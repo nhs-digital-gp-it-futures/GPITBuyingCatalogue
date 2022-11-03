@@ -5,6 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.AssociatedServiceOnly;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.DeliveryDates;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Triage;
 using OpenQA.Selenium;
@@ -38,6 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             SelectEditAssociatedServiceOnly = new SelectEditAssociatedServiceOnly(driver, commonActions);
             SelectEditAssociatedServiceRecipientOnly = new SelectEditAssociatedServiceRecipientOnly(driver, commonActions, factory);
             SelectEditAndConfirmAssociatedServiceOnlyPrices = new SelectEditAndConfirmAssociatedServiceOnlyPrices(driver, commonActions, factory);
+            SelectSolutionAndServices = new SelectSolutionAndServices(driver, commonActions);
             OrderingStepThree = new OrderingStepThree(driver, commonActions);
             OrderingStepFour = new OrderingStepFour(driver, commonActions);
             Factory = factory;
@@ -87,6 +89,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         internal SelectEditAndConfirmAdditionalServicePrice SelectEditAndConfirmAdditionalServicePrice { get; }
 
         internal SelectEditAssociatedServiceOnly SelectEditAssociatedServiceOnly { get; }
+
+        internal SelectSolutionAndServices SelectSolutionAndServices { get; }
 
         internal SelectEditAssociatedServiceRecipientOnly SelectEditAssociatedServiceRecipientOnly { get; }
 
@@ -195,10 +199,36 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             SolutionAndServicesReview.ReviewSolutionAndServices();
 
             TaskList.SelectPlannedDeliveryDatesTask();
-            PlannedDeliveryDates.SetDefaultPlannedDeliveryDate(DateTime.Today.AddDays(7));
+            PlannedDeliveryDates.PlannedDeliveryDate(solutionName, isAssociatedServiceOnlyOrder, associatedServices, additionalServices);
 
-            TaskList.SelectFundingSourcesTask();
-            SelectFundingSources.AddFundingSources(solutionName, isAssociatedServiceOnlyOrder, associatedServices, additionalServices);
+            var isMultiFramework = IsMultiFramework();
+
+            if (isMultiFramework)
+            {
+                TaskList.SelectFrameWork();
+                SelectFundingSources.AddFundingSources(solutionName, isAssociatedServiceOnlyOrder, associatedServices, additionalServices);
+            }
+            else
+            {
+                var isLocalFundingOnly = IsLocalFundingOnly();
+                if (isLocalFundingOnly)
+                {
+                    TaskList.SelectLocalFundingSourcesTask();
+                }
+                else
+                {
+                    TaskList.SelectFundingSourcesTask();
+                    SelectFundingSources.AddFundingSources(solutionName, isAssociatedServiceOnlyOrder, associatedServices, additionalServices);
+                }
+            }
+        }
+
+        public void EditPlannedDeliveryDate(string solutionName, string additionalService, string associatedService, bool editplanneddeliverydate = true)
+        {
+            var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder();
+
+            TaskList.EditPlannedDeliveryDateTask();
+            PlannedDeliveryDates.EditPlannedDeliveryDate(solutionName, isAssociatedServiceOnlyOrder, additionalService, associatedService, editplanneddeliverydate);
         }
 
         public void StepThreeCompleteContract(bool isDefault = true)
@@ -506,6 +536,37 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             var orderID = Driver.Url.Split('/').Last().Split('-')[0].Replace("C0", string.Empty);
 
             return dbContext.Orders.Any(o => string.Equals(o.Id.ToString(), orderID) && o.AssociatedServicesOnly);
+        }
+
+        private bool IsMultiFramework()
+        {
+            using var dbContext = Factory.DbContext;
+            var orderID = Driver.Url.Split('/').Last().Split('-')[0].Replace("C0", string.Empty);
+
+
+            var frameworks = dbContext.OrderItems
+             .Where(oi => string.Equals(oi.OrderId.ToString(), orderID))
+             .SelectMany(oi => oi.CatalogueItem.Solution.FrameworkSolutions.Select(fs => fs.Framework)).ToList();
+
+            return frameworks.Count() > 1;
+        }
+
+        private bool IsLocalFundingOnly()
+        {
+            using var dbContext = Factory.DbContext;
+            var orderID = Driver.Url.Split('/').Last().Split('-')[0].Replace("C0", string.Empty);
+
+            var frameworks = dbContext.OrderItems
+             .Where(oi => string.Equals(oi.OrderId.ToString(), orderID))
+             .SelectMany(oi => oi.CatalogueItem.Solution.FrameworkSolutions.Select(fs => fs.Framework)).ToList();
+
+            if (frameworks.Count == 0 || frameworks.Count > 1)
+            {
+                return false;
+            }
+
+            var framework = frameworks.FirstOrDefault();
+            return framework.LocalFundingOnly;
         }
 
         private bool HasAdditionalService(string solutionName)

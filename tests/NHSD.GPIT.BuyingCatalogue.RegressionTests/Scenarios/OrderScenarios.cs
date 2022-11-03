@@ -13,6 +13,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
         private const string SupplierName = "EMIS Health";
         private const string SolutionName = "Anywhere Consult";
+        private const string SolutionWithMultipleFrameworks = "Video Consult";
+        private const string SolutionForLocalfundingonly = "Online and Video Consult";
         private const string AssociatedServiceName = "Anywhere Consult – Integrated Device";
         private const string AdditionalServiceName = "Automated Arrivals";
         private const string NewSolutionName = "Emis Web GP";
@@ -47,6 +49,50 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void LocalFundingOnlyFrameworksOrderWithSolutionUnder40K()
+        {
+            string orderDescription = "LocalFundingOnlyFrameworksOrderWithSolutionUnder40K";
+
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(SolutionForLocalfundingonly);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void MultipleFrameworksOrderWithSolutionUnder40K()
+        {
+            string orderDescription = "MultipleFrameworksOrderWithSolutionUnder40K";
+
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(SolutionWithMultipleFrameworks);
 
             OrderingPages.StepThreeCompleteContract();
 
@@ -113,6 +159,30 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
 
             OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals", associatedService: "Automated Arrivals – Engineering Half Day");
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void EditPlannedDeliveryDateOrderWithSolutionAdditionalAndAssociatedServiceUnder40K()
+        {
+            string orderDescription = "EditPlannedDeliveryDateOrderWithSolutionAdditionalAndAssociatedServiceUnder40K";
+
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals", associatedService: "Automated Arrivals – Engineering Half Day");
+
+            OrderingPages.EditPlannedDeliveryDate("Emis Web GP", additionalService: "Automated Arrivals", associatedService: "Automated Arrivals – Engineering Half Day", true);
 
             OrderingPages.StepThreeCompleteContract();
 
@@ -397,6 +467,28 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
 
             OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void EditPlannedDeliveryDateOrderAssociatedServiceOnly()
+        {
+            string orderDescription = "EditPlannedDeliveryDateOrderAssociatedServiceOnly";
+
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
+
+            OrderingPages.EditPlannedDeliveryDate("Anywhere Consult", "Anywhere Consult – Integrated Device", " ",true);
 
             OrderingPages.StepThreeCompleteContract();
 

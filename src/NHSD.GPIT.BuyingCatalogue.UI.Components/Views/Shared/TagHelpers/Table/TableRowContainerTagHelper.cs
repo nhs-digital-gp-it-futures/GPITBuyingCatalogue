@@ -6,7 +6,6 @@ using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 {
     [HtmlTargetElement(TagHelperName, ParentTag = TableContainerTagHelper.TagHelperName)]
-    [RestrictChildren(TableCellTagHelper.TagHelperName)]
     public sealed class TableRowContainerTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-table-row-container";
