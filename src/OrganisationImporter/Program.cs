@@ -24,6 +24,7 @@ namespace OrganisationImporter
                 configBuilder.AddEnvironmentVariables();
                 _configuration = configBuilder.Build();
             });
+
             builder.ConfigureLogging(loggingBuilder => loggingBuilder.AddSerilog());
             builder.ConfigureServices(ConfigureServices);
 
