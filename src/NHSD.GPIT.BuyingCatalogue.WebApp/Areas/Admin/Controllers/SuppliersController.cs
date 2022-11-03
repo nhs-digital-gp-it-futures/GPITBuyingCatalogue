@@ -272,7 +272,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var solutions = await suppliersService.GetSolutionsReferencingSupplierContact(contactId);
 
-            var contact = supplier.SupplierContacts.Single(sc => sc.Id == contactId);
+            var contact = supplier.SupplierContacts.First(sc => sc.Id == contactId);
 
             var model = new EditContactModel(contact, supplier, solutions)
             {
@@ -317,7 +317,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var supplier = await suppliersService.GetSupplier(supplierId);
 
-            var contact = supplier.SupplierContacts.Single(sc => sc.Id == contactId);
+            var contact = supplier.SupplierContacts.First(sc => sc.Id == contactId);
 
             var model = new DeleteContactModel(contact, supplier.Name)
             {

@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
 
         public Task<CatalogueItem> GetAdditionalService(CatalogueItemId catalogueItemId, CatalogueItemId additionalServiceId)
             => BaseQuery(catalogueItemId)
-                .SingleAsync(i => i.Id == additionalServiceId);
+                .FirstAsync(i => i.Id == additionalServiceId);
 
         public async Task<CatalogueItem> GetAdditionalServiceWithCapabilities(CatalogueItemId additionalServiceId)
             => await dbContext.CatalogueItems.AsNoTracking()
@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
                     .ThenInclude(cic => cic.Capability)
                 .Include(ci => ci.CatalogueItemEpics)
                     .ThenInclude(cie => cie.Epic)
-                .SingleOrDefaultAsync(ci => ci.Id == additionalServiceId);
+                .FirstOrDefaultAsync(ci => ci.Id == additionalServiceId);
 
         public async Task<List<CatalogueItem>> GetAdditionalServicesBySolutionId(CatalogueItemId? catalogueItemId, bool publishedOnly = false)
         {

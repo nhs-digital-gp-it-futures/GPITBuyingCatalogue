@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 throw new ArgumentNullException(nameof(recipients));
             }
 
-            var deliveryDate = context.Orders.SingleOrDefault(x => x.Id == orderId)?.DeliveryDate;
+            var deliveryDate = context.Orders.FirstOrDefault(x => x.Id == orderId)?.DeliveryDate;
 
             foreach (var recipient in recipients)
             {
@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 throw new ArgumentNullException(nameof(recipients));
             }
 
-            var deliveryDate = context.Orders.SingleOrDefault(x => x.Id == orderId)?.DeliveryDate;
+            var deliveryDate = context.Orders.FirstOrDefault(x => x.Id == orderId)?.DeliveryDate;
 
             var existingRecipients = context.OrderItemRecipients
                 .Where(x => x.OrderId == orderId

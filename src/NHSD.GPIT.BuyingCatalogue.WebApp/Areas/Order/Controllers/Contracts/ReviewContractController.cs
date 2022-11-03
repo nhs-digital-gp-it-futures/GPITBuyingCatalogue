@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
 
         public async Task<IActionResult> ContractSummary(string internalOrgId, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderForSummary(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderForSummary(callOffId, internalOrgId)).Order;
             var defaultPlan = await implementationPlanService.GetDefaultImplementationPlan();
             var model = new ReviewContractModel(internalOrgId, order, defaultPlan)
             {
@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
         [HttpPost("summary/contract")]
         public async Task<IActionResult> ContractSummary(string internalOrgId, CallOffId callOffId, ReviewContractModel model)
         {
-            var order = await orderService.GetOrderForSummary(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderForSummary(callOffId, internalOrgId)).Order;
 
             if (!order.CanComplete())
             {

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.AssociatedServicesBilling;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
@@ -18,27 +19,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
         private readonly IContractsService contractsService;
         private readonly IAssociatedServicesBillingService associatedServicesBillingService;
         private readonly IImplementationPlanService implementationPlanService;
+        private readonly IOrderService orderService;
 
         public AssociatedServicesBillingController(
             IContractsService contractsService,
             IAssociatedServicesBillingService associatedServicesBillingService,
-            IImplementationPlanService implementationPlanService)
+            IImplementationPlanService implementationPlanService,
+            IOrderService orderService)
         {
             this.contractsService = contractsService ?? throw new ArgumentNullException(nameof(contractsService));
             this.associatedServicesBillingService = associatedServicesBillingService ?? throw new ArgumentNullException(nameof(associatedServicesBillingService));
             this.implementationPlanService = implementationPlanService ?? throw new ArgumentNullException(nameof(implementationPlanService));
+            this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
         }
 
         [HttpGet]
         public async Task<IActionResult> ReviewBilling(string internalOrgId, CallOffId callOffId)
         {
             var associatedServiceItems = await associatedServicesBillingService.GetAssociatedServiceOrderItems(internalOrgId, callOffId);
-
             var implementationPlan = await implementationPlanService.GetDefaultImplementationPlan();
-
             var targetMilestone = implementationPlan.Milestones.OrderBy(ms => ms.Order).LastOrDefault();
-
-            var contractFlags = await contractsService.GetContract(callOffId.Id);
+            var orderId = await orderService.GetOrderId(internalOrgId, callOffId);
+            var contractFlags = await contractsService.GetContract(orderId);
 
             var model = new ReviewBillingModel(callOffId, targetMilestone, contractFlags, associatedServiceItems)
             {
@@ -61,7 +63,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
                 return View(model);
             }
 
-            await contractsService.UseDefaultBilling(callOffId.Id, model.UseDefaultBilling!.Value);
+            var orderId = await orderService.GetOrderId(internalOrgId, callOffId);
+
+            await contractsService.UseDefaultBilling(orderId, model.UseDefaultBilling!.Value);
 
             if (model.UseDefaultBilling is false)
             {
@@ -94,10 +98,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
         [HttpGet("requirements")]
         public async Task<IActionResult> SpecificRequirements(string internalOrgId, CallOffId callOffId, [FromQuery] bool? fromBespoke = false)
         {
-            var contractFlags = await contractsService.GetContract(callOffId.Id);
+            var orderId = await orderService.GetOrderId(internalOrgId, callOffId);
+            var contractFlags = await contractsService.GetContract(orderId);
 
-            var goBackLink = fromBespoke!.Value ?
-                Url.Action(
+            var goBackLink = fromBespoke!.Value
+                ? Url.Action(
                     nameof(BespokeBilling),
                     typeof(AssociatedServicesBillingController).ControllerName(),
                     new { internalOrgId, callOffId })
@@ -120,7 +125,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
             if (!ModelState.IsValid)
                 return View(model);
 
-            await contractsService.HasSpecificRequirements(callOffId.Id, !model.ProceedWithoutSpecificRequirements!.Value);
+            var orderId = await orderService.GetOrderId(internalOrgId, callOffId);
+            await contractsService.HasSpecificRequirements(orderId, !model.ProceedWithoutSpecificRequirements!.Value);
 
             if (model.ProceedWithoutSpecificRequirements is false)
             {
@@ -136,7 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
                 new { internalOrgId, callOffId });
         }
 
-        [HttpGet("bespoke-requirments")]
+        [HttpGet("bespoke-requirements")]
         public IActionResult BespokeRequirements(string internalOrgId, CallOffId callOffId, [FromQuery] bool? fromBespoke = false)
         {
             var model = new BasicBillingModel(internalOrgId, callOffId)

@@ -350,7 +350,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var serviceLevelAgreements = await serviceLevelAgreementsService.GetServiceLevelAgreementForSolution(solutionId);
 
-            var contact = serviceLevelAgreements.Contacts.SingleOrDefault(slac => slac.Id == contactId);
+            var contact = serviceLevelAgreements.Contacts.FirstOrDefault(slac => slac.Id == contactId);
 
             if (contact is null)
                 return BadRequest($"No Contact found for Id: {contactId}");
@@ -404,7 +404,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!catalogueItem.Solution.ServiceLevelAgreement.Contacts.Any(slac => slac.Id == contactId))
                 return BadRequest($"No Contact found for Id: {contactId}");
 
-            var contact = catalogueItem.Solution.ServiceLevelAgreement.Contacts.SingleOrDefault(slac => slac.Id == contactId);
+            var contact = catalogueItem.Solution.ServiceLevelAgreement.Contacts.FirstOrDefault(slac => slac.Id == contactId);
 
             var model = new Models.ServiceLevelAgreements.EditSLAContactModel(catalogueItem, contact)
             {
@@ -474,7 +474,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var serviceLevel = catalogueItem.Solution.ServiceLevelAgreement.ServiceLevels.SingleOrDefault(sl => sl.Id == serviceLevelId);
+            var serviceLevel = catalogueItem.Solution.ServiceLevelAgreement.ServiceLevels.FirstOrDefault(sl => sl.Id == serviceLevelId);
             if (serviceLevel is null)
                 return BadRequest($"No Service Level found for Id: {serviceLevelId}");
 
@@ -520,7 +520,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var serviceLevel = catalogueItem.Solution.ServiceLevelAgreement.ServiceLevels.SingleOrDefault(sl => sl.Id == serviceLevelId);
+            var serviceLevel = catalogueItem.Solution.ServiceLevelAgreement.ServiceLevels.FirstOrDefault(sl => sl.Id == serviceLevelId);
             if (serviceLevel is null)
                 return BadRequest($"No Service Level found for Id: {serviceLevelId}");
 
@@ -542,7 +542,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var serviceLevel = catalogueItem.Solution.ServiceLevelAgreement.ServiceLevels.SingleOrDefault(sl => sl.Id == serviceLevelId);
+            var serviceLevel = catalogueItem.Solution.ServiceLevelAgreement.ServiceLevels.FirstOrDefault(sl => sl.Id == serviceLevelId);
             if (serviceLevel is null)
                 return BadRequest($"No Service Level found for Id: {serviceLevelId}");
 

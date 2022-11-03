@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         [HttpGet("select")]
         public async Task<IActionResult> SelectAdditionalServices(string internalOrgId, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
             if (order.GetSolution() == null)
             {
@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 await orderItemService.AddOrderItems(internalOrgId, callOffId, serviceIds);
             }
 
-            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
 
             var route = routingService.GetRoute(
                 RoutingPoint.SelectAdditionalServices,
@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 return View(SelectViewName, await GetModel(internalOrgId, callOffId, returnToTaskList: true));
             }
 
-            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
 
             var existingServiceIds = order.GetAdditionalServices()
                 .Select(x => x.CatalogueItemId)
@@ -134,7 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         [HttpGet("confirm-changes")]
         public async Task<IActionResult> ConfirmAdditionalServiceChanges(string internalOrgId, CallOffId callOffId, string serviceIds)
         {
-            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
             var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionId(order.GetSolution().CatalogueItemId, publishedOnly: true);
 
             var existingServiceIds = order.GetAdditionalServices()
@@ -213,7 +213,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
 
         private async Task<SelectServicesModel> GetModel(string internalOrgId, CallOffId callOffId, bool returnToTaskList = false)
         {
-            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
             var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionId(order.GetSolution().CatalogueItemId, publishedOnly: true);
 
             var backLink = returnToTaskList

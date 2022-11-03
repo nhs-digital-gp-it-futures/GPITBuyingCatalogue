@@ -119,7 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService
                 .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             mockListPriceService
                 .Setup(lps => lps.GetCatalogueItemWithPublishedListPrices(orderItem.Id))
@@ -162,7 +162,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
+
+            mockOrderService
+                .Setup(x => x.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
 
             mockListPriceService
                 .Setup(lps => lps.GetCatalogueItemWithPublishedListPrices(orderItem.Id))
@@ -217,7 +221,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService
                 .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             mockListPriceService
                 .Setup(lps => lps.GetCatalogueItemWithPublishedListPrices(catalogueItem.Id))
@@ -271,7 +275,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             var result = await controller.EditPrice(internalOrgId, callOffId, orderItem.CatalogueItemId);
 
@@ -301,7 +305,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             mockListPriceService
                 .Setup(x => x.GetCatalogueItemWithPublishedListPrices(orderItem.CatalogueItemId))
@@ -336,7 +340,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             mockListPriceService
                 .Setup(x => x.GetCatalogueItemWithPublishedListPrices(orderItem.CatalogueItemId))
@@ -396,7 +400,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService
                 .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             List<OrderPricingTierDto> actual = null;
 

@@ -160,6 +160,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
 
             var order = new Order
             {
+                OrderNumber = context.NextOrderNumber().Result,
+                Revision = 1,
                 OrderingPartyId = organisationId,
                 Created = System.DateTime.UtcNow,
                 IsDeleted = false,
@@ -177,11 +179,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
             context.Orders.Add(order);
             context.SaveChanges();
 
-            var callOffId = new CallOffId(order.Id, 1);
             var parameters = new Dictionary<string, string>()
             {
                 { nameof(InternalOrgId), InternalOrgId },
-                { nameof(CallOffId), callOffId.ToString() },
+                { nameof(CallOffId), $"{order.CallOffId}" },
             };
 
             NavigateToUrl(
@@ -209,6 +210,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
 
             var order = new Order
             {
+                OrderNumber = context.NextOrderNumber().Result,
+                Revision = 1,
                 OrderingPartyId = organisationId,
                 Created = System.DateTime.UtcNow,
                 IsDeleted = false,
@@ -226,11 +229,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
             context.Orders.Add(order);
             context.SaveChanges();
 
-            var callOffId = new CallOffId(order.Id, 1);
             var parameters = new Dictionary<string, string>()
             {
                 { nameof(InternalOrgId), InternalOrgId },
-                { nameof(CallOffId), callOffId.ToString() },
+                { nameof(CallOffId), $"{order.CallOffId}" },
             };
 
             NavigateToUrl(

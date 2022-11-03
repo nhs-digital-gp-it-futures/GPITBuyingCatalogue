@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet]
         public async Task<IActionResult> Supplier(string internalOrgId, CallOffId callOffId, int? selected = null)
         {
-            var order = await orderService.GetOrderWithSupplier(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithSupplier(callOffId, internalOrgId)).Order;
 
             if (order.Supplier is null)
             {
@@ -116,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("select")]
         public async Task<IActionResult> SelectSupplier(string internalOrgId, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderWithSupplier(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithSupplier(callOffId, internalOrgId)).Order;
 
             if (order.Supplier is not null)
             {
@@ -170,7 +170,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("confirm")]
         public async Task<IActionResult> ConfirmSupplier(string internalOrgId, CallOffId callOffId, int supplierId)
         {
-            var order = await orderService.GetOrderWithSupplier(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithSupplier(callOffId, internalOrgId)).Order;
 
             if (order?.Supplier is not null)
             {
@@ -215,7 +215,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("new-contact")]
         public async Task<IActionResult> NewContact(string internalOrgId, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderWithSupplier(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithSupplier(callOffId, internalOrgId)).Order;
 
             if (order?.SupplierId is null)
             {

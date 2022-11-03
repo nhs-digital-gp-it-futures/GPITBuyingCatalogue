@@ -9,7 +9,6 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
@@ -26,17 +25,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     {
         private readonly IOrderAdminService orderAdminService;
         private readonly ICsvService csvService;
+        private readonly IOrderService orderService;
         private readonly IPdfService pdfService;
         private readonly PdfSettings pdfSettings;
 
         public ManageOrdersController(
             IOrderAdminService orderAdminService,
             ICsvService csvService,
+            IOrderService orderService,
             IPdfService pdfService,
             PdfSettings pdfSettings)
         {
             this.orderAdminService = orderAdminService ?? throw new ArgumentNullException(nameof(orderAdminService));
             this.csvService = csvService ?? throw new ArgumentNullException(nameof(csvService));
+            this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
             this.pdfSettings = pdfSettings ?? throw new ArgumentNullException(nameof(pdfSettings));
         }
@@ -93,8 +95,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{callOffId}/download/full-order-csv")]
         public async Task<IActionResult> DownloadFullOrderCsv(CallOffId callOffId, string externalOrgId)
         {
+            var orderId = await orderService.GetOrderId(callOffId);
             using var memoryStream = new MemoryStream();
-            await csvService.CreateFullOrderCsvAsync(callOffId.Id, memoryStream);
+            await csvService.CreateFullOrderCsvAsync(orderId, memoryStream);
             memoryStream.Position = 0;
 
             return File(memoryStream.ToArray(), "application/octet-stream", $"{callOffId}_{externalOrgId}_full.csv");
@@ -103,8 +106,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{callOffId}/download/patient-order-csv")]
         public async Task<IActionResult> DownloadPatientNumberCsv(CallOffId callOffId, string externalOrgId)
         {
+            var orderId = await orderService.GetOrderId(callOffId);
             using var memoryStream = new MemoryStream();
-            await csvService.CreatePatientNumberCsvAsync(callOffId.Id, memoryStream);
+            await csvService.CreatePatientNumberCsvAsync(orderId, memoryStream);
             memoryStream.Position = 0;
 
             return File(memoryStream.ToArray(), "application/octet-stream", $"{callOffId}_{externalOrgId}_patient.csv");
@@ -144,7 +148,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            await orderAdminService.DeleteOrder(callOffId, model.NameOfRequester, model.NameOfApprover, model.ApprovalDate ?? null);
+            await orderAdminService.DeleteOrder(callOffId, model.NameOfRequester, model.NameOfApprover, model.ApprovalDate);
+
             return RedirectToAction(nameof(Index));
         }
 

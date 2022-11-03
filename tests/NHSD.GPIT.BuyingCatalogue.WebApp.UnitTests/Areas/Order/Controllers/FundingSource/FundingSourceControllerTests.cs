@@ -43,8 +43,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
             [Frozen] Mock<IOrderService> orderServiceMock,
             FundingSourceController controller)
         {
-            orderServiceMock.Setup(o => o.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(order);
+            orderServiceMock
+                .Setup(o => o.GetOrderThin(order.CallOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
 
             orderFrameworkMock.Setup(f => f.GetFrameworksForOrder(order.CallOffId, internalOrgId, order.AssociatedServicesOnly))
                 .ReturnsAsync(new List<EntityFramework.Catalogue.Models.Framework>() { framework });
@@ -74,8 +75,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
             [Frozen] Mock<IOrderService> orderServiceMock,
             FundingSourceController controller)
         {
-            orderServiceMock.Setup(o => o.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(order);
+            orderServiceMock
+                .Setup(o => o.GetOrderThin(order.CallOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
 
             orderFrameworkMock.Setup(f => f.GetFrameworksForOrder(order.CallOffId, internalOrgId, order.AssociatedServicesOnly))
                 .ReturnsAsync(frameworks);
@@ -106,8 +108,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
             order.SelectedFramework = null;
             order.SelectedFrameworkId = null;
 
-            orderServiceMock.Setup(o => o.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(order);
+            orderServiceMock
+                .Setup(o => o.GetOrderThin(order.CallOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
 
             var model = new SelectFrameworkModel(order, frameworks)
             {
@@ -139,8 +142,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
             [Frozen] Mock<IOrderService> orderServiceMock,
             FundingSourceController controller)
         {
-            orderServiceMock.Setup(o => o.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(order);
+            orderServiceMock
+                .Setup(o => o.GetOrderThin(order.CallOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
 
             var model = new SelectFrameworkModel(order, frameworks)
             {
@@ -173,8 +177,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
             [Frozen] Mock<IOrderService> orderServiceMock,
             FundingSourceController controller)
         {
-            orderServiceMock.Setup(o => o.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(order);
+            orderServiceMock
+                .Setup(o => o.GetOrderThin(order.CallOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
 
             var model = new SelectFrameworkModel(order, frameworks)
             {
@@ -235,8 +240,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
             [Frozen] Mock<IOrderService> orderServiceMock,
             FundingSourceController controller)
         {
-            orderServiceMock.Setup(o => o.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(order);
+            orderServiceMock
+                .Setup(o => o.GetOrderThin(order.CallOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
 
             frameworkMock.Setup(f => f.GetFramework(framework.Id))
                 .ReturnsAsync(framework);
@@ -320,8 +326,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
             EntityFramework.Catalogue.Models.Framework framework,
             FundingSourceController controller)
         {
-            orderServiceMock.Setup(o => o.GetOrderWithOrderItemsForFunding(order.CallOffId, internalOrgId))
-                .ReturnsAsync(order);
+            orderServiceMock
+                .Setup(o => o.GetOrderWithOrderItemsForFunding(order.CallOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
 
             frameworkServiceMock.Setup(f => f.GetFrameworksForOrder(order.CallOffId, internalOrgId, order.AssociatedServicesOnly))
                 .ReturnsAsync(new List<EntityFramework.Catalogue.Models.Framework>() { framework });
@@ -347,8 +354,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
             orderItemServiceMock.Setup(oi => oi.GetOrderItem(order.CallOffId, internalOrgId, orderItem.CatalogueItemId))
                 .ReturnsAsync(orderItem);
 
-            orderService.Setup(o => o.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(order);
+            orderService
+                .Setup(o => o.GetOrderThin(order.CallOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
 
             var expectedViewData = new WebApp.Areas.Order.Models.FundingSources.FundingSource(internalOrgId, order.CallOffId, order, orderItem);
 

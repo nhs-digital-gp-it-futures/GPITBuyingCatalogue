@@ -112,7 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public OrderItem OrderItem(CatalogueItemId catalogueItemId)
         {
-            return OrderItems.SingleOrDefault(x => x.CatalogueItem.Id == catalogueItemId);
+            return OrderItems.FirstOrDefault(x => x.CatalogueItem.Id == catalogueItemId);
         }
 
         public OrderItem GetSolution()

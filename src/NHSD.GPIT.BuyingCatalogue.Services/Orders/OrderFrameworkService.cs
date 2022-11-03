@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             return isAssociatedServiceOrder
                 ? await FindFrameworksFromAssociatedOnlySolution(callOffId, internalOrgId)
-                : await FindFrameworksFromCatalgoueSolution(callOffId, internalOrgId);
+                : await FindFrameworksFromCatalogueSolution(callOffId, internalOrgId);
         }
 
         public async Task SetSelectedFrameworkForOrder(
@@ -32,9 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             string internalOrgId,
             string frameworkId)
         {
-            var order = await dbContext.Orders.SingleOrDefaultAsync(
-                o => o.Id == callOffId.Id
-                && o.OrderingParty.InternalIdentifier == internalOrgId);
+            var order = await dbContext.Order(internalOrgId, callOffId);
 
             order.SelectedFrameworkId = frameworkId;
 
@@ -50,11 +48,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.SelectedFramework)
                 .Include(o => o.OrderItems)
                     .ThenInclude(oi => oi.OrderItemFunding)
-                .SingleOrDefaultAsync(
-                o => o.Id == callOffId.Id
-                && o.OrderingParty.InternalIdentifier == internalOrgId);
+                .FirstOrDefaultAsync(o => o.OrderNumber == callOffId.OrderNumber
+                    && o.Revision == callOffId.Revision
+                    && o.OrderingParty.InternalIdentifier == internalOrgId);
 
-            var selectedFramework = await dbContext.Frameworks.SingleAsync(f => f.Id == frameworkId);
+            var selectedFramework = await dbContext.Frameworks.FirstAsync(f => f.Id == frameworkId);
 
             if (selectedFramework.LocalFundingOnly != order.SelectedFramework.LocalFundingOnly)
             {
@@ -72,19 +70,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         private async Task<IList<EntityFramework.Catalogue.Models.Framework>> FindFrameworksFromAssociatedOnlySolution(CallOffId callOffId, string internalOrgId) =>
             await dbContext.Orders
-                .Where(o => o.Id == callOffId.Id
-                       && o.OrderingParty.InternalIdentifier == internalOrgId)
-            .SelectMany(o => o.Solution.Solution.FrameworkSolutions.Select(fs => fs.Framework))
-            .OrderBy(f => f.Name)
-            .ToListAsync();
+                .Where(o => o.OrderNumber == callOffId.OrderNumber
+                    && o.Revision == callOffId.Revision
+                    && o.OrderingParty.InternalIdentifier == internalOrgId)
+                .SelectMany(o => o.Solution.Solution.FrameworkSolutions.Select(fs => fs.Framework))
+                .OrderBy(f => f.Name)
+                .ToListAsync();
 
-        private async Task<IList<EntityFramework.Catalogue.Models.Framework>> FindFrameworksFromCatalgoueSolution(CallOffId callOffId, string internalOrgId) =>
-            await dbContext.OrderItems
-                .Where(oi => oi.OrderId == callOffId.Id
-                       && oi.Order.OrderingParty.InternalIdentifier == internalOrgId
-                       && oi.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution)
+        private async Task<IList<EntityFramework.Catalogue.Models.Framework>> FindFrameworksFromCatalogueSolution(CallOffId callOffId, string internalOrgId)
+        {
+            var orderId = await dbContext.OrderId(internalOrgId, callOffId);
+
+            return await dbContext.OrderItems
+                .Where(oi => oi.OrderId == orderId
+                    && oi.Order.OrderingParty.InternalIdentifier == internalOrgId
+                    && oi.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution)
                 .SelectMany(oi => oi.CatalogueItem.Solution.FrameworkSolutions.Select(fs => fs.Framework))
-            .OrderBy(f => f.Name)
-            .ToListAsync();
+                .OrderBy(f => f.Name)
+                .ToListAsync();
+        }
     }
 }

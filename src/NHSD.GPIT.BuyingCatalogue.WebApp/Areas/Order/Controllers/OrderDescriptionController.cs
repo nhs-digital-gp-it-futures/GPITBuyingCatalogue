@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet]
         public async Task<IActionResult> OrderDescription(string internalOrgId, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
             var descriptionModel = new OrderDescriptionModel(internalOrgId, order)
             {

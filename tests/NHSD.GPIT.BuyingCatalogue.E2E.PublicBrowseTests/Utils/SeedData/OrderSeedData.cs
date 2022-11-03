@@ -57,6 +57,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 IsDeleted = false,
@@ -78,6 +80,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 IsDeleted = false,
@@ -99,6 +103,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 IsDeleted = false,
@@ -127,6 +133,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 IsDeleted = false,
@@ -156,6 +164,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 IsDeleted = false,
@@ -193,6 +203,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 IsDeleted = false,
@@ -230,6 +242,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 IsDeleted = false,
@@ -276,6 +290,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 IsDeleted = false,
@@ -338,6 +354,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 IsDeleted = false,
@@ -415,6 +433,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 IsDeleted = false,
@@ -487,6 +507,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 IsDeleted = false,
@@ -544,6 +566,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 IsDeleted = false,
@@ -611,6 +635,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 IsDeleted = false,
@@ -680,6 +706,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 IsDeleted = false,
@@ -772,6 +800,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 IsDeleted = false,
@@ -874,6 +904,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 IsDeleted = false,
@@ -916,6 +948,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 IsDeleted = false,
@@ -970,6 +1004,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 IsDeleted = false,
@@ -1027,6 +1063,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 IsDeleted = false,
@@ -1083,6 +1121,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 IsDeleted = false,
@@ -1146,6 +1186,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 IsDeleted = false,
@@ -1223,6 +1265,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 IsDeleted = false,
@@ -1326,6 +1370,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
                 AssociatedServicesOnly = true,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
@@ -1397,6 +1443,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
                 AssociatedServicesOnly = true,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
@@ -1437,6 +1485,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
                 AssociatedServicesOnly = true,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
@@ -1469,6 +1519,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
                 AssociatedServicesOnly = true,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
@@ -1519,6 +1571,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
                 AssociatedServicesOnly = true,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
@@ -1580,6 +1634,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
                 OrderingPartyId = organisationId,
                 Created = timeNow,
                 IsDeleted = false,
@@ -1657,6 +1713,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var order = new Order
             {
                 Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
                 OrderingPartyId = GetOrganisationId(context, "CG-15H"),
                 Created = timeNow,
                 IsDeleted = false,

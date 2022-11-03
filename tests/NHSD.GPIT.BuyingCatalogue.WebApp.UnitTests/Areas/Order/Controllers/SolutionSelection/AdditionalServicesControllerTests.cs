@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService
                 .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             var result = await controller.SelectAdditionalServices(internalOrgId, order.CallOffId);
 
@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService
                 .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             mockAdditionalServicesService
                 .Setup(x => x.GetAdditionalServicesBySolutionId(solutionId, true))
@@ -128,7 +128,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             mockRoutingService
                 .Setup(x => x.GetRoute(RoutingPoint.SelectAdditionalServices, order, It.IsAny<RouteValues>()))
@@ -178,7 +178,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             mockRoutingService
                 .Setup(x => x.GetRoute(RoutingPoint.SelectAdditionalServices, order, It.IsAny<RouteValues>()))
@@ -223,7 +223,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService
                 .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             mockAdditionalServicesService
                 .Setup(x => x.GetAdditionalServicesBySolutionId(solutionId, true))
@@ -266,7 +266,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             var result = await controller.EditAdditionalServices(internalOrgId, callOffId, model);
 
@@ -311,7 +311,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             IEnumerable<CatalogueItemId> newServiceIds = null;
 
@@ -354,7 +354,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             var result = await controller.EditAdditionalServices(internalOrgId, callOffId, model);
 
@@ -390,7 +390,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService
                 .Setup(s => s.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             mockAdditionalServicesService
                 .Setup(x => x.GetAdditionalServicesBySolutionId(solutionId, true))

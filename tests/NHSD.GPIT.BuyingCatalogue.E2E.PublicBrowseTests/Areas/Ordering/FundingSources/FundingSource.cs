@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
             {
                 await using var dbcontext = GetEndToEndDbContext();
 
-                var catalogueItem = dbcontext.CatalogueItems.FirstOrDefault(ci => ci.Id == CatalogueItemId);
+                var catalogueItem = dbcontext.CatalogueItems.First(ci => ci.Id == CatalogueItemId);
 
                 CommonActions.PageTitle().Should().BeEquivalentTo($"Funding source - {catalogueItem.Name}".FormatForComparison());
                 CommonActions.GoBackLinkDisplayed().Should().BeTrue();
@@ -87,11 +87,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
                     nameof(FundingSourceController.FundingSources))
                     .Should().BeTrue();
 
-                await using var dbcontext = GetEndToEndDbContext();
+                await using var dbContext = GetEndToEndDbContext();
 
-                var orderItemSaved = await dbcontext.OrderItems
-                .Include(oi => oi.OrderItemFunding)
-                .FirstOrDefaultAsync(oi => oi.OrderId == CallOffId.Id && oi.CatalogueItemId == CatalogueItemId);
+                var orderId = await dbContext.OrderId(CallOffId);
+
+                var orderItemSaved = await dbContext.OrderItems
+                    .Include(oi => oi.OrderItemFunding)
+                    .FirstOrDefaultAsync(oi => oi.OrderId == orderId && oi.CatalogueItemId == CatalogueItemId);
 
                 orderItemSaved?.FundingType.Should().Be(OrderItemFundingType.MixedFunding);
             });
@@ -99,14 +101,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
 
         public void Dispose()
         {
-            using var dbcontext = GetEndToEndDbContext();
+            using var dbContext = GetEndToEndDbContext();
 
-            var orderItem = dbcontext.OrderItems
-                .Include(oi => oi.OrderItemFunding).FirstOrDefault(oi => oi.OrderId == CallOffId.Id && oi.CatalogueItemId == CatalogueItemId);
+            var orderId = dbContext.OrderId(CallOffId).Result;
+
+            var orderItem = dbContext.OrderItems
+                .Include(oi => oi.OrderItemFunding)
+                .First(oi => oi.OrderId == orderId && oi.CatalogueItemId == CatalogueItemId);
 
             orderItem.OrderItemFunding = null;
 
-            dbcontext.SaveChanges();
+            dbContext.SaveChanges();
         }
     }
 }
