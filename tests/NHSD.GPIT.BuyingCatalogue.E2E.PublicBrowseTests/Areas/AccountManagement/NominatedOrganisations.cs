@@ -62,8 +62,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
             CommonActions.ClickLinkElement(BreadcrumbObjects.HomeBreadcrumbLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(HomeController),
-                nameof(HomeController.Index)).Should().BeTrue();
+                typeof(WebApp.Controllers.HomeController),
+                nameof(WebApp.Controllers.HomeController.Index)).Should().BeTrue();
         }
 
         [Fact]
