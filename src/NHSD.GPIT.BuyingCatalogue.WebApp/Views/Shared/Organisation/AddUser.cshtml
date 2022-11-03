@@ -16,7 +16,9 @@
                             caption="@Model!.OrganisationName"
                             advice="Provide the following information about this user." />
 
-            <form method="post">
+            <form method="post" action ="@Url.Action(
+                                             nameof(OrganisationController.AddUser),
+                                             ViewContext.RouteData.Values["controller"].ToString())">
                 <input type="hidden" asp-for="OrganisationName" />
                 
                 <nhs-input
@@ -31,11 +33,9 @@
                     label-text="Last name" />
 
                 <div data-test-id="add-user-button">
-                    <nhs-submit-button 
-                        formaction='@Url.Action(
-                                        nameof(OrganisationController.AddUser),
-                                        ViewContext.RouteData.Values["controller"].ToString())' />
+                    <nhs-submit-button />
                 </div>
+                @Html.AntiForgeryToken()
             </form>
         </div>
     </div>

@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
 
         public void ClickLinkElement(By targetElement) =>
             Driver.FindElement(targetElement).Click();
-
+            
         public void ClickLinkElement(By targetElement, string hrefContains)
         {
             Driver.FindElements(targetElement)
@@ -281,7 +281,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
             Type controllerType,
             string methodName)
         {
-            if (controllerType.BaseType != typeof(Controller))
+            if (!typeof(Controller).IsAssignableFrom(controllerType))
                 throw new InvalidOperationException($"{nameof(controllerType)} is not a type of {nameof(Controller)}");
 
             if (string.IsNullOrWhiteSpace(methodName))

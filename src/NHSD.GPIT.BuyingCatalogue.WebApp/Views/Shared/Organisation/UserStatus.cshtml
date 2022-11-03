@@ -19,11 +19,12 @@
             have access to @Model.OrganisationName
         </p>
 
-        <form method="post">
+        <form method="post" action ="@Url.Action(
+                                         nameof(OrganisationController.UserStatus),
+                                         ViewContext.RouteData.Values["controller"].ToString())">
             <input type="hidden" asp-for="IsActive"/>
-            <nhs-submit-button text="Continue" formaction='@Url.Action(
-                                                              nameof(OrganisationController.UserStatus),
-                                                              ViewContext.RouteData.Values["controller"].ToString())' />
+            <nhs-submit-button text="Continue"/>
+            @Html.AntiForgeryToken()
         </form>
 
         <a href="@Url.Action(

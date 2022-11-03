@@ -7,7 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Organisation;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Organisation
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Organisation
 {
     public static class AddUserModelValidatorTests
     {
