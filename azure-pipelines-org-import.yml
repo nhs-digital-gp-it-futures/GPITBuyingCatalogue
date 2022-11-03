@@ -2,13 +2,6 @@ variables:
   - name: buildConfiguration
     value: Release
 
-parameters:
-  - name: publishProjects
-    type: object
-    default:
-    - BuyingCatalogueFunction
-    - OrganisationImporter
-
 trigger:
   branches:
     include:
@@ -59,10 +52,33 @@ jobs:
           publishWebProjects: false
           modifyOutputPath: false
 
-      - ${{ each project in parameters.publishProjects }}:
-        - task: PublishBuildArtifacts@1
-          displayName: Package ${{ project }}
-          inputs:
-            PathtoPublish: "$(Build.ArtifactStagingDirectory)/${{ project }}"
-            ArtifactName: "${{ project }}"
-            publishLocation: "Container"
+      - task: PublishBuildArtifacts@1
+        displayName: Package BuyingCatalogueFunction
+        inputs:
+          PathtoPublish: "$(Build.ArtifactStagingDirectory)/BuyingCatalogueFunction"
+          ArtifactName: "BuyingCatalogueFunction"
+          publishLocation: "Container"
+
+      - task: PublishBuildArtifacts@1
+        displayName: Package OrganisationImporter
+        inputs:
+          PathtoPublish: "$(Build.ArtifactStagingDirectory)/OrganisationImporter"
+          ArtifactName: "OrganisationImporter"
+          publishLocation: "Container"
+
+  - job: Terraform
+    displayName: Package Terraform
+    pool:
+      vmImage: "ubuntu-latest"
+    steps:
+    - task: CopyFiles@2
+      displayName: Copy OrgImport TF Files
+      inputs:
+        SourceFolder: 'terraform/orgimport'
+        Contents: '**'
+        TargetFolder: '$(build.artifactStagingDirectory)/terraform/orgimport'
+        CleanTargetFolder: false
+        OverWrite: true
+
+    - publish: $(build.artifactStagingDirectory)/terraform/orgimport
+      artifact: terraform-orgimport
