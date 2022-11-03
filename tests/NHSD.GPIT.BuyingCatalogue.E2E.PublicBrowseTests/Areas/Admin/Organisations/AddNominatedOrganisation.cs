@@ -97,7 +97,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 
             existingRelationships.Should().BeEmpty();
 
-            CommonActions.ElementAddValue(NominatedOrganisationObjects.SelectedOrganisation, ValidOrganisationName);
+            CommonActions.AutoCompleteAddValue(NominatedOrganisationObjects.SelectedOrganisation, ValidOrganisationName);
+            CommonActions.ClickLinkElement(NominatedOrganisationObjects.SearchResult(0));
             CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
 
             CommonActions.PageLoadedCorrectGetIndex(
