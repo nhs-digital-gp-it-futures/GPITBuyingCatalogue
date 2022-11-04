@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
     public class OrderScenarios : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         private const string InternalOrgId = "CG-03F";
-
+        private const string FileName = "valid_service_recipients.csv";
         private const string SupplierName = "EMIS Health";
         private const string SolutionName = "Anywhere Consult";
         private const string SolutionWithMultipleFrameworks = "Video Consult";
@@ -1337,6 +1337,31 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        public void OrderWithSolutionUnder40K_ImportServiceRecipients()
+        {
+            string orderDescription = "OrderWithSolutionUnder40K_ImportServiceRecipients";
+
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(
+                solutionName: NewSolutionName,
+                importServiceRecipients: true,
+                fileName: FileName);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
         public void OrderWithSolutionAndAdditionalServiceUnder40K_MultipleServiceRecipients()
         {
             string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_MultipleServiceRecipients";
@@ -1362,6 +1387,56 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        public void OrderWithSolutionAndAdditionalServiceUnder40K_ImportServiceRecipients()
+        {
+            string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_ImportServiceRecipients";
+
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(
+                solutionName: NewSolutionName,
+                additionalService: AdditionalServiceName,
+                importServiceRecipients: true,
+                fileName: FileName);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void OrderAssociatedServiceOnly_ImportServiceRecipients()
+        {
+            string orderDescription = "OrderAssociatedServiceOnly_ImportServiceRecipients";
+
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(
+                solutionName: SolutionName,
+                associatedService: AssociatedServiceName,
+                importServiceRecipients: true,
+                fileName: FileName);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
         public void OrderWithSolutionAndAssociatedServiceUnder40K_MultipleServiceRecipients()
         {
             string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_MultipleServiceRecipients";
@@ -1380,6 +1455,32 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
                 solutionName: NewSolutionName,
                 associatedService: AssociatedServiceNameForWebGP,
                 multipleServiceRecipients: true);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void OrderWithSolutionAndAssociatedServiceUnder40K_ImportServiceRecipients()
+        {
+            string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_ImportServiceRecipients";
+
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(
+                solutionName: NewSolutionName,
+                associatedService: AssociatedServiceNameForWebGP,
+                multipleServiceRecipients: true,
+                fileName: FileName);
 
             OrderingPages.StepThreeCompleteContract();
 

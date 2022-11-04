@@ -29,4 +29,10 @@
     <ProjectReference Include="..\NHSD.GPIT.BuyingCatalogue.E2ETests.Framework\NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="ServiceRecipientTestData\valid_service_recipients.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
