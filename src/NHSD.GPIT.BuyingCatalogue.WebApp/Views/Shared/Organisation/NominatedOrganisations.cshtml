@@ -11,14 +11,12 @@
                     <a href="@Model.HomeLink"
                        class="nhsuk-breadcrumb__link">Home</a>
                 </li>
-            @if (User.IsAdmin())
-            {
-                <li class="nhsuk-breadcrumb__item">
-                    <a asp-action="@nameof(OrganisationController.Index)"
-                       asp-controller="@ViewContext.RouteData.Values["controller"]"
-                       class="nhsuk-breadcrumb__link">Manage buyer organisations</a>
-                </li>
-            }
+                @if(!string.IsNullOrEmpty(Model.ManageOrgsLink)){
+                    <li class="nhsuk-breadcrumb__item">
+                        <a href="@Model.ManageOrgsLink"
+                           class="nhsuk-breadcrumb__link">Manage buyer organisations</a>
+                    </li>
+                }
                 <li class="nhsuk-breadcrumb__item">
                     <a asp-action="@nameof(OrganisationController.Details)"
                        asp-controller="@ViewContext.RouteData.Values["controller"]"
@@ -40,7 +38,7 @@
                                      ViewContext.RouteData.Values["controller"].ToString(),
                                      new { Model.OrganisationId })" 
                             text="Nominate an organisation") />
-        <input type="hidden" asp-for="@Model.HomeLink" />
+
         <h3>Nominated organisations</h3>
 
         @if (Model.NominatedOrganisations.Any())

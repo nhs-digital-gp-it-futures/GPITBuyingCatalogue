@@ -35,5 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
         public string ControllerName { get; set; }
 
         public string HomeLink { get; set; }
+
+        public string ManageOrgsLink { get; set; }
     }
 }

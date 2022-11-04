@@ -12,5 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
         public IEnumerable<Organisation> RelatedOrganisations { get; init; }
 
         public string HomeLink { get; set; }
+
+        public string ManageOrgsLink { get; set; }
     }
 }

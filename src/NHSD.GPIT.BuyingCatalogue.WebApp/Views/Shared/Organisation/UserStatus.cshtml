@@ -19,12 +19,9 @@
             have access to @Model.OrganisationName
         </p>
 
-        <form method="post" action ="@Url.Action(
-                                         nameof(OrganisationController.UserStatus),
-                                         ViewContext.RouteData.Values["controller"].ToString())">
+        <form method="post">
             <input type="hidden" asp-for="IsActive"/>
             <nhs-submit-button text="Continue"/>
-            @Html.AntiForgeryToken()
         </form>
 
         <a href="@Url.Action(

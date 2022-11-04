@@ -31,14 +31,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
         }
 
-        // This method is required by the base class
-        public override Task<IActionResult> Index()
-        {
-            return Index(null);
-        }
-
         [HttpGet]
-        public async Task<IActionResult> Index([FromQuery] string search)
+        public async Task<IActionResult> Index([FromQuery] string search = null)
         {
             var organisations = await GetFilteredOrganisations(search);
 
@@ -70,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{organisationId}/edit")]
         public async Task<IActionResult> EditOrganisation(int organisationId)
         {
-            var organisation = await GetOrganisationsService().GetOrganisation(organisationId);
+            var organisation = await OrganisationsService.GetOrganisation(organisationId);
 
             var model = new EditOrganisationModel(organisation)
             {
@@ -86,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            await GetOrganisationsService().UpdateCatalogueAgreementSigned(organisationId, model.CatalogueAgreementSigned);
+            await OrganisationsService.UpdateCatalogueAgreementSigned(organisationId, model.CatalogueAgreementSigned);
 
             return RedirectToAction(
                 nameof(EditConfirmation),
@@ -97,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{organisationId}/edit/confirmation")]
         public async Task<IActionResult> EditConfirmation(int organisationId)
         {
-            var organisation = await GetOrganisationsService().GetOrganisation(organisationId);
+            var organisation = await OrganisationsService.GetOrganisation(organisationId);
 
             var model = new EditConfirmationModel(organisation.Name, organisationId)
             {
@@ -124,7 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var (organisation, error) = await GetOdsService().GetOrganisationByOdsCode(model.OdsCode);
+            var (organisation, error) = await OdsService.GetOrganisationByOdsCode(model.OdsCode);
 
             if (organisation is null)
                 ModelState.AddModelError(nameof(model.OdsCode), error);
@@ -141,7 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("find/select")]
         public async Task<IActionResult> Select(string ods)
         {
-            var (organisation, _) = await GetOdsService().GetOrganisationByOdsCode(ods);
+            var (organisation, _) = await OdsService.GetOrganisationByOdsCode(ods);
 
             var model = new SelectOrganisationModel(organisation)
             {
@@ -166,7 +160,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("find/select/create")]
         public async Task<IActionResult> Create(string ods)
         {
-            (var organisation, _) = await GetOdsService().GetOrganisationByOdsCode(ods);
+            (var organisation, _) = await OdsService.GetOrganisationByOdsCode(ods);
 
             var model = new CreateOrganisationModel(organisation)
             {
@@ -182,9 +176,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            (OdsOrganisation organisation, _) = await GetOdsService().GetOrganisationByOdsCode(model.OdsOrganisation.OdsCode);
+            (OdsOrganisation organisation, _) = await OdsService.GetOrganisationByOdsCode(model.OdsOrganisation.OdsCode);
 
-            var (orgId, error) = await GetOrganisationsService().AddCcgOrganisation(organisation, model.CatalogueAgreementSigned);
+            var (orgId, error) = await OrganisationsService.AddCcgOrganisation(organisation, model.CatalogueAgreementSigned);
 
             if (orgId == 0)
             {
@@ -214,7 +208,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("find/select/create/confirmation")]
         public async Task<IActionResult> Confirmation(int organisationId)
         {
-            var organisation = await GetOrganisationsService().GetOrganisation(organisationId);
+            var organisation = await OrganisationsService.GetOrganisation(organisationId);
 
             var model = new ConfirmationModel(organisation.Name)
             {
@@ -224,11 +218,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
+        protected override string GetHomeLink()
+        {
+            return Url.Action(
+                nameof(HomeController.Index),
+                typeof(HomeController).ControllerName());
+        }
+
+        protected override string GetManageOrgsLink()
+        {
+            return Url.Action(nameof(Index));
+        }
+
         private async Task<IEnumerable<Organisation>> GetFilteredOrganisations(string search)
         {
             return string.IsNullOrWhiteSpace(search)
-                ? await GetOrganisationsService().GetAllOrganisations()
-                : await GetOrganisationsService().GetOrganisationsBySearchTerm(search);
+                ? await OrganisationsService.GetAllOrganisations()
+                : await OrganisationsService.GetOrganisationsBySearchTerm(search);
         }
     }
 }

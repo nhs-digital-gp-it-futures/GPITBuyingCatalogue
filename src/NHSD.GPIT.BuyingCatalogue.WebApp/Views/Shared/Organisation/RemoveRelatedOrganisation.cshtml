@@ -12,11 +12,8 @@
                         caption="@Model!.RelatedOrganisationName"
                         advice="@Model.OrganisationName will no longer be able to act on behalf of this organisation." />
 
-        <form method="POST" action ="@Url.Action(
-                                         nameof(OrganisationController.RemoveRelatedOrganisation),
-                                         ViewContext.RouteData.Values["controller"].ToString())">
+        <form method="POST">
             <nhs-submit-button text="Remove organisation"/>
-            @Html.AntiForgeryToken()
         </form>
 
         <a asp-controller=@ViewContext.RouteData.Values["controller"].ToString()

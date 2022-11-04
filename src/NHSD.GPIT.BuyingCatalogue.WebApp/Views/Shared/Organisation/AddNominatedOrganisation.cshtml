@@ -15,9 +15,7 @@
                         caption="@Model!.OrganisationName"
                         advice="Provide the following information to nominate an organisation that can create orders on your behalf." />
 
-        <form method = "post" action ="@Url.Action(
-                                        nameof(OrganisationController.AddNominatedOrganisation),
-                                        ViewContext.RouteData.Values["controller"].ToString())">
+        <form method = "post">
             <input type="hidden" asp-for="@Model.BackLink" />
             <input type="hidden" asp-for="@Model.OrganisationName" />
             
@@ -28,7 +26,6 @@
             </div>
 
             <nhs-submit-button text="Save and continue"/>
-            @Html.AntiForgeryToken()
         </form>
     </div>
 </div>

@@ -13,6 +13,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.Services.Organisations;
 using NHSD.GPIT.BuyingCatalogue.Services.Users;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Controllers
 {
@@ -31,14 +32,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Controllers
         }
 
         [HttpGet]
-        public override async Task<IActionResult> Index()
+        public async Task<IActionResult> Index()
         {
             var internalOrgId = User.GetPrimaryOrganisationInternalIdentifier();
-            var organisation = await GetOrganisationsService().GetOrganisationByInternalIdentifier(internalOrgId);
+            var organisation = await OrganisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
             return RedirectToAction(
                 nameof(ManageAccountController.Details),
                 typeof(ManageAccountController).ControllerName(),
                 new { organisationId = organisation.Id });
+        }
+
+        protected override string GetHomeLink()
+        {
+            return Url.Action(
+                nameof(HomeController.Index),
+                typeof(HomeController).ControllerName());
         }
     }
 }

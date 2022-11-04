@@ -16,10 +16,9 @@
                     <a href="@Model.HomeLink"
                    class="nhsuk-breadcrumb__link">Home</a>
                 </li>
-                @if(User.IsAdmin()){
+                @if(!string.IsNullOrEmpty(Model.ManageOrgsLink)){
                     <li class="nhsuk-breadcrumb__item">
-                        <a asp-action="@nameof(OrganisationController.Index)"
-                           asp-controller="@ViewContext.RouteData.Values["controller"]"
+                        <a href="@Model.ManageOrgsLink"
                            class="nhsuk-breadcrumb__link">Manage buyer organisations</a>
                     </li>
                 }
@@ -49,7 +48,7 @@
             </div>
         </nhs-summary-list-row>
     </nhs-summary-list>
-    <input type="hidden" asp-for="@Model.HomeLink" />
+
     <h2>Further details</h2>
     <ul>
         <li>
