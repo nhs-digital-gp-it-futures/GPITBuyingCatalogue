@@ -21,12 +21,13 @@
 
         <form method="post">
             <input type="hidden" asp-for="IsActive"/>
+            <input type="hidden" asp-for="ControllerName" />
             <nhs-submit-button text="Continue"/>
         </form>
 
         <a href="@Url.Action(
                      nameof(OrganisationController.Users),
-                     ViewContext.RouteData.Values["controller"].ToString(),
+                     Model.ControllerName,
                      new { Model.OrganisationId, Model.UserId })">Cancel</a>
     </div>
 </div>

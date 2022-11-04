@@ -20,7 +20,7 @@
                 }
                 <li class="nhsuk-breadcrumb__item">
                     <a asp-action="@nameof(OrganisationController.Details)"
-                       asp-controller="@ViewContext.RouteData.Values["controller"]"
+                       asp-controller="@Model.ControllerName"
                        asp-route-organisationId="@Model!.OrganisationId"
                        class="nhsuk-breadcrumb__link">Organisation details</a>
                 </li>
@@ -37,7 +37,7 @@
         <vc:nhs-action-link text="Add a user"
                             url="@Url.Action(
                                      nameof(OrganisationController.AddUser),
-                                     ViewContext.RouteData.Values["controller"].ToString(),
+                                     Model.ControllerName,
                                      new { Model.OrganisationId })" />
 
         <h3>Existing users</h3>
@@ -75,7 +75,7 @@
                                     @{
                                         var text = item.Disabled ? "Activate" : "Deactivate";
                                         <a asp-action="@nameof(OrganisationController.UserStatus)"
-                                           asp-controller=@ViewContext.RouteData.Values["controller"].ToString()
+                                           asp-controller=@Model.ControllerName
                                            asp-route-organisationId="@Model.OrganisationId"
                                            asp-route-userId="@item.Id">@text</a>
                                     }
@@ -96,7 +96,7 @@
         <vc:nhs-secondary-button text="Continue" 
                                  url="@Url.Action(
                                           nameof(OrganisationController.Details),
-                                          ViewContext.RouteData.Values["controller"].ToString(),
+                                          Model.ControllerName,
                                           new { Model.OrganisationId })"
                                  type="Primary" />
     </div>

@@ -9,6 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 {
@@ -34,6 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 
         protected IUsersService UserService { get; }
 
+
         [HttpGet("{organisationId}")]
         public async Task<IActionResult> Details(int organisationId)
         {
@@ -46,6 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 BackLink = Url.Action(nameof(Index)),
                 HomeLink = GetHomeLink(),
                 ManageOrgsLink = GetManageOrgsLink(),
+                ControllerName = GetControllerName(),
             };
 
             return View("Organisation/Details", model);
@@ -65,6 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 Users = users.OrderBy(x => x.LastName).ThenBy(x => x.FirstName),
                 HomeLink = GetHomeLink(),
                 ManageOrgsLink = GetManageOrgsLink(),
+                ControllerName = GetControllerName(),
             };
 
             return View("Organisation/Users", model);
@@ -78,6 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             var model = new AddUserModel(organisation)
             {
                 BackLink = Url.Action(nameof(Users), new { organisationId }),
+                ControllerName = GetControllerName(),
             };
 
             return View("Organisation/AddUser", model);
@@ -115,6 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 UserId = user.Id,
                 UserEmail = user.Email,
                 IsActive = !user.Disabled,
+                ControllerName = GetControllerName(),
             };
 
             return View("Organisation/UserStatus", model);
@@ -141,6 +147,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 RelatedOrganisations = relatedOrganisations,
                 HomeLink = GetHomeLink(),
                 ManageOrgsLink = GetManageOrgsLink(),
+                ControllerName = GetControllerName(),
             };
 
             return View("Organisation/RelatedOrganisations", model);
@@ -159,6 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 OrganisationName = organisation.Name,
                 RelatedOrganisationId = relatedOrganisationId,
                 RelatedOrganisationName = relatedOrganisation.Name,
+                ControllerName = GetControllerName(),
             };
 
             return View("Organisation/RemoveRelatedOrganisation", model);
@@ -184,6 +192,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 NominatedOrganisations = nominatedOrganisations,
                 HomeLink = GetHomeLink(),
                 ManageOrgsLink = GetManageOrgsLink(),
+                ControllerName = GetControllerName(),
             };
 
             return View("Organisation/NominatedOrganisations", model);
@@ -233,6 +242,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 OrganisationName = organisation.Name,
                 NominatedOrganisationId = nominatedOrganisationId,
                 NominatedOrganisationName = nominatedOrganisation.Name,
+                ControllerName = GetControllerName(),
             };
 
             return View("Organisation/RemoveNominatedOrganisation", model);
@@ -266,6 +276,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 .Where(x => !excludedOrganisationIds.Contains(x.Id))
                 .OrderBy(x => x.Name)
                 .Select(x => new SelectListItem(x.Name, $"{x.Id}"));
+        }
+
+        private string GetControllerName()
+        {
+            return ControllerContext.RouteData.Values["controller"]?.ToString();
         }
     }
 }

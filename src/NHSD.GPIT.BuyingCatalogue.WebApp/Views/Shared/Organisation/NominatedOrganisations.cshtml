@@ -19,7 +19,7 @@
                 }
                 <li class="nhsuk-breadcrumb__item">
                     <a asp-action="@nameof(OrganisationController.Details)"
-                       asp-controller="@ViewContext.RouteData.Values["controller"]"
+                       asp-controller="@Model.ControllerName"
                        asp-route-organisationId="@Model!.OrganisationId"
                        class="nhsuk-breadcrumb__link">Organisation details</a>
                 </li>
@@ -35,7 +35,7 @@
 
         <vc:nhs-action-link url="@Url.Action(
                                      nameof(OrganisationController.AddNominatedOrganisation),
-                                     ViewContext.RouteData.Values["controller"].ToString(),
+                                     Model.ControllerName,
                                      new { Model.OrganisationId })" 
                             text="Nominate an organisation") />
 
@@ -66,7 +66,7 @@
                             <nhs-table-cell>
                                 <span data-test-id="remove-nominated-organisation-link">
                                     <a asp-action="@nameof(OrganisationController.RemoveNominatedOrganisation)"
-                                       asp-controller=@ViewContext.RouteData.Values["controller"].ToString()
+                                        asp-controller=@Model.ControllerName
                                        asp-route-organisationId="@Model.OrganisationId"
                                        asp-route-nominatedOrganisationId="@item.Id">Remove</a>
                                 </span>
@@ -86,7 +86,7 @@
         <vc:nhs-secondary-button text="Continue" 
                                  url="@Url.Action(
                                           nameof(OrganisationController.Details),
-                                          ViewContext.RouteData.Values["controller"].ToString(),
+                                          Model.ControllerName,
                                           new { Model.OrganisationId })"
                                  type="Primary" />
     </div>

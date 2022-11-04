@@ -11,5 +11,6 @@
         public string UserEmail { get; init; }
 
         public bool IsActive { get; init; }
+        public string ControllerName { get; set; }
     }
 }

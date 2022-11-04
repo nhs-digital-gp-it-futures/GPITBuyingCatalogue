@@ -18,8 +18,9 @@
 
             <form method="post" action ="@Url.Action(
                                              nameof(OrganisationController.AddUser),
-                                             ViewContext.RouteData.Values["controller"].ToString())">
+                                             Model.ControllerName)">
                 <input type="hidden" asp-for="OrganisationName" />
+                <input type="hidden" asp-for="ControllerName" />
                 
                 <nhs-input
                     asp-for="@Model.EmailAddress" 

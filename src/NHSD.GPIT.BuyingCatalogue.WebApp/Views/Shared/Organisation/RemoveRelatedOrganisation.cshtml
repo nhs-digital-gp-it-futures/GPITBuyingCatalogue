@@ -13,10 +13,11 @@
                         advice="@Model.OrganisationName will no longer be able to act on behalf of this organisation." />
 
         <form method="POST">
+            <input type="hidden" asp-for="ControllerName" />
             <nhs-submit-button text="Remove organisation"/>
         </form>
 
-        <a asp-controller=@ViewContext.RouteData.Values["controller"].ToString()
+        <a asp-controller=@Model.ControllerName
            asp-action="@nameof(OrganisationController.RelatedOrganisations)" 
            asp-route-organisationId="@Model.OrganisationId">Cancel</a>
     </div>

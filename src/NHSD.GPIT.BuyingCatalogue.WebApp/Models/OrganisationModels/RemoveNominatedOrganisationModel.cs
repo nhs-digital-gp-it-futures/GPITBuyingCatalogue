@@ -9,5 +9,7 @@
         public int NominatedOrganisationId { get; init; }
 
         public string NominatedOrganisationName { get; init; }
+
+        public string ControllerName { get; set; }
     }
 }

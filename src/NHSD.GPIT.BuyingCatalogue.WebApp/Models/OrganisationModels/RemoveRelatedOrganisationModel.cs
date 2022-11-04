@@ -9,5 +9,7 @@
         public int RelatedOrganisationId { get; init; }
 
         public string RelatedOrganisationName { get; init; }
+
+        public string ControllerName { get; set; }
     }
 }
