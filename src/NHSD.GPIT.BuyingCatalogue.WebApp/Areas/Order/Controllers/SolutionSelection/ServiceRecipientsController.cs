@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             RoutingSource? source = null,
             string importedRecipients = null)
         {
-            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
             var orderItem = order.OrderItem(catalogueItemId);
             var serviceRecipients = await GetServiceRecipients(internalOrgId);
 
@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 return View("SelectRecipients", model);
             }
 
-            var order = await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId)).Order;
 
             await orderItemRecipientService.AddOrderItemRecipients(
                 order.Id,
@@ -109,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             RoutingSource? source = null,
             string importedRecipients = null)
         {
-            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
             var orderItem = order.OrderItem(catalogueItemId);
             var serviceRecipients = await GetServiceRecipients(internalOrgId);
 
@@ -145,7 +145,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 return View("SelectRecipients", model);
             }
 
-            var order = await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId)).Order;
 
             await orderItemRecipientService.UpdateOrderItemRecipients(
                 order.Id,

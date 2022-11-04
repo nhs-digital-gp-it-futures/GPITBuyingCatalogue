@@ -11,6 +11,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
         {
             builder.ToTable("Orders", Schemas.Ordering);
 
+            builder.HasKey(x => x.Id).HasName("PK_Orders");
+
+            builder.Property(x => x.OrderNumber); // .IsRequired();
+            builder.Property(x => x.Revision).HasDefaultValue(1); // .IsRequired();
             builder.Property(o => o.Completed);
             builder.Property(o => o.CommencementDate).HasColumnType("date");
             builder.Property(o => o.Created).HasDefaultValue(DateTime.UtcNow);
@@ -63,6 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .HasForeignKey(o => o.SelectedFrameworkId)
                 .HasConstraintName("FK_Orders_SelectedFramework");
 
+            // builder.HasIndex(o => new { o.OrderNumber, o.Revision }, "IX_Orders_OrderNumber_Revision").IsUnique();
             builder.HasIndex(o => o.IsDeleted, "IX_Orders_IsDeleted");
 
             builder.HasQueryFilter(o => !o.IsDeleted);

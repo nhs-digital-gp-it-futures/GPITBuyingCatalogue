@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.PublishStatus
 
         public async Task SetPublicationStatus(CatalogueItemId catalogueItemId, PublicationStatus publicationStatus)
         {
-            var catalogueItem = await context.CatalogueItems.SingleAsync(ci => ci.Id == catalogueItemId);
+            var catalogueItem = await context.CatalogueItems.FirstAsync(ci => ci.Id == catalogueItemId);
             if (catalogueItem.PublishedStatus == publicationStatus)
                 return;
 

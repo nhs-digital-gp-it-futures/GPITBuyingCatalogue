@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity
                 throw new ArgumentNullException(nameof(name));
             }
 
-            return Values.SingleOrDefault(o => string.Equals(o.Name, name, StringComparison.OrdinalIgnoreCase));
+            return Values.FirstOrDefault(o => string.Equals(o.Name, name, StringComparison.OrdinalIgnoreCase));
         }
 
         public override bool Equals(object obj)

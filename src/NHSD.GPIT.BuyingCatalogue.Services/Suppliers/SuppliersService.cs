@@ -41,19 +41,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Suppliers
         {
             return await dbContext.Suppliers
                 .Include(s => s.SupplierContacts)
-                .Where(s => s.Id == supplierId).SingleOrDefaultAsync();
+                .Where(s => s.Id == supplierId).FirstOrDefaultAsync();
         }
 
         public async Task<Supplier> GetSupplierByName(string supplierName)
         {
             return await dbContext.Suppliers
-                .Where(s => s.Name == supplierName).SingleOrDefaultAsync();
+                .Where(s => s.Name == supplierName).FirstOrDefaultAsync();
         }
 
         public async Task<Supplier> GetSupplierByLegalName(string supplierLegalName)
         {
             return await dbContext.Suppliers
-                .Where(s => s.LegalName == supplierLegalName).SingleOrDefaultAsync();
+                .Where(s => s.LegalName == supplierLegalName).FirstOrDefaultAsync();
         }
 
         public async Task<List<CatalogueItem>> GetAllSolutionsForSupplier(int supplierId)
@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Suppliers
             if (model is null)
                 throw new ArgumentNullException(nameof(model));
 
-            var latestSupplier = await dbContext.Suppliers.OrderByDescending(s => s.Id).Take(1).SingleAsync();
+            var latestSupplier = await dbContext.Suppliers.OrderByDescending(s => s.Id).Take(1).FirstAsync();
 
             var supplier = new Supplier
             {
@@ -149,7 +149,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Suppliers
 
             var supplier = await GetSupplier(supplierId);
 
-            var contact = supplier.SupplierContacts.Single(sc => sc.Id == contactId);
+            var contact = supplier.SupplierContacts.First(sc => sc.Id == contactId);
 
             contact.FirstName = updatedContact.FirstName;
             contact.LastName = updatedContact.LastName;
@@ -166,7 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Suppliers
         {
             var supplier = await GetSupplier(supplierId);
 
-            var contact = supplier.SupplierContacts.Single(sc => sc.Id == contactId);
+            var contact = supplier.SupplierContacts.First(sc => sc.Id == contactId);
 
             supplier.SupplierContacts.Remove(contact);
 

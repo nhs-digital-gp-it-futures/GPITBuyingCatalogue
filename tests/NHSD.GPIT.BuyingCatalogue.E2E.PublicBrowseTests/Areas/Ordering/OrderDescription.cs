@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -44,8 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.OrderDescription.DescriptionInput).Should().BeTrue();
 
-            await using var context = GetEndToEndDbContext();
-            var order = await context.Orders.SingleAsync(o => o.Id == CallOffId.Id);
+            var order = await GetEndToEndDbContext().Order(CallOffId);
 
             CommonActions.InputValueEqualTo(Objects.Ordering.OrderDescription.DescriptionInput, order.Description);
         }
@@ -89,8 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 typeof(OrderController),
                 nameof(OrderController.Order)).Should().BeTrue();
 
-            await using var context = GetEndToEndDbContext();
-            var order = await context.Orders.SingleAsync(o => o.Id == CallOffId.Id);
+            var order = await GetEndToEndDbContext().Order(CallOffId);
 
             order.Description.Should().BeEquivalentTo(description);
         }

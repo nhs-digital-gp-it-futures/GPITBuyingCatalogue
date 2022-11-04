@@ -65,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             mockOrderService
                 .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             mockContractsService
                 .Setup(x => x.GetContract(order.Id))
@@ -122,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             mockOrderService
                 .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             mockContractsService
                 .Setup(x => x.GetContract(order.Id))
@@ -163,18 +163,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         public static async Task Post_DefaultImplementationPlan_UseDefaultMilestones_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
+            int orderId,
             DefaultImplementationPlanModel model,
+            [Frozen] Mock<IOrderService> orderService,
             [Frozen] Mock<IContractsService> mockContractsService,
             ImplementationPlanController controller)
         {
+            orderService
+                .Setup(x => x.GetOrderId(internalOrgId, callOffId))
+                .ReturnsAsync(orderId);
+
             mockContractsService
-                .Setup(x => x.UseDefaultImplementationPlan(callOffId.Id, true))
+                .Setup(x => x.UseDefaultImplementationPlan(orderId, true))
                 .Verifiable();
 
             model.UseDefaultMilestones = true;
 
             var result = await controller.DefaultImplementationPlan(internalOrgId, callOffId, model);
 
+            orderService.VerifyAll();
             mockContractsService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
@@ -193,18 +200,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         public static async Task Post_DefaultImplementationPlan_DoNotUseDefaultMilestones_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
+            int orderId,
             DefaultImplementationPlanModel model,
+            [Frozen] Mock<IOrderService> orderService,
             [Frozen] Mock<IContractsService> mockContractsService,
             ImplementationPlanController controller)
         {
             model.UseDefaultMilestones = false;
 
+            orderService
+                .Setup(x => x.GetOrderId(internalOrgId, callOffId))
+                .ReturnsAsync(orderId);
+
             mockContractsService
-                .Setup(x => x.UseDefaultImplementationPlan(callOffId.Id, false))
+                .Setup(x => x.UseDefaultImplementationPlan(orderId, false))
                 .Verifiable();
 
             var result = await controller.DefaultImplementationPlan(internalOrgId, callOffId, model);
 
+            orderService.VerifyAll();
             mockContractsService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;

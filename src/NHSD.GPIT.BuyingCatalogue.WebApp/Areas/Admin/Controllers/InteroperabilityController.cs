@@ -111,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var im1Integration = solution
                 .Solution
                 .GetIntegrations()
-                .SingleOrDefault(i => i.Id == integrationId);
+                .FirstOrDefault(i => i.Id == integrationId);
 
             if (im1Integration is null)
                 return BadRequest($"No integration found for Id: {integrationId}");
@@ -147,7 +147,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var im1Integration = solution
                 .Solution
                 .GetIntegrations()
-                .SingleOrDefault(i => i.Id == integrationId);
+                .FirstOrDefault(i => i.Id == integrationId);
 
             if (im1Integration is null)
                 return BadRequest($"No integration found for Id: {integrationId}");
@@ -174,7 +174,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var im1Integration = solution
                 .Solution
                 .GetIntegrations()
-                .SingleOrDefault(i => i.Id == integrationId);
+                .FirstOrDefault(i => i.Id == integrationId);
 
             if (im1Integration is null)
                 return BadRequest($"No integration found for Id: {integrationId}");
@@ -200,7 +200,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var im1Integration = solution
                 .Solution
                 .GetIntegrations()
-                .SingleOrDefault(i => i.Id == integrationId);
+                .FirstOrDefault(i => i.Id == integrationId);
 
             if (im1Integration is null)
                 return BadRequest($"No integration found for Id: {integrationId}");
@@ -256,7 +256,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var integration = solution
                 .Solution
                 .GetIntegrations()
-                .SingleOrDefault(i => i.Id == integrationId);
+                .FirstOrDefault(i => i.Id == integrationId);
 
             if (integration is null)
                 return BadRequest($"No integration found for Id: {integrationId}");
@@ -289,7 +289,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var integration = solution
                 .Solution
                 .GetIntegrations()
-                .SingleOrDefault(i => i.Id == integrationId);
+                .FirstOrDefault(i => i.Id == integrationId);
 
             if (integration is null)
                 return BadRequest($"No integration found for Id: {integrationId}");
@@ -315,7 +315,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var integration = solution
                 .Solution
                 .GetIntegrations()
-                .SingleOrDefault(i => i.Id == integrationId);
+                .FirstOrDefault(i => i.Id == integrationId);
 
             if (integration is null)
                 return BadRequest($"No integration found for Id: {integrationId}");
@@ -341,7 +341,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var integration = solution
                 .Solution
                 .GetIntegrations()
-                .SingleOrDefault(i => i.Id == integrationId);
+                .FirstOrDefault(i => i.Id == integrationId);
 
             if (integration is null)
                 return BadRequest($"No integration found for Id: {integrationId}");

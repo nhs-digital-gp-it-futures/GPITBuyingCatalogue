@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             var orderItem = await dbContext.OrderItems
                 .Include(x => x.OrderItemRecipients)
-                .SingleOrDefaultAsync(x => x.OrderId == orderId
+                .FirstOrDefaultAsync(x => x.OrderId == orderId
                     && x.CatalogueItemId == catalogueItemId);
 
             if (orderItem == null)
@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public async Task SetOrderItemQuantity(int orderId, CatalogueItemId catalogueItemId, int quantity)
         {
             var orderItem = await dbContext.OrderItems
-                .SingleOrDefaultAsync(x => x.OrderId == orderId
+                .FirstOrDefaultAsync(x => x.OrderId == orderId
                     && x.CatalogueItemId == catalogueItemId);
 
             if (orderItem == null)
@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             var orderItem = await dbContext.OrderItems
                 .Include(x => x.OrderItemRecipients)
-                .SingleOrDefaultAsync(x => x.OrderId == orderId
+                .FirstOrDefaultAsync(x => x.OrderId == orderId
                     && x.CatalogueItemId == catalogueItemId);
 
             if (orderItem == null)

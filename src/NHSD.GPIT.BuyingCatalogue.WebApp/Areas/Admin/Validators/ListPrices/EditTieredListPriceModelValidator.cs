@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
             var catalogueItemId = GetCatalogueItemId(model);
 
             var catalogueItem = listPriceService.GetCatalogueItemWithListPrices(catalogueItemId).GetAwaiter().GetResult();
-            var price = catalogueItem.CataloguePrices.Single(p => p.CataloguePriceId == cataloguePriceId);
+            var price = catalogueItem.CataloguePrices.First(p => p.CataloguePriceId == cataloguePriceId);
             return price;
         }
 

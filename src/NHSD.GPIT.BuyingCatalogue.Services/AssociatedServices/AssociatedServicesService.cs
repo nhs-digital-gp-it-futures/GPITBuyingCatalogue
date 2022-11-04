@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
                 .ThenInclude(cp => cp.CataloguePriceTiers)
                 .Include(i => i.CataloguePrices)
                 .ThenInclude(cp => cp.PricingUnit)
-                .SingleOrDefaultAsync(i => i.Id == associatedServiceId);
+                .FirstOrDefaultAsync(i => i.Id == associatedServiceId);
 
         // checks to see if this associated services' name is unique for the supplier
         public Task<bool> AssociatedServiceExistsWithNameForSupplier(
@@ -105,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
             var solution = await dbContext.CatalogueItems
                 .Include(i => i.SupplierServiceAssociations)
                 .Where(i => i.Id == solutionId)
-                .SingleAsync();
+                .FirstAsync();
 
             solution.SupplierServiceAssociations.Clear();
 
@@ -159,7 +159,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
             var associatedService = await dbContext.CatalogueItems
                 .Include(i => i.AssociatedService)
                 .Where(i => i.Id == associatedServiceId)
-                .SingleAsync();
+                .FirstAsync();
 
             associatedService.Name = model.Name;
             associatedService.AssociatedService.Description = model.Description;

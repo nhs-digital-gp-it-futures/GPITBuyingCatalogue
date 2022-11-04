@@ -47,9 +47,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
                 return View(await GetDefaultViewModel(internalOrgId, callOffId));
             }
 
+            var orderId = await orderService.GetOrderId(internalOrgId, callOffId);
+
             if (model.UseDefaultMilestones!.Value)
             {
-                await contractsService.UseDefaultImplementationPlan(callOffId.Id, true);
+                await contractsService.UseDefaultImplementationPlan(orderId, true);
 
                 return new RedirectToActionResult(
                     nameof(OrderController.Order),
@@ -57,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
                     new { internalOrgId, callOffId });
             }
 
-            await contractsService.UseDefaultImplementationPlan(callOffId.Id, false);
+            await contractsService.UseDefaultImplementationPlan(orderId, false);
 
             return new RedirectToActionResult(
                 nameof(CustomImplementationPlan),
@@ -83,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
 
         private async Task<DefaultImplementationPlanModel> GetDefaultViewModel(string internalOrgId, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
             var contract = await contractsService.GetContract(order.Id);
             var catalogueItem = await solutionsService.GetSolutionThin(order.GetSolutionId().GetValueOrDefault());
             var defaultPlan = await implementationPlanService.GetDefaultImplementationPlan();

@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         public async Task<IActionResult> Index(string internalOrgId, CallOffId callOffId)
         {
             var defaultPlan = await implementationPlanService.GetDefaultImplementationPlan();
-            var order = await orderService.GetOrderForSummary(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderForSummary(callOffId, internalOrgId)).Order;
 
             return View(new OrderSummaryModel(order, defaultPlan));
         }

@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
         [HttpGet("select")]
         public async Task<IActionResult> SelectDate(string internalOrgId, CallOffId callOffId, string returnUrl = null)
         {
-            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
             var model = new SelectDateModel(internalOrgId, callOffId, order.CommencementDate!.Value, order.DeliveryDate)
             {
@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
                 return View(model);
             }
 
-            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
             if (order.DeliveryDate == null
                 || order.DeliveryDate.Value == model.Date!.Value)
@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
         [HttpGet("confirm")]
         public async Task<IActionResult> ConfirmChanges(string internalOrgId, CallOffId callOffId, string deliveryDate)
         {
-            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
             var newDate = DateTime.ParseExact(deliveryDate, DateFormat, CultureInfo.InvariantCulture);
 
             var model = new ConfirmChangesModel(internalOrgId, callOffId, order.DeliveryDate!.Value, newDate)
@@ -117,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
 
             await deliveryDateService.SetDeliveryDate(internalOrgId, callOffId, model.NewDeliveryDate);
 
-            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
             var catalogueItemId = order.GetOrderItemIds().First();
 
             return RedirectToAction(
@@ -129,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
         [HttpGet("{catalogueItemId}/edit")]
         public async Task<IActionResult> EditDates(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, RoutingSource? source = null)
         {
-            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
 
             var route = routingService.GetRoute(
                 RoutingPoint.EditDeliveryDatesBackLink,
@@ -152,7 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
                 return View(model);
             }
 
-            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
 
             var deliveryDates = model.Recipients
                 .Select(x => new RecipientDeliveryDateDto(x.OdsCode, x.Date!.Value))
@@ -171,7 +171,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
         [HttpGet("{catalogueItemId}/match")]
         public async Task<IActionResult> MatchDates(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId)
         {
-            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
             var catalogueItem = order.OrderItem(catalogueItemId).CatalogueItem;
             var previousCatalogueItemId = order.GetPreviousOrderItemId(catalogueItemId)!.Value;
 
@@ -194,7 +194,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
                 return View(model);
             }
 
-            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
 
             if (model.MatchDates == true)
             {
@@ -225,7 +225,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
         [HttpGet("review")]
         public async Task<IActionResult> Review(string internalOrgId, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
 
             var model = new ReviewModel(order)
             {

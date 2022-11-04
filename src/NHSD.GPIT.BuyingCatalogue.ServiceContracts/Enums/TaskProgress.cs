@@ -8,5 +8,6 @@
         InProgress,
         Completed,
         NotApplicable,
+        Amended,
     }
 }

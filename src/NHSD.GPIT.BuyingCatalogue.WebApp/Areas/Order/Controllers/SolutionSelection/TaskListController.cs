@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         [HttpGet]
         public async Task<IActionResult> TaskList(string internalOrgId, CallOffId callOffId, RoutingSource? source = null)
         {
-            var order = await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId)).Order;
 
             var route = routingService.GetRoute(
                 RoutingPoint.TaskListBackLink,

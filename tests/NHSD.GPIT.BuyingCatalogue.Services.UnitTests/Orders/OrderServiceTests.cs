@@ -9,14 +9,12 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Moq;
-using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.Services.Orders;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Xunit;
@@ -49,7 +47,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             await service.CreateOrder(description, organisation.InternalIdentifier, orderTriageValue, false);
 
-            var order = await context.Orders.Include(o => o.OrderingParty).SingleAsync();
+            var order = await context.Orders.Include(o => o.OrderingParty).FirstAsync();
+
+            order.OrderNumber.Should().Be(1);
+            order.Revision.Should().Be(1);
             order.Description.Should().Be(description);
             order.OrderingParty.InternalIdentifier.Should().Be(organisation.InternalIdentifier);
         }
@@ -90,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             await context.SaveChangesAsync();
 
-            var result = await service.GetOrderForSummary(order.CallOffId, order.OrderingParty.InternalIdentifier);
+            var result = (await service.GetOrderForSummary(order.CallOffId, order.OrderingParty.InternalIdentifier)).Order;
 
             result.Supplier.Address.Should().BeEquivalentTo(supplier.Address);
 
@@ -110,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             await context.SaveChangesAsync();
 
-            var actual = await service.GetOrderForSummary(order.CallOffId, order.OrderingParty.InternalIdentifier);
+            var actual = (await service.GetOrderForSummary(order.CallOffId, order.OrderingParty.InternalIdentifier)).Order;
 
             actual.Supplier.Address.Should().NotBeEquivalentTo(supplier.Address);
             actual.Supplier.Address.County.Should().Be(supplier.Address.County.Replace(junk, string.Empty));
