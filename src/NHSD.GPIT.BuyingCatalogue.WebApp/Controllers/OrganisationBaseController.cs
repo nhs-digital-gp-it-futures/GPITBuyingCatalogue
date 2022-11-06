@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 ControllerName = GetControllerName(),
             };
 
-            return View("Organisation/Details", model);
+            return View("OrganisationBase/Details", model);
         }
 
         [HttpGet("{organisationId}/users")]
@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 ControllerName = GetControllerName(),
             };
 
-            return View("Organisation/Users", model);
+            return View("OrganisationBase/Users", model);
         }
 
         [HttpGet("{organisationId}/users/add")]
@@ -84,14 +84,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 ControllerName = GetControllerName(),
             };
 
-            return View("Organisation/AddUser", model);
+            return View("OrganisationBase/AddUser", model);
         }
 
         [HttpPost("{organisationId}/users/add")]
         public async Task<IActionResult> AddUser(int organisationId, AddUserModel model)
         {
             if (!ModelState.IsValid)
-                return View("Organisation/AddUser", model);
+                return View("OrganisationBase/AddUser", model);
 
             await CreateBuyerService.Create(
                 organisationId,
@@ -122,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 ControllerName = GetControllerName(),
             };
 
-            return View("Organisation/UserStatus", model);
+            return View("OrganisationBase/UserStatus", model);
         }
 
         [HttpPost("{organisationId}/users/{userId}/status")]
@@ -149,7 +149,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 ControllerName = GetControllerName(),
             };
 
-            return View("Organisation/RelatedOrganisations", model);
+            return View("OrganisationBase/RelatedOrganisations", model);
         }
 
         [HttpGet("{organisationId}/related/{relatedOrganisationId}/remove")]
@@ -168,7 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 ControllerName = GetControllerName(),
             };
 
-            return View("Organisation/RemoveRelatedOrganisation", model);
+            return View("OrganisationBase/RemoveRelatedOrganisation", model);
         }
 
         [HttpPost("{organisationId}/related/{relatedOrganisationId}/remove")]
@@ -194,7 +194,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 ControllerName = GetControllerName(),
             };
 
-            return View("Organisation/NominatedOrganisations", model);
+            return View("OrganisationBase/NominatedOrganisations", model);
         }
 
         [HttpGet("{organisationId}/nominated/add")]
@@ -210,7 +210,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 PotentialOrganisations = await GetPotentialOrganisations(organisationId),
             };
 
-            return View("Organisation/AddNominatedOrganisation", model);
+            return View("OrganisationBase/AddNominatedOrganisation", model);
         }
 
         [HttpPost("{organisationId}/nominated/add")]
@@ -220,7 +220,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             {
                 model.PotentialOrganisations = await GetPotentialOrganisations(organisationId);
 
-                return View("Organisation/AddNominatedOrganisation", model);
+                return View("OrganisationBase/AddNominatedOrganisation", model);
             }
 
             await OrganisationsService.AddNominatedOrganisation(organisationId, int.Parse(model.SelectedOrganisationId));
@@ -244,7 +244,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 ControllerName = GetControllerName(),
             };
 
-            return View("Organisation/RemoveNominatedOrganisation", model);
+            return View("OrganisationBase/RemoveNominatedOrganisation", model);
         }
 
         [HttpPost("{organisationId}/nominated/{nominatedOrganisationId}/remove")]
@@ -279,7 +279,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 
         private string GetControllerName()
         {
-            return ControllerContext.RouteData.Values["controller"]?.ToString();
+            return ControllerContext.RouteData?.Values["controller"]?.ToString();
         }
     }
 }
