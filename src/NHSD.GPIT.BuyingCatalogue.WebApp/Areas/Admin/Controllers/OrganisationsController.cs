@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     [Authorize(Policy = "AdminOnly")]
     [Area("Admin")]
     [Route("admin/organisations")]
-    public sealed class OrganisationsController : OrganisationController
+    public sealed class OrganisationsController : OrganisationBaseController
     {
         public OrganisationsController(
             IOrganisationsService organisationsService,

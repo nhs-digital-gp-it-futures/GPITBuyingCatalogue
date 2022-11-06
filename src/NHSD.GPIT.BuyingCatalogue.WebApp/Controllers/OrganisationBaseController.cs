@@ -13,9 +13,9 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 {
-    public abstract class OrganisationController : Controller
+    public abstract class OrganisationBaseController : Controller
     {
-        protected OrganisationController(
+        protected OrganisationBaseController(
             IOrganisationsService organisationsService,
             IOdsService odsService,
             ICreateUserService createBuyerService,
@@ -34,7 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         protected ICreateUserService CreateBuyerService { get; }
 
         protected IUsersService UserService { get; }
-
 
         [HttpGet("{organisationId}")]
         public async Task<IActionResult> Details(int organisationId)

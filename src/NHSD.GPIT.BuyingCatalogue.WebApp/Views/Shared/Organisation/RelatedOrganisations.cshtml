@@ -18,7 +18,7 @@
                     </li>
                 }
                 <li class="nhsuk-breadcrumb__item">
-                    <a asp-action="@nameof(OrganisationController.Details)"
+                    <a asp-action="@nameof(OrganisationBaseController.Details)"
                    asp-controller="@Model.ControllerName"
                        asp-route-organisationId="@Model!.OrganisationId"
                        class="nhsuk-breadcrumb__link">Organisation details</a>
@@ -59,7 +59,7 @@
                             </nhs-table-cell>
                             <nhs-table-cell>
                                 <span data-test-id="remove-related-organisation-link">
-                                    <a asp-action="@nameof(OrganisationController.RemoveRelatedOrganisation)"
+                                    <a asp-action="@nameof(OrganisationBaseController.RemoveRelatedOrganisation)"
                                        asp-controller=@Model.ControllerName
                                        asp-route-organisationId="@Model.OrganisationId"
                                        asp-route-relatedOrganisationId="@item.Id">Remove</a>
@@ -79,7 +79,7 @@
 
         <vc:nhs-secondary-button text="Continue" 
                                  url="@Url.Action(
-                                          nameof(OrganisationController.Details),
+                                          nameof(OrganisationBaseController.Details),
                                           Model.ControllerName,
                                           new { Model.OrganisationId })"
                                  type="Primary" />

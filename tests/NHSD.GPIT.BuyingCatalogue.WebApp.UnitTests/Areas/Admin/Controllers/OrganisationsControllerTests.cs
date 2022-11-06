@@ -241,7 +241,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockUsersService.VerifyAll();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationController).ControllerName() + "/" + nameof(OrganisationController.Users));
+            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.Users));
 
             var model = result.Model.Should().BeAssignableTo<UsersModel>().Subject;
 
@@ -266,7 +266,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockOrganisationsService.VerifyAll();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationController).ControllerName() + "/" + nameof(OrganisationController.AddUser));
+            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.AddUser));
 
             var model = result.Model.Should().BeAssignableTo<AddUserModel>().Subject;
 
@@ -285,7 +285,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var result = (await controller.AddUser(organisationId, model)).As<ViewResult>();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationController).ControllerName() + "/" + nameof(OrganisationController.AddUser));
+            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.AddUser));
 
             var actualModel = result.Model.Should().BeAssignableTo<AddUserModel>().Subject;
 
@@ -337,7 +337,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockUsersService.VerifyAll();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationController).ControllerName() + "/" + nameof(OrganisationController.UserStatus));
+            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.UserStatus));
 
             var model = result.Model.Should().BeAssignableTo<UserStatusModel>().Subject;
 
@@ -390,7 +390,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockOrganisationsService.VerifyAll();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationController).ControllerName() + "/" + nameof(OrganisationController.RelatedOrganisations));
+            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.RelatedOrganisations));
 
             var model = result.Model.Should().BeAssignableTo<RelatedOrganisationsModel>().Subject;
 
@@ -420,7 +420,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockOrganisationsService.VerifyAll();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationController).ControllerName() + "/" + nameof(OrganisationController.RemoveRelatedOrganisation));
+            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.RemoveRelatedOrganisation));
 
             var model = result.Model.Should().BeAssignableTo<RemoveRelatedOrganisationModel>().Subject;
 
@@ -480,7 +480,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockOrganisationsService.VerifyAll();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationController).ControllerName() + "/" + nameof(OrganisationController.NominatedOrganisations));
+            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.NominatedOrganisations));
 
             var model = result.Model.Should().BeAssignableTo<NominatedOrganisationsModel>().Subject;
 
@@ -520,7 +520,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockOrganisationsService.VerifyAll();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationController).ControllerName() + "/" + nameof(OrganisationController.AddNominatedOrganisation));
+            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.AddNominatedOrganisation));
 
             var model = result.Model.Should().BeAssignableTo<AddNominatedOrganisationModel>().Subject;
             var expected = new SelectListItem(potentialOrganisation.Name, $"{potentialOrganisation.Id}");
@@ -562,7 +562,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var result = (await controller.AddNominatedOrganisation(organisation.Id, model)).As<ViewResult>();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationController).ControllerName() + "/" + nameof(OrganisationController.AddNominatedOrganisation));
+            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.AddNominatedOrganisation));
 
             var actualModel = result.Model.Should().BeAssignableTo<AddNominatedOrganisationModel>().Subject;
 
@@ -612,7 +612,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockOrganisationsService.VerifyAll();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationController).ControllerName() + "/" + nameof(OrganisationController.RemoveNominatedOrganisation));
+            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.RemoveNominatedOrganisation));
 
             var model = result.Model.Should().BeAssignableTo<RemoveNominatedOrganisationModel>().Subject;
 

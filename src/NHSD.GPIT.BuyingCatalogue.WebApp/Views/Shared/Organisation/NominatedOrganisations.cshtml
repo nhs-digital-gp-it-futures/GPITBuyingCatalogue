@@ -18,7 +18,7 @@
                     </li>
                 }
                 <li class="nhsuk-breadcrumb__item">
-                    <a asp-action="@nameof(OrganisationController.Details)"
+                    <a asp-action="@nameof(OrganisationBaseController.Details)"
                        asp-controller="@Model.ControllerName"
                        asp-route-organisationId="@Model!.OrganisationId"
                        class="nhsuk-breadcrumb__link">Organisation details</a>
@@ -34,7 +34,7 @@
                         advice="Add, remove and view organisations that can act on behalf of @Model.OrganisationName." />
 
         <vc:nhs-action-link url="@Url.Action(
-                                     nameof(OrganisationController.AddNominatedOrganisation),
+                                     nameof(OrganisationBaseController.AddNominatedOrganisation),
                                      Model.ControllerName,
                                      new { Model.OrganisationId })" 
                             text="Nominate an organisation") />
@@ -65,7 +65,7 @@
                             </nhs-table-cell>
                             <nhs-table-cell>
                                 <span data-test-id="remove-nominated-organisation-link">
-                                    <a asp-action="@nameof(OrganisationController.RemoveNominatedOrganisation)"
+                                    <a asp-action="@nameof(OrganisationBaseController.RemoveNominatedOrganisation)"
                                         asp-controller=@Model.ControllerName
                                        asp-route-organisationId="@Model.OrganisationId"
                                        asp-route-nominatedOrganisationId="@item.Id">Remove</a>
@@ -85,7 +85,7 @@
 
         <vc:nhs-secondary-button text="Continue" 
                                  url="@Url.Action(
-                                          nameof(OrganisationController.Details),
+                                          nameof(OrganisationBaseController.Details),
                                           Model.ControllerName,
                                           new { Model.OrganisationId })"
                                  type="Primary" />

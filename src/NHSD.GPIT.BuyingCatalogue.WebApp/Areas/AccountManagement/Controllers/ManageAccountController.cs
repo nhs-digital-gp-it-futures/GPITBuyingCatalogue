@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Controllers
     [Authorize(Policy = "AccountManager")]
     [Area("AccountManagement")]
     [Route("accountmanagement/manageaccount")]
-    public sealed class ManageAccountController : OrganisationController
+    public sealed class ManageAccountController : OrganisationBaseController
     {
         public ManageAccountController(
             IOrganisationsService organisationsService,

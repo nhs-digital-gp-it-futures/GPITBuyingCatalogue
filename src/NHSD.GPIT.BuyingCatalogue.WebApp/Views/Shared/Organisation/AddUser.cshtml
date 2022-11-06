@@ -17,7 +17,7 @@
                             advice="Provide the following information about this user." />
 
             <form method="post" action ="@Url.Action(
-                                             nameof(OrganisationController.AddUser),
+                                             nameof(OrganisationBaseController.AddUser),
                                              Model.ControllerName)">
                 <input type="hidden" asp-for="OrganisationName" />
                 <input type="hidden" asp-for="ControllerName" />

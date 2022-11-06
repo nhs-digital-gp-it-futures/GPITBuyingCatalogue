@@ -19,7 +19,7 @@
                     </li>
                 }
                 <li class="nhsuk-breadcrumb__item">
-                    <a asp-action="@nameof(OrganisationController.Details)"
+                    <a asp-action="@nameof(OrganisationBaseController.Details)"
                        asp-controller="@Model.ControllerName"
                        asp-route-organisationId="@Model!.OrganisationId"
                        class="nhsuk-breadcrumb__link">Organisation details</a>
@@ -36,7 +36,7 @@
 
         <vc:nhs-action-link text="Add a user"
                             url="@Url.Action(
-                                     nameof(OrganisationController.AddUser),
+                                     nameof(OrganisationBaseController.AddUser),
                                      Model.ControllerName,
                                      new { Model.OrganisationId })" />
 
@@ -74,7 +74,7 @@
                                 <span data-test-id="user-status-link">
                                     @{
                                         var text = item.Disabled ? "Activate" : "Deactivate";
-                                        <a asp-action="@nameof(OrganisationController.UserStatus)"
+                                        <a asp-action="@nameof(OrganisationBaseController.UserStatus)"
                                            asp-controller=@Model.ControllerName
                                            asp-route-organisationId="@Model.OrganisationId"
                                            asp-route-userId="@item.Id">@text</a>
@@ -95,7 +95,7 @@
 
         <vc:nhs-secondary-button text="Continue" 
                                  url="@Url.Action(
-                                          nameof(OrganisationController.Details),
+                                          nameof(OrganisationBaseController.Details),
                                           Model.ControllerName,
                                           new { Model.OrganisationId })"
                                  type="Primary" />

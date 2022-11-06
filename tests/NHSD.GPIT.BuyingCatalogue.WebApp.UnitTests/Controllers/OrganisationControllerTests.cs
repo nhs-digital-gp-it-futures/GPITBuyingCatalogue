@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         {
             var fixture = new Fixture().Customize(new AutoMoqCustomization());
             var assertion = new GuardClauseAssertion(fixture);
-            var constructors = typeof(OrganisationController).GetConstructors();
+            var constructors = typeof(OrganisationBaseController).GetConstructors();
 
             assertion.Verify(constructors);
         }
@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
             [Frozen] Mock<IUsersService> mockUsersService,
             [Frozen] Mock<IUrlHelper> mockUrlHelper,
-            OrganisationController controller)
+            OrganisationBaseController controller)
         {
             mockOrganisationsService
                 .Setup(x => x.GetOrganisation(organisation.Id))
@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             mockUsersService.VerifyAll();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationController).ControllerName() + "/" + nameof(OrganisationController.Details));
+            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.Details));
 
             var model = result.Model.Should().BeAssignableTo<DetailsModel>().Subject;
 
@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
             [Frozen] Mock<IUsersService> mockUsersService,
             [Frozen] Mock<IUrlHelper> mockUrlHelper,
-            OrganisationController controller)
+            OrganisationBaseController controller)
         {
             mockOrganisationsService
                 .Setup(x => x.GetOrganisation(organisation.Id))
@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             mockUsersService.VerifyAll();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationController).ControllerName() + "/" + nameof(OrganisationController.Users));
+            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.Users));
 
             var model = result.Model.Should().BeAssignableTo<UsersModel>().Subject;
 
@@ -118,7 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             Organisation organisation,
             [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
             [Frozen] Mock<IUrlHelper> mockUrlHelper,
-            OrganisationController controller)
+            OrganisationBaseController controller)
         {
             mockOrganisationsService
                 .Setup(x => x.GetOrganisation(organisation.Id))
@@ -131,7 +131,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             mockOrganisationsService.VerifyAll();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationController).ControllerName() + "/" + nameof(OrganisationController.AddUser));
+            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.AddUser));
 
             var model = result.Model.Should().BeAssignableTo<AddUserModel>().Subject;
 
@@ -143,14 +143,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         public static async Task Post_AddUser_WithModelErrors_ReturnsExpectedResult(
             int organisationId,
             AddUserModel model,
-            OrganisationController controller)
+            OrganisationBaseController controller)
         {
             controller.ModelState.AddModelError("key", "errorMessage");
 
             var result = (await controller.AddUser(organisationId, model)).As<ViewResult>();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationController).ControllerName() + "/" + nameof(OrganisationController.AddUser));
+            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.AddUser));
 
             var actualModel = result.Model.Should().BeAssignableTo<AddUserModel>().Subject;
 
@@ -163,7 +163,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             int organisationId,
             AddUserModel model,
             [Frozen] Mock<ICreateUserService> mockCreateBuyerService,
-            OrganisationController controller)
+            OrganisationBaseController controller)
         {
             model.EmailAddress = "a@b.com";
 
@@ -176,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             mockCreateBuyerService.VerifyAll();
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(OrganisationController.Users));
+            result.ActionName.Should().Be(nameof(OrganisationBaseController.Users));
         }
 
         [Theory]
@@ -187,7 +187,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
             [Frozen] Mock<IUsersService> mockUsersService,
             [Frozen] Mock<IUrlHelper> mockUrlHelper,
-            OrganisationController controller)
+            OrganisationBaseController controller)
         {
             mockOrganisationsService
                 .Setup(x => x.GetOrganisation(organisation.Id))
@@ -205,7 +205,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             mockUsersService.VerifyAll();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationController).ControllerName() + "/" + nameof(OrganisationController.UserStatus));
+            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.UserStatus));
 
             var model = result.Model.Should().BeAssignableTo<UserStatusModel>().Subject;
 
@@ -223,7 +223,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             int userId,
             UserStatusModel viewModel,
             [Frozen] Mock<IUsersService> mockUsersService,
-            OrganisationController controller)
+            OrganisationBaseController controller)
         {
             mockUsersService
                 .Setup(x => x.EnableOrDisableUser(userId, viewModel.IsActive))
@@ -234,7 +234,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             mockUsersService.VerifyAll();
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(OrganisationController.Users));
+            result.ActionName.Should().Be(nameof(OrganisationBaseController.Users));
         }
 
         [Theory]
@@ -243,7 +243,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             Organisation organisation,
             Organisation relatedOrganisation,
             [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
-            OrganisationController controller)
+            OrganisationBaseController controller)
         {
             mockOrganisationsService
                 .Setup(x => x.GetOrganisation(organisation.Id))
@@ -258,7 +258,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             mockOrganisationsService.VerifyAll();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationController).ControllerName() + "/" + nameof(OrganisationController.RelatedOrganisations));
+            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.RelatedOrganisations));
 
             var model = result.Model.Should().BeAssignableTo<RelatedOrganisationsModel>().Subject;
 
@@ -274,7 +274,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             Organisation relatedOrganisation,
             [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
             [Frozen] Mock<IUrlHelper> mockUrlHelper,
-            OrganisationController controller)
+            OrganisationBaseController controller)
         {
             mockOrganisationsService
                 .Setup(x => x.GetOrganisation(organisation.Id))
@@ -291,7 +291,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             mockOrganisationsService.VerifyAll();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationController).ControllerName() + "/" + nameof(OrganisationController.RemoveRelatedOrganisation));
+            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.RemoveRelatedOrganisation));
 
             var model = result.Model.Should().BeAssignableTo<RemoveRelatedOrganisationModel>().Subject;
 
@@ -306,7 +306,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         public static async Task Post_RemoveRelatedOrganisation_ReturnsExpectedResult(
             RemoveRelatedOrganisationModel model,
             [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
-            OrganisationController controller)
+            OrganisationBaseController controller)
         {
             mockOrganisationsService
                 .Setup(x => x.RemoveRelatedOrganisations(model.OrganisationId, model.RelatedOrganisationId))
@@ -323,7 +323,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             var redirectResult = result.Should().BeAssignableTo<RedirectToActionResult>().Subject;
 
-            redirectResult.ActionName.Should().Be(nameof(OrganisationController.RelatedOrganisations));
+            redirectResult.ActionName.Should().Be(nameof(OrganisationBaseController.RelatedOrganisations));
             redirectResult.RouteValues.Should().BeEquivalentTo(new Dictionary<string, int>
             {
                 { "organisationId", model.OrganisationId },
@@ -336,7 +336,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             Organisation organisation,
             Organisation nominatedOrganisation,
             [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
-            OrganisationController controller)
+            OrganisationBaseController controller)
         {
             mockOrganisationsService
                 .Setup(x => x.GetOrganisation(organisation.Id))
@@ -351,7 +351,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             mockOrganisationsService.VerifyAll();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationController).ControllerName() + "/" + nameof(OrganisationController.NominatedOrganisations));
+            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.NominatedOrganisations));
 
             var model = result.Model.Should().BeAssignableTo<NominatedOrganisationsModel>().Subject;
 
@@ -368,7 +368,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             Organisation potentialOrganisation,
             [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
             [Frozen] Mock<IUrlHelper> mockUrlHelper,
-            OrganisationController controller)
+            OrganisationBaseController controller)
         {
             mockOrganisationsService
                 .Setup(x => x.GetOrganisation(organisation.Id))
@@ -394,7 +394,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             mockOrganisationsService.VerifyAll();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationController).ControllerName() + "/" + nameof(OrganisationController.AddNominatedOrganisation));
+            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.AddNominatedOrganisation));
 
             var model = result.Model.Should().BeAssignableTo<AddNominatedOrganisationModel>().Subject;
             var expected = new SelectListItem(potentialOrganisation.Name, $"{potentialOrganisation.Id}");
@@ -411,7 +411,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             Organisation potentialOrganisation,
             AddNominatedOrganisationModel model,
             [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
-            OrganisationController controller)
+            OrganisationBaseController controller)
         {
             controller.ModelState.AddModelError("key", "errorMessage");
 
@@ -436,7 +436,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             var result = (await controller.AddNominatedOrganisation(organisation.Id, model)).As<ViewResult>();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationController).ControllerName() + "/" + nameof(OrganisationController.AddNominatedOrganisation));
+            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.AddNominatedOrganisation));
 
             var actualModel = result.Model.Should().BeAssignableTo<AddNominatedOrganisationModel>().Subject;
 
@@ -449,7 +449,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             int nominatedOrganisationId,
             AddNominatedOrganisationModel model,
             [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
-            OrganisationController controller)
+            OrganisationBaseController controller)
         {
             model.SelectedOrganisationId = $"{nominatedOrganisationId}";
 
@@ -462,7 +462,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             mockOrganisationsService.VerifyAll();
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(OrganisationController.NominatedOrganisations));
+            result.ActionName.Should().Be(nameof(OrganisationBaseController.NominatedOrganisations));
         }
 
         [Theory]
@@ -472,7 +472,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             Organisation nominatedOrganisation,
             [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
             [Frozen] Mock<IUrlHelper> mockUrlHelper,
-            OrganisationController controller)
+            OrganisationBaseController controller)
         {
             mockOrganisationsService
                 .Setup(x => x.GetOrganisation(organisation.Id))
@@ -489,7 +489,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             mockOrganisationsService.VerifyAll();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationController).ControllerName() + "/" + nameof(OrganisationController.RemoveNominatedOrganisation));
+            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.RemoveNominatedOrganisation));
 
             var model = result.Model.Should().BeAssignableTo<RemoveNominatedOrganisationModel>().Subject;
 
@@ -504,7 +504,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         public static async Task Post_RemoveNominatedOrganisation_ReturnsExpectedResult(
             RemoveNominatedOrganisationModel model,
             [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
-            OrganisationController controller)
+            OrganisationBaseController controller)
         {
             mockOrganisationsService
                 .Setup(x => x.RemoveNominatedOrganisation(model.OrganisationId, model.NominatedOrganisationId))
@@ -521,7 +521,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             var redirectResult = result.Should().BeAssignableTo<RedirectToActionResult>().Subject;
 
-            redirectResult.ActionName.Should().Be(nameof(OrganisationController.NominatedOrganisations));
+            redirectResult.ActionName.Should().Be(nameof(OrganisationBaseController.NominatedOrganisations));
             redirectResult.RouteValues.Should().BeEquivalentTo(new Dictionary<string, int>
             {
                 { "organisationId", model.OrganisationId },
