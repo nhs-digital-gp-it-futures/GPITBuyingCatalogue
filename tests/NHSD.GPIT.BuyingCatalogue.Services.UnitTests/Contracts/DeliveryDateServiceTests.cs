@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
             await context.SaveChangesAsync();
 
-            var dbOrder = await context.Orders.SingleAsync(x => x.Id == order.Id);
+            var dbOrder = await context.Orders.FirstAsync(x => x.Id == order.Id);
 
             dbOrder.DeliveryDate.Should().BeNull();
             dbOrder.OrderItems.ForEach(x => x.OrderItemRecipients.ForEach(r => r.DeliveryDate.Should().BeNull()));
@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
             await context.SaveChangesAsync();
 
-            var dbOrder = await context.Orders.SingleAsync(x => x.Id == order.Id);
+            var dbOrder = await context.Orders.FirstAsync(x => x.Id == order.Id);
 
             dbOrder.DeliveryDate.Should().Be(initialDate);
             dbOrder.OrderItems.ForEach(x => x.OrderItemRecipients.ForEach(r => r.DeliveryDate.Should().Be(initialDate)));
@@ -109,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             await context.SaveChangesAsync();
 
             var serviceToTest = order.GetAdditionalServices().First();
-            var orderItem = await context.OrderItems.SingleAsync(x => x.OrderId == order.Id && x.CatalogueItemId == serviceToTest.CatalogueItemId);
+            var orderItem = await context.OrderItems.FirstAsync(x => x.OrderId == order.Id && x.CatalogueItemId == serviceToTest.CatalogueItemId);
 
             orderItem.OrderItemRecipients.ForEach(x => x.DeliveryDate.Should().Be(initialDate));
 
@@ -142,7 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             await context.SaveChangesAsync();
 
             var serviceToTest = order.GetAdditionalServices().First();
-            var orderItem = await context.OrderItems.SingleAsync(x => x.OrderId == order.Id && x.CatalogueItemId == serviceToTest.CatalogueItemId);
+            var orderItem = await context.OrderItems.FirstAsync(x => x.OrderId == order.Id && x.CatalogueItemId == serviceToTest.CatalogueItemId);
 
             orderItem.OrderItemRecipients.ForEach(x => x.DeliveryDate.Should().Be(initialDate));
 

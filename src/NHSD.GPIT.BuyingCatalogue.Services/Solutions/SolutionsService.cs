@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     .ThenInclude(s => s.FrameworkSolutions)
                     .ThenInclude(s => s.Framework)
                 .Include(ci => ci.Supplier)
-                .SingleOrDefaultAsync(ci => ci.Id == solutionId);
+                .FirstOrDefaultAsync(ci => ci.Id == solutionId);
 
         public async Task<CatalogueItem> GetSolutionWithCapabilities(CatalogueItemId solutionId) =>
             await dbContext.CatalogueItems.AsNoTracking()
@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     .ThenInclude(cic => cic.Capability)
                 .Include(ci => ci.CatalogueItemEpics)
                     .ThenInclude(cie => cie.Epic)
-                .SingleOrDefaultAsync(ci => ci.Id == solutionId);
+                .FirstOrDefaultAsync(ci => ci.Id == solutionId);
 
         public async Task<CatalogueItem> GetSolutionWithServiceLevelAgreements(CatalogueItemId solutionId) =>
             await dbContext.CatalogueItems.AsNoTracking()
@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(ci => ci.Solution).ThenInclude(s => s.ServiceLevelAgreement).ThenInclude(sla => sla.Contacts)
                 .Include(ci => ci.Solution).ThenInclude(s => s.ServiceLevelAgreement).ThenInclude(sla => sla.ServiceHours)
                 .Include(ci => ci.Solution).ThenInclude(s => s.ServiceLevelAgreement).ThenInclude(sla => sla.ServiceLevels)
-            .SingleOrDefaultAsync(ci => ci.Id == solutionId);
+            .FirstOrDefaultAsync(ci => ci.Id == solutionId);
 
         public async Task<CatalogueItem> GetSolutionWithCataloguePrice(CatalogueItemId solutionId) =>
             await dbContext.CatalogueItems.AsNoTracking()
@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(ci => ci.CataloguePrices)
                 .ThenInclude(p => p.PricingUnit)
                 .Include(ci => ci.Solution)
-                .SingleOrDefaultAsync(ci => ci.Id == solutionId);
+                .FirstOrDefaultAsync(ci => ci.Id == solutionId);
 
         public async Task<CatalogueItem> GetSolutionWithSupplierDetails(CatalogueItemId solutionId) =>
             await dbContext.CatalogueItems.AsNoTracking()
@@ -72,14 +72,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(ci => ci.Supplier)
                     .ThenInclude(s => s.SupplierContacts)
                 .Include(ci => ci.CatalogueItemContacts)
-                .SingleOrDefaultAsync(ci => ci.Id == solutionId);
+                .FirstOrDefaultAsync(ci => ci.Id == solutionId);
 
         public async Task<CatalogueItem> GetSolutionWithWorkOffPlans(CatalogueItemId solutionId) =>
             await dbContext.CatalogueItems.AsNoTracking()
                 .Include(ci => ci.Solution)
                     .ThenInclude(s => s.WorkOffPlans)
                     .ThenInclude(wp => wp.Standard)
-                .SingleOrDefaultAsync(ci => ci.Id == solutionId);
+                .FirstOrDefaultAsync(ci => ci.Id == solutionId);
 
         public async Task<CatalogueItem> GetSolutionWithServiceAssociations(CatalogueItemId solutionId) =>
             await dbContext.CatalogueItems.AsNoTracking()
@@ -146,7 +146,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                            ci.Solution.ServiceLevelAgreement.ServiceLevels.Any())
                            ? TaskProgress.InProgress
                            : TaskProgress.NotStarted,
-                }).SingleOrDefaultAsync();
+                }).FirstOrDefaultAsync();
 
             return solution;
         }
@@ -178,7 +178,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(ci => ci.Solution)
                 .Include(ci => ci.CatalogueItemCapabilities.Where(c => c.CapabilityId == capabilityId)).ThenInclude(cic => cic.Capability)
                 .Include(ci => ci.CatalogueItemEpics.Where(cie => cie.CapabilityId == capabilityId && cie.Epic.IsActive)).ThenInclude(cie => cie.Epic)
-                .SingleOrDefaultAsync(c => c.Id == catalogueItemId);
+                .FirstOrDefaultAsync(c => c.Id == catalogueItemId);
         }
 
         public async Task<IList<Standard>> GetSolutionStandardsForMarketing(CatalogueItemId catalogueItemId)
@@ -227,7 +227,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     ShowInteroperability = !string.IsNullOrWhiteSpace(ci.Solution.Integrations) || !string.IsNullOrWhiteSpace(ci.Solution.IntegrationsUrl),
                     ShowImplementation = !string.IsNullOrWhiteSpace(ci.Solution.ImplementationDetail),
                     ShowHosting = ci.Solution.Hosting != null && ci.Solution.Hosting.IsValid(),
-                }).SingleOrDefaultAsync();
+                }).FirstOrDefaultAsync();
 
         public async Task<List<CatalogueItem>> GetPublishedAdditionalServicesForSolution(CatalogueItemId solutionId) =>
             await dbContext.CatalogueItems
@@ -301,7 +301,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             summary.ValidateNotNullOrWhiteSpace(nameof(summary));
 
-            var solution = await dbContext.Solutions.SingleAsync(s => s.CatalogueItemId == solutionId);
+            var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
             solution.Summary = summary;
             solution.FullDescription = description;
             solution.AboutUrl = link;
@@ -310,21 +310,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task SaveSolutionFeatures(CatalogueItemId solutionId, string[] features)
         {
-            var solution = await dbContext.Solutions.SingleAsync(s => s.CatalogueItemId == solutionId);
+            var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
             solution.Features = JsonSerializer.Serialize(features);
             await dbContext.SaveChangesAsync();
         }
 
         public async Task SaveImplementationDetail(CatalogueItemId solutionId, string detail)
         {
-            var solution = await dbContext.Solutions.SingleAsync(s => s.CatalogueItemId == solutionId);
+            var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
             solution.ImplementationDetail = detail;
             await dbContext.SaveChangesAsync();
         }
 
         public async Task<ClientApplication> GetClientApplication(CatalogueItemId solutionId)
         {
-            var solution = await dbContext.Solutions.SingleAsync(s => s.CatalogueItemId == solutionId);
+            var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
             return solution.GetClientApplication();
         }
 
@@ -332,7 +332,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             clientApplication.ValidateNotNull(nameof(clientApplication));
 
-            var solution = await dbContext.Solutions.SingleAsync(s => s.CatalogueItemId == solutionId);
+            var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
             solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
             await dbContext.SaveChangesAsync();
         }
@@ -348,7 +348,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task<Hosting> GetHosting(CatalogueItemId solutionId)
         {
-            var solution = await dbContext.Solutions.SingleAsync(s => s.CatalogueItemId == solutionId);
+            var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
             return solution.Hosting ?? new Hosting();
         }
 
@@ -356,14 +356,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             hosting.ValidateNotNull(nameof(hosting));
 
-            var solution = await dbContext.Solutions.SingleAsync(s => s.CatalogueItemId == solutionId);
+            var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
             solution.Hosting = hosting;
             await dbContext.SaveChangesAsync();
         }
 
         public async Task SaveSupplierDescriptionAndLink(int supplierId, string description, string link)
         {
-            var supplier = await dbContext.Suppliers.SingleAsync(s => s.Id == supplierId);
+            var supplier = await dbContext.Suppliers.FirstAsync(s => s.Id == supplierId);
             supplier.Summary = description;
             supplier.SupplierUrl = link;
             await dbContext.SaveChangesAsync();
@@ -515,7 +515,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task SaveContacts(CatalogueItemId solutionId, IList<SupplierContact> supplierContacts)
         {
-            var solution = await dbContext.CatalogueItems.Include(i => i.CatalogueItemContacts).SingleAsync(i => i.Id == solutionId);
+            var solution = await dbContext.CatalogueItems.Include(i => i.CatalogueItemContacts).FirstAsync(i => i.Id == solutionId);
 
             var staleContacts = solution
                 .CatalogueItemContacts
@@ -594,6 +594,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         private async Task<CatalogueItem> GetCatalogueItem(CatalogueItemId id) => await dbContext.CatalogueItems
             .Include(s => s.Solution)
             .Include(s => s.Solution.FrameworkSolutions)
-            .SingleAsync(s => s.Id == id);
+            .FirstAsync(s => s.Id == id);
     }
 }

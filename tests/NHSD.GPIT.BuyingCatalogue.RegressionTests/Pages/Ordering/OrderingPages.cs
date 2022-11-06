@@ -1,5 +1,6 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree;
@@ -272,11 +273,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             OrderingStepThree.SelectImplementationPlan(isDefault);
 
             using var dbContext = Factory.DbContext;
-            var orderID = Driver.Url.Split('/').Last().Split('-')[0].Replace("C0", string.Empty);
+            var orderNumber = Driver.Url.Split('/').Last().Split('-')[0].Replace("C0", string.Empty);
 
             var isOrderWithAssociatedService = dbContext.Orders
-                .Any(o => string.Equals(o.Id.ToString(), orderID) &&
-                o.OrderItems.Any(i => i.CatalogueItem.CatalogueItemType == EntityFramework.Catalogue.Models.CatalogueItemType.AssociatedService));
+                .Any(o => string.Equals(o.OrderNumber.ToString(), orderNumber) &&
+                o.OrderItems.Any(i => i.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService));
 
             if (isOrderWithAssociatedService)
             {
@@ -568,22 +569,25 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         private bool IsAssociatedServiceOnlyOrder()
         {
             using var dbContext = Factory.DbContext;
-            var orderID = Driver.Url.Split('/').Last().Split('-')[0].Replace("C0", string.Empty);
 
-            return dbContext.Orders.Any(o => string.Equals(o.Id.ToString(), orderID) && o.AssociatedServicesOnly);
+            var callOffId = CallOffId.Parse(Driver.Url.Split('/').Last()).Id;
+
+            return dbContext.Order(callOffId).Result.AssociatedServicesOnly;
         }
 
         private bool IsMultiFramework()
         {
             using var dbContext = Factory.DbContext;
-            var orderID = Driver.Url.Split('/').Last().Split('-')[0].Replace("C0", string.Empty);
 
+            var callOffId = CallOffId.Parse(Driver.Url.Split('/').Last()).Id;
+            var orderId = dbContext.OrderId(callOffId).Result;
 
             var frameworks = dbContext.OrderItems
-             .Where(oi => string.Equals(oi.OrderId.ToString(), orderID))
-             .SelectMany(oi => oi.CatalogueItem.Solution.FrameworkSolutions.Select(fs => fs.Framework)).ToList();
+                .Where(oi => oi.OrderId == orderId)
+                .SelectMany(oi => oi.CatalogueItem.Solution.FrameworkSolutions.Select(fs => fs.Framework))
+                .ToList();
 
-            return frameworks.Count() > 1;
+            return frameworks.Count > 1;
         }
 
         private bool IsLocalFundingOnly()
@@ -622,11 +626,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         {
             using var dbContext = Factory.DbContext;
 
-            var index = Driver.Url.Split('/').Count() - 2;
+            var index = Driver.Url.Split('/').Length - 2;
+            var callOffId = CallOffId.Parse(Driver.Url.Split('/').ElementAt(index)).Id;
+            var orderId = dbContext.OrderId(callOffId).Result;
 
-            var orderID = Driver.Url.Split('/').ElementAt(index).Split('-')[0].Replace("C0", string.Empty);
-
-            var result = dbContext.Orders.Any(o => string.Equals(o.Id.ToString(), orderID) && o.OrderItems.Any(i => i.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService));
+            var result = dbContext.Orders
+                .Any(o => o.Id == orderId
+                    && o.OrderItems.Any(i => i.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService));
 
             return result;
         }

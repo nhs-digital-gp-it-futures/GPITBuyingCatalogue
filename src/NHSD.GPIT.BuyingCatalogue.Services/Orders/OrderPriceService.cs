@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(x => x.OrderItemPrice)
                 .ThenInclude(x => x.OrderItemPriceTiers)
                 .Where(x => x.OrderItemPrice != null)
-                .SingleOrDefaultAsync(x => x.OrderId == orderId
+                .FirstOrDefaultAsync(x => x.OrderId == orderId
                     && x.CatalogueItemId == catalogueItemId);
 
             if (orderItem != null)
@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             var orderItem = await dbContext.OrderItems
                 .Include(x => x.OrderItemPrice)
                 .ThenInclude(x => x.OrderItemPriceTiers)
-                .SingleOrDefaultAsync(x => x.OrderId == orderId
+                .FirstOrDefaultAsync(x => x.OrderId == orderId
                     && x.CatalogueItemId == price.CatalogueItemId);
 
             if (orderItem == null)
@@ -82,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             if (orderItem.OrderItemPrice != null)
             {
                 var existingPrice = await dbContext.CataloguePrices
-                    .SingleAsync(x => x.CataloguePriceId == orderItem.OrderItemPrice.CataloguePriceId);
+                    .FirstAsync(x => x.CataloguePriceId == orderItem.OrderItemPrice.CataloguePriceId);
 
                 if (existingPrice.HasDifferentQuantityBasisThan(price))
                 {
@@ -99,7 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             {
                 var tier = orderItem.OrderItemPrice
                     .OrderItemPriceTiers
-                    .Single(x => x.LowerRange == agreedPrice.LowerRange
+                    .First(x => x.LowerRange == agreedPrice.LowerRange
                         && x.UpperRange == agreedPrice.UpperRange);
 
                 tier.Price = agreedPrice.Price;

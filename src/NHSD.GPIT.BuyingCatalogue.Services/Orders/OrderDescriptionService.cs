@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -21,8 +20,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             description.ValidateNotNullOrWhiteSpace(nameof(description));
 
-            var order = await dbContext.Orders.SingleAsync(o => o.Id == callOffId.Id && o.OrderingParty.InternalIdentifier == internalOrgId);
+            var order = await dbContext.Order(internalOrgId, callOffId);
+
             order.Description = description;
+
             await dbContext.SaveChangesAsync();
         }
     }

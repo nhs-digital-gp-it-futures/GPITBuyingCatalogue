@@ -140,7 +140,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 return View(SelectViewName, await GetSelectServicesModel(internalOrgId, callOffId, RoutingSource.TaskList));
             }
 
-            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
 
             var existingServiceIds = order.GetAssociatedServices()
                 .Select(x => x.CatalogueItemId)
@@ -182,7 +182,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
         [HttpGet("confirm-changes")]
         public async Task<IActionResult> ConfirmAssociatedServiceChanges(string internalOrgId, CallOffId callOffId, string serviceIds)
         {
-            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
             var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSupplier(order.SupplierId);
 
             var existingServiceIds = order.GetAssociatedServices()
@@ -248,10 +248,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
 
             if (removingServices && !addingServices)
             {
-                var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+                var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
+
                 if (!order.HasAssociatedService())
                 {
-                    await contractsService.RemoveBillingAndRequirements(callOffId.Id);
+                    await contractsService.RemoveBillingAndRequirements(order.Id);
                 }
             }
 
@@ -276,7 +277,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             CallOffId callOffId,
             RoutingSource? source = RoutingSource.Dashboard)
         {
-            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
             var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(order.GetSolutionId());
 
             var route = routingService.GetRoute(

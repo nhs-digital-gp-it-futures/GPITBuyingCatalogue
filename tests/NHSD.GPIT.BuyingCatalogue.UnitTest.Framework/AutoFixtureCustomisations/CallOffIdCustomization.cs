@@ -19,10 +19,10 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
                 if (!(request as Type == typeof(CallOffId)))
                     return new NoSpecimen();
 
-                var id = (context.Create<int>() % CallOffId.MaxId) + 1;
-                var revision = (context.Create<byte>() % CallOffId.MaxRevision) + 1;
+                var orderNumber = (context.Create<int>() % CallOffId.MaxOrderNumber) + 1;
+                var revision = (context.Create<int>() % CallOffId.MaxRevision) + 1;
 
-                return new CallOffId(id, (byte)revision);
+                return new CallOffId(orderNumber, revision);
             }
         }
     }

@@ -81,12 +81,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
         public async Task<Organisation> GetOrganisation(int id)
         {
-            return await dbContext.Organisations.SingleAsync(o => o.Id == id);
+            return await dbContext.Organisations.FirstAsync(o => o.Id == id);
         }
 
         public async Task<Organisation> GetOrganisationByInternalIdentifier(string internalIdentifier)
         {
-            return await dbContext.Organisations.SingleAsync(o => o.InternalIdentifier == internalIdentifier);
+            return await dbContext.Organisations.FirstAsync(o => o.InternalIdentifier == internalIdentifier);
         }
 
         public async Task<List<Organisation>> GetOrganisationsByInternalIdentifiers(string[] internalIdentifiers)
@@ -105,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
         public async Task UpdateCatalogueAgreementSigned(int organisationId, bool signed)
         {
-            var organisation = await dbContext.Organisations.SingleAsync(o => o.Id == organisationId);
+            var organisation = await dbContext.Organisations.FirstAsync(o => o.Id == organisationId);
             organisation.CatalogueAgreementSigned = signed;
             await dbContext.SaveChangesAsync();
         }
@@ -124,7 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             var organisation = await dbContext.Organisations
                 .Include(o => o.RelatedOrganisationOrganisations)
                 .ThenInclude(ro => ro.RelatedOrganisationNavigation)
-                .SingleAsync(o => o.Id == organisationId);
+                .FirstAsync(o => o.Id == organisationId);
 
             return organisation.RelatedOrganisationOrganisations.Select(ro => ro.RelatedOrganisationNavigation).OrderBy(o => o.Name).ToList();
         }
@@ -134,7 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             var organisation = await dbContext.Organisations
                 .Include(o => o.RelatedOrganisationOrganisations)
                 .ThenInclude(ro => ro.RelatedOrganisationNavigation)
-                .SingleAsync(o => o.Id == organisationId);
+                .FirstAsync(o => o.Id == organisationId);
 
             if (organisation.RelatedOrganisationOrganisations.Any(ro => ro.RelatedOrganisationId == relatedOrganisationId))
                 return;
@@ -149,7 +149,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             var organisation = await dbContext.Organisations
                 .Include(o => o.RelatedOrganisationOrganisations)
                 .ThenInclude(ro => ro.RelatedOrganisationNavigation)
-                .SingleAsync(o => o.Id == organisationId);
+                .FirstAsync(o => o.Id == organisationId);
 
             var relatedItem = organisation.RelatedOrganisationOrganisations.FirstOrDefault(ro => ro.RelatedOrganisationId == relatedOrganisationId);
 

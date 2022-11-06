@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.DevelopmentPlans
 
         public async Task SaveDevelopmentPlans(CatalogueItemId solutionId, string developmentPlan)
         {
-            var solution = await dbContext.Solutions.SingleOrDefaultAsync(s => s.CatalogueItemId == solutionId);
+            var solution = await dbContext.Solutions.FirstOrDefaultAsync(s => s.CatalogueItemId == solutionId);
 
             solution.RoadMap = developmentPlan;
             await dbContext.SaveChangesAsync();
@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.DevelopmentPlans
             await dbContext.WorkOffPlans.Where(wp => wp.SolutionId == solutionId).ToListAsync();
 
         public async Task<WorkOffPlan> GetWorkOffPlan(int id) =>
-            await dbContext.WorkOffPlans.SingleOrDefaultAsync(wp => wp.Id == id);
+            await dbContext.WorkOffPlans.FirstOrDefaultAsync(wp => wp.Id == id);
 
         public async Task SaveWorkOffPlan(CatalogueItemId solutionId, SaveWorkOffPlanModel model)
         {

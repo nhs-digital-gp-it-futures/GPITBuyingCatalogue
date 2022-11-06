@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
 
         public async Task EnableOrDisableUser(int userId, bool disabled)
         {
-            var user = await userManager.Users.SingleAsync(u => u.Id == userId);
+            var user = await userManager.Users.FirstAsync(u => u.Id == userId);
 
             user.Disabled = disabled;
 
@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
 
         public async Task UpdateUserAccountType(int userId, string organisationFunction)
         {
-            var user = await userManager.Users.SingleAsync(u => u.Id == userId);
+            var user = await userManager.Users.FirstAsync(u => u.Id == userId);
             var userRoles = await userManager.GetRolesAsync(user);
 
             await userManager.RemoveFromRolesAsync(user, userRoles);
@@ -94,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
 
         public async Task UpdateUserDetails(int userId, string firstName, string lastName, string email)
         {
-            var user = await userManager.Users.SingleAsync(u => u.Id == userId);
+            var user = await userManager.Users.FirstAsync(u => u.Id == userId);
 
             user.FirstName = firstName;
             user.LastName = lastName;
@@ -106,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
 
         public async Task UpdateUserOrganisation(int userId, int organisationId)
         {
-            var user = await userManager.Users.SingleAsync(u => u.Id == userId);
+            var user = await userManager.Users.FirstAsync(u => u.Id == userId);
 
             user.PrimaryOrganisationId = organisationId;
 

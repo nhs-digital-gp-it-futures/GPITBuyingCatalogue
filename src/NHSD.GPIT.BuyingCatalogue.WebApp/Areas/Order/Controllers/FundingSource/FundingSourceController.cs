@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.FundingSource
         [HttpGet("select-framework")]
         public async Task<IActionResult> SelectFramework(string internalOrgId, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
             var availableFrameworks = await orderFrameworkService.GetFrameworksForOrder(callOffId, internalOrgId, order.AssociatedServicesOnly);
 
@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.FundingSource
                 return View(model);
             }
 
-            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
             if (order.SelectedFramework != null && model.SelectedFramework != order.SelectedFrameworkId)
             {
@@ -97,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.FundingSource
         {
             var selectedFramework = await frameworkService.GetFramework(selectedFrameworkId);
 
-            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
             var model = new ConfirmFrameworkChangeModel(order, selectedFramework)
             {
@@ -139,7 +139,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.FundingSource
         [HttpGet]
         public async Task<IActionResult> FundingSources(string internalOrgId, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderWithOrderItemsForFunding(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithOrderItemsForFunding(callOffId, internalOrgId)).Order;
 
             var availableFrameworks = await orderFrameworkService.GetFrameworksForOrder(callOffId, internalOrgId, order.AssociatedServicesOnly);
 
@@ -168,7 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.FundingSource
         [HttpGet("{catalogueItemId}/funding-source")]
         public async Task<IActionResult> FundingSource(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId)
         {
-            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
             var item = await orderItemService.GetOrderItem(callOffId, internalOrgId, catalogueItemId);
 

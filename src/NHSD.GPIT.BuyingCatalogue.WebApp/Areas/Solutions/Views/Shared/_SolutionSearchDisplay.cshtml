@@ -8,7 +8,7 @@
     var index = orderedCapabilities.FindIndex(oc => oc.Capability.Name == "Productivity");
     if (index >= 0)
     {
-        var item = orderedCapabilities.Single(oc => oc.Capability.Name == "Productivity");
+        var item = orderedCapabilities.First(oc => oc.Capability.Name == "Productivity");
         orderedCapabilities.RemoveAt(index);
         orderedCapabilities.Add(item);
     }

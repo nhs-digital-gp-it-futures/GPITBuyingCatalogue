@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -55,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
         }
 
         [Fact]
-        public void ConfirmFrameworkChange_ClickGoback_ExpectedResult()
+        public void ConfirmFrameworkChange_ClickGoBack_ExpectedResult()
         {
             RunTest(() =>
             {
@@ -70,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
         }
 
         [Fact]
-        public void ConfirmFrameworkChange_ClickGobackWhileInError_ExpectedResult()
+        public void ConfirmFrameworkChange_ClickGoBackWhileInError_ExpectedResult()
         {
             RunTest(() =>
             {
@@ -118,18 +117,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
                 CommonActions.PageLoadedCorrectGetIndex(
                     typeof(FundingSourceController),
                     nameof(FundingSourceController.FundingSources))
-                .Should()
-                .BeTrue();
+                    .Should()
+                    .BeTrue();
 
-                using var dbcontext = GetEndToEndDbContext();
-
-                var order = await dbcontext.Orders
-                    .SingleAsync(o => o.Id == CallOffId.Id
-                                && o.OrderingParty.InternalIdentifier == InternalOrgId);
+                var order = await GetEndToEndDbContext().Order(InternalOrgId, CallOffId);
 
                 order.SelectedFrameworkId.Should().Be(SelectedFrameworkId);
-
-                Reset();
             });
         }
 
@@ -152,20 +145,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
 
         public void Dispose()
         {
-            Reset();
-        }
+            using var dbContext = GetEndToEndDbContext();
 
-        private async void Reset()
-        {
-            using var dbcontext = GetEndToEndDbContext();
+            var order = dbContext.Order(InternalOrgId, CallOffId).Result;
 
-            var order = await dbcontext.Orders
-                .SingleAsync(o => o.Id == CallOffId.Id
-                            && o.OrderingParty.InternalIdentifier == InternalOrgId);
+            order.SelectedFrameworkId = SelectedFrameworkId;
 
-            order.SelectedFrameworkId = "DFOCVC001";
-
-            await dbcontext.SaveChangesAsync();
+            dbContext.SaveChanges();
         }
     }
 }

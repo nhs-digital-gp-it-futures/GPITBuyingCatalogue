@@ -51,7 +51,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             var expected = new CommencementDateModel(internalOrgId, order);
 
-            orderServiceMock.Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId)).ReturnsAsync(order);
+            orderServiceMock
+                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
 
             var actualResult = await controller.CommencementDate(internalOrgId, order.CallOffId);
 
@@ -112,7 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             orderService
                 .Setup(x => x.GetOrderWithOrderItems(order.CallOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             commencementDateService
                 .Setup(x => x.SetCommencementDate(order.CallOffId, internalOrgId, date, initialPeriod, maximumTerm))
@@ -160,7 +162,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             orderService
                 .Setup(x => x.GetOrderWithOrderItems(order.CallOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             var result = await controller.CommencementDate(internalOrgId, order.CallOffId, model);
 
@@ -198,7 +200,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             orderService
                 .Setup(s => s.GetOrderWithOrderItems(order.CallOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             var tomorrow = DateTime.Today.AddDays(1).ToString(CommencementDateController.DateFormat);
             var details = string.Join(CommencementDateController.Delimiter, tomorrow, "3", "12");
@@ -307,7 +309,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             orderService
                 .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             deliveryDateService
                 .Setup(x => x.ResetDeliveryDates(order.Id, newDate))

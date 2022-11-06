@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.OrderItems).ThenInclude(oi => oi.OrderItemPrice).ThenInclude(oip => oip.OrderItemPriceTiers)
                 .AsNoTracking()
                 .AsSplitQuery()
-                .FirstOrDefaultAsync(o => o.Id == callOffId.Id);
+                .FirstOrDefaultAsync(o => o.OrderNumber == callOffId.OrderNumber && o.Revision == callOffId.Revision);
 
             if (order?.Completed.HasValue ?? false)
             {
@@ -99,10 +99,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             var parsedSearch = ParseCallOffId(search);
 
-            var orderIdSearch = await baseQuery.Where(o => o.Id.ToString().Contains(parsedSearch)).Select(o => new SearchFilterModel
+            var orderIdSearch = await baseQuery.Where(o => o.OrderNumber.ToString().Contains(parsedSearch)).Select(o => new SearchFilterModel
             {
                 Title = o.CallOffId.ToString(),
-                Category = OrderSearchTerms.CallOffID,
+                Category = OrderSearchTerms.CallOffId,
             }).Distinct().ToListAsync();
 
             var organisationSearch = await baseQuery.Where(o => o.OrderingParty.Name.Contains(search)).Select(o => new SearchFilterModel
@@ -138,7 +138,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task DeleteOrder(CallOffId callOffId, string nameOfRequester, string nameOfApprover, DateTime? dateOfApproval)
         {
-            var order = await dbContext.Orders.IgnoreQueryFilters().FirstOrDefaultAsync(o => o.Id == callOffId.Id);
+            var order = await dbContext.Orders
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(o => o.OrderNumber == callOffId.OrderNumber && o.Revision == callOffId.Revision);
 
             if (order == null)
                 return;
@@ -153,7 +155,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             {
                 NameOfRequester = nameOfRequester,
                 NameOfApprover = nameOfApprover,
-                DateOfApproval = dateOfApproval.Value,
+                DateOfApproval = dateOfApproval!.Value,
             };
 
             await dbContext.SaveChangesAsync();
@@ -164,7 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             if (!OrderSearchTerms.SearchTermFilters.ContainsKey(searchTermType))
             {
                 var parsedCallOffId = ParseCallOffId(searchTerm);
-                return baseQuery.Where(o => o.Id.ToString().Contains(parsedCallOffId)
+                return baseQuery.Where(o => o.OrderNumber.ToString().Contains(parsedCallOffId)
                     || o.OrderingParty.Name.Contains(searchTerm)
                     || o.Supplier.Name.Contains(searchTerm)
                     || o.OrderItems.Any(oi => oi.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution
@@ -175,12 +177,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         }
 
         private static string ParseCallOffId(string search) => search
-                    .Replace("C0", string.Empty, StringComparison.OrdinalIgnoreCase)
-                    .Replace("-01", string.Empty, StringComparison.OrdinalIgnoreCase);
+            .Replace("C0", string.Empty, StringComparison.OrdinalIgnoreCase)
+            .Replace("-01", string.Empty, StringComparison.OrdinalIgnoreCase);
 
         private static class OrderSearchTerms
         {
-            internal const string CallOffID = "Call-off ID";
+            internal const string CallOffId = "Call-off ID";
             internal const string Organisation = "Organisation";
             internal const string Supplier = "Supplier";
             internal const string Solution = "Solution";
@@ -188,11 +190,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             internal static readonly Dictionary<string, Func<IQueryable<Order>, string, IQueryable<Order>>> SearchTermFilters = new()
             {
                 {
-                    CallOffID,
+                    CallOffId,
                     (baseQuery, searchTerm) =>
                     {
                         var parsedCallOffId = ParseCallOffId(searchTerm);
-                        return baseQuery.Where(o => o.Id.ToString().Contains(parsedCallOffId));
+                        return baseQuery.Where(o => o.OrderNumber.ToString().Contains(parsedCallOffId));
                     }
                 },
                 {

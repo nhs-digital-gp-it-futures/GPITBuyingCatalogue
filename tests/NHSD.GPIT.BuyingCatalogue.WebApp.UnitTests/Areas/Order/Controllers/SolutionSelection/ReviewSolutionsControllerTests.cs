@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         {
             mockOrderService
                 .Setup(o => o.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             var result = await controller.ReviewSolutions(internalOrgId, callOffId);
 

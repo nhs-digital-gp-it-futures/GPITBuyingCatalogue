@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             CatalogueItemId catalogueItemId,
             RoutingSource? source = null)
         {
-            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
             var orderItem = order.OrderItem(catalogueItemId);
 
             if (orderItem.OrderItemPrice.IsPerServiceRecipient())
@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 return View(OrderItemViewName, model);
             }
 
-            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
 
             await orderQuantityService.SetOrderItemQuantity(
                 order.Id,
@@ -109,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
             CatalogueItemId catalogueItemId,
             RoutingSource? source = null)
         {
-            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
             var orderItem = order.OrderItem(catalogueItemId);
 
             var route = routingService.GetRoute(
@@ -155,7 +155,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.SolutionSelec
                 return View(ServiceRecipientViewName, model);
             }
 
-            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
             var quantities = model.ServiceRecipients
                 .Select(x => new OrderItemRecipientQuantityDto
                 {

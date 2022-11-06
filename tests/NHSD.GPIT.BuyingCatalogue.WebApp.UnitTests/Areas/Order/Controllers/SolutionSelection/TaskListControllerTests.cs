@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         {
             mockOrderService
                 .Setup(x => x.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             var result = await controller.TaskList(internalOrgId, callOffId);
 
@@ -82,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService
                 .Setup(x => x.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             mockAdditionalServicesService
                 .Setup(x => x.GetAdditionalServicesBySolutionId(order.OrderItems.First().CatalogueItemId, true))
@@ -120,7 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService
                 .Setup(x => x.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             mockAssociatedServicesService
                 .Setup(x => x.GetPublishedAssociatedServicesForSolution(order.OrderItems.First().CatalogueItemId))

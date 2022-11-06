@@ -11,29 +11,29 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
     [TypeConverter(typeof(CallOffIdTypeConverter))]
     public readonly struct CallOffId : IEquatable<CallOffId>
     {
-        public const int MaxId = 999999;
+        public const int MaxOrderNumber = 999999;
         public const int MaxRevision = 99;
 
-        private const string Pattern = @"^C(?<id>\d{1,6})-(?<revision>\d{1,2})$";
+        private const string Pattern = @"^C(?<orderNumber>\d{1,6})-(?<revision>\d{1,2})$";
 
         private static readonly Lazy<Regex> Regex = new(() => new Regex(Pattern, RegexOptions.Compiled));
 
         [JsonConstructor]
-        public CallOffId(int id, byte revision)
+        public CallOffId(int orderNumber, int revision)
         {
-            if (id is < 0 or > MaxId)
-                throw new ArgumentOutOfRangeException(nameof(id), id, $"Value must be between 0 and {MaxId}");
+            if (orderNumber is < 0 or > MaxOrderNumber)
+                throw new ArgumentOutOfRangeException(nameof(orderNumber), orderNumber, $"Value must be between 0 and {MaxOrderNumber}");
 
             if (revision > MaxRevision)
                 throw new ArgumentOutOfRangeException(nameof(revision), revision, $"Value must be less than {MaxRevision}");
 
-            Id = id;
+            OrderNumber = orderNumber;
             Revision = revision;
         }
 
-        public int Id { get; }
+        public int OrderNumber { get; }
 
-        public byte Revision { get; }
+        public int Revision { get; }
 
         public static bool operator ==(CallOffId left, CallOffId right)
         {
@@ -48,18 +48,21 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public static (bool Success, CallOffId Id) Parse(string callOffId)
         {
             var match = Regex.Value.Match(callOffId);
+
             if (!match.Success)
+            {
                 return (false, default);
+            }
 
-            var id = int.Parse(match.Groups["id"].Value, CultureInfo.InvariantCulture);
-            var revision = byte.Parse(match.Groups["revision"].Value, CultureInfo.InvariantCulture);
+            var orderNumber = int.Parse(match.Groups["orderNumber"].Value, CultureInfo.InvariantCulture);
+            var revision = int.Parse(match.Groups["revision"].Value, CultureInfo.InvariantCulture);
 
-            return (true, new CallOffId(id, revision));
+            return (true, new CallOffId(orderNumber, revision));
         }
 
         public bool Equals(CallOffId other)
         {
-            return Id == other.Id;
+            return OrderNumber == other.OrderNumber && Revision == other.Revision;
         }
 
         public override bool Equals(object obj)
@@ -69,12 +72,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public override int GetHashCode()
         {
-            return Id;
+            return (OrderNumber * 100) + Revision;
         }
 
         public override string ToString()
         {
-            return Invariant($"C{Id:D6}-{Revision:D2}");
+            return Invariant($"C{OrderNumber:D6}-{Revision:D2}");
         }
     }
 }

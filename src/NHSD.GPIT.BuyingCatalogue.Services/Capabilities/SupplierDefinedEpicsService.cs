@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
 
         public async Task DeleteSupplierDefinedEpic(string epicId)
         {
-            var epic = await dbContext.Epics.SingleOrDefaultAsync(e => e.Id == epicId);
+            var epic = await dbContext.Epics.FirstOrDefaultAsync(e => e.Id == epicId);
             if (epic is null)
                 return;
 

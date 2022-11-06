@@ -51,7 +51,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             order.Supplier = null;
 
-            orderServiceMock.Setup(s => s.GetOrderWithSupplier(order.CallOffId, internalOrgId)).ReturnsAsync(order);
+            orderServiceMock
+                .Setup(s => s.GetOrderWithSupplier(order.CallOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
 
             var actualResult = await controller.Supplier(internalOrgId, order.CallOffId);
 
@@ -83,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             orderServiceMock
                 .Setup(s => s.GetOrderWithSupplier(order.CallOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             supplierServiceMock
                 .Setup(s => s.GetSupplierFromBuyingCatalogue(order.Supplier.Id))
@@ -117,7 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             mockOrderService
                 .Setup(s => s.GetOrderWithSupplier(order.CallOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             mockSupplierService
                 .Setup(s => s.GetSupplierFromBuyingCatalogue(order.Supplier.Id))
@@ -200,7 +202,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             orderServiceMock
                 .Setup(s => s.GetOrderWithSupplier(order.CallOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             var result = await controller.SelectSupplier(internalOrgId, order.CallOffId);
 
@@ -229,7 +231,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             orderServiceMock
                 .Setup(s => s.GetOrderWithSupplier(order.CallOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             mockSupplierService
                 .Setup(x => x.GetAllSuppliersFromBuyingCatalogue())
@@ -269,7 +271,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             orderService
                 .Setup(s => s.GetOrderWithSupplier(order.CallOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             supplierService
                 .Setup(x => x.GetAllSuppliersWithAssociatedServices())
@@ -397,7 +399,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             mockOrderService
                 .Setup(_ => _.GetOrderWithSupplier(callOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             var result = await controller.ConfirmSupplier(internalOrgId, callOffId, order.Supplier.Id);
 
@@ -413,14 +415,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             string internalOrgId,
             CallOffId callOffId,
             int supplierId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> orderService,
             [Frozen] Mock<ISupplierService> mockSupplierService,
             SupplierController controller)
         {
+            order.Supplier = null;
+
+            orderService
+                .Setup(x => x.GetOrderWithSupplier(callOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
             mockSupplierService
                 .Setup(x => x.GetSupplierFromBuyingCatalogue(supplierId))
                 .ReturnsAsync((Supplier)null);
 
             var result = await controller.ConfirmSupplier(internalOrgId, callOffId, supplierId);
+
+            orderService.VerifyAll();
+            mockSupplierService.VerifyAll();
 
             var redirectResult = result.As<RedirectToActionResult>();
             redirectResult.Should().NotBeNull();
@@ -433,12 +446,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         public static async Task Get_ConfirmSupplier_EverythingOk_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
-            Supplier supplier,
             int supplierId,
+            EntityFramework.Ordering.Models.Order order,
+            Supplier supplier,
+            [Frozen] Mock<IOrderService> orderService,
             [Frozen] Mock<ISupplierService> mockSupplierService,
             SupplierController controller)
         {
-            var model = new ConfirmSupplierModel(internalOrgId, callOffId, supplier);
+            order.Supplier = null;
+
+            orderService
+                .Setup(x => x.GetOrderWithSupplier(callOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
 
             mockSupplierService
                 .Setup(x => x.GetSupplierFromBuyingCatalogue(supplierId))
@@ -446,10 +465,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             var result = await controller.ConfirmSupplier(internalOrgId, callOffId, supplierId);
 
+            orderService.VerifyAll();
             mockSupplierService.VerifyAll();
 
+            var expected = new ConfirmSupplierModel(internalOrgId, callOffId, supplier);
+
             result.Should().BeOfType<ViewResult>();
-            result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(model, x => x.Excluding(m => m.BackLink));
+            result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -493,7 +515,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             mockOrderService
                 .Setup(_ => _.GetOrderWithSupplier(callOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             var result = await systemUnderTest.NewContact(internalOrgId, callOffId);
 
@@ -526,7 +548,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             mockOrderService
                 .Setup(x => x.GetOrderWithSupplier(callOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             var result = await systemUnderTest.NewContact(internalOrgId, callOffId);
 
@@ -564,7 +586,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             mockOrderService
                 .Setup(x => x.GetOrderWithSupplier(callOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             mockSessionService
                 .Setup(x => x.GetSupplierContact(callOffId, supplierId))

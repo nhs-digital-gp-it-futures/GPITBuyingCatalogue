@@ -8,7 +8,6 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
@@ -84,11 +83,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
             CommonActions.ClickSave();
 
             CommonActions
-            .PageLoadedCorrectGetIndex(
-                typeof(ManageOrdersController),
-                nameof(ManageOrdersController.Index))
-            .Should()
-            .BeTrue();
+                .PageLoadedCorrectGetIndex(
+                    typeof(ManageOrdersController),
+                    nameof(ManageOrdersController.Index))
+                .Should()
+                .BeTrue();
 
             var id = CommonActions.GetTableRowCells();
             id.First().Should().Contain(CallOffId.ToString());
@@ -240,7 +239,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
         {
             using var context = GetEndToEndDbContext();
 
-            context.Database.ExecuteSqlInterpolated($"UPDATE Orders SET IsDeleted = 0 WHERE Id = {CallOffId.Id}");
+            var orderId = context.OrderId(CallOffId).Result;
+
+            context.Database.ExecuteSqlInterpolated($"UPDATE Orders SET IsDeleted = 0 WHERE Id = {orderId}");
         }
     }
 }

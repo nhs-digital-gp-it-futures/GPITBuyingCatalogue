@@ -83,13 +83,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return dbContext.Suppliers
                 .Include(o => o.SupplierContacts)
                 .Where(s => s.Id == id)
-                .SingleAsync();
+                .FirstAsync();
         }
 
         public async Task AddOrderSupplier(CallOffId callOffId, string internalOrgId, int supplierId)
         {
             var supplier = await GetSupplierFromBuyingCatalogue(supplierId);
-            var order = await orderService.GetOrderWithSupplier(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithSupplier(callOffId, internalOrgId)).Order;
 
             order.Supplier = supplier;
 
@@ -101,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             if (contact is null)
                 throw new ArgumentNullException(nameof(contact));
 
-            var order = await orderService.GetOrderWithSupplier(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithSupplier(callOffId, internalOrgId)).Order;
 
             order.SupplierContact ??= new Contact();
 

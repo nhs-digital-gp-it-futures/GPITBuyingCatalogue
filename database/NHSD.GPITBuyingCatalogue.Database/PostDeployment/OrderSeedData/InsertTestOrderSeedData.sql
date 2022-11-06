@@ -69,9 +69,11 @@ BEGIN
     -------------------------------------------------------
 
     INSERT INTO ordering.Orders 
-    (Description, OrderingPartyId, Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted, AssociatedServicesOnly)
+    (OrderNumber, Revision, Description, OrderingPartyId, Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted, AssociatedServicesOnly)
     VALUES
     (
+    1,
+    1,
     'Order with description',
     @OrderingParty,
     SYSDATETIME(),
@@ -94,9 +96,11 @@ BEGIN
     SELECT @LastBuyerContactId = IDENT_CURRENT('ordering.Contacts');
 
     INSERT INTO ordering.Orders 
-    (Description, OrderingPartyId, OrderingPartyContactId, Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted, AssociatedServicesOnly)
+    (OrderNumber, Revision, Description, OrderingPartyId, OrderingPartyContactId, Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted, AssociatedServicesOnly)
     VALUES
     (
+    2,
+    1,
     'Order with description and ordering party contact',
     @OrderingParty,
     @LastBuyerContactId,
@@ -128,10 +132,12 @@ BEGIN
     SELECT @LastSupplierContactId = IDENT_CURRENT('ordering.Contacts');
 
     INSERT INTO ordering.Orders 
-    (Description, OrderingPartyId, OrderingPartyContactId, SupplierId, SupplierContactId,
+    (OrderNumber, Revision, Description, OrderingPartyId, OrderingPartyContactId, SupplierId, SupplierContactId,
         Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted, AssociatedServicesOnly)
     VALUES
     (
+    3,
+    1,
     'Order with description, ordering party contact and supplier with contact',
     @OrderingParty,
     @LastBuyerContactId,
@@ -165,10 +171,12 @@ BEGIN
     SELECT @LastSupplierContactId = IDENT_CURRENT('ordering.Contacts');
 
     INSERT INTO ordering.Orders 
-    (Description, OrderingPartyId, OrderingPartyContactId, SupplierId, SupplierContactId, CommencementDate,
+    (OrderNumber, Revision, Description, OrderingPartyId, OrderingPartyContactId, SupplierId, SupplierContactId, CommencementDate,
         Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted, InitialPeriod, MaximumTerm, AssociatedServicesOnly)
     VALUES
     (
+    4,
+    1,
     'Order with description, ordering party contact and supplier with contact and timescales',
     @OrderingParty,
     @LastBuyerContactId,
@@ -209,11 +217,13 @@ BEGIN
     SELECT @LastSupplierContactId = IDENT_CURRENT('ordering.Contacts');
 
     INSERT INTO ordering.Orders 
-    (Description, OrderingPartyId, OrderingPartyContactId, SupplierId, SupplierContactId, CommencementDate,
+    (OrderNumber, Revision, Description, OrderingPartyId, OrderingPartyContactId, SupplierId, SupplierContactId, CommencementDate,
         Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted, InitialPeriod, MaximumTerm, AssociatedServicesOnly)
         OUTPUT INSERTED.Id INTO @OrderIdCatSolAdditional (Id)
     VALUES
     (
+    5,
+    1,
     'Order with catalogue solution and additional service',
     @OrderingParty,
     @LastBuyerContactId,
@@ -322,4 +332,6 @@ BEGIN
     (@OrderId, @AdditionalServiceId, 'Y03450', 234),
     (@OrderId, @AdditionalServiceId, 'Y03508', 345),
     (@OrderId, @AdditionalServiceId, 'Y04461', 456);
+
+    UPDATE ordering.Orders SET OrderNumber = Id
 END

@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
                 throw new ArgumentNullException(nameof(item));
             }
 
-            var price = item.CataloguePrices.Single(x => x.CataloguePriceId == priceId);
+            var price = item.CataloguePrices.First(x => x.CataloguePriceId == priceId);
 
             var existingPrice = orderItem?.OrderItemPrice?.CataloguePriceId == priceId
                 ? orderItem.OrderItemPrice
