@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels;
@@ -30,6 +26,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             : base(organisationsService, odsService, createBuyerService, userService)
         {
         }
+
+        protected override string ControllerName => typeof(OrganisationsController).ControllerName();
+
+        protected override string HomeLink => Url.Action(
+            nameof(HomeController.Index),
+            typeof(HomeController).ControllerName());
 
         [HttpGet]
         public async Task<IActionResult> Index([FromQuery] string search = null)
@@ -216,18 +218,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             };
 
             return View(model);
-        }
-
-        protected override string GetHomeLink()
-        {
-            return Url.Action(
-                nameof(HomeController.Index),
-                typeof(HomeController).ControllerName());
-        }
-
-        protected override string GetManageOrgsLink()
-        {
-            return Url.Action(nameof(Index));
         }
 
         private async Task<IEnumerable<Organisation>> GetFilteredOrganisations(string search)

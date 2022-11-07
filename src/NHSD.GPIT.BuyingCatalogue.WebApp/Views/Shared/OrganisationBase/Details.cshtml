@@ -1,10 +1,8 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels.DetailsModel
-@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsAddress
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.SummaryList
-@using Microsoft.AspNetCore.Http
-@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 @{
     ViewBag.Title = "Organisation details";
 }
@@ -16,9 +14,12 @@
                     <a href="@Model.HomeLink"
                    class="nhsuk-breadcrumb__link">Home</a>
                 </li>
-                @if(!string.IsNullOrEmpty(Model.ManageOrgsLink)){
+                @if (User.IsAdmin())
+                {
                     <li class="nhsuk-breadcrumb__item">
-                        <a href="@Model.ManageOrgsLink"
+                        <a href="@Url.Action(
+                                     nameof(OrganisationsController.Index),
+                                     typeof(OrganisationsController).ControllerName())"
                            class="nhsuk-breadcrumb__link">Manage buyer organisations</a>
                     </li>
                 }
@@ -55,21 +56,21 @@
             <a href="@Url.Action(
                          nameof(OrganisationBaseController.Users),
                          Model.ControllerName,
-                         new { organisationId = @Model.Organisation.Id })"><strong>User accounts</strong></a>
+                         new { organisationId = Model.Organisation.Id })"><strong>User accounts</strong></a>
             <p>Add, edit and view user accounts for @Model.Organisation.Name.</p>
         </li>
         <li>
             <a href="@Url.Action(
                          nameof(OrganisationBaseController.RelatedOrganisations),
                          Model.ControllerName,
-                         new { organisationId = @Model.Organisation.Id })"><strong>Related organisations</strong></a>
+                         new { organisationId = Model.Organisation.Id })"><strong>Related organisations</strong></a>
             <p>View and remove organisations that @Model.Organisation.Name can act on behalf of.</p>
         </li>
         <li>
             <a href="@Url.Action(
                          nameof(OrganisationBaseController.NominatedOrganisations),
                          Model.ControllerName,
-                         new { organisationId = @Model.Organisation.Id })"><strong>Nominated organisations</strong></a>
+                         new { organisationId = Model.Organisation.Id })"><strong>Nominated organisations</strong></a>
             <p>Add, remove and view organisations that can act on behalf of @Model.Organisation.Name.</p>
         </li>
     </ul>

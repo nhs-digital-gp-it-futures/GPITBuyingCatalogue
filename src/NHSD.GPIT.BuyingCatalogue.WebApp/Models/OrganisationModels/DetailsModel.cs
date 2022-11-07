@@ -30,12 +30,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
 
         public string CatalogueAgreementText { get; set; }
 
-        public List<string> BreadcrumbList { get; set; }
-
         public string ControllerName { get; set; }
 
         public string HomeLink { get; set; }
-
-        public string ManageOrgsLink { get; set; }
     }
 }

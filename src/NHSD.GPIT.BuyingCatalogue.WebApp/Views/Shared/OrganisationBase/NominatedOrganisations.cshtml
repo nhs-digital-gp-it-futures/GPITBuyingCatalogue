@@ -1,4 +1,4 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels.NominatedOrganisationsModel
 @{
     ViewBag.Title = "Nominated organisations";
@@ -11,9 +11,12 @@
                     <a href="@Model.HomeLink"
                        class="nhsuk-breadcrumb__link">Home</a>
                 </li>
-                @if(!string.IsNullOrEmpty(Model.ManageOrgsLink)){
+                @if (User.IsAdmin())
+                {
                     <li class="nhsuk-breadcrumb__item">
-                        <a href="@Model.ManageOrgsLink"
+                        <a href="@Url.Action(
+                                     nameof(OrganisationsController.Index),
+                                     typeof(OrganisationsController).ControllerName())"
                            class="nhsuk-breadcrumb__link">Manage buyer organisations</a>
                     </li>
                 }
