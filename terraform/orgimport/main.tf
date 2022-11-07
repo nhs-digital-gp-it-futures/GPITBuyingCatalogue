@@ -46,7 +46,9 @@ resource "azurerm_windows_web_app" "org_import_webapp" {
     }
   }
 
-  app_settings = {
-    CONNECTION_STRING = "TODO"
+  lifecycle {
+    ignore_changes = [
+      app_settings
+    ]
   }
 }
