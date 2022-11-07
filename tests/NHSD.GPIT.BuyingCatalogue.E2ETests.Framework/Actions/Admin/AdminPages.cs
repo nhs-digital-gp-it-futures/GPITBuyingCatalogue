@@ -16,6 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Admin
                 AddSolution = new(driver),
                 Features = new(driver),
                 CommonActions = new(driver),
+                Details = new(driver),
             };
         }
 

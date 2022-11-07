@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.AccountManagement;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Authorization;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
@@ -52,6 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             MarketingPages = new MarketingPageActions(Driver).PageActions;
             AuthorizationPages = new AuthorizationPages(Driver).PageActions;
             AdminPages = new AdminPages(Driver).PageActions;
+            AccountManagementPages = new AccountManagementPages(Driver).PageActions;
             OrderingPages = new OrderingPages(Driver).PageActions;
             CommonActions = new Actions.Common.CommonActions(Driver);
             Wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
@@ -83,6 +85,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
         internal Actions.Admin.ActionCollection AdminPages { get; }
 
         internal Actions.Ordering.ActionCollection OrderingPages { get; }
+
+        internal Actions.AccountManagement.ActionCollection AccountManagementPages { get; }
 
         internal TextGenerators TextGenerators { get; }
 

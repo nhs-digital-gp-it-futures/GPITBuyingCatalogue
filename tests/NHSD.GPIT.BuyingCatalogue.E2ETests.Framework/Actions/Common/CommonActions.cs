@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
 
         public void ClickLinkElement(By targetElement) =>
             Driver.FindElement(targetElement).Click();
-
+            
         public void ClickLinkElement(By targetElement, string hrefContains)
         {
             Driver.FindElements(targetElement)
@@ -287,7 +287,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
             Type controllerType,
             string methodName)
         {
-            if (controllerType.BaseType != typeof(Controller))
+            if (!typeof(Controller).IsAssignableFrom(controllerType))
                 throw new InvalidOperationException($"{nameof(controllerType)} is not a type of {nameof(Controller)}");
 
             if (string.IsNullOrWhiteSpace(methodName))
@@ -319,7 +319,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
             // checks every segment in actionUrl, that doesn't start with a "{" (%7B) against the same positioned element in driverUrl.
             // if any don't match, will return false, else true.
             return !actionUrl.Segments
-                .Where((t, i) => !t.StartsWith("%7B") && driverUrl.Segments[i] != t)
+                .Where((t, i) => !t.StartsWith("%7B") && driverUrl.Segments[i].ToLower() != t.ToLower())
                 .Any();
         }
 

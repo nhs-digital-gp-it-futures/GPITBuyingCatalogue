@@ -1,8 +1,11 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers 
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers 
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using HomeController = NHSD.GPIT.BuyingCatalogue.WebApp.Controllers.HomeController
 <nav class="nhsuk-header__navigation" id="header-navigation" role="navigation" aria-label="Primary navigation" aria-labelledby="label-navigation">
     <div class="nhsuk-width-container">
         <p class="nhsuk-header__navigation-title">
@@ -43,10 +46,21 @@
             </li>
             <li class="nhsuk-header__navigation-item">
                 <a class="nhsuk-header__navigation-link"
-					href="https://gpitbjss.atlassian.net/wiki/spaces/BG/overview">
+                   href="https://gpitbjss.atlassian.net/wiki/spaces/BG/overview">
                     Buyer's guide
                 </a>
             </li>
+            @if (User.IsAccountManager())
+            {
+                <li class="nhsuk-header__navigation-item">
+                    <a class="nhsuk-header__navigation-link"
+                       asp-action="@nameof(ManageAccountController.Index)"
+                       asp-controller="@typeof(ManageAccountController).ControllerName()"
+                       asp-area="@typeof(ManageAccountController).AreaName()">
+                        Manage Account
+                    </a>
+                </li>
+            }
             @if (User.Identity.IsAuthenticated)
             {
                 <li class="nhsuk-header__navigation-item">

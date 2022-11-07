@@ -1,4 +1,5 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Admin.EditSolution;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common.Organisation;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Admin
 {
@@ -17,6 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Admin
         public AddRelatedOrganisation AddRelatedOrganisation { get; set; }
 
         public AddSolution AddSolution { get; set; }
+
+        public Details Details { get; set; }
 
         public Features Features { get; set; }
     }

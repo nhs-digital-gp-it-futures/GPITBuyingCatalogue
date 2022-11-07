@@ -9,5 +9,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin
         public static By SaveButton => By.Id("Submit");
 
         public static By ActionLink => By.ClassName("nhsuk-action-link__link");
+
+        public static By ManageBuyerOrganisationsBreadcrumbLink => By.LinkText("Manage buyer organisations");
+
+        public static By ManageUsersBreadcrumbLink => By.LinkText("Manage users");
     }
 }
