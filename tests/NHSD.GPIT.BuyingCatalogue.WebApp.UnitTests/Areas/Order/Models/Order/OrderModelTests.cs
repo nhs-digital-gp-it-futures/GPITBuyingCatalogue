@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order;
 using Xunit;
@@ -15,13 +16,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             string internalOrgId,
             AspNetUser aspNetUser,
             EntityFramework.Ordering.Models.Order order,
-            OrderTaskList orderSections)
+            OrderProgress progress)
         {
             order.LastUpdatedByUser = aspNetUser;
 
-            var model = new OrderModel(internalOrgId, order, orderSections);
+            var model = new OrderModel(internalOrgId, order, progress);
 
-            model.SectionStatuses.Should().BeEquivalentTo(orderSections);
+            model.Progress.Should().BeEquivalentTo(progress);
             model.Title.Should().Be($"Order {order.CallOffId}");
             model.CallOffId.Should().Be(order.CallOffId);
             model.Description.Should().Be(order.Description);
@@ -33,11 +34,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         [CommonAutoData]
         public static void WithNoOrder_PropertiesCorrectlySet(
             string internalOrgId,
-            OrderTaskList orderSections)
+            OrderProgress progress)
         {
-            var model = new OrderModel(internalOrgId, null, orderSections);
+            var model = new OrderModel(internalOrgId, null, progress);
 
-            model.SectionStatuses.Should().BeEquivalentTo(orderSections);
+            model.Progress.Should().BeEquivalentTo(progress);
             model.Title.Should().Be("New order");
             model.CallOffId.Should().BeEquivalentTo(default(CallOffId));
             model.Description.Should().Be(default);

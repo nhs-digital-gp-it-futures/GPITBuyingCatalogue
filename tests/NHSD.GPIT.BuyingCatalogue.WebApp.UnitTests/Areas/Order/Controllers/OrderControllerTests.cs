@@ -19,6 +19,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order;
@@ -46,23 +47,35 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             AspNetUser aspNetUser,
+            OrderProgress orderTaskList,
             [Frozen] Mock<IOrderService> orderServiceMock,
+            [Frozen] Mock<IOrderProgressService> orderProgressService,
             OrderController controller)
         {
             order.LastUpdatedByUser = aspNetUser;
             order.Completed = null;
 
-            var orderTaskList = new OrderTaskList(order);
-            var expectedViewData = new OrderModel(internalOrgId, order, orderTaskList) { DescriptionUrl = "testUrl" };
-
             orderServiceMock
                 .Setup(s => s.GetOrderForTaskListStatuses(order.CallOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));
 
-            var actualResult = await controller.Order(internalOrgId, order.CallOffId);
+            orderProgressService
+                .Setup(x => x.GetOrderProgress(internalOrgId, order.CallOffId))
+                .ReturnsAsync(orderTaskList);
 
-            actualResult.Should().BeOfType<ViewResult>();
-            actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.BackLinkText));
+            var result = await controller.Order(internalOrgId, order.CallOffId);
+
+            orderServiceMock.VerifyAll();
+            orderProgressService.VerifyAll();
+
+            var expected = new OrderModel(internalOrgId, order, orderTaskList)
+            {
+                DescriptionUrl = "testUrl",
+            };
+
+            var actual = result.Should().BeOfType<ViewResult>().Subject;
+
+            actual.ViewData.Model.Should().BeEquivalentTo(expected, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.BackLinkText));
         }
 
         [Theory]
@@ -95,15 +108,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             Organisation organisation,
             OrderController controller)
         {
-            organisationsService.Setup(s => s.GetOrganisationByInternalIdentifier(internalOrgId))
+            organisationsService
+                .Setup(s => s.GetOrganisationByInternalIdentifier(internalOrgId))
                 .ReturnsAsync(organisation);
 
-            var expectedViewData = new OrderModel(internalOrgId, null, new OrderTaskList(), organisation.Name) { DescriptionUrl = "testUrl" };
+            var result = await controller.NewOrder(internalOrgId);
 
-            var actualResult = await controller.NewOrder(internalOrgId);
+            organisationsService.VerifyAll();
 
-            actualResult.Should().BeOfType<ViewResult>();
-            actualResult.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expectedViewData, opt => opt.Excluding(m => m.BackLink));
+            var expected = new OrderModel(internalOrgId, null, new OrderProgress(), organisation.Name)
+            {
+                DescriptionUrl = "testUrl",
+            };
+
+            var actual = result.Should().BeOfType<ViewResult>().Subject;
+
+            actual.ViewData.Model.Should().BeEquivalentTo(expected, opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -204,7 +224,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 .ReturnsAsync(new OrderWrapper(order));
 
             pdfServiceMock
-                .Setup(s => s.Convert(It.IsAny<System.Uri>()))
+                .Setup(s => s.Convert(It.IsAny<Uri>()))
                 .Returns(result);
 
             SetControllerHttpContext(controller);
@@ -237,7 +257,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 .ReturnsAsync(new OrderWrapper(order));
 
             pdfServiceMock
-                .Setup(s => s.Convert(It.IsAny<System.Uri>()))
+                .Setup(s => s.Convert(It.IsAny<Uri>()))
                 .Returns(result);
 
             SetControllerHttpContext(controller);
