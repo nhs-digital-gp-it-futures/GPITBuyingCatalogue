@@ -1,4 +1,5 @@
-﻿using Microsoft.Azure.WebJobs;
+﻿using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -14,19 +15,24 @@ namespace OrganisationImporter
         {
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.Console()
-                .CreateLogger();
+                .CreateBootstrapLogger();
 
-            var builder = new HostBuilder();
-
-            builder.ConfigureWebJobs(_ => { });
-            builder.ConfigureAppConfiguration(configBuilder =>
-            {
-                configBuilder.AddEnvironmentVariables();
-                _configuration = configBuilder.Build();
-            });
-
-            builder.ConfigureLogging(loggingBuilder => loggingBuilder.AddSerilog());
-            builder.ConfigureServices(ConfigureServices);
+            var builder = Host.CreateDefaultBuilder(args)
+                .ConfigureWebJobs()
+                .ConfigureAppConfiguration(configBuilder => _configuration = configBuilder.Build())
+                .ConfigureServices(ConfigureServices)
+                .UseSerilog((_, services, loggerConfiguration) =>
+                {
+                    var telemetryConfig = TelemetryConfiguration.CreateDefault();
+                    telemetryConfig.ConnectionString = _configuration["ApplicationInsights:Connection_String"];
+                    loggerConfiguration
+                        .WriteTo
+                        .Console()
+                        .WriteTo
+                        .ApplicationInsights(
+                            telemetryConfig,
+                            TelemetryConverter.Traces);
+                });
 
             var host = builder.Build();
 
@@ -54,6 +60,7 @@ namespace OrganisationImporter
         private static void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<OrganisationImportService>();
+            services.AddApplicationInsightsTelemetryWorkerService();
         }
     }
 }
