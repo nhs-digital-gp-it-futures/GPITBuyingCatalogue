@@ -131,6 +131,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
                 PersonalDetailsModelValidator.EmailInUseErrorMessage).Should().BeTrue();
         }
 
-        private AspNetUser GetUser() => GetEndToEndDbContext().AspNetUsers.Single(x => x.Id == UserId);
+        private AspNetUser GetUser() => GetEndToEndDbContext().AspNetUsers.First(x => x.Id == UserId);
     }
 }

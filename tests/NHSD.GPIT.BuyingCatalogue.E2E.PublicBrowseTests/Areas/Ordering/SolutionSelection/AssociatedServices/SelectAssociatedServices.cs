@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
         {
             var context = GetEndToEndDbContext();
 
-            var order = context.Orders.Single(x => x.Id == OrderId);
+            var order = context.Orders.First(x => x.Id == OrderId);
 
             order.AssociatedServicesOnly = true;
             order.SolutionId = new CatalogueItemId(99998, "001");

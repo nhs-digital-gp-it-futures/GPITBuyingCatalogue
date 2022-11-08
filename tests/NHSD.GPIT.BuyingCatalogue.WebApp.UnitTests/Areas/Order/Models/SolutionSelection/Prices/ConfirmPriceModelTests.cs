@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
             foreach (var tier in model.Tiers)
             {
-                var pricingTier = price.CataloguePriceTiers.Single(x => x.Id == tier.Id);
+                var pricingTier = price.CataloguePriceTiers.First(x => x.Id == tier.Id);
 
                 tier.AgreedPrice.Should().Be($"{pricingTier.Price:#,##0.00##}");
                 tier.Description.Should().Be(pricingTier.GetRangeDescription());
@@ -76,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
             foreach (var tier in model.Tiers)
             {
-                var pricingTier = price.CataloguePriceTiers.Single(x => x.Id == tier.Id);
+                var pricingTier = price.CataloguePriceTiers.First(x => x.Id == tier.Id);
                 var tierPrice = pricingTier.Price / 2;
 
                 tier.AgreedPrice.Should().Be($"{tierPrice:#,###,##0.00##}");
@@ -102,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
             foreach (var tier in model.Tiers)
             {
-                var pricingTier = price.OrderItemPriceTiers.Single(x => x.Id == tier.Id);
+                var pricingTier = price.OrderItemPriceTiers.First(x => x.Id == tier.Id);
 
                 tier.AgreedPrice.Should().Be($"{pricingTier.Price:#,##0.00##}");
                 tier.Description.Should().Be(pricingTier.GetRangeDescription());

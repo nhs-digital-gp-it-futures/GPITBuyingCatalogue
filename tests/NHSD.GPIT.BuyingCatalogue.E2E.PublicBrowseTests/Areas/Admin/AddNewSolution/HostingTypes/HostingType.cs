@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.HostingT
         public async Task HostingType_TitleDisplayedCorrectly()
         {
             await using var context = GetEndToEndDbContext();
-            var solutionName = (await context.CatalogueItems.SingleAsync(s => s.Id == new CatalogueItemId(99999, "002"))).Name;
+            var solutionName = (await context.CatalogueItems.FirstAsync(s => s.Id == new CatalogueItemId(99999, "002"))).Name;
 
             CommonActions.PageTitle()
                 .Should()
@@ -65,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.HostingT
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var actual = (await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId)).Hosting;
+            var actual = (await context.Solutions.FirstAsync(s => s.CatalogueItemId == SolutionId)).Hosting;
 
             actual.PublicCloud.Should().BeEquivalentTo(expected, opt => opt.Excluding(p => p.RequiresHscn));
         }
@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.HostingT
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var actual = (await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId)).Hosting;
+            var actual = (await context.Solutions.FirstAsync(s => s.CatalogueItemId == SolutionId)).Hosting;
 
             actual.PrivateCloud.Should().BeEquivalentTo(expected, opt => opt.Excluding(p => p.RequiresHscn));
         }
@@ -120,7 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.HostingT
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var actual = (await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId)).Hosting;
+            var actual = (await context.Solutions.FirstAsync(s => s.CatalogueItemId == SolutionId)).Hosting;
 
             actual.HybridHostingType.Should().BeEquivalentTo(expected, opt => opt.Excluding(h => h.RequiresHscn));
         }
@@ -148,7 +148,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.HostingT
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var actual = (await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId)).Hosting;
+            var actual = (await context.Solutions.FirstAsync(s => s.CatalogueItemId == SolutionId)).Hosting;
 
             actual.OnPremise.Should().BeEquivalentTo(expected, opt => opt.Excluding(p => p.RequiresHscn));
         }

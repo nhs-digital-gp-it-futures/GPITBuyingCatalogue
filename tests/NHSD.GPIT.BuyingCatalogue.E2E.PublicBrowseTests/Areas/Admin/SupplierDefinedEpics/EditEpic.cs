@@ -93,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
         public void EditEpic_DuplicatesExistingEpic_ThrowsError()
         {
             using var context = GetEndToEndDbContext();
-            var epic = context.Epics.Single(e => e.Id == "S00002");
+            var epic = context.Epics.First(e => e.Id == "S00002");
 
             CommonActions.ElementAddValue(AddSupplierDefinedEpicObjects.NameInput, epic.Name);
             CommonActions.ElementAddValue(AddSupplierDefinedEpicObjects.DescriptionInput, epic.Description);
@@ -243,7 +243,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
             using var context = GetEndToEndDbContext();
             var epic = context.CatalogueItemEpics
                 .Include(e => e.CatalogueItem)
-                .Single(e => e.EpicId == epicId && e.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution);
+                .First(e => e.EpicId == epicId && e.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution);
 
             var parameters = new Dictionary<string, string>
             {
@@ -270,7 +270,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
             using var context = GetEndToEndDbContext();
             var epic = context.CatalogueItemEpics
                 .Include(e => e.CatalogueItem)
-                .Single(e => e.EpicId == epicId && e.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService);
+                .First(e => e.EpicId == epicId && e.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService);
 
             var parameters = new Dictionary<string, string>
             {
@@ -294,7 +294,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
         public void EditEpic_Inactive_DeleteLinkVisible()
         {
             using var context = GetEndToEndDbContext();
-            context.Epics.Single(p => p.Id == "S00003").IsActive = false;
+            context.Epics.First(p => p.Id == "S00003").IsActive = false;
             context.SaveChanges();
 
             var parameters = new Dictionary<string, string>

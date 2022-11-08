@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
             var sla = context.ServiceLevelAgreements
                 .Include(s => s.ServiceLevels)
                 .Include(s => s.ServiceHours)
-                .Single(s => s.SolutionId == solution.CatalogueItemId);
+                .First(s => s.SolutionId == solution.CatalogueItemId);
 
             sla.SlaType.Should().Be(model.SlaLevel);
             sla.ServiceHours.Should().NotBeNullOrEmpty();
@@ -86,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
             var sla = context.ServiceLevelAgreements
                 .Include(s => s.ServiceLevels)
                 .Include(s => s.ServiceHours)
-                .Single(s => s.SolutionId == solution.CatalogueItemId);
+                .First(s => s.SolutionId == solution.CatalogueItemId);
 
             sla.SlaType.Should().Be(model.SlaLevel);
             sla.ServiceHours.Should().BeEmpty();
@@ -140,11 +140,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
             var sla = context.ServiceLevelAgreements
                 .Include(s => s.ServiceLevels)
                 .Include(s => s.ServiceHours)
-                .Single(s => s.SolutionId == solution.CatalogueItemId);
+                .First(s => s.SolutionId == solution.CatalogueItemId);
 
             sla.SlaType.Should().Be(SlaType.Type1);
-            sla.ServiceHours.Single().ApplicableDays.Should().Be(serviceAvailalabilityTime.ApplicableDays);
-            sla.ServiceLevels.Single().ServiceLevel.Should().Be(slaServiceLevel.ServiceLevel);
+            sla.ServiceHours.First().ApplicableDays.Should().Be(serviceAvailalabilityTime.ApplicableDays);
+            sla.ServiceLevels.First().ServiceLevel.Should().Be(slaServiceLevel.ServiceLevel);
         }
 
         [Theory]
@@ -167,7 +167,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
             var sla = context.ServiceLevelAgreements
                 .Include(s => s.ServiceLevels)
                 .Include(s => s.ServiceHours)
-                .Single(s => s.SolutionId == solution.CatalogueItemId);
+                .First(s => s.SolutionId == solution.CatalogueItemId);
 
             sla.SlaType.Should().Be(SlaType.Type2);
             sla.ServiceHours.Should().BeEmpty();
@@ -194,7 +194,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
             var sla = context.ServiceLevelAgreements
                 .Include(s => s.ServiceLevels)
                 .Include(s => s.ServiceHours)
-                .Single(s => s.SolutionId == solution.CatalogueItemId);
+                .First(s => s.SolutionId == solution.CatalogueItemId);
 
             sla.SlaType.Should().Be(SlaType.Type1);
             sla.ServiceHours.ForEach(s => s.ApplicableDays.Should().NotBe(serviceAvailalabilityTime.ApplicableDays));
@@ -244,7 +244,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
         {
             await service.SaveServiceAvailabilityTimes(solution.CatalogueItem, model);
 
-            var serviceAvailabilityTimes = context.ServiceAvailabilityTimes.Single(s => s.SolutionId == solution.CatalogueItemId);
+            var serviceAvailabilityTimes = context.ServiceAvailabilityTimes.First(s => s.SolutionId == solution.CatalogueItemId);
 
             serviceAvailabilityTimes.Should().NotBeNull();
             serviceAvailabilityTimes.ApplicableDays.Should().Be(model.ApplicableDays);
@@ -286,7 +286,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
 
             await service.UpdateServiceAvailabilityTimes(solution.CatalogueItem, serviceAvailabilityTimes.Id, model);
 
-            var actualServiceAvailabilityTimes = context.ServiceAvailabilityTimes.Single(s => s.Id == serviceAvailabilityTimes.Id);
+            var actualServiceAvailabilityTimes = context.ServiceAvailabilityTimes.First(s => s.Id == serviceAvailabilityTimes.Id);
 
             actualServiceAvailabilityTimes.Should().NotBeNull();
             actualServiceAvailabilityTimes.ApplicableDays.Should().Be(model.ApplicableDays);

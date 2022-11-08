@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Interope
 
             await using var context = GetEndToEndDbContext();
 
-            var integrations = (await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId)).Integrations;
+            var integrations = (await context.Solutions.FirstAsync(s => s.CatalogueItemId == SolutionId)).Integrations;
 
             integrations.Should().NotBeNullOrWhiteSpace();
 
@@ -98,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Interope
         public void Dispose()
         {
             var context = GetEndToEndDbContext();
-            var solution = context.Solutions.Single(s => s.CatalogueItemId == SolutionId);
+            var solution = context.Solutions.First(s => s.CatalogueItemId == SolutionId);
             solution.Integrations = null;
             context.SaveChanges();
         }

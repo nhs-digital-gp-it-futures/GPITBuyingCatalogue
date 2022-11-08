@@ -114,7 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
             serviceRecipients.ForEach(x =>
             {
-                var dto = result.Single(s => s.OdsCode == x.OdsCode);
+                var dto = result.First(s => s.OdsCode == x.OdsCode);
 
                 dto.Name.Should().Be(x.Name);
             });

@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DeliveryDa
             var context = GetEndToEndDbContext();
             var expected = DateTime.Today.AddDays(2);
 
-            context.Orders.Single(x => x.Id == OrderId).DeliveryDate.Should().Be(expected);
+            context.Orders.First(x => x.Id == OrderId).DeliveryDate.Should().Be(expected);
             context.OrderItemRecipients.Where(x => x.OrderId == OrderId).ForEach(x => x.DeliveryDate.Should().Be(expected));
         }
 
@@ -112,7 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DeliveryDa
             var context = GetEndToEndDbContext();
             var tomorrow = DateTime.Today.AddDays(1);
 
-            context.Orders.Single(x => x.Id == OrderId).DeliveryDate = tomorrow;
+            context.Orders.First(x => x.Id == OrderId).DeliveryDate = tomorrow;
             context.OrderItemRecipients.Where(x => x.OrderId == OrderId).ForEach(x => x.DeliveryDate = tomorrow);
 
             context.SaveChanges();
@@ -123,7 +123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DeliveryDa
             var context = GetEndToEndDbContext();
             var tomorrow = DateTime.Today.AddDays(1);
 
-            context.Orders.Single(x => x.Id == OrderId).DeliveryDate.Should().Be(tomorrow);
+            context.Orders.First(x => x.Id == OrderId).DeliveryDate.Should().Be(tomorrow);
             context.OrderItemRecipients.Where(x => x.OrderId == OrderId).ForEach(x => x.DeliveryDate.Should().Be(tomorrow));
         }
     }

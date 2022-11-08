@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             var result = await service.GetActiveEpicsByCapabilityIds(capabilities.Select(x => x.Id));
 
             result.Should().ContainSingle();
-            result.Single().Id.Should().Be(epics[0].Id);
+            result.First().Id.Should().Be(epics[0].Id);
         }
     }
 }

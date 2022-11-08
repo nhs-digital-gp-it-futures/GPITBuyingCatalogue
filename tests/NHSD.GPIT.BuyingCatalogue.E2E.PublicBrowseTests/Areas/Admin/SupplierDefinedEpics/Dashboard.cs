@@ -145,9 +145,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
                 var pageSummary = GetPageSummary();
 
-                pageSummary.Names.Single().Should().Be(sampleEpic.Name.Trim());
-                pageSummary.Capabilities.Single().Should().Be(sampleEpic.Capability.Name.Trim());
-                pageSummary.Ids.Single().Should().Be(sampleEpic.Id);
+                pageSummary.Names.First().Should().Be(sampleEpic.Name.Trim());
+                pageSummary.Capabilities.First().Should().Be(sampleEpic.Capability.Name.Trim());
+                pageSummary.Ids.First().Should().Be(sampleEpic.Id);
             });
         }
 

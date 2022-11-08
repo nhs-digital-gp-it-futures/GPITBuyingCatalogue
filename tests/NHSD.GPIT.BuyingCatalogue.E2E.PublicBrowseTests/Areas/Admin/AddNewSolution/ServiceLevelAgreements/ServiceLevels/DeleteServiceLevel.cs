@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
 
             await using var context = GetEndToEndDbContext();
 
-            var serviceLevels = await context.SlaServiceLevels.SingleOrDefaultAsync(slac => slac.Id == ServiceLevelId);
+            var serviceLevels = await context.SlaServiceLevels.FirstOrDefaultAsync(slac => slac.Id == ServiceLevelId);
 
             serviceLevels.Should().BeNull();
         }

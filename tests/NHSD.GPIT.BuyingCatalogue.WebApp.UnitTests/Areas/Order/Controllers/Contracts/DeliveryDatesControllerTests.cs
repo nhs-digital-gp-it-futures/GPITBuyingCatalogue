@@ -386,7 +386,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             foreach (var deliveryDate in deliveryDates)
             {
-                var recipient = model.Recipients.Single(x => x.OdsCode == deliveryDate.OdsCode);
+                var recipient = model.Recipients.First(x => x.OdsCode == deliveryDate.OdsCode);
                 recipient.Date.Should().Be(deliveryDate.DeliveryDate);
             }
 

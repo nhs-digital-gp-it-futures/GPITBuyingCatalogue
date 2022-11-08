@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DataProces
                 typeof(OrderController),
                 nameof(OrderController.Order)).Should().BeTrue();
 
-            var flags = GetEndToEndDbContext().ContractFlags.Single(x => x.OrderId == OrderId);
+            var flags = GetEndToEndDbContext().ContractFlags.First(x => x.OrderId == OrderId);
 
             flags.UseDefaultDataProcessing.Should().BeTrue();
         }
@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DataProces
                 typeof(DataProcessingPlanController),
                 nameof(DataProcessingPlanController.BespokeDataProcessingPlan)).Should().BeTrue();
 
-            var flags = GetEndToEndDbContext().ContractFlags.Single(x => x.OrderId == OrderId);
+            var flags = GetEndToEndDbContext().ContractFlags.First(x => x.OrderId == OrderId);
 
             flags.UseDefaultDataProcessing.Should().BeFalse();
         }

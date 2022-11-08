@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         {
             await using var context = GetEndToEndDbContext();
             var organisation =
-                await context.Organisations.SingleAsync(o => o.InternalIdentifier == Parameters["InternalOrgId"]);
+                await context.Organisations.FirstAsync(o => o.InternalIdentifier == Parameters["InternalOrgId"]);
 
             CommonActions.PageTitle()
                 .Should()

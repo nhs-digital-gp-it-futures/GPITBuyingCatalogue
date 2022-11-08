@@ -86,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
         {
             using var dbContext = Factory.DbContext;
 
-            var solution = dbContext.Solutions.SingleOrDefault(i => i.CatalogueItem.Name == solutionName);
+            var solution = dbContext.Solutions.FirstOrDefault(i => i.CatalogueItem.Name == solutionName);
 
             return (solution != null) ? solution.CatalogueItemId.ToString() : string.Empty;
         }

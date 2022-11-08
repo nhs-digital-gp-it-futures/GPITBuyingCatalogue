@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
         public async Task Details_OrganisationDetailsDisplayed()
         {
             await using var context = GetEndToEndDbContext();
-            var dbAddress = (await context.Organisations.SingleAsync(s => s.Id == OrganisationId)).Address;
+            var dbAddress = (await context.Organisations.FirstAsync(s => s.Id == OrganisationId)).Address;
 
             var pageAddress = AccountManagementPages.Details.GetAddress().ToList();
 
@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
         public async Task Details_OdsCodeDisplayed()
         {
             await using var context = GetEndToEndDbContext();
-            var dbOdsCode = (await context.Organisations.SingleAsync(s => s.Id == OrganisationId)).ExternalIdentifier;
+            var dbOdsCode = (await context.Organisations.FirstAsync(s => s.Id == OrganisationId)).ExternalIdentifier;
 
             var pageOdsCode = AccountManagementPages.Details.GetOdsCode();
 

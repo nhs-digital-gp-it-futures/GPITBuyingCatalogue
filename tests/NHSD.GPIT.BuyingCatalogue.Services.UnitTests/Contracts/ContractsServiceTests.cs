@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
             await service.HasSpecificRequirements(orderId, value);
 
-            var actual = await dbContext.ContractFlags.SingleAsync(x => x.Id == contractFlags.Id);
+            var actual = await dbContext.ContractFlags.FirstAsync(x => x.Id == contractFlags.Id);
 
             actual.HasSpecificRequirements.Should().Be(value);
         }
@@ -108,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
             await service.UseDefaultBilling(orderId, value);
 
-            var actual = await dbContext.ContractFlags.SingleAsync(x => x.Id == contractFlags.Id);
+            var actual = await dbContext.ContractFlags.FirstAsync(x => x.Id == contractFlags.Id);
 
             actual.UseDefaultBilling.Should().Be(value);
         }
@@ -133,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
             await service.UseDefaultDataProcessing(orderId, value);
 
-            var actual = await dbContext.ContractFlags.SingleAsync(x => x.Id == contractFlags.Id);
+            var actual = await dbContext.ContractFlags.FirstAsync(x => x.Id == contractFlags.Id);
 
             actual.UseDefaultDataProcessing.Should().Be(value);
         }
@@ -158,7 +158,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
             await service.UseDefaultImplementationPlan(orderId, value);
 
-            var actual = await dbContext.ContractFlags.SingleAsync(x => x.Id == contractFlags.Id);
+            var actual = await dbContext.ContractFlags.FirstAsync(x => x.Id == contractFlags.Id);
 
             actual.UseDefaultImplementationPlan.Should().Be(value);
         }

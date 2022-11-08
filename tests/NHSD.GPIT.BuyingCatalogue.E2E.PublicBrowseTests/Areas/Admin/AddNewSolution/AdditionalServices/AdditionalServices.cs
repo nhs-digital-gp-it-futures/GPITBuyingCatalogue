@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
         public async Task AdditionalServices_CorrectlyDisplayed()
         {
             await using var context = GetEndToEndDbContext();
-            var solutionName = (await context.CatalogueItems.SingleAsync(s => s.Id == SolutionId)).Name;
+            var solutionName = (await context.CatalogueItems.FirstAsync(s => s.Id == SolutionId)).Name;
 
             CommonActions.PageTitle()
                 .Should()
@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
             NavigateToUrl(typeof(AdditionalServicesController), nameof(AdditionalServicesController.Index), args);
 
             await using var context = GetEndToEndDbContext();
-            var solutionName = (await context.CatalogueItems.SingleAsync(s => s.Id == SolutionIdNoAdditionalService)).Name;
+            var solutionName = (await context.CatalogueItems.FirstAsync(s => s.Id == SolutionIdNoAdditionalService)).Name;
 
             CommonActions.PageTitle()
                 .Should()

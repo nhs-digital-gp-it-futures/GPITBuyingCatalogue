@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
         public void Index_AllSectionsDisplayed()
         {
             using var context = GetEndToEndDbContext();
-            var organisation = context.Organisations.Single(o => string.Equals(o.InternalIdentifier, InternalOrgId));
+            var organisation = context.Organisations.First(o => string.Equals(o.InternalIdentifier, InternalOrgId));
 
             CommonActions
                 .PageTitle()

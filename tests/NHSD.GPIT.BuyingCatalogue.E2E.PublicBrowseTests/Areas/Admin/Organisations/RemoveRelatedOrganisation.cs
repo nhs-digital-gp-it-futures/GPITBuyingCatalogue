@@ -97,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         private async Task<Organisation> AddRelatedOrganisation()
         {
             await using var context = GetEndToEndDbContext();
-            var organisation = context.Organisations.Single(x => x.Id == RelatedOrganisationId);
+            var organisation = context.Organisations.First(x => x.Id == RelatedOrganisationId);
             context.RelatedOrganisations.Add(new RelatedOrganisation(OrganisationId, RelatedOrganisationId));
             await context.SaveChangesAsync();
             Driver.Navigate().Refresh();

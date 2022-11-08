@@ -224,7 +224,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             var dbSolution = await context.CatalogueItems
                 .Include(s => s.Solution)
                 .Include(s => s.Solution.FrameworkSolutions)
-                .SingleAsync(s => s.Id == solution.CatalogueItemId);
+                .FirstAsync(s => s.Id == solution.CatalogueItemId);
 
             dbSolution.Name.Should().BeEquivalentTo(expectedSolutionName);
             dbSolution.SupplierId.Should().Be(expectedSupplierId);
@@ -246,7 +246,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             await service.SaveSolutionDescription(solution.CatalogueItemId, summary, description, link);
 
-            var actual = await context.Solutions.AsQueryable().SingleAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
+            var actual = await context.Solutions.AsQueryable().FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
 
             actual.Summary.Should().Be(summary);
             actual.FullDescription.Should().Be(description);
@@ -266,7 +266,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             await service.SaveSolutionFeatures(solution.CatalogueItemId, features);
 
-            var actual = await context.Solutions.AsQueryable().SingleAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
+            var actual = await context.Solutions.AsQueryable().FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
 
             actual.Features.Should().Be(JsonSerializer.Serialize(features));
         }
@@ -284,7 +284,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             await service.SaveImplementationDetail(solution.CatalogueItemId, detail);
 
-            var actual = await context.Solutions.AsQueryable().SingleAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
+            var actual = await context.Solutions.AsQueryable().FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
 
             actual.ImplementationDetail.Should().Be(detail);
         }
@@ -312,7 +312,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             await service.SaveClientApplication(solution.CatalogueItemId, clientApplication);
 
-            var actual = await context.Solutions.AsQueryable().SingleAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
+            var actual = await context.Solutions.AsQueryable().FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
 
             actual.ClientApplication.Should().Be(JsonSerializer.Serialize(clientApplication));
         }
@@ -340,7 +340,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             await service.SaveHosting(solution.CatalogueItemId, hosting);
 
-            var actual = await context.Solutions.AsQueryable().SingleAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
+            var actual = await context.Solutions.AsQueryable().FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
 
             actual.Hosting.Should().BeEquivalentTo(hosting);
         }
@@ -359,7 +359,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             await service.SaveSupplierDescriptionAndLink(supplier.Id, description, link);
 
-            var actual = await context.Suppliers.AsQueryable().SingleAsync(s => s.Id == supplier.Id);
+            var actual = await context.Suppliers.AsQueryable().FirstAsync(s => s.Id == supplier.Id);
 
             actual.Summary.Should().Be(description);
             actual.SupplierUrl.Should().Be(link);
@@ -395,7 +395,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             _ = await service.AddCatalogueSolution(model);
 
-            var actual = await context.CatalogueItems.AsAsyncEnumerable().SingleAsync();
+            var actual = await context.CatalogueItems.AsAsyncEnumerable().FirstAsync();
 
             actual.Name.Should().Be(model.Name);
         }
@@ -430,7 +430,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             await service.DeleteClientApplication(catalogueSolution.CatalogueItemId, ClientApplicationType.BrowserBased);
 
-            var actual = await context.Solutions.AsQueryable().SingleAsync(s => s.CatalogueItemId == catalogueSolution.CatalogueItemId);
+            var actual = await context.Solutions.AsQueryable().FirstAsync(s => s.CatalogueItemId == catalogueSolution.CatalogueItemId);
 
             var actualClientApplication = JsonDeserializer.Deserialize<ClientApplication>(actual.ClientApplication);
 
@@ -605,7 +605,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             SolutionsService systemUnderTest)
         {
             var solutions = GetSolutionsForSearchTerm(searchTerm);
-            var noMatch = solutions.Single(x => x.Name == SolutionName && x.Supplier.Name == SupplierName);
+            var noMatch = solutions.First(x => x.Name == SolutionName && x.Supplier.Name == SupplierName);
 
             for (var i = 0; i < solutions.Count; i++)
             {

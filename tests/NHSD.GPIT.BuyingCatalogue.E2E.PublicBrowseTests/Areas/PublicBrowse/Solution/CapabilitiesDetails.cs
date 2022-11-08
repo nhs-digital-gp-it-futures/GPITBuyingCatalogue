@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
                     (await context.CatalogueItems
                         .Include(ci => ci.CatalogueItemCapabilities)
                             .ThenInclude(s => s.Capability)
-                        .SingleAsync(s => s.Id == new CatalogueItemId(99999, "001")))
+                        .FirstAsync(s => s.Id == new CatalogueItemId(99999, "001")))
                     .CatalogueItemCapabilities
                     .Select(s => s.Capability);
 
@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
                 var nhsEpicsList = PublicBrowsePages.SolutionAction.GetNhsSolutionEpics().ToArray();
 
                 await using var context = GetEndToEndDbContext();
-                var nhsEpicsInfo = (await context.CatalogueItems.Include(s => s.CatalogueItemEpics).ThenInclude(s => s.Epic).SingleAsync(s => s.Id == new CatalogueItemId(99999, "001"))).CatalogueItemEpics.Select(s => s.Epic);
+                var nhsEpicsInfo = (await context.CatalogueItems.Include(s => s.CatalogueItemEpics).ThenInclude(s => s.Epic).FirstAsync(s => s.Id == new CatalogueItemId(99999, "001"))).CatalogueItemEpics.Select(s => s.Epic);
 
                 nhsEpicsList.Should().BeEquivalentTo(nhsEpicsInfo.Where(e => !e.SupplierDefined).Select(c => c.Name));
             });
@@ -87,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
                 var supplierEpicsList = PublicBrowsePages.SolutionAction.GetSupplierSolutionEpics();
 
                 await using var context = GetEndToEndDbContext();
-                var supplierEpicsInfo = (await context.CatalogueItems.Include(s => s.CatalogueItemEpics).ThenInclude(s => s.Epic).SingleAsync(s => s.Id == new CatalogueItemId(99999, "001"))).CatalogueItemEpics.Select(s => s.Epic);
+                var supplierEpicsInfo = (await context.CatalogueItems.Include(s => s.CatalogueItemEpics).ThenInclude(s => s.Epic).FirstAsync(s => s.Id == new CatalogueItemId(99999, "001"))).CatalogueItemEpics.Select(s => s.Epic);
 
                 supplierEpicsList.Should().BeEquivalentTo(supplierEpicsInfo.Where(e => e.SupplierDefined).Select(c => c.Name));
             });
@@ -99,7 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             await RunTestAsync(async () =>
             {
                 await using var context = GetEndToEndDbContext();
-                var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionId);
+                var solution = await context.CatalogueItems.FirstAsync(ci => ci.Id == SolutionId);
                 solution.PublishedStatus = PublicationStatus.Suspended;
                 await context.SaveChangesAsync();
 
@@ -117,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         public void Dispose()
         {
             using var context = GetEndToEndDbContext();
-            context.CatalogueItems.Single(ci => ci.Id == SolutionId).PublishedStatus = PublicationStatus.Published;
+            context.CatalogueItems.First(ci => ci.Id == SolutionId).PublishedStatus = PublicationStatus.Published;
             context.SaveChanges();
         }
     }

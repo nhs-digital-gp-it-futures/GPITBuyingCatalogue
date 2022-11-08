@@ -250,7 +250,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             actual.ForEach(x =>
             {
                 price.CataloguePriceTiers
-                    .Single(t => t.LowerRange == x.LowerRange && t.UpperRange == x.UpperRange)
+                    .First(t => t.LowerRange == x.LowerRange && t.UpperRange == x.UpperRange)
                     .Price.Should().Be(x.Price);
             });
 
@@ -435,7 +435,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             actual.ForEach(x =>
             {
                 model.Tiers
-                    .Single(t => t.LowerRange == x.LowerRange && t.UpperRange == x.UpperRange)
+                    .First(t => t.LowerRange == x.LowerRange && t.UpperRange == x.UpperRange)
                     .AgreedPrice.Should().Be($"{x.Price:#,##0.00##}");
             });
 

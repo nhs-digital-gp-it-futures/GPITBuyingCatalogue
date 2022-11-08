@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             await RunTestAsync(async () =>
             {
                 await using var context = GetEndToEndDbContext();
-                var pageTitle = (await context.CatalogueItems.SingleAsync(s => s.Id == new CatalogueItemId(99999, "001"))).Name;
+                var pageTitle = (await context.CatalogueItems.FirstAsync(s => s.Id == new CatalogueItemId(99999, "001"))).Name;
 
                 CommonActions
                     .PageTitle()
@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 
                 var associatedServicesInDb = await context.CatalogueItems.Where(c => c.CatalogueItemType == CatalogueItemType.AssociatedService).Where(c => c.SupplierId == 99999).ToListAsync();
 
-                var solution = await context.CatalogueItems.Include(s => s.SupplierServiceAssociations).SingleAsync(s => s.Id == SolutionId);
+                var solution = await context.CatalogueItems.Include(s => s.SupplierServiceAssociations).FirstAsync(s => s.Id == SolutionId);
                 associatedServicesInDb = associatedServicesInDb.Where(x => solution.SupplierServiceAssociations.Any(y => y.AssociatedServiceId == x.Id)).ToList();
 
                 var associatedServicesInTable = Driver.FindElement(SolutionObjects.AssociatedServicesTieredTable).FindElements(By.TagName("a"))
@@ -93,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
                     .Where(c => c.SupplierId == 99999)
                     .ToListAsync();
 
-                var solution = await context.CatalogueItems.Include(s => s.SupplierServiceAssociations).SingleAsync(s => s.Id == SolutionId);
+                var solution = await context.CatalogueItems.Include(s => s.SupplierServiceAssociations).FirstAsync(s => s.Id == SolutionId);
                 associatedServicesInDb = associatedServicesInDb.Where(x => solution.SupplierServiceAssociations.Any(y => y.AssociatedServiceId == x.Id)).ToList();
 
                 var associatedServicesOnPage = PublicBrowsePages.SolutionAction.GetAssociatedServicesInfo();
@@ -112,7 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             await RunTestAsync(async () =>
             {
                 await using var context = GetEndToEndDbContext();
-                var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionId);
+                var solution = await context.CatalogueItems.FirstAsync(ci => ci.Id == SolutionId);
                 solution.PublishedStatus = PublicationStatus.Suspended;
                 await context.SaveChangesAsync();
 
@@ -130,7 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         public void Dispose()
         {
             using var context = GetEndToEndDbContext();
-            context.CatalogueItems.Single(ci => ci.Id == SolutionId).PublishedStatus = PublicationStatus.Published;
+            context.CatalogueItems.First(ci => ci.Id == SolutionId).PublishedStatus = PublicationStatus.Published;
             context.SaveChanges();
         }
     }

@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.DevelopmentPlans
 
             await service.SaveDevelopmentPlans(solution.CatalogueItemId, developmentPlan);
 
-            var actual = await context.Solutions.AsQueryable().SingleAsync();
+            var actual = await context.Solutions.AsQueryable().FirstAsync();
 
             actual.RoadMap.Should().Be(developmentPlan);
         }
@@ -105,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.DevelopmentPlans
 
             await service.SaveWorkOffPlan(solution.CatalogueItemId, model);
 
-            var actual = await context.WorkOffPlans.AsQueryable().SingleAsync();
+            var actual = await context.WorkOffPlans.AsQueryable().FirstAsync();
 
             actual.SolutionId.Should().Be(solution.CatalogueItemId);
             actual.StandardId.Should().Be(model.StandardId);
@@ -135,7 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.DevelopmentPlans
 
             await service.UpdateWorkOffPlan(solution.WorkOffPlans.First().Id, model);
 
-            var actual = await context.WorkOffPlans.AsQueryable().SingleAsync(w => w.Id == solution.WorkOffPlans.First().Id);
+            var actual = await context.WorkOffPlans.AsQueryable().FirstAsync(w => w.Id == solution.WorkOffPlans.First().Id);
 
             actual.SolutionId.Should().Be(solution.CatalogueItemId);
             actual.StandardId.Should().Be(model.StandardId);
@@ -157,7 +157,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.DevelopmentPlans
 
             await service.DeleteWorkOffPlan(itemToDelete);
 
-            var dbSolution = await context.Solutions.Include(s => s.WorkOffPlans).SingleAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
+            var dbSolution = await context.Solutions.Include(s => s.WorkOffPlans).FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
 
             dbSolution.WorkOffPlans.Should().NotBeNullOrEmpty();
             dbSolution.WorkOffPlans.Any(w => w.Id == itemToDelete).Should().BeFalse();

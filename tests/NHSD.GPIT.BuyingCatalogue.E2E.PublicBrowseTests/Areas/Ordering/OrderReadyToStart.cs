@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public void ReadyToStart_AllSectionsDisplayed()
         {
             using var context = GetEndToEndDbContext();
-            var organisation = context.Organisations.Single(o => string.Equals(o.InternalIdentifier, InternalOrgId));
+            var organisation = context.Organisations.First(o => string.Equals(o.InternalIdentifier, InternalOrgId));
 
             CommonActions.PageTitle().Should().BeEquivalentTo($"Before you start an order - {organisation.Name}".FormatForComparison());
             CommonActions.LedeText().Should().Be("Before you start your order, you should know:".FormatForComparison());

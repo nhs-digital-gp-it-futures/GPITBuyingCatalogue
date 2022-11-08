@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         public async Task AddSlaType_CorrectlyDisplayed()
         {
             await using var context = GetEndToEndDbContext();
-            var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionId);
+            var solution = await context.CatalogueItems.FirstAsync(ci => ci.Id == SolutionId);
 
             CommonActions.PageTitle()
                 .Should()
@@ -100,7 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
                 .Should().BeTrue();
 
             await using var context = GetEndToEndDbContext();
-            var sla = await context.ServiceLevelAgreements.SingleAsync(s => s.SolutionId == SolutionId);
+            var sla = await context.ServiceLevelAgreements.FirstAsync(s => s.SolutionId == SolutionId);
 
             sla.SlaType.Should().Be(SlaType.Type1);
         }
@@ -108,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         public void Dispose()
         {
             using var context = GetEndToEndDbContext();
-            var sla = context.ServiceLevelAgreements.SingleOrDefault(s => s.SolutionId == SolutionId);
+            var sla = context.ServiceLevelAgreements.FirstOrDefault(s => s.SolutionId == SolutionId);
             if (sla is not null)
             {
                 context.ServiceLevelAgreements.Remove(sla);

@@ -390,7 +390,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             foreach (var dto in actual)
             {
                 model.ServiceRecipients
-                    .Single(x => x.OdsCode == dto.OdsCode)
+                    .First(x => x.OdsCode == dto.OdsCode)
                     .Quantity.Should().Be(dto.Quantity == 0 ? 1 : dto.Quantity);
             }
 

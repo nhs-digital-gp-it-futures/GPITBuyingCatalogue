@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             SupplierDefinedEpicsService service)
         {
             var epics = GetEpicsForSearchTerm(searchTerm);
-            var noMatch = epics.Single(x => x.Name == EpicName && x.Capability.Name == CapabilityName);
+            var noMatch = epics.First(x => x.Name == EpicName && x.Capability.Name == CapabilityName);
 
             for (var i = 0; i < epics.Count; i++)
             {

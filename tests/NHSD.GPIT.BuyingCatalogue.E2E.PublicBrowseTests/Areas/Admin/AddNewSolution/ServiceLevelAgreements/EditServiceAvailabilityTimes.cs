@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         public async Task EditAvailabilityTimes_CorrectlyDisplayed()
         {
             await using var context = GetEndToEndDbContext();
-            var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionId);
+            var solution = await context.CatalogueItems.FirstAsync(ci => ci.Id == SolutionId);
 
             CommonActions.PageTitle()
                 .Should()
@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         public async Task EditAvailabiligyTimes_UnpublishedSolutionSingleAvailabilityTime_DeleteLinkVisible()
         {
             await using var context = GetEndToEndDbContext();
-            var catalogueItem = await context.CatalogueItems.SingleAsync(c => c.Id == SingleAvailabilityTimeSolutionId);
+            var catalogueItem = await context.CatalogueItems.FirstAsync(c => c.Id == SingleAvailabilityTimeSolutionId);
             catalogueItem.PublishedStatus = PublicationStatus.Unpublished;
             await context.SaveChangesAsync();
 
@@ -127,7 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
                 .BeTrue();
 
             await using var context = GetEndToEndDbContext();
-            var serviceLevelAvailabilityTime = await context.ServiceAvailabilityTimes.SingleOrDefaultAsync(t => t.SolutionId == SolutionId && t.Id == ServiceAvailabilityTimesId);
+            var serviceLevelAvailabilityTime = await context.ServiceAvailabilityTimes.FirstOrDefaultAsync(t => t.SolutionId == SolutionId && t.Id == ServiceAvailabilityTimesId);
 
             serviceLevelAvailabilityTime.Category.Should().Be(supportType);
             serviceLevelAvailabilityTime.ApplicableDays.Should().Be(applicableDays);
@@ -239,7 +239,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         public void Dispose()
         {
             using var context = GetEndToEndDbContext();
-            var solution = context.CatalogueItems.Single(c => c.Id == SingleAvailabilityTimeSolutionId);
+            var solution = context.CatalogueItems.First(c => c.Id == SingleAvailabilityTimeSolutionId);
 
             if (solution is not null && solution.PublishedStatus != PublicationStatus.Published)
             {

@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         public async Task AddAvailabilityTimes_CorrectlyDisplayed()
         {
             await using var context = GetEndToEndDbContext();
-            var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionId);
+            var solution = await context.CatalogueItems.FirstAsync(ci => ci.Id == SolutionId);
 
             CommonActions.PageTitle()
                 .Should()
@@ -87,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
                 .BeTrue();
 
             await using var context = GetEndToEndDbContext();
-            var serviceLevelAvailabilityTime = await context.ServiceAvailabilityTimes.SingleOrDefaultAsync(t => t.SolutionId == SolutionId
+            var serviceLevelAvailabilityTime = await context.ServiceAvailabilityTimes.FirstOrDefaultAsync(t => t.SolutionId == SolutionId
                 && string.Equals(t.Category, supportType)
                 && string.Equals(t.ApplicableDays, applicableDays));
 
@@ -124,7 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         public async Task AddAvailabilityTimes_ClickSave_Duplicate()
         {
             await using var context = GetEndToEndDbContext();
-            var serviceAvailabilityTime = await context.ServiceAvailabilityTimes.SingleAsync(t => t.Id == 1);
+            var serviceAvailabilityTime = await context.ServiceAvailabilityTimes.FirstAsync(t => t.Id == 1);
 
             CommonActions.ElementAddValue(ServiceAvailabilityTimesObjects.SupportTypeInput, serviceAvailabilityTime.Category);
             CommonActions.ElementAddValue(ServiceAvailabilityTimesObjects.ApplicableDaysInput, serviceAvailabilityTime.ApplicableDays);

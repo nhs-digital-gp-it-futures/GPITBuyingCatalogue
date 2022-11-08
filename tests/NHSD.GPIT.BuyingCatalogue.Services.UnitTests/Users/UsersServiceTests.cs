@@ -154,7 +154,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
 
             await service.EnableOrDisableUser(user.Id, true);
 
-            var actual = await userManager.Users.SingleAsync(u => u.Id == user.Id);
+            var actual = await userManager.Users.FirstAsync(u => u.Id == user.Id);
 
             actual.Disabled.Should().BeTrue();
         }
@@ -176,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
 
             await service.EnableOrDisableUser(user.Id, false);
 
-            var actual = await userManager.Users.SingleAsync(u => u.Id == user.Id);
+            var actual = await userManager.Users.FirstAsync(u => u.Id == user.Id);
 
             actual.Disabled.Should().BeFalse();
         }
@@ -196,7 +196,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
 
             await service.UpdateUserAccountType(user.Id, accountType);
 
-            var actual = await userManager.Users.Include(u => u.AspNetUserRoles).ThenInclude(r => r.Role).SingleAsync(u => u.Id == user.Id);
+            var actual = await userManager.Users.Include(u => u.AspNetUserRoles).ThenInclude(r => r.Role).FirstAsync(u => u.Id == user.Id);
 
             actual.AspNetUserRoles.Select(u => u.Role).Should().Contain(x => x.Name == accountType);
         }
@@ -217,7 +217,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
 
             await service.UpdateUserDetails(user.Id, firstName, lastName, email);
 
-            var actual = await userManager.Users.SingleAsync(u => u.Id == user.Id);
+            var actual = await userManager.Users.FirstAsync(u => u.Id == user.Id);
 
             actual.FirstName.Should().Be(firstName);
             actual.LastName.Should().Be(lastName);
@@ -239,7 +239,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
 
             await service.UpdateUserOrganisation(user.Id, organisationId);
 
-            var actual = await userManager.Users.SingleAsync(u => u.Id == user.Id);
+            var actual = await userManager.Users.FirstAsync(u => u.Id == user.Id);
 
             actual.PrimaryOrganisationId.Should().Be(organisationId);
         }

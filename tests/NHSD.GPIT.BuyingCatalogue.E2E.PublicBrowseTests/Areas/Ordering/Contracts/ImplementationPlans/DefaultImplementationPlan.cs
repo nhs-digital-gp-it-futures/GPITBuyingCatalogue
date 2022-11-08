@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.Implementa
                 typeof(OrderController),
                 nameof(OrderController.Order)).Should().BeTrue();
 
-            var flags = GetEndToEndDbContext().ContractFlags.Single(x => x.OrderId == OrderId);
+            var flags = GetEndToEndDbContext().ContractFlags.First(x => x.OrderId == OrderId);
 
             flags.UseDefaultImplementationPlan.Should().BeTrue();
         }
@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.Implementa
                 typeof(ImplementationPlanController),
                 nameof(ImplementationPlanController.CustomImplementationPlan)).Should().BeTrue();
 
-            var flags = GetEndToEndDbContext().ContractFlags.Single(x => x.OrderId == OrderId);
+            var flags = GetEndToEndDbContext().ContractFlags.First(x => x.OrderId == OrderId);
 
             flags.UseDefaultImplementationPlan.Should().BeFalse();
         }

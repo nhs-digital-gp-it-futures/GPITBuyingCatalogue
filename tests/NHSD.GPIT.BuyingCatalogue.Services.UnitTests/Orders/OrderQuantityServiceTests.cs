@@ -133,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             var solutionId = order.OrderItems.First().CatalogueItemId;
 
             var expected = context.OrderItems
-                .Single(x => x.OrderId == order.Id
+                .First(x => x.OrderId == order.Id
                     && x.CatalogueItemId == solutionId);
 
             expected.Quantity.Should().Be(1);
@@ -141,7 +141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await service.SetOrderItemQuantity(order.Id, solutionId, quantity);
 
             var actual = context.OrderItems
-                .Single(x => x.OrderId == order.Id
+                .First(x => x.OrderId == order.Id
                     && x.CatalogueItemId == solutionId);
 
             actual.Quantity.Should().Be(quantity);
@@ -201,7 +201,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             var solutionId = order.OrderItems.First().CatalogueItemId;
 
             var expected = context.OrderItems
-                .Single(x => x.OrderId == order.Id
+                .First(x => x.OrderId == order.Id
                     && x.CatalogueItemId == solutionId);
 
             for (var i = 0; i < expected.OrderItemRecipients.Count; i++)
@@ -213,13 +213,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await service.SetServiceRecipientQuantities(order.Id, solutionId, quantities);
 
             var actual = context.OrderItems
-                .Single(x => x.OrderId == order.Id
+                .First(x => x.OrderId == order.Id
                     && x.CatalogueItemId == solutionId);
 
             for (var i = 0; i < actual.OrderItemRecipients.Count; i++)
             {
                 var recipient = actual.OrderItemRecipients.ElementAt(i);
-                var quantity = quantities.Single(x => x.OdsCode == recipient.OdsCode);
+                var quantity = quantities.First(x => x.OdsCode == recipient.OdsCode);
 
                 recipient.Quantity.Should().Be(quantity.Quantity);
             }
