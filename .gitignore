@@ -353,7 +353,7 @@ MigrationBackup/
 .ionide/
 
 # Terraform State files
-*/\.terraform/
+**/\.terraform/
 
 # Generated css file
 **/wwwroot/css/*.css
