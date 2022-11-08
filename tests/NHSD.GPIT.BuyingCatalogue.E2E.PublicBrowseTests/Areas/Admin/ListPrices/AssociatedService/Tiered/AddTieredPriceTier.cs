@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.AssociatedSe
 {
     public sealed class AddTieredPriceTier : AddTieredPriceTierBase
     {
-        private const int CataloguePriceId = 20;
+        private const int CataloguePriceIdConst = 20;
         private static readonly CatalogueItemId SolutionId = new(99998, "001");
         private static readonly CatalogueItemId AssociatedServiceId = new(99998, "S-997");
 
@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.AssociatedSe
         {
             { nameof(SolutionId), SolutionId.ToString() },
             { nameof(AssociatedServiceId), AssociatedServiceId.ToString() },
-            { nameof(CataloguePriceId), CataloguePriceId.ToString() },
+            { nameof(CataloguePriceId), CataloguePriceIdConst.ToString() },
         };
 
         public AddTieredPriceTier(LocalWebApplicationFactory factory)
@@ -27,6 +27,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.AssociatedSe
                   Parameters)
         {
         }
+
+        protected override int CataloguePriceId => CataloguePriceIdConst;
 
         protected override CatalogueItemId CatalogueItemId => AssociatedServiceId;
 

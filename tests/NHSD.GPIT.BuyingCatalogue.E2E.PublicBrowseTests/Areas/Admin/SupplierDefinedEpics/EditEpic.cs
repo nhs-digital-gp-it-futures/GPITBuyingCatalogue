@@ -343,7 +343,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
         [Fact]
         public void EditEpic_DeleteLink_Navigates()
         {
-            using var context = GetEndToEndDbContext();
             var parameters = new Dictionary<string, string>
             {
                 { nameof(EpicId), "S00003" },

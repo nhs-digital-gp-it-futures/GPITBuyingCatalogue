@@ -216,7 +216,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Developm
         [Fact]
         public async Task AddWorkOffPlan_DuplicateWorkOffPlan_ErrorThrown()
         {
-            using var context = GetEndToEndDbContext();
+            await using var context = GetEndToEndDbContext();
             var workOffPlan = await context.WorkOffPlans.FirstOrDefaultAsync(wp => wp.SolutionId == SolutionId);
 
             CommonActions.SelectDropDownItemByValue(DevelopmentPlanObjects.SelectStandards, workOffPlan.StandardId);
@@ -266,7 +266,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Developm
                 .Should()
                 .BeTrue();
 
-            using var context = GetEndToEndDbContext();
+            await using var context = GetEndToEndDbContext();
             var workOffPlan = await context.WorkOffPlans.FirstOrDefaultAsync(wp => wp.SolutionId == SolutionId && wp.Details == details);
 
             workOffPlan.StandardId.Should().BeEquivalentTo(standardId);

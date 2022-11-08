@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
@@ -22,7 +24,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
         internal static void Initialize(BuyingCatalogueDbContext context)
         {
             AddDefaultData(context);
-            context.SaveChanges();
         }
 
         private static void AddDefaultData(BuyingCatalogueDbContext context)
@@ -323,7 +324,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 new Organisation { Id = 182, Name = "Yorkshire and Humber – H&J Commissioning Hub", Address = new Address { Line1 = "C/O NHS ENGLAND", Line2 = "1W09, 1ST FLOOR, QUARRY HOUSE", Line3 = "QUARRY HILL", Town = "LEEDS", County = "WEST YORKSHIRE", Postcode = "LS2 7UE", Country = "ENGLAND" }, PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow, ExternalIdentifier = "14N", InternalIdentifier = "CG-14N", OrganisationType = OrganisationType.CCG },
                 new Organisation { Id = 181, Name = "Yorkshire and Humber Commissioning Hub", Address = new Address { Line1 = "C/O NHS ENGLAND, 1W09, 1ST FLOOR", Line2 = "QUARRY HOUSE", Line3 = "QUARRY HILL", Town = "LEEDS", County = "WEST YORKSHIRE", Postcode = "LS2 7UE", Country = "ENGLAND" }, PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow, ExternalIdentifier = "13V", InternalIdentifier = "CG-13V", OrganisationType = OrganisationType.CCG },
             };
-            context.AddRange(organisations);
+
+            context.InsertRangeWithIdentity(organisations);
 
             // Users
             var adminUser = new AspNetUser
@@ -347,8 +349,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             adminUser.AspNetUserRoles.Add(new AspNetUserRole() { Role = adminRole });
             adminUser.PasswordHash = new PasswordHasher<AspNetUser>().HashPassword(adminUser, TestPassword);
 
-            context.Add(adminUser);
-
             var buyUser = new AspNetUser
             {
                 Id = SueId,
@@ -369,8 +369,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             };
             buyUser.AspNetUserRoles.Add(new AspNetUserRole() { Role = buyerRole });
             buyUser.PasswordHash = new PasswordHasher<AspNetUser>().HashPassword(buyUser, TestPassword);
-
-            context.Add(buyUser);
 
             var buyProxyUser = new AspNetUser
             {
@@ -393,8 +391,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             buyProxyUser.AspNetUserRoles.Add(new AspNetUserRole() { Role = buyerRole });
             buyProxyUser.PasswordHash = new PasswordHasher<AspNetUser>().HashPassword(buyProxyUser, TestPassword);
 
-            context.Add(buyProxyUser);
-
             var accountManagerUser = new AspNetUser
             {
                 Id = DaveId,
@@ -416,7 +412,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             accountManagerUser.AspNetUserRoles.Add(new AspNetUserRole() { Role = accountManagerRole });
             accountManagerUser.PasswordHash = new PasswordHasher<AspNetUser>().HashPassword(accountManagerUser, TestPassword);
 
-            context.Add(accountManagerUser);
+            var users = new[] { adminUser, buyUser, buyProxyUser, accountManagerUser };
+
+            context.InsertRangeWithIdentity(users);
         }
     }
 }

@@ -26,6 +26,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
     <PackageReference Include="netDumbster" Version="3.0.0" />
     <PackageReference Include="Polly" Version="7.2.3" />
+    <PackageReference Include="Respawn" Version="6.0.0" />
     <PackageReference Include="Selenium.Support" Version="4.2.0" />
     <PackageReference Include="Selenium.WebDriver" Version="4.2.0" />
     <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="107.0.5304.6200" />
@@ -35,6 +36,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Testcontainers" Version="2.2.0" />
+    <PackageReference Include="TestContainers.Container.Database.MsSql" Version="1.5.4" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

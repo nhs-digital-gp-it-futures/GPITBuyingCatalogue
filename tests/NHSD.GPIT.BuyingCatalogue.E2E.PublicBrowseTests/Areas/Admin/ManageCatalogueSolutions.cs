@@ -116,8 +116,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         {
             await RunTestWithRetryAsync(async () =>
             {
-                await using var context = GetEndToEndDbContext();
-
                 await CommonActions.InputCharactersWithDelay(CatalogueSolutionObjects.SearchBar, Strings.RandomString(10));
                 CommonActions.WaitUntilElementIsDisplayed(CatalogueSolutionObjects.SearchListBox);
 

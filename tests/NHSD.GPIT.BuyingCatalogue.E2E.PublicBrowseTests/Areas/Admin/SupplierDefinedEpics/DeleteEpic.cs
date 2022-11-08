@@ -2,8 +2,10 @@
 using System.Linq;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.RandomData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
@@ -43,8 +45,27 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
         }
 
         [Fact]
-        public void Delete_Deletes()
+        public void Delete_Inactive_Deletes()
         {
+            using var context = GetEndToEndDbContext();
+            var epic = new Epic
+            {
+                Id = "S00999",
+                Name = Strings.RandomString(20),
+                Description = Strings.RandomString(20),
+                CapabilityId = context.Capabilities.First(x => x.CapabilityRef == "C44").Id,
+                IsActive = false,
+                SupplierDefined = true,
+            };
+
+            context.Epics.Add(epic);
+            context.SaveChanges();
+
+            NavigateToUrl(
+                typeof(SupplierDefinedEpicsController),
+                nameof(SupplierDefinedEpicsController.DeleteEpic),
+                new Dictionary<string, string> { { nameof(EpicId), epic.Id.ToString() } });
+
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -53,58 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
                 .Should()
                 .BeTrue();
 
-            using var context = GetEndToEndDbContext();
-            context.Epics.AsNoTracking().Any(e => e.Id == EpicId).Should().BeFalse();
-        }
-
-        [Fact]
-        public void Delete_ActiveNoReferences_RedirectsToEditPage()
-        {
-            const string epicId = "S00005";
-            var parameters = new Dictionary<string, string>
-            {
-                { nameof(EpicId), epicId },
-            };
-
-            NavigateToUrl(
-                typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.DeleteEpic),
-                parameters);
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.EditEpic))
-                .Should().BeTrue();
-
-            using var context = GetEndToEndDbContext();
-            context.Epics.Any(e => e.Id == epicId).Should().BeTrue();
-        }
-
-        [Fact]
-        public void Delete_ActiveWithReferences_RedirectsToDashboard()
-        {
-            const string epicId = "S00006";
-            var parameters = new Dictionary<string, string>
-            {
-                { nameof(EpicId), epicId },
-            };
-
-            NavigateToUrl(
-                typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.DeleteEpic),
-                parameters);
-
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.EditEpic))
-                .Should().BeTrue();
-
-            using var context = GetEndToEndDbContext();
-            context.Epics.Any(e => e.Id == epicId).Should().BeTrue();
+            context.Epics.AsNoTracking().Any(e => e.Id == epic.Id).Should().BeFalse();
         }
     }
 }

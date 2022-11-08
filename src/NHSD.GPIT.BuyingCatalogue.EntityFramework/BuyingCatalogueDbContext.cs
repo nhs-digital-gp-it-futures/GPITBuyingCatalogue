@@ -210,6 +210,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
             if (userId is null) return;
 
+            if (userId == null)
+                return;
+
             foreach (var entry in ChangeTracker.Entries())
             {
                 if (entry.Entity is not IAudited auditedEntity)

@@ -89,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         }
 
         [Fact]
-        public async Task EditAvailabiligyTimes_UnpublishedSolutionSingleAvailabilityTime_DeleteLinkVisible()
+        public async Task EditAvailabilityTimes_UnpublishedSolutionSingleAvailabilityTime_DeleteLinkVisible()
         {
             await using var context = GetEndToEndDbContext();
             var catalogueItem = await context.CatalogueItems.FirstAsync(c => c.Id == SingleAvailabilityTimeSolutionId);
