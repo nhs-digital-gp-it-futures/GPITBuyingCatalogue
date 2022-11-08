@@ -1,5 +1,6 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree;
@@ -42,6 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             SelectSolutionAndServices = new SelectSolutionAndServices(driver, commonActions);
             OrderingStepThree = new OrderingStepThree(driver, commonActions);
             OrderingStepFour = new OrderingStepFour(driver, commonActions);
+            ImportServiceReceipients = new ImportServiceReceipients(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -100,6 +102,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         internal OrderingStepFour OrderingStepFour { get; }
 
+        internal ImportServiceReceipients ImportServiceReceipients { get; }
+
         internal IWebDriver Driver { get; }
 
         public void StepOnePrepareOrder(
@@ -123,22 +127,22 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             OrderingStepOne.AddTimescaleForCallOffAgreement(orderTriage, itemType);
         }
 
-        public void StepTwoAddSolutionsAndServices(string solutionName, string additionalService = "", string associatedService = "", bool multipleServiceRecipients = false)
+        public void StepTwoAddSolutionsAndServices(string solutionName, string additionalService = "", string associatedService = "", bool multipleServiceRecipients = false, bool importServiceRecipients = false,string fileName = "")
         {
-            StepTwoAddSolutionsAndServices(solutionName, new List<string> { additionalService }, new List<string> { associatedService }, multipleServiceRecipients);
+            StepTwoAddSolutionsAndServices(solutionName, new List<string> { additionalService }, new List<string> { associatedService }, multipleServiceRecipients, importServiceRecipients, fileName);
         }
 
-        public void StepTwoAddSolutionsAndServices(string solutionName, IEnumerable<string>? additionalServices, string associatedService = "", bool multipleServiceRecipients = false)
+        public void StepTwoAddSolutionsAndServices(string solutionName, IEnumerable<string>? additionalServices, string associatedService = "", bool multipleServiceRecipients = false, bool importServiceRecipients = false, string fileName = "")
         {
-            StepTwoAddSolutionsAndServices(solutionName, additionalServices, new List<string> { associatedService }, multipleServiceRecipients);
+            StepTwoAddSolutionsAndServices(solutionName, additionalServices, new List<string> { associatedService }, multipleServiceRecipients, importServiceRecipients,fileName);
         }
 
-        public void StepTwoAddSolutionsAndServices(string solutionName, string additionalService, IEnumerable<string>? associatedServices, bool multipleServiceRecipients = false)
+        public void StepTwoAddSolutionsAndServices(string solutionName, string additionalService, IEnumerable<string>? associatedServices, bool multipleServiceRecipients = false, bool importServiceRecipients = false, string fileName = "")
         {
-            StepTwoAddSolutionsAndServices(solutionName, new List<string> { additionalService }, associatedServices, multipleServiceRecipients);
+            StepTwoAddSolutionsAndServices(solutionName, new List<string> { additionalService }, associatedServices, multipleServiceRecipients, importServiceRecipients, fileName);
         }
 
-        public void StepTwoAddSolutionsAndServices(string solutionName, IEnumerable<string>? additionalServices, IEnumerable<string>? associatedServices, bool multipleServiceRecipients = false)
+        public void StepTwoAddSolutionsAndServices(string solutionName, IEnumerable<string>? additionalServices, IEnumerable<string>? associatedServices, bool multipleServiceRecipients = false, bool importServiceRecipients = false,string fileName = "")
         {
             var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder();
 
@@ -148,18 +152,34 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             {
                 SelectEditCatalogueSolution.SelectSolution(solutionName, additionalServices);
 
-                SelectEditCatalogueSolutionServiceRecipients.AddCatalogueSolutionServiceRecipient(multipleServiceRecipients);
+                if (!importServiceRecipients)
+                {
+                    SelectEditCatalogueSolutionServiceRecipients.AddCatalogueSolutionServiceRecipient(multipleServiceRecipients);
+                }
+                else
+                {
+                    ImportServiceReceipients.ImportServiceRecipients(fileName);
+                }
+
                 SelectEditAndConfirmPrices.SelectAndConfirmPrice();
                 Quantity.AddQuantity();
 
                 if (HasAdditionalService(solutionName) && additionalServices != default && additionalServices.All(a => !string.IsNullOrWhiteSpace(a)))
                 {
-                        foreach (var additionalService in additionalServices)
+                    foreach (var additionalService in additionalServices)
+                    {
+                        if (!importServiceRecipients)
                         {
-                                SelectEditAdditionalServiceRecipients.AddServiceRecipients();
-                                SelectEditAndConfirmAdditionalServicePrice.SelectAndConfirmPrice();
-                                Quantity.AddQuantity();
+                            SelectEditAdditionalServiceRecipients.AddServiceRecipients();
                         }
+                        else
+                        {
+                            ImportServiceReceipients.ImportServiceRecipients(fileName);
+                        }
+
+                        SelectEditAndConfirmAdditionalServicePrice.SelectAndConfirmPrice();
+                        Quantity.AddQuantity();
+                    }
                 }
 
                 if (HasAssociatedServices(solutionName))
@@ -170,7 +190,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
                         foreach (var associatedService in associatedServices)
                         {
-                            SelectEditAssociatedServiceRecipents.AddServiceRecipient();
+                            if (!importServiceRecipients)
+                            {
+                                SelectEditAssociatedServiceRecipents.AddServiceRecipient();
+                            }
+                            else
+                            {
+                                ImportServiceReceipients.ImportServiceRecipients(fileName);
+                            }
+
                             SelectEditAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
                             Quantity.AddQuantity();
                         }
@@ -189,7 +217,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 {
                     foreach (var associatedService in associatedServices)
                     {
-                        SelectEditAssociatedServiceRecipientOnly.AddServiceRecipient(multipleServiceRecipients);
+                        if (!importServiceRecipients)
+                        {
+                            SelectEditAssociatedServiceRecipientOnly.AddServiceRecipient(multipleServiceRecipients);
+                        }
+                        else
+                        {
+                            ImportServiceReceipients.ImportServiceRecipients(fileName);
+                        }
+
                         SelectEditAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
                         Quantity.AddQuantity();
                     }
@@ -237,11 +273,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             OrderingStepThree.SelectImplementationPlan(isDefault);
 
             using var dbContext = Factory.DbContext;
-            var orderID = Driver.Url.Split('/').Last().Split('-')[0].Replace("C0", string.Empty);
+            var orderNumber = Driver.Url.Split('/').Last().Split('-')[0].Replace("C0", string.Empty);
 
             var isOrderWithAssociatedService = dbContext.Orders
-                .Any(o => string.Equals(o.Id.ToString(), orderID) &&
-                o.OrderItems.Any(i => i.CatalogueItem.CatalogueItemType == EntityFramework.Catalogue.Models.CatalogueItemType.AssociatedService));
+                .Any(o => string.Equals(o.OrderNumber.ToString(), orderNumber) &&
+                o.OrderItems.Any(i => i.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService));
 
             if (isOrderWithAssociatedService)
             {
@@ -533,22 +569,25 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         private bool IsAssociatedServiceOnlyOrder()
         {
             using var dbContext = Factory.DbContext;
-            var orderID = Driver.Url.Split('/').Last().Split('-')[0].Replace("C0", string.Empty);
 
-            return dbContext.Orders.Any(o => string.Equals(o.Id.ToString(), orderID) && o.AssociatedServicesOnly);
+            var callOffId = CallOffId.Parse(Driver.Url.Split('/').Last()).Id;
+
+            return dbContext.Order(callOffId).Result.AssociatedServicesOnly;
         }
 
         private bool IsMultiFramework()
         {
             using var dbContext = Factory.DbContext;
-            var orderID = Driver.Url.Split('/').Last().Split('-')[0].Replace("C0", string.Empty);
 
+            var callOffId = CallOffId.Parse(Driver.Url.Split('/').Last()).Id;
+            var orderId = dbContext.OrderId(callOffId).Result;
 
             var frameworks = dbContext.OrderItems
-             .Where(oi => string.Equals(oi.OrderId.ToString(), orderID))
-             .SelectMany(oi => oi.CatalogueItem.Solution.FrameworkSolutions.Select(fs => fs.Framework)).ToList();
+                .Where(oi => oi.OrderId == orderId)
+                .SelectMany(oi => oi.CatalogueItem.Solution.FrameworkSolutions.Select(fs => fs.Framework))
+                .ToList();
 
-            return frameworks.Count() > 1;
+            return frameworks.Count > 1;
         }
 
         private bool IsLocalFundingOnly()
@@ -587,11 +626,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         {
             using var dbContext = Factory.DbContext;
 
-            var index = Driver.Url.Split('/').Count() - 2;
+            var index = Driver.Url.Split('/').Length - 2;
+            var callOffId = CallOffId.Parse(Driver.Url.Split('/').ElementAt(index)).Id;
+            var orderId = dbContext.OrderId(callOffId).Result;
 
-            var orderID = Driver.Url.Split('/').ElementAt(index).Split('-')[0].Replace("C0", string.Empty);
-
-            var result = dbContext.Orders.Any(o => string.Equals(o.Id.ToString(), orderID) && o.OrderItems.Any(i => i.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService));
+            var result = dbContext.Orders
+                .Any(o => o.Id == orderId
+                    && o.OrderItems.Any(i => i.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService));
 
             return result;
         }

@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
                 .Include(s => s.CatalogueItem)
                 .ThenInclude(ci => ci.SupplierServiceAssociations)
                 .AsAsyncEnumerable()
-                .SingleAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
+                .FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
 
             updatedSolution.CatalogueItem.SupplierServiceAssociations.Should()
                 .BeEquivalentTo(expected, config => config
@@ -97,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
 
             var result = await service.AddAssociatedService(solution, model);
 
-            var dbSolution = await context.CatalogueItems.Include(c => c.AssociatedService).SingleAsync(c => c.Id == result);
+            var dbSolution = await context.CatalogueItems.Include(c => c.AssociatedService).FirstAsync(c => c.Id == result);
 
             dbSolution.Should().NotBeNull();
             dbSolution.Name.Should().Be(model.Name);
@@ -135,7 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
 
             await service.EditDetails(associatedService.Id, model);
 
-            var dbSolution = await context.CatalogueItems.Include(c => c.AssociatedService).SingleAsync(c => c.Id == associatedService.Id);
+            var dbSolution = await context.CatalogueItems.Include(c => c.AssociatedService).FirstAsync(c => c.Id == associatedService.Id);
 
             dbSolution.Should().NotBeNull();
             dbSolution.Name.Should().Be(model.Name);

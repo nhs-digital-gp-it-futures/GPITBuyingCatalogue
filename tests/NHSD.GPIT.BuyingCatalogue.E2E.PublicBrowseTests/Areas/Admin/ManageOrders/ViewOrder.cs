@@ -59,7 +59,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
         public void NoFramework()
         {
             var context = GetEndToEndDbContext();
-            var order = context.Orders.Include(o => o.SelectedFramework).First(o => o.Id == CallOffId.Id);
+
+            var order = context.Orders
+                .Include(o => o.SelectedFramework)
+                .First(o => o.OrderNumber == CallOffId.OrderNumber && o.Revision == CallOffId.Revision);
+
             var frameworkId = order.SelectedFrameworkId;
 
             order.SelectedFramework = null;
@@ -71,6 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
             CommonActions.ElementIsDisplayed(ViewOrderObjects.FrameworkSection).Should().BeFalse();
 
             order.SelectedFrameworkId = frameworkId;
+
             context.SaveChanges();
         }
 
@@ -133,10 +138,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
         public void NoSupplier_CorrectSupplierSection()
         {
             using var context = GetEndToEndDbContext();
-            var order = context.Orders.Include(o => o.Supplier).Single(o => o.Id == CallOffId.Id);
+
+            var order = context.Orders
+                .Include(o => o.Supplier)
+                .First(o => o.OrderNumber == CallOffId.OrderNumber && o.Revision == CallOffId.Revision);
+
             var supplierId = order.Supplier.Id;
 
             order.SupplierId = null;
+
             context.SaveChangesAs(UserSeedData.SueId);
 
             Driver.Navigate().Refresh();
@@ -144,6 +154,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
             CommonActions.ElementTextEqualTo(ViewOrderObjects.SupplierSection, "No supplier has been selected for this order yet".FormatForComparison()).Should().BeTrue();
 
             order.SupplierId = supplierId;
+
             context.SaveChangesAs(UserSeedData.SueId);
         }
 
@@ -151,7 +162,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
         public void Supplier_CorrectSupplierSection()
         {
             using var context = GetEndToEndDbContext();
-            var order = context.Orders.Include(o => o.Supplier).Single(o => o.Id == CallOffId.Id);
+
+            var order = context.Orders
+                .Include(o => o.Supplier)
+                .First(o => o.OrderNumber == CallOffId.OrderNumber && o.Revision == CallOffId.Revision);
+
             var supplier = order.Supplier;
 
             CommonActions.ElementTextEqualTo(ViewOrderObjects.SupplierSection, supplier.Name.FormatForComparison()).Should().BeTrue();
@@ -161,10 +176,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
         public void InProgressOrder_NoCsvButtons()
         {
             using var context = GetEndToEndDbContext();
-            var order = context.Orders.Single(o => o.Id == CallOffId.Id);
+
+            var order = context.Order(CallOffId).Result;
             var completionDate = order.Completed;
 
             order.Completed = null;
+
             context.SaveChangesAs(UserSeedData.SueId);
 
             Driver.Navigate().Refresh();
@@ -174,6 +191,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
             CommonActions.ElementIsDisplayed(ViewOrderObjects.PatientOnlyCsv).Should().BeFalse();
 
             order.Completed = completionDate;
+
             context.SaveChangesAs(UserSeedData.SueId);
         }
 
@@ -181,12 +199,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
         public void Funding_NotStarted_AsExpected()
         {
             using var context = GetEndToEndDbContext();
+
+            var orderId = context.OrderId(CallOffId).Result;
             var orderItem = context.Orders
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.OrderItemFunding)
-                .Where(o => o.Id == CallOffId.Id)
+                .Where(o => o.Id == orderId)
                 .Select(o => o.OrderItems.First())
-                .Single();
+                .First();
 
             orderItem.OrderItemFunding = null;
 
@@ -204,21 +224,26 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
         public void Funding_CentralFunding_AsExpected()
         {
             using var context = GetEndToEndDbContext();
+
+            var orderId = context.OrderId(CallOffId).Result;
             var orderItem = context.Orders
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.OrderItemFunding)
-                .Where(o => o.Id == CallOffId.Id)
+                .Where(o => o.Id == orderId)
                 .Select(o => o.OrderItems.First())
-                .Single();
+                .First();
 
             if (orderItem.OrderItemFunding is null)
+            {
                 SetOrderItemFunding(orderItem);
+            }
 
-            orderItem.OrderItemFunding.OrderItemFundingType = OrderItemFundingType.CentralFunding;
+            orderItem.OrderItemFunding!.OrderItemFundingType = OrderItemFundingType.CentralFunding;
 
             context.SaveChangesAs(UserSeedData.SueId);
 
             Driver.Navigate().Refresh();
+
             RunTest(() =>
             {
                 CommonActions.ElementTextEqualTo(ViewOrderObjects.FundingType, "Central".FormatForComparison()).Should().BeTrue();
@@ -229,17 +254,21 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
         public void Funding_LocalFunding_AsExpected()
         {
             using var context = GetEndToEndDbContext();
+
+            var orderId = context.OrderId(CallOffId).Result;
             var orderItem = context.Orders
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.OrderItemFunding)
-                .Where(o => o.Id == CallOffId.Id)
+                .Where(o => o.Id == orderId)
                 .Select(o => o.OrderItems.First())
-                .Single();
+                .First();
 
             if (orderItem.OrderItemFunding is null)
+            {
                 SetOrderItemFunding(orderItem);
+            }
 
-            orderItem.OrderItemFunding.OrderItemFundingType = OrderItemFundingType.LocalFunding;
+            orderItem.OrderItemFunding!.OrderItemFundingType = OrderItemFundingType.LocalFunding;
 
             context.SaveChangesAs(UserSeedData.SueId);
 

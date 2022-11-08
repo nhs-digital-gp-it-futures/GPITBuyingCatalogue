@@ -1,7 +1,9 @@
 ﻿CREATE TABLE ordering.Orders
 (
     Id INT IDENTITY(10001, 1) NOT NULL,
-    CallOffId AS CONCAT('C', FORMAT(Id, '000000'), '-01'),
+    OrderNumber INT /* NOT */ NULL,
+    Revision INT DEFAULT(1) /* NOT */ NULL,
+    CallOffId AS CONCAT('C', FORMAT(OrderNumber, '000000'), '-', FORMAT(Revision, '00')),
     [Description] NVARCHAR(100) NOT NULL,
     OrderingPartyId INT NOT NULL,
     OrderingPartyContactId INT NULL,
@@ -36,5 +38,6 @@
     CONSTRAINT FK_Orders_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
     CONSTRAINT FK_Orders_Solution FOREIGN KEY (SolutionId) REFERENCES catalogue.CatalogueItems(Id),
     CONSTRAINT FK_Orders_SelectedFramework FOREIGN KEY (SelectedFrameworkId) REFERENCES catalogue.Frameworks(Id),
+    /* INDEX IX_Orders_OrderNumber_Revision UNIQUE (OrderNumber, Revision), */
     INDEX IX_Orders_IsDeleted (IsDeleted)        
 ) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = ordering.Orders_History));

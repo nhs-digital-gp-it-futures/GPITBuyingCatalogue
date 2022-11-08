@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Shared
             Title = "Which organisation are you looking for?";
             InternalOrgId = currentInternalOrgId;
             AvailableOrganisations = organisations;
-            SelectedOrganisation = organisations.Single(o => o.InternalIdentifier.EqualsIgnoreCase(currentInternalOrgId)).InternalIdentifier;
+            SelectedOrganisation = organisations.First(o => o.InternalIdentifier.EqualsIgnoreCase(currentInternalOrgId)).InternalIdentifier;
         }
 
         public List<Organisation> AvailableOrganisations { get; set; }

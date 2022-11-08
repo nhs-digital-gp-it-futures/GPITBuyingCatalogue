@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Marketing
             try
             {
                 Driver.FindElements(DashboardObjects.SectionTitle)
-                .Single(s => s.Text.Contains(section)).FindElement(By.TagName("a"));
+                .First(s => s.Text.Contains(section)).FindElement(By.TagName("a"));
                 return true;
             }
             catch
@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Marketing
         public void ClickSection(string section)
         {
             Driver.FindElements(DashboardObjects.SectionTitle)
-                .Single(s => s.Text.Contains(section)).FindElement(By.TagName("a"))
+                .First(s => s.Text.Contains(section)).FindElement(By.TagName("a"))
                 .Click();
         }
 
@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Marketing
         {
             var section = Driver.FindElements(DashboardObjects.Sections)
                 .Where(s => s.ContainsElement(DashboardObjects.SectionTitle))
-                .Single(s => s.FindElement(DashboardObjects.SectionTitle).Text == sectionName);
+                .First(s => s.FindElement(DashboardObjects.SectionTitle).Text == sectionName);
             return section.FindElement(DashboardObjects.SectionStatus).Text.Equals("Complete", StringComparison.InvariantCultureIgnoreCase);
         }
     }

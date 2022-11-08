@@ -95,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
         {
             var context = GetEndToEndDbContext();
 
-            var order = context.Orders.Single(x => x.Id == OrderId);
+            var order = context.Orders.First(x => x.Id == OrderId);
 
             order.SolutionId = null;
 
@@ -106,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
         {
             return GetEndToEndDbContext().Orders
                 .Include(x => x.Solution)
-                .Single(x => x.Id == OrderId)
+                .First(x => x.Id == OrderId)
                 .Solution;
         }
     }

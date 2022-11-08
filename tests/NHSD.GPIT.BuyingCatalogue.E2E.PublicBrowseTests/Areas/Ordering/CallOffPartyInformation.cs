@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
@@ -52,8 +53,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ClickGoBackLink();
 
             CommonActions.PageLoadedCorrectGetIndex(
-            typeof(OrderController),
-            nameof(OrderController.Order)).Should().BeTrue();
+                typeof(OrderController),
+                nameof(OrderController.Order)).Should().BeTrue();
         }
 
         [Fact]
@@ -96,14 +97,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         }
 
         [Fact]
-        public void OrderingPartyInformation_InputText_AddsPartyInformation()
+        public async Task OrderingPartyInformation_InputText_AddsPartyInformation()
         {
-            using var context = GetEndToEndDbContext();
-            var organisationid = context.Organisations.First(p => p.InternalIdentifier == InternalOrgId).Id;
+            await using var context = GetEndToEndDbContext();
+
+            var organisationId = context.Organisations.First(p => p.InternalIdentifier == InternalOrgId).Id;
 
             var order = new Order
             {
-                OrderingPartyId = organisationid,
+                OrderNumber = await context.NextOrderNumber(),
+                Revision = 1,
+                OrderingPartyId = organisationId,
                 Created = DateTime.UtcNow,
                 IsDeleted = false,
                 Description = "This is an Order Description",
@@ -112,7 +116,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             context.Orders.Add(order);
             context.SaveChanges();
 
-            var callOffId = new CallOffId(order.Id, 1);
+            var callOffId = order.CallOffId;
+
             var parameters = new Dictionary<string, string>
             {
                 { nameof(InternalOrgId), InternalOrgId },
@@ -135,9 +140,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 typeof(OrderController),
                 nameof(OrderController.Order)).Should().BeTrue();
 
-            using var updatedContext = GetEndToEndDbContext();
-            var updatedOrder = updatedContext.Orders.Include(o => o.OrderingPartyContact)
-                .Single(o => o.Id == callOffId.Id);
+            await using var updatedContext = GetEndToEndDbContext();
+
+            var updatedOrder = updatedContext.Orders
+                .Include(o => o.OrderingPartyContact)
+                .First(o => o.OrderNumber == callOffId.OrderNumber && o.Revision == callOffId.Revision);
 
             updatedOrder.OrderingPartyContact.FirstName.Should().BeEquivalentTo(firstName);
             updatedOrder.OrderingPartyContact.LastName.Should().BeEquivalentTo(lastName);

@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.UrlGenerators
             IDictionary<string, string> parameters = null,
             IDictionary<string, string> queryParameters = null)
         {
-            if (controllerType.BaseType != typeof(Controller))
+            if (!typeof(Controller).IsAssignableFrom(controllerType))
                 throw new InvalidOperationException($"{nameof(controllerType)} is not a type of {nameof(Controller)}");
 
             if (string.IsNullOrWhiteSpace(methodName))

@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             var dbSolution = await context.CatalogueItems
                 .Include(c => c.Solution)
                 .Include(c => c.Supplier)
-                .SingleAsync(c => c.Name == solutionName);
+                .FirstAsync(c => c.Name == solutionName);
 
             dbSolution.Supplier.Id.Should().Be(99999);
             dbSolution.PublishedStatus.Should().Be(PublicationStatus.Draft);

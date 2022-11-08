@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -23,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             int initialPeriod,
             int maximumTerm)
         {
-            var order = await dbContext.Orders.FirstAsync(o => o.Id == callOffId.Id && o.OrderingParty.InternalIdentifier == internalOrgId);
+            var order = await dbContext.Order(internalOrgId, callOffId);
 
             order.CommencementDate = commencementDate;
             order.InitialPeriod = initialPeriod;

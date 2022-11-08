@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.RandomData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
@@ -108,9 +109,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 
                 var pageSummary = GetPageSummary();
 
-                pageSummary.OdsCodes.Single().Should().Be(sampleOrganisation.ExternalIdentifier);
-                pageSummary.OrganisationIds.Single().Should().Be(sampleOrganisation.Id);
-                pageSummary.OrganisationNames.Single().Should().Be(sampleOrganisation.Name);
+                pageSummary.OdsCodes.First().Should().Be(sampleOrganisation.ExternalIdentifier);
+                pageSummary.OrganisationIds.First().Should().Be(sampleOrganisation.Id);
+                pageSummary.OrganisationNames.First().Should().Be(sampleOrganisation.Name);
             });
         }
 

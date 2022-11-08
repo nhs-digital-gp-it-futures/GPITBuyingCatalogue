@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet]
         public async Task<IActionResult> Order(string internalOrgId, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderForTaskListStatuses(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderForTaskListStatuses(callOffId, internalOrgId)).Order;
 
             if (order.OrderStatus == OrderStatus.Completed)
             {
@@ -137,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("summary")]
         public async Task<IActionResult> Summary(string internalOrgId, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderForSummary(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderForSummary(callOffId, internalOrgId)).Order;
 
             var model = new SummaryModel(internalOrgId, order)
             {
@@ -174,7 +174,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("completed")]
         public async Task<IActionResult> Completed(string internalOrgId, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderForSummary(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderForSummary(callOffId, internalOrgId)).Order;
 
             return View(new CompletedModel(internalOrgId, order)
             {
@@ -189,7 +189,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet("download")]
         public async Task<IActionResult> Download(string internalOrgId, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderForSummary(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderForSummary(callOffId, internalOrgId)).Order;
 
             var result = pdfService.Convert(OrderSummaryUri(internalOrgId, callOffId));
 

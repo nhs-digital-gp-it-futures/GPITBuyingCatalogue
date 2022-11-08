@@ -1,0 +1,43 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Controllers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+@using ValidationSummaryTagHelper = Microsoft.AspNetCore.Mvc.TagHelpers.ValidationSummaryTagHelper
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels.AddUserModel
+@{
+    ViewBag.Title = "Add a new user";
+}
+
+<div data-test-id="add-user-page">
+    <partial name="Partials/_BackLink" model="Model" />
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-two-thirds">
+            <nhs-validation-summary />
+            <nhs-page-title title="@ViewBag.Title"
+                            caption="@Model!.OrganisationName"
+                            advice="Provide the following information about this user." />
+
+            <form method="post" action ="@Url.Action(
+                                             nameof(OrganisationBaseController.AddUser),
+                                             Model.ControllerName)">
+                <input type="hidden" asp-for="OrganisationName" />
+                <input type="hidden" asp-for="ControllerName" />
+                
+                <nhs-input
+                    asp-for="@Model.EmailAddress" 
+                    label-text="Email address"
+                    label-hint="This will also become the user's username" />
+                <nhs-input
+                    asp-for="@Model.FirstName" 
+                    label-text="First name" />
+                <nhs-input
+                    asp-for="@Model.LastName" 
+                    label-text="Last name" />
+
+                <div data-test-id="add-user-button">
+                    <nhs-submit-button />
+                </div>
+                @Html.AntiForgeryToken()
+            </form>
+        </div>
+    </div>
+</div>

@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AdditionalServices
 
             var result = await service.AddAdditionalService(solution, model);
 
-            var dbSolution = await context.CatalogueItems.Include(c => c.AdditionalService).SingleAsync(c => c.Id == result);
+            var dbSolution = await context.CatalogueItems.Include(c => c.AdditionalService).FirstAsync(c => c.Id == result);
 
             dbSolution.Should().NotBeNull();
             dbSolution.Name.Should().Be(model.Name);
@@ -98,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AdditionalServices
 
             await service.EditAdditionalService(solution.Id, additionalService.Id, model);
 
-            var dbSolution = await context.CatalogueItems.Include(c => c.AdditionalService).SingleAsync(c => c.Id == additionalService.Id);
+            var dbSolution = await context.CatalogueItems.Include(c => c.AdditionalService).FirstAsync(c => c.Id == additionalService.Id);
 
             dbSolution.Should().NotBeNull();
             dbSolution.Name.Should().Be(model.Name);

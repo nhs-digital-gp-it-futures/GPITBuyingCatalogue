@@ -308,7 +308,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CommencementDate
         public void CommencementDate_OrderValue40K_InitialPeriodAndMaximumTermTooHigh_ThrowsError()
         {
             using var context = GetEndToEndDbContext();
-            var order = context.Orders.First(o => o.Id == CallOffId.Id);
+
+            var order = context.Orders.First(o => o.OrderNumber == CallOffId.OrderNumber && o.Revision == CallOffId.Revision);
+
             order.OrderTriageValue = OrderTriageValue.Under40K;
 
             context.SaveChanges();
@@ -388,7 +390,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CommencementDate
 
             await using var context = GetEndToEndDbContext();
 
-            var order = await context.Orders.SingleAsync(o => o.Id == CallOffId.Id);
+            var order = await context.Orders.FirstAsync(o => o.OrderNumber == CallOffId.OrderNumber && o.Revision == CallOffId.Revision);
 
             order.CommencementDate.Should().NotBeNull();
             order.CommencementDate!.Value.Date.Should().Be(date.Date);
@@ -427,7 +429,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CommencementDate
         public void Dispose()
         {
             using var context = GetEndToEndDbContext();
-            var order = context.Orders.First(o => o.Id == CallOffId.Id);
+
+            var order = context.Order(CallOffId).Result;
+
             order.OrderTriageValue = OrderTriageValue.Over250K;
 
             context.SaveChanges();

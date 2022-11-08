@@ -124,13 +124,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
         {
             var context = GetEndToEndDbContext();
 
-            context.Orders.Single(x => x.Id == OrderId).SolutionId = ExistingSolutionId;
+            context.Orders.First(x => x.Id == OrderId).SolutionId = ExistingSolutionId;
             context.OrderItems.RemoveRange(context.OrderItems.Where(x => x.OrderId == OrderId));
             context.OrderItems.Add(new OrderItem
             {
                 OrderId = OrderId,
                 Created = DateTime.Now,
-                CatalogueItem = context.CatalogueItems.Single(x => x.Id == ExistingServiceId),
+                CatalogueItem = context.CatalogueItems.First(x => x.Id == ExistingServiceId),
             });
 
             context.SaveChanges();
@@ -140,7 +140,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
         {
             return GetEndToEndDbContext().Orders
                 .Include(x => x.Solution)
-                .Single(x => x.Id == OrderId)
+                .First(x => x.Id == OrderId)
                 .Solution;
         }
     }

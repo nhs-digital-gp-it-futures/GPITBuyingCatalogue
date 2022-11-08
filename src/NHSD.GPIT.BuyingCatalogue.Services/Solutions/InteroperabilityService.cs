@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task SaveIntegrationLink(CatalogueItemId solutionId, string integrationLink)
         {
-            var solution = await dbContext.Solutions.SingleAsync(s => s.CatalogueItemId == solutionId);
+            var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
             solution.IntegrationsUrl = integrationLink;
             await dbContext.SaveChangesAsync();
         }
@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             integration.Id = Guid.NewGuid();
 
-            var solution = await dbContext.Solutions.SingleAsync(s => s.CatalogueItemId == catalogueItemId);
+            var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == catalogueItemId);
 
             var integrations = solution.GetIntegrations() ?? new List<Integration>();
 
@@ -48,9 +48,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task<Integration> GetIntegrationById(CatalogueItemId solutionId, Guid integrationId)
         {
-            var solution = await dbContext.Solutions.SingleOrDefaultAsync(s => s.CatalogueItemId == solutionId);
+            var solution = await dbContext.Solutions.FirstOrDefaultAsync(s => s.CatalogueItemId == solutionId);
 
-            var integration = solution?.GetIntegrations().SingleOrDefault(i => i.Id == integrationId);
+            var integration = solution?.GetIntegrations().FirstOrDefault(i => i.Id == integrationId);
 
             return integration;
         }
@@ -60,11 +60,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             if (integration is null)
                 throw new ArgumentNullException(nameof(integration));
 
-            var solution = await dbContext.Solutions.SingleAsync(s => s.CatalogueItemId == solutionId);
+            var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
 
             var integrations = solution.GetIntegrations().ToList();
 
-            var index = integrations.IndexOf(integrations.Single(i => i.Id == integrationId));
+            var index = integrations.IndexOf(integrations.First(i => i.Id == integrationId));
 
             integrations.RemoveAt(index);
 
@@ -77,11 +77,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task DeleteIntegration(CatalogueItemId solutionId, Guid integrationId)
         {
-            var solution = await dbContext.Solutions.SingleAsync(s => s.CatalogueItemId == solutionId);
+            var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
 
             var integrations = solution.GetIntegrations().ToList();
 
-            var index = integrations.IndexOf(integrations.SingleOrDefault(i => i.Id == integrationId));
+            var index = integrations.IndexOf(integrations.FirstOrDefault(i => i.Id == integrationId));
 
             if (index > -1)
             {

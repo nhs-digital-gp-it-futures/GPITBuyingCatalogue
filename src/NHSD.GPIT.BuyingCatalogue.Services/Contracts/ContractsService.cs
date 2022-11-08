@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
 
         public async Task<ContractFlags> GetContract(int orderId)
         {
-            var output = await dbContext.ContractFlags.SingleOrDefaultAsync(x => x.OrderId == orderId);
+            var output = await dbContext.ContractFlags.FirstOrDefaultAsync(x => x.OrderId == orderId);
 
             if (output != null)
             {
@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
 
         public async Task HasSpecificRequirements(int orderId, bool value)
         {
-            var flags = await dbContext.ContractFlags.SingleOrDefaultAsync(x => x.OrderId == orderId);
+            var flags = await dbContext.ContractFlags.FirstOrDefaultAsync(x => x.OrderId == orderId);
 
             if (flags != null)
             {
@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
 
         public async Task UseDefaultBilling(int orderId, bool value)
         {
-            var flags = await dbContext.ContractFlags.SingleOrDefaultAsync(x => x.OrderId == orderId);
+            var flags = await dbContext.ContractFlags.FirstOrDefaultAsync(x => x.OrderId == orderId);
 
             if (flags != null)
             {
@@ -86,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
 
         public async Task UseDefaultDataProcessing(int orderId, bool value)
         {
-            var flags = await dbContext.ContractFlags.SingleOrDefaultAsync(x => x.OrderId == orderId);
+            var flags = await dbContext.ContractFlags.FirstOrDefaultAsync(x => x.OrderId == orderId);
 
             if (flags != null)
             {
@@ -98,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
 
         public async Task UseDefaultImplementationPlan(int orderId, bool value)
         {
-            var flags = await dbContext.ContractFlags.SingleOrDefaultAsync(x => x.OrderId == orderId);
+            var flags = await dbContext.ContractFlags.FirstOrDefaultAsync(x => x.OrderId == orderId);
 
             if (flags != null)
             {

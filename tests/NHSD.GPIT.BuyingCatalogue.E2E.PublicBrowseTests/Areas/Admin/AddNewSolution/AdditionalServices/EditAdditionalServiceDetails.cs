@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
 
             var additionalService = await context.CatalogueItems
                 .Include(ci => ci.AdditionalService)
-                .SingleAsync(ci => ci.Id == AdditionalServiceId);
+                .FirstAsync(ci => ci.Id == AdditionalServiceId);
 
             additionalService.Name.Should().Be(name);
             additionalService.AdditionalService.FullDescription.Should().Be(description);
@@ -107,7 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
         public async Task EditAdditionalServiceDetails_DuplicateSolutionName()
         {
             await using var context = GetEndToEndDbContext();
-            var catalogueItem = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionId);
+            var catalogueItem = await context.CatalogueItems.FirstAsync(ci => ci.Id == SolutionId);
 
             CommonActions.ClearInputElement(CommonSelectors.Name);
 

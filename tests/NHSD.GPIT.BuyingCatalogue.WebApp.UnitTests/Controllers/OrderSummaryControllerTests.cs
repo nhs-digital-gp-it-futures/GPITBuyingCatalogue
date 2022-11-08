@@ -48,7 +48,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         {
             order.Completed = DateTime.UtcNow;
 
-            orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId)).ReturnsAsync(order);
+            orderServiceMock
+                .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
 
             implementationPlanService
                 .Setup(x => x.GetDefaultImplementationPlan())
@@ -74,7 +76,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         {
             order.Completed = null;
 
-            orderServiceMock.Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId)).ReturnsAsync(order);
+            orderServiceMock
+                .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
 
             implementationPlanService
                 .Setup(x => x.GetDefaultImplementationPlan())

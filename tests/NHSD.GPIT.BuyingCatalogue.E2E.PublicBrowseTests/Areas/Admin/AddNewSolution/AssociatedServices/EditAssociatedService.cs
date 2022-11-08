@@ -83,8 +83,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         public async Task EditAssociatedService_CorrectlyDisplayed()
         {
             await using var context = GetEndToEndDbContext();
-            var supplierName = (await context.CatalogueItems.Include(ci => ci.Supplier).SingleAsync(s => s.Id == SolutionId)).Supplier.Name;
-            var associatedServiceName = (await context.CatalogueItems.SingleAsync(s => s.Id == AssociatedServiceId)).Name;
+            var supplierName = (await context.CatalogueItems.Include(ci => ci.Supplier).FirstAsync(s => s.Id == SolutionId)).Supplier.Name;
+            var associatedServiceName = (await context.CatalogueItems.FirstAsync(s => s.Id == AssociatedServiceId)).Name;
 
             CommonActions.PageTitle()
                 .Should()
@@ -126,7 +126,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         public void EditAssociatedService_EditServiceAssociation_NavigatesToCorrectPage()
         {
             using var context = GetEndToEndDbContext();
-            var associatedService = context.AssociatedServices.Single(a => a.CatalogueItemId == AssociatedServiceId);
+            var associatedService = context.AssociatedServices.First(a => a.CatalogueItemId == AssociatedServiceId);
             var solution = context.Solutions.Include(s => s.CatalogueItem).ThenInclude(c => c.AssociatedService).First();
             solution.CatalogueItem.SupplierServiceAssociations = new HashSet<SupplierServiceAssociation> { new(solution.CatalogueItemId, AssociatedServiceId) };
 
@@ -149,7 +149,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         public void EditAssociatedService_WithServiceAssociations_TableIsDisplayed()
         {
             using var context = GetEndToEndDbContext();
-            var associatedService = context.AssociatedServices.Single(a => a.CatalogueItemId == AssociatedServiceId);
+            var associatedService = context.AssociatedServices.First(a => a.CatalogueItemId == AssociatedServiceId);
             var solution = context.Solutions.Include(s => s.CatalogueItem).ThenInclude(c => c.SupplierServiceAssociations).First();
             solution.CatalogueItem.SupplierServiceAssociations = new HashSet<SupplierServiceAssociation> { new(solution.CatalogueItemId, AssociatedServiceId) };
 
@@ -168,7 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         public void AddAssociatedService_Unpublish_ActiveSolutions_ValidationError()
         {
             using var context = GetEndToEndDbContext();
-            var associatedService = context.AssociatedServices.Single(a => a.CatalogueItemId == AssociatedServiceId);
+            var associatedService = context.AssociatedServices.First(a => a.CatalogueItemId == AssociatedServiceId);
             var solution = context.Solutions.Include(s => s.CatalogueItem).ThenInclude(c => c.AssociatedService).First(s => s.CatalogueItemId != SolutionId);
             solution.CatalogueItem.SupplierServiceAssociations = new HashSet<SupplierServiceAssociation> { new(solution.CatalogueItemId, AssociatedServiceId) };
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
@@ -202,7 +202,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             PublicationStatus[] expectedPublicationStatuses)
         {
             await using var context = GetEndToEndDbContext();
-            (await context.CatalogueItems.SingleAsync(c => c.Id == AssociatedServiceId)).PublishedStatus = publicationStatus;
+            (await context.CatalogueItems.FirstAsync(c => c.Id == AssociatedServiceId)).PublishedStatus = publicationStatus;
             await context.SaveChangesAsync();
 
             Driver.Navigate().Refresh();
@@ -260,7 +260,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         public async Task Publish_CompleteSections_SetPublicationStatus()
         {
             await using var context = GetEndToEndDbContext();
-            (await context.CatalogueItems.SingleAsync(c => c.Id == AssociatedServiceId)).PublishedStatus = PublicationStatus.Draft;
+            (await context.CatalogueItems.FirstAsync(c => c.Id == AssociatedServiceId)).PublishedStatus = PublicationStatus.Draft;
             await context.SaveChangesAsync();
 
             Driver.Navigate().Refresh();
@@ -278,7 +278,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
                 .BeTrue();
 
             await using var updatedContext = GetEndToEndDbContext();
-            var publishedStatus = (await updatedContext.CatalogueItems.SingleAsync(c => c.Id == AssociatedServiceId)).PublishedStatus;
+            var publishedStatus = (await updatedContext.CatalogueItems.FirstAsync(c => c.Id == AssociatedServiceId)).PublishedStatus;
             publishedStatus
                 .Should()
                 .Be(PublicationStatus.Published);
@@ -287,7 +287,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         public void Dispose()
         {
             using var context = GetEndToEndDbContext();
-            context.CatalogueItems.Single(ci => ci.Id == AssociatedServiceId).PublishedStatus = PublicationStatus.Published;
+            context.CatalogueItems.First(ci => ci.Id == AssociatedServiceId).PublishedStatus = PublicationStatus.Published;
             context.SaveChanges();
         }
     }

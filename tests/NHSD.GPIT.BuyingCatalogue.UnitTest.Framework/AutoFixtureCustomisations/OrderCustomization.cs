@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using AutoFixture;
 using AutoFixture.Dsl;
 using AutoFixture.Kernel;
@@ -11,7 +11,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
         public void Customize(IFixture fixture)
         {
             ISpecimenBuilder ComposerTransformation(ICustomizationComposer<Order> composer) => composer
-            .FromFactory(new OrderSpeciminBuilder(fixture))
+                .FromFactory(new OrderSpecimenBuilder(fixture))
+                .Without(x => x.Revision).Do(x => x.Revision = 1)
                 .Without(o => o.IsDeleted)
                 .Without(o => o.LastUpdatedByUser)
                 .Without(o => o.OrderItems);
@@ -19,11 +20,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
             fixture.Customize<Order>(ComposerTransformation);
         }
 
-        private sealed class OrderSpeciminBuilder : ISpecimenBuilder
+        private sealed class OrderSpecimenBuilder : ISpecimenBuilder
         {
             private readonly IFixture fixture;
 
-            public OrderSpeciminBuilder(IFixture fixture)
+            public OrderSpecimenBuilder(IFixture fixture)
             {
                 this.fixture = fixture;
             }

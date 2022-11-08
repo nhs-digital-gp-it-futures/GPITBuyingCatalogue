@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
             foreach (var serviceRecipient in model.ServiceRecipients)
             {
-                var recipient = item.OrderItemRecipients.Single(x => x.OdsCode == serviceRecipient.OdsCode);
+                var recipient = item.OrderItemRecipients.First(x => x.OdsCode == serviceRecipient.OdsCode);
 
                 serviceRecipient.Name.Should().Be(recipient.Recipient?.Name);
                 serviceRecipient.InputQuantity.Should().Be($"{recipient.Quantity}");
@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
             foreach (var serviceRecipient in model.ServiceRecipients)
             {
-                var recipient = item.OrderItemRecipients.Single(x => x.OdsCode == serviceRecipient.OdsCode);
+                var recipient = item.OrderItemRecipients.First(x => x.OdsCode == serviceRecipient.OdsCode);
 
                 serviceRecipient.Name.Should().Be(recipient.Recipient?.Name);
                 serviceRecipient.InputQuantity.Should().BeNull();

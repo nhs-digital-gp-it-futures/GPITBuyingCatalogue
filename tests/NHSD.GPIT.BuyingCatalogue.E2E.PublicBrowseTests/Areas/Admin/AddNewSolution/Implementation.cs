@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         public async Task Implementation_TitleDisplayedCorrectly()
         {
             await using var context = GetEndToEndDbContext();
-            var solutionName = (await context.CatalogueItems.SingleAsync(s => s.Id == SolutionId)).Name;
+            var solutionName = (await context.CatalogueItems.FirstAsync(s => s.Id == SolutionId)).Name;
 
             CommonActions.PageTitle()
                 .Should()
@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId);
+            var solution = await context.Solutions.FirstAsync(s => s.CatalogueItemId == SolutionId);
             solution.ImplementationDetail.Should().Be(implementation);
         }
 
@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             AdminPages.CommonActions.ClickGoBack();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId);
+            var solution = await context.Solutions.FirstAsync(s => s.CatalogueItemId == SolutionId);
             var implementation = solution.ImplementationDetail;
 
             implementation.Should().BeNullOrEmpty();
@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         public void Dispose()
         {
             using var context = GetEndToEndDbContext();
-            var solution = context.Solutions.Single(s => s.CatalogueItemId == SolutionId);
+            var solution = context.Solutions.First(s => s.CatalogueItemId == SolutionId);
             solution.ImplementationDetail = null;
             context.SaveChanges();
         }

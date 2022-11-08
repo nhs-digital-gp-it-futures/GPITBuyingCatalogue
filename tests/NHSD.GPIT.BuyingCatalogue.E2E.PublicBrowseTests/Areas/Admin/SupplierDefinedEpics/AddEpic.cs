@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
         public void AddEpic_DuplicatesExistingEpic_ThrowsError()
         {
             using var context = GetEndToEndDbContext();
-            var epic = context.Epics.Single(e => e.Id == "S00001");
+            var epic = context.Epics.First(e => e.Id == "S00001");
 
             CommonActions.ElementAddValue(AddSupplierDefinedEpicObjects.NameInput, epic.Name);
             CommonActions.ElementAddValue(AddSupplierDefinedEpicObjects.DescriptionInput, epic.Description);

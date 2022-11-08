@@ -122,6 +122,35 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<RelationshipType> OrganisationRelationshipTypes { get; set; }
 
+        public async Task<Order> Order(CallOffId callOffId)
+        {
+            return await Orders
+                .IgnoreQueryFilters()
+                .FirstAsync(x => x.OrderNumber == callOffId.OrderNumber && x.Revision == callOffId.Revision);
+        }
+
+        public async Task<Order> Order(string internalOrgId, CallOffId callOffId)
+        {
+            return await Orders.FirstAsync(x => x.OrderNumber == callOffId.OrderNumber
+                && x.Revision == callOffId.Revision
+                && x.OrderingParty.InternalIdentifier == internalOrgId);
+        }
+
+        public async Task<int> OrderId(CallOffId callOffId)
+        {
+            return (await Order(callOffId)).Id;
+        }
+
+        public async Task<int> OrderId(string internalOrgId, CallOffId callOffId)
+        {
+            return (await Order(internalOrgId, callOffId)).Id;
+        }
+
+        public async Task<int> NextOrderNumber()
+        {
+            return (await Orders.IgnoreQueryFilters().MaxAsync(x => (int?)x.OrderNumber) ?? 0) + 1;
+        }
+
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
             UpdateAuditFields();

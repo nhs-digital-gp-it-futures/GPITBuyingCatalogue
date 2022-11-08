@@ -143,7 +143,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
 
             await using var context = GetEndToEndDbContext();
 
-            var contact = await context.SupplierContacts.SingleAsync(sc => sc.Id == ContactId);
+            var contact = await context.SupplierContacts.FirstAsync(sc => sc.Id == ContactId);
 
             contact.FirstName.Should().Be(firstName);
             contact.LastName.Should().Be(lastName);
@@ -157,11 +157,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             await using var context = GetEndToEndDbContext();
 
             var contact = await context.SupplierContacts
-                .SingleAsync(sc => sc.Id == ReferencedContactId);
+                .FirstAsync(sc => sc.Id == ReferencedContactId);
 
             var solution = await context.CatalogueItems
                 .Include(ci => ci.CatalogueItemContacts)
-                .SingleAsync(ci => ci.Id == ReferencingSolutionId);
+                .FirstAsync(ci => ci.Id == ReferencingSolutionId);
 
             if (solution.CatalogueItemContacts.All(x => x.Id != ReferencedContactId))
             {

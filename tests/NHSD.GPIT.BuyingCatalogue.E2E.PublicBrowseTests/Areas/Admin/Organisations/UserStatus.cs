@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common.Organisation;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Utils.RandomData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
@@ -78,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 
             await using var context = GetEndToEndDbContext();
 
-            var updatedUser = context.AspNetUsers.Single(x => x.Id == user.Id);
+            var updatedUser = context.AspNetUsers.First(x => x.Id == user.Id);
 
             updatedUser.Disabled.Should().BeTrue();
         }
@@ -96,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 
             await using var context = GetEndToEndDbContext();
 
-            var updatedUser = context.AspNetUsers.Single(x => x.Id == user.Id);
+            var updatedUser = context.AspNetUsers.First(x => x.Id == user.Id);
 
             updatedUser.Disabled.Should().BeFalse();
         }

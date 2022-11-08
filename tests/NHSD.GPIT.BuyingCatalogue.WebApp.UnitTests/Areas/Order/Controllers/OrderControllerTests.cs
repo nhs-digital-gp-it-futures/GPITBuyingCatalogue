@@ -55,7 +55,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var orderTaskList = new OrderTaskList(order);
             var expectedViewData = new OrderModel(internalOrgId, order, orderTaskList) { DescriptionUrl = "testUrl" };
 
-            orderServiceMock.Setup(s => s.GetOrderForTaskListStatuses(order.CallOffId, internalOrgId)).ReturnsAsync(order);
+            orderServiceMock
+                .Setup(s => s.GetOrderForTaskListStatuses(order.CallOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
 
             var actualResult = await controller.Order(internalOrgId, order.CallOffId);
 
@@ -73,7 +75,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             order.Completed = DateTime.UtcNow;
 
-            orderServiceMock.Setup(s => s.GetOrderForTaskListStatuses(order.CallOffId, internalOrgId)).ReturnsAsync(order);
+            orderServiceMock
+                .Setup(s => s.GetOrderForTaskListStatuses(order.CallOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
 
             var actualResult = await controller.Order(internalOrgId, order.CallOffId);
 
@@ -127,7 +131,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             orderService
                 .Setup(x => x.GetOrderForSummary(order.CallOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             var result = await systemUnderTest.Completed(internalOrgId, order.CallOffId);
 
@@ -197,7 +201,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             orderServiceMock
                 .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             pdfServiceMock
                 .Setup(s => s.Convert(It.IsAny<System.Uri>()))
@@ -230,7 +234,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             orderServiceMock
                 .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             pdfServiceMock
                 .Setup(s => s.Convert(It.IsAny<System.Uri>()))

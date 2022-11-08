@@ -168,7 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             var order = await dbContext.Orders
                 .Include(x => x.Supplier)
                 .AsNoTracking()
-                .SingleOrDefaultAsync(x => x.Id == orderId);
+                .FirstOrDefaultAsync(x => x.Id == orderId);
 
             if (order == null)
             {
@@ -176,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             }
 
             var output = order.Completed.HasValue
-                ? await dbContext.Suppliers.TemporalAsOf(order.Completed.Value).SingleOrDefaultAsync(x => x.Id == order.SupplierId)
+                ? await dbContext.Suppliers.TemporalAsOf(order.Completed.Value).FirstOrDefaultAsync(x => x.Id == order.SupplierId)
                 : order.Supplier;
 
             output ??= order.Supplier;

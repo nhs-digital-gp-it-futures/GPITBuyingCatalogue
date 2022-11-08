@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.RandomData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
@@ -99,10 +100,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
 
                 var pageSummary = GetPageSummary();
 
-                pageSummary.EmailAddresses.Single().Should().Be(sampleUser.Email);
-                pageSummary.FullNames.Single().Should().Be(sampleUser.FullName);
-                pageSummary.Organisations.Single().Should().Be(sampleUser.PrimaryOrganisation.Name);
-                pageSummary.Statuses.Single().Should().Be(GetAccountStatus(sampleUser.Disabled));
+                pageSummary.EmailAddresses.First().Should().Be(sampleUser.Email);
+                pageSummary.FullNames.First().Should().Be(sampleUser.FullName);
+                pageSummary.Organisations.First().Should().Be(sampleUser.PrimaryOrganisation.Name);
+                pageSummary.Statuses.First().Should().Be(GetAccountStatus(sampleUser.Disabled));
             });
         }
 

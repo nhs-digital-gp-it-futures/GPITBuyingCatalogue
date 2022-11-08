@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceLevelAgreements
             if (model is null)
                 throw new ArgumentNullException(nameof(model));
 
-            var solution = await dbContext.Solutions.SingleAsync(s => s.CatalogueItemId == model.Solution.Id);
+            var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == model.Solution.Id);
             solution.ServiceLevelAgreement = new EntityFramework.Catalogue.Models.ServiceLevelAgreements
             {
                 SlaType = model.SlaLevel,
@@ -46,12 +46,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceLevelAgreements
                 .Include(s => s.Contacts)
                 .Include(s => s.ServiceHours)
                 .Include(s => s.ServiceLevels)
-                .SingleOrDefaultAsync(s => s.SolutionId == solutionId);
+                .FirstOrDefaultAsync(s => s.SolutionId == solutionId);
         }
 
         public async Task UpdateServiceLevelTypeAsync(CatalogueItem solution, SlaType slaLevel)
         {
-            var sla = await dbContext.ServiceLevelAgreements.SingleAsync(s => s.SolutionId == solution.Id);
+            var sla = await dbContext.ServiceLevelAgreements.FirstAsync(s => s.SolutionId == solution.Id);
 
             if (sla.SlaType != slaLevel)
             {
@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceLevelAgreements
         }
 
         public async Task<ServiceAvailabilityTimes> GetServiceAvailabilityTimes(CatalogueItemId solutionId, int serviceAvailabilityTimesId)
-            => await dbContext.ServiceAvailabilityTimes.SingleOrDefaultAsync(s => s.SolutionId == solutionId && s.Id == serviceAvailabilityTimesId);
+            => await dbContext.ServiceAvailabilityTimes.FirstOrDefaultAsync(s => s.SolutionId == solutionId && s.Id == serviceAvailabilityTimesId);
 
         public async Task SaveServiceAvailabilityTimes(CatalogueItem solution, ServiceAvailabilityTimesModel model)
         {
@@ -153,7 +153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceLevelAgreements
 
         public async Task DeleteSlaContact(int slaContactId)
         {
-            var contact = await dbContext.SlaContacts.SingleAsync(slac => slac.Id == slaContactId);
+            var contact = await dbContext.SlaContacts.FirstAsync(slac => slac.Id == slaContactId);
 
             dbContext.SlaContacts.Remove(contact);
 
@@ -165,7 +165,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceLevelAgreements
             if (model is null)
                 throw new ArgumentNullException(nameof(model));
 
-            var contact = await dbContext.SlaContacts.SingleAsync(slac => slac.Id == model.Id);
+            var contact = await dbContext.SlaContacts.FirstAsync(slac => slac.Id == model.Id);
 
             contact.Channel = model.Channel;
             contact.ContactInformation = model.ContactInformation;
@@ -230,6 +230,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceLevelAgreements
         }
 
         private async Task<SlaServiceLevel> GetServiceLevel(CatalogueItemId solutionId, int serviceLevelId)
-            => await dbContext.SlaServiceLevels.SingleOrDefaultAsync(s => s.SolutionId == solutionId && s.Id == serviceLevelId);
+            => await dbContext.SlaServiceLevels.FirstOrDefaultAsync(s => s.SolutionId == solutionId && s.Id == serviceLevelId);
     }
 }

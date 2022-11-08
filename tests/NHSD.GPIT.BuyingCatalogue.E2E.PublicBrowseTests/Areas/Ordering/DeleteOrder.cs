@@ -48,12 +48,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         {
             CommonActions.ClickGoBackLink();
 
-            CommonActions
-            .PageLoadedCorrectGetIndex(
+            CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderController),
-                nameof(OrderController.Order))
-            .Should()
-            .BeTrue();
+                nameof(OrderController.Order)).Should().BeTrue();
         }
 
         [Fact]
@@ -63,44 +60,34 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ClickSave();
 
-            CommonActions
-            .PageLoadedCorrectGetIndex(
+            CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderController),
-                nameof(OrderController.Order))
-            .Should()
-            .BeTrue();
+                nameof(OrderController.Order)).Should().BeTrue();
         }
 
         [Fact]
         public void DeleteOrder_SelectYes_ExpectedResult()
         {
             CommonActions.ClickRadioButtonWithValue("True");
-
             CommonActions.ClickSave();
 
-            CommonActions
-            .PageLoadedCorrectGetIndex(
+            CommonActions.PageLoadedCorrectGetIndex(
                 typeof(DashboardController),
-                nameof(DashboardController.Organisation))
-            .Should()
-            .BeTrue();
+                nameof(DashboardController.Organisation)).Should().BeTrue();
 
             using var context = GetEndToEndDbContext();
 
-            var order = context.Orders.Where(o => o.Id == CallOffId.Id).Count().Should().Be(0);
+            context.Orders.Count(o => o.OrderNumber == CallOffId.OrderNumber && o.Revision == CallOffId.Revision).Should().Be(0);
         }
 
         [Fact]
-        public void DelteOrder_NoSelection_ThrowsError()
+        public void DeleteOrder_NoSelection_ThrowsError()
         {
             CommonActions.ClickSave();
 
-            CommonActions
-                .PageLoadedCorrectGetIndex(
-                    typeof(DeleteOrderController),
-                    nameof(DeleteOrderController.DeleteOrder))
-                .Should()
-                .BeTrue();
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(DeleteOrderController),
+                nameof(DeleteOrderController.DeleteOrder)).Should().BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
@@ -112,7 +99,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         {
             using var context = GetEndToEndDbContext();
 
-            context.Database.ExecuteSqlInterpolated($"UPDATE Orders SET IsDeleted = 0 WHERE Id = {CallOffId.Id}");
+            var orderId = context.OrderId(CallOffId).Result;
+
+            context.Database.ExecuteSqlInterpolated($"UPDATE Orders SET IsDeleted = 0 WHERE Id = {orderId}");
         }
     }
 }

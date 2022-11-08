@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common.Organisation;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
@@ -32,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         public void NominatedOrganisations_WithNoNominatedOrganisations_AllElementsDisplayed()
         {
             CommonActions.ElementIsDisplayed(BreadcrumbObjects.HomeBreadcrumbLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(BreadcrumbObjects.ManageBuyerOrganisationsBreadcrumbLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(CommonObjects.ManageBuyerOrganisationsBreadcrumbLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(BreadcrumbObjects.OrganisationDetailsBreadcrumbLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
             CommonActions.ElementExists(NominatedOrganisationObjects.NominatedOrganisationsTable).Should().BeFalse();
@@ -46,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             var organisation = await AddNominatedOrganisation();
 
             CommonActions.ElementIsDisplayed(BreadcrumbObjects.HomeBreadcrumbLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(BreadcrumbObjects.ManageBuyerOrganisationsBreadcrumbLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(CommonObjects.ManageBuyerOrganisationsBreadcrumbLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(BreadcrumbObjects.OrganisationDetailsBreadcrumbLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
             CommonActions.ElementIsDisplayed(NominatedOrganisationObjects.NominatedOrganisationsTable).Should().BeTrue();
@@ -71,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         [Fact]
         public void NominatedOrganisations_ClickManageBuyerOrganisationsBreadcrumbLink_DisplaysCorrectPage()
         {
-            CommonActions.ClickLinkElement(BreadcrumbObjects.ManageBuyerOrganisationsBreadcrumbLink);
+            CommonActions.ClickLinkElement(CommonObjects.ManageBuyerOrganisationsBreadcrumbLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrganisationsController),
@@ -123,7 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         private async Task<Organisation> AddNominatedOrganisation()
         {
             await using var context = GetEndToEndDbContext();
-            var organisation = context.Organisations.Single(x => x.Id == RelatedOrganisationId);
+            var organisation = context.Organisations.First(x => x.Id == RelatedOrganisationId);
             context.RelatedOrganisations.Add(new RelatedOrganisation(RelatedOrganisationId, OrganisationId));
             await context.SaveChangesAsync();
             Driver.Navigate().Refresh();

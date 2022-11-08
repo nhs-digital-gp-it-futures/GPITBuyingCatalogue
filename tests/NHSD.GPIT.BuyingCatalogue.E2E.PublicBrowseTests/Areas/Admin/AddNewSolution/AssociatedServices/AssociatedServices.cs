@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Associat
         public async Task AssociatedServices_CorrectlyDisplayed()
         {
             await using var context = GetEndToEndDbContext();
-            var solutionName = (await context.CatalogueItems.SingleAsync(s => s.Id == SolutionId)).Name;
+            var solutionName = (await context.CatalogueItems.FirstAsync(s => s.Id == SolutionId)).Name;
 
             CommonActions.PageTitle()
                 .Should()
@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Associat
             NavigateToUrl(typeof(AssociatedServicesController), nameof(AssociatedServicesController.AssociatedServices), parameters: args);
 
             await using var context = GetEndToEndDbContext();
-            var solutionName = (await context.CatalogueItems.SingleAsync(s => s.Id == SolutionIdNoAssociatedServices)).Name;
+            var solutionName = (await context.CatalogueItems.FirstAsync(s => s.Id == SolutionIdNoAssociatedServices)).Name;
 
             CommonActions.PageTitle()
                 .Should()
@@ -91,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Associat
         public async Task AssociatedServices_Save_Saves_And_NavigatesToCorrectPage()
         {
             await using var context = GetEndToEndDbContext();
-            var solution = await context.CatalogueItems.Include(c => c.SupplierServiceAssociations).SingleAsync(s => s.Id == SolutionId);
+            var solution = await context.CatalogueItems.Include(c => c.SupplierServiceAssociations).FirstAsync(s => s.Id == SolutionId);
             solution.SupplierServiceAssociations.Clear();
             await context.SaveChangesAsync();
 
@@ -107,9 +107,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Associat
                 .Should()
                 .BeTrue();
 
-            solution = await context.CatalogueItems.Include(c => c.SupplierServiceAssociations).SingleAsync(s => s.Id == SolutionId);
+            solution = await context.CatalogueItems.Include(c => c.SupplierServiceAssociations).FirstAsync(s => s.Id == SolutionId);
 
-            var savedRelatedService = solution.SupplierServiceAssociations.Single();
+            var savedRelatedService = solution.SupplierServiceAssociations.First();
 
             savedRelatedService.AssociatedServiceId.Should().BeEquivalentTo(CatalogueItemId.ParseExact("99999-S-999"));
         }
@@ -118,7 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Associat
         public async Task AssociatedServices_NoServices_Save_Saves_And_NavigatesToCorrectPage()
         {
             await using var context = GetEndToEndDbContext();
-            var solution = await context.CatalogueItems.Include(c => c.SupplierServiceAssociations).SingleAsync(s => s.Id == SolutionId);
+            var solution = await context.CatalogueItems.Include(c => c.SupplierServiceAssociations).FirstAsync(s => s.Id == SolutionId);
             solution.SupplierServiceAssociations.Clear();
             await context.SaveChangesAsync();
 
@@ -137,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Associat
                 .Should()
                 .BeTrue();
 
-            solution = await context.CatalogueItems.Include(c => c.SupplierServiceAssociations).SingleAsync(s => s.Id == SolutionId);
+            solution = await context.CatalogueItems.Include(c => c.SupplierServiceAssociations).FirstAsync(s => s.Id == SolutionId);
 
             solution.SupplierServiceAssociations.Should().BeEmpty();
         }

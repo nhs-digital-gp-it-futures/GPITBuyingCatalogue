@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.AccountManagement;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Authorization;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
@@ -52,6 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             MarketingPages = new MarketingPageActions(Driver).PageActions;
             AuthorizationPages = new AuthorizationPages(Driver).PageActions;
             AdminPages = new AdminPages(Driver).PageActions;
+            AccountManagementPages = new AccountManagementPages(Driver).PageActions;
             OrderingPages = new OrderingPages(Driver).PageActions;
             CommonActions = new Actions.Common.CommonActions(Driver);
             Wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
@@ -84,6 +86,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 
         internal Actions.Ordering.ActionCollection OrderingPages { get; }
 
+        internal Actions.AccountManagement.ActionCollection AccountManagementPages { get; }
+
         internal TextGenerators TextGenerators { get; }
 
         internal EndToEndDbContext GetEndToEndDbContext()
@@ -99,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
         internal void ClearClientApplication(CatalogueItemId solutionId)
         {
             using var context = GetEndToEndDbContext();
-            var solution = context.Solutions.Single(s => s.CatalogueItemId == solutionId);
+            var solution = context.Solutions.First(s => s.CatalogueItemId == solutionId);
             solution.ClientApplication = string.Empty;
             context.SaveChanges();
         }
@@ -107,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
         internal void ClearHostingTypes(CatalogueItemId solutionId)
         {
             using var context = GetEndToEndDbContext();
-            var solution = context.Solutions.Single(s => s.CatalogueItemId == solutionId);
+            var solution = context.Solutions.First(s => s.CatalogueItemId == solutionId);
             solution.Hosting = null;
             context.SaveChanges();
         }
@@ -115,7 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
         internal void ClearFeatures(CatalogueItemId solutionId)
         {
             using var context = GetEndToEndDbContext();
-            var solution = context.Solutions.Single(s => s.CatalogueItemId == solutionId);
+            var solution = context.Solutions.First(s => s.CatalogueItemId == solutionId);
             solution.Features = string.Empty;
             context.SaveChanges();
         }
@@ -123,7 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
         internal void ClearRoadMap(CatalogueItemId solutionId)
         {
             using var context = GetEndToEndDbContext();
-            var solution = context.Solutions.Single(s => s.CatalogueItemId == solutionId);
+            var solution = context.Solutions.First(s => s.CatalogueItemId == solutionId);
             solution.RoadMap = string.Empty;
             context.SaveChanges();
         }

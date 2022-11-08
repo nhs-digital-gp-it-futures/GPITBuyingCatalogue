@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         [HttpGet]
         public async Task<IActionResult> CommencementDate(string internalOrgId, CallOffId callOffId)
         {
-            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
             var model = new CommencementDateModel(internalOrgId, order)
             {
@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 return View(model);
             }
 
-            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
             var affectedDeliveryDates = order.OrderItems.SelectMany(x => x.OrderItemRecipients).Count(x => x.DeliveryDate < model.Date);
 
             if (affectedDeliveryDates > 0)
@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var parameters = details.Split(Delimiter);
             var newCommencementDate = DateTime.ParseExact(parameters[0], DateFormat, CultureInfo.InvariantCulture);
-            var order = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
             var affectedDeliveryDates = order.OrderItems.SelectMany(x => x.OrderItemRecipients).Count(x => x.DeliveryDate < newCommencementDate);
             var totalDeliveryDates = order.OrderItems.SelectMany(x => x.OrderItemRecipients).Count(x => x.DeliveryDate != null);
 
@@ -136,7 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 int.Parse(parameters[1]),
                 int.Parse(parameters[2]));
 
-            var order = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
             await deliveryDateService.ResetDeliveryDates(order.Id, model.NewDate);
 

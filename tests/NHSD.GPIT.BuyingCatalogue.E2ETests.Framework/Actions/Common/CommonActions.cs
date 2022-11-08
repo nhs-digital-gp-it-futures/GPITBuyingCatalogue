@@ -26,11 +26,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
 
         public void ClickLinkElement(By targetElement) =>
             Driver.FindElement(targetElement).Click();
-
+            
         public void ClickLinkElement(By targetElement, string hrefContains)
         {
             Driver.FindElements(targetElement)
-                .Single(s => s.GetAttribute("href").Contains(hrefContains))
+                .First(s => s.GetAttribute("href").Contains(hrefContains))
                 .Click();
         }
 
@@ -55,12 +55,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
 
         public void ClickSection(By targetField, string section) =>
             Driver.FindElements(targetField)
-                .Single(s => s.Text.Contains(section)).FindElement(By.TagName("a"))
+                .First(s => s.Text.Contains(section)).FindElement(By.TagName("a"))
                 .Click();
 
         public void ClickRadioButtonWithText(string label) =>
             Driver.FindElements(CommonSelectors.RadioButtonItems)
-                .Single(r => r.FindElement(By.TagName("label")).Text == label)
+                .First(r => r.FindElement(By.TagName("label")).Text == label)
                 .FindElement(By.TagName("input"))
                 .Click();
 
@@ -107,14 +107,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
         {
             Driver.FindElements(CommonSelectors.RadioButtonItems)
                 .Select(rb => rb.FindElement(By.TagName("input")))
-                .Single(rbi => rbi.GetAttribute("value") == value)
+                .First(rbi => rbi.GetAttribute("value") == value)
                 .Click();
         }
 
         public void ClickRadioButtonWithValue(By parent, string value)
         {
             Driver.FindElements(parent)
-                .Single(rbi => rbi.GetAttribute("value") == value)
+                .First(rbi => rbi.GetAttribute("value") == value)
                 .Click();
         }
 
@@ -141,7 +141,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
             return SelectDropDownItem(targetField, new Random().Next(1, optionsCount));
         }
 
+        public string GetRecipientImportCsv(string fileName)
+            => Path.GetFullPath(Path.Combine("ServiceRecipientTestData", fileName));
+
         // Input Element Actions
+        public void UploadFile(By targetElement, string filePath)
+            => Driver.FindElement(targetElement).SendKeys(filePath);
+
         public void ClearInputElement(By targetElement) =>
             Driver.FindElement(targetElement).Clear();
 
@@ -281,7 +287,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
             Type controllerType,
             string methodName)
         {
-            if (controllerType.BaseType != typeof(Controller))
+            if (!typeof(Controller).IsAssignableFrom(controllerType))
                 throw new InvalidOperationException($"{nameof(controllerType)} is not a type of {nameof(Controller)}");
 
             if (string.IsNullOrWhiteSpace(methodName))
@@ -313,7 +319,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
             // checks every segment in actionUrl, that doesn't start with a "{" (%7B) against the same positioned element in driverUrl.
             // if any don't match, will return false, else true.
             return !actionUrl.Segments
-                .Where((t, i) => !t.StartsWith("%7B") && driverUrl.Segments[i] != t)
+                .Where((t, i) => !t.StartsWith("%7B") && driverUrl.Segments[i].ToLower() != t.ToLower())
                 .Any();
         }
 

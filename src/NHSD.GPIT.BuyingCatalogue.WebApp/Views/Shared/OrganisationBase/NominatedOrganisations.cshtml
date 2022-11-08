@@ -1,0 +1,96 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels.NominatedOrganisationsModel
+@{
+    ViewBag.Title = "Nominated organisations";
+}
+@section Breadcrumbs {
+    <nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
+        <div class="nhsuk-width-container">
+            <ol class="nhsuk-breadcrumb__list">
+                <li class="nhsuk-breadcrumb__item">
+                    <a href="@Model.HomeLink"
+                       class="nhsuk-breadcrumb__link">Home</a>
+                </li>
+                @if (User.IsAdmin())
+                {
+                    <li class="nhsuk-breadcrumb__item">
+                        <a href="@Url.Action(
+                                     nameof(OrganisationsController.Index),
+                                     typeof(OrganisationsController).ControllerName())"
+                           class="nhsuk-breadcrumb__link">Manage buyer organisations</a>
+                    </li>
+                }
+                <li class="nhsuk-breadcrumb__item">
+                    <a asp-action="@nameof(OrganisationBaseController.Details)"
+                       asp-controller="@Model.ControllerName"
+                       asp-route-organisationId="@Model!.OrganisationId"
+                       class="nhsuk-breadcrumb__link">Organisation details</a>
+                </li>
+            </ol>
+        </div>
+    </nav>
+}
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model!.OrganisationName"
+                        advice="Add, remove and view organisations that can act on behalf of @Model.OrganisationName." />
+
+        <vc:nhs-action-link url="@Url.Action(
+                                     nameof(OrganisationBaseController.AddNominatedOrganisation),
+                                     Model.ControllerName,
+                                     new { Model.OrganisationId })" 
+                            text="Nominate an organisation") />
+
+        <h3>Nominated organisations</h3>
+
+        @if (Model.NominatedOrganisations.Any())
+        {
+            <div data-test-id="nominated-organisations-table">
+                <nhs-table>
+                    @foreach (var heading in new[] { "Organisation name", "ODS code", "Action" })
+                    {
+                        <nhs-table-column>@heading</nhs-table-column>
+                    }
+
+                    @foreach (var item in Model.NominatedOrganisations)
+                    {
+                        <nhs-table-row-container>
+                            <nhs-table-cell>
+                                <span data-test-id="nominated-organisation-name">
+                                    @item.Name
+                                </span>
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                <span data-test-id="nominated-organisation-ods-code">
+                                    @item.ExternalIdentifier
+                                </span>
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                <span data-test-id="remove-nominated-organisation-link">
+                                    <a asp-action="@nameof(OrganisationBaseController.RemoveNominatedOrganisation)"
+                                        asp-controller=@Model.ControllerName
+                                       asp-route-organisationId="@Model.OrganisationId"
+                                       asp-route-nominatedOrganisationId="@item.Id">Remove</a>
+                                </span>
+                            </nhs-table-cell>
+                        </nhs-table-row-container>
+                    }
+                </nhs-table>
+            </div>
+        }
+        else
+        {
+            <div data-test-id="nominated-organisations-error-message">
+                <p>No organisations can act on behalf of @Model.OrganisationName.</p>
+            </div>
+        }
+
+        <vc:nhs-secondary-button text="Continue" 
+                                 url="@Url.Action(
+                                          nameof(OrganisationBaseController.Details),
+                                          Model.ControllerName,
+                                          new { Model.OrganisationId })"
+                                 type="Primary" />
+    </div>
+</div>

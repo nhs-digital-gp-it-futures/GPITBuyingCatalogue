@@ -117,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return NotFound();
 
             AddTieredListPriceModel model = cataloguePriceId is not null
-                ? new(solution, associatedService, associatedService.CataloguePrices.Single(p => p.CataloguePriceId == cataloguePriceId))
+                ? new(solution, associatedService, associatedService.CataloguePrices.First(p => p.CataloguePriceId == cataloguePriceId))
                 {
                     DeleteListPriceUrl = Url.Action(
                             nameof(DeleteListPrice),
@@ -210,7 +210,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (associatedService is null)
                 return NotFound();
 
-            var price = associatedService.CataloguePrices.SingleOrDefault(p => p.CataloguePriceId == cataloguePriceId);
+            var price = associatedService.CataloguePrices.FirstOrDefault(p => p.CataloguePriceId == cataloguePriceId);
             if (price is null)
                 return NotFound();
 
@@ -235,7 +235,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
             {
                 var associatedService = await associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedServiceId);
-                var price = associatedService.CataloguePrices.Single(p => p.CataloguePriceId == cataloguePriceId);
+                var price = associatedService.CataloguePrices.First(p => p.CataloguePriceId == cataloguePriceId);
 
                 model.Tiers = price.CataloguePriceTiers.ToList();
 
@@ -260,7 +260,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (associatedService is null)
                 return NotFound();
 
-            var price = associatedService.CataloguePrices.SingleOrDefault(p => p.CataloguePriceId == cataloguePriceId);
+            var price = associatedService.CataloguePrices.FirstOrDefault(p => p.CataloguePriceId == cataloguePriceId);
             if (price is null)
                 return NotFound();
 
@@ -313,7 +313,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (associatedService is null)
                 return NotFound();
 
-            var price = associatedService.CataloguePrices.SingleOrDefault(p => p.CataloguePriceId == cataloguePriceId);
+            var price = associatedService.CataloguePrices.FirstOrDefault(p => p.CataloguePriceId == cataloguePriceId);
             if (price is null)
                 return NotFound();
 
@@ -342,7 +342,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (associatedService is null)
                 return NotFound();
 
-            var price = associatedService.CataloguePrices.SingleOrDefault(p => p.CataloguePriceId == cataloguePriceId);
+            var price = associatedService.CataloguePrices.FirstOrDefault(p => p.CataloguePriceId == cataloguePriceId);
             if (price is null)
                 return NotFound();
 
@@ -379,7 +379,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (associatedService is null)
                 return NotFound();
 
-            var price = associatedService.CataloguePrices.SingleOrDefault(p => p.CataloguePriceId == cataloguePriceId);
+            var price = associatedService.CataloguePrices.FirstOrDefault(p => p.CataloguePriceId == cataloguePriceId);
             if (price is null)
                 return NotFound();
 
@@ -408,7 +408,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (associatedService is null)
                 return NotFound();
 
-            var price = associatedService.CataloguePrices.SingleOrDefault(p => p.CataloguePriceId == cataloguePriceId);
+            var price = associatedService.CataloguePrices.FirstOrDefault(p => p.CataloguePriceId == cataloguePriceId);
             if (price is null)
                 return NotFound();
 
@@ -440,11 +440,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (associatedService is null)
                 return NotFound();
 
-            var price = associatedService.CataloguePrices.SingleOrDefault(p => p.CataloguePriceId == cataloguePriceId);
+            var price = associatedService.CataloguePrices.FirstOrDefault(p => p.CataloguePriceId == cataloguePriceId);
             if (price is null)
                 return NotFound();
 
-            var tier = price.CataloguePriceTiers.SingleOrDefault(p => p.Id == tierId);
+            var tier = price.CataloguePriceTiers.FirstOrDefault(p => p.Id == tierId);
             if (tier is null)
                 return NotFound();
 
@@ -498,11 +498,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (associatedService is null)
                 return NotFound();
 
-            var price = associatedService.CataloguePrices.SingleOrDefault(p => p.CataloguePriceId == cataloguePriceId);
+            var price = associatedService.CataloguePrices.FirstOrDefault(p => p.CataloguePriceId == cataloguePriceId);
             if (price is null)
                 return NotFound();
 
-            var tier = price.CataloguePriceTiers.SingleOrDefault(p => p.Id == tierId);
+            var tier = price.CataloguePriceTiers.FirstOrDefault(p => p.Id == tierId);
             if (tier is null)
                 return NotFound();
 

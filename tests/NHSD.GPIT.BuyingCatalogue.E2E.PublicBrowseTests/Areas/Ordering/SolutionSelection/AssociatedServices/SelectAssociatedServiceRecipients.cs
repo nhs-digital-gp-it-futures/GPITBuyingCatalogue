@@ -126,7 +126,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
 
             return context.OrderItems
                 .Include(x => x.OrderItemRecipients)
-                .Single(x => x.OrderId == OrderId
+                .First(x => x.OrderId == OrderId
                     && x.CatalogueItemId == CatalogueItemId);
         }
     }

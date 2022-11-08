@@ -50,8 +50,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
         public async Task EditAdditionalService_CorrectlyDisplayed()
         {
             await using var context = GetEndToEndDbContext();
-            var solutionName = (await context.CatalogueItems.SingleAsync(s => s.Id == SolutionId)).Name;
-            var additionalServiceName = (await context.CatalogueItems.SingleAsync(s => s.Id == AdditionalServiceId)).Name;
+            var solutionName = (await context.CatalogueItems.FirstAsync(s => s.Id == SolutionId)).Name;
+            var additionalServiceName = (await context.CatalogueItems.FirstAsync(s => s.Id == AdditionalServiceId)).Name;
 
             CommonActions.PageTitle()
                 .Should()
@@ -134,7 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
                 .BeTrue();
 
             await using var updatedContext = GetEndToEndDbContext();
-            var publishedStatus = (await updatedContext.CatalogueItems.SingleAsync(c => c.Id == AdditionalServiceId)).PublishedStatus;
+            var publishedStatus = (await updatedContext.CatalogueItems.FirstAsync(c => c.Id == AdditionalServiceId)).PublishedStatus;
             publishedStatus
                 .Should()
                 .Be(PublicationStatus.Published);

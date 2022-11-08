@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Tiered
         public void AllSectionsDisplayed()
         {
             using var context = GetEndToEndDbContext();
-            var catalogueItem = context.CatalogueItems.Single(p => p.Id == CatalogueItemId);
+            var catalogueItem = context.CatalogueItems.First(p => p.Id == CatalogueItemId);
 
             CommonActions.PageTitle().Should().Be($"Edit Tier {TierIndex} price - {catalogueItem.Name}".FormatForComparison());
             CommonActions.LedeText().Should().Be("Provide information about this tier.".FormatForComparison());

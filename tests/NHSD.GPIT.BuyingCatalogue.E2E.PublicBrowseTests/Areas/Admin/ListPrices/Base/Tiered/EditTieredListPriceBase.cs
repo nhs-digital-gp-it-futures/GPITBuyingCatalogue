@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Tiered
         public void AllSectionsDisplayed()
         {
             using var context = GetEndToEndDbContext();
-            var catalogueItem = context.CatalogueItems.Include(p => p.CataloguePrices).Single(c => c.Id == CatalogueItemId);
+            var catalogueItem = context.CatalogueItems.Include(p => p.CataloguePrices).First(c => c.Id == CatalogueItemId);
             var price = catalogueItem.CataloguePrices.First(p => p.CataloguePriceId == CataloguePriceId);
             var publishStatus = price.PublishedStatus;
 
@@ -129,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Tiered
         public void ClickAddPriceTier_NavigatesToCorrectPage()
         {
             using var context = GetEndToEndDbContext();
-            var price = context.CataloguePrices.Single(p => p.CatalogueItemId == CatalogueItemId && p.CataloguePriceId == CataloguePriceId);
+            var price = context.CataloguePrices.First(p => p.CatalogueItemId == CatalogueItemId && p.CataloguePriceId == CataloguePriceId);
             var publishStatus = price.PublishedStatus;
 
             price.PublishedStatus = PublicationStatus.Unpublished;
@@ -494,7 +494,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Tiered
         public void Published_EditPrice_NavigatesToCorrectPage()
         {
             using var context = GetEndToEndDbContext();
-            var price = context.CataloguePrices.Single(p => p.CatalogueItemId == CatalogueItemId && p.CataloguePriceId == CataloguePriceId);
+            var price = context.CataloguePrices.First(p => p.CatalogueItemId == CatalogueItemId && p.CataloguePriceId == CataloguePriceId);
             var publishStatus = price.PublishedStatus;
 
             price.PublishedStatus = PublicationStatus.Published;
@@ -516,7 +516,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Tiered
         public void Unpublished_EditPrice_NavigatesToCorrectPage()
         {
             using var context = GetEndToEndDbContext();
-            var price = context.CataloguePrices.Single(p => p.CatalogueItemId == CatalogueItemId && p.CataloguePriceId == CataloguePriceId);
+            var price = context.CataloguePrices.First(p => p.CatalogueItemId == CatalogueItemId && p.CataloguePriceId == CataloguePriceId);
             var publishStatus = price.PublishedStatus;
 
             price.PublishedStatus = PublicationStatus.Unpublished;
@@ -800,6 +800,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Tiered
             .Include(ci => ci.CataloguePrices)
             .ThenInclude(p => p.CataloguePriceTiers)
             .AsNoTracking()
-            .Single(ci => ci.Id == id);
+            .First(ci => ci.Id == id);
     }
 }

@@ -116,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrice
                 throw new ArgumentNullException(nameof(pricingUnit));
 
             var solution = await GetCatalogueItemWithListPrices(solutionId, true);
-            var price = solution.CataloguePrices.Single(p => p.CataloguePriceId == cataloguePriceId);
+            var price = solution.CataloguePrices.First(p => p.CataloguePriceId == cataloguePriceId);
 
             price.ProvisioningType = provisioningType;
             price.CataloguePriceCalculationType = calculationType;
@@ -145,7 +145,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrice
                 throw new ArgumentNullException(nameof(pricingUnit));
 
             var solution = await GetCatalogueItemWithListPrices(solutionId, true);
-            var cataloguePrice = solution.CataloguePrices.Single(p => p.CataloguePriceId == cataloguePriceId);
+            var cataloguePrice = solution.CataloguePrices.First(p => p.CataloguePriceId == cataloguePriceId);
 
             cataloguePrice.ProvisioningType = provisioningType;
             cataloguePrice.CataloguePriceCalculationType = calculationType;
@@ -165,7 +165,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrice
         {
             var cataloguePrice = await dbContext
                 .CataloguePrices
-                .SingleAsync(cp => cp.CatalogueItemId == solutionId && cp.CataloguePriceId == cataloguePriceId);
+                .FirstAsync(cp => cp.CatalogueItemId == solutionId && cp.CataloguePriceId == cataloguePriceId);
 
             cataloguePrice.PublishedStatus = status;
 
@@ -180,7 +180,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrice
             var cataloguePrice = await dbContext
                 .CataloguePrices
                 .Include(p => p.CataloguePriceTiers)
-                .SingleAsync(cp => cp.CatalogueItemId == solutionId && cp.CataloguePriceId == cataloguePriceId);
+                .FirstAsync(cp => cp.CatalogueItemId == solutionId && cp.CataloguePriceId == cataloguePriceId);
 
             cataloguePrice.CataloguePriceTiers.Add(tier);
 
@@ -198,9 +198,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrice
             var cataloguePrice = await dbContext
                 .CataloguePrices
                 .Include(p => p.CataloguePriceTiers)
-                .SingleAsync(cp => cp.CatalogueItemId == solutionId && cp.CataloguePriceId == cataloguePriceId);
+                .FirstAsync(cp => cp.CatalogueItemId == solutionId && cp.CataloguePriceId == cataloguePriceId);
 
-            var tier = cataloguePrice.CataloguePriceTiers.Single(p => p.Id == tierId);
+            var tier = cataloguePrice.CataloguePriceTiers.First(p => p.Id == tierId);
 
             tier.Price = price;
             tier.LowerRange = lowerRange;
@@ -214,9 +214,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrice
             var cataloguePrice = await dbContext
                    .CataloguePrices
                    .Include(p => p.CataloguePriceTiers)
-                   .SingleAsync(cp => cp.CatalogueItemId == solutionId && cp.CataloguePriceId == cataloguePriceId);
+                   .FirstAsync(cp => cp.CatalogueItemId == solutionId && cp.CataloguePriceId == cataloguePriceId);
 
-            var tier = cataloguePrice.CataloguePriceTiers.Single(p => p.Id == tierId);
+            var tier = cataloguePrice.CataloguePriceTiers.First(p => p.Id == tierId);
 
             tier.Price = price;
 
@@ -226,7 +226,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrice
         public async Task DeleteListPrice(CatalogueItemId solutionId, int cataloguePriceId)
         {
             var solution = await GetCatalogueItemWithListPrices(solutionId, true);
-            var price = solution.CataloguePrices.SingleOrDefault(p => p.CataloguePriceId == cataloguePriceId);
+            var price = solution.CataloguePrices.FirstOrDefault(p => p.CataloguePriceId == cataloguePriceId);
 
             if (price is null)
                 return;
@@ -240,9 +240,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrice
             var cataloguePrice = await dbContext
                    .CataloguePrices
                    .Include(p => p.CataloguePriceTiers)
-                   .SingleAsync(cp => cp.CatalogueItemId == solutionId && cp.CataloguePriceId == cataloguePriceId);
+                   .FirstAsync(cp => cp.CatalogueItemId == solutionId && cp.CataloguePriceId == cataloguePriceId);
 
-            var tier = cataloguePrice.CataloguePriceTiers.SingleOrDefault(p => p.Id == tierId);
+            var tier = cataloguePrice.CataloguePriceTiers.FirstOrDefault(p => p.Id == tierId);
 
             if (tier is null)
                 return;
@@ -263,7 +263,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ListPrice
             if (!tracked)
                 baseQuery = baseQuery.AsNoTracking();
 
-            return baseQuery.SingleOrDefaultAsync(ci => ci.Id == catalogueItemId);
+            return baseQuery.FirstOrDefaultAsync(ci => ci.Id == catalogueItemId);
         }
     }
 }

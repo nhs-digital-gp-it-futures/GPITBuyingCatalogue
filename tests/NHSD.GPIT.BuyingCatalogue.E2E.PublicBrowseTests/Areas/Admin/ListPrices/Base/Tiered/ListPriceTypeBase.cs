@@ -103,6 +103,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Tiered
             .Include(ci => ci.CataloguePrices)
             .ThenInclude(p => p.CataloguePriceTiers)
             .AsNoTracking()
-            .Single(ci => ci.Id == id);
+            .First(ci => ci.Id == id);
     }
 }

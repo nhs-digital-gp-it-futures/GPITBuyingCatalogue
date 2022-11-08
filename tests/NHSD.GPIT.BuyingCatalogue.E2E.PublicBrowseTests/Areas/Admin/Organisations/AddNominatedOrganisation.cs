@@ -6,10 +6,12 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common.Organisation;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Organisation;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Organisation;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
@@ -95,7 +97,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 
             existingRelationships.Should().BeEmpty();
 
-            CommonActions.ElementAddValue(NominatedOrganisationObjects.SelectedOrganisation, ValidOrganisationName);
+            CommonActions.AutoCompleteAddValue(NominatedOrganisationObjects.SelectedOrganisation, ValidOrganisationName);
+            CommonActions.ClickLinkElement(NominatedOrganisationObjects.SearchResult(0));
             CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
 
             CommonActions.PageLoadedCorrectGetIndex(

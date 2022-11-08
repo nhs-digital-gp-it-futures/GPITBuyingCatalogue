@@ -1,0 +1,24 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels.RemoveNominatedOrganisationModel
+@{
+    ViewBag.Title = "Remove organisation?";
+}
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <partial name="Partials/_BackLink" model="Model" />
+
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model!.NominatedOrganisationName"
+                        advice="This organisation will no longer be able to act on behalf of @Model.OrganisationName." />
+
+        <form method="POST">
+            <input type="hidden" asp-for="ControllerName" />
+            <nhs-submit-button text="Remove organisation"/>
+        </form>
+
+        <a asp-controller=@Model.ControllerName
+           asp-action="@nameof(OrganisationBaseController.NominatedOrganisations)" 
+           asp-route-organisationId="@Model.OrganisationId">Cancel</a>
+    </div>
+</div>

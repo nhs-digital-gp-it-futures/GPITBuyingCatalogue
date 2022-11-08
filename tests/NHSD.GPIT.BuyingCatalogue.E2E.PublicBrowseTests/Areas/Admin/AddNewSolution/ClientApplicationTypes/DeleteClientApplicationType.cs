@@ -121,7 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
                 .Should().BeTrue();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId);
+            var solution = await context.Solutions.FirstAsync(s => s.CatalogueItemId == SolutionId);
             var clientApplication = solution.GetClientApplication();
 
             clientApplication.ClientApplicationTypes.Should().NotContain(clientApplicationType.AsString(EnumFormat.EnumMemberValue));

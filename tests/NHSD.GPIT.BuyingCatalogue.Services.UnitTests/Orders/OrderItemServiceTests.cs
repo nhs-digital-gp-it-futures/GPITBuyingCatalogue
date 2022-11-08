@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             mockOrderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync((Order)null);
+                .ReturnsAsync(new OrderWrapper());
 
             await service.AddOrderItems(internalOrgId, callOffId, itemIds);
 
@@ -89,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             mockOrderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             await service.AddOrderItems(internalOrgId, callOffId, itemIds);
 
@@ -122,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             mockOrderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             await service.AddOrderItems(internalOrgId, callOffId, itemIds);
 
@@ -171,7 +171,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             mockOrderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync((Order)null);
+                .ReturnsAsync(new OrderWrapper());
 
             var itemIds = order.OrderItems.Select(x => x.CatalogueItemId).ToList();
 
@@ -204,7 +204,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             mockOrderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(order);
+                .ReturnsAsync(new OrderWrapper(order));
 
             await service.DeleteOrderItems(internalOrgId, callOffId, itemIds);
 

@@ -147,11 +147,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
                 .Include(x => x.OrderingParty)
                 .Include(x => x.OrderItems).ThenInclude(x => x.CatalogueItem)
                 .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemRecipients)
-                .Single(x => x.Id == CallOffId.Id
+                .First(x => x.OrderNumber == CallOffId.OrderNumber
+                    && x.Revision == CallOffId.Revision
                     && x.OrderingParty.InternalIdentifier == InternalOrgId);
 
             return order.OrderItems
-                .Single(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution);
+                .First(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution);
         }
     }
 }

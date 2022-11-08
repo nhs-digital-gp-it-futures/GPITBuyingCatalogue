@@ -6,9 +6,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin
 {
     public static class OrganisationObjects
     {
-        public static By AddressLines => ByExtensions.DataTestId("org-page-address");
-
-        public static By OdsCode => ByExtensions.DataTestId("org-page-external-identifier");
 
         public static By UserAccountsLink => By.LinkText("User accounts");
 
