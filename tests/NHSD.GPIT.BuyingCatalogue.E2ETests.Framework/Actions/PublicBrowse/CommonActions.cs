@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.PublicBrowse
         public string GetBreadcrumbNames(string breadcrumbItem)
         {
             var rows = Driver.FindElements(SolutionObjects.BreadcrumbsBanner);
-            var row = rows.Single(r => r.FindElement(By.TagName("a")).Text.Contains(breadcrumbItem, StringComparison.OrdinalIgnoreCase));
+            var row = rows.First(r => r.FindElement(By.TagName("a")).Text.Contains(breadcrumbItem, StringComparison.OrdinalIgnoreCase));
             return row.FindElement(By.TagName("a")).Text;
         }
     }

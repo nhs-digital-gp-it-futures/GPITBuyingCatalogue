@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Marketing
         {
             Driver.FindElements(PreviewPageObjects.ExpandingSections)
                 .Select(s => s.FindElement(By.TagName("summary")))
-                .Single(s => s.Text.Contains(applicationType))
+                .First(s => s.Text.Contains(applicationType))
                 .Click();
         }
 

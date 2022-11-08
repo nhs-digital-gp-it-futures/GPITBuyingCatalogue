@@ -76,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             orgId.Should().NotBe(0);
             error.Should().BeNull();
 
-            var newOrganisation = await context.Organisations.SingleAsync(o => o.Id == orgId);
+            var newOrganisation = await context.Organisations.FirstAsync(o => o.Id == orgId);
 
             newOrganisation.Address.Should().BeEquivalentTo(odsOrganisation.Address);
             newOrganisation.Id.Should().Be(orgId);
@@ -159,7 +159,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             OrganisationsService service)
         {
             var organisations = GetOrganisationsForSearchTerm(searchTerm);
-            var noMatch = organisations.Single(x => x.Name == OrganisationName && x.ExternalIdentifier == OdsCode);
+            var noMatch = organisations.First(x => x.Name == OrganisationName && x.ExternalIdentifier == OdsCode);
 
             foreach (var organisation in organisations)
             {

@@ -40,8 +40,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
         {
             await using var context = GetEndToEndDbContext();
             var capabilityCategories = await context.CapabilityCategories.Include(cc => cc.Capabilities).Where(cc => cc.Capabilities.Any()).ToListAsync();
-            var additionalService = await context.CatalogueItems.Include(i => i.Supplier).SingleAsync(s => s.Id == AdditionalServiceId);
-            var solution = await context.CatalogueItems.SingleAsync(s => s.Id == SolutionId);
+            var additionalService = await context.CatalogueItems.Include(i => i.Supplier).FirstAsync(s => s.Id == AdditionalServiceId);
+            var solution = await context.CatalogueItems.FirstAsync(s => s.Id == SolutionId);
             var additionalServiceName = additionalService.Name;
             var solutionName = solution.Name;
 
@@ -101,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
                 .Should()
                 .BeTrue();
 
-            var catalogueItemCapability = await context.CatalogueItemCapabilities.SingleOrDefaultAsync(c => c.CatalogueItemId == AdditionalServiceId && c.CapabilityId == capability.Id);
+            var catalogueItemCapability = await context.CatalogueItemCapabilities.FirstOrDefaultAsync(c => c.CatalogueItemId == AdditionalServiceId && c.CapabilityId == capability.Id);
 
             catalogueItemCapability.Should().NotBeNull();
         }

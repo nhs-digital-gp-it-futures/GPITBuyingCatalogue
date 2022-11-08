@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Interope
         public async Task EditIm1Integration_CorrectlyDisplayed()
         {
             await using var context = GetEndToEndDbContext();
-            var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionId);
+            var solution = await context.CatalogueItems.FirstAsync(ci => ci.Id == SolutionId);
 
             CommonActions.PageTitle()
                 .Should()
@@ -72,8 +72,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Interope
                 .Should().BeTrue();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId);
-            var integration = solution.GetIntegrations().Single(i => i.Id == IntegrationId);
+            var solution = await context.Solutions.FirstAsync(s => s.CatalogueItemId == SolutionId);
+            var integration = solution.GetIntegrations().First(i => i.Id == IntegrationId);
             integration.Qualifier.Should().BeEquivalentTo(integrationType);
             integration.IsConsumer.Should().Be(providerConsumer == "Consumer");
             integration.IntegratesWith.Should().BeEquivalentTo(integratesWith);
@@ -110,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Interope
         public void Dispose()
         {
             using var context = GetEndToEndDbContext();
-            var solution = context.Solutions.Single(s => s.CatalogueItemId == SolutionId);
+            var solution = context.Solutions.First(s => s.CatalogueItemId == SolutionId);
             solution.Integrations = JsonSerializer.Serialize(Integrations.GetIntegrations);
             context.SaveChanges();
         }

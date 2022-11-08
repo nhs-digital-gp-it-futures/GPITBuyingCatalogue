@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         {
             await using var context = GetEndToEndDbContext();
 
-            var user = await context.AspNetUsers.SingleAsync(x => x.Id == UserId);
+            var user = await context.AspNetUsers.FirstAsync(x => x.Id == UserId);
 
             user.PrimaryOrganisationId = context.Organisations
                 .First(x => x.Name != NhsDigitalOrganisationName)
@@ -131,7 +131,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         {
             await using var context = GetEndToEndDbContext();
 
-            var user = await context.AspNetUsers.Include(u => u.AspNetUserRoles).SingleAsync(x => x.Id == UserId);
+            var user = await context.AspNetUsers.Include(u => u.AspNetUserRoles).FirstAsync(x => x.Id == UserId);
             var buyerRole = await context.Roles.FirstAsync(x => x.Name == OrganisationFunction.Buyer.Name);
 
             user.AspNetUserRoles.Clear();
@@ -162,8 +162,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
 
             var adminRole = context.Roles.First(x => x.Name == OrganisationFunction.Authority.Name);
 
-            var user = context.AspNetUsers.Include(u => u.AspNetUserRoles).Single(x => x.Id == UserId);
-            var organisation = context.Organisations.Single(x => x.Name == NhsDigitalOrganisationName);
+            var user = context.AspNetUsers.Include(u => u.AspNetUserRoles).First(x => x.Id == UserId);
+            var organisation = context.Organisations.First(x => x.Name == NhsDigitalOrganisationName);
 
             user.AspNetUserRoles.Clear();
             user.AspNetUserRoles.Add(new() { Role = adminRole });
@@ -179,7 +179,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
 
             var organisation = await context
                 .Organisations
-                .SingleAsync(x => x.Name == organisationName);
+                .FirstAsync(x => x.Name == organisationName);
 
             return organisation.Id;
         }
@@ -188,7 +188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         {
             await using var context = GetEndToEndDbContext();
 
-            return await context.AspNetUsers.SingleAsync(x => x.Id == userId);
+            return await context.AspNetUsers.FirstAsync(x => x.Id == userId);
         }
     }
 }

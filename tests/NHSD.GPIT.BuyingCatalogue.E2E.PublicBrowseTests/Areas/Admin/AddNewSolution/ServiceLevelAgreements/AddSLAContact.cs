@@ -216,7 +216,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
                 .BeTrue();
 
             await using var context = GetEndToEndDbContext();
-            var contact = await context.SlaContacts.SingleOrDefaultAsync(slac => slac.SolutionId == SolutionId && slac.Id != ExistingContactId);
+            var contact = await context.SlaContacts.FirstOrDefaultAsync(slac => slac.SolutionId == SolutionId && slac.Id != ExistingContactId);
 
             contact.Should().NotBeNull();
 
@@ -230,7 +230,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         {
             using var context = GetEndToEndDbContext();
 
-            var contact = context.SlaContacts.SingleOrDefault(slac => slac.Id != ExistingContactId && slac.SolutionId == SolutionId);
+            var contact = context.SlaContacts.FirstOrDefault(slac => slac.Id != ExistingContactId && slac.SolutionId == SolutionId);
 
             if (contact is not null)
             {

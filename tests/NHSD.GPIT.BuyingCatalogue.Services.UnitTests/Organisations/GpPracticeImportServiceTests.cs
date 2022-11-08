@@ -152,7 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             result.TotalRecords.Should().Be(1);
             result.TotalRecordsUpdated.Should().Be(1);
 
-            var actual = dbContext.GpPracticeSizes.Single();
+            var actual = dbContext.GpPracticeSizes.First();
 
             actual.ExtractDate.Should().Be(CsvData.EXTRACT_DATE);
             actual.NumberOfPatients.Should().Be(CsvData.NUMBER_OF_PATIENTS);
@@ -186,7 +186,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             result.TotalRecords.Should().Be(1);
             result.TotalRecordsUpdated.Should().Be(1);
 
-            var actual = dbContext.GpPracticeSizes.Single();
+            var actual = dbContext.GpPracticeSizes.First();
 
             actual.ExtractDate.Should().Be(CsvData.EXTRACT_DATE);
             actual.NumberOfPatients.Should().Be(CsvData.NUMBER_OF_PATIENTS);

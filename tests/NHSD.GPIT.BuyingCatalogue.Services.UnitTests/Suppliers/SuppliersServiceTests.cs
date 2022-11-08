@@ -160,7 +160,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
             var actual = await service.GetAllSolutionsForSupplier(item2.SupplierId);
 
             actual.Count.Should().Be(1);
-            actual.Single().Id.Should().Be(item2.Id);
+            actual.First().Id.Should().Be(item2.Id);
         }
 
         [Theory]
@@ -176,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
 
             await service.AddSupplier(newSupplier);
 
-            var actual = await context.Suppliers.AsAsyncEnumerable().OrderByDescending(s => s.Id).Take(1).SingleAsync();
+            var actual = await context.Suppliers.AsAsyncEnumerable().OrderByDescending(s => s.Id).Take(1).FirstAsync();
 
             actual.Id.Should().Be(latestSupplier.Id + 1);
             actual.Name.Should().Be(newSupplier.SupplierName);
@@ -200,7 +200,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
 
             await service.UpdateSupplierActiveStatus(supplier.Id, newStatus);
 
-            var actual = await context.Suppliers.AsAsyncEnumerable().SingleAsync(s => s.Id == supplier.Id);
+            var actual = await context.Suppliers.AsAsyncEnumerable().FirstAsync(s => s.Id == supplier.Id);
 
             actual.IsActive.Should().Be(newStatus);
         }
@@ -218,7 +218,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
 
             await service.EditSupplierDetails(supplier.Id, model);
 
-            var actual = await context.Suppliers.AsAsyncEnumerable().SingleAsync(s => s.Id == supplier.Id);
+            var actual = await context.Suppliers.AsAsyncEnumerable().FirstAsync(s => s.Id == supplier.Id);
 
             actual.Name.Should().Be(model.SupplierName);
             actual.LegalName.Should().Be(model.SupplierLegalName);
@@ -240,7 +240,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
 
             await service.EditSupplierAddress(supplier.Id, newAddress);
 
-            var actual = await context.Suppliers.AsAsyncEnumerable().SingleAsync(s => s.Id == supplier.Id);
+            var actual = await context.Suppliers.AsAsyncEnumerable().FirstAsync(s => s.Id == supplier.Id);
 
             actual.Address.Should().BeEquivalentTo(newAddress);
         }
@@ -266,9 +266,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
             newContact.LastUpdatedByUser = null;
             await service.AddSupplierContact(supplier.Id, newContact);
 
-            var actual = await context.Suppliers.AsAsyncEnumerable().SingleAsync(s => s.Id == supplier.Id);
+            var actual = await context.Suppliers.AsAsyncEnumerable().FirstAsync(s => s.Id == supplier.Id);
 
-            actual.SupplierContacts.Single().Should().BeEquivalentTo(newContact);
+            actual.SupplierContacts.First().Should().BeEquivalentTo(newContact);
         }
 
         [Theory]
@@ -284,7 +284,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
 
             await service.EditSupplierContact(supplier.Id, supplier.SupplierContacts.First().Id, updatedContact);
 
-            var actual = await context.Suppliers.AsAsyncEnumerable().SingleAsync(s => s.Id == supplier.Id);
+            var actual = await context.Suppliers.AsAsyncEnumerable().FirstAsync(s => s.Id == supplier.Id);
 
             var savedContact = actual.SupplierContacts.First();
 
@@ -309,7 +309,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
 
             await service.DeleteSupplierContact(supplier.Id, contactToDelete);
 
-            var updatedSupplier = await context.Suppliers.SingleAsync(s => s.Id == supplier.Id);
+            var updatedSupplier = await context.Suppliers.FirstAsync(s => s.Id == supplier.Id);
 
             updatedSupplier.SupplierContacts.ToList().ForEach(sc => sc.Id.Should().NotBe(contactToDelete));
         }

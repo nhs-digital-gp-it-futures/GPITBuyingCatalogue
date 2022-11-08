@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         public async Task EditServiceLevel_CorrectlyDisplayed()
         {
             await using var context = GetEndToEndDbContext();
-            var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionId);
+            var solution = await context.CatalogueItems.FirstAsync(ci => ci.Id == SolutionId);
 
             CommonActions.PageTitle()
                 .Should()
@@ -188,7 +188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         public async Task EditServiceLevel_UnpublishedSolutionSingleServiceLevel_DeleteLinkVisible()
         {
             await using var context = GetEndToEndDbContext();
-            var catalogueItem = await context.CatalogueItems.SingleAsync(c => c.Id == SingleServiceLevelSolutionId);
+            var catalogueItem = await context.CatalogueItems.FirstAsync(c => c.Id == SingleServiceLevelSolutionId);
             catalogueItem.PublishedStatus = PublicationStatus.Unpublished;
             await context.SaveChangesAsync();
 
@@ -203,7 +203,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         public void Dispose()
         {
             using var context = GetEndToEndDbContext();
-            var solution = context.CatalogueItems.Single(c => c.Id == SingleServiceLevelSolutionId);
+            var solution = context.CatalogueItems.First(c => c.Id == SingleServiceLevelSolutionId);
 
             if (solution is not null && solution.PublishedStatus != PublicationStatus.Published)
             {

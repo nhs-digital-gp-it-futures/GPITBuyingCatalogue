@@ -104,8 +104,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             var modelState = result.Should().BeOfType<ViewResult>().Subject.ViewData.ModelState;
 
             modelState.ValidationState.Should().Be(ModelValidationState.Invalid);
-            modelState.Keys.Single().Should().Be(ReviewContractController.ErrorKey);
-            modelState.Values.Single().Errors.Single().ErrorMessage.Should().Be(ReviewContractController.ErrorMessage);
+            modelState.Keys.First().Should().Be(ReviewContractController.ErrorKey);
+            modelState.Values.First().Errors.First().ErrorMessage.Should().Be(ReviewContractController.ErrorMessage);
         }
 
         [Theory]

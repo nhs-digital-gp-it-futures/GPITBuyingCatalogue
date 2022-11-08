@@ -121,7 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests
             });
             builder.ConfigureServices(services =>
             {
-                var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(BuyingCatalogueDbContext));
+                var descriptor = services.FirstOrDefault(d => d.ServiceType == typeof(BuyingCatalogueDbContext));
                 if (descriptor is not null)
                 {
                     services.Remove(descriptor);

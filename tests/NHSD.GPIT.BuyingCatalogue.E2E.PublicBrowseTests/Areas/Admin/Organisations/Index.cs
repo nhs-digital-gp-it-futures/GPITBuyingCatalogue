@@ -109,9 +109,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 
                 var pageSummary = GetPageSummary();
 
-                pageSummary.OdsCodes.Single().Should().Be(sampleOrganisation.ExternalIdentifier);
-                pageSummary.OrganisationIds.Single().Should().Be(sampleOrganisation.Id);
-                pageSummary.OrganisationNames.Single().Should().Be(sampleOrganisation.Name);
+                pageSummary.OdsCodes.First().Should().Be(sampleOrganisation.ExternalIdentifier);
+                pageSummary.OrganisationIds.First().Should().Be(sampleOrganisation.Id);
+                pageSummary.OrganisationNames.First().Should().Be(sampleOrganisation.Name);
             });
         }
 

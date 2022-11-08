@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Associat
 
             var associatedService = await context.CatalogueItems
                 .Include(ci => ci.AssociatedService)
-                .SingleAsync(ci => ci.Id == AssociatedServiceId);
+                .FirstAsync(ci => ci.Id == AssociatedServiceId);
 
             associatedService.Name.Should().Be(name);
             associatedService.AssociatedService.Description.Should().Be(description);
@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Associat
 
             var existingAssociatedService = await context
                 .CatalogueItems
-                .SingleOrDefaultAsync(ci => ci.Id == ExistingAssociatedServiceId);
+                .FirstOrDefaultAsync(ci => ci.Id == ExistingAssociatedServiceId);
 
             var name = existingAssociatedService.Name;
 

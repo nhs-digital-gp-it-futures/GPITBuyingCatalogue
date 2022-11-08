@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
         public void TriageSelection_ShowsCorrectTitle(OrderTriageValue option, string title)
         {
             using var context = GetEndToEndDbContext();
-            var organisation = context.Organisations.Single(o => string.Equals(o.InternalIdentifier, InternalOrgId));
+            var organisation = context.Organisations.First(o => string.Equals(o.InternalIdentifier, InternalOrgId));
 
             var parameters = new Dictionary<string, string>
             {
@@ -113,7 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
         public void StepsNotCompleted_LoadsCorrectPage(OrderTriageValue option, string title)
         {
             using var context = GetEndToEndDbContext();
-            var organisation = context.Organisations.Single(o => string.Equals(o.InternalIdentifier, InternalOrgId));
+            var organisation = context.Organisations.First(o => string.Equals(o.InternalIdentifier, InternalOrgId));
 
             var parameters = new Dictionary<string, string>
             {

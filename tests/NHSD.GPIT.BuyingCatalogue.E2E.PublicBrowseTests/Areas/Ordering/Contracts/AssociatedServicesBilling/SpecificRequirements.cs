@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.Associated
                 typeof(AssociatedServicesBillingController),
                 nameof(AssociatedServicesBillingController.BespokeRequirements)).Should().BeTrue();
 
-            var flags = GetEndToEndDbContext().ContractFlags.Single(x => x.OrderId == OrderId);
+            var flags = GetEndToEndDbContext().ContractFlags.First(x => x.OrderId == OrderId);
 
             flags.HasSpecificRequirements.Should().BeTrue();
         }
@@ -105,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.Associated
                 typeof(OrderController),
                 nameof(OrderController.Order)).Should().BeTrue();
 
-            var flags = GetEndToEndDbContext().ContractFlags.Single(x => x.OrderId == OrderId);
+            var flags = GetEndToEndDbContext().ContractFlags.First(x => x.OrderId == OrderId);
 
             flags.HasSpecificRequirements.Should().BeFalse();
         }

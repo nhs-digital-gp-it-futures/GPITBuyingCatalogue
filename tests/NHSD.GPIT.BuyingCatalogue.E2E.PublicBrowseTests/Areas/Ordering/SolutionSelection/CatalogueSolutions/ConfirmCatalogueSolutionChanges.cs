@@ -136,7 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
             {
                 OrderId = OrderId,
                 Created = DateTime.Now,
-                CatalogueItem = context.CatalogueItems.Single(x => x.Id == ExistingSolutionId),
+                CatalogueItem = context.CatalogueItems.First(x => x.Id == ExistingSolutionId),
             });
 
             context.SaveChanges();

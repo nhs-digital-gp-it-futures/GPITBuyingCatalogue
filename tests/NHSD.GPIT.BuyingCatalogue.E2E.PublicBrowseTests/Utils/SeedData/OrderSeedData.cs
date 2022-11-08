@@ -270,7 +270,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             {
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "001")),
+                CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "001")),
             };
 
             order.OrderItems.Add(addedSolution);
@@ -318,21 +318,21 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             {
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "001")),
+                CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "001")),
             };
 
             var additionalService = new OrderItem
             {
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "001A99")),
+                CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "001A99")),
             };
 
             var associatedService = new OrderItem
             {
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "S-999")),
+                CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "S-999")),
             };
 
             order.OrderItems.Add(solution);
@@ -386,7 +386,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
                     .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                     .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
-                    .Single();
+                    .First();
 
             var addedSolution = new OrderItem
             {
@@ -394,7 +394,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
                 Quantity = 10,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99999, "001")),
+                CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99999, "001")),
                 OrderItemFunding = new OrderItemFunding
                 {
                     CatalogueItemId = new CatalogueItemId(99999, "001"),
@@ -465,7 +465,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
                     .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                     .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
-                    .SingleAsync();
+                    .FirstAsync();
 
             var addedSolution = new OrderItem
             {
@@ -473,7 +473,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
                 Quantity = 10,
-                CatalogueItem = await context.CatalogueItems.SingleAsync(c => c.Id == new CatalogueItemId(99999, "003")),
+                CatalogueItem = await context.CatalogueItems.FirstAsync(c => c.Id == new CatalogueItemId(99999, "003")),
             };
 
             var recipients = context.ServiceRecipients.ToList();
@@ -538,7 +538,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
                     .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                     .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
-                    .SingleAsync();
+                    .FirstAsync();
 
             var addedSolution = new OrderItem
             {
@@ -546,7 +546,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
                 Quantity = 10,
-                CatalogueItem = await context.CatalogueItems.SingleAsync(c => c.Id == new CatalogueItemId(99999, "001")),
+                CatalogueItem = await context.CatalogueItems.FirstAsync(c => c.Id == new CatalogueItemId(99999, "001")),
             };
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
@@ -598,7 +598,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
                     .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                     .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
-                    .Single();
+                    .First();
 
             price.CataloguePriceCalculationType = EntityFramework.Catalogue.Models.CataloguePriceCalculationType.SingleFixed;
             price.OrderItemPriceTiers.First().Price = 0;
@@ -609,7 +609,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
                 Quantity = 10,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99999, "001")),
+                CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99999, "001")),
                 OrderItemFunding = new OrderItemFunding
                 {
                     CatalogueItemId = new CatalogueItemId(99999, "001"),
@@ -669,7 +669,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
                 .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                 .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
-                .Single();
+                .First();
 
             var addedSolution = new OrderItem
             {
@@ -677,7 +677,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
                 Quantity = 10,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "002")),
+                CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "002")),
             };
 
             var recipients = context.ServiceRecipients.ToList();
@@ -737,21 +737,21 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
                 .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                 .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
-                .Single();
+                .First();
 
             var priceMultiplePriceSolution = context.CatalogueItems
                 .Where(c => c.Id == new CatalogueItemId(99998, "001"))
                 .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
                 .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                 .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
-                .Single();
+                .First();
 
             var addedSinglePriceCatalogueSolution = new OrderItem
             {
                 OrderItemPrice = priceSinglePriceSolution,
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "002")),
+                CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "002")),
             };
 
             var addedMultiplePriceCatalogueSolution = new OrderItem
@@ -759,14 +759,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 OrderItemPrice = priceMultiplePriceSolution,
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "001")),
+                CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "001")),
             };
 
             var addedAdditionalSolution = new OrderItem
             {
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "001A99")),
+                CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "001A99")),
             };
 
             var recipients = context.ServiceRecipients.ToList();
@@ -832,21 +832,21 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
                 .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                 .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
-                .Single();
+                .First();
 
             var priceMultiplePriceSolution = context.CatalogueItems
                 .Where(c => c.Id == new CatalogueItemId(99998, "001"))
                 .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
                 .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                 .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
-                .Single();
+                .First();
 
             var addedSinglePriceCatalogueSolution = new OrderItem
             {
                 OrderItemPrice = priceSinglePriceSolution,
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "002")),
+                CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "002")),
             };
 
             var addedMultiplePriceCatalogueSolution = new OrderItem
@@ -854,7 +854,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 OrderItemPrice = priceMultiplePriceSolution,
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "001")),
+                CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "001")),
             };
 
             var addedAdditionalSolution = new OrderItem
@@ -862,7 +862,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 OrderItemPrice = priceSinglePriceSolution,
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "002A999")),
+                CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "002A999")),
             };
 
             var recipients = context.ServiceRecipients.ToList();
@@ -929,8 +929,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             };
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
-            var solution = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "001"));
-            var additionalService = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "S-999"));
+            var solution = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "001"));
+            var additionalService = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "S-999"));
 
             order.OrderItems.Add(new OrderItem { Created = DateTime.UtcNow, OrderId = orderId, CatalogueItem = solution });
             order.OrderItems.Add(new OrderItem { Created = DateTime.UtcNow, OrderId = orderId, CatalogueItem = additionalService });
@@ -979,14 +979,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
                 .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                 .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
-                .Single();
+                .First();
 
             var addedSolution = new OrderItem
             {
                 OrderItemPrice = price,
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "S-999")),
+                CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "S-999")),
             };
 
             order.OrderItems.Add(addedSolution);
@@ -1035,14 +1035,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
                 .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                 .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
-                .Single();
+                .First();
 
             var addedSolution = new OrderItem
             {
                 OrderItemPrice = price,
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "S-999")),
+                CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "S-999")),
             };
 
             var recipients = context.ServiceRecipients.ToList();
@@ -1091,9 +1091,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             };
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
-            var solution = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "001"));
-            var additionalService = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "001A99"));
-            var associatedService = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "S-999"));
+            var solution = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "001"));
+            var additionalService = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "001A99"));
+            var associatedService = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "S-999"));
 
             order.OrderItems.Add(new OrderItem { Created = DateTime.UtcNow, OrderId = orderId, CatalogueItem = solution });
             order.OrderItems.Add(new OrderItem { Created = DateTime.UtcNow, OrderId = orderId, CatalogueItem = additionalService });
@@ -1147,9 +1147,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             };
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
-            var solution = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "001"));
-            var additionalService = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "001A99"));
-            var associatedService = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "S-999"));
+            var solution = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "001"));
+            var additionalService = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "001A99"));
+            var associatedService = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "S-999"));
 
             var solutionItem = new OrderItem { Created = DateTime.UtcNow, OrderId = orderId, CatalogueItem = solution };
 
@@ -1219,14 +1219,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
                 .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                 .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
-                .Single();
+                .First();
 
             var addedSolution = new OrderItem
             {
                 OrderItemPrice = price,
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "001")),
+                CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "001")),
             };
 
             var recipients = context.ServiceRecipients.ToList();
@@ -1298,28 +1298,28 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
                 .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                 .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
-                .Single();
+                .First();
 
             var additionalPrice = context.CatalogueItems
                 .Where(c => c.Id == new CatalogueItemId(99998, "002A999"))
                 .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
                 .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                 .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
-                .Single();
+                .First();
 
             var associatedPrice = context.CatalogueItems
                 .Where(c => c.Id == new CatalogueItemId(99998, "S-997"))
                 .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
                 .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                 .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
-                .Single();
+                .First();
 
             var addedMultiplePriceCatalogueSolution = new OrderItem
             {
                 OrderItemPrice = priceMultiplePriceSolution,
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "001")),
+                CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "001")),
             };
 
             var addedAdditionalSolution = new OrderItem
@@ -1327,7 +1327,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 OrderItemPrice = additionalPrice,
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "002A999")),
+                CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "002A999")),
             };
 
             var addedAssociatedSolution = new OrderItem
@@ -1335,7 +1335,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 OrderItemPrice = associatedPrice,
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "S-997")),
+                CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "S-997")),
             };
 
             var recipients = context.ServiceRecipients.ToList();
@@ -1405,14 +1405,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
                 .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                 .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
-                .Single();
+                .First();
 
             var service = new OrderItem
             {
                 OrderItemPrice = price,
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "S-997")),
+                CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "S-997")),
             };
 
             var recipients = context.ServiceRecipients.ToList();
@@ -1553,7 +1553,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             {
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "S-997")),
+                CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "S-997")),
             };
 
             order.OrderItems.Add(service);
@@ -1611,7 +1611,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             {
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "S-997")),
+                CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "S-997")),
                 OrderItemRecipients = recipients.ToList(),
             });
 
@@ -1619,7 +1619,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             {
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "S-998")),
+                CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "S-998")),
             });
 
             context.Add(order);
@@ -1666,14 +1666,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
                 .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                 .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
-                .Single();
+                .First();
 
             var addedSolution = new OrderItem
             {
                 OrderItemPrice = price,
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
-                CatalogueItem = context.CatalogueItems.Single(c => c.Id == new CatalogueItemId(99998, "001")),
+                CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "001")),
             };
 
             var recipients = context.ServiceRecipients.ToList();
@@ -1755,7 +1755,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
         private static async Task<EntityFramework.Catalogue.Models.Framework> GetFramework(BuyingCatalogueDbContext context, string frameworkId)
         {
-            return await context.Frameworks.SingleAsync(f => f.Id == frameworkId);
+            return await context.Frameworks.FirstAsync(f => f.Id == frameworkId);
         }
     }
 }

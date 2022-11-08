@@ -75,13 +75,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Developm
             .BeTrue();
 
             using var context = GetEndToEndDbContext();
-            context.WorkOffPlans.SingleOrDefaultAsync(wp => wp.Id == WorkOffPlanId).Result.Should().BeNull();
+            context.WorkOffPlans.FirstOrDefaultAsync(wp => wp.Id == WorkOffPlanId).Result.Should().BeNull();
         }
 
         public void Dispose()
         {
             using var context = GetEndToEndDbContext();
-            var workOffPlan = context.WorkOffPlans.SingleOrDefaultAsync(wp => wp.Id == WorkOffPlanId).Result;
+            var workOffPlan = context.WorkOffPlans.FirstOrDefaultAsync(wp => wp.Id == WorkOffPlanId).Result;
 
             if (workOffPlan is null)
             {

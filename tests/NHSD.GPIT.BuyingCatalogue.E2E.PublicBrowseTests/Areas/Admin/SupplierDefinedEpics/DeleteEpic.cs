@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
         public void Delete_AllSectionsDisplayed()
         {
             using var context = GetEndToEndDbContext();
-            var epic = context.Epics.AsNoTracking().Single(e => e.Id == EpicId);
+            var epic = context.Epics.AsNoTracking().First(e => e.Id == EpicId);
 
             CommonActions.PageTitle().Should().Be($"Delete {epic.Name}?".FormatForComparison());
             CommonActions.LedeText().Should().Be("Confirm you want to delete this supplier defined Epic.".FormatForComparison());
