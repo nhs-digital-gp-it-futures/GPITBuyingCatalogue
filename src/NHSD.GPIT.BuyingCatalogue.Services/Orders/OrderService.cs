@@ -337,7 +337,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 templateId = orderMessageSettings.DualCsvTemplateId;
             }
 
-            var userEmail = dbContext.Users.First(x => x.Id == userId).Email;            
+            var userEmail = dbContext.Users.First(x => x.Id == userId).Email;
             var pdfData = pdfService.Convert(orderSummaryUri);
 
             fullOrderStream.Position = 0;
