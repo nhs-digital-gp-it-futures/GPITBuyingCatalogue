@@ -23,6 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
     {
         public const string OrderIdToken = "order_id";
         public const string OrderSummaryLinkToken = "order_summary_link";
+        public const string OrderSummaryCsv = "order_summary_csv";
 
         private readonly BuyingCatalogueDbContext dbContext;
         private readonly ICsvService csvService;
@@ -336,13 +337,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 templateId = orderMessageSettings.DualCsvTemplateId;
             }
 
-            var userEmail = dbContext.Users.First(x => x.Id == userId).Email;
+            var userEmail = dbContext.Users.First(x => x.Id == userId).Email;            
             var pdfData = pdfService.Convert(orderSummaryUri);
 
+            fullOrderStream.Position = 0;
             var userTokens = new Dictionary<string, dynamic>
             {
                 { OrderIdToken, $"{callOffId}" },
                 { OrderSummaryLinkToken, NotificationClient.PrepareUpload(pdfData) },
+                { OrderSummaryCsv, NotificationClient.PrepareUpload(fullOrderStream.ToArray(), true) },
             };
 
             await Task.WhenAll(
