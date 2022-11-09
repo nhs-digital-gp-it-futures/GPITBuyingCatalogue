@@ -1,5 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
 {
@@ -24,6 +27,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
 
         [StringLength(256)]
         public string EmailAddress { get; set; }
+
+        public string SelectedAccountType { get; set; }
+
+        public IList<SelectListItem> AccountTypeOptions => new List<SelectListItem>
+        {
+            new(OrganisationFunction.Buyer.DisplayName, $"{OrganisationFunction.Buyer.Name}"),
+            new(OrganisationFunction.AccountManager.DisplayName, $"{OrganisationFunction.AccountManager.Name}"),
+        };
 
         public string ControllerName { get; set; }
     }

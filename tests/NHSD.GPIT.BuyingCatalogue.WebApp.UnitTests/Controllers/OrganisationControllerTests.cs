@@ -166,6 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             OrganisationBaseController controller)
         {
             model.EmailAddress = "a@b.com";
+            model.SelectedAccountType = OrganisationFunction.Buyer.Name;
 
             mockCreateBuyerService
                 .Setup(x => x.Create(organisationId, model.FirstName, model.LastName, model.EmailAddress, OrganisationFunction.Buyer.Name))
