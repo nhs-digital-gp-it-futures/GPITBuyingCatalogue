@@ -29,10 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="node_modules\node-gyp\lib\Find-VisualStudio.cs" />
-  </ItemGroup>  
-
-  <ItemGroup>
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
     <PackageReference Include="Enums.NET" Version="4.0.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.0.2" />
