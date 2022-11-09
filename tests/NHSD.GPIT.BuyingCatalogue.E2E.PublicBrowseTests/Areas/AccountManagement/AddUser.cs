@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
             AccountManagementPages.AddUser.EnterFirstName(user.FirstName);
             AccountManagementPages.AddUser.EnterLastName(user.LastName);
             AccountManagementPages.AddUser.EnterEmailAddress(user.EmailAddress);
-            AccountManagementPages.AddUser.EnterRole(OrganisationFunction.Buyer.Name);
+            CommonActions.ClickRadioButtonWithText(OrganisationFunction.Buyer.Name);
 
             CommonActions.ClickSave();
 
@@ -110,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
             AccountManagementPages.AddUser.EnterFirstName(user.FirstName);
             AccountManagementPages.AddUser.EnterLastName(user.LastName);
             AccountManagementPages.AddUser.EnterEmailAddress("test");
-            AccountManagementPages.AddUser.EnterRole(OrganisationFunction.Buyer.Name);
+            CommonActions.ClickRadioButtonWithText(OrganisationFunction.Buyer.Name);
 
             CommonActions.ClickSave();
 
@@ -134,7 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
             AccountManagementPages.AddUser.EnterFirstName(user.FirstName);
             AccountManagementPages.AddUser.EnterLastName(user.LastName);
             AccountManagementPages.AddUser.EnterEmailAddress(user.Email);
-            AccountManagementPages.AddUser.EnterRole(OrganisationFunction.Buyer.Name);
+            CommonActions.ClickRadioButtonWithText(OrganisationFunction.Buyer.Name);
 
             CommonActions.ClickSave();
 

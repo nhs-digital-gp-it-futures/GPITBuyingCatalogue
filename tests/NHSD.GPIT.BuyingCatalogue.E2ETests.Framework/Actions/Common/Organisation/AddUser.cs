@@ -26,17 +26,5 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common.Organisati
         {
             Driver.FindElement(AddUserObjects.Email).SendKeys(emailAddress);
         }
-        public void EnterRole(string role)
-        {
-            Driver.FindElements(CommonSelectors.RadioButtonItems)
-                .First(r => r.FindElement(By.TagName("label")).Text == role)
-                .FindElement(By.TagName("input"))
-                .Click();
-        }
-
-        public string GetConfirmationMessage()
-        {
-            return Driver.FindElement(AddUserObjects.ConfirmationTitle).Text;
-        }
     }
 }
