@@ -32,8 +32,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
 
         public IEnumerable<SelectableRadioOption<string>> AccountTypeOptions => new List<SelectableRadioOption<string>>
         {
-            new(OrganisationFunction.Buyer.DisplayName, $"{OrganisationFunction.Buyer.Name}"),
-            new(OrganisationFunction.AccountManager.DisplayName, $"{OrganisationFunction.AccountManager.Name}"),
+            new(OrganisationFunction.Buyer.DisplayName, OrganisationFunction.Buyer.Name),
+            new(OrganisationFunction.AccountManager.DisplayName, OrganisationFunction.AccountManager.Name),
         };
 
         public string ControllerName { get; set; }
