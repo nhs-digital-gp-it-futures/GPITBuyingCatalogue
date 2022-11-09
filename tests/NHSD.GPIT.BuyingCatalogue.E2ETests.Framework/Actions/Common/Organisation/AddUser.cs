@@ -1,4 +1,5 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common.Organisation;
 using OpenQA.Selenium;
 
@@ -24,6 +25,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common.Organisati
         public void EnterEmailAddress(string emailAddress)
         {
             Driver.FindElement(AddUserObjects.Email).SendKeys(emailAddress);
+        }
+        public void EnterRole(string role)
+        {
+            Driver.FindElements(CommonSelectors.RadioButtonItems)
+                .First(r => r.FindElement(By.TagName("label")).Text == role)
+                .FindElement(By.TagName("input"))
+                .Click();
         }
 
         public string GetConfirmationMessage()
