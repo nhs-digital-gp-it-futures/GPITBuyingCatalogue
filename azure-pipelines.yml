@@ -10,7 +10,13 @@ variables:
   - group: dev-acr-secrets
 
 trigger:
-- develop
+  branches:
+    include:
+    - develop
+  paths:
+    exclude:
+    - '**/BuyingCatalogueFunction*'
+    - '**/OrganisationImporter*'
 
 pr:
 - develop
@@ -190,19 +196,19 @@ jobs:
     artifact: dacpacs
 
 - job: createBuildArtifact
-  displayName: Create Build Artifact
+  displayName: Publish Terraform
   pool:
     vmImage: 'ubuntu-latest'
 
   steps:
   - task: CopyFiles@2
-    displayName: Build Artifact - Code
+    displayName: Build Artifact - Terraform
     inputs:
-      SourceFolder: 'terraform'
+      SourceFolder: 'terraform/webapp'
       Contents: '**'
-      TargetFolder: '$(build.artifactStagingDirectory)/terraform'
+      TargetFolder: '$(build.artifactStagingDirectory)/terraform/webapp'
       CleanTargetFolder: false
       OverWrite: true
 
-  - publish: $(build.artifactStagingDirectory)/terraform
+  - publish: $(build.artifactStagingDirectory)/terraform/webapp
     artifact: build-artifact
