@@ -8,10 +8,10 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 
@@ -22,21 +22,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     [Route("order/organisation/{internalOrgId}/order/{callOffId}")]
     public sealed class OrderController : Controller
     {
-        private readonly IContractsService contractsService;
         private readonly IOrderService orderService;
+        private readonly IOrderProgressService orderProgressService;
         private readonly IOrganisationsService organisationsService;
         private readonly IPdfService pdfService;
         private readonly PdfSettings pdfSettings;
 
         public OrderController(
-            IContractsService contractsService,
             IOrderService orderService,
+            IOrderProgressService orderProgressService,
             IOrganisationsService organisationsService,
             IPdfService pdfService,
             PdfSettings pdfSettings)
         {
-            this.contractsService = contractsService ?? throw new ArgumentNullException(nameof(contractsService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
+            this.orderProgressService = orderProgressService ?? throw new ArgumentNullException(nameof(orderProgressService));
             this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
             this.pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
             this.pdfSettings = pdfSettings ?? throw new ArgumentNullException(nameof(pdfSettings));
@@ -55,10 +55,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                     new { internalOrgId, callOffId });
             }
 
-            var orderModel = new OrderModel(
-                internalOrgId,
-                order,
-                new(order))
+            var orderProgress = await orderProgressService.GetOrderProgress(internalOrgId, callOffId);
+
+            var orderModel = new OrderModel(internalOrgId, order, orderProgress)
             {
                 DescriptionUrl = Url.Action(
                     nameof(OrderDescriptionController.OrderDescription),
@@ -122,7 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         {
             var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
-            var orderModel = new OrderModel(internalOrgId, null, new OrderTaskList(), organisation.Name)
+            var orderModel = new OrderModel(internalOrgId, null, new OrderProgress(), organisation.Name)
             {
                 DescriptionUrl = Url.Action(
                     nameof(OrderDescriptionController.NewOrderDescription),

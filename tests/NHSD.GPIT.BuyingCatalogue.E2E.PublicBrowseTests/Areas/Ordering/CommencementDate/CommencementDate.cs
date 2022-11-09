@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -305,15 +304,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CommencementDate
         }
 
         [Fact]
-        public void CommencementDate_OrderValue40K_InitialPeriodAndMaximumTermTooHigh_ThrowsError()
+        public async Task CommencementDate_OrderValue40K_InitialPeriodAndMaximumTermTooHigh_ThrowsError()
         {
-            using var context = GetEndToEndDbContext();
+            await using var context = GetEndToEndDbContext();
 
-            var order = context.Orders.First(o => o.OrderNumber == CallOffId.OrderNumber && o.Revision == CallOffId.Revision);
+            var order = await context.Order(CallOffId);
 
             order.OrderTriageValue = OrderTriageValue.Under40K;
 
-            context.SaveChanges();
+            await context.SaveChangesAsync();
 
             Driver.Navigate().Refresh();
 

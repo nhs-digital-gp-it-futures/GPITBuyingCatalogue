@@ -360,6 +360,7 @@ MigrationBackup/
 
 # Generated js files
 **/wwwroot/js/*.js
+**/wwwroot/ts/*.js
 **/wwwroot/**/*.js.map
 **/wwwroot/**/*.min.js
 !**/wwwroot/js/accessible-autocomplete/accessible-autocomplete.min.js

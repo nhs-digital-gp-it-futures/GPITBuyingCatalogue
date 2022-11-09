@@ -31,7 +31,7 @@
                                             label-hint="Provide a description of your order."
                                             data-test-id="test-order-description"
                                             url="@Model.DescriptionUrl"
-                                            status="@Model.SectionStatuses.DescriptionStatus" />
+                                            status="@Model.Progress.DescriptionStatus" />
 
                         <nhs-task-list-item label-text="Call-off Ordering Party contact details"
                                             label-hint="Provide information about the primary contact for your order."
@@ -40,7 +40,7 @@
                                                      nameof(OrderingPartyController.OrderingParty),
                                                      typeof(OrderingPartyController).ControllerName(),
                                                      new { Model.InternalOrgId, Model.CallOffId})"
-                                            status="@Model.SectionStatuses.OrderingPartyStatus" />
+                                            status="@Model.Progress.OrderingPartyStatus" />
 
                         <nhs-task-list-item label-text="Supplier information and contact details"
                                             label-hint="Find the supplier you want to order from and select a supplier contact."
@@ -49,7 +49,7 @@
                                                      nameof(SupplierController.Supplier),
                                                      typeof(SupplierController).ControllerName(),
                                                      new { Model.InternalOrgId, Model.CallOffId})"
-                                            status="@Model.SectionStatuses.SupplierStatus" />
+                                            status="@Model.Progress.SupplierStatus" />
 
                         <nhs-task-list-item label-text="Timescales for Call-off Agreement"
                                             label-hint="Provide the commencement date, the length of the contract and its initial period."
@@ -58,27 +58,27 @@
                                                      nameof(CommencementDateController.CommencementDate),
                                                      typeof(CommencementDateController).ControllerName(),
                                                      new { Model.InternalOrgId, Model.CallOffId})"
-                                            status="@Model.SectionStatuses.CommencementDateStatus" />
+                                            status="@Model.Progress.CommencementDateStatus" />
                     </nhs-task-list-section>
 
                     <nhs-task-list-section label-text="Add solutions and services">
                         <nhs-task-list-item label-text="Select solutions and services"
                                             label-hint="Add Service Recipients, prices and quantities for what you’re ordering."
                                             data-test-id="test-solutions-and-services"
-                                            url="@SolutionSelectionUrlTarget(Model.SectionStatuses.SolutionOrService)"
-                                            status="@Model.SectionStatuses.SolutionOrService" />
+                                            url="@SolutionSelectionUrlTarget(Model.Progress.SolutionOrService)"
+                                            status="@Model.Progress.SolutionOrService" />
 
                         <nhs-task-list-item label-text="Planned delivery dates"
                                             label-hint="Enter the planned delivery dates for the items you're ordering."
                                             data-test-id="test-planned-delivery-dates"
-                                            url="@DeliveryDatesUrlTarget(Model.SectionStatuses.DeliveryDates)"
-                                            status="@Model.SectionStatuses.DeliveryDates" />
+                                            url="@DeliveryDatesUrlTarget(Model.Progress.DeliveryDates)"
+                                            status="@Model.Progress.DeliveryDates" />
 
                         <nhs-task-list-item label-text="Select funding sources"
                                             label-hint="Review how you’ll be paying for your order."
                                             data-test-id="test-funding-sources"
                                             url="@FundingSourceUrlTarget()"
-                                            status="@Model.SectionStatuses.FundingSource" />
+                                            status="@Model.Progress.FundingSource" />
                     </nhs-task-list-section>
 
                     <nhs-task-list-section label-text="Complete contract">
@@ -89,7 +89,7 @@
                                                      nameof(ImplementationPlanController.DefaultImplementationPlan),
                                                      typeof(ImplementationPlanController).ControllerName(),
                                                      new { Model.InternalOrgId, Model.CallOffId })"
-                                            status="@Model.SectionStatuses.ImplementationPlan" />
+                                            status="@Model.Progress.ImplementationPlan" />
 
                         <nhs-task-list-item label-text="Associated Service billing and requirements"
                                             label-hint="Select how you’d like to be billed for any Associated Services in your order."
@@ -98,7 +98,7 @@
                                                      nameof(AssociatedServicesBillingController.ReviewBilling),
                                                      typeof(AssociatedServicesBillingController).ControllerName(),
                                                      new { Model.InternalOrgId, Model.CallOffId })"
-                                            status="@Model.SectionStatuses.AssociatedServiceBilling" />
+                                            status="@Model.Progress.AssociatedServiceBilling" />
 
                         <nhs-task-list-item label-text="Data processing information"
                                             label-hint="Select if you want to make any changes to the default data processing information."
@@ -107,7 +107,7 @@
                                                     nameof(DataProcessingPlanController.Index),
                                                     typeof(DataProcessingPlanController).ControllerName(),
                                                     new { Model.InternalOrgId, Model.CallOffId })"
-                                            status="@Model.SectionStatuses.DataProcessingInformation" />
+                                            status="@Model.Progress.DataProcessingInformation" />
                     </nhs-task-list-section>
 
                     <nhs-task-list-section label-text="Complete order">
@@ -118,7 +118,7 @@
                                                      nameof(OrderController.Summary),
                                                      typeof(OrderController).ControllerName(),
                                                      new { Model.InternalOrgId, Model.CallOffId })"
-                                            status="@Model.SectionStatuses.ReviewAndCompleteStatus" />
+                                            status="@Model.Progress.ReviewAndCompleteStatus" />
                     </nhs-task-list-section>
                 </nhs-task-list>
 

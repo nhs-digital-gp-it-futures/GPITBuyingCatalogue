@@ -14,8 +14,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.Services;
 using NHSD.GPIT.BuyingCatalogue.Services.Routing;
+using NHSD.GPIT.BuyingCatalogue.Services.TaskList;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Fakes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ModelBinders;
@@ -115,6 +117,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             }
 
             services.AddSingleton<IRoutingService, RoutingService>();
+            services.AddSingleton<IOrderTaskProgressProviderService, OrderTaskProgressProviderService>();
+
             ServicesStartup.Configure(services);
 
             services.AddRazorPages();
