@@ -1,14 +1,19 @@
 ﻿using System;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
 {
     public sealed class OrderModel : OrderingBaseModel
     {
-        public OrderModel(string internalOrgId, EntityFramework.Ordering.Models.Order order, OrderTaskList orderSections, string organisationName = "")
+        public OrderModel(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            OrderProgress orderSections,
+            string organisationName = "")
         {
             InternalOrgId = internalOrgId;
-            SectionStatuses = orderSections;
+            Progress = orderSections;
 
             if (order is null)
             {
@@ -44,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
 
         public DateTime? LastUpdated { get; set; }
 
-        public OrderTaskList SectionStatuses { get; set; }
+        public OrderProgress Progress { get; set; }
 
         public bool ShowSelectFrameworkPage { get; set; }
     }
