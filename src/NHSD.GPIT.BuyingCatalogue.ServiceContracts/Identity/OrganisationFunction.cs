@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity
     {
         public static readonly OrganisationFunction Authority = new(1, "Authority", "Admin", "This type of user is an administrator on behalf of NHS Digital.");
         public static readonly OrganisationFunction Buyer = new(2, "Buyer", "Buyer", "This type of user can place orders on the Buying Catalogue for your organisation.");
-        public static readonly OrganisationFunction AccountManager = new(3, "AccountManager", "Account Manager", "This type of user can manage user accounts for your organisation.");
+        public static readonly OrganisationFunction AccountManager = new(3, "AccountManager", "Account manager", "This type of user can manage user accounts for your organisation.");
 
         private static readonly IEnumerable<OrganisationFunction> Values = new[] { Authority, Buyer, AccountManager };
 
