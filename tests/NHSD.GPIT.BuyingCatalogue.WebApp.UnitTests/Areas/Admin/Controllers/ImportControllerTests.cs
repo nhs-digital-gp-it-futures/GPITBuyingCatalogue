@@ -5,9 +5,6 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
-using Hangfire;
-using Hangfire.Common;
-using Hangfire.States;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -75,31 +72,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_ImportGpPracticeList_ReturnsExpectedResult(
             string emailAddress,
             ImportGpPracticeListModel model,
-            [Frozen] Mock<IBackgroundJobClient> mockBackgroundJobClient,
             [Frozen] Mock<IUsersService> mockUsersService,
             ImportController systemUnderTest)
         {
             model.CsvUrl = Url;
-            Job job = null;
 
             mockUsersService
                 .Setup(x => x.GetUser(UserId))
                 .ReturnsAsync(new AspNetUser { Email = emailAddress });
 
-            mockBackgroundJobClient
-                .Setup(x => x.Create(It.IsAny<Job>(), It.IsAny<IState>()))
-                .Callback<Job, IState>((j, _) => job = j)
-                .Returns(string.Empty);
-
             var result = (await systemUnderTest.ImportGpPracticeList(model)).As<RedirectToActionResult>();
 
             mockUsersService.VerifyAll();
-            mockBackgroundJobClient.VerifyAll();
-
-            job.Type.Should().BeAssignableTo<IGpPracticeService>();
-            job.Method.Name.Should().Be(nameof(IGpPracticeService.ImportGpPracticeData));
-            job.Args[0].Should().BeEquivalentTo(new Uri(Url));
-            job.Args[1].Should().Be(emailAddress);
 
             result.ActionName.Should().Be(nameof(ImportController.ImportGpPracticeListConfirmation));
         }
