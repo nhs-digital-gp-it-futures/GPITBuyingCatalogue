@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
-            CommonActions.PageTitle().Should().BeEquivalentTo($"Add a new user-{organisation.Name}".FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo($"Add user-{organisation.Name}".FormatForComparison());
 
             CommonActions.ElementIsDisplayed(AddUserObjects.FirstName).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddUserObjects.LastName).Should().BeTrue();
