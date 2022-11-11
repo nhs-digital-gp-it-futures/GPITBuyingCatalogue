@@ -385,15 +385,14 @@
                 </p>
             </section>
 
-        @if (Model.IsAuthenticated && Model.IsBuyer)
+        @if (Model.IsAuthenticated && Model.IsBuyer && !Model.AlreadyAcceptedLatestTerms)
         {
             <form method="post" data-test-id="terms-form">                
                 <input type="hidden" asp-for="ReturnUrl" />
                 <input type="hidden" asp-for="IsBuyer" />
                 <input type="hidden" asp-for="AlreadyAcceptedLatestTerms" />
-
-                @if (!Model.AlreadyAcceptedLatestTerms)
-                {
+                
+                @{
                     var privacyPolicyUrl = Url.Action(nameof(HomeController.PrivacyPolicy), typeof(HomeController).ControllerName());
 
                     <nhs-fieldset-form-label asp-for="HasAcceptedTermsOfUse">

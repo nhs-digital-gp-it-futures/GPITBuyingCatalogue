@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
         [Fact]
         public void AllSectionsDisplayed()
         {
-            CommonActions.PageTitle().Should().Be("Buying Catalogue terms of use".FormatForComparison());
+            CommonActions.PageTitle().Should().Be("Buying Catalogue Registered User Terms of Use".FormatForComparison());
             CommonActions.LedeText().Should().Be("You must agree to comply with these terms of use to place orders on the Buying Catalogue.".FormatForComparison());
 
             CommonActions.ElementIsDisplayed(TermsOfUseObjects.SectionOne).Should().BeTrue();
@@ -61,14 +61,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
         }
 
         [Fact]
-        public void Authenticated_HasAccepted_FormVisible()
+        public void Authenticated_HasAccepted_FormNotVisible()
         {
             Login();
 
-            CommonActions.ElementIsDisplayed(TermsOfUseObjects.Form).Should().BeTrue();
-            CommonActions.GetNumberOfCheckBoxesDisplayed().Should().Be(1);
+            CommonActions.ElementIsDisplayed(TermsOfUseObjects.Form).Should().BeFalse();
+            CommonActions.GetNumberOfCheckBoxesDisplayed().Should().Be(0);
 
-            CommonActions.SaveButtonDisplayed().Should().BeTrue();
+            CommonActions.SaveButtonDisplayed().Should().BeFalse();
         }
 
         [Fact]
