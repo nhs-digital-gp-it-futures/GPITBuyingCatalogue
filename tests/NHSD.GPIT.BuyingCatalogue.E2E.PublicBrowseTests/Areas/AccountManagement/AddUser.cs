@@ -53,6 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
             CommonActions.ElementIsDisplayed(AddUserObjects.LastName).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddUserObjects.Email).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddUserObjects.Role).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AddUserObjects.Status).Should().BeTrue();
         }
 
         [Fact]
@@ -74,6 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
             AccountManagementPages.AddUser.EnterLastName(user.LastName);
             AccountManagementPages.AddUser.EnterEmailAddress(user.EmailAddress);
             CommonActions.ClickRadioButtonWithText(OrganisationFunction.Buyer.Name);
+            CommonActions.ClickRadioButtonWithText("Active");
 
             CommonActions.ClickSave();
 
@@ -100,6 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
             CommonActions.ElementShowingCorrectErrorMessage(AddUserObjects.LastNameError, LastNameRequired).Should().BeTrue();
             CommonActions.ElementShowingCorrectErrorMessage(AddUserObjects.EmailError, EmailAddressRequired).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddUserObjects.RoleError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AddUserObjects.StatusError).Should().BeTrue();
         }
 
         [Fact]
@@ -111,6 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
             AccountManagementPages.AddUser.EnterLastName(user.LastName);
             AccountManagementPages.AddUser.EnterEmailAddress("test");
             CommonActions.ClickRadioButtonWithText(OrganisationFunction.Buyer.Name);
+            CommonActions.ClickRadioButtonWithText("Active");
 
             CommonActions.ClickSave();
 
@@ -135,6 +139,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
             AccountManagementPages.AddUser.EnterLastName(user.LastName);
             AccountManagementPages.AddUser.EnterEmailAddress(user.Email);
             CommonActions.ClickRadioButtonWithText(OrganisationFunction.Buyer.Name);
+            CommonActions.ClickRadioButtonWithText("Active");
 
             CommonActions.ClickSave();
 

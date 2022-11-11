@@ -84,14 +84,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Organisation
             var emailAddress = "test@test.com";
 
             mockUsersService
-                .Setup(x => x.EmailAddressExists(emailAddress, 0))
+                .Setup(x => x.EmailAddressExists(emailAddress, model.UserId))
                 .ReturnsAsync(true);
 
             model.EmailAddress = emailAddress;
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(model => model.EmailAddress)
+            result.ShouldHaveValidationErrorFor(x => x.EmailAddress)
                 .WithErrorMessage("A user with this email address is already registered on the Buying Catalogue");
         }
 

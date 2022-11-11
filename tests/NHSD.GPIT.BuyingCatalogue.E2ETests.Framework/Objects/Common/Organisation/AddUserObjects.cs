@@ -24,5 +24,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common.Organisati
         public static By Role => By.Id("selected-account-type");
 
         public static By RoleError => By.Id("selected-account-type-error");
+
+        public static By Status => By.Id("is-active");
+
+        public static By StatusError => By.Id("is-active-error");
     }
 }

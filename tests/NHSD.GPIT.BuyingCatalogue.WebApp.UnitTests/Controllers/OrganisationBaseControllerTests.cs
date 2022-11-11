@@ -212,6 +212,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             model.OrganisationName.Should().Be(organisation.Name);
             model.UserId.Should().Be(user.Id);
+            model.Title.Should().Be("Edit user");
         }
 
         [Theory]

@@ -59,6 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 
             CommonActions.ElementTextEqualTo(OrganisationUsersObjects.UserName, user.GetDisplayName());
             CommonActions.ElementTextEqualTo(OrganisationUsersObjects.UserEmail, user.Email);
+            CommonActions.ElementTextEqualTo(OrganisationUsersObjects.UserAccountType, user.GetDisplayRoleName());
             CommonActions.ElementIsDisplayed(OrganisationUsersObjects.UserEditLink).Should().BeTrue();
         }
 
