@@ -303,7 +303,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             model.EmailAddress = "a@b.com";
 
             mockCreateBuyerService
-                .Setup(x => x.Create(organisationId, model.FirstName, model.LastName, model.EmailAddress, model.SelectedAccountType))
+                .Setup(x => x.Create(organisationId, model.FirstName, model.LastName, model.EmailAddress, model.SelectedAccountType, false))
                 .ReturnsAsync((AspNetUser)null);
 
             var result = (await controller.AddUser(organisationId, model)).As<RedirectToActionResult>();

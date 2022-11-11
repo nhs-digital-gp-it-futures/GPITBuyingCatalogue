@@ -49,7 +49,7 @@
         {
             <div data-test-id="users-table">
                 <nhs-table>
-                    @foreach (var heading in new[] { "Name", "Email address", "Account Status", "Action" })
+                    @foreach (var heading in new[] { "Name", "Email address", "Account Type", "Account Status", "Action" })
                     {
                         <nhs-table-column>@heading</nhs-table-column>
                     }
@@ -68,20 +68,22 @@
                                 </span>
                             </nhs-table-cell>
                             <nhs-table-cell>
+                                <span data-test-id="user-role">
+                                    @item.GetRoleName()
+                                </span>
+                            </nhs-table-cell>
+                            <nhs-table-cell>
                                 @{
                                     var status = item.Disabled ? AccountStatus.Inactive : AccountStatus.Active;
                                     <nhs-tag status-enum="@status"/>
                                 }
                             </nhs-table-cell>
                             <nhs-table-cell>
-                                <span data-test-id="user-status-link">
-                                    @{
-                                        var text = item.Disabled ? "Activate" : "Deactivate";
-                                        <a asp-action="@nameof(OrganisationBaseController.UserStatus)"
+                                <span data-test-id="user-edit-link">
+                                    <a asp-action="@nameof(OrganisationBaseController.EditUser)"
                                            asp-controller=@Model.ControllerName
                                            asp-route-organisationId="@Model.OrganisationId"
-                                           asp-route-userId="@item.Id">@text</a>
-                                    }
+                                           asp-route-userId="@item.Id">Edit</a>
                                 </span>
                             </nhs-table-cell>
                         </nhs-table-row-container>

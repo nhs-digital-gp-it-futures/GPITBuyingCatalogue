@@ -39,7 +39,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
             string firstName,
             string lastName,
             string emailAddress,
-            string organisationFunction)
+            string organisationFunction,
+            bool isDisabled = false)
         {
             if (string.IsNullOrWhiteSpace(emailAddress))
                 throw new ArgumentException($"{nameof(emailAddress)} must be provided.", nameof(emailAddress));
@@ -51,6 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
                 UserName = emailAddress,
                 Email = emailAddress,
                 PrimaryOrganisationId = primaryOrganisationId,
+                Disabled = isDisabled,
             };
 
             await userManager.CreateAsync(aspNetUser);

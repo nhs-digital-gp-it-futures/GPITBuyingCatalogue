@@ -169,7 +169,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             model.SelectedAccountType = OrganisationFunction.Buyer.Name;
 
             mockCreateBuyerService
-                .Setup(x => x.Create(organisationId, model.FirstName, model.LastName, model.EmailAddress, OrganisationFunction.Buyer.Name))
+                .Setup(x => x.Create(organisationId, model.FirstName, model.LastName, model.EmailAddress, OrganisationFunction.Buyer.Name, false))
                 .ReturnsAsync((AspNetUser)null);
 
             var result = (await controller.AddUser(organisationId, model)).As<RedirectToActionResult>();

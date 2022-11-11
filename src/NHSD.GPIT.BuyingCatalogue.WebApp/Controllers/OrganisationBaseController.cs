@@ -98,7 +98,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 model.FirstName,
                 model.LastName,
                 model.EmailAddress,
-                model.SelectedAccountType);
+                model.SelectedAccountType,
+                !model.IsActive.Value);
 
             return RedirectToAction(
                 nameof(Users),
@@ -131,6 +132,41 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             await UserService.EnableOrDisableUser(userId, model.IsActive);
 
             return RedirectToAction(nameof(Users), new { organisationId });
+        }
+
+        [HttpGet("{organisationId}/users/{userId}/edit")]
+        public async Task<IActionResult> EditUser(int organisationId, int userId)
+        {
+            var organisation = await OrganisationsService.GetOrganisation(organisationId);
+            var user = await UserService.GetUser(userId);
+
+            var model = new AddUserModel(organisation, user)
+            {
+                BackLink = Url.Action(nameof(Users), new { organisationId }),
+                ControllerName = ControllerName,
+            };
+
+            return View("OrganisationBase/AddUser", model);
+        }
+
+        [HttpPost("{organisationId}/users/{userId}/edit")]
+        public async Task<IActionResult> EditUser(int organisationId, int userId, AddUserModel model)
+        {
+            if (!ModelState.IsValid)
+                return View("OrganisationBase/AddUser", model);
+
+            await UserService.UpdateUser(
+                userId,
+                model.FirstName,
+                model.LastName,
+                model.EmailAddress,
+                !model.IsActive.Value,
+                model.SelectedAccountType,
+                organisationId);
+
+            return RedirectToAction(
+                nameof(Users),
+                new { organisationId });
         }
 
         [HttpGet("{organisationId}/related")]

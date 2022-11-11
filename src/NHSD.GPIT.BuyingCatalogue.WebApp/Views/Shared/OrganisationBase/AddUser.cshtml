@@ -3,7 +3,7 @@
 @using ValidationSummaryTagHelper = Microsoft.AspNetCore.Mvc.TagHelpers.ValidationSummaryTagHelper
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels.AddUserModel
 @{
-    ViewBag.Title = "Add user";
+    ViewBag.Title = Model.Title;
 }
 
 <div data-test-id="add-user-page">
@@ -11,15 +11,14 @@
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
             <nhs-validation-summary RadioId="@nameof(Model.SelectedAccountType)" />
-            <nhs-page-title title="@ViewBag.Title"
+            <nhs-page-title title="@Model.Title"
                             caption="@Model!.OrganisationName"
                             advice="Provide the following information about this user." />
 
-            <form method="post" action ="@Url.Action(
-                                             nameof(OrganisationBaseController.AddUser),
-                                             Model.ControllerName)">
+            <form method="post">
                 <input type="hidden" asp-for="OrganisationName" />
                 <input type="hidden" asp-for="ControllerName" />
+                <input type="hidden" asp-for="UserId" />
                 
                 <nhs-input
                     asp-for="@Model.EmailAddress" 
@@ -31,16 +30,26 @@
                     asp-for="@Model.LastName" 
                     label-text="Last name" />
 
-                    <nhs-fieldset-form-label asp-for="SelectedAccountType"
-                                             label-text="Account type"
-                                             label-hint="Select one option."
-                                             size="Medium">
-                        <nhs-radio-buttons asp-for="SelectedAccountType"
-                                           values="@Model.AccountTypeOptions.Cast<object>()"
-                                           value-name="Value"
-                                           display-name="Name"
-                                           hint-name="Advice" />
-                    </nhs-fieldset-form-label>
+                <nhs-fieldset-form-label asp-for="SelectedAccountType"
+                                         label-text="Account type"
+                                         label-hint="Select one option."
+                                         size="Medium">
+                    <nhs-radio-buttons asp-for="SelectedAccountType"
+                                       values="@Model.AccountTypeOptions.Cast<object>()"
+                                       value-name="Value"
+                                       display-name="Name"
+                                       hint-name="Advice" />
+                </nhs-fieldset-form-label>
+                
+                <nhs-fieldset-form-label asp-for="IsActive"
+                                         label-text="What is this user's account status?"
+                                         label-hint="Select one option."
+                                         size="Medium">
+                    <nhs-radio-buttons asp-for="IsActive"
+                                       values="@Model.StatusOptions.Cast<object>()"
+                                       value-name="Value"
+                                       display-name="Name" />
+                </nhs-fieldset-form-label>
 
                 <div data-test-id="add-user-button">
                     <nhs-submit-button />
