@@ -2,7 +2,7 @@
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels.UsersModel
 @{
-    ViewBag.Title = "User Accounts";
+    ViewBag.Title = "User accounts";
 }
 @section Breadcrumbs {
     <nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
@@ -49,7 +49,7 @@
         {
             <div data-test-id="users-table">
                 <nhs-table>
-                    @foreach (var heading in new[] { "Name", "Email address", "Account Type", "Account Status", "Action" })
+                    @foreach (var heading in new[] { "Name", "Email address", "Account type", "Account status", "Action" })
                     {
                         <nhs-table-column>@heading</nhs-table-column>
                     }
