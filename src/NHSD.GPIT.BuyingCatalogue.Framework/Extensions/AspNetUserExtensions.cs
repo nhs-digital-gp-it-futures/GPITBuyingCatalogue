@@ -21,8 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
                 throw new ArgumentNullException(nameof(user));
 
             var roleName = user.AspNetUserRoles.First()?.Role?.Name;
-            var role = OrganisationFunction.FromName(roleName);
-            return role != null ? role.DisplayName : string.Empty;
+            return OrganisationFunction.FromName(roleName)!.DisplayName;
         }
     }
 }

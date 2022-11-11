@@ -19,6 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common.Organisati
 
         public static By UserEmail => ByExtensions.DataTestId("user-email");
 
-        public static By UserStatusLink => ByExtensions.DataTestId("user-status-link");
+        public static By UserEditLink => ByExtensions.DataTestId("user-edit-link");
     }
 }

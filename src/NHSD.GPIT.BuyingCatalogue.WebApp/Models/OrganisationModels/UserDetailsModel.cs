@@ -8,13 +8,13 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
 {
-    public sealed class AddUserModel : NavBaseModel
+    public sealed class UserDetailsModel : NavBaseModel
     {
-        public AddUserModel()
+        public UserDetailsModel()
         {
         }
 
-        public AddUserModel(Organisation organisation, AspNetUser user)
+        public UserDetailsModel(Organisation organisation, AspNetUser user)
             : this(organisation)
         {
             UserId = user.Id;
@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
             IsActive = !user.Disabled;
         }
 
-        public AddUserModel(Organisation organisation)
+        public UserDetailsModel(Organisation organisation)
         {
             OrganisationName = organisation.Name;
         }

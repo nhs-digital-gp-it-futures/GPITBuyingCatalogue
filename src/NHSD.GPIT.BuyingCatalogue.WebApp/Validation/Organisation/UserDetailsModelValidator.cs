@@ -5,11 +5,11 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Organisation
 {
-    public sealed class AddUserModelValidator : AbstractValidator<AddUserModel>
+    public sealed class UserDetailsModelValidator : AbstractValidator<UserDetailsModel>
     {
         private readonly IUsersService usersService;
 
-        public AddUserModelValidator(IUsersService usersService)
+        public UserDetailsModelValidator(IUsersService usersService)
         {
             this.usersService = usersService ?? throw new ArgumentNullException(nameof(usersService));
 
@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Organisation
                 .NotEmpty()
                 .WithMessage("Select an account type");
             RuleFor(x => x.IsActive)
-                .NotNull()
+                .NotEmpty()
                 .WithMessage("Select an account status");
         }
 
