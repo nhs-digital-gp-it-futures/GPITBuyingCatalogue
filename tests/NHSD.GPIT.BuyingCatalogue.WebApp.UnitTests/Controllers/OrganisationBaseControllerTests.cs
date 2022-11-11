@@ -188,6 +188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
              AspNetUser user,
              [Frozen] Mock<IUsersService> mockUsersService,
              [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
+             [Frozen] Mock<IUrlHelper> mockUrlHelper,
              OrganisationBaseController controller)
         {
             mockOrganisationsService
@@ -197,6 +198,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             mockUsersService
                 .Setup(x => x.GetUser(user.Id))
                 .ReturnsAsync(user);
+
+            controller.Url = mockUrlHelper.Object;
 
             var result = (await controller.EditUser(organisation.Id, user.Id)).As<ViewResult>();
 

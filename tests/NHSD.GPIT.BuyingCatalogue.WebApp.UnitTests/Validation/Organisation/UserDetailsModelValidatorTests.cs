@@ -107,13 +107,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Organisation
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.LastName)
+            result.ShouldHaveValidationErrorFor(m => m.SelectedAccountType)
                 .WithErrorMessage("Select an account type");
         }
 
         [Theory]
         [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
         public static void Validate_AccountStatusNullOrEmpty_SetsModelError(
             bool? isActive,
             UserDetailsModel model,
@@ -123,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Organisation
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.LastName)
+            result.ShouldHaveValidationErrorFor(m => m.IsActive)
                 .WithErrorMessage("Select an account status");
         }
 

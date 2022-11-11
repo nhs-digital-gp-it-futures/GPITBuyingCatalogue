@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
@@ -21,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
             FirstName = user.FirstName;
             LastName = user.LastName;
             EmailAddress = user.Email;
-            SelectedAccountType = user.AspNetUserRoles.First()?.Role?.Name;
+            SelectedAccountType = user.GetRoleName();
             IsActive = !user.Disabled;
         }
 
