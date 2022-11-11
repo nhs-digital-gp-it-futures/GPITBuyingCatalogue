@@ -1,8 +1,7 @@
 ﻿@using EnumsNET
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags;
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
-@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+@using NHSD.GPIT.BuyingCatalogue.Framework.Environments
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Dashboard.OrganisationModel;
 @{
     ViewBag.Title = "Orders dashboard";
@@ -35,7 +34,8 @@
         </div>
 
         <div class="nhsuk-grid-column-full">
-            @if((Model.Orders.Count == 0 && Context.Request.Query["search"].Count > 0) || Model.Orders.Count > 0)
+            @if (Context.Request.Query["search"].Count > 0
+                || Model.Orders.Count > 0)
             {
                 <vc:nhs-suggestion-search id="orders-suggestion-search"
                                           ajax-url="@Url.Action(
@@ -45,7 +45,8 @@
                                           title-text="Search for order by order description or Call-off ID"
                                           query-parameter-name="search"/>
             }
-            @if (Model.Orders is not null && Model.Orders.Count > 0)
+
+            @if (Model.Orders.Count > 0)
             {
                 <nhs-table data-test-id="orders-table">
                     <nhs-table-column>Call-off ID</nhs-table-column>
@@ -69,11 +70,12 @@
                                 </span>
                             </nhs-table-cell>
                             <nhs-table-cell>
-                                <a data-test-id="link-@order.CallOffId" asp-action="@nameof(OrderController.Order)"
-                                    asp-controller="@typeof(OrderController).ControllerName()"
-                                    asp-route-internalOrgId="@Model.InternalOrgId"
-                                    asp-route-callOffId="@order.CallOffId" style="white-space:nowrap;">
-                                    @GetLinkName(order.OrderStatus)
+                                <a data-test-id="link-@order.CallOffId"
+                                   asp-action="@nameof(OrderController.Order)"
+                                   asp-controller="@typeof(OrderController).ControllerName()"
+                                   asp-route-internalOrgId="@Model.InternalOrgId"
+                                   asp-route-callOffId="@order.CallOffId" style="white-space: nowrap;">
+                                    @GetLinkName(order)
                                 </a>
                             </nhs-table-cell>
                         </nhs-table-row-container>
@@ -108,12 +110,27 @@
 </div>
 
 @{
-    string GetLinkName(OrderStatus orderStatus) => orderStatus switch
+    string GetLinkName(Order order)
     {
-        OrderStatus.Completed => "View",
-        OrderStatus.InProgress => "Edit",
-        _ => string.Empty,
-    };
+        if (CurrentEnvironment.IsDevelopment
+            && !order.AssociatedServicesOnly
+            && !Model.AnySubsequentRevisions(order.CallOffId))
+        {
+            return order.OrderStatus switch
+            {
+                OrderStatus.Completed => "Amend",
+                OrderStatus.InProgress => "Edit",
+                _ => string.Empty,
+            };
+        }
+
+        return order.OrderStatus switch
+        {
+            OrderStatus.Completed => "View",
+            OrderStatus.InProgress => "Edit",
+            _ => string.Empty,
+        };
+    }
 
     NhsTagsTagHelper.TagColour GetTagColour(OrderStatus orderStatus) => orderStatus switch
     {

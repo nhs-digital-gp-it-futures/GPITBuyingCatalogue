@@ -33,6 +33,15 @@
                         caption="@Model.Order.CallOffId"
                         advice="@Model.AdviceText" />
 
+        @if (Model.CanBeAmended)
+        {
+            <vc:nhs-action-link text="Amend this order"
+                                url="@Url.Action(
+                                         nameof(OrderController.AmendOrder),
+                                         typeof(OrderController).ControllerName(),
+                                         new { Model.InternalOrgId, Model.CallOffId })"/>
+        }
+
         <nhs-summary-list>
             <nhs-summary-list-row label-text="Order ID" data-test-id="order-id-summary">
                 @Model.Order.CallOffId

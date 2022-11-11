@@ -9,20 +9,30 @@
                 additional-advice="This page is rendered from DoAndDontList.cshtml using the DoDontModel.
                 This model has been initialised in the controller." />
 
-<vc:nhs-do-list items="@Model.Options" />
+<vc:nhs-do-list title="Do"
+                items="@Model.Items" />
 
-<vc:nhs-dont-list items="@Model.Options" />
+<vc:nhs-dont-list title="Don't"
+                  items="@Model.Items" />
 
 <nhs-fieldset-form-container asp-for="@Model"
                              label-text="Code Examples for the above lists"
                              size="Medium">
     <div class="app-tabs__container bc-code-snippet">
-        <span class="vs-light-theme-blue ">&lt;</span><span class="vs-light-theme-purple">vc:nhs-do-list items</span><span class="vs-light-theme-blue">="@@Model.Options"</span>
+        <span class="vs-light-theme-blue ">&lt;</span>
+        <span class="vs-light-theme-purple">vc:nhs-do-list title</span>
+        <span class="vs-light-theme-blue">="@@Model.Title"</span>
+        <span class="vs-light-theme-purple"> items</span>
+        <span class="vs-light-theme-blue">="@@Model.Items"</span>
         <span class="vs-light-theme-blue ">/&gt;</span>
     </div>
 
     <div class="app-tabs__container bc-code-snippet">
-        <span class="vs-light-theme-blue ">&lt;</span><span class="vs-light-theme-purple">vc:nhs-dont-list items</span><span class="vs-light-theme-blue">="@@Model.Options"</span>
+        <span class="vs-light-theme-blue ">&lt;</span>
+        <span class="vs-light-theme-purple">vc:nhs-dont-list title</span>
+        <span class="vs-light-theme-blue">="@@Model.Title"</span>
+        <span class="vs-light-theme-purple"> items</span>
+        <span class="vs-light-theme-blue">="@@Model.Items"</span>
         <span class="vs-light-theme-blue ">/&gt;</span>
     </div>
 </nhs-fieldset-form-container>
@@ -31,6 +41,16 @@
     <nhs-table-column>Attribute</nhs-table-column>
     <nhs-table-column>Functionality</nhs-table-column>
     <nhs-table-column>Required</nhs-table-column>
+
+    <nhs-table-row-container>
+        <nhs-table-cell>title</nhs-table-cell>
+        <nhs-table-cell>
+            <p>string</p>
+        </nhs-table-cell>
+        <nhs-table-cell>
+            <nhs-tag text="Yes" colour="Red" />
+        </nhs-table-cell>
+    </nhs-table-row-container>
 
     <nhs-table-row-container>
         <nhs-table-cell>items</nhs-table-cell>
@@ -49,9 +69,10 @@
                              size="Medium"
                              label-text="Example of the Model">
 
-    <span>var model = new CareCardModel()</span><br />
+    <span>var model = new NhsDoListModel</span><br />
     <span>{</span><br />
-    <span>&nbsp;Options = new List&lt;string&gt;</span><br />
+    <span>&nbsp;Title = "title",</span><br />
+    <span>&nbsp;Items = new List&lt;string&gt;</span><br />
     <span>&nbsp;{</span><br />
     <span>&nbsp;&nbsp;"This is the first option",</span><br />
     <span>&nbsp;&nbsp;"This is the second option",</span><br />
@@ -61,5 +82,5 @@
 </nhs-fieldset-form-container>
 
 <nhs-endnote>
-    Page last Updated: 10 June 2021
+    Page last Updated: 10 November 2022
 </nhs-endnote>

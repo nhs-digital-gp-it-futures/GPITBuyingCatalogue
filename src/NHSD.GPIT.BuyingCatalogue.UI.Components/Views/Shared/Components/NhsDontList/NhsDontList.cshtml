@@ -1,9 +1,9 @@
-﻿@model List<string>
+﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsDontList.NhsDontListModel
 
 <div class="nhsuk-do-dont-list">
-    <h3 class="nhsuk-do-dont-list__label">Don&#39;t</h3>
+    <h3 class="nhsuk-do-dont-list__label">@Model.Title</h3>
     <ul class="nhsuk-list nhsuk-list--cross">
-        @foreach (string item in @Model)
+        @foreach (var item in @Model.Items)
         {
             <li>
                 <svg class="nhsuk-icon nhsuk-icon__cross" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">

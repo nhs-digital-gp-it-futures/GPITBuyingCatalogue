@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -148,7 +149,21 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public async Task<int> NextOrderNumber()
         {
-            return (await Orders.IgnoreQueryFilters().MaxAsync(x => (int?)x.OrderNumber) ?? 0) + 1;
+            var maxOrderNumber = await Orders
+                .IgnoreQueryFilters()
+                .MaxAsync(x => (int?)x.OrderNumber) ?? 0;
+
+            return maxOrderNumber + 1;
+        }
+
+        public async Task<int> NextRevision(int orderNumber)
+        {
+            var maxRevision = await Orders
+                .IgnoreQueryFilters()
+                .Where(x => x.OrderNumber == orderNumber)
+                .MaxAsync(x => (int?)x.Revision) ?? 0;
+
+            return maxRevision + 1;
         }
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)

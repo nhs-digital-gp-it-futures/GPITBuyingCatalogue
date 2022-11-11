@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Environments;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -137,6 +138,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
         public async Task<IActionResult> Summary(string internalOrgId, CallOffId callOffId)
         {
             var order = (await orderService.GetOrderForSummary(callOffId, internalOrgId)).Order;
+            var hasSubsequentRevisions = await orderService.HasSubsequentRevisions(callOffId);
+
+            var canBeAmended = CurrentEnvironment.IsDevelopment
+                && order.OrderStatus == OrderStatus.Completed
+                && !order.AssociatedServicesOnly
+                && !hasSubsequentRevisions;
 
             var model = new SummaryModel(internalOrgId, order)
             {
@@ -160,11 +167,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
                 AdviceText = order.OrderStatus switch
                 {
+                    OrderStatus.Completed when canBeAmended => "This order has already been completed, but you can amend it if needed.",
                     OrderStatus.Completed => "This order has been confirmed and can no longer be changed.",
                     _ => order.CanComplete()
                         ? "Review your order summary before completing it. Once the order summary is completed, you'll be unable to make changes."
                         : "This is what's been added to your order so far. You must complete all mandatory steps before you can confirm your order.",
                 },
+
+                CanBeAmended = canBeAmended,
             };
 
             return View(model);
@@ -197,6 +207,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 : $"order-summary-in-progress-{callOffId}.pdf";
 
             return File(result, "application/pdf", fileName);
+        }
+
+        [HttpGet("amend")]
+        public IActionResult AmendOrder(string internalOrgId, CallOffId callOffId)
+        {
+            return View(new AmendOrderModel(internalOrgId, callOffId)
+            {
+                BackLink = Url.Action(
+                    nameof(Summary),
+                    typeof(OrderController).ControllerName(),
+                    new { internalOrgId, callOffId }),
+            });
+        }
+
+        [HttpPost("amend")]
+        public async Task<IActionResult> AmendOrder(string internalOrgId, CallOffId callOffId, AmendOrderModel model)
+        {
+            var amendment = await orderService.AmendOrder(internalOrgId, callOffId);
+
+            return RedirectToAction(
+                nameof(Order),
+                typeof(OrderController).ControllerName(),
+                new { internalOrgId, amendment.CallOffId });
         }
 
         private Uri OrderSummaryUri(string internalOrgId, CallOffId callOffId)

@@ -273,6 +273,51 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             actualResult.As<FileContentResult>().FileContents.Should().BeEquivalentTo(result);
         }
 
+        [Theory]
+        [CommonAutoData]
+        public static void Get_AmendOrder_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            OrderController controller)
+        {
+            var result = controller.AmendOrder(internalOrgId, callOffId);
+
+            var actual = result.Should().BeOfType<ViewResult>().Subject;
+
+            var expected = new AmendOrderModel(internalOrgId, callOffId);
+
+            actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AmendOrder_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            AmendOrderModel model,
+            [Frozen] Mock<IOrderService> orderService,
+            OrderController controller)
+        {
+            orderService
+                .Setup(x => x.AmendOrder(internalOrgId, callOffId))
+                .ReturnsAsync(order);
+
+            var result = await controller.AmendOrder(internalOrgId, callOffId, model);
+
+            orderService.VerifyAll();
+
+            var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actual.ActionName.Should().Be(nameof(OrderController.Order));
+            actual.ControllerName.Should().Be(typeof(OrderController).ControllerName());
+            actual.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
+                { "callOffId", order.CallOffId },
+            });
+        }
+
         private static void SetControllerHttpContext(ControllerBase controller)
         {
             controller.ControllerContext = new ControllerContext

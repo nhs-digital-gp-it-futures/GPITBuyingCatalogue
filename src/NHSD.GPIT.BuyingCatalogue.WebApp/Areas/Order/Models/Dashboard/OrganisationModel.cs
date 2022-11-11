@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -26,8 +27,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Dashboard
 
         public bool CanActOnBehalf { get; set; }
 
+        public IEnumerable<CallOffId> OrderIds { get; set; }
+
         public IList<EntityFramework.Ordering.Models.Order> Orders { get; set; }
 
         public PageOptions Options { get; set; }
+
+        public bool AnySubsequentRevisions(CallOffId callOffId) => OrderIds.Any(x => x.OrderNumber == callOffId.OrderNumber && x.Revision > callOffId.Revision);
     }
 }

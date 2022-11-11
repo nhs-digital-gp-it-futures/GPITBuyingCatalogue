@@ -77,7 +77,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers
         {
             var model = new DoDontModel
             {
-                Options = new List<string>
+                Title = "this is the title",
+                Items = new List<string>
                 {
                     "this is the first option",
                     "this is the second option",

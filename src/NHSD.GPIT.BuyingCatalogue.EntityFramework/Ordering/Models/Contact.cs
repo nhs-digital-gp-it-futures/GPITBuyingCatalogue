@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
@@ -45,5 +44,17 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public ICollection<Order> OrderOrderingPartyContacts { get; set; }
 
         public ICollection<Order> OrderSupplierContacts { get; set; }
+
+        public Contact Clone()
+        {
+            return new Contact
+            {
+                FirstName = FirstName,
+                LastName = LastName,
+                Email = Email,
+                Phone = Phone,
+                Department = Department,
+            };
+        }
     }
 }
