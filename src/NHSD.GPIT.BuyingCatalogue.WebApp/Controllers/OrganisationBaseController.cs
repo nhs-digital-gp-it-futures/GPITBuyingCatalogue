@@ -98,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 model.FirstName,
                 model.LastName,
                 model.EmailAddress,
-                OrganisationFunction.Buyer.Name);
+                model.SelectedAccountType);
 
             return RedirectToAction(
                 nameof(Users),

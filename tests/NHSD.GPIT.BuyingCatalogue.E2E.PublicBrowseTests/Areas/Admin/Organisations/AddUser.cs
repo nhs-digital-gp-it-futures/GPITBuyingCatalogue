@@ -8,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
@@ -46,11 +47,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
-            CommonActions.PageTitle().Should().BeEquivalentTo($"Add a new user-{organisation.Name}".FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo($"Add user-{organisation.Name}".FormatForComparison());
 
             CommonActions.ElementIsDisplayed(AddUserObjects.FirstName).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddUserObjects.LastName).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddUserObjects.Email).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AddUserObjects.Role).Should().BeTrue();
         }
 
         [Fact]
@@ -71,6 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             AdminPages.AddUser.EnterFirstName(user.FirstName);
             AdminPages.AddUser.EnterLastName(user.LastName);
             AdminPages.AddUser.EnterEmailAddress(user.EmailAddress);
+            CommonActions.ClickRadioButtonWithText(OrganisationFunction.Buyer.Name);
 
             CommonActions.ClickSave();
 
@@ -96,6 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             CommonActions.ElementShowingCorrectErrorMessage(AddUserObjects.FirstNameError, FirstNameRequired).Should().BeTrue();
             CommonActions.ElementShowingCorrectErrorMessage(AddUserObjects.LastNameError, LastNameRequired).Should().BeTrue();
             CommonActions.ElementShowingCorrectErrorMessage(AddUserObjects.EmailError, EmailAddressRequired).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AddUserObjects.RoleError).Should().BeTrue();
         }
 
         [Fact]
@@ -106,6 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             AdminPages.AddUser.EnterFirstName(user.FirstName);
             AdminPages.AddUser.EnterLastName(user.LastName);
             AdminPages.AddUser.EnterEmailAddress("test");
+            CommonActions.ClickRadioButtonWithText(OrganisationFunction.Buyer.Name);
 
             CommonActions.ClickSave();
 
@@ -129,6 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             AdminPages.AddUser.EnterFirstName(user.FirstName);
             AdminPages.AddUser.EnterLastName(user.LastName);
             AdminPages.AddUser.EnterEmailAddress(user.Email);
+            CommonActions.ClickRadioButtonWithText(OrganisationFunction.Buyer.Name);
 
             CommonActions.ClickSave();
 

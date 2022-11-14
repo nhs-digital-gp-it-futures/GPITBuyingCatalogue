@@ -114,7 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         [Fact]
         public void AccountType_ClickAccountManager_ThenSubmit_SetsValuesAndDisplaysCorrectPage()
         {
-            CommonActions.ClickRadioButtonWithText("Account Manager");
+            CommonActions.ClickRadioButtonWithText("Account manager");
 
             CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
 
