@@ -1,8 +1,10 @@
 ﻿using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Azure.WebJobs;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using OrganisationImporter.Services;
 using Serilog;
 
@@ -24,7 +26,7 @@ namespace OrganisationImporter
                 .UseSerilog((_, services, loggerConfiguration) =>
                 {
                     var telemetryConfig = TelemetryConfiguration.CreateDefault();
-                    telemetryConfig.ConnectionString = _configuration["ApplicationInsights:Connection_String"];
+                    telemetryConfig.ConnectionString = _configuration["APPLICATIONINSIGHTS:CONNECTION_STRING"];
                     loggerConfiguration
                         .WriteTo
                         .Console()
@@ -61,6 +63,10 @@ namespace OrganisationImporter
         {
             services.AddSingleton<OrganisationImportService>();
             services.AddApplicationInsightsTelemetryWorkerService();
+            services.AddDbContext<BuyingCatalogueDbContext>(opts =>
+            {
+                opts.UseSqlServer(_configuration.GetValue<string>("BUYINGCATALOGUECONNECTIONSTRING"));
+            });
         }
     }
 }

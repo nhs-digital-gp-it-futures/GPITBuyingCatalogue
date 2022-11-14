@@ -17,6 +17,7 @@ trigger:
     exclude:
     - '**/BuyingCatalogueFunction*'
     - '**/OrganisationImporter*'
+    - 'terraform/orgimport'
 
 pr:
 - develop
