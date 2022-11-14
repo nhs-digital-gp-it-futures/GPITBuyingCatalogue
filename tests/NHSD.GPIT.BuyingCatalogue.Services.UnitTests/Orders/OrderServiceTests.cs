@@ -264,11 +264,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             await context.SaveChangesAsync();
 
-            (await context.Orders.SingleAsync(x => x.Id == order.Id)).SolutionId.Should().BeNull();
+            (await context.Orders.FirstAsync(x => x.Id == order.Id)).SolutionId.Should().BeNull();
 
             await service.SetSolutionId(order.OrderingParty.InternalIdentifier, order.CallOffId, solutionId);
 
-            (await context.Orders.SingleAsync(x => x.Id == order.Id)).SolutionId.Should().Be(solutionId);
+            (await context.Orders.FirstAsync(x => x.Id == order.Id)).SolutionId.Should().Be(solutionId);
         }
     }
 }

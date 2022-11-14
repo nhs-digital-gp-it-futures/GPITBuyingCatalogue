@@ -93,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             RunTest(() =>
             {
                 using var context = GetEndToEndDbContext();
-                var solution = context.Solutions.Single(s => s.CatalogueItemId == SolutionId);
+                var solution = context.Solutions.First(s => s.CatalogueItemId == SolutionId);
                 var originalIntegrations = solution.Integrations;
                 solution.Integrations = null;
                 context.SaveChanges();
@@ -151,7 +151,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             await RunTestAsync(async () =>
             {
                 await using var context = GetEndToEndDbContext();
-                var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionId);
+                var solution = await context.CatalogueItems.FirstAsync(ci => ci.Id == SolutionId);
                 solution.PublishedStatus = PublicationStatus.Suspended;
                 await context.SaveChangesAsync();
 
@@ -169,7 +169,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         public void Dispose()
         {
             using var context = GetEndToEndDbContext();
-            context.CatalogueItems.Single(ci => ci.Id == SolutionId).PublishedStatus = PublicationStatus.Published;
+            context.CatalogueItems.First(ci => ci.Id == SolutionId).PublishedStatus = PublicationStatus.Published;
             context.SaveChanges();
         }
     }

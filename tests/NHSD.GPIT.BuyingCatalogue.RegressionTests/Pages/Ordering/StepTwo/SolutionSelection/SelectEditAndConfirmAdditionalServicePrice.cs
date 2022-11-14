@@ -87,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
         {
             using var db = Factory.DbContext;
 
-            var additionalService = db.AdditionalServices.SingleOrDefault(a => a.CatalogueItem.Name == additionalServiceName);
+            var additionalService = db.AdditionalServices.FirstOrDefault(a => a.CatalogueItem.Name == additionalServiceName);
 
             return (additionalService != null) ? additionalService.CatalogueItemId.ToString() : string.Empty;
         }

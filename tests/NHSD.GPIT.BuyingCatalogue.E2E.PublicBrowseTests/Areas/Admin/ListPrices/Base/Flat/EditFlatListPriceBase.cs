@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Flat
         public void AllSectionsDisplayed()
         {
             using var context = GetEndToEndDbContext();
-            var catalogueItem = context.CatalogueItems.Single(c => c.Id == CatalogueItemId);
+            var catalogueItem = context.CatalogueItems.First(c => c.Id == CatalogueItemId);
 
             CommonActions.PageTitle().Should().Be($"Edit a flat list price - {catalogueItem.Name}".FormatForComparison());
             CommonActions.LedeText().Should().Be($"Provide the following information about the pricing model for your {catalogueItem.CatalogueItemType.Name()}.".FormatForComparison());
@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Flat
         public void Unpublished_DeleteLinkVisible()
         {
             using var context = GetEndToEndDbContext();
-            var cataloguePrice = context.CataloguePrices.Single(p => p.CataloguePriceId == CataloguePriceId);
+            var cataloguePrice = context.CataloguePrices.First(p => p.CataloguePriceId == CataloguePriceId);
             var originalPublishStatus = cataloguePrice.PublishedStatus;
 
             cataloguePrice.PublishedStatus = PublicationStatus.Unpublished;
@@ -109,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Flat
         public void ClickDelete_NavigatesToCorrectPage()
         {
             using var context = GetEndToEndDbContext();
-            var cataloguePrice = context.CataloguePrices.Single(p => p.CataloguePriceId == CataloguePriceId);
+            var cataloguePrice = context.CataloguePrices.First(p => p.CataloguePriceId == CataloguePriceId);
             var originalPublishStatus = cataloguePrice.PublishedStatus;
 
             cataloguePrice.PublishedStatus = PublicationStatus.Unpublished;
@@ -232,6 +232,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Flat
             .Include(ci => ci.CataloguePrices)
             .ThenInclude(p => p.CataloguePriceTiers)
             .AsNoTracking()
-            .Single(ci => ci.Id == id);
+            .First(ci => ci.Id == id);
     }
 }

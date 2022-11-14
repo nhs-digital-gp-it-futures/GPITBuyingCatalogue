@@ -184,7 +184,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 
                 var catalogueItem = context.CatalogueItems.AsNoTracking()
                     .Include(i => i.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability)
-                    .Single(ci => ci.Id == catalogueItemId);
+                    .First(ci => ci.Id == catalogueItemId);
 
                 CommonActions.ElementTextEqualTo(
                         SolutionsObjects.CapabilitesOverCountLink,

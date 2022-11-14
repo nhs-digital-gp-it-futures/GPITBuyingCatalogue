@@ -109,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
                 expectedUser.Email,
                 role);
 
-            var actual = await userManager.Users.Include(u => u.AspNetUserRoles).ThenInclude(r => r.Role).SingleAsync(u => u.Id == result.Id);
+            var actual = await userManager.Users.Include(u => u.AspNetUserRoles).ThenInclude(r => r.Role).FirstAsync(u => u.Id == result.Id);
 
             actual.PrimaryOrganisationId.Should().Be(expectedUser.PrimaryOrganisationId);
             actual.FirstName.Should().Be(expectedUser.FirstName);

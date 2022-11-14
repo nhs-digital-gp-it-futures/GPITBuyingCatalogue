@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         public async Task AddAssociatedService_CorrectlyDisplayed()
         {
             await using var context = GetEndToEndDbContext();
-            var supplierName = (await context.CatalogueItems.Include(ci => ci.Supplier).SingleAsync(s => s.Id == SolutionId)).Supplier.Name;
+            var supplierName = (await context.CatalogueItems.Include(ci => ci.Supplier).FirstAsync(s => s.Id == SolutionId)).Supplier.Name;
 
             CommonActions.PageTitle()
                 .Should()
@@ -84,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             var associatedServiceItem = await context
                 .CatalogueItems
                 .Include(ci => ci.AssociatedService)
-                .SingleAsync(ci => ci.Id == CatalogueItemId.ParseExact(id));
+                .FirstAsync(ci => ci.Id == CatalogueItemId.ParseExact(id));
 
             associatedServiceItem.Name.Should().Be(name);
 

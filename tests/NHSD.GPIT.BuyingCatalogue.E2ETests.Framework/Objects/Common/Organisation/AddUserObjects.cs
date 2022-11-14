@@ -20,5 +20,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common.Organisati
         public static By Email => By.Id("EmailAddress");
 
         public static By EmailError => By.Id("EmailAddress-error");
+
+        public static By Role => By.Id("selected-account-type");
+
+        public static By RoleError => By.Id("selected-account-type-error");
     }
 }

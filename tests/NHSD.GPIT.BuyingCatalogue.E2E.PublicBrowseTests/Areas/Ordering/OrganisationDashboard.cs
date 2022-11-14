@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public async Task OrganisationDashboard_SectionsCorrectlyDisplayed()
         {
             await using var context = GetEndToEndDbContext();
-            var organisation = await context.Organisations.SingleAsync(o => o.InternalIdentifier == Parameters["InternalOrgId"]);
+            var organisation = await context.Organisations.FirstAsync(o => o.InternalIdentifier == Parameters["InternalOrgId"]);
 
             CommonActions.PageTitle().Should().BeEquivalentTo($"Orders dashboard - {organisation.Name}".FormatForComparison());
             CommonActions.LedeText().Should().BeEquivalentTo("Manage orders currently in progress and view completed orders.".FormatForComparison());
@@ -187,7 +187,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             await RunTestWithRetryAsync(async () =>
             {
                 using var context = GetEndToEndDbContext();
-                var organisation = await context.Organisations.Include(o => o.Orders).SingleAsync(o => o.InternalIdentifier == InternalOrgId);
+                var organisation = await context.Organisations.Include(o => o.Orders).FirstAsync(o => o.InternalIdentifier == InternalOrgId);
                 var order = organisation.Orders.First();
 
                 CommonActions.ElementAddValue(Objects.Ordering.OrganisationDashboard.SearchBar, order.CallOffId.ToString());
@@ -259,7 +259,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             await RunTestWithRetryAsync(async () =>
             {
                 using var context = GetEndToEndDbContext();
-                var organisation = await context.Organisations.Include(o => o.Orders).SingleAsync(o => o.InternalIdentifier == InternalOrgId);
+                var organisation = await context.Organisations.Include(o => o.Orders).FirstAsync(o => o.InternalIdentifier == InternalOrgId);
                 var order = organisation.Orders.First();
 
                 CommonActions.ElementAddValue(Objects.Ordering.OrganisationDashboard.SearchBar, order.CallOffId.ToString());
@@ -275,7 +275,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public void OrderDashboard_NoOrders_SectionsCorrectlyDisplayed()
         {
             using var context = GetEndToEndDbContext();
-            var organisation = context.Organisations.AsNoTracking().Single(o => o.InternalIdentifier == InternalOrgId);
+            var organisation = context.Organisations.AsNoTracking().First(o => o.InternalIdentifier == InternalOrgId);
             var orders = context.Orders.AsNoTracking().Where(o => o.OrderingPartyId == organisation.Id).ToList();
 
             context.RemoveRange(orders);

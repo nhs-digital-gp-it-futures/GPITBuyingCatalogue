@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         public async Task Details_SectionsDisplayedCorrectly()
         {
             await using var context = GetEndToEndDbContext();
-            var solutionName = (await context.CatalogueItems.SingleAsync(s => s.Id == SolutionId)).Name;
+            var solutionName = (await context.CatalogueItems.FirstAsync(s => s.Id == SolutionId)).Name;
 
             CommonActions.PageTitle()
                 .Should()
@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 
             await using var context = GetEndToEndDbContext();
             var solution = await context.Solutions
-                .SingleAsync(s => s.CatalogueItemId == SolutionId);
+                .FirstAsync(s => s.CatalogueItemId == SolutionId);
 
             solution.IsPilotSolution.Should().BeTrue();
         }
@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             var solution = await context.CatalogueItems
                 .Include(s => s.Solution)
                 .Include(s => s.Solution.FrameworkSolutions)
-                .SingleAsync(s => s.Id == SolutionId);
+                .FirstAsync(s => s.Id == SolutionId);
 
             var solutions = solution.Solution.FrameworkSolutions.ToList();
             solutions[0].FrameworkId.Should().Be("NHSDGP001");
@@ -93,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             var solution = await context.CatalogueItems
                 .Include(s => s.Solution)
                 .Include(s => s.Solution.FrameworkSolutions)
-                .SingleAsync(s => s.Id == SolutionId);
+                .FirstAsync(s => s.Id == SolutionId);
 
             var solutions = solution.Solution.FrameworkSolutions.ToList();
             solutions[0].FrameworkId.Should().Be("DFOCVC001");
@@ -111,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             var solution = await context.CatalogueItems
                 .Include(s => s.Solution)
                 .Include(s => s.Solution.FrameworkSolutions)
-                .SingleAsync(s => s.Id == SolutionId);
+                .FirstAsync(s => s.Id == SolutionId);
 
             var solutions = solution.Solution.FrameworkSolutions.ToList();
             solutions[0].FrameworkId.Should().Be("NHSDGP001");
@@ -129,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             var catalogueItem = context.CatalogueItems
                 .Include(s => s.Solution)
                 .Include(s => s.Solution.FrameworkSolutions)
-                .Single(s => s.Id == SolutionId);
+                .First(s => s.Id == SolutionId);
 
             catalogueItem.Solution.FrameworkSolutions.Clear();
             catalogueItem.Solution.FrameworkSolutions.Add(new EntityFramework.Catalogue.Models.FrameworkSolution

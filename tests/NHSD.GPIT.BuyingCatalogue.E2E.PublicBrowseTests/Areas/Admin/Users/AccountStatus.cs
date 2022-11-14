@@ -80,11 +80,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         public void Dispose()
         {
             var context = GetEndToEndDbContext();
-            var user = context.AspNetUsers.Single(x => x.Id == UserId);
+            var user = context.AspNetUsers.First(x => x.Id == UserId);
             user.Disabled = false;
             context.SaveChanges();
         }
 
-        private AspNetUser GetUser() => GetEndToEndDbContext().AspNetUsers.Single(x => x.Id == UserId);
+        private AspNetUser GetUser() => GetEndToEndDbContext().AspNetUsers.First(x => x.Id == UserId);
     }
 }

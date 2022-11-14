@@ -98,6 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
                     TaskProgress.Completed => NhsTagsTagHelper.TagColour.Green,
                     TaskProgress.InProgress => NhsTagsTagHelper.TagColour.Yellow,
                     TaskProgress.Optional => NhsTagsTagHelper.TagColour.White,
+                    TaskProgress.Amended => NhsTagsTagHelper.TagColour.Orange,
                     _ => NhsTagsTagHelper.TagColour.Grey,
                 },
 
@@ -108,6 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
                     TaskProgress.Optional => "Optional",
                     TaskProgress.InProgress => "In&nbsp;progress",
                     TaskProgress.NotStarted => "Not started",
+                    TaskProgress.Amended => "Amended",
                     _ => "Completed",
                 },
             };

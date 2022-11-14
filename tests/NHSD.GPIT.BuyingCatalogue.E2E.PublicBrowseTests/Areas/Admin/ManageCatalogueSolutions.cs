@@ -105,9 +105,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
 
                 var pageSummary = GetPageSummary();
 
-                pageSummary.SolutionIds.Single().Should().Be($"{sampleSolution.Id}");
-                pageSummary.SolutionNames.Single().Should().Be(sampleSolution.Name.Trim());
-                pageSummary.SupplierNames.Single().Should().Be(sampleSolution.Supplier.Name.Trim());
+                pageSummary.SolutionIds.First().Should().Be($"{sampleSolution.Id}");
+                pageSummary.SolutionNames.First().Should().Be(sampleSolution.Name.Trim());
+                pageSummary.SupplierNames.First().Should().Be(sampleSolution.Supplier.Name.Trim());
             });
         }
 

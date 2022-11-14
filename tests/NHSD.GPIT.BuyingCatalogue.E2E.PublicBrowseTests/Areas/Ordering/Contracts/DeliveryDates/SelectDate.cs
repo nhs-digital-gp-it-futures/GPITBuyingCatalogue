@@ -192,7 +192,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DeliveryDa
         public void SelectDate_DateBeforeCommencementDate_ClickSave_ExpectedResult()
         {
             var context = GetEndToEndDbContext();
-            var date = context.Orders.Single(x => x.Id == OrderId).CommencementDate!.Value;
+            var date = context.Orders.First(x => x.Id == OrderId).CommencementDate!.Value;
 
             CommonActions.ElementAddValue(DeliveryDatesObjects.SelectDateDayInput, $"{date.Day:00}");
             CommonActions.ElementAddValue(DeliveryDatesObjects.SelectDateMonthInput, $"{date.Month:00}");
@@ -233,7 +233,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DeliveryDa
 
             var context = GetEndToEndDbContext();
 
-            context.Orders.Single(x => x.Id == OrderId).DeliveryDate.Should().Be(date);
+            context.Orders.First(x => x.Id == OrderId).DeliveryDate.Should().Be(date);
             context.OrderItemRecipients.Where(x => x.OrderId == OrderId).ForEach(x => x.DeliveryDate.Should().Be(date));
         }
 
@@ -242,7 +242,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DeliveryDa
         {
             var context = GetEndToEndDbContext();
 
-            context.Orders.Single(x => x.Id == OrderId).DeliveryDate = DateTime.Today;
+            context.Orders.First(x => x.Id == OrderId).DeliveryDate = DateTime.Today;
 
             context.SaveChanges();
 
@@ -259,7 +259,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DeliveryDa
 
             context = GetEndToEndDbContext();
 
-            context.Orders.Single(x => x.Id == OrderId).DeliveryDate.Should().Be(DateTime.Today);
+            context.Orders.First(x => x.Id == OrderId).DeliveryDate.Should().Be(DateTime.Today);
             context.OrderItemRecipients.Where(x => x.OrderId == OrderId).ForEach(x => x.DeliveryDate.Should().BeNull());
         }
 
@@ -268,7 +268,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DeliveryDa
             var context = GetEndToEndDbContext();
 
             context.Orders
-                .Single(x => x.Id == OrderId).DeliveryDate = null;
+                .First(x => x.Id == OrderId).DeliveryDate = null;
 
             context.OrderItemRecipients
                 .Where(x => x.OrderId == OrderId)
@@ -282,7 +282,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DeliveryDa
         {
             var context = GetEndToEndDbContext();
 
-            context.Orders.Single(x => x.Id == OrderId).DeliveryDate.Should().BeNull();
+            context.Orders.First(x => x.Id == OrderId).DeliveryDate.Should().BeNull();
             context.OrderItemRecipients.Where(x => x.OrderId == OrderId).ForEach(x => x.DeliveryDate.Should().BeNull());
         }
     }

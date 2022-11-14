@@ -107,7 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             foreach (var tier in actual.OrderItemPriceTiers)
             {
-                var pricingTier = price.CataloguePriceTiers.Single(x => x.LowerRange == tier.LowerRange && x.UpperRange == tier.UpperRange);
+                var pricingTier = price.CataloguePriceTiers.First(x => x.LowerRange == tier.LowerRange && x.UpperRange == tier.UpperRange);
 
                 tier.ListPrice.Should().Be(pricingTier.Price);
                 tier.Price.Should().Be(pricingTier.Price);
@@ -172,7 +172,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             foreach (var tier in actual.OrderItemPriceTiers)
             {
-                var pricingTier = price.CataloguePriceTiers.Single(x => x.LowerRange == tier.LowerRange && x.UpperRange == tier.UpperRange);
+                var pricingTier = price.CataloguePriceTiers.First(x => x.LowerRange == tier.LowerRange && x.UpperRange == tier.UpperRange);
 
                 tier.ListPrice.Should().Be(pricingTier.Price);
                 tier.Price.Should().Be(pricingTier.Price);
@@ -223,8 +223,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             foreach (var tier in actual.OrderItemPriceTiers)
             {
-                var pricingTier = price.CataloguePriceTiers.Single(x => x.LowerRange == tier.LowerRange && x.UpperRange == tier.UpperRange);
-                var agreedPrice = agreedPrices.Single(x => x.LowerRange == tier.LowerRange && x.UpperRange == tier.UpperRange);
+                var pricingTier = price.CataloguePriceTiers.First(x => x.LowerRange == tier.LowerRange && x.UpperRange == tier.UpperRange);
+                var agreedPrice = agreedPrices.First(x => x.LowerRange == tier.LowerRange && x.UpperRange == tier.UpperRange);
 
                 tier.ListPrice.Should().Be(pricingTier.Price);
                 tier.Price.Should().Be(agreedPrice.Price);
@@ -289,13 +289,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             var solutionId = order.GetSolution().CatalogueItemId;
 
             var expected = context.OrderItemPrices
-                .Single(x => x.OrderId == order.Id
+                .First(x => x.OrderId == order.Id
                     && x.CatalogueItemId == solutionId);
 
             await service.UpdatePrice(order.Id, solutionId, new List<OrderPricingTierDto>());
 
             var actual = context.OrderItemPrices
-                .Single(x => x.OrderId == order.Id
+                .First(x => x.OrderId == order.Id
                     && x.CatalogueItemId == solutionId);
 
             actual.Should().BeEquivalentTo(expected);
@@ -329,13 +329,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await service.UpdatePrice(order.Id, solution.CatalogueItemId, agreedPrices);
 
             var actual = context.OrderItemPrices
-                .Single(x => x.OrderId == order.Id
+                .First(x => x.OrderId == order.Id
                     && x.CatalogueItemId == solution.CatalogueItemId);
 
             for (var i = 0; i < actual.OrderItemPriceTiers.Count; i++)
             {
                 var tier = actual.OrderItemPriceTiers.ElementAt(i);
-                var agreedPrice = agreedPrices.Single(x => x.LowerRange == tier.LowerRange && x.UpperRange == tier.UpperRange);
+                var agreedPrice = agreedPrices.First(x => x.LowerRange == tier.LowerRange && x.UpperRange == tier.UpperRange);
 
                 tier.Price.Should().Be(agreedPrice.Price);
             }

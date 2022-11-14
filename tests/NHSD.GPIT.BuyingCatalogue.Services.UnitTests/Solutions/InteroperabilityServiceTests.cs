@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             await service.SaveIntegrationLink(solution.CatalogueItemId, integrationLink);
 
-            var updatedSolution = await context.Solutions.SingleAsync();
+            var updatedSolution = await context.Solutions.FirstAsync();
             updatedSolution.IntegrationsUrl.Should().Be(integrationLink);
         }
 
@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             await context.SaveChangesAsync();
 
             await service.AddIntegration(solution.CatalogueItemId, newIntegration);
-            var updatedSolution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
+            var updatedSolution = await context.Solutions.FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
             updatedSolution.GetIntegrations().Should().Contain(i => i.Description == newIntegration.Description);
         }
 
@@ -89,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             await context.SaveChangesAsync();
 
             await service.EditIntegration(solution.CatalogueItemId, updatedIntegration.Id, updatedIntegration);
-            var updatedSolution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
+            var updatedSolution = await context.Solutions.FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
             updatedSolution.GetIntegrations().Should().ContainEquivalentOf(updatedIntegration);
         }
 
@@ -133,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             await context.SaveChangesAsync();
 
             await service.DeleteIntegration(solution.CatalogueItemId, deletedIntegration.Id);
-            var updatedSolution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
+            var updatedSolution = await context.Solutions.FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
             updatedSolution.GetIntegrations().Should().NotContainEquivalentOf(deletedIntegration);
         }
 
@@ -151,7 +151,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             await context.SaveChangesAsync();
 
             await service.DeleteIntegration(solution.CatalogueItemId, invalidIntegrationId);
-            var updatedSolution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
+            var updatedSolution = await context.Solutions.FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
             updatedSolution.GetIntegrations().Should().BeEquivalentTo(integrations);
         }
     }

@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
                 nameof(BrowserBasedController.BrowserBased)).Should().BeTrue();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId);
+            var solution = await context.Solutions.FirstAsync(s => s.CatalogueItemId == SolutionId);
 
             var additionalInformation = JsonDeserializer.Deserialize<ServiceContracts.Solutions.ClientApplication>(solution.ClientApplication)
                 ?.AdditionalInformation;

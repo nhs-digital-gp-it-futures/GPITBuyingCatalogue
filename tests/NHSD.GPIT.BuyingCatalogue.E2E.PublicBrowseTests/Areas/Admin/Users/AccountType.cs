@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         public void AccountType_UserNotInNhsDigital_ClickAdmin_ThenSubmit_DisplaysErrorMessage()
         {
             var context = GetEndToEndDbContext();
-            var user = context.AspNetUsers.Single(x => x.Id == UserId);
+            var user = context.AspNetUsers.First(x => x.Id == UserId);
             user.PrimaryOrganisationId = OrganisationConstants.NhsDigitalOrganisationId + 1;
             context.SaveChanges();
 
@@ -114,7 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         [Fact]
         public void AccountType_ClickAccountManager_ThenSubmit_SetsValuesAndDisplaysCorrectPage()
         {
-            CommonActions.ClickRadioButtonWithText("Account Manager");
+            CommonActions.ClickRadioButtonWithText("Account manager");
 
             CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
 
@@ -129,12 +129,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         public void Dispose()
         {
             var context = GetEndToEndDbContext();
-            var user = context.AspNetUsers.Single(x => x.Id == UserId);
+            var user = context.AspNetUsers.First(x => x.Id == UserId);
             user.PrimaryOrganisationId = OrganisationConstants.NhsDigitalOrganisationId;
             context.SaveChanges();
         }
 
-        private AspNetUser GetUser() => GetEndToEndDbContext().AspNetUsers.Include(u => u.AspNetUserRoles).ThenInclude(r => r.Role).Single(x => x.Id == UserId);
+        private AspNetUser GetUser() => GetEndToEndDbContext().AspNetUsers.Include(u => u.AspNetUserRoles).ThenInclude(r => r.Role).First(x => x.Id == UserId);
 
         private void CheckRadioButtons(bool isAuth, bool isBuyer, bool isAM)
         {

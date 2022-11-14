@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Interope
         public async Task DeleteIm1Integration_DisplayedCorrectly()
         {
             await using var context = GetEndToEndDbContext();
-            var solution = await context.CatalogueItems.SingleAsync(s => s.Id == SolutionId);
+            var solution = await context.CatalogueItems.FirstAsync(s => s.Id == SolutionId);
 
             CommonActions.PageTitle()
                 .Should()
@@ -60,8 +60,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Interope
                 .Should().BeTrue();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId);
-            var integration = solution.GetIntegrations().SingleOrDefault(i => i.Id == IntegrationId);
+            var solution = await context.Solutions.FirstAsync(s => s.CatalogueItemId == SolutionId);
+            var integration = solution.GetIntegrations().FirstOrDefault(i => i.Id == IntegrationId);
             integration.Should().BeNull();
         }
 
@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Interope
         public void Dispose()
         {
             using var context = GetEndToEndDbContext();
-            var solution = context.Solutions.Single(s => s.CatalogueItemId == SolutionId);
+            var solution = context.Solutions.First(s => s.CatalogueItemId == SolutionId);
             solution.Integrations = JsonSerializer.Serialize(Integrations.GetIntegrations);
             context.SaveChanges();
         }

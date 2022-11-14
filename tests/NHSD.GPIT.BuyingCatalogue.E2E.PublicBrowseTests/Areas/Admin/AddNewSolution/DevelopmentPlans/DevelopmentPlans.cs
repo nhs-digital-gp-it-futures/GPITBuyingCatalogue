@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Developm
         public async Task DevelopmentPlans_TitleDisplayedCorrectly()
         {
             await using var context = GetEndToEndDbContext();
-            var solutionName = (await context.CatalogueItems.SingleAsync(s => s.Id == SolutionId)).Name;
+            var solutionName = (await context.CatalogueItems.FirstAsync(s => s.Id == SolutionId)).Name;
 
             CommonActions.PageTitle()
                 .Should()
@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Developm
             CommonActions.ClickSave();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId);
+            var solution = await context.Solutions.FirstAsync(s => s.CatalogueItemId == SolutionId);
             solution.RoadMap.Should().Be(link);
         }
 
@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Developm
             AdminPages.CommonActions.ClickGoBack();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId);
+            var solution = await context.Solutions.FirstAsync(s => s.CatalogueItemId == SolutionId);
             var roadmapUrl = solution.RoadMap;
 
             roadmapUrl.Should().BeNullOrEmpty();

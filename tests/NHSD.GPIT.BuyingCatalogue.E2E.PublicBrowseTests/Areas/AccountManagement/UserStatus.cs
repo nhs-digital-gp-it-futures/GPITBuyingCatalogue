@@ -78,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
 
             await using var context = GetEndToEndDbContext();
 
-            var updatedUser = context.AspNetUsers.Single(x => x.Id == user.Id);
+            var updatedUser = context.AspNetUsers.First(x => x.Id == user.Id);
 
             updatedUser.Disabled.Should().BeTrue();
         }
@@ -96,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
 
             await using var context = GetEndToEndDbContext();
 
-            var updatedUser = context.AspNetUsers.Single(x => x.Id == user.Id);
+            var updatedUser = context.AspNetUsers.First(x => x.Id == user.Id);
 
             updatedUser.Disabled.Should().BeFalse();
         }

@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             await RunTestAsync(async () =>
             {
                 await using var context = GetEndToEndDbContext();
-                var pageTitle = (await context.CatalogueItems.SingleAsync(s => s.Id == new CatalogueItemId(99999, "001"))).Name;
+                var pageTitle = (await context.CatalogueItems.FirstAsync(s => s.Id == new CatalogueItemId(99999, "001"))).Name;
 
                 CommonActions
                 .PageTitle()
@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             await RunTestAsync(async () =>
             {
                 await using var context = GetEndToEndDbContext();
-                var info = (await context.Solutions.SingleAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "001"))).ImplementationDetail;
+                var info = (await context.Solutions.FirstAsync(s => s.CatalogueItemId == new CatalogueItemId(99999, "001"))).ImplementationDetail;
 
                 var implementationContent = PublicBrowsePages.SolutionAction.GetSummaryAndDescriptions();
 
@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             await RunTestAsync(async () =>
             {
                 await using var context = GetEndToEndDbContext();
-                var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionId);
+                var solution = await context.CatalogueItems.FirstAsync(ci => ci.Id == SolutionId);
                 solution.PublishedStatus = PublicationStatus.Suspended;
                 await context.SaveChangesAsync();
 
@@ -89,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         public void Dispose()
         {
             using var context = GetEndToEndDbContext();
-            context.CatalogueItems.Single(ci => ci.Id == SolutionId).PublishedStatus = PublicationStatus.Published;
+            context.CatalogueItems.First(ci => ci.Id == SolutionId).PublishedStatus = PublicationStatus.Published;
             context.SaveChanges();
         }
     }

@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Interope
                 nameof(CatalogueSolutionsController.ManageCatalogueSolution)).Should().BeTrue();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId);
+            var solution = await context.Solutions.FirstAsync(s => s.CatalogueItemId == SolutionId);
 
             solution.IntegrationsUrl.Should().Be(url);
         }
@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Interope
                 nameof(CatalogueSolutionsController.ManageCatalogueSolution)).Should().BeTrue();
 
             await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.SingleAsync(s => s.CatalogueItemId == SolutionId);
+            var solution = await context.Solutions.FirstAsync(s => s.CatalogueItemId == SolutionId);
 
             solution.IntegrationsUrl.Should().BeNullOrWhiteSpace();
         }
@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Interope
         public void Dispose()
         {
             using var context = GetEndToEndDbContext();
-            var solution = context.Solutions.Single(s => s.CatalogueItemId == SolutionId);
+            var solution = context.Solutions.First(s => s.CatalogueItemId == SolutionId);
             solution.Integrations = null;
             solution.IntegrationsUrl = null;
             context.SaveChanges();

@@ -102,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         public async Task EditSLAContact_SingleContactUnpublished_DeleteLinkShown()
         {
             await using var context = GetEndToEndDbContext();
-            var solution = await context.CatalogueItems.SingleOrDefaultAsync(c => c.Id == SolutionSingleContactPublishedId);
+            var solution = await context.CatalogueItems.FirstOrDefaultAsync(c => c.Id == SolutionSingleContactPublishedId);
 
             solution.PublishedStatus = EntityFramework.Catalogue.Models.PublicationStatus.Unpublished;
 
@@ -206,7 +206,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         public async Task EditSLAContact_DuplicateContactWithApplicableDays_ErrorThrown()
         {
             await using var context = GetEndToEndDbContext();
-            var existingContact = await context.SlaContacts.SingleAsync(slac => slac.Id == 3);
+            var existingContact = await context.SlaContacts.FirstAsync(slac => slac.Id == 3);
             existingContact.ApplicableDays = "Test";
 
             await context.SaveChangesAsync();
@@ -288,7 +288,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
                 .BeTrue();
 
             using var updatedContext = GetEndToEndDbContext();
-            var updatedContact = updatedContext.SlaContacts.SingleOrDefault(slac => slac.Id == contact.Id);
+            var updatedContact = updatedContext.SlaContacts.FirstOrDefault(slac => slac.Id == contact.Id);
 
             updatedContact.Should().NotBeNull();
 
@@ -348,7 +348,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
                 .BeTrue();
 
             using var updatedContext = GetEndToEndDbContext();
-            var updatedContact = updatedContext.SlaContacts.SingleOrDefault(slac => slac.Id == contact.Id);
+            var updatedContact = updatedContext.SlaContacts.FirstOrDefault(slac => slac.Id == contact.Id);
 
             updatedContact.Should().NotBeNull();
             updatedContact.Channel.FormatForComparison().Should().Be(channel.FormatForComparison());
@@ -365,7 +365,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         {
             using var context = GetEndToEndDbContext();
 
-            var solution = context.CatalogueItems.SingleOrDefault(c => c.Id == SolutionSingleContactPublishedId);
+            var solution = context.CatalogueItems.FirstOrDefault(c => c.Id == SolutionSingleContactPublishedId);
 
             if (solution is not null)
             {

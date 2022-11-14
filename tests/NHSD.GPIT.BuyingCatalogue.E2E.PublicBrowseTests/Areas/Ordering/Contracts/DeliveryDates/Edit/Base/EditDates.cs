@@ -235,7 +235,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DeliveryDa
         [Fact]
         public void EditDates_EditDate_DateBeforeCommencementDate_ExpectedResult()
         {
-            var commencementDate = GetEndToEndDbContext().Orders.Single(x => x.Id == orderId).CommencementDate!.Value;
+            var commencementDate = GetEndToEndDbContext().Orders.First(x => x.Id == orderId).CommencementDate!.Value;
             var date = commencementDate.AddDays(-1);
 
             CommonActions.ElementAddValue(DeliveryDatesObjects.EditDatesDayInput(0), $"{date.Day:00}");

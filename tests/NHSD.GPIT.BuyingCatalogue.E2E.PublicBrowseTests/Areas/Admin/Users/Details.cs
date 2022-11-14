@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         public async Task Details_InactiveUser_AllElementsDisplayed()
         {
             var context = GetEndToEndDbContext();
-            var user = await context.Users.SingleAsync(x => x.Id == UserId);
+            var user = await context.Users.FirstAsync(x => x.Id == UserId);
 
             user.Disabled = true;
             await context.SaveChangesAsync();
@@ -231,7 +231,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
                 .Include(x => x.PrimaryOrganisation)
                 .Include(u => u.AspNetUserRoles)
                 .ThenInclude(r => r.Role)
-                .SingleAsync(x => x.Id == userId);
+                .FirstAsync(x => x.Id == userId);
         }
     }
 }

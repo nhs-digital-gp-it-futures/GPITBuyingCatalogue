@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         public async Task EditSlaTypeConfirmation_CorrectlyDisplayed()
         {
             await using var context = GetEndToEndDbContext();
-            var solution = await context.CatalogueItems.SingleAsync(ci => ci.Id == SolutionId);
+            var solution = await context.CatalogueItems.FirstAsync(ci => ci.Id == SolutionId);
 
             CommonActions.PageTitle()
                 .Should()
@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
                 .Should().BeTrue();
 
             await using var context = GetEndToEndDbContext();
-            var sla = await context.ServiceLevelAgreements.SingleAsync(s => s.SolutionId == SolutionId);
+            var sla = await context.ServiceLevelAgreements.FirstAsync(s => s.SolutionId == SolutionId);
 
             sla.SlaType.Should().Be(SlaType.Type2);
         }
@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         {
             using var context = GetEndToEndDbContext();
 
-            var sla = context.ServiceLevelAgreements.SingleAsync(sla => sla.SolutionId == SolutionId).Result;
+            var sla = context.ServiceLevelAgreements.FirstAsync(sla => sla.SolutionId == SolutionId).Result;
 
             sla.SlaType = SlaType.Type1;
 

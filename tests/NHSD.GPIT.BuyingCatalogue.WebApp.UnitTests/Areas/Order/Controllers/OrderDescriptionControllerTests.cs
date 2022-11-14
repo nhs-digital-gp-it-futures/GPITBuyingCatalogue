@@ -99,8 +99,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             actualResult.ViewName.Should().BeNull();
             actualResult.ViewData.ModelState.IsValid.Should().BeFalse();
             actualResult.ViewData.ModelState.ErrorCount.Should().Be(1);
-            actualResult.ViewData.ModelState.Keys.Single().Should().Be(errorKey);
-            actualResult.ViewData.ModelState.Values.Single().Errors.Single().ErrorMessage.Should().Be(errorMessage);
+            actualResult.ViewData.ModelState.Keys.First().Should().Be(errorKey);
+            actualResult.ViewData.ModelState.Values.First().Errors.First().ErrorMessage.Should().Be(errorMessage);
         }
 
         [Theory]
@@ -198,8 +198,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             actualResult.ViewName.Should().Be("OrderDescription");
             actualResult.ViewData.ModelState.IsValid.Should().BeFalse();
             actualResult.ViewData.ModelState.ErrorCount.Should().Be(1);
-            actualResult.ViewData.ModelState.Keys.Single().Should().Be(errorKey);
-            actualResult.ViewData.ModelState.Values.Single().Errors.Single().ErrorMessage.Should().Be(errorMessage);
+            actualResult.ViewData.ModelState.Keys.First().Should().Be(errorKey);
+            actualResult.ViewData.ModelState.Values.First().Errors.First().ErrorMessage.Should().Be(errorMessage);
         }
     }
 }

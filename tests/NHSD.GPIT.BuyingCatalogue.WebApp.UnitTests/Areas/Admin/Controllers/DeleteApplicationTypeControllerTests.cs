@@ -113,8 +113,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.ViewName.Should().BeNull();
             actual.ViewData.ModelState.IsValid.Should().BeFalse();
             actual.ViewData.ModelState.ErrorCount.Should().Be(1);
-            actual.ViewData.ModelState.Keys.Single().Should().Be(errorKey);
-            actual.ViewData.ModelState.Values.Single().Errors.Single().ErrorMessage.Should().Be(errorMessage);
+            actual.ViewData.ModelState.Keys.First().Should().Be(errorKey);
+            actual.ViewData.ModelState.Values.First().Errors.First().ErrorMessage.Should().Be(errorMessage);
         }
     }
 }

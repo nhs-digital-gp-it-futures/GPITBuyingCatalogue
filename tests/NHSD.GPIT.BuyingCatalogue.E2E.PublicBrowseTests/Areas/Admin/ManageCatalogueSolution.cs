@@ -121,7 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
             PublicationStatus[] expectedPublicationStatuses)
         {
             await using var context = GetEndToEndDbContext();
-            (await context.CatalogueItems.SingleAsync(c => c.Id == SolutionId)).PublishedStatus = publicationStatus;
+            (await context.CatalogueItems.FirstAsync(c => c.Id == SolutionId)).PublishedStatus = publicationStatus;
             await context.SaveChangesAsync();
 
             Driver.Navigate().Refresh();
@@ -203,7 +203,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
         public void Dispose()
         {
             using var context = GetEndToEndDbContext();
-            context.CatalogueItems.Single(ci => ci.Id == SolutionId).PublishedStatus = PublicationStatus.Published;
+            context.CatalogueItems.First(ci => ci.Id == SolutionId).PublishedStatus = PublicationStatus.Published;
             context.SaveChanges();
         }
     }
