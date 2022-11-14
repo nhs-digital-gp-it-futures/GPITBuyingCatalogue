@@ -6,9 +6,6 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
-using Hangfire;
-using Hangfire.Common;
-using Hangfire.States;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
@@ -56,36 +53,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             FluentActions
                 .Awaiting(() => systemUnderTest.ImportGpPracticeData(Uri, emailAddress))
                 .Should().ThrowAsync<ArgumentNullException>();
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task ImportGpPracticeData_ImportServiceReturnsResult_EnqueuesEmail(
-            ImportGpPracticeListResult result,
-            [Frozen] Mock<IBackgroundJobClient> mockClient,
-            [Frozen] Mock<IGpPracticeImportService> mockImportService,
-            GpPracticeService systemUnderTest)
-        {
-            Job job = null;
-
-            mockImportService
-                .Setup(x => x.PerformImport(Uri))
-                .ReturnsAsync(result);
-
-            mockClient
-                .Setup(x => x.Create(It.IsAny<Job>(), It.IsAny<IState>()))
-                .Callback<Job, IState>((j, _) => job = j)
-                .Returns(string.Empty);
-
-            await systemUnderTest.ImportGpPracticeData(Uri, EmailAddress);
-
-            mockImportService.VerifyAll();
-            mockClient.VerifyAll();
-
-            job.Type.Should().BeAssignableTo<IGpPracticeService>();
-            job.Method.Name.Should().Be(nameof(IGpPracticeService.SendConfirmationEmail));
-            job.Args[0].Should().Be(result);
-            job.Args[1].Should().Be(EmailAddress);
         }
 
         [Theory]

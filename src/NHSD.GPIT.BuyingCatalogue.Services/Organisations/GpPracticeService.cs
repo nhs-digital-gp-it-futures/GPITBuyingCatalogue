@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Hangfire;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -15,18 +14,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
         public const string TotalUpdatedToken = "total_updated";
 
         private readonly ImportPracticeListMessageSettings settings;
-        private readonly IBackgroundJobClient backgroundJobClient;
         private readonly IGovNotifyEmailService emailService;
         private readonly IGpPracticeImportService gpPracticeImportService;
 
         public GpPracticeService(
             ImportPracticeListMessageSettings settings,
-            IBackgroundJobClient backgroundJobClient,
             IGovNotifyEmailService emailService,
             IGpPracticeImportService gpPracticeImportService)
         {
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
-            this.backgroundJobClient = backgroundJobClient ?? throw new ArgumentNullException(nameof(backgroundJobClient));
             this.emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
             this.gpPracticeImportService = gpPracticeImportService ?? throw new ArgumentNullException(nameof(gpPracticeImportService));
         }
@@ -41,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
             var result = await gpPracticeImportService.PerformImport(csvUri);
 
-            backgroundJobClient.Enqueue(() => SendConfirmationEmail(result, emailAddress));
+            await SendConfirmationEmail(result, emailAddress);
         }
 
         public async Task SendConfirmationEmail(ImportGpPracticeListResult result, string emailAddress)
