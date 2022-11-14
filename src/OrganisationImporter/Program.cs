@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using OrganisationImporter.Interfaces;
 using OrganisationImporter.Services;
 using Serilog;
 
@@ -61,12 +62,16 @@ namespace OrganisationImporter
         }
         private static void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<OrganisationImportService>();
+            services.AddHttpClient();
             services.AddApplicationInsightsTelemetryWorkerService();
             services.AddDbContext<BuyingCatalogueDbContext>(opts =>
             {
                 opts.UseSqlServer(_configuration.GetValue<string>("BUYINGCATALOGUECONNECTIONSTRING"));
             });
+
+            services.AddSingleton<OrganisationImportService>();
+            services.AddSingleton<IHttpService, HttpService>();
+            services.AddSingleton<ITrudService, TrudService>();
         }
     }
 }
