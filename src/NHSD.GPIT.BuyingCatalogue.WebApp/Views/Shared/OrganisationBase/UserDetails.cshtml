@@ -20,16 +20,16 @@
                 <input type="hidden" asp-for="ControllerName" />
                 <input type="hidden" asp-for="UserId" />
                 <input type="hidden" asp-for="BackLink" />
-                
-                <nhs-input
-                    asp-for="@Model.EmailAddress" 
-                    label-text="Email address" />
+
                 <nhs-input
                     asp-for="@Model.FirstName" 
                     label-text="First name" />
                 <nhs-input
                     asp-for="@Model.LastName" 
                     label-text="Last name" />
+                <nhs-input 
+                    asp-for="@Model.EmailAddress"
+                    label-text="Email address" />
 
                 <nhs-fieldset-form-label asp-for="SelectedAccountType"
                                          label-text="Account type"
