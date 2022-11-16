@@ -1,29 +1,42 @@
+using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 using OrganisationImporter.Interfaces;
+using OrganisationImporter.Models;
 
 namespace OrganisationImporter.Services;
 
 public class OrganisationImportService
 {
     private readonly ITrudService _trudService;
-    private readonly ILogger<OrganisationImportService> logger;
+    private readonly ILogger<OrganisationImportService> _logger;
 
     public OrganisationImportService(
-        ITrudService _trudService,
+        ITrudService trudXmlService,
         ILogger<OrganisationImportService> logger)
     {
-        this._trudService = _trudService ?? throw new ArgumentNullException(nameof(_trudService));
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        this._trudService = trudXmlService ?? throw new ArgumentNullException(nameof(trudXmlService));
+        this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     public async Task ImportFromUrl(Uri url)
     {
-        logger.LogInformation("Received {Url}", url);
+        _logger.LogInformation("Received {Url}", url);
 
+        var stopwatch = Stopwatch.StartNew();
         var trudData = await _trudService.GetTrudData(url);
+        if (trudData is null)
+        {
+            _logger.LogError("Couldn't retrieve TRUD data from {Url}, see logs for more", url);
 
-        var roleTypes = trudData.GetRoleTypes();
+            return;
+        }
 
-        logger.LogInformation("TRUD contains {Count} organisations", trudData.Organisations.Organisation.Count.ToString("#,##"));
+        _logger.LogInformation("TRUD contains {Count} organisations", trudData.OrganisationsRoot.Organisations.Count.ToString("#,##"));
+
+        await _trudService.SaveTrudDataAsync(new(trudData, _logger));
+
+        stopwatch.Stop();
+
+        _logger.LogInformation("Processing TRUD took {ElapsedTime}ms", stopwatch.ElapsedMilliseconds);
     }
 }

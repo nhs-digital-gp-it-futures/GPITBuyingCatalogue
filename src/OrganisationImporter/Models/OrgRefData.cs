@@ -159,19 +159,21 @@ public class LastChangeDate {
 [XmlRoot(ElementName="Location")]
 public class Location {
 	[XmlElement(ElementName="AddrLn1")]
-	public string AddrLn1 { get; set; }
-	[XmlElement(ElementName="AddrLn2")]
-	public string AddrLn2 { get; set; }
+    public string AddrLn1 { get; set; }
+    [XmlElement(ElementName="AddrLn2")]
+    public string AddrLn2 { get; set; }
+    [XmlElement(ElementName="AddrLn3")]
+    public string AddrLn3 { get; set; }
 	[XmlElement(ElementName="Town")]
-	public string Town { get; set; }
+    public string Town { get; set; }
 	[XmlElement(ElementName="County")]
-	public string County { get; set; }
+    public string County { get; set; }
 	[XmlElement(ElementName="PostCode")]
-	public string PostCode { get; set; }
+    public string PostCode { get; set; }
 	[XmlElement(ElementName="Country")]
 	public string Country { get; set; }
 	[XmlElement(ElementName="UPRN")]
-	public string UPRN { get; set; }
+    public string UPRN { get; set; }
 }
 
 [XmlRoot(ElementName="GeoLoc")]
@@ -189,15 +191,15 @@ public class Role {
 	[XmlAttribute(AttributeName="id")]
 	public string Id { get; set; }
 	[XmlAttribute(AttributeName="uniqueRoleId")]
-	public string UniqueRoleId { get; set; }
+	public int UniqueRoleId { get; set; }
 	[XmlAttribute(AttributeName="primaryRole")]
-	public string PrimaryRole { get; set; }
+	public bool PrimaryRole { get; set; }
 }
 
 [XmlRoot(ElementName="Roles")]
-public class Roles {
+public class RolesRoot {
 	[XmlElement(ElementName="Role")]
-	public Role Role { get; set; }
+	public List<Role> Roles { get; set; }
 }
 
 [XmlRoot(ElementName="PrimaryRoleId")]
@@ -217,7 +219,7 @@ public class Target {
 }
 
 [XmlRoot(ElementName="Rel")]
-public class Rel {
+public class Relationship {
 	[XmlElement(ElementName="Date")]
 	public Date Date { get; set; }
 	[XmlElement(ElementName="Status")]
@@ -227,13 +229,13 @@ public class Rel {
 	[XmlAttribute(AttributeName="id")]
 	public string Id { get; set; }
 	[XmlAttribute(AttributeName="uniqueRelId")]
-	public string UniqueRelId { get; set; }
+	public int UniqueRelId { get; set; }
 }
 
 [XmlRoot(ElementName="Rels")]
-public class Rels {
+public class RelationshipsRoot {
 	[XmlElement(ElementName="Rel")]
-	public Rel Rel { get; set; }
+	public List<Relationship> Relationship { get; set; }
 }
 
 [XmlRoot(ElementName="Succ")]
@@ -269,9 +271,9 @@ public class Organisation {
 	[XmlElement(ElementName="GeoLoc")]
 	public GeoLoc GeoLoc { get; set; }
 	[XmlElement(ElementName="Roles")]
-	public Roles Roles { get; set; }
+	public RolesRoot RolesRoot { get; set; }
 	[XmlElement(ElementName="Rels")]
-	public Rels Rels { get; set; }
+	public RelationshipsRoot RelationshipsRoot { get; set; }
 	[XmlElement(ElementName="Succs")]
 	public Succs Succs { get; set; }
 	[XmlAttribute(AttributeName="orgRecordClass")]
@@ -279,9 +281,9 @@ public class Organisation {
 }
 
 [XmlRoot(ElementName="Organisations")]
-public class Organisations {
+public class OrganisationsRoot {
 	[XmlElement(ElementName="Organisation")]
-	public List<Organisation> Organisation { get; set; }
+	public List<Organisation> Organisations { get; set; }
 }
 
 [XmlRoot(ElementName="OrgRefData", Namespace="http://refdata.hscic.gov.uk/org/v2-0-0")]
@@ -293,7 +295,7 @@ public class OrgRefData {
 	public CodeSystems CodeSystems { get; set; }
 
 	[XmlElement(ElementName="Organisations", Namespace = "")]
-	public Organisations Organisations { get; set; }
+	public OrganisationsRoot OrganisationsRoot { get; set; }
 
 	[XmlAttribute(AttributeName="HSCOrgRefData", Namespace="http://www.w3.org/2000/xmlns/")]
 	public string HSCOrgRefData { get; set; }

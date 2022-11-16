@@ -29,12 +29,14 @@ namespace OrganisationImporter
                     var telemetryConfig = TelemetryConfiguration.CreateDefault();
                     telemetryConfig.ConnectionString = _configuration["APPLICATIONINSIGHTS:CONNECTION_STRING"];
                     loggerConfiguration
+                        .ReadFrom.Configuration(_configuration)
                         .WriteTo
                         .Console()
-                        .WriteTo
-                        .ApplicationInsights(
-                            telemetryConfig,
-                            TelemetryConverter.Traces);
+                        // .WriteTo
+                        // .ApplicationInsights(
+                        //     telemetryConfig,
+                        //     TelemetryConverter.Traces)
+                        ;
                 });
 
             var host = builder.Build();
@@ -66,7 +68,9 @@ namespace OrganisationImporter
             services.AddApplicationInsightsTelemetryWorkerService();
             services.AddDbContext<BuyingCatalogueDbContext>(opts =>
             {
-                opts.UseSqlServer(_configuration.GetValue<string>("BUYINGCATALOGUECONNECTIONSTRING"));
+                var connectionString = _configuration.GetValue<string>("BUYINGCATALOGUECONNECTIONSTRING");
+                opts.UseSqlServer(connectionString);
+                opts.EnableSensitiveDataLogging();
             });
 
             services.AddSingleton<OrganisationImportService>();
