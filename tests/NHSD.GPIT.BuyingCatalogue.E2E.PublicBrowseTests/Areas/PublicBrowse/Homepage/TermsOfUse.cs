@@ -61,14 +61,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
         }
 
         [Fact]
-        public void Authenticated_HasAccepted_FormNotVisible()
+        public void Authenticated_HasAccepted_FormVisible()
         {
             Login();
 
-            CommonActions.ElementIsDisplayed(TermsOfUseObjects.Form).Should().BeFalse();
-            CommonActions.GetNumberOfCheckBoxesDisplayed().Should().Be(0);
+            CommonActions.ElementIsDisplayed(TermsOfUseObjects.Form).Should().BeTrue();
+            CommonActions.GetNumberOfCheckBoxesDisplayed().Should().Be(1);
 
-            CommonActions.SaveButtonDisplayed().Should().BeFalse();
+            CommonActions.SaveButtonDisplayed().Should().BeTrue();
         }
 
         [Fact]

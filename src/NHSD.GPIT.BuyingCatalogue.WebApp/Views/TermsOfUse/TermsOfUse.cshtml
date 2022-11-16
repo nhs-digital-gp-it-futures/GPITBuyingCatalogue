@@ -8,8 +8,8 @@
         <div class="nhsuk-width-container">
             <ol class="nhsuk-breadcrumb__list">
                 <li class="nhsuk-breadcrumb__item">
-                    <a asp-action="@nameof(HomeController.Index)" 
-                       asp-controller="@typeof(HomeController).ControllerName()" 
+                    <a asp-action="@nameof(HomeController.Index)"
+                       asp-controller="@typeof(HomeController).ControllerName()"
                        class="nhsuk-breadcrumb__link"
                        data-test-id="home-crumb">Home</a>
                 </li>
@@ -385,14 +385,15 @@
                 </p>
             </section>
 
-        @if (Model.IsAuthenticated && Model.IsBuyer && !Model.AlreadyAcceptedLatestTerms)
+        @if (Model.IsAuthenticated && Model.IsBuyer)
         {
-            <form method="post" data-test-id="terms-form">                
+            <form method="post" data-test-id="terms-form">
                 <input type="hidden" asp-for="ReturnUrl" />
                 <input type="hidden" asp-for="IsBuyer" />
                 <input type="hidden" asp-for="AlreadyAcceptedLatestTerms" />
-                
-                @{
+
+                @if (!Model.AlreadyAcceptedLatestTerms)
+                {
                     var privacyPolicyUrl = Url.Action(nameof(HomeController.PrivacyPolicy), typeof(HomeController).ControllerName());
 
                     <nhs-fieldset-form-label asp-for="HasAcceptedTermsOfUse">
