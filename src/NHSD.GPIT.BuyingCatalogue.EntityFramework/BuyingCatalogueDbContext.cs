@@ -22,6 +22,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
         {
         }
 
+        public BuyingCatalogueDbContext(DbContextOptions<BuyingCatalogueDbContext> options)
+            : base(options)
+        {
+        }
+
         public BuyingCatalogueDbContext(DbContextOptions<BuyingCatalogueDbContext> options, IIdentityService identityService)
             : base(options)
         {
@@ -181,7 +186,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         private void UpdateAuditFields(int? userId = null)
         {
-            userId ??= identityService.GetUserId();
+            userId ??= identityService?.GetUserId();
+
+            if (userId is null) return;
 
             foreach (var entry in ChangeTracker.Entries())
             {
