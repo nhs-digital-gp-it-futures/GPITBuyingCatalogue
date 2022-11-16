@@ -5,8 +5,6 @@
     [AddressLine1]          NVARCHAR(255) NULL,
     [AddressLine2]          NVARCHAR(255) NULL,
     [AddressLine3]          NVARCHAR(255) NULL,
-    [AddressLine4]          NVARCHAR(255) NULL,
-    [AddressLine5]          NVARCHAR(255) NULL,
     [Town]                  NVARCHAR(100) NULL,
     [County]                NVARCHAR(100) NULL,
     [Postcode]              NVARCHAR(10)  NULL,

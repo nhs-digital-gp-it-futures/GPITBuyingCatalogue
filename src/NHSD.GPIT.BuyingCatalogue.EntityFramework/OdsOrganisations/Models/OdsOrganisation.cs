@@ -24,7 +24,9 @@ public class OdsOrganisation
 
     public bool IsActive { get; set; }
 
-    public virtual ICollection<OrganisationRelationship> Related { get; set; }
+    public virtual ICollection<OrganisationRelationship> Related { get; set; } =
+        new HashSet<OrganisationRelationship>();
 
-    public virtual OrganisationRelationship Parent { get; set; }
+    public virtual ICollection<OrganisationRelationship> Parents { get; set; } =
+        new HashSet<OrganisationRelationship>();
 }
