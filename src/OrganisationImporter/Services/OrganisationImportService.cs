@@ -11,10 +11,10 @@ public class OrganisationImportService
     private readonly ILogger<OrganisationImportService> _logger;
 
     public OrganisationImportService(
-        ITrudService trudXmlService,
+        ITrudService trudService,
         ILogger<OrganisationImportService> logger)
     {
-        this._trudService = trudXmlService ?? throw new ArgumentNullException(nameof(trudXmlService));
+        this._trudService = trudService ?? throw new ArgumentNullException(nameof(trudService));
         this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 

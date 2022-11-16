@@ -11,7 +11,7 @@ using Serilog;
 
 namespace OrganisationImporter
 {
-    public class Program
+    public static class Program
     {
         private static IConfigurationRoot _configuration;
         static async Task Main(string[] args)
@@ -32,10 +32,10 @@ namespace OrganisationImporter
                         .ReadFrom.Configuration(_configuration)
                         .WriteTo
                         .Console()
-                        // .WriteTo
-                        // .ApplicationInsights(
-                        //     telemetryConfig,
-                        //     TelemetryConverter.Traces)
+                        .WriteTo
+                        .ApplicationInsights(
+                            telemetryConfig,
+                            TelemetryConverter.Traces)
                         ;
                 });
 
