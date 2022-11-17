@@ -23,6 +23,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.PublicBrowse
 
         public static By SectionNine => ByExtensions.DataTestId("terms-section-nine");
 
+        public static By SectionTen => ByExtensions.DataTestId("terms-section-ten");
+
+        public static By SectionEleven => ByExtensions.DataTestId("terms-section-eleven");
+
         public static By Form => ByExtensions.DataTestId("terms-form");
 
         public static By HasAcceptedTermsOfUse => By.Id("HasAcceptedTermsOfUse");
