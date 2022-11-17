@@ -38,13 +38,6 @@ resource "azurerm_windows_web_app" "org_import_webapp" {
   site_config {
     worker_count      = 1
     use_32_bit_worker = true
-    ip_restriction {
-      action     = "Deny"
-      name       = "Block All"
-      ip_address = "0.0.0.0/32"
-      priority   = 200
-      headers    = []
-    }
   }
 
   app_settings = {
