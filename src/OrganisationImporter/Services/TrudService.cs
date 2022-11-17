@@ -12,26 +12,31 @@ namespace OrganisationImporter.Services;
 
 public class TrudService : ITrudService
 {
-    private const string NestedZipFileName = "fullfile.zip";
-    private const string XmlFileExtension = ".xml";
 
     private readonly BuyingCatalogueDbContext _dbContext;
     private readonly IHttpService _httpService;
+    private readonly IZipService _zipService;
     private readonly ILogger<TrudService> _logger;
 
     public TrudService(
         BuyingCatalogueDbContext dbContext,
         IHttpService httpService,
+        IZipService zipService,
         ILogger<TrudService> logger)
     {
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         _httpService = httpService ?? throw new ArgumentNullException(nameof(httpService));
+        _zipService = zipService ?? throw new ArgumentNullException(nameof(zipService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<OrgRefData> GetTrudData(Uri url)
+    public async Task<OrgRefData> GetTrudDataAsync(Uri url)
     {
-        await using var dataStream = await GetDataStreamAsync(url);
+        await using var zipStream = await _httpService.DownloadAsync(url);
+        if (zipStream is null)
+            return null;
+
+        await using var dataStream = await _zipService.GetTrudDataFileAsync(zipStream);
         if (dataStream is null)
             return null;
 
@@ -55,11 +60,15 @@ public class TrudService : ITrudService
             await _dbContext.SaveChangesAsync();
 
             _dbContext.OrganisationRoles.AddRange(mappedData.OrganisationRoles);
-            _dbContext.OrganisationRelationships.AddRange(mappedData.OrganisationRelationships);
+
+            if (mappedData.OrganisationRelationships.Any())
+                _dbContext.OrganisationRelationships.AddRange(mappedData.OrganisationRelationships);
 
             await _dbContext.SaveChangesAsync();
 
             await transaction.CommitAsync();
+
+            _logger.LogInformation("Committed TRUD changes to database");
         }
         catch (Exception ex)
         {
@@ -67,53 +76,6 @@ public class TrudService : ITrudService
 
             await transaction.RollbackAsync();
         }
-    }
-
-    private async Task<Stream> GetDataStreamAsync(Uri url)
-    {
-        await using var zipStream = await _httpService.DownloadAsync(url);
-
-        // Open the main Zip file and retrieve the nested Zip
-        using var zipFile = new ZipFile(zipStream);
-
-        var nestedZipFile = zipFile.GetEntry(NestedZipFileName);
-        if (nestedZipFile is null)
-        {
-            _logger.LogError("Couldn't find {NestedZipFileName} in {ParentZipFileName}", NestedZipFileName,
-                zipFile.Name);
-
-            return null;
-        }
-
-        _logger.LogInformation("Retrieved nested zip file {NestedZipFileName}", nestedZipFile.Name);
-
-        // Open the nested Zip and get the first XML file.
-        // The file name isn't predictable and so GetEntry can't be used
-        await using var fullFileStream = zipFile.GetInputStream(nestedZipFile);
-        using var fullFileZip = new ZipFile(fullFileStream);
-
-        // If there is more than 1 XML file, we can't predict which one to use
-        var zipEntries = fullFileZip.Cast<ZipEntry>().Where(x => x.IsFile && x.Name.EndsWith(XmlFileExtension))
-            .ToArray();
-
-        if (zipEntries.Length > 1)
-        {
-            _logger.LogError("Nested archive contains more than one XML file. {@Files}",
-                zipEntries.Select(x => x.Name));
-
-            return null;
-        }
-
-        var dataset = zipEntries.First();
-        await using var fullFileInputStream = fullFileZip.GetInputStream(dataset);
-
-        _logger.LogInformation("Retrieved TRUD dataset file {DataSetFileName}", dataset.Name);
-
-        var memoryStream = new MemoryStream();
-        await fullFileInputStream.CopyToAsync(memoryStream);
-
-        memoryStream.Seek(0, SeekOrigin.Begin);
-        return memoryStream;
     }
 
     private OrgRefData DeserializeStream(Stream stream)
@@ -154,7 +116,11 @@ public class TrudService : ITrudService
         foreach (var entityToClear in entitiesToClear)
         {
             var entityType = dbContext.Model.FindEntityType(entityToClear)!;
-            await dbContext.Database.ExecuteSqlRawAsync($"DELETE FROM {entityType.GetSchemaQualifiedTableName()}");
+            var tableName = dbContext.Database.IsSqlServer()
+                ? entityType.GetSchemaQualifiedTableName()
+                : entityType.GetTableName();
+
+            await dbContext.Database.ExecuteSqlRawAsync($"DELETE FROM {tableName}");
         }
 
         await dbContext.SaveChangesAsync();

@@ -31,6 +31,8 @@ public class HttpService : IHttpService
                 logger.LogError(
                     "Failed to download TRUD dataset.\r\nStatus Code: {StatusCode}\r\nError: {ResponseContent}",
                     response.StatusCode, responseBody);
+
+                return null;
             }
 
             return await response.Content.ReadAsStreamAsync();

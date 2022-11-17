@@ -181,7 +181,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
         {
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
-            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(BuyingCatalogueDbContext).Assembly);
         }
 
         private void UpdateAuditFields(int? userId = null)

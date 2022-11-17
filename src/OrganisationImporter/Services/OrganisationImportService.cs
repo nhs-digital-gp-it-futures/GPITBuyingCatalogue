@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 using OrganisationImporter.Interfaces;
-using OrganisationImporter.Models;
 
 namespace OrganisationImporter.Services;
 
@@ -23,9 +22,10 @@ public class OrganisationImportService
         _logger.LogInformation("Received {Url}", url);
 
         var stopwatch = Stopwatch.StartNew();
-        var trudData = await _trudService.GetTrudData(url);
+        var trudData = await _trudService.GetTrudDataAsync(url);
         if (trudData is null)
         {
+            stopwatch.Stop();
             _logger.LogError("Couldn't retrieve TRUD data from {Url}, see logs for more", url);
 
             return;
