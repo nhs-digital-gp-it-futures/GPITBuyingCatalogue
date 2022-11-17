@@ -78,59 +78,67 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         {
             var organisation = await OrganisationsService.GetOrganisation(organisationId);
 
-            var model = new AddUserModel(organisation)
+            var model = new UserDetailsModel(organisation)
             {
                 BackLink = Url.Action(nameof(Users), new { organisationId }),
                 ControllerName = ControllerName,
             };
 
-            return View("OrganisationBase/AddUser", model);
+            return View("OrganisationBase/UserDetails", model);
         }
 
         [HttpPost("{organisationId}/users/add")]
-        public async Task<IActionResult> AddUser(int organisationId, AddUserModel model)
+        public async Task<IActionResult> AddUser(int organisationId, UserDetailsModel model)
         {
             if (!ModelState.IsValid)
-                return View("OrganisationBase/AddUser", model);
+                return View("OrganisationBase/UserDetails", model);
 
             await CreateBuyerService.Create(
                 organisationId,
                 model.FirstName,
                 model.LastName,
                 model.EmailAddress,
-                model.SelectedAccountType);
+                model.SelectedAccountType,
+                !model.IsActive!.Value);
 
             return RedirectToAction(
                 nameof(Users),
                 new { organisationId });
         }
 
-        [HttpGet("{organisationId}/users/{userId}/status")]
-        public async Task<IActionResult> UserStatus(int organisationId, int userId)
+        [HttpGet("{organisationId}/users/{userId}/edit")]
+        public async Task<IActionResult> EditUser(int organisationId, int userId)
         {
             var organisation = await OrganisationsService.GetOrganisation(organisationId);
             var user = await UserService.GetUser(userId);
 
-            var model = new UserStatusModel
+            var model = new UserDetailsModel(organisation, user)
             {
                 BackLink = Url.Action(nameof(Users), new { organisationId }),
-                OrganisationId = organisationId,
-                OrganisationName = organisation.Name,
-                UserId = user.Id,
-                UserEmail = user.Email,
-                IsActive = !user.Disabled,
                 ControllerName = ControllerName,
             };
 
-            return View("OrganisationBase/UserStatus", model);
+            return View("OrganisationBase/UserDetails", model);
         }
 
-        [HttpPost("{organisationId}/users/{userId}/status")]
-        public async Task<IActionResult> UserStatus(int organisationId, int userId, UserStatusModel model)
+        [HttpPost("{organisationId}/users/{userId}/edit")]
+        public async Task<IActionResult> EditUser(int organisationId, int userId, UserDetailsModel model)
         {
-            await UserService.EnableOrDisableUser(userId, model.IsActive);
+            if (!ModelState.IsValid)
+                return View("OrganisationBase/UserDetails", model);
 
-            return RedirectToAction(nameof(Users), new { organisationId });
+            await UserService.UpdateUser(
+                userId,
+                model.FirstName,
+                model.LastName,
+                model.EmailAddress,
+                !model.IsActive!.Value,
+                model.SelectedAccountType,
+                organisationId);
+
+            return RedirectToAction(
+                nameof(Users),
+                new { organisationId });
         }
 
         [HttpGet("{organisationId}/related")]
