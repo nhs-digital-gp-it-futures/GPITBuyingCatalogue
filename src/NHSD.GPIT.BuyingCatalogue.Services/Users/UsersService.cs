@@ -113,6 +113,25 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
             await userManager.UpdateAsync(user);
         }
 
+        public async Task UpdateUser(int userId, string firstName, string lastName, string email, bool disabled, string organisationFunction, int organisationId)
+        {
+            var user = await userManager.Users.FirstAsync(u => u.Id == userId);
+
+            user.FirstName = firstName;
+            user.LastName = lastName;
+            user.Email = email;
+            user.UserName = email;
+            user.Disabled = disabled;
+            user.PrimaryOrganisationId = organisationId;
+
+            var userRoles = await userManager.GetRolesAsync(user);
+
+            await userManager.RemoveFromRolesAsync(user, userRoles);
+            await userManager.AddToRoleAsync(user, organisationFunction);
+
+            await userManager.UpdateAsync(user);
+        }
+
         public async Task<bool> EmailAddressExists(string emailAddress, int userId = 0)
         {
             var testAddress = (emailAddress ?? string.Empty).ToUpperInvariant();

@@ -26,6 +26,15 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users
 
         Task UpdateUserOrganisation(int userId, int organisationId);
 
+        Task UpdateUser(
+            int userId,
+            string firstName,
+            string lastName,
+            string email,
+            bool disabled,
+            string organisationFunction,
+            int organisationId);
+
         Task<bool> EmailAddressExists(string emailAddress, int userId = 0);
     }
 }
