@@ -26,5 +26,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common.Organisati
         {
             Driver.FindElement(AddUserObjects.Email).SendKeys(emailAddress);
         }
+
     }
 }

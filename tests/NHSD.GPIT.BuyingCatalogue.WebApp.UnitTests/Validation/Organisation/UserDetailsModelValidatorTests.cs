@@ -9,15 +9,15 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Organisation
 {
-    public static class AddUserModelValidatorTests
+    public static class UserDetailsModelValidatorTests
     {
         [Theory]
         [CommonInlineAutoData(null)]
         [CommonInlineAutoData("")]
         public static void Validate_FirstNameNullOrEmpty_SetsModelError(
             string firstName,
-            AddUserModel model,
-            AddUserModelValidator validator)
+            UserDetailsModel model,
+            UserDetailsModelValidator validator)
         {
             model.FirstName = firstName;
 
@@ -32,8 +32,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Organisation
         [CommonInlineAutoData("")]
         public static void Validate_LastNameNullOrEmpty_SetsModelError(
             string lastName,
-            AddUserModel model,
-            AddUserModelValidator validator)
+            UserDetailsModel model,
+            UserDetailsModelValidator validator)
         {
             model.LastName = lastName;
 
@@ -48,8 +48,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Organisation
         [CommonInlineAutoData("")]
         public static void Validate_EmailAddressNullOrEmpty_SetsModelError(
             string emailAddress,
-            AddUserModel model,
-            AddUserModelValidator validator)
+            UserDetailsModel model,
+            UserDetailsModelValidator validator)
         {
             model.EmailAddress = emailAddress;
 
@@ -63,8 +63,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Organisation
         [CommonInlineAutoData("test")]
         public static void Validate_EmailAddressInvalidFormat_SetsModelError(
             string emailAddress,
-            AddUserModel model,
-            AddUserModelValidator validator)
+            UserDetailsModel model,
+            UserDetailsModelValidator validator)
         {
             model.EmailAddress = emailAddress;
 
@@ -78,21 +78,52 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Organisation
         [CommonAutoData]
         public static void Validate_UserWithEmailExists_SetsModelError(
             [Frozen] Mock<IUsersService> mockUsersService,
-            AddUserModel model,
-            AddUserModelValidator validator)
+            UserDetailsModel model,
+            UserDetailsModelValidator validator)
         {
             var emailAddress = "test@test.com";
 
             mockUsersService
-                .Setup(x => x.EmailAddressExists(emailAddress, 0))
+                .Setup(x => x.EmailAddressExists(emailAddress, model.UserId))
                 .ReturnsAsync(true);
 
             model.EmailAddress = emailAddress;
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(model => model.EmailAddress)
+            result.ShouldHaveValidationErrorFor(x => x.EmailAddress)
                 .WithErrorMessage("A user with this email address is already registered on the Buying Catalogue");
+        }
+
+        [Theory]
+        [CommonInlineAutoData(null)]
+        [CommonInlineAutoData("")]
+        public static void Validate_AccountTypeNullOrEmpty_SetsModelError(
+            string accountType,
+            UserDetailsModel model,
+            UserDetailsModelValidator validator)
+        {
+            model.SelectedAccountType = accountType;
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.SelectedAccountType)
+                .WithErrorMessage("Select an account type");
+        }
+
+        [Theory]
+        [CommonInlineAutoData(null)]
+        public static void Validate_AccountStatusNullOrEmpty_SetsModelError(
+            bool? isActive,
+            UserDetailsModel model,
+            UserDetailsModelValidator validator)
+        {
+            model.IsActive = isActive;
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.IsActive)
+                .WithErrorMessage("Select an account status");
         }
 
         [Theory]
@@ -100,8 +131,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Organisation
         public static void Validate_Valid_NoModelError(
             string firstName,
             string lastName,
-            AddUserModel model,
-            AddUserModelValidator validator)
+            UserDetailsModel model,
+            UserDetailsModelValidator validator)
         {
             model.FirstName = firstName;
             model.LastName = lastName;

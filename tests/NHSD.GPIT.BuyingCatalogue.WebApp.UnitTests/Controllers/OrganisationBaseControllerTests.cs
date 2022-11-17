@@ -17,13 +17,14 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 {
-    public static class OrganisationControllerTests
+    public static class OrganisationBaseControllerTests
     {
         [Fact]
         public static void Constructors_VerifyGuardClauses()
@@ -131,9 +132,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             mockOrganisationsService.VerifyAll();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.AddUser));
+            result.ViewName.Should().Be("OrganisationBase/UserDetails");
 
-            var model = result.Model.Should().BeAssignableTo<AddUserModel>().Subject;
+            var model = result.Model.Should().BeAssignableTo<UserDetailsModel>().Subject;
 
             model.OrganisationName.Should().Be(organisation.Name);
         }
@@ -142,7 +143,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         [CommonAutoData]
         public static async Task Post_AddUser_WithModelErrors_ReturnsExpectedResult(
             int organisationId,
-            AddUserModel model,
+            UserDetailsModel model,
             OrganisationBaseController controller)
         {
             controller.ModelState.AddModelError("key", "errorMessage");
@@ -150,9 +151,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             var result = (await controller.AddUser(organisationId, model)).As<ViewResult>();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.AddUser));
+            result.ViewName.Should().Be("OrganisationBase/UserDetails");
 
-            var actualModel = result.Model.Should().BeAssignableTo<AddUserModel>().Subject;
+            var actualModel = result.Model.Should().BeAssignableTo<UserDetailsModel>().Subject;
 
             actualModel.Should().BeEquivalentTo(model);
         }
@@ -161,7 +162,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         [CommonAutoData]
         public static async Task Post_AddUser_ValidModel_ReturnsExpectedResult(
             int organisationId,
-            AddUserModel model,
+            UserDetailsModel model,
             [Frozen] Mock<ICreateUserService> mockCreateBuyerService,
             OrganisationBaseController controller)
         {
@@ -169,7 +170,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             model.SelectedAccountType = OrganisationFunction.Buyer.Name;
 
             mockCreateBuyerService
-                .Setup(x => x.Create(organisationId, model.FirstName, model.LastName, model.EmailAddress, OrganisationFunction.Buyer.Name))
+                .Setup(x => x.Create(organisationId, model.FirstName, model.LastName, model.EmailAddress, OrganisationFunction.Buyer.Name, false))
                 .ReturnsAsync((AspNetUser)null);
 
             var result = (await controller.AddUser(organisationId, model)).As<RedirectToActionResult>();
@@ -182,13 +183,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_UserStatus_ReturnsExpectedResult(
-            Organisation organisation,
-            AspNetUser user,
-            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
-            [Frozen] Mock<IUsersService> mockUsersService,
-            [Frozen] Mock<IUrlHelper> mockUrlHelper,
-            OrganisationBaseController controller)
+        public static async Task Get_EditUser_ReturnsExpectedResult(
+             Organisation organisation,
+             AspNetUser user,
+             [Frozen] Mock<IUsersService> mockUsersService,
+             [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
+             [Frozen] Mock<IUrlHelper> mockUrlHelper,
+             OrganisationBaseController controller)
         {
             mockOrganisationsService
                 .Setup(x => x.GetOrganisation(organisation.Id))
@@ -200,37 +201,56 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             controller.Url = mockUrlHelper.Object;
 
-            var result = (await controller.UserStatus(organisation.Id, user.Id)).As<ViewResult>();
+            var result = (await controller.EditUser(organisation.Id, user.Id)).As<ViewResult>();
 
             mockOrganisationsService.VerifyAll();
-            mockUsersService.VerifyAll();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.UserStatus));
+            result.ViewName.Should().Be("OrganisationBase/UserDetails");
 
-            var model = result.Model.Should().BeAssignableTo<UserStatusModel>().Subject;
+            var model = result.Model.Should().BeAssignableTo<UserDetailsModel>().Subject;
 
-            model.OrganisationId.Should().Be(organisation.Id);
             model.OrganisationName.Should().Be(organisation.Name);
             model.UserId.Should().Be(user.Id);
-            model.UserEmail.Should().Be(user.Email);
-            model.IsActive.Should().Be(!user.Disabled);
+            model.Title.Should().Be("Edit user");
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_UserStatus_ReturnsExpectedResult(
+        public static async Task Post_EditUser_WithModelErrors_ReturnsExpectedResult(
             int organisationId,
             int userId,
-            UserStatusModel viewModel,
+            UserDetailsModel model,
+            OrganisationBaseController controller)
+        {
+            controller.ModelState.AddModelError("key", "errorMessage");
+
+            var result = (await controller.EditUser(organisationId, userId, model)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.ViewName.Should().Be("OrganisationBase/UserDetails");
+
+            var actualModel = result.Model.Should().BeAssignableTo<UserDetailsModel>().Subject;
+
+            actualModel.Should().BeEquivalentTo(model);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditUser_ValidModel_ReturnsExpectedResult(
+            int organisationId,
+            int userId,
+            UserDetailsModel model,
             [Frozen] Mock<IUsersService> mockUsersService,
             OrganisationBaseController controller)
         {
+            model.EmailAddress = "a@b.com";
+
             mockUsersService
-                .Setup(x => x.EnableOrDisableUser(userId, viewModel.IsActive))
+                .Setup(x => x.UpdateUser(userId, model.FirstName, model.LastName, model.EmailAddress, !model.IsActive!.Value, model.SelectedAccountType, organisationId))
                 .Returns(Task.CompletedTask);
 
-            var result = (await controller.UserStatus(organisationId, userId, viewModel)).As<RedirectToActionResult>();
+            var result = (await controller.EditUser(organisationId, userId, model)).As<RedirectToActionResult>();
 
             mockUsersService.VerifyAll();
 
