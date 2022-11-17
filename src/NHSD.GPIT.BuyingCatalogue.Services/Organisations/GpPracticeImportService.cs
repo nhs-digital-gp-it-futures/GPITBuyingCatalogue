@@ -55,7 +55,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
         private async Task<ImportGpPracticeListResult> Import(IEnumerable<GpPractice> gpPractices)
         {
-            if (dbContext.Database.IsRelational())
+            // SQLite doesn't support TRUNCATE or schemas.
+            if (dbContext.Database.IsSqlServer())
             {
                 await dbContext.Database.ExecuteSqlRawAsync(TruncateStatement);
             }

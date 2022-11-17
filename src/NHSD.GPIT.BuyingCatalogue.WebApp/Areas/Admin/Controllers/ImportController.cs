@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -16,16 +15,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 [Route("admin/import")]
 public class ImportController : Controller
 {
-    private readonly IBackgroundJobClient backgroundJobClient;
     private readonly IGpPracticeService gpPracticeService;
     private readonly IUsersService usersService;
 
     public ImportController(
-        IBackgroundJobClient backgroundJobClient,
         IGpPracticeService gpPracticeService,
         IUsersService usersService)
     {
-        this.backgroundJobClient = backgroundJobClient ?? throw new ArgumentNullException(nameof(backgroundJobClient));
         this.gpPracticeService = gpPracticeService ?? throw new ArgumentNullException(nameof(gpPracticeService));
         this.usersService = usersService ?? throw new ArgumentNullException(nameof(usersService));
     }
@@ -51,7 +47,7 @@ public class ImportController : Controller
 
         var user = await usersService.GetUser(User.UserId());
 
-        backgroundJobClient.Enqueue(() => gpPracticeService.ImportGpPracticeData(new Uri(model.CsvUrl), user.Email));
+        await gpPracticeService.ImportGpPracticeData(new(model.CsvUrl), user.Email);
 
         return RedirectToAction(nameof(ImportGpPracticeListConfirmation));
     }
