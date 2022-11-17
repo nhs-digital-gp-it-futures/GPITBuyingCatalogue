@@ -197,7 +197,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             CommonActions.ElementAddValue(UserObjects.FirstNameInput, Strings.RandomString(10));
             CommonActions.ElementAddValue(UserObjects.LastNameInput, Strings.RandomString(10));
             CommonActions.ElementAddValue(UserObjects.EmailInput, ValidEmailAddress);
-            CommonActions.ClickRadioButtonWithText("Account Manager");
+            CommonActions.ClickRadioButtonWithText("Account manager");
 
             CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
 

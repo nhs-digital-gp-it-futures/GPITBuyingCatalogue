@@ -28,6 +28,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Organisation
                 .WithMessage("Enter an email address in the correct format, like name@example.com")
                 .Must(NotBeDuplicateUserEmail)
                 .WithMessage("A user with this email address is already registered on the Buying Catalogue");
+
+            RuleFor(x => x.SelectedAccountType)
+                .NotEmpty()
+                .WithMessage("Select an account type");
         }
 
         private bool NotBeDuplicateUserEmail(string emailAddress) => !usersService.EmailAddressExists(emailAddress).GetAwaiter().GetResult();
