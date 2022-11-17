@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +16,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
 {
-    public sealed class AddUser : AccountManagerTestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class AddUser : AccountManagerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         private const int OrganisationId = 2;
 
@@ -153,6 +155,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(AddUserObjects.EmailError, EmailAlreadyExists).Should().BeTrue();
+        }
+
+        public void Dispose()
+        {
+            using var context = GetEndToEndDbContext();
+            var users = context.AspNetUsers.Where(x => x.PrimaryOrganisationId == OrganisationId).ToList();
+            users.ForEach(x => context.AspNetUsers.Remove(x));
+            context.SaveChanges();
         }
 
         private async Task<AspNetUser> CreateUser(bool isEnabled = true)

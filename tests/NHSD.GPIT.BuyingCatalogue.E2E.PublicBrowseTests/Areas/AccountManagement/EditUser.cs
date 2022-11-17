@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using MoreLinq.Extensions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common.Organisation;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Utils.RandomData;
@@ -17,7 +19,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
 {
-    public sealed class EditUser : AccountManagerTestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class EditUser : AccountManagerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         private const int OrganisationId = 2;
         private const int UserId = 3;
@@ -72,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
         }
 
         [Fact]
-        public void AddUser_ClickGoBackButton_ExpectedResult()
+        public void EditUser_ClickGoBackButton_ExpectedResult()
         {
             CommonActions.ClickGoBackLink();
 
@@ -95,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
         }
 
         [Fact]
-        public void AddUser_EmptyInput_ThrowsErrors()
+        public void EditUser_EmptyInput_ThrowsErrors()
         {
             CommonActions.ClearInputElement(AddUserObjects.FirstName);
             CommonActions.ClearInputElement(AddUserObjects.LastName);
@@ -118,7 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
         }
 
         [Fact]
-        public void AddUser_EmailIncorrectFormat_ThrowsError()
+        public void EditUser_EmailIncorrectFormat_ThrowsError()
         {
             CommonActions.ClearInputElement(AddUserObjects.Email);
             AccountManagementPages.AddUser.EnterEmailAddress("test");
@@ -138,7 +140,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
         }
 
         [Fact]
-        public async Task AddUser_EmailAlreadyExists_ThrowsError()
+        public async Task EditUser_EmailAlreadyExists_ThrowsError()
         {
             var user = await CreateUser();
 
@@ -157,6 +159,26 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(AddUserObjects.EmailError, EmailAlreadyExists).Should().BeTrue();
+        }
+
+        public void Dispose()
+        {
+            using var context = GetEndToEndDbContext();
+            var user = context.Users.Where(x => x.Id == UserId)
+                .Include(x => x.AspNetUserRoles).First();
+
+            user.Disabled = false;
+
+            user.AspNetUserRoles.ForEach(x => user.AspNetUserRoles.Remove(x));
+
+            var buyer = context.Roles.First(r => r.Name == OrganisationFunction.Buyer.Name);
+            user.AspNetUserRoles = new List<AspNetUserRole>
+            {
+                new() { Role = buyer },
+            };
+
+            context.Update(user);
+            context.SaveChanges();
         }
 
         private async Task<AspNetUser> GetUser()
