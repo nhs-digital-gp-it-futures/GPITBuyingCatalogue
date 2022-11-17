@@ -58,10 +58,15 @@ public static class TrudServiceTests
     public static async Task GetTrudData_ValidXml_ReturnsExpected(
         Uri url,
         OrgRefData trudData,
+        [Frozen] Mock<IHttpService> httpService,
         [Frozen] Mock<IZipService> zipService,
         TrudService trudService)
     {
         var xml = trudData.ToXml();
+
+        httpService
+            .Setup(x => x.DownloadAsync(It.IsAny<Uri>()))
+            .ReturnsAsync(xml.ToStream());
 
         zipService
             .Setup(x => x.GetTrudDataFileAsync(It.IsAny<Stream>()))

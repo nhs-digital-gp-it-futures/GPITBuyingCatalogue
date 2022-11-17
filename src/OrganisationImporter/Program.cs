@@ -35,8 +35,7 @@ namespace OrganisationImporter
                         .WriteTo
                         .ApplicationInsights(
                             telemetryConfig,
-                            TelemetryConverter.Traces)
-                        ;
+                            TelemetryConverter.Traces);
                 });
 
             var host = builder.Build();
