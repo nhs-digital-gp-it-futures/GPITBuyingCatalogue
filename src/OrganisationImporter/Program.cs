@@ -75,6 +75,7 @@ namespace OrganisationImporter
             services.AddSingleton<OrganisationImportService>();
             services.AddSingleton<IHttpService, HttpService>();
             services.AddSingleton<ITrudService, TrudService>();
+            services.AddSingleton<IZipService, ZipService>();
         }
     }
 }
