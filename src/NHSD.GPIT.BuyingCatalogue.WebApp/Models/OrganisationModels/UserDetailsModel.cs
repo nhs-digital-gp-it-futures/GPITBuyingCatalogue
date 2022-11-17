@@ -52,6 +52,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
         [StringLength(256)]
         public string EmailAddress { get; set; }
 
+        public bool IsDefaultAccountType { get; set; }
+
         public string SelectedAccountType { get; set; }
 
         public IEnumerable<SelectableRadioOption<string>> AccountTypeOptions => new List<SelectableRadioOption<string>>

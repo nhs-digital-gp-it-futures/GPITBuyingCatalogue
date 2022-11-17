@@ -36,5 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users
             int organisationId);
 
         Task<bool> EmailAddressExists(string emailAddress, int userId = 0);
+
+        Task<bool> IsAccountManagerLimit(int organisationId);
     }
 }

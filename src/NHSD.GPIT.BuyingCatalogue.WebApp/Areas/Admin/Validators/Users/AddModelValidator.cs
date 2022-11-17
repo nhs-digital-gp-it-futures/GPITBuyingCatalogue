@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using System.Net.Mail;
+using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -17,6 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
         public const string FirstNameMissingErrorMessage = "Enter a first name";
         public const string LastNameMissingErrorMessage = "Enter a last name";
         public const string MustBelongToNhsDigitalErrorMessage = "Admins must be a member of NHS Digital";
+        public const string MustNotExceedAccountManagerLimit = "There are already 2 active account managers for this organisation which is the maximum allowed.";
         public const string OrganisationMissingErrorMessage = "Select an organisation";
 
         private readonly IUsersService usersService;
@@ -53,7 +55,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
                 .NotEmpty()
                 .WithMessage(AccountTypeMissingErrorMessage)
                 .Must((model, accountType) => BelongToCorrectOrganisation(accountType, model.SelectedOrganisationId))
-                .WithMessage(MustBelongToNhsDigitalErrorMessage);
+                .WithMessage(MustBelongToNhsDigitalErrorMessage)
+                .Must((model, accountType) => AccountManagerLimit(accountType, model.SelectedOrganisationId))
+                .WithMessage(MustNotExceedAccountManagerLimit);
         }
 
         private static bool BelongToCorrectOrganisation(string accountType, string selectedOrganisationId)
@@ -62,6 +66,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
                 return true;
 
             return selectedOrganisationId == $"{OrganisationConstants.NhsDigitalOrganisationId}";
+        }
+
+        private bool AccountManagerLimit(string accountType, string selectedOrganisationId)
+        {
+            if (accountType != OrganisationFunction.AccountManager.Name)
+                return true;
+
+            return !usersService.IsAccountManagerLimit(int.Parse(selectedOrganisationId)).Result;
         }
 
         private bool NotBeDuplicateUserEmail(string emailAddress)

@@ -98,17 +98,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Organisation
         [Theory]
         [CommonInlineAutoData(null)]
         [CommonInlineAutoData("")]
-        public static void Validate_AccountTypeNullOrEmpty_SetsModelError(
+        public static void Validate_AccountTypeNullOrEmpty_IsNotDefaultType_SetsModelError(
             string accountType,
             UserDetailsModel model,
             UserDetailsModelValidator validator)
         {
             model.SelectedAccountType = accountType;
+            model.IsDefaultAccountType = false;
 
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedAccountType)
                 .WithErrorMessage("Select an account type");
+        }
+
+        [Theory]
+        [CommonInlineAutoData(null)]
+        [CommonInlineAutoData("")]
+        public static void Validate_AccountTypeNullOrEmpty_IsDefaultType_NoModelErrors(
+            string accountType,
+            UserDetailsModel model,
+            UserDetailsModelValidator validator)
+        {
+            model.SelectedAccountType = accountType;
+            model.IsDefaultAccountType = true;
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldNotHaveValidationErrorFor(m => m.SelectedAccountType);
         }
 
         [Theory]

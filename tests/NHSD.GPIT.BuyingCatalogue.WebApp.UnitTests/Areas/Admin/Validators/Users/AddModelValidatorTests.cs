@@ -195,6 +195,51 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
 
         [Theory]
         [CommonAutoData]
+        public static void Validate_AccountTypeIsAccountManager_NoModelError(
+            int organisationId,
+            [Frozen] Mock<IUsersService> mockUsersService,
+            AddModelValidator validator)
+        {
+            var model = new AddModel
+            {
+                SelectedOrganisationId = $"{organisationId}",
+                SelectedAccountType = OrganisationFunction.AccountManager.Name,
+            };
+
+            mockUsersService
+                .Setup(x => x.IsAccountManagerLimit(organisationId))
+                .ReturnsAsync(false);
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldNotHaveValidationErrorFor(m => m.SelectedAccountType);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Validate_AccountTypeIsAccountManager_ModelError(
+            int organisationId,
+            [Frozen] Mock<IUsersService> mockUsersService,
+            AddModelValidator validator)
+        {
+            var model = new AddModel
+            {
+                SelectedOrganisationId = $"{organisationId}",
+                SelectedAccountType = OrganisationFunction.AccountManager.Name,
+            };
+
+            mockUsersService
+                .Setup(x => x.IsAccountManagerLimit(organisationId))
+                .ReturnsAsync(true);
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.SelectedAccountType)
+                .WithErrorMessage(AddModelValidator.MustNotExceedAccountManagerLimit);
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static void Validate_EverythingOk_NoModelErrors(
             [Frozen] Mock<IUsersService> mockUsersService,
             [Frozen] Mock<IEmailDomainService> mockEmailDomainService,

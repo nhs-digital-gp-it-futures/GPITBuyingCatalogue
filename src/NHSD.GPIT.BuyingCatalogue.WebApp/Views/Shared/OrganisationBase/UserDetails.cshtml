@@ -20,7 +20,8 @@
                 <input type="hidden" asp-for="ControllerName" />
                 <input type="hidden" asp-for="UserId" />
                 <input type="hidden" asp-for="BackLink" />
-
+                <input type="hidden" asp-for="IsDefaultAccountType" />
+                
                 <nhs-input
                     asp-for="@Model.FirstName" 
                     label-text="First name" />
@@ -30,18 +31,29 @@
                 <nhs-input 
                     asp-for="@Model.EmailAddress"
                     label-text="Email address" />
+                <br/>
 
-                <nhs-fieldset-form-label asp-for="SelectedAccountType"
-                                         label-text="Account type"
-                                         label-hint="Select one option."
-                                         size="Medium">
-                    <nhs-radio-buttons asp-for="SelectedAccountType"
-                                       values="@Model.AccountTypeOptions.Cast<object>()"
-                                       value-name="Value"
-                                       display-name="Name"
-                                       hint-name="Advice" />
-                </nhs-fieldset-form-label>
-                
+                @if(Model.IsDefaultAccountType)
+                {
+                    <h3>Account type: Buyer</h3>
+                    <nhs-inset-text>
+                        You can only add buyers for this organisation. This is because there are already 2 active account managers which is the maximum allowed.
+                    </nhs-inset-text>
+                }
+                else
+                {
+                    <nhs-fieldset-form-label asp-for="SelectedAccountType"
+                                             label-text="Account type"
+                                             label-hint="Select one option."
+                                             size="Medium">
+                        <nhs-radio-buttons asp-for="SelectedAccountType"
+                                           values="@Model.AccountTypeOptions.Cast<object>()"
+                                           value-name="Value"
+                                           display-name="Name"
+                                           hint-name="Advice" />
+                    </nhs-fieldset-form-label>
+                }
+
                 <nhs-fieldset-form-label asp-for="IsActive"
                                          label-text="Account status"
                                          label-hint="Select one option."

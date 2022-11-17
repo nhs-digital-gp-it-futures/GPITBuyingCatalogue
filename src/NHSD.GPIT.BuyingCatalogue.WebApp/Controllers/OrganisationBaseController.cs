@@ -77,11 +77,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         public async Task<IActionResult> AddUser(int organisationId)
         {
             var organisation = await OrganisationsService.GetOrganisation(organisationId);
+            var isDefaultAccountType = await UserService.IsAccountManagerLimit(organisationId);
 
             var model = new UserDetailsModel(organisation)
             {
                 BackLink = Url.Action(nameof(Users), new { organisationId }),
                 ControllerName = ControllerName,
+                IsDefaultAccountType = isDefaultAccountType,
             };
 
             return View("OrganisationBase/UserDetails", model);
@@ -98,7 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 model.FirstName,
                 model.LastName,
                 model.EmailAddress,
-                model.SelectedAccountType,
+                model.IsDefaultAccountType ? OrganisationFunction.Buyer.Name : model.SelectedAccountType,
                 !model.IsActive!.Value);
 
             return RedirectToAction(

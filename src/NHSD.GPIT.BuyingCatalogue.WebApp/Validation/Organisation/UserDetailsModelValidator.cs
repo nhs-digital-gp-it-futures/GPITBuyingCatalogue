@@ -31,7 +31,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Organisation
 
             RuleFor(x => x.SelectedAccountType)
                 .NotEmpty()
-                .WithMessage("Select an account type");
+                .WithMessage("Select an account type")
+                .When(x => !x.IsDefaultAccountType);
+
             RuleFor(x => x.IsActive)
                 .NotEmpty()
                 .WithMessage("Select an account status");
