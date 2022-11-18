@@ -41,6 +41,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
 
         public int UserId { get; set; }
 
+        public int MaxNumberOfAccountManagers { get; set; }
+
         public string OrganisationName { get; set; }
 
         [StringLength(100)]
@@ -51,6 +53,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
 
         [StringLength(256)]
         public string EmailAddress { get; set; }
+
+        public bool IsDefaultAccountType { get; set; }
 
         public string SelectedAccountType { get; set; }
 

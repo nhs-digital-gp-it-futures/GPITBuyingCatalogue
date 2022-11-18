@@ -293,17 +293,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonInlineAutoData(true, "Buyer")]
+        [CommonInlineAutoData(false, "AccountManager")]
         public static async Task Post_AddUser_ValidModel_ReturnsExpectedResult(
+            bool isDefaultAccountType,
+            string accountType,
             int organisationId,
             UserDetailsModel model,
             [Frozen] Mock<ICreateUserService> mockCreateBuyerService,
             OrganisationsController controller)
         {
             model.EmailAddress = "a@b.com";
+            model.SelectedAccountType = "AccountManager";
+            model.IsDefaultAccountType = isDefaultAccountType;
 
             mockCreateBuyerService
-                .Setup(x => x.Create(organisationId, model.FirstName, model.LastName, model.EmailAddress, model.SelectedAccountType, false))
+                .Setup(x => x.Create(organisationId, model.FirstName, model.LastName, model.EmailAddress, accountType, !model.IsActive.Value))
                 .ReturnsAsync((AspNetUser)null);
 
             var result = (await controller.AddUser(organisationId, model)).As<RedirectToActionResult>();

@@ -9,19 +9,22 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.Services.Users;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.SharedMocks;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
 {
     public static class UsersServiceTests
     {
+        private const int MaxNumberOfAccountManagers = 1;
+
         [Fact]
         public static void Constructor_NullRepository_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() => _ = new UsersService(null));
+            Assert.Throws<ArgumentNullException>(() => _ = new UsersService(null, new AccountManagementSettings()));
         }
 
         [Theory]
@@ -107,7 +110,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         {
             FluentActions
                 .Awaiting(() => service.GetAllUsersBySearchTerm(searchTerm))
-                .Should().ThrowAsync<ArgumentNullException>();
+                .Should()
+                .ThrowAsync<ArgumentNullException>();
         }
 
         [Theory]
@@ -196,7 +200,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
 
             await service.UpdateUserAccountType(user.Id, accountType);
 
-            var actual = await userManager.Users.Include(u => u.AspNetUserRoles).ThenInclude(r => r.Role).FirstAsync(u => u.Id == user.Id);
+            var actual = await userManager.Users.Include(u => u.AspNetUserRoles)
+                .ThenInclude(r => r.Role)
+                .FirstAsync(u => u.Id == user.Id);
 
             actual.AspNetUserRoles.Select(u => u.Role).Should().Contain(x => x.Name == accountType);
         }
@@ -246,6 +252,40 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
 
         [Theory]
         [InMemoryDbAutoData]
+        public static async Task UpdateUser_UpdatesDatabaseCorrectly(
+            string firstName,
+            string lastName,
+            string email,
+            string accountType,
+            int organisationId,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] UserManager<AspNetUser> userManager,
+            AspNetUser user,
+            UsersService service)
+        {
+            user.Disabled = true;
+
+            context.Roles.Add(new() { Name = accountType, NormalizedName = accountType.ToUpperInvariant() });
+            context.AspNetUsers.Add(user);
+            await context.SaveChangesAsync();
+
+            await service.UpdateUser(user.Id, firstName, lastName, email, false, accountType, organisationId);
+
+            var actual = await userManager.Users.Include(u => u.AspNetUserRoles)
+                .ThenInclude(r => r.Role)
+                .FirstAsync(u => u.Id == user.Id);
+
+            actual.FirstName.Should().Be(firstName);
+            actual.LastName.Should().Be(lastName);
+            actual.Email.Should().Be(email);
+            actual.UserName.Should().Be(email);
+            actual.Disabled.Should().Be(false);
+            actual.AspNetUserRoles.Select(u => u.Role).Should().Contain(x => x.Name == accountType);
+            actual.PrimaryOrganisationId.Should().Be(organisationId);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
         public static async Task EmailAddressExists_ReturnsCorrectResult(
             string emailAddress,
             [Frozen] BuyingCatalogueDbContext context,
@@ -276,6 +316,104 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             var result = await service.EmailAddressExists(emailAddress, user.Id);
 
             result.Should().BeFalse();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task IsAccountManagerLimit_LessThanLimit_ReturnsFalse(
+            int organisationId,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] AccountManagementSettings accountManagerSettings,
+            UsersService service)
+        {
+            accountManagerSettings.MaximumNumberOfAccountManagers = MaxNumberOfAccountManagers;
+
+            context.AspNetUsers.RemoveRange(context.AspNetUsers);
+            await context.SaveChangesAsync();
+
+            var result = await service.IsAccountManagerLimit(organisationId);
+
+            result.Should().BeFalse();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task IsAccountManagerLimit_EqualsLimit_ReturnsTrue(
+            int organisationId,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] AccountManagementSettings accountManagerSettings,
+            AspNetUser user,
+            UsersService service)
+        {
+            context.AspNetUsers.RemoveRange(context.AspNetUsers);
+            await AddAccountManagerToOrganisation(organisationId, context, user);
+
+            accountManagerSettings.MaximumNumberOfAccountManagers = MaxNumberOfAccountManagers;
+
+            var result = await service.IsAccountManagerLimit(organisationId);
+
+            result.Should().BeTrue();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task IsAccountManagerLimit_OverLimit_ReturnsTrue(
+            int organisationId,
+            [Frozen] BuyingCatalogueDbContext context,
+            AspNetUser user,
+            AspNetUser user2,
+            [Frozen] AccountManagementSettings accountManagerSettings,
+            UsersService service)
+        {
+            context.AspNetUsers.RemoveRange(context.AspNetUsers);
+
+            accountManagerSettings.MaximumNumberOfAccountManagers = 1;
+            await AddAccountManagerToOrganisation(organisationId, context, user);
+            await AddAccountManagerToOrganisation(organisationId, context, user2);
+
+            var result = await service.IsAccountManagerLimit(organisationId);
+
+            result.Should().BeTrue();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task IsAccountManagerLimit_InactiveLimit_ReturnsFalse(
+            int organisationId,
+            [Frozen] BuyingCatalogueDbContext context,
+            AspNetUser user,
+            UsersService service,
+            [Frozen] AccountManagementSettings accountManagerSettings)
+        {
+            context.AspNetUsers.RemoveRange(context.AspNetUsers);
+            accountManagerSettings.MaximumNumberOfAccountManagers = 1;
+
+            await AddAccountManagerToOrganisation(organisationId, context, user, true);
+
+            var result = await service.IsAccountManagerLimit(organisationId);
+
+            result.Should().BeFalse();
+        }
+
+        private static async Task AddAccountManagerToOrganisation(
+            int organisationId,
+            BuyingCatalogueDbContext context,
+            AspNetUser user,
+            bool disabled = false)
+        {
+            user.PrimaryOrganisationId = organisationId;
+            user.Disabled = disabled;
+            user.AspNetUserRoles.Add(
+                new()
+                {
+                    Role = new()
+                    {
+                        Name = OrganisationFunction.AccountManager.Name,
+                        NormalizedName = OrganisationFunction.AccountManager.Name.ToUpperInvariant(),
+                    },
+                });
+            context.AspNetUsers.Add(user);
+            await context.SaveChangesAsync();
         }
     }
 }
