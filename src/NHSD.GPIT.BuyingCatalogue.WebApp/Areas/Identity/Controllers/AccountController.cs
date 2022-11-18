@@ -69,26 +69,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             if (user is null)
                 return BadLogin();
 
+            if (user.Disabled)
+            {
+                var disabledErrorFormat = string.Format(
+                    CultureInfo.CurrentCulture,
+                    UserDisabledErrorMessageTemplate,
+                    disabledErrorMessageSettings.EmailAddress,
+                    disabledErrorMessageSettings.PhoneNumber);
+
+                ModelState.AddModelError(nameof(LoginViewModel.DisabledError), disabledErrorFormat);
+
+                return View(viewModel);
+            }
+
             var signinResult = await signInManager.PasswordSignInAsync(user, viewModel.Password, false, true);
 
             if (!signinResult.Succeeded)
                 return BadLogin();
 
-            if (!user.Disabled)
-            {
-                await odsService.UpdateOrganisationDetails(user.PrimaryOrganisation.ExternalIdentifier);
-                return Redirect(string.IsNullOrWhiteSpace(viewModel.ReturnUrl) ? "~/" : viewModel.ReturnUrl);
-            }
-
-            var disabledErrorFormat = string.Format(
-                CultureInfo.CurrentCulture,
-                UserDisabledErrorMessageTemplate,
-                disabledErrorMessageSettings.EmailAddress,
-                disabledErrorMessageSettings.PhoneNumber);
-
-            ModelState.AddModelError(nameof(LoginViewModel.DisabledError), disabledErrorFormat);
-
-            return View(viewModel);
+            await odsService.UpdateOrganisationDetails(user.PrimaryOrganisation.ExternalIdentifier);
+            return Redirect(string.IsNullOrWhiteSpace(viewModel.ReturnUrl) ? "~/" : viewModel.ReturnUrl);
         }
 
         [HttpGet("Logout")]
