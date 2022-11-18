@@ -52,7 +52,7 @@ gulp.task("clean", function () {
 });
 
 gulp.task('watch', function () {
-    gulp.watch([paths.scss + '**/*.scss'], gulp.series(['sass','min:css']));
+    gulp.watch([paths.scss + '**/*.scss'], gulp.series(['sass', 'min:css']));
 });
 
 function getBundles(regexPattern) {
