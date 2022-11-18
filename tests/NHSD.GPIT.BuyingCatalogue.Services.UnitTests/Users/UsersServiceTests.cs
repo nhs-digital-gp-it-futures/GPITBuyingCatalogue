@@ -9,20 +9,22 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.Services.Users;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.SharedMocks;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
 {
     public static class UsersServiceTests
     {
+        private const int MaxNumberOfAccountManagers = 1;
+
         [Fact]
         public static void Constructor_NullRepository_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() => _ = new UsersService(null));
+            Assert.Throws<ArgumentNullException>(() => _ = new UsersService(null, new AccountManagementSettings()));
         }
 
         [Theory]
@@ -318,11 +320,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task IsAccountManagerLimit_NoActiveAccountManagers_ReturnsFalse(
+        public static async Task IsAccountManagerLimit_LessThanLimit_ReturnsFalse(
             int organisationId,
             [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] AccountManagementSettings accountManagerSettings,
             UsersService service)
         {
+            accountManagerSettings.MaximumNumberOfAccountManagers = MaxNumberOfAccountManagers;
+
             context.AspNetUsers.RemoveRange(context.AspNetUsers);
             await context.SaveChangesAsync();
 
@@ -333,30 +338,36 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task IsAccountManagerLimit_OneActiveAccountManager_ReturnsFalse(
+        public static async Task IsAccountManagerLimit_EqualsLimit_ReturnsTrue(
             int organisationId,
             [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] AccountManagementSettings accountManagerSettings,
             AspNetUser user,
             UsersService service)
         {
             context.AspNetUsers.RemoveRange(context.AspNetUsers);
             await AddAccountManagerToOrganisation(organisationId, context, user);
 
+            accountManagerSettings.MaximumNumberOfAccountManagers = MaxNumberOfAccountManagers;
+
             var result = await service.IsAccountManagerLimit(organisationId);
 
-            result.Should().BeFalse();
+            result.Should().BeTrue();
         }
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task IsAccountManagerLimit_TwoActiveAccountManagers_ReturnsTrue(
+        public static async Task IsAccountManagerLimit_OverLimit_ReturnsTrue(
             int organisationId,
             [Frozen] BuyingCatalogueDbContext context,
             AspNetUser user,
             AspNetUser user2,
+            [Frozen] AccountManagementSettings accountManagerSettings,
             UsersService service)
         {
             context.AspNetUsers.RemoveRange(context.AspNetUsers);
+
+            accountManagerSettings.MaximumNumberOfAccountManagers = 1;
             await AddAccountManagerToOrganisation(organisationId, context, user);
             await AddAccountManagerToOrganisation(organisationId, context, user2);
 
@@ -367,16 +378,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task IsAccountManagerLimit_OneActiveOneInactiveAccountManagers_ReturnsFalse(
+        public static async Task IsAccountManagerLimit_InactiveLimit_ReturnsFalse(
             int organisationId,
             [Frozen] BuyingCatalogueDbContext context,
             AspNetUser user,
-            AspNetUser user2,
-            UsersService service)
+            UsersService service,
+            [Frozen] AccountManagementSettings accountManagerSettings)
         {
             context.AspNetUsers.RemoveRange(context.AspNetUsers);
-            await AddAccountManagerToOrganisation(organisationId, context, user);
-            await AddAccountManagerToOrganisation(organisationId, context, user2, true);
+            accountManagerSettings.MaximumNumberOfAccountManagers = 1;
+
+            await AddAccountManagerToOrganisation(organisationId, context, user, true);
 
             var result = await service.IsAccountManagerLimit(organisationId);
 

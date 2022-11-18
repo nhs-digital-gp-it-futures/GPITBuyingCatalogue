@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 
@@ -14,12 +15,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
 {
     public sealed class UsersService : IUsersService
     {
-        private const int MaxAccountManagersPerOrg = 2;
         private readonly UserManager<AspNetUser> userManager;
+        private readonly AccountManagementSettings accountManagementSettings;
 
-        public UsersService(UserManager<AspNetUser> userManager)
+        public UsersService(UserManager<AspNetUser> userManager, AccountManagementSettings accountManagementSettings)
         {
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            this.accountManagementSettings = accountManagementSettings ?? throw new ArgumentNullException(nameof(accountManagementSettings));
         }
 
         public Task<AspNetUser> GetUser(int userId)
@@ -155,7 +157,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
                         && u.GetRoleName() == OrganisationFunction.AccountManager.Name
                         && !u.Disabled);
 
-            return users >= MaxAccountManagersPerOrg;
+            return users >= accountManagementSettings.MaximumNumberOfAccountManagers;
         }
     }
 }

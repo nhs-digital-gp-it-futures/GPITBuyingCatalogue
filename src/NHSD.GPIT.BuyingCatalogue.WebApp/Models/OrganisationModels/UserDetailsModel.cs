@@ -41,6 +41,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
 
         public int UserId { get; set; }
 
+        public int MaxNumberOfAccountManagers { get; set; }
+
         public string OrganisationName { get; set; }
 
         [StringLength(100)]

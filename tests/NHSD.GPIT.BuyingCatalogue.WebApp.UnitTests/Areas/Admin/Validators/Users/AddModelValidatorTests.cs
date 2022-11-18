@@ -1,6 +1,7 @@
 ﻿using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -220,6 +221,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         public static void Validate_AccountTypeIsAccountManager_ModelError(
             int organisationId,
             [Frozen] Mock<IUsersService> mockUsersService,
+            [Frozen] AccountManagementSettings accountManagementSettings,
             AddModelValidator validator)
         {
             var model = new AddModel
@@ -235,7 +237,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedAccountType)
-                .WithErrorMessage(AddModelValidator.MustNotExceedAccountManagerLimit);
+                .WithErrorMessage(string.Format(AddModelValidator.MustNotExceedAccountManagerLimit, accountManagementSettings.MaximumNumberOfAccountManagers));
         }
 
         [Theory]
