@@ -109,6 +109,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         {
             const string expectedErrorMessage = "The username or password were not recognised. Please try again.";
 
+            user.Disabled = false;
+
             mockUserManager
                 .Setup(x => x.FindByNameAsync(model.EmailAddress))
                 .ReturnsAsync(user);
