@@ -19,6 +19,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels;
 using Xunit;
 
@@ -117,7 +118,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         [CommonAutoData]
         public static async Task Get_AddUser_ReturnsExpectedResult(
             Organisation organisation,
+            bool isAccountManagerLimit,
             [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
+            [Frozen] Mock<IUsersService> mockUsersService,
             [Frozen] Mock<IUrlHelper> mockUrlHelper,
             OrganisationBaseController controller)
         {
@@ -125,11 +128,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
                 .Setup(x => x.GetOrganisation(organisation.Id))
                 .ReturnsAsync(organisation);
 
+            mockUsersService
+                .Setup(x => x.IsAccountManagerLimit(organisation.Id))
+                .ReturnsAsync(isAccountManagerLimit);
+
             controller.Url = mockUrlHelper.Object;
 
             var result = (await controller.AddUser(organisation.Id)).As<ViewResult>();
 
             mockOrganisationsService.VerifyAll();
+            mockUsersService.VerifyAll();
 
             result.Should().NotBeNull();
             result.ViewName.Should().Be("OrganisationBase/UserDetails");
@@ -137,6 +145,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             var model = result.Model.Should().BeAssignableTo<UserDetailsModel>().Subject;
 
             model.OrganisationName.Should().Be(organisation.Name);
+            model.IsDefaultAccountType.Should().Be(isAccountManagerLimit);
         }
 
         [Theory]
@@ -159,18 +168,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonInlineAutoData(true, "Buyer")]
+        [CommonInlineAutoData(false, "AccountManager")]
         public static async Task Post_AddUser_ValidModel_ReturnsExpectedResult(
+            bool isDefaultAccountType,
+            string accountType,
             int organisationId,
             UserDetailsModel model,
             [Frozen] Mock<ICreateUserService> mockCreateBuyerService,
             OrganisationBaseController controller)
         {
             model.EmailAddress = "a@b.com";
-            model.SelectedAccountType = OrganisationFunction.Buyer.Name;
+            model.SelectedAccountType = "AccountManager";
+            model.IsDefaultAccountType = isDefaultAccountType;
 
             mockCreateBuyerService
-                .Setup(x => x.Create(organisationId, model.FirstName, model.LastName, model.EmailAddress, OrganisationFunction.Buyer.Name, false))
+                .Setup(x => x.Create(organisationId, model.FirstName, model.LastName, model.EmailAddress, accountType, !model.IsActive.Value))
                 .ReturnsAsync((AspNetUser)null);
 
             var result = (await controller.AddUser(organisationId, model)).As<RedirectToActionResult>();

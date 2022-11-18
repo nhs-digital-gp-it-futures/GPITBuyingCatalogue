@@ -83,7 +83,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 .ConfigureConsentCookieSettings(Configuration)
                 .ConfigureTermsOfUseSettings(Configuration)
                 .ConfigureAnalyticsSettings(Configuration)
-                .ConfigurePriceTiersCap(Configuration);
+                .ConfigurePriceTiersCap(Configuration)
+                .ConfigureAccountManagement(Configuration);
 
             services.ConfigureCookies(Configuration);
 

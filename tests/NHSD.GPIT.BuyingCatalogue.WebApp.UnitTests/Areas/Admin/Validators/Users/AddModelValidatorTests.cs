@@ -1,6 +1,7 @@
 ﻿using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -191,6 +192,52 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
             var result = validator.TestValidate(model);
 
             result.ShouldNotHaveValidationErrorFor(m => m.SelectedAccountType);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Validate_AccountTypeIsAccountManager_NoModelError(
+            int organisationId,
+            [Frozen] Mock<IUsersService> mockUsersService,
+            AddModelValidator validator)
+        {
+            var model = new AddModel
+            {
+                SelectedOrganisationId = $"{organisationId}",
+                SelectedAccountType = OrganisationFunction.AccountManager.Name,
+            };
+
+            mockUsersService
+                .Setup(x => x.IsAccountManagerLimit(organisationId))
+                .ReturnsAsync(false);
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldNotHaveValidationErrorFor(m => m.SelectedAccountType);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Validate_AccountTypeIsAccountManager_ModelError(
+            int organisationId,
+            [Frozen] Mock<IUsersService> mockUsersService,
+            [Frozen] AccountManagementSettings accountManagementSettings,
+            AddModelValidator validator)
+        {
+            var model = new AddModel
+            {
+                SelectedOrganisationId = $"{organisationId}",
+                SelectedAccountType = OrganisationFunction.AccountManager.Name,
+            };
+
+            mockUsersService
+                .Setup(x => x.IsAccountManagerLimit(organisationId))
+                .ReturnsAsync(true);
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.SelectedAccountType)
+                .WithErrorMessage(string.Format(AddModelValidator.MustNotExceedAccountManagerLimit, accountManagementSettings.MaximumNumberOfAccountManagers));
         }
 
         [Theory]
