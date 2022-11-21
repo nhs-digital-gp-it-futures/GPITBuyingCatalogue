@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
@@ -13,16 +14,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 {
     public abstract class OrganisationBaseController : Controller
     {
+        private AccountManagementSettings accountManagementSettings;
+
         protected OrganisationBaseController(
             IOrganisationsService organisationsService,
             IOdsService odsService,
             ICreateUserService createBuyerService,
-            IUsersService userService)
+            IUsersService userService,
+            AccountManagementSettings accountManagementSettings)
         {
             OrganisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
             OdsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
             CreateBuyerService = createBuyerService ?? throw new ArgumentNullException(nameof(createBuyerService));
             UserService = userService ?? throw new ArgumentNullException(nameof(userService));
+            this.accountManagementSettings = accountManagementSettings ?? throw new ArgumentNullException(nameof(accountManagementSettings));
         }
 
         protected IOrganisationsService OrganisationsService { get; }
@@ -77,11 +82,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         public async Task<IActionResult> AddUser(int organisationId)
         {
             var organisation = await OrganisationsService.GetOrganisation(organisationId);
+            var isDefaultAccountType = await UserService.IsAccountManagerLimit(organisationId);
 
             var model = new UserDetailsModel(organisation)
             {
                 BackLink = Url.Action(nameof(Users), new { organisationId }),
                 ControllerName = ControllerName,
+                IsDefaultAccountType = isDefaultAccountType,
+                MaxNumberOfAccountManagers = accountManagementSettings.MaximumNumberOfAccountManagers,
             };
 
             return View("OrganisationBase/UserDetails", model);
@@ -98,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 model.FirstName,
                 model.LastName,
                 model.EmailAddress,
-                model.SelectedAccountType,
+                model.IsDefaultAccountType ? OrganisationFunction.Buyer.Name : model.SelectedAccountType,
                 !model.IsActive!.Value);
 
             return RedirectToAction(
@@ -116,6 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             {
                 BackLink = Url.Action(nameof(Users), new { organisationId }),
                 ControllerName = ControllerName,
+                MaxNumberOfAccountManagers = accountManagementSettings.MaximumNumberOfAccountManagers,
             };
 
             return View("OrganisationBase/UserDetails", model);

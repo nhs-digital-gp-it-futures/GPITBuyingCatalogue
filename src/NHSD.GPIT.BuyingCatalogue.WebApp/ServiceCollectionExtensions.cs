@@ -175,6 +175,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             return services;
         }
 
+        public static IServiceCollection ConfigureAccountManagement(this IServiceCollection services, IConfiguration configuration)
+        {
+            var accountManagementSettings = configuration.GetSection("accountManagement").Get<AccountManagementSettings>();
+            services.AddSingleton(accountManagementSettings);
+
+            return services;
+        }
+
         public static IServiceCollection ConfigureTermsOfUseSettings(this IServiceCollection services, IConfiguration configuration)
         {
             var termsOfUseSettings = configuration.GetSection("termsOfUse").Get<TermsOfUseSettings>();

@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Users
@@ -13,10 +16,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
     public sealed class UsersService : IUsersService
     {
         private readonly UserManager<AspNetUser> userManager;
+        private readonly AccountManagementSettings accountManagementSettings;
 
-        public UsersService(UserManager<AspNetUser> userManager)
+        public UsersService(UserManager<AspNetUser> userManager, AccountManagementSettings accountManagementSettings)
         {
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            this.accountManagementSettings = accountManagementSettings ?? throw new ArgumentNullException(nameof(accountManagementSettings));
         }
 
         public Task<AspNetUser> GetUser(int userId)
@@ -139,6 +144,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
                 .FirstOrDefaultAsync(x => x.Id != userId && x.NormalizedEmail == testAddress);
 
             return user != null;
+        }
+
+        public async Task<bool> IsAccountManagerLimit(int organisationId)
+        {
+            var users = await userManager.Users
+                .Include(x => x.AspNetUserRoles)
+                .ThenInclude(x => x.Role)
+                .AsAsyncEnumerable()
+                .CountAsync(
+                    u => u.PrimaryOrganisationId == organisationId
+                        && u.GetRoleName() == OrganisationFunction.AccountManager.Name
+                        && !u.Disabled);
+
+            return users >= accountManagementSettings.MaximumNumberOfAccountManagers;
         }
     }
 }
