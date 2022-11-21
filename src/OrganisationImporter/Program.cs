@@ -1,14 +1,17 @@
 ﻿using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Azure.WebJobs;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using OrganisationImporter.Interfaces;
 using OrganisationImporter.Services;
 using Serilog;
 
 namespace OrganisationImporter
 {
-    public class Program
+    public static class Program
     {
         private static IConfigurationRoot _configuration;
         static async Task Main(string[] args)
@@ -24,8 +27,9 @@ namespace OrganisationImporter
                 .UseSerilog((_, services, loggerConfiguration) =>
                 {
                     var telemetryConfig = TelemetryConfiguration.CreateDefault();
-                    telemetryConfig.ConnectionString = _configuration["ApplicationInsights:Connection_String"];
+                    telemetryConfig.ConnectionString = _configuration["APPLICATIONINSIGHTS:CONNECTION_STRING"];
                     loggerConfiguration
+                        .ReadFrom.Configuration(_configuration)
                         .WriteTo
                         .Console()
                         .WriteTo
@@ -59,8 +63,19 @@ namespace OrganisationImporter
         }
         private static void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<OrganisationImportService>();
+            services.AddHttpClient();
             services.AddApplicationInsightsTelemetryWorkerService();
+            services.AddDbContext<BuyingCatalogueDbContext>(opts =>
+            {
+                var connectionString = _configuration.GetValue<string>("BUYINGCATALOGUECONNECTIONSTRING");
+                opts.UseSqlServer(connectionString);
+                opts.EnableSensitiveDataLogging();
+            });
+
+            services.AddSingleton<OrganisationImportService>();
+            services.AddSingleton<IHttpService, HttpService>();
+            services.AddSingleton<ITrudService, TrudService>();
+            services.AddSingleton<IZipService, ZipService>();
         }
     }
 }

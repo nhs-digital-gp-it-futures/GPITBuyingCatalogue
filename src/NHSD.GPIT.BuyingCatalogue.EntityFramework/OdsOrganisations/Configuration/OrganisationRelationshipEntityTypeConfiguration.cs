@@ -8,7 +8,7 @@ public class OrganisationRelationshipEntityTypeConfiguration : IEntityTypeConfig
 {
     public void Configure(EntityTypeBuilder<OrganisationRelationship> builder)
     {
-        builder.ToTable("OrganisationRelationships", schema: "ods_organisations");
+        builder.ToTable("OrganisationRelationships", schema: Schemas.OdsOrganisations);
 
         builder.HasKey(x => x.Id);
 
@@ -16,12 +16,12 @@ public class OrganisationRelationshipEntityTypeConfiguration : IEntityTypeConfig
             .WithMany()
             .HasForeignKey(x => x.RelationshipTypeId);
 
-        builder.HasOne(x => x.TargetOrganisation)
-            .WithOne(x => x.Parent)
-            .HasForeignKey<OrganisationRelationship>(x => x.TargetOrganisationId);
-
         builder.HasOne(x => x.OwnerOrganisation)
             .WithMany(x => x.Related)
             .HasForeignKey(x => x.OwnerOrganisationId);
+
+        builder.HasOne(x => x.TargetOrganisation)
+            .WithMany(x => x.Parents)
+            .HasForeignKey(x => x.TargetOrganisationId);
     }
 }

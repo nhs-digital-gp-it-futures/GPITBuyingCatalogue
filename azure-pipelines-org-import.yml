@@ -7,9 +7,16 @@ trigger:
     include:
       - develop
   paths:
+    exclude:
+      - "src/**"
+      - "terraform/**"
+      - "tests/**"
     include:
-      - "**/BuyingCatalogueFunction*"
-      - "**/OrganisationImporter*"
+      - "src/BuyingCatalogueFunction*"
+      - "src/OrganisationImporter*"
+      - "terraform/orgimport"
+      - "tests/BuyingCatalogueFunctionTests"
+      - "OrganisationImporter/OrganisationImporterTests"
 
 pool:
   vmImage: ubuntu-latest

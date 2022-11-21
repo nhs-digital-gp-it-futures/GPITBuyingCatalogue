@@ -8,7 +8,7 @@ public class RoleTypeEntityTypeConfiguration : IEntityTypeConfiguration<RoleType
 {
     public void Configure(EntityTypeBuilder<RoleType> builder)
     {
-        builder.ToTable("RoleTypes", schema: "ods_organisations");
+        builder.ToTable("RoleTypes", schema: Schemas.OdsOrganisations);
 
         builder.HasKey(x => x.Id);
 
