@@ -65,6 +65,10 @@ public class TrudService : ITrudService
 
             await _dbContext.SaveChangesAsync();
 
+            _dbContext.OrgImportJournal.Add(new());
+
+            await _dbContext.SaveChangesAsync();
+
             await transaction.CommitAsync();
 
             _logger.LogInformation("Committed TRUD changes to database");
@@ -110,6 +114,7 @@ public class TrudService : ITrudService
             typeof(OdsOrganisation),
             typeof(RelationshipType),
             typeof(RoleType),
+            typeof(OrgImportJournal)
         };
 
         foreach (var entityToClear in entitiesToClear)

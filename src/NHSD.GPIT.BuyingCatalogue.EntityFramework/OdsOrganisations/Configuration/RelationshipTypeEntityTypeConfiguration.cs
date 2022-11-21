@@ -8,7 +8,7 @@ public class RelationshipTypeEntityTypeConfiguration : IEntityTypeConfiguration<
 {
     public void Configure(EntityTypeBuilder<RelationshipType> builder)
     {
-        builder.ToTable("RelationshipTypes", schema: "ods_organisations");
+        builder.ToTable("RelationshipTypes", schema: Schemas.OdsOrganisations);
 
         builder.HasKey(x => x.Id);
 

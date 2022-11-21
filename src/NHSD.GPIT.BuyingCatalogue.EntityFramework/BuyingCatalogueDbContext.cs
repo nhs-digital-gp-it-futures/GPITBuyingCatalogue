@@ -127,6 +127,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<RelationshipType> OrganisationRelationshipTypes { get; set; }
 
+        public DbSet<OrgImportJournal> OrgImportJournal { get; set; }
+
         public async Task<Order> Order(CallOffId callOffId)
         {
             return await Orders
