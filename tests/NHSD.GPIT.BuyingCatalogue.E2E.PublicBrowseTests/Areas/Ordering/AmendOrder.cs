@@ -35,6 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         {
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.SubmitButton);
+            CommonActions.ElementIsDisplayed(AmendOrderObjects.CancelLink);
             CommonActions.ElementIsDisplayed(AmendOrderObjects.ProcurementSupportLink);
         }
 
@@ -46,6 +47,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderController),
                 nameof(OrderController.Summary)).Should().BeTrue();
+
+            GetNextRevision().Should().BeNull();
+        }
+
+        [Fact]
+        public void AmendOrder_ClickCancel_ExpectedResult()
+        {
+            CommonActions.ClickLinkElement(AmendOrderObjects.CancelLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(DashboardController),
+                nameof(DashboardController.Organisation)).Should().BeTrue();
 
             GetNextRevision().Should().BeNull();
         }

@@ -1,7 +1,5 @@
 ﻿@using EnumsNET
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags;
-@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-@using NHSD.GPIT.BuyingCatalogue.Framework.Environments
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Dashboard.OrganisationModel;
 @{
     ViewBag.Title = "Orders dashboard";
@@ -66,7 +64,8 @@
                             <nhs-table-cell>@order.LastUpdated.ToString("dd/MM/yyyy")</nhs-table-cell>
                             <nhs-table-cell>
                                 <span style="white-space: nowrap">
-                                    <nhs-tag colour="@GetTagColour(order.OrderStatus)" text="@order.OrderStatus.AsString(EnumFormat.EnumMemberValue)"/>
+                                    <nhs-tag colour="@Model.TagColour(order.OrderStatus)"
+                                             text="@order.OrderStatus.AsString(EnumFormat.EnumMemberValue)"/>
                                 </span>
                             </nhs-table-cell>
                             <nhs-table-cell>
@@ -75,7 +74,7 @@
                                    asp-controller="@typeof(OrderController).ControllerName()"
                                    asp-route-internalOrgId="@Model.InternalOrgId"
                                    asp-route-callOffId="@order.CallOffId" style="white-space: nowrap;">
-                                    @GetLinkName(order)
+                                    @Model.LinkName(order)
                                 </a>
                             </nhs-table-cell>
                         </nhs-table-row-container>
@@ -108,34 +107,3 @@
         </div>
     </div>
 </div>
-
-@{
-    string GetLinkName(Order order)
-    {
-        if (CurrentEnvironment.IsDevelopment
-            && !order.AssociatedServicesOnly
-            && !Model.AnySubsequentRevisions(order.CallOffId))
-        {
-            return order.OrderStatus switch
-            {
-                OrderStatus.Completed => "Amend",
-                OrderStatus.InProgress => "Edit",
-                _ => string.Empty,
-            };
-        }
-
-        return order.OrderStatus switch
-        {
-            OrderStatus.Completed => "View",
-            OrderStatus.InProgress => "Edit",
-            _ => string.Empty,
-        };
-    }
-
-    NhsTagsTagHelper.TagColour GetTagColour(OrderStatus orderStatus) => orderStatus switch
-    {
-        OrderStatus.Completed => NhsTagsTagHelper.TagColour.Green,
-        OrderStatus.InProgress => NhsTagsTagHelper.TagColour.Yellow,
-        _ => throw new ArgumentOutOfRangeException(nameof(orderStatus)),
-    };
-}

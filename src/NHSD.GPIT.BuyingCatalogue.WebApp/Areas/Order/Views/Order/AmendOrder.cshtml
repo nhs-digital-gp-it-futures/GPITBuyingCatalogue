@@ -29,9 +29,15 @@
         
         <form method="post">
             <nhs-submit-button text="Amend order"/>
+            
+            <p>
+                <a href="@Url.Action(
+                             nameof(DashboardController.Index),
+                             typeof(DashboardController).ControllerName())">Cancel</a>
+            </p>
         </form>
-
-        <div class="nhsuk-u-margin-top-3">
+        
+        <div class="nhsuk-u-margin-top-6">
             <h2>Need help?</h2>
             <p>
                 We've developed a
