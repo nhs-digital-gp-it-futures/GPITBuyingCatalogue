@@ -14,10 +14,6 @@ public class OdsOrganisation
 
     public string AddressLine3 { get; set; }
 
-    public string AddressLine4 { get; set; }
-
-    public string AddressLine5 { get; set; }
-
     public string Town { get; set; }
 
     public string County { get; set; }
@@ -28,7 +24,9 @@ public class OdsOrganisation
 
     public bool IsActive { get; set; }
 
-    public virtual ICollection<OrganisationRelationship> Related { get; set; }
+    public virtual ICollection<OrganisationRelationship> Related { get; set; } =
+        new HashSet<OrganisationRelationship>();
 
-    public virtual OrganisationRelationship Parent { get; set; }
+    public virtual ICollection<OrganisationRelationship> Parents { get; set; } =
+        new HashSet<OrganisationRelationship>();
 }
