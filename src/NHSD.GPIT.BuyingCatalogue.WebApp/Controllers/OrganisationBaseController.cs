@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
@@ -13,16 +14,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 {
     public abstract class OrganisationBaseController : Controller
     {
+        private AccountManagementSettings accountManagementSettings;
+
         protected OrganisationBaseController(
             IOrganisationsService organisationsService,
             IOdsService odsService,
             ICreateUserService createBuyerService,
-            IUsersService userService)
+            IUsersService userService,
+            AccountManagementSettings accountManagementSettings)
         {
             OrganisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
             OdsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
             CreateBuyerService = createBuyerService ?? throw new ArgumentNullException(nameof(createBuyerService));
             UserService = userService ?? throw new ArgumentNullException(nameof(userService));
+            this.accountManagementSettings = accountManagementSettings ?? throw new ArgumentNullException(nameof(accountManagementSettings));
         }
 
         protected IOrganisationsService OrganisationsService { get; }
@@ -77,60 +82,72 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         public async Task<IActionResult> AddUser(int organisationId)
         {
             var organisation = await OrganisationsService.GetOrganisation(organisationId);
+            var isDefaultAccountType = await UserService.IsAccountManagerLimit(organisationId);
 
-            var model = new AddUserModel(organisation)
+            var model = new UserDetailsModel(organisation)
             {
                 BackLink = Url.Action(nameof(Users), new { organisationId }),
                 ControllerName = ControllerName,
+                IsDefaultAccountType = isDefaultAccountType,
+                MaxNumberOfAccountManagers = accountManagementSettings.MaximumNumberOfAccountManagers,
             };
 
-            return View("OrganisationBase/AddUser", model);
+            return View("OrganisationBase/UserDetails", model);
         }
 
         [HttpPost("{organisationId}/users/add")]
-        public async Task<IActionResult> AddUser(int organisationId, AddUserModel model)
+        public async Task<IActionResult> AddUser(int organisationId, UserDetailsModel model)
         {
             if (!ModelState.IsValid)
-                return View("OrganisationBase/AddUser", model);
+                return View("OrganisationBase/UserDetails", model);
 
             await CreateBuyerService.Create(
                 organisationId,
                 model.FirstName,
                 model.LastName,
                 model.EmailAddress,
-                model.SelectedAccountType);
+                model.IsDefaultAccountType ? OrganisationFunction.Buyer.Name : model.SelectedAccountType,
+                !model.IsActive!.Value);
 
             return RedirectToAction(
                 nameof(Users),
                 new { organisationId });
         }
 
-        [HttpGet("{organisationId}/users/{userId}/status")]
-        public async Task<IActionResult> UserStatus(int organisationId, int userId)
+        [HttpGet("{organisationId}/users/{userId}/edit")]
+        public async Task<IActionResult> EditUser(int organisationId, int userId)
         {
             var organisation = await OrganisationsService.GetOrganisation(organisationId);
             var user = await UserService.GetUser(userId);
 
-            var model = new UserStatusModel
+            var model = new UserDetailsModel(organisation, user)
             {
                 BackLink = Url.Action(nameof(Users), new { organisationId }),
-                OrganisationId = organisationId,
-                OrganisationName = organisation.Name,
-                UserId = user.Id,
-                UserEmail = user.Email,
-                IsActive = !user.Disabled,
                 ControllerName = ControllerName,
+                MaxNumberOfAccountManagers = accountManagementSettings.MaximumNumberOfAccountManagers,
             };
 
-            return View("OrganisationBase/UserStatus", model);
+            return View("OrganisationBase/UserDetails", model);
         }
 
-        [HttpPost("{organisationId}/users/{userId}/status")]
-        public async Task<IActionResult> UserStatus(int organisationId, int userId, UserStatusModel model)
+        [HttpPost("{organisationId}/users/{userId}/edit")]
+        public async Task<IActionResult> EditUser(int organisationId, int userId, UserDetailsModel model)
         {
-            await UserService.EnableOrDisableUser(userId, model.IsActive);
+            if (!ModelState.IsValid)
+                return View("OrganisationBase/UserDetails", model);
 
-            return RedirectToAction(nameof(Users), new { organisationId });
+            await UserService.UpdateUser(
+                userId,
+                model.FirstName,
+                model.LastName,
+                model.EmailAddress,
+                !model.IsActive!.Value,
+                model.SelectedAccountType,
+                organisationId);
+
+            return RedirectToAction(
+                nameof(Users),
+                new { organisationId });
         }
 
         [HttpGet("{organisationId}/related")]

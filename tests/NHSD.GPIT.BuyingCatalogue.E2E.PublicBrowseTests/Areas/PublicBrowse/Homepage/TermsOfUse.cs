@@ -42,6 +42,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
             CommonActions.ElementIsDisplayed(TermsOfUseObjects.SectionSeven).Should().BeTrue();
             CommonActions.ElementIsDisplayed(TermsOfUseObjects.SectionEight).Should().BeTrue();
             CommonActions.ElementIsDisplayed(TermsOfUseObjects.SectionNine).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(TermsOfUseObjects.SectionTen).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(TermsOfUseObjects.SectionEleven).Should().BeTrue();
         }
 
         [Fact]

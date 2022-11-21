@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
@@ -17,8 +18,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Controllers
             IOrganisationsService organisationsService,
             IOdsService odsService,
             ICreateUserService createBuyerService,
-            IUsersService userService)
-            : base(organisationsService, odsService, createBuyerService, userService)
+            IUsersService userService,
+            AccountManagementSettings accountManagementSettings)
+            : base(organisationsService, odsService, createBuyerService, userService, accountManagementSettings)
         {
         }
 

@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Users
@@ -13,10 +16,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
     public sealed class UsersService : IUsersService
     {
         private readonly UserManager<AspNetUser> userManager;
+        private readonly AccountManagementSettings accountManagementSettings;
 
-        public UsersService(UserManager<AspNetUser> userManager)
+        public UsersService(UserManager<AspNetUser> userManager, AccountManagementSettings accountManagementSettings)
         {
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            this.accountManagementSettings = accountManagementSettings ?? throw new ArgumentNullException(nameof(accountManagementSettings));
         }
 
         public Task<AspNetUser> GetUser(int userId)
@@ -113,6 +118,25 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
             await userManager.UpdateAsync(user);
         }
 
+        public async Task UpdateUser(int userId, string firstName, string lastName, string email, bool disabled, string organisationFunction, int organisationId)
+        {
+            var user = await userManager.Users.FirstAsync(u => u.Id == userId);
+
+            user.FirstName = firstName;
+            user.LastName = lastName;
+            user.Email = email;
+            user.UserName = email;
+            user.Disabled = disabled;
+            user.PrimaryOrganisationId = organisationId;
+
+            var userRoles = await userManager.GetRolesAsync(user);
+
+            await userManager.RemoveFromRolesAsync(user, userRoles);
+            await userManager.AddToRoleAsync(user, organisationFunction);
+
+            await userManager.UpdateAsync(user);
+        }
+
         public async Task<bool> EmailAddressExists(string emailAddress, int userId = 0)
         {
             var testAddress = (emailAddress ?? string.Empty).ToUpperInvariant();
@@ -120,6 +144,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
                 .FirstOrDefaultAsync(x => x.Id != userId && x.NormalizedEmail == testAddress);
 
             return user != null;
+        }
+
+        public async Task<bool> IsAccountManagerLimit(int organisationId)
+        {
+            var users = await userManager.Users
+                .Include(x => x.AspNetUserRoles)
+                .ThenInclude(x => x.Role)
+                .AsAsyncEnumerable()
+                .CountAsync(
+                    u => u.PrimaryOrganisationId == organisationId
+                        && u.GetRoleName() == OrganisationFunction.AccountManager.Name
+                        && !u.Disabled);
+
+            return users >= accountManagementSettings.MaximumNumberOfAccountManagers;
         }
     }
 }

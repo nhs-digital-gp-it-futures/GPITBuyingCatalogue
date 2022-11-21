@@ -56,7 +56,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
 
             CommonActions.ElementTextEqualTo(OrganisationUsersObjects.UserName, user.GetDisplayName());
             CommonActions.ElementTextEqualTo(OrganisationUsersObjects.UserEmail, user.Email);
-            CommonActions.ElementIsDisplayed(OrganisationUsersObjects.UserStatusLink).Should().BeTrue();
+            CommonActions.ElementTextEqualTo(OrganisationUsersObjects.UserAccountType, user.GetDisplayRoleName());
+            CommonActions.ElementIsDisplayed(OrganisationUsersObjects.UserEditLink).Should().BeTrue();
         }
 
         [Fact]
@@ -92,15 +93,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
         }
 
         [Fact]
-        public async Task Users_ClickUserStatusLink_DisplaysCorrectPage()
+        public async Task Users_ClickEditUserLink_DisplaysCorrectPage()
         {
             await AddUser();
 
-            CommonActions.ClickLinkElement(OrganisationUsersObjects.UserStatusLink);
+            CommonActions.ClickLinkElement(OrganisationUsersObjects.UserEditLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(ManageAccountController),
-                nameof(ManageAccountController.UserStatus)).Should().BeTrue();
+                nameof(ManageAccountController.EditUser)).Should().BeTrue();
         }
 
         [Fact]

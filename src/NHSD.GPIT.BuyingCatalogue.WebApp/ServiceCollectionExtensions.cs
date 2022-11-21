@@ -2,8 +2,6 @@
 using System.IO.Compression;
 using System.Threading.Tasks;
 using FluentValidation.AspNetCore;
-using Hangfire;
-using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
@@ -37,7 +35,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         private const string BuyingCatalogueDbConnectionEnvironmentVariable = "BC_DB_CONNECTION";
         private const string BuyingCatalogueDomainNameEnvironmentVariable = "DOMAIN_NAME";
         private const string BuyingCataloguePdfEnvironmentVariable = "USE_SSL_FOR_PDF";
-        private const string HangFireDbConnectionEnvironmentVariable = "HANGFIRE_DB_CONNECTION";
         private const string SessionIdleTimeoutEnvironmentVariable = "SESSION_IDLE_TIMEOUT";
 
         public static void ConfigureAuthorization(this IServiceCollection services)
@@ -174,6 +171,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         {
             var priceTiersCapSettings = configuration.GetSection("priceTiersCap").Get<PriceTiersCapSettings>();
             services.AddSingleton(priceTiersCapSettings);
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureAccountManagement(this IServiceCollection services, IConfiguration configuration)
+        {
+            var accountManagementSettings = configuration.GetSection("accountManagement").Get<AccountManagementSettings>();
+            services.AddSingleton(accountManagementSettings);
 
             return services;
         }
@@ -349,22 +354,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             {
                 options.ValueCountLimit = 16384;
             });
-        }
-
-        public static IServiceCollection AddHangFire(this IServiceCollection services)
-        {
-            var connectionString = Environment.GetEnvironmentVariable(HangFireDbConnectionEnvironmentVariable);
-
-            return services
-                .AddHangfire(x => x.UseSqlServerStorage(connectionString, new SqlServerStorageOptions
-                {
-                    CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
-                    SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
-                    QueuePollInterval = TimeSpan.Zero,
-                    UseRecommendedIsolationLevel = true,
-                    DisableGlobalLocks = true,
-                }))
-                .AddHangfireServer();
         }
     }
 }

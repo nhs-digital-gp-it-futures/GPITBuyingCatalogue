@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
@@ -19,7 +18,6 @@ using NHSD.GPIT.BuyingCatalogue.Services;
 using NHSD.GPIT.BuyingCatalogue.Services.Routing;
 using NHSD.GPIT.BuyingCatalogue.Services.TaskList;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Fakes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ModelBinders;
 using Serilog;
 
@@ -90,7 +88,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 .ConfigureConsentCookieSettings(Configuration)
                 .ConfigureTermsOfUseSettings(Configuration)
                 .ConfigureAnalyticsSettings(Configuration)
-                .ConfigurePriceTiersCap(Configuration);
+                .ConfigurePriceTiersCap(Configuration)
+                .ConfigureAccountManagement(Configuration);
 
             services.ConfigureCookies(Configuration);
 
@@ -111,15 +110,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.ConfigureDisabledErrorMessage(Configuration);
 
             services.ConfigureAuthorization();
-
-            if (IsE2ETestEnvironment())
-            {
-                services.AddScoped<IBackgroundJobClient, FakeBackgroundJobClient>();
-            }
-            else
-            {
-                services.AddHangFire();
-            }
 
             services.AddSingleton<IRoutingService, RoutingService>();
             services.AddSingleton<IOrderTaskProgressProviderService, OrderTaskProgressProviderService>();
@@ -222,11 +212,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 endpoints.MapControllers();
                 endpoints.MapDefaultControllerRoute();
             });
-
-            if (!IsE2ETestEnvironment())
-            {
-                app.UseHangfireDashboard();
-            }
         }
 
         private bool IsE2ETestEnvironment() => hostEnvironment.IsEnvironment("E2ETest");
