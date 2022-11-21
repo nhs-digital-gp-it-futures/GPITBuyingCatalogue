@@ -5,6 +5,7 @@
         internal const string Catalogue = "catalogue";
         internal const string Ordering = "ordering";
         internal const string Organisations = "organisations";
+        internal const string OdsOrganisations = "ods_organisations";
         internal const string Users = "users";
     }
 }
