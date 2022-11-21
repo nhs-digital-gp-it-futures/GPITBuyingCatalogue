@@ -120,7 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             var organisation = await OrganisationsService.GetOrganisation(organisationId);
             var user = await UserService.GetUser(userId);
 
-            if (organisation.Id != user.PrimaryOrganisationId)
+            if (user == null || organisation == null || organisation.Id != user.PrimaryOrganisationId)
                 return NotFound();
 
             var model = new UserDetailsModel(organisation, user)

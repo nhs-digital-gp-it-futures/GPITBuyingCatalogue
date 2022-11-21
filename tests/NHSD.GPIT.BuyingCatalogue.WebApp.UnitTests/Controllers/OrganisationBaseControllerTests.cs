@@ -259,6 +259,60 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
         [Theory]
         [CommonAutoData]
+        public static async Task Get_EditUser_NullOrganisation_ReturnsExpectedResult(
+            Organisation organisation,
+            AspNetUser user,
+            [Frozen] Mock<IUsersService> mockUsersService,
+            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
+            [Frozen] Mock<IUrlHelper> mockUrlHelper,
+            OrganisationBaseController controller)
+        {
+            mockOrganisationsService
+                .Setup(x => x.GetOrganisation(organisation.Id))
+                .ReturnsAsync((Organisation)null);
+
+            mockUsersService
+                .Setup(x => x.GetUser(user.Id))
+                .ReturnsAsync(user);
+
+            controller.Url = mockUrlHelper.Object;
+
+            var result = (await controller.EditUser(organisation.Id, user.Id)).As<NotFoundResult>();
+
+            mockOrganisationsService.VerifyAll();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditUser_NullOUser_ReturnsExpectedResult(
+            Organisation organisation,
+            AspNetUser user,
+            [Frozen] Mock<IUsersService> mockUsersService,
+            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
+            [Frozen] Mock<IUrlHelper> mockUrlHelper,
+            OrganisationBaseController controller)
+        {
+            mockOrganisationsService
+                .Setup(x => x.GetOrganisation(organisation.Id))
+                .ReturnsAsync(organisation);
+
+            mockUsersService
+                .Setup(x => x.GetUser(user.Id))
+                .ReturnsAsync((AspNetUser)null);
+
+            controller.Url = mockUrlHelper.Object;
+
+            var result = (await controller.EditUser(organisation.Id, user.Id)).As<NotFoundResult>();
+
+            mockOrganisationsService.VerifyAll();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static async Task Post_EditUser_WithModelErrors_ReturnsExpectedResult(
             int organisationId,
             int userId,
