@@ -323,7 +323,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             var result = (await controller.EditUser(organisationId, user.Id, model)).As<BadRequestResult>();
 
             mockUsersService.VerifyAll();
-            mockUsersService.Verify(x => x.UpdateUser(user.Id, model.FirstName, model.LastName, model.EmailAddress, !model.IsActive!.Value, model.SelectedAccountType, It.IsAny<int>()), Times.Never());
+            mockUsersService.VerifyNoOtherCalls();
 
             result.Should().NotBeNull();
         }
