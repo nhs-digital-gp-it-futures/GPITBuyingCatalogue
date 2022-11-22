@@ -1,18 +1,18 @@
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace BuyingCatalogueFunction
+namespace BuyingCatalogueFunction.Functions
 {
-    public static class OrganisationUpdateTrigger
+    public static class OrganisationUpdateFunctions
     {
-        [FunctionName("OrganisationUpdateTrigger")]
-        public static async Task<IActionResult> Run(
+        [FunctionName(nameof(OrganisationUpdateHttpTrigger))]
+        public static async Task<IActionResult> OrganisationUpdateHttpTrigger(
             [HttpTrigger(AuthorizationLevel.Admin, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
