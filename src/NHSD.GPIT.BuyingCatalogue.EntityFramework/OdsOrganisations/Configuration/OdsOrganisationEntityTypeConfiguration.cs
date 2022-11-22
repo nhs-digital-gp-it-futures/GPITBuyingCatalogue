@@ -8,7 +8,7 @@ public class OdsOrganisationEntityTypeConfiguration : IEntityTypeConfiguration<O
 {
     public void Configure(EntityTypeBuilder<OdsOrganisation> builder)
     {
-        builder.ToTable("OdsOrganisations", schema: "ods_organisations");
+        builder.ToTable("OdsOrganisations", schema: Schemas.OdsOrganisations);
 
         builder.HasKey(x => x.Id);
 
@@ -17,8 +17,6 @@ public class OdsOrganisationEntityTypeConfiguration : IEntityTypeConfiguration<O
         builder.Property(x => x.AddressLine1).HasMaxLength(255);
         builder.Property(x => x.AddressLine2).HasMaxLength(255);
         builder.Property(x => x.AddressLine3).HasMaxLength(255);
-        builder.Property(x => x.AddressLine4).HasMaxLength(255);
-        builder.Property(x => x.AddressLine5).HasMaxLength(255);
 
         builder.Property(x => x.Town).HasMaxLength(100);
         builder.Property(x => x.County).HasMaxLength(100);

@@ -23,6 +23,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
         {
         }
 
+        public BuyingCatalogueDbContext(DbContextOptions<BuyingCatalogueDbContext> options)
+            : base(options)
+        {
+        }
+
         public BuyingCatalogueDbContext(DbContextOptions<BuyingCatalogueDbContext> options, IIdentityService identityService)
             : base(options)
         {
@@ -123,6 +128,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<RelationshipType> OrganisationRelationshipTypes { get; set; }
 
+        public DbSet<OrgImportJournal> OrgImportJournal { get; set; }
+
         public async Task<Order> Order(CallOffId callOffId)
         {
             return await Orders
@@ -191,12 +198,14 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
         {
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
-            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(BuyingCatalogueDbContext).Assembly);
         }
 
         private void UpdateAuditFields(int? userId = null)
         {
-            userId ??= identityService.GetUserId();
+            userId ??= identityService?.GetUserId();
+
+            if (userId is null) return;
 
             foreach (var entry in ChangeTracker.Entries())
             {

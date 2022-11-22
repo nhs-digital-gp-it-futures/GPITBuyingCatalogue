@@ -113,6 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.AddSingleton<IRoutingService, RoutingService>();
             services.AddSingleton<IOrderTaskProgressProviderService, OrderTaskProgressProviderService>();
+            services.AddSingleton<OrganisationRestrictActionFilterAttribute>();
 
             ServicesStartup.Configure(services);
 

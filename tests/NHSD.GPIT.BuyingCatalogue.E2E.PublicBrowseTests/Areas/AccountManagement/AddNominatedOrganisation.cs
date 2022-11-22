@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
 {
     public class AddNominatedOrganisation : AccountManagerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        private const int OrganisationId = 1;
+        private const int OrganisationId = 176;
         private const string ValidOrganisationName = "NHS Leeds CCG";
 
         private static readonly Dictionary<string, string> Parameters = new()

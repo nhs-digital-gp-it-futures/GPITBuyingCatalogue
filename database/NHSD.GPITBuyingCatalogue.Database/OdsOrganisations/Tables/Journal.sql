@@ -1,4 +1,5 @@
 ﻿CREATE TABLE [ods_organisations].[Journal]
 (
-    ImportDate DATETIME2 NOT NULL
+    [Id]            INT         NOT NULL PRIMARY KEY IDENTITY(1,1),
+    [ImportDate]    DATETIME2   NOT NULL DEFAULT(GETUTCDATE())
 )
