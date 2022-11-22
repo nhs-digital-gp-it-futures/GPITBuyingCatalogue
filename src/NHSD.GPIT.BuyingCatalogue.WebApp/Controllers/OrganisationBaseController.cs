@@ -120,6 +120,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             var organisation = await OrganisationsService.GetOrganisation(organisationId);
             var user = await UserService.GetUser(userId);
 
+            if (user == null || organisation == null || organisation.Id != user.PrimaryOrganisationId)
+                return NotFound();
+
             var model = new UserDetailsModel(organisation, user)
             {
                 BackLink = Url.Action(nameof(Users), new { organisationId }),
@@ -135,6 +138,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         {
             if (!ModelState.IsValid)
                 return View("OrganisationBase/UserDetails", model);
+
+            var user = await UserService.GetUser(userId);
+
+            if (user.PrimaryOrganisationId != organisationId)
+                return BadRequest();
 
             await UserService.UpdateUser(
                 userId,

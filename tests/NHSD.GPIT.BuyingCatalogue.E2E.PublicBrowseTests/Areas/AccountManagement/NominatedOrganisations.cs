@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
 {
     public class NominatedOrganisations : AccountManagerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        private const int OrganisationId = 1;
+        private const int OrganisationId = 176;
         private const int RelatedOrganisationId = 5;
 
         private static readonly Dictionary<string, string> Parameters = new()

@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common.Organisation;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Utils.RandomData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -15,9 +17,9 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
 {
-    public class Users : AccountManagerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    public class Users : AccountManagerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        private const int OrganisationId = 2;
+        private const int OrganisationId = 176;
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
@@ -30,22 +32,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
         }
 
         [Fact]
-        public void Users_WithNoUsers_AllElementsDisplayed()
-        {
-            CommonActions.ElementIsDisplayed(BreadcrumbObjects.HomeBreadcrumbLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(BreadcrumbObjects.OrganisationDetailsBreadcrumbLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(OrganisationUsersObjects.AddUserLink).Should().BeTrue();
-            CommonActions.ElementExists(OrganisationUsersObjects.UsersTable).Should().BeFalse();
-            CommonActions.ElementIsDisplayed(OrganisationUsersObjects.UsersErrorMessage).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(OrganisationUsersObjects.ContinueLink).Should().BeTrue();
-        }
-
-        [Fact]
         public async Task Users_WithUsers_AllElementsDisplayed()
         {
-            var user = await AddUser();
-
             CommonActions.ElementIsDisplayed(BreadcrumbObjects.HomeBreadcrumbLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(BreadcrumbObjects.OrganisationDetailsBreadcrumbLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
@@ -54,6 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
             CommonActions.ElementExists(OrganisationUsersObjects.UsersErrorMessage).Should().BeFalse();
             CommonActions.ElementIsDisplayed(OrganisationUsersObjects.ContinueLink).Should().BeTrue();
 
+            var user = await GetUser();
             CommonActions.ElementTextEqualTo(OrganisationUsersObjects.UserName, user.GetDisplayName());
             CommonActions.ElementTextEqualTo(OrganisationUsersObjects.UserEmail, user.Email);
             CommonActions.ElementTextEqualTo(OrganisationUsersObjects.UserAccountType, user.GetDisplayRoleName());
@@ -93,10 +82,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
         }
 
         [Fact]
-        public async Task Users_ClickEditUserLink_DisplaysCorrectPage()
+        public void Users_ClickEditUserLink_DisplaysCorrectPage()
         {
-            await AddUser();
-
             CommonActions.ClickLinkElement(OrganisationUsersObjects.UserEditLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -114,23 +101,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
                 nameof(ManageAccountController.Details)).Should().BeTrue();
         }
 
-        public void Dispose()
-        {
-            using var context = GetEndToEndDbContext();
-            var users = context.AspNetUsers.Where(x => x.PrimaryOrganisationId == OrganisationId).ToList();
-            users.ForEach(x => context.AspNetUsers.Remove(x));
-            context.SaveChanges();
-        }
-
-        private async Task<AspNetUser> AddUser()
+        private async Task<AspNetUser> GetUser()
         {
             await using var context = GetEndToEndDbContext();
-            var user = GenerateUser.GenerateAspNetUser(context, OrganisationId, DefaultPassword, isEnabled: true);
-            context.Add(user);
-            await context.SaveChangesAsync();
-            Driver.Navigate().Refresh();
 
-            return user;
+            return context.Users.Include(x => x.AspNetUserRoles)
+                .ThenInclude(x => x.Role)
+                .First(x => x.Id == UserSeedData.DaveId);
         }
     }
 }

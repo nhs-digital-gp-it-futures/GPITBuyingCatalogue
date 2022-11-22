@@ -21,8 +21,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
 {
     public sealed class EditUser : AccountManagerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        private const int OrganisationId = 2;
-        private const int UserId = 3;
+        private const int OrganisationId = 176;
+        private const int UserId = 5;
 
         private const string FirstNameRequired = "Enter a first name";
         private const string LastNameRequired = "Enter a last name";
@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
             CommonActions.ElementIsDisplayed(AddUserObjects.Status).Should().BeTrue();
 
             var userRole = user.GetRoleName();
-            var organisationFunction = OrganisationFunction.FromName(userRole).DisplayName;
+            var organisationFunction = OrganisationFunction.FromName(userRole).Name;
 
             CommonActions.InputValueEqualTo(AddUserObjects.FirstName, user.FirstName).Should().BeTrue();
             CommonActions.InputValueEqualTo(AddUserObjects.LastName, user.LastName).Should().BeTrue();
@@ -171,7 +171,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
 
             user.AspNetUserRoles.ForEach(x => user.AspNetUserRoles.Remove(x));
 
-            var buyer = context.Roles.First(r => r.Name == OrganisationFunction.Buyer.Name);
+            var buyer = context.Roles.First(r => r.Name == OrganisationFunction.AccountManager.Name);
             user.AspNetUserRoles = new List<AspNetUserRole>
             {
                 new() { Role = buyer },

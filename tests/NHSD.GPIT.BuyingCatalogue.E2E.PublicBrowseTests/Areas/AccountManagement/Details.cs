@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
 {
     public sealed class Details : AccountManagerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        private const int OrganisationId = 2;
+        private const int OrganisationId = 176;
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
