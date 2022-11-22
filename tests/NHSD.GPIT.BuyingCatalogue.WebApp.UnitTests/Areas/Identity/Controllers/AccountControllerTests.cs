@@ -109,6 +109,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         {
             const string expectedErrorMessage = "The username or password were not recognised. Please try again.";
 
+            user.Disabled = false;
+
             mockUserManager
                 .Setup(x => x.FindByNameAsync(model.EmailAddress))
                 .ReturnsAsync(user);
@@ -152,16 +154,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
                 .Setup(x => x.FindByNameAsync(model.EmailAddress))
                 .ReturnsAsync(user);
 
-            mockSignInManager
-                .Setup(x => x.PasswordSignInAsync(user, model.Password, false, true))
-                .ReturnsAsync(SignInResult.Success);
-
             var controller = CreateController(mockUserManager.Object, mockSignInManager.Object);
 
             var result = await controller.Login(model);
 
             mockUserManager.VerifyAll();
-            mockSignInManager.VerifyAll();
 
             controller.ModelState.Should().ContainKey(nameof(model.DisabledError));
             controller.ModelState[nameof(model.DisabledError)]?.Errors.Should().Contain(x => x.ErrorMessage.Contains(expectedErrorMessage));
