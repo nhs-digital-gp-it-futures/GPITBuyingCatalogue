@@ -204,6 +204,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
              [Frozen] Mock<IUrlHelper> mockUrlHelper,
              OrganisationBaseController controller)
         {
+            user.PrimaryOrganisationId = organisation.Id;
+
             mockOrganisationsService
                 .Setup(x => x.GetOrganisation(organisation.Id))
                 .ReturnsAsync(organisation);
@@ -230,6 +232,87 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
         [Theory]
         [CommonAutoData]
+        public static async Task Get_EditUser_InvalidOrganisationId_ReturnsExpectedResult(
+            Organisation organisation,
+            AspNetUser user,
+            [Frozen] Mock<IUsersService> mockUsersService,
+            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
+            [Frozen] Mock<IUrlHelper> mockUrlHelper,
+            OrganisationBaseController controller)
+        {
+            mockOrganisationsService
+                .Setup(x => x.GetOrganisation(organisation.Id))
+                .ReturnsAsync(organisation);
+
+            mockUsersService
+                .Setup(x => x.GetUser(user.Id))
+                .ReturnsAsync(user);
+
+            controller.Url = mockUrlHelper.Object;
+
+            var result = (await controller.EditUser(organisation.Id, user.Id)).As<NotFoundResult>();
+
+            mockOrganisationsService.VerifyAll();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditUser_NullOrganisation_ReturnsExpectedResult(
+            Organisation organisation,
+            AspNetUser user,
+            [Frozen] Mock<IUsersService> mockUsersService,
+            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
+            [Frozen] Mock<IUrlHelper> mockUrlHelper,
+            OrganisationBaseController controller)
+        {
+            mockOrganisationsService
+                .Setup(x => x.GetOrganisation(organisation.Id))
+                .ReturnsAsync((Organisation)null);
+
+            mockUsersService
+                .Setup(x => x.GetUser(user.Id))
+                .ReturnsAsync(user);
+
+            controller.Url = mockUrlHelper.Object;
+
+            var result = (await controller.EditUser(organisation.Id, user.Id)).As<NotFoundResult>();
+
+            mockOrganisationsService.VerifyAll();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditUser_NullOUser_ReturnsExpectedResult(
+            Organisation organisation,
+            AspNetUser user,
+            [Frozen] Mock<IUsersService> mockUsersService,
+            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
+            [Frozen] Mock<IUrlHelper> mockUrlHelper,
+            OrganisationBaseController controller)
+        {
+            mockOrganisationsService
+                .Setup(x => x.GetOrganisation(organisation.Id))
+                .ReturnsAsync(organisation);
+
+            mockUsersService
+                .Setup(x => x.GetUser(user.Id))
+                .ReturnsAsync((AspNetUser)null);
+
+            controller.Url = mockUrlHelper.Object;
+
+            var result = (await controller.EditUser(organisation.Id, user.Id)).As<NotFoundResult>();
+
+            mockOrganisationsService.VerifyAll();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static async Task Post_EditUser_WithModelErrors_ReturnsExpectedResult(
             int organisationId,
             int userId,
@@ -252,7 +335,35 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         [CommonAutoData]
         public static async Task Post_EditUser_ValidModel_ReturnsExpectedResult(
             int organisationId,
-            int userId,
+            AspNetUser user,
+            UserDetailsModel model,
+            [Frozen] Mock<IUsersService> mockUsersService,
+            OrganisationBaseController controller)
+        {
+            user.PrimaryOrganisationId = organisationId;
+            model.EmailAddress = "a@b.com";
+
+            mockUsersService
+                .Setup(x => x.GetUser(user.Id))
+                .ReturnsAsync(user);
+
+            mockUsersService
+                .Setup(x => x.UpdateUser(user.Id, model.FirstName, model.LastName, model.EmailAddress, !model.IsActive!.Value, model.SelectedAccountType, organisationId))
+                .Returns(Task.CompletedTask);
+
+            var result = (await controller.EditUser(organisationId, user.Id, model)).As<RedirectToActionResult>();
+
+            mockUsersService.VerifyAll();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(OrganisationBaseController.Users));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditUser_InvalidOrganisationId_ReturnsExpectedResult(
+            int organisationId,
+            AspNetUser user,
             UserDetailsModel model,
             [Frozen] Mock<IUsersService> mockUsersService,
             OrganisationBaseController controller)
@@ -260,15 +371,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             model.EmailAddress = "a@b.com";
 
             mockUsersService
-                .Setup(x => x.UpdateUser(userId, model.FirstName, model.LastName, model.EmailAddress, !model.IsActive!.Value, model.SelectedAccountType, organisationId))
-                .Returns(Task.CompletedTask);
+                .Setup(x => x.GetUser(user.Id))
+                .ReturnsAsync(user);
 
-            var result = (await controller.EditUser(organisationId, userId, model)).As<RedirectToActionResult>();
+            var result = (await controller.EditUser(organisationId, user.Id, model)).As<BadRequestResult>();
 
             mockUsersService.VerifyAll();
+            mockUsersService.VerifyNoOtherCalls();
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(OrganisationBaseController.Users));
         }
 
         [Theory]

@@ -5,6 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
+using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Controllers
@@ -12,6 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Controllers
     [Authorize(Policy = "AccountManager")]
     [Area("AccountManagement")]
     [Route("account-management/manage-account")]
+    [ServiceFilter(typeof(OrganisationRestrictActionFilterAttribute))]
     public sealed class ManageAccountController : OrganisationBaseController
     {
         public ManageAccountController(

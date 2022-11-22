@@ -16,9 +16,9 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
 {
-    public sealed class AddUser : AccountManagerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    public sealed class AddUser : AccountManagerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        private const int OrganisationId = 2;
+        private const int OrganisationId = 176;
 
         private const string FirstNameRequired = "Enter a first name";
         private const string LastNameRequired = "Enter a last name";
@@ -155,14 +155,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(AddUserObjects.EmailError, EmailAlreadyExists).Should().BeTrue();
-        }
 
-        public void Dispose()
-        {
-            using var context = GetEndToEndDbContext();
-            var users = context.AspNetUsers.Where(x => x.PrimaryOrganisationId == OrganisationId).ToList();
-            users.ForEach(x => context.AspNetUsers.Remove(x));
-            context.SaveChanges();
+            await RemoveUser(user);
         }
 
         private async Task<AspNetUser> CreateUser(bool isEnabled = true)
@@ -174,6 +168,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
             Driver.Navigate().Refresh();
 
             return user;
+        }
+
+        private async Task RemoveUser(AspNetUser user)
+        {
+            await using var context = GetEndToEndDbContext();
+            var dbUser = context.AspNetUsers.First(x => x.Id == user.Id);
+
+            context.Remove(dbUser);
+
+            await context.SaveChangesAsync();
         }
     }
 }

@@ -328,6 +328,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
            OrganisationsController controller)
         {
+            user.PrimaryOrganisationId = organisation.Id;
+
             mockOrganisationsService
                 .Setup(x => x.GetOrganisation(organisation.Id))
                 .ReturnsAsync(organisation);
@@ -374,18 +376,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Post_EditUser_ValidModel_ReturnsExpectedResult(
             int organisationId,
-            int userId,
+            AspNetUser user,
             UserDetailsModel model,
             [Frozen] Mock<IUsersService> mockUsersService,
             OrganisationsController controller)
         {
+            user.PrimaryOrganisationId = organisationId;
             model.EmailAddress = "a@b.com";
 
             mockUsersService
-                .Setup(x => x.UpdateUser(userId, model.FirstName, model.LastName, model.EmailAddress, !model.IsActive!.Value, model.SelectedAccountType, organisationId))
+                .Setup(x => x.GetUser(user.Id))
+                .ReturnsAsync(user);
+
+            mockUsersService
+                .Setup(x => x.UpdateUser(user.Id, model.FirstName, model.LastName, model.EmailAddress, !model.IsActive!.Value, model.SelectedAccountType, organisationId))
                 .Returns(Task.CompletedTask);
 
-            var result = (await controller.EditUser(organisationId, userId, model)).As<RedirectToActionResult>();
+            var result = (await controller.EditUser(organisationId, user.Id, model)).As<RedirectToActionResult>();
 
             mockUsersService.VerifyAll();
 
