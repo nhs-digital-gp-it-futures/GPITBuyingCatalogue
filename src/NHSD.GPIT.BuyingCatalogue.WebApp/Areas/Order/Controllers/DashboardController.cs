@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -46,16 +47,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
             [FromQuery] string page = "",
             [FromQuery] string search = "")
         {
-            const int PageSize = 10;
-            var options = new PageOptions(page, PageSize);
-
+            var options = new PageOptions(page, pageSize: 10);
             var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-
-            var orders = await orderService.GetPagedOrders(organisation.Id, options, search);
+            (PagedList<EntityFramework.Ordering.Models.Order> orders, IEnumerable<CallOffId> orderIds) = await orderService.GetPagedOrders(organisation.Id, options, search);
 
             var model = new OrganisationModel(organisation, User, orders.Items)
             {
                 Options = orders.Options,
+                OrderIds = orderIds,
             };
 
             return View(model);

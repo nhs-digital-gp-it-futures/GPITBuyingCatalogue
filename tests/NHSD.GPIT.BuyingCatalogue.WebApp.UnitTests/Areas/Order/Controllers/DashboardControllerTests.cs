@@ -86,23 +86,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             string internalOrgId,
             DashboardController controller)
         {
+            var orderIds = orders.Items.Select(x => x.CallOffId).ToList();
+
             var user = new ClaimsPrincipal(new ClaimsIdentity(
                 new Claim[] { new("organisationFunction", "Buyer") },
                 "mock"));
 
-            controller.ControllerContext =
-                 new ControllerContext
-                 {
-                     HttpContext = new DefaultHttpContext { User = user },
-                 };
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = user },
+            };
 
-            organisationService.Setup(s => s.GetOrganisationByInternalIdentifier(internalOrgId)).ReturnsAsync(organisation);
+            organisationService
+                .Setup(s => s.GetOrganisationByInternalIdentifier(internalOrgId))
+                .ReturnsAsync(organisation);
 
-            orderService.Setup(s => s.GetPagedOrders(organisation.Id, It.IsAny<PageOptions>(), string.Empty)).ReturnsAsync(orders);
+            orderService
+                .Setup(s => s.GetPagedOrders(organisation.Id, It.IsAny<PageOptions>(), string.Empty))
+                .ReturnsAsync((orders, orderIds));
 
             var expected = new OrganisationModel(organisation, user, orders.Items)
             {
                 Options = orders.Options,
+                OrderIds = orderIds,
             };
 
             var result = (await controller.Organisation(internalOrgId)).As<ViewResult>();

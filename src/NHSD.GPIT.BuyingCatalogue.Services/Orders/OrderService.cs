@@ -55,6 +55,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return await dbContext.OrderId(internalOrgId, callOffId);
         }
 
+        public async Task<bool> HasSubsequentRevisions(CallOffId callOffId)
+        {
+            return await dbContext.Orders
+                .IgnoreQueryFilters()
+                .AnyAsync(x => x.OrderNumber == callOffId.OrderNumber && x.Revision > callOffId.Revision);
+        }
+
         public async Task<OrderWrapper> GetOrderThin(CallOffId callOffId, string internalOrgId)
         {
             var orders = await dbContext.Orders
@@ -231,7 +238,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return new OrderWrapper(orders);
         }
 
-        public async Task<PagedList<Order>> GetPagedOrders(int organisationId, PageOptions options, string search = null)
+        public async Task<(PagedList<Order> Orders, IEnumerable<CallOffId> OrderIds)> GetPagedOrders(int organisationId, PageOptions options, string search = null)
         {
             options ??= new PageOptions();
 
@@ -250,13 +257,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             }
 
             options.TotalNumberOfItems = query.Count;
+            var orderIds = query.Select(x => x.CallOffId);
 
             if (options.PageNumber != 0)
                 query = query.Skip((options.PageNumber - 1) * options.PageSize).ToList();
 
             var results = query.Take(options.PageSize).ToList();
 
-            return new PagedList<Order>(results, options);
+            return (new PagedList<Order>(results, options), orderIds);
         }
 
         public async Task<IList<SearchFilterModel>> GetOrdersBySearchTerm(int organisationId, string searchTerm)
@@ -298,6 +306,34 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             await dbContext.SaveChangesAsync();
 
             return order;
+        }
+
+        public async Task<Order> AmendOrder(string internalOrgId, CallOffId callOffId)
+        {
+            var order = (await GetOrderForSummary(callOffId, internalOrgId)).Order;
+
+            var amendment = new Order
+            {
+                OrderNumber = order.OrderNumber,
+                Revision = await dbContext.NextRevision(order.OrderNumber),
+                AssociatedServicesOnly = order.AssociatedServicesOnly,
+                CommencementDate = order.CommencementDate,
+                Description = order.Description,
+                InitialPeriod = order.InitialPeriod,
+                MaximumTerm = order.MaximumTerm,
+                OrderingPartyId = order.OrderingPartyId,
+                OrderingPartyContact = order.OrderingPartyContact.Clone(),
+                OrderTriageValue = order.OrderTriageValue,
+                SelectedFrameworkId = order.SelectedFrameworkId,
+                SupplierId = order.SupplierId,
+                SupplierContact = order.SupplierContact.Clone(),
+            };
+
+            dbContext.Add(amendment);
+
+            await dbContext.SaveChangesAsync();
+
+            return amendment;
         }
 
         public async Task DeleteOrder(CallOffId callOffId, string internalOrgId)

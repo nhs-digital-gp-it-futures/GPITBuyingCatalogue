@@ -57,6 +57,46 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [InMemoryDbAutoData]
+        public static async Task AmendOrder_UpdatesDatabase(
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            context.Orders.Add(order);
+            await context.SaveChangesAsync();
+
+            var result = await service.AmendOrder(order.OrderingParty.InternalIdentifier, order.CallOffId);
+
+            result.OrderNumber.Should().Be(order.OrderNumber);
+            result.Revision.Should().Be(order.CallOffId.Revision + 1);
+            result.AssociatedServicesOnly.Should().Be(order.AssociatedServicesOnly);
+            result.CommencementDate.Should().Be(order.CommencementDate);
+            result.Description.Should().Be(order.Description);
+            result.InitialPeriod.Should().Be(order.InitialPeriod);
+            result.MaximumTerm.Should().Be(order.MaximumTerm);
+            result.OrderingPartyId.Should().Be(order.OrderingPartyId);
+            result.OrderTriageValue.Should().Be(order.OrderTriageValue);
+            result.SelectedFrameworkId.Should().Be(order.SelectedFrameworkId);
+            result.SupplierId.Should().Be(order.SupplierId);
+
+            result.OrderingPartyContact.Id.Should().NotBe(order.OrderingPartyContact.Id);
+            result.SupplierContact.Id.Should().NotBe(order.SupplierContact.Id);
+
+            result.OrderingPartyContact.FirstName.Should().Be(order.OrderingPartyContact.FirstName);
+            result.OrderingPartyContact.LastName.Should().Be(order.OrderingPartyContact.LastName);
+            result.OrderingPartyContact.Department.Should().Be(order.OrderingPartyContact.Department);
+            result.OrderingPartyContact.Email.Should().Be(order.OrderingPartyContact.Email);
+            result.OrderingPartyContact.Phone.Should().Be(order.OrderingPartyContact.Phone);
+
+            result.SupplierContact.FirstName.Should().Be(order.SupplierContact.FirstName);
+            result.SupplierContact.LastName.Should().Be(order.SupplierContact.LastName);
+            result.SupplierContact.Department.Should().Be(order.SupplierContact.Department);
+            result.SupplierContact.Email.Should().Be(order.SupplierContact.Email);
+            result.SupplierContact.Phone.Should().Be(order.SupplierContact.Phone);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
         public static async Task DeleteOrder_SoftDeletedOrder(
             [Frozen] BuyingCatalogueDbContext context,
             Order order,
@@ -140,15 +180,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             context.SaveChanges();
 
-            var result = await service.GetPagedOrders(organisation.Id, new PageOptions("0", 2));
+            (PagedList<Order> pagedOrders, IEnumerable<CallOffId> orderIds) = await service.GetPagedOrders(organisation.Id, new PageOptions("0", 2));
 
-            result.Items.Count.Should().Be(2);
-            result.Options.TotalNumberOfItems.Should().Be(orders.Count);
+            orderIds.Should().BeEquivalentTo(orders.Select(x => x.CallOffId));
 
-            var expectedNumberOfPages = (int)Math.Ceiling((double)orders.Count / result.Options.PageSize);
-            result.Options.NumberOfPages
-                .Should()
-                .Be(expectedNumberOfPages);
+            pagedOrders.Items.Count.Should().Be(2);
+            pagedOrders.Options.TotalNumberOfItems.Should().Be(orders.Count);
+
+            var expected = (int)Math.Ceiling((double)orders.Count / pagedOrders.Options.PageSize);
+
+            pagedOrders.Options.NumberOfPages.Should().Be(expected);
         }
 
         [Theory]
@@ -171,7 +212,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             var result = await service.GetPagedOrders(organisation.Id, new PageOptions("0", 2), searchTerm);
 
-            result.Items.First().Should().BeEquivalentTo(order);
+            result.Orders.Items.First().Should().BeEquivalentTo(order);
         }
 
         [Theory]

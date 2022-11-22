@@ -25,7 +25,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
             {
                 Title = $"Order {order.CallOffId}";
                 CallOffId = order.CallOffId;
-                TitleAdvice = "Complete the following steps to create an order summary.";
+                TitleAdvice = order.CallOffId.Revision > 1
+                    ? "You can amend parts of this order as required and will need to review other parts that cannot be changed. Your amendments will be saved as you progress through each section."
+                    : "Complete the following steps to create an order summary.";
                 Description = order.Description;
                 OrganisationName = order.OrderingParty.Name;
 

@@ -6,9 +6,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsDon
 {
     public sealed class NhsDontListViewComponent : ViewComponent
     {
-        public async Task<IViewComponentResult> InvokeAsync(List<string> items)
+        public async Task<IViewComponentResult> InvokeAsync(string title, List<string> items)
         {
-            return await Task.FromResult(View("NhsDontList", items));
+            return await Task.FromResult(View("NhsDontList", new NhsDontListModel
+            {
+                Title = title,
+                Items = items,
+            }));
         }
     }
 }

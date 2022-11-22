@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
@@ -11,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NHSD.GPIT.BuyingCatalogue.Framework.Environments;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
@@ -26,9 +26,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
     [ExcludeFromCodeCoverage]
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly IHostEnvironment hostEnvironment;
+
+        public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
         {
             Configuration = configuration;
+            this.hostEnvironment = hostEnvironment;
         }
 
         public IConfiguration Configuration { get; }
@@ -36,6 +39,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            CurrentEnvironment.IsDevelopment = hostEnvironment.IsDevelopment();
+
             if (!IsE2ETestEnvironment())
             {
                 services.ConfigureDataProtection(Configuration);
@@ -210,6 +215,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             });
         }
 
-        private static bool IsE2ETestEnvironment() => Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "E2ETest";
+        private bool IsE2ETestEnvironment() => hostEnvironment.IsEnvironment("E2ETest");
     }
 }

@@ -13,6 +13,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public Task<int> GetOrderId(CallOffId callOffId);
 
+        public Task<bool> HasSubsequentRevisions(CallOffId callOffId);
+
         public Task<OrderWrapper> GetOrderThin(CallOffId callOffId, string internalOrgId);
 
         public Task<OrderWrapper> GetOrderWithCatalogueItemAndPrices(CallOffId callOffId, string internalOrgId);
@@ -27,11 +29,13 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public Task<OrderWrapper> GetOrderForTaskListStatuses(CallOffId callOffId, string internalOrgId);
 
-        public Task<PagedList<Order>> GetPagedOrders(int organisationId, PageOptions options, string search = null);
+        public Task<(PagedList<Order> Orders, IEnumerable<CallOffId> OrderIds)> GetPagedOrders(int organisationId, PageOptions options, string search = null);
 
         public Task<IList<SearchFilterModel>> GetOrdersBySearchTerm(int organisationId, string searchTerm);
 
         public Task<Order> CreateOrder(string description, string internalOrgId, OrderTriageValue? orderTriageValue, bool isAssociatedServiceOnly);
+
+        public Task<Order> AmendOrder(string internalOrgId, CallOffId callOffId);
 
         public Task DeleteOrder(CallOffId callOffId, string internalOrgId);
 
