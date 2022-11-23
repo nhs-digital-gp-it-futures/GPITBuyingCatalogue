@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 BackLink = Url.Action(nameof(Details), new { organisationId }),
                 OrganisationId = organisationId,
                 OrganisationName = organisation.Name,
-                Users = users.OrderBy(x => x.LastName).ThenBy(x => x.FirstName),
+                Users = users,
                 HomeLink = HomeLink,
                 ControllerName = ControllerName,
             };
