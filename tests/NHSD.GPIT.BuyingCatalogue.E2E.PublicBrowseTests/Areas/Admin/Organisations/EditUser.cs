@@ -12,12 +12,12 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 {
-    public sealed class EditUser : AccountManagerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    public sealed class EditUser : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         private const int OrganisationId = 176;
         private const int UserId = 5;
@@ -37,8 +37,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
         public EditUser(LocalWebApplicationFactory factory)
             : base(
                   factory,
-                  typeof(ManageAccountController),
-                  nameof(ManageAccountController.EditUser),
+                  typeof(OrganisationsController),
+                  nameof(OrganisationsController.EditUser),
                   Parameters)
         {
         }
@@ -77,8 +77,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
             CommonActions.ClickGoBackLink();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(ManageAccountController),
-                nameof(ManageAccountController.Users)).Should().BeTrue();
+                typeof(OrganisationsController),
+                nameof(OrganisationsController.Users)).Should().BeTrue();
         }
 
         [Fact]
@@ -90,8 +90,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(ManageAccountController),
-                nameof(ManageAccountController.Users)).Should().BeTrue();
+                typeof(OrganisationsController),
+                nameof(OrganisationsController.Users)).Should().BeTrue();
         }
 
         [Fact]
@@ -104,8 +104,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(ManageAccountController),
-                nameof(ManageAccountController.EditUser))
+                typeof(OrganisationsController),
+                nameof(OrganisationsController.EditUser))
                 .Should()
                 .BeTrue();
 
@@ -126,8 +126,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(ManageAccountController),
-                nameof(ManageAccountController.EditUser))
+                typeof(OrganisationsController),
+                nameof(OrganisationsController.EditUser))
                 .Should()
                 .BeTrue();
 
@@ -148,8 +148,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(ManageAccountController),
-                nameof(ManageAccountController.EditUser))
+                typeof(OrganisationsController),
+                nameof(OrganisationsController.EditUser))
                 .Should()
                 .BeTrue();
 

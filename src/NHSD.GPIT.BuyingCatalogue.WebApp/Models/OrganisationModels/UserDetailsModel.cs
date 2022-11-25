@@ -11,6 +11,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
 {
     public sealed class UserDetailsModel : NavBaseModel
     {
+        private bool isDefaultAccountType;
+
         public UserDetailsModel()
         {
         }
@@ -28,6 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
 
         public UserDetailsModel(Organisation organisation)
         {
+            OrganisationId = organisation.Id;
             OrganisationName = organisation.Name;
         }
 
@@ -38,6 +41,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
                 return UserId == 0 ? "Add user" : "Edit user";
             }
         }
+
+        public int OrganisationId { get; set; }
 
         public int UserId { get; set; }
 
@@ -54,9 +59,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
         [StringLength(256)]
         public string EmailAddress { get; set; }
 
-        public bool IsDefaultAccountType { get; set; }
-
         public string SelectedAccountType { get; set; }
+
+        public bool IsDefaultAccountType
+        {
+            get => isDefaultAccountType;
+            set
+            {
+                if (value)
+                    SelectedAccountType = OrganisationFunction.Buyer.Name;
+                isDefaultAccountType = value;
+            }
+        }
 
         public IEnumerable<SelectableRadioOption<string>> AccountTypeOptions => new List<SelectableRadioOption<string>>
         {

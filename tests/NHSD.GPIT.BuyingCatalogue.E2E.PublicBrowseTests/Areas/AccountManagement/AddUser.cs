@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common.Organisation;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Utils.RandomData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
@@ -25,6 +26,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
         private const string EmailAddressRequired = "Enter an email address";
         private const string EmailFormatIncorrect = "Enter an email address in the correct format, like name@example.com";
         private const string EmailAlreadyExists = "A user with this email address is already registered on the Buying Catalogue";
+        private const string RoleMustBeBuyer =
+            "You can only add buyers for this organisation. This is because there are already 2 active account managers which is the maximum allowed.";
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
@@ -159,10 +162,35 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
             await RemoveUser(user);
         }
 
-        private async Task<AspNetUser> CreateUser(bool isEnabled = true)
+        [Fact]
+        public async Task AddUser_AccountManagerLimit_InsetTextDisplayed()
         {
             await using var context = GetEndToEndDbContext();
-            var user = GenerateUser.GenerateAspNetUser(context, OrganisationId, DefaultPassword, isEnabled);
+
+            await CreateUser(accountType: OrganisationFunction.AccountManager.Name);
+            await CreateUser(accountType: OrganisationFunction.AccountManager.Name);
+
+            CommonActions.ElementIsDisplayed(AddUserObjects.Role).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(CommonSelectors.NhsInsetText).Should().BeTrue();
+            CommonActions.ElementTextContains(CommonSelectors.NhsInsetText, RoleMustBeBuyer).Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task AddUser_AccountManagerLimit_Inactive_InsetTextNotDisplayed()
+        {
+            await using var context = GetEndToEndDbContext();
+
+            await CreateUser(false, OrganisationFunction.AccountManager.Name);
+            await CreateUser(false, OrganisationFunction.AccountManager.Name);
+
+            CommonActions.ElementIsDisplayed(AddUserObjects.Role).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(CommonSelectors.NhsInsetText).Should().BeFalse();
+        }
+
+        private async Task<AspNetUser> CreateUser(bool isEnabled = true, string accountType = "Buyer")
+        {
+            await using var context = GetEndToEndDbContext();
+            var user = GenerateUser.GenerateAspNetUser(context, OrganisationId, DefaultPassword, isEnabled, accountType);
             context.Add(user);
             await context.SaveChangesAsync();
             Driver.Navigate().Refresh();

@@ -381,9 +381,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         public static async Task IsAccountManagerLimit_InactiveLimit_ReturnsFalse(
             int organisationId,
             [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] AccountManagementSettings accountManagerSettings,
             AspNetUser user,
-            UsersService service,
-            [Frozen] AccountManagementSettings accountManagerSettings)
+            UsersService service)
         {
             context.AspNetUsers.RemoveRange(context.AspNetUsers);
             accountManagerSettings.MaximumNumberOfAccountManagers = 1;
@@ -391,6 +391,45 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             await AddAccountManagerToOrganisation(organisationId, context, user, true);
 
             var result = await service.IsAccountManagerLimit(organisationId);
+
+            result.Should().BeFalse();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task IsAccountManagerLimit_ForCurrentUser_ReturnsFalse(
+            int organisationId,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] AccountManagementSettings accountManagerSettings,
+            AspNetUser user,
+            UsersService service)
+        {
+            context.AspNetUsers.RemoveRange(context.AspNetUsers);
+            accountManagerSettings.MaximumNumberOfAccountManagers = 1;
+
+            await AddAccountManagerToOrganisation(organisationId, context, user);
+
+            var result = await service.IsAccountManagerLimit(organisationId, user.Id);
+
+            result.Should().BeFalse();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task IsAccountManagerLimit_EqualsLimit_DifferentOrg_ReturnsFalse(
+            int accountManagerOrgId,
+            int testOrgId,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] AccountManagementSettings accountManagerSettings,
+            AspNetUser user,
+            UsersService service)
+        {
+            context.AspNetUsers.RemoveRange(context.AspNetUsers);
+            await AddAccountManagerToOrganisation(accountManagerOrgId, context, user);
+
+            accountManagerSettings.MaximumNumberOfAccountManagers = MaxNumberOfAccountManagers;
+
+            var result = await service.IsAccountManagerLimit(testOrgId);
 
             result.Should().BeFalse();
         }

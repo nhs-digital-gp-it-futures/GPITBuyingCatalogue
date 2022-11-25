@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels;
 using Xunit;
@@ -33,6 +34,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.OrganisationModelsTe
             actual.UserId.Should().Be(user.Id);
             actual.Title.Should().Be("Edit user");
             actual.FirstName.Should().Be(user.FirstName);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void IsDefaultAccountType_True_PropertiesSetAsExpected(
+            Organisation organisation)
+        {
+            var actual = new UserDetailsModel(organisation);
+            actual.IsDefaultAccountType = true;
+            actual.SelectedAccountType.Should().Be(OrganisationFunction.Buyer.Name);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void IsDefaultAccountType_False_PropertiesSetAsExpected(
+            Organisation organisation)
+        {
+            var actual = new UserDetailsModel(organisation);
+            actual.IsDefaultAccountType = false;
+            actual.SelectedAccountType.Should().BeNull();
         }
     }
 }
