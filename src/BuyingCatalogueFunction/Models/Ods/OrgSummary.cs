@@ -1,6 +1,6 @@
 ﻿namespace BuyingCatalogueFunction.Models.Ods
 {
-    public class OrganisationSummary
+    public class OrgSummary
     {
         public string OrgLink { get; set; }
     }

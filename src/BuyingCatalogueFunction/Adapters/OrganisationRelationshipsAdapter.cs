@@ -6,16 +6,16 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 
 namespace BuyingCatalogueFunction.Adapters
 {
-    public class OrganisationRelationshipsAdapter : IAdapter<Organisation, IEnumerable<OrganisationRelationship>>
+    public class OrganisationRelationshipsAdapter : IAdapter<Org, IEnumerable<OrganisationRelationship>>
     {
-        public IEnumerable<OrganisationRelationship> Process(Organisation input)
+        public IEnumerable<OrganisationRelationship> Process(Org input)
         {
             if (input == null)
             {
                 throw new ArgumentNullException(nameof(input));
             }
 
-            var relationships = input.Rels?.Rel ?? new List<Rel>();
+            var relationships = input.Rels?.Rel ?? new List<OrgRel>();
 
             return relationships.Select(x => new OrganisationRelationship
             {

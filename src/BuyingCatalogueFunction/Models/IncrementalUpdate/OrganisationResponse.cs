@@ -2,8 +2,8 @@
 
 namespace BuyingCatalogueFunction.Models.IncrementalUpdate
 {
-    public class LookupResult
+    public class OrganisationResponse
     {
-        public Organisation Organisation { get; set; }
+        public Org Organisation { get; set; }
     }
 }

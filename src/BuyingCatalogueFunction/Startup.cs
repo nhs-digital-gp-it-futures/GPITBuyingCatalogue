@@ -44,11 +44,12 @@ namespace BuyingCatalogueFunction
 
             services.AddTransient<IIncrementalUpdateService, IncrementalUpdateService>();
             services.AddTransient<IOdsService, OdsService>();
+            services.AddTransient<IOdsOrganisationService, OdsOrganisationService>();
             services.AddTransient<IOrganisationUpdateService, OrganisationUpdateService>();
 
-            services.AddTransient<IAdapter<Organisation, OdsOrganisation>, OdsOrganisationAdapter>();
-            services.AddTransient<IAdapter<Organisation, IEnumerable<OrganisationRelationship>>, OrganisationRelationshipsAdapter>();
-            services.AddTransient<IAdapter<Organisation, IEnumerable<OrganisationRole>>, OrganisationRolesAdapter>();
+            services.AddTransient<IAdapter<Org, OdsOrganisation>, OdsOrganisationAdapter>();
+            services.AddTransient<IAdapter<Org, IEnumerable<OrganisationRelationship>>, OrganisationRelationshipsAdapter>();
+            services.AddTransient<IAdapter<Org, IEnumerable<OrganisationRole>>, OrganisationRolesAdapter>();
 
             services.AddDbContext<BuyingCatalogueDbContext>(options =>
             {
@@ -60,9 +61,15 @@ namespace BuyingCatalogueFunction
         private OdsSettings GetOdsSettings()
         {
             var organisationUri = Configuration.GetOrThrow("OrganisationUri", _logger);
+            var relationshipsUri = Configuration.GetOrThrow("RelationshipsUri", _logger);
+            var rolesUri = Configuration.GetOrThrow("RolesUri", _logger);
             var searchUri = Configuration.GetOrThrow("SearchUri", _logger);
 
-            return new OdsSettings(new Uri(organisationUri), new Uri(searchUri));
+            return new OdsSettings(
+                new Uri(organisationUri),
+                new Uri(relationshipsUri),
+                new Uri(rolesUri),
+                new Uri(searchUri));
         }
     }
 }

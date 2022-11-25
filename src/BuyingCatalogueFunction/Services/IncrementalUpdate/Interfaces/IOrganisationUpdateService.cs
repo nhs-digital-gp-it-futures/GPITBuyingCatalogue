@@ -1,21 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Threading.Tasks;
-using BuyingCatalogueFunction.Models.Ods;
+using BuyingCatalogueFunction.Models.IncrementalUpdate;
 
 namespace BuyingCatalogueFunction.Services.IncrementalUpdate.Interfaces
 {
     public interface IOrganisationUpdateService
     {
-        Task Upsert(Organisation organisation);
+        Task<DateTime> GetLastRunDate();
 
-        Task AddMissingOrganisations(IEnumerable<string> organisationIds);
+        Task SetLastRunDate(DateTime lastRunDate);
 
-        Task AddRelationships(Organisation organisation);
-
-        Task AddRoles(Organisation organisation);
-
-        Task AddRelationshipTypes(IEnumerable<string> relationshipIds);
-
-        Task AddRoleTypes(IEnumerable<string> roleIds);
+        Task IncrementalUpdate(IncrementalUpdateData data);
     }
 }

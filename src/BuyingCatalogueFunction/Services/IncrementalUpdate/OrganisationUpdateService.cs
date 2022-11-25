@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using BuyingCatalogueFunction.Adapters;
-using BuyingCatalogueFunction.Models.Ods;
+using BuyingCatalogueFunction.Models.IncrementalUpdate;
 using BuyingCatalogueFunction.Services.IncrementalUpdate.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 
@@ -12,135 +12,82 @@ namespace BuyingCatalogueFunction.Services.IncrementalUpdate
 {
     public class OrganisationUpdateService : IOrganisationUpdateService
     {
+        public const int MaxDays = -180;
+
         private readonly BuyingCatalogueDbContext _dbContext;
-        private readonly IAdapter<Organisation, OdsOrganisation> _organisationAdapter;
-        private readonly IAdapter<Organisation, IEnumerable<OrganisationRelationship>> _relationshipsAdapter;
-        private readonly IAdapter<Organisation, IEnumerable<OrganisationRole>> _rolesAdapter;
+        private readonly IOdsOrganisationService _odsOrganisationService;
 
         public OrganisationUpdateService(
             BuyingCatalogueDbContext dbContext,
-            IAdapter<Organisation, OdsOrganisation> organisationAdapter,
-            IAdapter<Organisation, IEnumerable<OrganisationRelationship>> relationshipsAdapter,
-            IAdapter<Organisation, IEnumerable<OrganisationRole>> rolesAdapter)
+            IOdsOrganisationService odsOrganisationService)
         {
-            _dbContext = dbContext;
-            _organisationAdapter = organisationAdapter;
-            _relationshipsAdapter = relationshipsAdapter;
-            _rolesAdapter = rolesAdapter;
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            _odsOrganisationService = odsOrganisationService ?? throw new ArgumentNullException(nameof(odsOrganisationService));
         }
 
-        public async Task Upsert(Organisation organisation)
+        public async Task<DateTime> GetLastRunDate()
         {
-            var orgId = organisation.OrgId.extension;
-            var existing = await _dbContext.OdsOrganisations.FirstOrDefaultAsync(x => x.Id == orgId);
+            var journal = await _dbContext.OrgImportJournal.FirstOrDefaultAsync();
+            var lastRunDate = journal?.ImportDate ?? DateTime.Today.AddDays(-1);
 
-            if (existing != null)
+            lastRunDate = lastRunDate < DateTime.Today.AddDays(MaxDays)
+                ? DateTime.Today.AddDays(MaxDays)
+                : lastRunDate;
+
+            return lastRunDate;
+        }
+
+        public async Task SetLastRunDate(DateTime lastRunDate)
+        {
+            var journal = await _dbContext.OrgImportJournal.FirstOrDefaultAsync();
+
+            if (journal == null)
             {
-                var relationships = await _dbContext.OrganisationRelationships
-                    .Where(x => x.OwnerOrganisationId == orgId)
-                    .ToListAsync();
-
-                var roles = await _dbContext.OrganisationRoles
-                    .Where(x => x.OrganisationId == orgId)
-                    .ToListAsync();
-
-                _dbContext.OrganisationRelationships.RemoveRange(relationships);
-                _dbContext.OrganisationRoles.RemoveRange(roles);
-                _dbContext.OdsOrganisations.Remove(existing);
-
-                await _dbContext.SaveChangesAsync();
+                _dbContext.OrgImportJournal.Add(new OrgImportJournal
+                {
+                    ImportDate = lastRunDate,
+                });
+            }
+            else
+            {
+                journal.ImportDate = lastRunDate;
             }
 
-            await _dbContext.OdsOrganisations.AddAsync(_organisationAdapter.Process(organisation));
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task AddMissingOrganisations(IEnumerable<string> organisationIds)
+        public async Task IncrementalUpdate(IncrementalUpdateData data)
         {
-            var existingIds = await _dbContext.OdsOrganisations
-                .Where(x => organisationIds.Contains(x.Id))
-                .Select(x => x.Id)
-                .ToListAsync();
-
-            var idsToAdd = organisationIds.Except(existingIds);
-
-            await _dbContext.OdsOrganisations.AddRangeAsync(idsToAdd.Select(x => new OdsOrganisation
+            if (data == null)
             {
-                Id = x,
-                Name = "Pending",
-            }));
-
-            await _dbContext.SaveChangesAsync();
-        }
-
-        public async Task AddRelationships(Organisation organisation)
-        {
-            var existing = await _dbContext.OrganisationRelationships
-                .Where(x => x.OwnerOrganisationId == organisation.OrgId.extension)
-                .ToListAsync();
-
-            if (existing.Any())
-            {
-                _dbContext.OrganisationRelationships.RemoveRange(existing);
-
-                await _dbContext.SaveChangesAsync();
+                throw new ArgumentNullException(nameof(data));
             }
 
-            await _dbContext.OrganisationRelationships.AddRangeAsync(_relationshipsAdapter.Process(organisation));
-            await _dbContext.SaveChangesAsync();
-        }
+            var allOrganisations = data.Organisations.Union(data.RelatedOrganisations).ToList();
 
-        public async Task AddRoles(Organisation organisation)
-        {
-            var existing = await _dbContext.OrganisationRoles
-                .Where(x => x.OrganisationId == organisation.OrgId.extension)
-                .ToListAsync();
+            IDbContextTransaction transaction = null;
 
-            if (existing.Any())
+            try
             {
-                _dbContext.OrganisationRoles.RemoveRange(existing);
+                transaction = await _dbContext.Database.BeginTransactionAsync();
 
-                await _dbContext.SaveChangesAsync();
+                await _odsOrganisationService.AddRelationshipTypes(data.Relationships);
+                await _odsOrganisationService.AddRoleTypes(data.Roles);
+                await _odsOrganisationService.UpsertOrganisations(allOrganisations);
+                await _odsOrganisationService.AddOrganisationRelationships(data.Organisations);
+                await _odsOrganisationService.AddOrganisationRoles(data.Organisations);
+
+                await transaction.CommitAsync();
             }
-
-            await _dbContext.OrganisationRoles.AddRangeAsync(_rolesAdapter.Process(organisation));
-            await _dbContext.SaveChangesAsync();
-        }
-
-        public async Task AddRelationshipTypes(IEnumerable<string> relationshipIds)
-        {
-            var existingIds = await _dbContext.OrganisationRelationshipTypes
-                .Where(x => relationshipIds.Contains(x.Id))
-                .Select(x => x.Id)
-                .ToListAsync();
-
-            var idsToAdd = relationshipIds.Except(existingIds);
-
-            await _dbContext.OrganisationRelationshipTypes.AddRangeAsync(idsToAdd.Select(x => new RelationshipType
+            catch
             {
-                Id = x,
-                Description = "Pending",
-            }));
+                if (transaction != null)
+                {
+                    await transaction.RollbackAsync();
+                }
 
-            await _dbContext.SaveChangesAsync();
-        }
-
-        public async Task AddRoleTypes(IEnumerable<string> roleIds)
-        {
-            var existingIds = await _dbContext.OrganisationRoleTypes
-                .Where(x => roleIds.Contains(x.Id))
-                .Select(x => x.Id)
-                .ToListAsync();
-
-            var idsToAdd = roleIds.Except(existingIds);
-
-            await _dbContext.OrganisationRoleTypes.AddRangeAsync(idsToAdd.Select(x => new RoleType
-            {
-                Id = x,
-                Description = "Pending",
-            }));
-
-            await _dbContext.SaveChangesAsync();
+                throw;
+            }
         }
     }
 }

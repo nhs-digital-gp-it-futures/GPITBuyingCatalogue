@@ -2,7 +2,7 @@
 
 namespace BuyingCatalogueFunction.Models.Ods;
 
-public class Rels
+public class OrgRoles
 {
-    public List<Rel> Rel { get; set; }
+    public List<OrgRole> Role { get; set; }
 }

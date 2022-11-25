@@ -1,10 +1,9 @@
 ﻿namespace BuyingCatalogueFunction.Models.Ods
 {
-    public class Role
+    public class Relationship
     {
         public string id { get; set; }
         public string code { get; set; }
         public string displayName { get; set; }
-        public string primaryRole { get; set; }
     }
 }

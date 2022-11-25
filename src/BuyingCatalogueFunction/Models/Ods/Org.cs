@@ -2,8 +2,10 @@
 
 namespace BuyingCatalogueFunction.Models.Ods;
 
-public class Organisation
+public class Org
 {
+    public const string Active = "Active";
+
     public string Name { get; set; }
     public List<Date> Date { get; set; }
     public OrgId OrgId { get; set; }
@@ -12,6 +14,6 @@ public class Organisation
     public string orgRecordClass { get; set; }
     public GeoLoc GeoLoc { get; set; }
     public Contacts Contacts { get; set; }
-    public Roles Roles { get; set; }
-    public Rels Rels { get; set; }
+    public OrgRoles Roles { get; set; }
+    public OrgRels Rels { get; set; }
 }

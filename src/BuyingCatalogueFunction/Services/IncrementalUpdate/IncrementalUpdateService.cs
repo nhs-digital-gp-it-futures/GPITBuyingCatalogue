@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BuyingCatalogueFunction.Models.Ods;
+using BuyingCatalogueFunction.Extensions;
+using BuyingCatalogueFunction.Models.IncrementalUpdate;
 using BuyingCatalogueFunction.Services.IncrementalUpdate.Interfaces;
 using Microsoft.Extensions.Logging;
 
@@ -26,59 +26,41 @@ namespace BuyingCatalogueFunction.Services.IncrementalUpdate
 
         public async Task UpdateOrganisationData()
         {
-            var response = await _odsService.SearchByLastChangedDate(DateTime.Today.AddDays(-3));
+            var lastRunDate = await _organisationUpdateService.GetLastRunDate();
+            var organisationIds = (await _odsService.SearchByLastChangeDate(lastRunDate)).ToList();
 
-            var orgIds = response.Organisations
-                .Select(x => x.OrgLink.Split("/").Last())
-                .Distinct()
-                .ToList();
-
-            if (!orgIds.Any())
+            if (!organisationIds.Any())
             {
-                _logger.LogInformation("No changes retrieved from ODS service");
+                _logger.LogInformation("No updates retrieved from ODS service");
                 return;
             }
 
-            var organisations = new List<Organisation>();
-
-            foreach (var organisationId in orgIds)
+            var data = new IncrementalUpdateData
             {
-                organisations.Add(await _odsService.GetOrganisation(organisationId));
+                Relationships = (await _odsService.GetRelationships()).ToList(),
+                Roles = (await _odsService.GetRoles()).ToList(),
+            };
+
+            foreach (var organisationId in organisationIds)
+            {
+                data.Organisations.Add(await _odsService.GetOrganisation(organisationId));
             }
 
-            var relationshipIds = organisations.SelectMany(x => x.Rels?.Rel ?? new List<Rel>())
-                .Select(x => x.id)
-                .Distinct()
-                .ToList();
+            data.Organisations.RemoveAll(x => x == null);
 
-            await _organisationUpdateService.AddRelationshipTypes(relationshipIds);
+            var relatedOrganisationIds = data.Organisations.RelatedOrganisationIds().Except(organisationIds);
 
-            var roleIds = organisations.SelectMany(x => x.Roles?.Role ?? new List<Role>())
-                .Select(x => x.id)
-                .Distinct()
-                .ToList();
-
-            await _organisationUpdateService.AddRoleTypes(roleIds);
-
-            foreach (var organisation in organisations)
+            foreach (var organisationId in relatedOrganisationIds)
             {
-                await _organisationUpdateService.Upsert(organisation);
+                data.RelatedOrganisations.Add(await _odsService.GetOrganisation(organisationId));
             }
 
-            var relatedOrganisationIds = organisations.SelectMany(x => x.Rels?.Rel ?? new List<Rel>())
-                .Select(x => x.Target.OrgId.extension)
-                .Distinct()
-                .ToList();
+            data.RelatedOrganisations.RemoveAll(x => x == null);
 
-            await _organisationUpdateService.AddMissingOrganisations(relatedOrganisationIds);
+            await _organisationUpdateService.IncrementalUpdate(data);
+            await _organisationUpdateService.SetLastRunDate(DateTime.Today);
 
-            foreach (var organisation in organisations)
-            {
-                await _organisationUpdateService.AddRelationships(organisation);
-                await _organisationUpdateService.AddRoles(organisation);
-            }
-
-            _logger.LogInformation($"Updated {orgIds.Count} organisations");
+            _logger.LogInformation($"Updated {organisationIds.Count} organisations");
         }
     }
 }

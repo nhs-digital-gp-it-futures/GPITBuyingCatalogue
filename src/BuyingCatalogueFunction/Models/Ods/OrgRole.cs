@@ -2,11 +2,11 @@
 
 namespace BuyingCatalogueFunction.Models.Ods;
 
-public class Rel
+public class OrgRole
 {
+    public string id { get; set; }
+    public int uniqueRoleId { get; set; }
     public List<Date> Date { get; set; }
     public string Status { get; set; }
-    public Target Target { get; set; }
-    public string id { get; set; }
-    public int uniqueRelId { get; set; }
+    public bool? primaryRole { get; set; }
 }

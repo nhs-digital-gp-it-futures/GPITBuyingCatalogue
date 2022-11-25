@@ -1,14 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using BuyingCatalogueFunction.Models.IncrementalUpdate;
 using BuyingCatalogueFunction.Models.Ods;
 
 namespace BuyingCatalogueFunction.Services.IncrementalUpdate.Interfaces
 {
     public interface IOdsService
     {
-        Task<SearchResult> SearchByLastChangedDate(DateTime lastChangedDate);
+        Task<Org> GetOrganisation(string orgId);
 
-        Task<Organisation> GetOrganisation(string orgId);
+        Task<IEnumerable<Relationship>> GetRelationships();
+
+        Task<IEnumerable<Role>> GetRoles();
+
+        Task<IEnumerable<string>> SearchByLastChangeDate(DateTime lastChangedDate);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 
-public class OdsOrganisation
+public partial class OdsOrganisation
 {
     public string Id { get; set; }
 

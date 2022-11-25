@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Web.Http;
 using BuyingCatalogueFunction.Services.IncrementalUpdate.Interfaces;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
@@ -22,7 +24,7 @@ namespace BuyingCatalogueFunction.Functions
         }
 
         [FunctionName(nameof(IncrementalUpdateHttpTrigger))]
-        public async Task IncrementalUpdateHttpTrigger(
+        public async Task<IActionResult> IncrementalUpdateHttpTrigger(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest request)
         {
             _logger.LogInformation($"HTTP-triggered incremental update starting at {DateTime.Now}");
@@ -32,10 +34,14 @@ namespace BuyingCatalogueFunction.Functions
                 await _incrementalUpdateService.UpdateOrganisationData();
 
                 _logger.LogInformation($"HTTP-triggered incremental update completed at {DateTime.Now}");
+
+                return new OkResult();
             }
             catch (Exception e)
             {
                 _logger.LogError(e.Message, e);
+
+                return new InternalServerErrorResult();
             }
         }
 

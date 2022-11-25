@@ -4,11 +4,9 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 
 namespace BuyingCatalogueFunction.Adapters
 {
-    public class OdsOrganisationAdapter : IAdapter<Organisation, OdsOrganisation>
+    public class OdsOrganisationAdapter : IAdapter<Org, OdsOrganisation>
     {
-        public const string ActiveStatus = "Active";
-
-        public OdsOrganisation Process(Organisation input)
+        public OdsOrganisation Process(Org input)
         {
             if (input == null)
             {
@@ -19,7 +17,7 @@ namespace BuyingCatalogueFunction.Adapters
             {
                 Id = input.OrgId.extension,
                 Name = input.Name,
-                IsActive = string.Equals(input.Status, ActiveStatus, StringComparison.InvariantCultureIgnoreCase),
+                IsActive = string.Equals(input.Status, Org.Active, StringComparison.InvariantCultureIgnoreCase),
                 AddressLine1 = input.GeoLoc.Location.AddrLn1,
                 AddressLine2 = input.GeoLoc.Location.AddrLn2,
                 AddressLine3 = input.GeoLoc.Location.AddrLn3,

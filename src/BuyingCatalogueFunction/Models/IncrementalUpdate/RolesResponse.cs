@@ -3,8 +3,8 @@ using BuyingCatalogueFunction.Models.Ods;
 
 namespace BuyingCatalogueFunction.Models.IncrementalUpdate
 {
-    public class SearchResult
+    public class RolesResponse
     {
-        public List<OrganisationSummary> Organisations { get; set; } = new();
+        public List<Role> Roles { get; set; }
     }
 }

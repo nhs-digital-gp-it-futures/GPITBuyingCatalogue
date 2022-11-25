@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using BuyingCatalogueFunction.Models.IncrementalUpdate;
 using BuyingCatalogueFunction.Models.Ods;
@@ -6,36 +8,81 @@ using BuyingCatalogueFunction.Services.IncrementalUpdate.Interfaces;
 using BuyingCatalogueFunction.Settings;
 using Flurl;
 using Flurl.Http;
+using Microsoft.Extensions.Logging;
 
 namespace BuyingCatalogueFunction.Services.IncrementalUpdate
 {
     public class OdsService : IOdsService
     {
+        private const string HttpStatusPattern = "3xx,4xx";
+
+        private readonly ILogger<OdsService> _logger;
         private readonly OdsSettings _settings;
 
-        public OdsService(OdsSettings settings)
+        public OdsService(ILogger<OdsService> logger, OdsSettings settings)
         {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
 
-        public async Task<SearchResult> SearchByLastChangedDate(DateTime lastChangedDate)
+        public async Task<Org> GetOrganisation(string orgId)
+        {
+            var response = await _settings.OrganisationsUri
+                .AppendPathSegment(orgId)
+                .AllowHttpStatus(HttpStatusPattern)
+                .GetJsonAsync<OrganisationResponse>();
+
+            if (response == null)
+            {
+                _logger.LogWarning("Failed to retrieve ODS organisation data for id {OrganisationId}", orgId);
+            }
+
+            return response?.Organisation;
+        }
+
+        public async Task<IEnumerable<Relationship>> GetRelationships()
+        {
+            var response = await _settings.RelationshipsUri
+                .AllowHttpStatus(HttpStatusPattern)
+                .GetJsonAsync<RelationshipsResponse>();
+
+            if (response == null)
+            {
+                _logger.LogWarning("Failed to retrieve ODS relationship data");
+            }
+
+            return response?.Relationships ?? Enumerable.Empty<Relationship>();
+        }
+
+        public async Task<IEnumerable<Role>> GetRoles()
+        {
+            var response = await _settings.RolesUri
+                .AllowHttpStatus(HttpStatusPattern)
+                .GetJsonAsync<RolesResponse>();
+
+            if (response == null)
+            {
+                _logger.LogWarning("Failed to retrieve ODS role data");
+            }
+
+            return response?.Roles ?? Enumerable.Empty<Role>();
+        }
+
+        public async Task<IEnumerable<string>> SearchByLastChangeDate(DateTime lastChangedDate)
         {
             var formattedDate = $"{lastChangedDate:yyyy-MM-dd}";
 
-            return await _settings.SearchUri
+            var response = await _settings.SearchUri
                 .SetQueryParam("LastChangeDate", formattedDate)
-                .AllowHttpStatus("3xx,4xx")
-                .GetJsonAsync<SearchResult>();
-        }
+                .AllowHttpStatus(HttpStatusPattern)
+                .GetJsonAsync<SearchResponse>();
 
-        public async Task<Organisation> GetOrganisation(string orgId)
-        {
-            var result = await _settings.OrganisationsUri
-                .AppendPathSegment(orgId)
-                .AllowHttpStatus("3xx,4xx")
-                .GetJsonAsync<LookupResult>();
+            if (response == null)
+            {
+                _logger.LogWarning("Failed to retrieve ODS updates for last change date {LastChangeDate}", formattedDate);
+            }
 
-            return result.Organisation;
+            return response?.OrganisationIds ?? Enumerable.Empty<string>();
         }
     }
 }
