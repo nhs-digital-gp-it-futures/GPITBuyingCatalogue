@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using MoreLinq.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -22,6 +23,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
 
         public Task<List<Capability>> GetCapabilities() => dbContext.Capabilities
             .AsNoTracking()
+            .Include(x => x.Category)
+            .OrderBy(x => x.Category.Name)
+            .ThenBy(x => x.Name)
+            .ToListAsync();
+
+        public Task<List<Capability>> GetReferencedCapabilities() => dbContext.Capabilities.AsNoTracking()
+            .Where(x => x.CatalogueItemCapabilities.Any())
             .Include(x => x.Category)
             .OrderBy(x => x.Category.Name)
             .ThenBy(x => x.Name)

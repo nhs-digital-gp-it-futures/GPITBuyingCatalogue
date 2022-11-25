@@ -33,19 +33,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             EpicsService service)
         {
             FluentActions
-                .Awaiting(() => service.GetActiveEpicsByCapabilityIds(null))
+                .Awaiting(() => service.GetReferencedEpicsByCapabilityIds(null))
                 .Should().ThrowAsync<ArgumentNullException>();
         }
 
         [Theory]
         [InMemoryDbAutoData]
         public static async Task GetActiveEpicsByCapabilityIds_ExpectedResult(
+            CatalogueItem catalogueItem,
             CapabilityCategory category,
             List<Capability> capabilities,
             List<Epic> epics,
             [Frozen] BuyingCatalogueDbContext dbContext,
             EpicsService service)
         {
+            dbContext.CatalogueItems.Add(catalogueItem);
             dbContext.CapabilityCategories.Add(category);
             await dbContext.SaveChangesAsync();
 
@@ -69,7 +71,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             dbContext.Epics.AddRange(epics);
             await dbContext.SaveChangesAsync();
 
-            var result = await service.GetActiveEpicsByCapabilityIds(capabilities.Select(x => x.Id));
+            dbContext.CatalogueItemEpics.Add(new(catalogueItem.Id, epics[0].CapabilityId, epics[0].Id));
+            await dbContext.SaveChangesAsync();
+
+            var result = await service.GetReferencedEpicsByCapabilityIds(capabilities.Select(x => x.Id));
 
             result.Should().ContainSingle();
             result.First().Id.Should().Be(epics[0].Id);
