@@ -96,9 +96,9 @@ public class TrudOdsService : IOdsService
     }
 
     /// <summary>
-    /// Updates happen nightly as per the incremental update process
+    /// Updates happen nightly as per the incremental update process.
     /// </summary>
-    /// <param name="odsCode">Not used</param>
+    /// <param name="odsCode">Not used.</param>
     /// <returns>A <see cref="Task"/> that is completed.</returns>
     [ExcludeFromCodeCoverage(Justification = "Updates are performed by the nightly incremental update process")]
     public Task UpdateOrganisationDetails(string odsCode) => Task.CompletedTask;
