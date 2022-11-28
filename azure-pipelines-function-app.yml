@@ -12,9 +12,9 @@ trigger:
       - "terraform/**"
       - "tests/**"
     include:
-      - "src/OrganisationImporter*"
-      - "terraform/orgimport"
-      - "OrganisationImporter/OrganisationImporterTests"
+      - "src/BuyingCatalogueFunction*"
+      - "terraform/functionapp"
+      - "tests/BuyingCatalogueFunctionTests"
 
 pool:
   vmImage: ubuntu-latest
@@ -40,14 +40,20 @@ jobs:
           arguments: "--no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true"
 
       - task: DotNetCoreCLI@2
-        displayName: Publish OrganisationImporter
+        displayName: Publish BuyingCatalogueFunction
         inputs:
           command: "publish"
-          projects: "src/OrganisationImporter"
-          arguments: "--configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/OrganisationImporter/App_Data/jobs/triggered/OrganisationImportWebJob -r win-x64 --no-self-contained"
+          projects: "src/BuyingCatalogueFunction"
+          arguments: "--no-build --configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/BuyingCatalogueFunction"
           publishWebProjects: false
           modifyOutputPath: false
-          zipAfterPublish: false
+
+      - task: PublishBuildArtifacts@1
+        displayName: Package BuyingCatalogueFunction
+        inputs:
+          PathtoPublish: "$(Build.ArtifactStagingDirectory)/BuyingCatalogueFunction"
+          ArtifactName: "BuyingCatalogueFunction"
+          publishLocation: "Container"
 
       - task: ArchiveFiles@2
         inputs:
@@ -62,26 +68,19 @@ jobs:
           Contents: "**"
           RemoveSourceFolder: true
 
-      - task: PublishBuildArtifacts@1
-        displayName: Package OrganisationImporter
-        inputs:
-          PathtoPublish: "$(Build.ArtifactStagingDirectory)/OrganisationImporter"
-          ArtifactName: "OrganisationImporter"
-          publishLocation: "Container"
-
   - job: Terraform
     displayName: Package Terraform
     pool:
       vmImage: "ubuntu-latest"
     steps:
       - task: CopyFiles@2
-        displayName: Copy OrgImport TF Files
+        displayName: Copy Function App TF Files
         inputs:
-          SourceFolder: "terraform/orgimport"
+          SourceFolder: "terraform/functionapp"
           Contents: "**"
-          TargetFolder: "$(build.artifactStagingDirectory)/terraform/orgimport"
+          TargetFolder: "$(build.artifactStagingDirectory)/terraform/functionapp"
           CleanTargetFolder: false
           OverWrite: true
 
-      - publish: $(build.artifactStagingDirectory)/terraform/orgimport
-        artifact: terraform-orgimport
+      - publish: $(build.artifactStagingDirectory)/terraform/functionapp
+        artifact: terraform-functionapp
