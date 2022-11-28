@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -14,6 +14,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations;
 
 public class TrudOdsService : IOdsService
 {
+    internal const string InvalidOdsOrganisation = "Couldn't find organisation with ODS Code {OdsCode}";
+    internal const string InvalidTrudOrganisation = "Couldn't find organisation in TRUD dataset with ODS Code {OdsCode}";
     internal const string InvalidOrganisationError = "Organisation not found";
     internal const string InvalidOrgTypeError = "Not a buyer organisation";
     internal const string InvalidIdExceptionMessage = "Invalid ODS Code specified";
@@ -24,13 +26,20 @@ public class TrudOdsService : IOdsService
 
     private readonly OdsSettings settings;
     private readonly BuyingCatalogueDbContext context;
+    private readonly IOrganisationsService organisationsService;
+    private readonly ILogger<TrudOdsService> logger;
 
     public TrudOdsService(
         OdsSettings settings,
-        BuyingCatalogueDbContext context)
+        BuyingCatalogueDbContext context,
+        IOrganisationsService organisationsService,
+        ILogger<TrudOdsService> logger)
     {
         this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
         this.context = context ?? throw new ArgumentNullException(nameof(context));
+        this.organisationsService =
+            organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
+        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     public async Task<(OdsOrganisation Organisation, string Error)> GetOrganisationByOdsCode(string odsCode)
@@ -44,23 +53,7 @@ public class TrudOdsService : IOdsService
         if (!organisation.IsActive || !IsBuyerOrganisation(organisation))
             return (null, InvalidOrgTypeError);
 
-        var mappedOrganisation = new OdsOrganisation
-        {
-            IsActive = organisation.IsActive,
-            OdsCode = organisation.Id,
-            OrganisationName = organisation.Name,
-            PrimaryRoleId = GetPrimaryRoleId(organisation),
-            Address = new()
-            {
-                Line1 = organisation.AddressLine1,
-                Line2 = organisation.AddressLine2,
-                Line3 = organisation.AddressLine3,
-                Town = organisation.Town,
-                County = organisation.County,
-                Postcode = organisation.Postcode,
-                Country = organisation.Country,
-            },
-        };
+        var mappedOrganisation = MapOrganisation(organisation);
 
         return (mappedOrganisation, null);
     }
@@ -95,13 +88,44 @@ public class TrudOdsService : IOdsService
         return serviceRecipients;
     }
 
-    /// <summary>
-    /// Updates happen nightly as per the incremental update process.
-    /// </summary>
-    /// <param name="odsCode">Not used.</param>
-    /// <returns>A <see cref="Task"/> that is completed.</returns>
-    [ExcludeFromCodeCoverage(Justification = "Updates are performed by the nightly incremental update process")]
-    public Task UpdateOrganisationDetails(string odsCode) => Task.CompletedTask;
+    public async Task UpdateOrganisationDetails(string odsCode)
+    {
+        var organisation = await context.Organisations.FirstOrDefaultAsync(x => x.InternalIdentifier == odsCode);
+        if (organisation == null)
+        {
+            logger.LogWarning(InvalidOdsOrganisation, odsCode);
+            return;
+        }
+
+        var trudOrganisation =
+            await context.OdsOrganisations.FirstOrDefaultAsync(x => x.Id == organisation.ExternalIdentifier);
+        if (trudOrganisation == null)
+        {
+            logger.LogWarning(InvalidTrudOrganisation, odsCode);
+            return;
+        }
+
+        await organisationsService.UpdateCcgOrganisation(MapOrganisation(trudOrganisation));
+    }
+
+    internal static OdsOrganisation
+        MapOrganisation(EntityFramework.OdsOrganisations.Models.OdsOrganisation organisation) => new()
+    {
+        IsActive = organisation.IsActive,
+        OdsCode = organisation.Id,
+        OrganisationName = organisation.Name,
+        PrimaryRoleId = GetPrimaryRoleId(organisation),
+        Address = new()
+        {
+            Line1 = organisation.AddressLine1,
+            Line2 = organisation.AddressLine2,
+            Line3 = organisation.AddressLine3,
+            Town = organisation.Town,
+            County = organisation.County,
+            Postcode = organisation.Postcode,
+            Country = organisation.Country,
+        },
+    };
 
     private static string GetPrimaryRoleId(EntityFramework.OdsOrganisations.Models.OdsOrganisation organisation) =>
         organisation.Roles.FirstOrDefault(x => x.IsPrimaryRole)?.RoleId;

@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Moq;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.Services.Organisations;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Xunit;
@@ -172,9 +174,66 @@ public class TrudOdsServiceTests
         context.AddRange(childOrganisations);
         await context.SaveChangesAsync();
 
-        var results = (await service.GetServiceRecipientsByParentInternalIdentifier(organisation.InternalIdentifier)).ToList();
+        var results = (await service.GetServiceRecipientsByParentInternalIdentifier(organisation.InternalIdentifier))
+            .ToList();
 
         results.Should().NotBeEmpty();
         results.Should().HaveCount(childOrganisations.Count);
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task UpdateOrganisationDetails_InvalidOdsOrganisation_Returns(
+        string odsCode,
+        [Frozen] Mock<IOrganisationsService> organisationsService,
+        TrudOdsService service)
+    {
+        await service.UpdateOrganisationDetails(odsCode);
+
+        organisationsService.Verify(x => x.UpdateCcgOrganisation(It.IsAny<OdsOrganisation>()), Times.Never());
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task UpdateOrganisationDetails_InvalidTrudOrganisation_Returns(
+        Organisation organisation,
+        [Frozen] Mock<IOrganisationsService> organisationsService,
+        [Frozen] BuyingCatalogueDbContext context,
+        TrudOdsService service)
+    {
+        context.Organisations.Add(organisation);
+        await context.SaveChangesAsync();
+
+        await service.UpdateOrganisationDetails(organisation.InternalIdentifier);
+
+        organisationsService.Verify(x => x.UpdateCcgOrganisation(It.IsAny<OdsOrganisation>()), Times.Never());
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task UpdateOrganisationDetails_ValidOrganisation_UpdatesOrganisationDetails(
+        Organisation organisation,
+        EntityFramework.OdsOrganisations.Models.OdsOrganisation trudOrganisation,
+        [Frozen] Mock<IOrganisationsService> organisationsService,
+        [Frozen] BuyingCatalogueDbContext context,
+        TrudOdsService service)
+    {
+        trudOrganisation.Id = organisation.ExternalIdentifier;
+
+        context.Organisations.Add(organisation);
+        context.OdsOrganisations.Add(trudOrganisation);
+        await context.SaveChangesAsync();
+
+        OdsOrganisation actual = null;
+
+        organisationsService
+            .Setup(x => x.UpdateCcgOrganisation(It.IsAny<OdsOrganisation>()))
+            .Callback<OdsOrganisation>(x => actual = x);
+
+        await service.UpdateOrganisationDetails(organisation.InternalIdentifier);
+
+        organisationsService.VerifyAll();
+
+        actual.Should().BeEquivalentTo(TrudOdsService.MapOrganisation(trudOrganisation));
     }
 }
