@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -156,6 +157,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(AddUserObjects.EmailError, EmailAlreadyExists).Should().BeTrue();
+
+            await RemoveUser(user);
         }
 
         [Fact]
@@ -163,12 +166,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         {
             await using var context = GetEndToEndDbContext();
 
-            await CreateUser(accountType: OrganisationFunction.AccountManager.Name);
-            await CreateUser(accountType: OrganisationFunction.AccountManager.Name);
+            var user1 = await CreateUser(accountType: OrganisationFunction.AccountManager.Name);
+            var user2 = await CreateUser(accountType: OrganisationFunction.AccountManager.Name);
 
             CommonActions.ElementIsDisplayed(AddUserObjects.Role).Should().BeFalse();
             CommonActions.ElementIsDisplayed(CommonSelectors.NhsInsetText).Should().BeTrue();
             CommonActions.ElementTextContains(CommonSelectors.NhsInsetText, RoleMustBeBuyer).Should().BeTrue();
+
+            await RemoveUser(user1);
+            await RemoveUser(user2);
         }
 
         [Fact]
@@ -176,11 +182,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         {
             await using var context = GetEndToEndDbContext();
 
-            await CreateUser(false, OrganisationFunction.AccountManager.Name);
-            await CreateUser(false, OrganisationFunction.AccountManager.Name);
+            var user1 = await CreateUser(false, OrganisationFunction.AccountManager.Name);
+            var user2 = await CreateUser(false, OrganisationFunction.AccountManager.Name);
 
             CommonActions.ElementIsDisplayed(AddUserObjects.Role).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.NhsInsetText).Should().BeFalse();
+
+            await RemoveUser(user1);
+            await RemoveUser(user2);
         }
 
         private async Task<AspNetUser> CreateUser(bool isEnabled = true, string accountType = "Buyer")
@@ -192,6 +201,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             Driver.Navigate().Refresh();
 
             return user;
+        }
+
+        private async Task RemoveUser(AspNetUser user)
+        {
+            await using var context = GetEndToEndDbContext();
+            var dbUser = context.AspNetUsers.First(x => x.Id == user.Id);
+
+            context.Remove(dbUser);
+
+            await context.SaveChangesAsync();
         }
     }
 }
