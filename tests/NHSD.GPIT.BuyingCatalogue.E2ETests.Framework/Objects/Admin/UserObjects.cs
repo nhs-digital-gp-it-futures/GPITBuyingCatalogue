@@ -62,8 +62,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin
 
         public static By OrganisationDisplay => ByExtensions.DataTestId("user-organisation");
 
-        public static By ResetPasswordLink => By.LinkText("Reset password");
-
         public static By SearchBar => By.Id("users-suggestion-search");
 
         public static By SearchButton => By.ClassName("suggestion-search-search__submit");
