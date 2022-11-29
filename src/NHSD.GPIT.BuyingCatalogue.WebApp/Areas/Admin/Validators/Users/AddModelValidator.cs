@@ -23,7 +23,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
         public const string OrganisationMissingErrorMessage = "Select an organisation";
 
         private readonly IUsersService usersService;
-        private readonly AccountManagementSettings accountManagementSettings;
 
         public AddModelValidator(
             IUsersService usersService,
@@ -31,7 +30,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
             AccountManagementSettings accountManagementSettings)
         {
             this.usersService = usersService;
-            this.accountManagementSettings = accountManagementSettings;
 
             RuleFor(x => x.SelectedOrganisationId)
                 .NotEmpty()

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using FluentValidation;
+using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels;
 
@@ -10,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Organisation
     {
         private readonly IUsersService usersService;
 
-        public UserDetailsModelValidator(IUsersService usersService)
+        public UserDetailsModelValidator(IUsersService usersService, AccountManagementSettings accountManagementSettings)
         {
             this.usersService = usersService ?? throw new ArgumentNullException(nameof(usersService));
 
@@ -33,7 +35,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Organisation
             RuleFor(x => x.SelectedAccountType)
                 .NotEmpty()
                 .WithMessage("Select an account type")
-                .When(x => !x.IsDefaultAccountType);
+                .Must((model, accountType) => AccountManagerLimit(accountType, model.OrganisationId, model.UserId, !model.IsActive.GetValueOrDefault(false)))
+                .WithMessage($"There are already {accountManagementSettings.MaximumNumberOfAccountManagers} active account managers for this organisation which is the maximum allowed.");
 
             RuleFor(x => x.IsActive)
                 .NotEmpty()
@@ -41,5 +44,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Organisation
         }
 
         private bool NotBeDuplicateUserEmail(string emailAddress, int userId) => !usersService.EmailAddressExists(emailAddress, userId).GetAwaiter().GetResult();
+
+        private bool AccountManagerLimit(string accountType, int orgId, int userId, bool disabled)
+        {
+            return accountType != OrganisationFunction.AccountManager.Name || disabled
+                || !usersService.IsAccountManagerLimit(orgId, userId).Result;
+        }
     }
 }

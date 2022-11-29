@@ -18,9 +18,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Utils.RandomData
                 .Generate();
         }
 
-        public static AspNetUser GenerateAspNetUser(BuyingCatalogueDbContext context, int organisationId, string password, bool isEnabled)
+        public static AspNetUser GenerateAspNetUser(BuyingCatalogueDbContext context, int organisationId, string password, bool isEnabled, string accountType = "Buyer")
         {
-            var role = context.Roles.First(r => r.Name == OrganisationFunction.Buyer.Name);
+            var role = context.Roles.First(r => r.Name == accountType);
 
             var user = new Faker<AspNetUser>("en_GB")
                 .RuleFor(u => u.FirstName, f => f.Name.FirstName())

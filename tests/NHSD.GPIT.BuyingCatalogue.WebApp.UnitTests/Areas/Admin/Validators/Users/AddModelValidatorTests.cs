@@ -208,7 +208,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
             };
 
             mockUsersService
-                .Setup(x => x.IsAccountManagerLimit(organisationId))
+                .Setup(x => x.IsAccountManagerLimit(organisationId, 0))
                 .ReturnsAsync(false);
 
             var result = validator.TestValidate(model);
@@ -231,7 +231,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
             };
 
             mockUsersService
-                .Setup(x => x.IsAccountManagerLimit(organisationId))
+                .Setup(x => x.IsAccountManagerLimit(organisationId, 0))
                 .ReturnsAsync(true);
 
             var result = validator.TestValidate(model);

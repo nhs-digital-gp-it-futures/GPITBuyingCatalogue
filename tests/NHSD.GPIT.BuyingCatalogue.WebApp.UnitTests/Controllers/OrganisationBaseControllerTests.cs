@@ -129,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
                 .ReturnsAsync(organisation);
 
             mockUsersService
-                .Setup(x => x.IsAccountManagerLimit(organisation.Id))
+                .Setup(x => x.IsAccountManagerLimit(organisation.Id, 0))
                 .ReturnsAsync(isAccountManagerLimit);
 
             controller.Url = mockUrlHelper.Object;
