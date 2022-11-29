@@ -90,7 +90,7 @@ public class TrudOdsService : IOdsService
 
     public async Task UpdateOrganisationDetails(string odsCode)
     {
-        var organisation = await context.Organisations.FirstOrDefaultAsync(x => x.InternalIdentifier == odsCode);
+        var organisation = await context.Organisations.FirstOrDefaultAsync(x => x.ExternalIdentifier == odsCode);
         if (organisation == null)
         {
             logger.LogWarning(InvalidOdsOrganisation, odsCode);

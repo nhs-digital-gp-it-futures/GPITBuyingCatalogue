@@ -230,7 +230,7 @@ public class TrudOdsServiceTests
             .Setup(x => x.UpdateCcgOrganisation(It.IsAny<OdsOrganisation>()))
             .Callback<OdsOrganisation>(x => actual = x);
 
-        await service.UpdateOrganisationDetails(organisation.InternalIdentifier);
+        await service.UpdateOrganisationDetails(organisation.ExternalIdentifier);
 
         organisationsService.VerifyAll();
 
