@@ -65,6 +65,14 @@ resource "azurerm_windows_function_app" "function_app" {
     always_on     = true
     ftps_state    = "Disabled"
     http2_enabled = true
+
+    ip_restriction {
+      ip_address = var.primary_vpn
+    }
+
+    ip_restriction {
+      ip_address = var.nhsd_network_range
+    }
   }
 
   lifecycle {
