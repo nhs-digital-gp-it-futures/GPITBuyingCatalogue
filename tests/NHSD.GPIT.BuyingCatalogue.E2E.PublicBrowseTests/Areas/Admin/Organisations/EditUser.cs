@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using MoreLinq.Extensions;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common.Organisation;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Utils.RandomData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
@@ -27,6 +28,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         private const string EmailAddressRequired = "Enter an email address";
         private const string EmailFormatIncorrect = "Enter an email address in the correct format, like name@example.com";
         private const string EmailAlreadyExists = "A user with this email address is already registered on the Buying Catalogue";
+        private const string RoleMustBeBuyer =
+            "You can only add buyers for this organisation. This is because there are already 2 active account managers which is the maximum allowed.";
+
+        private const string RoleError =
+            "There are already 2 active account managers for this organisation which is the maximum allowed.";
+
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
@@ -157,26 +164,98 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(AddUserObjects.EmailError, EmailAlreadyExists).Should().BeTrue();
+
+            await RemoveUser(user);
+        }
+
+        [Fact]
+        public async Task EditUser_EditActiveBuyer_AccountManagerLimit_InsetTextDisplayed()
+        {
+            SetupUser(UserId, false, OrganisationFunction.Buyer.Name);
+
+            var amUser1 = await CreateUser(accountType: OrganisationFunction.AccountManager.Name);
+            var amUser2 = await CreateUser(accountType: OrganisationFunction.AccountManager.Name);
+
+            CommonActions.ElementIsDisplayed(AddUserObjects.Role).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(CommonSelectors.NhsInsetText).Should().BeTrue();
+            CommonActions.ElementTextContains(CommonSelectors.NhsInsetText, RoleMustBeBuyer).Should().BeTrue();
+
+            await RemoveUser(amUser1);
+            await RemoveUser(amUser2);
+        }
+
+        [Fact]
+        public async Task EditUser_EditInactiveBuyer_AccountManagerLimit_InsetTextNotDisplayed()
+        {
+            SetupUser(UserId, true, OrganisationFunction.Buyer.Name);
+
+            var amUser1 = await CreateUser(accountType: OrganisationFunction.AccountManager.Name);
+            var amUser2 = await CreateUser(accountType: OrganisationFunction.AccountManager.Name);
+
+            CommonActions.ElementIsDisplayed(AddUserObjects.Role).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(CommonSelectors.NhsInsetText).Should().BeFalse();
+
+            await RemoveUser(amUser1);
+            await RemoveUser(amUser2);
+        }
+
+        [Fact]
+        public async Task EditUser_UpdateInactiveBuyerToActiveAccountManager_AccountManagerLimit_ErrorDisplayed()
+        {
+            SetupUser(UserId, true, OrganisationFunction.Buyer.Name);
+
+            var amUser1 = await CreateUser(accountType: OrganisationFunction.AccountManager.Name);
+            var amUser2 = await CreateUser(accountType: OrganisationFunction.AccountManager.Name);
+
+            CommonActions.ClickRadioButtonWithText(OrganisationFunction.AccountManager.DisplayName);
+            CommonActions.ClickRadioButtonWithText("Active");
+            CommonActions.ClickSave();
+
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+            CommonActions.ElementTextContains(AddUserObjects.RoleError, RoleError).Should().BeTrue();
+
+            await RemoveUser(amUser1);
+            await RemoveUser(amUser2);
+        }
+
+        [Fact]
+        public async Task EditUser_EditInactiveAccountManager_AccountManagerLimit_InsetTextNotDisplayed()
+        {
+            SetupUser(UserId, true, OrganisationFunction.AccountManager.Name);
+
+            var amUser1 = await CreateUser(accountType: OrganisationFunction.AccountManager.Name);
+            var amUser2 = await CreateUser(accountType: OrganisationFunction.AccountManager.Name);
+
+            CommonActions.ElementIsDisplayed(AddUserObjects.Role).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(CommonSelectors.NhsInsetText).Should().BeFalse();
+
+            await RemoveUser(amUser1);
+            await RemoveUser(amUser2);
+        }
+
+        [Fact]
+        public async Task EditUser_ActivateInactiveAccountManager_AccountManagerLimit_ErrorDisplayed()
+        {
+            SetupUser(UserId, true, OrganisationFunction.AccountManager.Name);
+
+            var amUser1 = await CreateUser(accountType: OrganisationFunction.AccountManager.Name);
+            var amUser2 = await CreateUser(accountType: OrganisationFunction.AccountManager.Name);
+
+            CommonActions.ClickRadioButtonWithText("Active");
+            CommonActions.ClickSave();
+
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+            CommonActions.ElementTextContains(AddUserObjects.RoleError, RoleError).Should().BeTrue();
+
+            await RemoveUser(amUser1);
+            await RemoveUser(amUser2);
         }
 
         public void Dispose()
         {
-            using var context = GetEndToEndDbContext();
-            var user = context.Users.Where(x => x.Id == UserId)
-                .Include(x => x.AspNetUserRoles).First();
-
-            user.Disabled = false;
-
-            user.AspNetUserRoles.ForEach(x => user.AspNetUserRoles.Remove(x));
-
-            var buyer = context.Roles.First(r => r.Name == OrganisationFunction.AccountManager.Name);
-            user.AspNetUserRoles = new List<AspNetUserRole>
-            {
-                new() { Role = buyer },
-            };
-
-            context.Update(user);
-            context.SaveChanges();
+            SetupUser(UserId, false, OrganisationFunction.AccountManager.Name);
         }
 
         private async Task<AspNetUser> GetUser()
@@ -190,15 +269,45 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
                 .ToList().FirstOrDefault();
         }
 
-        private async Task<AspNetUser> CreateUser(bool isEnabled = true)
+        private async Task<AspNetUser> CreateUser(bool isEnabled = true, string accountType = "Buyer")
         {
             await using var context = GetEndToEndDbContext();
-            var user = GenerateUser.GenerateAspNetUser(context, OrganisationId, DefaultPassword, isEnabled);
+            var user = GenerateUser.GenerateAspNetUser(context, OrganisationId, DefaultPassword, isEnabled, accountType);
             context.Add(user);
             await context.SaveChangesAsync();
             Driver.Navigate().Refresh();
 
             return user;
+        }
+
+        private async Task RemoveUser(AspNetUser user)
+        {
+            await using var context = GetEndToEndDbContext();
+            var dbUser = context.AspNetUsers.First(x => x.Id == user.Id);
+
+            context.Remove(dbUser);
+
+            await context.SaveChangesAsync();
+        }
+
+        private void SetupUser(int userId, bool disabled, string roleName)
+        {
+            using var context = GetEndToEndDbContext();
+            var user = context.Users.Where(x => x.Id == userId)
+                .Include(x => x.AspNetUserRoles).First();
+
+            user.Disabled = disabled;
+
+            user.AspNetUserRoles.ForEach(x => user.AspNetUserRoles.Remove(x));
+
+            var role = context.Roles.First(r => r.Name == roleName);
+            user.AspNetUserRoles = new List<AspNetUserRole>
+            {
+                new() { Role = role },
+            };
+
+            context.Update(user);
+            context.SaveChanges();
         }
     }
 }
