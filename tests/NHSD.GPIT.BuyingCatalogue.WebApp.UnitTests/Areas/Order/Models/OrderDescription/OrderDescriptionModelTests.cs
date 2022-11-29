@@ -13,10 +13,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.OrderDes
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order)
         {
+            order.Revision = 1;
+
             var model = new OrderDescriptionModel(internalOrgId, order);
 
             model.Title.Should().Be("Order description");
             model.Description.Should().Be(order.Description);
+            model.Advice.Should().Be(OrderDescriptionModel.AdviceText);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void WithValidArguments_AmendedOrder_PropertiesCorrectlySet(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order)
+        {
+            order.Revision = 2;
+
+            var model = new OrderDescriptionModel(internalOrgId, order);
+
+            model.Title.Should().Be("Order description");
+            model.Description.Should().Be(order.Description);
+            model.Advice.Should().Be(OrderDescriptionModel.AmendmentAdviceText);
         }
     }
 }
