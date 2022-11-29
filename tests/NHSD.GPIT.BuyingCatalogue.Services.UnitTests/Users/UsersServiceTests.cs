@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task GetAllUsersForOrganisation_GetsCorrectUsersFromDatabase(
+        public static async Task GetAllUsers_GetsCorrectUsers_OrderedByStatus_FromDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             Organisation organisation,
             AspNetUser user1,
@@ -87,7 +87,43 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         {
             context.Organisations.Add(organisation);
             user1.PrimaryOrganisationId = organisation.Id;
+            user1.Disabled = true;
+            user1.LastName = "Adams";
             user2.PrimaryOrganisationId = organisation.Id;
+            user2.Disabled = false;
+            user2.LastName = "Smith";
+            user3.PrimaryOrganisationId = organisation.Id;
+            user3.Disabled = false;
+            user3.LastName = "Brown";
+
+            context.AspNetUsers.Add(user1);
+            context.AspNetUsers.Add(user2);
+            context.AspNetUsers.Add(user3);
+            await context.SaveChangesAsync();
+
+            var actual = await service.GetAllUsers();
+
+            actual.Count.Should().Be(3);
+            actual[0].UserName.Should().Be(user3.UserName);
+            actual[1].UserName.Should().Be(user2.UserName);
+            actual[2].UserName.Should().Be(user1.UserName);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetAllUsersForOrganisation_GetsCorrectUsers_OrderedByStatus_FromDatabase(
+            [Frozen] BuyingCatalogueDbContext context,
+            Organisation organisation,
+            AspNetUser user1,
+            AspNetUser user2,
+            AspNetUser user3,
+            UsersService service)
+        {
+            context.Organisations.Add(organisation);
+            user1.PrimaryOrganisationId = organisation.Id;
+            user1.Disabled = true;
+            user2.PrimaryOrganisationId = organisation.Id;
+            user2.Disabled = false;
             context.AspNetUsers.Add(user1);
             context.AspNetUsers.Add(user2);
             context.AspNetUsers.Add(user3);
@@ -96,8 +132,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             var actual = await service.GetAllUsersForOrganisation(organisation.Id);
 
             actual.Count.Should().Be(2);
-            actual[0].UserName.Should().Be(user1.UserName);
-            actual[1].UserName.Should().Be(user2.UserName);
+            actual[0].UserName.Should().Be(user2.UserName);
+            actual[1].UserName.Should().Be(user1.UserName);
         }
 
         [Theory]

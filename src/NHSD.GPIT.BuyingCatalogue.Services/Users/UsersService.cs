@@ -39,7 +39,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
                 .Include(x => x.PrimaryOrganisation)
                 .Include(x => x.AspNetUserRoles)
                 .ThenInclude(x => x.Role)
-                .OrderBy(x => x.LastName)
+                .OrderBy(x => x.Disabled)
+                .ThenBy(x => x.LastName)
                 .ThenBy(x => x.FirstName)
                 .ToListAsync();
         }
@@ -74,6 +75,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
                 .Where(u => u.PrimaryOrganisationId == organisationId)
                 .Include(x => x.AspNetUserRoles)
                 .ThenInclude(x => x.Role)
+                .OrderBy(x => x.Disabled)
+                .ThenBy(x => x.LastName)
+                .ThenBy(x => x.FirstName)
                 .ToListAsync();
         }
 
