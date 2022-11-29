@@ -47,8 +47,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Organisation
 
         private bool AccountManagerLimit(string accountType, int orgId, int userId, bool disabled)
         {
-            return !usersService.IsAccountManagerLimit(orgId, userId).Result
-                || accountType != OrganisationFunction.AccountManager.Name || disabled;
+            return accountType != OrganisationFunction.AccountManager.Name || disabled
+                || !usersService.IsAccountManagerLimit(orgId, userId).Result;
         }
     }
 }
