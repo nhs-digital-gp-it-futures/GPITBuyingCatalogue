@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             [FromQuery] string search = null)
         {
             var capabilityIds = SolutionsFilterHelper.ParseCapabilityIds(selectedCapabilityIds);
-            var epics = await epicsService.GetActiveEpicsByCapabilityIds(capabilityIds);
+            var epics = await epicsService.GetReferencedEpicsByCapabilityIds(capabilityIds);
 
             if (!epics.Any())
             {
@@ -139,16 +139,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
         private async Task<FilterCapabilitiesModel> GetCapabilitiesModel(string selectedIds = null, string search = null)
         {
-            var capabilities = await capabilitiesService.GetCapabilities();
+            var capabilities = await capabilitiesService.GetReferencedCapabilities();
 
-            return new FilterCapabilitiesModel(capabilities, selectedIds, search);
+            return new(capabilities, selectedIds, search);
         }
 
         private async Task<FilterEpicsModel> GetEpicsModel(string selectedCapabilityIds, string selectedEpicIds = null, string search = null)
         {
             var capabilityIds = SolutionsFilterHelper.ParseCapabilityIds(selectedCapabilityIds);
             var capabilities = await capabilitiesService.GetCapabilitiesByIds(capabilityIds);
-            var epics = await epicsService.GetActiveEpicsByCapabilityIds(capabilityIds);
+            var epics = await epicsService.GetReferencedEpicsByCapabilityIds(capabilityIds);
 
             return new FilterEpicsModel(capabilities, epics, selectedEpicIds, search);
         }

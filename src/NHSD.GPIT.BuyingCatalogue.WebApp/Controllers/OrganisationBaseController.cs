@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -70,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 BackLink = Url.Action(nameof(Details), new { organisationId }),
                 OrganisationId = organisationId,
                 OrganisationName = organisation.Name,
-                Users = users.OrderBy(x => x.LastName).ThenBy(x => x.FirstName),
+                Users = users,
                 HomeLink = HomeLink,
                 ControllerName = ControllerName,
             };
@@ -82,13 +83,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         public async Task<IActionResult> AddUser(int organisationId)
         {
             var organisation = await OrganisationsService.GetOrganisation(organisationId);
-            var isDefaultAccountType = await UserService.IsAccountManagerLimit(organisationId);
+            var isLimit = await UserService.IsAccountManagerLimit(organisationId);
 
             var model = new UserDetailsModel(organisation)
             {
                 BackLink = Url.Action(nameof(Users), new { organisationId }),
                 ControllerName = ControllerName,
-                IsDefaultAccountType = isDefaultAccountType,
+                IsDefaultAccountType = isLimit,
                 MaxNumberOfAccountManagers = accountManagementSettings.MaximumNumberOfAccountManagers,
             };
 
@@ -106,7 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 model.FirstName,
                 model.LastName,
                 model.EmailAddress,
-                model.IsDefaultAccountType ? OrganisationFunction.Buyer.Name : model.SelectedAccountType,
+                model.SelectedAccountType,
                 !model.IsActive!.Value);
 
             return RedirectToAction(
@@ -123,10 +124,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             if (user == null || organisation == null || organisation.Id != user.PrimaryOrganisationId)
                 return NotFound();
 
+            var isLimit = await UserService.IsAccountManagerLimit(organisationId, userId);
+
             var model = new UserDetailsModel(organisation, user)
             {
                 BackLink = Url.Action(nameof(Users), new { organisationId }),
                 ControllerName = ControllerName,
+                IsDefaultAccountType = isLimit && !user.Disabled,
                 MaxNumberOfAccountManagers = accountManagementSettings.MaximumNumberOfAccountManagers,
             };
 

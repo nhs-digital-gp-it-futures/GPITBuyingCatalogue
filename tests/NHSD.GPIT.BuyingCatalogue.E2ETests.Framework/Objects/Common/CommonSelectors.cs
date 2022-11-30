@@ -32,6 +32,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common
 
         public static By NhsErrorSectionLinkList => By.ClassName("nhsuk-error-summary__list");
 
+        public static By NhsInsetText => By.ClassName("nhsuk-inset-text");
+
         public static By LinkTextBox => By.Id("Link");
 
         public static By TableRow => By.CssSelector("tbody tr.nhsuk-table__row");
