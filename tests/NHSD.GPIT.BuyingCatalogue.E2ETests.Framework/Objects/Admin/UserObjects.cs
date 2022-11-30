@@ -14,6 +14,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin
 
         public static By AccountTypeRadioButtonsError => By.Id("selected-account-type-error");
 
+        public static By Status => By.Id("is-active");
+
+        public static By StatusError => By.Id("is-active-error");
+
         public static By AddUserLink => By.LinkText("Add a new user");
 
         public static By AutoCompleteListBox => By.Id("SelectedOrganisationId__listbox");

@@ -12,6 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
     public class AddModelValidator : AbstractValidator<AddModel>
     {
         public const string AccountTypeMissingErrorMessage = "Select an account type";
+        public const string AccountStatusMissingErrorMessage = "Select an account status";
         public const string EmailInUseErrorMessage = "A user with this email address already exists on the Buying Catalogue.";
         public const string EmailMissingErrorMessage = "Enter an email address";
         public const string EmailWrongFormatErrorMessage = "Enter an email address in the correct format, like name@example.com";
@@ -60,6 +61,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
                 .WithMessage(MustBelongToNhsDigitalErrorMessage)
                 .Must((model, accountType) => AccountManagerLimit(accountType, model.SelectedOrganisationId))
                 .WithMessage(string.Format(MustNotExceedAccountManagerLimit, accountManagementSettings.MaximumNumberOfAccountManagers));
+
+            RuleFor(x => x.IsActive)
+                .NotEmpty()
+                .WithMessage("Select an account status");
         }
 
         private static bool BelongToCorrectOrganisation(string accountType, string selectedOrganisationId)
