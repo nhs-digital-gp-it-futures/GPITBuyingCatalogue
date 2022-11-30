@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
 {
     public sealed class UserDetailsModel : NavBaseModel
     {
-        private bool isDefaultAccountType;
+        private string selectedAccountType;
 
         public UserDetailsModel()
         {
@@ -59,18 +59,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
         [StringLength(256)]
         public string EmailAddress { get; set; }
 
-        public string SelectedAccountType { get; set; }
-
-        public bool IsDefaultAccountType
+        public string SelectedAccountType
         {
-            get => isDefaultAccountType;
+            get
+            {
+                return IsDefaultAccountType ? OrganisationFunction.Buyer.Name : selectedAccountType;
+            }
+
             set
             {
-                if (value)
-                    SelectedAccountType = OrganisationFunction.Buyer.Name;
-                isDefaultAccountType = value;
+                selectedAccountType = value;
             }
         }
+
+        public bool IsDefaultAccountType { get; set; }
 
         public IEnumerable<SelectableRadioOption<string>> AccountTypeOptions => new List<SelectableRadioOption<string>>
         {
