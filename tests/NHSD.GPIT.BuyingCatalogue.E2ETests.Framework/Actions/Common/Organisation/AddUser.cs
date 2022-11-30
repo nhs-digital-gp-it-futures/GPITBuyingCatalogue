@@ -1,6 +1,4 @@
-﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common.Organisation;
+﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common.Organisation;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common.Organisation
