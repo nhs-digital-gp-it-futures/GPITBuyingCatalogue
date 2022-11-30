@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Filtering
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.SubmitButton).Should().BeTrue();
 
-            var expected = GetEndToEndDbContext().Capabilities.Count();
+            var expected = GetEndToEndDbContext().Capabilities.Count(x => x.CatalogueItemCapabilities.Any());
 
             CommonActions.GetNumberOfCheckBoxesDisplayed().Should().Be(expected);
             CommonActions.GetNumberOfSelectedCheckBoxes().Should().Be(0);
@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Filtering
         [Fact]
         public void FilterCapabilities_WithSelectedIds_AllSectionsDisplayed()
         {
-            var selectedIds = GetEndToEndDbContext().Capabilities.Select(x => x.Id).ToList();
+            var selectedIds = GetEndToEndDbContext().Capabilities.Where(x => x.CatalogueItemCapabilities.Any()).Select(x => x.Id).ToList();
 
             NavigateToUrl(
                 typeof(FilterController),

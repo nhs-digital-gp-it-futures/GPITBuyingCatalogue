@@ -101,8 +101,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             {
                 Id = 176,
                 Name = "South West North Commissioning Hub",
-                Address = new Address 
-                    { Line1 = "NHS ENGLAND", Line2 = "QUARRY HOUSE", Line3 = "QUARRY HILL", Town = "LEEDS", County = "WEST YORKSHIRE", Postcode = "LS2 7UE", Country = "ENGLAND" },
+                Address = new Address
+                {
+                    Line1 = "NHS ENGLAND",
+                    Line2 = "QUARRY HOUSE",
+                    Line3 = "QUARRY HILL",
+                    Town = "LEEDS",
+                    County = "WEST YORKSHIRE",
+                    Postcode = "LS2 7UE",
+                    Country = "ENGLAND"
+                },
                 InternalIdentifier = "CG-15H",
                 ExternalIdentifier = "15H",
                 OrganisationType = OrganisationType.CCG,

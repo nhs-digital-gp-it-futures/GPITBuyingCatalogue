@@ -12,10 +12,8 @@ trigger:
       - "terraform/**"
       - "tests/**"
     include:
-      - "src/BuyingCatalogueFunction*"
       - "src/OrganisationImporter*"
       - "terraform/orgimport"
-      - "tests/BuyingCatalogueFunctionTests"
       - "OrganisationImporter/OrganisationImporterTests"
 
 pool:
@@ -42,15 +40,6 @@ jobs:
           arguments: "--no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true"
 
       - task: DotNetCoreCLI@2
-        displayName: Publish BuyingCatalogueFunction
-        inputs:
-          command: "publish"
-          projects: "src/BuyingCatalogueFunction"
-          arguments: "--no-build --configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/BuyingCatalogueFunction"
-          publishWebProjects: false
-          modifyOutputPath: false
-
-      - task: DotNetCoreCLI@2
         displayName: Publish OrganisationImporter
         inputs:
           command: "publish"
@@ -59,13 +48,6 @@ jobs:
           publishWebProjects: false
           modifyOutputPath: false
           zipAfterPublish: false
-
-      - task: PublishBuildArtifacts@1
-        displayName: Package BuyingCatalogueFunction
-        inputs:
-          PathtoPublish: "$(Build.ArtifactStagingDirectory)/BuyingCatalogueFunction"
-          ArtifactName: "BuyingCatalogueFunction"
-          publishLocation: "Container"
 
       - task: ArchiveFiles@2
         inputs:

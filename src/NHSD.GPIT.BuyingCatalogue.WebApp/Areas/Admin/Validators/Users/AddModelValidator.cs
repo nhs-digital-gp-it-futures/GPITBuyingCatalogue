@@ -1,5 +1,4 @@
-﻿using System.Net.Mail;
-using FluentValidation;
+﻿using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;

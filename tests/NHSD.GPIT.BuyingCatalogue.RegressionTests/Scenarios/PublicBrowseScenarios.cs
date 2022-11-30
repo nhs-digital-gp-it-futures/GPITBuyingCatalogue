@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
+﻿using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using Xunit;
 using Xunit.Abstractions;
