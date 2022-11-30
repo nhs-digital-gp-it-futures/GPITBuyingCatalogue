@@ -4,6 +4,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderDescription
 {
     public sealed class OrderDescriptionModel : OrderingBaseModel
     {
+        public const string AmendmentAdviceText = "You can update the description of this order to help distinguish it from the previous version if required.";
         public const string AdviceText = "Provide a brief description of your order to help identify it from any others you’ve worked on.";
         public const string NewOrderAdviceText = AdviceText + " Once you save the description, a unique order ID will be generated.";
 
@@ -25,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderDescription
             InternalOrgId = internalOrgId;
             Caption = $"Order {order?.CallOffId}";
             Description = order?.Description;
-            Advice = AdviceText;
+            Advice = (order?.IsAmendment ?? false) ? AmendmentAdviceText : AdviceText;
         }
 
         [StringLength(100)]

@@ -1,4 +1,7 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using FluentAssertions;
+using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -30,11 +33,46 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             Order order,
             DescriptionStatusProvider service)
         {
+            order.Revision = 1;
             order.Description = description;
 
             var actual = service.Get(new OrderWrapper(order), new OrderProgress());
 
             actual.Should().Be(expected);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Get_AmendedOrder_DescriptionUnchanged_ReturnsExpectedResult(
+            List<Order> orders,
+            DescriptionStatusProvider service)
+        {
+            orders.Select((x, i) => (x, i)).ForEach(x => x.x.Revision = x.i + 1);
+
+            var wrapper = new OrderWrapper(orders);
+
+            wrapper.Order.Description = wrapper.Last.Description;
+
+            var actual = service.Get(wrapper, new OrderProgress());
+
+            actual.Should().Be(TaskProgress.Completed);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Get_AmendedOrder_DescriptionChanged_ReturnsExpectedResult(
+            List<Order> orders,
+            DescriptionStatusProvider service)
+        {
+            orders.Select((x, i) => (x, i)).ForEach(x => x.x.Revision = x.i + 1);
+
+            var wrapper = new OrderWrapper(orders);
+
+            wrapper.Order.Description = $"{wrapper.Last.Description} changed";
+
+            var actual = service.Get(wrapper, new OrderProgress());
+
+            actual.Should().Be(TaskProgress.Amended);
         }
     }
 }
