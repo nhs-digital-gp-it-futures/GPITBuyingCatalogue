@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contacts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderingParty;
 
@@ -17,16 +16,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
     {
         private readonly IOrderService orderService;
         private readonly IOrderingPartyService orderingPartyService;
-        private readonly IContactDetailsService contactDetailsService;
 
         public OrderingPartyController(
             IOrderService orderService,
-            IOrderingPartyService orderingPartyService,
-            IContactDetailsService contactDetailsService)
+            IOrderingPartyService orderingPartyService)
         {
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.orderingPartyService = orderingPartyService ?? throw new ArgumentNullException(nameof(orderingPartyService));
-            this.contactDetailsService = contactDetailsService ?? throw new ArgumentNullException(nameof(contactDetailsService));
         }
 
         [HttpGet]
@@ -53,9 +49,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
 
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
-            var contact = contactDetailsService.AddOrUpdatePrimaryContact(
-                order.OrderingPartyContact,
-                model.Contact);
+            var contact = order.OrderingPartyContact ?? new Contact();
+            contact.FirstName = model.Contact.FirstName.Trim();
+            contact.LastName = model.Contact.LastName.Trim();
+            contact.Email = model.Contact.EmailAddress.Trim();
+            contact.Phone = model.Contact.TelephoneNumber.Trim();
 
             await orderingPartyService.SetOrderingPartyContact(order, contact);
 
