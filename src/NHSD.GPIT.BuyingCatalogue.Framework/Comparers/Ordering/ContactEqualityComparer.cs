@@ -16,8 +16,7 @@ public class ContactEqualityComparer : IEqualityComparer<Contact>
         return x.FirstName == y.FirstName
             && x.LastName == y.LastName
             && x.Email == y.Email
-            && x.Phone == y.Phone
-            && x.LastUpdated == y.LastUpdated;
+            && x.Phone == y.Phone;
     }
 
     public int GetHashCode(Contact obj)
