@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -16,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         public static void Get_OrderIsNull_ReturnsCannotStart(
             OrderingPartyStatusProvider service)
         {
-            var actual = service.Get(null, new OrderProgress());
+            var actual = service.Get(null, new());
 
             actual.Should().Be(TaskProgress.CannotStart);
         }
@@ -29,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         {
             order.OrderingPartyContact = null;
 
-            var actual = service.Get(new OrderWrapper(order), null);
+            var actual = service.Get(new(order), null);
 
             actual.Should().Be(TaskProgress.NotStarted);
         }
@@ -42,8 +44,48 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             OrderingPartyStatusProvider service)
         {
             order.OrderingPartyContact = contact;
+            order.Revision = 1;
 
-            var actual = service.Get(new OrderWrapper(order), null);
+            var actual = service.Get(new(order), null);
+
+            actual.Should().Be(TaskProgress.Completed);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Get_IsAmendment_ContactEdited_ReturnsAmended(
+            Contact originalContact,
+            Contact editedContact,
+            List<Order> orders,
+            OrderingPartyStatusProvider service)
+        {
+            var previousOrder = orders.AsEnumerable().Reverse().Skip(1).First();
+            var amendedOrder = orders.Last();
+
+            amendedOrder.Revision = orders.Count;
+            previousOrder.OrderingPartyContact = originalContact;
+            amendedOrder.OrderingPartyContact = editedContact;
+
+            var actual = service.Get(new(orders), null);
+
+            actual.Should().Be(TaskProgress.Amended);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Get_IsAmendment_ContactUnchanged_ReturnsCompleted(
+            Contact originalContact,
+            List<Order> orders,
+            OrderingPartyStatusProvider service)
+        {
+            var previousOrder = orders.AsEnumerable().Reverse().Skip(1).First();
+            var amendedOrder = orders.Last();
+
+            amendedOrder.Revision = orders.Count;
+            previousOrder.OrderingPartyContact = originalContact;
+            amendedOrder.OrderingPartyContact = originalContact;
+
+            var actual = service.Get(new(orders), null);
 
             actual.Should().Be(TaskProgress.Completed);
         }
