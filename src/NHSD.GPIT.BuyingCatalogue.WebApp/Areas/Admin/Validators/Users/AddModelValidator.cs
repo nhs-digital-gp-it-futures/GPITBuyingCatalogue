@@ -1,5 +1,4 @@
-﻿using System.Net.Mail;
-using FluentValidation;
+﻿using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
@@ -23,7 +22,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
         public const string OrganisationMissingErrorMessage = "Select an organisation";
 
         private readonly IUsersService usersService;
-        private readonly AccountManagementSettings accountManagementSettings;
 
         public AddModelValidator(
             IUsersService usersService,
@@ -31,7 +29,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
             AccountManagementSettings accountManagementSettings)
         {
             this.usersService = usersService;
-            this.accountManagementSettings = accountManagementSettings;
 
             RuleFor(x => x.SelectedOrganisationId)
                 .NotEmpty()

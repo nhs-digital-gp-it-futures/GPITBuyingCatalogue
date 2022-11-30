@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             FilterController controller)
         {
             capabilitiesService
-                .Setup(x => x.GetCapabilities())
+                .Setup(x => x.GetReferencedCapabilities())
                 .ReturnsAsync(capabilities);
 
             var result = await controller.FilterCapabilities();
@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             FilterController controller)
         {
             capabilitiesService
-                .Setup(x => x.GetCapabilities())
+                .Setup(x => x.GetReferencedCapabilities())
                 .ReturnsAsync(capabilities);
 
             var selected = $"{capabilities.First().Id}{FilterConstants.Delimiter}{capabilities.Last().Id}";
@@ -93,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             controller.ModelState.AddModelError("key", "errorMessage");
 
             capabilitiesService
-                .Setup(x => x.GetCapabilities())
+                .Setup(x => x.GetReferencedCapabilities())
                 .ReturnsAsync(capabilities);
 
             var result = await controller.FilterCapabilities(model);
@@ -176,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var selectedIds = $"{capabilityId}";
 
             epicsService
-                .Setup(x => x.GetActiveEpicsByCapabilityIds(new[] { capabilityId }))
+                .Setup(x => x.GetReferencedEpicsByCapabilityIds(new[] { capabilityId }))
                 .ReturnsAsync(new List<Epic>());
 
             var result = await controller.IncludeEpics(selectedIds);
@@ -205,7 +205,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var selectedIds = $"{capabilityId}";
 
             epicsService
-                .Setup(x => x.GetActiveEpicsByCapabilityIds(new[] { capabilityId }))
+                .Setup(x => x.GetReferencedEpicsByCapabilityIds(new[] { capabilityId }))
                 .ReturnsAsync(epics);
 
             var result = await controller.IncludeEpics(selectedIds);
@@ -301,7 +301,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(capabilities);
 
             epicsService
-                .Setup(x => x.GetActiveEpicsByCapabilityIds(capabilityIds))
+                .Setup(x => x.GetReferencedEpicsByCapabilityIds(capabilityIds))
                 .ReturnsAsync(epics);
 
             var result = await controller.FilterEpics(selectedCapabilityIds);
@@ -333,7 +333,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(capabilities);
 
             epicsService
-                .Setup(x => x.GetActiveEpicsByCapabilityIds(capabilityIds))
+                .Setup(x => x.GetReferencedEpicsByCapabilityIds(capabilityIds))
                 .ReturnsAsync(epics);
 
             var result = await controller.FilterEpics(selectedCapabilityIds, selectedEpicIds);
@@ -366,7 +366,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(capabilities);
 
             epicsService
-                .Setup(x => x.GetActiveEpicsByCapabilityIds(capabilityIds))
+                .Setup(x => x.GetReferencedEpicsByCapabilityIds(capabilityIds))
                 .ReturnsAsync(epics);
 
             controller.ModelState.AddModelError("key", "errorMessage");

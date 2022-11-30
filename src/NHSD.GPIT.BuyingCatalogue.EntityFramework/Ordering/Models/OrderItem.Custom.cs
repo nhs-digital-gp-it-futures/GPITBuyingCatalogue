@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
