@@ -347,7 +347,7 @@ namespace BuyingCatalogueFunctionTests.Services
 
             adapter.VerifyAll();
 
-            dbContext.OdsOrganisations.Should().BeEquivalentTo(new[] { expected });
+            dbContext.OdsOrganisations.Should().BeEquivalentTo(new[] { expected }, opt => opt.Excluding(x => x.Roles));
         }
     }
 }
