@@ -7,6 +7,10 @@
 
 @{
     ViewBag.Title = Model.Title;
+
+    var deleteButtonTitle = Model.IsAmendment
+        ? "Delete amendment"
+        : "Delete order";
 }
 
 <div data-test-id="@Model.CallOffId-page">
@@ -92,14 +96,17 @@
                                                  new { Model.InternalOrgId, Model.CallOffId })"
                                         status="@Model.Progress.ImplementationPlan" />
 
-                    <nhs-task-list-item label-text="Associated Service billing and requirements"
-                                        label-hint="Select how you’d like to be billed for any Associated Services in your order."
-                                        data-test-id="test-associated-service-billing"
-                                        url="@Url.Action(
-                                                 nameof(AssociatedServicesBillingController.ReviewBilling),
-                                                 typeof(AssociatedServicesBillingController).ControllerName(),
-                                                 new { Model.InternalOrgId, Model.CallOffId })"
-                                        status="@Model.Progress.AssociatedServiceBilling" />
+                    @if (!Model.IsAmendment)
+                    {
+                        <nhs-task-list-item label-text="Associated Service billing and requirements"
+                                            label-hint="Select how you’d like to be billed for any Associated Services in your order."
+                                            data-test-id="test-associated-service-billing"
+                                            url="@Url.Action(
+                                                     nameof(AssociatedServicesBillingController.ReviewBilling),
+                                                     typeof(AssociatedServicesBillingController).ControllerName(),
+                                                     new { Model.InternalOrgId, Model.CallOffId })"
+                                            status="@Model.Progress.AssociatedServiceBilling" />
+                    }
 
                     <nhs-task-list-item label-text="Data processing information"
                                         label-hint="Select if you want to make any changes to the default data processing information."
@@ -138,12 +145,12 @@
                                      type="Secondary" />
                 </nhs-button-group>
 
-                <vc:nhs-secondary-button text="Delete order"
-                            url="@Url.Action(
-                                    nameof(DeleteOrderController.DeleteOrder),
-                                    typeof(DeleteOrderController).ControllerName(),
-                                    new { Model.InternalOrgId, Model.CallOffId })"
-                            type="Delete"/>
+                <vc:nhs-secondary-button text="@deleteButtonTitle"
+                                         url="@Url.Action(
+                                                  nameof(DeleteOrderController.DeleteOrder),
+                                                  typeof(DeleteOrderController).ControllerName(),
+                                                  new { Model.InternalOrgId, Model.CallOffId })"
+                                         type="Delete"/>
             }
 
             @if (Model.LastUpdated is not null
@@ -206,8 +213,7 @@
         _ => throw new ArgumentException("Orders solution selection currently in a status that it should not be able to be in."),
     };
 
-    string FundingSourceUrlTarget() =>
-        Model.ShowSelectFrameworkPage
+    string FundingSourceUrlTarget() => Model.ShowSelectFrameworkPage
         ? Url.Action(
             nameof(FundingSourceController.SelectFramework),
             typeof(FundingSourceController).ControllerName(),

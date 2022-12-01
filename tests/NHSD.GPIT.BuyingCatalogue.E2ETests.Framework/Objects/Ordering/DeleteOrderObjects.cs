@@ -9,6 +9,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
 
         public static By SelectOptions => By.Id("selected-option");
 
-        public static By SelectOptionError => By.Id("selected-option-error");
+        public static By SelectOptionError => By.Id("delete-order-error");
     }
 }

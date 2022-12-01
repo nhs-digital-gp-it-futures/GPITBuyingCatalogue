@@ -25,7 +25,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
             {
                 Title = $"Order {order.CallOffId}";
                 CallOffId = order.CallOffId;
-                TitleAdvice = order.CallOffId.Revision > 1
+                IsAmendment = order.IsAmendment;
+                TitleAdvice = order.IsAmendment
                     ? "You can amend parts of this order as required and will need to review other parts that cannot be changed. Your amendments will be saved as you progress through each section."
                     : "Complete the following steps to create an order summary.";
                 Description = order.Description;
@@ -38,6 +39,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
         }
 
         public CallOffId CallOffId { get; set; }
+
+        public bool IsAmendment { get; set; }
 
         public string Description { get; set; }
 
