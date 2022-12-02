@@ -128,18 +128,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         [CommonAutoData]
         public static void Validate_EmailInUse_SetsModelError(
             [Frozen] Mock<IUsersService> mockUsersService,
-            [Frozen] Mock<IEmailDomainService> mockEmailDomainService,
             UserDetailsModel model,
             UserDetailsModelValidator validator)
         {
             model.Email = EmailAddress;
 
             mockUsersService
-                .Setup(x => x.EmailAddressExists(EmailAddress, 0))
-                .ReturnsAsync(true);
-
-            mockEmailDomainService
-                .Setup(x => x.IsAllowed(EmailAddress))
+                .Setup(x => x.EmailAddressExists(EmailAddress, model.UserId))
                 .ReturnsAsync(true);
 
             var result = validator.TestValidate(model);
