@@ -13,7 +13,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Users
 {
-    public class AddModelValidatorTests
+    public class UserDetailsModelValidatorTests
     {
         private const string EmailAddress = "a@b.com";
 
@@ -23,9 +23,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         [CommonInlineAutoData(" ")]
         public static void Validate_SelectedOrganisationIdNullOrEmpty_SetsModelError(
             string organisationId,
-            AddModelValidator validator)
+            UserDetailsModelValidator validator)
         {
-            var model = new AddModel
+            var model = new UserDetailsModel
             {
                 SelectedOrganisationId = organisationId,
             };
@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedOrganisationId)
-                .WithErrorMessage(AddModelValidator.OrganisationMissingErrorMessage);
+                .WithErrorMessage(UserDetailsModelValidator.OrganisationMissingErrorMessage);
         }
 
         [Theory]
@@ -42,9 +42,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         [CommonInlineAutoData(" ")]
         public static void Validate_FirstNameNullOrEmpty_SetsModelError(
             string firstName,
-            AddModelValidator validator)
+            UserDetailsModelValidator validator)
         {
-            var model = new AddModel
+            var model = new UserDetailsModel
             {
                 FirstName = firstName,
             };
@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.FirstName)
-                .WithErrorMessage(AddModelValidator.FirstNameMissingErrorMessage);
+                .WithErrorMessage(UserDetailsModelValidator.FirstNameMissingErrorMessage);
         }
 
         [Theory]
@@ -61,9 +61,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         [CommonInlineAutoData(" ")]
         public static void Validate_LastNameNullOrEmpty_SetsModelError(
             string lastName,
-            AddModelValidator validator)
+            UserDetailsModelValidator validator)
         {
-            var model = new AddModel
+            var model = new UserDetailsModel
             {
                 LastName = lastName,
             };
@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.LastName)
-                .WithErrorMessage(AddModelValidator.LastNameMissingErrorMessage);
+                .WithErrorMessage(UserDetailsModelValidator.LastNameMissingErrorMessage);
         }
 
         [Theory]
@@ -80,9 +80,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         [CommonInlineAutoData(" ")]
         public static void Validate_EmailNullOrEmpty_SetsModelError(
             string email,
-            AddModelValidator validator)
+            UserDetailsModelValidator validator)
         {
-            var model = new AddModel
+            var model = new UserDetailsModel
             {
                 Email = email,
             };
@@ -90,27 +90,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Email)
-                .WithErrorMessage(AddModelValidator.EmailMissingErrorMessage);
+                .WithErrorMessage(UserDetailsModelValidator.EmailMissingErrorMessage);
         }
 
         [Theory]
         [CommonAutoData]
         public static void Validate_EmailWrongFormat_SetsModelError(
-            AddModel model,
-            AddModelValidator validator)
+            UserDetailsModel model,
+            UserDetailsModelValidator validator)
         {
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Email)
-                .WithErrorMessage(AddModelValidator.EmailWrongFormatErrorMessage);
+                .WithErrorMessage(UserDetailsModelValidator.EmailWrongFormatErrorMessage);
         }
 
         [Theory]
         [CommonAutoData]
         public static void Validate_InvalidEmailDomain_SetsModelError(
             [Frozen] Mock<IEmailDomainService> mockEmailDomainService,
-            AddModel model,
-            AddModelValidator validator)
+            UserDetailsModel model,
+            UserDetailsModelValidator validator)
         {
             model.Email = EmailAddress;
 
@@ -120,15 +120,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Email)
-                .WithErrorMessage(AddModelValidator.EmailDomainInvalid);
+                .WithErrorMessage(UserDetailsModelValidator.EmailDomainInvalid);
         }
 
         [Theory]
         [CommonAutoData]
         public static void Validate_EmailInUse_SetsModelError(
             [Frozen] Mock<IUsersService> mockUsersService,
-            AddModel model,
-            AddModelValidator validator)
+            UserDetailsModel model,
+            UserDetailsModelValidator validator)
         {
             model.Email = EmailAddress;
 
@@ -139,7 +139,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Email)
-                .WithErrorMessage(AddModelValidator.EmailInUseErrorMessage);
+                .WithErrorMessage(UserDetailsModelValidator.EmailInUseErrorMessage);
         }
 
         [Theory]
@@ -148,9 +148,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         [CommonInlineAutoData(" ")]
         public static void Validate_AccountTypeNullOrEmpty_SetsModelError(
             string accountType,
-            AddModelValidator validator)
+            UserDetailsModelValidator validator)
         {
-            var model = new AddModel
+            var model = new UserDetailsModel
             {
                 SelectedAccountType = accountType,
             };
@@ -158,15 +158,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedAccountType)
-                .WithErrorMessage(AddModelValidator.AccountTypeMissingErrorMessage);
+                .WithErrorMessage(UserDetailsModelValidator.AccountTypeMissingErrorMessage);
         }
 
         [Theory]
         [CommonAutoData]
         public static void Validate_AccountTypeIsAdmin_OrganisationIdNotNhsDigital_SetsModelError(
-            AddModelValidator validator)
+            UserDetailsModelValidator validator)
         {
-            var model = new AddModel
+            var model = new UserDetailsModel
             {
                 SelectedOrganisationId = $"{OrganisationConstants.NhsDigitalOrganisationId + 1}",
                 SelectedAccountType = OrganisationFunction.Authority.Name,
@@ -175,15 +175,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedAccountType)
-                .WithErrorMessage(AddModelValidator.MustBelongToNhsDigitalErrorMessage);
+                .WithErrorMessage(UserDetailsModelValidator.MustBelongToNhsDigitalErrorMessage);
         }
 
         [Theory]
         [CommonAutoData]
         public static void Validate_AccountTypeIsAdmin_OrganisationIdNhsDigital_NoModelError(
-            AddModelValidator validator)
+            UserDetailsModelValidator validator)
         {
-            var model = new AddModel
+            var model = new UserDetailsModel
             {
                 SelectedOrganisationId = $"{OrganisationConstants.NhsDigitalOrganisationId}",
                 SelectedAccountType = OrganisationFunction.Authority.Name,
@@ -199,9 +199,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         public static void Validate_AccountTypeIsAccountManager_NoModelError(
             int organisationId,
             [Frozen] Mock<IUsersService> mockUsersService,
-            AddModelValidator validator)
+            UserDetailsModelValidator validator)
         {
-            var model = new AddModel
+            var model = new UserDetailsModel
             {
                 SelectedOrganisationId = $"{organisationId}",
                 SelectedAccountType = OrganisationFunction.AccountManager.Name,
@@ -222,9 +222,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
             int organisationId,
             [Frozen] Mock<IUsersService> mockUsersService,
             [Frozen] AccountManagementSettings accountManagementSettings,
-            AddModelValidator validator)
+            UserDetailsModelValidator validator)
         {
-            var model = new AddModel
+            var model = new UserDetailsModel
             {
                 SelectedOrganisationId = $"{organisationId}",
                 SelectedAccountType = OrganisationFunction.AccountManager.Name,
@@ -237,22 +237,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedAccountType)
-                .WithErrorMessage(string.Format(AddModelValidator.MustNotExceedAccountManagerLimit, accountManagementSettings.MaximumNumberOfAccountManagers));
+                .WithErrorMessage(string.Format(UserDetailsModelValidator.MustNotExceedAccountManagerLimit, accountManagementSettings.MaximumNumberOfAccountManagers));
         }
 
         [Theory]
         [CommonInlineAutoData(null)]
         public static void Validate_AccountStatusNullOrEmpty_SetsModelError(
             bool? isActive,
-            AddModel model,
-            AddModelValidator validator)
+            UserDetailsModel model,
+            UserDetailsModelValidator validator)
         {
             model.IsActive = isActive;
 
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.IsActive)
-                .WithErrorMessage(AddModelValidator.AccountStatusMissingErrorMessage);
+                .WithErrorMessage(UserDetailsModelValidator.AccountStatusMissingErrorMessage);
         }
 
         [Theory]
@@ -260,8 +260,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         public static void Validate_EverythingOk_NoModelErrors(
             [Frozen] Mock<IUsersService> mockUsersService,
             [Frozen] Mock<IEmailDomainService> mockEmailDomainService,
-            AddModel model,
-            AddModelValidator validator)
+            UserDetailsModel model,
+            UserDetailsModelValidator validator)
         {
             model.Email = EmailAddress;
             model.SelectedAccountType = OrganisationFunction.Buyer.Name;

@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 {
     public abstract class OrganisationBaseController : Controller
     {
-        private AccountManagementSettings accountManagementSettings;
+        private readonly AccountManagementSettings accountManagementSettings;
 
         protected OrganisationBaseController(
             IOrganisationsService organisationsService,

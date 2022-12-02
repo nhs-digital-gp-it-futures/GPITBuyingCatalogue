@@ -1,6 +1,7 @@
 ﻿using System;
 using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels;
@@ -11,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Organisation
     {
         private readonly IUsersService usersService;
 
-        public UserDetailsModelValidator(IUsersService usersService, AccountManagementSettings accountManagementSettings)
+        public UserDetailsModelValidator(IUsersService usersService, IEmailDomainService emailDomainService, AccountManagementSettings accountManagementSettings)
         {
             this.usersService = usersService ?? throw new ArgumentNullException(nameof(usersService));
 
@@ -29,7 +30,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Organisation
                 .EmailAddress()
                 .WithMessage("Enter an email address in the correct format, like name@example.com")
                 .Must((model, email) => NotBeDuplicateUserEmail(email, model.UserId))
-                .WithMessage("A user with this email address is already registered on the Buying Catalogue");
+                .WithMessage("A user with this email address is already registered on the Buying Catalogue")
+                .Must(email => emailDomainService.IsAllowed(email).GetAwaiter().GetResult())
+                .WithMessage("This email domain cannot be used to register a new user account as it is not on the allow list");
 
             RuleFor(x => x.SelectedAccountType)
                 .NotEmpty()

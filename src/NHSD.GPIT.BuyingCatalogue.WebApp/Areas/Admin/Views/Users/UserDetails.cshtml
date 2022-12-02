@@ -1,6 +1,6 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.UserModels.AddModel
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.UserModels.UserDetailsModel
 @{
-    ViewBag.Title = "Add user";
+    ViewBag.Title = Model.Title;
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -14,6 +14,10 @@
 
         <form method="post">
             <div class="nhsuk-u-margin-bottom-9">
+                <input type="hidden" asp-for="UserId" />
+                <input type="hidden" asp-for="BackLink" />
+                <input type="hidden" asp-for="Title" />
+
                 <nhs-auto-complete asp-for="SelectedOrganisationId"
                                    asp-items="@(new SelectList(Model!.Organisations, "Value", "Text"))"
                                    label-text="Organisation"/>
@@ -35,10 +39,10 @@
                                            values="Model.AccountTypeOptions.Cast<object>()"
                                            value-name="Value"
                                            display-name="Name"
-                                           hint-name="Advice" />
+                                           hint-name="Advice"/>
                     </nhs-fieldset-form-label>
                 </div>
-                
+
                 <nhs-fieldset-form-label asp-for="IsActive"
                                          label-text="Account status"
                                          label-hint="Select one option."
@@ -46,7 +50,7 @@
                     <nhs-radio-buttons asp-for="IsActive"
                                        values="@Model.StatusOptions.Cast<object>()"
                                        value-name="Value"
-                                       display-name="Name" />
+                                       display-name="Name"/>
                 </nhs-fieldset-form-label>
             </div>
 

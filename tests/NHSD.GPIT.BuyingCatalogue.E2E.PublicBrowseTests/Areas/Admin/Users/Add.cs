@@ -59,27 +59,27 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 UserObjects.SelectedOrganisationError,
-                AddModelValidator.OrganisationMissingErrorMessage).Should().BeTrue();
+                UserDetailsModelValidator.OrganisationMissingErrorMessage).Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 UserObjects.FirstNameInputError,
-                AddModelValidator.FirstNameMissingErrorMessage).Should().BeTrue();
+                UserDetailsModelValidator.FirstNameMissingErrorMessage).Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 UserObjects.LastNameInputError,
-                AddModelValidator.LastNameMissingErrorMessage).Should().BeTrue();
+                UserDetailsModelValidator.LastNameMissingErrorMessage).Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 UserObjects.EmailInputError,
-                AddModelValidator.EmailMissingErrorMessage).Should().BeTrue();
+                UserDetailsModelValidator.EmailMissingErrorMessage).Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 UserObjects.AccountTypeRadioButtonsError,
-                $"Error: {AddModelValidator.AccountTypeMissingErrorMessage}").Should().BeTrue();
+                $"Error: {UserDetailsModelValidator.AccountTypeMissingErrorMessage}").Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 UserObjects.StatusError,
-                $"Error: {AddModelValidator.AccountStatusMissingErrorMessage}").Should().BeTrue();
+                $"Error: {UserDetailsModelValidator.AccountStatusMissingErrorMessage}").Should().BeTrue();
         }
 
         [Fact]
@@ -98,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 UserObjects.EmailInputError,
-                PersonalDetailsModelValidator.EmailWrongFormatErrorMessage).Should().BeTrue();
+                UserDetailsModelValidator.EmailWrongFormatErrorMessage).Should().BeTrue();
         }
 
         [Fact]
@@ -120,7 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 UserObjects.EmailInputError,
-                AddModelValidator.EmailInUseErrorMessage).Should().BeTrue();
+                UserDetailsModelValidator.EmailInUseErrorMessage).Should().BeTrue();
         }
 
         [Fact]
@@ -169,7 +169,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 UserObjects.AccountTypeRadioButtonsError,
-                $"Error: {AddModelValidator.MustBelongToNhsDigitalErrorMessage}").Should().BeTrue();
+                $"Error: {UserDetailsModelValidator.MustBelongToNhsDigitalErrorMessage}").Should().BeTrue();
         }
 
         [Fact]
