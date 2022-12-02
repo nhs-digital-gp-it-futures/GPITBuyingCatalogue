@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
@@ -81,16 +82,39 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         [Fact]
         public void DeleteAmendment_SelectYes_ExpectedResult()
         {
-            CommonActions.ClickRadioButtonWithText(DeleteOrderModel.AmendmentYesOptionText);
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(DashboardController),
-                nameof(DashboardController.Organisation)).Should().BeTrue();
-
             using var context = GetEndToEndDbContext();
 
-            context.Orders.Count(o => o.OrderNumber == CallOffId.OrderNumber && o.Revision == CallOffId.Revision).Should().Be(0);
+            context.Orders
+                .IgnoreQueryFilters()
+                .Count(o => o.OrderNumber == CallOffId.OrderNumber && o.Revision == CallOffId.Revision).Should().Be(1);
+
+            IDbContextTransaction transaction = null;
+
+            try
+            {
+                transaction = context.Database.BeginTransaction();
+
+                CommonActions.ClickRadioButtonWithText(DeleteOrderModel.AmendmentYesOptionText);
+                CommonActions.ClickSave();
+
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(DashboardController),
+                    nameof(DashboardController.Organisation)).Should().BeTrue();
+
+                context.Orders
+                    .IgnoreQueryFilters()
+                    .Count(o => o.OrderNumber == CallOffId.OrderNumber && o.Revision == CallOffId.Revision).Should().Be(0);
+
+                transaction.Rollback();
+            }
+            catch
+            {
+                transaction?.Rollback();
+            }
+
+            context.Orders
+                .IgnoreQueryFilters()
+                .Count(o => o.OrderNumber == CallOffId.OrderNumber && o.Revision == CallOffId.Revision).Should().Be(1);
         }
 
         [Fact]
