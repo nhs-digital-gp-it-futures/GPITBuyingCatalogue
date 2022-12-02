@@ -79,7 +79,7 @@
             @if (Model.Order.CommencementDate.HasValue)
             {
                 <nhs-summary-list-row label-text="Commencement date" data-test-id="start-date-summary">
-                    @($"{Model.Order.CommencementDate.Value:dd MMMM yyyy}")
+                    @($"{Model.Order.CommencementDate.Value:d MMMM yyyy}")
                 </nhs-summary-list-row>
             }
 
