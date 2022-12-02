@@ -2,6 +2,7 @@
 using FluentValidation.TestHelper;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -215,12 +216,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Organisation
         public static void Validate_Valid_NoModelError(
             string firstName,
             string lastName,
+            [Frozen] Mock<IUsersService> mockUsersService,
+            [Frozen] Mock<IEmailDomainService> mockEmailDomainService,
             UserDetailsModel model,
             UserDetailsModelValidator validator)
         {
             model.FirstName = firstName;
             model.LastName = lastName;
             model.EmailAddress = "a@nhs.net";
+
+            mockUsersService
+                .Setup(x => x.EmailAddressExists("a@nhs.net", model.UserId))
+                .ReturnsAsync(false);
+
+            mockEmailDomainService
+                .Setup(x => x.IsAllowed("a@nhs.net"))
+                .ReturnsAsync(true);
 
             var result = validator.TestValidate(model);
 
