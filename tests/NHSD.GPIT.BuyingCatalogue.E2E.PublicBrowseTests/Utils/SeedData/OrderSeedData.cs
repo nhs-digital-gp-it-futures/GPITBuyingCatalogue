@@ -46,6 +46,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             AddOrderReadyToComplete(context);
             AddCompletedOrder(context, 90010, GetOrganisationId(context));
             AddCompletedOrder(context, 90011, GetOrganisationId(context, "CG-15F"));
+            AddCompletedOrder(context, 90030, GetOrganisationId(context));
+            AddAmendment(context, 90030, 2, GetOrganisationId(context));
             AddOrderByAccountManager(context);
         }
 
@@ -1702,6 +1704,45 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             context.Add(order);
 
+            context.SaveChangesAs(user.Id);
+        }
+
+        private static void AddAmendment(BuyingCatalogueDbContext context, int orderNumber, int revision, int organisationId)
+        {
+            var timeNow = DateTime.UtcNow;
+            var orderId = context.Orders.IgnoreQueryFilters().Max(x => x.Id) + 1;
+
+            var order = new Order
+            {
+                Id = orderId,
+                OrderNumber = orderNumber,
+                Revision = revision,
+                OrderingPartyId = organisationId,
+                Created = timeNow,
+                IsDeleted = false,
+                Description = "This is an Amendment",
+                OrderingPartyContact = new Contact
+                {
+                    FirstName = "Clark",
+                    LastName = "Kent",
+                    Email = "Clark.Kent@TheDailyPlanet.Fake",
+                    Phone = "123456789",
+                },
+                SupplierId = 99998,
+                SupplierContact = new Contact
+                {
+                    FirstName = "Bruce",
+                    LastName = "Wayne",
+                    Email = "bat.man@Gotham.Fake",
+                    Phone = "123456789",
+                },
+                SelectedFrameworkId = DFOCVC,
+                CommencementDate = timeNow.AddDays(1),
+            };
+
+            var user = GetBuyerUser(context, order.OrderingPartyId);
+
+            context.Add(order);
             context.SaveChangesAs(user.Id);
         }
 

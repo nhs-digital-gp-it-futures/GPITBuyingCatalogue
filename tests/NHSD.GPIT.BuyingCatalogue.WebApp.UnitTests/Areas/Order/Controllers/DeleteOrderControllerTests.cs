@@ -54,6 +54,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             var actualResult = await controller.DeleteOrder(internalOrgId, order.CallOffId);
 
+            orderServiceMock.VerifyAll();
+
             actualResult.Should().BeOfType<ViewResult>();
         }
 
@@ -71,38 +73,87 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));
 
-            var actualResult = await controller.DeleteOrder(internalOrgId, order.CallOffId);
+            var result = await controller.DeleteOrder(internalOrgId, order.CallOffId);
 
-            actualResult.Should().BeOfType<RedirectToActionResult>();
-            actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(OrderController.Summary));
-            actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(OrderController).ControllerName());
-            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", order.CallOffId } });
-            orderServiceMock.Verify(o => o.DeleteOrder(order.CallOffId, internalOrgId), Times.Never);
+            orderServiceMock.VerifyAll();
+            orderServiceMock.VerifyNoOtherCalls();
+
+            var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actual.ActionName.Should().Be(nameof(OrderController.Summary));
+            actual.ControllerName.Should().Be(typeof(OrderController).ControllerName());
+            actual.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
+                { "callOffId", order.CallOffId },
+            });
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_DeleteOrder_Deletes_CorrectlyRedirects(
+        public static async Task Post_DeleteOrder_Amendment_YesSelected_CorrectlyRedirects(
             string internalOrgId,
             CallOffId callOffId,
             DeleteOrderModel model,
             [Frozen] Mock<IOrderService> orderServiceMock,
             DeleteOrderController controller)
         {
+            model.IsAmendment = true;
             model.SelectedOption = true;
 
-            var actualResult = await controller.DeleteOrder(internalOrgId, callOffId, model);
+            orderServiceMock
+                .Setup(x => x.HardDeleteOrder(callOffId, internalOrgId))
+                .Verifiable();
 
-            actualResult.Should().BeOfType<RedirectToActionResult>();
-            actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(DashboardController.Organisation));
-            actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(DashboardController).ControllerName());
-            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "internalOrgId", internalOrgId } });
-            orderServiceMock.Verify(o => o.DeleteOrder(callOffId, internalOrgId), Times.Once);
+            var result = await controller.DeleteOrder(internalOrgId, callOffId, model);
+
+            orderServiceMock.VerifyAll();
+            orderServiceMock.VerifyNoOtherCalls();
+
+            var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actual.ActionName.Should().Be(nameof(DashboardController.Organisation));
+            actual.ControllerName.Should().Be(typeof(DashboardController).ControllerName());
+            actual.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
+            });
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_DeleteOrder_DoesNotDelete_CorrectlyRedirects(
+        public static async Task Post_DeleteOrder_Order_YesSelected_CorrectlyRedirects(
+            string internalOrgId,
+            CallOffId callOffId,
+            DeleteOrderModel model,
+            [Frozen] Mock<IOrderService> orderServiceMock,
+            DeleteOrderController controller)
+        {
+            model.IsAmendment = false;
+            model.SelectedOption = true;
+
+            orderServiceMock
+                .Setup(x => x.SoftDeleteOrder(callOffId, internalOrgId))
+                .Verifiable();
+
+            var result = await controller.DeleteOrder(internalOrgId, callOffId, model);
+
+            orderServiceMock.VerifyAll();
+            orderServiceMock.VerifyNoOtherCalls();
+
+            var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actual.ActionName.Should().Be(nameof(DashboardController.Organisation));
+            actual.ControllerName.Should().Be(typeof(DashboardController).ControllerName());
+            actual.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
+            });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeleteOrder_NoSelected_DoesNotDelete_CorrectlyRedirects(
             string internalOrgId,
             CallOffId callOffId,
             DeleteOrderModel model,
@@ -111,13 +162,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             model.SelectedOption = false;
 
-            var actualResult = await controller.DeleteOrder(internalOrgId, callOffId, model);
+            var result = await controller.DeleteOrder(internalOrgId, callOffId, model);
 
-            actualResult.Should().BeOfType<RedirectToActionResult>();
-            actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(OrderController.Order));
-            actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(OrderController).ControllerName());
-            actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", callOffId } });
-            orderServiceMock.Verify(o => o.DeleteOrder(callOffId, internalOrgId), Times.Never);
+            orderServiceMock.VerifyNoOtherCalls();
+
+            var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actual.ActionName.Should().Be(nameof(OrderController.Order));
+            actual.ControllerName.Should().Be(typeof(OrderController).ControllerName());
+            actual.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
+                { "callOffId", callOffId },
+            });
         }
     }
 }

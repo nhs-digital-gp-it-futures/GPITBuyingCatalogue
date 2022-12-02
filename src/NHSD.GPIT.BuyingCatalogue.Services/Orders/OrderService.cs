@@ -58,7 +58,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public async Task<bool> HasSubsequentRevisions(CallOffId callOffId)
         {
             return await dbContext.Orders
-                .IgnoreQueryFilters()
                 .AnyAsync(x => x.OrderNumber == callOffId.OrderNumber && x.Revision > callOffId.Revision);
         }
 
@@ -336,11 +335,27 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return amendment;
         }
 
-        public async Task DeleteOrder(CallOffId callOffId, string internalOrgId)
+        public async Task SoftDeleteOrder(CallOffId callOffId, string internalOrgId)
         {
             var order = await dbContext.Order(internalOrgId, callOffId);
 
             order.IsDeleted = true;
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task HardDeleteOrder(CallOffId callOffId, string internalOrgId)
+        {
+            var order = await dbContext.Order(internalOrgId, callOffId);
+
+            dbContext.ContractFlags.RemoveRange(dbContext.ContractFlags.Where(x => x.OrderId == order.Id));
+            dbContext.OrderDeletionApprovals.RemoveRange(dbContext.OrderDeletionApprovals.Where(x => x.OrderId == order.Id));
+            dbContext.OrderItems.RemoveRange(dbContext.OrderItems.Where(x => x.OrderId == order.Id));
+            dbContext.OrderItemFunding.RemoveRange(dbContext.OrderItemFunding.Where(x => x.OrderId == order.Id));
+            dbContext.OrderItemPriceTiers.RemoveRange(dbContext.OrderItemPriceTiers.Where(x => x.OrderId == order.Id));
+            dbContext.OrderItemPrices.RemoveRange(dbContext.OrderItemPrices.Where(x => x.OrderId == order.Id));
+            dbContext.OrderItemRecipients.RemoveRange(dbContext.OrderItemRecipients.Where(x => x.OrderId == order.Id));
+            dbContext.Orders.Remove(order);
 
             await dbContext.SaveChangesAsync();
         }
