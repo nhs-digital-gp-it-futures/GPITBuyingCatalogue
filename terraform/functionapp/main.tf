@@ -17,12 +17,12 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "function_app_rg" {
-  name     = "${local.project_environment}-fa-rg"
+  name     = "${local.project_environment}-rg-functionapp"
   location = var.region
 }
 
 resource "azurerm_service_plan" "function_app_plan" {
-  name                = "${local.project_environment}-fa-plan"
+  name                = "${local.project_environment}-functionapp-service-plan"
   location            = azurerm_resource_group.function_app_rg.location
   resource_group_name = azurerm_resource_group.function_app_rg.name
   sku_name            = "P1v2"
@@ -38,7 +38,7 @@ resource "azurerm_storage_account" "function_app_storage" {
 }
 
 resource "azurerm_windows_function_app" "function_app" {
-  name = "${local.project_environment}-fa"
+  name = "${local.project_environment}-functionapp"
 
   app_settings = {
     APPINSIGHTS_INSTRUMENTATIONKEY  = data.azurerm_application_insights.app_insights.instrumentation_key
