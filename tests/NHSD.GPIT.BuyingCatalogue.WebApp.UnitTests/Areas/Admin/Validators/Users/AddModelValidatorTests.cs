@@ -241,6 +241,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         }
 
         [Theory]
+        [CommonInlineAutoData(null)]
+        public static void Validate_AccountStatusNullOrEmpty_SetsModelError(
+            bool? isActive,
+            AddModel model,
+            AddModelValidator validator)
+        {
+            model.IsActive = isActive;
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.IsActive)
+                .WithErrorMessage(AddModelValidator.AccountStatusMissingErrorMessage);
+        }
+
+        [Theory]
         [CommonAutoData]
         public static void Validate_EverythingOk_NoModelErrors(
             [Frozen] Mock<IUsersService> mockUsersService,

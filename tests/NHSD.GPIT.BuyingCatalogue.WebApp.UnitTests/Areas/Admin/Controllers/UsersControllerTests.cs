@@ -231,7 +231,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                     model.LastName,
                     model.Email,
                     model.SelectedAccountType,
-                    false))
+                    !model.IsActive!.Value))
                 .ReturnsAsync(new AspNetUser());
 
             var result = await controller.Add(model);

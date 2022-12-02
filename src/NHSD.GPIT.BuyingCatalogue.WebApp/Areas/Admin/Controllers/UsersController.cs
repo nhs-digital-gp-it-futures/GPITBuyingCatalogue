@@ -106,7 +106,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 model.FirstName,
                 model.LastName,
                 model.Email,
-                model.SelectedAccountType);
+                model.SelectedAccountType,
+                !model.IsActive!.Value);
 
             return RedirectToAction(nameof(Index));
         }
