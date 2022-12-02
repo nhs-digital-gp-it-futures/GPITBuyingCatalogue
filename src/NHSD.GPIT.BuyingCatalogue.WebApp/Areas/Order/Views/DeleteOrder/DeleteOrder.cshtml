@@ -16,20 +16,7 @@
 
             <nhs-warning-callout label-text="Deleting an @Model.OrderType"
                                  data-test-id="delete-warning-callout">
-                @if (Model.IsAmendment)
-                {
-                    <p>
-                        Deleting an amendment is permanent and any information you’ve already changed will be lost.
-                        The order will revert to its previous version.
-                    </p>
-                }
-                else
-                {
-                    <p>
-                        Deleting an order is permanent and any information you’ve already input will be lost.
-                        Once you’ve deleted your order, you’ll not be able to retrieve it and will have to start a new one.
-                    </p>
-                }
+                <p>@Model.Warning</p>
             </nhs-warning-callout>
 
             <form method="post">
