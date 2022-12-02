@@ -15,7 +15,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
 {
     public class UserDetailsModelValidatorTests
     {
-        private const string EmailAddress = "a@b.com";
+        private const string InvalidEmailAddress = "a@b.com";
+        private const string EmailAddress = "a@nhs.net";
 
         [Theory]
         [CommonInlineAutoData(null)]
@@ -112,9 +113,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
             UserDetailsModel model,
             UserDetailsModelValidator validator)
         {
-            model.Email = EmailAddress;
+            model.Email = InvalidEmailAddress;
 
-            mockEmailDomainService.Setup(s => s.IsAllowed(EmailAddress))
+            mockEmailDomainService.Setup(s => s.IsAllowed(InvalidEmailAddress))
                 .ReturnsAsync(false);
 
             var result = validator.TestValidate(model);
@@ -127,6 +128,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         [CommonAutoData]
         public static void Validate_EmailInUse_SetsModelError(
             [Frozen] Mock<IUsersService> mockUsersService,
+            [Frozen] Mock<IEmailDomainService> mockEmailDomainService,
             UserDetailsModel model,
             UserDetailsModelValidator validator)
         {
@@ -134,6 +136,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
 
             mockUsersService
                 .Setup(x => x.EmailAddressExists(EmailAddress, 0))
+                .ReturnsAsync(true);
+
+            mockEmailDomainService
+                .Setup(x => x.IsAllowed(EmailAddress))
                 .ReturnsAsync(true);
 
             var result = validator.TestValidate(model);
