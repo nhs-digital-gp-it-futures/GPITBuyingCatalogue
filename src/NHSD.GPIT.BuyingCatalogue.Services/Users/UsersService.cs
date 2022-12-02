@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
@@ -39,7 +38,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
                 .Include(x => x.PrimaryOrganisation)
                 .Include(x => x.AspNetUserRoles)
                 .ThenInclude(x => x.Role)
-                .OrderBy(x => x.LastName)
+                .OrderBy(x => x.Disabled)
+                .ThenBy(x => x.LastName)
                 .ThenBy(x => x.FirstName)
                 .ToListAsync();
         }
@@ -74,6 +74,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
                 .Where(u => u.PrimaryOrganisationId == organisationId)
                 .Include(x => x.AspNetUserRoles)
                 .ThenInclude(x => x.Role)
+                .OrderBy(x => x.Disabled)
+                .ThenBy(x => x.LastName)
+                .ThenBy(x => x.FirstName)
                 .ToListAsync();
         }
 
@@ -146,14 +149,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
             return user != null;
         }
 
-        public async Task<bool> IsAccountManagerLimit(int organisationId)
+        public async Task<bool> IsAccountManagerLimit(int organisationId, int userId = 0)
         {
             var users = await userManager.Users
                 .Include(x => x.AspNetUserRoles)
                 .ThenInclude(x => x.Role)
                 .AsAsyncEnumerable()
                 .CountAsync(
-                    u => u.PrimaryOrganisationId == organisationId
+                    u => u.Id != userId
+                        && u.PrimaryOrganisationId == organisationId
                         && u.GetRoleName() == OrganisationFunction.AccountManager.Name
                         && !u.Disabled);
 

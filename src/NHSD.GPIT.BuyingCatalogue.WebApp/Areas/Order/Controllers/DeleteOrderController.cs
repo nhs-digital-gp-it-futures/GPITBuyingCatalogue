@@ -59,7 +59,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                     new { internalOrgId, callOffId });
             }
 
-            await orderService.DeleteOrder(callOffId, internalOrgId);
+            if (model.IsAmendment)
+            {
+                await orderService.HardDeleteOrder(callOffId, internalOrgId);
+            }
+            else
+            {
+                await orderService.SoftDeleteOrder(callOffId, internalOrgId);
+            }
 
             return RedirectToAction(
                 nameof(DashboardController.Organisation),

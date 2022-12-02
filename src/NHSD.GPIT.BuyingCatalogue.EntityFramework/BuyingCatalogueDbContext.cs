@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
@@ -100,7 +99,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<WorkOffPlan> WorkOffPlans { get; set; }
 
+        public DbSet<OrderDeletionApproval> OrderDeletionApprovals { get; set; }
+
         public DbSet<OrderItem> OrderItems { get; set; }
+
+        public DbSet<OrderItemFunding> OrderItemFunding { get; set; }
 
         public DbSet<OrderItemRecipient> OrderItemRecipients { get; set; }
 

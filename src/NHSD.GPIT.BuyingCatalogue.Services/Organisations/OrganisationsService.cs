@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
             if (existing == null)
             {
-                logger.LogWarning("No organisation found for ODS code {OdsCode}.", organisation.OdsCode);
+                logger.LogWarning("No organisation found for ODS code {OdsCode}", organisation.OdsCode);
                 return;
             }
 

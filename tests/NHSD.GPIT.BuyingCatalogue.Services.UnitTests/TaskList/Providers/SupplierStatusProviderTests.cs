@@ -73,15 +73,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonInlineAutoData(TaskProgress.Completed)]
+        [CommonInlineAutoData(TaskProgress.Amended)]
         public static void Get_OrderHasNoSupplierContact_ReturnsInProgress(
+            TaskProgress orderingPartyStatus,
             Supplier supplier,
             Order order,
             SupplierStatusProvider service)
         {
             var state = new OrderProgress
             {
-                OrderingPartyStatus = TaskProgress.Completed,
+                OrderingPartyStatus = orderingPartyStatus,
             };
 
             order.Supplier = supplier;
@@ -93,8 +95,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonInlineAutoData(TaskProgress.Completed)]
+        [CommonInlineAutoData(TaskProgress.Amended)]
         public static void Get_OrderHasSupplierAndSupplierContact_ReturnsCompleted(
+            TaskProgress orderingPartyStatus,
             Supplier supplier,
             Contact contact,
             Order order,
@@ -102,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         {
             var state = new OrderProgress
             {
-                OrderingPartyStatus = TaskProgress.Completed,
+                OrderingPartyStatus = orderingPartyStatus,
             };
 
             order.Supplier = supplier;

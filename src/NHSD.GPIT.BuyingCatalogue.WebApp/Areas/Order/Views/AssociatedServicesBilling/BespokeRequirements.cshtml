@@ -1,7 +1,4 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts;
-@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.AssociatedServicesBilling.BasicBillingModel
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.AssociatedServicesBilling.BasicBillingModel
 @{
     ViewBag.Title = "Bespoke Associated Services requirements";
 }
@@ -16,7 +13,7 @@
                         advice="Document any specific requirements for your Associated Services."/>
 
         <p>As you’ve agreed some specific requirements for your Associated Services with the supplier, you need to document them.
-            You can do this by downloading and completing <a href="https://gpitbjss.atlassian.net/wiki/spaces/BC/pages/12075008028/Order+form+template+Appendix+2+Associated+Service+billing+and+requirements" target="_blank">section 2 of Appendix 2: Associated Services billing and requirements (opens in a new tab)</a></p>
+            You can do this by downloading and completing <a href="https://gpitbjss.atlassian.net/wiki/spaces/BG/pages/12209684600/Order+form+appendix+2+Associated+Service+billing+and+requirements" target="_blank">section 2 of Appendix 2: Associated Services billing and requirements (opens in a new tab)</a></p>
         <p>This document must be included when you send your order to the supplier. You can download it now or after you’ve completed your order. </p>
 
         <vc:nhs-secondary-button url="@Url.Action(nameof(OrderController.Order),

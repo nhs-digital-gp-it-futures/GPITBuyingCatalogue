@@ -1,7 +1,6 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.UserModels.DetailsModel
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.UserModels.DetailsModel
 @{
-    ViewBag.Title = "View user";
+    ViewBag.Title = "Edit user";
 }
 
 @section Breadcrumbs {
@@ -132,18 +131,6 @@
                     </nhs-table-row-container>
                 </nhs-table>
             </div>
-
-            @if (!Model.User.Disabled)
-            {
-                <div class="nhsuk-u-margin-bottom-6">
-                    <vc:nhs-secondary-button url="@Url.Action(
-                                                      nameof(UsersController.ResetPassword),
-                                                      typeof(UsersController).ControllerName(),
-                                                      new { userId = @Model.User.Id })"
-                                             text="Reset password"
-                                             type="Secondary" />
-                </div>
-            }
         </div>
 
         <div class="nhsuk-grid-column-full">

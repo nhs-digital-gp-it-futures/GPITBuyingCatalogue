@@ -165,16 +165,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
                 nameof(UsersController.Details)).Should().BeTrue();
         }
 
-        [Fact]
-        public void ClickResetPasswordLink_DisplaysCorrectPage()
-        {
-            CommonActions.ClickLinkElement(UserObjects.ResetPasswordLink);
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(UsersController),
-                nameof(UsersController.ResetPassword)).Should().BeTrue();
-        }
-
         private async Task AssertAllFieldsPresent(bool isUserActive)
         {
             CommonActions.ElementIsDisplayed(BreadcrumbObjects.HomeBreadcrumbLink).Should().BeTrue();
@@ -192,7 +182,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             CommonActions.ElementIsDisplayed(UserObjects.EditOrganisationLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(UserObjects.EditAccountTypeLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(UserObjects.EditAccountStatusLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(UserObjects.ResetPasswordLink).Should().Be(isUserActive);
 
             CommonActions.ElementExists(UserObjects.OrdersTable).Should().BeFalse();
             CommonActions.ElementIsDisplayed(UserObjects.OrdersErrorMessage).Should().BeTrue();

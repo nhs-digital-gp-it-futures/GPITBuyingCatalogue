@@ -3,10 +3,16 @@
 @using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 @using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.Contracts
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Order.OrderModel
 
 @{
     ViewBag.Title = Model.Title;
+
+    var isAmendment = Model.IsAmendment;
+    var deleteButtonTitle = isAmendment ? "Delete amendment" : "Delete order";
+    var contractSectionLabel = isAmendment ? "Supporting documents" : "Complete contract";
+    var solutionsAndServicesSectionLabel = isAmendment ? "Solution and services" : "Add solutions and services";
 }
 
 <div data-test-id="@Model.CallOffId-page">
@@ -29,13 +35,13 @@
             <nhs-task-list>
                 <nhs-task-list-section label-text="Prepare order">
                     <nhs-task-list-item label-text="Order description"
-                                        label-hint="Provide a description of your order."
+                                        label-hint="@Model.StatusDescription(OrderSummaryField.OrderDescription, isAmendment)"
                                         data-test-id="test-order-description"
                                         url="@Model.DescriptionUrl"
                                         status="@Model.Progress.DescriptionStatus" />
 
                     <nhs-task-list-item label-text="Call-off Ordering Party contact details"
-                                        label-hint="Provide information about the primary contact for your order."
+                                        label-hint="@Model.StatusDescription(OrderSummaryField.OrderingParty, isAmendment)"
                                         data-test-id="test-calloff-party"
                                         url="@Url.Action(
                                                  nameof(OrderingPartyController.OrderingParty),
@@ -44,7 +50,7 @@
                                         status="@Model.Progress.OrderingPartyStatus" />
 
                     <nhs-task-list-item label-text="Supplier information and contact details"
-                                        label-hint="Find the supplier you want to order from and select a supplier contact."
+                                        label-hint="@Model.StatusDescription(OrderSummaryField.Supplier, isAmendment)"
                                         data-test-id="test-supplier-contact"
                                         url="@Url.Action(
                                                  nameof(SupplierController.Supplier),
@@ -53,7 +59,7 @@
                                         status="@Model.Progress.SupplierStatus" />
 
                     <nhs-task-list-item label-text="Timescales for Call-off Agreement"
-                                        label-hint="Provide the commencement date, the length of the contract and its initial period."
+                                        label-hint="@Model.StatusDescription(OrderSummaryField.CommencementDate, isAmendment)"
                                         data-test-id="test-timescales"
                                         url="@Url.Action(
                                                  nameof(CommencementDateController.CommencementDate),
@@ -62,29 +68,32 @@
                                         status="@Model.Progress.CommencementDateStatus" />
                 </nhs-task-list-section>
 
-                <nhs-task-list-section label-text="Add solutions and services">
+                <nhs-task-list-section label-text="@solutionsAndServicesSectionLabel">
                     <nhs-task-list-item label-text="Select solutions and services"
-                                        label-hint="Add Service Recipients, prices and quantities for what you’re ordering."
+                                        label-hint="@Model.StatusDescription(OrderSummaryField.SolutionsAndServices, isAmendment)"
                                         data-test-id="test-solutions-and-services"
                                         url="@SolutionSelectionUrlTarget(Model.Progress.SolutionOrService)"
                                         status="@Model.Progress.SolutionOrService" />
 
-                    <nhs-task-list-item label-text="Planned delivery dates"
-                                        label-hint="Enter the planned delivery dates for the items you're ordering."
-                                        data-test-id="test-planned-delivery-dates"
-                                        url="@DeliveryDatesUrlTarget(Model.Progress.DeliveryDates)"
-                                        status="@Model.Progress.DeliveryDates" />
+                    @if (!isAmendment)
+                    {
+                        <nhs-task-list-item label-text="Planned delivery dates"
+                                            label-hint="@Model.StatusDescription(OrderSummaryField.PlannedDeliveryDates, isAmendment: false)"
+                                            data-test-id="test-planned-delivery-dates"
+                                            url="@DeliveryDatesUrlTarget(Model.Progress.DeliveryDates)"
+                                            status="@Model.Progress.DeliveryDates" />
+                    }
 
                     <nhs-task-list-item label-text="Select funding sources"
-                                        label-hint="Review how you’ll be paying for your order."
+                                        label-hint="@Model.StatusDescription(OrderSummaryField.FundingSources, isAmendment)"
                                         data-test-id="test-funding-sources"
                                         url="@FundingSourceUrlTarget()"
                                         status="@Model.Progress.FundingSource" />
                 </nhs-task-list-section>
 
-                <nhs-task-list-section label-text="Complete contract">
+                <nhs-task-list-section label-text="@contractSectionLabel">
                     <nhs-task-list-item label-text="Implementation plan milestones"
-                                        label-hint="Select if you’re using the standard implementation plan milestones or have agreed bespoke ones."
+                                        label-hint="@Model.StatusDescription(OrderSummaryField.ImplementationPlan, isAmendment)"
                                         data-test-id="test-implementation-milestones"
                                         url="@Url.Action(
                                                  nameof(ImplementationPlanController.DefaultImplementationPlan),
@@ -92,17 +101,20 @@
                                                  new { Model.InternalOrgId, Model.CallOffId })"
                                         status="@Model.Progress.ImplementationPlan" />
 
-                    <nhs-task-list-item label-text="Associated Service billing and requirements"
-                                        label-hint="Select how you’d like to be billed for any Associated Services in your order."
-                                        data-test-id="test-associated-service-billing"
-                                        url="@Url.Action(
-                                                 nameof(AssociatedServicesBillingController.ReviewBilling),
-                                                 typeof(AssociatedServicesBillingController).ControllerName(),
-                                                 new { Model.InternalOrgId, Model.CallOffId })"
-                                        status="@Model.Progress.AssociatedServiceBilling" />
+                    @if (!isAmendment)
+                    {
+                        <nhs-task-list-item label-text="Associated Service billing and requirements"
+                                            label-hint="@Model.StatusDescription(OrderSummaryField.AssociatedServicesBilling, isAmendment: false)"
+                                            data-test-id="test-associated-service-billing"
+                                            url="@Url.Action(
+                                                     nameof(AssociatedServicesBillingController.ReviewBilling),
+                                                     typeof(AssociatedServicesBillingController).ControllerName(),
+                                                     new { Model.InternalOrgId, Model.CallOffId })"
+                                            status="@Model.Progress.AssociatedServiceBilling" />
+                    }
 
                     <nhs-task-list-item label-text="Data processing information"
-                                        label-hint="Select if you want to make any changes to the default data processing information."
+                                        label-hint="@Model.StatusDescription(OrderSummaryField.DataProcessing, isAmendment)"
                                         data-test-id="test-data-processing-info"
                                         url="@Url.Action(
                                                 nameof(DataProcessingPlanController.Index),
@@ -113,7 +125,7 @@
 
                 <nhs-task-list-section label-text="Complete order">
                     <nhs-task-list-item label-text="Review and complete order"
-                                        label-hint="Check the information you’ve provided is correct and complete your order."
+                                        label-hint="@Model.StatusDescription(OrderSummaryField.ReviewAndComplete, isAmendment)"
                                         data-test-id="test-review-and-complete-order"
                                         url="@Url.Action(
                                                  nameof(OrderController.Summary),
@@ -138,12 +150,12 @@
                                      type="Secondary" />
                 </nhs-button-group>
 
-                <vc:nhs-secondary-button text="Delete order"
-                            url="@Url.Action(
-                                    nameof(DeleteOrderController.DeleteOrder),
-                                    typeof(DeleteOrderController).ControllerName(),
-                                    new { Model.InternalOrgId, Model.CallOffId })"
-                            type="Delete"/>
+                <vc:nhs-secondary-button text="@deleteButtonTitle"
+                                         url="@Url.Action(
+                                                  nameof(DeleteOrderController.DeleteOrder),
+                                                  typeof(DeleteOrderController).ControllerName(),
+                                                  new { Model.InternalOrgId, Model.CallOffId })"
+                                         type="Delete"/>
             }
 
             @if (Model.LastUpdated is not null
@@ -206,8 +218,7 @@
         _ => throw new ArgumentException("Orders solution selection currently in a status that it should not be able to be in."),
     };
 
-    string FundingSourceUrlTarget() =>
-        Model.ShowSelectFrameworkPage
+    string FundingSourceUrlTarget() => Model.ShowSelectFrameworkPage
         ? Url.Action(
             nameof(FundingSourceController.SelectFramework),
             typeof(FundingSourceController).ControllerName(),

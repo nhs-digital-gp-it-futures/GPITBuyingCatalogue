@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using MoreLinq;
-using MoreLinq.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
@@ -30,23 +28,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         private readonly ICreateUserService createUserService;
         private readonly IOrderService orderService;
         private readonly IOrganisationsService organisationsService;
-        private readonly IPasswordResetCallback passwordResetCallback;
-        private readonly IPasswordService passwordService;
         private readonly IUsersService usersService;
 
         public UsersController(
             ICreateUserService createUserService,
             IOrderService orderService,
             IOrganisationsService organisationsService,
-            IPasswordResetCallback passwordResetCallback,
-            IPasswordService passwordService,
             IUsersService usersService)
         {
             this.createUserService = createUserService ?? throw new ArgumentNullException(nameof(createUserService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
-            this.passwordResetCallback = passwordResetCallback ?? throw new ArgumentNullException(nameof(passwordResetCallback));
-            this.passwordService = passwordService ?? throw new ArgumentNullException(nameof(passwordService));
             this.usersService = usersService ?? throw new ArgumentNullException(nameof(usersService));
         }
 
@@ -114,7 +106,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 model.FirstName,
                 model.LastName,
                 model.Email,
-                model.SelectedAccountType);
+                model.SelectedAccountType,
+                !model.IsActive!.Value);
 
             return RedirectToAction(nameof(Index));
         }
@@ -274,35 +267,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 model.FirstName,
                 model.LastName,
                 model.Email);
-
-            return RedirectToAction(nameof(Details), new { userId });
-        }
-
-        [HttpGet("{userId}/reset-password")]
-        public async Task<IActionResult> ResetPassword(int userId)
-        {
-            var user = await usersService.GetUser(userId);
-
-            if (user == null)
-            {
-                return new NotFoundResult();
-            }
-
-            return View(new ResetPasswordModel
-            {
-                BackLink = Url.Action(nameof(Details), new { userId }),
-                Email = user.Email,
-            });
-        }
-
-        [HttpPost("{userId}/reset-password")]
-        public async Task<IActionResult> ResetPassword(int userId, ResetPasswordModel model)
-        {
-            var user = await usersService.GetUser(userId);
-            var token = await passwordService.GeneratePasswordResetTokenAsync(user.Email);
-            var callbackUri = passwordResetCallback.GetPasswordResetCallback(token);
-
-            await passwordService.SendResetEmailAsync(user, callbackUri);
 
             return RedirectToAction(nameof(Details), new { userId });
         }

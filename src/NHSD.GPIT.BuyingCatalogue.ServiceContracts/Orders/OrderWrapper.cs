@@ -6,18 +6,15 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 {
     public class OrderWrapper
     {
-        private readonly List<Order> previous;
+        private readonly List<Order> previous = new();
 
         public OrderWrapper()
         {
-            Order = null;
-            previous = new List<Order>();
         }
 
         public OrderWrapper(Order order)
         {
             Order = order;
-            previous = new List<Order>();
         }
 
         public OrderWrapper(IEnumerable<Order> orders)
@@ -32,6 +29,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
                 ? ordered.SkipLast(1).ToList()
                 : new List<Order>();
         }
+
+        public Order Last => previous.Any()
+            ? previous.Last()
+            : null;
 
         public Order Order { get; set; }
     }

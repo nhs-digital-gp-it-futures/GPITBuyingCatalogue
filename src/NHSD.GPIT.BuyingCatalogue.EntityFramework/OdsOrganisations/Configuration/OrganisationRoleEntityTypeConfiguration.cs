@@ -13,7 +13,7 @@ public class OrganisationRoleEntityTypeConfiguration : IEntityTypeConfiguration<
         builder.HasKey(x => x.Id);
 
         builder.HasOne(x => x.Organisation)
-            .WithMany()
+            .WithMany(x => x.Roles)
             .HasForeignKey(x => x.OrganisationId);
 
         builder.HasOne(x => x.RoleType)

@@ -7,7 +7,7 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-validation-summary RadioId="SelectedAccountType,SelectedAccountStatusId" />
+        <nhs-validation-summary RadioId="SelectedAccountType,IsActive" />
 
         <nhs-page-title title="@ViewBag.Title"
                         advice="Provide the following information about this user."/>
@@ -34,9 +34,20 @@
                         <nhs-radio-buttons asp-for="SelectedAccountType"
                                            values="Model.AccountTypeOptions.Cast<object>()"
                                            value-name="Value"
-                                           display-name="Text" />
+                                           display-name="Name"
+                                           hint-name="Advice" />
                     </nhs-fieldset-form-label>
                 </div>
+                
+                <nhs-fieldset-form-label asp-for="IsActive"
+                                         label-text="Account status"
+                                         label-hint="Select one option."
+                                         size="Medium">
+                    <nhs-radio-buttons asp-for="IsActive"
+                                       values="@Model.StatusOptions.Cast<object>()"
+                                       value-name="Value"
+                                       display-name="Name" />
+                </nhs-fieldset-form-label>
             </div>
 
             <nhs-submit-button/>

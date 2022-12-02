@@ -1,6 +1,4 @@
 ﻿using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModels;

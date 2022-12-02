@@ -36,6 +36,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             ? $"{CommencementDate?.AddMonths(MaximumTerm.Value).AddDays(-1):dd MMMM yyyy}"
             : string.Empty;
 
+        public bool IsAmendment => CallOffId.Revision > 1;
+
         public void Complete()
         {
             Completed = DateTime.UtcNow;

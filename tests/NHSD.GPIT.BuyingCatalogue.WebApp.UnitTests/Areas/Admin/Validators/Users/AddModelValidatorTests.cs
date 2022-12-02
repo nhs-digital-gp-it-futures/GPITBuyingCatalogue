@@ -208,7 +208,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
             };
 
             mockUsersService
-                .Setup(x => x.IsAccountManagerLimit(organisationId))
+                .Setup(x => x.IsAccountManagerLimit(organisationId, 0))
                 .ReturnsAsync(false);
 
             var result = validator.TestValidate(model);
@@ -231,13 +231,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
             };
 
             mockUsersService
-                .Setup(x => x.IsAccountManagerLimit(organisationId))
+                .Setup(x => x.IsAccountManagerLimit(organisationId, 0))
                 .ReturnsAsync(true);
 
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedAccountType)
                 .WithErrorMessage(string.Format(AddModelValidator.MustNotExceedAccountManagerLimit, accountManagementSettings.MaximumNumberOfAccountManagers));
+        }
+
+        [Theory]
+        [CommonInlineAutoData(null)]
+        public static void Validate_AccountStatusNullOrEmpty_SetsModelError(
+            bool? isActive,
+            AddModel model,
+            AddModelValidator validator)
+        {
+            model.IsActive = isActive;
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.IsActive)
+                .WithErrorMessage(AddModelValidator.AccountStatusMissingErrorMessage);
         }
 
         [Theory]

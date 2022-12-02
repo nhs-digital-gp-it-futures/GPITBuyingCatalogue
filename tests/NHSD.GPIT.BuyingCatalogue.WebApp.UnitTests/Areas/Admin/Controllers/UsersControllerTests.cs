@@ -231,7 +231,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                     model.LastName,
                     model.Email,
                     model.SelectedAccountType,
-                    false))
+                    !model.IsActive!.Value))
                 .ReturnsAsync(new AspNetUser());
 
             var result = await controller.Add(model);
@@ -561,70 +561,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var result = await controller.PersonalDetails(UserId, model);
 
             mockUsersService.VerifyAll();
-
-            var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
-
-            actual.ActionName.Should().Be(nameof(UsersController.Details));
-            actual.RouteValues.Should().BeEquivalentTo(new Dictionary<string, int>
-            {
-                { "userId", UserId },
-            });
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_ResetPassword_ReturnsExpectedResult(
-            AspNetUser user,
-            [Frozen] Mock<IUsersService> mockUsersService,
-            UsersController controller)
-        {
-            mockUsersService
-                .Setup(x => x.GetUser(UserId))
-                .ReturnsAsync(user);
-
-            var result = await controller.ResetPassword(UserId);
-
-            mockUsersService.VerifyAll();
-
-            var actual = result.Should().BeOfType<ViewResult>().Subject;
-            var model = actual.Model.Should().BeOfType<ResetPasswordModel>().Subject;
-
-            model.Email.Should().Be(user.Email);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_ResetPassword_ReturnsExpectedResult(
-            ResetPasswordModel model,
-            AspNetUser user,
-            PasswordResetToken token,
-            Uri uri,
-            [Frozen] Mock<IUsersService> mockUsersService,
-            [Frozen] Mock<IPasswordService> mockPasswordService,
-            [Frozen] Mock<IPasswordResetCallback> mockPasswordResetCallback,
-            UsersController controller)
-        {
-            mockUsersService
-                .Setup(x => x.GetUser(UserId))
-                .ReturnsAsync(user);
-
-            mockPasswordService
-                .Setup(x => x.GeneratePasswordResetTokenAsync(user.Email))
-                .ReturnsAsync(token);
-
-            mockPasswordResetCallback
-                .Setup(x => x.GetPasswordResetCallback(token))
-                .Returns(uri);
-
-            mockPasswordService
-                .Setup(x => x.SendResetEmailAsync(user, uri))
-                .Returns(Task.CompletedTask);
-
-            var result = await controller.ResetPassword(UserId, model);
-
-            mockUsersService.VerifyAll();
-            mockPasswordService.VerifyAll();
-            mockPasswordResetCallback.VerifyAll();
 
             var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
 

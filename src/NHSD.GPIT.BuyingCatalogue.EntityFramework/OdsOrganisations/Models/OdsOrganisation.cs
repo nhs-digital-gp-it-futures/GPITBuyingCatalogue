@@ -2,7 +2,7 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 
-public class OdsOrganisation
+public partial class OdsOrganisation
 {
     public string Id { get; set; }
 
@@ -29,4 +29,6 @@ public class OdsOrganisation
 
     public virtual ICollection<OrganisationRelationship> Parents { get; set; } =
         new HashSet<OrganisationRelationship>();
+
+    public virtual ICollection<OrganisationRole> Roles { get; set; } = new HashSet<OrganisationRole>();
 }
