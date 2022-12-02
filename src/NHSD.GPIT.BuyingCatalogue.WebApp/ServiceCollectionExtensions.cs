@@ -21,8 +21,10 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.Services.Email;
 using NHSD.GPIT.BuyingCatalogue.Services.Identity;
+using NHSD.GPIT.BuyingCatalogue.Services.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
 using Notify.Client;
@@ -102,6 +104,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             var odsSettings = configuration.GetSection("Ods").Get<OdsSettings>();
 
             services.AddSingleton(odsSettings);
+
+            if (odsSettings.UseTrud)
+                services.AddScoped<IOdsService, TrudOdsService>();
+            else
+                services.AddScoped<IOdsService, OdsService>();
         }
 
         public static void ConfigureDbContexts(this IServiceCollection services)
