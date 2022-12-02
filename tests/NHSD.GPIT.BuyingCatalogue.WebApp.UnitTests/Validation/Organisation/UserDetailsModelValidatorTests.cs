@@ -220,7 +220,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Organisation
         {
             model.FirstName = firstName;
             model.LastName = lastName;
-            model.EmailAddress = "a@a.com";
+            model.EmailAddress = "a@nhs.net";
 
             var result = validator.TestValidate(model);
 
