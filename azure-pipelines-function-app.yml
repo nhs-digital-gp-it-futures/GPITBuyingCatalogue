@@ -47,6 +47,7 @@ jobs:
           arguments: "--no-build --configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/BuyingCatalogueFunction"
           publishWebProjects: false
           modifyOutputPath: false
+          zipAfterPublish: true
 
       - task: PublishBuildArtifacts@1
         displayName: Package BuyingCatalogueFunction
@@ -54,13 +55,6 @@ jobs:
           PathtoPublish: "$(Build.ArtifactStagingDirectory)/BuyingCatalogueFunction"
           ArtifactName: "BuyingCatalogueFunction"
           publishLocation: "Container"
-
-      - task: ArchiveFiles@2
-        inputs:
-          rootFolderOrFile: "$(Build.ArtifactStagingDirectory)/BuyingCatalogueFunction"
-          includeRootFolder: false
-          archiveType: "zip"
-          archiveFile: "$(Build.ArtifactStagingDirectory)/BuyingCatalogueFunction/BuyingCatalogueFunction.zip"
 
   - job: Terraform
     displayName: Package Terraform
