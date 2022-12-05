@@ -183,7 +183,7 @@
     </pdf-summary-list-row>
 
     <pdf-summary-list-row label-text="Date order summary created">
-        @DateTime.UtcNow.ToLongDateString()
+        @DateTime.UtcNow.ToString("d MMMM yyyy")
     </pdf-summary-list-row>
 
     @if (Model.Order.OrderStatus == OrderStatus.Completed
@@ -216,7 +216,7 @@
     @if (Model.Order.CommencementDate != null)
     {
         <pdf-summary-list-row label-text="Commencement date">
-            @Model.Order.CommencementDate?.ToLongDateString()
+            @($"{Model.Order.CommencementDate.Value:d MMMM yyyy}")
         </pdf-summary-list-row>
     }
 

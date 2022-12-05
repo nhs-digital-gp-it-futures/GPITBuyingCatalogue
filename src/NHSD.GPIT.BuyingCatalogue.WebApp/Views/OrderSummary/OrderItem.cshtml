@@ -55,7 +55,7 @@
         @foreach (var recipient in Model.OrderItem.OrderItemRecipients)
         {
             var deliveryDate = recipient.DeliveryDate.HasValue
-                ? $"{recipient.DeliveryDate.Value:dd MMMM yyyy}"
+                ? $"{recipient.DeliveryDate.Value:d MMMM yyyy}"
                 : "No date entered";
 
             <tr class="alternating">
