@@ -57,16 +57,10 @@ jobs:
 
       - task: ArchiveFiles@2
         inputs:
-          rootFolderOrFile: "$(Build.ArtifactStagingDirectory)/OrganisationImporter"
+          rootFolderOrFile: "$(Build.ArtifactStagingDirectory)/BuyingCatalogueFunction"
           includeRootFolder: false
           archiveType: "zip"
-          archiveFile: "$(Build.ArtifactStagingDirectory)/OrganisationImporter/OrganisationImporter.zip"
-
-      - task: DeleteFiles@1
-        inputs:
-          SourceFolder: "$(Build.ArtifactStagingDirectory)/OrganisationImporter/App_Data"
-          Contents: "**"
-          RemoveSourceFolder: true
+          archiveFile: "$(Build.ArtifactStagingDirectory)/BuyingCatalogueFunction/BuyingCatalogueFunction.zip"
 
   - job: Terraform
     displayName: Package Terraform
