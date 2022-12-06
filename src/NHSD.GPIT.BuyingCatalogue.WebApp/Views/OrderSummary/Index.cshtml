@@ -190,7 +190,7 @@
         && Model.Order.Completed.HasValue)
     {
         <pdf-summary-list-row label-text="Date order summary completed">
-            @Model.Order.Completed.Value.ToLongDateString()
+            @Model.Order.Completed.Value.ToString("d MMMM yyyy")
         </pdf-summary-list-row>
     }
 
