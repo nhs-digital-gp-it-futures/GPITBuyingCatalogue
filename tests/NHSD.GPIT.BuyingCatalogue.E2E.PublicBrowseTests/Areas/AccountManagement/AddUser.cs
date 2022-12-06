@@ -20,6 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
     {
         private const int OrganisationId = 176;
 
+        private const string ValidEmail = "a@nhs.net";
         private const string FirstNameRequired = "Enter a first name";
         private const string LastNameRequired = "Enter a last name";
         private const string EmailAddressRequired = "Enter an email address";
@@ -74,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
         public void AddUser_AddUser_ExpectedResult()
         {
             var user = GenerateUser.Generate();
-
+            user.EmailAddress = ValidEmail;
             AccountManagementPages.AddUser.EnterFirstName(user.FirstName);
             AccountManagementPages.AddUser.EnterLastName(user.LastName);
             AccountManagementPages.AddUser.EnterEmailAddress(user.EmailAddress);

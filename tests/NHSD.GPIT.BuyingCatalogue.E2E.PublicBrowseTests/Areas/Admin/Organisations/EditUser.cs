@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
     {
         private const int OrganisationId = 176;
         private const int UserId = 5;
-
+        private const string ValidEmail = "a@nhs.net";
         private const string FirstNameRequired = "Enter a first name";
         private const string LastNameRequired = "Enter a last name";
         private const string EmailAddressRequired = "Enter an email address";
@@ -93,7 +93,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         {
             CommonActions.ClickRadioButtonWithText(OrganisationFunction.AccountManager.DisplayName);
             CommonActions.ClickRadioButtonWithText("Inactive");
-
+            CommonActions.ClearInputElement(AddUserObjects.Email);
+            AccountManagementPages.AddUser.EnterEmailAddress(ValidEmail);
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
