@@ -12,9 +12,6 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -180,12 +177,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockOrganisationsService.VerifyAll();
 
             var actual = result.Should().BeOfType<ViewResult>().Subject;
+            actual.ViewName.Should().Be("UserDetails");
+
             var model = actual.Model.Should().BeOfType<UserDetailsModel>().Subject;
 
             foreach (var organisation in organisations)
             {
                 model.Organisations.Should().Contain(x => x.Value == $"{organisation.Id}" && x.Text == organisation.Name);
             }
+
+            model.Title.Should().Contain("Add user");
         }
 
         [Theory]
@@ -207,12 +208,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockOrganisationsService.VerifyAll();
 
             var actual = result.Should().BeOfType<ViewResult>().Subject;
+            actual.ViewName.Should().Be("UserDetails");
             var actualModel = actual.Model.Should().BeAssignableTo<UserDetailsModel>().Subject;
 
-            foreach (var organisation in organisations)
-            {
-                actualModel.Organisations.Should().Contain(x => x.Value == $"{organisation.Id}" && x.Text == organisation.Name);
-            }
+            actualModel.Should().BeEquivalentTo(model);
         }
 
         [Theory]
@@ -241,6 +240,128 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
             actual.ActionName.Should().Be(nameof(UsersController.Index));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditUser_ReturnsExpectedResult(
+            List<Organisation> organisations,
+            AspNetUser user,
+            [Frozen] Mock<IUsersService> mockUsersService,
+            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
+            UsersController controller)
+        {
+            mockOrganisationsService
+                .Setup(x => x.GetAllOrganisations())
+                .ReturnsAsync(organisations);
+
+            mockUsersService
+                .Setup(x => x.GetUser(user.Id))
+                .ReturnsAsync(user);
+
+            var result = (await controller.Edit(user.Id)).As<ViewResult>();
+
+            mockOrganisationsService.VerifyAll();
+
+            result.Should().NotBeNull();
+            result.ViewName.Should().Be("UserDetails");
+
+            var model = result.Model.Should().BeAssignableTo<UserDetailsModel>().Subject;
+
+            foreach (var organisation in organisations)
+            {
+                model.Organisations.Should().Contain(x => x.Value == $"{organisation.Id}" && x.Text == organisation.Name);
+            }
+
+            model.UserId.Should().Be(user.Id);
+            model.Title.Should().Be("Edit user");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditUser_NullUser_ReturnsExpectedResult(
+            List<Organisation> organisations,
+            AspNetUser user,
+            [Frozen] Mock<IUsersService> mockUsersService,
+            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
+            UsersController controller)
+        {
+            mockOrganisationsService
+                .Setup(x => x.GetAllOrganisations())
+                .ReturnsAsync(organisations);
+
+            mockUsersService
+                .Setup(x => x.GetUser(user.Id))
+                .ReturnsAsync((AspNetUser)null);
+
+            var result = (await controller.Edit(user.Id)).As<NotFoundResult>();
+
+            mockOrganisationsService.VerifyAll();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditUser_WithModelErrors_ReturnsExpectedResult(
+            int userId,
+            UserDetailsModel model,
+            UsersController controller)
+        {
+            controller.ModelState.AddModelError("key", "errorMessage");
+
+            var result = (await controller.Edit(userId, model)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.ViewName.Should().Be("UserDetails");
+
+            var actualModel = result.Model.Should().BeAssignableTo<UserDetailsModel>().Subject;
+
+            actualModel.Should().BeEquivalentTo(model);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditUser_NullUser_ReturnsExpectedResult(
+            int userId,
+            UserDetailsModel model,
+            [Frozen] Mock<IUsersService> mockUsersService,
+            UsersController controller)
+        {
+            mockUsersService
+                .Setup(x => x.GetUser(userId))
+                .ReturnsAsync((AspNetUser)null);
+
+            var result = (await controller.Edit(userId, model)).As<NotFoundResult>();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditUser_ValidModel_ReturnsExpectedResult(
+            int userId,
+            AspNetUser user,
+            UserDetailsModel model,
+            [Frozen] Mock<IUsersService> mockUsersService,
+            UsersController controller)
+        {
+            mockUsersService
+                .Setup(x => x.GetUser(userId))
+                .ReturnsAsync(user);
+
+            model.SelectedOrganisationId = "1";
+
+            mockUsersService
+                .Setup(x => x.UpdateUser(userId, model.FirstName, model.LastName, model.Email, !model.IsActive!.Value, model.SelectedAccountType, int.Parse(model.SelectedOrganisationId)))
+                .Returns(Task.CompletedTask);
+
+            var result = (await controller.Edit(userId, model)).As<RedirectToActionResult>();
+
+            mockUsersService.VerifyAll();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(UsersController.Index));
         }
     }
 }

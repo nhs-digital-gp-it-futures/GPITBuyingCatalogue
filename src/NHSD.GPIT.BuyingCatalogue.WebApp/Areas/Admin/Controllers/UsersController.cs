@@ -132,7 +132,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost("{userId}/edit")]
-        public async Task<IActionResult> EditUser(int userId, Models.UserModels.UserDetailsModel model)
+        public async Task<IActionResult> Edit(int userId, Models.UserModels.UserDetailsModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -140,6 +140,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 model.Organisations = GetFormattedOrganisations(organisations);
                 return View("UserDetails", model);
             }
+
+            var user = await usersService.GetUser(userId);
+
+            if (user == null)
+                return NotFound();
 
             await usersService.UpdateUser(
                 userId,

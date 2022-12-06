@@ -14,6 +14,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Organisation
 {
     public static class UserDetailsModelValidatorTests
     {
+        private const string InvalidEmailAddress = "a@b.com";
+        private const string EmailAddress = "a@nhs.net";
+
         [Theory]
         [CommonInlineAutoData(null)]
         [CommonInlineAutoData("")]
@@ -49,6 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Organisation
         [Theory]
         [CommonInlineAutoData(null)]
         [CommonInlineAutoData("")]
+        [CommonInlineAutoData(" ")]
         public static void Validate_EmailAddressNullOrEmpty_SetsModelError(
             string emailAddress,
             UserDetailsModel model,
@@ -79,18 +83,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Organisation
 
         [Theory]
         [CommonAutoData]
+        public static void Validate_InvalidEmailDomain_SetsModelError(
+            [Frozen] Mock<IEmailDomainService> mockEmailDomainService,
+            UserDetailsModel model,
+            UserDetailsModelValidator validator)
+        {
+            model.EmailAddress = InvalidEmailAddress;
+
+            mockEmailDomainService.Setup(s => s.IsAllowed(InvalidEmailAddress))
+                .ReturnsAsync(false);
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.EmailAddress)
+                .WithErrorMessage("This email domain cannot be used to register a new user account as it is not on the allow list");
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static void Validate_UserWithEmailExists_SetsModelError(
             [Frozen] Mock<IUsersService> mockUsersService,
             UserDetailsModel model,
             UserDetailsModelValidator validator)
         {
-            var emailAddress = "test@test.com";
-
             mockUsersService
-                .Setup(x => x.EmailAddressExists(emailAddress, model.UserId))
+                .Setup(x => x.EmailAddressExists(EmailAddress, model.UserId))
                 .ReturnsAsync(true);
 
-            model.EmailAddress = emailAddress;
+            model.EmailAddress = EmailAddress;
 
             var result = validator.TestValidate(model);
 

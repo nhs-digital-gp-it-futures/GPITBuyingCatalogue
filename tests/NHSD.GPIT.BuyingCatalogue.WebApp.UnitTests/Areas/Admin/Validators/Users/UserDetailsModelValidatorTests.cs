@@ -96,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_EmailWrongFormat_SetsModelError(
+        public static void Validate_EmailInvalidFormat_SetsModelError(
             UserDetailsModel model,
             UserDetailsModelValidator validator)
         {
@@ -108,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_InvalidEmailDomain_SetsModelError(
+        public static void Validate_EmailInvalidDomain_SetsModelError(
             [Frozen] Mock<IEmailDomainService> mockEmailDomainService,
             UserDetailsModel model,
             UserDetailsModelValidator validator)
