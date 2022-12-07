@@ -347,10 +347,6 @@
     <None Include="PostDeployment\InsertRelatedOrganisations.sql" />
     <None Include="PostDeployment\InsertOrganisationTypes.sql" />
     <None Include="PostDeployment\OrderSeedData\InsertTestOrderSeedData.sql" />
-    <None Include="Security\Schemas\HangFire.sql" />
-    <None Include="Security\Users\HangFire.sql" />
-    <None Include="Security\Logins\HangFire.sql" />
-    <None Include="Security\Roles\BackgroundProcessor.sql" />
     <None Include="PostDeployment\InsertCataloguePriceCalculationTypes.sql" />
     <None Include="PostDeployment\InsertCataloguePriceQuantityCalculationTypes.sql" />
     <None Include="PostDeployment\InsertSupplierServiceAssociations.sql" />

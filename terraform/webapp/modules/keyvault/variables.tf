@@ -34,10 +34,6 @@ variable "kv_sqlusername" {
   type = string
 }
 
-variable "kv_sql_hangfire_username" {
-  type = string
-}
-
 variable "kv_access_group" {
   type = string
 }
