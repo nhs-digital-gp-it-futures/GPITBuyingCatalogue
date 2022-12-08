@@ -1,12 +1,12 @@
-FROM mcr.microsoft.com/dotnet/sdk:5.0-alpine AS dacpacbuild
+FROM mcr.microsoft.com/dotnet/sdk:7.0-alpine AS dacpacbuild
 
 WORKDIR /dacpac
 COPY database/NHSD.GPITBuyingCatalogue.Database.Deployment/*.csproj .
 COPY database/NHSD.GPITBuyingCatalogue.Database .
 RUN pwsh -ExecutionPolicy Bypass -NoProfile -NonInteractive -File ./BuildUtils/ScriptMerge.ps1 . \
-    && mv PostDeployment/PostDeploymentCombined.sql .. \    
+    && mv PostDeployment/PostDeploymentCombined.sql .. \
     && rm -rf PostDeployment && rm -rf PreDeployment \
-    && dotnet build "NHSD.GPITBuyingCatalogue.Database.Deployment.csproj" -c Release -o build 
+    && dotnet build "NHSD.GPITBuyingCatalogue.Database.Deployment.csproj" -c Release -o build
 
 RUN apk add --update nodejs npm
 

@@ -1,8 +1,7 @@
-﻿<Project Sdk="MSBuild.Sdk.SqlProj/1.17.0">
+﻿<Project Sdk="MSBuild.Sdk.SqlProj/2.4.0">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <SqlServerVersion>SqlAzure</SqlServerVersion>
-    <BundledNETCoreAppTargetFrameworkVersion>5.0</BundledNETCoreAppTargetFrameworkVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
