@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.Contracts.Deli
                 .WithMessage(DeliveryDateInThePastErrorMessage)
                 .Must(x => x.Date >= x.CommencementDate)
                 .Unless(x => !x.IsValid)
-                .WithMessage(x => string.Format(DeliveryDateBeforeCommencementDateErrorMessage, $"{x.CommencementDate:dd MMMM yyyy}"))
+                .WithMessage(x => string.Format(DeliveryDateBeforeCommencementDateErrorMessage, $"{x.CommencementDate:d MMMM yyyy}"))
                 .OverridePropertyName(x => x.Day);
         }
     }
