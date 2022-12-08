@@ -40,6 +40,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CommencementDate
         {
             CommonActions.PageTitle().Should().BeEquivalentTo($"Timescales for Call-off Agreement - Order {CallOffId}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
+
+            CommonActions.ElementIsDisplayed(CommencementDateObjects.CommencementDateReadOnlyDisplay).Should().BeFalse();
+            CommonActions.ContinueButtonDisplayed().Should().BeFalse();
+
             CommonActions.ElementIsDisplayed(CommencementDateObjects.CommencementDateDayInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommencementDateObjects.CommencementDateMonthInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommencementDateObjects.CommencementDateYearInput).Should().BeTrue();
