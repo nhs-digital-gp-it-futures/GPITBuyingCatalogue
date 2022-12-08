@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
@@ -115,6 +116,52 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             var actual = service.Get(new OrderWrapper(order), state);
 
             actual.Should().Be(TaskProgress.Completed);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(TaskProgress.Completed)]
+        [CommonInlineAutoData(TaskProgress.Amended)]
+        public static void Get_OrderIsAnAmendment_SupplierContactTheSame_ReturnsCompleted(
+            TaskProgress orderingPartyStatus,
+            List<Order> orders,
+            SupplierStatusProvider service)
+        {
+            var state = new OrderProgress
+            {
+                OrderingPartyStatus = orderingPartyStatus,
+            };
+
+            orders[0].Revision = 1;
+            orders[1].Revision = 2;
+            orders[2].Revision = 3;
+
+            orders[2].SupplierContact = orders[1].SupplierContact;
+
+            var actual = service.Get(new OrderWrapper(orders), state);
+
+            actual.Should().Be(TaskProgress.Completed);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(TaskProgress.Completed)]
+        [CommonInlineAutoData(TaskProgress.Amended)]
+        public static void Get_OrderIsAnAmendment_SupplierContactDifferent_ReturnsAmended(
+            TaskProgress orderingPartyStatus,
+            List<Order> orders,
+            SupplierStatusProvider service)
+        {
+            var state = new OrderProgress
+            {
+                OrderingPartyStatus = orderingPartyStatus,
+            };
+
+            orders[0].Revision = 1;
+            orders[1].Revision = 2;
+            orders[2].Revision = 3;
+
+            var actual = service.Get(new OrderWrapper(orders), state);
+
+            actual.Should().Be(TaskProgress.Amended);
         }
     }
 }
