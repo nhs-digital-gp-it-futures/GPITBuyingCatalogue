@@ -8,7 +8,7 @@ services:
         environment:
             SA_PASSWORD: "Abc123Abc123"
             ACCEPT_EULA: "Y"
-                 
+
     nhsd_gpitbcdb_deploy:
         image: ${DOCKER_REGISTRY}gpitbuyingcataloguedatabase
         container_name: nhsd_gpitbcdb_deploy
@@ -18,9 +18,8 @@ services:
         environment:
             SA_PASSWORD: "Abc123Abc123"
             NHSD_PASSWORD: "DisruptTheMarket1!"
-            HANGFIRE_PASSWORD: "Abc123Abc123"
             DB_NAME: "GPITBuyingCatalogue"
-            DB_SERVER: sqlserver            
+            DB_SERVER: sqlserver
             INCLUDE_IMPORT: "TRUE"
             INCLUDE_PUBLISH: "TRUE"
             INSERT_TEST_DATA: "TRUE"
@@ -32,4 +31,4 @@ services:
             EA_USER_PASSWORD_HASH: "AQAAAAEAACcQAAAAEEOFkNNrFpKmDC2TBv2CP/dzxfnjdXk97RoqRlunE/CGs2tmFcewKZj4M/fITiP2tg=="
             EA_USER_PHONE: "01234567890"
         depends_on:
-            - "sqlserver"    
+            - "sqlserver"

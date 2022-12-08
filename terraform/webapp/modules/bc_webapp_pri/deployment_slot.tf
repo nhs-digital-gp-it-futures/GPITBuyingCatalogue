@@ -22,8 +22,7 @@ resource "azurerm_app_service_slot" "slot" {
     
     # Settings for sql
     BC_DB_CONNECTION                    = "Server=tcp:${data.azurerm_mssql_server.sql_server.fully_qualified_domain_name},1433;Initial Catalog=${var.db_name_main};Persist Security Info=False;User ID=${var.sql_admin_username};Password=${var.sql_admin_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"    
-    HANGFIRE_DB_CONNECTION              = "Server=tcp:${data.azurerm_mssql_server.sql_server.fully_qualified_domain_name},1433;Initial Catalog=${var.db_name_main};Persist Security Info=False;User ID=${var.hangfire_username};Password=${var.hangfire_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"    
-    
+
     NOTIFY_API_KEY                      = var.notify_api_key
 
     SESSION_IDLE_TIMEOUT                = "60"

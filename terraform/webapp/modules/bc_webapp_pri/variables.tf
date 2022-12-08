@@ -107,12 +107,3 @@ variable "sql_admin_password" {
   type      = string
   sensitive = true
 }
-
-variable "hangfire_username" {
-  type = string
-}
-
-variable "hangfire_password" {
-  type = string
-  sensitive = true
-}

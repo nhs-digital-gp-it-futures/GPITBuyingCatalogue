@@ -12,6 +12,5 @@ module "keyvault" {
   core_env                  = local.core_env
   keyvault_core_id          = data.azurerm_key_vault.keyvault_core.id
   kv_sqlusername            = var.kv_sqlusername
-  kv_sql_hangfire_username  = var.kv_sql_hangfire_username
   kv_access_group           = var.kv_access_group
 }
