@@ -6,6 +6,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
     {
         public static By CancelLink => By.LinkText("Cancel");
 
+        public static By CommencementDateReadOnlyDisplay => By.Id("commencement-date-read-only-display");
+
         public static By CommencementDateDayInput => By.Id("Day");
 
         public static By CommencementDateMonthInput => By.Id("Month");
