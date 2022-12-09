@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.Contracts.Deli
             return string.Format(
                 DeliveryDateBeforeCommencementDateErrorMessage,
                 description,
-                $"{commencementDate:dd MMMM yyyy}");
+                $"{commencementDate:d MMMM yyyy}");
         }
     }
 }

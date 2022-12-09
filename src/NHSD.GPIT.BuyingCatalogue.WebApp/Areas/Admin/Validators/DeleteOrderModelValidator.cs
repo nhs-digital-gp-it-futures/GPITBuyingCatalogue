@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
                 .WithMessage(ApprovalDateInTheFutureErrorMessage)
                 .Must(x => x.ApprovalDate >= x.OrderCreationDate.Date)
                 .Unless(ApprovalDateIsInvalid)
-                .WithMessage(x => string.Format(ApprovalDateBeforeOrderCreationErrorMessage, x.OrderCreationDate.ToLongDateString()))
+                .WithMessage(x => string.Format(ApprovalDateBeforeOrderCreationErrorMessage, x.OrderCreationDate.ToString("d MMMM yyyy")))
                 .OverridePropertyName(x => x.ApprovalDay);
 
             RuleFor(x => x.NameOfApprover)
