@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
 
             CommonActions.ElementTextEqualTo(UserObjects.OrderCallOffId, order.CallOffId.ToString()).Should().BeTrue();
             CommonActions.ElementTextEqualTo(UserObjects.OrderDescription, order.Description).Should().BeTrue();
-            CommonActions.ElementTextEqualTo(UserObjects.OrderCreated, $"{order.Created:dd/MM/yyyy}").Should().BeTrue();
+            CommonActions.ElementTextEqualTo(UserObjects.OrderCreated, $"{order.Created:d/MM/yyyy}").Should().BeTrue();
             CommonActions.ElementTextEqualTo(UserObjects.OrderStatus, order.OrderStatus.ToString()).Should().BeTrue();
         }
 
