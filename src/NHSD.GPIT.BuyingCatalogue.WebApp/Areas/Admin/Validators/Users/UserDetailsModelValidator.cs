@@ -8,7 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.UserModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
 {
-    public class AddModelValidator : AbstractValidator<AddModel>
+    public class UserDetailsModelValidator : AbstractValidator<UserDetailsModel>
     {
         public const string AccountTypeMissingErrorMessage = "Select an account type";
         public const string AccountStatusMissingErrorMessage = "Select an account status";
@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
 
         private readonly IUsersService usersService;
 
-        public AddModelValidator(
+        public UserDetailsModelValidator(
             IUsersService usersService,
             IEmailDomainService emailDomainService,
             AccountManagementSettings accountManagementSettings)
@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
                 .WithMessage(EmailMissingErrorMessage)
                 .EmailAddress()
                 .WithMessage(EmailWrongFormatErrorMessage)
-                .Must(NotBeDuplicateUserEmail)
+                .Must((model, email) => NotBeDuplicateUserEmail(email, model.UserId))
                 .WithMessage(EmailInUseErrorMessage)
                 .Must(email => emailDomainService.IsAllowed(email).GetAwaiter().GetResult())
                 .WithMessage(EmailDomainInvalid);
@@ -58,12 +58,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
                 .WithMessage(AccountTypeMissingErrorMessage)
                 .Must((model, accountType) => BelongToCorrectOrganisation(accountType, model.SelectedOrganisationId))
                 .WithMessage(MustBelongToNhsDigitalErrorMessage)
-                .Must((model, accountType) => AccountManagerLimit(accountType, model.SelectedOrganisationId))
+                .Must((model, accountType) => AccountManagerLimit(accountType, model.SelectedOrganisationId, model.UserId))
                 .WithMessage(string.Format(MustNotExceedAccountManagerLimit, accountManagementSettings.MaximumNumberOfAccountManagers));
 
             RuleFor(x => x.IsActive)
                 .NotEmpty()
-                .WithMessage("Select an account status");
+                .WithMessage(AccountStatusMissingErrorMessage);
         }
 
         private static bool BelongToCorrectOrganisation(string accountType, string selectedOrganisationId)
@@ -74,17 +74,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
             return selectedOrganisationId == $"{OrganisationConstants.NhsDigitalOrganisationId}";
         }
 
-        private bool AccountManagerLimit(string accountType, string selectedOrganisationId)
+        private bool AccountManagerLimit(string accountType, string selectedOrganisationId, int userId)
         {
             if (accountType != OrganisationFunction.AccountManager.Name)
                 return true;
 
-            return !usersService.IsAccountManagerLimit(int.Parse(selectedOrganisationId)).Result;
+            return !usersService.IsAccountManagerLimit(int.Parse(selectedOrganisationId), userId).Result;
         }
 
-        private bool NotBeDuplicateUserEmail(string emailAddress)
+        private bool NotBeDuplicateUserEmail(string emailAddress, int userId)
         {
-            return !usersService.EmailAddressExists(emailAddress).Result;
+            return !usersService.EmailAddressExists(emailAddress, userId).Result;
         }
     }
 }

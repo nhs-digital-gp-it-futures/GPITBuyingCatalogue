@@ -12,9 +12,6 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -180,12 +177,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockOrganisationsService.VerifyAll();
 
             var actual = result.Should().BeOfType<ViewResult>().Subject;
-            var model = actual.Model.Should().BeOfType<AddModel>().Subject;
+            actual.ViewName.Should().Be("UserDetails");
+
+            var model = actual.Model.Should().BeOfType<UserDetailsModel>().Subject;
 
             foreach (var organisation in organisations)
             {
                 model.Organisations.Should().Contain(x => x.Value == $"{organisation.Id}" && x.Text == organisation.Name);
             }
+
+            model.Title.Should().Contain("Add user");
         }
 
         [Theory]
@@ -193,7 +194,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_Add_WithModelErrors_ReturnsExpectedResult(
             List<Organisation> organisations,
             [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
-            AddModel model,
+            UserDetailsModel model,
             UsersController controller)
         {
             mockOrganisationsService
@@ -207,19 +208,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockOrganisationsService.VerifyAll();
 
             var actual = result.Should().BeOfType<ViewResult>().Subject;
-            var actualModel = actual.Model.Should().BeAssignableTo<AddModel>().Subject;
+            actual.ViewName.Should().Be("UserDetails");
+            var actualModel = actual.Model.Should().BeAssignableTo<UserDetailsModel>().Subject;
 
-            foreach (var organisation in organisations)
-            {
-                actualModel.Organisations.Should().Contain(x => x.Value == $"{organisation.Id}" && x.Text == organisation.Name);
-            }
+            actualModel.Should().BeEquivalentTo(model);
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_Add_ReturnsExpectedResult(
             [Frozen] Mock<ICreateUserService> mockCreateUserService,
-            AddModel model,
+            UserDetailsModel model,
             UsersController controller)
         {
             model.SelectedOrganisationId = $"{OrganisationConstants.NhsDigitalOrganisationId}";
@@ -245,221 +244,45 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_Details_ReturnsExpectedResult(
-            AspNetUser user,
-            List<EntityFramework.Ordering.Models.Order> orders,
-            [Frozen] Mock<IUsersService> mockUsersService,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            UsersController controller)
-        {
-            string role = OrganisationFunction.Buyer.Name;
-
-            var roles = new List<string> { role };
-
-            mockUsersService
-                .Setup(x => x.GetUser(UserId))
-                .ReturnsAsync(user);
-
-            mockUsersService
-                .Setup(x => x.GetRoles(user))
-                .ReturnsAsync(roles);
-
-            mockOrderService
-                .Setup(x => x.GetUserOrders(UserId))
-                .ReturnsAsync(orders);
-
-            var result = await controller.Details(UserId);
-
-            mockUsersService.VerifyAll();
-            mockOrderService.VerifyAll();
-
-            var actual = result.Should().BeOfType<ViewResult>().Subject;
-            var model = actual.Model.Should().BeOfType<DetailsModel>().Subject;
-
-            model.User.Should().Be(user);
-            model.Orders.Should().BeEquivalentTo(orders);
-        }
-
-        [Theory]
-        [CommonInlineAutoData(true, AccountStatus.Inactive)]
-        [CommonInlineAutoData(false, AccountStatus.Active)]
-        public static async Task Get_AccountStatus_ReturnsExpectedResult(
-            bool disabled,
-            AccountStatus accountStatus,
-            AspNetUser user,
-            [Frozen] Mock<IUsersService> mockUsersService,
-            UsersController controller)
-        {
-            user.Disabled = disabled;
-
-            mockUsersService
-                .Setup(x => x.GetUser(UserId))
-                .ReturnsAsync(user);
-
-            var result = await controller.AccountStatus(UserId);
-
-            mockUsersService.VerifyAll();
-
-            var actual = result.Should().BeOfType<ViewResult>().Subject;
-            var model = actual.Model.Should().BeOfType<AccountStatusModel>().Subject;
-
-            model.Email.Should().Be(user.Email);
-            model.SelectedAccountStatusId.Should().Be($"{accountStatus}");
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_AccountStatus_WithModelErrors_ReturnsExpectedResult(
-            AccountStatusModel model,
-            UsersController controller)
-        {
-            controller.ModelState.AddModelError("key", "errorMessage");
-
-            var result = await controller.AccountStatus(UserId, model);
-
-            var actual = result.Should().BeOfType<ViewResult>().Subject;
-            var actualModel = actual.Model.Should().BeOfType<AccountStatusModel>().Subject;
-
-            actualModel.Should().Be(model);
-        }
-
-        [Theory]
-        [CommonInlineAutoData(true, AccountStatus.Inactive)]
-        [CommonInlineAutoData(false, AccountStatus.Active)]
-        public static async Task Post_AccountStatus_ReturnsExpectedResult(
-            bool disabled,
-            AccountStatus accountStatus,
-            AccountStatusModel model,
-            [Frozen] Mock<IUsersService> mockUsersService,
-            UsersController controller)
-        {
-            model.SelectedAccountStatusId = $"{accountStatus}";
-
-            mockUsersService
-                .Setup(x => x.EnableOrDisableUser(UserId, disabled))
-                .Returns(Task.CompletedTask);
-
-            var result = await controller.AccountStatus(UserId, model);
-
-            mockUsersService.VerifyAll();
-
-            var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
-
-            actual.ActionName.Should().Be(nameof(UsersController.Details));
-            actual.RouteValues.Should().BeEquivalentTo(new Dictionary<string, int>
-            {
-                { "userId", UserId },
-            });
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_AccountType_ReturnsExpectedResult(
-            AspNetUser user,
-            [Frozen] Mock<IUsersService> mockUsersService,
-            UsersController controller)
-        {
-            string role = OrganisationFunction.Buyer.Name;
-
-            var roles = new List<string> { role };
-
-            mockUsersService
-                .Setup(x => x.GetUser(UserId))
-                .ReturnsAsync(user);
-
-            mockUsersService
-                .Setup(x => x.GetRoles(user))
-                .ReturnsAsync(roles);
-
-            var result = await controller.AccountType(UserId);
-
-            mockUsersService.VerifyAll();
-
-            var actual = result.Should().BeOfType<ViewResult>().Subject;
-            var model = actual.Model.Should().BeOfType<AccountTypeModel>().Subject;
-
-            model.Email.Should().Be(user.Email);
-            model.SelectedAccountType.Should().Be(role);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_AccountType_WithModelErrors_ReturnsExpectedResult(
-            AccountTypeModel model,
-            UsersController controller)
-        {
-            controller.ModelState.AddModelError("key", "errorMessage");
-
-            var result = await controller.AccountType(UserId, model);
-
-            var actual = result.Should().BeOfType<ViewResult>().Subject;
-            var actualModel = actual.Model.Should().BeOfType<AccountTypeModel>().Subject;
-
-            actualModel.Should().Be(model);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_AccountType_ReturnsExpectedResult(
-            AccountTypeModel model,
-            [Frozen] Mock<IUsersService> mockUsersService,
-            UsersController controller)
-        {
-            mockUsersService
-                .Setup(x => x.UpdateUserAccountType(UserId, model.SelectedAccountType))
-                .Returns(Task.CompletedTask);
-
-            var result = await controller.AccountType(UserId, model);
-
-            mockUsersService.VerifyAll();
-
-            var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
-
-            actual.ActionName.Should().Be(nameof(UsersController.Details));
-            actual.RouteValues.Should().BeEquivalentTo(new Dictionary<string, int>
-            {
-                { "userId", UserId },
-            });
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_Organisation_ReturnsExpectedResult(
-            AspNetUser user,
+        public static async Task Get_EditUser_ReturnsExpectedResult(
             List<Organisation> organisations,
+            AspNetUser user,
             [Frozen] Mock<IUsersService> mockUsersService,
             [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
             UsersController controller)
         {
-            mockUsersService
-                .Setup(x => x.GetUser(UserId))
-                .ReturnsAsync(user);
-
             mockOrganisationsService
                 .Setup(x => x.GetAllOrganisations())
                 .ReturnsAsync(organisations);
 
-            var result = await controller.Organisation(UserId);
+            mockUsersService
+                .Setup(x => x.GetUser(user.Id))
+                .ReturnsAsync(user);
 
-            mockUsersService.VerifyAll();
+            var result = (await controller.Edit(user.Id)).As<ViewResult>();
+
             mockOrganisationsService.VerifyAll();
 
-            var actual = result.Should().BeOfType<ViewResult>().Subject;
-            var model = actual.Model.Should().BeOfType<OrganisationModel>().Subject;
+            result.Should().NotBeNull();
+            result.ViewName.Should().Be("UserDetails");
 
-            model.Email.Should().Be(user.Email);
+            var model = result.Model.Should().BeAssignableTo<UserDetailsModel>().Subject;
 
             foreach (var organisation in organisations)
             {
                 model.Organisations.Should().Contain(x => x.Value == $"{organisation.Id}" && x.Text == organisation.Name);
             }
+
+            model.UserId.Should().Be(user.Id);
+            model.Title.Should().Be("Edit user");
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_Organisation_WithModelErrors_ReturnsExpectedResult(
-            OrganisationModel model,
+        public static async Task Get_EditUser_NullUser_ReturnsExpectedResult(
             List<Organisation> organisations,
+            AspNetUser user,
+            [Frozen] Mock<IUsersService> mockUsersService,
             [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
             UsersController controller)
         {
@@ -467,108 +290,78 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .Setup(x => x.GetAllOrganisations())
                 .ReturnsAsync(organisations);
 
-            controller.ModelState.AddModelError("key", "errorMessage");
+            mockUsersService
+                .Setup(x => x.GetUser(user.Id))
+                .ReturnsAsync((AspNetUser)null);
 
-            var result = await controller.Organisation(UserId, model);
+            var result = (await controller.Edit(user.Id)).As<NotFoundResult>();
 
             mockOrganisationsService.VerifyAll();
 
-            var actual = result.Should().BeOfType<ViewResult>().Subject;
-            var actualModel = actual.Model.Should().BeOfType<OrganisationModel>().Subject;
-
-            foreach (var organisation in organisations)
-            {
-                actualModel.Organisations.Should().Contain(x => x.Value == $"{organisation.Id}" && x.Text == organisation.Name);
-            }
+            result.Should().NotBeNull();
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_Organisation_ReturnsExpectedResult(
-            OrganisationModel model,
-            [Frozen] Mock<IUsersService> mockUsersService,
-            UsersController controller)
-        {
-            model.SelectedOrganisationId = $"{OrganisationConstants.NhsDigitalOrganisationId}";
-
-            mockUsersService
-                .Setup(x => x.UpdateUserOrganisation(UserId, OrganisationConstants.NhsDigitalOrganisationId))
-                .Returns(Task.CompletedTask);
-
-            var result = await controller.Organisation(UserId, model);
-
-            mockUsersService.VerifyAll();
-
-            var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
-
-            actual.ActionName.Should().Be(nameof(UsersController.Details));
-            actual.RouteValues.Should().BeEquivalentTo(new Dictionary<string, int>
-            {
-                { "userId", UserId },
-            });
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_PersonalDetails_ReturnsExpectedResult(
-            AspNetUser user,
-            [Frozen] Mock<IUsersService> mockUsersService,
-            UsersController controller)
-        {
-            mockUsersService
-                .Setup(x => x.GetUser(UserId))
-                .ReturnsAsync(user);
-
-            var result = await controller.PersonalDetails(UserId);
-
-            mockUsersService.VerifyAll();
-
-            var actual = result.Should().BeOfType<ViewResult>().Subject;
-            var model = actual.Model.Should().BeOfType<PersonalDetailsModel>().Subject;
-
-            model.FirstName.Should().Be(user.FirstName);
-            model.LastName.Should().Be(user.LastName);
-            model.Email.Should().Be(user.Email);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_PersonalDetails_WithModelErrors_ReturnsExpectedResult(
-            PersonalDetailsModel model,
+        public static async Task Post_EditUser_WithModelErrors_ReturnsExpectedResult(
+            int userId,
+            UserDetailsModel model,
             UsersController controller)
         {
             controller.ModelState.AddModelError("key", "errorMessage");
 
-            var result = await controller.PersonalDetails(UserId, model);
+            var result = (await controller.Edit(userId, model)).As<ViewResult>();
 
-            var actual = result.Should().BeOfType<ViewResult>().Subject;
-            var actualModel = actual.Model.Should().BeOfType<PersonalDetailsModel>().Subject;
+            result.Should().NotBeNull();
+            result.ViewName.Should().Be("UserDetails");
+
+            var actualModel = result.Model.Should().BeAssignableTo<UserDetailsModel>().Subject;
 
             actualModel.Should().BeEquivalentTo(model);
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_PersonalDetails_ReturnsExpectedResult(
-            PersonalDetailsModel model,
+        public static async Task Post_EditUser_NullUser_ReturnsExpectedResult(
+            int userId,
+            UserDetailsModel model,
             [Frozen] Mock<IUsersService> mockUsersService,
             UsersController controller)
         {
             mockUsersService
-                .Setup(x => x.UpdateUserDetails(UserId, model.FirstName, model.LastName, model.Email))
+                .Setup(x => x.GetUser(userId))
+                .ReturnsAsync((AspNetUser)null);
+
+            var result = (await controller.Edit(userId, model)).As<NotFoundResult>();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditUser_ValidModel_ReturnsExpectedResult(
+            int userId,
+            AspNetUser user,
+            UserDetailsModel model,
+            [Frozen] Mock<IUsersService> mockUsersService,
+            UsersController controller)
+        {
+            mockUsersService
+                .Setup(x => x.GetUser(userId))
+                .ReturnsAsync(user);
+
+            model.SelectedOrganisationId = "1";
+
+            mockUsersService
+                .Setup(x => x.UpdateUser(userId, model.FirstName, model.LastName, model.Email, !model.IsActive!.Value, model.SelectedAccountType, int.Parse(model.SelectedOrganisationId)))
                 .Returns(Task.CompletedTask);
 
-            var result = await controller.PersonalDetails(UserId, model);
+            var result = (await controller.Edit(userId, model)).As<RedirectToActionResult>();
 
             mockUsersService.VerifyAll();
 
-            var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
-
-            actual.ActionName.Should().Be(nameof(UsersController.Details));
-            actual.RouteValues.Should().BeEquivalentTo(new Dictionary<string, int>
-            {
-                { "userId", UserId },
-            });
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(UsersController.Index));
         }
     }
 }

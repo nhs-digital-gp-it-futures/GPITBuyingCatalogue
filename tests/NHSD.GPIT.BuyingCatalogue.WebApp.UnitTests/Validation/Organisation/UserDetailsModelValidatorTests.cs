@@ -2,6 +2,7 @@
 using FluentValidation.TestHelper;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -13,6 +14,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Organisation
 {
     public static class UserDetailsModelValidatorTests
     {
+        private const string InvalidEmailAddress = "a@b.com";
+        private const string EmailAddress = "a@nhs.net";
+
         [Theory]
         [CommonInlineAutoData(null)]
         [CommonInlineAutoData("")]
@@ -48,6 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Organisation
         [Theory]
         [CommonInlineAutoData(null)]
         [CommonInlineAutoData("")]
+        [CommonInlineAutoData(" ")]
         public static void Validate_EmailAddressNullOrEmpty_SetsModelError(
             string emailAddress,
             UserDetailsModel model,
@@ -78,18 +83,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Organisation
 
         [Theory]
         [CommonAutoData]
+        public static void Validate_InvalidEmailDomain_SetsModelError(
+            [Frozen] Mock<IEmailDomainService> mockEmailDomainService,
+            UserDetailsModel model,
+            UserDetailsModelValidator validator)
+        {
+            model.EmailAddress = InvalidEmailAddress;
+
+            mockEmailDomainService.Setup(s => s.IsAllowed(InvalidEmailAddress))
+                .ReturnsAsync(false);
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.EmailAddress)
+                .WithErrorMessage("This email domain cannot be used to register a new user account as it is not on the allow list");
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static void Validate_UserWithEmailExists_SetsModelError(
             [Frozen] Mock<IUsersService> mockUsersService,
             UserDetailsModel model,
             UserDetailsModelValidator validator)
         {
-            var emailAddress = "test@test.com";
-
             mockUsersService
-                .Setup(x => x.EmailAddressExists(emailAddress, model.UserId))
+                .Setup(x => x.EmailAddressExists(EmailAddress, model.UserId))
                 .ReturnsAsync(true);
 
-            model.EmailAddress = emailAddress;
+            model.EmailAddress = EmailAddress;
 
             var result = validator.TestValidate(model);
 
@@ -215,12 +236,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Organisation
         public static void Validate_Valid_NoModelError(
             string firstName,
             string lastName,
+            [Frozen] Mock<IUsersService> mockUsersService,
+            [Frozen] Mock<IEmailDomainService> mockEmailDomainService,
             UserDetailsModel model,
             UserDetailsModelValidator validator)
         {
             model.FirstName = firstName;
             model.LastName = lastName;
-            model.EmailAddress = "a@a.com";
+            model.EmailAddress = "a@nhs.net";
+
+            mockUsersService
+                .Setup(x => x.EmailAddressExists("a@nhs.net", model.UserId))
+                .ReturnsAsync(false);
+
+            mockEmailDomainService
+                .Setup(x => x.IsAllowed("a@nhs.net"))
+                .ReturnsAsync(true);
 
             var result = validator.TestValidate(model);
 
