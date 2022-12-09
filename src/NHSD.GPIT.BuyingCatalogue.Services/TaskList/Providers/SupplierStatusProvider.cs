@@ -14,21 +14,32 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
                 return TaskProgress.CannotStart;
             }
 
-            if (state.OrderingPartyStatus != TaskProgress.Completed && state.OrderingPartyStatus != TaskProgress.Amended)
+            if (state.OrderingPartyStatus != TaskProgress.Completed
+                && state.OrderingPartyStatus != TaskProgress.Amended)
             {
                 return TaskProgress.CannotStart;
             }
 
             var order = wrapper.Order;
 
-            if (order.Supplier != null)
+            if (order.Supplier == null)
             {
-                return order.SupplierContact != null
-                    ? TaskProgress.Completed
-                    : TaskProgress.InProgress;
+                return TaskProgress.NotStarted;
             }
 
-            return TaskProgress.NotStarted;
+            if (order.SupplierContact == null)
+            {
+                return TaskProgress.InProgress;
+            }
+
+            if (!order.IsAmendment)
+            {
+                return TaskProgress.Completed;
+            }
+
+            return order.SupplierContact.Equals(wrapper.Last?.SupplierContact)
+                ? TaskProgress.Completed
+                : TaskProgress.Amended;
         }
     }
 }

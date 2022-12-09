@@ -14,7 +14,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
                 return TaskProgress.CannotStart;
             }
 
-            if (state.SupplierStatus != TaskProgress.Completed)
+            if (state.SupplierStatus != TaskProgress.Completed
+                && state.SupplierStatus != TaskProgress.Amended)
             {
                 return TaskProgress.CannotStart;
             }
