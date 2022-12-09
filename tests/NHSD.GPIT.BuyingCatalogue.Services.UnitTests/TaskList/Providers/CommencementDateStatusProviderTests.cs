@@ -55,14 +55,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonInlineAutoData(TaskProgress.Completed)]
+        [CommonInlineAutoData(TaskProgress.Amended)]
         public static void Get_CommencementDateIsNull_ReturnsNotStarted(
+            TaskProgress supplierStatus,
             Order order,
             CommencementDateStatusProvider service)
         {
             var state = new OrderProgress
             {
-                SupplierStatus = TaskProgress.Completed,
+                SupplierStatus = supplierStatus,
             };
 
             order.CommencementDate = null;
@@ -73,14 +75,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonInlineAutoData(TaskProgress.Completed)]
+        [CommonInlineAutoData(TaskProgress.Amended)]
         public static void Get_CommencementDateIsNotNull_ReturnsCompleted(
+            TaskProgress supplierStatus,
             Order order,
             CommencementDateStatusProvider service)
         {
             var state = new OrderProgress
             {
-                SupplierStatus = TaskProgress.Completed,
+                SupplierStatus = supplierStatus,
             };
 
             order.CommencementDate = DateTime.Today;

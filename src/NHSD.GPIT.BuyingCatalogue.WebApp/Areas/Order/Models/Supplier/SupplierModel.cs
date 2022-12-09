@@ -13,6 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier
             Title = "Supplier contact details";
             InternalOrgId = internalOrgId;
             CallOffId = callOffId;
+            IsAmendment = order.IsAmendment;
             SupplierId = order.Supplier.Id;
             SupplierName = order.Supplier.Name;
         }
@@ -22,6 +23,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier
         }
 
         public CallOffId CallOffId { get; set; }
+
+        public bool IsAmendment { get; set; }
 
         public int SupplierId { get; set; }
 

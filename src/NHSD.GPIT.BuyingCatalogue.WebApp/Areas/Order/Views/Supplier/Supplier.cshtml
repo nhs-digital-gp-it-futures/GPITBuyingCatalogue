@@ -11,17 +11,21 @@
                             caption="Order @(Model.CallOffId)"
                             advice="Select an existing contact for @Model.SupplierName or add a new one." />
 
-            <nhs-inset-text>
-                <h3>Your confirmed supplier</h3>
-                <p>As you've confirmed the supplier details for this order they cannot be changed.</p>
-                <p>If you need to select a new supplier, you must start a new order.</p>
-            </nhs-inset-text>
+            @if (!Model.IsAmendment)
+            {
+                <nhs-inset-text>
+                    <h3>Your confirmed supplier</h3>
+                    <p>As you've confirmed the supplier details for this order they cannot be changed.</p>
+                    <p>If you need to select a new supplier, you must start a new order.</p>
+                </nhs-inset-text>
+            }
 
             <form method="post">
                 <input type="hidden" asp-for="SupplierId" />
                 <input type="hidden" asp-for="BackLink" />
                 <input type="hidden" asp-for="SupplierName" />
                 <input type="hidden" asp-for="Title" />
+                <input type="hidden" asp-for="IsAmendment" />
 
                 <div class="nhsuk-u-margin-bottom-9">
                     @if (Model.Contacts.Count > 1)
