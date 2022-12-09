@@ -134,7 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.ApprovalDay)
-                .WithErrorMessage(string.Format(DeleteOrderModelValidator.ApprovalDateBeforeOrderCreationErrorMessage, now.ToLongDateString()));
+                .WithErrorMessage(string.Format(DeleteOrderModelValidator.ApprovalDateBeforeOrderCreationErrorMessage, now.ToString("d MMMM yyyy")));
         }
 
         [Theory]

@@ -14,6 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CommencementDate
         {
             InternalOrgId = internalOrgId;
             CallOffId = order.CallOffId;
+            IsAmendment = order.IsAmendment;
             OrderTriageValue = order.OrderTriageValue;
             InitialPeriod = $"{order.InitialPeriod}";
             MaximumTerm = $"{order.MaximumTerm}";
@@ -24,6 +25,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.CommencementDate
         public string InternalOrgId { get; set; }
 
         public CallOffId CallOffId { get; set; }
+
+        public bool IsAmendment { get; set; }
 
         public string InitialPeriod { get; set; }
 

@@ -31,7 +31,7 @@
             @RenderBody()
 
             <nhs-endnote>
-                Solution information last reviewed: @Model.LastReviewed.ToLongDateString()
+                Solution information last reviewed: @Model.LastReviewed.ToString("d MMMM yyyy")
             </nhs-endnote>
         </main>
     </div>
