@@ -36,7 +36,7 @@
                     @Model.LastUpdatedByName
                 </nhs-summary-list-row>
                 <nhs-summary-list-row label-text="Last updated">
-                    @Model.LastUpdated.ToLongDateString()
+                    @Model.LastUpdated.ToString("d MMMM yyyy")
                 </nhs-summary-list-row>
             </nhs-summary-list>
         }

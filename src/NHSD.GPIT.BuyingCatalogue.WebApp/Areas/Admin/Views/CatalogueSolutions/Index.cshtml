@@ -81,7 +81,7 @@
                             </span>
                         </nhs-table-cell>
                         <nhs-table-cell>
-                            @(item.LastUpdated == DateTime.MinValue ? string.Empty : item.LastUpdated.ToString("dd/MM/yyy"))
+                            @(item.LastUpdated == DateTime.MinValue ? string.Empty : item.LastUpdated.ToString("d/MM/yyy"))
                         </nhs-table-cell>
                         <nhs-table-cell>
                             <nhs-tag status-enum="@item.PublishedStatus" />
