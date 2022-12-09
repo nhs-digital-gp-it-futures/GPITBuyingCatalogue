@@ -19,6 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Commence
             var model = new CommencementDateModel(internalOrgId, order);
 
             model.InternalOrgId.Should().Be(internalOrgId);
+            model.IsAmendment.Should().Be(order.IsAmendment);
             model.Day.Should().Be(order.CommencementDate!.Value.Day.ToString("00"));
             model.Month.Should().Be(order.CommencementDate!.Value.Month.ToString("00"));
             model.Year.Should().Be(order.CommencementDate!.Value.Year.ToString("00"));
