@@ -14,7 +14,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation",
-        "BC_DB_CONNECTION": "Server=localhost,1432;Database=GPITBuyingCatalogue;User=SA;password=Abc123Abc123;Integrated Security=false",
+        "BC_DB_CONNECTION": "Server=localhost,1432;Database=GPITBuyingCatalogue;User=SA;password=Abc123Abc123;Integrated Security=false;TrustServerCertificate=true",
         "APPINSIGHTS_INSTRUMENTATIONKEY": "",
         "DOMAIN_NAME": "localhost:49036",
         "SESSION_IDLE_TIMEOUT": "60"
@@ -26,7 +26,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation",
-        "BC_DB_CONNECTION": "Server=localhost,1432;Database=GPITBuyingCatalogue;User=SA;password=Abc123Abc123;Integrated Security=false",
+        "BC_DB_CONNECTION": "Server=localhost,1432;Database=GPITBuyingCatalogue;User=SA;password=Abc123Abc123;Integrated Security=false;TrustServerCertificate=true",
         "APPINSIGHTS_INSTRUMENTATIONKEY": "",
         "DOMAIN_NAME": "localhost:5001",
         "SESSION_IDLE_TIMEOUT": "60"
@@ -43,7 +43,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation",
-        "BC_DB_CONNECTION": "Server=host.docker.internal,1432;Database=GPITBuyingCatalogue;User=SA;password=Abc123Abc123;Integrated Security=false",
+        "BC_DB_CONNECTION": "Server=host.docker.internal,1432;Database=GPITBuyingCatalogue;User=SA;password=Abc123Abc123;Integrated Security=false;TrustServerCertificate=true",
         "APPINSIGHTS_INSTRUMENTATIONKEY": "",
         "DOMAIN_NAME": "localhost:49155",
         "USE_SSL_FOR_PDF": "true",
