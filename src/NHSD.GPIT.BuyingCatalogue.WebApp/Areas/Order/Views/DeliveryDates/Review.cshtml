@@ -159,6 +159,6 @@
 
 @{
     string GetFormattedDate(DateTime? date) => date.HasValue
-        ? $"{date.Value:dd MMMM yyyy}"
+        ? $"{date.Value:d MMMM yyyy}"
         : "No date entered";
 }

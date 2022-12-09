@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Pdf
 
             try
             {
-                var psi = new ProcessStartInfo(GetChromePath(), $"{ChromeArgs} --print-to-pdf={filePath} {url}");
+                var psi = new ProcessStartInfo(GetChromePath(), $"{ChromeArgs} --print-to-pdf=\"{filePath}\" {url}");
                 var process = Process.Start(psi);
                 process.WaitForExit(30000);
                 return File.ReadAllBytes(filePath);

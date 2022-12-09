@@ -128,6 +128,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
                 Driver.GetQueryValue("page").Should().Be("3");
 
                 CommonActions.ElementIsDisplayed(CommonSelectors.Pagination).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(CommonSelectors.PaginationNext).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(CommonSelectors.PaginationNextSubText).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(CommonSelectors.PaginationPrevious).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(CommonSelectors.PaginationPreviousSubText).Should().BeTrue();
+
+                CommonActions.ClickLinkElement(CommonSelectors.PaginationNext);
+
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(ManageOrdersController),
+                    nameof(ManageOrdersController.Index)).Should().BeTrue();
+
+                Driver.GetQueryValue("page").Should().Be("4");
+
+                CommonActions.ElementIsDisplayed(CommonSelectors.Pagination).Should().BeTrue();
                 CommonActions.ElementIsDisplayed(CommonSelectors.PaginationNext).Should().BeFalse();
                 CommonActions.ElementIsDisplayed(CommonSelectors.PaginationNextSubText).Should().BeFalse();
                 CommonActions.ElementIsDisplayed(CommonSelectors.PaginationPrevious).Should().BeTrue();
@@ -187,7 +201,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
         {
             await RunTestWithRetryAsync(async () =>
             {
-                using var context = GetEndToEndDbContext();
+                await using var context = GetEndToEndDbContext();
                 var order = context.Orders.First();
                 var callOffId = order.CallOffId.ToString();
 
@@ -208,7 +222,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
             {
                 using var context = GetEndToEndDbContext();
                 var order = context.Orders.Include(o => o.OrderingParty).First();
-                var callOffId = order.CallOffId.ToString();
                 var organisationName = order.OrderingParty.Name;
 
                 CommonActions.ElementAddValue(ManageOrdersDashboardObjects.SearchBar, organisationName);
@@ -226,7 +239,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
         {
             await RunTestWithRetryAsync(async () =>
             {
-                using var context = GetEndToEndDbContext();
+                await using var context = GetEndToEndDbContext();
                 var order = context.Orders.Include(o => o.Supplier).First(o => o.Supplier != null);
                 var supplierName = order.Supplier.Name;
 
@@ -245,7 +258,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
         {
             await RunTestWithRetryAsync(async () =>
             {
-                using var context = GetEndToEndDbContext();
+                await using var context = GetEndToEndDbContext();
                 var orders = context.Orders.Include(o => o.OrderItems).ThenInclude(oi => oi.CatalogueItem).Where(o => o.OrderItems.Any());
                 var order = orders.First(o => o.OrderItems.Any(oi => oi.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution));
                 var solutionName = order.OrderItems.First().CatalogueItem.Name;

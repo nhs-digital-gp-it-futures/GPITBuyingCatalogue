@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         }
 
         public string EndDate => CommencementDate.HasValue && MaximumTerm.HasValue
-            ? $"{CommencementDate?.AddMonths(MaximumTerm.Value).AddDays(-1):dd MMMM yyyy}"
+            ? $"{CommencementDate?.AddMonths(MaximumTerm.Value).AddDays(-1):d MMMM yyyy}"
             : string.Empty;
 
         public bool IsAmendment => CallOffId.Revision > 1;

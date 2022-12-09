@@ -97,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task DeleteOrder_SoftDeletedOrder(
+        public static async Task SoftDeleteOrder_SoftDeletedOrder(
             [Frozen] BuyingCatalogueDbContext context,
             Order order,
             OrderService service)
@@ -105,12 +105,46 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await context.Orders.AddAsync(order);
             await context.SaveChangesAsync();
 
-            await service.DeleteOrder(order.CallOffId, order.OrderingParty.InternalIdentifier);
+            await service.SoftDeleteOrder(order.CallOffId, order.OrderingParty.InternalIdentifier);
 
             var updatedOrder = await context.Orders.FirstOrDefaultAsync();
 
             // Although soft deleted, there is a query filter on the context to exclude soft deleted orders
             updatedOrder.Should().BeNull();
+
+            updatedOrder = await context.Orders.IgnoreQueryFilters().FirstOrDefaultAsync();
+            updatedOrder.Should().Be(order);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task HardDeleteOrder_DeletesOrder(
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            await context.Orders.AddAsync(order);
+            await context.SaveChangesAsync();
+
+            context.ContractFlags.Count().Should().Be(1);
+            context.Orders.Count().Should().Be(1);
+            context.OrderDeletionApprovals.Count().Should().Be(1);
+            context.OrderItems.Count().Should().Be(3);
+            context.OrderItemFunding.Count().Should().Be(3);
+            context.OrderItemPriceTiers.Count().Should().Be(9);
+            context.OrderItemPrices.Count().Should().Be(3);
+            context.OrderItemRecipients.Count().Should().Be(9);
+
+            await service.HardDeleteOrder(order.CallOffId, order.OrderingParty.InternalIdentifier);
+
+            context.ContractFlags.Should().BeEmpty();
+            context.Orders.Should().BeEmpty();
+            context.OrderDeletionApprovals.Should().BeEmpty();
+            context.OrderItems.Should().BeEmpty();
+            context.OrderItemFunding.Should().BeEmpty();
+            context.OrderItemPriceTiers.Should().BeEmpty();
+            context.OrderItemPrices.Should().BeEmpty();
+            context.OrderItemRecipients.Should().BeEmpty();
         }
 
         [Theory]

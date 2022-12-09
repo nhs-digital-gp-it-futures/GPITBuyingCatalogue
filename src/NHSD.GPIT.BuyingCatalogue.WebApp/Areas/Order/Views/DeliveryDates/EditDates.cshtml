@@ -4,7 +4,7 @@
 @{
     ViewBag.Title = $"Planned delivery dates for {Model.CatalogueItemType.Name()}";
     var deliveryDate = Model.DeliveryDate.HasValue
-        ? $"{Model.DeliveryDate:dd MMMM yyyy}"
+        ? $"{Model.DeliveryDate:d MMMM yyyy}"
         : "No date entered";
 }
 
