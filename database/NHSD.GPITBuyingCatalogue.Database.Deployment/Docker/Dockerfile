@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:5.0-alpine AS dacpacbuild
+FROM mcr.microsoft.com/dotnet/sdk:7.0-alpine AS dacpacbuild
 WORKDIR /dacpac
 COPY database/NHSD.GPITBuyingCatalogue.Database.Deployment/*.csproj .
 COPY database/NHSD.GPITBuyingCatalogue.Database .
