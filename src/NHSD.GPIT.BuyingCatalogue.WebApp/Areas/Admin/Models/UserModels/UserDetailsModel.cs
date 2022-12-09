@@ -1,12 +1,42 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.UserModels
 {
-    public class AddModel : NavBaseModel
+    public class UserDetailsModel : NavBaseModel
     {
+        public UserDetailsModel()
+        {
+        }
+
+        public UserDetailsModel(AspNetUser user)
+        {
+            SelectedOrganisationId = $"{user.PrimaryOrganisationId}";
+            UserId = user.Id;
+            FirstName = user.FirstName;
+            LastName = user.LastName;
+            Email = user.Email;
+            SelectedAccountType = user.GetRoleName();
+            IsActive = !user.Disabled;
+        }
+
+        public string Title
+        {
+            get
+            {
+                return UserId == 0 ? "Add user" : "Edit user";
+            }
+        }
+
+        public int UserId { get; set; }
+
         public string FirstName { get; set; }
 
         public string LastName { get; set; }

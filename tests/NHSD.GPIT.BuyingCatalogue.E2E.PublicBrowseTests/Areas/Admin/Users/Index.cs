@@ -49,13 +49,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         }
 
         [Fact]
-        public void ClickViewUserLink_DisplaysCorrectPage()
+        public void ClickEditUserLink_DisplaysCorrectPage()
         {
             CommonActions.ClickLinkElement(UserObjects.UserLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(UsersController),
-                nameof(UsersController.Details)).Should().BeTrue();
+                nameof(UsersController.Edit)).Should().BeTrue();
         }
 
         [Fact]

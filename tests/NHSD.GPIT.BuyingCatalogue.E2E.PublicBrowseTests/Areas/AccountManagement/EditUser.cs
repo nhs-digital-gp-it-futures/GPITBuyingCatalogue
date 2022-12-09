@@ -22,12 +22,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
     {
         private const int OrganisationId = 176;
         private const int UserId = 5;
-
+        private const string ValidEmail = "a@nhs.net";
         private const string FirstNameRequired = "Enter a first name";
         private const string LastNameRequired = "Enter a last name";
         private const string EmailAddressRequired = "Enter an email address";
         private const string EmailFormatIncorrect = "Enter an email address in the correct format, like name@example.com";
         private const string EmailAlreadyExists = "A user with this email address is already registered on the Buying Catalogue";
+        private const string EmailInvalidDomain =
+            "This email domain cannot be used to register a new user account as it is not on the allow list";
+
         private const string RoleMustBeBuyer =
             "You can only add buyers for this organisation. This is because there are already 2 active account managers which is the maximum allowed.";
 
@@ -92,7 +95,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
         {
             CommonActions.ClickRadioButtonWithText(OrganisationFunction.AccountManager.DisplayName);
             CommonActions.ClickRadioButtonWithText("Inactive");
-
+            CommonActions.ClearInputElement(AddUserObjects.Email);
+            AccountManagementPages.AddUser.EnterEmailAddress(ValidEmail);
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -165,6 +169,26 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
             CommonActions.ElementShowingCorrectErrorMessage(AddUserObjects.EmailError, EmailAlreadyExists).Should().BeTrue();
 
             await RemoveUser(user);
+        }
+
+        [Fact]
+        public void EditUser_EmailInvalidDomain_ThrowsError()
+        {
+            CommonActions.ClearInputElement(AddUserObjects.Email);
+            AccountManagementPages.AddUser.EnterEmailAddress("test@test.com");
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(ManageAccountController),
+                    nameof(ManageAccountController.EditUser))
+                .Should()
+                .BeTrue();
+
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+
+            CommonActions.ElementShowingCorrectErrorMessage(AddUserObjects.EmailError, EmailInvalidDomain).Should().BeTrue();
         }
 
         [Fact]

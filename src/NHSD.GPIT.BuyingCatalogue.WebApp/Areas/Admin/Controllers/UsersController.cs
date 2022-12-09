@@ -7,13 +7,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
+using NHSD.GPIT.BuyingCatalogue.Services.Organisations;
+using NHSD.GPIT.BuyingCatalogue.Services.Users;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.UserModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
@@ -23,21 +28,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     public class UsersController : Controller
     {
         public const int PageSize = 10;
-        public const int NumberOfOrders = 10;
 
         private readonly ICreateUserService createUserService;
-        private readonly IOrderService orderService;
         private readonly IOrganisationsService organisationsService;
         private readonly IUsersService usersService;
 
         public UsersController(
             ICreateUserService createUserService,
-            IOrderService orderService,
             IOrganisationsService organisationsService,
             IUsersService usersService)
         {
             this.createUserService = createUserService ?? throw new ArgumentNullException(nameof(createUserService));
-            this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
             this.usersService = usersService ?? throw new ArgumentNullException(nameof(usersService));
         }
@@ -73,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             {
                 Title = x.FullName,
                 Category = x.Email,
-                Url = Url.Action(nameof(Details), new { userId = $"{x.Id}" }),
+                Url = Url.Action(nameof(Edit), new { userId = $"{x.Id}" }),
             }));
         }
 
@@ -82,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var organisations = await organisationsService.GetAllOrganisations();
 
-            return View(new AddModel
+            return View("UserDetails", new Models.UserModels.UserDetailsModel
             {
                 BackLink = Url.Action(nameof(Index)),
                 Organisations = GetFormattedOrganisations(organisations),
@@ -90,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost("add")]
-        public async Task<IActionResult> Add(AddModel model)
+        public async Task<IActionResult> Add(Models.UserModels.UserDetailsModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -98,7 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
                 model.Organisations = GetFormattedOrganisations(organisations);
 
-                return View(model);
+                return View("UserDetails", model);
             }
 
             await createUserService.Create(
@@ -112,163 +113,49 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [HttpGet("{userId}")]
-        public async Task<IActionResult> Details(int userId)
+        [HttpGet("{userId}/edit")]
+        public async Task<IActionResult> Edit(int userId)
         {
-            var user = await usersService.GetUser(userId);
-
-            if (user == null)
-            {
-                return new NotFoundResult();
-            }
-
-            var roles = await usersService.GetRoles(user);
-            var orders = await orderService.GetUserOrders(userId);
-
-            return View(new DetailsModel
-            {
-                User = user,
-                UserRole = roles.OrderBy(r => r).First(),
-                Orders = orders.Take(NumberOfOrders).ToList(),
-            });
-        }
-
-        [HttpGet("{userId}/account-status")]
-        public async Task<IActionResult> AccountStatus(int userId)
-        {
-            var user = await usersService.GetUser(userId);
-
-            if (user == null)
-            {
-                return new NotFoundResult();
-            }
-
-            var status = user.Disabled
-                ? ServiceContracts.Enums.AccountStatus.Inactive
-                : ServiceContracts.Enums.AccountStatus.Active;
-
-            return View(new AccountStatusModel
-            {
-                BackLink = Url.Action(nameof(Details), new { userId }),
-                Email = user.Email,
-                SelectedAccountStatusId = $"{status}",
-            });
-        }
-
-        [HttpPost("{userId}/account-status")]
-        public async Task<IActionResult> AccountStatus(int userId, AccountStatusModel model)
-        {
-            if (!ModelState.IsValid)
-                return View(model);
-
-            var disabled = model.SelectedAccountStatus == ServiceContracts.Enums.AccountStatus.Inactive;
-
-            await usersService.EnableOrDisableUser(userId, disabled);
-
-            return RedirectToAction(nameof(Details), new { userId });
-        }
-
-        [HttpGet("{userId}/account-type")]
-        public async Task<IActionResult> AccountType(int userId)
-        {
-            var user = await usersService.GetUser(userId);
-
-            if (user == null)
-            {
-                return new NotFoundResult();
-            }
-
-            var roles = await usersService.GetRoles(user);
-            return View(new AccountTypeModel
-            {
-                BackLink = Url.Action(nameof(Details), new { userId }),
-                Email = user.Email,
-                SelectedAccountType = roles.OrderBy(r => r).First(),
-            });
-        }
-
-        [HttpPost("{userId}/account-type")]
-        public async Task<IActionResult> AccountType(int userId, AccountTypeModel model)
-        {
-            if (!ModelState.IsValid)
-                return View(model);
-
-            await usersService.UpdateUserAccountType(userId, model.SelectedAccountType);
-
-            return RedirectToAction(nameof(Details), new { userId });
-        }
-
-        [HttpGet("{userId}/organisation")]
-        public async Task<IActionResult> Organisation(int userId)
-        {
-            var user = await usersService.GetUser(userId);
-
-            if (user == null)
-            {
-                return new NotFoundResult();
-            }
-
             var organisations = await organisationsService.GetAllOrganisations();
+            var user = await usersService.GetUser(userId);
 
-            return View(new OrganisationModel
+            if (user == null)
+                return NotFound();
+
+            var model = new Models.UserModels.UserDetailsModel(user)
             {
-                BackLink = Url.Action(nameof(Details), new { userId }),
-                UserId = userId,
-                Email = user.Email,
-                SelectedOrganisationId = $"{user.PrimaryOrganisationId}",
+                BackLink = Url.Action(nameof(Index)),
                 Organisations = GetFormattedOrganisations(organisations),
-            });
+            };
+
+            return View("UserDetails", model);
         }
 
-        [HttpPost("{userId}/organisation")]
-        public async Task<IActionResult> Organisation(int userId, OrganisationModel model)
+        [HttpPost("{userId}/edit")]
+        public async Task<IActionResult> Edit(int userId, Models.UserModels.UserDetailsModel model)
         {
             if (!ModelState.IsValid)
             {
                 var organisations = await organisationsService.GetAllOrganisations();
-
                 model.Organisations = GetFormattedOrganisations(organisations);
-
-                return View(model);
+                return View("UserDetails", model);
             }
 
-            await usersService.UpdateUserOrganisation(userId, int.Parse(model.SelectedOrganisationId));
-
-            return RedirectToAction(nameof(Details), new { userId });
-        }
-
-        [HttpGet("{userId}/personal-details")]
-        public async Task<IActionResult> PersonalDetails(int userId)
-        {
             var user = await usersService.GetUser(userId);
 
             if (user == null)
-            {
-                return new NotFoundResult();
-            }
+                return NotFound();
 
-            return View(new PersonalDetailsModel
-            {
-                BackLink = Url.Action(nameof(Details), new { userId }),
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-            });
-        }
-
-        [HttpPost("{userId}/personal-details")]
-        public async Task<IActionResult> PersonalDetails(int userId, PersonalDetailsModel model)
-        {
-            if (!ModelState.IsValid)
-                return View(model);
-
-            await usersService.UpdateUserDetails(
+            await usersService.UpdateUser(
                 userId,
                 model.FirstName,
                 model.LastName,
-                model.Email);
+                model.Email,
+                !model.IsActive!.Value,
+                model.SelectedAccountType,
+                int.Parse(model.SelectedOrganisationId));
 
-            return RedirectToAction(nameof(Details), new { userId });
+            return RedirectToAction(nameof(Index));
         }
 
         private static IEnumerable<SelectListItem> GetFormattedOrganisations(IEnumerable<Organisation> organisations)
