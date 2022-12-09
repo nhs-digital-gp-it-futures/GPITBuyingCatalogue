@@ -69,11 +69,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.AddApplicationInsightsTelemetry();
 
-            services.ConfigureDbContexts();
+            services.ConfigureDbContexts(Configuration);
 
             if (!IsE2ETestEnvironment())
             {
-                services.ConfigureSession();
+                services.ConfigureSession(Configuration);
             }
 
             services.ConfigureIdentity();
@@ -101,9 +101,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigureOds(Configuration);
 
-            services.ConfigureDomainName();
+            services.ConfigureDomainName(Configuration);
 
-            services.ConfigurePdf();
+            services.ConfigurePdf(Configuration);
 
             services.ConfigureFormOptions();
 
