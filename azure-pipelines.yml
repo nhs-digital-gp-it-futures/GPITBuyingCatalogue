@@ -84,7 +84,7 @@ jobs:
     inputs:
       command: build
       projects: 'NHSD.GPIT.BuyingCatalogue.sln'
-      arguments: '--no-restore --configuration $(buildConfiguration) -v d'
+      arguments: '--no-restore --configuration $(buildConfiguration)'
 
   - task: gulp@0
     displayName: 'Run gulp min'
