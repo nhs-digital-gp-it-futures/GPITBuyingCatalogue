@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models;
 using static NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models.RadioListModel;
 
@@ -203,7 +204,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Controllers
         {
             var model = new SelectListModel
             {
-                SelectListItems = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
+                SelectListItems = new List<SelectOption<string>>
                 {
                     new("First Option", "1"),
                     new("Second Option", "2"),

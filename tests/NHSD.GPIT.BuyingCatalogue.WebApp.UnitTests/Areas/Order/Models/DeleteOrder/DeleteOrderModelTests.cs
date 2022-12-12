@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.DeleteOr
             };
 
             model.AvailableOptions.Count.Should().Be(expected.Length);
-            expected.ForEach(x => model.AvailableOptions.FirstOrDefault(o => o.Name == x).Should().NotBeNull());
+            expected.ForEach(x => model.AvailableOptions.FirstOrDefault(o => o.Text == x).Should().NotBeNull());
         }
 
         [Theory]
@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.DeleteOr
             };
 
             model.AvailableOptions.Count.Should().Be(expected.Length);
-            expected.ForEach(x => model.AvailableOptions.FirstOrDefault(o => o.Name == x).Should().NotBeNull());
+            expected.ForEach(x => model.AvailableOptions.FirstOrDefault(o => o.Text == x).Should().NotBeNull());
         }
     }
 }

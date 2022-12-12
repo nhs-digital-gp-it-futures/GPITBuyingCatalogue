@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Utils.TestModels;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Utils.RandomData
 {

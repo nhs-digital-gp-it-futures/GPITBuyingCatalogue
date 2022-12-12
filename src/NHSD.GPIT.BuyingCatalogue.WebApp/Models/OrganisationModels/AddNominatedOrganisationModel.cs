@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
 {
@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
 
         public string OrganisationName { get; init; }
 
-        public IEnumerable<SelectListItem> PotentialOrganisations { get; set; }
+        public IEnumerable<SelectOption<string>> PotentialOrganisations { get; set; }
 
         public string SelectedOrganisationId { get; set; }
     }

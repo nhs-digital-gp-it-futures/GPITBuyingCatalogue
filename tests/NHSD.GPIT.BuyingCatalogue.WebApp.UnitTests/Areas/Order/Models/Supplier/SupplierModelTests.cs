@@ -55,9 +55,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Supplier
             foreach (var contact in supplierContacts)
             {
                 model.FormattedContacts.Should().Contain(x => x.Value == contact.Id
-                    && x.Name.Contains(contact.FirstName)
-                    && x.Name.Contains(contact.LastName)
-                    && x.Name.Contains(contact.Department));
+                    && x.Text.Contains(contact.FirstName)
+                    && x.Text.Contains(contact.LastName)
+                    && x.Text.Contains(contact.Department));
             }
 
             model.TemporaryContact.Should().BeNull();
@@ -89,9 +89,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Supplier
             foreach (var contact in supplierContacts)
             {
                 model.FormattedContacts.Should().Contain(x => x.Value == contact.Id
-                    && x.Name.Contains(contact.FirstName)
-                    && x.Name.Contains(contact.LastName)
-                    && x.Name.Contains(contact.Department));
+                    && x.Text.Contains(contact.FirstName)
+                    && x.Text.Contains(contact.LastName)
+                    && x.Text.Contains(contact.Department));
             }
 
             model.TemporaryContact.Should().Be(supplierContacts.First());

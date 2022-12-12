@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels.BrowserBasedModels
 {
@@ -29,10 +29,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationT
 
         public string SelectedConnectionSpeed { get; set; }
 
-        public IReadOnlyList<SelectListItem> ConnectionSpeeds { get; set; }
+        public IReadOnlyList<SelectOption<string>> ConnectionSpeeds { get; set; }
 
         public string SelectedScreenResolution { get; set; }
 
-        public IReadOnlyList<SelectListItem> ScreenResolutions { get; set; }
+        public IReadOnlyList<SelectOption<string>> ScreenResolutions { get; set; }
     }
 }

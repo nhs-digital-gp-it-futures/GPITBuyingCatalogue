@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.ImplementationPlans
@@ -17,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.Implemen
 
         public bool? UseDefaultMilestones { get; set; }
 
-        public IList<SelectableRadioOption<bool>> Options => new List<SelectableRadioOption<bool>>
+        public IList<SelectOption<bool>> Options => new List<SelectOption<bool>>
         {
             new("Yes", true),
             new(NoOptionText, false),

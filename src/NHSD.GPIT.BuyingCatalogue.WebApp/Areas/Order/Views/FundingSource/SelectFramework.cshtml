@@ -15,7 +15,7 @@
                                      label-text="Which framework do you want to order from?"
                                      size="Small">
                 <nhs-radio-buttons asp-for="SelectedFramework"
-                                   values="@Model.Frameworks"
+                                   values="@Model.Frameworks.Cast<object>()"
                                    display-name="Text"
                                    value-name="Value" />
             </nhs-fieldset-form-label>

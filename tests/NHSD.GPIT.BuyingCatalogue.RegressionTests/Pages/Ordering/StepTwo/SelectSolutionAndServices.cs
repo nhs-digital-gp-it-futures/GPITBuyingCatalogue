@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo
             return names;
         }
 
-        public static List<string> EditPlannedDeliveryDateSelectSolutionServices(bool isAssociatedServiceOnly,string associatedServices, string additionalServices)
+        public static List<string> EditPlannedDeliveryDateSelectSolutionServices(bool isAssociatedServiceOnly, string associatedServices, string additionalServices)
         {
             var names = new List<string>();
 

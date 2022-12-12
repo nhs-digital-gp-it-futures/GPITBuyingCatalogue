@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models
 {
@@ -7,6 +7,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp.Models
     {
         public string SelectListItem { get; set; }
 
-        public List<SelectListItem> SelectListItems { get; set; }
+        public List<SelectOption<string>> SelectListItems { get; set; }
     }
 }

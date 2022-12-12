@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels.DesktopBasedModels
 {
@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationT
 
         public string SelectedMemorySize { get; set; }
 
-        public IReadOnlyList<SelectListItem> MemorySizes { get; init; }
+        public IReadOnlyList<SelectOption<string>> MemorySizes { get; init; }
 
         [StringLength(300)]
         public string StorageSpace { get; set; }
@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationT
         [StringLength(300)]
         public string ProcessingPower { get; set; }
 
-        public IReadOnlyList<SelectListItem> Resolutions { get; init; }
+        public IReadOnlyList<SelectOption<string>> Resolutions { get; init; }
 
         public string SelectedResolution { get; set; }
     }

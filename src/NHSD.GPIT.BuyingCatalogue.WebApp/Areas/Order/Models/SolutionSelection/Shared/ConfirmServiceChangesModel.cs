@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Shared
@@ -35,10 +35,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
 
         public bool? ConfirmChanges { get; set; }
 
-        public IEnumerable<SelectListItem> SelectListItems => new[]
+        public IEnumerable<SelectOption<string>> SelectListItems => new[]
         {
-            new SelectListItem($"Yes, I want to confirm changes to my {ItemDescription}", $"{true}"),
-            new SelectListItem($"No, I want to keep my current {ItemDescription}", $"{false}"),
+            new SelectOption<string>($"Yes, I want to confirm changes to my {ItemDescription}", $"{true}"),
+            new SelectOption<string>($"No, I want to keep my current {ItemDescription}", $"{false}"),
         };
 
         private string ItemDescription => CatalogueItemType == CatalogueItemType.Solution

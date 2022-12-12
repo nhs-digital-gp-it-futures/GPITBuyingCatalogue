@@ -1,5 +1,7 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels.AddEditIm1IntegrationModel;
-@{ ViewBag.Title = $"{(Model.Description is not null ? "Edit" : "Add") } an IM1 integration"; }
+@{
+    ViewBag.Title = $"{(Model.Description is not null ? "Edit" : "Add")} an IM1 integration";
+}
 
 <div class="nhsuk-width-container">
     <partial name="Partials/_BackLink" model="Model" />
@@ -15,16 +17,15 @@
                 <input type="hidden" asp-for="@Model.SolutionName" />
 
                 <nhs-select asp-for="SelectedIntegrationType"
-                            asp-items="@(new SelectList(Model.IntegrationTypes, "Value", "Text"))"
+                            asp-items="@Model.IntegrationTypes"
                             label-text="Integration type" />
 
                 <nhs-select asp-for="SelectedProviderOrConsumer"
-                            asp-items="@(new SelectList(Model.ProviderConsumerTypes, "Value", "Text"))"
+                            asp-items="@Model.ProviderConsumerTypes"
                             label-text="Provider or consumer" />
 
                 <nhs-input asp-for="IntegratesWith"
-                           label-text="System integrating with"
-                           />
+                           label-text="System integrating with" />
 
                 <nhs-textarea asp-for="Description"
                               label-text="Description"

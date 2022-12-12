@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
@@ -19,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 
         public CataloguePriceType? SelectedCataloguePriceType { get; set; }
 
-        public IList<SelectableRadioOption<CataloguePriceType>> AvailableListPriceTypes => new List<SelectableRadioOption<CataloguePriceType>>
+        public IList<SelectOption<CataloguePriceType>> AvailableListPriceTypes => new List<SelectOption<CataloguePriceType>>
         {
             new(
                 "Flat price",

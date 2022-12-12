@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.AssociatedServicesBilling
@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.Associat
 
         public bool? ProceedWithoutSpecificRequirements { get; set; }
 
-        public IList<SelectListItem> Options => new List<SelectListItem>
+        public IList<SelectOption<string>> Options => new List<SelectOption<string>>
         {
             new("Yes", $"{true}"),
             new(NoOptionText, $"{false}"),

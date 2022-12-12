@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.DeleteOrder
@@ -17,13 +18,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.DeleteOrder
         public const string OrderWarning = "Deleting an order is permanent and any information you’ve already input will be lost. Once you’ve deleted your order, you’ll not be able to retrieve it and will have to start a new one.";
         public const string OrderYesOptionText = "Yes, I want to delete this order";
 
-        private readonly IList<SelectableRadioOption<bool>> amendmentOptions = new List<SelectableRadioOption<bool>>
+        private readonly IList<SelectOption<bool>> amendmentOptions = new List<SelectOption<bool>>
         {
             new(AmendmentYesOptionText, true),
             new(AmendmentNoOptionText, false),
         };
 
-        private readonly IList<SelectableRadioOption<bool>> orderOptions = new List<SelectableRadioOption<bool>>
+        private readonly IList<SelectOption<bool>> orderOptions = new List<SelectOption<bool>>
         {
             new(OrderYesOptionText, true),
             new(OrderNoOptionText, false),
@@ -57,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.DeleteOrder
 
         public bool? SelectedOption { get; set; }
 
-        public IList<SelectableRadioOption<bool>> AvailableOptions => IsAmendment
+        public IList<SelectOption<bool>> AvailableOptions => IsAmendment
             ? amendmentOptions
             : orderOptions;
     }

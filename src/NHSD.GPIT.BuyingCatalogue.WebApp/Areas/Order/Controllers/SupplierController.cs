@@ -4,10 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Session;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Supplier;
@@ -139,7 +139,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                 CallOffId = callOffId,
                 InternalOrgId = internalOrgId,
                 AssociatedServicesOnly = order.AssociatedServicesOnly,
-                Suppliers = suppliers.Select(x => new SelectListItem(x.Name, $"{x.Id}")),
+                Suppliers = suppliers.Select(x => new SelectOption<string>(x.Name, $"{x.Id}")),
             };
 
             return View(model);
@@ -154,7 +154,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers
                     ? await supplierService.GetAllSuppliersWithAssociatedServices()
                     : await supplierService.GetAllSuppliersFromBuyingCatalogue();
 
-                model.Suppliers = suppliers.Select(x => new SelectListItem(x.Name, $"{x.Id}"));
+                model.Suppliers = suppliers.Select(x => new SelectOption<string>(x.Name, $"{x.Id}"));
 
                 return View(model);
             }

@@ -2,7 +2,7 @@
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 {
@@ -61,8 +61,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             AssignQuantityCalculationType(cataloguePrice);
         }
 
-        public override IEnumerable<SelectableRadioOption<CataloguePriceCalculationType>> AvailableCalculationTypes =>
-            new List<SelectableRadioOption<CataloguePriceCalculationType>>
+        public override IEnumerable<SelectOption<CataloguePriceCalculationType>> AvailableCalculationTypes =>
+            new List<SelectOption<CataloguePriceCalculationType>>
             {
                 new(
                     CataloguePriceCalculationType.SingleFixed.Name(),

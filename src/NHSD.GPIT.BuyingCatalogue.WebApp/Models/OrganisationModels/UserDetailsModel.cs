@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
@@ -72,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
 
         public bool IsDefaultAccountType { get; set; }
 
-        public IEnumerable<SelectableRadioOption<string>> AccountTypeOptions => new List<SelectableRadioOption<string>>
+        public IEnumerable<SelectOption<string>> AccountTypeOptions => new List<SelectOption<string>>
         {
             new(OrganisationFunction.Buyer.DisplayName, OrganisationFunction.Buyer.Advice, OrganisationFunction.Buyer.Name),
             new(OrganisationFunction.AccountManager.DisplayName, OrganisationFunction.AccountManager.Advice, OrganisationFunction.AccountManager.Name),
@@ -80,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
 
         public bool? IsActive { get; set; }
 
-        public IEnumerable<SelectableRadioOption<bool>> StatusOptions => new List<SelectableRadioOption<bool>>
+        public IEnumerable<SelectOption<bool>> StatusOptions => new List<SelectOption<bool>>
         {
             new("Active", true),
             new("Inactive", false),

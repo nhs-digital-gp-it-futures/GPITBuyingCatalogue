@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Constants
 {
     public static class SelectLists
     {
-        public static readonly IReadOnlyList<SelectListItem> MemorySizes = new List<SelectListItem>
+        public static readonly IReadOnlyList<SelectOption<string>> MemorySizes = new List<SelectOption<string>>
         {
             new() { Text = "256MB", Value = "256MB" },
             new() { Text = "512MB", Value = "512MB" },
@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Constants
             new() { Text = "16GB or higher", Value = "16GB or higher" },
         };
 
-        public static readonly IReadOnlyList<SelectListItem> ConnectionSpeeds = new List<SelectListItem>
+        public static readonly IReadOnlyList<SelectOption<string>> ConnectionSpeeds = new List<SelectOption<string>>
         {
             new() { Text = "0.5Mbps", Value = "0.5Mbps" },
             new() { Text = "1Mbps", Value = "1Mbps" },
@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Constants
             new() { Text = "Higher than 30Mbps", Value = "Higher than 30Mbps" },
         };
 
-        public static readonly IReadOnlyList<SelectListItem> ScreenResolutions = new List<SelectListItem>
+        public static readonly IReadOnlyList<SelectOption<string>> ScreenResolutions = new List<SelectOption<string>>
         {
             new() { Text = "16:9 - 640 x 360", Value = "16:9 - 640 x 360" },
             new() { Text = "4:3 - 800 x 600", Value = "4:3 - 800 x 600" },

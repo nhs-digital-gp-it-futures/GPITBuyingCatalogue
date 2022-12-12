@@ -19,7 +19,7 @@
                 <input type="hidden" asp-for="Title" />
 
                 <nhs-auto-complete asp-for="SelectedOrganisationId"
-                                   asp-items="@(new SelectList(Model!.Organisations, "Value", "Text"))"
+                                   asp-items="@Model.Organisations"
                                    label-text="Organisation"/>
                 <nhs-input asp-for="FirstName"
                            label-text="First name"/>
@@ -38,8 +38,8 @@
                         <nhs-radio-buttons asp-for="SelectedAccountType"
                                            values="Model.AccountTypeOptions.Cast<object>()"
                                            value-name="Value"
-                                           display-name="Name"
-                                           hint-name="Advice"/>
+                                           display-name="Text"
+                                           hint-name="Advice" />
                     </nhs-fieldset-form-label>
                 </div>
 
@@ -50,7 +50,7 @@
                     <nhs-radio-buttons asp-for="IsActive"
                                        values="@Model.StatusOptions.Cast<object>()"
                                        value-name="Value"
-                                       display-name="Name"/>
+                                       display-name="Text" />
                 </nhs-fieldset-form-label>
             </div>
 

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels.MobileTabletBasedModels
 {
@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationT
 
         public string SelectedConnectionSpeed { get; set; }
 
-        public IReadOnlyList<SelectListItem> ConnectionSpeeds { get; set; }
+        public IReadOnlyList<SelectOption<string>> ConnectionSpeeds { get; set; }
 
         public ConnectionTypeModel[] ConnectionTypes { get; set; }
 

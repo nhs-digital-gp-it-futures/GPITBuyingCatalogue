@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.DeliveryDates
@@ -32,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.Delivery
 
         public bool? ConfirmChanges { get; set; }
 
-        public IEnumerable<SelectableRadioOption<bool>> Options => new List<SelectableRadioOption<bool>>
+        public IEnumerable<SelectOption<bool>> Options => new List<SelectOption<bool>>
         {
             new(YesOption, true),
             new(NoOption, false),

@@ -9,7 +9,7 @@
                 additional-advice="This page is rendered from SelectList.cshtml using the SelectListModel." />
 
 <nhs-select asp-for="SelectListItem"
-            asp-items="@(new SelectList(Model.SelectListItems, "Value", "Text"))"
+            asp-items="@Model.SelectListItems"
             label-text="A Select List From a List of SelectListItems"
             label-hint="And a Hint" />
 
