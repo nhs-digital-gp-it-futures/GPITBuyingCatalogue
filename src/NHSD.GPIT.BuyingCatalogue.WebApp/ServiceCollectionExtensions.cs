@@ -34,6 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 {
     public static class ServiceCollectionExtensions
     {
+        private const int DefaultSessionTimeout = 60;
         private const string BuyingCatalogueDbConnectionEnvironmentVariable = "BC_DB_CONNECTION";
         private const string BuyingCatalogueDomainNameEnvironmentVariable = "DOMAIN_NAME";
         private const string BuyingCataloguePdfEnvironmentVariable = "USE_SSL_FOR_PDF";
@@ -67,8 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         {
             var cookieExpiration = configuration.GetSection("cookieExpiration").Get<CookieExpirationSettings>();
 
-            if (!int.TryParse(Environment.GetEnvironmentVariable(SessionIdleTimeoutEnvironmentVariable), out int sessionIdleTimeout))
-                throw new InvalidOperationException($"Environment variable '{SessionIdleTimeoutEnvironmentVariable}' must be set to an integer representing the number of minutes before timing out the session");
+            var sessionIdleTimeout = configuration.GetValue<int?>(SessionIdleTimeoutEnvironmentVariable) ?? DefaultSessionTimeout;
 
             services.ConfigureApplicationCookie(options =>
             {
@@ -111,9 +111,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 services.AddScoped<IOdsService, OdsService>();
         }
 
-        public static void ConfigureDbContexts(this IServiceCollection services)
+        public static void ConfigureDbContexts(this IServiceCollection services, IConfiguration configuration)
         {
-            var buyingCatalogueConnectionString = Environment.GetEnvironmentVariable(BuyingCatalogueDbConnectionEnvironmentVariable);
+            var buyingCatalogueConnectionString = configuration.GetValue<string>(BuyingCatalogueDbConnectionEnvironmentVariable);
 
             if (string.IsNullOrWhiteSpace(buyingCatalogueConnectionString))
                 throw new InvalidOperationException($"Environment variable '{BuyingCatalogueDbConnectionEnvironmentVariable}' must be set for the database connection string");
@@ -121,15 +121,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddDbContext<BuyingCatalogueDbContext>(options => options.UseSqlServer(buyingCatalogueConnectionString));
         }
 
-        public static void ConfigureSession(this IServiceCollection services)
+        public static void ConfigureSession(this IServiceCollection services, IConfiguration configuration)
         {
-            var buyingCatalogueConnectionString = Environment.GetEnvironmentVariable(BuyingCatalogueDbConnectionEnvironmentVariable);
+            var buyingCatalogueConnectionString = configuration.GetValue<string>(BuyingCatalogueDbConnectionEnvironmentVariable);
 
             if (string.IsNullOrWhiteSpace(buyingCatalogueConnectionString))
                 throw new InvalidOperationException($"Environment variable '{BuyingCatalogueDbConnectionEnvironmentVariable}' must be set for the database connection string");
 
-            if (!int.TryParse(Environment.GetEnvironmentVariable(SessionIdleTimeoutEnvironmentVariable), out int sessionIdleTimeout))
-                throw new InvalidOperationException($"Environment variable '{SessionIdleTimeoutEnvironmentVariable}' must be set to an integer representing the number of minutes before timing out the session");
+            var sessionIdleTimeout = configuration.GetValue<int?>(SessionIdleTimeoutEnvironmentVariable) ?? DefaultSessionTimeout;
 
             services.AddDistributedSqlServerCache(options =>
             {
@@ -152,9 +151,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSingleton(disabledErrorMessage);
         }
 
-        public static void ConfigureDomainName(this IServiceCollection services)
+        public static void ConfigureDomainName(this IServiceCollection services, IConfiguration configuration)
         {
-            var domain = Environment.GetEnvironmentVariable(BuyingCatalogueDomainNameEnvironmentVariable);
+            var domain = configuration.GetValue<string>(BuyingCatalogueDomainNameEnvironmentVariable);
 
             if (string.IsNullOrWhiteSpace(domain))
                 throw new InvalidOperationException($"Environment variable '{BuyingCatalogueDomainNameEnvironmentVariable}' must be set for the domain name");
@@ -163,14 +162,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSingleton(domainNameSettings);
         }
 
-        public static void ConfigurePdf(this IServiceCollection services)
+        public static void ConfigurePdf(this IServiceCollection services, IConfiguration configuration)
         {
-            var useSsl = Environment.GetEnvironmentVariable(BuyingCataloguePdfEnvironmentVariable);
+            var useSsl = configuration.GetValue<bool?>(BuyingCataloguePdfEnvironmentVariable) ?? false;
 
-            if (string.IsNullOrWhiteSpace(useSsl))
-                useSsl = "false";
-
-            var pdfSettings = new PdfSettings { UseSslForPdf = useSsl.EqualsIgnoreCase("true") };
+            var pdfSettings = new PdfSettings { UseSslForPdf = useSsl };
             services.AddSingleton(pdfSettings);
         }
 
@@ -249,7 +245,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
         public static IServiceCollection ConfigureGovNotify(this IServiceCollection services, IConfiguration configuration)
         {
-            var notifyApiKey = Environment.GetEnvironmentVariable("NOTIFY_API_KEY");
+            var notifyApiKey = configuration.GetValue<string>("NOTIFY_API_KEY");
             if (!string.IsNullOrWhiteSpace(notifyApiKey))
             {
                 services.AddScoped<IAsyncNotificationClient, NotificationClient>(sp => new NotificationClient(notifyApiKey));
