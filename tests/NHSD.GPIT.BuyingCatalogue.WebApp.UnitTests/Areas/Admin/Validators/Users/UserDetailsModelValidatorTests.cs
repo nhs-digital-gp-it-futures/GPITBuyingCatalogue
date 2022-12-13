@@ -195,7 +195,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
             result.ShouldNotHaveValidationErrorFor(m => m.SelectedAccountType);
         }
 
-
         [Theory]
         [CommonInlineAutoData(false, "AccountManager", null)]
         [CommonInlineAutoData(false, "AccountManager", true)]
