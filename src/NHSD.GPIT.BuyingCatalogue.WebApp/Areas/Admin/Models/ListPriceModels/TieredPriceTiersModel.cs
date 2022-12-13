@@ -3,6 +3,7 @@ using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
@@ -41,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             MaximumNumberOfTiers = maximumNumberOfTiers;
         }
 
-        public static IList<SelectableRadioOption<PublicationStatus>> AvailablePublicationStatuses => new List<SelectableRadioOption<PublicationStatus>>
+        public static IList<SelectOption<PublicationStatus>> AvailablePublicationStatuses => new List<SelectOption<PublicationStatus>>
         {
             new(PublicationStatus.Draft.Description(), PublicationStatus.Draft),
             new(PublicationStatus.Published.Description(), PublicationStatus.Published),

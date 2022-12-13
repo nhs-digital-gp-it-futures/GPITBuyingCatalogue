@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 {
@@ -24,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         public ModelExpression For { get; set; }
 
         [HtmlAttributeName(TagHelperConstants.ItemsName)]
-        public SelectList Items { get; set; }
+        public IEnumerable<SelectOption<string>> Items { get; set; }
 
         [HtmlAttributeName(TagHelperConstants.LabelTextName)]
         public string LabelText { get; set; }
@@ -56,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 htmlGenerator,
                 ViewContext,
                 For,
-                Items,
+                new SelectList(Items, "Value", "Text", Items.FirstOrDefault(x => x.Selected)),
                 AllowMultiple,
                 UseDefaultValue);
 

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSources;
 using Xunit;
@@ -18,10 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
         {
             var model = new SelectFrameworkModel(order, frameworks);
 
-            var expectedList = new SelectList(
-                frameworks.Select(f => new SelectListItem(f.ShortName, f.Id)),
-                "Value",
-                "Text");
+            var expectedList = frameworks.Select(f => new SelectOption<string>(f.ShortName, f.Id));
 
             model.Title.Should().Be(SelectFrameworkModel.TitleText);
             model.Caption.Should().Be($"Order {order.CallOffId}");

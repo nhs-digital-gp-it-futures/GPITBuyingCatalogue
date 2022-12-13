@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels;
@@ -282,7 +280,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             return RedirectToAction(nameof(NominatedOrganisations), new { organisationId });
         }
 
-        private async Task<IEnumerable<SelectListItem>> GetPotentialOrganisations(int organisationId)
+        private async Task<IEnumerable<SelectOption<string>>> GetPotentialOrganisations(int organisationId)
         {
             var allOrganisations = await OrganisationsService.GetAllOrganisations();
             var nominatedOrganisations = await OrganisationsService.GetNominatedOrganisations(organisationId);
@@ -294,7 +292,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             return allOrganisations
                 .Where(x => !excludedOrganisationIds.Contains(x.Id))
                 .OrderBy(x => x.Name)
-                .Select(x => new SelectListItem(x.Name, $"{x.Id}"));
+                .Select(x => new SelectOption<string>(x.Name, $"{x.Id}"));
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using EnumsNET;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage
@@ -20,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage
 
         public CatalogueItemType? SelectedOrderItemType { get; set; }
 
-        public IList<SelectableRadioOption<CatalogueItemType>> AvailableOrderItemTypes => new List<SelectableRadioOption<CatalogueItemType>>
+        public IList<SelectOption<CatalogueItemType>> AvailableOrderItemTypes => new List<SelectOption<CatalogueItemType>>
         {
             new(
                 CatalogueItemType.Solution.AsString(EnumFormat.DisplayName),

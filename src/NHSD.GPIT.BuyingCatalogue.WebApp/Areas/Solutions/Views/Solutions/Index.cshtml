@@ -142,7 +142,7 @@
             <form id="sort-form" method="post">
 
                 <nhs-select asp-for="SelectedSortOption"
-                        asp-items="@(new SelectList(Model.SortOptions, "Value", "Text"))"
+                        asp-items="@Model.SortOptions"
                         label-text="Sort by:"
                         use-default-value="false" />
 

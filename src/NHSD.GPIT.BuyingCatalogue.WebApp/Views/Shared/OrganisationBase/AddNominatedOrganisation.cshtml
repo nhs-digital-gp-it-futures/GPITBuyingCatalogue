@@ -22,7 +22,7 @@
             <div class="nhsuk-u-margin-bottom-9">
                 <nhs-auto-complete asp-for="SelectedOrganisationId"
                                    label-text="Organisation"
-                                   asp-items="@(new SelectList(Model.PotentialOrganisations, "Value", "Text"))" />
+                                   asp-items="@Model.PotentialOrganisations" />
             </div>
 
             <nhs-submit-button text="Save and continue"/>

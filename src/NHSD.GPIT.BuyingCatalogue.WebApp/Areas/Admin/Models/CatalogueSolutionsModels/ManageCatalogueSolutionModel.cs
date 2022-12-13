@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Admin;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
@@ -58,9 +58,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutions
 
         public PublicationStatus SelectedPublicationStatus { get; set; }
 
-        public IReadOnlyList<SelectListItem> PublicationStatuses => SolutionPublicationStatus
+        public IReadOnlyList<SelectOption<string>> PublicationStatuses => SolutionPublicationStatus
                 .GetAvailablePublicationStatuses(CatalogueItemType.Solution)
-                .Select(p => new SelectListItem(p.Description(), p.EnumMemberName()))
+                .Select(p => new SelectOption<string>(p.Description(), p.EnumMemberName()))
                 .ToList();
 
         public TaskProgress DescriptionStatus { get; init; }

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -158,9 +158,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private static IEnumerable<SelectListItem> GetFormattedOrganisations(IEnumerable<Organisation> organisations)
+        private static IEnumerable<SelectOption<string>> GetFormattedOrganisations(IEnumerable<Organisation> organisations)
         {
-            return organisations.Select(x => new SelectListItem(x.Name, $"{x.Id}"));
+            return organisations.Select(x => new SelectOption<string>(x.Name, $"{x.Id}"));
         }
 
         private async Task<List<AspNetUser>> GetFilteredUsers(string searchTerm)

@@ -24,7 +24,7 @@
                        label-text="Solution name" />
 
             <nhs-select asp-for="SupplierId"
-                        asp-items="@(new SelectList(Model.SuppliersSelectList, "Value", "Text"))"
+                        asp-items="@Model.SuppliersSelectList"
                         label-text="Supplier name" />
 
             <nhs-fieldset-form-label asp-for="@Model"

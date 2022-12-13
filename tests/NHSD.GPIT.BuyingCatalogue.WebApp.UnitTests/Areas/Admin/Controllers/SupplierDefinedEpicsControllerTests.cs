@@ -7,9 +7,9 @@ using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SupplierDefinedEpics;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -160,12 +160,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ICapabilitiesService> capabilitiesService,
             SupplierDefinedEpicsController controller)
         {
-            var expectedCapabilitiesSelectList = new SelectList(
-                capabilities
+            var expectedCapabilitiesSelectList = capabilities
                 .OrderBy(c => c.Name)
-                .Select(c => new SelectListItem(c.Name, c.Id.ToString())),
-                "Value",
-                "Text");
+                .Select(c => new SelectOption<string>(c.Name, c.Id.ToString()));
 
             capabilitiesService.Setup(s => s.GetCapabilities())
                 .ReturnsAsync(capabilities);
@@ -205,12 +202,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var expectedCapabilitiesSelectList = new SelectList(
-                capabilities
+            var expectedCapabilitiesSelectList = capabilities
                 .OrderBy(c => c.Name)
-                .Select(c => new SelectListItem(c.Name, c.Id.ToString())),
-                "Value",
-                "Text");
+                .Select(c => new SelectOption<string>(c.Name, c.Id.ToString()));
 
             capabilitiesService.Setup(s => s.GetCapabilities())
                 .ReturnsAsync(capabilities);
@@ -324,12 +318,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var expectedCapabilitiesSelectList = new SelectList(
-                capabilities
+            var expectedCapabilitiesSelectList = capabilities
                 .OrderBy(c => c.Name)
-                .Select(c => new SelectListItem(c.Name, c.Id.ToString())),
-                "Value",
-                "Text");
+                .Select(c => new SelectOption<string>(c.Name, c.Id.ToString()));
 
             capabilitiesService.Setup(s => s.GetCapabilities())
                 .ReturnsAsync(capabilities);

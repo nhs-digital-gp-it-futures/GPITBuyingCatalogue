@@ -13,6 +13,7 @@ using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -553,7 +554,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.AddNominatedOrganisation));
 
             var model = result.Model.Should().BeAssignableTo<AddNominatedOrganisationModel>().Subject;
-            var expected = new SelectListItem(potentialOrganisation.Name, $"{potentialOrganisation.Id}");
+            var expected = new SelectOption<string>(potentialOrganisation.Name, $"{potentialOrganisation.Id}");
 
             model.OrganisationId.Should().Be(organisation.Id);
             model.OrganisationName.Should().Be(organisation.Name);
@@ -586,7 +587,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             model.SelectedOrganisationId = string.Empty;
             model.PotentialOrganisations = new[]
             {
-                new SelectListItem(potentialOrganisation.Name, $"{potentialOrganisation.Id}"),
+                new SelectOption<string>(potentialOrganisation.Name, $"{potentialOrganisation.Id}"),
             };
 
             var result = (await controller.AddNominatedOrganisation(organisation.Id, model)).As<ViewResult>();

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.Shared
@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
             SupplierName = order.Supplier?.Name;
 
             CatalogueSolutions = solutions
-                .Select(x => new SelectListItem(x.Name, $"{x.Id}"))
+                .Select(x => new SelectOption<string>(x.Name, $"{x.Id}"))
                 .ToList();
 
             AdditionalServices = additionalServices
@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.SolutionSelection.
 
         public string SelectedCatalogueSolutionId { get; set; }
 
-        public List<SelectListItem> CatalogueSolutions { get; set; }
+        public List<SelectOption<string>> CatalogueSolutions { get; set; }
 
         public List<ServiceModel> AdditionalServices { get; set; }
 
