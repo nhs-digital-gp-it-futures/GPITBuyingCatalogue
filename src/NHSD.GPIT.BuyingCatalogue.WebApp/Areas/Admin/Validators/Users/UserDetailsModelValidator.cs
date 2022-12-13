@@ -66,18 +66,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
                 .WithMessage(AccountStatusMissingErrorMessage);
         }
 
-        private static bool BelongToCorrectOrganisation(string accountType, string selectedOrganisationId)
+        private static bool BelongToCorrectOrganisation(string accountType, int? selectedOrganisationId)
         {
             if (accountType != OrganisationFunction.Authority.Name)
                 return true;
 
-            return selectedOrganisationId == $"{OrganisationConstants.NhsDigitalOrganisationId}";
+            return selectedOrganisationId == OrganisationConstants.NhsDigitalOrganisationId;
         }
 
-        private bool AccountManagerLimit(string accountType, string selectedOrganisationId, int userId, bool disabled)
+        private bool AccountManagerLimit(string accountType, int? selectedOrganisationId, int userId, bool disabled)
         {
             return accountType != OrganisationFunction.AccountManager.Name || disabled
-                || !usersService.IsAccountManagerLimit(int.Parse(selectedOrganisationId), userId).Result;
+                || !usersService.IsAccountManagerLimit(selectedOrganisationId.GetValueOrDefault(), userId).Result;
         }
 
         private bool NotBeDuplicateUserEmail(string emailAddress, int userId)

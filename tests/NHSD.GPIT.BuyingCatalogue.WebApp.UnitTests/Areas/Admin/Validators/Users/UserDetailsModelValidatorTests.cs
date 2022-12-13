@@ -20,10 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
 
         [Theory]
         [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
         public static void Validate_SelectedOrganisationIdNullOrEmpty_SetsModelError(
-            string organisationId,
+            int organisationId,
             UserDetailsModelValidator validator)
         {
             var model = new UserDetailsModel
@@ -169,7 +167,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         {
             var model = new UserDetailsModel
             {
-                SelectedOrganisationId = $"{OrganisationConstants.NhsDigitalOrganisationId + 1}",
+                SelectedOrganisationId = OrganisationConstants.NhsDigitalOrganisationId + 1,
                 SelectedAccountType = OrganisationFunction.Authority.Name,
             };
 
@@ -186,7 +184,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         {
             var model = new UserDetailsModel
             {
-                SelectedOrganisationId = $"{OrganisationConstants.NhsDigitalOrganisationId}",
+                SelectedOrganisationId = OrganisationConstants.NhsDigitalOrganisationId,
                 SelectedAccountType = OrganisationFunction.Authority.Name,
             };
 
@@ -223,7 +221,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         {
             var model = new UserDetailsModel
             {
-                SelectedOrganisationId = $"{OrganisationConstants.NhsDigitalOrganisationId}",
+                SelectedOrganisationId = OrganisationConstants.NhsDigitalOrganisationId,
                 UserId = userId,
                 SelectedAccountType = accountType,
                 IsActive = isActive,
@@ -249,7 +247,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         {
             var model = new UserDetailsModel
             {
-                SelectedOrganisationId = $"{organisationId}",
+                SelectedOrganisationId = organisationId,
                 UserId = userId,
                 SelectedAccountType = OrganisationFunction.AccountManager.Name,
                 IsActive = true,

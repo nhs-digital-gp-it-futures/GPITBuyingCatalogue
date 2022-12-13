@@ -146,7 +146,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
                 UserDetailsModelValidator.EmailDomainInvalid).Should().BeTrue();
         }
 
-
         [Fact]
         public void Add_Buyer_ClickSave_DisplaysCorrectPage()
         {

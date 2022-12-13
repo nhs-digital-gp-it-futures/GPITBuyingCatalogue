@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.UserMode
         {
             var actual = new UserDetailsModel(user);
 
-            actual.SelectedOrganisationId.Should().Be($"{user.PrimaryOrganisationId}");
+            actual.SelectedOrganisationId.Should().Be(user.PrimaryOrganisationId);
             actual.UserId.Should().Be(user.Id);
             actual.Title.Should().Be("Edit user");
             actual.FirstName.Should().Be(user.FirstName);

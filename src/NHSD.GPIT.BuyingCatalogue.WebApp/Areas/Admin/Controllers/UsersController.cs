@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             }
 
             await createUserService.Create(
-                int.Parse(model.SelectedOrganisationId),
+                model.SelectedOrganisationId!.Value,
                 model.FirstName,
                 model.LastName,
                 model.Email,
@@ -153,7 +153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 model.Email,
                 !model.IsActive!.Value,
                 model.SelectedAccountType,
-                int.Parse(model.SelectedOrganisationId));
+                model.SelectedOrganisationId!.Value);
 
             return RedirectToAction(nameof(Index));
         }
