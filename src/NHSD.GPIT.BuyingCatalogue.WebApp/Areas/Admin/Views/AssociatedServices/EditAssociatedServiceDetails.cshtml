@@ -11,7 +11,9 @@
                         caption="@Model.SupplierName"
                         advice="Provide the following details for your Associated Service." />
 
-        <nhs-inset-text>Any changes to these details will be visible to anyone ordering your Associated Service in future.</nhs-inset-text>
+        <nhs-inset-text>
+            <p>Any changes to these details will be visible to anyone ordering your Associated Service in future.</p>
+        </nhs-inset-text>
 
         <form method="post">
             <input type="hidden" asp-for="@Model.Id" />
