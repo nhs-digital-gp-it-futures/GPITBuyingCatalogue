@@ -3,10 +3,6 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels.UsersModel
 @{
     ViewBag.Title = "User accounts";
-    if (User.IsAdmin())
-    {
-        Layout = "Layouts/_AdminLayout";
-    }
 }
 @section Breadcrumbs {
     <nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">

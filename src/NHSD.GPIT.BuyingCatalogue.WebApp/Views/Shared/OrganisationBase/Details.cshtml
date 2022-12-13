@@ -4,10 +4,6 @@
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.SummaryList
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 @{
-    if (User.IsAdmin())
-    {
-        Layout = "Layouts/_AdminLayout";
-    }
     ViewBag.Title = "Organisation details";
 }
 @section Breadcrumbs {
