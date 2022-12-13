@@ -20,6 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 {
     public sealed class EditUser : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
+        private const int NhsDigitalOrganisationId = 1;
         private const int OrganisationId = 176;
         private const int UserId = 5;
         private const string ValidEmail = "a@nhs.net";
@@ -62,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
-            CommonActions.PageTitle().Should().BeEquivalentTo($"Edit user-{organisation.Name}".FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo($"Edit user-{organisation!.Name}".FormatForComparison());
 
             CommonActions.ElementIsDisplayed(AddUserObjects.FirstName).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddUserObjects.LastName).Should().BeTrue();
@@ -78,6 +79,46 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             CommonActions.InputValueEqualTo(AddUserObjects.Email, user.Email).Should().BeTrue();
             CommonActions.IsRadioButtonChecked(organisationFunction).Should().BeTrue();
             CommonActions.IsRadioButtonChecked((!user.Disabled).ToString()).Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task EditUser_NhsDigitalOrganisation_RelevantSectionsDisplayed()
+        {
+            var user = await CreateUser(NhsDigitalOrganisationId, true, OrganisationFunction.Authority.Name);
+
+            NavigateToUrl(
+                typeof(OrganisationsController),
+                nameof(OrganisationsController.EditUser),
+                new Dictionary<string, string>
+                {
+                    { nameof(OrganisationId), NhsDigitalOrganisationId.ToString() },
+                    { nameof(UserId), user.Id.ToString() }
+                });
+
+            await using var context = GetEndToEndDbContext();
+
+            var organisation = await context.Organisations.AsNoTracking().FirstOrDefaultAsync(o => o.Id == NhsDigitalOrganisationId);
+
+            CommonActions.SaveButtonDisplayed().Should().BeTrue();
+            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
+            CommonActions.PageTitle().Should().BeEquivalentTo($"Edit user-{organisation!.Name}".FormatForComparison());
+
+            CommonActions.ElementIsDisplayed(AddUserObjects.FirstName).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AddUserObjects.LastName).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AddUserObjects.Email).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AddUserObjects.Role).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(AddUserObjects.Status).Should().BeTrue();
+
+            var userRole = user.GetRoleName();
+            var organisationFunction = OrganisationFunction.FromName(userRole).Name;
+
+            CommonActions.InputValueEqualTo(AddUserObjects.FirstName, user.FirstName).Should().BeTrue();
+            CommonActions.InputValueEqualTo(AddUserObjects.LastName, user.LastName).Should().BeTrue();
+            CommonActions.InputValueEqualTo(AddUserObjects.Email, user.Email).Should().BeTrue();
+            CommonActions.IsRadioButtonChecked(organisationFunction).Should().BeFalse();
+            CommonActions.IsRadioButtonChecked((!user.Disabled).ToString()).Should().BeTrue();
+
+            await RemoveUser(user);
         }
 
         [Fact]
@@ -292,10 +333,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
                 .ToList().FirstOrDefault();
         }
 
-        private async Task<AspNetUser> CreateUser(bool isEnabled = true, string accountType = "Buyer")
+        private async Task<AspNetUser> CreateUser(
+            int organisationId = OrganisationId,
+            bool isEnabled = true,
+            string accountType = "Buyer")
         {
             await using var context = GetEndToEndDbContext();
-            var user = GenerateUser.GenerateAspNetUser(context, OrganisationId, DefaultPassword, isEnabled, accountType);
+            var user = GenerateUser.GenerateAspNetUser(context, organisationId, DefaultPassword, isEnabled, accountType);
             context.Add(user);
             await context.SaveChangesAsync();
             Driver.Navigate().Refresh();
