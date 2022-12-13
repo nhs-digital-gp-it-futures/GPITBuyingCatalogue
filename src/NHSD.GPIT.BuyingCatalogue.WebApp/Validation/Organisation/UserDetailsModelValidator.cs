@@ -3,6 +3,7 @@ using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels;
 
@@ -38,7 +39,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Organisation
                 .NotEmpty()
                 .WithMessage("Select an account type")
                 .Must((model, accountType) => AccountManagerLimit(accountType, model.OrganisationId, model.UserId, !model.IsActive.GetValueOrDefault(false)))
-                .WithMessage($"There are already {accountManagementSettings.MaximumNumberOfAccountManagers} active account managers for this organisation which is the maximum allowed.");
+                .WithMessage($"There are already {accountManagementSettings.MaximumNumberOfAccountManagers} active account managers for this organisation which is the maximum allowed.")
+                .When(x => x.OrganisationId != OrganisationConstants.NhsDigitalOrganisationId);
 
             RuleFor(x => x.IsActive)
                 .NotEmpty()

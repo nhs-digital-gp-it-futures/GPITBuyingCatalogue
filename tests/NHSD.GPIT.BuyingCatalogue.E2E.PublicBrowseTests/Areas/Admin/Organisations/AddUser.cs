@@ -19,6 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 {
     public sealed class AddUser : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
+        private const int NhsDigitalOrganisationId = 1;
         private const int OrganisationId = 2;
         private const string ValidEmail = "a@nhs.net";
         private const string FirstNameRequired = "Enter a first name";
@@ -55,12 +56,36 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
-            CommonActions.PageTitle().Should().BeEquivalentTo($"Add user-{organisation.Name}".FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo($"Add user-{organisation!.Name}".FormatForComparison());
 
             CommonActions.ElementIsDisplayed(AddUserObjects.FirstName).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddUserObjects.LastName).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddUserObjects.Email).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddUserObjects.Role).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AddUserObjects.Status).Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task AddUser_NhsDigital_RelevantSectionsDisplayed()
+        {
+            NavigateToUrl(
+                typeof(OrganisationsController),
+                nameof(OrganisationsController.AddUser),
+                new Dictionary<string, string> { { nameof(OrganisationId), NhsDigitalOrganisationId.ToString() } });
+
+            await using var context = GetEndToEndDbContext();
+
+            var organisation =
+                await context.Organisations.AsNoTracking().FirstOrDefaultAsync(o => o.Id == NhsDigitalOrganisationId);
+
+            CommonActions.SaveButtonDisplayed().Should().BeTrue();
+            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
+            CommonActions.PageTitle().Should().BeEquivalentTo($"Add user-{organisation!.Name}".FormatForComparison());
+
+            CommonActions.ElementIsDisplayed(AddUserObjects.FirstName).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AddUserObjects.LastName).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AddUserObjects.Email).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(AddUserObjects.Role).Should().BeFalse();
             CommonActions.ElementIsDisplayed(AddUserObjects.Status).Should().BeTrue();
         }
 

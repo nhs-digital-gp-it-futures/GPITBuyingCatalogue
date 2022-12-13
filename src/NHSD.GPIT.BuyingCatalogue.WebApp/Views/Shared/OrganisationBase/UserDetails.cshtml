@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 @using ValidationSummaryTagHelper = Microsoft.AspNetCore.Mvc.TagHelpers.ValidationSummaryTagHelper
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels.UserDetailsModel
@@ -23,42 +24,45 @@
                 <input type="hidden" asp-for="BackLink" />
                 <input type="hidden" asp-for="IsDefaultAccountType" />
                 <input type="hidden" asp-for="MaxNumberOfAccountManagers" />
-                
+
                 <nhs-input
-                    asp-for="@Model.FirstName" 
+                    asp-for="@Model.FirstName"
                     label-text="First name" />
                 <nhs-input
-                    asp-for="@Model.LastName" 
+                    asp-for="@Model.LastName"
                     label-text="Last name" />
-                <nhs-input 
+                <nhs-input
                     asp-for="@Model.EmailAddress"
                     label-text="Email address" />
                 <br/>
 
-                @if(Model.IsDefaultAccountType)
+                @if (Model.OrganisationId != OrganisationConstants.NhsDigitalOrganisationId)
                 {
-                    <h3>Account type</h3>
-                    <p>Buyer</p>
-                    <nhs-inset-text>
-                        <p>
-                            You can only add buyers for this organisation.
-                            This is because there are already @Model.MaxNumberOfAccountManagers active account managers which is the maximum allowed.
-                        </p>
-                    </nhs-inset-text>
-                    <input type="hidden" asp-for="SelectedAccountType" />
-                }
-                else
-                {
-                    <nhs-fieldset-form-label asp-for="SelectedAccountType"
-                                             label-text="Account type"
-                                             label-hint="Select one option."
-                                             size="Medium">
-                        <nhs-radio-buttons asp-for="SelectedAccountType"
-                                           values="@Model.AccountTypeOptions.Cast<object>()"
-                                           value-name="Value"
-                                           display-name="Text"
-                                           hint-name="Advice" />
-                    </nhs-fieldset-form-label>
+                    @if (Model.IsDefaultAccountType)
+                    {
+                        <h3>Account type</h3>
+                        <p>Buyer</p>
+                        <nhs-inset-text>
+                            <p>
+                                You can only add buyers for this organisation.
+                                This is because there are already @Model.MaxNumberOfAccountManagers active account managers which is the maximum allowed.
+                            </p>
+                        </nhs-inset-text>
+                        <input type="hidden" asp-for="SelectedAccountType"/>
+                    }
+                    else
+                    {
+                        <nhs-fieldset-form-label asp-for="SelectedAccountType"
+                                                 label-text="Account type"
+                                                 label-hint="Select one option."
+                                                 size="Medium">
+                            <nhs-radio-buttons asp-for="SelectedAccountType"
+                                               values="@Model.AccountTypeOptions.Cast<object>()"
+                                               value-name="Value"
+                                               display-name="Text"
+                                               hint-name="Advice"/>
+                        </nhs-fieldset-form-label>
+                    }
                 }
 
                 <nhs-fieldset-form-label asp-for="IsActive"
