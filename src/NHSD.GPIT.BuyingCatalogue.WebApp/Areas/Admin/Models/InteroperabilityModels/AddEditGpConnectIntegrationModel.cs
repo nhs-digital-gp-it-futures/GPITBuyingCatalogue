@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels
@@ -11,22 +12,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
     {
         public AddEditGpConnectIntegrationModel()
         {
-            IntegrationTypes = new List<object>
-            {
-                new { Text = "GP Connect - HTML View", Value = "HTML View" },
-                new { Text = "GP Connect - Appointment Booking", Value = "Appointment Booking" },
-                new { Text = "GP Connect - Structured Record", Value = "Structured Record" },
-            };
-
-            ProviderConsumerTypes = new List<object>
-            {
-                new { Text = Framework.Constants.Interoperability.Provider, Value = Framework.Constants.Interoperability.Provider },
-                new { Text = Framework.Constants.Interoperability.Consumer, Value = Framework.Constants.Interoperability.Consumer },
-            };
         }
 
         public AddEditGpConnectIntegrationModel(CatalogueItem solution)
-            : this()
         {
             SolutionName = solution.Name;
             SolutionId = solution.Id;
@@ -34,13 +22,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
 
         public string SolutionName { get; }
 
-        public IEnumerable<object> IntegrationTypes { get; }
+        public List<SelectOption<string>> IntegrationTypes => new()
+        {
+            new("GP Connect - HTML View", "HTML View"),
+            new("GP Connect - Appointment Booking", "Appointment Booking"),
+            new("GP Connect - Structured Record", "Structured Record"),
+        };
 
         public string SelectedIntegrationType { get; set; }
 
         public string SelectedProviderOrConsumer { get; set; }
 
-        public IEnumerable<object> ProviderConsumerTypes { get; }
+        public List<SelectOption<string>> ProviderConsumerTypes => new()
+        {
+            new(Framework.Constants.Interoperability.Provider, Framework.Constants.Interoperability.Provider),
+            new(Framework.Constants.Interoperability.Consumer, Framework.Constants.Interoperability.Consumer),
+        };
 
         [StringLength(1000)]
         public string AdditionalInformation { get; set; }

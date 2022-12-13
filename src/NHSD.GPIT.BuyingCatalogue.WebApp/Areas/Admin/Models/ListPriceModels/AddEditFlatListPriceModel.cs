@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
@@ -42,14 +42,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             AssignQuantityCalculationType(cataloguePrice);
         }
 
-        public IEnumerable<SelectListItem> AvailableBillingPeriods => new List<SelectListItem>
+        public IEnumerable<SelectOption<string>> AvailableBillingPeriods => new List<SelectOption<string>>
         {
             new("None", null, true),
             new(TimeUnit.PerMonth.Description(), TimeUnit.PerMonth.ToString(), false),
             new(TimeUnit.PerYear.Description(), TimeUnit.PerYear.ToString(), false),
         };
 
-        public IEnumerable<SelectListItem> AvailableProvisioningTypes => new SelectListItem[]
+        public IEnumerable<SelectOption<string>> AvailableProvisioningTypes => new SelectOption<string>[]
         {
             new(ProvisioningType.Patient.Name(), ProvisioningType.Patient.ToString()),
             new(ProvisioningType.PerServiceRecipient.Name(), ProvisioningType.PerServiceRecipient.ToString()),
@@ -57,8 +57,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             new(ProvisioningType.OnDemand.Name(), ProvisioningType.OnDemand.ToString()),
         };
 
-        public IEnumerable<SelectableRadioOption<CataloguePriceQuantityCalculationType>>
-            AvailableQuantityCalculationTypes => new List<SelectableRadioOption<CataloguePriceQuantityCalculationType>>
+        public IEnumerable<SelectOption<CataloguePriceQuantityCalculationType>>
+            AvailableQuantityCalculationTypes => new List<SelectOption<CataloguePriceQuantityCalculationType>>
         {
             new(
                 CataloguePriceQuantityCalculationType.PerSolutionOrService.Name(),
@@ -109,13 +109,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 
         public string DeleteListPriceUrl { get; set; }
 
-        public IList<SelectableRadioOption<PublicationStatus>> AvailablePublicationStatuses => CataloguePricePublicationStatus
+        public IList<SelectOption<PublicationStatus>> AvailablePublicationStatuses => CataloguePricePublicationStatus
             .GetAvailablePublicationStatuses()
-            .Select(p => new SelectableRadioOption<PublicationStatus>(p.Description(), p))
+            .Select(p => new SelectOption<PublicationStatus>(p.Description(), p))
             .ToList();
 
-        public virtual IEnumerable<SelectableRadioOption<CataloguePriceCalculationType>> AvailableCalculationTypes =>
-            new List<SelectableRadioOption<CataloguePriceCalculationType>>
+        public virtual IEnumerable<SelectOption<CataloguePriceCalculationType>> AvailableCalculationTypes =>
+            new List<SelectOption<CataloguePriceCalculationType>>
         {
             new(
                 CataloguePriceCalculationType.SingleFixed.Name(),

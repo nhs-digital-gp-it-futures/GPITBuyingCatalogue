@@ -20,7 +20,7 @@
                 <input type="hidden" asp-for="@Model.SolutionName" />
 
                 <nhs-select asp-for="SelectedMemorySize"
-                            asp-items="@(new SelectList(Model.MemorySizes, "Value", "Text"))"
+                            asp-items="@Model.MemorySizes"
                             label-text="Memory size"
                             label-hint="Select the minimum memory size required for your Catalogue Solution to function." />
 
@@ -33,7 +33,7 @@
                               label-hint="Provide information on the minimum CPU power required for your Catalogue Solution to function on desktop." />
 
                 <nhs-select asp-for="SelectedResolution"
-                            asp-items="@(new SelectList(Model.Resolutions, "Value", "Text"))"
+                            asp-items="@Model.Resolutions"
                             label-text="Screen resolution and aspect ratio (optional)"
                             label-hint="Select the minimum recommended screen resolution and aspect ratio for your Catalogue Solution to function on desktop." />
 

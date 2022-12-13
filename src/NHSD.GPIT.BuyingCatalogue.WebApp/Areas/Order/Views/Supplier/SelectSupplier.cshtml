@@ -24,7 +24,7 @@
                 <input type="hidden" asp-for="AssociatedServicesOnly"/>
                 <nhs-auto-complete label-text="Enter supplier name"
                                    asp-for="SelectedSupplierId"
-                                   asp-items="@(new SelectList(Model.Suppliers, "Value", "Text"))"/>
+                                   asp-items="@Model.Suppliers" />
                 <br/>
                 <nhs-submit-button/>
             </form>

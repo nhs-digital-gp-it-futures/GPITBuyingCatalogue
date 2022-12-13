@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Admin;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModels;
@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             var expected = solution.CatalogueItem
                 .PublishedStatus
                 .GetAvailablePublicationStatuses(solution.CatalogueItem.CatalogueItemType)
-                .Select(p => new SelectListItem(p.Description(), p.EnumMemberName()))
+                .Select(p => new SelectOption<string>(p.Description(), p.EnumMemberName()))
                 .ToList();
 
             var actual = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem).PublicationStatuses;

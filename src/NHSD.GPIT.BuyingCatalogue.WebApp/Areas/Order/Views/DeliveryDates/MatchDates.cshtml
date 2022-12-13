@@ -33,7 +33,7 @@
                         @foreach (var option in Model.Options)
                         {
                             <nhs-radio-button asp-for="MatchDates"
-                                              display-text="@option.Name"
+                                              display-text="@option.Text"
                                               value="@option.Value"/>
                         }
                     </nhs-radio-button-container>

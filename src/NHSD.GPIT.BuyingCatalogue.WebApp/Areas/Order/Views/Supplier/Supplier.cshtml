@@ -36,14 +36,14 @@
                             <nhs-radio-buttons asp-for="SelectedContactId"
                                                values="@Model.FormattedContacts.Cast<object>()"
                                                value-name="Value"
-                                               display-name="Name" />
+                                               display-name="Text" />
                         </nhs-fieldset-form-label>
                     }
                     else
                     {
                         <input type="hidden" asp-for="SelectedContactId" value="@Model.Contacts.First().Id"/>
                         <h3>Contact for this order</h3>
-                        <p>@Model.FormattedContacts.First().Name</p>
+                        <p>@Model.FormattedContacts.First().Text</p>
                     }
                 </div>
 

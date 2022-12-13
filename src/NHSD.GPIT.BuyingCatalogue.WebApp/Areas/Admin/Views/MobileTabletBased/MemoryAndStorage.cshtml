@@ -20,7 +20,7 @@
                 <input type="hidden" asp-for="@Model.SolutionName" />
 
                 <nhs-select asp-for="SelectedMemorySize"
-                            asp-items="@(new SelectList(Model.MemorySizes, "Value", "Text"))"
+                            asp-items="@Model.MemorySizes"
                             label-text="Memory size"
                             label-hint="Select the minimum memory size required for your Catalogue Solution to function." />
                 <nhs-textarea asp-for="Description"

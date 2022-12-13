@@ -53,7 +53,7 @@
                         <nhs-radio-buttons asp-for="SelectedAccountType"
                                            values="@Model.AccountTypeOptions.Cast<object>()"
                                            value-name="Value"
-                                           display-name="Name"
+                                           display-name="Text"
                                            hint-name="Advice" />
                     </nhs-fieldset-form-label>
                 }
@@ -65,7 +65,7 @@
                     <nhs-radio-buttons asp-for="IsActive"
                                        values="@Model.StatusOptions.Cast<object>()"
                                        value-name="Value"
-                                       display-name="Name" />
+                                       display-name="Text" />
                 </nhs-fieldset-form-label>
 
                 <div data-test-id="add-user-button">

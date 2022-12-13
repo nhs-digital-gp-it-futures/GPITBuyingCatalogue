@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Contracts.DataProcessing;
@@ -21,7 +22,7 @@ public class DataProcessingPlanModel : NavBaseModel
 
     public bool? UseDefaultDataProcessing { get; set; }
 
-    public List<SelectableRadioOption<bool>> AvailableDataProcessingOptions => new()
+    public List<SelectOption<bool>> AvailableDataProcessingOptions => new()
     {
         new("Yes", true),
         new(NoOptionText, false),
