@@ -228,7 +228,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         [Fact]
         public async Task EditUser_EditActiveBuyer_AccountManagerLimit_ClickSave_DisplaysErrorMessage()
         {
-            var testUser = await SetupUser(false, OrganisationFunction.Buyer.Name);
+            var testUser = SetupUser(false, OrganisationFunction.Buyer.Name);
 
             var user1 = await CreateUser(testUser.PrimaryOrganisationId, accountType: OrganisationFunction.AccountManager.Name);
             var user2 = await CreateUser(testUser.PrimaryOrganisationId, accountType: OrganisationFunction.AccountManager.Name);
@@ -254,7 +254,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         [Fact]
         public async Task EditUser_EditActiveAdmin_AccountManagerLimit_ClickSave_DisplaysErrorMessage()
         {
-            var testUser = await SetupUser(false, OrganisationFunction.Authority.Name);
+            var testUser = SetupUser(false, OrganisationFunction.Authority.Name);
 
             var user1 = await CreateUser(testUser.PrimaryOrganisationId, accountType: OrganisationFunction.AccountManager.Name);
             var user2 = await CreateUser(testUser.PrimaryOrganisationId, accountType: OrganisationFunction.AccountManager.Name);
@@ -280,7 +280,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         [Fact]
         public async Task EditUser_EditInactiveAccountManager_AccountManagerLimit_ClickSave_DisplaysErrorMessage()
         {
-            var testUser = await SetupUser(true, OrganisationFunction.AccountManager.Name);
+            var testUser = SetupUser(true, OrganisationFunction.AccountManager.Name);
 
             var user1 = await CreateUser(testUser.PrimaryOrganisationId, accountType: OrganisationFunction.AccountManager.Name);
             var user2 = await CreateUser(testUser.PrimaryOrganisationId, accountType: OrganisationFunction.AccountManager.Name);
@@ -306,7 +306,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         [Fact]
         public async Task EditUser_EditInactiveBuyer_AccountManagerLimit_ClickSave_DisplaysErrorMessage()
         {
-            var testUser = await SetupUser(true, OrganisationFunction.Buyer.Name);
+            var testUser = SetupUser(true, OrganisationFunction.Buyer.Name);
 
             var user1 = await CreateUser(testUser.PrimaryOrganisationId, accountType: OrganisationFunction.AccountManager.Name);
             var user2 = await CreateUser(testUser.PrimaryOrganisationId, accountType: OrganisationFunction.AccountManager.Name);
@@ -333,7 +333,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         [Fact]
         public async Task EditUser_EditInactiveAdmin_AccountManagerLimit_ClickSave_DisplaysErrorMessage()
         {
-            var testUser = await SetupUser(true, OrganisationFunction.Authority.Name);
+            var testUser = SetupUser(true, OrganisationFunction.Authority.Name);
 
             var user1 = await CreateUser(testUser.PrimaryOrganisationId, accountType: OrganisationFunction.AccountManager.Name);
             var user2 = await CreateUser(testUser.PrimaryOrganisationId, accountType: OrganisationFunction.AccountManager.Name);
@@ -395,10 +395,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             await context.SaveChangesAsync();
         }
 
-        private async Task<AspNetUser> SetupUser(bool disabled, string roleName)
+        private AspNetUser SetupUser(bool disabled, string roleName)
         {
-            await using var context = GetEndToEndDbContext();
-            var user = await GetUser();
+            using var context = GetEndToEndDbContext();
+            var user = context.Users.Where(x => x.Id == UserId)
+                .Include(x => x.AspNetUserRoles).First();
 
             user.Disabled = disabled;
 
