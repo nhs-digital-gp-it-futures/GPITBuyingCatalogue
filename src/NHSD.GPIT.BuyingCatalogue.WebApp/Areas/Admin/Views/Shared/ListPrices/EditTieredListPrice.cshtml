@@ -125,11 +125,18 @@
             }
             else
             {
-				if(Model.Tiers.Count < Model.MaximumNumberOfTiers){
-				<vc:nhs-action-link text="Add a pricing tier" url="@Model.AddPricingTierUrl" />
-				}else{
+				if (Model.Tiers.Count < Model.MaximumNumberOfTiers)
+				{
+				    <vc:nhs-action-link text="Add a pricing tier"
+                                        url="@Model.AddPricingTierUrl" />
+				}
+				else
+				{
 					<nhs-inset-text data-test-id="maximum-tiers-reached-inset">
-						The maximum number of tiers you can add is @Model.MaximumNumberOfTiers. You cannot add any more tiers for this price.
+                        <p>
+                            The maximum number of tiers you can add is @Model.MaximumNumberOfTiers.
+                            You cannot add any more tiers for this price.
+                        </p>
 					</nhs-inset-text>
 				}
             }
