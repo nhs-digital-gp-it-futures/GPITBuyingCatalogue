@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
         public static string GetDisplayRoleName(this AspNetUser user)
         {
             var roleName = GetRoleName(user);
-            return OrganisationFunction.FromName(roleName)!.DisplayName;
+            return roleName is not null ? OrganisationFunction.FromName(roleName)!.DisplayName : string.Empty;
         }
     }
 }

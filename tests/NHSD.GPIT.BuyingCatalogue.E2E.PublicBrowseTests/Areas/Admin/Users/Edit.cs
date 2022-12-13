@@ -226,16 +226,120 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         }
 
         [Fact]
-        public async Task Edit_AccountManagerLimit_ClickSave_DisplaysErrorMessage()
+        public async Task EditUser_EditActiveBuyer_AccountManagerLimit_ClickSave_DisplaysErrorMessage()
         {
-            var testUser = await GetUser();
+            var testUser = await SetupUser(false, OrganisationFunction.Buyer.Name);
 
             var user1 = await CreateUser(testUser.PrimaryOrganisationId, accountType: OrganisationFunction.AccountManager.Name);
             var user2 = await CreateUser(testUser.PrimaryOrganisationId, accountType: OrganisationFunction.AccountManager.Name);
 
-            CommonActions.AutoCompleteAddValue(UserObjects.SelectedOrganisation, testUser.PrimaryOrganisation.Name);
-            CommonActions.ClickLinkElement(UserObjects.AutoCompleteResult(0));
             CommonActions.ClickRadioButtonWithText("Account manager");
+            CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(UsersController),
+                nameof(UsersController.Edit)).Should().BeTrue();
+
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+
+            CommonActions.ElementShowingCorrectErrorMessage(
+                UserObjects.AccountTypeRadioButtonsError,
+                $"Error: {UserDetailsModelValidator.MustNotExceedAccountManagerLimit}");
+
+            await RemoveUser(user1);
+            await RemoveUser(user2);
+        }
+
+        [Fact]
+        public async Task EditUser_EditActiveAdmin_AccountManagerLimit_ClickSave_DisplaysErrorMessage()
+        {
+            var testUser = await SetupUser(false, OrganisationFunction.Authority.Name);
+
+            var user1 = await CreateUser(testUser.PrimaryOrganisationId, accountType: OrganisationFunction.AccountManager.Name);
+            var user2 = await CreateUser(testUser.PrimaryOrganisationId, accountType: OrganisationFunction.AccountManager.Name);
+
+            CommonActions.ClickRadioButtonWithText("Account manager");
+            CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(UsersController),
+                nameof(UsersController.Edit)).Should().BeTrue();
+
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+
+            CommonActions.ElementShowingCorrectErrorMessage(
+                UserObjects.AccountTypeRadioButtonsError,
+                $"Error: {UserDetailsModelValidator.MustNotExceedAccountManagerLimit}");
+
+            await RemoveUser(user1);
+            await RemoveUser(user2);
+        }
+
+        [Fact]
+        public async Task EditUser_EditInactiveAccountManager_AccountManagerLimit_ClickSave_DisplaysErrorMessage()
+        {
+            var testUser = await SetupUser(true, OrganisationFunction.AccountManager.Name);
+
+            var user1 = await CreateUser(testUser.PrimaryOrganisationId, accountType: OrganisationFunction.AccountManager.Name);
+            var user2 = await CreateUser(testUser.PrimaryOrganisationId, accountType: OrganisationFunction.AccountManager.Name);
+
+            CommonActions.ClickRadioButtonWithText("Active");
+            CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(UsersController),
+                nameof(UsersController.Edit)).Should().BeTrue();
+
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+
+            CommonActions.ElementShowingCorrectErrorMessage(
+                UserObjects.AccountTypeRadioButtonsError,
+                $"Error: {UserDetailsModelValidator.MustNotExceedAccountManagerLimit}");
+
+            await RemoveUser(user1);
+            await RemoveUser(user2);
+        }
+
+        [Fact]
+        public async Task EditUser_EditInactiveBuyer_AccountManagerLimit_ClickSave_DisplaysErrorMessage()
+        {
+            var testUser = await SetupUser(true, OrganisationFunction.Buyer.Name);
+
+            var user1 = await CreateUser(testUser.PrimaryOrganisationId, accountType: OrganisationFunction.AccountManager.Name);
+            var user2 = await CreateUser(testUser.PrimaryOrganisationId, accountType: OrganisationFunction.AccountManager.Name);
+
+            CommonActions.ClickRadioButtonWithText("Account manager");
+            CommonActions.ClickRadioButtonWithText("Active");
+            CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(UsersController),
+                nameof(UsersController.Edit)).Should().BeTrue();
+
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+
+            CommonActions.ElementShowingCorrectErrorMessage(
+                UserObjects.AccountTypeRadioButtonsError,
+                $"Error: {UserDetailsModelValidator.MustNotExceedAccountManagerLimit}");
+
+            await RemoveUser(user1);
+            await RemoveUser(user2);
+        }
+
+        [Fact]
+        public async Task EditUser_EditInactiveAdmin_AccountManagerLimit_ClickSave_DisplaysErrorMessage()
+        {
+            var testUser = await SetupUser(true, OrganisationFunction.Authority.Name);
+
+            var user1 = await CreateUser(testUser.PrimaryOrganisationId, accountType: OrganisationFunction.AccountManager.Name);
+            var user2 = await CreateUser(testUser.PrimaryOrganisationId, accountType: OrganisationFunction.AccountManager.Name);
+
+            CommonActions.ClickRadioButtonWithText("Account manager");
+            CommonActions.ClickRadioButtonWithText("Active");
             CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -255,22 +359,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
 
         public void Dispose()
         {
-            using var context = GetEndToEndDbContext();
-            var user = context.Users.Where(x => x.Id == UserId)
-                .Include(x => x.AspNetUserRoles).First();
-
-            user.Disabled = false;
-
-            user.AspNetUserRoles.ForEach(x => user.AspNetUserRoles.Remove(x));
-
-            var role = context.Roles.First(r => r.Name == OrganisationFunction.AccountManager.Name);
-            user.AspNetUserRoles = new List<AspNetUserRole>
-            {
-                new() { Role = role },
-            };
-
-            context.Update(user);
-            context.SaveChanges();
+            SetupUser(false, OrganisationFunction.AccountManager.Name);
         }
 
         private async Task<AspNetUser> GetUser()
@@ -304,6 +393,27 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             context.Remove(dbUser);
 
             await context.SaveChangesAsync();
+        }
+
+        private async Task<AspNetUser> SetupUser(bool disabled, string roleName)
+        {
+            await using var context = GetEndToEndDbContext();
+            var user = await GetUser();
+
+            user.Disabled = disabled;
+
+            user.AspNetUserRoles.ForEach(x => user.AspNetUserRoles.Remove(x));
+
+            var role = context.Roles.First(r => r.Name == roleName);
+            user.AspNetUserRoles = new List<AspNetUserRole>
+            {
+                new() { Role = role },
+            };
+
+            context.Update(user);
+            context.SaveChanges();
+
+            return user;
         }
     }
 }

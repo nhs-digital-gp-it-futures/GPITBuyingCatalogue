@@ -90,6 +90,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin
 
         public static By UserOrganisation => ByExtensions.DataTestId("user-organisation");
 
+        public static By UserAccountType => ByExtensions.DataTestId("user-role");
+
         public static By UserStatus => ByExtensions.DataTestId("user-status");
 
         public static By UsersTable => ByExtensions.DataTestId("users-table");

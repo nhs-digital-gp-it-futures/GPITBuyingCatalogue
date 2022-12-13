@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
                 .WithMessage(AccountTypeMissingErrorMessage)
                 .Must((model, accountType) => BelongToCorrectOrganisation(accountType, model.SelectedOrganisationId))
                 .WithMessage(MustBelongToNhsDigitalErrorMessage)
-                .Must((model, accountType) => AccountManagerLimit(accountType, model.SelectedOrganisationId, model.UserId))
+                .Must((model, accountType) => AccountManagerLimit(accountType, model.SelectedOrganisationId, model.UserId, !model.IsActive.GetValueOrDefault(false)))
                 .WithMessage(string.Format(MustNotExceedAccountManagerLimit, accountManagementSettings.MaximumNumberOfAccountManagers));
 
             RuleFor(x => x.IsActive)
@@ -74,12 +74,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
             return selectedOrganisationId == $"{OrganisationConstants.NhsDigitalOrganisationId}";
         }
 
-        private bool AccountManagerLimit(string accountType, string selectedOrganisationId, int userId)
+        private bool AccountManagerLimit(string accountType, string selectedOrganisationId, int userId, bool disabled)
         {
-            if (accountType != OrganisationFunction.AccountManager.Name)
-                return true;
-
-            return !usersService.IsAccountManagerLimit(int.Parse(selectedOrganisationId), userId).Result;
+            return accountType != OrganisationFunction.AccountManager.Name || disabled
+                || !usersService.IsAccountManagerLimit(int.Parse(selectedOrganisationId), userId).Result;
         }
 
         private bool NotBeDuplicateUserEmail(string emailAddress, int userId)
