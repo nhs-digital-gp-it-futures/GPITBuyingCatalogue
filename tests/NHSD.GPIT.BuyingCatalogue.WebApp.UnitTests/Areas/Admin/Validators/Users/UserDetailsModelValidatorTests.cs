@@ -19,14 +19,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         private const string EmailAddress = "a@nhs.net";
 
         [Theory]
-        [CommonInlineAutoData(null)]
+        [CommonAutoData]
         public static void Validate_SelectedOrganisationIdNullOrEmpty_SetsModelError(
-            int organisationId,
             UserDetailsModelValidator validator)
         {
             var model = new UserDetailsModel
             {
-                SelectedOrganisationId = organisationId,
+                SelectedOrganisationId = null,
             };
 
             var result = validator.TestValidate(model);
