@@ -20,7 +20,7 @@
                 <input type="hidden" asp-for="@Model.SolutionName" />
 
                 <nhs-select asp-for="SelectedConnectionSpeed"
-                            asp-items="@(new SelectList(Model.ConnectionSpeeds,"Value","Text"))"
+                            asp-items="@Model.ConnectionSpeeds"
                             label-text="Connection speed"
                             label-hint="Select the minimum bandwidth required for your Catalogue Solution to function." />
                 <nhs-submit-button />

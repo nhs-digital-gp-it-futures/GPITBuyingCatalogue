@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSources
 {
@@ -27,15 +27,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSources
 
         public string SelectedFramework { get; set; }
 
-        public SelectList Frameworks { get; set; }
+        public IEnumerable<SelectOption<string>> Frameworks { get; set; }
 
         public string Caption { get; set; }
 
         public bool AssociatedServicesOnly { get; set; }
 
-        public void SetFrameworks(IList<EntityFramework.Catalogue.Models.Framework> frameworks) => Frameworks = new SelectList(
-                frameworks.Select(f => new SelectListItem(f.ShortName, f.Id)),
-                "Value",
-                "Text");
+        public void SetFrameworks(IList<EntityFramework.Catalogue.Models.Framework> frameworks) => Frameworks = frameworks
+            .Select(f => new SelectOption<string>(f.ShortName, f.Id));
     }
 }

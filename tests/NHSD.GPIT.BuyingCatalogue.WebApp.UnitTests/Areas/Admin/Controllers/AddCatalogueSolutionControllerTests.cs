@@ -10,10 +10,10 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers;
@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.ViewName.Should().Be("Details");
             actual.Model.As<SolutionModel>()
                 .SuppliersSelectList.Should()
-                .BeEquivalentTo(suppliers.Select(s => new SelectListItem($"{s.Name} ({s.Id})", s.Id.ToString(CultureInfo.InvariantCulture))));
+                .BeEquivalentTo(suppliers.Select(s => new SelectOption<string>($"{s.Name} ({s.Id})", s.Id.ToString(CultureInfo.InvariantCulture))));
         }
 
         [Theory]

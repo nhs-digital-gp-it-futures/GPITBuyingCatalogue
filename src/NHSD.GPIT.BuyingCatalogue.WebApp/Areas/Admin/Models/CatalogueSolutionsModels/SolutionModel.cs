@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
@@ -36,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutions
 
         public IList<FrameworkModel> Frameworks { get; set; }
 
-        public IEnumerable<SelectListItem> SuppliersSelectList { get; set; } = new List<SelectListItem>();
+        public IEnumerable<SelectOption<string>> SuppliersSelectList { get; set; } = new List<SelectOption<string>>();
 
         public string Heading { get; set; }
 
@@ -45,8 +44,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutions
         public SolutionModel WithSelectListItems(IList<Supplier> suppliers)
         {
             SuppliersSelectList = suppliers == null || !suppliers.Any()
-            ? System.Array.Empty<SelectListItem>()
-            : suppliers.Select(s => new SelectListItem($"{s.Name} ({s.Id})", s.Id.ToString(CultureInfo.InvariantCulture)));
+                ? Enumerable.Empty<SelectOption<string>>()
+                : suppliers.Select(s => new SelectOption<string>($"{s.Name} ({s.Id})", $"{s.Id}"));
 
             return this;
         }

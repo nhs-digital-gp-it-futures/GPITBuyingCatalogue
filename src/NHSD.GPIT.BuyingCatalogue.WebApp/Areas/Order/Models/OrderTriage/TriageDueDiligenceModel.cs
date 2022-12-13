@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage
@@ -28,10 +28,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage
 
         public OrderTriageValue? Option { get; set; }
 
-        public IEnumerable<SelectListItem> SelectListItems => new[]
+        public IEnumerable<SelectOption<string>> SelectListItems => new[]
         {
-            new SelectListItem(true.ToYesNo(), true.ToString()),
-            new SelectListItem(false.ToYesNo(), false.ToString()),
+            new SelectOption<string>(true.ToYesNo(), true.ToString()),
+            new SelectOption<string>(false.ToYesNo(), false.ToString()),
         };
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
 {
@@ -7,7 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
     {
         public bool? UseAnalytics { get; init; }
 
-        public IList<SelectListItem> CookieOptions => new List<SelectListItem>
+        public IList<SelectOption<string>> CookieOptions => new List<SelectOption<string>>
         {
             new("Use cookies to measure my website use", true.ToString()),
             new("Do not use cookies to measure my website use", false.ToString()),

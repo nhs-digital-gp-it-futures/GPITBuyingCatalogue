@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
@@ -31,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             Title = "Edit a pricing tier";
         }
 
-        public static IList<SelectableRadioOption<bool>> AvailableRangeOptions => new List<SelectableRadioOption<bool>>
+        public static IList<SelectOption<bool>> AvailableRangeOptions => new List<SelectOption<bool>>
         {
             new("Infinite upper range", true),
             new("Set upper range", false),

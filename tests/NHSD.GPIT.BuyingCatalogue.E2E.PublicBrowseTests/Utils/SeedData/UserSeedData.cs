@@ -110,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Town = "LEEDS",
                     County = "WEST YORKSHIRE",
                     Postcode = "LS2 7UE",
-                    Country = "ENGLAND"
+                    Country = "ENGLAND",
                 },
                 InternalIdentifier = "CG-15H",
                 ExternalIdentifier = "15H",

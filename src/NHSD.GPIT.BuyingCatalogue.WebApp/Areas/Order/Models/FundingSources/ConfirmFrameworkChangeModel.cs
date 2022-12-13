@@ -1,5 +1,5 @@
-using System.Collections.Generic;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+﻿using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSources
 {
@@ -22,12 +22,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSources
             SelectedFramework = selectedFramework;
         }
 
-        public static IEnumerable<SelectableRadioOption<bool>> Options =>
-            new List<SelectableRadioOption<bool>>
-            {
-                new($"Yes, I want to confirm changes to the procurement framework", true),
-                new($"No, I do not want to confirm changes to the procurement framework ", false),
-            };
+        public static IEnumerable<SelectOption<bool>> Options => new List<SelectOption<bool>>
+        {
+            new($"Yes, I want to confirm changes to the procurement framework", true),
+            new($"No, I do not want to confirm changes to the procurement framework ", false),
+        };
 
         public string Caption { get; set; }
 

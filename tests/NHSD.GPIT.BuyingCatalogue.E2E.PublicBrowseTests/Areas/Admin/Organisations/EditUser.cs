@@ -37,7 +37,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         private const string RoleError =
             "There are already 2 active account managers for this organisation which is the maximum allowed.";
 
-
         private static readonly Dictionary<string, string> Parameters = new()
         {
             { nameof(OrganisationId), OrganisationId.ToString() },

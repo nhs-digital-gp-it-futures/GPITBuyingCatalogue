@@ -22,13 +22,18 @@
             advice="Provide information about the pricing tiers available for your @(Model.CatalogueItemType.Name()).">
         </nhs-page-title>
 
-		@if(Model.Tiers.Count < Model.MaximumNumberOfTiers){
-        <vc:nhs-action-link
-            text="Add a pricing tier"
-             url="@Model.AddTieredPriceTierUrl" />
-		}else{
+		@if (Model.Tiers.Count < Model.MaximumNumberOfTiers)
+		{
+		    <vc:nhs-action-link text="Add a pricing tier"
+                                url="@Model.AddTieredPriceTierUrl" />
+		}
+		else
+		{
 			<nhs-inset-text data-test-id="maximum-tiers-reached-inset">
-				The maximum number of tiers you can add is @Model.MaximumNumberOfTiers. You cannot add any more tiers for this price.
+                <p>
+                    The maximum number of tiers you can add is @Model.MaximumNumberOfTiers.
+                    You cannot add any more tiers for this price.
+                </p>
 			</nhs-inset-text>
 		}
 
@@ -75,7 +80,7 @@
                 <nhs-radio-buttons
                     asp-for="SelectedPublicationStatus"
                     values="@TieredPriceTiersModel.AvailablePublicationStatuses.Cast<object>()"
-                    display-name="Name"
+                    display-name="Text"
                     value-name="Value">
                 </nhs-radio-buttons>
             </nhs-fieldset-form-label>
