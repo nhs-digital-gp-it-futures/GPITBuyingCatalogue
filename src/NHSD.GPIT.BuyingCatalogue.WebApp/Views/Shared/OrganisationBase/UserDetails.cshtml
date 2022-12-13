@@ -5,6 +5,10 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels.UserDetailsModel
 @{
     ViewBag.Title = Model.Title;
+    if (User.IsAdmin())
+    {
+        Layout = "Layouts/_AdminLayout";
+    }
 }
 
 <div data-test-id="add-user-page">

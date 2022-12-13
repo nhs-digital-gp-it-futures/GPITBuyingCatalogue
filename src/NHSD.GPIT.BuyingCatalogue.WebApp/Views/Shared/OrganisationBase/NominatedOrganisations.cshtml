@@ -2,6 +2,10 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels.NominatedOrganisationsModel
 @{
     ViewBag.Title = "Nominated organisations";
+    if (User.IsAdmin())
+    {
+        Layout = "Layouts/_AdminLayout";
+    }
 }
 @section Breadcrumbs {
     <nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
