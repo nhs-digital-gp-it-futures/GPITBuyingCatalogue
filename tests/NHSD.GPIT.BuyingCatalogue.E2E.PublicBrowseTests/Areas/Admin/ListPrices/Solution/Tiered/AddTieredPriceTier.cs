@@ -9,13 +9,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
 {
     public sealed class AddTieredPriceTier : AddTieredPriceTierBase
     {
-        private const int CataloguePriceId = 4;
+        private const int CataloguePriceIdConst = 4;
         private static readonly CatalogueItemId SolutionId = new(99998, "001");
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
             { nameof(SolutionId), SolutionId.ToString() },
-            { nameof(CataloguePriceId), CataloguePriceId.ToString() },
+            { nameof(CataloguePriceId), CataloguePriceIdConst.ToString() },
         };
 
         public AddTieredPriceTier(LocalWebApplicationFactory factory)
@@ -25,6 +25,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Solution.Tie
                   Parameters)
         {
         }
+
+        protected override int CataloguePriceId => CataloguePriceIdConst;
 
         protected override CatalogueItemId CatalogueItemId => SolutionId;
 

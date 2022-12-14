@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -10,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 {
     internal static class BuyingCatalogueSeedData
     {
-        internal static void Initialize(EndToEndDbContext context)
+        internal static void Initialize(BuyingCatalogueDbContext context)
         {
             AddDefaultData(context);
             AddCatalogueItems(context);
@@ -18,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             context.SaveChanges();
         }
 
-        private static void AddCatalogueItems(EndToEndDbContext context)
+        private static void AddCatalogueItems(BuyingCatalogueDbContext context)
         {
             var catalogueSolutions = CatalogueSolutionSeedData.GetCatalogueSolutionItems();
             context.AddRange(catalogueSolutions);
@@ -42,6 +44,23 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             context.SaveChanges();
 
+            var cataloguePrices = CataloguePricesSeedData.GetCataloguePrices();
+            context.InsertRangeWithIdentity(cataloguePrices);
+
+            var cataloguePriceTiers = CataloguePricesSeedData.GetCataloguePriceTiers();
+            context.InsertRangeWithIdentity(cataloguePriceTiers);
+
+            var serviceLevelAgreements = ServiceLevelAgreementSeedData.GetServiceLevelAgreements();
+            var serviceLevelContacts = ServiceLevelAgreementSeedData.GetServiceLevelContacts();
+            var serviceLevels = ServiceLevelAgreementSeedData.GetServiceLevels();
+            var serviceAvailabilityTimes = ServiceLevelAgreementSeedData.GetServiceAvailabilityTimes();
+
+            context.AddRange(serviceLevelAgreements);
+
+            context.InsertRangeWithIdentity(serviceLevelContacts);
+            context.InsertRangeWithIdentity(serviceLevels);
+            context.InsertRangeWithIdentity(serviceAvailabilityTimes);
+
             List<FrameworkSolution> frameworkSolutions = new()
             {
                 new FrameworkSolution { FrameworkId = "DFOCVC001", SolutionId = new CatalogueItemId(99999, "001"), IsFoundation = false, LastUpdated = DateTime.UtcNow },
@@ -58,70 +77,123 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             context.AddRange(frameworkSolutions);
 
             context.SaveChanges();
-
-            List<CataloguePrice> prices = new()
-            {
-                new CataloguePrice
-                {
-                    CataloguePriceId = -1,
-                    CatalogueItemId = new CatalogueItemId(99999, "001"),
-                    CataloguePriceType = CataloguePriceType.Flat,
-                    PricingUnit = new PricingUnit
-                    {
-                        Id = -1,
-                        RangeDescription = "patients",
-                        Description = "per patient",
-                    },
-                    CurrencyCode = "GBP",
-                    ProvisioningType = ProvisioningType.Patient,
-                    TimeUnit = TimeUnit.PerYear,
-                    LastUpdated = DateTime.UtcNow,
-                    CataloguePriceTiers = new List<CataloguePriceTier>
-                    {
-                        new()
-                        {
-                            Id = -1,
-                            CataloguePriceId = -1,
-                            LowerRange = 1,
-                            UpperRange = null,
-                            Price = 100.01M,
-                            LastUpdated = DateTime.UtcNow,
-                        },
-                    },
-                },
-                new CataloguePrice
-                {
-                    CatalogueItemId = new CatalogueItemId(99999, "S-999"),
-                    CataloguePriceType = CataloguePriceType.Flat,
-                    PricingUnit = new PricingUnit
-                    {
-                        Id = -2,
-                        RangeDescription = "things",
-                        Description = "per thing",
-                    },
-                    CurrencyCode = "GBP",
-                    ProvisioningType = ProvisioningType.Declarative,
-                    TimeUnit = TimeUnit.PerYear,
-                    LastUpdated = DateTime.UtcNow,
-                    CataloguePriceTiers = new List<CataloguePriceTier>
-                    {
-                        new()
-                        {
-                            Id = -2,
-                            CataloguePriceId = -2,
-                            LowerRange = 1,
-                            UpperRange = null,
-                            Price = 100.01M,
-                            LastUpdated = DateTime.UtcNow,
-                        },
-                    },
-                },
-            };
-            context.AddRange(prices);
         }
 
-        private static void AddDefaultData(EndToEndDbContext context)
+        private static void AddDefaultData(BuyingCatalogueDbContext context)
         {
+            // Suppliers
+            List<Supplier> suppliers = new()
+            {
+                new Supplier
+                {
+                    Id = 99999,
+                    Name = "DFOCVC Supplier",
+                    LegalName = "DFOCVC Supplier",
+                    Deleted = false,
+                    Address = new Address
+                    {
+                        Line1 = "DFOCVC Supplier Tower",
+                        Line2 = "High Street",
+                        Town = "Leeds",
+                        County = "West Yorkshire",
+                        Country = "UK",
+                    },
+                    SupplierContacts = new List<SupplierContact>
+                    {
+                        new()
+                        {
+                            Email = "test@test.com",
+                            FirstName = "Dave",
+                            LastName = "Smith",
+                            Department = "Test Department",
+                            LastUpdated = DateTime.UtcNow,
+                            PhoneNumber = "00987654321",
+                            SupplierId = 99999,
+                        },
+                    },
+                    Summary = "About this supplier",
+                    SupplierUrl = "https://www.e2etest.com",
+                    IsActive = true,
+                },
+                new Supplier
+                {
+                    Id = 99998,
+                    Name = "E2E Test Supplier With Contact",
+                    LegalName = "E2E Supplier WC",
+                    Deleted = false,
+                    Address = new Address
+                    {
+                        Line1 = "E2E Test Supplier",
+                        Line2 = "High Street",
+                        Town = "Cardiff",
+                        County = "Cardiff",
+                        Country = "UK",
+                    },
+                    Summary = "About this Supplier",
+                    SupplierUrl = "https://www.e2etest.com",
+                    SupplierContacts = new List<SupplierContact>
+                    {
+                        new()
+                        {
+                            SupplierId = 99998,
+                            FirstName = "Alice",
+                            LastName = "Smith",
+                            Department = "Test Department",
+                            Email = "Alice.Smith@e2etest.com",
+                            PhoneNumber = "123456789",
+                        },
+                        new()
+                        {
+                            SupplierId = 99998,
+                            FirstName = "Clark",
+                            LastName = "Kent",
+                            Department = "Reporter",
+                            Email = "Clark.Kent@TheDailyPlanet.Test",
+                            PhoneNumber = "123456789",
+                        },
+                        new()
+                        {
+                            SupplierId = 99998,
+                            FirstName = "Bruce",
+                            LastName = "Wayne",
+                            Department = "Crime",
+                            Email = "Bruce.Wayne@WayneEnterprises.Test",
+                            PhoneNumber = "123456789",
+                        },
+                    },
+                    IsActive = true,
+                },
+                new Supplier
+                {
+                    Id = 99997,
+                    Name = "E2E Test Supplier",
+                    LegalName = "E2E Supplier",
+                    Deleted = false,
+                    Address = new Address
+                    {
+                        Line1 = "E2E Test Supplier",
+                        Line2 = "High Street",
+                        Town = "Cardiff",
+                        County = "Cardiff",
+                        Country = "UK",
+                    },
+                    Summary = "About this Supplier",
+                    SupplierUrl = "https://www.e2etest.com",
+                    IsActive = true,
+                },
+                new Supplier
+                {
+                    Id = 99996,
+                    Name = "Inactive Supplier",
+                    LegalName = "Inactive Supplier",
+                    Deleted = false,
+                    IsActive = false,
+                },
+            };
+
+            context.AddRange(suppliers);
+            context.SaveChanges();
+
             // CapabilityStatus
             List<Database.Models.CapabilityStatus> capabilityStatuses = new()
             {
@@ -754,121 +826,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             };
             context.AddRange(solutionEpicStatuses);
 
-            // Suppliers
-            List<Supplier> suppliers = new()
-            {
-                new Supplier
-                {
-                    Id = 99999,
-                    Name = "DFOCVC Supplier",
-                    LegalName = "DFOCVC Supplier",
-                    Deleted = false,
-                    Address = new Address
-                    {
-                        Line1 = "DFOCVC Supplier Tower",
-                        Line2 = "High Street",
-                        Town = "Leeds",
-                        County = "West Yorkshire",
-                        Country = "UK",
-                    },
-                    SupplierContacts = new List<SupplierContact>
-                    {
-                        new()
-                        {
-                            Id = 1,
-                            Email = "test@test.com",
-                            FirstName = "Dave",
-                            LastName = "Smith",
-                            Department = "Test Department",
-                            LastUpdated = DateTime.UtcNow,
-                            PhoneNumber = "00987654321",
-                            SupplierId = 99999,
-                        },
-                    },
-                    Summary = "About this supplier",
-                    SupplierUrl = "https://www.e2etest.com",
-                    IsActive = true,
-                },
-                new Supplier
-                {
-                    Id = 99998,
-                    Name = "E2E Test Supplier With Contact",
-                    LegalName = "E2E Supplier WC",
-                    Deleted = false,
-                    Address = new Address
-                    {
-                        Line1 = "E2E Test Supplier",
-                        Line2 = "High Street",
-                        Town = "Cardiff",
-                        County = "Cardiff",
-                        Country = "UK",
-                    },
-                    Summary = "About this Supplier",
-                    SupplierUrl = "https://www.e2etest.com",
-                    SupplierContacts = new List<SupplierContact>
-                    {
-                        new()
-                        {
-                            Id = 2,
-                            SupplierId = 99998,
-                            FirstName = "Alice",
-                            LastName = "Smith",
-                            Department = "Test Department",
-                            Email = "Alice.Smith@e2etest.com",
-                            PhoneNumber = "123456789",
-                        },
-                        new()
-                        {
-                            Id = 3,
-                            SupplierId = 99998,
-                            FirstName = "Clark",
-                            LastName = "Kent",
-                            Department = "Reporter",
-                            Email = "Clark.Kent@TheDailyPlanet.Test",
-                            PhoneNumber = "123456789",
-                        },
-                        new()
-                        {
-                            Id = 4,
-                            SupplierId = 99998,
-                            FirstName = "Bruce",
-                            LastName = "Wayne",
-                            Department = "Crime",
-                            Email = "Bruce.Wayne@WayneEnterprises.Test",
-                            PhoneNumber = "123456789",
-                        },
-                    },
-                    IsActive = true,
-                },
-                new Supplier
-                {
-                    Id = 99997,
-                    Name = "E2E Test Supplier",
-                    LegalName = "E2E Supplier",
-                    Deleted = false,
-                    Address = new Address
-                    {
-                        Line1 = "E2E Test Supplier",
-                        Line2 = "High Street",
-                        Town = "Cardiff",
-                        County = "Cardiff",
-                        Country = "UK",
-                    },
-                    Summary = "About this Supplier",
-                    SupplierUrl = "https://www.e2etest.com",
-                    IsActive = true,
-                },
-                new Supplier
-                {
-                    Id = 99996,
-                    Name = "Inactive Supplier",
-                    LegalName = "Inactive Supplier",
-                    Deleted = false,
-                    IsActive = false,
-                },
-            };
-            context.AddRange(suppliers);
-
             // TimeUnit
             List<Database.Models.TimeUnit> timeUnits = new()
             {
@@ -972,7 +929,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             context.AddRange(standardCapabilities);
         }
 
-        private static void AddMockedItems(EndToEndDbContext context)
+        private static void AddMockedItems(BuyingCatalogueDbContext context)
         {
             var serviceRecipients =
             ServiceRecipientsSeedData

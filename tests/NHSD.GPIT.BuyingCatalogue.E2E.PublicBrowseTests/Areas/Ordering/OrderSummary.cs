@@ -203,6 +203,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderController),
                 nameof(OrderController.Order)).Should().BeTrue();
+
+            RemoveOrder(order);
         }
 
         private static OrderItemFunding CreateOrderItemFunding(OrderItem orderItem)
@@ -339,8 +341,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         private void RemoveOrder(Order order)
         {
             using var context = GetEndToEndDbContext();
+            var dbOrder = context.Orders.AsNoTracking().First(x => x.Id == order.Id);
 
-            context.Orders.Remove(order);
+            context.Orders.Remove(dbOrder);
             context.SaveChanges();
         }
     }

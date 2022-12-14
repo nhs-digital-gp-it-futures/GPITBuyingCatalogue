@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
         public ActionBase(IWebDriver driver)
         {
             Driver = driver;
-            Wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
+            Wait = new WebDriverWait(Driver, TimeSpan.FromMilliseconds(500));
         }
 
         public WebDriverWait Wait { get; protected set; }

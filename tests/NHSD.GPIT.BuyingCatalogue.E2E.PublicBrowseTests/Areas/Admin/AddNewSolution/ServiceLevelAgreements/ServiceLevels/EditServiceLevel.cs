@@ -205,11 +205,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
             using var context = GetEndToEndDbContext();
             var solution = context.CatalogueItems.First(c => c.Id == SingleServiceLevelSolutionId);
 
-            if (solution is not null && solution.PublishedStatus != PublicationStatus.Published)
-            {
-                solution.PublishedStatus = PublicationStatus.Published;
-                context.SaveChanges();
-            }
+            if (solution.PublishedStatus == PublicationStatus.Published) return;
+
+            solution.PublishedStatus = PublicationStatus.Published;
+            context.SaveChanges();
         }
     }
 }

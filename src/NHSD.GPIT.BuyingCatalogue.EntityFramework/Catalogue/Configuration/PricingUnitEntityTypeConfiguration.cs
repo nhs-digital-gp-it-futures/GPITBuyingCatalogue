@@ -13,9 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 
             builder.HasKey(u => u.Id);
 
-            builder.Property(u => u.Id)
-                .UseIdentityColumn();
-
             builder.Property(u => u.Description)
                 .IsRequired()
                 .HasMaxLength(100);
@@ -24,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .HasMaxLength(1000);
 
             builder.Property(u => u.RangeDescription)
-                .HasMaxLength(30);
+                .HasMaxLength(100);
 
             builder.Property(u => u.LastUpdated).HasDefaultValue(DateTime.UtcNow);
 

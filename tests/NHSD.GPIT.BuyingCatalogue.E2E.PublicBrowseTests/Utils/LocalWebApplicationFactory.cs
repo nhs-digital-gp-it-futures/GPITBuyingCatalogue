@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
@@ -13,7 +14,6 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -31,11 +31,12 @@ using NHSD.GPIT.BuyingCatalogue.WebApp;
 using OpenQA.Selenium;
 using Serilog;
 using Serilog.Events;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 {
-    public sealed class LocalWebApplicationFactory : WebApplicationFactory<Startup>
+    public sealed class LocalWebApplicationFactory : WebApplicationFactory<Startup>, IAsyncLifetime
     {
         private const string LocalhostBaseAddress = "https://127.0.0.1";
 
@@ -48,49 +49,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
         private const string Browser = "chrome";
 
-        // Sqllite constants
-        private const string SqlliteConnectionStringInMemory = "DataSource=:memory:";
+        private SqliteConnection sqliteConnection = new($"DataSource=file:{Guid.NewGuid():N}?mode=memory&cache=shared");
 
-        private const string SqlliteFileSystemFileLocation = "C:/test.db";
-
-        private const bool UseFileSystemSqlite = false;
-
-        private static readonly string SqlliteConnectionStringFileSystem = $"DataSource={SqlliteFileSystemFileLocation}";
-
-        private readonly IHost host;
-
-        private bool disposed = false;
-
-        private SqliteConnection sqliteConnection;
-
-        private IServiceProvider scopedServices;
-
-        public LocalWebApplicationFactory()
-        {
-            ClientOptions.BaseAddress = new Uri(LocalhostBaseAddress);
-
-            BcDbName = Guid.NewGuid().ToString();
-
-            SetEnvVariables();
-
-            host = CreateHostBuilder().Build();
-            host.Start();
-
-            RootUri = host.Services.GetRequiredService<IServer>().Features.Get<IServerAddressesFeature>().Addresses.LastOrDefault();
-
-            var browserFactory = new BrowserFactory(Browser);
-            Driver = browserFactory.Driver;
-
-            if (!Browser.Contains("local") && !Debugger.IsAttached && browserFactory.GridRunning)
-            {
-                RootUri = RootUri.Replace("127.0.0.1", "host.docker.internal");
-            }
-        }
-
-        ~LocalWebApplicationFactory()
-        {
-            Dispose(true);
-        }
+        private BrowserFactory browserFactory;
+        private IHost host;
 
         public static ITestOutputHelper TestOutputHelper
         {
@@ -110,97 +72,109 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             }
         }
 
-        public string BcDbName { get; private set; }
+        public string RootUri { get; private set; }
 
-        public string RootUri { get; }
+        internal IWebDriver Driver => browserFactory.Driver;
 
-        internal IWebDriver Driver { get; }
-
-        internal EndToEndDbContext DbContext
+        internal BuyingCatalogueDbContext DbContext
         {
             get
             {
-                var options = new DbContextOptionsBuilder<EndToEndDbContext>()
-                    .UseSqlite(sqliteConnection)
-                    .EnableSensitiveDataLogging()
-                    .Options;
+                var scope = host.Services.CreateScope();
 
-                return new EndToEndDbContext(options, GetIdentityService);
+                return scope.ServiceProvider.GetRequiredService<BuyingCatalogueDbContext>();
             }
         }
 
-        internal IIdentityService GetIdentityService => host.Services.GetRequiredService<IIdentityService>();
-
         internal IDistributedCache GetDistributedCache => host.Services.GetRequiredService<IDistributedCache>();
-
-        internal IMemoryCache GetMemoryCache => host.Services.GetRequiredService<IMemoryCache>();
 
         internal IDataProtectionProvider GetDataProtectionProvider => host.Services.GetRequiredService<IDataProtectionProvider>();
 
         internal ILoggerFactory GetLoggerFactory => host.Services.GetRequiredService<ILoggerFactory>();
 
+        public async Task InitializeAsync()
+        {
+            await sqliteConnection.OpenAsync();
+            SetEnvVariables();
+
+            host = CreateHostBuilder().Build();
+            await host.StartAsync();
+
+            RootUri = host
+                .Services
+                .GetRequiredService<IServer>()!
+                .Features
+                .Get<IServerAddressesFeature>()!
+                .Addresses
+                .LastOrDefault();
+
+            browserFactory = new(Browser);
+
+            if (!Browser.Contains("local") && !Debugger.IsAttached && browserFactory.GridRunning)
+            {
+                RootUri = RootUri.Replace("127.0.0.1", "host.docker.internal");
+            }
+        }
+
+        public new async Task DisposeAsync()
+        {
+            await sqliteConnection.DisposeAsync();
+
+            browserFactory?.Dispose();
+        }
+
         protected override IHostBuilder CreateHostBuilder()
         {
-            IHostBuilder builder = Host.CreateDefaultBuilder();
+            var builder = base.CreateHostBuilder()!;
             builder.UseSerilog();
-            builder.ConfigureWebHost(webHost =>
-            {
-                webHost.UseKestrel();
-                webHost.UseWebRoot(Path.GetFullPath("../../../../../src/NHSD.GPIT.BuyingCatalogue.WebApp/wwwroot"));
-                webHost.UseStartup<Startup>();
-                webHost.ConfigureTestServices(services =>
+            builder.ConfigureWebHost(
+                webHost =>
                 {
-                    services.AddSingleton<IUrlValidator, StubbedUrlValidator>();
-                    services.AddSingleton<IServiceRecipientImportService, StubbedServiceRecipientImportService>();
-                    services.AddSingleton<IGpPracticeProvider, StubbedGpPracticeProvider>();
+                    webHost.UseKestrel();
+                    webHost.UseWebRoot(Path.GetFullPath("../../../../../src/NHSD.GPIT.BuyingCatalogue.WebApp/wwwroot"));
+                    webHost.UseUrls($"{LocalhostBaseAddress}:0");
+
+                    webHost.ConfigureTestServices(
+                        services =>
+                        {
+                            services.AddSingleton<IUrlValidator, StubbedUrlValidator>();
+                            services.AddSingleton<IServiceRecipientImportService, StubbedServiceRecipientImportService>();
+                            services.AddSingleton<IGpPracticeProvider, StubbedGpPracticeProvider>();
+
+                            services.AddSession(
+                                options =>
+                                {
+                                    options.IdleTimeout = TimeSpan.FromMinutes(60);
+                                });
+                        });
                 });
-                webHost.UseUrls($"{LocalhostBaseAddress}:0");
-            });
+
             builder.ConfigureServices(services =>
             {
+                services.AddHttpContextAccessor();
+                services.AddDistributedMemoryCache();
+
+                services.AddSingleton<IIdentityService>(new IdentityService(new HttpContextAccessor()));
+
                 var descriptor = services.FirstOrDefault(d => d.ServiceType == typeof(BuyingCatalogueDbContext));
                 if (descriptor is not null)
                 {
                     services.Remove(descriptor);
                 }
 
-                sqliteConnection?.Dispose();
-
-                if (UseFileSystemSqlite && File.Exists(SqlliteFileSystemFileLocation))
-                {
-                    File.Delete(SqlliteFileSystemFileLocation);
-                }
-
-                sqliteConnection = new SqliteConnection(
-                    UseFileSystemSqlite ? SqlliteConnectionStringFileSystem : SqlliteConnectionStringInMemory);
-                sqliteConnection.Open();
-
-                services.AddDbContext<EndToEndDbContext>(options =>
-                {
-                    options.UseSqlite(sqliteConnection);
-                    options.EnableSensitiveDataLogging();
-                });
-                services.AddDbContext<BuyingCatalogueDbContext, EndToEndDbContext>();
-
-                services.AddHttpContextAccessor();
-
-                services.AddSingleton<IIdentityService>(new IdentityService(new HttpContextAccessor()));
+                services.AddDbContext<BuyingCatalogueDbContext, EndToEndDbContext>(
+                    options =>
+                    {
+                        options.UseSqlite(sqliteConnection.ConnectionString);
+                        options.EnableSensitiveDataLogging();
+                    });
 
                 var sp = services.BuildServiceProvider();
+                var scope = sp.CreateScope();
+                var bcDb = scope.ServiceProvider.GetRequiredService<EndToEndDbContext>();
 
-                using var scope = sp.CreateScope();
-                scopedServices = scope.ServiceProvider;
-
-                var bcDb = scopedServices.GetRequiredService<EndToEndDbContext>();
-
+                bcDb.Database.EnsureDeleted();
                 bcDb.Database.EnsureCreated();
-
-                services.AddDistributedMemoryCache();
-
-                services.AddSession(options =>
-                {
-                    options.IdleTimeout = TimeSpan.FromMinutes(60);
-                });
 
                 try
                 {
@@ -216,45 +190,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                     Trace.WriteLine(ex.Message);
                     throw;
                 }
-
-                bcDb.Dispose();
             });
 
-            builder.ConfigureAppConfiguration((hostContext, config) =>
+            builder.ConfigureAppConfiguration(config =>
             {
                 foreach (var s in config.Sources)
                 {
-                    if (s is FileConfigurationSource)
-                        ((FileConfigurationSource)s).ReloadOnChange = false;
+                    if (s is FileConfigurationSource source)
+                        source.ReloadOnChange = false;
                 }
             });
+
             return builder;
-        }
-
-        [ExcludeFromCodeCoverage]
-        protected override void Dispose(bool disposing)
-        {
-            Driver?.Quit();
-            base.Dispose(disposing);
-            if (disposing && !disposed)
-            {
-                host?.Dispose();
-                sqliteConnection?.Dispose();
-                disposed = true;
-            }
-        }
-
-        private static void SetEnvVariables()
-        {
-            SetEnvironmentVariable(nameof(BC_DB_CONNECTION), BC_DB_CONNECTION);
-
-            SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "E2ETest");
-
-            SetEnvironmentVariable(nameof(DOMAIN_NAME), DOMAIN_NAME);
-
-            SetEnvironmentVariable("DOTNET_USE_POLLING_FILE_WATCHER", "true");
-
-            SetEnvironmentVariable("SESSION_IDLE_TIMEOUT", "60");
         }
 
         private static void SetEnvironmentVariable(string name, string value)
@@ -263,6 +210,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             {
                 Environment.SetEnvironmentVariable(name, value);
             }
+        }
+
+        private void SetEnvVariables()
+        {
+            SetEnvironmentVariable(nameof(BC_DB_CONNECTION), sqliteConnection.ConnectionString);
+
+            SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "E2ETest");
+
+            SetEnvironmentVariable(nameof(DOMAIN_NAME), DOMAIN_NAME);
+
+            SetEnvironmentVariable("DOTNET_USE_POLLING_FILE_WATCHER", "true");
+
+            SetEnvironmentVariable("SESSION_IDLE_TIMEOUT", "60");
         }
     }
 }

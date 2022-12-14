@@ -1,7 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Reflection;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
 {
@@ -16,13 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.ApplyConfiguration(new CatalogueItemTypeEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new CataloguePriceTypeEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new CapabilityStatusEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new CompliancyLevelEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new ProvisioningTypeEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new PublicationStatusEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new TimeUnitEntityTypeConfiguration());
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
     }
 }

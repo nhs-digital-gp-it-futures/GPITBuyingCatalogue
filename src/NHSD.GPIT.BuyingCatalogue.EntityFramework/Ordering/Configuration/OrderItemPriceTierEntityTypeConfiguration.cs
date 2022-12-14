@@ -13,8 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
 
             builder.HasKey(oipt => oipt.Id);
 
-            builder.Property(oipt => oipt.Id).UseIdentityColumn();
-
             builder.Property(oipt => oipt.CatalogueItemId)
                 .HasMaxLength(14)
                 .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
@@ -33,8 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
 
             builder.HasOne(oipt => oipt.LastUpdatedByUser)
                 .WithMany()
-                .HasForeignKey(oipt => oipt.LastUpdatedBy)
-                .HasConstraintName("FK_OrderItemPrices_LastUpdatedBy");
+                .HasForeignKey(oipt => oipt.LastUpdatedBy);
 
             builder.HasOne(oipt => oipt.OrderItemPrice)
                 .WithMany(oip => oip.OrderItemPriceTiers)

@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Addition
         public async Task Submit_NoCapabilitiesSelected_AddsSummaryError()
         {
             await using var context = GetEndToEndDbContext();
-            var catalogueItemCapabilities = await context.CatalogueItemCapabilities.Where(c => c.CatalogueItemId == AdditionalServiceId).ToListAsync();
+            var catalogueItemCapabilities = await context.CatalogueItemCapabilities.AsNoTracking().Where(c => c.CatalogueItemId == AdditionalServiceId).ToListAsync();
             context.CatalogueItemCapabilities.RemoveRange(catalogueItemCapabilities);
             await context.SaveChangesAsync();
 

@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.ServiceLevelAgreements;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.RandomData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
@@ -82,6 +85,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         [Fact]
         public async Task DeleteServiceLevel_ClickDelete_ExpectedResult()
         {
+            var serviceLevel = await AddServiceLevel();
+
+            NavigateToUrl(
+                typeof(ServiceLevelAgreementsController),
+                nameof(ServiceLevelAgreementsController.DeleteServiceLevel),
+                new Dictionary<string, string>
+                {
+                    { nameof(SolutionId), SolutionId.ToString() },
+                    { nameof(ServiceLevelId), serviceLevel.Id.ToString() },
+                });
+
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -90,11 +104,28 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
                 .Should()
                 .BeTrue();
 
+            var context = GetEndToEndDbContext();
+
+            context.SlaServiceLevels.Count(x => x.Id == serviceLevel.Id).Should().Be(0);
+        }
+
+        private async Task<SlaServiceLevel> AddServiceLevel()
+        {
             await using var context = GetEndToEndDbContext();
 
-            var serviceLevels = await context.SlaServiceLevels.FirstOrDefaultAsync(slac => slac.Id == ServiceLevelId);
+            var serviceLevel = new SlaServiceLevel
+            {
+                SolutionId = SolutionId,
+                TypeOfService = Strings.RandomString(10),
+                ServiceLevel = Strings.RandomString(10),
+                HowMeasured = Strings.RandomString(10),
+                ServiceCredits = true,
+            };
 
-            serviceLevels.Should().BeNull();
+            context.SlaServiceLevels.Add(serviceLevel);
+            await context.SaveChangesAsync();
+
+            return serviceLevel;
         }
     }
 }
