@@ -20,9 +20,9 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Dashboard;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Shared;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Dashboard;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Shared;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 using Xunit;
 
@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         public static void ClassIsCorrectlyDecorated()
         {
             typeof(DashboardController).Should().BeDecoratedWith<AuthorizeAttribute>();
-            typeof(DashboardController).Should().BeDecoratedWith<AreaAttribute>(a => a.RouteValue == "Order");
+            typeof(DashboardController).Should().BeDecoratedWith<AreaAttribute>(a => a.RouteValue == "Orders");
         }
 
         [Fact]
