@@ -7,7 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders
 {
     public class ViewOrderModel : NavBaseModel
     {
-        public ViewOrderModel(EntityFramework.Ordering.Models.Order order)
+        public ViewOrderModel(Order order)
         {
             CallOffId = order.CallOffId;
             Description = order.Description;

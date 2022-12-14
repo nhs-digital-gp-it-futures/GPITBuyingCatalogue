@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
 
             orderItem.OrderItemFunding = null;
 
-            var model = new WebApp.Areas.Order.Models.FundingSources.FundingSource(internalOrgId, callOffId, order, orderItem);
+            var model = new WebApp.Areas.Orders.Models.FundingSources.FundingSource(internalOrgId, callOffId, order, orderItem);
 
             model.Title.Should().Be("Funding source");
             model.CallOffId.Should().Be(callOffId);
@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
         {
             var orderItem = order.OrderItems.First();
 
-            var model = new WebApp.Areas.Order.Models.FundingSources.FundingSource(internalOrgId, callOffId, order, orderItem);
+            var model = new WebApp.Areas.Orders.Models.FundingSources.FundingSource(internalOrgId, callOffId, order, orderItem);
 
             model.Title.Should().Be("Funding source");
             model.CallOffId.Should().Be(callOffId);
