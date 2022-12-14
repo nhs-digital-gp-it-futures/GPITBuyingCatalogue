@@ -2,6 +2,7 @@
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels;
 using Xunit;
@@ -41,8 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.OrganisationModelsTe
         public static void IsDefaultAccountType_True_PropertiesSetAsExpected(
             Organisation organisation)
         {
-            var actual = new UserDetailsModel(organisation);
-            actual.IsDefaultAccountType = true;
+            var actual = new UserDetailsModel(organisation) { OrganisationId = 100, IsDefaultAccountType = true };
             actual.SelectedAccountType.Should().Be(OrganisationFunction.Buyer.Name);
         }
 
@@ -51,9 +51,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.OrganisationModelsTe
         public static void IsDefaultAccountType_False_PropertiesSetAsExpected(
             Organisation organisation)
         {
-            var actual = new UserDetailsModel(organisation);
-            actual.IsDefaultAccountType = false;
+            var actual = new UserDetailsModel(organisation) { OrganisationId = 100, IsDefaultAccountType = false };
             actual.SelectedAccountType.Should().BeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void IsNhsDigitalOrganisation_True_PropertiesSetAsExpected(
+            Organisation organisation)
+        {
+            var actual = new UserDetailsModel(organisation)
+            {
+                IsDefaultAccountType = false, OrganisationId = OrganisationConstants.NhsDigitalOrganisationId,
+            };
+
+            actual.SelectedAccountType.Should().Be(OrganisationFunction.Authority.Name);
         }
     }
 }

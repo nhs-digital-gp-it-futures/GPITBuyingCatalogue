@@ -6,10 +6,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin
 {
     public static class UserObjects
     {
-        public static By AccountStatusDisplay => ByExtensions.DataTestId("user-account-status");
-
-        public static By AccountTypeDisplay => ByExtensions.DataTestId("user-account-type");
-
         public static By AccountTypeRadioButtons => By.Id("selected-account-type");
 
         public static By AccountTypeRadioButtonsError => By.Id("selected-account-type-error");
@@ -20,51 +16,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin
 
         public static By AddUserLink => By.LinkText("Add a new user");
 
-        public static By AutoCompleteListBox => By.Id("SelectedOrganisationId__listbox");
-
-        public static By AutoCompleteErrorMessage => new ByChained(AutoCompleteListBox, By.ClassName("autocomplete__option--no-results"));
-
-        public static By EditAccountStatusLink => ByExtensions.DataTestId("edit-account-status-link");
-
-        public static By EditAccountTypeLink => ByExtensions.DataTestId("edit-account-type-link");
-
-        public static By EditOrganisationLink => ByExtensions.DataTestId("edit-organisation-link");
-
-        public static By EditPersonalDetailsLink => ByExtensions.DataTestId("edit-personal-details-link");
-
-        public static By EmailDisplay => ByExtensions.DataTestId("user-email");
-
         public static By EmailInput => By.Id("Email");
 
         public static By EmailInputError => By.Id("Email-error");
-
-        public static By FirstNameDisplay => ByExtensions.DataTestId("user-first-name");
 
         public static By FirstNameInput => By.Id("FirstName");
 
         public static By FirstNameInputError => By.Id("FirstName-error");
 
-        public static By LastNameDisplay => ByExtensions.DataTestId("user-last-name");
-
         public static By LastNameInput => By.Id("LastName");
 
         public static By LastNameInputError => By.Id("LastName-error");
-
-        public static By OrderCallOffId => ByExtensions.DataTestId("order-call-off-id");
-
-        public static By OrderCreated => ByExtensions.DataTestId("order-created");
-
-        public static By OrderDescription => ByExtensions.DataTestId("order-description");
-
-        public static By OrderLink => ByExtensions.DataTestId("order-link");
-
-        public static By OrderStatus => ByExtensions.DataTestId("order-status");
-
-        public static By OrdersErrorMessage => By.Id("orders-error-message");
-
-        public static By OrdersTable => By.Id("orders-table");
-
-        public static By OrganisationDisplay => ByExtensions.DataTestId("user-organisation");
 
         public static By SearchBar => By.Id("users-suggestion-search");
 

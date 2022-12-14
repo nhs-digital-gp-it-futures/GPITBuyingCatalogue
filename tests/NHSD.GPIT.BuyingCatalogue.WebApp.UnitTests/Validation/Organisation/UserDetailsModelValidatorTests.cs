@@ -4,6 +4,7 @@ using Moq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels;
@@ -145,6 +146,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Organisation
         {
             model.SelectedAccountType = accountType;
             model.IsDefaultAccountType = true;
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldNotHaveValidationErrorFor(m => m.SelectedAccountType);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(null)]
+        [CommonInlineAutoData("")]
+        public static void Validate_AccountTypeNullOrEmpty_NhsDigitalOrganisation_NoModelErrors(
+            string accountType,
+            UserDetailsModel model,
+            UserDetailsModelValidator validator)
+        {
+            model.OrganisationId = OrganisationConstants.NhsDigitalOrganisationId;
+            model.SelectedAccountType = accountType;
+            model.IsDefaultAccountType = false;
 
             var result = validator.TestValidate(model);
 

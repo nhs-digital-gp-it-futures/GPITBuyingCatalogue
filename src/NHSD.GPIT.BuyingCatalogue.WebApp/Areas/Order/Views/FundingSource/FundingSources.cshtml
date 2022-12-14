@@ -18,17 +18,19 @@
         @if (Model.CountOfOrderFrameworks > 1)
         {
             <nhs-inset-text>
-                These items are available from more than one framework. You’re procuring them from the @(Model.SelectedFramework.ShortName) framework. 
-                <a href="@Url.Action(
-                            nameof(FundingSourceController.SelectFramework),
-                            typeof(FundingSourceController).ControllerName(),
-                            new { Model.InternalOrgId, Model.CallOffId })">Change framework</a>
+                <p>
+                    These items are available from more than one framework. You’re procuring them from the @(Model.SelectedFramework.ShortName) framework.
+                    <a href="@Url.Action(
+                                 nameof(FundingSourceController.SelectFramework),
+                                 typeof(FundingSourceController).ControllerName(),
+                                 new { Model.InternalOrgId, Model.CallOffId })">Change framework</a>
+                </p>
             </nhs-inset-text>
         }
         else
         {
             <nhs-inset-text>
-                You’re procuring these items from the @(Model.SelectedFramework.ShortName) framework.
+                <p>You’re procuring these items from the @(Model.SelectedFramework.ShortName) framework.</p>
             </nhs-inset-text>
         }
 

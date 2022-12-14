@@ -5,6 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
 {
@@ -62,6 +63,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
         {
             get
             {
+                if (OrganisationId == OrganisationConstants.NhsDigitalOrganisationId)
+                {
+                    return OrganisationFunction.Authority.Name;
+                }
+
                 return IsDefaultAccountType ? OrganisationFunction.Buyer.Name : selectedAccountType;
             }
 
