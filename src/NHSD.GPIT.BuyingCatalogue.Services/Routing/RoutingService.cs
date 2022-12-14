@@ -36,9 +36,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing
 
         private IRoutingResultProvider GetProvider(RoutingPoint point)
         {
-            return providers.ContainsKey(point)
-                ? providers[point]
-                : throw new ArgumentOutOfRangeException(nameof(point), point, null);
+            if (!providers.TryGetValue(point, out var routingProvider))
+            {
+                throw new ArgumentOutOfRangeException(nameof(point), point, null);
+            }
+
+            return routingProvider;
         }
     }
 }

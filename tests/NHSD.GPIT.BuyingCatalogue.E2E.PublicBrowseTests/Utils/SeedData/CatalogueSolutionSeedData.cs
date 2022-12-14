@@ -140,52 +140,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                                 LastUpdated = DateTime.UtcNow,
                             },
                         },
-                        ServiceLevelAgreement = new ServiceLevelAgreements()
-                        {
-                            SolutionId = new CatalogueItemId(99999, "001"),
-                            SlaType = SlaType.Type1,
-                            Contacts = new List<SlaContact>()
-                            {
-                                new SlaContact()
-                                {
-                                    Id = 99,
-                                    SolutionId = new CatalogueItemId(99999, "001"),
-                                    Channel = "This is a Channel",
-                                    ContactInformation = "This is Contact Information",
-                                    TimeFrom = DateTime.UtcNow,
-                                    TimeUntil = DateTime.UtcNow.AddHours(5),
-                                },
-                            },
-                            ServiceHours = new HashSet<ServiceAvailabilityTimes>
-                            {
-                                new()
-                                {
-                                    Id = 99,
-                                    ApplicableDays = "Applicable Days 01",
-                                    Category = "Support Type 01",
-                                    TimeFrom = DateTime.UtcNow.AddHours(-5),
-                                    TimeUntil = DateTime.UtcNow,
-                                },
-                            },
-                            ServiceLevels = new HashSet<SlaServiceLevel>
-                            {
-                                new()
-                                {
-                                    Id = 99,
-                                    HowMeasured = "Hourly",
-                                    ServiceLevel = "Level",
-                                    TypeOfService = "Type",
-                                    ServiceCredits = true,
-                                },
-                            },
-                        },
                         Integrations = JsonSerializer.Serialize(Integrations.GetIntegrations),
                     },
                     CatalogueItemContacts = new List<SupplierContact>
                     {
                         new()
                         {
-                            Id = 5,
                             SupplierId = 99999,
                             FirstName = "Jan",
                             LastName = "Bob",
@@ -260,69 +220,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         new() { CapabilityId = 43, EpicId = "S00006", StatusId = 1 },
                     },
                     PublishedStatus = PublicationStatus.Published,
-                    CataloguePrices = new List<CataloguePrice>
-                    {
-                        new()
-                        {
-                            CataloguePriceId = 7,
-                            CatalogueItemId = new CatalogueItemId(99999, "001"),
-                            ProvisioningType = ProvisioningType.Patient,
-                            CataloguePriceType = CataloguePriceType.Flat,
-                            PublishedStatus = PublicationStatus.Published,
-                            CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
-                            PricingUnit = new PricingUnit
-                            {
-                                Id = 7,
-                                RangeDescription = "Test Tier",
-                                Description = "per test patient",
-                            },
-                            TimeUnit = TimeUnit.PerYear,
-                            CurrencyCode = "GBP",
-                            LastUpdated = DateTime.UtcNow,
-                            CataloguePriceTiers = new List<CataloguePriceTier>
-                            {
-                                new()
-                                {
-                                    Id = 10,
-                                    CataloguePriceId = 7,
-                                    LowerRange = 1,
-                                    UpperRange = null,
-                                    Price = 999.9999M,
-                                    LastUpdated = DateTime.UtcNow,
-                                },
-                            },
-                        },
-                        new()
-                        {
-                            CataloguePriceId = 8,
-                            CatalogueItemId = new CatalogueItemId(99999, "001"),
-                            ProvisioningType = ProvisioningType.Patient,
-                            CataloguePriceType = CataloguePriceType.Flat,
-                            PublishedStatus = PublicationStatus.Draft,
-                            CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
-                            PricingUnit = new PricingUnit
-                            {
-                                Id = 8,
-                                RangeDescription = "Test Tier",
-                                Description = "per test patient",
-                            },
-                            TimeUnit = TimeUnit.PerYear,
-                            CurrencyCode = "GBP",
-                            LastUpdated = DateTime.UtcNow,
-                            CataloguePriceTiers = new List<CataloguePriceTier>
-                            {
-                                new()
-                                {
-                                    Id = 11,
-                                    CataloguePriceId = 8,
-                                    LowerRange = 1,
-                                    UpperRange = null,
-                                    Price = 999.9999M,
-                                    LastUpdated = DateTime.UtcNow,
-                                },
-                            },
-                        },
-                    },
                 },
                 new CatalogueItem
                 {
@@ -446,39 +343,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             new() { CapabilityId = 1, EpicId = "C1E2", StatusId = 2 },
                         },
                     PublishedStatus = PublicationStatus.Published,
-                    CataloguePrices = new List<CataloguePrice>
-                    {
-                        new()
-                        {
-                            CataloguePriceId = 31,
-                            CatalogueItemId = new CatalogueItemId(99999, "003"),
-                            ProvisioningType = ProvisioningType.Patient,
-                            CataloguePriceType = CataloguePriceType.Flat,
-                            PublishedStatus = PublicationStatus.Published,
-                            CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
-                            PricingUnit = new PricingUnit
-                            {
-                                Id = 600,
-                                RangeDescription = "Test Tier",
-                                Description = "per test patient",
-                            },
-                            TimeUnit = TimeUnit.PerYear,
-                            CurrencyCode = "GBP",
-                            LastUpdated = DateTime.UtcNow,
-                            CataloguePriceTiers = new List<CataloguePriceTier>
-                            {
-                                new()
-                                {
-                                    Id = 600,
-                                    CataloguePriceId = 31,
-                                    LowerRange = 1,
-                                    UpperRange = null,
-                                    Price = 999.9999M,
-                                    LastUpdated = DateTime.UtcNow,
-                                },
-                            },
-                        },
-                    },
                 },
                 new CatalogueItem
                 {
@@ -707,39 +571,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         new() { CapabilityId = 46, EpicId = "C46E5", LastUpdated = DateTime.UtcNow, StatusId = 1 },
                     },
                     PublishedStatus = PublicationStatus.Published,
-                    CataloguePrices = new List<CataloguePrice>
-                    {
-                        new()
-                        {
-                            CataloguePriceId = 9,
-                            CatalogueItemId = new CatalogueItemId(99997, "001"),
-                            ProvisioningType = ProvisioningType.Patient,
-                            CataloguePriceType = CataloguePriceType.Flat,
-                            PublishedStatus = PublicationStatus.Published,
-                            CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
-                            PricingUnit = new PricingUnit
-                            {
-                                Id = 9,
-                                RangeDescription = "Test Tier",
-                                Description = "per test patient",
-                            },
-                            TimeUnit = TimeUnit.PerYear,
-                            CurrencyCode = "GBP",
-                            LastUpdated = DateTime.UtcNow,
-                            CataloguePriceTiers = new List<CataloguePriceTier>
-                            {
-                                new()
-                                {
-                                    Id = 12,
-                                    CataloguePriceId = 9,
-                                    LowerRange = 1,
-                                    UpperRange = null,
-                                    Price = 999.9999M,
-                                    LastUpdated = DateTime.UtcNow,
-                                },
-                            },
-                        },
-                    },
                 },
                 new CatalogueItem
                 {
@@ -837,57 +668,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                                 LastUpdated = DateTime.UtcNow,
                             },
                         },
-                        ServiceLevelAgreement = new ServiceLevelAgreements()
-                        {
-                            SolutionId = new CatalogueItemId(99998, "001"),
-                            SlaType = SlaType.Type1,
-                            Contacts = new List<SlaContact>()
-                            {
-                                new SlaContact()
-                                {
-                                    Id = 1,
-                                    SolutionId = new CatalogueItemId(99998, "001"),
-                                    Channel = "This is a Channel",
-                                    ContactInformation = "This is Contact Information",
-                                    TimeFrom = DateTime.UtcNow,
-                                    TimeUntil = DateTime.UtcNow.AddHours(5),
-                                },
-                            },
-                            ServiceHours = new HashSet<ServiceAvailabilityTimes>
-                            {
-                                new()
-                                {
-                                    Id = 1,
-                                    ApplicableDays = "Applicable Days 01",
-                                    Category = "Support Type 01",
-                                    TimeFrom = DateTime.UtcNow.AddHours(-5),
-                                    TimeUntil = DateTime.UtcNow,
-                                },
-                            },
-                            ServiceLevels = new HashSet<SlaServiceLevel>
-                            {
-                                new()
-                                {
-                                    Id = 1,
-                                    TypeOfService = "Type of Service 01",
-                                    ServiceLevel = "Service level 01",
-                                    HowMeasured = "How Measured 01",
-                                    ServiceCredits = true,
-                                },
-                            },
-                        },
                         WorkOffPlans = new HashSet<WorkOffPlan>
                         {
                             new()
                             {
-                                Id = 1,
                                 StandardId = "S1",
                                 Details = "Some Details",
                                 CompletionDate = DateTime.UtcNow.AddDays(5),
                             },
                             new()
                             {
-                                Id = 2,
                                 StandardId = "S1",
                                 Details = "Standard for Deletion Test",
                                 CompletionDate = DateTime.UtcNow.AddDays(5),
@@ -911,271 +701,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         new() { CapabilityId = 46, EpicId = "C46E1", LastUpdated = DateTime.UtcNow, StatusId = 1 },
                     },
                     PublishedStatus = PublicationStatus.Published,
-                    CataloguePrices = new List<CataloguePrice>
-                    {
-                        new()
-                        {
-                            CataloguePriceId = 1,
-                            CatalogueItemId = new CatalogueItemId(99998, "001"),
-                            ProvisioningType = ProvisioningType.Patient,
-                            CataloguePriceCalculationType = CataloguePriceCalculationType.Volume,
-                            CataloguePriceType = CataloguePriceType.Flat,
-                            PublishedStatus = PublicationStatus.Published,
-                            PricingUnit = new PricingUnit
-                            {
-                                Id = 1,
-                                RangeDescription = "Patients",
-                                Description = "per flat test patient",
-                            },
-                            TimeUnit = TimeUnit.PerYear,
-                            CurrencyCode = "GBP",
-                            LastUpdated = DateTime.UtcNow,
-                            CataloguePriceTiers = new List<CataloguePriceTier>
-                            {
-                                new()
-                                {
-                                    Id = 1,
-                                    CataloguePriceId = 1,
-                                    LowerRange = 1,
-                                    UpperRange = null,
-                                    Price = 999.9999M,
-                                    LastUpdated = DateTime.UtcNow,
-                                },
-                            },
-                        },
-                        new()
-                        {
-                            CataloguePriceId = 2,
-                            CatalogueItemId = new CatalogueItemId(99998, "001"),
-                            ProvisioningType = ProvisioningType.OnDemand,
-                            CataloguePriceType = CataloguePriceType.Flat,
-                            CataloguePriceCalculationType = CataloguePriceCalculationType.Volume,
-                            PublishedStatus = PublicationStatus.Published,
-                            CataloguePriceQuantityCalculationType = CataloguePriceQuantityCalculationType.PerServiceRecipient,
-                            PricingUnit = new PricingUnit
-                            {
-                                Id = 2,
-                                RangeDescription = "Patients",
-                                Description = "per flat test on demand",
-                            },
-                            TimeUnit = TimeUnit.PerYear,
-                            CurrencyCode = "GBP",
-                            LastUpdated = DateTime.UtcNow,
-                            CataloguePriceTiers = new List<CataloguePriceTier>
-                            {
-                                new()
-                                {
-                                    Id = 2,
-                                    CataloguePriceId = 2,
-                                    LowerRange = 1,
-                                    UpperRange = null,
-                                    Price = 999.9999M,
-                                    LastUpdated = DateTime.UtcNow,
-                                },
-                            },
-                        },
-                        new()
-                        {
-                            CataloguePriceId = 3,
-                            CatalogueItemId = new CatalogueItemId(99998, "001"),
-                            ProvisioningType = ProvisioningType.Declarative,
-                            CataloguePriceType = CataloguePriceType.Flat,
-                            CataloguePriceCalculationType = CataloguePriceCalculationType.Volume,
-                            PublishedStatus = PublicationStatus.Published,
-                            CataloguePriceQuantityCalculationType = CataloguePriceQuantityCalculationType.PerServiceRecipient,
-                            PricingUnit = new PricingUnit
-                            {
-                                Id = 3,
-                                RangeDescription = "Patients",
-                                Description = "per flat test declarative",
-                            },
-                            TimeUnit = TimeUnit.PerYear,
-                            CurrencyCode = "GBP",
-                            LastUpdated = DateTime.UtcNow,
-                            CataloguePriceTiers = new List<CataloguePriceTier>
-                            {
-                                new()
-                                {
-                                    Id = 999,
-                                    CataloguePriceId = 3,
-                                    LowerRange = 1,
-                                    UpperRange = null,
-                                    Price = 999.9999M,
-                                    LastUpdated = DateTime.UtcNow,
-                                },
-                            },
-                        },
-                        new()
-                        {
-                            CataloguePriceId = 4,
-                            CatalogueItemId = new CatalogueItemId(99998, "001"),
-                            ProvisioningType = ProvisioningType.Patient,
-                            CataloguePriceType = CataloguePriceType.Tiered,
-                            CataloguePriceCalculationType = CataloguePriceCalculationType.Cumulative,
-                            PublishedStatus = PublicationStatus.Published,
-                            PricingUnit = new PricingUnit
-                            {
-                                Id = 4,
-                                RangeDescription = "Patients",
-                                Description = "per tiered cumulative test patient",
-                            },
-                            TimeUnit = TimeUnit.PerYear,
-                            CurrencyCode = "GBP",
-                            LastUpdated = DateTime.UtcNow,
-                            CataloguePriceTiers = new List<CataloguePriceTier>
-                            {
-                                new()
-                                {
-                                    Id = 3,
-                                    CataloguePriceId = 4,
-                                    LowerRange = 1,
-                                    UpperRange = 89999,
-                                    Price = 999.9999M,
-                                    LastUpdated = DateTime.UtcNow,
-                                },
-                                new()
-                                {
-                                    Id = 4,
-                                    CataloguePriceId = 4,
-                                    LowerRange = 90000,
-                                    UpperRange = 899999,
-                                    LastUpdated = DateTime.UtcNow,
-                                },
-                                new()
-                                {
-                                    Id = 5,
-                                    CataloguePriceId = 4,
-                                    LowerRange = 900000,
-                                    UpperRange = null,
-                                    LastUpdated = DateTime.UtcNow,
-                                },
-                            },
-                        },
-                        new()
-                        {
-                            CataloguePriceId = 5,
-                            CatalogueItemId = new CatalogueItemId(99998, "001"),
-                            ProvisioningType = ProvisioningType.Patient,
-                            CataloguePriceType = CataloguePriceType.Tiered,
-                            CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
-                            PublishedStatus = PublicationStatus.Published,
-                            PricingUnit = new PricingUnit
-                            {
-                                Id = 5,
-                                RangeDescription = "Patients",
-                                Description = "per tiered single fixed test patient",
-                            },
-                            TimeUnit = TimeUnit.PerYear,
-                            CurrencyCode = "GBP",
-                            LastUpdated = DateTime.UtcNow,
-                            CataloguePriceTiers = new List<CataloguePriceTier>
-                            {
-                                new()
-                                {
-                                    Id = 6,
-                                    CataloguePriceId = 5,
-                                    LowerRange = 1,
-                                    UpperRange = 89999,
-                                    Price = 999.9999M,
-                                    LastUpdated = DateTime.UtcNow,
-                                },
-                                new()
-                                {
-                                    Id = 7,
-                                    CataloguePriceId = 5,
-                                    LowerRange = 90000,
-                                    UpperRange = 899999,
-                                    LastUpdated = DateTime.UtcNow,
-                                },
-                                new()
-                                {
-                                    Id = 8,
-                                    CataloguePriceId = 5,
-                                    LowerRange = 900000,
-                                    UpperRange = null,
-                                    LastUpdated = DateTime.UtcNow,
-                                },
-                            },
-                        },
-                        new()
-                        {
-                            CataloguePriceId = 27,
-                            CatalogueItemId = new CatalogueItemId(99998, "001"),
-                            ProvisioningType = ProvisioningType.Patient,
-                            CataloguePriceType = CataloguePriceType.Tiered,
-                            CataloguePriceCalculationType = CataloguePriceCalculationType.Cumulative,
-                            PublishedStatus = PublicationStatus.Draft,
-                            PricingUnit = new PricingUnit
-                            {
-                                Id = 23,
-                                RangeDescription = "Patients",
-                                Description = "per tiered single fixed test patient Maximum Tiers Unpublished",
-                            },
-                            TimeUnit = TimeUnit.PerYear,
-                            CurrencyCode = "GBP",
-                            LastUpdated = DateTime.UtcNow,
-                            CataloguePriceTiers = new List<CataloguePriceTier>
-                            {
-                                new()
-                                {
-                                    Id = 38,
-                                    CataloguePriceId = 27,
-                                    LowerRange = 1,
-                                    UpperRange = 9999,
-                                    Price = 999.9999M,
-                                    LastUpdated = DateTime.UtcNow,
-                                },
-                                new()
-                                {
-                                    Id = 39,
-                                    CataloguePriceId = 27,
-                                    LowerRange = 10000,
-                                    UpperRange = 49000,
-                                    LastUpdated = DateTime.UtcNow,
-                                },
-                                new()
-                                {
-                                    Id = 40,
-                                    CataloguePriceId = 27,
-                                    LowerRange = 50000,
-                                    UpperRange = 99999,
-                                    LastUpdated = DateTime.UtcNow,
-                                },
-                                new()
-                                {
-                                    Id = 41,
-                                    CataloguePriceId = 27,
-                                    LowerRange = 100000,
-                                    UpperRange = 149999,
-                                    LastUpdated = DateTime.UtcNow,
-                                },
-                                new()
-                                {
-                                    Id = 42,
-                                    CataloguePriceId = 27,
-                                    LowerRange = 150000,
-                                    UpperRange = null,
-                                    LastUpdated = DateTime.UtcNow,
-                                },
-                                new()
-                                {
-                                    Id = 43,
-                                    CataloguePriceId = 27,
-                                    LowerRange = 150000,
-                                    UpperRange = null,
-                                    LastUpdated = DateTime.UtcNow,
-                                },
-                                new()
-                                {
-                                    Id = 44,
-                                    CataloguePriceId = 27,
-                                    LowerRange = 150000,
-                                    UpperRange = null,
-                                    LastUpdated = DateTime.UtcNow,
-                                },
-                            },
-                        },
-                    },
                 },
                 new CatalogueItem
                 {
@@ -1274,70 +799,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                                 LastUpdated = DateTime.UtcNow,
                             },
                         },
-                        ServiceLevelAgreement = new ServiceLevelAgreements()
-                        {
-                            SolutionId = new CatalogueItemId(99998, "002"),
-                            SlaType = SlaType.Type1,
-                            Contacts = new List<SlaContact>()
-                            {
-                                new SlaContact()
-                                {
-                                    Id = 2,
-                                    SolutionId = new CatalogueItemId(99998, "002"),
-                                    Channel = "This is a Channel",
-                                    ContactInformation = "This is Contact Information",
-                                    TimeFrom = DateTime.UtcNow,
-                                    TimeUntil = DateTime.UtcNow.AddHours(5),
-                                },
-                                new SlaContact()
-                                {
-                                    Id = 3,
-                                    SolutionId = new CatalogueItemId(99998, "002"),
-                                    Channel = "This is a Channel 2",
-                                    ContactInformation = "This is Contact Information 2",
-                                    TimeFrom = DateTime.UtcNow,
-                                    TimeUntil = DateTime.UtcNow.AddHours(5),
-                                },
-                            },
-                            ServiceHours = new HashSet<ServiceAvailabilityTimes>
-                            {
-                                new()
-                                {
-                                    Id = 2,
-                                    ApplicableDays = "Applicable Days 02",
-                                    Category = "Support Type 02",
-                                    TimeFrom = DateTime.UtcNow.AddHours(-5),
-                                    TimeUntil = DateTime.UtcNow,
-                                },
-                                new()
-                                {
-                                    Id = 3,
-                                    ApplicableDays = "Applicable Days 03",
-                                    Category = "Support Type 03",
-                                    TimeFrom = DateTime.UtcNow.AddHours(-5),
-                                    TimeUntil = DateTime.UtcNow,
-                                },
-                            },
-                            ServiceLevels = new HashSet<SlaServiceLevel>
-                            {
-                                new()
-                                {
-                                    Id = 2,
-                                    TypeOfService = "Type of Service 02",
-                                    ServiceLevel = "Service level 02",
-                                    HowMeasured = "How Measured 02",
-                                    ServiceCredits = true,
-                                },
-                                new()
-                                {
-                                    Id = 3,
-                                    TypeOfService = "Type of Service 03",
-                                    ServiceLevel = "Service level 03",
-                                    HowMeasured = "How Measured 03",
-                                    ServiceCredits = true,
-                                },
-                            },
-                        },
                     },
                     CatalogueItemCapabilities = new List<CatalogueItemCapability>
                     {
@@ -1348,40 +809,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         new() { CapabilityId = 47, EpicId = "C47E1", LastUpdated = DateTime.UtcNow, StatusId = 1 },
                     },
                     PublishedStatus = PublicationStatus.Published,
-                    CataloguePrices = new List<CataloguePrice>
-                    {
-                        new()
-                        {
-                            CataloguePriceId = 6,
-                            CatalogueItemId = new CatalogueItemId(99998, "002"),
-                            ProvisioningType = ProvisioningType.Declarative,
-                            CataloguePriceType = CataloguePriceType.Flat,
-                            PublishedStatus = PublicationStatus.Published,
-                            CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
-                            CataloguePriceQuantityCalculationType = CataloguePriceQuantityCalculationType.PerSolutionOrService,
-                            PricingUnit = new PricingUnit
-                            {
-                                Id = 6,
-                                RangeDescription = "Test Tier",
-                                Description = "Per Test",
-                            },
-                            TimeUnit = TimeUnit.PerYear,
-                            CurrencyCode = "GBP",
-                            LastUpdated = DateTime.UtcNow,
-                            CataloguePriceTiers = new List<CataloguePriceTier>
-                            {
-                                new()
-                                {
-                                    Id = 9,
-                                    CataloguePriceId = 6,
-                                    LowerRange = 1,
-                                    UpperRange = null,
-                                    Price = 999.9999M,
-                                    LastUpdated = DateTime.UtcNow,
-                                },
-                            },
-                        },
-                    },
                 },
             };
 

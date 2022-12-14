@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.ListPrices;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
@@ -28,6 +30,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Tiered
         {
             this.parameters = parameters;
         }
+
+        protected abstract int CataloguePriceId { get; }
 
         protected abstract CatalogueItemId CatalogueItemId { get; }
 
@@ -95,10 +99,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Tiered
         }
 
         [Fact]
-        public void ClickSubmit_Input_RedirectsCorrectly()
+        public async Task ClickSubmit_Input_RedirectsCorrectly()
         {
-            CommonActions.ElementAddValue(AddTieredPriceTierObjects.PriceInput, "3.14");
-            CommonActions.ElementAddValue(AddTieredPriceTierObjects.LowerRangeInput, "1");
+            const decimal price = 3.14m;
+            const int lowerRange = 1;
+
+            CommonActions.ElementAddValue(AddTieredPriceTierObjects.PriceInput, price.ToString(CultureInfo.InvariantCulture));
+            CommonActions.ElementAddValue(AddTieredPriceTierObjects.LowerRangeInput, lowerRange.ToString());
             CommonActions.ClickRadioButtonWithText("Infinite upper range");
 
             CommonActions.ClickSave();
@@ -106,19 +113,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Tiered
             CommonActions.PageLoadedCorrectGetIndex(
                 Controller,
                 "TieredPriceTiers").Should().BeTrue();
+
+            await RemovePriceTier(price, lowerRange, null);
         }
 
         [Fact]
-        public void ClickSubmit_Input_Editing_RedirectsCorrectly()
+        public async Task ClickSubmit_Input_Editing_RedirectsCorrectly()
         {
+            const decimal price = 3.10m;
+            const int lowerRange = 15;
+
             NavigateToUrl(
                 Controller,
                 "AddTieredPriceTier",
                 parameters,
                 new Dictionary<string, string> { { "isEditing", true.ToString() } });
 
-            CommonActions.ElementAddValue(AddTieredPriceTierObjects.PriceInput, "3.10");
-            CommonActions.ElementAddValue(AddTieredPriceTierObjects.LowerRangeInput, "15");
+            CommonActions.ElementAddValue(AddTieredPriceTierObjects.PriceInput, price.ToString(CultureInfo.InvariantCulture));
+            CommonActions.ElementAddValue(AddTieredPriceTierObjects.LowerRangeInput, lowerRange.ToString());
             CommonActions.ClickRadioButtonWithText("Infinite upper range");
 
             CommonActions.ClickSave();
@@ -126,6 +138,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Tiered
             CommonActions.PageLoadedCorrectGetIndex(
                 Controller,
                 "EditTieredListPrice").Should().BeTrue();
+
+            await RemovePriceTier(price, lowerRange, null);
         }
 
         [Fact]
@@ -141,6 +155,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Tiered
             CommonActions.ElementShowingCorrectErrorMessage(AddTieredPriceTierObjects.PriceInputError, "Enter a price").Should().BeTrue();
             CommonActions.ElementShowingCorrectErrorMessage(AddTieredPriceTierObjects.LowerRangeInputError, "Enter a lower range").Should().BeTrue();
             CommonActions.ElementShowingCorrectErrorMessage(AddTieredPriceTierObjects.UpperRangeInputError, "Enter an upper range").Should().BeTrue();
+        }
+
+        private async Task RemovePriceTier(decimal price, int lowerRange, int? upperRange)
+        {
+            await using var context = GetEndToEndDbContext();
+            var tier = context.CataloguePriceTiers.First(
+                x => x.CataloguePriceId == CataloguePriceId
+                    && x.LowerRange == lowerRange
+                    && x.UpperRange == null
+                    && x.Price == price);
+
+            context.CataloguePriceTiers.Remove(tier);
+            await context.SaveChangesAsync();
         }
     }
 }

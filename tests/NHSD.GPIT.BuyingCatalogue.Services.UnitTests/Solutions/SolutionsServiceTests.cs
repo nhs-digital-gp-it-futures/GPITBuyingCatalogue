@@ -611,7 +611,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             {
                 var supplier = solutions[i].Supplier;
 
-                supplier.Id = i * 10;
+                supplier.Id = (i + 1) * 10;
                 supplier.LegalName = $"{i}";
 
                 context.Suppliers.Add(supplier);

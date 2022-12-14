@@ -34,7 +34,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.HasOne(a => a.Solution)
                 .WithMany(s => s.AdditionalServices)
                 .HasForeignKey(a => a.SolutionId)
-                .HasConstraintName("FK_AdditionalServices_Solution");
+                .HasConstraintName("FK_AdditionalServices_Solution")
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(a => a.LastUpdatedByUser)
                 .WithMany()

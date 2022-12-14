@@ -91,6 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 
             await using var context = GetEndToEndDbContext();
             var solution = await context.CatalogueItems
+                .AsNoTracking()
                 .Include(s => s.Solution)
                 .Include(s => s.Solution.FrameworkSolutions)
                 .FirstAsync(s => s.Id == SolutionId);
@@ -109,6 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 
             await using var context = GetEndToEndDbContext();
             var solution = await context.CatalogueItems
+                .AsNoTracking()
                 .Include(s => s.Solution)
                 .Include(s => s.Solution.FrameworkSolutions)
                 .FirstAsync(s => s.Id == SolutionId);

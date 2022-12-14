@@ -8,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common.Organisation;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Organisation;
 using Xunit;
@@ -17,7 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
     public class AddNominatedOrganisation : AccountManagerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         private const int OrganisationId = 176;
-        private const string ValidOrganisationName = "NHS Leeds CCG";
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
@@ -68,17 +68,25 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
         [Fact]
         public void AddNominatedOrganisation_FilterOrganisations_WithMatches_ExpectedResult()
         {
-            CommonActions.ElementAddValue(NominatedOrganisationObjects.SelectedOrganisation, ValidOrganisationName);
+            var organisation = GetOrganisationNomination();
+
+            CommonActions.ElementAddValue(NominatedOrganisationObjects.SelectedOrganisation, organisation.Name);
             CommonActions.WaitUntilElementIsDisplayed(NominatedOrganisationObjects.SearchListBox);
 
             CommonActions.ElementIsDisplayed(NominatedOrganisationObjects.SearchResult(0)).Should().BeTrue();
-            CommonActions.ElementTextEqualTo(NominatedOrganisationObjects.SearchResult(0), ValidOrganisationName).Should().BeTrue();
+            CommonActions.ElementTextEqualTo(NominatedOrganisationObjects.SearchResult(0), organisation.Name)
+                .Should()
+                .BeTrue();
         }
 
         [Fact]
         public void AddNominatedOrganisation_FilterOrganisations_WithNoMatches_ExpectedResult()
         {
-            CommonActions.ElementAddValue(NominatedOrganisationObjects.SelectedOrganisation, ValidOrganisationName + "XYZ");
+            var organisation = GetOrganisationNomination();
+
+            CommonActions.ElementAddValue(
+                NominatedOrganisationObjects.SelectedOrganisation,
+                organisation.Name + "XYZ");
             CommonActions.WaitUntilElementIsDisplayed(NominatedOrganisationObjects.SearchListBox);
 
             CommonActions.ElementIsDisplayed(NominatedOrganisationObjects.SearchResultsErrorMessage).Should().BeTrue();
@@ -89,25 +97,41 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
         {
             await using var context = GetEndToEndDbContext();
 
+            var organisation = GetOrganisationNomination();
+
             var existingRelationships = await context.RelatedOrganisations
+                .AsNoTracking()
                 .Where(x => x.RelatedOrganisationId == OrganisationId)
                 .ToListAsync();
 
             existingRelationships.Should().BeEmpty();
 
-            CommonActions.AutoCompleteAddValue(NominatedOrganisationObjects.SelectedOrganisation, ValidOrganisationName);
+            CommonActions.AutoCompleteAddValue(
+                NominatedOrganisationObjects.SelectedOrganisation,
+                organisation.Name);
             CommonActions.ClickLinkElement(NominatedOrganisationObjects.SearchResult(0));
             CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(ManageAccountController),
-                nameof(ManageAccountController.NominatedOrganisations)).Should().BeTrue();
+                    typeof(ManageAccountController),
+                    nameof(ManageAccountController.NominatedOrganisations))
+                .Should()
+                .BeTrue();
 
             existingRelationships = await context.RelatedOrganisations
                 .Where(x => x.RelatedOrganisationId == OrganisationId)
                 .ToListAsync();
 
             existingRelationships.Should().ContainSingle();
+        }
+
+        private Organisation GetOrganisationNomination()
+        {
+            const string validOrganisationId = "CG-15F";
+            using var context = GetEndToEndDbContext();
+
+            return context.Organisations.AsNoTracking()
+                .First(x => x.InternalIdentifier == validOrganisationId);
         }
 
         public void Dispose()

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.ServiceLevelAgreements;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
@@ -15,7 +16,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceLevelAgreements
 {
-    public sealed class AddSLAContact : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    public sealed class AddSLAContact : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         private const string ChannelErrorNoInput = "Enter a contact channel";
         private const string ContactInformationNoInput = "Enter contact information";
@@ -23,8 +24,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
         private const string UntilNoInput = "Error: Enter an until time";
         private const string TimeInvalidFormat = "Error: Enter time in the correct format";
         private const string DuplicateContact = "A contact with these details already exists";
-
-        private const int ExistingContactId = 1;
 
         private static readonly CatalogueItemId SolutionId = new(99998, "001");
 
@@ -216,7 +215,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
                 .BeTrue();
 
             await using var context = GetEndToEndDbContext();
-            var contact = await context.SlaContacts.FirstOrDefaultAsync(slac => slac.SolutionId == SolutionId && slac.Id != ExistingContactId);
+            var contact = await context.SlaContacts.FirstAsync(x => string.Equals(x.Channel, channel) && string.Equals(x.ContactInformation, contactInformation));
 
             contact.Should().NotBeNull();
 
@@ -224,19 +223,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
             contact.ContactInformation.FormatForComparison().Should().Be(contactInformation.FormatForComparison());
             contact.TimeFrom.ToString("HH:mm").FormatForComparison().Should().Be(timefrom.FormatForComparison());
             contact.TimeUntil.ToString("HH:mm").FormatForComparison().Should().Be(timeUntil.FormatForComparison());
-        }
 
-        public void Dispose()
-        {
-            using var context = GetEndToEndDbContext();
-
-            var contact = context.SlaContacts.FirstOrDefault(slac => slac.Id != ExistingContactId && slac.SolutionId == SolutionId);
-
-            if (contact is not null)
-            {
-                context.SlaContacts.Remove(contact);
-                context.SaveChanges();
-            }
+            context.Remove(contact);
+            await context.SaveChangesAsync();
         }
     }
 }

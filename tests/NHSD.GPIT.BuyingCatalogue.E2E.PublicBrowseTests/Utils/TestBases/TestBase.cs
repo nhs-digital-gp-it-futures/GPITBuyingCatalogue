@@ -16,18 +16,21 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.PublicBrowse;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.UrlGenerators;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.MemoryCache;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.Session;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using Polly;
+using Xunit;
 using Xunit.Abstractions;
 using Actions = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 {
-    public abstract class TestBase
+    public abstract class TestBase : IAsyncLifetime
     {
         public static readonly string DefaultPassword = "Th1sIsP4ssword!";
 
@@ -72,8 +75,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 
         internal SessionHandler Session { get; private set; }
 
-        internal MemoryCacheHandler MemoryCache { get; private set; }
-
         internal WebDriverWait Wait { get; }
 
         internal Actions.PublicBrowse.ActionCollection PublicBrowsePages { get; }
@@ -90,12 +91,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 
         internal TextGenerators TextGenerators { get; }
 
-        internal EndToEndDbContext GetEndToEndDbContext()
+        internal BuyingCatalogueDbContext GetEndToEndDbContext()
         {
             return Factory.DbContext;
         }
 
-        internal EndToEndDbContext GetUsersContext()
+        internal BuyingCatalogueDbContext GetUsersContext()
         {
             return Factory.DbContext;
         }
@@ -137,7 +138,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             if (UserAlreadyLoggedIn() || !AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
                 return;
 
-            using var context = GetEndToEndDbContext();
+            var context = GetEndToEndDbContext();
             var user = GetAdmin().UserName;
             AuthorizationPages.LoginActions.Login(user, DefaultPassword);
         }
@@ -179,10 +180,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
 
         internal IEnumerable<AspNetUser> GetUserByRole(string role)
         {
-            using var context = GetEndToEndDbContext();
+            var context = GetEndToEndDbContext();
 
             return context
                 .AspNetUsers
+                .AsNoTracking()
                 .Include(u => u.AspNetUserRoles)
                 .ThenInclude(r => r.Role)
                 .Where(u => u.AspNetUserRoles.Any(r => r.Role.Name == role))
@@ -196,12 +198,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
                 Factory.GetDistributedCache,
                 Factory.Driver,
                 Factory.GetLoggerFactory);
-        }
-
-        internal void InitializeMemoryCacheHandler()
-        {
-            MemoryCache = new MemoryCacheHandler(
-                Factory.GetMemoryCache);
         }
 
         internal Task DisposeSession()
@@ -234,7 +230,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             NavigateToUrl(new Uri(UrlGenerator.GenerateUrlFromMethod(controller, methodName, parameters, queryParameters), UriKind.Relative));
         }
 
-        protected bool UserAlreadyLoggedIn() => Driver.Manage().Cookies.GetCookieNamed("user-session") != null;
+        private bool UserAlreadyLoggedIn() => Driver.Manage().Cookies.GetCookieNamed("user-session") != null;
 
         protected async Task RunTestAsync(Func<Task> task, [CallerMemberName] string callerMemberName = "", [CallerFilePath] string callerFilePath = "")
         {
@@ -336,6 +332,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             {
                 testOutputHelper.WriteLine(message);
             }
+        }
+
+        public Task InitializeAsync() => Task.CompletedTask;
+
+        public Task DisposeAsync()
+        {
+            NavigateToUrl(
+                typeof(AccountController),
+                nameof(AccountController.Logout));
+
+            return Task.CompletedTask;
         }
     }
 }
