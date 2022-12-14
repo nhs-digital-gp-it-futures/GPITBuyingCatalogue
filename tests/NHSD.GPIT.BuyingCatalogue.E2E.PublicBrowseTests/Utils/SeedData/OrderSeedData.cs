@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MoreLinq;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -17,97 +18,102 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
         internal static void Initialize(BuyingCatalogueDbContext context)
         {
-            AddOrderAtDescriptionStage(context);
-            AddOrderAtCallOffPartyStage(context);
-            AddOrderAtSupplierStage(context);
-            AddOrderAtSupplierContactStage(context);
-            AddOrderAtCommencementDateStage(context);
-            AddOrderAtCatalogueSolutionStage(context);
-            AddOrderWithAddedCatalogueSolutionButNoData(context);
-            AddOrderWithAddedCatalogueSolutionAndServicesButNoData(context);
-            AddOrderWithAddedCatalogueSolution(context);
-            AddOrderWithAddedCatalogueSolutionNoSelectedFrameworkMultipleFrameworks(context);
-            AddOrderWithAddedCatalogueSolutionNoSelectedFrameworkSingleFramework(context);
-            AddOrderWithAddedCatalogueSolutionNoFundingRequired(context);
-            AddOrderWithAddedNoContactCatalogueSolution(context);
-            AddOrderWithAddedNoContactSolutionAndNoContactAdditionalSolution(context);
-            AddOrderWithAddedNoContactSolutionAndNoContactAdditionalSolutionAndPrice(context);
-            AddOrderWithAddedAssociatedService(context);
-            AddOrderWithAddedAssociatedServiceAndOrderItemPrice(context);
-            AddOrderWithAddedAssociatedServiceAndServiceRecipientPrice(context);
-            AddOrderWithAddedNoContactSolutionAdditionalServiceAndAssociatedService(context);
-            AddOrderWithMixtureOfServicesAndMatchingPlannedDeliveryDates(context);
-            AddOrderWithMixtureOfServicesAndDifferingPlannedDeliveryDates(context);
-            AddAssociatedServicesOnlyOrder(context);
-            AddEmptyAssociatedServicesOnlyOrder(context);
-            AddEmptyAssociatedServicesOnlyOrderNoSupplier(context);
-            AddAssociatedServicesOnlyOrderWithNoPriceOrServiceRecipients(context);
-            AddAssociatedServicesOnlyOrderWithOnePopulatedOrderItem(context);
-            AddOrderReadyToComplete(context);
-            AddCompletedOrder(context, 90010, GetOrganisationId(context));
-            AddCompletedOrder(context, 90011, GetOrganisationId(context, "CG-15F"));
-            AddCompletedOrder(context, 90030, GetOrganisationId(context));
-            AddAmendment(context, 90030, 2, GetOrganisationId(context));
-            AddOrderByAccountManager(context);
+            var orders = new List<Order>
+            {
+                AddOrderAtDescriptionStage(context),
+                AddOrderAtCallOffPartyStage(context),
+                AddOrderAtSupplierStage(context),
+                AddOrderAtSupplierContactStage(context),
+                AddOrderAtCommencementDateStage(context),
+                AddOrderAtCatalogueSolutionStage(context),
+                AddOrderWithAddedCatalogueSolutionButNoData(context),
+                AddOrderWithAddedCatalogueSolutionAndServicesButNoData(context),
+                AddOrderWithAddedCatalogueSolution(context),
+                AddOrderWithAddedCatalogueSolutionNoSelectedFrameworkMultipleFrameworks(context),
+                AddOrderWithAddedCatalogueSolutionNoSelectedFrameworkSingleFramework(context),
+                AddOrderWithAddedCatalogueSolutionNoFundingRequired(context),
+                AddOrderWithAddedNoContactCatalogueSolution(context),
+                AddOrderWithAddedNoContactSolutionAndNoContactAdditionalSolution(context),
+                AddOrderWithAddedNoContactSolutionAndNoContactAdditionalSolutionAndPrice(context),
+                AddOrderWithAddedAssociatedService(context),
+                AddOrderWithAddedAssociatedServiceAndOrderItemPrice(context),
+                AddOrderWithAddedAssociatedServiceAndServiceRecipientPrice(context),
+                AddOrderWithAddedNoContactSolutionAdditionalServiceAndAssociatedService(context),
+                AddOrderWithMixtureOfServicesAndMatchingPlannedDeliveryDates(context),
+                AddOrderWithMixtureOfServicesAndDifferingPlannedDeliveryDates(context),
+                AddAssociatedServicesOnlyOrder(context),
+                AddEmptyAssociatedServicesOnlyOrder(context),
+                AddEmptyAssociatedServicesOnlyOrderNoSupplier(context),
+                AddAssociatedServicesOnlyOrderWithNoPriceOrServiceRecipients(context),
+                AddAssociatedServicesOnlyOrderWithOnePopulatedOrderItem(context),
+                AddOrderReadyToComplete(context),
+                AddCompletedOrder(context, 90010, GetOrganisationId(context)),
+                AddCompletedOrder(context, 90011, GetOrganisationId(context, "CG-15F")),
+                AddCompletedOrder(context, 90030, GetOrganisationId(context)),
+                AddAmendment(context, 90030, 2),
+                AddOrderByAccountManager(context),
+            };
+
+            context.InsertRangeWithIdentity(orders);
         }
 
-        private static void AddOrderAtDescriptionStage(BuyingCatalogueDbContext context)
+        private static Order AddOrderAtDescriptionStage(BuyingCatalogueDbContext context)
         {
             const int orderId = 90000;
             var timeNow = DateTime.UtcNow;
+            var organisation = GetOrganisationId(context);
+            var user = GetBuyerUser(context, organisation);
 
             var order = new Order
             {
                 Id = orderId,
                 OrderNumber = orderId,
                 Revision = 1,
-                OrderingPartyId = GetOrganisationId(context),
+                OrderingPartyId = organisation,
                 Created = timeNow,
                 IsDeleted = false,
                 Description = "This is an Order Description",
+                LastUpdatedBy = user.Id,
             };
 
-            var user = GetBuyerUser(context, order.OrderingPartyId);
-
-            context.Add(order);
-
-            context.SaveChangesAs(user.Id);
+            return order;
         }
 
-        private static void AddOrderAtCallOffPartyStage(BuyingCatalogueDbContext context)
+        private static Order AddOrderAtCallOffPartyStage(BuyingCatalogueDbContext context)
         {
             const int orderId = 90001;
             var timeNow = DateTime.UtcNow;
+            var organisation = GetOrganisationId(context);
+            var user = GetBuyerUser(context, organisation);
 
             var order = new Order
             {
                 Id = orderId,
                 OrderNumber = orderId,
                 Revision = 1,
-                OrderingPartyId = GetOrganisationId(context),
+                OrderingPartyId = organisation,
                 Created = timeNow,
                 IsDeleted = false,
                 Description = "This is an Order Description",
+                LastUpdatedBy = user.Id,
             };
 
-            var user = GetBuyerUser(context, order.OrderingPartyId);
-
-            context.Add(order);
-
-            context.SaveChangesAs(user.Id);
+            return order;
         }
 
-        private static void AddOrderAtSupplierStage(BuyingCatalogueDbContext context)
+        private static Order AddOrderAtSupplierStage(BuyingCatalogueDbContext context)
         {
             const int orderId = 90002;
             var timeNow = DateTime.UtcNow;
+            var organisation = GetOrganisationId(context);
+            var user = GetBuyerUser(context, organisation);
 
             var order = new Order
             {
                 Id = orderId,
                 OrderNumber = orderId,
                 Revision = 1,
-                OrderingPartyId = GetOrganisationId(context),
+                OrderingPartyId = organisation,
                 Created = timeNow,
                 IsDeleted = false,
                 Description = "This is an Order Description",
@@ -118,26 +124,25 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Email = "Clark.Kent@TheDailyPlanet.com",
                     Phone = "123456789",
                 },
+                LastUpdatedBy = user.Id,
             };
 
-            var user = GetBuyerUser(context, order.OrderingPartyId);
-
-            context.Add(order);
-
-            context.SaveChangesAs(user.Id);
+            return order;
         }
 
-        private static void AddOrderAtSupplierContactStage(BuyingCatalogueDbContext context)
+        private static Order AddOrderAtSupplierContactStage(BuyingCatalogueDbContext context)
         {
             const int orderId = 91002;
             var timeNow = DateTime.UtcNow;
+            var organisation = GetOrganisationId(context);
+            var user = GetBuyerUser(context, organisation);
 
             var order = new Order
             {
                 Id = orderId,
                 OrderNumber = orderId,
                 Revision = 1,
-                OrderingPartyId = GetOrganisationId(context),
+                OrderingPartyId = organisation,
                 Created = timeNow,
                 IsDeleted = false,
                 Description = "This is an Order Description",
@@ -149,26 +154,25 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Phone = "123456789",
                 },
                 SupplierId = 99998,
+                LastUpdatedBy = user.Id,
             };
 
-            var user = GetBuyerUser(context, order.OrderingPartyId);
-
-            context.Add(order);
-
-            context.SaveChangesAs(user.Id);
+            return order;
         }
 
-        private static void AddOrderAtCommencementDateStage(BuyingCatalogueDbContext context)
+        private static Order AddOrderAtCommencementDateStage(BuyingCatalogueDbContext context)
         {
             const int orderId = 90003;
             var timeNow = DateTime.UtcNow;
+            var organisation = GetOrganisationId(context);
+            var user = GetBuyerUser(context, organisation);
 
             var order = new Order
             {
                 Id = orderId,
                 OrderNumber = orderId,
                 Revision = 1,
-                OrderingPartyId = GetOrganisationId(context),
+                OrderingPartyId = organisation,
                 Created = timeNow,
                 IsDeleted = false,
                 Description = "This is an Order Description",
@@ -188,26 +192,25 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Email = "bat.man@Gotham.Fake",
                     Phone = "123456789",
                 },
+                LastUpdatedBy = user.Id,
             };
 
-            var user = GetBuyerUser(context, order.OrderingPartyId);
-
-            context.Add(order);
-
-            context.SaveChangesAs(user.Id);
+            return order;
         }
 
-        private static void AddOrderAtCatalogueSolutionStage(BuyingCatalogueDbContext context)
+        private static Order AddOrderAtCatalogueSolutionStage(BuyingCatalogueDbContext context)
         {
             const int orderId = 90004;
             var timeNow = DateTime.UtcNow;
+            var organisation = GetOrganisationId(context);
+            var user = GetBuyerUser(context, organisation);
 
             var order = new Order
             {
                 Id = orderId,
                 OrderNumber = orderId,
                 Revision = 1,
-                OrderingPartyId = GetOrganisationId(context),
+                OrderingPartyId = organisation,
                 Created = timeNow,
                 IsDeleted = false,
                 Description = "This is an Order Description",
@@ -227,26 +230,25 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Phone = "123456789",
                 },
                 CommencementDate = timeNow.AddDays(1),
+                LastUpdatedBy = user.Id,
             };
 
-            var user = GetBuyerUser(context, order.OrderingPartyId);
-
-            context.Add(order);
-
-            context.SaveChangesAs(user.Id);
+            return order;
         }
 
-        private static void AddOrderWithAddedCatalogueSolutionButNoData(BuyingCatalogueDbContext context)
+        private static Order AddOrderWithAddedCatalogueSolutionButNoData(BuyingCatalogueDbContext context)
         {
             const int orderId = 90012;
             var timeNow = DateTime.UtcNow;
+            var organisation = GetOrganisationId(context);
+            var user = GetBuyerUser(context, organisation);
 
             var order = new Order
             {
                 Id = orderId,
                 OrderNumber = orderId,
                 Revision = 1,
-                OrderingPartyId = GetOrganisationId(context),
+                OrderingPartyId = organisation,
                 Created = timeNow,
                 IsDeleted = false,
                 Description = "This is an Order Description",
@@ -266,6 +268,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Phone = "123456789",
                 },
                 CommencementDate = timeNow.AddDays(1),
+                LastUpdatedBy = user.Id,
             };
 
             var addedSolution = new OrderItem
@@ -277,24 +280,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             order.OrderItems.Add(addedSolution);
 
-            var user = GetBuyerUser(context, order.OrderingPartyId);
-
-            context.Add(order);
-
-            context.SaveChangesAs(user.Id);
+            return order;
         }
 
-        private static void AddOrderWithAddedCatalogueSolutionAndServicesButNoData(BuyingCatalogueDbContext context)
+        private static Order AddOrderWithAddedCatalogueSolutionAndServicesButNoData(BuyingCatalogueDbContext context)
         {
             const int orderId = 91012;
             var timeNow = DateTime.UtcNow;
+            var organisation = GetOrganisationId(context);
+            var user = GetBuyerUser(context, organisation);
 
             var order = new Order
             {
                 Id = orderId,
                 OrderNumber = orderId,
                 Revision = 1,
-                OrderingPartyId = GetOrganisationId(context),
+                OrderingPartyId = organisation,
                 Created = timeNow,
                 IsDeleted = false,
                 Description = "This is an Order Description",
@@ -314,6 +315,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Phone = "123456789",
                 },
                 CommencementDate = timeNow.AddDays(1),
+                LastUpdatedBy = user.Id,
             };
 
             var solution = new OrderItem
@@ -341,24 +343,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             order.OrderItems.Add(additionalService);
             order.OrderItems.Add(associatedService);
 
-            var user = GetBuyerUser(context, order.OrderingPartyId);
-
-            context.Add(order);
-
-            context.SaveChangesAs(user.Id);
+            return order;
         }
 
-        private static async void AddOrderWithAddedCatalogueSolution(BuyingCatalogueDbContext context)
+        private static Order AddOrderWithAddedCatalogueSolution(BuyingCatalogueDbContext context)
         {
             const int orderId = 90005;
             var timeNow = DateTime.UtcNow;
+            var organisation = GetOrganisationId(context);
+            var user = GetBuyerUser(context, organisation);
 
             var order = new Order
             {
                 Id = orderId,
                 OrderNumber = orderId,
                 Revision = 1,
-                OrderingPartyId = GetOrganisationId(context),
+                OrderingPartyId = organisation,
                 Created = timeNow,
                 IsDeleted = false,
                 Description = "This is an Order Description",
@@ -380,7 +380,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CommencementDate = DateTime.UtcNow.AddDays(1),
                 InitialPeriod = 6,
                 MaximumTerm = 36,
-                SelectedFramework = await GetFramework(context, DFOCVC),
+                SelectedFramework = GetFramework(context, DFOCVC),
+                LastUpdatedBy = user.Id,
             };
 
             var price = context.CatalogueItems
@@ -402,7 +403,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     CatalogueItemId = new CatalogueItemId(99999, "001"),
                     OrderId = orderId,
                     OrderItemFundingType = OrderItemFundingType.LocalFundingOnly,
+                    LastUpdatedBy = user.Id,
                 },
+                LastUpdatedBy = user.Id,
             };
 
             var recipients = context.ServiceRecipients.ToList();
@@ -418,26 +421,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 addedSolution.OrderItemRecipients.Add(recipient);
             });
 
-            var user = GetBuyerUser(context, order.OrderingPartyId);
-
             order.OrderItems.Add(addedSolution);
 
-            context.Add(order);
-
-            context.SaveChangesAs(user.Id);
+            return order;
         }
 
-        private static async void AddOrderWithAddedCatalogueSolutionNoSelectedFrameworkMultipleFrameworks(BuyingCatalogueDbContext context)
+        private static Order AddOrderWithAddedCatalogueSolutionNoSelectedFrameworkMultipleFrameworks(BuyingCatalogueDbContext context)
         {
             const int orderId = 90020;
             var timeNow = DateTime.UtcNow;
+            var organisation = GetOrganisationId(context);
+            var user = GetBuyerUser(context, organisation);
 
             var order = new Order
             {
                 Id = orderId,
                 OrderNumber = orderId,
                 Revision = 1,
-                OrderingPartyId = GetOrganisationId(context),
+                OrderingPartyId = organisation,
                 Created = timeNow,
                 IsDeleted = false,
                 Description = "This is an Order Description",
@@ -460,14 +461,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 DeliveryDate = DateTime.Today.AddDays(2),
                 InitialPeriod = 6,
                 MaximumTerm = 36,
+                LastUpdatedBy = user.Id,
             };
 
-            var price = await context.CatalogueItems
+            var price = context.CatalogueItems
                     .Where(c => c.Id == new CatalogueItemId(99999, "003"))
                     .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
                     .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                     .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
-                    .FirstAsync();
+                    .First();
 
             var addedSolution = new OrderItem
             {
@@ -475,7 +477,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
                 Quantity = 10,
-                CatalogueItem = await context.CatalogueItems.FirstAsync(c => c.Id == new CatalogueItemId(99999, "003")),
+                CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99999, "003")),
             };
 
             var recipients = context.ServiceRecipients.ToList();
@@ -492,26 +494,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 addedSolution.OrderItemRecipients.Add(recipient);
             });
 
-            var user = GetBuyerUser(context, order.OrderingPartyId);
-
             order.OrderItems.Add(addedSolution);
 
-            context.Add(order);
-
-            context.SaveChangesAs(user.Id);
+            return order;
         }
 
-        private static async void AddOrderWithAddedCatalogueSolutionNoSelectedFrameworkSingleFramework(BuyingCatalogueDbContext context)
+        private static Order AddOrderWithAddedCatalogueSolutionNoSelectedFrameworkSingleFramework(BuyingCatalogueDbContext context)
         {
             const int orderId = 90021;
             var timeNow = DateTime.UtcNow;
+            var organisation = GetOrganisationId(context);
+            var user = GetBuyerUser(context, organisation);
 
             var order = new Order
             {
                 Id = orderId,
                 OrderNumber = orderId,
                 Revision = 1,
-                OrderingPartyId = GetOrganisationId(context),
+                OrderingPartyId = organisation,
                 Created = timeNow,
                 IsDeleted = false,
                 Description = "This is an Order Description",
@@ -533,14 +533,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CommencementDate = DateTime.UtcNow.AddDays(1),
                 InitialPeriod = 6,
                 MaximumTerm = 36,
+                LastUpdatedBy = user.Id,
             };
 
-            var price = await context.CatalogueItems
+            var price = context.CatalogueItems
                     .Where(c => c.Id == new CatalogueItemId(99999, "001"))
                     .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
                     .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
                     .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
-                    .FirstAsync();
+                    .First();
 
             var addedSolution = new OrderItem
             {
@@ -548,29 +549,27 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
                 Quantity = 10,
-                CatalogueItem = await context.CatalogueItems.FirstAsync(c => c.Id == new CatalogueItemId(99999, "001")),
+                CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99999, "001")),
             };
-
-            var user = GetBuyerUser(context, order.OrderingPartyId);
 
             order.OrderItems.Add(addedSolution);
 
-            context.Add(order);
-
-            context.SaveChangesAs(user.Id);
+            return order;
         }
 
-        private static async void AddOrderWithAddedCatalogueSolutionNoFundingRequired(BuyingCatalogueDbContext context)
+        private static Order AddOrderWithAddedCatalogueSolutionNoFundingRequired(BuyingCatalogueDbContext context)
         {
             const int orderId = 90015;
             var timeNow = DateTime.UtcNow;
+            var organisation = GetOrganisationId(context);
+            var user = GetBuyerUser(context, organisation);
 
             var order = new Order
             {
                 Id = orderId,
                 OrderNumber = orderId,
                 Revision = 1,
-                OrderingPartyId = GetOrganisationId(context),
+                OrderingPartyId = organisation,
                 Created = timeNow,
                 IsDeleted = false,
                 Description = "This is an Order Description",
@@ -592,7 +591,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CommencementDate = DateTime.UtcNow.AddDays(1),
                 InitialPeriod = 6,
                 MaximumTerm = 36,
-                SelectedFramework = await GetFramework(context, GPITFUTURES),
+                SelectedFramework = GetFramework(context, GPITFUTURES),
+                LastUpdatedBy = user.Id,
             };
 
             var price = context.CatalogueItems
@@ -617,29 +617,28 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     CatalogueItemId = new CatalogueItemId(99999, "001"),
                     OrderId = orderId,
                     OrderItemFundingType = OrderItemFundingType.NoFundingRequired,
+                    LastUpdatedBy = user.Id,
                 },
             };
 
-            var user = GetBuyerUser(context, order.OrderingPartyId);
-
             order.OrderItems.Add(addedSolution);
 
-            context.Add(order);
-
-            context.SaveChangesAs(user.Id);
+            return order;
         }
 
-        private static async void AddOrderWithAddedNoContactCatalogueSolution(BuyingCatalogueDbContext context)
+        private static Order AddOrderWithAddedNoContactCatalogueSolution(BuyingCatalogueDbContext context)
         {
             const int orderId = 90006;
             var timeNow = DateTime.UtcNow;
+            var organisation = GetOrganisationId(context);
+            var user = GetBuyerUser(context, organisation);
 
             var order = new Order
             {
                 Id = orderId,
                 OrderNumber = orderId,
                 Revision = 1,
-                OrderingPartyId = GetOrganisationId(context),
+                OrderingPartyId = organisation,
                 Created = timeNow,
                 IsDeleted = false,
                 Description = "This is an Order Description",
@@ -661,10 +660,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CommencementDate = timeNow.AddDays(1),
                 InitialPeriod = 6,
                 MaximumTerm = 36,
-                SelectedFramework = await GetFramework(context, GPITFUTURES),
+                SelectedFramework = GetFramework(context, GPITFUTURES),
+                LastUpdatedBy = user.Id,
             };
-
-            var user = GetBuyerUser(context, order.OrderingPartyId);
 
             var price = context.CatalogueItems
                 .Where(c => c.Id == new CatalogueItemId(99998, "002"))
@@ -695,22 +693,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             order.OrderItems.Add(addedSolution);
 
-            context.Add(order);
-
-            context.SaveChangesAs(user.Id);
+            return order;
         }
 
-        private static void AddOrderWithAddedNoContactSolutionAndNoContactAdditionalSolution(BuyingCatalogueDbContext context)
+        private static Order AddOrderWithAddedNoContactSolutionAndNoContactAdditionalSolution(BuyingCatalogueDbContext context)
         {
             const int orderId = 90007;
             var timeNow = DateTime.UtcNow;
+            var organisation = GetOrganisationId(context);
+            var user = GetBuyerUser(context, organisation);
 
             var order = new Order
             {
                 Id = orderId,
                 OrderNumber = orderId,
                 Revision = 1,
-                OrderingPartyId = GetOrganisationId(context),
+                OrderingPartyId = organisation,
                 Created = timeNow,
                 IsDeleted = false,
                 Description = "This is an Order Description",
@@ -730,9 +728,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Phone = "123456789",
                 },
                 CommencementDate = timeNow.AddDays(1),
+                LastUpdatedBy = user.Id,
             };
-
-            var user = GetBuyerUser(context, order.OrderingPartyId);
 
             var priceSinglePriceSolution = context.CatalogueItems
                 .Where(c => c.Id == new CatalogueItemId(99998, "002"))
@@ -789,22 +786,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             order.OrderItems.Add(addedMultiplePriceCatalogueSolution);
             order.OrderItems.Add(addedAdditionalSolution);
 
-            context.Add(order);
-
-            context.SaveChangesAs(user.Id);
+            return order;
         }
 
-        private static void AddOrderWithAddedNoContactSolutionAndNoContactAdditionalSolutionAndPrice(BuyingCatalogueDbContext context)
+        private static Order AddOrderWithAddedNoContactSolutionAndNoContactAdditionalSolutionAndPrice(BuyingCatalogueDbContext context)
         {
             const int orderId = 91007;
             var timeNow = DateTime.UtcNow;
+            var organisation = GetOrganisationId(context);
+            var user = GetBuyerUser(context, organisation);
 
             var order = new Order
             {
                 Id = orderId,
                 OrderNumber = orderId,
                 Revision = 1,
-                OrderingPartyId = GetOrganisationId(context),
+                OrderingPartyId = organisation,
                 Created = timeNow,
                 IsDeleted = false,
                 Description = "This is an Order Description",
@@ -825,9 +822,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
                 CommencementDate = timeNow.AddDays(1).Date,
                 DeliveryDate = timeNow.AddDays(2).Date,
+                LastUpdatedBy = user.Id,
             };
-
-            var user = GetBuyerUser(context, order.OrderingPartyId);
 
             var priceSinglePriceSolution = context.CatalogueItems
                 .Where(c => c.Id == new CatalogueItemId(99998, "002"))
@@ -893,22 +889,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             order.OrderItems.Add(addedMultiplePriceCatalogueSolution);
             order.OrderItems.Add(addedAdditionalSolution);
 
-            context.Add(order);
-
-            context.SaveChangesAs(user.Id);
+            return order;
         }
 
-        private static void AddOrderWithAddedAssociatedService(BuyingCatalogueDbContext context)
+        private static Order AddOrderWithAddedAssociatedService(BuyingCatalogueDbContext context)
         {
             const int orderId = 90008;
             var timeNow = DateTime.UtcNow;
+            var organisation = GetOrganisationId(context);
+            var user = GetBuyerUser(context, organisation);
 
             var order = new Order
             {
                 Id = orderId,
                 OrderNumber = orderId,
                 Revision = 1,
-                OrderingPartyId = GetOrganisationId(context),
+                OrderingPartyId = organisation,
                 Created = timeNow,
                 IsDeleted = false,
                 Description = "This is an Order Description",
@@ -928,31 +924,31 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Phone = "123456789",
                 },
                 CommencementDate = timeNow.AddDays(1),
+                LastUpdatedBy = user.Id,
             };
 
-            var user = GetBuyerUser(context, order.OrderingPartyId);
             var solution = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "001"));
             var additionalService = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "S-999"));
 
             order.OrderItems.Add(new OrderItem { Created = DateTime.UtcNow, OrderId = orderId, CatalogueItem = solution });
             order.OrderItems.Add(new OrderItem { Created = DateTime.UtcNow, OrderId = orderId, CatalogueItem = additionalService });
 
-            context.Add(order);
-
-            context.SaveChangesAs(user.Id);
+            return order;
         }
 
-        private static void AddOrderWithAddedAssociatedServiceAndOrderItemPrice(BuyingCatalogueDbContext context)
+        private static Order AddOrderWithAddedAssociatedServiceAndOrderItemPrice(BuyingCatalogueDbContext context)
         {
             const int orderId = 91008;
             var timeNow = DateTime.UtcNow;
+            var organisation = GetOrganisationId(context);
+            var user = GetBuyerUser(context, organisation);
 
             var order = new Order
             {
                 Id = orderId,
                 OrderNumber = orderId,
                 Revision = 1,
-                OrderingPartyId = GetOrganisationId(context),
+                OrderingPartyId = organisation,
                 Created = timeNow,
                 IsDeleted = false,
                 Description = "This is an Order Description",
@@ -972,9 +968,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Phone = "123456789",
                 },
                 CommencementDate = timeNow.AddDays(1),
+                LastUpdatedBy = user.Id,
             };
-
-            var user = GetBuyerUser(context, order.OrderingPartyId);
 
             var price = context.CatalogueItems
                 .Where(c => c.Id == new CatalogueItemId(99998, "002"))
@@ -993,22 +988,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             order.OrderItems.Add(addedSolution);
 
-            context.Add(order);
-
-            context.SaveChangesAs(user.Id);
+            return order;
         }
 
-        private static void AddOrderWithAddedAssociatedServiceAndServiceRecipientPrice(BuyingCatalogueDbContext context)
+        private static Order AddOrderWithAddedAssociatedServiceAndServiceRecipientPrice(BuyingCatalogueDbContext context)
         {
             const int orderId = 92008;
             var timeNow = DateTime.UtcNow;
+            var organisation = GetOrganisationId(context);
+            var user = GetBuyerUser(context, organisation);
 
             var order = new Order
             {
                 Id = orderId,
                 OrderNumber = orderId,
                 Revision = 1,
-                OrderingPartyId = GetOrganisationId(context),
+                OrderingPartyId = organisation,
                 Created = timeNow,
                 IsDeleted = false,
                 Description = "This is an Order Description",
@@ -1028,9 +1023,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Phone = "123456789",
                 },
                 CommencementDate = timeNow.AddDays(1),
+                LastUpdatedBy = user.Id,
             };
-
-            var user = GetBuyerUser(context, order.OrderingPartyId);
 
             var price = context.CatalogueItems
                 .Where(c => c.Id == new CatalogueItemId(99999, "001"))
@@ -1053,223 +1047,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             order.OrderItems.Add(addedSolution);
 
-            context.Add(order);
-            context.SaveChangesAs(user.Id);
+            return order;
         }
 
-        private static void AddOrderWithMixtureOfServicesAndMatchingPlannedDeliveryDates(BuyingCatalogueDbContext context)
-        {
-            const int orderId = 90022;
-            var timeNow = DateTime.UtcNow;
-
-            var order = new Order
-            {
-                Id = orderId,
-                OrderNumber = orderId,
-                Revision = 1,
-                OrderingPartyId = GetOrganisationId(context),
-                Created = timeNow,
-                IsDeleted = false,
-                Description = "This is an Order Description",
-                OrderingPartyContact = new Contact
-                {
-                    FirstName = "Clark",
-                    LastName = "Kent",
-                    Email = "Clark.Kent@TheDailyPlanet.Fake",
-                    Phone = "123456789",
-                },
-                SupplierId = 99998,
-                SupplierContact = new Contact
-                {
-                    FirstName = "Bruce",
-                    LastName = "Wayne",
-                    Email = "bat.man@Gotham.Fake",
-                    Phone = "123456789",
-                },
-                CommencementDate = timeNow.AddDays(2).Date,
-                InitialPeriod = 3,
-                MaximumTerm = 12,
-                DeliveryDate = timeNow.AddDays(3).Date,
-            };
-
-            var user = GetBuyerUser(context, order.OrderingPartyId);
-            var solution = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "001"));
-            var additionalService = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "001A99"));
-            var associatedService = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "S-999"));
-
-            order.OrderItems.Add(new OrderItem { Created = DateTime.UtcNow, OrderId = orderId, CatalogueItem = solution });
-            order.OrderItems.Add(new OrderItem { Created = DateTime.UtcNow, OrderId = orderId, CatalogueItem = additionalService });
-            order.OrderItems.Add(new OrderItem { Created = DateTime.UtcNow, OrderId = orderId, CatalogueItem = associatedService });
-
-            var recipients = context.ServiceRecipients.ToList();
-
-            recipients.ForEach(r => order.OrderItems.ToList().ForEach(x => x.OrderItemRecipients.Add(new OrderItemRecipient
-            {
-                Recipient = r,
-                OdsCode = r.OdsCode,
-                DeliveryDate = timeNow.AddDays(3).Date,
-            })));
-
-            context.Add(order);
-
-            context.SaveChangesAs(user.Id);
-        }
-
-        private static void AddOrderWithMixtureOfServicesAndDifferingPlannedDeliveryDates(BuyingCatalogueDbContext context)
-        {
-            const int orderId = 90023;
-            var timeNow = DateTime.UtcNow;
-
-            var order = new Order
-            {
-                Id = orderId,
-                OrderNumber = orderId,
-                Revision = 1,
-                OrderingPartyId = GetOrganisationId(context),
-                Created = timeNow,
-                IsDeleted = false,
-                Description = "This is an Order Description",
-                OrderingPartyContact = new Contact
-                {
-                    FirstName = "Clark",
-                    LastName = "Kent",
-                    Email = "Clark.Kent@TheDailyPlanet.Fake",
-                    Phone = "123456789",
-                },
-                SupplierId = 99998,
-                SupplierContact = new Contact
-                {
-                    FirstName = "Bruce",
-                    LastName = "Wayne",
-                    Email = "bat.man@Gotham.Fake",
-                    Phone = "123456789",
-                },
-                CommencementDate = timeNow.AddDays(2).Date,
-                DeliveryDate = timeNow.AddDays(3).Date,
-            };
-
-            var user = GetBuyerUser(context, order.OrderingPartyId);
-            var solution = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "001"));
-            var additionalService = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "001A99"));
-            var associatedService = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "S-999"));
-
-            var solutionItem = new OrderItem { Created = DateTime.UtcNow, OrderId = orderId, CatalogueItem = solution };
-
-            order.OrderItems.Add(new OrderItem { Created = DateTime.UtcNow, OrderId = orderId, CatalogueItem = additionalService });
-            order.OrderItems.Add(new OrderItem { Created = DateTime.UtcNow, OrderId = orderId, CatalogueItem = associatedService });
-
-            context.ServiceRecipients.ForEach(r =>
-            {
-                order.OrderItems.ToList().ForEach(x => x.OrderItemRecipients.Add(new OrderItemRecipient
-                {
-                    Recipient = r,
-                    DeliveryDate = timeNow.AddDays(3).Date,
-                }));
-
-                solutionItem.OrderItemRecipients.Add(new OrderItemRecipient
-                {
-                    Recipient = r,
-                    DeliveryDate = timeNow.AddDays(2).Date,
-                });
-            });
-
-            order.OrderItems.Add(solutionItem);
-
-            context.Add(order);
-
-            context.SaveChangesAs(user.Id);
-        }
-
-        private static async void AddOrderReadyToComplete(BuyingCatalogueDbContext context)
-        {
-            const int orderId = 90009;
-            var timeNow = DateTime.UtcNow;
-
-            var order = new Order
-            {
-                Id = orderId,
-                OrderNumber = orderId,
-                Revision = 1,
-                OrderingPartyId = GetOrganisationId(context),
-                Created = timeNow,
-                IsDeleted = false,
-                Description = "This is an Order Description",
-                OrderingPartyContact = new Contact
-                {
-                    FirstName = "Clark",
-                    LastName = "Kent",
-                    Email = "Clark.Kent@TheDailyPlanet.Fake",
-                    Phone = "123456789",
-                },
-                SupplierId = 99998,
-                SupplierContact = new Contact
-                {
-                    FirstName = "Bruce",
-                    LastName = "Wayne",
-                    Email = "bat.man@Gotham.Fake",
-                    Phone = "123456789",
-                },
-                CommencementDate = timeNow.AddDays(1).Date,
-                DeliveryDate = timeNow.AddDays(1).Date,
-                SelectedFramework = await GetFramework(context, GPITFUTURES),
-            };
-
-            var user = GetBuyerUser(context, order.OrderingPartyId);
-
-            var price = context.CatalogueItems
-                .Where(c => c.Id == new CatalogueItemId(99998, "001"))
-                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
-                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
-                .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
-                .First();
-
-            var addedSolution = new OrderItem
-            {
-                OrderItemPrice = price,
-                Created = DateTime.UtcNow,
-                OrderId = orderId,
-                CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "001")),
-            };
-
-            var recipients = context.ServiceRecipients.ToList();
-
-            recipients.ForEach(r =>
-            {
-                var recipient = new OrderItemRecipient
-                {
-                    Recipient = r,
-                    Quantity = 1000,
-                    DeliveryDate = timeNow.AddDays(1).Date,
-                };
-
-                addedSolution.OrderItemRecipients.Add(recipient);
-            });
-
-            addedSolution.OrderItemFunding = new OrderItemFunding
-            {
-                OrderId = addedSolution.OrderId,
-                CatalogueItemId = addedSolution.CatalogueItemId,
-                OrderItemFundingType = OrderItemFundingType.CentralFunding,
-            };
-
-            order.OrderItems.Add(addedSolution);
-
-            context.Add(order);
-
-            context.SaveChangesAs(user.Id);
-        }
-
-        private static void AddOrderWithAddedNoContactSolutionAdditionalServiceAndAssociatedService(BuyingCatalogueDbContext context)
+        private static Order AddOrderWithAddedNoContactSolutionAdditionalServiceAndAssociatedService(BuyingCatalogueDbContext context)
         {
             const int orderId = 90013;
             var timeNow = DateTime.UtcNow;
+            var organisation = GetOrganisationId(context);
+            var user = GetBuyerUser(context, organisation);
 
             var order = new Order
             {
                 Id = orderId,
                 OrderNumber = orderId,
                 Revision = 1,
-                OrderingPartyId = GetOrganisationId(context),
+                OrderingPartyId = organisation,
                 Created = timeNow,
                 IsDeleted = false,
                 Description = "This is an Order Description",
@@ -1291,9 +1084,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CommencementDate = timeNow.AddDays(1),
                 InitialPeriod = 6,
                 MaximumTerm = 36,
+                LastUpdatedBy = user.Id,
             };
-
-            var user = GetBuyerUser(context, order.OrderingPartyId);
 
             var priceMultiplePriceSolution = context.CatalogueItems
                 .Where(c => c.Id == new CatalogueItemId(99998, "001"))
@@ -1359,15 +1151,217 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             order.OrderItems.Add(addedAdditionalSolution);
             order.OrderItems.Add(addedAssociatedSolution);
 
-            context.Add(order);
-
-            context.SaveChangesAs(user.Id);
+            return order;
         }
 
-        private static void AddAssociatedServicesOnlyOrder(BuyingCatalogueDbContext context)
+        private static Order AddOrderWithMixtureOfServicesAndMatchingPlannedDeliveryDates(BuyingCatalogueDbContext context)
+        {
+            const int orderId = 90022;
+            var timeNow = DateTime.UtcNow;
+            var organisation = GetOrganisationId(context);
+            var user = GetBuyerUser(context, organisation);
+
+            var order = new Order
+            {
+                Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
+                OrderingPartyId = organisation,
+                Created = timeNow,
+                IsDeleted = false,
+                Description = "This is an Order Description",
+                OrderingPartyContact = new Contact
+                {
+                    FirstName = "Clark",
+                    LastName = "Kent",
+                    Email = "Clark.Kent@TheDailyPlanet.Fake",
+                    Phone = "123456789",
+                },
+                SupplierId = 99998,
+                SupplierContact = new Contact
+                {
+                    FirstName = "Bruce",
+                    LastName = "Wayne",
+                    Email = "bat.man@Gotham.Fake",
+                    Phone = "123456789",
+                },
+                CommencementDate = timeNow.AddDays(2).Date,
+                InitialPeriod = 3,
+                MaximumTerm = 12,
+                DeliveryDate = timeNow.AddDays(3).Date,
+                LastUpdatedBy = user.Id,
+            };
+
+            var solution = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "001"));
+            var additionalService = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "001A99"));
+            var associatedService = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "S-999"));
+
+            order.OrderItems.Add(new OrderItem { Created = DateTime.UtcNow, OrderId = orderId, CatalogueItem = solution });
+            order.OrderItems.Add(new OrderItem { Created = DateTime.UtcNow, OrderId = orderId, CatalogueItem = additionalService });
+            order.OrderItems.Add(new OrderItem { Created = DateTime.UtcNow, OrderId = orderId, CatalogueItem = associatedService });
+
+            var recipients = context.ServiceRecipients.ToList();
+
+            recipients.ForEach(r => order.OrderItems.ToList().ForEach(x => x.OrderItemRecipients.Add(new OrderItemRecipient
+            {
+                Recipient = r,
+                OdsCode = r.OdsCode,
+                DeliveryDate = timeNow.AddDays(3).Date,
+            })));
+
+            return order;
+        }
+
+        private static Order AddOrderWithMixtureOfServicesAndDifferingPlannedDeliveryDates(BuyingCatalogueDbContext context)
+        {
+            const int orderId = 90023;
+            var timeNow = DateTime.UtcNow;
+            var organisation = GetOrganisationId(context);
+            var user = GetBuyerUser(context, organisation);
+
+            var order = new Order
+            {
+                Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
+                OrderingPartyId = organisation,
+                Created = timeNow,
+                IsDeleted = false,
+                Description = "This is an Order Description",
+                OrderingPartyContact = new Contact
+                {
+                    FirstName = "Clark",
+                    LastName = "Kent",
+                    Email = "Clark.Kent@TheDailyPlanet.Fake",
+                    Phone = "123456789",
+                },
+                SupplierId = 99998,
+                SupplierContact = new Contact
+                {
+                    FirstName = "Bruce",
+                    LastName = "Wayne",
+                    Email = "bat.man@Gotham.Fake",
+                    Phone = "123456789",
+                },
+                CommencementDate = timeNow.AddDays(2).Date,
+                DeliveryDate = timeNow.AddDays(3).Date,
+                LastUpdatedBy = user.Id,
+            };
+
+            var solution = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "001"));
+            var additionalService = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "001A99"));
+            var associatedService = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "S-999"));
+
+            var solutionItem = new OrderItem { Created = DateTime.UtcNow, OrderId = orderId, CatalogueItem = solution };
+
+            order.OrderItems.Add(new OrderItem { Created = DateTime.UtcNow, OrderId = orderId, CatalogueItem = additionalService });
+            order.OrderItems.Add(new OrderItem { Created = DateTime.UtcNow, OrderId = orderId, CatalogueItem = associatedService });
+
+            context.ServiceRecipients.ForEach(r =>
+            {
+                order.OrderItems.ToList().ForEach(x => x.OrderItemRecipients.Add(new OrderItemRecipient
+                {
+                    Recipient = r,
+                    DeliveryDate = timeNow.AddDays(3).Date,
+                }));
+
+                solutionItem.OrderItemRecipients.Add(new OrderItemRecipient
+                {
+                    Recipient = r,
+                    DeliveryDate = timeNow.AddDays(2).Date,
+                });
+            });
+
+            order.OrderItems.Add(solutionItem);
+
+            return order;
+        }
+
+        private static Order AddOrderReadyToComplete(BuyingCatalogueDbContext context)
+        {
+            const int orderId = 90009;
+            var timeNow = DateTime.UtcNow;
+            var organisation = GetOrganisationId(context);
+            var user = GetBuyerUser(context, organisation);
+
+            var order = new Order
+            {
+                Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
+                OrderingPartyId = organisation,
+                Created = timeNow,
+                IsDeleted = false,
+                Description = "This is an Order Description",
+                OrderingPartyContact = new Contact
+                {
+                    FirstName = "Clark",
+                    LastName = "Kent",
+                    Email = "Clark.Kent@TheDailyPlanet.Fake",
+                    Phone = "123456789",
+                },
+                SupplierId = 99998,
+                SupplierContact = new Contact
+                {
+                    FirstName = "Bruce",
+                    LastName = "Wayne",
+                    Email = "bat.man@Gotham.Fake",
+                    Phone = "123456789",
+                },
+                CommencementDate = timeNow.AddDays(1).Date,
+                DeliveryDate = timeNow.AddDays(1).Date,
+                SelectedFramework = GetFramework(context, GPITFUTURES),
+                LastUpdatedBy = user.Id,
+            };
+
+            var price = context.CatalogueItems
+                .Where(c => c.Id == new CatalogueItemId(99998, "001"))
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
+                .First();
+
+            var addedSolution = new OrderItem
+            {
+                OrderItemPrice = price,
+                Created = DateTime.UtcNow,
+                OrderId = orderId,
+                CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "001")),
+            };
+
+            var recipients = context.ServiceRecipients.ToList();
+
+            recipients.ForEach(r =>
+            {
+                var recipient = new OrderItemRecipient
+                {
+                    Recipient = r,
+                    Quantity = 1000,
+                    DeliveryDate = timeNow.AddDays(1).Date,
+                };
+
+                addedSolution.OrderItemRecipients.Add(recipient);
+            });
+
+            addedSolution.OrderItemFunding = new OrderItemFunding
+            {
+                OrderId = addedSolution.OrderId,
+                CatalogueItemId = addedSolution.CatalogueItemId,
+                OrderItemFundingType = OrderItemFundingType.CentralFunding,
+                LastUpdatedBy = user.Id,
+            };
+
+            order.OrderItems.Add(addedSolution);
+
+            return order;
+        }
+
+        private static Order AddAssociatedServicesOnlyOrder(BuyingCatalogueDbContext context)
         {
             const int orderId = 90014;
             var timeNow = DateTime.UtcNow;
+            var organisation = GetOrganisationId(context);
+            var user = GetBuyerUser(context, organisation);
 
             var order = new Order
             {
@@ -1375,7 +1369,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 OrderNumber = orderId,
                 Revision = 1,
                 AssociatedServicesOnly = true,
-                OrderingPartyId = GetOrganisationId(context),
+                OrderingPartyId = organisation,
                 Created = timeNow,
                 IsDeleted = false,
                 Description = "Associated services only",
@@ -1398,9 +1392,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 InitialPeriod = 6,
                 MaximumTerm = 36,
                 SolutionId = new CatalogueItemId(99998, "001"),
+                LastUpdatedBy = user.Id,
             };
-
-            var user = GetBuyerUser(context, order.OrderingPartyId);
 
             var price = context.CatalogueItems
                 .Where(c => c.Id == new CatalogueItemId(99998, "S-997"))
@@ -1432,15 +1425,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             order.OrderItems.Add(service);
 
-            context.Add(order);
-
-            context.SaveChangesAs(user.Id);
+            return order;
         }
 
-        private static void AddEmptyAssociatedServicesOnlyOrder(BuyingCatalogueDbContext context)
+        private static Order AddEmptyAssociatedServicesOnlyOrder(BuyingCatalogueDbContext context)
         {
             const int orderId = 90018;
             var timeNow = DateTime.UtcNow;
+            var organisation = GetOrganisationId(context);
+            var user = GetBuyerUser(context, organisation);
 
             var order = new Order
             {
@@ -1448,7 +1441,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 OrderNumber = orderId,
                 Revision = 1,
                 AssociatedServicesOnly = true,
-                OrderingPartyId = GetOrganisationId(context),
+                OrderingPartyId = organisation,
                 Created = timeNow,
                 IsDeleted = false,
                 Description = "Associated services only",
@@ -1470,19 +1463,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CommencementDate = timeNow.AddDays(1),
                 InitialPeriod = 6,
                 MaximumTerm = 36,
+                LastUpdatedBy = user.Id,
             };
 
-            var user = GetBuyerUser(context, order.OrderingPartyId);
-
-            context.Add(order);
-
-            context.SaveChangesAs(user.Id);
+            return order;
         }
 
-        private static void AddEmptyAssociatedServicesOnlyOrderNoSupplier(BuyingCatalogueDbContext context)
+        private static Order AddEmptyAssociatedServicesOnlyOrderNoSupplier(BuyingCatalogueDbContext context)
         {
             const int orderId = 90019;
             var timeNow = DateTime.UtcNow;
+            var organisation = GetOrganisationId(context);
+            var user = GetBuyerUser(context, organisation);
 
             var order = new Order
             {
@@ -1490,7 +1482,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 OrderNumber = orderId,
                 Revision = 1,
                 AssociatedServicesOnly = true,
-                OrderingPartyId = GetOrganisationId(context),
+                OrderingPartyId = organisation,
                 Created = timeNow,
                 IsDeleted = false,
                 Description = "Associated services only",
@@ -1504,19 +1496,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CommencementDate = timeNow.AddDays(1),
                 InitialPeriod = 6,
                 MaximumTerm = 36,
+                LastUpdatedBy = user.Id,
             };
 
-            var user = GetBuyerUser(context, order.OrderingPartyId);
-
-            context.Add(order);
-
-            context.SaveChangesAs(user.Id);
+            return order;
         }
 
-        private static void AddAssociatedServicesOnlyOrderWithNoPriceOrServiceRecipients(BuyingCatalogueDbContext context)
+        private static Order AddAssociatedServicesOnlyOrderWithNoPriceOrServiceRecipients(BuyingCatalogueDbContext context)
         {
             const int orderId = 90016;
             var timeNow = DateTime.UtcNow;
+            var organisation = GetOrganisationId(context);
+            var user = GetBuyerUser(context, organisation);
 
             var order = new Order
             {
@@ -1524,7 +1515,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 OrderNumber = orderId,
                 Revision = 1,
                 AssociatedServicesOnly = true,
-                OrderingPartyId = GetOrganisationId(context),
+                OrderingPartyId = organisation,
                 Created = timeNow,
                 IsDeleted = false,
                 Description = "Associated services only",
@@ -1547,9 +1538,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 InitialPeriod = 6,
                 MaximumTerm = 36,
                 SolutionId = new CatalogueItemId(99998, "001"),
+                LastUpdatedBy = user.Id,
             };
-
-            var user = GetBuyerUser(context, order.OrderingPartyId);
 
             var service = new OrderItem
             {
@@ -1560,15 +1550,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             order.OrderItems.Add(service);
 
-            context.Add(order);
-
-            context.SaveChangesAs(user.Id);
+            return order;
         }
 
-        private static void AddAssociatedServicesOnlyOrderWithOnePopulatedOrderItem(BuyingCatalogueDbContext context)
+        private static Order AddAssociatedServicesOnlyOrderWithOnePopulatedOrderItem(BuyingCatalogueDbContext context)
         {
             const int orderId = 90017;
             var timeNow = DateTime.UtcNow;
+            var organisation = GetOrganisationId(context);
+            var user = GetBuyerUser(context, organisation);
 
             var order = new Order
             {
@@ -1576,7 +1566,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 OrderNumber = orderId,
                 Revision = 1,
                 AssociatedServicesOnly = true,
-                OrderingPartyId = GetOrganisationId(context),
+                OrderingPartyId = organisation,
                 Created = timeNow,
                 IsDeleted = false,
                 Description = "Associated services only",
@@ -1599,9 +1589,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 InitialPeriod = 6,
                 MaximumTerm = 36,
                 SolutionId = new CatalogueItemId(99998, "001"),
+                LastUpdatedBy = user.Id,
             };
-
-            var user = GetBuyerUser(context, order.OrderingPartyId);
 
             var recipients = context.ServiceRecipients.Select(x => new OrderItemRecipient
             {
@@ -1624,14 +1613,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "S-998")),
             });
 
-            context.Add(order);
-
-            context.SaveChangesAs(user.Id);
+            return order;
         }
 
-        private static void AddCompletedOrder(BuyingCatalogueDbContext context, int orderId, int organisationId)
+        private static Order AddCompletedOrder(BuyingCatalogueDbContext context, int orderId, int organisationId)
         {
             var timeNow = DateTime.UtcNow;
+            var user = GetBuyerUser(context, organisationId);
 
             var order = new Order
             {
@@ -1659,9 +1647,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
                 SelectedFrameworkId = DFOCVC,
                 CommencementDate = timeNow.AddDays(1),
+                LastUpdatedBy = user.Id,
             };
-
-            var user = GetBuyerUser(context, order.OrderingPartyId);
 
             var price = context.CatalogueItems
                 .Where(c => c.Id == new CatalogueItemId(99998, "001"))
@@ -1696,28 +1683,27 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 OrderId = addedSolution.OrderId,
                 CatalogueItemId = addedSolution.CatalogueItemId,
                 OrderItemFundingType = OrderItemFundingType.CentralFunding,
+                LastUpdatedBy = user.Id,
             };
 
             order.Complete();
 
             order.OrderItems.Add(addedSolution);
 
-            context.Add(order);
-
-            context.SaveChangesAs(user.Id);
+            return order;
         }
 
-        private static void AddAmendment(BuyingCatalogueDbContext context, int orderNumber, int revision, int organisationId)
+        private static Order AddAmendment(BuyingCatalogueDbContext context, int orderNumber, int revision)
         {
             var timeNow = DateTime.UtcNow;
-            var orderId = context.Orders.IgnoreQueryFilters().Max(x => x.Id) + 1;
+            var organisation = GetOrganisationId(context);
+            var user = GetBuyerUser(context, organisation);
 
             var order = new Order
             {
-                Id = orderId,
                 OrderNumber = orderNumber,
                 Revision = revision,
-                OrderingPartyId = organisationId,
+                OrderingPartyId = organisation,
                 Created = timeNow,
                 IsDeleted = false,
                 Description = "This is an Amendment",
@@ -1738,35 +1724,32 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
                 SelectedFrameworkId = DFOCVC,
                 CommencementDate = timeNow.AddDays(1),
+                LastUpdatedBy = user.Id,
             };
 
-            var user = GetBuyerUser(context, order.OrderingPartyId);
-
-            context.Add(order);
-            context.SaveChangesAs(user.Id);
+            return order;
         }
 
-        private static void AddOrderByAccountManager(BuyingCatalogueDbContext context)
+        private static Order AddOrderByAccountManager(BuyingCatalogueDbContext context)
         {
             const int orderId = 95000;
             var timeNow = DateTime.UtcNow;
+            var organisation = GetOrganisationId(context, "CG-15H");
+            var user = GetAccountManagerUser(context, organisation);
 
             var order = new Order
             {
                 Id = orderId,
                 OrderNumber = orderId,
                 Revision = 1,
-                OrderingPartyId = GetOrganisationId(context, "CG-15H"),
+                OrderingPartyId = organisation,
                 Created = timeNow,
                 IsDeleted = false,
                 Description = "This is an Order Description",
+                LastUpdatedBy = user.Id,
             };
 
-            var user = GetAccountManagerUser(context, order.OrderingPartyId);
-
-            context.Add(order);
-
-            context.SaveChangesAs(user.Id);
+            return order;
         }
 
         private static int GetOrganisationId(BuyingCatalogueDbContext context, string internalOrgId = "CG-03F")
@@ -1794,9 +1777,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             return user;
         }
 
-        private static async Task<EntityFramework.Catalogue.Models.Framework> GetFramework(BuyingCatalogueDbContext context, string frameworkId)
+        private static EntityFramework.Catalogue.Models.Framework GetFramework(BuyingCatalogueDbContext context, string frameworkId)
         {
-            return await context.Frameworks.FirstAsync(f => f.Id == frameworkId);
+            return context.Frameworks.First(f => f.Id == frameworkId);
         }
     }
 }

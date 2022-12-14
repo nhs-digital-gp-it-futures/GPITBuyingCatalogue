@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
@@ -191,8 +192,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.ReviewCont
         public void Dispose()
         {
             var context = GetEndToEndDbContext();
-
-            context.Database.ExecuteSqlRaw("UPDATE Orders SET Completed = NULL WHERE Id = {0}", OrderId);
+            var order = context.Orders.First(x => x.Id == OrderId);
+            order.Completed = null;
 
             var flags = context.GetContractFlags(OrderId);
 

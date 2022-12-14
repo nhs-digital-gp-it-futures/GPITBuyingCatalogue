@@ -13,8 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 
             builder.HasKey(pt => pt.Id);
 
-            builder.Property(pt => pt.Id).UseIdentityColumn();
-
             builder.Property(pt => pt.CataloguePriceId)
                 .IsRequired();
 

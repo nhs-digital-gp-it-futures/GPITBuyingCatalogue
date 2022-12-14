@@ -12,8 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 
             builder.HasKey(c => c.Id);
 
-            builder.Property(c => c.Id).UseIdentityColumn();
-
             builder.Property(c => c.SupplierId).IsRequired();
 
             builder.Property(c => c.FirstName).HasMaxLength(35);
@@ -25,7 +23,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.HasOne<Supplier>()
                 .WithMany(s => s.SupplierContacts)
                 .HasForeignKey(c => c.SupplierId)
-                .HasConstraintName("FK_SupplierContacts_Supplier");
+                .HasConstraintName("FK_SupplierContacts_Supplier")
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(s => s.LastUpdatedByUser)
                 .WithMany()

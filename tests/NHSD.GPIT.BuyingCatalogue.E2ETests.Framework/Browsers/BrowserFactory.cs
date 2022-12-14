@@ -6,7 +6,7 @@ using OpenQA.Selenium.Remote;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Browsers
 {
-    public sealed class BrowserFactory
+    public sealed class BrowserFactory : IDisposable
     {
         private const string DefaultHubUrl = "http://localhost:4444/wd/hub";
 
@@ -94,6 +94,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Browsers
             }
 
             return driver;
+        }
+
+        public void Dispose()
+        {
+            Driver?.Quit();
+            Driver?.Dispose();
         }
     }
 }

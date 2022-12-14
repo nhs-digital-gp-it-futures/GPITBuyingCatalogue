@@ -195,8 +195,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
                  .Should()
                  .BeFalse();
 
-            await using var updatedContext = GetEndToEndDbContext();
-            var updatedCatalogueItem = updatedContext.CatalogueItems.First(c => c.Id == SolutionId);
+            var updatedCatalogueItem = context.CatalogueItems.AsNoTracking().First(c => c.Id == SolutionId);
             updatedCatalogueItem.PublishedStatus.Should().Be(PublicationStatus.Published);
         }
 

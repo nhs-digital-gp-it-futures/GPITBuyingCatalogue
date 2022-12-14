@@ -11,9 +11,15 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
     {
         public void Configure(EntityTypeBuilder<Supplier> builder)
         {
-            builder.ToTable("Suppliers", Schemas.Catalogue);
+            builder.ToTable("Suppliers", Schemas.Catalogue, b => b.IsTemporal(
+                temp =>
+                {
+                    temp.UseHistoryTable("Suppliers_History");
+                    temp.HasPeriodStart("SysStartTime");
+                    temp.HasPeriodEnd("SysEndTime");
+                }));
 
-            builder.Property(s => s.Id).HasMaxLength(6);
+            builder.Property(s => s.Id).HasMaxLength(6).ValueGeneratedNever();
             builder.Property(s => s.Address)
                 .HasMaxLength(500)
                 .HasConversion(

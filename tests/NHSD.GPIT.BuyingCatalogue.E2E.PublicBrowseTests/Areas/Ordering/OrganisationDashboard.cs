@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
@@ -125,24 +127,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 .BeTrue();
         }
 
-        [Theory]
-        [InlineData(OrderStatus.InProgress, "Edit")]
-        [InlineData(OrderStatus.Completed, "View")]
-        public void OrganisationDashboard_OrderStatus_DisplaysCorrectLinkText(
-            OrderStatus status,
-            string expectedLinkText)
-        {
-            using var context = GetEndToEndDbContext();
-            var orders = context.Organisations
-                .Where(o => o.InternalIdentifier == InternalOrgId)
-                .SelectMany(o => o.Orders)
-                .OrderByDescending(o => o.LastUpdated)
-                .ToList();
-            var order = orders.First(o => o.OrderStatus == status);
-
-            CommonActions.ElementTextContains(ByExtensions.DataTestId($"link-{order.CallOffId}"), expectedLinkText).Should().BeTrue();
-        }
-
         [Fact]
         public void OrganisationDashboard_OrderInProgress_ClickEdit_Redirects()
         {
@@ -166,12 +150,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public void OrganisationDashboard_OrderCompleted_ClickView_Redirects()
         {
             using var context = GetEndToEndDbContext();
-            var orders = context.Organisations
-                .Where(o => o.InternalIdentifier == InternalOrgId)
-                .SelectMany(o => o.Orders)
-                .OrderByDescending(o => o.LastUpdated)
-                .ToList();
-            var order = orders.First(o => o.OrderStatus == OrderStatus.Completed);
+            var order = context.Orders.OrderBy(x => x.Revision).First(o => o.OrderingParty.InternalIdentifier == InternalOrgId && o.Completed == null);
+            order.Completed = DateTime.UtcNow;
+            context.SaveChanges();
+
+            Driver.Navigate().Refresh();
 
             CommonActions.ClickLinkElement(ByExtensions.DataTestId($"link-{order.CallOffId}"));
 
@@ -179,6 +162,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 typeof(OrderController),
                 nameof(OrderController.Summary))
                 .Should().BeTrue();
+
+            order.Completed = null;
+            context.SaveChanges();
         }
 
         [Fact]
@@ -276,9 +262,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         {
             using var context = GetEndToEndDbContext();
             var organisation = context.Organisations.AsNoTracking().First(o => o.InternalIdentifier == InternalOrgId);
-            var orders = context.Orders.AsNoTracking().Where(o => o.OrderingPartyId == organisation.Id).ToList();
+            var orders = context.Orders.Where(o => o.OrderingPartyId == organisation.Id && !o.IsDeleted).ToList();
+            orders.ForEach(x => x.IsDeleted = true);
 
-            context.RemoveRange(orders);
             context.SaveChanges();
 
             Driver.Navigate().Refresh();
@@ -292,7 +278,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(By.Id("no-orders")).Should().BeTrue();
 
-            context.Orders.AddRange(orders);
+            orders.ForEach(x => x.IsDeleted = false);
             context.SaveChanges();
         }
 

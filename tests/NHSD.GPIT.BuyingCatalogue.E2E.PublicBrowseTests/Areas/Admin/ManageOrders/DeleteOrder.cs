@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.ManageOrders;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
@@ -238,10 +239,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
         public void Dispose()
         {
             using var context = GetEndToEndDbContext();
+            var order = context.Orders.Where(x => x.OrderNumber == CallOffId.OrderNumber && x.Revision == CallOffId.Revision).ToList();
 
-            var orderId = context.OrderId(CallOffId).Result;
+            order.ForEach(x => x.IsDeleted = false);
 
-            context.Database.ExecuteSqlInterpolated($"UPDATE Orders SET IsDeleted = 0 WHERE Id = {orderId}");
+            context.SaveChanges();
         }
     }
 }
