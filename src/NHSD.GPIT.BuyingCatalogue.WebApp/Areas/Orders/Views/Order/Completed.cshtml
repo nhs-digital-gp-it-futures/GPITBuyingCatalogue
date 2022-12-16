@@ -1,0 +1,124 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders.CompletedModel
+
+@{
+    var returnUrl = Url.Action(
+        nameof(DashboardController.Organisation),
+        typeof(DashboardController).ControllerName(),
+        new { Model.InternalOrgId });
+
+    var procurementSupportUrl = Url.Action(
+        nameof(ProcurementHubController.Index),
+        typeof(ProcurementHubController).ControllerName(),
+        new { returnUrl });
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="Order completed"
+                        caption="Order @Model.CallOffId"
+                        advice="You've successfully completed your order. Make sure you complete the listed tasks where relevant to finalise your procurement." />
+
+        <div class="nhsuk-u-margin-bottom-6">
+            <h3>Next steps</h3>
+            <ul>
+                <li>
+                    download a copy of your order using the button on this page
+                </li>
+                <li>
+                    return a signed copy of your order to gpitf.commercial1@nhs.net, gpitfutures.finance@nhs.net and commercial.procurementhub@nhs.net
+                </li>
+
+                @if (Model.Order.ApproximateFundingType == Order.LocalFunding)
+                {
+                    <li>
+                        as you're paying for your order using local funding, you’ll need to contact the supplier to arrange payment
+                    </li>
+                }
+                else
+                {
+                    <li>
+                        as you're paying for your order using your central allocation, NHS Digital's finance team will process the payments for you
+                    </li>
+                    <li>
+                        once solutions and services are in use, enter the activation dates on the order tracker so we can start paying for centrally funded orders
+                    </li>
+                }
+
+                <li>
+                    if you’ve ordered a migration, you can find more information on
+                    <a href="https://digital.nhs.uk/services/gp-it-futures-systems/clinical-system-migration-guide" target="_blank">preparing and planning (opens in a new tab)</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="nhsuk-inset-text">
+            <span class="nhsuk-u-visually-hidden">Information: </span>
+            <p>A copy of these tasks will be emailed to the address you’ve provided.</p>
+        </div>
+
+        @if (Model.SupportingDocumentsRequired)
+        {
+            <div class="nhsuk-u-margin-bottom-9" id="supporting-documents">
+                <h2>Supporting documents</h2>
+                <p>
+                    You've referenced the following documents in your order.
+                    They must be completed and included when you send your order to the supplier for signature.
+                </p>
+
+                <ul>
+                    @if (Model.HasBespokeImplementationPlan)
+                    {
+                        <li id="has-bespoke-implementation-plan">
+                            <a href="https://gpitbjss.atlassian.net/wiki/spaces/BG/pages/12209553613/Order+form+appendix+1+Implementation+plan+milestones" target="_blank">
+                                Appendix 1: Implementation plan milestones (opens in a new tab)
+                            </a>
+                        </li>
+                    }
+
+                    @if (Model.HasBespokeBilling)
+                    {
+                        <li id="has-bespoke-billing">
+                            <a href="https://gpitbjss.atlassian.net/wiki/spaces/BG/pages/12209684600/Order+form+appendix+2+Associated+Service+billing+and+requirements" target="_blank">
+                                Appendix 2: Associated Services billing and requirements (opens in a new tab)
+                            </a>
+                       </li>
+                    }
+
+                    @if (Model.HasBespokeDataProcessing)
+                    {
+                        <li id="has-bespoke-data-processing">
+                            <a href="https://gpitbjss.atlassian.net/wiki/spaces/BG/pages/12208930955/Order+form+appendix+3+Data+processing+information" target="_blank">
+                                Appendix 3: Data processing information (opens in a new tab)
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+
+        <div class="nhsuk-u-margin-bottom-6">
+            <vc:nhs-secondary-button text="Download order PDF"
+                                     type="Secondary"
+                                     url="@Url.Action(
+                                              nameof(OrderController.Download),
+                                              typeof(OrderController).ControllerName(),
+                                              new { Model!.InternalOrgId, Model.CallOffId })" />
+            <br/>
+            <vc:nhs-secondary-button text="Return to orders dashboard"
+                                     type="Primary"
+                                     url="@Model.BackLink" />
+        </div>
+
+        <h3>Need help?</h3>
+        <p>
+            If you need any help or have any queries, you can contact the National and Commercial Procurement Hub:
+        </p>
+
+        <vc:nhs-action-link text="Get procurement support"
+                            url="@procurementSupportUrl" />
+    </div>
+</div>

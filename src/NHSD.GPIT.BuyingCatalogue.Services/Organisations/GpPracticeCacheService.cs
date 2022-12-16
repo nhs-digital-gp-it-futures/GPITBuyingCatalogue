@@ -1,42 +1,45 @@
 ﻿using System;
-using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Caching;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 {
     public class GpPracticeCacheService : IGpPracticeCacheService
     {
-        public const int EntryNotFound = -1;
-
         private readonly BuyingCatalogueDbContext dbContext;
-        private readonly IGpPracticeCache gpPracticeCache;
+
+        private Dictionary<string, int> practiceSizes;
 
         public GpPracticeCacheService(
-            BuyingCatalogueDbContext dbContext,
-            IGpPracticeCache gpPracticeCache)
+            BuyingCatalogueDbContext dbContext)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            this.gpPracticeCache = gpPracticeCache ?? throw new ArgumentNullException(nameof(gpPracticeCache));
+
+            Initialise();
         }
 
-        public async Task<int?> GetNumberOfPatients(string odsCode)
+        public int? GetNumberOfPatients(string odsCode)
         {
-            var cachedValue = gpPracticeCache.Get(odsCode);
-
-            if (cachedValue.HasValue)
+            if (practiceSizes.TryGetValue(odsCode, out var value))
             {
-                return cachedValue.Value == EntryNotFound
-                    ? null
-                    : cachedValue;
+                return value;
             }
 
-            var dbItem = await dbContext.GpPracticeSizes.FindAsync(odsCode);
+            return null;
+        }
 
-            gpPracticeCache.Set(odsCode, dbItem?.NumberOfPatients ?? EntryNotFound);
+        public void Refresh()
+        {
+            Initialise();
+        }
 
-            return dbItem?.NumberOfPatients;
+        private void Initialise()
+        {
+            practiceSizes = dbContext.GpPracticeSizes.ToDictionary(
+                x => x.OdsCode,
+                x => x.NumberOfPatients);
         }
     }
 }
