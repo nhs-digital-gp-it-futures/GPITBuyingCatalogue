@@ -7,9 +7,15 @@ const gulp = require("gulp"),
     merge = require("merge-stream"),
     del = require("del"),
     sass = require("gulp-sass")(require('sass')),
-    bundleconfig = require("./bundleconfig.json");
+    bundleconfig = require("./bundleconfig.json"),
+    uglify = require('gulp-uglify'),
+    rename = require('gulp-rename');
+
 const paths = {
-    scss: 'wwwroot/scss/'
+    scss: 'wwwroot/scss/',
+    govuk: 'wwwroot/govuk-frontend/',
+    nhsuk: 'wwwroot/nhsuk-frontend/',
+    nodemod: 'node_modules/'
 };
 
 const regex = {
@@ -22,6 +28,18 @@ gulp.task("sass", function () {
     return gulp.src(paths.scss + '**/*.scss', ['!_variables.scss'])
         .pipe(sass())
         .pipe(gulp.dest('wwwroot/css'));
+});
+
+gulp.task('nhsuk', function () {
+    return gulp.src(paths.nodemod + 'nhsuk-frontend/dist/nhsuk.min.js')
+        .pipe(gulp.dest(paths.nhsuk + 'assets/js'));
+});
+
+gulp.task('govuk', function () {
+    return gulp.src(paths.nodemod + 'govuk-frontend/govuk/all.js')
+        .pipe(uglify())
+        .pipe(rename('govuk-frontend.min.js'))
+        .pipe(gulp.dest(paths.govuk + 'assets/js'))
 });
 
 gulp.task("min:js", async function () {
@@ -61,4 +79,4 @@ function getBundles(regexPattern) {
     });
 }
 
-gulp.task("min", gulp.series("clean", "sass", "min:js", "min:css"));
+gulp.task("min", gulp.series("clean", "sass", "min:js", "min:css", "nhsuk", "govuk"));
