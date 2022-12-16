@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Caching;
 using NHSD.GPIT.BuyingCatalogue.Services.Organisations;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Xunit;
@@ -27,69 +24,27 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         };
 
         [Theory]
-        [CommonAutoData]
-        public static async Task GetNumberOfPatients_CacheReturnsValue_ReturnsValue(
-            [Frozen] Mock<IGpPracticeCache> mockCache,
-            GpPracticeCacheService systemUnderTest)
-        {
-            mockCache
-                .Setup(x => x.Get(OdsCode))
-                .Returns(NumberOfPatients);
-
-            var result = await systemUnderTest.GetNumberOfPatients(OdsCode);
-
-            result.Should().Be(NumberOfPatients);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task GetNumberOfPatients_CacheReturnsNotFound_ReturnsNull(
-            [Frozen] Mock<IGpPracticeCache> mockCache,
-            GpPracticeCacheService systemUnderTest)
-        {
-            mockCache
-                .Setup(x => x.Get(OdsCode))
-                .Returns(GpPracticeCacheService.EntryNotFound);
-
-            var result = await systemUnderTest.GetNumberOfPatients(OdsCode);
-
-            result.Should().BeNull();
-        }
-
-        [Theory]
         [InMemoryDbAutoData]
-        public static async Task GetNumberOfPatients_NotInCache_FoundInDb_ReturnsValue(
+        public static void GetNumberOfPatients_ValueExists_ReturnsValue(
             [Frozen] BuyingCatalogueDbContext dbContext,
-            [Frozen] Mock<IGpPracticeCache> mockCache,
             GpPracticeCacheService systemUnderTest)
         {
-            mockCache
-                .Setup(x => x.Get(OdsCode))
-                .Returns((int?)null);
-
             dbContext.GpPracticeSizes.Add(GpPracticeSize);
-            await dbContext.SaveChangesAsync();
+            dbContext.SaveChanges();
 
-            var result = await systemUnderTest.GetNumberOfPatients(OdsCode);
+            systemUnderTest.Refresh();
 
-            mockCache.Verify(x => x.Set(OdsCode, NumberOfPatients));
+            var result = systemUnderTest.GetNumberOfPatients(OdsCode);
 
             result.Should().Be(NumberOfPatients);
         }
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task GetNumberOfPatients_NotInCache_NotInDb_ReturnsNull(
-            [Frozen] Mock<IGpPracticeCache> mockCache,
+        public static void GetNumberOfPatients_ValueDoesNotExist_ReturnsNull(
             GpPracticeCacheService systemUnderTest)
         {
-            mockCache
-                .Setup(x => x.Get(OdsCode))
-                .Returns((int?)null);
-
-            var result = await systemUnderTest.GetNumberOfPatients(OdsCode);
-
-            mockCache.Verify(x => x.Set(OdsCode, -1));
+            var result = systemUnderTest.GetNumberOfPatients(OdsCode);
 
             result.Should().BeNull();
         }
