@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders
         {
         }
 
-        public DeleteOrderModel(EntityFramework.Ordering.Models.Order order)
+        public DeleteOrderModel(Order order)
         {
             CallOffId = order.CallOffId;
 

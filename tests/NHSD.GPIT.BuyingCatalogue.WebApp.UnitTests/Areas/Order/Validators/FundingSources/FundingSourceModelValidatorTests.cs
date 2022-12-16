@@ -1,7 +1,7 @@
 ﻿using FluentValidation.TestHelper;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSources;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Validators.FundingSources;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.FundingSources;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.FundingSources

@@ -18,9 +18,9 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderTriage;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.Shared;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.OrderTriage;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Shared;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
