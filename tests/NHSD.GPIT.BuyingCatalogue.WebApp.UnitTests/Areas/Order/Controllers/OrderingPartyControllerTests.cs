@@ -9,8 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.OrderingParty;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.OrderingParty;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         public static void ClassIsCorrectlyDecorated()
         {
             typeof(OrderingPartyController).Should().BeDecoratedWith<AuthorizeAttribute>();
-            typeof(OrderingPartyController).Should().BeDecoratedWith<AreaAttribute>(a => a.RouteValue == "Order");
+            typeof(OrderingPartyController).Should().BeDecoratedWith<AreaAttribute>(a => a.RouteValue == "Orders");
         }
 
         [Fact]
