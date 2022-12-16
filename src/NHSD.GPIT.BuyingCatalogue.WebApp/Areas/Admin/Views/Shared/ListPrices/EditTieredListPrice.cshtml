@@ -40,18 +40,6 @@
                                       value-name="Value"
                                       display-name="Text"
                                       index="1">
-                        <nhs-select asp-for="PerServiceRecipientBillingPeriod"
-                                    asp-items="Model.AvailableBillingPeriods"
-                                    label-text="Billing period (optional)"
-                                    label-hint="Select if it’s a recurring payment either per month or per year."
-                                    use-default-value="false" />
-                    </nhs-radio-button>
-
-                    <nhs-radio-button asp-for="SelectedProvisioningType"
-                                      value="Model.AvailableProvisioningTypes.ElementAt(2)"
-                                      value-name="Value"
-                                      display-name="Text"
-                                      index="2">
 
                         <nhs-fieldset-form-label asp-for="DeclarativeQuantityCalculationType" label-text="How are quantities for this price calculated?" size="Small">
                             <nhs-radio-buttons asp-for="DeclarativeQuantityCalculationType"
@@ -68,10 +56,10 @@
                     </nhs-radio-button>
 
                     <nhs-radio-button asp-for="SelectedProvisioningType"
-                                      value="Model.AvailableProvisioningTypes.ElementAt(3)"
+                                      value="Model.AvailableProvisioningTypes.ElementAt(2)"
                                       value-name="Value"
                                       display-name="Text"
-                                      index="3">
+                                      index="2">
 
                         <nhs-fieldset-form-label asp-for="OnDemandQuantityCalculationType"  label-text="How are quantities for this price calculated?" size="Small">
                             <nhs-radio-buttons asp-for="OnDemandQuantityCalculationType"
