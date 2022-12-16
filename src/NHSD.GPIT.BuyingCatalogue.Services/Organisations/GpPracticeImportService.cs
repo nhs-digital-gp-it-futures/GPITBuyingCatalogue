@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Caching;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
@@ -15,16 +14,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
         private const string TruncateStatement = "TRUNCATE TABLE [organisations].[GpPracticeSize]";
 
         private readonly BuyingCatalogueDbContext dbContext;
-        private readonly IGpPracticeCache gpPracticeCache;
+        private readonly IGpPracticeCacheService gpPracticeCacheService;
         private readonly IGpPracticeProvider gpPracticeProvider;
 
         public GpPracticeImportService(
             BuyingCatalogueDbContext dbContext,
-            IGpPracticeCache gpPracticeCache,
+            IGpPracticeCacheService gpPracticeCacheService,
             IGpPracticeProvider gpPracticeProvider)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            this.gpPracticeCache = gpPracticeCache ?? throw new ArgumentNullException(nameof(gpPracticeCache));
+            this.gpPracticeCacheService = gpPracticeCacheService ?? throw new ArgumentNullException(nameof(gpPracticeCacheService));
             this.gpPracticeProvider = gpPracticeProvider ?? throw new ArgumentNullException(nameof(gpPracticeProvider));
         }
 
@@ -75,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
             await dbContext.SaveChangesAsync();
 
-            gpPracticeCache.RemoveAll();
+            gpPracticeCacheService.Refresh();
 
             return new ImportGpPracticeListResult
             {

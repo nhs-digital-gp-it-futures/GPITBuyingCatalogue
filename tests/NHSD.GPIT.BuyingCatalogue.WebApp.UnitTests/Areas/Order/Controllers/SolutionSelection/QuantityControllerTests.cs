@@ -237,7 +237,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockCacheService
                 .Setup(x => x.GetNumberOfPatients(It.IsAny<string>()))
-                .ReturnsAsync(NumberOfPatients);
+                .Returns(NumberOfPatients);
 
             var result = await controller.SelectServiceRecipientQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId);
 
