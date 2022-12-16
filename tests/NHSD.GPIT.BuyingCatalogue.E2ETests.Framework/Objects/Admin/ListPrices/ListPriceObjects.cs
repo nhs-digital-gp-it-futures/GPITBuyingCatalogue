@@ -15,11 +15,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.ListPrices
 
         public static By PublicationStatusInput => By.Id("selected-publication-status");
 
-        public static By PerServiceRecipientBillingPeriodInput => By.Id("conditional-SelectedProvisioningType_1");
+        public static By DeclarativeBillingPeriodInput => By.Id("conditional-SelectedProvisioningType_1");
 
-        public static By DeclarativeBillingPeriodInput => By.Id("conditional-SelectedProvisioningType_2");
-
-        public static By OnDemandBillingPeriodInput => By.Id("conditional-SelectedProvisioningType_3");
+        public static By OnDemandBillingPeriodInput => By.Id("conditional-SelectedProvisioningType_2");
 
         public static By ProvisioningTypeInputError => By.Id("selected-provisioning-type-error");
 
