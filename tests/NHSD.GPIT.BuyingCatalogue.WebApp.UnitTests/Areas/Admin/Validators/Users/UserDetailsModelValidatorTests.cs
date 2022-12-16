@@ -19,16 +19,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         private const string EmailAddress = "a@nhs.net";
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [CommonAutoData]
         public static void Validate_SelectedOrganisationIdNullOrEmpty_SetsModelError(
-            string organisationId,
             UserDetailsModelValidator validator)
         {
             var model = new UserDetailsModel
             {
-                SelectedOrganisationId = organisationId,
+                SelectedOrganisationId = null,
             };
 
             var result = validator.TestValidate(model);
@@ -169,7 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         {
             var model = new UserDetailsModel
             {
-                SelectedOrganisationId = $"{OrganisationConstants.NhsDigitalOrganisationId + 1}",
+                SelectedOrganisationId = OrganisationConstants.NhsDigitalOrganisationId + 1,
                 SelectedAccountType = OrganisationFunction.Authority.Name,
             };
 
@@ -186,7 +183,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         {
             var model = new UserDetailsModel
             {
-                SelectedOrganisationId = $"{OrganisationConstants.NhsDigitalOrganisationId}",
+                SelectedOrganisationId = OrganisationConstants.NhsDigitalOrganisationId,
                 SelectedAccountType = OrganisationFunction.Authority.Name,
             };
 
@@ -196,21 +193,42 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         }
 
         [Theory]
-        [CommonAutoData]
-        public static void Validate_AccountTypeIsAccountManager_NoModelError(
-            int organisationId,
+        [CommonInlineAutoData(false, "AccountManager", null)]
+        [CommonInlineAutoData(false, "AccountManager", true)]
+        [CommonInlineAutoData(false, "AccountManager", false)]
+        [CommonInlineAutoData(false, "Buyer", null)]
+        [CommonInlineAutoData(false, "Buyer", true)]
+        [CommonInlineAutoData(false, "Buyer", false)]
+        [CommonInlineAutoData(false, "Authority", null)]
+        [CommonInlineAutoData(false, "Authority", true)]
+        [CommonInlineAutoData(false, "Authority", false)]
+        [CommonInlineAutoData(true, "AccountManager", null)]
+        [CommonInlineAutoData(true, "AccountManager", false)]
+        [CommonInlineAutoData(true, "Buyer", null)]
+        [CommonInlineAutoData(true, "Buyer", true)]
+        [CommonInlineAutoData(true, "Buyer", false)]
+        [CommonInlineAutoData(true, "Authority", null)]
+        [CommonInlineAutoData(true, "Authority", true)]
+        [CommonInlineAutoData(true, "Authority", false)]
+        public static void Validate_AccountType_MaxLimit_NoModelError(
+            bool isAccountManagerLimit,
+            string accountType,
+            bool? isActive,
+            int userId,
             [Frozen] Mock<IUsersService> mockUsersService,
             UserDetailsModelValidator validator)
         {
             var model = new UserDetailsModel
             {
-                SelectedOrganisationId = $"{organisationId}",
-                SelectedAccountType = OrganisationFunction.AccountManager.Name,
+                SelectedOrganisationId = OrganisationConstants.NhsDigitalOrganisationId,
+                UserId = userId,
+                SelectedAccountType = accountType,
+                IsActive = isActive,
             };
 
             mockUsersService
-                .Setup(x => x.IsAccountManagerLimit(organisationId, 0))
-                .ReturnsAsync(false);
+                .Setup(x => x.IsAccountManagerLimit(OrganisationConstants.NhsDigitalOrganisationId, userId))
+                .ReturnsAsync(isAccountManagerLimit);
 
             var result = validator.TestValidate(model);
 
@@ -219,26 +237,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_AccountTypeIsAccountManager_ModelError(
+        public static void Validate_ActiveAccountManager_MaxLimitTrue_ModelError(
             int organisationId,
+            int userId,
             [Frozen] Mock<IUsersService> mockUsersService,
             [Frozen] AccountManagementSettings accountManagementSettings,
             UserDetailsModelValidator validator)
         {
             var model = new UserDetailsModel
             {
-                SelectedOrganisationId = $"{organisationId}",
+                SelectedOrganisationId = organisationId,
+                UserId = userId,
                 SelectedAccountType = OrganisationFunction.AccountManager.Name,
+                IsActive = true,
             };
 
             mockUsersService
-                .Setup(x => x.IsAccountManagerLimit(organisationId, 0))
+                .Setup(x => x.IsAccountManagerLimit(organisationId, userId))
                 .ReturnsAsync(true);
 
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedAccountType)
-                .WithErrorMessage(string.Format(UserDetailsModelValidator.MustNotExceedAccountManagerLimit, accountManagementSettings.MaximumNumberOfAccountManagers));
+                .WithErrorMessage($"There are already {accountManagementSettings.MaximumNumberOfAccountManagers} active account managers for this organisation which is the maximum allowed.");
         }
 
         [Theory]

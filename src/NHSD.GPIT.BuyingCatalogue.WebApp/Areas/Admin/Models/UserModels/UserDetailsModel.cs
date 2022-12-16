@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.UserModels
 
         public UserDetailsModel(AspNetUser user)
         {
-            SelectedOrganisationId = $"{user.PrimaryOrganisationId}";
+            SelectedOrganisationId = user.PrimaryOrganisationId;
             UserId = user.Id;
             FirstName = user.FirstName;
             LastName = user.LastName;
@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.UserModels
 
         public string SelectedAccountType { get; set; }
 
-        public string SelectedOrganisationId { get; set; }
+        public int? SelectedOrganisationId { get; set; }
 
         public IEnumerable<SelectOption<string>> AccountTypeOptions => new List<SelectOption<string>>
         {
