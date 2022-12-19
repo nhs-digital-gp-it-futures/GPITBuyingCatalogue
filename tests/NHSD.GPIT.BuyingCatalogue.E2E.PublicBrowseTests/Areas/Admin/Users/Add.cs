@@ -10,6 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users;
 using Xunit;
@@ -160,6 +161,30 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             CommonActions.ElementAddValue(UserObjects.FirstNameInput, Strings.RandomString(10));
             CommonActions.ElementAddValue(UserObjects.LastNameInput, Strings.RandomString(10));
             CommonActions.ElementAddValue(UserObjects.EmailInput, ValidEmailAddress);
+            CommonActions.ClickRadioButtonWithText("Buyer");
+            CommonActions.ClickRadioButtonWithText("Active");
+
+            CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(UsersController),
+                nameof(UsersController.Index)).Should().BeTrue();
+        }
+
+        [Fact]
+        public void AddUser_IncludesWhitespace_WhitespaceRemoved()
+        {
+            var context = GetEndToEndDbContext();
+
+            var organisationName = context.Organisations
+                .First(x => x.Name != NhsDigitalOrganisationName)
+                .Name;
+
+            CommonActions.AutoCompleteAddValue(UserObjects.SelectedOrganisation, organisationName);
+            CommonActions.ClickLinkElement(UserObjects.AutoCompleteResult(0));
+            CommonActions.ElementAddValue(UserObjects.FirstNameInput, "    " + Strings.RandomString(10) + "    ");
+            CommonActions.ElementAddValue(UserObjects.LastNameInput, "    " + Strings.RandomString(10) + "    ");
+            CommonActions.ElementAddValue(UserObjects.EmailInput, "    " + ValidEmailAddress + "    ");
             CommonActions.ClickRadioButtonWithText("Buyer");
             CommonActions.ClickRadioButtonWithText("Active");
 

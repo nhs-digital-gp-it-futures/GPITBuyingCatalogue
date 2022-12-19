@@ -96,6 +96,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
         }
 
         [Fact]
+        public void AddUser_IncludesWhitespace_WhitespaceRemoved()
+        {
+            var user = GenerateUser.Generate();
+            user.EmailAddress = ValidEmail;
+            AccountManagementPages.AddUser.EnterFirstName("     " + user.FirstName + "     ");
+            AccountManagementPages.AddUser.EnterLastName("     " + user.LastName + "     ");
+            AccountManagementPages.AddUser.EnterEmailAddress("     " + user.EmailAddress + "     ");
+            CommonActions.ClickRadioButtonWithText(OrganisationFunction.Buyer.Name);
+            CommonActions.ClickRadioButtonWithText("Active");
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(ManageAccountController),
+                nameof(ManageAccountController.Users)).Should().BeTrue();
+        }
+
+        [Fact]
         public void AddUser_EmptyInput_ThrowsErrors()
         {
             CommonActions.ClickSave();

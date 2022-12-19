@@ -13,6 +13,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
@@ -92,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
                 new Dictionary<string, string>
                 {
                     { nameof(OrganisationId), NhsDigitalOrganisationId.ToString() },
-                    { nameof(UserId), user.Id.ToString() }
+                    { nameof(UserId), user.Id.ToString() },
                 });
 
             await using var context = GetEndToEndDbContext();
@@ -137,7 +138,23 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             CommonActions.ClickRadioButtonWithText(OrganisationFunction.AccountManager.DisplayName);
             CommonActions.ClickRadioButtonWithText("Inactive");
             CommonActions.ClearInputElement(AddUserObjects.Email);
-            AccountManagementPages.AddUser.EnterEmailAddress(ValidEmail);
+            AdminPages.AddUser.EnterEmailAddress(ValidEmail);
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrganisationsController),
+                nameof(OrganisationsController.Users)).Should().BeTrue();
+        }
+
+        [Fact]
+        public void EditUser_IncludesWhitespace_RemovesWhitespace()
+        {
+            CommonActions.ClearInputElement(AddUserObjects.FirstName);
+            AdminPages.AddUser.EnterFirstName("    Alice    ");
+            CommonActions.ClearInputElement(AddUserObjects.LastName);
+            AdminPages.AddUser.EnterLastName("    Smith    ");
+            CommonActions.ClearInputElement(AddUserObjects.Email);
+            AdminPages.AddUser.EnterEmailAddress("    " + ValidEmail + "    ");
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -172,7 +189,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         public void EditUser_EmailIncorrectFormat_ThrowsError()
         {
             CommonActions.ClearInputElement(AddUserObjects.Email);
-            AccountManagementPages.AddUser.EnterEmailAddress("test");
+            AdminPages.AddUser.EnterEmailAddress("test");
 
             CommonActions.ClickSave();
 
@@ -194,7 +211,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             var user = await CreateUser();
 
             CommonActions.ClearInputElement(AddUserObjects.Email);
-            AccountManagementPages.AddUser.EnterEmailAddress(user.Email);
+            AdminPages.AddUser.EnterEmailAddress(user.Email);
 
             CommonActions.ClickSave();
 
@@ -216,7 +233,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         public void EditUser_EmailInvalidDomain_ThrowsError()
         {
             CommonActions.ClearInputElement(AddUserObjects.Email);
-            AccountManagementPages.AddUser.EnterEmailAddress("test@test.com");
+            AdminPages.AddUser.EnterEmailAddress("test@test.com");
 
             CommonActions.ClickSave();
 
