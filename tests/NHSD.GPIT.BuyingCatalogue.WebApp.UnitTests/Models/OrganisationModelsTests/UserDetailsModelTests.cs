@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.OrganisationModelsTe
             actual.UserId.Should().Be(0);
             actual.Title.Should().Be("Add user");
             actual.MaximumAccountManagerMessage.Should().Be(
-                $"You can only add buyers for this organisation.This is because there are already {maxNumberAccountManagers} active account managers which is the maximum allowed.");
+                $"You can only add buyers for this organisation. This is because there are already {maxNumberAccountManagers} active account managers which is the maximum allowed.");
         }
 
         [Theory]
