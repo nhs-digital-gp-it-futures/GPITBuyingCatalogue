@@ -23,7 +23,7 @@
                 <input type="hidden" asp-for="UserId" />
                 <input type="hidden" asp-for="BackLink" />
                 <input type="hidden" asp-for="IsDefaultAccountType" />
-                <input type="hidden" asp-for="MaxNumberOfAccountManagers" />
+                <input type="hidden" asp-for="MaximumAccountManagerMessage" />
 
                 <nhs-input
                     asp-for="@Model.FirstName"
@@ -44,8 +44,7 @@
                         <p>Buyer</p>
                         <nhs-inset-text>
                             <p>
-                                You can only add buyers for this organisation.
-                                This is because there are already @Model.MaxNumberOfAccountManagers active account managers which is the maximum allowed.
+                                @Model.MaximumAccountManagerMessage
                             </p>
                         </nhs-inset-text>
                         <input type="hidden" asp-for="SelectedAccountType"/>

@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
             "This email domain cannot be used to register a new user account as it is not on the allow list";
 
         private const string RoleMustBeBuyer =
-            "You can only add buyers for this organisation. This is because there are already 2 active account managers which is the maximum allowed.";
+            "You cannot make this user an account manager. This is because there are already 2 active account managers for this organisation, which is the maximum allowed.";
 
         private const string RoleError =
             "There are already 2 active account managers for this organisation which is the maximum allowed.";
