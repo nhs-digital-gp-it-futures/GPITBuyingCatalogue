@@ -52,7 +52,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         public IEnumerable<SelectOption<string>> AvailableProvisioningTypes => new SelectOption<string>[]
         {
             new(ProvisioningType.Patient.Name(), ProvisioningType.Patient.ToString()),
-            new(ProvisioningType.PerServiceRecipient.Name(), ProvisioningType.PerServiceRecipient.ToString()),
             new(ProvisioningType.Declarative.Name(), ProvisioningType.Declarative.ToString()),
             new(ProvisioningType.OnDemand.Name(), ProvisioningType.OnDemand.ToString()),
         };

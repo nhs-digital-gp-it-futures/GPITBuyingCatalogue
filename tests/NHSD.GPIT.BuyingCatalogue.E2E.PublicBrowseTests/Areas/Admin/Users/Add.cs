@@ -250,6 +250,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             CommonActions.AutoCompleteAddValue(UserObjects.SelectedOrganisation, organisation.Name);
             CommonActions.ClickLinkElement(UserObjects.AutoCompleteResult(0));
             CommonActions.ClickRadioButtonWithText("Account manager");
+            CommonActions.ClickRadioButtonWithText("Active");
             CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -262,6 +263,28 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             CommonActions.ElementShowingCorrectErrorMessage(
                 UserObjects.AccountTypeRadioButtonsError,
                 $"Error: {UserDetailsModelValidator.MustNotExceedAccountManagerLimit}");
+
+            await RemoveUser(user1);
+            await RemoveUser(user2);
+        }
+
+        [Fact]
+        public async Task AddUser_AccountManagerLimit_Inactive_ClickSave_DisplaysErrorMessage()
+        {
+            await using var context = GetEndToEndDbContext();
+
+            var organisation = context.Organisations
+                .First(x => x.Name != NhsDigitalOrganisationName);
+            var user1 = await CreateUser(organisation.Id, accountType: OrganisationFunction.AccountManager.Name);
+            var user2 = await CreateUser(organisation.Id, accountType: OrganisationFunction.AccountManager.Name);
+
+            CommonActions.AutoCompleteAddValue(UserObjects.SelectedOrganisation, organisation.Name);
+            CommonActions.ClickLinkElement(UserObjects.AutoCompleteResult(0));
+            CommonActions.ClickRadioButtonWithText("Account manager");
+            CommonActions.ClickRadioButtonWithText("Inactive");
+            CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
+
+            CommonActions.ElementIsDisplayed(UserObjects.AccountTypeRadioButtonsError).Should().BeFalse();
 
             await RemoveUser(user1);
             await RemoveUser(user2);
