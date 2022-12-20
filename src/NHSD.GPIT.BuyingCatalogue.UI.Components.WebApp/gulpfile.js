@@ -8,7 +8,6 @@ const gulp = require("gulp"),
     del = require("del"),
     sass = require("gulp-sass")(require('sass')),
     bundleconfig = require("./bundleconfig.json"),
-    uglify = require('gulp-uglify'),
     rename = require('gulp-rename');
 
 const paths = {
@@ -37,7 +36,6 @@ gulp.task('nhsuk', function () {
 
 gulp.task('govuk', function () {
     return gulp.src(paths.nodemod + 'govuk-frontend/govuk/all.js')
-        .pipe(uglify())
         .pipe(rename('govuk-frontend.min.js'))
         .pipe(gulp.dest(paths.govuk + 'assets/js'))
 });
@@ -79,4 +77,4 @@ function getBundles(regexPattern) {
     });
 }
 
-gulp.task("min", gulp.series("clean", "sass", "min:js", "min:css", "nhsuk", "govuk"));
+gulp.task("min", gulp.series("clean", "sass", "nhsuk", "govuk", "min:js", "min:css"));
