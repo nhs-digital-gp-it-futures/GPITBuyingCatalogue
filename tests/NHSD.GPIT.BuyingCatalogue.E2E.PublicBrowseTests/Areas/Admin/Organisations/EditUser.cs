@@ -249,6 +249,25 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         }
 
         [Fact]
+        public async Task EditUser_AccountManagerLimit_ValidationError_InsetTextDisplayed()
+        {
+            SetupUser(UserId, false, OrganisationFunction.Buyer.Name);
+
+            var amUser1 = await CreateUser(accountType: OrganisationFunction.AccountManager.Name);
+            var amUser2 = await CreateUser(accountType: OrganisationFunction.AccountManager.Name);
+
+            CommonActions.ClearInputElement(AddUserObjects.Email);
+            CommonActions.ClickSave();
+
+            CommonActions.ElementIsDisplayed(AddUserObjects.Role).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(CommonSelectors.NhsInsetText).Should().BeTrue();
+            CommonActions.ElementTextContains(CommonSelectors.NhsInsetText, RoleMustBeBuyer).Should().BeTrue();
+
+            await RemoveUser(amUser1);
+            await RemoveUser(amUser2);
+        }
+
+        [Fact]
         public async Task EditUser_EditInactiveBuyer_AccountManagerLimit_InsetTextNotDisplayed()
         {
             SetupUser(UserId, true, OrganisationFunction.Buyer.Name);
