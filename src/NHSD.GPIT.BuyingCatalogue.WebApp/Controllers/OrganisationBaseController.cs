@@ -83,11 +83,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             var organisation = await OrganisationsService.GetOrganisation(organisationId);
             var isLimit = await UserService.IsAccountManagerLimit(organisationId);
 
-            var model = new UserDetailsModel(organisation, accountManagementSettings.MaximumNumberOfAccountManagers)
+            var model = new UserDetailsModel(organisation)
             {
                 BackLink = Url.Action(nameof(Users), new { organisationId }),
                 ControllerName = ControllerName,
                 IsDefaultAccountType = isLimit,
+                MaxNumberOfAccountManagers = accountManagementSettings.MaximumNumberOfAccountManagers,
             };
 
             return View("OrganisationBase/UserDetails", model);
@@ -123,11 +124,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 
             var isLimit = await UserService.IsAccountManagerLimit(organisationId, userId);
 
-            var model = new UserDetailsModel(organisation, user, accountManagementSettings.MaximumNumberOfAccountManagers)
+            var model = new UserDetailsModel(organisation, user)
             {
                 BackLink = Url.Action(nameof(Users), new { organisationId }),
                 ControllerName = ControllerName,
                 IsDefaultAccountType = isLimit && !user.Disabled,
+                MaxNumberOfAccountManagers = accountManagementSettings.MaximumNumberOfAccountManagers,
             };
 
             return View("OrganisationBase/UserDetails", model);

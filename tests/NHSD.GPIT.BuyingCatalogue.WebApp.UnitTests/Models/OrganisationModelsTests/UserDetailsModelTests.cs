@@ -16,7 +16,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.OrganisationModelsTe
         public static void WithOrganisationConstruction_PropertiesSetAsExpected(
             Organisation organisation, int maxNumberAccountManagers)
         {
-            var actual = new UserDetailsModel(organisation, maxNumberAccountManagers);
+            var actual = new UserDetailsModel(organisation)
+            {
+                MaxNumberOfAccountManagers = maxNumberAccountManagers,
+            };
 
             actual.OrganisationName.Should().Be(organisation.Name);
             actual.UserId.Should().Be(0);
@@ -32,7 +35,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.OrganisationModelsTe
             AspNetUser user,
             int maxNumberAccountManagers)
         {
-            var actual = new UserDetailsModel(organisation, user, maxNumberAccountManagers);
+            var actual = new UserDetailsModel(organisation, user)
+            {
+                MaxNumberOfAccountManagers = maxNumberAccountManagers,
+            };
 
             actual.OrganisationName.Should().Be(organisation.Name);
             actual.UserId.Should().Be(user.Id);
@@ -45,27 +51,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.OrganisationModelsTe
         [Theory]
         [CommonAutoData]
         public static void IsDefaultAccountType_True_PropertiesSetAsExpected(
-            Organisation organisation, int maxNumberAccountManagers)
+            Organisation organisation)
         {
-            var actual = new UserDetailsModel(organisation, maxNumberAccountManagers) { OrganisationId = 100, IsDefaultAccountType = true };
+            var actual = new UserDetailsModel(organisation) { OrganisationId = 100, IsDefaultAccountType = true };
             actual.SelectedAccountType.Should().Be(OrganisationFunction.Buyer.Name);
         }
 
         [Theory]
         [CommonAutoData]
         public static void IsDefaultAccountType_False_PropertiesSetAsExpected(
-            Organisation organisation, int maxNumberAccountManagers)
+            Organisation organisation)
         {
-            var actual = new UserDetailsModel(organisation, maxNumberAccountManagers) { OrganisationId = 100, IsDefaultAccountType = false };
+            var actual = new UserDetailsModel(organisation) { OrganisationId = 100, IsDefaultAccountType = false };
             actual.SelectedAccountType.Should().BeNull();
         }
 
         [Theory]
         [CommonAutoData]
         public static void IsNhsDigitalOrganisation_True_PropertiesSetAsExpected(
-            Organisation organisation, int maxNumberAccountManagers)
+            Organisation organisation)
         {
-            var actual = new UserDetailsModel(organisation, maxNumberAccountManagers)
+            var actual = new UserDetailsModel(organisation)
             {
                 IsDefaultAccountType = false, OrganisationId = OrganisationConstants.NhsDigitalOrganisationId,
             };

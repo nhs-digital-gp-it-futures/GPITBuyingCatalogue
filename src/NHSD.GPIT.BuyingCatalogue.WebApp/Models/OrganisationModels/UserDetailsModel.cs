@@ -14,15 +14,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
         public const string AddMaximumAccountManagerMessage = "You can only add buyers for this organisation. This is because there are already {0} active account managers which is the maximum allowed.";
         public const string EditMaximumAccountManagerMessage = "You cannot make this user an account manager. This is because there are already {0} active account managers for this organisation, which is the maximum allowed.";
 
-        private readonly int maxAccountManagers;
         private string selectedAccountType;
 
         public UserDetailsModel()
         {
         }
 
-        public UserDetailsModel(Organisation organisation, AspNetUser user, int maxAccountManagers)
-            : this(organisation, maxAccountManagers)
+        public UserDetailsModel(Organisation organisation, AspNetUser user)
+            : this(organisation)
         {
             UserId = user.Id;
             FirstName = user.FirstName;
@@ -32,11 +31,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
             IsActive = !user.Disabled;
         }
 
-        public UserDetailsModel(Organisation organisation, int maxAccountManagers)
+        public UserDetailsModel(Organisation organisation)
         {
             OrganisationId = organisation.Id;
             OrganisationName = organisation.Name;
-            this.maxAccountManagers = maxAccountManagers;
         }
 
         public string Title
@@ -51,11 +49,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
 
         public int UserId { get; set; }
 
+        public int MaxNumberOfAccountManagers { get; set; }
+
         public string MaximumAccountManagerMessage
         {
             get
             {
-                return UserId == 0 ? string.Format(AddMaximumAccountManagerMessage, maxAccountManagers) : string.Format(EditMaximumAccountManagerMessage, maxAccountManagers);
+                var message = UserId == 0 ? AddMaximumAccountManagerMessage : EditMaximumAccountManagerMessage;
+                return string.Format(message, MaxNumberOfAccountManagers);
             }
         }
 
