@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
         public const string FirstNameMissingErrorMessage = "Enter a first name";
         public const string LastNameMissingErrorMessage = "Enter a last name";
         public const string MustBelongToNhsDigitalErrorMessage = "Admins must be a member of NHS Digital";
-        public const string MustNotExceedAccountManagerLimit = "There are already {0} active account managers for this organisation which is the maximum allowed.";
+        public const string MustNotExceedAccountManagerLimit = "There are already {0} active account managers for this organisation which is the maximum allowed";
         public const string OrganisationMissingErrorMessage = "Select an organisation";
 
         private readonly IUsersService usersService;
