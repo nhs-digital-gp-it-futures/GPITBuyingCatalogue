@@ -67,5 +67,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.OrganisationModelsTe
 
             actual.SelectedAccountType.Should().Be(OrganisationFunction.Authority.Name);
         }
+
+        [Theory]
+        [CommonAutoData]
+        public static void InputFields_IncludesWhitespace_WhitespaceRemoved(
+            string firstName,
+            string lastName,
+            string email,
+            Organisation organisation)
+        {
+            var actual = new UserDetailsModel(organisation)
+            {
+                FirstName = " " + firstName + " ",
+                LastName = " " + lastName + "  ",
+                EmailAddress = " " + email + "  ",
+            };
+
+            actual.FirstName.Should().Be(firstName.Trim());
+            actual.LastName.Should().Be(lastName.Trim());
+            actual.EmailAddress.Should().Be(email.Trim());
+        }
     }
 }

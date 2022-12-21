@@ -8,6 +8,7 @@ using MoreLinq.Extensions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common.Organisation;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.RandomData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Utils.RandomData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
@@ -174,8 +175,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             CommonActions.ClickRadioButtonWithText(OrganisationFunction.AccountManager.DisplayName);
             CommonActions.ClickRadioButtonWithText("Inactive");
             CommonActions.ClearInputElement(UserObjects.EmailInput);
-            CommonActions.ClearInputElement(UserObjects.EmailInput);
             CommonActions.ElementAddValue(UserObjects.EmailInput, ValidEmailAddress);
+
+            CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(UsersController),
+                nameof(UsersController.Index)).Should().BeTrue();
+        }
+
+        [Fact]
+        public void Edit_IncludesWhitespace_WhitespaceRemoved()
+        {
+            CommonActions.ClearInputElement(UserObjects.FirstNameInput);
+            CommonActions.ElementAddValue(UserObjects.FirstNameInput, "    " + Strings.RandomString(10) + "    ");
+            CommonActions.ClearInputElement(UserObjects.LastNameInput);
+            CommonActions.ElementAddValue(UserObjects.LastNameInput, "    " + Strings.RandomString(10) + "    ");
+            CommonActions.ClearInputElement(UserObjects.EmailInput);
+            CommonActions.ElementAddValue(UserObjects.EmailInput, "    " + ValidEmailAddress + "    ");
 
             CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
 

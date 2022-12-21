@@ -78,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
         }
 
         [Fact]
-        public void AddUser_AddUser_ExpectedResult()
+        public async Task AddUser_AddUser_ExpectedResult()
         {
             var user = GenerateUser.Generate();
             user.EmailAddress = ValidEmail;
@@ -93,6 +93,28 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(ManageAccountController),
                 nameof(ManageAccountController.Users)).Should().BeTrue();
+
+            await RemoveUserByEmail(ValidEmail);
+        }
+
+        [Fact]
+        public async Task AddUser_IncludesWhitespace_WhitespaceRemoved()
+        {
+            var user = GenerateUser.Generate();
+            user.EmailAddress = ValidEmail;
+            AccountManagementPages.AddUser.EnterFirstName("     " + user.FirstName + "     ");
+            AccountManagementPages.AddUser.EnterLastName("     " + user.LastName + "     ");
+            AccountManagementPages.AddUser.EnterEmailAddress("     " + user.EmailAddress + "     ");
+            CommonActions.ClickRadioButtonWithText(OrganisationFunction.Buyer.Name);
+            CommonActions.ClickRadioButtonWithText("Active");
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(ManageAccountController),
+                nameof(ManageAccountController.Users)).Should().BeTrue();
+
+            await RemoveUserByEmail(ValidEmail);
         }
 
         [Fact]
@@ -239,6 +261,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
         {
             await using var context = GetEndToEndDbContext();
             var dbUser = context.AspNetUsers.First(x => x.Id == user.Id);
+
+            context.Remove(dbUser);
+
+            await context.SaveChangesAsync();
+        }
+
+        private async Task RemoveUserByEmail(string email)
+        {
+            await using var context = GetEndToEndDbContext();
+            var dbUser = context.AspNetUsers.First(x => x.Email == email);
 
             context.Remove(dbUser);
 
