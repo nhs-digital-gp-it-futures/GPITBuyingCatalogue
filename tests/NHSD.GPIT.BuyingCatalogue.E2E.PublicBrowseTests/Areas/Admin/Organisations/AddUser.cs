@@ -255,6 +255,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         }
 
         [Fact]
+        public async Task AddUser_AccountManagerLimit_ValidationError_InsetTextDisplayed()
+        {
+            await using var context = GetEndToEndDbContext();
+
+            var user1 = await CreateUser(accountType: OrganisationFunction.AccountManager.Name);
+            var user2 = await CreateUser(accountType: OrganisationFunction.AccountManager.Name);
+
+            CommonActions.ClickSave();
+
+            CommonActions.ElementIsDisplayed(AddUserObjects.Role).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(CommonSelectors.NhsInsetText).Should().BeTrue();
+            CommonActions.ElementTextContains(CommonSelectors.NhsInsetText, RoleMustBeBuyer).Should().BeTrue();
+
+            await RemoveUser(user1);
+            await RemoveUser(user2);
+        }
+
+        [Fact]
         public async Task AddUser_AccountManagerLimit_Inactive_InsetTextNotDisplayed()
         {
             await using var context = GetEndToEndDbContext();

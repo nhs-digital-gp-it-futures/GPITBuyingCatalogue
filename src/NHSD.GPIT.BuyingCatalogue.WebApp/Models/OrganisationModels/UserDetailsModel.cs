@@ -12,6 +12,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
 {
     public sealed class UserDetailsModel : NavBaseModel
     {
+        public const string AddMaximumAccountManagerMessage = "You can only add buyers for this organisation. This is because there are already {0} active account managers which is the maximum allowed.";
+        public const string EditMaximumAccountManagerMessage = "You cannot make this user an account manager. This is because there are already {0} active account managers for this organisation, which is the maximum allowed.";
+
         private string selectedAccountType;
         private string firstName;
         private string lastName;
@@ -51,6 +54,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
         public int UserId { get; set; }
 
         public int MaxNumberOfAccountManagers { get; set; }
+
+        public string MaximumAccountManagerMessage
+        {
+            get
+            {
+                var message = UserId == 0 ? AddMaximumAccountManagerMessage : EditMaximumAccountManagerMessage;
+                return string.Format(message, MaxNumberOfAccountManagers);
+            }
+        }
 
         public string OrganisationName { get; set; }
 
