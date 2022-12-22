@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using CsvHelper.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -15,6 +16,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
         public const string EditMaximumAccountManagerMessage = "You cannot make this user an account manager. This is because there are already {0} active account managers for this organisation, which is the maximum allowed.";
 
         private string selectedAccountType;
+        private string firstName;
+        private string lastName;
+        private string emailAddress;
 
         public UserDetailsModel()
         {
@@ -63,13 +67,46 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
         public string OrganisationName { get; set; }
 
         [StringLength(100)]
-        public string FirstName { get; set; }
+        public string FirstName
+        {
+            get
+            {
+                return firstName;
+            }
+
+            set
+            {
+                firstName = value?.Trim();
+            }
+        }
 
         [StringLength(100)]
-        public string LastName { get; set; }
+        public string LastName
+        {
+            get
+            {
+                return lastName;
+            }
+
+            set
+            {
+                lastName = value?.Trim();
+            }
+        }
 
         [StringLength(256)]
-        public string EmailAddress { get; set; }
+        public string EmailAddress
+        {
+            get
+            {
+                return emailAddress;
+            }
+
+            set
+            {
+                emailAddress = value?.Trim();
+            }
+        }
 
         public string SelectedAccountType
         {
