@@ -76,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Developm
                 .Should()
                 .BeTrue();
 
-            using var context = GetEndToEndDbContext();
+            await using var context = GetEndToEndDbContext();
             var workOffPlan = await context.WorkOffPlans.FirstOrDefaultAsync(wp => wp.Id == WorkOffPlanId);
 
             workOffPlan.StandardId.Should().BeEquivalentTo(standardId);

@@ -1,0 +1,43 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates.SelectDateModel
+@{
+    ViewBag.Title = "Planned delivery date";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="Order @Model.CallOffId"
+                        advice="Enter the planned delivery date for when any solutions and services you're ordering will start being used." />
+                        
+        <nhs-inset-text>
+            <p>
+                If you have more than one planned delivery date, you should enter the date the majority
+                of Service Recipients will begin using any solutions and services you're ordering.
+            </p>
+            <p>
+                This date will initially be applied to all recipients, but you'll be able
+                to change it for any recipients with a different planned delivery date.
+            </p>
+        </nhs-inset-text>
+
+        <form method="post">
+            <input type="hidden" asp-for="@Model.BackLink" />
+            <input type="hidden" asp-for="@Model.CommencementDate"/>
+
+            <div class="nhsuk-u-margin-bottom-9">
+                <nhs-fieldset-form-label asp-for="@Model"
+                                         label-text="What is the planned delivery date?"
+                                         label-hint="This is the date any solutions and services you've ordered will start being used."
+                                         size="ExtraSmall">
+                    <nhs-date-input asp-for="@Model" day="Day" month="Month" year="Year" />
+                </nhs-fieldset-form-label>
+            </div>
+
+            <nhs-submit-button />
+        </form>
+    </div>
+</div>

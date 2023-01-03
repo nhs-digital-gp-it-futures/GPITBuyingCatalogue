@@ -7,7 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             using var context = GetEndToEndDbContext();
 
-            context.Orders.Count(o => o.OrderNumber == CallOffId.OrderNumber && o.Revision == CallOffId.Revision).Should().Be(0);
+            context.Orders.Count(o => o.Id == CallOffId.OrderNumber).Should().Be(0);
         }
 
         [Fact]
@@ -99,9 +99,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         {
             using var context = GetEndToEndDbContext();
 
-            var orderId = context.OrderId(CallOffId).Result;
+            var order = context.Orders.IgnoreQueryFilters().First(o => o.Id == CallOffId.OrderNumber);
+            order.IsDeleted = false;
 
-            context.Database.ExecuteSqlInterpolated($"UPDATE Orders SET IsDeleted = 0 WHERE Id = {orderId}");
+            context.SaveChanges();
         }
     }
 }

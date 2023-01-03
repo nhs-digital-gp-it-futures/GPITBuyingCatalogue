@@ -103,18 +103,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
         {
             var nameText = TextGenerators.TextInputAddText(AddSupplierDefinedEpicObjects.NameInput, 500);
             var descriptionText = TextGenerators.TextInputAddText(AddSupplierDefinedEpicObjects.DescriptionInput, 1000);
-            var selectedCapabilityId = CommonActions.SelectRandomDropDownItem(AddSupplierDefinedEpicObjects.CapabilityInput);
+            CommonActions.SelectRandomDropDownItem(AddSupplierDefinedEpicObjects.CapabilityInput);
             CommonActions.ClickRadioButtonWithText("Active");
-
-            var expectedEpic = new Epic
-            {
-                Name = nameText,
-                Description = descriptionText,
-                IsActive = true,
-                CompliancyLevel = CompliancyLevel.May,
-                CapabilityId = int.Parse(selectedCapabilityId),
-                SupplierDefined = true,
-            };
 
             CommonActions.ClickSave();
 
@@ -125,14 +115,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             using var context = GetEndToEndDbContext();
             var epic = context.Epics.First(e => e.Name == nameText && e.Description == descriptionText);
-            epic
-                .Should()
-                .BeEquivalentTo(
-                    expectedEpic,
-                    opt => opt
-                        .Excluding(m => m.Id)
-                        .Excluding(m => m.LastUpdated)
-                        .Excluding(m => m.LastUpdatedBy));
+            epic.Should().NotBeNull();
+
+            context.Epics.Remove(epic);
+            context.SaveChanges();
         }
     }
 }

@@ -176,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             {
                 BackLink = Url.Action(nameof(AddTieredListPrice), new { solutionId, cataloguePriceId }),
                 AddTieredPriceTierUrl = Url.Action(
-                    nameof(CatalogueSolutionListPriceController.AddTieredPriceTier),
+                    nameof(AddTieredPriceTier),
                     typeof(CatalogueSolutionListPriceController).ControllerName(),
                     new { solutionId, cataloguePriceId }),
             };

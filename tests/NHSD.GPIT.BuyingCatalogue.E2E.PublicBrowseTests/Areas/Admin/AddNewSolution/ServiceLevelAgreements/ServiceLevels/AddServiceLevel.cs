@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -14,7 +15,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceLevelAgreements.ServiceLevels
 {
-    public sealed class AddServiceLevel : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class AddServiceLevel : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         private static readonly CatalogueItemId SolutionId = new(99998, "001");
 
@@ -158,6 +159,21 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
             CommonActions.ElementShowingCorrectErrorMessage(ServiceLevelObjects.CreditsRadioListError, "Error: Service level with these details already exists")
                 .Should()
                 .BeTrue();
+        }
+
+        public void Dispose()
+        {
+            using var context = GetEndToEndDbContext();
+
+            var serviceLevels = context.SlaServiceLevels.OrderByDescending(x => x.LastUpdated)
+                .Where(x => x.SolutionId == SolutionId)
+                .ToList();
+
+            if (serviceLevels.Count <= 1)
+                return;
+
+            context.SlaServiceLevels.Remove(serviceLevels.First());
+            context.SaveChanges();
         }
     }
 }

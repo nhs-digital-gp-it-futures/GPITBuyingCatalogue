@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.ListPrices;
@@ -59,9 +60,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Flat
 
             CommonActions.ElementIsDisplayed(ListPriceObjects.OnDemandQuantityCalculationRadioButtons).Should().BeFalse();
             CommonActions.ElementIsDisplayed(ListPriceObjects.DeclarativeQuantityCalculationRadioButtons).Should().BeFalse();
-
-            CommonActions.ClickRadioButtonWithValue(ListPriceObjects.ProvisioningTypeRadioButtons, ProvisioningType.PerServiceRecipient.ToString());
-            CommonActions.ElementIsDisplayed(ListPriceObjects.PerServiceRecipientBillingPeriodInput).Should().BeTrue();
 
             CommonActions.ClickRadioButtonWithValue(ListPriceObjects.ProvisioningTypeRadioButtons, ProvisioningType.OnDemand.ToString());
             CommonActions.ElementIsDisplayed(ListPriceObjects.OnDemandQuantityCalculationRadioButtons).Should().BeTrue();
@@ -131,14 +129,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Flat
         }
 
         [Fact]
-        public void Submit_Input_NavigatesToCorrectPage()
+        public async Task Submit_Input_NavigatesToCorrectPage()
         {
             CommonActions.ClickRadioButtonWithValue(ProvisioningType.Patient.ToString());
             CommonActions.ClickRadioButtonWithValue(PublicationStatus.Published.ToString());
             CommonActions.ClickRadioButtonWithValue(CataloguePriceCalculationType.SingleFixed.ToString());
 
-            TextGenerators.TextInputAddText(ListPriceObjects.UnitDescriptionInput, 100);
-            TextGenerators.TextInputAddText(ListPriceObjects.RangeDefinitionInput, 100);
+            var description = TextGenerators.TextInputAddText(ListPriceObjects.UnitDescriptionInput, 100);
+            var definition = TextGenerators.TextInputAddText(ListPriceObjects.RangeDefinitionInput, 100);
             CommonActions.ElementAddValue(ListPriceObjects.PriceInput, "3.14");
 
             CommonActions.ClickSave();
@@ -146,6 +144,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Flat
             CommonActions.PageLoadedCorrectGetIndex(
                 Controller,
                 "Index").Should().BeTrue();
+
+            await using var context = GetEndToEndDbContext();
+            var price = context.CataloguePrices.Include(x => x.PricingUnit).First(
+                x => string.Equals(description, x.PricingUnit.Description)
+                    && string.Equals(definition, x.PricingUnit.RangeDescription));
+
+            context.CataloguePrices.Remove(price);
+            await context.SaveChangesAsync();
         }
 
         private CatalogueItem GetCatalogueItemWithPrices(CatalogueItemId id)

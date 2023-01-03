@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Organisation
                 .NotEmpty()
                 .WithMessage("Select an account type")
                 .Must((model, accountType) => AccountManagerLimit(accountType, model.OrganisationId, model.UserId, !model.IsActive.GetValueOrDefault(false)))
-                .WithMessage($"There are already {accountManagementSettings.MaximumNumberOfAccountManagers} active account managers for this organisation which is the maximum allowed.")
+                .WithMessage($"There are already {accountManagementSettings.MaximumNumberOfAccountManagers} active account managers for this organisation which is the maximum allowed")
                 .When(x => x.OrganisationId != OrganisationConstants.NhsDigitalOrganisationId);
 
             RuleFor(x => x.IsActive)
