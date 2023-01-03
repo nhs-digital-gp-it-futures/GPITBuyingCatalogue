@@ -9,6 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
     public sealed class PasswordResetSettings
     {
         public string EmailTemplateId { get; set; }
+
         public int NumOfPreviousPasswords { get; set; }
     }
 }
