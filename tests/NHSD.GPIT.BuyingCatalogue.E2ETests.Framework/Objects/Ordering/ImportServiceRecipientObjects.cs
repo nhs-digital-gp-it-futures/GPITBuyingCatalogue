@@ -1,5 +1,5 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.ImportServiceRecipients;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.ImportServiceRecipients;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering;

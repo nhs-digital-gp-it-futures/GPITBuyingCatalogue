@@ -6,7 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared;
 using Xunit;
 
@@ -199,6 +199,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(SupplierController),
                 nameof(SupplierController.Supplier)).Should().BeTrue();
+
+            context.Orders.Remove(order);
+            context.SaveChanges();
         }
 
         [Fact]
@@ -268,6 +271,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
             CommonActions.InputValueEqualTo(NewContactObjects.DepartmentInput, department).Should().BeTrue();
             CommonActions.InputValueEqualTo(NewContactObjects.PhoneNumberInput, phoneNumber).Should().BeTrue();
             CommonActions.InputValueEqualTo(NewContactObjects.EmailInput, email).Should().BeTrue();
+
+            context.Orders.Remove(order);
+            context.SaveChanges();
         }
     }
 }

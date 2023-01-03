@@ -15,8 +15,8 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers.FundingSource;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Models.FundingSources;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.FundingSource;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.FundingSource
@@ -358,7 +358,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
                 .Setup(o => o.GetOrderThin(order.CallOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));
 
-            var expectedViewData = new WebApp.Areas.Order.Models.FundingSources.FundingSource(internalOrgId, order.CallOffId, order, orderItem);
+            var expectedViewData = new WebApp.Areas.Orders.Models.FundingSources.FundingSource(internalOrgId, order.CallOffId, order, orderItem);
 
             var actual = await controller.FundingSource(internalOrgId, order.CallOffId, orderItem.CatalogueItemId);
 
@@ -377,7 +377,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
             [Frozen] Mock<IOrderItemService> orderItemServiceMock,
             FundingSourceController controller)
         {
-            var model = new WebApp.Areas.Order.Models.FundingSources.FundingSource(internalOrgId, order.CallOffId, order, orderItem)
+            var model = new WebApp.Areas.Orders.Models.FundingSources.FundingSource(internalOrgId, order.CallOffId, order, orderItem)
             {
                 SelectedFundingType = OrderItemFundingType.CentralFunding,
             };
@@ -408,7 +408,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
             [Frozen] Mock<IOrderItemService> orderItemServiceMock,
             FundingSourceController controller)
         {
-            var model = new WebApp.Areas.Order.Models.FundingSources.FundingSource(internalOrgId, order.CallOffId, order, orderItem);
+            var model = new WebApp.Areas.Orders.Models.FundingSources.FundingSource(internalOrgId, order.CallOffId, order, orderItem);
 
             controller.ModelState.AddModelError("test", "test");
 

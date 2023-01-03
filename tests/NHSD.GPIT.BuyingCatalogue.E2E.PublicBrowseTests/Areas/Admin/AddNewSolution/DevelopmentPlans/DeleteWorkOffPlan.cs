@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.DevelopmentPlans
 {
-    public class DeleteWorkOffPlan : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    public class DeleteWorkOffPlan : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         private const int WorkOffPlanId = 2;
         private static readonly CatalogueItemId SolutionId = new(99998, "001");
@@ -64,8 +67,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Developm
         }
 
         [Fact]
-        public void DeleteWorkOffPlan_DeleteWorkOffPlan_ExpectedResult()
+        public async Task DeleteWorkOffPlan_DeleteWorkOffPlan_ExpectedResult()
         {
+            var workOffPlan = await AddWorkOffPlan();
+
+            NavigateToUrl(
+                typeof(DevelopmentPlansController),
+                nameof(DevelopmentPlansController.DeleteWorkOffPlan),
+                new Dictionary<string, string>
+                {
+                    { nameof(SolutionId), SolutionId.ToString() },
+                    { nameof(WorkOffPlanId), workOffPlan.Id.ToString() },
+                });
+
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -74,30 +88,26 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Developm
             .Should()
             .BeTrue();
 
-            using var context = GetEndToEndDbContext();
-            context.WorkOffPlans.FirstOrDefaultAsync(wp => wp.Id == WorkOffPlanId).Result.Should().BeNull();
+            await using var context = GetEndToEndDbContext();
+            context.WorkOffPlans.Count(wp => wp.Id == workOffPlan.Id).Should().Be(0);
         }
 
-        public void Dispose()
+        private async Task<WorkOffPlan> AddWorkOffPlan()
         {
-            using var context = GetEndToEndDbContext();
-            var workOffPlan = context.WorkOffPlans.FirstOrDefaultAsync(wp => wp.Id == WorkOffPlanId).Result;
+            await using var context = GetEndToEndDbContext();
 
-            if (workOffPlan is null)
+            var workOffPlan = new WorkOffPlan
             {
-                workOffPlan = new EntityFramework.Catalogue.Models.WorkOffPlan()
-                {
-                    Id = WorkOffPlanId,
-                    SolutionId = SolutionId,
-                    StandardId = "S1",
-                    Details = "Standard for Deletion Test",
-                    CompletionDate = DateTime.UtcNow.AddDays(5),
-                };
+                SolutionId = SolutionId,
+                StandardId = "S1",
+                Details = "Standard for Deletion Test",
+                CompletionDate = DateTime.UtcNow.AddDays(5),
+            };
 
-                context.WorkOffPlans.Add(workOffPlan);
-            }
+            context.WorkOffPlans.Add(workOffPlan);
+            await context.SaveChangesAsync();
 
-            context.SaveChanges();
+            return workOffPlan;
         }
     }
 }

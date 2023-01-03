@@ -1,5 +1,5 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Order.Controllers;
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 @{
     ViewBag.Title = "Buying Catalogue";
@@ -33,6 +33,8 @@
                    asp-action="@nameof(DashboardController.Index)"><strong>Create or manage orders</strong></a>
                 <p>Place a new order or complete an order you've already started (log in required).</p>
             </li>
+        @if (!User.Identity.IsAuthenticated)
+        {
             <li>
                 <a id="request-account-link"
                    asp-area="@typeof(RegistrationController).AreaName()"
@@ -40,6 +42,7 @@
                    asp-action="@nameof(RegistrationController.Index)"><strong>Request an account</strong></a>
                 <p>Get log in credentials so you can create orders on the Buying Catalogue.</p>
             </li>
+        }
             <li>
                 <a id="nominate-organisation-link"
                    asp-area="@typeof(NominateOrganisationController).AreaName()"

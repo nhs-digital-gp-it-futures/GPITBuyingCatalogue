@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Authorization;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
@@ -10,7 +9,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
 {
-    public sealed class Login : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    public sealed class Login : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         private const string EmailError = "Enter your email address";
         private const string PasswordError = "Enter your password";
@@ -35,9 +34,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
         }
 
         [Fact]
-        public async Task Login_LoginSuccessful()
+        public void Login_LoginSuccessful()
         {
-            await using var context = GetUsersContext();
             var userEmail = GetAdmin().Email;
 
             AuthorizationPages.LoginActions.Login(userEmail, DefaultPassword);
@@ -115,7 +113,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
         [InlineData("falseUser@email.com", "password")]
         public async Task Login_InvalidEmailOrPassword_UnsuccessfulLogin(string user, string password)
         {
-            await using var context = GetUsersContext();
             var userEmail = user == "user" ? GetAdmin().Email : user;
             var userPassword = password == "password" ? DefaultPassword : password;
 
@@ -177,9 +174,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
             user.Disabled = false;
             context.Update(user);
             context.SaveChanges();
-
-            // Force logout at end of test
-            Driver.Manage().Cookies.DeleteAllCookies();
         }
     }
 }

@@ -10,6 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users;
 using Xunit;
@@ -171,6 +172,30 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         }
 
         [Fact]
+        public void AddUser_IncludesWhitespace_WhitespaceRemoved()
+        {
+            var context = GetEndToEndDbContext();
+
+            var organisationName = context.Organisations
+                .First(x => x.Name != NhsDigitalOrganisationName)
+                .Name;
+
+            CommonActions.AutoCompleteAddValue(UserObjects.SelectedOrganisation, organisationName);
+            CommonActions.ClickLinkElement(UserObjects.AutoCompleteResult(0));
+            CommonActions.ElementAddValue(UserObjects.FirstNameInput, "    " + Strings.RandomString(10) + "    ");
+            CommonActions.ElementAddValue(UserObjects.LastNameInput, "    " + Strings.RandomString(10) + "    ");
+            CommonActions.ElementAddValue(UserObjects.EmailInput, "    " + ValidEmailAddress + "    ");
+            CommonActions.ClickRadioButtonWithText("Buyer");
+            CommonActions.ClickRadioButtonWithText("Active");
+
+            CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(UsersController),
+                nameof(UsersController.Index)).Should().BeTrue();
+        }
+
+        [Fact]
         public void Add_Admin_NotInNhsDigital_ClickSave_DisplaysErrorMessage()
         {
             var organisationName = GetEndToEndDbContext()
@@ -250,6 +275,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             CommonActions.AutoCompleteAddValue(UserObjects.SelectedOrganisation, organisation.Name);
             CommonActions.ClickLinkElement(UserObjects.AutoCompleteResult(0));
             CommonActions.ClickRadioButtonWithText("Account manager");
+            CommonActions.ClickRadioButtonWithText("Active");
             CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -262,6 +288,28 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             CommonActions.ElementShowingCorrectErrorMessage(
                 UserObjects.AccountTypeRadioButtonsError,
                 $"Error: {UserDetailsModelValidator.MustNotExceedAccountManagerLimit}");
+
+            await RemoveUser(user1);
+            await RemoveUser(user2);
+        }
+
+        [Fact]
+        public async Task AddUser_AccountManagerLimit_Inactive_ClickSave_DisplaysErrorMessage()
+        {
+            await using var context = GetEndToEndDbContext();
+
+            var organisation = context.Organisations
+                .First(x => x.Name != NhsDigitalOrganisationName);
+            var user1 = await CreateUser(organisation.Id, accountType: OrganisationFunction.AccountManager.Name);
+            var user2 = await CreateUser(organisation.Id, accountType: OrganisationFunction.AccountManager.Name);
+
+            CommonActions.AutoCompleteAddValue(UserObjects.SelectedOrganisation, organisation.Name);
+            CommonActions.ClickLinkElement(UserObjects.AutoCompleteResult(0));
+            CommonActions.ClickRadioButtonWithText("Account manager");
+            CommonActions.ClickRadioButtonWithText("Inactive");
+            CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
+
+            CommonActions.ElementIsDisplayed(UserObjects.AccountTypeRadioButtonsError).Should().BeFalse();
 
             await RemoveUser(user1);
             await RemoveUser(user2);

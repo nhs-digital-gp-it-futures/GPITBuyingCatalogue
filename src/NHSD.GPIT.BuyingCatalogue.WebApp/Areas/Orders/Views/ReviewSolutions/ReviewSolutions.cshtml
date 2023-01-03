@@ -1,0 +1,92 @@
+﻿@using System.Linq;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
+
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Review.ReviewSolutionsModel
+@{
+	ViewBag.Title = Model.AssociatedServicesOnly
+        ? "Associated Services"
+	    : "Catalogue Solution and services";
+
+    var advice = Model.AssociatedServicesOnly
+        ? "Review the Associated Services that you've added to this order. You can edit the items that you've added at any time."
+        : "Review the Catalogue Solution and any services that you've added to this order. You can edit the items that you've added at any time.";
+
+    var editLinkTitle = Model.AssociatedServicesOnly
+        ? "Edit Associated Services"
+        : "Edit solution and services";
+
+    var solutionsTitle = Model.CatalogueSolutions.Count > 1 ? "Catalogue Solutions" : "Catalogue Solution";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-page-title title="@ViewBag.Title"
+						caption="Order @Model.CallOffId"
+						advice="@advice"/>
+
+        <vc:nhs-action-link text="@editLinkTitle"
+                            url="@Url.Action(
+                                     nameof(TaskListController.TaskList),
+                                     typeof(TaskListController).ControllerName(),
+                                     new { Model.InternalOrgId, Model.CallOffId })" />
+		<hr />
+
+		@if (Model.CatalogueSolutions.Any())
+		{
+		    <h2 id="catalogue-solutions-title">@solutionsTitle</h2>
+		    @foreach (var solution in Model.CatalogueSolutions)
+		    {
+		        <partial name="_ReviewExpander" model="solution" />
+		    }
+		}
+
+		@if (Model.AdditionalServices.Any())
+		{
+			<h2 id="additional-services-title">Additional Services</h2>
+			@foreach (var service in Model.AdditionalServices)
+			{
+				<partial name="_ReviewExpander" model="service" />
+			}
+		}
+
+		@if (Model.AssociatedServices.Any())
+		{
+			<h2 id="associated-services-title">Associated Services</h2>
+			@foreach (var service in Model.AssociatedServices)
+			{
+				<partial name="_ReviewExpander" model="service" />
+			}
+		}
+
+        <br/>
+
+        <nhs-summary-list>
+            <nhs-summary-list-row label-text="Total one-off cost:">
+                £@($"{Model.Order.TotalOneOffCost():N2}")
+            </nhs-summary-list-row>
+
+            <nhs-summary-list-row label-text="Total monthly cost:">
+                £@($"{Model.Order.TotalMonthlyCost():N2}")
+            </nhs-summary-list-row>
+
+            <nhs-summary-list-row label-text="Total cost for one year:">
+                £@($"{Model.Order.TotalAnnualCost():N2}")
+            </nhs-summary-list-row>
+
+            <nhs-summary-list-row label-text="Total cost of contract (@Model.ContractLength months):">
+                £@($"{Model.Order.TotalCost():N2}")
+            </nhs-summary-list-row>
+		</nhs-summary-list>
+
+        <vc:nhs-secondary-button text="Continue"
+                                 type="Primary"
+                                 url="@Url.Action(
+                                          nameof(OrderController.Order),
+                                          typeof(OrderController).ControllerName(),
+                                          new { Model.InternalOrgId, Model.CallOffId })"/>
+	</div>
+</div>
+

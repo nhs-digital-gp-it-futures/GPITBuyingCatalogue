@@ -44,8 +44,7 @@
                         <p>Buyer</p>
                         <nhs-inset-text>
                             <p>
-                                You can only add buyers for this organisation.
-                                This is because there are already @Model.MaxNumberOfAccountManagers active account managers which is the maximum allowed.
+                                @Model.MaximumAccountManagerMessage
                             </p>
                         </nhs-inset-text>
                         <input type="hidden" asp-for="SelectedAccountType"/>

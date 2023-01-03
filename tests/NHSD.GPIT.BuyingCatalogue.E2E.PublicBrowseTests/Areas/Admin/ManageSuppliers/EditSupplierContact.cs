@@ -20,7 +20,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
         private const int SupplierId = 99998;
         private const int ContactId = 3;
         private const int ReferencedContactId = 2;
-        private const int OtherContactId = 2;
         private static readonly CatalogueItemId ReferencingSolutionId = new(99998, "001");
 
         private static readonly Dictionary<string, string> Parameters = new()
@@ -58,9 +57,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
         }
 
         [Fact]
-        public void EditSupplierContact_ReferencedContact_SectionsDisplayed()
+        public async Task EditSupplierContact_ReferencedContact_SectionsDisplayed()
         {
-            AddSupplierContactToSolutionIfNotExists();
+            await AddSupplierContactToSolutionIfNotExists();
 
             NavigateToUrl(
                 typeof(SuppliersController),
@@ -70,12 +69,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.ElementIsDisplayed(SupplierContactObjects.ReferencingSolutionsTable).Should().BeTrue();
             CommonActions.ElementIsDisplayed(SupplierContactObjects.NoReferencingSolutionsInset).Should().BeFalse();
             CommonActions.ElementIsDisplayed(SupplierContactObjects.DeleteLink).Should().BeFalse();
+
+            await RemoveSupplierContactFromSolution();
         }
 
         [Fact]
-        public void EditSupplierContact_ReferencedContact_LinkGoesToEditSupplierDetailsForSolution()
+        public async Task EditSupplierContact_ReferencedContact_LinkGoesToEditSupplierDetailsForSolution()
         {
-            AddSupplierContactToSolutionIfNotExists();
+            await AddSupplierContactToSolutionIfNotExists();
 
             NavigateToUrl(
                 typeof(SuppliersController),
@@ -87,6 +88,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionsController),
                 nameof(CatalogueSolutionsController.EditSupplierDetails)).Should().BeTrue();
+
+            await RemoveSupplierContactFromSolution();
         }
 
         [Fact]
@@ -104,7 +107,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
         {
             await using var context = GetEndToEndDbContext();
 
-            var contact = await context.SupplierContacts.FirstAsync(sc => sc.Id == OtherContactId);
+            var supplier = await context.Suppliers.Include(x => x.SupplierContacts)
+                .FirstAsync(sc => sc.Id == SupplierId);
+            var contact = supplier.SupplierContacts.Last();
 
             CommonActions.ElementAddValue(SupplierContactObjects.FirstNameInput, contact.FirstName);
             CommonActions.ElementAddValue(SupplierContactObjects.LastNameInput, contact.LastName);
@@ -152,7 +157,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             contact.Email.Should().Be(email);
         }
 
-        private async void AddSupplierContactToSolutionIfNotExists()
+        private async Task AddSupplierContactToSolutionIfNotExists()
         {
             await using var context = GetEndToEndDbContext();
 
@@ -163,12 +168,29 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
                 .Include(ci => ci.CatalogueItemContacts)
                 .FirstAsync(ci => ci.Id == ReferencingSolutionId);
 
-            if (solution.CatalogueItemContacts.All(x => x.Id != ReferencedContactId))
-            {
-                solution.CatalogueItemContacts.Add(contact);
+            if (solution.CatalogueItemContacts.Any(x => x.Id == ReferencedContactId)) return;
 
-                await context.SaveChangesAsync();
-            }
+            solution.CatalogueItemContacts.Add(contact);
+
+            await context.SaveChangesAsync();
+        }
+
+        private async Task RemoveSupplierContactFromSolution()
+        {
+            await using var context = GetEndToEndDbContext();
+
+            var contact = await context.SupplierContacts
+                .FirstAsync(sc => sc.Id == ReferencedContactId);
+
+            var solution = await context.CatalogueItems
+                .Include(ci => ci.CatalogueItemContacts)
+                .FirstAsync(ci => ci.Id == ReferencingSolutionId);
+
+            if (solution.CatalogueItemContacts.All(x => x.Id != ReferencedContactId)) return;
+
+            solution.CatalogueItemContacts.Remove(contact);
+
+            await context.SaveChangesAsync();
         }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.ServiceLevelAgreements;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
@@ -14,7 +16,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceLevelAgreements
 {
-    public sealed class AddServiceAvailabilityTimes : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class AddServiceAvailabilityTimes : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         private static readonly CatalogueItemId SolutionId = new(99998, "001");
 
@@ -210,6 +212,21 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceL
             CommonActions.ElementShowingCorrectErrorMessage(ServiceAvailabilityTimesObjects.TimeInputError, $"Error: Enter time in the correct format")
                  .Should()
                  .BeTrue();
+        }
+
+        public void Dispose()
+        {
+            using var context = GetEndToEndDbContext();
+
+            var serviceAvailabilityTimes = context.ServiceAvailabilityTimes.OrderByDescending(x => x.LastUpdated)
+                .Where(x => x.SolutionId == SolutionId)
+                .ToList();
+
+            if (serviceAvailabilityTimes.Count <= 1)
+                return;
+
+            context.ServiceAvailabilityTimes.Remove(serviceAvailabilityTimes.First());
+            context.SaveChanges();
         }
     }
 }

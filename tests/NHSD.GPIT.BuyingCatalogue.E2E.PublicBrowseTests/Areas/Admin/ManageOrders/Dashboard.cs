@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.ManageOrders;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Utils.Extensions;
@@ -76,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
                 CommonActions.ElementIsDisplayed(CommonSelectors.PaginationPrevious).Should().BeFalse();
                 CommonActions.ElementIsDisplayed(CommonSelectors.PaginationPreviousSubText).Should().BeFalse();
 
-                context.Orders.AddRange(orders);
+                context.InsertRangeWithIdentity(orders);
                 context.SaveChanges();
             });
         }

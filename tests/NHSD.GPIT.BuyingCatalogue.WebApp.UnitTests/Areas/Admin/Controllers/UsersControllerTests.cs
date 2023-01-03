@@ -220,7 +220,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             UserDetailsModel model,
             UsersController controller)
         {
-            model.SelectedOrganisationId = $"{OrganisationConstants.NhsDigitalOrganisationId}";
+            model.SelectedOrganisationId = OrganisationConstants.NhsDigitalOrganisationId;
 
             mockCreateUserService
                 .Setup(x => x.Create(
@@ -349,10 +349,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .Setup(x => x.GetUser(userId))
                 .ReturnsAsync(user);
 
-            model.SelectedOrganisationId = "1";
+            model.SelectedOrganisationId = 1;
 
             mockUsersService
-                .Setup(x => x.UpdateUser(userId, model.FirstName, model.LastName, model.Email, !model.IsActive!.Value, model.SelectedAccountType, int.Parse(model.SelectedOrganisationId)))
+                .Setup(x => x.UpdateUser(userId, model.FirstName, model.LastName, model.Email, !model.IsActive!.Value, model.SelectedAccountType, model.SelectedOrganisationId!.Value))
                 .Returns(Task.CompletedTask);
 
             var result = (await controller.Edit(userId, model)).As<RedirectToActionResult>();

@@ -8,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.RandomData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
@@ -112,8 +113,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         {
             await RunTestWithRetryAsync(async () =>
             {
-                await using var context = GetEndToEndDbContext();
-
                 await CommonActions.InputCharactersWithDelay(UserObjects.SearchBar, Strings.RandomString(10));
                 CommonActions.WaitUntilElementIsDisplayed(UserObjects.SearchListBox);
 
@@ -166,6 +165,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             EmailAddresses = Driver.FindElements(UserObjects.UserEmail).Select(x => x.Text.Trim()),
             FullNames = Driver.FindElements(UserObjects.UserFullName).Select(x => x.Text.Trim()),
             Organisations = Driver.FindElements(UserObjects.UserOrganisation).Select(x => x.Text.Trim()),
+            AccountTypes = Driver.FindElements(UserObjects.UserAccountType).Select(x => x.Text.Trim()),
             Statuses = Driver.FindElements(UserObjects.UserStatus).Select(x => x.Text.Trim()),
         };
 
@@ -175,12 +175,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
 
             var users = await context.AspNetUsers
                 .Include(x => x.PrimaryOrganisation)
+                .Include(x => x.AspNetUserRoles).ThenInclude(y => y.Role)
                 .Select(x => new
                 {
                     x.Email,
                     x.FullName,
                     OrganisationName = x.PrimaryOrganisation.Name,
                     Status = GetAccountStatus(x.Disabled),
+                    AccountType = x.GetDisplayRoleName(),
                 }).ToListAsync();
 
             var pageSummary = GetPageSummary();
@@ -189,6 +191,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             pageSummary.FullNames.Should().BeEquivalentTo(users.Select(x => x.FullName)).And.HaveCount(users.Count);
             pageSummary.Organisations.Should().BeEquivalentTo(users.Select(x => x.OrganisationName)).And.HaveCount(users.Count);
             pageSummary.Statuses.Should().BeEquivalentTo(users.Select(x => x.Status)).And.HaveCount(users.Count);
+            pageSummary.AccountTypes.Should().BeEquivalentTo(users.Select(x => x.AccountType)).And.HaveCount(users.Count);
         }
 
         private class PageSummary
@@ -200,6 +203,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             public IEnumerable<string> Organisations { get; init; }
 
             public IEnumerable<string> Statuses { get; init; }
+
+            public IEnumerable<string> AccountTypes { get; init; }
         }
     }
 }

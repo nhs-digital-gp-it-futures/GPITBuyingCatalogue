@@ -187,7 +187,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
         }
 
         [Fact]
-        public async Task AddSupplierContact_CorrectInput_ExpectedResult()
+        public void AddSupplierContact_CorrectInput_ExpectedResult()
         {
             var firstName = TextGenerators.TextInputAddText(SupplierContactObjects.FirstNameInput, 35);
             var lastName = TextGenerators.TextInputAddText(SupplierContactObjects.LastNameInput, 35);
@@ -203,15 +203,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
 
             Driver.FindElements(CommonSelectors.TableRow).Count.Should().Be(1);
 
-            await using var context = GetEndToEndDbContext();
-
-            var contact = await context.SupplierContacts.OrderByDescending(sc => sc.Id).FirstAsync();
-
-            contact.FirstName.Should().Be(firstName);
-            contact.LastName.Should().Be(lastName);
-            contact.Department.Should().Be(department);
-            contact.PhoneNumber.Should().Be(phoneNumber);
-            contact.Email.Should().Be(email);
+            GetEndToEndDbContext()
+                .SupplierContacts.AsNoTracking()
+                .Any(
+                    x => x.FirstName == firstName && x.LastName == lastName && x.Department == department
+                        && x.PhoneNumber == phoneNumber && x.Email == email)
+                .Should()
+                .BeTrue();
 
             CommonActions.ClickContinue();
 

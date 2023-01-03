@@ -1,0 +1,30 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources.SelectFrameworkModel
+@{
+    ViewBag.Title = Model.Title;
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary RadioId="@nameof(Model.SelectedFramework)"/>
+        <nhs-page-title title="@ViewBag.Title"
+                        advice="Your Catalogue Solution is available from more than one procurement framework. You must choose the framework you want to order from before you can select your funding sources."
+                        caption="@Model.Caption" />
+        <form method="post">
+            <nhs-fieldset-form-label asp-for="SelectedFramework" 
+                                     label-text="Which framework do you want to order from?"
+                                     size="Small">
+                <nhs-radio-buttons asp-for="SelectedFramework"
+                                   values="@Model.Frameworks.Cast<object>()"
+                                   display-name="Text"
+                                   value-name="Value" />
+            </nhs-fieldset-form-label>
+            <input type="hidden" asp-for="AssociatedServicesOnly" />
+            <input type="hidden" asp-for="BackLink" />
+            <input type="hidden" asp-for="Caption" />
+            <input type="hidden" asp-for="Title" />
+            <nhs-submit-button />
+        </form>
+    </div>
+</div>
+

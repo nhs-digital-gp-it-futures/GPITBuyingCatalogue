@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
     public class AddNominatedOrganisation : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         private const int OrganisationId = 1;
-        private const string ValidOrganisationName = "NHS Leeds CCG";
+        private const string ValidOrganisationId = "CG-15F";
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
@@ -67,19 +67,27 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         }
 
         [Fact]
-        public void AddNominatedOrganisation_FilterOrganisations_WithMatches_ExpectedResult()
+        public async Task AddNominatedOrganisation_FilterOrganisations_WithMatches_ExpectedResult()
         {
-            CommonActions.ElementAddValue(NominatedOrganisationObjects.SelectedOrganisation, ValidOrganisationName);
+            await using var context = GetEndToEndDbContext();
+            var organisation = context.Organisations.AsNoTracking()
+                .First(x => x.InternalIdentifier == ValidOrganisationId);
+
+            CommonActions.ElementAddValue(NominatedOrganisationObjects.SelectedOrganisation, organisation.Name);
             CommonActions.WaitUntilElementIsDisplayed(NominatedOrganisationObjects.SearchListBox);
 
             CommonActions.ElementIsDisplayed(NominatedOrganisationObjects.SearchResult(0)).Should().BeTrue();
-            CommonActions.ElementTextEqualTo(NominatedOrganisationObjects.SearchResult(0), ValidOrganisationName).Should().BeTrue();
+            CommonActions.ElementTextEqualTo(NominatedOrganisationObjects.SearchResult(0), organisation.Name).Should().BeTrue();
         }
 
         [Fact]
-        public void AddNominatedOrganisation_FilterOrganisations_WithNoMatches_ExpectedResult()
+        public async Task AddNominatedOrganisation_FilterOrganisations_WithNoMatches_ExpectedResult()
         {
-            CommonActions.ElementAddValue(NominatedOrganisationObjects.SelectedOrganisation, ValidOrganisationName + "XYZ");
+            await using var context = GetEndToEndDbContext();
+            var organisation = context.Organisations.AsNoTracking()
+                .First(x => x.InternalIdentifier == ValidOrganisationId);
+
+            CommonActions.ElementAddValue(NominatedOrganisationObjects.SelectedOrganisation, organisation.Name + "XYZ");
             CommonActions.WaitUntilElementIsDisplayed(NominatedOrganisationObjects.SearchListBox);
 
             CommonActions.ElementIsDisplayed(NominatedOrganisationObjects.SearchResultsErrorMessage).Should().BeTrue();
@@ -89,6 +97,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         public async Task AddNominatedOrganisation_SelectOrganisation_ClickContinue_ExpectedResult()
         {
             await using var context = GetEndToEndDbContext();
+            var organisation = context.Organisations.AsNoTracking()
+                .First(x => x.InternalIdentifier == ValidOrganisationId);
 
             var existingRelationships = await context.RelatedOrganisations
                 .Where(x => x.RelatedOrganisationId == OrganisationId)
@@ -96,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 
             existingRelationships.Should().BeEmpty();
 
-            CommonActions.AutoCompleteAddValue(NominatedOrganisationObjects.SelectedOrganisation, ValidOrganisationName);
+            CommonActions.AutoCompleteAddValue(NominatedOrganisationObjects.SelectedOrganisation, organisation.Name);
             CommonActions.ClickLinkElement(NominatedOrganisationObjects.SearchResult(0));
             CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
 

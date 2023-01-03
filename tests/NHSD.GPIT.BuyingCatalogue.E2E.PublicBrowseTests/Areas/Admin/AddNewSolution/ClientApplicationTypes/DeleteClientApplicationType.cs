@@ -16,7 +16,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientApplicationTypes
 {
-    public sealed class DeleteClientApplicationType : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    public sealed class DeleteClientApplicationType : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         private static readonly CatalogueItemId SolutionId = new(99999, "001");
 
@@ -105,6 +105,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
         [InlineData(ClientApplicationType.Desktop)]
         public async Task DeleteClientApplicationType_DeleteButton_DeletesClientApplicationType(ClientApplicationType clientApplicationType)
         {
+            await using var context = GetEndToEndDbContext();
+            var originalSolution =
+                await context.Solutions.AsNoTracking().FirstAsync(x => x.CatalogueItemId == SolutionId);
+            var originalClientApplication = originalSolution.ClientApplication;
+
             var queryParam = new Dictionary<string, string>
             {
                 { "solutionId", SolutionId.ToString() },
@@ -119,17 +124,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
                 typeof(CatalogueSolutionsController),
                 nameof(CatalogueSolutionsController.ClientApplicationType))
                 .Should().BeTrue();
-
-            await using var context = GetEndToEndDbContext();
-            var solution = await context.Solutions.FirstAsync(s => s.CatalogueItemId == SolutionId);
+            var solution = await context.Solutions.AsNoTracking().FirstAsync(s => s.CatalogueItemId == SolutionId);
             var clientApplication = solution.GetClientApplication();
 
             clientApplication.ClientApplicationTypes.Should().NotContain(clientApplicationType.AsString(EnumFormat.EnumMemberValue));
-        }
 
-        public void Dispose()
-        {
-            ClearClientApplication(SolutionId);
+            solution.ClientApplication = originalClientApplication;
+            context.Update(solution);
+            await context.SaveChangesAsync();
         }
     }
 }
