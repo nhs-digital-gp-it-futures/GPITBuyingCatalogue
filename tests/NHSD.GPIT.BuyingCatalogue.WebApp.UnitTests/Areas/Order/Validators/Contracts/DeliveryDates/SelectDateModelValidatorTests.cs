@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
 
             var errorMessage = string.Format(
                 SelectDateModelValidator.DeliveryDateBeforeCommencementDateErrorMessage,
-                $"{model.CommencementDate:dd MMMM yyyy}");
+                $"{model.CommencementDate:d MMMM yyyy}");
 
             result.ShouldHaveValidationErrorFor(x => x.Day).WithErrorMessage(errorMessage);
         }
