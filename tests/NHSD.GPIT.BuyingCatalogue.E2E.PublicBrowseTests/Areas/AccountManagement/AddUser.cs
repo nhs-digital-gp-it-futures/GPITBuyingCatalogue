@@ -78,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
         }
 
         [Fact]
-        public void AddUser_AddUser_ExpectedResult()
+        public async Task AddUser_AddUser_ExpectedResult()
         {
             var user = GenerateUser.Generate();
             user.EmailAddress = ValidEmail;
@@ -93,6 +93,28 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(ManageAccountController),
                 nameof(ManageAccountController.Users)).Should().BeTrue();
+
+            await RemoveUserByEmail(ValidEmail);
+        }
+
+        [Fact]
+        public async Task AddUser_IncludesWhitespace_WhitespaceRemoved()
+        {
+            var user = GenerateUser.Generate();
+            user.EmailAddress = ValidEmail;
+            AccountManagementPages.AddUser.EnterFirstName("     " + user.FirstName + "     ");
+            AccountManagementPages.AddUser.EnterLastName("     " + user.LastName + "     ");
+            AccountManagementPages.AddUser.EnterEmailAddress("     " + user.EmailAddress + "     ");
+            CommonActions.ClickRadioButtonWithText(OrganisationFunction.Buyer.Name);
+            CommonActions.ClickRadioButtonWithText("Active");
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(ManageAccountController),
+                nameof(ManageAccountController.Users)).Should().BeTrue();
+
+            await RemoveUserByEmail(ValidEmail);
         }
 
         [Fact]
@@ -210,6 +232,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
         }
 
         [Fact]
+        public async Task AddUser_AccountManagerLimit_ValidationError_InsetTextDisplayed()
+        {
+            await using var context = GetEndToEndDbContext();
+
+            var user1 = await CreateUser(accountType: OrganisationFunction.AccountManager.Name);
+            var user2 = await CreateUser(accountType: OrganisationFunction.AccountManager.Name);
+
+            CommonActions.ClickSave();
+
+            CommonActions.ElementIsDisplayed(AddUserObjects.Role).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(CommonSelectors.NhsInsetText).Should().BeTrue();
+            CommonActions.ElementTextContains(CommonSelectors.NhsInsetText, RoleMustBeBuyer).Should().BeTrue();
+
+            await RemoveUser(user1);
+            await RemoveUser(user2);
+        }
+
+        [Fact]
         public async Task AddUser_AccountManagerLimit_Inactive_InsetTextNotDisplayed()
         {
             await using var context = GetEndToEndDbContext();
@@ -239,6 +279,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
         {
             await using var context = GetEndToEndDbContext();
             var dbUser = context.AspNetUsers.First(x => x.Id == user.Id);
+
+            context.Remove(dbUser);
+
+            await context.SaveChangesAsync();
+        }
+
+        private async Task RemoveUserByEmail(string email)
+        {
+            await using var context = GetEndToEndDbContext();
+            var dbUser = context.AspNetUsers.First(x => x.Email == email);
 
             context.Remove(dbUser);
 

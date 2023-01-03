@@ -22,5 +22,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.UserMode
             actual.Title.Should().Be("Edit user");
             actual.FirstName.Should().Be(user.FirstName);
         }
+
+        [Theory]
+        [CommonAutoData]
+        public static void InputFields_IncludesWhitespace_WhitespaceRemoved(
+            string firstName,
+            string lastName,
+            string email)
+        {
+            var actual = new UserDetailsModel()
+            {
+                FirstName = " " + firstName + " ",
+                LastName = " " + lastName + "  ",
+                Email = " " + email + "  ",
+            };
+
+            actual.FirstName.Should().Be(firstName.Trim());
+            actual.LastName.Should().Be(lastName.Trim());
+            actual.Email.Should().Be(email.Trim());
+        }
     }
 }
