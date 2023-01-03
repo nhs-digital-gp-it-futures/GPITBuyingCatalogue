@@ -39,6 +39,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users
 
         Task<bool> IsAccountManagerLimit(int organisationId, int userId = 0);
 
-        Task<bool> IsPasswordPresentInPastNPasswords(AspNetUser user, string email, string newPassword, int numOfPreviousPasswords);
+        bool IsPasswordPresentInPastNPasswords(AspNetUser user, string email, string newPassword);
     }
 }

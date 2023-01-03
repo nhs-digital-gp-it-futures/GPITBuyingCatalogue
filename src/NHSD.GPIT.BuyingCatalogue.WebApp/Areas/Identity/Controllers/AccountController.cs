@@ -150,7 +150,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             if (!ModelState.IsValid)
                 return View(viewModel);
             var user = await userManager.FindByEmailAsync(viewModel.Email);
-            var usedPassword = await services.IsPasswordPresentInPastNPasswords(user, viewModel.Email, viewModel.Password, ResetPasswordViewModel.ConfigPasswordResetValues.numOfPreviousPasswords);
+            var usedPassword = services.IsPasswordPresentInPastNPasswords(user, viewModel.Email, viewModel.Password);
             if (usedPassword)
             {
                 ModelState.AddModelError(nameof(ResetPasswordViewModel.Password), ResetPasswordViewModel.ErrorMessages.PasswordPriviouslyUsed);

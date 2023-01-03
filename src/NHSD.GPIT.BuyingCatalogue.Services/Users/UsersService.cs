@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Flurl.Http;
 using Microsoft.AspNetCore.Identity;
@@ -22,11 +23,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
         private readonly AccountManagementSettings accountManagementSettings;
         private readonly BuyingCatalogueDbContext dbContext;
         private readonly IPasswordHasher<AspNetUser> passwordHash;
+        private readonly PasswordResetSettings passwordRestsettings;
 
-        public UsersService(UserManager<AspNetUser> userManager, AccountManagementSettings accountManagementSettings, BuyingCatalogueDbContext dbContext, IPasswordHasher<AspNetUser> passwordHash)
+        public UsersService(UserManager<AspNetUser> userManager, AccountManagementSettings accountManagementSettings, BuyingCatalogueDbContext dbContext, IPasswordHasher<AspNetUser> passwordHash, PasswordResetSettings passwordRestsettings)
         {
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             this.accountManagementSettings = accountManagementSettings ?? throw new ArgumentNullException(nameof(accountManagementSettings));
+            this.passwordRestsettings = passwordRestsettings ?? throw new ArgumentNullException(nameof(passwordRestsettings));
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             this.passwordHash = passwordHash ?? throw new ArgumentNullException(nameof(passwordHash));
         }
@@ -172,13 +175,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
             return users >= accountManagementSettings.MaximumNumberOfAccountManagers;
         }
 
-        public async Task<bool> IsPasswordPresentInPastNPasswords(AspNetUser user, string email, string newPassword, int numOfPreviousPasswords)
+        public bool IsPasswordPresentInPastNPasswords(AspNetUser user, string email, string newPassword)
         {
-            var passwordHistQuery = (from hist in dbContext.AspNetUsers.TemporalAll()
-                                     where hist.Email == email
-                                     orderby hist.LastUpdated descending
-                                     select hist.PasswordHash).Take<string>(numOfPreviousPasswords);
-            foreach (var hist in passwordHistQuery)
+            var passwordHistQuery1 = dbContext.AspNetUsers.TemporalAll()
+                .Where(x => x.Email == email)
+                .OrderByDescending(x => x.LastUpdated)
+                .Select(x => x.PasswordHash)
+                .Take(passwordRestsettings.NumOfPreviousPasswords);
+            foreach (var hist in passwordHistQuery1)
             {
                 var result = passwordHash.VerifyHashedPassword(user, hist, newPassword);
                 if (result == PasswordVerificationResult.Success)

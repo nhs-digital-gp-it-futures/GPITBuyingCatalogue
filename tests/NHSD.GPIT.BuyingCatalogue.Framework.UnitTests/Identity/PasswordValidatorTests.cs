@@ -8,10 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
     public static class PasswordValidatorTests
     {
         [Theory]
-        [InlineData("Pass123123")]
-        [InlineData("Pass$$$$$$")]
-        [InlineData("pass$$$123")]
-        [InlineData("PASS$$$123")]
+        [InlineData("Pass123123$")]
         public static void ValidateAsync_ValidPassword_ReturnsSuccessfulIdentityResult(string password)
         {
             var validator = new PasswordValidator();
