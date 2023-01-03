@@ -84,11 +84,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 
             var signinResult = await signInManager.PasswordSignInAsync(user, viewModel.Password, false, true);
 
-            if (!signinResult.Succeeded)
-                return BadLogin();
+            if (signinResult.Succeeded)
+            {
+                await odsService.UpdateOrganisationDetails(user.PrimaryOrganisation.ExternalIdentifier);
+                return Redirect(string.IsNullOrWhiteSpace(viewModel.ReturnUrl) ? "~/" : viewModel.ReturnUrl);
+            }
 
-            await odsService.UpdateOrganisationDetails(user.PrimaryOrganisation.ExternalIdentifier);
-            return Redirect(string.IsNullOrWhiteSpace(viewModel.ReturnUrl) ? "~/" : viewModel.ReturnUrl);
+            return signinResult.IsLockedOut ? View("LockedAccount") : BadLogin();
         }
 
         [HttpGet("Logout")]

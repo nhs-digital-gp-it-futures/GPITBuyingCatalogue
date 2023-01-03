@@ -228,7 +228,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                     o.Password.RequireUppercase = false;
                     o.Password.RequiredLength = 10;
                     o.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-                    o.Lockout.MaxFailedAccessAttempts = 6;
+                    o.Lockout.MaxFailedAccessAttempts = 3;
                 })
                 .AddEntityFrameworkStores<BuyingCatalogueDbContext>()
                 .AddTokenProvider<DataProtectorTokenProvider<AspNetUser>>(TokenOptions.DefaultProvider)
