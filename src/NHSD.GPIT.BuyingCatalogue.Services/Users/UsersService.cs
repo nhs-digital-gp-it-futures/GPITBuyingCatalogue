@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
+using Flurl.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
@@ -16,11 +20,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
     {
         private readonly UserManager<AspNetUser> userManager;
         private readonly AccountManagementSettings accountManagementSettings;
+        private readonly BuyingCatalogueDbContext dbContext;
+        private readonly IPasswordHasher<AspNetUser> passwordHash;
 
-        public UsersService(UserManager<AspNetUser> userManager, AccountManagementSettings accountManagementSettings)
+        public UsersService(UserManager<AspNetUser> userManager, AccountManagementSettings accountManagementSettings, BuyingCatalogueDbContext dbContext, IPasswordHasher<AspNetUser> passwordHash)
         {
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             this.accountManagementSettings = accountManagementSettings ?? throw new ArgumentNullException(nameof(accountManagementSettings));
+            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            this.passwordHash = passwordHash ?? throw new ArgumentNullException(nameof(passwordHash));
         }
 
         public Task<AspNetUser> GetUser(int userId)
@@ -162,6 +170,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
                         && !u.Disabled);
 
             return users >= accountManagementSettings.MaximumNumberOfAccountManagers;
+        }
+
+        public async Task<bool> IsPasswordPresentInPastNPasswords(AspNetUser user, string email, string newPassword, int numOfPreviousPasswords)
+        {
+            var passwordHistQuery = (from hist in dbContext.AspNetUsers.TemporalAll()
+                                     where hist.Email == email
+                                     orderby hist.LastUpdated descending
+                                     select hist.PasswordHash).Take<string>(numOfPreviousPasswords);
+            foreach (var hist in passwordHistQuery)
+            {
+                var result = passwordHash.VerifyHashedPassword(user, hist, newPassword);
+                if (result == PasswordVerificationResult.Success)
+                    return true;
+            }
+
+            return false;
         }
     }
 }

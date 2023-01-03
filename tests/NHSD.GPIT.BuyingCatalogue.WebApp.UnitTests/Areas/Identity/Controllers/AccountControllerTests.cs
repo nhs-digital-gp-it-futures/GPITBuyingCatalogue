@@ -11,6 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
@@ -289,6 +290,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
             IOdsService odsService = null)
         {
             return new AccountController(
+                Mock.Of<IUsersService>(),
                 signInManager,
                 userManager,
                 odsService ?? Mock.Of<IOdsService>(),

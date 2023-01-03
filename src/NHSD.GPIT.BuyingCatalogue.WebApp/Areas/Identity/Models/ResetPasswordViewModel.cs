@@ -24,6 +24,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models
         {
             public const string PasswordRequired = "Enter a password";
             public const string PasswordMismatch = "Passwords do not match";
+            public const string PasswordPriviouslyUsed = "Password was used previously.Enter a different password";
+        }
+        public static class ConfigPasswordResetValues
+        {
+            public const int numOfPreviousPasswords = 5;
         }
     }
 }
