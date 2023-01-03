@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
         public const string FirstNameMissingErrorMessage = "Enter a first name";
         public const string LastNameMissingErrorMessage = "Enter a last name";
         public const string MustBelongToNhsDigitalErrorMessage = "Admins must be a member of NHS Digital";
-        public const string MustNotExceedAccountManagerLimit = "There are already {0} active account managers for this organisation which is the maximum allowed.";
+        public const string MustNotExceedAccountManagerLimit = "There are already {0} active account managers for this organisation which is the maximum allowed";
         public const string OrganisationMissingErrorMessage = "Select an organisation";
 
         private readonly IUsersService usersService;
@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
                 .WithMessage(AccountTypeMissingErrorMessage)
                 .Must((model, accountType) => BelongToCorrectOrganisation(accountType, model.SelectedOrganisationId))
                 .WithMessage(MustBelongToNhsDigitalErrorMessage)
-                .Must((model, accountType) => AccountManagerLimit(accountType, model.SelectedOrganisationId, model.UserId))
+                .Must((model, accountType) => AccountManagerLimit(accountType, model.SelectedOrganisationId, model.UserId, !model.IsActive.GetValueOrDefault(false)))
                 .WithMessage(string.Format(MustNotExceedAccountManagerLimit, accountManagementSettings.MaximumNumberOfAccountManagers));
 
             RuleFor(x => x.IsActive)
@@ -66,20 +66,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
                 .WithMessage(AccountStatusMissingErrorMessage);
         }
 
-        private static bool BelongToCorrectOrganisation(string accountType, string selectedOrganisationId)
+        private static bool BelongToCorrectOrganisation(string accountType, int? selectedOrganisationId)
         {
             if (accountType != OrganisationFunction.Authority.Name)
                 return true;
 
-            return selectedOrganisationId == $"{OrganisationConstants.NhsDigitalOrganisationId}";
+            return selectedOrganisationId == OrganisationConstants.NhsDigitalOrganisationId;
         }
 
-        private bool AccountManagerLimit(string accountType, string selectedOrganisationId, int userId)
+        private bool AccountManagerLimit(string accountType, int? selectedOrganisationId, int userId, bool disabled)
         {
-            if (accountType != OrganisationFunction.AccountManager.Name)
-                return true;
-
-            return !usersService.IsAccountManagerLimit(int.Parse(selectedOrganisationId), userId).Result;
+            return accountType != OrganisationFunction.AccountManager.Name || disabled
+                || !usersService.IsAccountManagerLimit(selectedOrganisationId.GetValueOrDefault(), userId).Result;
         }
 
         private bool NotBeDuplicateUserEmail(string emailAddress, int userId)
