@@ -202,9 +202,25 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
             context.SaveChanges();
 
             AuthorizationPages.LoginActions.Login(user.Email, incorrectPassword);
-            AuthorizationPages.LoginActions.ClickLogin();
-            AuthorizationPages.LoginActions.ClickLogin();
 
+            CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(AccountController),
+                    nameof(AccountController.Login))
+                .Should()
+                .BeTrue();
+
+            AuthorizationPages.CommonActions.LogoutLinkDisplayed().Should().BeFalse();
+
+            AuthorizationPages.LoginActions.ClickLogin();
+            CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(AccountController),
+                    nameof(AccountController.Login))
+                .Should()
+                .BeTrue();
+
+            AuthorizationPages.CommonActions.LogoutLinkDisplayed().Should().BeFalse();
+
+            AuthorizationPages.LoginActions.ClickLogin();
             CommonActions.PageLoadedCorrectGetIndex(
                     typeof(AccountController),
                     nameof(AccountController.LockedAccount))
