@@ -34,6 +34,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Authorization
             Driver.FindElement(AuthorizationObjects.LoginButton).Click();
         }
 
+        public void ClickLogin()
+        {
+            Driver.FindElement(AuthorizationObjects.LoginButton).Click();
+        }
+
         private bool ElementDisplayed(By by)
         {
             try

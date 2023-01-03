@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 {
@@ -90,7 +92,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
                 return Redirect(string.IsNullOrWhiteSpace(viewModel.ReturnUrl) ? "~/" : viewModel.ReturnUrl);
             }
 
-            return signinResult.IsLockedOut ? View("LockedAccount") : BadLogin();
+            return signinResult.IsLockedOut ? RedirectToAction(nameof(LockedAccount)) : BadLogin();
+        }
+
+        [HttpGet("LockedAccount")]
+        public IActionResult LockedAccount()
+        {
+            var model = new NavBaseModel
+            {
+                BackLink = Url.Action(nameof(Login), typeof(AccountController).ControllerName()),
+                BackLinkText = "Go back",
+            };
+            return View(model);
         }
 
         [HttpGet("Logout")]

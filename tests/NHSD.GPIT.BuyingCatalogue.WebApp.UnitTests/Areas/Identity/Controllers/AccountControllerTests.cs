@@ -1,19 +1,25 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using Xunit;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
@@ -167,6 +173,40 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
 
             actualResult.ViewName.Should().BeNull();
             actualResult.Model.Should().BeAssignableTo<LoginViewModel>();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_Login_UserAccountLocked_ReturnsLockedView(
+            AspNetUser user,
+            LoginViewModel model,
+            Mock<UserManager<AspNetUser>> mockUserManager,
+            Mock<SignInManager<AspNetUser>> mockSignInManager,
+            Mock<IUrlHelper> mockUrlHelper)
+        {
+            user.Disabled = false;
+
+            mockUserManager
+                .Setup(x => x.FindByNameAsync(model.EmailAddress))
+                .ReturnsAsync(user);
+
+            mockSignInManager
+                .Setup(x => x.PasswordSignInAsync(user, model.Password, false, true))
+                .ReturnsAsync(SignInResult.LockedOut);
+
+            var controller = CreateController(mockUserManager.Object, mockSignInManager.Object);
+
+            controller.Url = mockUrlHelper.Object;
+
+            var result = await controller.Login(model);
+
+            mockUserManager.VerifyAll();
+            mockSignInManager.VerifyAll();
+            mockUrlHelper.VerifyAll();
+
+            var actualResult = result.Should().BeAssignableTo<RedirectToActionResult>().Subject;
+
+            actualResult.ActionName.Should().Be(nameof(AccountController.LockedAccount));
         }
 
         [Theory]

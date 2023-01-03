@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Authorization;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
@@ -164,6 +165,82 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
 
             CommonActions.ElementTextContains(AuthorizationObjects.DisabledError, DisabledError).Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task Login_LockedUser_LockedOutPageDisplayed()
+        {
+            await using var context = GetUsersContext();
+            var user = GetAdmin();
+
+            user.LockoutEnabled = true;
+            user.LockoutEnd = DateTimeOffset.Now.AddMinutes(5);
+            context.Update(user);
+            context.SaveChanges();
+
+            AuthorizationPages.LoginActions.Login(user.Email, DefaultPassword);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(AccountController),
+                    nameof(AccountController.LockedAccount))
+                .Should()
+                .BeTrue();
+
+            AuthorizationPages.CommonActions.LogoutLinkDisplayed().Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task Login_ThreeFailedLoginAttempts_LocksOutUser()
+        {
+            var incorrectPassword = "Test";
+
+            await using var context = GetUsersContext();
+            var user = GetAdmin();
+
+            user.LockoutEnabled = true;
+            context.Update(user);
+            context.SaveChanges();
+
+            AuthorizationPages.LoginActions.Login(user.Email, incorrectPassword);
+            AuthorizationPages.LoginActions.ClickLogin();
+            AuthorizationPages.LoginActions.ClickLogin();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(AccountController),
+                    nameof(AccountController.LockedAccount))
+                .Should()
+                .BeTrue();
+
+            AuthorizationPages.CommonActions.LogoutLinkDisplayed().Should().BeFalse();
+
+            user = GetAdmin();
+            user.LockoutEnd.HasValue.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task Login_LockedUser_LockOutTimeExpired_UserCanLogIn()
+        {
+            await using var context = GetUsersContext();
+            var user = GetAdmin();
+
+            user.LockoutEnabled = true;
+            user.LockoutEnd = DateTimeOffset.Now.AddMinutes(-1);
+            context.Update(user);
+            context.SaveChanges();
+
+            AuthorizationPages.LoginActions.Login(user.Email, DefaultPassword);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(HomeController),
+                    nameof(HomeController.Index))
+                .Should()
+                .BeTrue();
+
+            AuthorizationPages.CommonActions.LogoutLinkDisplayed().Should().BeTrue();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(HomeController),
+                nameof(HomeController.Index)).Should().BeTrue();
         }
 
         public void Dispose()
