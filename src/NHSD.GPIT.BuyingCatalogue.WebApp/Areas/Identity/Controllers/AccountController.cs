@@ -100,7 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
         {
             var model = new NavBaseModel
             {
-                BackLink = Url.Action(nameof(Login), typeof(AccountController).ControllerName()),
+                BackLink = Url.Action(nameof(Login)),
                 BackLinkText = "Go back",
             };
             return View(model);
