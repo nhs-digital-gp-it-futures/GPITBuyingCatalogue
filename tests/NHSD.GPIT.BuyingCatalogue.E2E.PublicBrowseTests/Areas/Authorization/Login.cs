@@ -10,7 +10,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
 {
-    public sealed class Login : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class Login : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         private const string EmailError = "Enter your email address";
         private const string PasswordError = "Enter your password";
@@ -112,7 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
         [Theory]
         [InlineData("user", "falsePassword")]
         [InlineData("falseUser@email.com", "password")]
-        public async Task Login_InvalidEmailOrPassword_UnsuccessfulLogin(string user, string password)
+        public void Login_InvalidEmailOrPassword_UnsuccessfulLogin(string user, string password)
         {
             var userEmail = user == "user" ? GetAdmin().Email : user;
             var userPassword = password == "password" ? DefaultPassword : password;
@@ -265,6 +265,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
             var user = GetAdmin();
 
             user.Disabled = false;
+            user.LockoutEnabled = false;
+            user.AccessFailedCount = 0;
+            user.LockoutEnd = null;
             context.Update(user);
             context.SaveChanges();
         }

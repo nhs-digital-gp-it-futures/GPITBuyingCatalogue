@@ -26,6 +26,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Authorization
             return ElementDisplayed(AuthorizationObjects.LoginButton);
         }
 
+        public bool HomepageButtonDisplayed()
+        {
+            return ElementDisplayed(AuthorizationObjects.HomepageButton);
+        }
+
         public void Login(string userEmail, string password)
         {
             Driver.FindElement(AuthorizationObjects.EmailAddress).SendKeys(userEmail);
@@ -37,6 +42,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Authorization
         public void ClickLogin()
         {
             Driver.FindElement(AuthorizationObjects.LoginButton).Click();
+        }
+
+        public void ClickHomepageButton()
+        {
+            Driver.FindElement(AuthorizationObjects.HomepageButton).Click();
         }
 
         private bool ElementDisplayed(By by)
