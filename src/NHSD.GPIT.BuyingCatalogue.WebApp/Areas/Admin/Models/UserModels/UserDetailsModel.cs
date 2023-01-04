@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Net.Mail;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -13,13 +15,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.UserModels
 {
     public class UserDetailsModel : NavBaseModel
     {
+        private string firstName;
+        private string lastName;
+        private string email;
+
         public UserDetailsModel()
         {
         }
 
         public UserDetailsModel(AspNetUser user)
         {
-            SelectedOrganisationId = $"{user.PrimaryOrganisationId}";
+            SelectedOrganisationId = user.PrimaryOrganisationId;
             UserId = user.Id;
             FirstName = user.FirstName;
             LastName = user.LastName;
@@ -38,15 +44,50 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.UserModels
 
         public int UserId { get; set; }
 
-        public string FirstName { get; set; }
+        public string FirstName
+        {
+            get
+            {
+                return firstName;
+            }
 
-        public string LastName { get; set; }
+            set
+            {
+                firstName = value?.Trim();
+            }
+        }
 
-        public string Email { get; set; }
+        [StringLength(100)]
+        public string LastName
+        {
+            get
+            {
+                return lastName;
+            }
+
+            set
+            {
+                lastName = value?.Trim();
+            }
+        }
+
+        [StringLength(256)]
+        public string Email
+        {
+            get
+            {
+                return email;
+            }
+
+            set
+            {
+                email = value?.Trim();
+            }
+        }
 
         public string SelectedAccountType { get; set; }
 
-        public string SelectedOrganisationId { get; set; }
+        public int? SelectedOrganisationId { get; set; }
 
         public IEnumerable<SelectOption<string>> AccountTypeOptions => new List<SelectOption<string>>
         {

@@ -133,11 +133,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             if (solution?.OrderItemPrice?.ProvisioningType is ProvisioningType.Patient
                 && solution.CatalogueItemId != catalogueItemId)
             {
-                await SetPracticeSizes(model, solution);
+                SetPracticeSizes(model, solution);
             }
             else
             {
-                await SetPracticeSizes(model);
+                SetPracticeSizes(model);
             }
 
             return View(ServiceRecipientViewName, model);
@@ -178,7 +178,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             return RedirectToAction(route.ActionName, route.ControllerName, route.RouteValues);
         }
 
-        private async Task SetPracticeSizes(SelectServiceRecipientQuantityModel model, OrderItem solution = null)
+        private void SetPracticeSizes(SelectServiceRecipientQuantityModel model, OrderItem solution = null)
         {
             foreach (var serviceRecipient in model.ServiceRecipients)
             {
@@ -195,7 +195,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 }
                 else
                 {
-                    var quantity = await gpPracticeCache.GetNumberOfPatients(serviceRecipient.OdsCode);
+                    var quantity = gpPracticeCache.GetNumberOfPatients(serviceRecipient.OdsCode);
 
                     if (quantity.HasValue)
                     {

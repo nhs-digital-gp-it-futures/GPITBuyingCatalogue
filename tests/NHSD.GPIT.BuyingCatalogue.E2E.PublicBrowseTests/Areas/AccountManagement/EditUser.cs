@@ -32,10 +32,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
             "This email domain cannot be used to register a new user account as it is not on the allow list";
 
         private const string RoleMustBeBuyer =
-            "You can only add buyers for this organisation. This is because there are already 2 active account managers which is the maximum allowed.";
+            "You cannot make this user an account manager. This is because there are already 2 active account managers for this organisation, which is the maximum allowed.";
 
         private const string RoleError =
-            "There are already 2 active account managers for this organisation which is the maximum allowed.";
+            "There are already 2 active account managers for this organisation which is the maximum allowed";
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
@@ -97,6 +97,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
             CommonActions.ClickRadioButtonWithText("Inactive");
             CommonActions.ClearInputElement(AddUserObjects.Email);
             AccountManagementPages.AddUser.EnterEmailAddress(ValidEmail);
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(ManageAccountController),
+                nameof(ManageAccountController.Users)).Should().BeTrue();
+        }
+
+        [Fact]
+        public void EditUser_IncludesWhitespace_RemovesWhitespace()
+        {
+            CommonActions.ClearInputElement(AddUserObjects.FirstName);
+            AccountManagementPages.AddUser.EnterFirstName("    Alice    ");
+            CommonActions.ClearInputElement(AddUserObjects.LastName);
+            AccountManagementPages.AddUser.EnterLastName("    Smith    ");
+            CommonActions.ClearInputElement(AddUserObjects.Email);
+            AccountManagementPages.AddUser.EnterEmailAddress("    " + ValidEmail + "    ");
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -198,6 +214,25 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
 
             var amUser1 = await CreateUser(accountType: OrganisationFunction.AccountManager.Name);
             var amUser2 = await CreateUser(accountType: OrganisationFunction.AccountManager.Name);
+
+            CommonActions.ElementIsDisplayed(AddUserObjects.Role).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(CommonSelectors.NhsInsetText).Should().BeTrue();
+            CommonActions.ElementTextContains(CommonSelectors.NhsInsetText, RoleMustBeBuyer).Should().BeTrue();
+
+            await RemoveUser(amUser1);
+            await RemoveUser(amUser2);
+        }
+
+        [Fact]
+        public async Task EditUser_AccountManagerLimit_ValidationError_InsetTextDisplayed()
+        {
+            SetupUser(UserId, false, OrganisationFunction.Buyer.Name);
+
+            var amUser1 = await CreateUser(accountType: OrganisationFunction.AccountManager.Name);
+            var amUser2 = await CreateUser(accountType: OrganisationFunction.AccountManager.Name);
+
+            CommonActions.ClearInputElement(AddUserObjects.Email);
+            CommonActions.ClickSave();
 
             CommonActions.ElementIsDisplayed(AddUserObjects.Role).Should().BeFalse();
             CommonActions.ElementIsDisplayed(CommonSelectors.NhsInsetText).Should().BeTrue();

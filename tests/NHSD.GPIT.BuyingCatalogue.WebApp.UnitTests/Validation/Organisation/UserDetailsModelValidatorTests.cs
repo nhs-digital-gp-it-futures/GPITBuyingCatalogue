@@ -127,6 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Organisation
             UserDetailsModel model,
             UserDetailsModelValidator validator)
         {
+            model.OrganisationId = 500;
             model.SelectedAccountType = accountType;
             model.IsDefaultAccountType = false;
 
@@ -144,6 +145,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Organisation
             UserDetailsModel model,
             UserDetailsModelValidator validator)
         {
+            model.OrganisationId = 500;
             model.SelectedAccountType = accountType;
             model.IsDefaultAccountType = true;
 
@@ -246,7 +248,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Organisation
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedAccountType)
-                .WithErrorMessage($"There are already {accountManagementSettings.MaximumNumberOfAccountManagers} active account managers for this organisation which is the maximum allowed.");
+                .WithErrorMessage($"There are already {accountManagementSettings.MaximumNumberOfAccountManagers} active account managers for this organisation which is the maximum allowed");
         }
 
         [Theory]
