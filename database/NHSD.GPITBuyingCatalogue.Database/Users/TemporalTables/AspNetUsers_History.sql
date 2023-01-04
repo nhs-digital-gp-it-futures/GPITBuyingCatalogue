@@ -7,6 +7,7 @@
      NormalizedEmail nvarchar(256) NOT NULL,
      EmailConfirmed bit NOT NULL,
      PasswordHash nvarchar(max) NULL,
+     PasswordUpdatedDate datetime2(7) NOT NULL,
      SecurityStamp nvarchar(max) NULL,
      ConcurrencyStamp nvarchar(max) NULL,
      PhoneNumber nvarchar(35) NULL,

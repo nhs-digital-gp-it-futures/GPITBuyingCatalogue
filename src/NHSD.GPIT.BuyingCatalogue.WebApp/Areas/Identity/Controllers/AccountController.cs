@@ -82,6 +82,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
                 return View(viewModel);
             }
 
+            if ((DateTime.Now - user.PasswordUpdatedDate).Days >= 365)
+            {
+                return RedirectToAction(nameof(UpdatePassword));
+            }
+
             var signinResult = await signInManager.PasswordSignInAsync(user, viewModel.Password, false, true);
 
             if (!signinResult.Succeeded)
@@ -149,7 +154,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             var res = await passwordService.ResetPasswordAsync(viewModel.Email, viewModel.Token, viewModel.Password);
 
             if (res.Succeeded)
+            {
+                await passwordService.UpdatePasswordChangedDate(viewModel.Email);
                 return RedirectToAction(nameof(ResetPasswordConfirmation));
+            }
 
             var invalidPasswordError = res.Errors.FirstOrDefault(error => error.Code == PasswordValidator.InvalidPasswordCode);
 

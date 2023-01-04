@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
@@ -123,6 +124,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
         {
             var user = await userManager.FindByEmailAsync(emailAddress);
             return await userManager.ResetPasswordAsync(user, token, newPassword);
+        }
+
+        /// <summary>
+        /// Update the date the password was changed <paramref name="emailAddress"/>.
+        /// </summary>
+        /// <param name="emailAddress">The email address of the user.</param>
+        /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous operation.</placeholder></returns>
+        public async Task UpdatePasswordChangedDate(string emailAddress)
+        {
+            var user = await userManager.Users.FirstAsync(u => u.Email == emailAddress);
+
+            user.PasswordUpdatedDate = DateTime.Now;
+
+            await userManager.UpdateAsync(user);
         }
     }
 }

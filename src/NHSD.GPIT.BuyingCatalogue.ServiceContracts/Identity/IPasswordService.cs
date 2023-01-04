@@ -50,5 +50,12 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity
         /// <param name="token">The password reset token.</param>
         /// <returns><see langref="true"/> if the token is valid; otherwise <see langref="false"/>.</returns>
         Task<bool> IsValidPasswordResetTokenAsync(string emailAddress, string token);
+
+        /// <summary>
+        /// Update the date the password was changed <paramref name="emailAddress"/>.
+        /// </summary>
+        /// <param name="emailAddress">The email address of the user.</param>
+        /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous operation.</placeholder></returns>
+        Task UpdatePasswordChangedDate(string emailAddress);
     }
 }

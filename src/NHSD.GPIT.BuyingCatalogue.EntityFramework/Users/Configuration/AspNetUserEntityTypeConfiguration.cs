@@ -33,6 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Configuration
             builder.Property(u => u.PhoneNumber).HasMaxLength(35);
             builder.Property(u => u.PhoneNumberConfirmed).IsRequired().HasDefaultValue(0);
             builder.Property(u => u.UserName).HasMaxLength(256).IsRequired();
+            builder.Property(u => u.PasswordUpdatedDate).HasDefaultValue(DateTime.UtcNow);
             builder.Property(u => u.LastUpdated).HasDefaultValue(DateTime.UtcNow);
 
             builder.HasOne(u => u.PrimaryOrganisation)

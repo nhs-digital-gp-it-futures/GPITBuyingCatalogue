@@ -7,6 +7,7 @@
      NormalizedEmail nvarchar(256) NOT NULL,
      EmailConfirmed bit CONSTRAINT DF_AspNetUsers_EmailConfirmed DEFAULT 0 NOT NULL,
      PasswordHash nvarchar(max) NULL,
+     PasswordUpdatedDate datetime2(7) DEFAULT GETUTCDATE() NOT NULL,
      SecurityStamp nvarchar(max) NULL,
      ConcurrencyStamp nvarchar(max) NULL,
      PhoneNumber nvarchar(35) NULL,
