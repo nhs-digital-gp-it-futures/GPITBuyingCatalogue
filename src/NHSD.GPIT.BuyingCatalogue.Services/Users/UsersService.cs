@@ -23,13 +23,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
         private readonly AccountManagementSettings accountManagementSettings;
         private readonly BuyingCatalogueDbContext dbContext;
         private readonly IPasswordHasher<AspNetUser> passwordHash;
-        private readonly PasswordResetSettings passwordRestsettings;
+        private readonly PasswordResetSettings passwordResetSettings;
 
-        public UsersService(UserManager<AspNetUser> userManager, AccountManagementSettings accountManagementSettings, BuyingCatalogueDbContext dbContext, IPasswordHasher<AspNetUser> passwordHash, PasswordResetSettings passwordRestsettings)
+        public UsersService(UserManager<AspNetUser> userManager, AccountManagementSettings accountManagementSettings, BuyingCatalogueDbContext dbContext, IPasswordHasher<AspNetUser> passwordHash, PasswordResetSettings passwordResetSettings)
         {
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             this.accountManagementSettings = accountManagementSettings ?? throw new ArgumentNullException(nameof(accountManagementSettings));
-            this.passwordRestsettings = passwordRestsettings ?? throw new ArgumentNullException(nameof(passwordRestsettings));
+            this.passwordResetSettings = passwordResetSettings ?? throw new ArgumentNullException(nameof(passwordResetSettings));
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             this.passwordHash = passwordHash ?? throw new ArgumentNullException(nameof(passwordHash));
         }
@@ -175,14 +175,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
             return users >= accountManagementSettings.MaximumNumberOfAccountManagers;
         }
 
-        public bool IsPasswordValid(AspNetUser user, string email, string newPassword)
+        public async Task<bool> IsPasswordValid(AspNetUser user, string newPassword)
         {
-            var passwordHistQuery1 = dbContext.AspNetUsers.TemporalAll()
-                .Where(x => x.Email == email)
+            var passwordHistQuery1 = await dbContext.AspNetUsers.TemporalAll()
+                .Where(x => x.Id == user.Id)
                 .OrderByDescending(x => x.LastUpdated)
                 .Select(x => x.PasswordHash)
                 .Distinct()
-                .Take(passwordRestsettings.NumOfPreviousPasswords);
+                .Take(passwordResetSettings.NumOfPreviousPasswords)
+                .ToListAsync();
             foreach (var hist in passwordHistQuery1)
             {
                 var result = passwordHash.VerifyHashedPassword(user, hist, newPassword);

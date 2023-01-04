@@ -188,8 +188,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
                 .ReturnsAsync(user);
 
             mockIUsersService
-                .Setup(x => x.IsPasswordValid(It.IsAny<AspNetUser>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(true);
+                .Setup(x => x.IsPasswordValid(It.IsAny<AspNetUser>(), It.IsAny<string>()))
+                .Returns(Task.FromResult(true));
 
             var controller = CreateController(mockUserManager.Object, mockSignInManager.Object, null, mockIUsersService.Object);
 
