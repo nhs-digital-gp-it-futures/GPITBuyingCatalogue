@@ -107,7 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementTextEqualTo(
                 Objects.Ordering.OrderDashboard.LastUpdatedEndNote,
-                $"Order last updated by Sue Smith on {DateTime.UtcNow.ToString("dd MMMM yyyy")}");
+                $"Order last updated by Sue Smith on {DateTime.UtcNow.ToString("d MMMM yyyy")}");
         }
 
         [Fact]
