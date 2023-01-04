@@ -4,5 +4,11 @@
     "inputFiles": [
       "wwwroot/css/main.css"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/govuk-frontend/assets/js/govuk-frontend.min.js",
+    "inputFiles": [
+      "wwwroot/govuk-frontend/assets/js/govuk-frontend.min.js"
+    ]
   }
 ]
