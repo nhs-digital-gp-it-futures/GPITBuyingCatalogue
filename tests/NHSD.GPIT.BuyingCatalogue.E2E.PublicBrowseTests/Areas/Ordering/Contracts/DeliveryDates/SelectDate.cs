@@ -208,7 +208,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DeliveryDa
 
             var errorMessage = string.Format(
                 SelectDateModelValidator.DeliveryDateBeforeCommencementDateErrorMessage,
-                $"{date:dd MMMM yyyy}");
+                $"{date:d MMMM yyyy}");
 
             CommonActions.ElementTextEqualTo(
                 DeliveryDatesObjects.SelectDateError,

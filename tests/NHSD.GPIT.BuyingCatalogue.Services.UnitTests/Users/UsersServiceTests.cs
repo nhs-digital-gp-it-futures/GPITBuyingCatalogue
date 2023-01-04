@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoFixture.AutoMoq;
+using AutoFixture;
+using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
@@ -13,6 +16,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.Services.Users;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
@@ -22,9 +26,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         private const int MaxNumberOfAccountManagers = 1;
 
         [Fact]
-        public static void Constructor_NullRepository_ThrowsException()
+        public static void Constructors_VerifyGuardClauses()
         {
-            Assert.Throws<ArgumentNullException>(() => _ = new UsersService(null, new AccountManagementSettings(), null, null, null));
+            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var assertion = new GuardClauseAssertion(fixture);
+            var constructors = typeof(UsersService).GetConstructors();
+
+            assertion.Verify(constructors);
         }
 
         [Theory]

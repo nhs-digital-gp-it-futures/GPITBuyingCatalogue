@@ -26,6 +26,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
         [InlineData("pass$$$$$$")]
         [InlineData("PASS$$$$$$")]
         [InlineData("PASSonetwothree")]
+        [InlineData("Pass$$$$$$")]
+        [InlineData("pass$$$123")]
+        [InlineData("PASS$$$123")]
         public static void ValidateAsync_InvalidPassword_ReturnsFailureIdentityResult(string password)
         {
             var validator = new PasswordValidator();

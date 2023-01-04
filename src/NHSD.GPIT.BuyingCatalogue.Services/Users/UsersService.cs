@@ -175,12 +175,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
             return users >= accountManagementSettings.MaximumNumberOfAccountManagers;
         }
 
-        public bool IsPasswordPresentInPastNPasswords(AspNetUser user, string email, string newPassword)
+        public bool IsPasswordValidPresentInPastNPasswords(AspNetUser user, string email, string newPassword)
         {
             var passwordHistQuery1 = dbContext.AspNetUsers.TemporalAll()
                 .Where(x => x.Email == email)
                 .OrderByDescending(x => x.LastUpdated)
                 .Select(x => x.PasswordHash)
+                .Distinct()
                 .Take(passwordRestsettings.NumOfPreviousPasswords);
             foreach (var hist in passwordHistQuery1)
             {
