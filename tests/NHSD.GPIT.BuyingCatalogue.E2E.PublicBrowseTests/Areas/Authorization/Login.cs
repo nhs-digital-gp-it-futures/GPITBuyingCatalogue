@@ -63,13 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
 
             AuthorizationPages.LoginActions.Login(email, DefaultPassword);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(AccountController),
-                    nameof(AccountController.Login))
-                .Should()
-                .BeTrue();
-
-            AuthorizationPages.CommonActions.LogoutLinkDisplayed().Should().BeFalse();
+            IsUnsuccessfulLogin();
 
             AuthorizationPages.LoginActions.EmailAddressInputDisplayed().Should().BeTrue();
             AuthorizationPages.LoginActions.PasswordInputDisplayed().Should().BeTrue();
@@ -91,13 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
 
             AuthorizationPages.LoginActions.Login(userEmail, password);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(AccountController),
-                    nameof(AccountController.Login))
-                .Should()
-                .BeTrue();
-
-            AuthorizationPages.CommonActions.LogoutLinkDisplayed().Should().BeFalse();
+            IsUnsuccessfulLogin();
 
             AuthorizationPages.LoginActions.EmailAddressInputDisplayed().Should().BeTrue();
             AuthorizationPages.LoginActions.PasswordInputDisplayed().Should().BeTrue();
@@ -119,13 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
 
             AuthorizationPages.LoginActions.Login(userEmail, userPassword);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(AccountController),
-                    nameof(AccountController.Login))
-                .Should()
-                .BeTrue();
-
-            AuthorizationPages.CommonActions.LogoutLinkDisplayed().Should().BeFalse();
+            IsUnsuccessfulLogin();
 
             AuthorizationPages.LoginActions.EmailAddressInputDisplayed().Should().BeTrue();
             AuthorizationPages.LoginActions.PasswordInputDisplayed().Should().BeTrue();
@@ -150,13 +132,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
 
             AuthorizationPages.LoginActions.Login(user.Email, DefaultPassword);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(AccountController),
-                    nameof(AccountController.Login))
-                .Should()
-                .BeTrue();
-
-            AuthorizationPages.CommonActions.LogoutLinkDisplayed().Should().BeFalse();
+            IsUnsuccessfulLogin();
 
             AuthorizationPages.LoginActions.EmailAddressInputDisplayed().Should().BeTrue();
             AuthorizationPages.LoginActions.PasswordInputDisplayed().Should().BeTrue();
@@ -180,19 +156,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
 
             AuthorizationPages.LoginActions.Login(user.Email, DefaultPassword);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(AccountController),
-                    nameof(AccountController.LockedAccount))
-                .Should()
-                .BeTrue();
-
-            AuthorizationPages.CommonActions.LogoutLinkDisplayed().Should().BeFalse();
+            IsLockedOut();
         }
 
         [Fact]
         public async Task Login_ThreeFailedLoginAttempts_LocksOutUser()
         {
-            var incorrectPassword = "Test";
+            const string incorrectPassword = "Test";
 
             await using var context = GetUsersContext();
             var user = GetAdmin();
@@ -202,32 +172,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
             context.SaveChanges();
 
             AuthorizationPages.LoginActions.Login(user.Email, incorrectPassword);
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(AccountController),
-                    nameof(AccountController.Login))
-                .Should()
-                .BeTrue();
-
-            AuthorizationPages.CommonActions.LogoutLinkDisplayed().Should().BeFalse();
+            IsUnsuccessfulLogin();
 
             AuthorizationPages.LoginActions.ClickLogin();
-            CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(AccountController),
-                    nameof(AccountController.Login))
-                .Should()
-                .BeTrue();
-
-            AuthorizationPages.CommonActions.LogoutLinkDisplayed().Should().BeFalse();
+            IsUnsuccessfulLogin();
 
             AuthorizationPages.LoginActions.ClickLogin();
-            CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(AccountController),
-                    nameof(AccountController.LockedAccount))
-                .Should()
-                .BeTrue();
-
-            AuthorizationPages.CommonActions.LogoutLinkDisplayed().Should().BeFalse();
+            IsLockedOut();
 
             user = GetAdmin();
             user.LockoutEnd.HasValue.Should().BeTrue();
@@ -270,6 +221,28 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
             user.LockoutEnd = null;
             context.Update(user);
             context.SaveChanges();
+        }
+
+        private void IsUnsuccessfulLogin()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(AccountController),
+                    nameof(AccountController.Login))
+                .Should()
+                .BeTrue();
+
+            AuthorizationPages.CommonActions.LogoutLinkDisplayed().Should().BeFalse();
+        }
+
+        private void IsLockedOut()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(AccountController),
+                    nameof(AccountController.LockedAccount))
+                .Should()
+                .BeTrue();
+
+            AuthorizationPages.CommonActions.LogoutLinkDisplayed().Should().BeFalse();
         }
     }
 }
