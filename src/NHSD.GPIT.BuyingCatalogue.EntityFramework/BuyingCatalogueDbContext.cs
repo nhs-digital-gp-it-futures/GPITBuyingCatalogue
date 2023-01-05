@@ -208,8 +208,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
         {
             userId ??= identityService?.GetUserId();
 
-            if (userId is null) return;
-
             foreach (var entry in ChangeTracker.Entries())
             {
                 if (entry.Entity is not IAudited auditedEntity)
@@ -221,7 +219,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
                     case EntityState.Unchanged:
                         continue;
                     default:
-                        auditedEntity.LastUpdatedBy = userId;
+                        auditedEntity.LastUpdatedBy = userId ?? auditedEntity.LastUpdatedBy;
                         auditedEntity.LastUpdated = DateTime.UtcNow;
                         continue;
                 }
