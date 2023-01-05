@@ -6,7 +6,7 @@
     <Name>NHSD.GPITBuyingCatalogue.Database</Name>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>4.1</ProjectVersion>
-    <ProjectGuid>{3a93afa0-d505-46f6-9b6c-a66c23907991}</ProjectGuid>
+    <ProjectGuid>{deea1b1a-aec7-46f2-a786-4c0e9a391958}</ProjectGuid>
     <DSP>Microsoft.Data.Tools.Schema.Sql.SqlAzureV12DatabaseSchemaProvider</DSP>
     <OutputType>Database</OutputType>
     <RootPath>
