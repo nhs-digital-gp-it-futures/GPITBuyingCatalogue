@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
     public sealed class PasswordValidator : IPasswordValidator<AspNetUser>
     {
         public const string InvalidPasswordCode = "InvalidPassword";
-        public const string PasswordConditionsNotMet = "The password you’ve entered does not meet the criteria";
+        public const string PasswordConditionsNotMet = "The password you’ve entered does not meet the password policy";
 
         public Task<IdentityResult> ValidateAsync(UserManager<AspNetUser> manager, AspNetUser user, string password)
         {
@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
                 () => password.Any(c => specialCharacters.Contains(c, StringComparison.InvariantCultureIgnoreCase)),
             };
 
-            if (validationRules.Count(r => r()) < 3)
+            if (validationRules.Count(r => r()) < 4)
             {
                 return Task.FromResult(IdentityResult.Failed(new IdentityError
                 {

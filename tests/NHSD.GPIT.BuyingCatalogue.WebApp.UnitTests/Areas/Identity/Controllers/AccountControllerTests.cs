@@ -15,12 +15,15 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using Xunit;
+using static NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing.Constants;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
@@ -177,6 +180,39 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
 
         [Theory]
         [CommonAutoData]
+        public static async Task ResetPassword_WithPreviouslyUsedPassword_ReturnsModelError(
+             AspNetUser user,
+             ResetPasswordViewModel model,
+             Mock<UserManager<AspNetUser>> mockUserManager,
+             Mock<SignInManager<AspNetUser>> mockSignInManager,
+             Mock<IUsersService> mockIUsersService)
+        {
+            const string expectedErrorMessage = "Password was used previously. Enter a different password";
+            user.Disabled = true;
+            mockUserManager
+                .Setup(x => x.FindByEmailAsync(model.Email))
+                .ReturnsAsync(user);
+
+            mockIUsersService
+                .Setup(x => x.IsPasswordValid(It.IsAny<AspNetUser>(), It.IsAny<string>()))
+                .Returns(Task.FromResult(true));
+
+            var controller = CreateController(mockUserManager.Object, mockSignInManager.Object, null, mockIUsersService.Object);
+
+            var result = await controller.ResetPassword(model);
+            mockUserManager.VerifyAll();
+            mockIUsersService.VerifyAll();
+            controller.ModelState.Should().ContainKey(nameof(ResetPasswordViewModel.Password));
+            controller.ModelState[nameof(ResetPasswordViewModel.Password)]?.Errors.Should().Contain(x => x.ErrorMessage.Contains(expectedErrorMessage));
+
+            var actualResult = result.Should().BeAssignableTo<ViewResult>().Subject;
+
+            actualResult.ViewName.Should().BeNull();
+            actualResult.Model.Should().BeAssignableTo<ResetPasswordViewModel>();
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static async Task Post_Login_UserAccountLocked_ReturnsLockedView(
             AspNetUser user,
             LoginViewModel model,
@@ -326,12 +362,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         private static AccountController CreateController(
             UserManager<AspNetUser> userManager,
             SignInManager<AspNetUser> signInManager,
-            IOdsService odsService = null)
+            IOdsService odsService = null,
+            IUsersService userServices = null)
         {
             return new AccountController(
                 signInManager,
                 userManager,
                 odsService ?? Mock.Of<IOdsService>(),
+                userServices ?? Mock.Of<IUsersService>(),
                 Mock.Of<IPasswordService>(),
                 Mock.Of<IPasswordResetCallback>(),
                 new DisabledErrorMessageSettings());
