@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
@@ -12,6 +13,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.Services.Users;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 {
@@ -89,11 +91,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 
             var signinResult = await signInManager.PasswordSignInAsync(user, viewModel.Password, false, true);
 
-            if (!signinResult.Succeeded)
-                return BadLogin();
+            if (signinResult.Succeeded)
+            {
+                await odsService.UpdateOrganisationDetails(user.PrimaryOrganisation.ExternalIdentifier);
+                return Redirect(string.IsNullOrWhiteSpace(viewModel.ReturnUrl) ? "~/" : viewModel.ReturnUrl);
+            }
 
-            await odsService.UpdateOrganisationDetails(user.PrimaryOrganisation.ExternalIdentifier);
-            return Redirect(string.IsNullOrWhiteSpace(viewModel.ReturnUrl) ? "~/" : viewModel.ReturnUrl);
+            return signinResult.IsLockedOut ? RedirectToAction(nameof(LockedAccount)) : BadLogin();
+        }
+
+        [HttpGet("LockedAccount")]
+        public IActionResult LockedAccount()
+        {
+            var model = new NavBaseModel
+            {
+                BackLink = Url.Action(nameof(Login)),
+                BackLinkText = "Go back",
+            };
+            return View(model);
         }
 
         [HttpGet("Logout")]

@@ -225,7 +225,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                     PasswordValidator.ConfigurePasswordOptions(o.Password);
 
                     o.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-                    o.Lockout.MaxFailedAccessAttempts = 6;
+                    o.Lockout.MaxFailedAccessAttempts = 3;
                 })
                 .AddEntityFrameworkStores<BuyingCatalogueDbContext>()
                 .AddTokenProvider<DataProtectorTokenProvider<AspNetUser>>(TokenOptions.DefaultProvider)
