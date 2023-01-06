@@ -222,11 +222,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.AddIdentity<AspNetUser, AspNetRole>(o =>
                 {
-                    o.Password.RequireDigit = false;
-                    o.Password.RequireLowercase = false;
-                    o.Password.RequireNonAlphanumeric = false;
-                    o.Password.RequireUppercase = false;
-                    o.Password.RequiredLength = 10;
+                    PasswordValidator.ConfigurePasswordOptions(o.Password);
+
                     o.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                     o.Lockout.MaxFailedAccessAttempts = 6;
                 })
