@@ -56,6 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 options.Filters.Add(typeof(OrdersActionFilter));
                 options.Filters.Add(typeof(CookieConsentActionFilter));
                 options.Filters.Add(typeof(TermsOfUseActionFilter));
+                options.Filters.Add(typeof(UpdatePasswordActionFilter));
                 options.Filters.Add<SerilogMvcLoggingAttribute>();
             }).AddControllersAsServices();
 

@@ -35,6 +35,15 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity
         Task SendResetEmailAsync(AspNetUser user, Uri callback);
 
         /// <summary>
+        /// Changes the password of the user with the specified email<paramref name="emailAddress"/>.
+        /// </summary>
+        /// <param name="emailAddress">The email address of the user.</param>
+        /// <param name="currentPassword">The user's current password.</param>
+        /// <param name="newPassword">The value of the new password.</param>
+        /// <returns>The result of the password reset operation.</returns>
+        Task<IdentityResult> ChangePasswordAsync(string emailAddress, string currentPassword, string newPassword);
+
+        /// <summary>
         /// Resets the password of the user with the specified <paramref name="emailAddress"/>.
         /// </summary>
         /// <param name="emailAddress">The email address of the user.</param>
@@ -55,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity
         /// Update the date the password was changed <paramref name="emailAddress"/>.
         /// </summary>
         /// <param name="emailAddress">The email address of the user.</param>
-        /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous operation.</placeholder></returns>
-        Task UpdatePasswordChangedDate(string emailAddress);
+        /// <returns>The result of the update operation.</returns>
+        Task<IdentityResult> UpdatePasswordChangedDate(string emailAddress);
     }
 }

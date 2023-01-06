@@ -10,6 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Validators.Registration;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 {
@@ -80,11 +81,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
                 ModelState.AddModelError(nameof(LoginViewModel.DisabledError), disabledErrorFormat);
 
                 return View(viewModel);
-            }
-
-            if ((DateTime.Now - user.PasswordUpdatedDate).Days >= 365)
-            {
-                return RedirectToAction(nameof(UpdatePassword));
             }
 
             var signinResult = await signInManager.PasswordSignInAsync(user, viewModel.Password, false, true);
@@ -185,6 +181,47 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
         public IActionResult ResetPasswordExpired()
         {
             return View();
+        }
+
+        [HttpGet("UpdatePassword")]
+        public IActionResult UpdatePassword()
+        {
+            return View();
+        }
+
+        [HttpPost("UpdatePassword")]
+        public async Task<IActionResult> UpdatePassword(UpdatePasswordViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+                return View(viewModel);
+
+            var res = await passwordService.ChangePasswordAsync(User.Identity.Name, viewModel.CurrentPassword, viewModel.NewPassword);
+
+            if (res.Succeeded)
+            {
+                await passwordService.UpdatePasswordChangedDate(User.Identity.Name);
+                await signInManager.SignOutAsync().ConfigureAwait(false);
+                return RedirectToAction(nameof(Login));
+            }
+
+            var incorrectPasswordError = res.Errors.FirstOrDefault(error => error.Code == UpdatePasswordViewModelValidator.CurrentPasswordMismatchCode);
+
+            if (incorrectPasswordError is not null)
+            {
+                ModelState.AddModelError(nameof(UpdatePasswordViewModel.CurrentPassword), UpdatePasswordViewModelValidator.CurrentPasswordIncorrect);
+                return View(viewModel);
+            }
+
+            var invalidPasswordError = res.Errors.FirstOrDefault(error => error.Code == PasswordValidator.InvalidPasswordCode);
+
+            if (invalidPasswordError is not null)
+            {
+                ModelState.AddModelError(nameof(UpdatePasswordViewModel.NewPassword), invalidPasswordError.Description);
+                return View(viewModel);
+            }
+
+            throw new InvalidOperationException(
+                $"Unexpected errors whilst updating password: {string.Join(" & ", res.Errors.Select(error => error.Description))}");
         }
     }
 }

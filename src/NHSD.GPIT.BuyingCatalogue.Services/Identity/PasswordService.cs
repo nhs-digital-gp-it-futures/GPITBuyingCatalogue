@@ -114,6 +114,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
         }
 
         /// <summary>
+        /// Changes the password of the user with the specified email<paramref name="emailAddress"/>.
+        /// </summary>
+        /// <param name="emailAddress">The email address of the user.</param>
+        /// <param name="currentPassword">The user's current password.</param>
+        /// <param name="newPassword">The value of the new password.</param>
+        /// <returns>The result of the password reset operation.</returns>
+        public async Task<IdentityResult> ChangePasswordAsync(string emailAddress, string currentPassword, string newPassword)
+        {
+            var user = await userManager.FindByEmailAsync(emailAddress);
+            return await userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+        }
+
+        /// <summary>
         /// Resets the password of the user with the specified <paramref name="emailAddress"/>.
         /// </summary>
         /// <param name="emailAddress">The email address of the user.</param>
@@ -130,14 +143,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
         /// Update the date the password was changed <paramref name="emailAddress"/>.
         /// </summary>
         /// <param name="emailAddress">The email address of the user.</param>
-        /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous operation.</placeholder></returns>
-        public async Task UpdatePasswordChangedDate(string emailAddress)
+        /// <returns>The result of the update operation.</returns>
+        public async Task<IdentityResult> UpdatePasswordChangedDate(string emailAddress)
         {
             var user = await userManager.Users.FirstAsync(u => u.Email == emailAddress);
 
             user.PasswordUpdatedDate = DateTime.Now;
 
-            await userManager.UpdateAsync(user);
+            return await userManager.UpdateAsync(user);
         }
     }
 }
