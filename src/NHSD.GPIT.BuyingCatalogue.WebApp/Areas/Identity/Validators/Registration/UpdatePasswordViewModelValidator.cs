@@ -27,7 +27,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Validators.Registratio
                 .WithMessage(ConfirmPasswordRequired)
                 .Matches(x => x.NewPassword)
                 .WithMessage(PasswordMismatch);
-
         }
     }
 }
