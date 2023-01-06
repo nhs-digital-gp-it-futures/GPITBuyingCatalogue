@@ -179,14 +179,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
         {
             var passwordHistQuery1 = await dbContext.AspNetUsers.TemporalAll()
                 .Where(x => x.Id == user.Id)
-                .OrderByDescending(x => x.LastUpdated)
-                .Select(x => x.PasswordHash)
+                .Select(x => new { x.PasswordHash, x.LastUpdated })
                 .Distinct()
                 .Take(passwordResetSettings.NumOfPreviousPasswords)
+                .OrderByDescending(x => x.LastUpdated)
                 .ToListAsync();
+
             foreach (var hist in passwordHistQuery1)
             {
-                var result = passwordHash.VerifyHashedPassword(user, hist, newPassword);
+                var result = passwordHash.VerifyHashedPassword(user, hist.PasswordHash, newPassword);
                 if (result == PasswordVerificationResult.Success)
                     return true;
             }
