@@ -1,12 +1,10 @@
 ﻿using System;
-using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OrganisationImporter.Models;
 using OrganisationImporter.Services;
 using OrganisationImporterTests.AutoFixtureCustomizations;
 using Xunit;

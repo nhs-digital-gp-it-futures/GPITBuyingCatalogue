@@ -60,7 +60,7 @@ namespace BuyingCatalogueFunction.Services.IncrementalUpdate
             await _organisationUpdateService.IncrementalUpdate(data);
             await _organisationUpdateService.SetLastRunDate(DateTime.Today);
 
-            _logger.LogInformation($"Updated {organisationIds.Count} organisations");
+            _logger.LogInformation("Updated {Count} organisations", organisationIds.Count);
         }
     }
 }

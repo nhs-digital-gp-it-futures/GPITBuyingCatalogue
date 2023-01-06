@@ -1,7 +1,4 @@
 ﻿using System;
-using AutoFixture;
-using AutoFixture.AutoMoq;
-using AutoFixture.Idioms;
 using BuyingCatalogueFunction.Adapters;
 using BuyingCatalogueFunction.Models.Ods;
 using FluentAssertions;
@@ -12,16 +9,6 @@ namespace BuyingCatalogueFunctionTests.Adapters
 {
     public static class OdsOrganisationAdapterTests
     {
-        [Fact]
-        public static void Constructor_VerifyGuardClauses()
-        {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
-            var assertion = new GuardClauseAssertion(fixture);
-            var constructors = typeof(OdsOrganisationAdapter).GetConstructors();
-
-            assertion.Verify(constructors);
-        }
-
         [Theory]
         [CommonAutoData]
         public static void Process_InputIsNull_ThrowsException(

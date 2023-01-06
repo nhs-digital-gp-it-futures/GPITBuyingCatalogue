@@ -24,10 +24,10 @@ MERGE INTO catalogue.CapabilityCategories AS TARGET
      USING @capabilityCategories AS SOURCE
         ON TARGET.Id = SOURCE.Id
       WHEN MATCHED THEN
-UPDATE SET 
+UPDATE SET
         TARGET.[Name] = SOURCE.[Name],
         TARGET.[Description] = SOURCE.[Description]
       WHEN NOT MATCHED BY TARGET THEN
-    INSERT (Id, [Name], [Description])
-    VALUES (SOURCE.Id, SOURCE.[Name], SOURCE.[Description]);
+    INSERT ([Name], [Description])
+    VALUES (SOURCE.[Name], SOURCE.[Description]);
 GO
