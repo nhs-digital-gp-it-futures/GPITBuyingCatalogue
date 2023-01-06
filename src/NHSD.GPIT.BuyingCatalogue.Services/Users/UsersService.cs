@@ -177,15 +177,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
 
         public async Task<bool> IsPasswordValid(AspNetUser user, string newPassword)
         {
-            var passwordHistQuery1 = await dbContext.AspNetUsers.TemporalAll()
-                .Where(x => x.Id == user.Id)
-                .Select(x => new { x.PasswordHash, x.LastUpdated })
-                .Distinct()
-                .Take(passwordResetSettings.NumOfPreviousPasswords)
-                .OrderByDescending(x => x.LastUpdated)
-                .ToListAsync();
+            var passwords = await dbContext.AspNetUsers.TemporalAll()
+                            .Where(x => x.Id == user.Id)
+                            .Select(x => new { x.PasswordHash, x.LastUpdated })
+                            .OrderByDescending(x => x.LastUpdated)
+                            .ToListAsync();
 
-            foreach (var hist in passwordHistQuery1)
+            var passwordHistory = passwords
+                .DistinctBy(x => x.PasswordHash)
+                .Take(passwordResetSettings.NumOfPreviousPasswords);
+
+            foreach (var hist in passwordHistory)
             {
                 var result = passwordHash.VerifyHashedPassword(user, hist.PasswordHash, newPassword);
                 if (result == PasswordVerificationResult.Success)
