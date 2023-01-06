@@ -10,22 +10,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         {
         }
 
-        public TaskListOrderItemModel(string internalOrgId, CallOffId callOffId, OrderItem orderItem)
+        public TaskListOrderItemModel(string internalOrgId, CallOffId callOffId, OrderItem orderItem, bool hasCurrentAmendments = false)
         {
             InternalOrgId = internalOrgId;
             CallOffId = callOffId;
 
-            CatalogueItemId = orderItem?.CatalogueItemId ?? default(CatalogueItemId);
+            CatalogueItemId = orderItem?.CatalogueItemId ?? default;
             Name = orderItem?.CatalogueItem?.Name ?? string.Empty;
+            HasCurrentAmendments = hasCurrentAmendments;
 
             ServiceRecipientsStatus = GetServiceRecipientsStatus(orderItem);
             PriceStatus = GetPriceStatus(orderItem);
             QuantityStatus = GetQuantityStatus(orderItem);
+            DeliveryDatesStatus = GetDeliveryDateStatus(orderItem);
         }
 
         public string InternalOrgId { get; set; }
 
         public CallOffId CallOffId { get; set; }
+
+        public bool IsAmendment => CallOffId.IsAmendment;
+
+        public bool FromPreviousRevision { get; set; }
+
+        public bool HasCurrentAmendments { get; set; }
 
         public CatalogueItemId CatalogueItemId { get; set; }
 
@@ -40,6 +48,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         public TaskProgress PriceStatus { get; set; }
 
         public TaskProgress QuantityStatus { get; set; }
+
+        public TaskProgress DeliveryDatesStatus { get; set; }
+
+        private static TaskProgress GetDeliveryDateStatus(OrderItem orderItem)
+        {
+            if (!orderItem.OrderItemRecipients.Any())
+            {
+                return TaskProgress.CannotStart;
+            }
+
+            if (orderItem.OrderItemRecipients.All(x => x.DeliveryDate.HasValue))
+            {
+                return TaskProgress.Completed;
+            }
+
+            return orderItem.OrderItemRecipients.Any(x => x.DeliveryDate.HasValue)
+                ? TaskProgress.InProgress
+                : TaskProgress.NotStarted;
+        }
 
         private static TaskProgress GetServiceRecipientsStatus(OrderItem orderItem)
         {

@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new TaskListModel(internalOrgId, callOffId, order);
+            var expected = new TaskListModel(internalOrgId, callOffId, new OrderWrapper(order));
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
         }
@@ -95,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new TaskListModel(internalOrgId, callOffId, order)
+            var expected = new TaskListModel(internalOrgId, callOffId, new OrderWrapper(order))
             {
                 AdditionalServicesAvailable = true,
             };
@@ -133,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new TaskListModel(internalOrgId, callOffId, order)
+            var expected = new TaskListModel(internalOrgId, callOffId, new OrderWrapper(order))
             {
                 AssociatedServicesAvailable = true,
             };
