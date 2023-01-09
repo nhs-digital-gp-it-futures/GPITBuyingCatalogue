@@ -31,7 +31,7 @@
                 <nhs-table-row-container>
                     <nhs-table-cell>@workOffPlan.Standard.Name</nhs-table-cell>
                     <nhs-table-cell>@workOffPlan.Details</nhs-table-cell>
-                    <nhs-table-cell>@workOffPlan.CompletionDate.ToString("d/MM/yyyy")</nhs-table-cell>
+                    <nhs-table-cell>@workOffPlan.CompletionDate.ToString("d MMM yyyy")</nhs-table-cell>
                     <nhs-table-cell>
                         <a href="@Url.Action(
                                     nameof(DevelopmentPlansController.EditWorkOffPlan),
