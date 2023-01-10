@@ -7,46 +7,35 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
 {
-    public sealed class PasswordValidator : IPasswordValidator<AspNetUser>
+    public sealed class PasswordValidator : PasswordValidator<AspNetUser>
     {
         public const string InvalidPasswordCode = "InvalidPassword";
         public const string PasswordConditionsNotMet = "The password you’ve entered does not meet the password policy";
 
-        public Task<IdentityResult> ValidateAsync(UserManager<AspNetUser> manager, AspNetUser user, string password)
+        public static void ConfigurePasswordOptions(PasswordOptions options)
         {
-            const string specialCharacters = "!@#$%^&*";
+            if (options == null) throw new ArgumentNullException(nameof(options));
 
-            password ??= string.Empty;
+            options.RequireDigit = true;
+            options.RequireUppercase = true;
+            options.RequireLowercase = true;
+            options.RequireNonAlphanumeric = true;
+            options.RequiredLength = 10;
+            options.RequiredUniqueChars = 1;
+        }
 
-            if (password.Length < 10)
-            {
-                return Task.FromResult(
-                    IdentityResult.Failed(
-                        new IdentityError
-                        {
-                            Code = InvalidPasswordCode,
-                            Description = PasswordConditionsNotMet,
-                        }));
-            }
+        public override async Task<IdentityResult> ValidateAsync(
+            UserManager<AspNetUser> manager,
+            AspNetUser user,
+            string password)
+        {
+            var result = await base.ValidateAsync(manager, user, password);
 
-            var validationRules = new List<Func<bool>>
-            {
-                () => password.Any(char.IsLower),
-                () => password.Any(char.IsUpper),
-                () => password.Any(char.IsDigit),
-                () => password.Any(c => specialCharacters.Contains(c, StringComparison.InvariantCultureIgnoreCase)),
-            };
+            if (result.Succeeded)
+                return result;
 
-            if (validationRules.Count(r => r()) < 4)
-            {
-                return Task.FromResult(IdentityResult.Failed(new IdentityError
-                {
-                    Code = InvalidPasswordCode,
-                    Description = PasswordConditionsNotMet,
-                }));
-            }
-
-            return Task.FromResult(IdentityResult.Success);
+            return IdentityResult.Failed(
+                new IdentityError { Code = InvalidPasswordCode, Description = PasswordConditionsNotMet });
         }
     }
 }

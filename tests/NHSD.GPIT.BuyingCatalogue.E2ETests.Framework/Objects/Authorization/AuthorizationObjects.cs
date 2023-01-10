@@ -14,6 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Authorization
         public static By PasswordError => By.Id("Password-error");
 
         public static By LoginButton => By.CssSelector("button[type=submit]");
+        public static By HomepageButton => By.LinkText("Return to homepage");
 
         public static By LogoutLink => ByExtensions.DataTestId("logout-link");
 

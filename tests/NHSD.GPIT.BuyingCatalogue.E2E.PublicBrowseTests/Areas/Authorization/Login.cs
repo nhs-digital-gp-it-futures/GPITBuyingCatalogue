@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Authorization;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
@@ -9,7 +10,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
 {
-    public sealed class Login : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class Login : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         private const string EmailError = "Enter your email address";
         private const string PasswordError = "Enter your password";
@@ -62,13 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
 
             AuthorizationPages.LoginActions.Login(email, DefaultPassword);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(AccountController),
-                    nameof(AccountController.Login))
-                .Should()
-                .BeTrue();
-
-            AuthorizationPages.CommonActions.LogoutLinkDisplayed().Should().BeFalse();
+            IsUnsuccessfulLogin();
 
             AuthorizationPages.LoginActions.EmailAddressInputDisplayed().Should().BeTrue();
             AuthorizationPages.LoginActions.PasswordInputDisplayed().Should().BeTrue();
@@ -90,13 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
 
             AuthorizationPages.LoginActions.Login(userEmail, password);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(AccountController),
-                    nameof(AccountController.Login))
-                .Should()
-                .BeTrue();
-
-            AuthorizationPages.CommonActions.LogoutLinkDisplayed().Should().BeFalse();
+            IsUnsuccessfulLogin();
 
             AuthorizationPages.LoginActions.EmailAddressInputDisplayed().Should().BeTrue();
             AuthorizationPages.LoginActions.PasswordInputDisplayed().Should().BeTrue();
@@ -111,20 +100,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
         [Theory]
         [InlineData("user", "falsePassword")]
         [InlineData("falseUser@email.com", "password")]
-        public async Task Login_InvalidEmailOrPassword_UnsuccessfulLogin(string user, string password)
+        public void Login_InvalidEmailOrPassword_UnsuccessfulLogin(string user, string password)
         {
             var userEmail = user == "user" ? GetAdmin().Email : user;
             var userPassword = password == "password" ? DefaultPassword : password;
 
             AuthorizationPages.LoginActions.Login(userEmail, userPassword);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(AccountController),
-                    nameof(AccountController.Login))
-                .Should()
-                .BeTrue();
-
-            AuthorizationPages.CommonActions.LogoutLinkDisplayed().Should().BeFalse();
+            IsUnsuccessfulLogin();
 
             AuthorizationPages.LoginActions.EmailAddressInputDisplayed().Should().BeTrue();
             AuthorizationPages.LoginActions.PasswordInputDisplayed().Should().BeTrue();
@@ -149,13 +132,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
 
             AuthorizationPages.LoginActions.Login(user.Email, DefaultPassword);
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(AccountController),
-                    nameof(AccountController.Login))
-                .Should()
-                .BeTrue();
-
-            AuthorizationPages.CommonActions.LogoutLinkDisplayed().Should().BeFalse();
+            IsUnsuccessfulLogin();
 
             AuthorizationPages.LoginActions.EmailAddressInputDisplayed().Should().BeTrue();
             AuthorizationPages.LoginActions.PasswordInputDisplayed().Should().BeTrue();
@@ -166,14 +143,106 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
             CommonActions.ElementTextContains(AuthorizationObjects.DisabledError, DisabledError).Should().BeTrue();
         }
 
+        [Fact]
+        public async Task Login_LockedUser_LockedOutPageDisplayed()
+        {
+            await using var context = GetUsersContext();
+            var user = GetAdmin();
+
+            user.LockoutEnabled = true;
+            user.LockoutEnd = DateTimeOffset.Now.AddMinutes(5);
+            context.Update(user);
+            context.SaveChanges();
+
+            AuthorizationPages.LoginActions.Login(user.Email, DefaultPassword);
+
+            IsLockedOut();
+        }
+
+        [Fact]
+        public async Task Login_ThreeFailedLoginAttempts_LocksOutUser()
+        {
+            const string incorrectPassword = "Test";
+
+            await using var context = GetUsersContext();
+            var user = GetAdmin();
+
+            user.LockoutEnabled = true;
+            context.Update(user);
+            context.SaveChanges();
+
+            AuthorizationPages.LoginActions.Login(user.Email, incorrectPassword);
+            IsUnsuccessfulLogin();
+
+            AuthorizationPages.LoginActions.ClickLogin();
+            IsUnsuccessfulLogin();
+
+            AuthorizationPages.LoginActions.ClickLogin();
+            IsLockedOut();
+
+            user = GetAdmin();
+            user.LockoutEnd.HasValue.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task Login_LockedUser_LockOutTimeExpired_UserCanLogIn()
+        {
+            await using var context = GetUsersContext();
+            var user = GetAdmin();
+
+            user.LockoutEnabled = true;
+            user.LockoutEnd = DateTimeOffset.Now.AddMinutes(-1);
+            context.Update(user);
+            context.SaveChanges();
+
+            AuthorizationPages.LoginActions.Login(user.Email, DefaultPassword);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(HomeController),
+                    nameof(HomeController.Index))
+                .Should()
+                .BeTrue();
+
+            AuthorizationPages.CommonActions.LogoutLinkDisplayed().Should().BeTrue();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(HomeController),
+                nameof(HomeController.Index)).Should().BeTrue();
+        }
+
         public void Dispose()
         {
             var context = GetUsersContext();
             var user = GetAdmin();
 
             user.Disabled = false;
+            user.LockoutEnabled = false;
+            user.AccessFailedCount = 0;
+            user.LockoutEnd = null;
             context.Update(user);
             context.SaveChanges();
+        }
+
+        private void IsUnsuccessfulLogin()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(AccountController),
+                    nameof(AccountController.Login))
+                .Should()
+                .BeTrue();
+
+            AuthorizationPages.CommonActions.LogoutLinkDisplayed().Should().BeFalse();
+        }
+
+        private void IsLockedOut()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(AccountController),
+                    nameof(AccountController.LockedAccount))
+                .Should()
+                .BeTrue();
+
+            AuthorizationPages.CommonActions.LogoutLinkDisplayed().Should().BeFalse();
         }
     }
 }
