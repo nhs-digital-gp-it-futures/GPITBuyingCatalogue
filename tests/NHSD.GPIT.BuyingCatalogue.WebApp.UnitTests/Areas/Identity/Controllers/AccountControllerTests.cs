@@ -21,6 +21,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
+using NHSD.GPIT.BuyingCatalogue.Services.Identity;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
@@ -504,8 +505,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
 
             var result = await controller.UpdatePassword(model);
 
+            mockPasswordService.Verify(x => x.UpdatePasswordChangedDate(userName));
+            mockSignInManager.Verify(x => x.SignOutAsync());
             var actualResult = result.Should().BeAssignableTo<RedirectToActionResult>().Subject;
-
             actualResult.ActionName.Should().Be(nameof(AccountController.Login));
         }
 

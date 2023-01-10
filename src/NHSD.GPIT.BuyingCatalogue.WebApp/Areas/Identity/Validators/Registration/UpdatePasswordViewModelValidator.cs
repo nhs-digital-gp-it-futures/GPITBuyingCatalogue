@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Validators.Registratio
         public const string CurrentPasswordIncorrect = "Current password incorrect";
         public const string NewPasswordRequired = "Enter a new password";
         public const string ConfirmPasswordRequired = "Confirm new password";
-        public const string PasswordMismatch = "Passwords do not match";
+        public const string ConfirmPasswordMismatch = "Passwords do not match";
 
         public UpdatePasswordViewModelValidator()
         {
@@ -25,8 +25,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Validators.Registratio
             RuleFor(x => x.ConfirmPassword)
                 .NotEmpty()
                 .WithMessage(ConfirmPasswordRequired)
-                .Matches(x => x.NewPassword)
-                .WithMessage(PasswordMismatch);
+                .Equal(x => x.NewPassword)
+                .WithMessage(ConfirmPasswordMismatch);
         }
     }
 }
