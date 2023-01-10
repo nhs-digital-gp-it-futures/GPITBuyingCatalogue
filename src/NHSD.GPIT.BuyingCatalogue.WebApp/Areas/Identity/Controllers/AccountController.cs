@@ -216,23 +216,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             }
 
             var incorrectPasswordError = res.Errors.FirstOrDefault(error => error.Code == UpdatePasswordViewModelValidator.CurrentPasswordMismatchCode);
-
-            if (incorrectPasswordError is not null)
-            {
-                ModelState.AddModelError(nameof(UpdatePasswordViewModel.CurrentPassword), UpdatePasswordViewModelValidator.CurrentPasswordIncorrect);
-                return View(viewModel);
-            }
-
             var invalidPasswordError = res.Errors.FirstOrDefault(error => error.Code == PasswordValidator.InvalidPasswordCode);
 
-            if (invalidPasswordError is not null)
-            {
-                ModelState.AddModelError(nameof(UpdatePasswordViewModel.NewPassword), invalidPasswordError.Description);
-                return View(viewModel);
-            }
+            if (incorrectPasswordError is null && invalidPasswordError is null)
+                throw new InvalidOperationException($"Unexpected errors whilst updating password: {string.Join(" & ", res.Errors.Select(error => error.Description))}");
 
-            throw new InvalidOperationException(
-                $"Unexpected errors whilst updating password: {string.Join(" & ", res.Errors.Select(error => error.Description))}");
+            if (incorrectPasswordError is not null)
+                ModelState.AddModelError(nameof(UpdatePasswordViewModel.CurrentPassword), UpdatePasswordViewModelValidator.CurrentPasswordIncorrect);
+
+            if (invalidPasswordError is not null)
+                ModelState.AddModelError(nameof(UpdatePasswordViewModel.NewPassword), invalidPasswordError.Description);
+
+            return View(viewModel);
         }
     }
 }
