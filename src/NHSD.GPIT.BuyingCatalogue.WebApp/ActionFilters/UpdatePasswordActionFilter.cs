@@ -22,8 +22,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters
 
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            var passwordExpired = await PasswordHasExpired(context);
-            if (context.HttpContext.Request.Path.StartsWithSegments("/identity/account") || context.HttpContext.Request.Path.StartsWithSegments("/home/error") || !passwordExpired)
+            if (context.HttpContext.Request.Path.StartsWithSegments("/identity/account")
+                || context.HttpContext.Request.Path.StartsWithSegments("/home/error")
+                || !await PasswordHasExpired(context))
             {
                 await next();
                 return;
@@ -44,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters
                 if (userId != null)
                 {
                     var user = await userManager.FindByIdAsync(userId);
-                    if (user != null && (DateTime.Now - user.PasswordUpdatedDate).Days >= 365)
+                    if (user != null && (DateTime.UtcNow - user.PasswordUpdatedDate).Days >= 365)
                     {
                         return true;
                     }
