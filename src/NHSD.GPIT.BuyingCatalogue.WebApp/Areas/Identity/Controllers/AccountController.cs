@@ -219,6 +219,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             if (!ModelState.IsValid)
                 return View(viewModel);
 
+            var user = await userManager.FindByEmailAsync(User.Identity.Name);
+            var usedPassword = await userServices.IsPasswordValid(user, viewModel.NewPassword);
+            if (usedPassword)
+            {
+                ModelState.AddModelError(nameof(UpdatePasswordViewModel.NewPassword), UpdatePasswordViewModelValidator.NewPasswordAlreadyUsed);
+                return View(viewModel);
+            }
+
             var res = await passwordService.ChangePasswordAsync(User.Identity.Name, viewModel.CurrentPassword, viewModel.NewPassword);
 
             if (res.Succeeded)
