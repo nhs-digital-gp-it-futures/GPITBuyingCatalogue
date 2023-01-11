@@ -26,7 +26,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
         private readonly SignInManager<AspNetUser> signInManager;
         private readonly UserManager<AspNetUser> userManager;
         private readonly IOdsService odsService;
-        private readonly IUsersService userServices;
         private readonly IPasswordService passwordService;
         private readonly IPasswordResetCallback passwordResetCallback;
         private readonly DisabledErrorMessageSettings disabledErrorMessageSettings;
@@ -35,7 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             SignInManager<AspNetUser> signInManager,
             UserManager<AspNetUser> userManager,
             IOdsService odsService,
-            IUsersService userServices,
             IPasswordService passwordService,
             IPasswordResetCallback passwordResetCallback,
             DisabledErrorMessageSettings disabledErrorMessageSettings)
@@ -43,7 +41,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             this.signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
-            this.userServices = userServices ?? throw new ArgumentNullException(nameof(userServices));
             this.passwordService = passwordService ?? throw new ArgumentNullException(nameof(passwordService));
             this.passwordResetCallback = passwordResetCallback ?? throw new ArgumentNullException(nameof(passwordResetCallback));
             this.disabledErrorMessageSettings = disabledErrorMessageSettings ?? throw new ArgumentNullException(nameof(disabledErrorMessageSettings));
@@ -164,13 +161,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
         {
             if (!ModelState.IsValid)
                 return View(viewModel);
-            var user = await userManager.FindByEmailAsync(viewModel.Email);
-            var usedPassword = await userServices.IsPasswordValid(user, viewModel.Password);
-            if (usedPassword)
-            {
-                ModelState.AddModelError(nameof(ResetPasswordViewModel.Password), ResetPasswordViewModel.ErrorMessages.PasswordPreviouslyUsed);
-                return View(viewModel);
-            }
 
             var res = await passwordService.ResetPasswordAsync(viewModel.Email, viewModel.Token, viewModel.Password);
             if (res.Succeeded)
@@ -183,7 +173,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 
             if (invalidPasswordError is not null)
             {
-                ModelState.AddModelError(nameof(ResetPasswordViewModel.Password), invalidPasswordError.Description);
+                ModelState.AddModelError(nameof(ResetPasswordViewModel.Password), PasswordValidator.PasswordConditionsNotMet);
+                return View(viewModel);
+            }
+
+            var passwordUsedBefore = res.Errors.FirstOrDefault(error => error.Code == PasswordValidator.PasswordAlreadyUsedCode);
+            if (passwordUsedBefore is not null)
+            {
+                ModelState.AddModelError(nameof(ResetPasswordViewModel.Password), PasswordValidator.PasswordAlreadyUsed);
                 return View(viewModel);
             }
 
@@ -219,14 +216,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             if (!ModelState.IsValid)
                 return View(viewModel);
 
-            var user = await userManager.FindByEmailAsync(User.Identity.Name);
-            var usedPassword = await userServices.IsPasswordValid(user, viewModel.NewPassword);
-            if (usedPassword)
-            {
-                ModelState.AddModelError(nameof(UpdatePasswordViewModel.NewPassword), UpdatePasswordViewModelValidator.NewPasswordAlreadyUsed);
-                return View(viewModel);
-            }
-
             var res = await passwordService.ChangePasswordAsync(User.Identity.Name, viewModel.CurrentPassword, viewModel.NewPassword);
 
             if (res.Succeeded)
@@ -236,17 +225,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
                 return RedirectToAction(nameof(Login));
             }
 
-            var incorrectPasswordError = res.Errors.FirstOrDefault(error => error.Code == UpdatePasswordViewModelValidator.CurrentPasswordMismatchCode);
+            var passwordUsedBefore = res.Errors.FirstOrDefault(error => error.Code == PasswordValidator.PasswordAlreadyUsedCode);
+            var incorrectPasswordError = res.Errors.FirstOrDefault(error => error.Code == PasswordValidator.PasswordMismatchCode);
             var invalidPasswordError = res.Errors.FirstOrDefault(error => error.Code == PasswordValidator.InvalidPasswordCode);
 
-            if (incorrectPasswordError is null && invalidPasswordError is null)
+            if (incorrectPasswordError is null && invalidPasswordError is null && passwordUsedBefore is null)
                 throw new InvalidOperationException($"Unexpected errors whilst updating password: {string.Join(" & ", res.Errors.Select(error => error.Description))}");
 
             if (incorrectPasswordError is not null)
                 ModelState.AddModelError(nameof(UpdatePasswordViewModel.CurrentPassword), UpdatePasswordViewModelValidator.CurrentPasswordIncorrect);
 
             if (invalidPasswordError is not null)
-                ModelState.AddModelError(nameof(UpdatePasswordViewModel.NewPassword), invalidPasswordError.Description);
+                ModelState.AddModelError(nameof(UpdatePasswordViewModel.NewPassword), PasswordValidator.PasswordConditionsNotMet);
+
+            if (passwordUsedBefore is not null)
+                ModelState.AddModelError(nameof(UpdatePasswordViewModel.NewPassword), PasswordValidator.PasswordAlreadyUsed);
 
             return View(viewModel);
         }

@@ -21,17 +21,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
     {
         private readonly UserManager<AspNetUser> userManager;
         private readonly AccountManagementSettings accountManagementSettings;
-        private readonly BuyingCatalogueDbContext dbContext;
-        private readonly IPasswordHasher<AspNetUser> passwordHash;
-        private readonly PasswordResetSettings passwordResetSettings;
 
-        public UsersService(UserManager<AspNetUser> userManager, AccountManagementSettings accountManagementSettings, BuyingCatalogueDbContext dbContext, IPasswordHasher<AspNetUser> passwordHash, PasswordResetSettings passwordResetSettings)
+        public UsersService(UserManager<AspNetUser> userManager, AccountManagementSettings accountManagementSettings)
         {
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             this.accountManagementSettings = accountManagementSettings ?? throw new ArgumentNullException(nameof(accountManagementSettings));
-            this.passwordResetSettings = passwordResetSettings ?? throw new ArgumentNullException(nameof(passwordResetSettings));
-            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            this.passwordHash = passwordHash ?? throw new ArgumentNullException(nameof(passwordHash));
         }
 
         public Task<AspNetUser> GetUser(int userId)
@@ -173,28 +167,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
                         && !u.Disabled);
 
             return users >= accountManagementSettings.MaximumNumberOfAccountManagers;
-        }
-
-        public async Task<bool> IsPasswordValid(AspNetUser user, string newPassword)
-        {
-            var passwords = await dbContext.AspNetUsers.TemporalAll()
-                            .Where(x => x.Id == user.Id)
-                            .Select(x => new { x.PasswordHash, x.LastUpdated })
-                            .OrderByDescending(x => x.LastUpdated)
-                            .ToListAsync();
-
-            var passwordHistory = passwords
-                .DistinctBy(x => x.PasswordHash)
-                .Take(passwordResetSettings.NumOfPreviousPasswords);
-
-            foreach (var hist in passwordHistory)
-            {
-                var result = passwordHash.VerifyHashedPassword(user, hist.PasswordHash, newPassword);
-                if (result == PasswordVerificationResult.Success)
-                    return true;
-            }
-
-            return false;
         }
     }
 }

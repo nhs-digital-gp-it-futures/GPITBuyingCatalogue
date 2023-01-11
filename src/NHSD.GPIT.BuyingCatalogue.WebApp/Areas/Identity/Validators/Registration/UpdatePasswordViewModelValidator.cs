@@ -6,10 +6,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Validators.Registratio
     public class UpdatePasswordViewModelValidator : AbstractValidator<UpdatePasswordViewModel>
     {
         public const string CurrentPasswordRequired = "Enter current password";
-        public const string CurrentPasswordMismatchCode = "PasswordMismatch";
         public const string CurrentPasswordIncorrect = "Current password incorrect";
         public const string NewPasswordRequired = "Enter a new password";
-        public const string NewPasswordAlreadyUsed = "Password was used previously. Enter a different password";
         public const string ConfirmPasswordRequired = "Confirm new password";
         public const string ConfirmPasswordMismatch = "Passwords do not match";
 

@@ -38,7 +38,5 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users
         Task<bool> EmailAddressExists(string emailAddress, int userId = 0);
 
         Task<bool> IsAccountManagerLimit(int organisationId, int userId = 0);
-
-        Task<bool> IsPasswordValid(AspNetUser user, string newPassword);
     }
 }
