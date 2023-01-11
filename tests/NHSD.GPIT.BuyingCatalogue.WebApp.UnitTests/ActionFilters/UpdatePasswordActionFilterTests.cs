@@ -98,7 +98,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
             Mock<ActionExecutionDelegate> nextDelegate,
             Mock<UserManager<AspNetUser>> userManager)
         {
-            var userId = "1";
             var claims = new Claim[]
             {
                 new Claim(CatalogueClaims.OrganisationFunction, "Authority"),
