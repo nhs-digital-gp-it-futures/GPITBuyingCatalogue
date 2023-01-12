@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
@@ -217,6 +221,52 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
                 It.Is<string>(p => p.Equals(new IdentityOptions().Tokens.PasswordResetTokenProvider, StringComparison.Ordinal)),
                 It.Is<string>(p => p.Equals(UserManager<AspNetUser>.ResetPasswordTokenPurpose, StringComparison.Ordinal)),
                 It.Is<string>(t => t.Equals(token, StringComparison.Ordinal))));
+        }
+
+        [Fact]
+        public static async Task ChangePasswordAsync_WithUser_ReturnsIdentityResult()
+        {
+            const string email = "a@b.c";
+            const string currentPassword = "CurrentPassword";
+            const string password = "Pass123321";
+
+            var expectedResult = new IdentityResult();
+            var user = AspNetUserBuilder.Create().Build();
+            var mockUserManager = MockUserManager;
+            mockUserManager.Setup(m => m.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(user);
+            mockUserManager.Setup(m => m.ResetPasswordAsync(user, currentPassword, password)).ReturnsAsync(() => expectedResult);
+
+            var service = new PasswordService(
+                Mock.Of<IGovNotifyEmailService>(),
+                new PasswordResetSettings(),
+                mockUserManager.Object);
+
+            var result = await service.ResetPasswordAsync(email, currentPassword, password);
+            result.Should().Be(expectedResult);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task UpdatePasswordChangedDate_WithUser_ReturnsIdentityResult(
+            [Frozen] BuyingCatalogueDbContext context,
+            Mock<UserManager<AspNetUser>> mockUserManager,
+            AspNetUser user,
+            string email)
+        {
+            var expectedResult = IdentityResult.Success;
+            user.Email = email;
+            context.Users.Add(user);
+            await context.SaveChangesAsync();
+
+            mockUserManager.Setup(m => m.UpdateAsync(It.IsAny<AspNetUser>())).ReturnsAsync(() => expectedResult);
+
+            var service = new PasswordService(
+                Mock.Of<IGovNotifyEmailService>(),
+                new PasswordResetSettings(),
+                mockUserManager.Object);
+
+            var result = await service.UpdatePasswordChangedDate(email);
+            result.Should().Be(expectedResult);
         }
     }
 }

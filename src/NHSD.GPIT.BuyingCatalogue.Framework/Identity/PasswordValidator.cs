@@ -24,7 +24,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
         private readonly PasswordResetSettings passwordResetSettings;
 
         public PasswordValidator()
-        { }
+        {
+        }
 
         public PasswordValidator(BuyingCatalogueDbContext dbContext, IPasswordHasher<AspNetUser> passwordHash, PasswordResetSettings passwordResetSettings)
         {
