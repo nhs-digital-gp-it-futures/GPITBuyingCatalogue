@@ -182,7 +182,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
             Mock<SignInManager<AspNetUser>> mockSignInManager,
             Mock<IPasswordService> mockPasswordService)
         {
-            IdentityError[] expectedErrorMessages = new IdentityError[] {
+            IdentityError[] expectedErrorMessages = new IdentityError[]
+            {
                 new IdentityError() { Code = PasswordValidator.PasswordAlreadyUsedCode, Description = PasswordValidator.PasswordAlreadyUsed },
             };
 
@@ -384,7 +385,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         {
             const string userName = "Name";
 
-            IdentityError[] expectedErrorMessages = new IdentityError[] {
+            IdentityError[] expectedErrorMessages = new IdentityError[]
+            {
                 new IdentityError() { Code = PasswordValidator.PasswordAlreadyUsedCode, Description = PasswordValidator.PasswordAlreadyUsed },
             };
 
@@ -427,8 +429,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         {
             const string userName = "Name";
 
-            IdentityError[] expectedErrorMessages = new IdentityError[] { new IdentityError() { Code = PasswordValidator.PasswordMismatchCode, Description = UpdatePasswordViewModelValidator.CurrentPasswordIncorrect },
-                new IdentityError() { Code = PasswordValidator.InvalidPasswordCode, Description = PasswordValidator.PasswordConditionsNotMet }, };
+            IdentityError[] expectedErrorMessages = new IdentityError[]
+            {
+                new IdentityError() { Code = PasswordValidator.PasswordMismatchCode, Description = UpdatePasswordViewModelValidator.CurrentPasswordIncorrect },
+                new IdentityError() { Code = PasswordValidator.InvalidPasswordCode, Description = PasswordValidator.PasswordConditionsNotMet },
+            };
 
             mockPasswordService
                 .Setup(x => x.ChangePasswordAsync(userName, model.CurrentPassword, model.NewPassword))
