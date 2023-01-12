@@ -28,7 +28,6 @@ public static class PasswordValidatorTests
         assertion.Verify(constructors);
     }
 
-
     [Theory]
     [InMemoryDbAutoData]
     public static void ValidateAsync_ValidPassword_NotUsedBefore_ReturnsSuccessfulIdentityResult(
