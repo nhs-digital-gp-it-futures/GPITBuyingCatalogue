@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -204,12 +205,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             return View();
         }
 
+        [Authorize]
         [HttpGet("UpdatePassword")]
         public IActionResult UpdatePassword()
         {
             return View();
         }
 
+        [Authorize]
         [HttpPost("UpdatePassword")]
         public async Task<IActionResult> UpdatePassword(UpdatePasswordViewModel viewModel)
         {
