@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             {
                 var service = new PasswordService(
                     Mock.Of<IGovNotifyEmailService>(),
-                    new PasswordResetSettings(),
+                    new PasswordSettings(),
                     MockUserManager.Object);
 
                 return service.GeneratePasswordResetTokenAsync(emailAddress);
@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         {
             var service = new PasswordService(
                 Mock.Of<IGovNotifyEmailService>(),
-                new PasswordResetSettings(),
+                new PasswordSettings(),
                 MockUserManager.Object);
 
             var token = await service.GeneratePasswordResetTokenAsync("a@b.com");
@@ -96,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
 
             var service = new PasswordService(
                 Mock.Of<IGovNotifyEmailService>(),
-                new PasswordResetSettings(),
+                new PasswordSettings(),
                 mockUserManager.Object);
 
             var token = await service.GeneratePasswordResetTokenAsync("a@b.com");
@@ -113,7 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             {
                 var service = new PasswordService(
                     Mock.Of<IGovNotifyEmailService>(),
-                    new PasswordResetSettings(),
+                    new PasswordSettings(),
                     MockUserManager.Object);
 
                 return service.SendResetEmailAsync(null, new Uri("https://www.google.co.uk/"));
@@ -129,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             {
                 var service = new PasswordService(
                     Mock.Of<IGovNotifyEmailService>(),
-                    new PasswordResetSettings(),
+                    new PasswordSettings(),
                     MockUserManager.Object);
 
                 return service.SendResetEmailAsync(AspNetUserBuilder.Create().Build(), null);
@@ -141,7 +141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         [Theory]
         [CommonAutoData]
         public static async Task SendResetEmailAsync_SendsEmail(
-            [Frozen] PasswordResetSettings settings,
+            [Frozen] PasswordSettings settings,
             [Frozen] Mock<IGovNotifyEmailService> govNotifyEmailService,
             PasswordService passwordService)
         {
@@ -169,7 +169,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
 
             var service = new PasswordService(
                 Mock.Of<IGovNotifyEmailService>(),
-                new PasswordResetSettings(),
+                new PasswordSettings(),
                 mockUserManager.Object);
 
             var result = await service.ResetPasswordAsync(email, token, password);
@@ -188,7 +188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         {
             var service = new PasswordService(
                 Mock.Of<IGovNotifyEmailService>(),
-                new PasswordResetSettings(),
+                new PasswordSettings(),
                 MockUserManager.Object);
 
             var isValid = await service.IsValidPasswordResetTokenAsync(emailAddress, token);
@@ -211,7 +211,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
 
             var service = new PasswordService(
                 Mock.Of<IGovNotifyEmailService>(),
-                new PasswordResetSettings(),
+                new PasswordSettings(),
                 mockUserManager.Object);
 
             await service.IsValidPasswordResetTokenAsync(emailAddress, token);
@@ -238,7 +238,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
 
             var service = new PasswordService(
                 Mock.Of<IGovNotifyEmailService>(),
-                new PasswordResetSettings(),
+                new PasswordSettings(),
                 mockUserManager.Object);
 
             var result = await service.ResetPasswordAsync(email, currentPassword, password);
@@ -262,7 +262,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
 
             var service = new PasswordService(
                 Mock.Of<IGovNotifyEmailService>(),
-                new PasswordResetSettings(),
+                new PasswordSettings(),
                 mockUserManager.Object);
 
             var result = await service.UpdatePasswordChangedDate(email);

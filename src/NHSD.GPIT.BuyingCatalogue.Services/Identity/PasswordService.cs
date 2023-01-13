@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
     {
         private readonly IGovNotifyEmailService govNotifyEmailService;
         private readonly IdentityOptions identityOptions = new();
-        private readonly PasswordResetSettings settings;
+        private readonly PasswordSettings settings;
         private readonly UserManager<AspNetUser> userManager;
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
         /// <exception cref="ArgumentNullException"><paramref name="userManager"/> is <see langref="null"/>.</exception>
         public PasswordService(
             IGovNotifyEmailService govNotifyEmailService,
-            PasswordResetSettings settings,
+            PasswordSettings settings,
             UserManager<AspNetUser> userManager)
         {
             this.govNotifyEmailService = govNotifyEmailService ?? throw new ArgumentNullException(nameof(govNotifyEmailService));

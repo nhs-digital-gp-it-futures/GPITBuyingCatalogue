@@ -35,7 +35,7 @@ public static class PasswordValidatorTests
         AspNetUser user,
         UserManager<AspNetUser> userManager,
         Mock<IPasswordHasher<AspNetUser>> mockPasswordHash,
-        PasswordResetSettings passwordResetSettings)
+        PasswordSettings passwordResetSettings)
     {
         var password = "Pass123123!";
         var validator = new PasswordValidator(dbContext, mockPasswordHash.Object, passwordResetSettings);

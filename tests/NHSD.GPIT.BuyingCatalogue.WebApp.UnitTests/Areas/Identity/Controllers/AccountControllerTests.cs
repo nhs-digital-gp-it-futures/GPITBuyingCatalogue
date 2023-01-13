@@ -555,7 +555,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
                 odsService ?? Mock.Of<IOdsService>(),
                 passwordService ?? Mock.Of<IPasswordService>(),
                 Mock.Of<IPasswordResetCallback>(),
-                new DisabledErrorMessageSettings());
+                new DisabledErrorMessageSettings(),
+                new PasswordSettings());
         }
     }
 }

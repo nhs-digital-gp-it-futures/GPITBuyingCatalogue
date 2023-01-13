@@ -216,26 +216,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             return services;
         }
 
-        public static void ConfigureIdentity(this IServiceCollection services)
+        public static void ConfigureIdentity(this IServiceCollection services, IConfiguration configuration)
         {
+            var passwordSettings = configuration.GetSection("password").Get<PasswordSettings>();
+
             services.AddTransient<IUserClaimsPrincipalFactory<AspNetUser>, CatalogueUserClaimsPrincipalFactory>();
 
             services.AddIdentity<AspNetUser, AspNetRole>(o =>
                 {
                     PasswordValidator.ConfigurePasswordOptions(o.Password);
 
-                    o.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-                    o.Lockout.MaxFailedAccessAttempts = 3;
+                    o.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(passwordSettings.LockOutTimeInMinutes);
+                    o.Lockout.MaxFailedAccessAttempts = passwordSettings.MaxAccessFailedAttempts;
                 })
                 .AddEntityFrameworkStores<BuyingCatalogueDbContext>()
                 .AddTokenProvider<DataProtectorTokenProvider<AspNetUser>>(TokenOptions.DefaultProvider)
                 .AddPasswordValidator<PasswordValidator>();
         }
 
-        public static void ConfigurePasswordReset(this IServiceCollection services, IConfiguration configuration)
+        public static void ConfigurePassword(this IServiceCollection services, IConfiguration configuration)
         {
-            var passwordResetSettings = configuration.GetSection("passwordReset").Get<PasswordResetSettings>();
-            services.AddSingleton(passwordResetSettings);
+            var passwordSettings = configuration.GetSection("password").Get<PasswordSettings>();
+            services.AddSingleton(passwordSettings);
             services.AddScoped<IPasswordService, PasswordService>();
             services.AddScoped<IPasswordResetCallback, PasswordResetCallback>();
         }

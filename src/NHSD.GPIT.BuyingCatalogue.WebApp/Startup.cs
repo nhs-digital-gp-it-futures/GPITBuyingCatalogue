@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 services.ConfigureSession(Configuration);
             }
 
-            services.ConfigureIdentity();
+            services.ConfigureIdentity(Configuration);
 
             services.ConfigureCacheKeySettings(Configuration)
                 .ConfigureGovNotify(Configuration)
@@ -96,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigureCookies(Configuration);
 
-            services.ConfigurePasswordReset(Configuration);
+            services.ConfigurePassword(Configuration);
 
             services.ConfigureRegistration(Configuration);
 

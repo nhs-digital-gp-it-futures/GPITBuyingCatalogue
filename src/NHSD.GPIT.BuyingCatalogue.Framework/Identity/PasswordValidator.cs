@@ -21,15 +21,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
 
         private readonly BuyingCatalogueDbContext dbContext;
         private readonly IPasswordHasher<AspNetUser> passwordHash;
-        private readonly PasswordResetSettings passwordResetSettings;
+        private readonly PasswordSettings passwordSettings;
 
         public PasswordValidator()
         {
         }
 
-        public PasswordValidator(BuyingCatalogueDbContext dbContext, IPasswordHasher<AspNetUser> passwordHash, PasswordResetSettings passwordResetSettings)
+        public PasswordValidator(BuyingCatalogueDbContext dbContext, IPasswordHasher<AspNetUser> passwordHash, PasswordSettings passwordSettings)
         {
-            this.passwordResetSettings = passwordResetSettings ?? throw new ArgumentNullException(nameof(passwordResetSettings));
+            this.passwordSettings = passwordSettings ?? throw new ArgumentNullException(nameof(passwordSettings));
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             this.passwordHash = passwordHash ?? throw new ArgumentNullException(nameof(passwordHash));
         }
@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
 
             var passwordHistory = passwords
                 .DistinctBy(x => x.PasswordHash)
-                .Take(passwordResetSettings.NumOfPreviousPasswords);
+                .Take(passwordSettings.NumOfPreviousPasswords);
 
             foreach (var hist in passwordHistory)
             {

@@ -96,8 +96,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
             ActionExecutingContext executingContext,
             ActionExecutedContext executedContext,
             Mock<ActionExecutionDelegate> nextDelegate,
-            Mock<UserManager<AspNetUser>> userManager)
+            Mock<UserManager<AspNetUser>> userManager,
+            PasswordSettings passwordSettings)
         {
+            passwordSettings.PasswordExpiryDays = 365;
+
             var claims = new Claim[]
             {
                 new Claim(CatalogueClaims.OrganisationFunction, "Authority"),
@@ -110,7 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
             nextDelegate.Setup(d => d())
                 .ReturnsAsync(executedContext);
 
-            var filter = new UpdatePasswordActionFilter(userManager.Object);
+            var filter = new UpdatePasswordActionFilter(userManager.Object, passwordSettings);
 
             await filter.OnActionExecutionAsync(executingContext, nextDelegate.Object);
 
@@ -123,9 +126,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
             ActionExecutingContext executingContext,
             ActionExecutedContext executedContext,
             Mock<ActionExecutionDelegate> nextDelegate,
-            Mock<UserManager<AspNetUser>> userManager)
+            Mock<UserManager<AspNetUser>> userManager,
+            PasswordSettings passwordSettings)
         {
             var userId = "1";
+            passwordSettings.PasswordExpiryDays = 365;
+
             var claims = new Claim[]
             {
                 new Claim(CatalogueClaims.OrganisationFunction, "Authority"),
@@ -139,7 +145,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
             nextDelegate.Setup(d => d())
                 .ReturnsAsync(executedContext);
 
-            var filter = new UpdatePasswordActionFilter(userManager.Object);
+            var filter = new UpdatePasswordActionFilter(userManager.Object, passwordSettings);
 
             await filter.OnActionExecutionAsync(executingContext, nextDelegate.Object);
 
@@ -155,13 +161,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
             ActionExecutedContext executedContext,
             Mock<ActionExecutionDelegate> nextDelegate,
             Mock<UserManager<AspNetUser>> userManager,
-            AspNetUser user)
+            AspNetUser user,
+            PasswordSettings passwordSettings)
         {
             var userId = "1";
             var claims = new Claim[]
             {
                 new Claim(CatalogueClaims.OrganisationFunction, "Authority"),
             };
+
+            passwordSettings.PasswordExpiryDays = 365;
 
             executingContext.HttpContext.User = new ClaimsPrincipal(
                 new ClaimsIdentity(claims, "mock"));
@@ -174,7 +183,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
             nextDelegate.Setup(d => d())
                 .ReturnsAsync(executedContext);
 
-            var filter = new UpdatePasswordActionFilter(userManager.Object);
+            var filter = new UpdatePasswordActionFilter(userManager.Object, passwordSettings);
 
             await filter.OnActionExecutionAsync(executingContext, nextDelegate.Object);
 
@@ -188,7 +197,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
             ActionExecutedContext executedContext,
             Mock<ActionExecutionDelegate> nextDelegate,
             AspNetUser user,
-            Mock<UserManager<AspNetUser>> userManager)
+            Mock<UserManager<AspNetUser>> userManager,
+            PasswordSettings passwordSettings)
         {
             var userId = "1";
             var claims = new Claim[]
@@ -199,7 +209,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
             executingContext.HttpContext.User = new ClaimsPrincipal(
                 new ClaimsIdentity(claims, "mock"));
 
-            user.PasswordUpdatedDate = DateTime.UtcNow.AddDays(-365);
+            user.PasswordUpdatedDate = DateTime.UtcNow.AddDays(-passwordSettings.PasswordExpiryDays);
 
             userManager.Setup(x => x.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns(userId);
             userManager.Setup(x => x.FindByIdAsync(userId)).ReturnsAsync(user);
@@ -207,7 +217,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
             nextDelegate.Setup(d => d())
                 .ReturnsAsync(executedContext);
 
-            var filter = new UpdatePasswordActionFilter(userManager.Object);
+            var filter = new UpdatePasswordActionFilter(userManager.Object, passwordSettings);
 
             await filter.OnActionExecutionAsync(executingContext, nextDelegate.Object);
 

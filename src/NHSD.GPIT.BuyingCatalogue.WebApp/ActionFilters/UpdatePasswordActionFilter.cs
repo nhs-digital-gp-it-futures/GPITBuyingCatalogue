@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 
@@ -13,11 +14,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters
     public class UpdatePasswordActionFilter : ActionFilterAttribute
     {
         private readonly UserManager<AspNetUser> userManager;
+        private readonly PasswordSettings passwordSettings;
 
         public UpdatePasswordActionFilter(
-            UserManager<AspNetUser> userManager)
+            UserManager<AspNetUser> userManager, PasswordSettings passwordSettings)
         {
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            this.passwordSettings = passwordSettings ?? throw new ArgumentNullException(nameof(passwordSettings));
         }
 
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
@@ -45,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters
                 if (userId != null)
                 {
                     var user = await userManager.FindByIdAsync(userId);
-                    if (user != null && (DateTime.UtcNow - user.PasswordUpdatedDate).Days >= 365)
+                    if (user != null && (DateTime.UtcNow - user.PasswordUpdatedDate).Days >= passwordSettings.PasswordExpiryDays)
                     {
                         return true;
                     }
