@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                     typeof(AssociatedServicesController).ControllerName(),
                     new { solutionId, associatedServiceId }),
                 AddListPriceUrl = Url.Action(
-                    nameof(AddFlatListPrice),
+                    nameof(ListPriceType),
                     new { solutionId, associatedServiceId }),
             };
 
