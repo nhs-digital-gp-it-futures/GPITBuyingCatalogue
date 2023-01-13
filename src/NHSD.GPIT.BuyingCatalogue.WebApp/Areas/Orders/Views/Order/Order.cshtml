@@ -195,29 +195,45 @@
         _ => throw new ArgumentException("Planned delivery dates currently in a status that it should not be able to be in."),
     };
 
-    string SolutionSelectionUrlTarget(TaskProgress progress) => progress switch
+    string SolutionSelectionUrlTarget(TaskProgress progress)
     {
-        TaskProgress.NotStarted => Url.Action(
-            nameof(CatalogueSolutionsController.SelectSolution),
-            typeof(CatalogueSolutionsController).ControllerName(),
-            new { Model.InternalOrgId, Model.CallOffId }),
+        if (isAmendment)
+        {
+            return Url.Action(
+                nameof(TaskListController.TaskList),
+                typeof(TaskListController).ControllerName(),
+                new { Model.InternalOrgId, Model.CallOffId, Source = RoutingSource.Dashboard });
+        }
 
-        TaskProgress.InProgress => Url.Action(
-            nameof(TaskListController.TaskList),
-            typeof(TaskListController).ControllerName(),
-            new { Model.InternalOrgId, Model.CallOffId, Source = RoutingSource.Dashboard }),
+        return progress switch
+        {
+            TaskProgress.NotStarted => Url.Action(
+                nameof(CatalogueSolutionsController.SelectSolution),
+                typeof(CatalogueSolutionsController).ControllerName(),
+                new { Model.InternalOrgId, Model.CallOffId }),
 
-        TaskProgress.Completed => Url.Action(
-            nameof(ReviewSolutionsController.ReviewSolutions),
-            typeof(ReviewSolutionsController).ControllerName(),
-            new { Model.InternalOrgId, Model.CallOffId }),
+            TaskProgress.Amended => Url.Action(
+                nameof(CatalogueSolutionsController.SelectSolution),
+                typeof(CatalogueSolutionsController).ControllerName(),
+                new { Model.InternalOrgId, Model.CallOffId }),
 
-        TaskProgress.CannotStart => string.Empty,
-        TaskProgress.NotApplicable => string.Empty,
-        TaskProgress.Optional => string.Empty,
+            TaskProgress.InProgress => Url.Action(
+                nameof(TaskListController.TaskList),
+                typeof(TaskListController).ControllerName(),
+                new { Model.InternalOrgId, Model.CallOffId, Source = RoutingSource.Dashboard }),
 
-        _ => throw new ArgumentException("Orders solution selection currently in a status that it should not be able to be in."),
-    };
+            TaskProgress.Completed => Url.Action(
+                nameof(ReviewSolutionsController.ReviewSolutions),
+                typeof(ReviewSolutionsController).ControllerName(),
+                new { Model.InternalOrgId, Model.CallOffId }),
+
+            TaskProgress.CannotStart => string.Empty,
+            TaskProgress.NotApplicable => string.Empty,
+            TaskProgress.Optional => string.Empty,
+
+            _ => throw new ArgumentException("Orders solution selection currently in a status that it should not be able to be in."),
+        };
+    }
 
     string FundingSourceUrlTarget() => Model.ShowSelectFrameworkPage
         ? Url.Action(
