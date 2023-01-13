@@ -17,6 +17,5 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
         public int MaxAccessFailedAttempts { get; set; }
 
         public int PasswordExpiryDays { get; set; }
-
     }
 }
