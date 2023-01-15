@@ -37,12 +37,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public ICollection<IPriceTier> PriceTiers => OrderItemPriceTiers.Cast<IPriceTier>().ToList();
 
-        public CostType CostType =>
-            OrderItem.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService &&
-            ProvisioningType == ProvisioningType.Declarative
-                ? CostType.OneOff
-                : CostType.Recurring;
-
         public string ToPriceUnitString()
         {
             return $"{Description} {BillingPeriod?.Description() ?? string.Empty}".Trim();

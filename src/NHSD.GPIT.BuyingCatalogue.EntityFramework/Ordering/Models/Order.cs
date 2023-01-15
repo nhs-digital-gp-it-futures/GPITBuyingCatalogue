@@ -7,6 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
+    [Serializable]
     public partial class Order : IAudited
     {
         public Order()

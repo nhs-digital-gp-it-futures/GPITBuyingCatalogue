@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
 {
     [ExcludeFromCodeCoverage(Justification = "Class currently only contains automatic properties")]
+    [Serializable]
     public sealed class AspNetUserClaim : IdentityUserClaim<int>, IAudited
     {
         public DateTime LastUpdated { get; set; }

@@ -1,5 +1,8 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+﻿using System;
+
+namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
+    [Serializable]
     public sealed class Hosting
     {
         public PublicCloud PublicCloud { get; set; } = new();

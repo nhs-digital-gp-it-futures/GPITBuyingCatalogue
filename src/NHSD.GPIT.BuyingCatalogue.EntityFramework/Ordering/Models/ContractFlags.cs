@@ -2,6 +2,7 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
+    [Serializable]
     public class ContractFlags : IAudited
     {
         public int Id { get; set; }

@@ -5,6 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
 {
+    [Serializable]
     public sealed class AspNetUser : IdentityUser<int>, IAudited
     {
         public AspNetUser()

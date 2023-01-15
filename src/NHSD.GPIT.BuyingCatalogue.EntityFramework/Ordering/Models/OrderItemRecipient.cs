@@ -3,6 +3,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
+    [Serializable]
     public sealed class OrderItemRecipient : IAudited
     {
         public int OrderId { get; set; }

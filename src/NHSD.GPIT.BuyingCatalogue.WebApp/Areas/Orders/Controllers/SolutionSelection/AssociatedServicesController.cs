@@ -277,7 +277,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             CallOffId callOffId,
             RoutingSource? source = RoutingSource.Dashboard)
         {
-            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
+            var wrapper = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var order = wrapper.Order;
             var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(order.GetSolutionId());
 
             var route = routingService.GetRoute(
@@ -285,7 +286,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 order,
                 new RouteValues(internalOrgId, callOffId) { Source = source });
 
-            return new SelectServicesModel(order, associatedServices, CatalogueItemType.AssociatedService)
+            return new SelectServicesModel(wrapper, associatedServices, CatalogueItemType.AssociatedService)
             {
                 BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
                 InternalOrgId = internalOrgId,

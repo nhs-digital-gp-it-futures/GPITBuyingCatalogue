@@ -134,8 +134,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         [HttpGet("confirm-changes")]
         public async Task<IActionResult> ConfirmAdditionalServiceChanges(string internalOrgId, CallOffId callOffId, string serviceIds)
         {
-            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
-            var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionId(order.GetSolution().CatalogueItemId, publishedOnly: true);
+            var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = wrapper.Order;
+            var solution = wrapper.RolledUp.GetSolution();
+
+            var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionId(
+                solution.CatalogueItemId,
+                publishedOnly: true);
 
             var existingServiceIds = order.GetAdditionalServices()
                 .Select(x => x.CatalogueItemId)
@@ -213,14 +218,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
         private async Task<SelectServicesModel> GetModel(string internalOrgId, CallOffId callOffId, bool returnToTaskList = false)
         {
-            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
-            var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionId(order.GetSolution().CatalogueItemId, publishedOnly: true);
+            var wrapper = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var order = wrapper.RolledUp;
+
+            var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionId(
+                order.GetSolution().CatalogueItemId,
+                publishedOnly: true);
 
             var backLink = returnToTaskList
                 ? Url.Action(nameof(TaskListController.TaskList), typeof(TaskListController).ControllerName(), new { internalOrgId, callOffId })
                 : Url.Action(nameof(OrderController.Order), typeof(OrderController).ControllerName(), new { internalOrgId, callOffId });
 
-            return new SelectServicesModel(order, additionalServices, CatalogueItemType.AdditionalService)
+            return new SelectServicesModel(wrapper, additionalServices, CatalogueItemType.AdditionalService)
             {
                 BackLink = backLink,
                 InternalOrgId = internalOrgId,

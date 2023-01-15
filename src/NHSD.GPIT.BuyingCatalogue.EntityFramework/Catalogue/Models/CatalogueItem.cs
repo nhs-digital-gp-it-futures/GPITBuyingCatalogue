@@ -5,6 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
+    [Serializable]
     public partial class CatalogueItem : IAudited
     {
         public CatalogueItem()

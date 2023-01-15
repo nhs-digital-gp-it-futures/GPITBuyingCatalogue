@@ -72,6 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     .ThenInclude(i => i.CatalogueItem)
                 .Include(o => o.SelectedFramework)
                 .AsSplitQuery()
+                .AsNoTracking()
                 .Where(o => o.OrderNumber == callOffId.OrderNumber
                     && o.Revision <= callOffId.Revision
                     && o.OrderingParty.InternalIdentifier == internalOrgId)
@@ -364,8 +365,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             var order = (await GetOrderThin(callOffId, internalOrgId)).Order;
 
-            order.Complete();
-
             await using var fullOrderStream = new MemoryStream();
             await using var patientOrderStream = new MemoryStream();
 
@@ -398,6 +397,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 { OrderSummaryLinkToken, NotificationClient.PrepareUpload(pdfData) },
                 { OrderSummaryCsv, NotificationClient.PrepareUpload(fullOrderStream.ToArray(), true) },
             };
+
+            order = await dbContext.Order(callOffId);
+            order.Complete();
 
             await Task.WhenAll(
                 emailService.SendEmailAsync(orderMessageSettings.Recipient.Address, templateId, adminTokens),

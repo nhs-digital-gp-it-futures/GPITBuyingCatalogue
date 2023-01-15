@@ -116,11 +116,15 @@
                 <nhs-tag status-enum="@Model.DeliveryDatesStatus"/>
             </nhs-table-cell>
             <nhs-table-cell>
-                <a id="Quantity_@Model.CatalogueItemId" 
-                   href="@Url.Action(
-                             nameof(DeliveryDatesController.EditDates),
-                             typeof(DeliveryDatesController).ControllerName(),
-                             new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, source })">Edit</a>
+                @if (Model.DeliveryDatesStatus != TaskProgress.NotApplicable
+                    && Model.DeliveryDatesStatus != TaskProgress.CannotStart)
+                {
+                    <a id="Quantity_@Model.CatalogueItemId"
+                       href="@Url.Action( 
+                                 nameof(DeliveryDatesController.EditDates),
+                                 typeof(DeliveryDatesController).ControllerName(),
+                                 new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, source })">Edit</a>
+                }
             </nhs-table-cell>
         </nhs-table-row-container>
     }

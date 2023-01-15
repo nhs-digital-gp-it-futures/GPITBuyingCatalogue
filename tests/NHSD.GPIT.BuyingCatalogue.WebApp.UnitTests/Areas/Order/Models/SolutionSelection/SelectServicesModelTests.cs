@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Shared;
 using Xunit;
@@ -24,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             existingItem.CatalogueItem.Id = services.First().Id;
             existingItem.CatalogueItem.CatalogueItemType = catalogueItemType;
 
-            var model = new SelectServicesModel(order, services, catalogueItemType);
+            var model = new SelectServicesModel(new OrderWrapper(order), services, catalogueItemType);
 
             model.Services.Count.Should().Be(services.Count);
 
@@ -43,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             List<CatalogueItem> services)
         {
             FluentActions
-                .Invoking(() => new SelectServicesModel(order, services, CatalogueItemType.Solution))
+                .Invoking(() => new SelectServicesModel(new OrderWrapper(order), services, CatalogueItemType.Solution))
                 .Should().Throw<ArgumentOutOfRangeException>();
         }
     }

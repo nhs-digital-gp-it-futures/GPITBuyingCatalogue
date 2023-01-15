@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new SelectServicesModel(order, services, CatalogueItemType.AdditionalService)
+            var expected = new SelectServicesModel(new OrderWrapper(order), services, CatalogueItemType.AdditionalService)
             {
                 InternalOrgId = internalOrgId,
                 CallOffId = order.CallOffId,
@@ -236,7 +236,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new SelectServicesModel(order, services, CatalogueItemType.AdditionalService)
+            var expected = new SelectServicesModel(new OrderWrapper(order), services, CatalogueItemType.AdditionalService)
             {
                 InternalOrgId = internalOrgId,
                 CallOffId = order.CallOffId,

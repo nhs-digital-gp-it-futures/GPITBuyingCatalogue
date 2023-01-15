@@ -48,14 +48,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                 return View(model);
 
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
-
             var contact = order.OrderingPartyContact ?? new Contact();
+
             contact.FirstName = model.Contact.FirstName.Trim();
             contact.LastName = model.Contact.LastName.Trim();
             contact.Email = model.Contact.EmailAddress.Trim();
             contact.Phone = model.Contact.TelephoneNumber.Trim();
 
-            await orderingPartyService.SetOrderingPartyContact(order, contact);
+            await orderingPartyService.SetOrderingPartyContact(callOffId, contact);
 
             return RedirectToAction(
                 nameof(OrderController.Order),

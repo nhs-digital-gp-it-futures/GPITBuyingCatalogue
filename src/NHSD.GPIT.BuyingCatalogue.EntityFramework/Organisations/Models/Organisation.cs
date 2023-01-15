@@ -6,6 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models
 {
+    [Serializable]
     public sealed class Organisation : IAudited
     {
         public Organisation()

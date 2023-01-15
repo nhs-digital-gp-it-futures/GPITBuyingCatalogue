@@ -24,20 +24,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [CommonAutoData]
-        public static Task SetOrderingPartyContact_NullOrder_ThrowsException(
-            Contact contact,
-            OrderingPartyService service)
-        {
-            return Assert.ThrowsAsync<ArgumentNullException>(() => service.SetOrderingPartyContact(null, contact));
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static Task SetOrderingPartyContact_NullContact_ThrowsException(
-            Order order,
+            CallOffId callOffId,
             OrderingPartyService service)
         {
-            return Assert.ThrowsAsync<ArgumentNullException>(() => service.SetOrderingPartyContact(order, null));
+            return Assert.ThrowsAsync<ArgumentNullException>(() => service.SetOrderingPartyContact(callOffId, null));
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Shared
@@ -14,39 +15,64 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         }
 
         public SelectServicesModel(
-            Order order,
+            OrderWrapper wrapper,
             IEnumerable<CatalogueItem> services,
             CatalogueItemType catalogueItemType)
         {
-            var existingServices = catalogueItemType switch
-            {
-                CatalogueItemType.AdditionalService => order.GetAdditionalServices().ToList(),
-                CatalogueItemType.AssociatedService => order.GetAssociatedServices().ToList(),
-                CatalogueItemType.Solution => throw new ArgumentOutOfRangeException(nameof(catalogueItemType), catalogueItemType, null),
-                _ => throw new ArgumentOutOfRangeException(nameof(catalogueItemType), catalogueItemType, null),
-            };
+            var previous = wrapper.Previous;
+            var current = wrapper.Order;
 
+            var existingServices = GetServices(previous, catalogueItemType);
             var existingServiceIds = existingServices.Select(x => x.CatalogueItem.Id).ToList();
 
-            Services = services.Select(x => new ServiceModel
-            {
-                CatalogueItemId = x.Id,
-                Description = x.Name,
-            })
-            .ToList();
+            var currentServices = GetServices(current, catalogueItemType);
+            var currentServiceIds = currentServices.Select(x => x.CatalogueItem.Id).ToList();
 
-            foreach (var existingService in Services.Where(x => existingServiceIds.Contains(x.CatalogueItemId)))
+            ExistingServices = existingServices.Select(x => x.CatalogueItem.Name).ToList();
+
+            Services = services
+                .Where(x => !existingServiceIds.Contains(x.Id))
+                .Select(x => new ServiceModel
+                {
+                    CatalogueItemId = x.Id,
+                    Description = x.Name,
+                })
+                .ToList();
+
+            foreach (var service in Services.Where(x => currentServiceIds.Contains(x.CatalogueItemId)))
             {
-                existingService.IsSelected = true;
+                service.IsSelected = true;
             }
+
+            IsAmendment = wrapper.IsAmendment;
         }
 
         public string InternalOrgId { get; set; }
 
         public CallOffId CallOffId { get; set; }
 
+        public bool IsAmendment { get; set; }
+
         public bool AssociatedServicesOnly { get; set; }
 
+        public List<string> ExistingServices { get; set; }
+
         public List<ServiceModel> Services { get; set; }
+
+        private static List<OrderItem> GetServices(Order order, CatalogueItemType catalogueItemType)
+        {
+            if (order == null)
+            {
+                return new List<OrderItem>();
+            }
+
+            return catalogueItemType switch
+            {
+                CatalogueItemType.AdditionalService => order.GetAdditionalServices().ToList(),
+                CatalogueItemType.AssociatedService => order.GetAssociatedServices().ToList(),
+                CatalogueItemType.Solution => throw new ArgumentOutOfRangeException(nameof(catalogueItemType), catalogueItemType, null),
+                _ => throw new ArgumentOutOfRangeException(nameof(catalogueItemType), catalogueItemType, null),
+            };
+        }
     }
 }
