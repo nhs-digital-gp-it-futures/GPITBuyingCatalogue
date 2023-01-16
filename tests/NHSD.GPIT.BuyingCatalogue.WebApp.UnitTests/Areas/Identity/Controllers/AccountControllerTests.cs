@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
-using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -19,11 +15,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using Xunit;
-using static NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing.Constants;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
@@ -194,7 +186,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
                 .ReturnsAsync(user);
 
             mockIUsersService
-                .Setup(x => x.IsPasswordValid(It.IsAny<AspNetUser>(), It.IsAny<string>()))
+                .Setup(x => x.IsDuplicatePassword(It.IsAny<AspNetUser>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(true));
 
             var controller = CreateController(mockUserManager.Object, mockSignInManager.Object, null, mockIUsersService.Object);
