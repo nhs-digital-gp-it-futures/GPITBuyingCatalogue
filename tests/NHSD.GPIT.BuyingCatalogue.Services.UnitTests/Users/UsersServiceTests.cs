@@ -484,6 +484,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             AspNetUser user,
             string newPassword,
             [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IPasswordHasher<AspNetUser>> passwordHasher,
             UsersService service)
         {
             user.PasswordHash = null;
@@ -493,6 +494,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             await context.SaveChangesAsync();
 
             var result = await service.IsDuplicatePassword(user, newPassword);
+
+            passwordHasher.VerifyNoOtherCalls();
 
             result.Should().BeFalse();
         }
@@ -506,15 +509,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             [Frozen] Mock<IPasswordHasher<AspNetUser>> passwordHasher,
             UsersService service)
         {
-            passwordHasher
-                .Setup(x => x.VerifyHashedPassword(user, user.PasswordHash, password))
-                .Returns(PasswordVerificationResult.Failed);
-
             context.AspNetUsers.Add(user);
 
             await context.SaveChangesAsync();
 
+            passwordHasher
+                .Setup(x => x.VerifyHashedPassword(user, user.PasswordHash, password))
+                .Returns(PasswordVerificationResult.Failed);
+
             var result = await service.IsDuplicatePassword(user, password);
+
+            passwordHasher.VerifyAll();
 
             result.Should().BeFalse();
         }
@@ -528,15 +533,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             [Frozen] Mock<IPasswordHasher<AspNetUser>> passwordHasher,
             UsersService service)
         {
-            passwordHasher
-                .Setup(x => x.VerifyHashedPassword(user, user.PasswordHash, password))
-                .Returns(PasswordVerificationResult.Success);
-
             context.AspNetUsers.Add(user);
 
             await context.SaveChangesAsync();
 
+            passwordHasher
+                .Setup(x => x.VerifyHashedPassword(user, user.PasswordHash, password))
+                .Returns(PasswordVerificationResult.Success);
+
             var result = await service.IsDuplicatePassword(user, password);
+
+            passwordHasher.VerifyAll();
 
             result.Should().BeTrue();
         }
