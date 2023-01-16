@@ -4,6 +4,10 @@
 
     var serviceText = "These are optional add-ons to the main solution that provide extra functionality."
         + (Model.IsAmendment ? " We're only showing Additional Services that weren't added to the original order." : "");
+
+    var advice = Model.IsAmendment && !Model.Services.Any()
+        ? "All the Additional Services available with this Catalogue Solution have already been added to this order."
+        : "Select the Additional Services that you want to add to your order.";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -14,7 +18,7 @@
 
         <nhs-page-title title="@ViewBag.Title"
                         caption="Order @Model.CallOffId"
-                        advice="Select the Additional Services that you want to add to your order."/>
+                        advice="@advice"/>
         
         <form method="post">
             @if (Model.Services.Any())
