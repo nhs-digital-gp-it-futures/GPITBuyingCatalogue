@@ -173,8 +173,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
 
         public async Task<bool> IsDuplicatePassword(AspNetUser user, string newPassword)
         {
+            // temporal tables screw up ordering, hence the use of a projection
             var history = await dbContext.AspNetUsers.TemporalAll()
                 .Where(x => x.Id == user.Id)
+                .Select(x => new { x.PasswordHash, x.LastUpdated })
                 .OrderByDescending(x => x.LastUpdated)
                 .Select(x => x.PasswordHash)
                 .Where(x => x != null)
