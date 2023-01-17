@@ -102,14 +102,24 @@ jobs:
     inputs:
       command: test
       projects: '**/*UnitTests.csproj'
-      arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
+      arguments: '-v n --no-build --configuration $(buildConfiguration) --collect:"XPlat Code Coverage" -- xunit.parallelizeTestCollections=true'
+      publishTestResults: false
 
-  - task: DotNetCoreCLI@2
-    displayName: 'Run Integration Tests'
+  - task: CmdLine@2
+    displayName: 'Push code coverage statistics'
     inputs:
-      command: test
-      projects: '**/*IntegrationTests.csproj'
-      arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
+      script: |
+        curl -Os https://uploader.codecov.io/latest/linux/codecov
+        
+        chmod +x codecov
+        ./codecov -f tests/**/coverage.cobertura.xml -t $(CODECOVTOKEN)
+
+#  - task: DotNetCoreCLI@2
+#    displayName: 'Run Integration Tests'
+#    inputs:
+#      command: test
+#      projects: '**/*IntegrationTests.csproj'
+#      arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
 
   - task: Docker@2
     displayName: 'Docker: Build and Push'
