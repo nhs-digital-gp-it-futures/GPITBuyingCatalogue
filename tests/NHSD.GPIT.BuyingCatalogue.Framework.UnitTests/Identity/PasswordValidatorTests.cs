@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
@@ -11,6 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
+using NHSD.GPIT.BuyingCatalogue.Services.Users;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Xunit;
 
@@ -30,7 +32,7 @@ public static class PasswordValidatorTests
 
     [Theory]
     [InMemoryDbAutoData]
-    public static void ValidateAsync_ValidPassword_NotUsedBefore_ReturnsSuccessfulIdentityResult(
+    public static async Task ValidateAsync_ValidPassword_NoPasswordHistory_ReturnsSuccessfulIdentityResult(
         [Frozen] BuyingCatalogueDbContext dbContext,
         AspNetUser user,
         UserManager<AspNetUser> userManager,
@@ -38,11 +40,79 @@ public static class PasswordValidatorTests
         PasswordSettings passwordResetSettings)
     {
         var password = "Pass123123!";
+        user.PasswordHash = null;
+
+        dbContext.AspNetUsers.Add(user);
+
+        await dbContext.SaveChangesAsync();
+
         var validator = new PasswordValidator(dbContext, mockPasswordHash.Object, passwordResetSettings);
         PasswordValidator.ConfigurePasswordOptions(userManager.Options.Password);
 
         var result = validator.ValidateAsync(userManager, user, password);
+
+        mockPasswordHash.VerifyNoOtherCalls();
         result.Result.Succeeded.Should().BeTrue();
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task ValidateAsync_ValidPassword_PasswordNotInHistory_ReturnsSuccessfulIdentityResult(
+        AspNetUser user,
+        [Frozen] BuyingCatalogueDbContext dbContext,
+        [Frozen] Mock<IPasswordHasher<AspNetUser>> mockPasswordHash,
+        UserManager<AspNetUser> userManager,
+        PasswordSettings passwordResetSettings)
+    {
+        var password = "Pass123123!";
+        dbContext.AspNetUsers.Add(user);
+
+        await dbContext.SaveChangesAsync();
+
+        mockPasswordHash
+            .Setup(x => x.VerifyHashedPassword(user, user.PasswordHash, password))
+            .Returns(PasswordVerificationResult.Failed);
+
+        var validator = new PasswordValidator(dbContext, mockPasswordHash.Object, passwordResetSettings);
+        PasswordValidator.ConfigurePasswordOptions(userManager.Options.Password);
+
+        var result = validator.ValidateAsync(userManager, user, password);
+
+        mockPasswordHash.VerifyAll();
+
+        result.Result.Succeeded.Should().BeTrue();
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task ValidateAsync_ValidPassword_PasswordInHistory_ReturnsFailureIdentityResult(
+        AspNetUser user,
+        [Frozen] BuyingCatalogueDbContext dbContext,
+        [Frozen] Mock<IPasswordHasher<AspNetUser>> mockPasswordHash,
+        UserManager<AspNetUser> userManager,
+        PasswordSettings passwordResetSettings)
+    {
+        var password = "Pass123123!";
+        dbContext.AspNetUsers.Add(user);
+
+        await dbContext.SaveChangesAsync();
+
+        mockPasswordHash
+            .Setup(x => x.VerifyHashedPassword(user, user.PasswordHash, password))
+            .Returns(PasswordVerificationResult.Success);
+
+        var validator = new PasswordValidator(dbContext, mockPasswordHash.Object, passwordResetSettings);
+        PasswordValidator.ConfigurePasswordOptions(userManager.Options.Password);
+
+        var result = validator.ValidateAsync(userManager, user, password);
+
+        mockPasswordHash.VerifyAll();
+
+        result.Result.Succeeded.Should().BeFalse();
+        result.Result.Errors.Count().Should().Be(1);
+        var error = result.Result.Errors.First();
+        error.Code.Should().Be(PasswordValidator.PasswordAlreadyUsedCode);
+        error.Description.Should().Be(PasswordValidator.PasswordAlreadyUsed);
     }
 
     [Theory]

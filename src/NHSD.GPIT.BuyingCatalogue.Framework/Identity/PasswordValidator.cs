@@ -27,7 +27,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
         {
         }
 
-        public PasswordValidator(BuyingCatalogueDbContext dbContext, IPasswordHasher<AspNetUser> passwordHash, PasswordSettings passwordSettings)
+        public PasswordValidator(
+            BuyingCatalogueDbContext dbContext,
+            IPasswordHasher<AspNetUser> passwordHash,
+            PasswordSettings passwordSettings)
         {
             this.passwordSettings = passwordSettings ?? throw new ArgumentNullException(nameof(passwordSettings));
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
@@ -55,35 +58,35 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
 
             if (result.Succeeded)
             {
-                return await IsHistoricalPassword(user, password) ?
-                    IdentityResult.Failed(new IdentityError { Code = PasswordAlreadyUsedCode, Description = PasswordAlreadyUsed }) :
-                    result;
+                return await IsDuplicatePassword(user, password)
+                    ? IdentityResult.Failed(
+                        new IdentityError { Code = PasswordAlreadyUsedCode, Description = PasswordAlreadyUsed })
+                    : result;
             }
 
             return IdentityResult.Failed(
                 new IdentityError { Code = InvalidPasswordCode, Description = PasswordConditionsNotMet });
         }
 
-        private async Task<bool> IsHistoricalPassword(AspNetUser user, string newPassword)
+        private async Task<bool> IsDuplicatePassword(AspNetUser user, string newPassword)
         {
-            var passwords = await dbContext.AspNetUsers.TemporalAll()
+            var history = await dbContext.AspNetUsers.TemporalAll()
                 .Where(x => x.Id == user.Id)
-                .Select(x => new { x.PasswordHash, x.LastUpdated })
                 .OrderByDescending(x => x.LastUpdated)
+                .Select(x => x.PasswordHash)
+                .Where(x => x != null)
+                .Distinct()
+                .Take(passwordSettings.NumOfPreviousPasswords)
                 .ToListAsync();
 
-            var passwordHistory = passwords
-                .DistinctBy(x => x.PasswordHash)
-                .Take(passwordSettings.NumOfPreviousPasswords);
-
-            foreach (var hist in passwordHistory)
+            if (!history.Any())
             {
-                var result = passwordHash.VerifyHashedPassword(user, hist.PasswordHash, newPassword);
-                if (result == PasswordVerificationResult.Success)
-                    return true;
+                return false;
             }
 
-            return false;
+            return history
+                .Select(x => passwordHash.VerifyHashedPassword(user, x, newPassword))
+                .Any(x => x != PasswordVerificationResult.Failed);
         }
     }
 }
