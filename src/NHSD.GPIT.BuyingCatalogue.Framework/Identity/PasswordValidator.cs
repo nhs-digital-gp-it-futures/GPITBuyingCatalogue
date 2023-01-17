@@ -72,21 +72,25 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
         {
             // temporal tables screw up ordering, hence the use of a projection
             var history = await dbContext.AspNetUsers.TemporalAll()
-                .Where(x => x.Id == user.Id)
-                .Select(x => new { x.PasswordHash, x.LastUpdated })
+                    .Where(x => x.Id == user.Id)
+                    .Select(x => new { x.PasswordHash, x.LastUpdated })
+                    .ToListAsync();
+
+            var hashes = history
                 .OrderByDescending(x => x.LastUpdated)
                 .Select(x => x.PasswordHash)
                 .Where(x => x != null)
                 .Distinct()
                 .Take(passwordSettings.NumOfPreviousPasswords)
-                .ToListAsync();
+                .ToList();
 
-            if (!history.Any())
+
+            if (!hashes.Any())
             {
                 return false;
             }
 
-            return history
+            return hashes
                 .Select(x => passwordHash.VerifyHashedPassword(user, x, newPassword))
                 .Any(x => x != PasswordVerificationResult.Failed);
         }
