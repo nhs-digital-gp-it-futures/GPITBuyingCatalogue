@@ -30,58 +30,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
                 : new List<Order>();
         }
 
-        public bool IsAmendment => previous.Any();
-
         public Order Last => previous.Any()
             ? previous.Last()
             : null;
 
         public Order Order { get; set; }
-
-        public Order Previous
-        {
-            get
-            {
-                if (!previous.Any())
-                {
-                    return null;
-                }
-
-                var output = previous.First();
-
-                previous.Skip(1).ToList().ForEach(output.Apply);
-
-                return output;
-            }
-        }
-
-        public Order RolledUp
-        {
-            get
-            {
-                var output = Previous;
-
-                if (output == null)
-                {
-                    return Order;
-                }
-
-                output.Apply(Order);
-                output.Revision = Order.Revision;
-
-                return output;
-            }
-        }
-
-        public bool HasCurrentAmendments(OrderItem orderItem)
-        {
-            if (Previous == null)
-            {
-                return false;
-            }
-
-            return Order.OrderItems.Any(x => x.CatalogueItemId == orderItem.CatalogueItemId)
-                && Previous.OrderItems.Any(x => x.CatalogueItemId == orderItem.CatalogueItemId);
-        }
     }
 }

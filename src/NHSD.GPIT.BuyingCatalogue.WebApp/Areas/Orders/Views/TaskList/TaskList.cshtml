@@ -1,9 +1,6 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.TaskList.TaskListModel
-
-@{
-    ViewBag.Title = Model.Title;
-}
+﻿@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.TaskList.TaskListModel;
 
 <partial name="Partials/_BackLink" model="Model" />
 
@@ -11,21 +8,27 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
 
+        @{
+            ViewBag.Title = Model.Progress == TaskProgress.Completed
+                ? "Edit solutions and services"
+                : "Review your progress";
+
+            var advice = Model.Progress == TaskProgress.Completed
+                ? "Select the sections that you want to edit."
+                : "Review the progress of your order. Make sure you’ve included everything you want to order and that all sections are completed.";
+        }
+
         <nhs-page-title title="@ViewBag.Title"
                         caption="Order @Model!.CallOffId"
-                        advice="@Model.Advice" />
+                        advice="@advice" />
 
         <div id="SolutionDetails" class="nhsuk-u-margin-bottom-9">
             <h2>Catalogue Solution</h2>
-            
-            @if (!Model.IsAmendment)
-            {
-                <vc:nhs-action-link text="Change Catalogue Solution"
-                                    url="@Url.Action(
-                                             nameof(CatalogueSolutionsController.EditSolution),
-                                             typeof(CatalogueSolutionsController).ControllerName(),
-                                             new { Model.InternalOrgId, Model.CallOffId })"/>
-            }
+            <vc:nhs-action-link text="Change Catalogue Solution"
+                                url="@Url.Action(
+                                         nameof(CatalogueSolutionsController.EditSolution),
+                                         typeof(CatalogueSolutionsController).ControllerName(),
+                                         new { Model.InternalOrgId, Model.CallOffId })"/>
 
             @if (Model.AssociatedServicesOnly)
             {
@@ -69,35 +72,32 @@
                 }
             </div>
         }
-        
-        @if (!Model.IsAmendment)
-        {
-            <div id="AssociatedServiceDetails" class="nhsuk-u-margin-bottom-9">
-                <h2>Associated Services</h2>
-                @if (Model.AssociatedServicesAvailable)
-                {
-                    <span data-test-id="associated-services-action">
-                        <vc:nhs-action-link text="@Model.AssociatedServicesActionText"
-                                            url="@Url.Action(
-                                                     nameof(AssociatedServicesController.EditAssociatedServices),
-                                                     typeof(AssociatedServicesController).ControllerName(),
-                                                     new { Model.InternalOrgId, Model.CallOffId })"/>
-                    </span>
-                }
-                else
-                {
-                    <p>There are no Associated Services available for this Catalogue Solution.</p>
-                }
 
-                @foreach (var service in Model.AssociatedServices)
-                {
-                    <div class="nhsuk-u-margin-bottom-9">
-                        <partial name="TaskListOrderItem"
-                                 model="@Model.OrderItemModel(service.CatalogueItemId)"/>
-                    </div>
-                }
-            </div>
-        }
+        <div id="AssociatedServiceDetails" class="nhsuk-u-margin-bottom-9">
+            <h2>Associated Services</h2>
+            @if (Model.AssociatedServicesAvailable)
+            {
+                <span data-test-id="associated-services-action">
+                    <vc:nhs-action-link text="@Model.AssociatedServicesActionText"
+                                        url="@Url.Action(
+                                                 nameof(AssociatedServicesController.EditAssociatedServices),
+                                                 typeof(AssociatedServicesController).ControllerName(),
+                                                 new { Model.InternalOrgId, Model.CallOffId })"/>
+                </span>
+            }
+            else
+            {
+                <p>There are no Associated Services available for this Catalogue Solution.</p>
+            }
+
+            @foreach (var service in Model.AssociatedServices)
+            {
+                <div class="nhsuk-u-margin-bottom-9">
+                    <partial name="TaskListOrderItem"
+                             model="@Model.OrderItemModel(service.CatalogueItemId)"/>
+                </div>
+            }
+        </div>
 
         <vc:nhs-secondary-button text="Continue"
                                  url="@Model.BackLink"

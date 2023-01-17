@@ -6,7 +6,6 @@ using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.TaskList;
 using Xunit;
@@ -33,7 +32,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order)
         {
-            callOffId = new CallOffId(callOffId.OrderNumber, 1);
             order.AssociatedServicesOnly = false;
 
             var solution = order.OrderItems.ElementAt(0);
@@ -44,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             additionalService.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
             associatedService.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
 
-            var model = new TaskListModel(internalOrgId, callOffId, new OrderWrapper(order));
+            var model = new TaskListModel(internalOrgId, callOffId, order);
 
             model.InternalOrgId.Should().BeEquivalentTo(internalOrgId);
             model.CallOffId.Should().BeEquivalentTo(callOffId);
@@ -54,8 +52,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             model.AssociatedServices.Should().BeEquivalentTo(new[] { associatedService });
 
             model.Progress.Should().Be(TaskProgress.Completed);
-            model.Advice.Should().Be(TaskListModel.CompletedAdvice);
-            model.Title.Should().Be(TaskListModel.CompletedTitle);
 
             model.OrderItemModel(solution.CatalogueItemId).Should().NotBeNull();
             model.OrderItemModel(additionalService.CatalogueItemId).Should().NotBeNull();
@@ -70,14 +66,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             CatalogueItem serviceSolution,
             EntityFramework.Ordering.Models.Order order)
         {
-            callOffId = new CallOffId(callOffId.OrderNumber, 1);
             order.AssociatedServicesOnly = true;
             order.Solution = serviceSolution;
 
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            var model = new TaskListModel(internalOrgId, callOffId, new OrderWrapper(order));
+            var model = new TaskListModel(internalOrgId, callOffId, order);
 
             model.InternalOrgId.Should().BeEquivalentTo(internalOrgId);
             model.CallOffId.Should().BeEquivalentTo(callOffId);
@@ -92,8 +87,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             });
 
             model.Progress.Should().Be(TaskProgress.Completed);
-            model.Advice.Should().Be(TaskListModel.CompletedAdvice);
-            model.Title.Should().Be(TaskListModel.CompletedTitle);
 
             for (var i = 0; i < 3; i++)
             {
@@ -108,8 +101,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order)
         {
-            callOffId = new CallOffId(callOffId.OrderNumber, 1);
-
             var solution = order.OrderItems.ElementAt(0);
 
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
@@ -117,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
             order.OrderItems = new List<OrderItem> { solution };
 
-            var model = new TaskListModel(internalOrgId, callOffId, new OrderWrapper(order));
+            var model = new TaskListModel(internalOrgId, callOffId, order);
 
             model.InternalOrgId.Should().BeEquivalentTo(internalOrgId);
             model.CallOffId.Should().BeEquivalentTo(callOffId);
@@ -127,21 +118,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             model.AssociatedServices.Should().BeEmpty();
 
             model.Progress.Should().Be(TaskProgress.InProgress);
-            model.Advice.Should().Be(TaskListModel.InProgressAdvice);
-            model.Title.Should().Be(TaskListModel.InProgressTitle);
 
             model.OrderItemModel(solution.CatalogueItemId).Should().NotBeNull();
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Amendment_SetsTitleAndAdviceCorrectly(
-            TaskListModel model)
-        {
-            model.CallOffId = new CallOffId(model.CallOffId.OrderNumber, 2);
-
-            model.Advice.Should().Be(TaskListModel.AmendmentAdvice);
-            model.Title.Should().Be(TaskListModel.AmendmentTitle);
         }
 
         [Theory]
@@ -149,21 +127,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         public static void WithAdditionalServices_SetsActionText(
             TaskListModel model)
         {
-            model.CallOffId = new CallOffId(model.CallOffId.OrderNumber, 1);
-
             model.AdditionalServices.Should().HaveCountGreaterThan(0);
+
             model.AdditionalServicesActionText.Should().Be("Change Additional Services");
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void WithAdditionalServices_Amendment_SetsActionText(
-            TaskListModel model)
-        {
-            model.CallOffId = new CallOffId(model.CallOffId.OrderNumber, 2);
-
-            model.AdditionalServices.Should().HaveCountGreaterThan(0);
-            model.AdditionalServicesActionText.Should().Be("Add Additional Services");
         }
 
         [Theory]
@@ -182,6 +148,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             TaskListModel model)
         {
             model.AssociatedServices.Should().HaveCountGreaterThan(0);
+
             model.AssociatedServicesActionText.Should().Be("Change Associated Services");
         }
 

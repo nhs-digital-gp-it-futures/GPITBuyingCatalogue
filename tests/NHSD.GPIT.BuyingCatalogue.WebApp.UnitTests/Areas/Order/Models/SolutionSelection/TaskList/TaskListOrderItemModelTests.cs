@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using FluentAssertions;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -156,11 +155,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
         [Theory]
         [CommonAutoData]
-        public static void
-            QuantityStatus_PerServiceRecipientProvisioningType_OrderItemRecipientQuantitiesEntered_ExpectedResult(
-                string internalOrgId,
-                CallOffId callOffId,
-                OrderItem orderItem)
+        public static void QuantityStatus_PerServiceRecipientProvisioningType_OrderItemRecipientQuantitiesEntered_ExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            OrderItem orderItem)
         {
             orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.PerServiceRecipient;
 
@@ -193,11 +191,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
         [Theory]
         [CommonAutoData]
-        public static void
-            QuantityStatus_PerOrderItemProvisioningType_OrderItemRecipientQuantitiesEntered_ExpectedResult(
-                string internalOrgId,
-                CallOffId callOffId,
-                OrderItem orderItem)
+        public static void QuantityStatus_PerOrderItemProvisioningType_OrderItemRecipientQuantitiesEntered_ExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            OrderItem orderItem)
         {
             orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.Declarative;
             orderItem.OrderItemPrice.CataloguePriceQuantityCalculationType =
@@ -227,63 +224,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem);
 
             model.QuantityStatus.Should().Be(TaskProgress.InProgress);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void DeliveryDatesStatus_NoOrderItemRecipients_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            OrderItem orderItem)
-        {
-            orderItem.OrderItemRecipients.Clear();
-
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem);
-
-            model.DeliveryDatesStatus.Should().Be(TaskProgress.CannotStart);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void DeliveryDatesStatus_NoDeliveryDatesEntered_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            OrderItem orderItem)
-        {
-            orderItem.OrderItemRecipients.ForEach(x => x.DeliveryDate = null);
-
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem);
-
-            model.DeliveryDatesStatus.Should().Be(TaskProgress.NotStarted);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void DeliveryDatesStatus_SomeDeliveryDatesEntered_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            OrderItem orderItem)
-        {
-            orderItem.OrderItemRecipients.ForEach(x => x.DeliveryDate = null);
-            orderItem.OrderItemRecipients.First().DeliveryDate = DateTime.Today;
-
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem);
-
-            model.DeliveryDatesStatus.Should().Be(TaskProgress.InProgress);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void DeliveryDatesStatus_AllDeliveryDatesEntered_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            OrderItem orderItem)
-        {
-            orderItem.OrderItemRecipients.ForEach(x => x.DeliveryDate = DateTime.Today);
-
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem);
-
-            model.DeliveryDatesStatus.Should().Be(TaskProgress.Completed);
         }
     }
 }

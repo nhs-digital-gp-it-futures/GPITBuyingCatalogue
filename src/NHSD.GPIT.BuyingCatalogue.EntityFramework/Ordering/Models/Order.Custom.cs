@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             ? $"{CommencementDate?.AddMonths(MaximumTerm.Value).AddDays(-1):d MMMM yyyy}"
             : string.Empty;
 
-        public bool IsAmendment => CallOffId.IsAmendment;
+        public bool IsAmendment => CallOffId.Revision > 1;
 
         public void Complete()
         {
@@ -166,29 +166,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public bool HasSolution()
         {
             return OrderItems.Any(o => o.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution);
-        }
-
-        public void Apply(Order order)
-        {
-            foreach (var orderItem in order.OrderItems)
-            {
-                var existing = OrderItems.FirstOrDefault(x => x.CatalogueItemId == orderItem.CatalogueItemId);
-
-                if (existing == null)
-                {
-                    OrderItems.Add(orderItem);
-                }
-                else
-                {
-                    foreach (var recipient in orderItem.OrderItemRecipients)
-                    {
-                        if (existing.OrderItemRecipients.All(x => x.OdsCode != recipient.OdsCode))
-                        {
-                            existing.OrderItemRecipients.Add(recipient);
-                        }
-                    }
-                }
-            }
         }
 
         public bool Equals(Order other)

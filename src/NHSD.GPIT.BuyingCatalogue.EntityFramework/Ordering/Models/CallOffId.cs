@@ -35,8 +35,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public int Revision { get; }
 
-        public bool IsAmendment => Revision > 1;
-
         public static bool operator ==(CallOffId left, CallOffId right)
         {
             return left.Equals(right);
