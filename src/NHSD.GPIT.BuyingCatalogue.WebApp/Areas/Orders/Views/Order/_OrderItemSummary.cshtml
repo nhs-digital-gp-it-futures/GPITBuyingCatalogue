@@ -28,7 +28,7 @@
 			@foreach(var serviceRecipient in Model.OrderItemRecipients)
 			{
 			    var deliveryDate = serviceRecipient.DeliveryDate.HasValue
-			        ? $"{serviceRecipient.DeliveryDate.Value:d MMM yyyy}"
+			        ? $"{serviceRecipient.DeliveryDate.Value:d MMMM yyyy}"
 			        : "No date entered";
 
                 <nhs-table-row-container>
