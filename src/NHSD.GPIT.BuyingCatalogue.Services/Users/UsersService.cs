@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using Flurl.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -175,26 +171,30 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
             return users >= accountManagementSettings.MaximumNumberOfAccountManagers;
         }
 
-        public async Task<bool> IsPasswordValid(AspNetUser user, string newPassword)
+        public async Task<bool> IsDuplicatePassword(AspNetUser user, string newPassword)
         {
-            var passwords = await dbContext.AspNetUsers.TemporalAll()
-                            .Where(x => x.Id == user.Id)
-                            .Select(x => new { x.PasswordHash, x.LastUpdated })
-                            .OrderByDescending(x => x.LastUpdated)
-                            .ToListAsync();
+            // temporal tables screw up ordering, hence the use of a projection
+            var history = await dbContext.AspNetUsers.TemporalAll()
+                .Where(x => x.Id == user.Id)
+                .Select(x => new { x.PasswordHash, x.LastUpdated })
+                .ToListAsync();
 
-            var passwordHistory = passwords
-                .DistinctBy(x => x.PasswordHash)
-                .Take(passwordResetSettings.NumOfPreviousPasswords);
+            var hashes = history
+                .OrderByDescending(x => x.LastUpdated)
+                .Select(x => x.PasswordHash)
+                .Where(x => x != null)
+                .Distinct()
+                .Take(passwordResetSettings.NumOfPreviousPasswords)
+                .ToList();
 
-            foreach (var hist in passwordHistory)
+            if (!hashes.Any())
             {
-                var result = passwordHash.VerifyHashedPassword(user, hist.PasswordHash, newPassword);
-                if (result == PasswordVerificationResult.Success)
-                    return true;
+                return false;
             }
 
-            return false;
+            return hashes
+                .Select(x => passwordHash.VerifyHashedPassword(user, x, newPassword))
+                .Any(x => x != PasswordVerificationResult.Failed);
         }
     }
 }
