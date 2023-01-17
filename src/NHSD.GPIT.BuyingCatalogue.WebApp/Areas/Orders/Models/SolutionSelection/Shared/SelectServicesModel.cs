@@ -19,13 +19,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             IEnumerable<CatalogueItem> services,
             CatalogueItemType catalogueItemType)
         {
-            var previous = wrapper.Previous;
-            var current = wrapper.Order;
-
-            var existingServices = GetServices(previous, catalogueItemType);
+            var existingServices = GetServices(wrapper.Previous, catalogueItemType);
             var existingServiceIds = existingServices.Select(x => x.CatalogueItem.Id).ToList();
 
-            var currentServices = GetServices(current, catalogueItemType);
+            var currentServices = GetServices(wrapper.Order, catalogueItemType);
             var currentServiceIds = currentServices.Select(x => x.CatalogueItem.Id).ToList();
 
             ExistingServices = existingServices.Select(x => x.CatalogueItem.Name).ToList();
@@ -45,6 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             }
 
             IsAmendment = wrapper.IsAmendment;
+            SolutionName = wrapper.RolledUp.GetSolution()?.CatalogueItem.Name;
         }
 
         public string InternalOrgId { get; set; }
@@ -54,6 +52,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         public bool IsAmendment { get; set; }
 
         public bool AssociatedServicesOnly { get; set; }
+
+        public string SolutionName { get; set; }
 
         public List<string> ExistingServices { get; set; }
 
@@ -70,7 +70,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             {
                 CatalogueItemType.AdditionalService => order.GetAdditionalServices().ToList(),
                 CatalogueItemType.AssociatedService => order.GetAssociatedServices().ToList(),
-                CatalogueItemType.Solution => throw new ArgumentOutOfRangeException(nameof(catalogueItemType), catalogueItemType, null),
                 _ => throw new ArgumentOutOfRangeException(nameof(catalogueItemType), catalogueItemType, null),
             };
         }

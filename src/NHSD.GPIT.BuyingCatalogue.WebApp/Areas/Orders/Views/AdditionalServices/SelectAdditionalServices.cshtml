@@ -17,7 +17,7 @@
         <nhs-validation-summary/>
 
         <nhs-page-title title="@ViewBag.Title"
-                        caption="Order @Model.CallOffId"
+                        caption="@Model.SolutionName"
                         advice="@advice"/>
         
         <form method="post">
@@ -40,9 +40,12 @@
             }
             else
             {
-                <div id="nothing-to-select">
-                    <p>There are no Additional Services available for this Catalogue Solution.</p>
-                </div>
+                @if (!Model.IsAmendment)
+                {
+                    <div id="nothing-to-select">
+                        <p>There are no Additional Services available for this Catalogue Solution.</p>
+                    </div>
+                }
             }
             
             @if (Model.ExistingServices.Any())
