@@ -39,6 +39,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users
 
         Task<bool> IsAccountManagerLimit(int organisationId, int userId = 0);
 
-        Task<bool> IsPasswordValid(AspNetUser user, string newPassword);
+        Task<bool> IsDuplicatePassword(AspNetUser user, string newPassword);
     }
 }
