@@ -113,13 +113,14 @@ jobs:
         
         chmod +x codecov
         ./codecov -f tests/**/coverage.cobertura.xml -t $(CODECOVTOKEN)
+    condition: and(succeeded(), in(variables['Build.Reason'], 'IndividualCI', 'BatchedCI', 'PullRequest'))
 
-#  - task: DotNetCoreCLI@2
-#    displayName: 'Run Integration Tests'
-#    inputs:
-#      command: test
-#      projects: '**/*IntegrationTests.csproj'
-#      arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
+  - task: DotNetCoreCLI@2
+    displayName: 'Run Integration Tests'
+    inputs:
+      command: test
+      projects: '**/*IntegrationTests.csproj'
+      arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
 
   - task: Docker@2
     displayName: 'Docker: Build and Push'
