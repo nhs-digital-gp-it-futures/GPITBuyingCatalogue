@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
@@ -17,17 +16,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
     {
         private readonly UserManager<AspNetUser> userManager;
         private readonly AccountManagementSettings accountManagementSettings;
-        private readonly BuyingCatalogueDbContext dbContext;
-        private readonly IPasswordHasher<AspNetUser> passwordHash;
-        private readonly PasswordResetSettings passwordResetSettings;
 
-        public UsersService(UserManager<AspNetUser> userManager, AccountManagementSettings accountManagementSettings, BuyingCatalogueDbContext dbContext, IPasswordHasher<AspNetUser> passwordHash, PasswordResetSettings passwordResetSettings)
+        public UsersService(UserManager<AspNetUser> userManager, AccountManagementSettings accountManagementSettings)
         {
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             this.accountManagementSettings = accountManagementSettings ?? throw new ArgumentNullException(nameof(accountManagementSettings));
-            this.passwordResetSettings = passwordResetSettings ?? throw new ArgumentNullException(nameof(passwordResetSettings));
-            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            this.passwordHash = passwordHash ?? throw new ArgumentNullException(nameof(passwordHash));
         }
 
         public Task<AspNetUser> GetUser(int userId)
@@ -169,32 +162,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Users
                         && !u.Disabled);
 
             return users >= accountManagementSettings.MaximumNumberOfAccountManagers;
-        }
-
-        public async Task<bool> IsDuplicatePassword(AspNetUser user, string newPassword)
-        {
-            // temporal tables screw up ordering, hence the use of a projection
-            var history = await dbContext.AspNetUsers.TemporalAll()
-                .Where(x => x.Id == user.Id)
-                .Select(x => new { x.PasswordHash, x.LastUpdated })
-                .ToListAsync();
-
-            var hashes = history
-                .OrderByDescending(x => x.LastUpdated)
-                .Select(x => x.PasswordHash)
-                .Where(x => x != null)
-                .Distinct()
-                .Take(passwordResetSettings.NumOfPreviousPasswords)
-                .ToList();
-
-            if (!hashes.Any())
-            {
-                return false;
-            }
-
-            return hashes
-                .Select(x => passwordHash.VerifyHashedPassword(user, x, newPassword))
-                .Any(x => x != PasswordVerificationResult.Failed);
         }
     }
 }

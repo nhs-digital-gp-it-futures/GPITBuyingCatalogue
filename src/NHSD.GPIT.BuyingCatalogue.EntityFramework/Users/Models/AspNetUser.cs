@@ -30,6 +30,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
 
         public string FullName => $"{FirstName} {LastName}";
 
+        public DateTime PasswordUpdatedDate { get; set; }
+
         public DateTime LastUpdated { get; set; }
 
         public int? LastUpdatedBy { get; set; }

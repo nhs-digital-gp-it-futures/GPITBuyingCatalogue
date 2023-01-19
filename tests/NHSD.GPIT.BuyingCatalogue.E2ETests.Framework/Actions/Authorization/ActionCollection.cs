@@ -5,5 +5,7 @@
         public CommonActions CommonActions { get; set; }
 
         public LoginActions LoginActions { get; set; }
+
+        public UpdatePasswordActions UpdatePasswordActions { get; set; }
     }
 }
