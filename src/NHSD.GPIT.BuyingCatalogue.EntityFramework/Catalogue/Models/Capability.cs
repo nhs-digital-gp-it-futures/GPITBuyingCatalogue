@@ -11,6 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
             CatalogueItemCapabilities = new HashSet<CatalogueItemCapability>();
             Epics = new HashSet<Epic>();
             StandardCapabilities = new HashSet<StandardCapability>();
+            FrameworkCapabilities = new HashSet<FrameworkCapability>();
         }
 
         public int Id { get; set; }
