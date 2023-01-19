@@ -28,6 +28,6 @@ UPDATE SET
         TARGET.[Name] = SOURCE.[Name],
         TARGET.[Description] = SOURCE.[Description]
       WHEN NOT MATCHED BY TARGET THEN
-    INSERT ([Name], [Description])
-    VALUES (SOURCE.[Name], SOURCE.[Description]);
+      INSERT (Id, [Name], [Description])
+      VALUES (SOURCE.Id, SOURCE.[Name], SOURCE.[Description]);
 GO
