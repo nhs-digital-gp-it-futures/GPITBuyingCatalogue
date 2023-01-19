@@ -51,8 +51,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 AddCompletedOrder(context, 90011, GetOrganisationId(context, "CG-15F")),
                 AddCompletedOrder(context, 90030, GetOrganisationId(context)),
                 AddAmendment(context, 90030, 2),
+                AddCompletedOrder(context, 90031, GetOrganisationId(context)),
+                AddAmendment(context, 90031, 2),
                 AddOrderByAccountManager(context),
             };
+
+            var order90031 = orders.First(x => x.Id == 90031);
+
+            AddOrderItemToOrder(context, order90031, new CatalogueItemId(99998, "001A99"));
 
             context.InsertRangeWithIdentity(orders);
         }
@@ -1691,6 +1697,49 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             order.OrderItems.Add(addedSolution);
 
             return order;
+        }
+
+        private static void AddOrderItemToOrder(BuyingCatalogueDbContext context, Order order, CatalogueItemId catalogueItemId)
+        {
+            var user = GetBuyerUser(context, order.OrderingPartyId);
+
+            var price = context.CatalogueItems
+                .Where(c => c.Id == catalogueItemId)
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
+                .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
+                .First();
+
+            var orderItem = new OrderItem
+            {
+                OrderItemPrice = price,
+                Created = DateTime.UtcNow,
+                OrderId = order.Id,
+                CatalogueItem = context.CatalogueItems.First(c => c.Id == catalogueItemId),
+            };
+
+            var recipients = context.ServiceRecipients.ToList();
+
+            recipients.ForEach(r =>
+            {
+                var recipient = new OrderItemRecipient
+                {
+                    Recipient = r,
+                    Quantity = 1000,
+                };
+
+                orderItem.OrderItemRecipients.Add(recipient);
+            });
+
+            orderItem.OrderItemFunding = new OrderItemFunding
+            {
+                OrderId = orderItem.OrderId,
+                CatalogueItemId = orderItem.CatalogueItemId,
+                OrderItemFundingType = OrderItemFundingType.CentralFunding,
+                LastUpdatedBy = user.Id,
+            };
+
+            order.OrderItems.Add(orderItem);
         }
 
         private static Order AddAmendment(BuyingCatalogueDbContext context, int orderNumber, int revision)

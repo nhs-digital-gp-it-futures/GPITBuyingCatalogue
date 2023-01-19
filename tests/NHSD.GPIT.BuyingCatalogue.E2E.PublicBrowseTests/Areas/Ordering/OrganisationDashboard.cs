@@ -111,6 +111,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             Driver.Url.Should().EndWith("page=3");
 
             CommonActions.ElementIsDisplayed(CommonSelectors.PaginationPrevious).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(CommonSelectors.PaginationNext).Should().BeTrue();
+
+            CommonActions.ClickLinkElement(CommonSelectors.PaginationNext);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(DashboardController),
+                nameof(DashboardController.Organisation)).Should().BeTrue();
+
+            Driver.Url.Should().EndWith("page=4");
+
+            CommonActions.ElementIsDisplayed(CommonSelectors.PaginationPrevious).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.PaginationNext).Should().BeFalse();
 
             using var context = GetEndToEndDbContext();
@@ -122,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 PageSize = 10,
             }.NumberOfPages;
 
-            CommonActions.ElementTextEqualTo(CommonSelectors.PaginationPreviousSubText, $"2 of {expectedNumberOfPages}")
+            CommonActions.ElementTextEqualTo(CommonSelectors.PaginationPreviousSubText, $"3 of {expectedNumberOfPages}")
                 .Should()
                 .BeTrue();
         }
