@@ -312,7 +312,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
                 .Setup(x => x.SendResetEmailAsync(token.User, uri)).Returns(Task.CompletedTask)
                 .Verifiable();
 
-            var controller = CreateController(mockUserManager.Object, mockSignInManager.Object, passwordService:mockPasswordService.Object, passwordResetCallback: mockPasswordResetCallback.Object);
+            var controller = CreateController(mockUserManager.Object, mockSignInManager.Object, passwordService: mockPasswordService.Object, passwordResetCallback: mockPasswordResetCallback.Object);
 
             var result = await controller.ForgotPassword(model);
 
