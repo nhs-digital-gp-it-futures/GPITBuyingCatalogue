@@ -10,6 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Authorization
             {
                 CommonActions = new(driver),
                 LoginActions = new(driver),
+                UpdatePasswordActions = new(driver),
             };
         }
 

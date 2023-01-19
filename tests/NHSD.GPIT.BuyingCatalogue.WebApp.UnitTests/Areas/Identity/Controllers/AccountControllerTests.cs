@@ -15,10 +15,10 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Validators.Registration;
 using Xunit;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
@@ -176,6 +176,36 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
 
         [Theory]
         [CommonAutoData]
+        public static async Task ResetPassword_WithPreviouslyUsedPassword_ReturnsModelError(
+            ResetPasswordViewModel model,
+            Mock<UserManager<AspNetUser>> mockUserManager,
+            Mock<SignInManager<AspNetUser>> mockSignInManager,
+            Mock<IPasswordService> mockPasswordService)
+        {
+            IdentityError[] expectedErrorMessages = new IdentityError[]
+            {
+                new IdentityError() { Code = PasswordValidator.PasswordAlreadyUsedCode, Description = PasswordValidator.PasswordAlreadyUsed },
+            };
+
+            mockPasswordService
+                .Setup(x => x.ResetPasswordAsync(model.Email, model.Token, model.Password))
+                .ReturnsAsync(IdentityResult.Failed(expectedErrorMessages));
+
+            var controller = CreateController(mockUserManager.Object, mockSignInManager.Object, mockPasswordService.Object);
+
+            var result = await controller.ResetPassword(model);
+
+            controller.ModelState.Should().ContainKey(nameof(ResetPasswordViewModel.Password));
+            controller.ModelState[nameof(ResetPasswordViewModel.Password)]?.Errors.Should().Contain(x => x.ErrorMessage.Contains(PasswordValidator.PasswordAlreadyUsed));
+
+            var actualResult = result.Should().BeAssignableTo<ViewResult>().Subject;
+
+            actualResult.ViewName.Should().BeNull();
+            actualResult.Model.Should().BeAssignableTo<ResetPasswordViewModel>();
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static async Task Post_Login_UserAccountLocked_ReturnsLockedView(
             AspNetUser user,
             LoginViewModel model,
@@ -233,7 +263,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
                 .Setup(x => x.UpdateOrganisationDetails(odsCode))
                 .Verifiable();
 
-            var controller = CreateController(mockUserManager.Object, mockSignInManager.Object, mockOdsService.Object);
+            var controller = CreateController(mockUserManager.Object, mockSignInManager.Object, odsService: mockOdsService.Object);
 
             var result = await controller.Login(model);
 
@@ -595,22 +625,212 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
             Assert.Null(((ViewResult)result).ViewName);
         }
 
+        [Theory]
+        [CommonAutoData]
+        public static void Get_UpdatePassword_ReturnsDefaultView(AccountController controller)
+        {
+            var result = controller.UpdatePassword();
+
+            Assert.IsAssignableFrom<ViewResult>(result);
+            Assert.Null(((ViewResult)result).ViewName);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_UpdatePassword_InvalidModelState_ReturnsDefaultView(AccountController controller)
+        {
+            controller.ModelState.AddModelError("test", "test");
+
+            var result = await controller.UpdatePassword(new UpdatePasswordViewModel());
+
+            Assert.IsAssignableFrom<ViewResult>(result);
+            Assert.Null(((ViewResult)result).ViewName);
+            Assert.IsAssignableFrom<UpdatePasswordViewModel>(((ViewResult)result).Model);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task UpdatePassword_PreviouslyUsedPassword_ReturnsModelError(
+            UpdatePasswordViewModel model,
+            Mock<UserManager<AspNetUser>> mockUserManager,
+            Mock<SignInManager<AspNetUser>> mockSignInManager,
+            Mock<IPasswordService> mockPasswordService)
+        {
+            const string userName = "Name";
+
+            IdentityError[] expectedErrorMessages = new IdentityError[]
+            {
+                new IdentityError() { Code = PasswordValidator.PasswordAlreadyUsedCode, Description = PasswordValidator.PasswordAlreadyUsed },
+            };
+
+            mockPasswordService
+                .Setup(x => x.ChangePasswordAsync(userName, model.CurrentPassword, model.NewPassword))
+                .ReturnsAsync(IdentityResult.Failed(expectedErrorMessages));
+
+            var userPrincipal = new ClaimsPrincipal(new ClaimsIdentity(
+                new Claim[] { new(ClaimTypes.Name, userName) },
+                "mock"));
+
+            var controller = CreateController(
+                mockUserManager.Object,
+                mockSignInManager.Object,
+                mockPasswordService.Object);
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = userPrincipal, },
+            };
+
+            var result = await controller.UpdatePassword(model);
+
+            controller.ModelState.Should().ContainKey(nameof(UpdatePasswordViewModel.NewPassword));
+            controller.ModelState[nameof(UpdatePasswordViewModel.NewPassword)]?.Errors.Should().Contain(x => x.ErrorMessage.Contains(PasswordValidator.PasswordAlreadyUsed));
+
+            var actualResult = result.Should().BeAssignableTo<ViewResult>().Subject;
+
+            actualResult.ViewName.Should().BeNull();
+            actualResult.Model.Should().BeAssignableTo<UpdatePasswordViewModel>();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task UpdatePassword_ErrorUpdatingPassword_ReturnsModelError(
+            Mock<UserManager<AspNetUser>> mockUserManager,
+            Mock<SignInManager<AspNetUser>> mockSignInManager,
+            UpdatePasswordViewModel model,
+            Mock<IPasswordService> mockPasswordService)
+        {
+            const string userName = "Name";
+
+            IdentityError[] expectedErrorMessages = new IdentityError[]
+            {
+                new IdentityError() { Code = PasswordValidator.PasswordMismatchCode, Description = UpdatePasswordViewModelValidator.CurrentPasswordIncorrect },
+                new IdentityError() { Code = PasswordValidator.InvalidPasswordCode, Description = PasswordValidator.PasswordConditionsNotMet },
+            };
+
+            mockPasswordService
+                .Setup(x => x.ChangePasswordAsync(userName, model.CurrentPassword, model.NewPassword))
+                .ReturnsAsync(IdentityResult.Failed(expectedErrorMessages));
+
+            var userPrincipal = new ClaimsPrincipal(new ClaimsIdentity(
+                new Claim[] { new(ClaimTypes.Name, userName) },
+                "mock"));
+
+            var controller = CreateController(
+                mockUserManager.Object,
+                mockSignInManager.Object,
+                mockPasswordService.Object);
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = userPrincipal, },
+            };
+
+            var result = await controller.UpdatePassword(model);
+
+            controller.ModelState.Should().ContainKey(nameof(UpdatePasswordViewModel.CurrentPassword));
+            controller.ModelState[nameof(UpdatePasswordViewModel.CurrentPassword)]?.Errors.Should().Contain(x => x.ErrorMessage.Contains(UpdatePasswordViewModelValidator.CurrentPasswordIncorrect));
+
+            controller.ModelState.Should().ContainKey(nameof(UpdatePasswordViewModel.NewPassword));
+            controller.ModelState[nameof(UpdatePasswordViewModel.NewPassword)]?.Errors.Should().Contain(x => x.ErrorMessage.Contains(PasswordValidator.PasswordConditionsNotMet));
+
+            var actualResult = result.Should().BeAssignableTo<ViewResult>().Subject;
+
+            actualResult.ViewName.Should().BeNull();
+            actualResult.Model.Should().BeAssignableTo<UpdatePasswordViewModel>();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void UpdatePassword_UnexpectedErrors_ThrowsException(
+            Mock<UserManager<AspNetUser>> mockUserManager,
+            Mock<SignInManager<AspNetUser>> mockSignInManager,
+            UpdatePasswordViewModel model,
+            Mock<IPasswordService> mockPasswordService)
+        {
+            const string userName = "Name";
+            const string code = "Code";
+            const string errorMessage = "Error";
+
+            IdentityError[] expectedErrorMessages = new IdentityError[] { new IdentityError() { Code = code, Description = errorMessage }, };
+
+            mockPasswordService
+                .Setup(x => x.ChangePasswordAsync(userName, model.CurrentPassword, model.NewPassword))
+                .ReturnsAsync(IdentityResult.Failed(expectedErrorMessages));
+
+            var userPrincipal = new ClaimsPrincipal(new ClaimsIdentity(
+                new Claim[] { new(ClaimTypes.Name, userName) },
+                "mock"));
+
+            var controller = CreateController(
+                mockUserManager.Object,
+                mockSignInManager.Object,
+                mockPasswordService.Object);
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = userPrincipal, },
+            };
+
+            var result = Assert.ThrowsAsync<InvalidOperationException>(async () => await controller.UpdatePassword(model));
+            result.Result.Message.Should().Be("Unexpected errors whilst updating password: " + errorMessage);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task UpdatePassword_PasswordUpdated_ReturnsRedirect(
+            Mock<UserManager<AspNetUser>> mockUserManager,
+            Mock<SignInManager<AspNetUser>> mockSignInManager,
+            UpdatePasswordViewModel model,
+            Mock<IPasswordService> mockPasswordService)
+        {
+            const string userName = "Name";
+
+            mockPasswordService
+                .Setup(x => x.ChangePasswordAsync(userName, model.CurrentPassword, model.NewPassword))
+                .ReturnsAsync(IdentityResult.Success);
+
+            mockSignInManager
+                .Setup(x => x.SignOutAsync())
+                .Returns(Task.CompletedTask);
+
+            var userPrincipal = new ClaimsPrincipal(new ClaimsIdentity(
+                new Claim[] { new(ClaimTypes.Name, userName) },
+                "mock"));
+
+            var controller = CreateController(
+                mockUserManager.Object,
+                mockSignInManager.Object,
+                mockPasswordService.Object);
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = userPrincipal, },
+            };
+
+            var result = await controller.UpdatePassword(model);
+
+            mockPasswordService.Verify(x => x.UpdatePasswordChangedDate(userName));
+            mockSignInManager.Verify(x => x.SignOutAsync());
+            var actualResult = result.Should().BeAssignableTo<RedirectToActionResult>().Subject;
+            actualResult.ActionName.Should().Be(nameof(AccountController.Login));
+        }
+
         private static AccountController CreateController(
             UserManager<AspNetUser> userManager,
             SignInManager<AspNetUser> signInManager,
-            IOdsService odsService = null,
-            IUsersService userServices = null,
             IPasswordService passwordService = null,
+            IOdsService odsService = null,
             IPasswordResetCallback passwordResetCallback = null)
         {
             return new AccountController(
                 signInManager,
                 userManager,
                 odsService ?? Mock.Of<IOdsService>(),
-                userServices ?? Mock.Of<IUsersService>(),
                 passwordService ?? Mock.Of<IPasswordService>(),
                 passwordResetCallback ?? Mock.Of<IPasswordResetCallback>(),
-                new DisabledErrorMessageSettings());
+                new DisabledErrorMessageSettings(),
+                new PasswordSettings());
         }
     }
 }
