@@ -56,6 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 options.Filters.Add(typeof(OrdersActionFilter));
                 options.Filters.Add(typeof(CookieConsentActionFilter));
                 options.Filters.Add(typeof(TermsOfUseActionFilter));
+                options.Filters.Add(typeof(UpdatePasswordActionFilter));
                 options.Filters.Add<SerilogMvcLoggingAttribute>();
             }).AddControllersAsServices();
 
@@ -78,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 services.ConfigureSession(Configuration);
             }
 
-            services.ConfigureIdentity();
+            services.ConfigureIdentity(Configuration);
 
             services.ConfigureCacheKeySettings(Configuration)
                 .ConfigureGovNotify(Configuration)
@@ -95,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigureCookies(Configuration);
 
-            services.ConfigurePasswordReset(Configuration);
+            services.ConfigurePassword(Configuration);
 
             services.ConfigureRegistration(Configuration);
 

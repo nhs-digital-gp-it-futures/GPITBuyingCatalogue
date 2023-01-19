@@ -9,7 +9,6 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -476,76 +475,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
             var result = await service.IsAccountManagerLimit(testOrgId);
 
             result.Should().BeFalse();
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
-        public static async Task IsDuplicatePassword_NoPasswordHistory_ReturnsFalse(
-            AspNetUser user,
-            string newPassword,
-            [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] Mock<IPasswordHasher<AspNetUser>> passwordHasher,
-            UsersService service)
-        {
-            user.PasswordHash = null;
-
-            context.AspNetUsers.Add(user);
-
-            await context.SaveChangesAsync();
-
-            var result = await service.IsDuplicatePassword(user, newPassword);
-
-            passwordHasher.VerifyNoOtherCalls();
-
-            result.Should().BeFalse();
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
-        public static async Task IsDuplicatePassword_PasswordNotInHistory_ReturnsFalse(
-            AspNetUser user,
-            string password,
-            [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] Mock<IPasswordHasher<AspNetUser>> passwordHasher,
-            UsersService service)
-        {
-            context.AspNetUsers.Add(user);
-
-            await context.SaveChangesAsync();
-
-            passwordHasher
-                .Setup(x => x.VerifyHashedPassword(user, user.PasswordHash, password))
-                .Returns(PasswordVerificationResult.Failed);
-
-            var result = await service.IsDuplicatePassword(user, password);
-
-            passwordHasher.VerifyAll();
-
-            result.Should().BeFalse();
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
-        public static async Task IsDuplicatePassword_PasswordInHistory_ReturnsTrue(
-            AspNetUser user,
-            string password,
-            [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] Mock<IPasswordHasher<AspNetUser>> passwordHasher,
-            UsersService service)
-        {
-            context.AspNetUsers.Add(user);
-
-            await context.SaveChangesAsync();
-
-            passwordHasher
-                .Setup(x => x.VerifyHashedPassword(user, user.PasswordHash, password))
-                .Returns(PasswordVerificationResult.Success);
-
-            var result = await service.IsDuplicatePassword(user, password);
-
-            passwordHasher.VerifyAll();
-
-            result.Should().BeTrue();
         }
 
         private static async Task AddAccountManagerToOrganisation(
