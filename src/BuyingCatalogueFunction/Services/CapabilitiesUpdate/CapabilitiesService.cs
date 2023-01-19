@@ -19,6 +19,7 @@ public class CapabilitiesService : ICapabilitiesService
         static async Task<List<T>> ReadDatasetInternalAsync<T>(ZipFile zipFile, string dataset)
         {
             var zipEntry = zipFile.GetEntry(dataset);
+            if (zipEntry == null) throw new ZipException($"Entry {dataset} does not exist in {zipFile.Name}");
 
             await using var stream = zipFile.GetInputStream(zipEntry);
 
