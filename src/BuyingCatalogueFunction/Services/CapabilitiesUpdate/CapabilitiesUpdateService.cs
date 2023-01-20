@@ -109,7 +109,7 @@ public class CapabilitiesUpdateService : ICapabilitiesUpdateService
             dbStandards.Any(y => x.StandardId == y.Id)).ToList();
 
         var toRemove = dbRelationships.Where(x =>
-                relationships.All(y => x.CapabilityId != y.CapabilityId && x.StandardId != y.StandardId))
+                !relationships.Any(y => x.StandardId == y.StandardId && x.CapabilityId == y.CapabilityId))
             .ToList();
 
         _dbContext.StandardCapabilities.RemoveRange(toRemove);
