@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
@@ -17,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
     {
         private readonly IGovNotifyEmailService govNotifyEmailService;
         private readonly IdentityOptions identityOptions = new();
-        private readonly PasswordResetSettings settings;
+        private readonly PasswordSettings settings;
         private readonly UserManager<AspNetUser> userManager;
 
         /// <summary>
@@ -32,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
         /// <exception cref="ArgumentNullException"><paramref name="userManager"/> is <see langref="null"/>.</exception>
         public PasswordService(
             IGovNotifyEmailService govNotifyEmailService,
-            PasswordResetSettings settings,
+            PasswordSettings settings,
             UserManager<AspNetUser> userManager)
         {
             this.govNotifyEmailService = govNotifyEmailService ?? throw new ArgumentNullException(nameof(govNotifyEmailService));
@@ -113,6 +114,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
         }
 
         /// <summary>
+        /// Changes the password of the user with the specified email<paramref name="emailAddress"/>.
+        /// </summary>
+        /// <param name="emailAddress">The email address of the user.</param>
+        /// <param name="currentPassword">The user's current password.</param>
+        /// <param name="newPassword">The value of the new password.</param>
+        /// <returns>The result of the password reset operation.</returns>
+        public async Task<IdentityResult> ChangePasswordAsync(string emailAddress, string currentPassword, string newPassword)
+        {
+            var user = await userManager.FindByEmailAsync(emailAddress);
+            return await userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+        }
+
+        /// <summary>
         /// Resets the password of the user with the specified <paramref name="emailAddress"/>.
         /// </summary>
         /// <param name="emailAddress">The email address of the user.</param>
@@ -123,6 +137,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
         {
             var user = await userManager.FindByEmailAsync(emailAddress);
             return await userManager.ResetPasswordAsync(user, token, newPassword);
+        }
+
+        /// <summary>
+        /// Update the date the password was changed <paramref name="emailAddress"/>.
+        /// </summary>
+        /// <param name="emailAddress">The email address of the user.</param>
+        /// <returns>The result of the update operation.</returns>
+        public async Task<IdentityResult> UpdatePasswordChangedDate(string emailAddress)
+        {
+            var user = await userManager.Users.FirstAsync(u => u.Email == emailAddress);
+
+            user.PasswordUpdatedDate = DateTime.Now;
+
+            return await userManager.UpdateAsync(user);
         }
     }
 }
