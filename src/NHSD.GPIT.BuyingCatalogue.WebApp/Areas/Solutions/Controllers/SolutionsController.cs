@@ -165,14 +165,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             CatalogueItemId additionalServiceId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
-            if (solution is null)
+            if (solution is null || solution.Solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
             if (solution.PublishedStatus == PublicationStatus.Suspended)
                 return RedirectToAction(nameof(Description), new { solutionId });
 
             var item = await additionalServicesService.GetAdditionalServiceWithCapabilities(additionalServiceId);
-            if (item is null)
+            if (item is null || item.AdditionalService is null)
                 return BadRequest($"No Catalogue Item found for Id: {additionalServiceId}");
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);

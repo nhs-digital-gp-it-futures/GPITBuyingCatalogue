@@ -9,19 +9,23 @@ using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 using Xunit;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
@@ -77,6 +81,42 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 { "selectedCapabilityIds", null },
                 { "selectedEpicIds", null },
             });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async void GetFilterSearchSuggestions_ReturnsJsonResult(
+            string search,
+            string currentPage,
+            List<SearchFilterModel> searchResults,
+            [Frozen] Mock<ISolutionsFilterService> mockService,
+            SolutionsController controller)
+        {
+            mockService.Setup(s => s.GetSolutionsBySearchTerm(search, It.IsAny<int>()))
+                .ReturnsAsync(searchResults);
+
+            var context = new DefaultHttpContext();
+            context.HttpContext.Request.Headers.Referer = currentPage;
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = context,
+            };
+
+            var currentPageUrl = new UriBuilder(currentPage);
+            var expectedResults = searchResults.Select(r =>
+                new SuggestionSearchResult
+                {
+                    Title = r.Title,
+                    Category = r.Category,
+                    Url = currentPageUrl.AppendQueryParameterToUrl(nameof(search), r.Title).ToString(),
+                });
+
+            var result = await controller.FilterSearchSuggestions(search);
+
+            mockService.VerifyAll();
+            var actualResult = result.Should().BeOfType<JsonResult>().Subject;
+            actualResult.Value.Should().BeEquivalentTo(expectedResults);
         }
 
         [Theory]
@@ -214,6 +254,151 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
             actual.Model.Should().BeEquivalentTo(capabilitiesViewModel, opt => opt.Excluding(cvm => cvm.BackLink).Excluding(cvm => cvm.BackLinkText));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_CapabilitiesAdditionalServices_NullCatalogueItem_ReturnsBadRequest(
+            [Frozen] Mock<ISolutionsService> mockService,
+            SolutionsController controller,
+            CatalogueItemId catalogueItemId,
+            CatalogueItemId additionalServiceId)
+        {
+            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
+                .ReturnsAsync((CatalogueItem)null);
+
+            var actual = (await controller.CapabilitiesAdditionalServices(catalogueItemId, additionalServiceId)).As<BadRequestObjectResult>();
+
+            mockService.VerifyAll();
+            actual.Should().NotBeNull();
+            actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_CapabilitiesAdditionalServices_NullSolution_ReturnsBadRequest(
+            [Frozen] Mock<ISolutionsService> mockService,
+            SolutionsController controller,
+            CatalogueItemId catalogueItemId,
+            CatalogueItemId additionalServiceId)
+        {
+            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
+                .ReturnsAsync(new CatalogueItem() { Solution = null });
+
+            var actual = (await controller.CapabilitiesAdditionalServices(catalogueItemId, additionalServiceId)).As<BadRequestObjectResult>();
+
+            mockService.VerifyAll();
+            actual.Should().NotBeNull();
+            actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_CapabilitiesAdditionalServices_PublicationSuspended_ReturnsRedirectToAction(
+            [Frozen] Mock<ISolutionsService> mockService,
+            SolutionsController controller,
+            CatalogueItemId catalogueItemId,
+            CatalogueItemId additionalServiceId,
+            Solution solution)
+        {
+            var catalogueItem = new CatalogueItem { Solution = solution, PublishedStatus = PublicationStatus.Suspended };
+
+            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+
+            var actual = (await controller.CapabilitiesAdditionalServices(catalogueItemId, additionalServiceId)).As<RedirectToActionResult>();
+
+            mockService.VerifyAll();
+            actual.Should().NotBeNull();
+            actual.ActionName.Should().Be(nameof(SolutionsController.Description));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_CapabilitiesAdditionalServices_NoCatalogueItemForAdditionalService_ReturnsBadRequest(
+            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] Mock<IAdditionalServicesService> mockAdditionalServices,
+            SolutionsController controller,
+            CatalogueItemId catalogueItemId,
+            CatalogueItemId additionalServiceId,
+            Solution solution)
+        {
+            var catalogueItem = new CatalogueItem { Solution = solution, PublishedStatus = PublicationStatus.Published };
+
+            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+
+            mockAdditionalServices.Setup(s => s.GetAdditionalServiceWithCapabilities(additionalServiceId))
+                .ReturnsAsync((CatalogueItem)null);
+
+            var actual = (await controller.CapabilitiesAdditionalServices(catalogueItemId, additionalServiceId)).As<BadRequestObjectResult>();
+
+            mockService.VerifyAll();
+            mockAdditionalServices.VerifyAll();
+            actual.Should().NotBeNull();
+            actual.Value.Should().Be($"No Catalogue Item found for Id: {additionalServiceId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_CapabilitiesAdditionalServices_NullAdditionalService_ReturnsBadRequest(
+            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] Mock<IAdditionalServicesService> mockAdditionalServices,
+            SolutionsController controller,
+            CatalogueItemId catalogueItemId,
+            CatalogueItemId additionalServiceId,
+            Solution solution)
+        {
+            var catalogueItem = new CatalogueItem { Solution = solution, PublishedStatus = PublicationStatus.Published };
+
+            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+
+            mockAdditionalServices.Setup(s => s.GetAdditionalServiceWithCapabilities(additionalServiceId))
+                .ReturnsAsync(new CatalogueItem() { AdditionalService = null });
+
+            var actual = (await controller.CapabilitiesAdditionalServices(catalogueItemId, additionalServiceId)).As<BadRequestObjectResult>();
+
+            mockService.VerifyAll();
+            mockAdditionalServices.VerifyAll();
+            actual.Should().NotBeNull();
+            actual.Value.Should().Be($"No Catalogue Item found for Id: {additionalServiceId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_CapabilitiesAdditionalServices_ReturnsDefaultView(
+            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] Mock<IAdditionalServicesService> mockAdditionalServices,
+            SolutionsController controller,
+            CatalogueItemId catalogueItemId,
+            CatalogueItemId additionalServiceId,
+            Solution solution,
+            AdditionalService additionalService,
+            CatalogueItemContentStatus contentStatus)
+        {
+            var catalogueItem = new CatalogueItem { Solution = solution, PublishedStatus = PublicationStatus.Published };
+
+            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
+                .ReturnsAsync(catalogueItem);
+
+            mockService.Setup(s => s.GetContentStatusForCatalogueItem(catalogueItemId))
+                .ReturnsAsync(contentStatus);
+
+            var additionalCatalogueItem = new CatalogueItem() { AdditionalService = additionalService };
+            mockAdditionalServices.Setup(s => s.GetAdditionalServiceWithCapabilities(additionalServiceId))
+                .ReturnsAsync(additionalCatalogueItem);
+
+            var expectedModel = new CapabilitiesViewModel(catalogueItem, additionalCatalogueItem, contentStatus)
+                { Name = additionalCatalogueItem.Name, Description = additionalService.FullDescription, };
+
+            var actual = (await controller.CapabilitiesAdditionalServices(catalogueItemId, additionalServiceId)).As<ViewResult>();
+
+            mockService.VerifyAll();
+            mockAdditionalServices.VerifyAll();
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNullOrEmpty();
+            actual.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(cvm => cvm.BackLink).Excluding(cvm => cvm.BackLinkText));
         }
 
         [Theory]
