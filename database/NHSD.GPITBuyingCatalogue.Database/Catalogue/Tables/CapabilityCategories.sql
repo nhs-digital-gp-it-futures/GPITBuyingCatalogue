@@ -7,7 +7,7 @@
      LastUpdatedBy int NULL,
      SysStartTime datetime2(0) GENERATED ALWAYS AS ROW START NOT NULL,
      SysEndTime datetime2(0) GENERATED ALWAYS AS ROW END NOT NULL,
-     PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),     
+     PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
      CONSTRAINT PK_CapabilityCategories PRIMARY KEY (Id),
      CONSTRAINT AK_CapabilityCategories_Name UNIQUE ([Name]),
      CONSTRAINT FK_CapabilityCategories_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),

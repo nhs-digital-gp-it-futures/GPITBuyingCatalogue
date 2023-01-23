@@ -27,19 +27,19 @@ namespace BuyingCatalogueFunction.Functions
         public async Task<IActionResult> IncrementalUpdateHttpTrigger(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest request)
         {
-            _logger.LogInformation($"HTTP-triggered incremental update starting at {DateTime.Now}");
+            _logger.LogInformation("HTTP-triggered incremental update starting at {Date}", DateTime.Now);
 
             try
             {
                 await _incrementalUpdateService.UpdateOrganisationData();
 
-                _logger.LogInformation($"HTTP-triggered incremental update completed at {DateTime.Now}");
+                _logger.LogInformation("HTTP-triggered incremental update completed at {Date}", DateTime.Now);
 
                 return new OkResult();
             }
             catch (Exception e)
             {
-                _logger.LogError(e.Message, e);
+                _logger.LogError("Error occurred while processing request. {Exception}", e);
 
                 return new InternalServerErrorResult();
             }
@@ -49,17 +49,17 @@ namespace BuyingCatalogueFunction.Functions
         public async Task IncrementalUpdateTimerTrigger(
             [TimerTrigger("0 0 4 * * *")] TimerInfo info)
         {
-            _logger.LogInformation($"Timer-triggered incremental update starting at {DateTime.Now}");
+            _logger.LogInformation("Timer-triggered incremental update starting at {Date}", DateTime.Now);
 
             try
             {
                 await _incrementalUpdateService.UpdateOrganisationData();
 
-                _logger.LogInformation($"Timer-triggered incremental update completed at {DateTime.Now}");
+                _logger.LogInformation("Timer-triggered incremental update completed at {Date}", DateTime.Now);
             }
             catch (Exception e)
             {
-                _logger.LogError(e.Message, e);
+                _logger.LogError("Error occurred while processing request. {Exception}", e);
             }
         }
     }
