@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                     typeof(AdditionalServicesController).ControllerName(),
                     new { solutionId, additionalServiceId }),
                 AddListPriceUrl = Url.Action(
-                    nameof(AddFlatListPrice),
+                    nameof(ListPriceType),
                     new { solutionId, additionalServiceId }),
             };
 
@@ -126,7 +126,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 : new(solution, additionalService);
 
             model.BackLink = Url.Action(
-                nameof(Index),
+                nameof(ListPriceType),
                 new { solutionId, additionalServiceId });
             return View("ListPrices/AddTieredListPrice", model);
         }
@@ -156,7 +156,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new AddEditFlatListPriceModel(additionalService)
             {
-                BackLink = Url.Action(nameof(Index), new { solutionId, additionalServiceId }),
+                BackLink = Url.Action(nameof(ListPriceType), new { solutionId, additionalServiceId }),
             };
 
             return View("ListPrices/AddEditFlatListPrice", model);
