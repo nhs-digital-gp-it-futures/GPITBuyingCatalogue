@@ -3,7 +3,7 @@
     public enum CompliancyLevel
     {
         Must = 1,
-        Should,
-        May,
+        Should = 2,
+        May = 3,
     }
 }

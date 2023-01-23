@@ -1,6 +1,5 @@
 ﻿
 using System.Xml.Serialization;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 
 namespace OrganisationImporter.Models;
 

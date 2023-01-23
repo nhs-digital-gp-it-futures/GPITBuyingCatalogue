@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using BuyingCatalogueFunction;
 using BuyingCatalogueFunction.Adapters;
 using BuyingCatalogueFunction.Models.Ods;
 using BuyingCatalogueFunction.Services;
+using BuyingCatalogueFunction.Services.CapabilitiesUpdate;
+using BuyingCatalogueFunction.Services.CapabilitiesUpdate.Interfaces;
 using BuyingCatalogueFunction.Services.IncrementalUpdate;
 using BuyingCatalogueFunction.Services.IncrementalUpdate.Interfaces;
 using BuyingCatalogueFunction.Settings;
@@ -46,6 +47,8 @@ namespace BuyingCatalogueFunction
             services.AddTransient<IOdsService, OdsService>();
             services.AddTransient<IOdsOrganisationService, OdsOrganisationService>();
             services.AddTransient<IOrganisationUpdateService, OrganisationUpdateService>();
+            services.AddTransient<ICapabilitiesUpdateService, CapabilitiesUpdateService>();
+            services.AddTransient<ICapabilitiesService, CapabilitiesService>();
 
             services.AddTransient<IAdapter<Org, OdsOrganisation>, OdsOrganisationAdapter>();
             services.AddTransient<IAdapter<Org, IEnumerable<OrganisationRelationship>>, OrganisationRelationshipsAdapter>();
@@ -65,11 +68,11 @@ namespace BuyingCatalogueFunction
             var rolesUri = Configuration.GetOrThrow("RolesUri", _logger);
             var searchUri = Configuration.GetOrThrow("SearchUri", _logger);
 
-            return new OdsSettings(
-                new Uri(organisationUri),
-                new Uri(relationshipsUri),
-                new Uri(rolesUri),
-                new Uri(searchUri));
+            return new(
+                new(organisationUri),
+                new(relationshipsUri),
+                new(rolesUri),
+                new(searchUri));
         }
     }
 }

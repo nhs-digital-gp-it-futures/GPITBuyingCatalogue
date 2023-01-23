@@ -6,6 +6,16 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
     [Serializable]
     public sealed class FrameworkCapability : IAudited
     {
+        public FrameworkCapability()
+        {
+        }
+
+        public FrameworkCapability(string frameworkId, int capabilityId)
+        {
+            FrameworkId = frameworkId;
+            CapabilityId = capabilityId;
+        }
+
         public string FrameworkId { get; set; }
 
         public int CapabilityId { get; set; }
