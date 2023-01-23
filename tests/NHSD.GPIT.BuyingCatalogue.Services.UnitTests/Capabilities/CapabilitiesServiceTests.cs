@@ -212,5 +212,85 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
 
             catalogueItem.CatalogueItemEpics.Count.Should().Be(expectedNumberOfEpics);
         }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetReferencedCapabilities_NoItemsReferencingCapabilities_ReturnsEmpty(
+            List<Capability> capabilities,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            CapabilitiesService service)
+        {
+            dbContext.AddRange(capabilities);
+            dbContext.CatalogueItemCapabilities.RemoveRange(dbContext.CatalogueItemCapabilities);
+            await dbContext.SaveChangesAsync();
+
+            var referencedCapabilities = await service.GetReferencedCapabilities();
+
+            referencedCapabilities.Should().BeEmpty();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetReferencedCapabilities_WithItemsReferencingCapabilities_ReturnsCapabilities(
+            List<Capability> capabilities,
+            List<CatalogueItem> catalogueItems,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            CapabilitiesService service)
+        {
+            capabilities.ForEach(x => x.CatalogueItemCapabilities = null);
+            catalogueItems.ForEach(
+                x =>
+                {
+                    x.CatalogueItemCapabilities = null;
+                    x.PublishedStatus = PublicationStatus.Published;
+                });
+
+            var catalogueItemCapabilities = capabilities.Zip(catalogueItems)
+                .Select(x => new CatalogueItemCapability(x.Second.Id, x.First.Id))
+                .ToList();
+
+            dbContext.Capabilities.AddRange(capabilities);
+            dbContext.CatalogueItems.AddRange(catalogueItems);
+            dbContext.CatalogueItemCapabilities.AddRange(catalogueItemCapabilities);
+            await dbContext.SaveChangesAsync();
+
+            var referencedCapabilities = await service.GetReferencedCapabilities();
+
+            capabilities.ForEach(x => referencedCapabilities.Should().Contain(y => x.Id == y.Id));
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task
+            GetReferencedCapabilities_WithUnpublishedItems_ReturnsReferencedCapabilitiesByPublishedItems(
+                List<Capability> capabilities,
+                List<CatalogueItem> catalogueItems,
+                [Frozen] BuyingCatalogueDbContext dbContext,
+                CapabilitiesService service)
+        {
+            capabilities.ForEach(x => x.CatalogueItemCapabilities = null);
+            catalogueItems.ForEach(x => x.CatalogueItemCapabilities = null);
+
+            catalogueItems.Take(2).ToList().ForEach(x => x.PublishedStatus = PublicationStatus.Unpublished);
+
+            var catalogueItemCapabilities = capabilities.Zip(catalogueItems)
+                .Select(x => new CatalogueItemCapability(x.Second.Id, x.First.Id))
+                .ToList();
+
+            dbContext.Capabilities.AddRange(capabilities);
+            dbContext.CatalogueItems.AddRange(catalogueItems);
+            dbContext.CatalogueItemCapabilities.AddRange(catalogueItemCapabilities);
+            await dbContext.SaveChangesAsync();
+
+            var unpublishedItemCapabilities = catalogueItemCapabilities
+                .Where(x => x.CatalogueItem.PublishedStatus == PublicationStatus.Unpublished)
+                .Select(x => x.Capability)
+                .Distinct()
+                .ToList();
+
+            var referencedCapabilities = await service.GetReferencedCapabilities();
+
+            unpublishedItemCapabilities.ForEach(x => referencedCapabilities.Should().NotContain(y => x.Id == y.Id));
+        }
     }
 }
