@@ -81,6 +81,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<Standard> Standards { get; set; }
 
+        public DbSet<StandardCapability> StandardCapabilities { get; set; }
+
         public DbSet<AspNetUser> AspNetUsers { get; set; }
 
         public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }

@@ -16,5 +16,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         [Description("Capability")]
         [Display(Name = "Capability")]
         Capability = 3,
+
+        [Description("Context Specific")]
+        [Display(Name = "Context Specific")]
+        ContextSpecific = 4,
     }
 }

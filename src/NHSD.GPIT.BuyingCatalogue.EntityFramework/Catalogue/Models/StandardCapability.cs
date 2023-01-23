@@ -5,6 +5,16 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     public sealed class StandardCapability : IAudited
     {
+        public StandardCapability()
+        {
+        }
+
+        public StandardCapability(string standardId, int capabilityId)
+        {
+            StandardId = standardId;
+            CapabilityId = capabilityId;
+        }
+
         public string StandardId { get; set; }
 
         public int CapabilityId { get; set; }
