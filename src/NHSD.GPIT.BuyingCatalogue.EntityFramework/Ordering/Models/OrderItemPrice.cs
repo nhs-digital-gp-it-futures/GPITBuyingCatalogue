@@ -6,6 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
+    [Serializable]
     public sealed partial class OrderItemPrice : IAudited, IPrice
     {
         public OrderItemPrice()

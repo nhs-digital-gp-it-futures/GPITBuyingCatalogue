@@ -1,6 +1,13 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Shared.SelectServicesModel
 @{
     ViewBag.Title = "Additional Services";
+
+    var serviceText = "These are optional add-ons to the main solution that provide extra functionality."
+        + (Model.IsAmendment ? " We're only showing Additional Services that weren't added to the original order." : "");
+
+    var advice = Model.IsAmendment && !Model.Services.Any()
+        ? "All the Additional Services available with this Catalogue Solution have already been added to this order."
+        : "Select the Additional Services that you want to add to your order.";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -10,15 +17,15 @@
         <nhs-validation-summary/>
 
         <nhs-page-title title="@ViewBag.Title"
-                        caption="Order @Model.CallOffId"
-                        advice="Select the Additional Services that you want to add to your order."/>
+                        caption="@Model.SolutionName"
+                        advice="@advice"/>
         
         <form method="post">
             @if (Model.Services.Any())
             {
                 <div id="services-to-select">
                     <h3>Additional Services available</h3>
-                    <p>These are optional add-ons to the main solution that provide extra functionality.</p>
+                    <p>@serviceText</p>
 
                     <nhs-checkbox-container>
                         @foreach (var (service, i) in Model.Services.Select((value, i) => (value, i)))
@@ -33,13 +40,38 @@
             }
             else
             {
-                <div id="nothing-to-select">
-                    <p>There are no Additional Services available for this Catalogue Solution.</p>
+                @if (!Model.IsAmendment)
+                {
+                    <div id="nothing-to-select">
+                        <p>There are no Additional Services available for this Catalogue Solution.</p>
+                    </div>
+                }
+            }
+            
+            @if (Model.ExistingServices.Any())
+            {
+                <div id="existing-services" class="nhsuk-u-margin-top-9">
+                    <h3>Additional Services already added</h3>
+                    
+                    <ul>
+                        @foreach (var (service, i) in Model.ExistingServices.Select((x, i) => (x, i)))
+                        {
+                            <input type="hidden" asp-for="@Model.ExistingServices[i]"/>
+                            <li>@service</li>
+                        }
+                    </ul>
                 </div>
             }
 
             <div class="nhsuk-u-margin-top-9">
-                <nhs-submit-button/>
+                @if (Model.Services.Any())
+                {
+                    <nhs-submit-button/>
+                }
+                else
+                {
+                    <nhs-submit-button text="Continue"/>
+                }
             </div>
         </form>
     </div>

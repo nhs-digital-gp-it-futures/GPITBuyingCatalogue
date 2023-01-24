@@ -4,6 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
+    [Serializable]
     public class ServiceAvailabilityTimes : IAudited
     {
         public int Id { get; set; }

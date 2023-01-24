@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
         [Fact]
         public void SelectAdditionalServices_AllSectionsDisplayed()
         {
-            CommonActions.PageTitle().Should().BeEquivalentTo($"Additional Services - Order {CallOffId}".FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo("Additional Services - DFOCVC Solution Full".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(AdditionalServicesObjects.ServicesToSelect).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AdditionalServicesObjects.NothingToSelect).Should().BeFalse();

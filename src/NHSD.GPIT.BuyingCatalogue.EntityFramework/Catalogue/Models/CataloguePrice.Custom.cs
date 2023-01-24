@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
     {
         public ICollection<IPriceTier> PriceTiers => CataloguePriceTiers.Cast<IPriceTier>().ToList();
 
-        public string Description => PricingUnit.Description;
+        public string Description => PricingUnit?.Description;
 
         public TimeUnit? BillingPeriod => TimeUnit;
 

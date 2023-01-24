@@ -14,11 +14,11 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.AdditionalServices
 {
-    public class EditAdditionalServices : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    public class EditAdditionalServicesAmendment : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         private const string InternalOrgId = "CG-03F";
-        private const int OrderId = 90007;
-        private static readonly CallOffId CallOffId = new(OrderId, 1);
+        private const int OrderId = 90031;
+        private static readonly CallOffId CallOffId = new(OrderId, 2);
 
         private static readonly CatalogueItemId ExistingServiceId = new(99998, "001A99");
         private static readonly CatalogueItemId NewServiceId = new(99998, "001A98");
@@ -29,16 +29,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
             { nameof(CallOffId), $"{CallOffId}" },
         };
 
-        public EditAdditionalServices(LocalWebApplicationFactory factory)
+        public EditAdditionalServicesAmendment(LocalWebApplicationFactory factory)
             : base(factory, typeof(AdditionalServicesController), nameof(AdditionalServicesController.EditAdditionalServices), Parameters)
         {
         }
+
+        private int NewOrderId => GetEndToEndDbContext().Orders
+            .First(x => x.OrderNumber == OrderId && x.Revision == 2).Id;
 
         private OrderItem ExistingService => GetEndToEndDbContext().OrderItems
             .FirstOrDefault(x => x.OrderId == OrderId && x.CatalogueItemId == ExistingServiceId);
 
         private OrderItem NewService => GetEndToEndDbContext().OrderItems
-            .FirstOrDefault(x => x.OrderId == OrderId && x.CatalogueItemId == NewServiceId);
+            .FirstOrDefault(x => x.OrderId == NewOrderId && x.CatalogueItemId == NewServiceId);
 
         [Fact]
         public void EditAdditionalServices_AllSectionsDisplayed()
@@ -48,8 +51,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
             CommonActions.ElementIsDisplayed(AdditionalServicesObjects.ServicesToSelect).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AdditionalServicesObjects.NothingToSelect).Should().BeFalse();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
-            CommonActions.GetNumberOfCheckBoxesDisplayed().Should().Be(2);
-            CommonActions.GetNumberOfSelectedCheckBoxes().Should().Be(1);
+            CommonActions.GetNumberOfCheckBoxesDisplayed().Should().Be(1);
+            CommonActions.GetNumberOfSelectedCheckBoxes().Should().Be(0);
         }
 
         [Fact]
@@ -99,18 +102,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
+                typeof(ServiceRecipientsController),
+                nameof(ServiceRecipientsController.AddServiceRecipients)).Should().BeTrue();
+
+            NavigateToUrl(
                 typeof(AdditionalServicesController),
-                nameof(AdditionalServicesController.ConfirmAdditionalServiceChanges)).Should().BeTrue();
+                nameof(AdditionalServicesController.EditAdditionalServices),
+                Parameters);
 
-            ExistingService.Should().NotBeNull();
-            NewService.Should().BeNull();
-        }
-
-        [Fact]
-        public void EditAdditionalServices_AddAndRemoveAdditionalService_ExpectedResult()
-        {
             CommonActions.ClickFirstCheckbox();
-            CommonActions.ClickCheckboxByLabel("E2E Single Price Additional Service");
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -118,7 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
                 nameof(AdditionalServicesController.ConfirmAdditionalServiceChanges)).Should().BeTrue();
 
             ExistingService.Should().NotBeNull();
-            NewService.Should().BeNull();
+            NewService.Should().NotBeNull();
         }
 
         public void Dispose()
@@ -127,7 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
 
             var orderItems = context.OrderItems
                 .Include(x => x.CatalogueItem)
-                .Where(x => x.OrderId == OrderId
+                .Where(x => x.OrderId == NewOrderId
                     && x.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService
                     && x.CatalogueItemId != ExistingServiceId);
 

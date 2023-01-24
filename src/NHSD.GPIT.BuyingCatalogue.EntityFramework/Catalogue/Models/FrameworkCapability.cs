@@ -3,6 +3,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
+    [Serializable]
     public sealed class FrameworkCapability : IAudited
     {
         public FrameworkCapability()
