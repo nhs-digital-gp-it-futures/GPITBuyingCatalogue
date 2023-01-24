@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 {
@@ -10,6 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
     public sealed class PageTitleTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-page-title";
+        public const string ModelName = "model";
         public const string TitleName = "title";
         public const string TitleCaptionName = "caption";
         public const string TitleAdviceName = "advice";
@@ -21,6 +23,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         {
             this.viewComponentHelper = viewComponentHelper;
         }
+
+        [HtmlAttributeName(ModelName)]
+        public PageTitleModel Model { get; set; }
 
         [HtmlAttributeName(TitleName)]
         public string Title { get; set; }
@@ -49,10 +54,10 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 "NhsPageTitle",
                 new
                 {
-                    title = Title,
-                    titleCaption = TitleCaption,
-                    titleAdvice = TitleAdvice,
-                    titleAdditionalAdvice = TitleAdviceAdditional,
+                    title = Model?.Title ?? Title,
+                    titleCaption = Model?.Caption ?? TitleCaption,
+                    titleAdvice = Model?.Advice ?? TitleAdvice,
+                    titleAdditionalAdvice = Model?.AdditionalAdvice ?? TitleAdviceAdditional,
                 });
 
             output.TagName = string.Empty;

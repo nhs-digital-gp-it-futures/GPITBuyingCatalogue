@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             OrderItem orderItem,
             List<ServiceRecipientModel> serviceRecipients)
         {
-            var model = new SelectRecipientsModel(orderItem, serviceRecipients, selectionMode);
+            var model = new SelectRecipientsModel(orderItem, null, serviceRecipients, selectionMode);
 
             model.ItemName.Should().Be(orderItem.CatalogueItem.Name);
             model.ItemType.Should().Be(orderItem.CatalogueItem.CatalogueItemType);
@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             OrderItem orderItem,
             List<ServiceRecipientModel> serviceRecipients)
         {
-            var model = new SelectRecipientsModel(orderItem, serviceRecipients, SelectionMode.All);
+            var model = new SelectRecipientsModel(orderItem, null, serviceRecipients, SelectionMode.All);
 
             model.ServiceRecipients.ForEach(x => x.Selected.Should().BeTrue());
             model.SelectionMode.Should().Be(SelectionMode.None);
@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             OrderItem orderItem,
             List<ServiceRecipientModel> serviceRecipients)
         {
-            var model = new SelectRecipientsModel(orderItem, serviceRecipients, null);
+            var model = new SelectRecipientsModel(orderItem, null, serviceRecipients, null);
 
             model.PreSelectRecipients(null);
 
@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             OrderItem orderItem,
             List<ServiceRecipientModel> serviceRecipients)
         {
-            var model = new SelectRecipientsModel(orderItem, serviceRecipients, null);
+            var model = new SelectRecipientsModel(orderItem, null, serviceRecipients, null);
 
             model.PreSelectRecipients(orderItem);
 
@@ -75,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             OrderItem baseOrderItem,
             List<ServiceRecipientModel> serviceRecipients)
         {
-            var model = new SelectRecipientsModel(orderItem, serviceRecipients, null);
+            var model = new SelectRecipientsModel(orderItem, null, serviceRecipients, null);
 
             baseOrderItem.OrderItemRecipients.First().OdsCode = serviceRecipients.First().OdsCode;
 
@@ -93,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             OrderItem orderItem,
             List<ServiceRecipientModel> serviceRecipients)
         {
-            var model = new SelectRecipientsModel(orderItem, serviceRecipients, SelectionMode.None);
+            var model = new SelectRecipientsModel(orderItem, null, serviceRecipients, SelectionMode.None);
 
             var result = model.GetSelectedItems();
 
@@ -106,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             OrderItem orderItem,
             List<ServiceRecipientModel> serviceRecipients)
         {
-            var model = new SelectRecipientsModel(orderItem, serviceRecipients, SelectionMode.All);
+            var model = new SelectRecipientsModel(orderItem, null, serviceRecipients, SelectionMode.All);
 
             var result = model.GetSelectedItems();
 

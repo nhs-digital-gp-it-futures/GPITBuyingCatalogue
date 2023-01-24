@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
@@ -22,6 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public SelectRecipientsModel(
             OrderItem orderItem,
+            OrderItem previousItem,
             List<ServiceRecipientModel> serviceRecipients,
             SelectionMode? selectionMode,
             string[] importedRecipients = null)
@@ -29,8 +31,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             this.selectionMode = selectionMode;
             ServiceRecipients = serviceRecipients;
 
-            ItemName = orderItem.CatalogueItem.Name;
-            ItemType = orderItem.CatalogueItem.CatalogueItemType;
+            ItemName = previousItem?.CatalogueItem.Name ?? orderItem.CatalogueItem.Name;
+            ItemType = previousItem?.CatalogueItem.CatalogueItemType ?? orderItem.CatalogueItem.CatalogueItemType;
+
+            Title = $"Service Recipients for {ItemType.Name()}";
+            Caption = ItemName;
+            Advice = $"Manually select the organisations you want to receive this {ItemType.Name()} or import them using a CSV file.";
+
+            PreviouslySelected = previousItem?.OrderItemRecipients?.Select(x => x.Recipient.Name).ToList() ?? new List<string>();
+            ServiceRecipients.RemoveAll(x => PreviouslySelected.Contains(x.Name));
 
             switch (selectionMode)
             {
@@ -49,12 +58,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                 case null:
                     if (importedRecipients?.Length > 0)
                     {
-                        HasImportedRecipients = true;
-                        ServiceRecipients.Where(
-                                sr => importedRecipients.Select(x => x.ToUpperInvariant()).Contains(sr.OdsCode))
+                        ServiceRecipients
+                            .Where(sr => importedRecipients.Select(x => x.ToUpperInvariant()).Contains(sr.OdsCode))
                             .ToList()
                             .ForEach(x => x.Selected = true);
 
+                        HasImportedRecipients = true;
                         SelectionMode = SelectionMode.None;
                         SelectionCaption = SelectNone;
                     }
@@ -96,6 +105,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public bool HasImportedRecipients { get; set; }
 
+        public List<string> PreviouslySelected { get; set; }
+
         public List<ServiceRecipientDto> GetSelectedItems()
         {
             return ServiceRecipients
@@ -119,7 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         private void SetSelectionsFromOrderItem(OrderItem orderItem)
         {
-            ServiceRecipients.ForEach(x => x.Selected = orderItem.OrderItemRecipients?.Any(r => r.OdsCode == x.OdsCode) ?? false);
+            ServiceRecipients.ForEach(x => x.Selected = orderItem?.OrderItemRecipients?.Any(r => r.OdsCode == x.OdsCode) ?? false);
 
             SelectionMode = ServiceRecipients.All(x => x.Selected)
                 ? SelectionMode.None

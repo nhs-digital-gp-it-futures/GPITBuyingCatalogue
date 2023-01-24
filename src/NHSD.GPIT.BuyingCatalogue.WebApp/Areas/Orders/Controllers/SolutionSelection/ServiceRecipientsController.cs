@@ -19,16 +19,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
     {
         private readonly IOdsService odsService;
         private readonly IOrderItemRecipientService orderItemRecipientService;
+        private readonly IOrderItemService orderItemService;
         private readonly IOrderService orderService;
         private readonly IRoutingService routingService;
 
         public ServiceRecipientsController(
             IOdsService odsService,
+            IOrderItemService orderItemService,
             IOrderItemRecipientService orderItemRecipientService,
             IOrderService orderService,
             IRoutingService routingService)
         {
             this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
+            this.orderItemService = orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
             this.orderItemRecipientService = orderItemRecipientService ?? throw new ArgumentNullException(nameof(orderItemRecipientService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.routingService = routingService ?? throw new ArgumentNullException(nameof(routingService));
@@ -43,17 +46,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             RoutingSource? source = null,
             string importedRecipients = null)
         {
-            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
+            var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = wrapper.Order;
             var orderItem = order.OrderItem(catalogueItemId);
+            var previousItem = wrapper.Previous?.OrderItem(catalogueItemId);
             var serviceRecipients = await GetServiceRecipients(internalOrgId);
+            var splitImportedRecipients = importedRecipients?.Split(',', StringSplitOptions.RemoveEmptyEntries);
 
             var route = routingService.GetRoute(
                 RoutingPoint.SelectServiceRecipientsBackLink,
                 order,
-                new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source, });
+                new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
 
-            var splitImportedRecipients = importedRecipients?.Split(',', StringSplitOptions.RemoveEmptyEntries);
-            var model = new SelectRecipientsModel(orderItem, serviceRecipients, selectionMode, splitImportedRecipients)
+            var model = new SelectRecipientsModel(orderItem, previousItem, serviceRecipients, selectionMode, splitImportedRecipients)
             {
                 BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
                 InternalOrgId = internalOrgId,
@@ -65,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var baseOrderItem = model.AssociatedServicesOnly
                 ? order.GetAssociatedServices().FirstOrDefault()
-                : order.GetSolution();
+                : wrapper.RolledUp.GetSolution();
 
             if (splitImportedRecipients is null)
                 model.PreSelectRecipients(baseOrderItem);
@@ -109,17 +114,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             RoutingSource? source = null,
             string importedRecipients = null)
         {
-            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
+            var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = wrapper.Order;
             var orderItem = order.OrderItem(catalogueItemId);
+            var previousItem = wrapper.Previous?.OrderItem(catalogueItemId);
             var serviceRecipients = await GetServiceRecipients(internalOrgId);
+            var splitImportedRecipients = importedRecipients?.Split(',', StringSplitOptions.RemoveEmptyEntries);
 
             var route = routingService.GetRoute(
                 RoutingPoint.SelectServiceRecipientsBackLink,
                 order,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source, });
 
-            var splitImportedRecipients = importedRecipients?.Split(',', StringSplitOptions.RemoveEmptyEntries);
-            var model = new SelectRecipientsModel(orderItem, serviceRecipients, selectionMode, splitImportedRecipients)
+            var model = new SelectRecipientsModel(orderItem, previousItem, serviceRecipients, selectionMode, splitImportedRecipients)
             {
                 BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
                 InternalOrgId = internalOrgId,
@@ -146,6 +153,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             }
 
             var order = (await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId)).Order;
+
+            if (order.OrderItem(catalogueItemId) == null)
+            {
+                await orderItemService.AddOrderItems(internalOrgId, callOffId, new[] { catalogueItemId });
+
+                order = (await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId)).Order;
+            }
 
             await orderItemRecipientService.UpdateOrderItemRecipients(
                 order.Id,

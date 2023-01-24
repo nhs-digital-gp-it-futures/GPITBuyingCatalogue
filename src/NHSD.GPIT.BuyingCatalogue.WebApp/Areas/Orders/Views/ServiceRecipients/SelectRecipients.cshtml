@@ -26,15 +26,19 @@
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
         <nhs-validation-summary />
-
-        <nhs-page-title title="@ViewBag.Title"
-                        caption="@Model!.ItemName"
-                        advice="Manually select the organisations you want to receive this @(Model.ItemType.Name()) or import them using a CSV file." />
+        <nhs-page-title model="Model" />
 
         @if (Model.HasImportedRecipients)
         {
             <nhs-inset-text>
                 <p>Your Service Recipients have been imported successfully. If you need to make changes, you can do so manually or re-import them.</p>
+            </nhs-inset-text>
+        }
+        
+        @if (Model.PreviouslySelected.Any())
+        {
+            <nhs-inset-text>
+                <p>We're only showing the Service Recipients which were not included in the original order.</p>
             </nhs-inset-text>
         }
 

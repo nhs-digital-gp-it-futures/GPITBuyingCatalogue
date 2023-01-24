@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 })
                 .ToList();
 
-            var expected = new SelectRecipientsModel(solution, recipients, selectionMode)
+            var expected = new SelectRecipientsModel(solution, null, recipients, selectionMode)
             {
                 InternalOrgId = internalOrgId,
                 CallOffId = callOffId,
@@ -256,7 +256,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 })
                 .ToList();
 
-            var expected = new SelectRecipientsModel(solution, recipients, selectionMode)
+            var expected = new SelectRecipientsModel(solution, null, recipients, selectionMode)
             {
                 InternalOrgId = internalOrgId,
                 CallOffId = callOffId,
