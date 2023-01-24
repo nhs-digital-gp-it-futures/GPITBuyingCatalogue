@@ -1,5 +1,13 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ListPriceModel;
+
+    string Contextual() => Model.FlatListPrices.Count > 1 ? $"{ContextualContent} prices:" : $"{ContextualContent} price:";
+    string UnitDefinition = "";
+}
 
 <article class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
@@ -10,6 +18,7 @@
 
         @if (Model.HasFlatListPrices())
         {
+            <p><strong>@Contextual()</strong></p>
             <nhs-table data-test-id="flat-list-price-table">
                 <nhs-table-column>Price</nhs-table-column>
                 <nhs-table-column>Unit</nhs-table-column>
@@ -27,6 +36,62 @@
                 }
             </nhs-table>
         }
+        @if (Model.TieredListPrices.Any())
+        {
+            <p><strong>This is how much this Catalogue Solution costs:</strong></p>
+            <nhs-table label-text="Price of Catalogue Solution" data-test-id="tiered-list-price-table">
+                <nhs-table-column>Tier</nhs-table-column>
+                <nhs-table-column>Price per unit</nhs-table-column>
+                <nhs-table-column>Range</nhs-table-column>
+                @foreach (var price in Model.TieredListPrices)
+                {
+                    @for (var i = 0; i < price.CataloguePriceTiers.Count; i++)
+                    {
+                        var priceTier = price.CataloguePriceTiers.OrderBy(p => p.LowerRange).ElementAt(i);
+                        <nhs-table-row-container>
+                            <nhs-table-cell>
+                                @GetTierName(i)
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                £@priceTier.Price @price.ProvisioningType.Name()
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                @priceTier.GetRangeDescription()
+                            </nhs-table-cell>
+                        </nhs-table-row-container>
+                    }
+                    UnitDefinition = @price.PricingUnit.Definition?.ToString();
+                }
+            </nhs-table>
+
+            <p>The total price for this Catalogue Solution is calculated cumulatively.</p>
+
+            <nhs-details label-text="What is a tiered cumulative price?">
+                <p> You’ll pay a price determined by the tiers and the number of items you buy. For example:</p>
+                <p>
+                    <h4>Quantity</h4>
+                    Service Recipient 1 needs 5 licences<br>Service Recipient 2 needs 5 licences<br>Service Recipient 3 needs 15 licences<br>Total quantity: 25
+                </p>  
+                <p>
+                    <h4>Tiers</h4>
+                    Tier 1: 1-9 licences cost £5<br>Tier 2: 10-19 licences cost £2.50<br>Tier 3: 20+ licences cost £1
+                </p>
+                <p>
+                    <h4>Price</h4>
+                    Tier 1: 9 licences cost £45<br>Tier 2: 9 licences cost £22.50<br>Tier 3: 7 licences cost £7<br>Total cost: £74.50
+                </p>
+            </nhs-details>
+            <div>
+                @if (!string.IsNullOrEmpty(@UnitDefinition))
+                {
+                    <p><strong>Unit definition for this Catalogue Solution</strong></p>
+                    <p>@UnitDefinition</p>
+                }
+            </div> 
+        } 
         </nhs-card>
     </div>
 </article>
+@{
+    static string GetTierName(int index) => $"Tier {index + 1}";
+}
