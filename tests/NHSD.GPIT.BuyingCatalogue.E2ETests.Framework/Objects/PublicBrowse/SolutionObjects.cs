@@ -19,8 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.PublicBrowse
 
         public static By CapabilitiesContent => By.CssSelector("tbody tr td:nth-child(1)");
 
-        public static By FlatPriceTable => ByExtensions.DataTestId("flat-list-price-table");
-
         public static By PriceColumn => ByExtensions.DataTestId("price");
 
         public static By CheckEpicLink => ByExtensions.DataTestId("check-epics-link");
