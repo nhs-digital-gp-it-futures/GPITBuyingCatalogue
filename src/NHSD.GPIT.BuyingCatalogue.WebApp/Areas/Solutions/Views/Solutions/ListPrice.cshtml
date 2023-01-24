@@ -8,7 +8,7 @@
     const string ContextualContent = "This Catalogue Solution is available at the following";
 
     string Contextual() => Model.FlatListPrices.Count > 1 ? $"{ContextualContent} prices:" : $"{ContextualContent} price:";
-    string UnitDefinition = null;
+    string? UnitDefinition = "";
 }
 
 <article class="nhsuk-grid-row">
@@ -37,7 +37,7 @@
         @if (Model.TieredListPrices.Any())
         {
             <p><strong>This is how much this Catalogue Solution costs:</strong></p>
-            <nhs-table label-text="Price of Catalogue Solution">
+            <nhs-table label-text="Price of Catalogue Solution" data-test-id="tiered-list-price-table">
                 <nhs-table-column>Tier</nhs-table-column>
                 <nhs-table-column>Price per unit</nhs-table-column>
                 <nhs-table-column>Range</nhs-table-column>
@@ -58,11 +58,11 @@
                             </nhs-table-cell>
                         </nhs-table-row-container>
                     }
-                    UnitDefinition = @price.PricingUnit.Definition.ToString();
+                    UnitDefinition = @price.PricingUnit.Definition?.ToString();
                 }
             </nhs-table>
 
-            <p>Total price for this Catalogue Solution is calculated cumulatively.</p>
+            <p>The total price for this Catalogue Solution is calculated cumulatively.</p>
 
             <nhs-details label-text="What is a tiered cumulative price?">
                 <p> You’ll pay a price determined by the tiers and the number of items you buy. For example:</p>
@@ -80,7 +80,7 @@
                 </p>
             </nhs-details>
             <div>
-                @if (!string.IsNullOrWhiteSpace(@UnitDefinition))
+                @if (!string.IsNullOrEmpty(@UnitDefinition))
                 {
                     <p><strong>Unit definition for this Catalogue Solution</strong></p>
                     <p>@UnitDefinition</p>
