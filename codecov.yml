@@ -2,3 +2,4 @@ ignore:
   - "tests/**"
   - "src/NHSD.GPIT.BuyingCatalogue.UI.Components"
   - "src/NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp"
+  - "**/*.cshtml"
