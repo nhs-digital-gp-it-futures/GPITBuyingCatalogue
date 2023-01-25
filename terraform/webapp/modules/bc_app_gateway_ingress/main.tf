@@ -64,10 +64,11 @@ resource "azurerm_application_gateway" "app_gateway" {
   }
 
   request_routing_rule {
-    name                       = "${var.ag_name_fragment}-appgateway-rqrt"
-    rule_type                  = "Basic"
-    http_listener_name         = "${var.ag_name_fragment}-appgateway-httplstn"
+    name                        = "${var.ag_name_fragment}-appgateway-rqrt"
+    rule_type                   = "Basic"
+    http_listener_name          = "${var.ag_name_fragment}-appgateway-httplstn"
     redirect_configuration_name = "${var.ag_name_fragment}-appgateway-http-redirect"
+    priority                    = 10010
   }
 
   http_listener {
@@ -84,6 +85,7 @@ resource "azurerm_application_gateway" "app_gateway" {
     http_listener_name         = "${var.ag_name_fragment}-appgateway-httpslstn"
     backend_address_pool_name  = "${var.ag_name_fragment}-appgateway-beap"
     backend_http_settings_name = "${var.ag_name_fragment}-appgateway-be-htst"
+    priority                    = 10020
   }
 
   redirect_configuration {
