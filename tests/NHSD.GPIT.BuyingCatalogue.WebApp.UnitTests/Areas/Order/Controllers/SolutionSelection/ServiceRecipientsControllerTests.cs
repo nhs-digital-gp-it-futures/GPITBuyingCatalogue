@@ -284,10 +284,78 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [CommonAutoData]
+        public static async Task Post_EditServiceRecipients_CatalogueItemDoesNotExistInCurrentRevision_ReturnsExpectedResult(
+            SelectRecipientsModel model,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] Mock<IOrderItemService> mockOrderItemService,
+            [Frozen] Mock<IOrderItemRecipientService> mockOrderRecipientService,
+            [Frozen] Mock<IRoutingService> mockRoutingService,
+            ServiceRecipientsController controller)
+        {
+            IEnumerable<ServiceRecipientDto> serviceRecipients = null;
+
+            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+
+            var orderItem = order.OrderItems.First().CatalogueItem;
+
+            orderItem.CatalogueItemType = CatalogueItemType.Solution;
+
+            order.OrderItems.Remove(order.OrderItems.First());
+
+            IEnumerable<CatalogueItemId> actual = null;
+
+            mockOrderService
+                .Setup(x => x.GetOrderWithCatalogueItemAndPrices(model.CallOffId, model.InternalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            mockOrderItemService
+                .Setup(x => x.AddOrderItems(model.InternalOrgId, model.CallOffId, It.IsAny<IEnumerable<CatalogueItemId>>()))
+                .Callback<string, CallOffId, IEnumerable<CatalogueItemId>>((_, _, x) => actual = x);
+
+            mockOrderRecipientService
+                .Setup(x => x.UpdateOrderItemRecipients(order.Id, orderItem.Id, It.IsAny<List<ServiceRecipientDto>>()))
+                .Callback<int, CatalogueItemId, IEnumerable<ServiceRecipientDto>>((_, _, recipients) => serviceRecipients = recipients)
+                .Returns(Task.CompletedTask);
+
+            mockRoutingService
+                .Setup(x => x.GetRoute(RoutingPoint.SelectServiceRecipients, order, It.IsAny<RouteValues>()))
+                .Returns(Route(model.InternalOrgId, model.CallOffId, orderItem.Id));
+
+            var result = await controller.EditServiceRecipients(model.InternalOrgId, model.CallOffId, orderItem.Id, model);
+
+            mockOrderService.VerifyAll();
+            mockOrderItemService.VerifyAll();
+            mockOrderRecipientService.VerifyAll();
+            mockRoutingService.VerifyAll();
+
+            actual.Should().BeEquivalentTo(new[] { orderItem.Id });
+
+            var expected = model.ServiceRecipients
+                .Where(x => x.Selected)
+                .Select(x => x.Dto);
+
+            serviceRecipients.Should().BeEquivalentTo(expected);
+
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actualResult.ControllerName.Should().Be(typeof(PricesController).ControllerName());
+            actualResult.ActionName.Should().Be(nameof(PricesController.SelectPrice));
+            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", model.InternalOrgId },
+                { "callOffId", model.CallOffId },
+                { "catalogueItemId", orderItem.Id },
+            });
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static async Task Post_EditServiceRecipients_ReturnsExpectedResult(
             SelectRecipientsModel model,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] Mock<IOrderItemService> mockOrderItemService,
             [Frozen] Mock<IOrderItemRecipientService> mockOrderRecipientService,
             [Frozen] Mock<IRoutingService> mockRoutingService,
             ServiceRecipientsController controller)
@@ -316,6 +384,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var result = await controller.EditServiceRecipients(model.InternalOrgId, model.CallOffId, orderItem.Id, model);
 
             mockOrderService.VerifyAll();
+            mockOrderItemService.VerifyNoOtherCalls();
             mockOrderRecipientService.VerifyAll();
             mockRoutingService.VerifyAll();
 

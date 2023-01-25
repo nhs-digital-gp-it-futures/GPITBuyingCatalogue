@@ -8,6 +8,7 @@
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.ServiceRecipients
 @using ValidationSummaryTagHelper = Microsoft.AspNetCore.Mvc.TagHelpers.ValidationSummaryTagHelper
+@using System.Linq
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.ServiceRecipients.SelectRecipientsModel;
 @{
     ViewBag.Title = $"Service Recipients for {Model.ItemType.Name()}";
@@ -35,7 +36,7 @@
             </nhs-inset-text>
         }
         
-        @if (Model.PreviouslySelected.Any())
+        @if (Model.PreviouslySelected?.Any() ?? false)
         {
             <nhs-inset-text>
                 <p>We're only showing the Service Recipients which were not included in the original order.</p>
@@ -70,15 +71,27 @@
                                  type="Secondary" />
 
         <form method="post">
+            <input type="hidden" asp-for="@Model.AdditionalAdvice" />
+            <input type="hidden" asp-for="@Model.Advice" />
             <input type="hidden" asp-for="@Model.AssociatedServicesOnly" />
             <input type="hidden" asp-for="@Model.BackLink" />
+            <input type="hidden" asp-for="@Model.Caption" />
             <input type="hidden" asp-for="@Model.CatalogueItemId" />
+            <input type="hidden" asp-for="@Model.HasImportedRecipients" />
             <input type="hidden" asp-for="@Model.ItemName" />
             <input type="hidden" asp-for="@Model.ItemType" />
             <input type="hidden" asp-for="@Model.SelectionCaption" />
             <input type="hidden" asp-for="@Model.SelectionMode" />
             <input type="hidden" asp-for="@Model.Source" />
-            <input type="hidden" asp-for="HasImportedRecipients" />
+            <input type="hidden" asp-for="@Model.Title" />
+            
+            @if (Model.PreviouslySelected?.Any() ?? false)
+            {
+                for (var i = 0; i < Model.PreviouslySelected.Count; i++)
+                {
+                    <input type="hidden" asp-for="@Model.PreviouslySelected[i]" />
+                }
+            }
 
             <nhs-table>
                 <nhs-table-column>Organisation</nhs-table-column>

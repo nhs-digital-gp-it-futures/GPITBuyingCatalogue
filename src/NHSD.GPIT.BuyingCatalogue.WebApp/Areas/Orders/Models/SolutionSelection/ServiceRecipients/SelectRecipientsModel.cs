@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
@@ -12,6 +11,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 {
     public class SelectRecipientsModel : NavBaseModel
     {
+        public const string AdviceText = "Manually select the organisations you want to receive this {0} or import them using a CSV file.";
+        public const string TitleText = "Service Recipients for {0}";
+
         public const string SelectAll = "Select all";
         public const string SelectNone = "Select none";
 
@@ -34,11 +36,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             ItemName = previousItem?.CatalogueItem.Name ?? orderItem.CatalogueItem.Name;
             ItemType = previousItem?.CatalogueItem.CatalogueItemType ?? orderItem.CatalogueItem.CatalogueItemType;
 
-            Title = $"Service Recipients for {ItemType.Name()}";
+            Title = string.Format(TitleText, ItemType.Name());
             Caption = ItemName;
-            Advice = $"Manually select the organisations you want to receive this {ItemType.Name()} or import them using a CSV file.";
+            Advice = string.Format(AdviceText, ItemType.Name());
 
-            PreviouslySelected = previousItem?.OrderItemRecipients?.Select(x => x.Recipient.Name).ToList() ?? new List<string>();
+            PreviouslySelected = previousItem?.OrderItemRecipients?.Select(x => x.Recipient?.Name).ToList() ?? new List<string>();
             ServiceRecipients.RemoveAll(x => PreviouslySelected.Contains(x.Name));
 
             switch (selectionMode)
@@ -55,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                     SelectionCaption = SelectAll;
                     break;
 
-                case null:
+                default:
                     if (importedRecipients?.Length > 0)
                     {
                         ServiceRecipients
@@ -73,9 +75,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                     }
 
                     break;
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(selectionMode), selectionMode, null);
             }
         }
 
