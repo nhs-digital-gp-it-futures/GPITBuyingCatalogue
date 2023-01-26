@@ -1,6 +1,7 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ListPriceModel;
@@ -15,10 +16,7 @@
 
         @if (Model.TieredListPrices.Any())
         {
-            @if (Model.HasFlatListPrices())
-            {
-                <h4><strong>Tiered prices for this Catalogue Solution</strong></h4>
-            }
+            <h4><strong>Tiered prices for this Catalogue Solution</strong></h4>
             @foreach (var price in Model.TieredListPrices)
             {
                 <nhs-table label-text="Tiered price @price.PricingUnit.Description" data-test-id="tiered-list-price-table">
@@ -42,24 +40,9 @@
 
                 }
                 </nhs-table>
-                @if (@price.CataloguePriceCalculationType.ToString() == "SingleFixed")
-                {<p>@price.CataloguePriceCalculationType.</p>
-                    <div>
-                        <partial name="PriceDetails/_TieredSingleFixedDetails" />
-                    </div>
-                }
-                @if (@price.CataloguePriceCalculationType.ToString() == "Cumulative")
-                {
-                    <div>
-                        <partial name="PriceDetails/_TieredCumulativeDetails" />
-                    </div>
-                }
-                @if (@price.CataloguePriceCalculationType.ToString() == "Volume")
-                {
-                    <div>
-                        <partial name="PriceDetails/_TieredVolumeDetails" />
-                    </div>
-                }
+                <div data-test-id="price-details">
+                    <partial name="PriceDetails/_PriceDetailsComponent" model="new PriceCalculationDetailsModel( Model.ItemType, @price.CataloguePriceType, price.CataloguePriceCalculationType)" />
+                </div>
                 string UnitDefinition = @price.PricingUnit.Definition?.ToString();
                 <div>
                     @if (!string.IsNullOrEmpty(@UnitDefinition))
@@ -73,11 +56,8 @@
 
         @if (Model.HasFlatListPrices())
         {
-            @if (Model.TieredListPrices.Any())
-            {
-                <h4><strong>Flat prices for this Catalogue Solution</strong></h4>
-            }
-                
+            <h4><strong>Flat prices for this Catalogue Solution</strong></h4>
+              
             @foreach (var item in Model.FlatListPrices)
             {
                 <nhs-table label-text="Flat price @item.Unit" data-test-id="flat-list-price-table">
