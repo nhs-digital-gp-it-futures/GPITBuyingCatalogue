@@ -29,8 +29,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
             new($"No, I do not want to confirm changes to the procurement framework ", false),
         };
 
-        public string Caption { get; set; }
-
         public EntityFramework.Catalogue.Models.Framework CurrentFramework { get; set; }
 
         public EntityFramework.Catalogue.Models.Framework SelectedFramework { get; set; }

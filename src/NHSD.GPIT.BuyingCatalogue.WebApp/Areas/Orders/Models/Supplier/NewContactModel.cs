@@ -21,7 +21,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Supplier
         public int SupplierId { get; set; }
 
         public string SupplierName { get; set; }
-
-        public string Title { get; set; }
     }
 }

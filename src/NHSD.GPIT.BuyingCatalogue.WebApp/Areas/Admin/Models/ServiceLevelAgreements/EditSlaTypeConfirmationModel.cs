@@ -23,7 +23,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreem
         }
 
         public string SolutionName { get; set; }
-
-        public string Advice { get; set; }
     }
 }

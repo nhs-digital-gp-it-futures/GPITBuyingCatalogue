@@ -12,6 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
     public class SelectRecipientsModel : NavBaseModel
     {
         public const string AdviceText = "Manually select the organisations you want to receive this {0} or import them using a CSV file.";
+        public const string AdviceTextImport = "Review the organisations that will receive this {0}.";
+        public const string AdviceTextNoRecipientsAvailable = "All your Service Recipients were included in the original order, so there are no more available to add.";
         public const string TitleText = "Service Recipients for {0}";
 
         public const string SelectAll = "Select all";
@@ -38,10 +40,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
             Title = string.Format(TitleText, ItemType.Name());
             Caption = ItemName;
-            Advice = string.Format(AdviceText, ItemType.Name());
 
             PreviouslySelected = previousItem?.OrderItemRecipients?.Select(x => x.Recipient?.Name).ToList() ?? new List<string>();
             ServiceRecipients.RemoveAll(x => PreviouslySelected.Contains(x.Name));
+
+            if (!ServiceRecipients.Any())
+            {
+                Advice = AdviceTextNoRecipientsAvailable;
+            }
+            else
+            {
+                Advice = importedRecipients == null
+                    ? string.Format(AdviceText, ItemType.Name())
+                    : string.Format(AdviceTextImport, ItemType.Name());
+            }
 
             switch (selectionMode)
             {

@@ -37,8 +37,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
 
         public CallOffId CallOffId { get; set; }
 
-        public string Caption { get; set; }
-
         public List<OrderItem> OrderItemsSelectable { get; set; }
 
         public List<OrderItem> OrderItemsLocalOnly { get; set; }

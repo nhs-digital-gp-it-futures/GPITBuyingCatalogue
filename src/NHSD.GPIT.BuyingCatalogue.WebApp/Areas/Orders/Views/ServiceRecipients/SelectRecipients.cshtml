@@ -7,7 +7,6 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.ServiceRecipients
-@using ValidationSummaryTagHelper = Microsoft.AspNetCore.Mvc.TagHelpers.ValidationSummaryTagHelper
 @using System.Linq
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.ServiceRecipients.SelectRecipientsModel;
 @{
@@ -28,93 +27,103 @@
     <div class="nhsuk-grid-column-full">
         <nhs-validation-summary />
         <nhs-page-title model="Model" />
-
-        @if (Model.HasImportedRecipients)
-        {
-            <nhs-inset-text>
-                <p>Your Service Recipients have been imported successfully. If you need to make changes, you can do so manually or re-import them.</p>
-            </nhs-inset-text>
-        }
         
-        @if (Model.PreviouslySelected?.Any() ?? false)
+        @if (Model.ServiceRecipients?.Any() ?? false)
         {
-            <nhs-inset-text>
-                <p>We're only showing the Service Recipients which were not included in the original order.</p>
-            </nhs-inset-text>
-        }
+            if (Model.HasImportedRecipients)
+            {
+                <nhs-inset-text>
+                    <p>Your Service Recipients have been imported successfully. If you need to make changes, you can do so manually or re-import them.</p>
+                </nhs-inset-text>
+            }
+            else
+            {
+                if (Model.PreviouslySelected?.Any() ?? false)
+                {
+                    <nhs-inset-text>
+                        <p>We're only showing the Service Recipients which were not included in the original order.</p>
+                    </nhs-inset-text>
+                }
+            }
 
-        <vc:nhs-action-link text="Import Service Recipients"
+            <vc:nhs-action-link text="Import Service Recipients"
                             url="@Url.Action(
                                      nameof(ImportServiceRecipientsController.Index),
                                      typeof(ImportServiceRecipientsController).ControllerName(),
                                      new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, importMode = serviceRecipientsImportMode })" />
 
-        @if (Model.PreSelected && Model.ItemType != CatalogueItemType.Solution)
-        {
-            var itemType = Model.AssociatedServicesOnly
-                ? "first Associated Service"
-                : "Catalogue Solution";
+            @if (Model.PreSelected && Model.ItemType != CatalogueItemType.Solution)
+            {
+                var itemType = Model.AssociatedServicesOnly
+                    ? "first Associated Service"
+                    : "Catalogue Solution";
 
-            <div id="pre-selected" class="nhsuk-inset-text">
-                <span class="nhsuk-u-visually-hidden">Information: </span>
-                <p>The recipients you selected for your @itemType have been pre-selected.</p>
-            </div>
-        }
+                <div id="pre-selected" class="nhsuk-inset-text">
+                    <span class="nhsuk-u-visually-hidden">Information: </span>
+                    <p>The recipients you selected for your @itemType have been pre-selected.</p>
+                </div>
+            }
 
-        <h2>Select Service Recipients</h2>
+            <h2>Select Service Recipients</h2>
 
-        <vc:nhs-secondary-button url="@Url.Action(
-                                          @actionName,
+            <vc:nhs-secondary-button url="@Url.Action(
+                                          actionName,
                                           typeof(ServiceRecipientsController).ControllerName(),
                                           new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, Model.SelectionMode })"
                                  text="@Model.SelectionCaption"
                                  type="Secondary" />
+        }
 
         <form method="post">
-            <input type="hidden" asp-for="@Model.AdditionalAdvice" />
-            <input type="hidden" asp-for="@Model.Advice" />
-            <input type="hidden" asp-for="@Model.AssociatedServicesOnly" />
-            <input type="hidden" asp-for="@Model.BackLink" />
-            <input type="hidden" asp-for="@Model.Caption" />
-            <input type="hidden" asp-for="@Model.CatalogueItemId" />
-            <input type="hidden" asp-for="@Model.HasImportedRecipients" />
-            <input type="hidden" asp-for="@Model.ItemName" />
-            <input type="hidden" asp-for="@Model.ItemType" />
-            <input type="hidden" asp-for="@Model.SelectionCaption" />
-            <input type="hidden" asp-for="@Model.SelectionMode" />
-            <input type="hidden" asp-for="@Model.Source" />
-            <input type="hidden" asp-for="@Model.Title" />
-            
+            <hidden-inputs title="Title" caption="Caption" advice="Advice" />
+            <input type="hidden" asp-for="@Model.AssociatedServicesOnly"/>
+            <input type="hidden" asp-for="@Model.BackLink"/>
+            <input type="hidden" asp-for="@Model.CatalogueItemId"/>
+            <input type="hidden" asp-for="@Model.HasImportedRecipients"/>
+            <input type="hidden" asp-for="@Model.ItemName"/>
+            <input type="hidden" asp-for="@Model.ItemType"/>
+            <input type="hidden" asp-for="@Model.SelectionCaption"/>
+            <input type="hidden" asp-for="@Model.SelectionMode"/>
+            <input type="hidden" asp-for="@Model.Source"/>
+
             @if (Model.PreviouslySelected?.Any() ?? false)
             {
                 for (var i = 0; i < Model.PreviouslySelected.Count; i++)
                 {
-                    <input type="hidden" asp-for="@Model.PreviouslySelected[i]" />
+                    <input type="hidden" asp-for="@Model.PreviouslySelected[i]"/>
                 }
             }
+            
+            @if (Model.ServiceRecipients?.Any() ?? false)
+            {
+                <nhs-table>
+                    <nhs-table-column>Organisation</nhs-table-column>
+                    <nhs-table-column>ODS code</nhs-table-column>
+                    @foreach (var (item, i) in Model.ServiceRecipients.Select((x, i) => (x, i)))
+                    {
+                        <nhs-table-row-container>
+                            <nhs-table-cell>
+                                <nhs-checkbox-container>
+                                    <nhs-checkbox asp-for="@Model.ServiceRecipients[i].Selected"
+                                                  label-text="@item.Name"
+                                                  hidden-input="@Model.ServiceRecipients[i].Name"/>
+                                </nhs-checkbox-container>
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                <div class="nhsuk-input--width-10 nhsuk-u-margin-top-2">@item.OdsCode</div>
+                                <input type="hidden" asp-for="@Model.ServiceRecipients[i].OdsCode"/>
+                            </nhs-table-cell>
+                        </nhs-table-row-container>
+                    }
+                </nhs-table>
 
-            <nhs-table>
-                <nhs-table-column>Organisation</nhs-table-column>
-                <nhs-table-column>ODS code</nhs-table-column>
-                @foreach (var (item, i) in Model.ServiceRecipients.Select((x, i) => (x, i)))
-                {
-                    <nhs-table-row-container>
-                        <nhs-table-cell>
-                            <nhs-checkbox-container>
-                                <nhs-checkbox asp-for="@Model.ServiceRecipients[i].Selected"
-                                              label-text="@item.Name"
-                                              hidden-input="@Model.ServiceRecipients[i].Name" />
-                            </nhs-checkbox-container>
-                        </nhs-table-cell>
-                        <nhs-table-cell>
-                            <div class="nhsuk-input--width-10 nhsuk-u-margin-top-2">@item.OdsCode</div>
-                            <input type="hidden" asp-for="@Model.ServiceRecipients[i].OdsCode" />
-                        </nhs-table-cell>
-                    </nhs-table-row-container>
-                }
-            </nhs-table>
-            <br />
-            <nhs-submit-button />
+                <br/>
+                <nhs-submit-button/>
+            }
+            else
+            {
+                <nhs-submit-button text="Continue" />
+            }
         </form>
     </div>
 </div>

@@ -32,8 +32,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices
             CatalogueItemName = catalogueItem.Name;
         }
 
-        public string Title { get; init; }
-
         public string SolutionName { get; init; }
 
         public CatalogueItemId CatalogueItemId { get; init; }

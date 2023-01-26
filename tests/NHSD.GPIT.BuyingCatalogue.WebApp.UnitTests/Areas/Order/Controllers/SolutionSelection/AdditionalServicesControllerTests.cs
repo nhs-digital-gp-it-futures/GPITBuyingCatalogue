@@ -256,6 +256,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] Mock<IOrderService> mockOrderService,
             AdditionalServicesController controller)
         {
+            callOffId = new CallOffId(callOffId.OrderNumber, 1);
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
 
             for (var i = 0; i < order.OrderItems.Count; i++)
@@ -295,6 +296,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] Mock<IOrderItemService> mockOrderItemService,
             AdditionalServicesController controller)
         {
+            callOffId = new CallOffId(callOffId.OrderNumber, 1);
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
 
             for (var i = 0; i < order.OrderItems.Count; i++)
@@ -348,6 +350,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] Mock<IOrderService> mockOrderService,
             AdditionalServicesController controller)
         {
+            callOffId = new CallOffId(callOffId.OrderNumber, 1);
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
 
             model.Services.Clear();
@@ -383,6 +386,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] Mock<IAdditionalServicesService> mockAdditionalServicesService,
             AdditionalServicesController controller)
         {
+            callOffId = new CallOffId(callOffId.OrderNumber, 1);
+
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 

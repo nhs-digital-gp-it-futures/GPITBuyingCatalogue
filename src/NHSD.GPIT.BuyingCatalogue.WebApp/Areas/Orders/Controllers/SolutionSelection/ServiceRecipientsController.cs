@@ -154,17 +154,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var order = (await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId)).Order;
 
-            if (order.OrderItem(catalogueItemId) == null)
+            if (model.ServiceRecipients?.Any() ?? false)
             {
-                await orderItemService.AddOrderItems(internalOrgId, callOffId, new[] { catalogueItemId });
+                if (order.OrderItem(catalogueItemId) == null)
+                {
+                    await orderItemService.AddOrderItems(internalOrgId, callOffId, new[] { catalogueItemId });
 
-                order = (await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId)).Order;
+                    order = (await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId)).Order;
+                }
+
+                await orderItemRecipientService.UpdateOrderItemRecipients(
+                    order.Id,
+                    catalogueItemId,
+                    model.GetSelectedItems());
             }
-
-            await orderItemRecipientService.UpdateOrderItemRecipients(
-                order.Id,
-                catalogueItemId,
-                model.GetSelectedItems());
 
             var route = routingService.GetRoute(
                 RoutingPoint.SelectServiceRecipients,

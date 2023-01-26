@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.DeleteOrder
 
         public bool IsAmendment { get; set; }
 
-        public string Advice => IsAmendment
+        public new string Advice => IsAmendment
             ? AmendmentAdvice
             : OrderAdvice;
 

@@ -24,8 +24,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
             CapabilityCategories = GetCapabilities(catalogueItem, capabilityCategories);
         }
 
-        public string Title { get; init; }
-
         public string SolutionName { get; init; }
 
         public string CatalogueItemType { get; init; }
