@@ -41,7 +41,7 @@
                 }
                 </nhs-table>
                 <div data-test-id="price-details">
-                    <partial name="PriceDetails/_PriceDetailsComponent" model="new PriceCalculationDetailsModel( Model.ItemType, @price.CataloguePriceType, price.CataloguePriceCalculationType)" />
+                    <partial name="PriceDetails/_PriceDetailsComponent" model="new PriceCalculationDetailsModel( Model.ItemType, price.CataloguePriceType, price.CataloguePriceCalculationType)" />
                 </div>
                 string UnitDefinition = @price.PricingUnit.Definition?.ToString();
                 <div>
