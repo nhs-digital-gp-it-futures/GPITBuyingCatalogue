@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
+using System.Text.Json;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using Xunit;
@@ -54,10 +57,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [CommonInlineAutoData("some-value")]
-        [CommonInlineAutoData("some-VALUE")]
+        [CommonAutoData]
         public static void HasApplicationType_ValueValid_ReturnsYes(
-            string valid,
+            ClientApplicationType clientApplicationType,
             [Frozen] CatalogueItem catalogueItem,
             [Frozen] Solution solution,
             [Frozen] ClientApplication clientApplication,
@@ -68,11 +70,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             _ = catalogueItem;
             _ = solution;
 
-            clientApplication.ClientApplicationTypes = new HashSet<string> { valid };
+            clientApplication.ClientApplicationTypes = new HashSet<string> { clientApplicationType.EnumMemberName() };
 
-            var actual = model.HasApplicationType("SOME-value");
+            var actual = model.HasApplicationType(clientApplicationType);
 
-            actual.Should().Be("Yes");
+            actual.Should().BeTrue();
         }
 
         [Theory]
@@ -88,11 +90,166 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             _ = catalogueItem;
             _ = solution;
 
-            clientApplication.ClientApplicationTypes = new HashSet<string> { "valid" };
+            clientApplication.ClientApplicationTypes =
+                new HashSet<string> { ClientApplicationType.Desktop.EnumMemberName() };
 
-            var actual = model.HasApplicationType("SOME-value");
+            var actual = model.HasApplicationType(ClientApplicationType.MobileTablet);
 
-            actual.Should().Be("No");
+            actual.Should().BeFalse();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Construct_BrowserBasedApplication_CreatesDescriptionListViewModel(
+            Solution solution,
+            CatalogueItemContentStatus contentStatus)
+        {
+            var clientApplication = new ClientApplication
+            {
+                ClientApplicationTypes = new() { ClientApplicationType.BrowserBased.EnumMemberName() },
+                BrowsersSupported = new() { new() { BrowserName = "Chrome" } },
+                MobileResponsive = true,
+                Plugins = new() { Required = true, AdditionalInformation = "AdditionalInformation" },
+                MinimumConnectionSpeed = "1Gbit",
+                MinimumDesktopResolution = "3440x1440",
+                HardwareRequirements = "RTX 4090, i9 13900KF",
+                AdditionalInformation = "Test",
+            };
+
+            solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
+
+            var model = new ClientApplicationTypesModel(solution.CatalogueItem, contentStatus);
+
+            model.BrowserBasedApplication.Should().NotBeNull();
+            model.BrowserBasedApplication.Items.Should().HaveCount(8);
+            model.BrowserBasedApplication.Items.Should()
+                .ContainKeys(
+                    "Supported browser types",
+                    "Mobile responsive",
+                    "Plug-ins or extensions required",
+                    "Additional information about plug-ins or extensions",
+                    "Minimum connection speed",
+                    "Screen resolution and aspect ratio",
+                    "Hardware requirements",
+                    "Additional information");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Construct_NativeDesktopApplication_CreatesDescriptionListViewModel(
+            Solution solution,
+            CatalogueItemContentStatus contentStatus)
+        {
+            var clientApplication = new ClientApplication
+            {
+                ClientApplicationTypes = new() { ClientApplicationType.Desktop.EnumMemberName() },
+                NativeDesktopOperatingSystemsDescription = "Windows 95",
+                NativeDesktopMinimumConnectionSpeed = "10Gbps",
+                NativeDesktopMemoryAndStorage = new()
+                {
+                    MinimumCpu = "i9 13900KF",
+                    MinimumMemoryRequirement = "64GB DDR5 5600Mhz",
+                    RecommendedResolution = "3440x1440",
+                    StorageRequirementsDescription = "2TB NVMe",
+                },
+                NativeDesktopThirdParty =
+                    new() { ThirdPartyComponents = "Component", DeviceCapabilities = "Device Capability", },
+                NativeDesktopHardwareRequirements = "Water cooling",
+                NativeDesktopAdditionalInformation = "Monitor",
+            };
+
+            solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
+
+            var model = new ClientApplicationTypesModel(solution.CatalogueItem, contentStatus);
+
+            model.NativeDesktopApplication.Should().NotBeNull();
+            model.NativeDesktopApplication.Items.Should().HaveCount(10);
+            model.NativeDesktopApplication.Items.Should()
+                .ContainKeys(
+                    "Description of supported operating systems",
+                    "Minimum connection speed",
+                    "Screen resolution and aspect ratio",
+                    "Memory size",
+                    "Storage space",
+                    "Processing power",
+                    "Third-party components",
+                    "Device capabilities",
+                    "Hardware requirements",
+                    "Additional information");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Construct_NativeMobileApplication_CreatesDescriptionListViewModel(
+            Solution solution,
+            CatalogueItemContentStatus contentStatus)
+        {
+            var clientApplication = new ClientApplication
+            {
+                ClientApplicationTypes = new() { ClientApplicationType.MobileTablet.EnumMemberName() },
+                MobileOperatingSystems =
+                    new() { OperatingSystems = new() { "MS-DOS" }, OperatingSystemsDescription = "256MB DDR", },
+                MobileConnectionDetails =
+                    new()
+                    {
+                        MinimumConnectionSpeed = "500Mbit",
+                        ConnectionType = new() { "10BASE5" },
+                        Description = "Description",
+                    },
+                MobileMemoryAndStorage = new() { Description = "Description", MinimumMemoryRequirement = "256GB", },
+                MobileThirdParty = new() { DeviceCapabilities = "Capabilities", ThirdPartyComponents = "Components", },
+                NativeMobileHardwareRequirements = "Requirements",
+                NativeMobileAdditionalInformation = "Information",
+            };
+
+            solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
+
+            var model = new ClientApplicationTypesModel(solution.CatalogueItem, contentStatus);
+
+            model.NativeMobileApplication.Should().NotBeNull();
+            model.NativeMobileApplication.Items.Should().HaveCount(11);
+            model.NativeMobileApplication.Items.Should()
+                .ContainKeys(
+                    "Supported operating systems",
+                    "Description of supported operating systems",
+                    "Minimum connection speed",
+                    "Connection types supported",
+                    "Connection requirements",
+                    "Memory size",
+                    "Storage space",
+                    "Third-party components",
+                    "Device capabilities",
+                    "Hardware requirements",
+                    "Additional information");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Construct_AllApplicationTypes(
+            Solution solution,
+            CatalogueItemContentStatus contentStatus)
+        {
+            var clientApplication = new ClientApplication
+            {
+                ClientApplicationTypes = new()
+                {
+                    ClientApplicationType.Desktop.EnumMemberName(),
+                    ClientApplicationType.BrowserBased.EnumMemberName(),
+                    ClientApplicationType.MobileTablet.EnumMemberName(),
+                },
+            };
+
+            solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
+
+            var model = new ClientApplicationTypesModel(solution.CatalogueItem, contentStatus);
+
+            model.ApplicationTypes.Should().NotBeNull();
+            model.ApplicationTypes.Items.Should()
+                .ContainKeys(
+                    "Browser-based application",
+                    "Desktop application",
+                    "Mobile or tablet application");
+            model.ApplicationTypes.Items.Values.Should().OnlyContain(x => x.Text == "Yes");
         }
     }
 }
