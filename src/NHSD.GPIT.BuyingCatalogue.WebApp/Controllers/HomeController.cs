@@ -68,6 +68,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 typeof(HomeController).ControllerName()),
         });
 
+        [HttpGet("advanced-telephony-better-purchase")]
+        public IActionResult AdvacedTelephonyBetterPurchaseFramework() => View(new NavBaseModel
+        {
+            BackLink = Url.Action(
+                nameof(Index),
+                typeof(HomeController).ControllerName()),
+        });
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error(int? statusCode = null, string error = null)
         {
