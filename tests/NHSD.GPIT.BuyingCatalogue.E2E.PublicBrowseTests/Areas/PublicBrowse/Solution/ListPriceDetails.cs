@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.PublicBrowse;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
@@ -49,6 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
                 NavigateToUrl(typeof(SolutionsController), nameof(SolutionsController.ListPrice), ParametersWithAllSections);
                 CommonActions.ElementIsDisplayed(ListPriceDetailsObjects.ListPriceTable).Should().BeTrue();
                 CommonActions.ElementIsDisplayed(ListPriceDetailsObjects.TieredPriceTable).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(ListPriceDetailsObjects.PriceDetails).Should().BeTrue();
             });
         }
 
@@ -59,6 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 
             CommonActions.ElementIsDisplayed(ListPriceDetailsObjects.ListPriceTable).Should().BeTrue();
             CommonActions.ElementIsDisplayed(ListPriceDetailsObjects.TieredPriceTable).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(ListPriceDetailsObjects.PriceDetails).Should().BeFalse();
         }
 
         [Fact]

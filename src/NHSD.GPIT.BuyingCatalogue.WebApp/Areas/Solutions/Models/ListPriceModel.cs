@@ -28,9 +28,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             TieredListPrices = item.CataloguePrices
                 .Where(p =>
                     p.CataloguePriceType == CataloguePriceType.Tiered).ToList();
+
+            ItemType = item.CatalogueItemType;
         }
 
-        public override int Index => 2;
+        public CatalogueItemType ItemType { get; set; }
+
+        public override int Index => 4;
 
         public IList<PriceViewModel> FlatListPrices { get; set; }
 

@@ -1,6 +1,7 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ListPriceModel;
@@ -16,30 +17,14 @@
         <nhs-card title="Price of Catalogue Solution">
             <p>This is how much this Catalogue Solution costs:</p>
 
-        @if (Model.HasFlatListPrices())
-        {
-            <p><strong>@Contextual()</strong></p>
-            <nhs-table data-test-id="flat-list-price-table">
-                <nhs-table-column>Price</nhs-table-column>
-                <nhs-table-column>Unit</nhs-table-column>
+        <p><strong>@ContextualContent</strong></p>
 
-                @foreach (var item in Model.FlatListPrices)
-                {
-                    <nhs-table-row-container>
-                        <nhs-table-cell data-test-id="price">
-                            @item.CurrencyCode@item.Price.Value.ToString("N4")
-                        </nhs-table-cell>
-                        <nhs-table-cell>
-                            @item.Unit
-                        </nhs-table-cell>
-                    </nhs-table-row-container>
-                }
-            </nhs-table>
-        }
         @if (Model.TieredListPrices.Any())
         {
-            <p><strong>This is how much this Catalogue Solution costs:</strong></p>
-            <nhs-table label-text="Price of Catalogue Solution" data-test-id="tiered-list-price-table">
+            <h4><strong>Tiered prices for this Catalogue Solution</strong></h4>
+            @foreach (var price in Model.TieredListPrices)
+            {
+                <nhs-table label-text="Tiered price @price.PricingUnit.Description" data-test-id="tiered-list-price-table">
                 <nhs-table-column>Tier</nhs-table-column>
                 <nhs-table-column>Price per unit</nhs-table-column>
                 <nhs-table-column>Range</nhs-table-column>

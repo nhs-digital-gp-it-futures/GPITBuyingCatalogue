@@ -7,6 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.PublicBrowse
     {
         public static By ListPriceTable => ByExtensions.DataTestId("flat-list-price-table");
         public static By TieredPriceTable => ByExtensions.DataTestId("tiered-list-price-table");
+        public static By PriceDetails => ByExtensions.DataTestId("price-details");
 
     }
 }
