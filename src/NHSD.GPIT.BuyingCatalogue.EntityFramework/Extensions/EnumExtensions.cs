@@ -12,6 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
             where TEnum : struct, Enum => value.AsString(EnumFormat.DisplayName);
 
         public static string EnumMemberName<TEnum>(this TEnum value)
-            where TEnum : struct, Enum => value.ToString();
+            where TEnum : struct, Enum => value.AsString(EnumFormat.EnumMemberValue);
     }
 }
