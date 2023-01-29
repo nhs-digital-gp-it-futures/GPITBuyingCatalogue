@@ -102,10 +102,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(PricesController),
-                nameof(PricesController.ConfirmPrice)).Should().BeTrue();
+                typeof(ServiceRecipientsController),
+                nameof(ServiceRecipientsController.ConfirmChanges)).Should().BeTrue();
 
-            GetOrderItem().OrderItemRecipients.Count.Should().Be(1);
+            GetOrderItem().OrderItemRecipients.Count.Should().Be(0);
         }
 
         public void Dispose()

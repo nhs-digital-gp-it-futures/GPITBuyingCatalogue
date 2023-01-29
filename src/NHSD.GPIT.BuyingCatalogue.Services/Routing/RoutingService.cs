@@ -15,6 +15,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing
         {
             providers.Add(RoutingPoint.ConfirmPrice, new ConfirmPriceProvider());
             providers.Add(RoutingPoint.ConfirmPriceBackLink, new ConfirmPriceBackLinkProvider());
+            providers.Add(RoutingPoint.ConfirmServiceRecipients, new ConfirmServiceRecipientsProvider());
+            providers.Add(RoutingPoint.ConfirmServiceRecipientsBackLink, new ConfirmServiceRecipientsBackLinkProvider());
             providers.Add(RoutingPoint.EditDeliveryDates, new EditDeliveryDatesProvider());
             providers.Add(RoutingPoint.EditDeliveryDatesBackLink, new EditDeliveryDatesBackLinkProvider());
             providers.Add(RoutingPoint.EditPrice, new EditPriceProvider());
@@ -24,7 +26,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing
             providers.Add(RoutingPoint.SelectPriceBackLink, new SelectPriceBackLinkProvider());
             providers.Add(RoutingPoint.SelectQuantity, new SelectQuantityProvider(associatedServicesService));
             providers.Add(RoutingPoint.SelectQuantityBackLink, new SelectQuantityBackLinkProvider());
-            providers.Add(RoutingPoint.SelectServiceRecipients, new SelectServiceRecipientsProvider());
             providers.Add(RoutingPoint.SelectServiceRecipientsBackLink, new SelectServiceRecipientsBackLinkProvider());
             providers.Add(RoutingPoint.TaskListBackLink, new TaskListBackLinkProvider());
         }

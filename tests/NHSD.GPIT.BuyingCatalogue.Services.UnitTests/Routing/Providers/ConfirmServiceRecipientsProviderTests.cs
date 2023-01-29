@@ -11,13 +11,13 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
 {
-    public class SelectServiceRecipientsProviderTests
+    public class ConfirmServiceRecipientsProviderTests
     {
         [Theory]
         [CommonAutoData]
         public void Process_OrderIsNull_ThrowsException(
             RouteValues routeValues,
-            SelectServiceRecipientsProvider provider)
+            ConfirmServiceRecipientsProvider provider)
         {
             FluentActions
                 .Invoking(() => provider.Process(null, routeValues))
@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         [CommonAutoData]
         public void Process_RouteValuesIsNull_ThrowsException(
             Order order,
-            SelectServiceRecipientsProvider provider)
+            ConfirmServiceRecipientsProvider provider)
         {
             FluentActions
                 .Invoking(() => provider.Process(order, null))
@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             CallOffId callOffId,
             CatalogueItemId catalogueItemId,
             Order order,
-            SelectServiceRecipientsProvider provider)
+            ConfirmServiceRecipientsProvider provider)
         {
             var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId)
             {
@@ -78,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             string internalOrgId,
             CallOffId callOffId,
             Order order,
-            SelectServiceRecipientsProvider provider)
+            ConfirmServiceRecipientsProvider provider)
         {
             order.OrderItems.ToList().ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
 
@@ -105,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             string internalOrgId,
             CallOffId callOffId,
             Order order,
-            SelectServiceRecipientsProvider provider)
+            ConfirmServiceRecipientsProvider provider)
         {
             order.OrderItems.ToList().ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
 
@@ -134,7 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             string internalOrgId,
             CallOffId callOffId,
             Order order,
-            SelectServiceRecipientsProvider provider)
+            ConfirmServiceRecipientsProvider provider)
         {
             order.OrderItems.ToList().ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
 
