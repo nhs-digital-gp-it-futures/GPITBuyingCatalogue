@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
@@ -7,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Routing
 {
+    [ExcludeFromCodeCoverage]
     public class RoutingService : IRoutingService
     {
         private readonly Dictionary<RoutingPoint, IRoutingResultProvider> providers = new();

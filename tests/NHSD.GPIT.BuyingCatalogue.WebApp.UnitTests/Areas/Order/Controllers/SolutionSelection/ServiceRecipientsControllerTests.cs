@@ -295,6 +295,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
+        [CommonAutoData]
+        public static void Post_EditServiceRecipients_NoSelectedRecipients_ReturnsExpectedResult(
+            SelectRecipientsModel model,
+            ServiceRecipientsController controller)
+        {
+            model.ServiceRecipients.ForEach(x => x.Selected = false);
+
+            var result = controller.EditServiceRecipients(model.InternalOrgId, model.CallOffId, model.CatalogueItemId, model);
+
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actualResult.ControllerName.Should().Be(typeof(TaskListController).ControllerName());
+            actualResult.ActionName.Should().Be(nameof(TaskListController.TaskList));
+            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", model.InternalOrgId },
+                { "callOffId", model.CallOffId },
+            });
+        }
+
+        [Theory]
         [CommonInlineAutoData(JourneyType.Add)]
         [CommonInlineAutoData(JourneyType.Edit)]
         public static async Task Get_ConfirmChanges_ReturnsExpectedResult(

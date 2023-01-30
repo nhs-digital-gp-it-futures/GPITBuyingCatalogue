@@ -174,9 +174,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 return View("SelectRecipients", model);
             }
 
-            var recipientIds = string.Join(
-                Separator,
-                model.ServiceRecipients.Where(x => x.Selected).Select(x => x.OdsCode));
+            var odsCodes = model.ServiceRecipients?
+                .Where(x => x.Selected)
+                .Select(x => x.OdsCode)
+                .ToList() ?? new List<string>();
+
+            if (!odsCodes.Any())
+            {
+                return RedirectToAction(
+                    nameof(TaskListController.TaskList),
+                    typeof(TaskListController).ControllerName(),
+                    new { internalOrgId, callOffId });
+            }
+
+            var recipientIds = string.Join(Separator, odsCodes);
 
             return RedirectToAction(
                 nameof(ConfirmChanges),
@@ -204,7 +215,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 .Select(x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OdsCode })
                 .ToList();
 
-            var previouslySelected = wrapper.Previous?.OrderItem(catalogueItemId)
+            var previouslySelected = wrapper.Previous?.OrderItem(catalogueItemId)?
                 .OrderItemRecipients
                 .Select(x => new ServiceRecipientModel { Name = x.Recipient.Name, OdsCode = x.OdsCode })
                 .ToList() ?? new List<ServiceRecipientModel>();
