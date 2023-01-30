@@ -208,7 +208,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var order = wrapper.RolledUp;
             var catalogueItem = order.OrderItem(catalogueItemId).CatalogueItem;
             var serviceRecipients = await GetServiceRecipients(internalOrgId);
-            var selectedRecipientIds = recipientIds.Split(Separator, StringSplitOptions.RemoveEmptyEntries);
+            var selectedRecipientIds = recipientIds?.Split(Separator, StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>();
 
             var selected = serviceRecipients
                 .Where(x => selectedRecipientIds.Contains(x.OdsCode))

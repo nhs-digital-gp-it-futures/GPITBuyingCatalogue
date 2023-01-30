@@ -18,15 +18,17 @@
             <input type="hidden" asp-for="BackLink" />
             <input type="hidden" asp-for="Journey" />
             <input type="hidden" asp-for="Source" />
-
-            <ul>
-                @foreach (var (recipient, index) in Model.Selected.Select((x, i) => (x, i)))
-                {
-                    <input type="hidden" asp-for="Selected[index].Name"/>
-                    <input type="hidden" asp-for="Selected[index].OdsCode"/>
-                    <li>@recipient.Name</li>
-                }
-            </ul>
+            
+            <div id="selected-service-recipients">
+                <ul>
+                    @foreach (var (recipient, index) in Model.Selected.Select((x, i) => (x, i)))
+                    {
+                        <input type="hidden" asp-for="Selected[index].Name"/>
+                        <input type="hidden" asp-for="Selected[index].OdsCode"/>
+                        <li>@recipient.Name</li>
+                    }
+                </ul>
+            </div>
 
             <div class="nhsuk-u-margin-top-6">
                 <p>
@@ -38,19 +40,21 @@
 
             @if (Model.PreviouslySelected?.Any() ?? false)
             {
-                <nhs-details label-text="View Service Recipients from the original order">
-                    <p>
-                        The original order had @Model.PreviouslySelected.Count Service @PluralOrSingular(Model.PreviouslySelected.Count)
-                    </p>
-                    <ul>
-                        @foreach (var (recipient, index) in Model.PreviouslySelected.Select((x, i) => (x, i)))
-                        {
-                            <input type="hidden" asp-for="PreviouslySelected[index].Name"/>
-                            <input type="hidden" asp-for="PreviouslySelected[index].OdsCode"/>
-                            <li>@recipient.Name</li>
-                        }
-                    </ul>
-                </nhs-details>
+                <div id="previously-selected-service-recipients">
+                    <nhs-details label-text="View Service Recipients from the original order">
+                        <p>
+                            The original order had @Model.PreviouslySelected.Count Service @PluralOrSingular(Model.PreviouslySelected.Count)
+                        </p>
+                        <ul>
+                            @foreach (var (recipient, index) in Model.PreviouslySelected.Select((x, i) => (x, i)))
+                            {
+                                <input type="hidden" asp-for="PreviouslySelected[index].Name"/>
+                                <input type="hidden" asp-for="PreviouslySelected[index].OdsCode"/>
+                                <li>@recipient.Name</li>
+                            }
+                        </ul>
+                    </nhs-details>
+                </div>
             }
 
             <div class="nhsuk-u-margin-top-6">
