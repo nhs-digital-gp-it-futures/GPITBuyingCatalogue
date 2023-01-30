@@ -33,13 +33,17 @@
 
                     @if (Model.PreviouslySelected?.Any() ?? false)
                     {
-                        <p>We're only showing the Service Recipients which were not included in the original order.</p>
+                        <p id="previously-selected">
+                            We're only showing the Service Recipients which were not included in the original order.
+                        </p>
                     }
                     
                     @if (Model.PreSelected
                         && Model.ItemType != CatalogueItemType.Solution)
                     {
-                        <p id="pre-selected">The recipients you selected for your @Model.PreSelectedItemType have been pre-selected.</p>
+                        <p id="pre-selected">
+                            The recipients you selected for your @Model.PreSelectedItemType have been pre-selected.
+                        </p>
                     }
                 </nhs-inset-text>
             }

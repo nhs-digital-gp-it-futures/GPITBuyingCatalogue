@@ -187,8 +187,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                             .ForEach(x => x.Selected = true);
 
                         HasImportedRecipients = true;
-                        SelectionMode = SelectionMode.None;
-                        SelectionCaption = SelectNone;
+
+                        var allSelected = ServiceRecipients.All(x => x.Selected);
+
+                        SelectionMode = allSelected ? SelectionMode.None : SelectionMode.All;
+                        SelectionCaption = allSelected ? SelectNone : SelectAll;
                     }
                     else
                     {
