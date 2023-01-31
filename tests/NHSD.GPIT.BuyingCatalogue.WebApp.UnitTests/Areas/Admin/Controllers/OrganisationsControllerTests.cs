@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -22,6 +23,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
+using NuGet.Packaging.Signing;
 using Xunit;
 using OrganisationModel = NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels.OrganisationModel;
 
@@ -216,6 +218,376 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .ToList();
 
             actualResult.Should().BeEmpty();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditOrganisation_ReturnsExpectedResult(
+            Organisation organisation,
+            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
+            OrganisationsController controller)
+        {
+            mockOrganisationsService
+                .Setup(x => x.GetOrganisation(organisation.Id))
+                .ReturnsAsync(organisation);
+
+            var result = (await controller.EditOrganisation(organisation.Id)).As<ViewResult>();
+
+            mockOrganisationsService.VerifyAll();
+
+            result.Should().NotBeNull();
+            result.ViewName.Should().BeNull();
+
+            var model = result.Model.Should().BeAssignableTo<EditOrganisationModel>().Subject;
+
+            model.Should().BeEquivalentTo(new EditOrganisationModel(organisation),opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditOrganisation_WithModelErrors_ReturnsExpectedResult(
+            int organisationId,
+            EditOrganisationModel model,
+            OrganisationsController controller)
+        {
+            controller.ModelState.AddModelError("key", "errorMessage");
+
+            var result = (await controller.EditOrganisation(organisationId, model)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.ViewName.Should().BeNull();
+
+            var actualModel = result.Model.Should().BeAssignableTo<EditOrganisationModel>().Subject;
+
+            actualModel.Should().BeEquivalentTo(model);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditOrganisation_ReturnsRedirectToActionResult(
+            int organisationId,
+            EditOrganisationModel model,
+            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
+            OrganisationsController controller)
+        {
+            mockOrganisationsService
+                .Setup(x => x.UpdateCatalogueAgreementSigned(organisationId, model.CatalogueAgreementSigned))
+                .Returns(Task.CompletedTask);
+
+            var result = (await controller.EditOrganisation(organisationId, model)).As<RedirectToActionResult>();
+
+            mockOrganisationsService.VerifyAll();
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(OrganisationsController.EditConfirmation));
+            result.RouteValues.Should().BeEquivalentTo(new Dictionary<string, int>
+            {
+                { "organisationId", organisationId },
+            });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditConfirmation_ReturnsExpectedResult(
+            Organisation organisation,
+            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
+            OrganisationsController controller)
+        {
+            mockOrganisationsService
+                .Setup(x => x.GetOrganisation(organisation.Id))
+                .ReturnsAsync(organisation);
+
+            var result = (await controller.EditConfirmation(organisation.Id)).As<ViewResult>();
+
+            mockOrganisationsService.VerifyAll();
+
+            result.Should().NotBeNull();
+            result.ViewName.Should().BeNull();
+
+            var model = result.Model.Should().BeAssignableTo<EditConfirmationModel>().Subject;
+
+            model.Should().BeEquivalentTo(new EditConfirmationModel(organisation.Name, organisation.Id), opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Get_Find_ReturnsExpectedResult(
+            string ods,
+            OrganisationsController controller)
+        {
+            var result = controller.Find(ods).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.ViewName.Should().BeNull();
+
+            var model = result.Model.Should().BeAssignableTo<FindOrganisationModel>().Subject;
+
+            model.Should().BeEquivalentTo(new FindOrganisationModel(ods), opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_Find_WithModelErrors_ReturnsExpectedResult(
+            FindOrganisationModel model,
+            OrganisationsController controller)
+        {
+            controller.ModelState.AddModelError("key", "errorMessage");
+
+            var result = (await controller.Find(model)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.ViewName.Should().BeNull();
+
+            var actualModel = result.Model.Should().BeAssignableTo<FindOrganisationModel>().Subject;
+
+            actualModel.Should().BeEquivalentTo(model);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_Find_NullOrganisation_ReturnsExpectedResult(
+            FindOrganisationModel model,
+            [Frozen] Mock<IOdsService> mockOdsService,
+            string error,
+            OrganisationsController controller)
+        {
+            mockOdsService
+                .Setup(x => x.GetOrganisationByOdsCode(model.OdsCode))
+                .ReturnsAsync((null, error));
+            var result = (await controller.Find(model)).As<ViewResult>();
+
+            mockOdsService.VerifyAll();
+            result.Should().NotBeNull();
+            result.ViewName.Should().BeNull();
+
+            var actualModel = result.Model.Should().BeAssignableTo<FindOrganisationModel>().Subject;
+
+            actualModel.Should().BeEquivalentTo(model);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_Find_ReturnsRedirectToActionResult(
+            FindOrganisationModel model,
+            [Frozen] Mock<IOdsService> mockOdsService,
+            OdsOrganisation organisation,
+            OrganisationsController controller)
+        {
+            mockOdsService
+                .Setup(x => x.GetOrganisationByOdsCode(model.OdsCode))
+                .ReturnsAsync((organisation, null));
+            var result = (await controller.Find(model)).As<RedirectToActionResult>();
+
+            mockOdsService.VerifyAll();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(OrganisationsController.Select));
+
+            result.RouteValues.Should().BeEquivalentTo(new Dictionary<string, string>
+            {
+                { "ods", model.OdsCode },
+            });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_Select_ReturnsExpectedResult(
+            string ods,
+            [Frozen] Mock<IOdsService> mockOdsService,
+            OdsOrganisation organisation,
+            OrganisationsController controller)
+        {
+            mockOdsService
+                .Setup(x => x.GetOrganisationByOdsCode(ods))
+                .ReturnsAsync((organisation, null));
+
+            var result = (await controller.Select(ods)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.ViewName.Should().BeNull();
+
+            var model = result.Model.Should().BeAssignableTo<SelectOrganisationModel>().Subject;
+
+            model.Should().BeEquivalentTo(new SelectOrganisationModel(organisation), opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Post_Select_WithModelErrors_ReturnsExpectedResult(
+            SelectOrganisationModel model,
+            OrganisationsController controller)
+        {
+            controller.ModelState.AddModelError("key", "errorMessage");
+
+            var result = controller.Select(model).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.ViewName.Should().BeNull();
+
+            var actualModel = result.Model.Should().BeAssignableTo<SelectOrganisationModel>().Subject;
+
+            actualModel.Should().BeEquivalentTo(model);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Post_Select_ReturnsRedirectToActionResult(
+            SelectOrganisationModel model,
+            OrganisationsController controller)
+        {
+            var result = controller.Select(model).As<RedirectToActionResult>();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(OrganisationsController.Create));
+
+            result.RouteValues.Should().BeEquivalentTo(new Dictionary<string, string>
+            {
+                { "ods", model.OdsOrganisation.OdsCode },
+            });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_Create_ReturnsExpectedResult(
+            string ods,
+            [Frozen] Mock<IOdsService> mockOdsService,
+            OdsOrganisation organisation,
+            OrganisationsController controller)
+        {
+            mockOdsService
+                .Setup(x => x.GetOrganisationByOdsCode(ods))
+                .ReturnsAsync((organisation, null));
+
+            var result = (await controller.Create(ods)).As<ViewResult>();
+
+            mockOdsService.VerifyAll();
+            result.Should().NotBeNull();
+            result.ViewName.Should().BeNull();
+
+            var model = result.Model.Should().BeAssignableTo<CreateOrganisationModel>().Subject;
+
+            model.Should().BeEquivalentTo(new CreateOrganisationModel(organisation), opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_Create_WithModelErrors_ReturnsExpectedResult(
+            CreateOrganisationModel model,
+            OrganisationsController controller)
+        {
+            controller.ModelState.AddModelError("key", "errorMessage");
+
+            var result = (await controller.Create(model)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.ViewName.Should().BeNull();
+
+            var actualModel = result.Model.Should().BeAssignableTo<CreateOrganisationModel>().Subject;
+
+            actualModel.Should().BeEquivalentTo(model);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_Create_Failed_ReturnsRedirectToActionResult(
+            CreateOrganisationModel model,
+            [Frozen] Mock<IOdsService> mockOdsService,
+            [Frozen] Mock<IOrganisationsService> mockOrgService,
+            OdsOrganisation organisation,
+            string error,
+            OrganisationsController controller)
+        {
+            mockOdsService
+                .Setup(x => x.GetOrganisationByOdsCode(model.OdsOrganisation.OdsCode))
+                .ReturnsAsync((organisation, null));
+
+            mockOrgService
+                .Setup(x => x.AddCcgOrganisation(organisation, model.CatalogueAgreementSigned))
+                .ReturnsAsync((0, error));
+
+            var result = (await controller.Create(model)).As<RedirectToActionResult>();
+
+            mockOdsService.VerifyAll();
+            mockOrgService.VerifyAll();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(OrganisationsController.Error));
+
+            result.RouteValues.Should().BeEquivalentTo(new Dictionary<string, string>
+            {
+                { "odsCode", model.OdsOrganisation.OdsCode },
+                { "error", error },
+            });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_Create_ReturnsRedirectToActionResult(
+            CreateOrganisationModel model,
+            [Frozen] Mock<IOdsService> mockOdsService,
+            [Frozen] Mock<IOrganisationsService> mockOrgService,
+            OdsOrganisation organisation,
+            int orgId,
+            OrganisationsController controller)
+        {
+            mockOdsService
+                .Setup(x => x.GetOrganisationByOdsCode(model.OdsOrganisation.OdsCode))
+                .ReturnsAsync((organisation, null));
+
+            mockOrgService
+                .Setup(x => x.AddCcgOrganisation(organisation, model.CatalogueAgreementSigned))
+                .ReturnsAsync((orgId, null));
+
+            var result = (await controller.Create(model)).As<RedirectToActionResult>();
+
+            mockOdsService.VerifyAll();
+            mockOrgService.VerifyAll();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(OrganisationsController.Confirmation));
+
+            result.RouteValues.Should().BeEquivalentTo(new Dictionary<string, int>
+            {
+                { "organisationId", orgId },
+            });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Get_Error_ReturnsExpectedResult(
+            string ods,
+            string error,
+            OrganisationsController controller)
+        {
+            var result = controller.Error(ods, error).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.ViewName.Should().BeNull();
+
+            var model = result.Model.Should().BeAssignableTo<AddAnOrganisationErrorModel>().Subject;
+
+            model.Should().BeEquivalentTo(new AddAnOrganisationErrorModel(ods, error), opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_Confirmation_ReturnsExpectedResult(
+            [Frozen] Mock<IOrganisationsService> mockOrgService,
+            Organisation organisation,
+            OrganisationsController controller)
+        {
+            mockOrgService
+                .Setup(x => x.GetOrganisation(organisation.Id))
+                .ReturnsAsync(organisation);
+
+            var result = (await controller.Confirmation(organisation.Id)).As<ViewResult>();
+
+            mockOrgService.VerifyAll();
+            result.Should().NotBeNull();
+            result.ViewName.Should().BeNull();
+
+            var model = result.Model.Should().BeAssignableTo<ConfirmationModel>().Subject;
+
+            model.Should().BeEquivalentTo(new ConfirmationModel(organisation.Name), opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
