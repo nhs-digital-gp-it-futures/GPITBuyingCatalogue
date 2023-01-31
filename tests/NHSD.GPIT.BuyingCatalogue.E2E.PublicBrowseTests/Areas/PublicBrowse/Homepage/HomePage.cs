@@ -25,8 +25,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
     {
         private static readonly Dictionary<string, string> Parameters = new();
 
-        private readonly IContactUsService contactUsService;
-
         public HomePage(LocalWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
             : base(
                   factory,
