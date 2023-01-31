@@ -25,7 +25,7 @@
                     {
                         <input type="hidden" asp-for="Selected[index].Name"/>
                         <input type="hidden" asp-for="Selected[index].OdsCode"/>
-                        <li>@recipient.Name</li>
+                        <li>@recipient.Description</li>
                     }
                 </ul>
             </div>
@@ -50,7 +50,7 @@
                             {
                                 <input type="hidden" asp-for="PreviouslySelected[index].Name"/>
                                 <input type="hidden" asp-for="PreviouslySelected[index].OdsCode"/>
-                                <li>@recipient.Name</li>
+                                <li>@recipient.Description</li>
                             }
                         </ul>
                     </nhs-details>
