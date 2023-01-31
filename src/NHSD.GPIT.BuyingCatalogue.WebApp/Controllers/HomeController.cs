@@ -20,10 +20,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             this.contactUsService = contactUsService ?? throw new ArgumentNullException(nameof(contactUsService));
         }
 
-        public HomeController()
-        {
-        }
-
         public IActionResult DownloadComissioningSupportPackPDF()
         {
             var resourceStream = typeof(HomeController).Assembly.GetManifestResourceStream("NHSD.GPIT.BuyingCatalogue.WebApp.Files.Advanced GP Telephony Specification Commissioning Support Pack v1.12.pdf");
