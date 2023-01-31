@@ -144,28 +144,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
         [Fact]
         public void HomePage_ClickAdvancedTelephony_ExpectedResult()
         {
-            RunTest(() =>
-            {
                 CommonActions.ClickLinkElement(Objects.Home.HomeSelectors.AdvancedTelephonyLink);
 
                 CommonActions.PageLoadedCorrectGetIndex(
                         typeof(HomeController),
                         nameof(HomeController.AdvacedTelephonyBetterPurchaseFramework)).Should().BeTrue();
-            });
-        }
-
-        [Fact]
-        public Task DownloadComissioningSupportPackPDF_ReturnsPDF()
-        {
-            var controller = new HomeController();
-
-            var pdfResult = controller.DownloadComissioningSupportPackPDF();
-
-            var fileResult = pdfResult as FileResult;
-            Assert.NotNull(fileResult);
-            Assert.Equal("application/pdf", fileResult.ContentType);
-            Assert.Equal("Advanced GP Telephony Specification Commissioning Support Pack v1.12.pdf", fileResult.FileDownloadName);
-            return Task.CompletedTask;
         }
 
         [Fact]

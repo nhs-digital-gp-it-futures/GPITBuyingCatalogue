@@ -20,7 +20,7 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
       <_Parameter1>$(AssemblyName).UnitTests</_Parameter1>
@@ -29,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="wwwroot\document\Advanced GP Telephony Specification Commissioning Support Pack v1.12.pdf" />
+    <EmbeddedResource Include="wwwroot\Files\Advanced GP Telephony Specification Commissioning Support Pack v1.12.pdf" />
   </ItemGroup>
 
   <ItemGroup>
