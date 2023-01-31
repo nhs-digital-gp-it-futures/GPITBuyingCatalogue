@@ -1,4 +1,7 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +18,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         public HomeController(IContactUsService contactUsService)
         {
             this.contactUsService = contactUsService ?? throw new ArgumentNullException(nameof(contactUsService));
+        }
+
+        public IActionResult DownloadComissioningSupportPackPDF()
+        {
+            var resourceStream = typeof(HomeController).Assembly.GetManifestResourceStream("NHSD.GPIT.BuyingCatalogue.WebApp.Files.Advanced GP Telephony Specification Commissioning Support Pack v1.12.pdf");
+            return File(resourceStream, "application/pdf", "Advanced GP Telephony Specification Commissioning Support Pack v1.12.pdf");
         }
 
         public IActionResult Index()
@@ -62,6 +71,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 
         [HttpGet("tech-innovation")]
         public IActionResult TechInnovationFramework() => View(new NavBaseModel
+        {
+            BackLink = Url.Action(
+                nameof(Index),
+                typeof(HomeController).ControllerName()),
+        });
+
+        [HttpGet("advanced-telephony-better-purchase")]
+        public IActionResult AdvacedTelephonyBetterPurchaseFramework() => View(new NavBaseModel
         {
             BackLink = Url.Action(
                 nameof(Index),
