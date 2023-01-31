@@ -113,7 +113,6 @@ jobs:
         
         chmod +x codecov
         ./codecov -f tests/**/coverage.cobertura.xml -t $(CODECOVTOKEN)
-    condition: and(succeeded(), in(variables['Build.Reason'], 'IndividualCI', 'BatchedCI', 'PullRequest'))
 
   - task: DotNetCoreCLI@2
     displayName: 'Run Integration Tests'
