@@ -29,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="wwwroot\Files\Advanced GP Telephony Specification Commissioning Support Pack v1.12.pdf" />
+    <EmbeddedResource Include="Files\Advanced GP Telephony Specification Commissioning Support Pack v1.12.pdf" />
   </ItemGroup>
 
   <ItemGroup>

@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 
         public IActionResult DownloadComissioningSupportPackPDF()
         {
-            var resourceStream = typeof(HomeController).Assembly.GetManifestResourceStream("NHSD.GPIT.BuyingCatalogue.WebApp.wwwroot.Files.Advanced GP Telephony Specification Commissioning Support Pack v1.12.pdf");
+            var resourceStream = typeof(HomeController).Assembly.GetManifestResourceStream("NHSD.GPIT.BuyingCatalogue.WebApp.Files.Advanced GP Telephony Specification Commissioning Support Pack v1.12.pdf");
             return File(resourceStream, "application/pdf", "Advanced GP Telephony Specification Commissioning Support Pack v1.12.pdf");
         }
 
