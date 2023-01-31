@@ -11,6 +11,11 @@
         nameof(ProcurementHubController.Index),
         typeof(ProcurementHubController).ControllerName(),
         new { returnUrl });
+
+    var comissioningSupportPackURL = Url.Action(
+        nameof(HomeController.DownloadComissioningSupportPackPDF),
+        typeof(HomeController).ControllerName(),
+        new { returnUrl });
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -40,42 +45,39 @@
             Suppliers that are on the list will be pre-committed to the terms of the new Digital Care Services Cloud Telephony framework, prior to its launch. Buying organisations can therefore procure services from any of the suppliers with confidence in the capability of the advanced telephony solutions offered and the suppliers operating them.
         </p>
 
-        <h4>Suppliers on the Better Purchasing Framework List</h4>
+        <h2>Suppliers on the Better Purchasing Framework List</h2>
 
-        <p>These are the suppliers that are available from the list. You can use the links to download more information about the suppliers and solutions on the list:</p>
+        <p>These are the suppliers that are available from the list:</p>
 
         <ul>
-            <li>Southern Communications Corporate Solutions Ltd (acquired X-On) PDF</li>
-            <li>Daisy Corporate Services Trading Limited (acquired Premier Choice Ltd) PDF</li>
-            <li>Focus Group (acquired Ethos Voice & Data (EVAD) & SW Comms Group) PDF</li>
-            <li>Wavenet Ltd PDF</li>
-            <li>Redcentric Solutions Ltd PDF</li>
-            <li>Babble Ltd PDF</li>
-            <li>Gamma Telecom Ltd PDF</li>
+            <li>Storacall Technology Ltd (trading as X-on)</li>
+            <li>Daisy Communications Ltd</li>
+            <li>Think Healthcare</li>
+            <li>Redcentric Solutions Ltd</li>
         </ul>
 
+        <p>The list will grow over time as more suppliers meet the qualification criteria.</p>
+
         <p>
-            Find out more about the Better Purchasing framework in the commissioning support pack produced by the National Commercial and Procurement Hub.
+            Find out more about the Better Purchasing framework in the draft commissioning support pack produced by the National Commercial and Procurement Hub.
         </p>
 
-        <vc:nhs-secondary-button text="Download commissioning support pack (PDF)"
-                                 type="Primary"
-                                 url="@Url.Action(
-                                          nameof(HomeController.Index),
-                                          typeof(HomeController).ControllerName())" />
+        <vc:nhs-secondary-button type="Secondary"
+                                 text="Download support pack PDF"
+                                 url="@comissioningSupportPackURL" />
 
         <p>
             For more information on the Better Purchasing framework and the suppliers and solutions currently involved, contact National Commercial and Procurement Hub.
         </p>
 
         <div class="nhsuk-u-margin-top-6">
-            <vc:nhs-action-link text="Get procurement support"
+            <vc:nhs-action-link text="Contact Procurement Hub"
                                 url="@procurementSupportUrl" />
         </div>
 
-        <h4>
+        <h2>
             Digital Care Services Cloud Telephony framework
-        </h4>
+        </h2>
 
         <p>
             The Digital Care Services Cloud Telephony framework is planned to launch in spring 2023. It will set the strategic technical and commercial direction for future services, as well as the standard for unified communications and telephony services in general practice and primary care.

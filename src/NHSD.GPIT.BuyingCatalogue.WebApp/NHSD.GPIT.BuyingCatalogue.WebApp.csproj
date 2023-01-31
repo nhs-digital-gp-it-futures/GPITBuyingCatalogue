@@ -29,6 +29,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="wwwroot\document\Advanced GP Telephony Specification Commissioning Support Pack v1.12.pdf" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
     <PackageReference Include="Enums.NET" Version="4.0.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.0.2" />

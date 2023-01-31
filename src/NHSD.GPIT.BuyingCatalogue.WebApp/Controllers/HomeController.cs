@@ -1,4 +1,7 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +18,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         public HomeController(IContactUsService contactUsService)
         {
             this.contactUsService = contactUsService ?? throw new ArgumentNullException(nameof(contactUsService));
+        }
+
+        public HomeController()
+        {
+        }
+
+        public IActionResult DownloadComissioningSupportPackPDF()
+        {
+            var resourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("NHSD.GPIT.BuyingCatalogue.WebApp.wwwroot.document.Advanced GP Telephony Specification Commissioning Support Pack v1.12.pdf");
+            return File(resourceStream, "application/pdf", "Advanced GP Telephony Specification Commissioning Support Pack v1.12.pdf");
         }
 
         public IActionResult Index()
