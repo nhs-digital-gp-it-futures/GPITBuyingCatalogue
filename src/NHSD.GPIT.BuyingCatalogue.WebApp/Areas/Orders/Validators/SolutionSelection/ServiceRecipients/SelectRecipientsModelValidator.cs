@@ -19,7 +19,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.SolutionSelec
 
         private static bool HaveMadeASelection(List<ServiceRecipientModel> serviceRecipients)
         {
-            return serviceRecipients.Any(x => x.Selected);
+            return !(serviceRecipients?.Any() ?? false)
+                || serviceRecipients.Any(x => x.Selected);
         }
     }
 }

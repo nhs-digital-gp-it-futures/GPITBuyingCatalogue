@@ -1,0 +1,69 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.ServiceRecipients.ConfirmChangesModel;
+@{
+    ViewBag.Title = Model.Title;
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+        <nhs-page-title model="Model" />
+        
+        <h3>Selected Service Recipients</h3>
+        <p>You've selected @Model.Selected.Count Service @PluralOrSingular(Model.Selected.Count)</p>
+
+        <form method="post">
+            <hidden-inputs title="Title" caption="Caption" advice="Advice"/>
+            <input type="hidden" asp-for="BackLink" />
+            <input type="hidden" asp-for="Journey" />
+            <input type="hidden" asp-for="Source" />
+            
+            <div id="selected-service-recipients">
+                <ul>
+                    @foreach (var (recipient, index) in Model.Selected.Select((x, i) => (x, i)))
+                    {
+                        <input type="hidden" asp-for="Selected[index].Name"/>
+                        <input type="hidden" asp-for="Selected[index].OdsCode"/>
+                        <li>@recipient.Description</li>
+                    }
+                </ul>
+            </div>
+
+            <div class="nhsuk-u-margin-top-6">
+                <p>
+                    You can
+                    <a href="@Model.BackLink">add or remove Service Recipients</a>
+                    if needed, or edit them later if you continue with your order.
+                </p>
+            </div>
+
+            @if (Model.PreviouslySelected?.Any() ?? false)
+            {
+                <div id="previously-selected-service-recipients">
+                    <nhs-details label-text="View Service Recipients from the original order">
+                        <p>
+                            The original order had @Model.PreviouslySelected.Count Service @PluralOrSingular(Model.PreviouslySelected.Count)
+                        </p>
+                        <ul>
+                            @foreach (var (recipient, index) in Model.PreviouslySelected.Select((x, i) => (x, i)))
+                            {
+                                <input type="hidden" asp-for="PreviouslySelected[index].Name"/>
+                                <input type="hidden" asp-for="PreviouslySelected[index].OdsCode"/>
+                                <li>@recipient.Description</li>
+                            }
+                        </ul>
+                    </nhs-details>
+                </div>
+            }
+
+            <div class="nhsuk-u-margin-top-6">
+                <nhs-submit-button text="Continue" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@{
+    string PluralOrSingular(int total) => total == 1 ? "Recipient:" : "Recipients:";
+}

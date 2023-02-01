@@ -20,10 +20,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.OrderTriage
 
         public string OrganisationName { get; set; }
 
-        public string Title { get; set; }
-
-        public string Advice { get; set; }
-
         public bool? Selected { get; set; }
 
         public OrderTriageValue? Option { get; set; }

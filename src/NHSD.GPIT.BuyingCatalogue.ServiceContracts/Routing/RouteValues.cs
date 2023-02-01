@@ -1,4 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+﻿using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing
 {
@@ -27,8 +28,12 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing
 
         public CatalogueItemId? CatalogueItemId { get; set; }
 
+        public JourneyType? Journey { get; set; }
+
         public RoutingSource? Source { get; set; }
 
         public int? SelectedPriceId { get; set; }
+
+        public string RecipientIds { get; set; }
     }
 }

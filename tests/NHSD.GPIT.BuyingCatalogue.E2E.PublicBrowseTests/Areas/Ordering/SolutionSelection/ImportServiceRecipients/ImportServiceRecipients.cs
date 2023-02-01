@@ -37,7 +37,7 @@ public class ImportServiceRecipients : BuyerTestBase, IClassFixture<LocalWebAppl
         var catalogueItem = context.CatalogueItems.Find(CatalogueItemId);
         var catalogueItemName = catalogueItem!.Name;
 
-        CommonActions.PageTitle().Should().BeEquivalentTo($"Import Service Recipients-{catalogueItemName}".FormatForComparison());
+        CommonActions.PageTitle().Should().BeEquivalentTo($"Upload Service Recipients-{catalogueItemName}".FormatForComparison());
         CommonActions.LedeText().Should().BeEquivalentTo("Create a CSV with your Service Recipients in the first column and their ODS codes in the second column.".FormatForComparison());
         CommonActions.GoBackLinkDisplayed().Should().BeTrue();
 

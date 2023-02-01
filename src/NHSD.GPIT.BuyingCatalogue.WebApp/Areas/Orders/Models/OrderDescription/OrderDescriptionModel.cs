@@ -32,9 +32,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.OrderDescription
 
         [StringLength(100)]
         public string Description { get; set; }
-
-        public string Caption { get; set; }
-
-        public string Advice { get; set; }
     }
 }

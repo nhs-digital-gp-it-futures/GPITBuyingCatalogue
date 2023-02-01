@@ -4,6 +4,8 @@
     {
         ConfirmPrice,
         ConfirmPriceBackLink,
+        ConfirmServiceRecipients,
+        ConfirmServiceRecipientsBackLink,
         EditDeliveryDates,
         EditDeliveryDatesBackLink,
         EditPrice,
@@ -14,7 +16,6 @@
         SelectPriceBackLink,
         SelectQuantity,
         SelectQuantityBackLink,
-        SelectServiceRecipients,
         SelectServiceRecipientsBackLink,
         TaskListBackLink,
     }

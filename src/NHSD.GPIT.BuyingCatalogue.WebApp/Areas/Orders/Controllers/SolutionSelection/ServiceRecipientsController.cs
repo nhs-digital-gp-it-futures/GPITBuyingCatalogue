@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
@@ -17,18 +19,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
     [Route("order/organisation/{internalOrgId}/order/{callOffId}/item/{catalogueItemId}/service-recipients")]
     public class ServiceRecipientsController : Controller
     {
+        public const char Separator = ',';
+
         private readonly IOdsService odsService;
         private readonly IOrderItemRecipientService orderItemRecipientService;
+        private readonly IOrderItemService orderItemService;
         private readonly IOrderService orderService;
         private readonly IRoutingService routingService;
 
         public ServiceRecipientsController(
             IOdsService odsService,
+            IOrderItemService orderItemService,
             IOrderItemRecipientService orderItemRecipientService,
             IOrderService orderService,
             IRoutingService routingService)
         {
             this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
+            this.orderItemService = orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
             this.orderItemRecipientService = orderItemRecipientService ?? throw new ArgumentNullException(nameof(orderItemRecipientService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.routingService = routingService ?? throw new ArgumentNullException(nameof(routingService));
@@ -41,19 +48,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             CatalogueItemId catalogueItemId,
             SelectionMode? selectionMode = null,
             RoutingSource? source = null,
+            string recipientIds = null,
             string importedRecipients = null)
         {
-            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
+            var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = wrapper.Order;
             var orderItem = order.OrderItem(catalogueItemId);
+            var previousItem = wrapper.Previous?.OrderItem(catalogueItemId);
             var serviceRecipients = await GetServiceRecipients(internalOrgId);
+            var splitImportedRecipients = importedRecipients?.Split(Separator, StringSplitOptions.RemoveEmptyEntries);
 
             var route = routingService.GetRoute(
                 RoutingPoint.SelectServiceRecipientsBackLink,
                 order,
-                new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source, });
+                new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
 
-            var splitImportedRecipients = importedRecipients?.Split(',', StringSplitOptions.RemoveEmptyEntries);
-            var model = new SelectRecipientsModel(orderItem, serviceRecipients, selectionMode, splitImportedRecipients)
+            var model = new SelectRecipientsModel(orderItem, previousItem, serviceRecipients, selectionMode, splitImportedRecipients)
             {
                 BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
                 InternalOrgId = internalOrgId,
@@ -63,18 +73,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 AssociatedServicesOnly = order.AssociatedServicesOnly,
             };
 
-            var baseOrderItem = model.AssociatedServicesOnly
-                ? order.GetAssociatedServices().FirstOrDefault()
-                : order.GetSolution();
+            if (recipientIds is null
+                && splitImportedRecipients is null)
+            {
+                var baseOrderItem = model.AssociatedServicesOnly
+                    ? order.GetAssociatedServices().FirstOrDefault()
+                    : wrapper.RolledUp.GetSolution();
 
-            if (splitImportedRecipients is null)
                 model.PreSelectRecipients(baseOrderItem);
+            }
+
+            if (recipientIds != null)
+            {
+                model.SelectRecipientIds(recipientIds);
+            }
 
             return View("SelectRecipients", model);
         }
 
         [HttpPost("add")]
-        public async Task<IActionResult> AddServiceRecipients(
+        public IActionResult AddServiceRecipients(
             string internalOrgId,
             CallOffId callOffId,
             CatalogueItemId catalogueItemId,
@@ -85,19 +103,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 return View("SelectRecipients", model);
             }
 
-            var order = (await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId)).Order;
+            var recipientIds = string.Join(
+                Separator,
+                model.ServiceRecipients.Where(x => x.Selected).Select(x => x.OdsCode));
 
-            await orderItemRecipientService.AddOrderItemRecipients(
-                order.Id,
-                catalogueItemId,
-                model.GetSelectedItems());
-
-            var route = routingService.GetRoute(
-                RoutingPoint.SelectServiceRecipients,
-                order,
-                new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = model.Source });
-
-            return RedirectToAction(route.ActionName, route.ControllerName, route.RouteValues);
+            return RedirectToAction(
+                nameof(ConfirmChanges),
+                typeof(ServiceRecipientsController).ControllerName(),
+                new { internalOrgId, callOffId, catalogueItemId, recipientIds, journey = JourneyType.Add, model.Source });
         }
 
         [HttpGet("edit")]
@@ -107,19 +120,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             CatalogueItemId catalogueItemId,
             SelectionMode? selectionMode = null,
             RoutingSource? source = null,
+            string recipientIds = null,
             string importedRecipients = null)
         {
-            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
+            var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = wrapper.Order;
             var orderItem = order.OrderItem(catalogueItemId);
+            var previousItem = wrapper.Previous?.OrderItem(catalogueItemId);
             var serviceRecipients = await GetServiceRecipients(internalOrgId);
+            var splitImportedRecipients = importedRecipients?.Split(Separator, StringSplitOptions.RemoveEmptyEntries);
 
             var route = routingService.GetRoute(
                 RoutingPoint.SelectServiceRecipientsBackLink,
                 order,
-                new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source, });
+                new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
 
-            var splitImportedRecipients = importedRecipients?.Split(',', StringSplitOptions.RemoveEmptyEntries);
-            var model = new SelectRecipientsModel(orderItem, serviceRecipients, selectionMode, splitImportedRecipients)
+            var model = new SelectRecipientsModel(orderItem, previousItem, serviceRecipients, selectionMode, splitImportedRecipients)
             {
                 BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
                 InternalOrgId = internalOrgId,
@@ -130,11 +146,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 IsAdding = false,
             };
 
+            if (orderItem == null
+                && selectionMode == null
+                && recipientIds == null
+                && !order.AssociatedServicesOnly)
+            {
+                model.PreSelectSolutionServiceRecipients(wrapper.RolledUp, catalogueItemId);
+            }
+
+            if (recipientIds != null)
+            {
+                model.SelectRecipientIds(recipientIds);
+            }
+
             return View("SelectRecipients", model);
         }
 
         [HttpPost("edit")]
-        public async Task<IActionResult> EditServiceRecipients(
+        public IActionResult EditServiceRecipients(
             string internalOrgId,
             CallOffId callOffId,
             CatalogueItemId catalogueItemId,
@@ -145,15 +174,99 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 return View("SelectRecipients", model);
             }
 
+            var odsCodes = model.ServiceRecipients?
+                .Where(x => x.Selected)
+                .Select(x => x.OdsCode)
+                .ToList() ?? new List<string>();
+
+            if (!odsCodes.Any())
+            {
+                return RedirectToAction(
+                    nameof(TaskListController.TaskList),
+                    typeof(TaskListController).ControllerName(),
+                    new { internalOrgId, callOffId });
+            }
+
+            var recipientIds = string.Join(Separator, odsCodes);
+
+            return RedirectToAction(
+                nameof(ConfirmChanges),
+                typeof(ServiceRecipientsController).ControllerName(),
+                new { internalOrgId, callOffId, catalogueItemId, recipientIds, journey = JourneyType.Edit, model.Source });
+        }
+
+        [HttpGet("confirm-changes")]
+        public async Task<IActionResult> ConfirmChanges(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            string recipientIds,
+            JourneyType journey,
+            RoutingSource? source = null)
+        {
+            var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = wrapper.RolledUp;
+            var catalogueItem = order.OrderItem(catalogueItemId).CatalogueItem;
+            var serviceRecipients = await GetServiceRecipients(internalOrgId);
+            var selectedRecipientIds = recipientIds?.Split(Separator, StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>();
+
+            var selected = serviceRecipients
+                .Where(x => selectedRecipientIds.Contains(x.OdsCode))
+                .Select(x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OdsCode })
+                .ToList();
+
+            var previouslySelected = wrapper.Previous?.OrderItem(catalogueItemId)?
+                .OrderItemRecipients
+                .Select(x => new ServiceRecipientModel { Name = x.Recipient.Name, OdsCode = x.OdsCode })
+                .ToList() ?? new List<ServiceRecipientModel>();
+
+            var route = routingService.GetRoute(
+                RoutingPoint.ConfirmServiceRecipientsBackLink,
+                order,
+                new RouteValues(internalOrgId, callOffId, catalogueItemId)
+                {
+                    RecipientIds = recipientIds,
+                    Journey = journey,
+                    Source = source,
+                });
+
+            var model = new ConfirmChangesModel
+            {
+                BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
+                Caption = catalogueItem.Name,
+                Advice = callOffId.IsAmendment
+                    ? string.Format(ConfirmChangesModel.AdditionalAdviceText, catalogueItem.CatalogueItemType.Name())
+                    : string.Format(ConfirmChangesModel.AdviceText, catalogueItem.CatalogueItemType.Name()),
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+                CatalogueItemId = catalogueItemId,
+                Journey = journey,
+                Source = source,
+                Selected = selected,
+                PreviouslySelected = previouslySelected,
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("confirm-changes")]
+        public async Task<IActionResult> ConfirmChanges(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            ConfirmChangesModel model)
+        {
             var order = (await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId)).Order;
+
+            await orderItemService.AddOrderItems(internalOrgId, callOffId, new[] { catalogueItemId });
 
             await orderItemRecipientService.UpdateOrderItemRecipients(
                 order.Id,
                 catalogueItemId,
-                model.GetSelectedItems());
+                model.Selected.Select(x => x.Dto).ToList());
 
             var route = routingService.GetRoute(
-                RoutingPoint.SelectServiceRecipients,
+                RoutingPoint.ConfirmServiceRecipients,
                 order,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = model.Source });
 

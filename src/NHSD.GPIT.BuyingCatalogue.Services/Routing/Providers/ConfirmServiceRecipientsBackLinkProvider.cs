@@ -4,33 +4,30 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
 {
-    public class SelectServiceRecipientsBackLinkProvider : IRoutingResultProvider
+    public class ConfirmServiceRecipientsBackLinkProvider : IRoutingResultProvider
     {
         public RoutingResult Process(Order order, RouteValues routeValues)
         {
-            if (routeValues == null)
+            if (routeValues?.Journey == null)
             {
                 throw new ArgumentNullException(nameof(routeValues));
             }
 
-            if (routeValues.Source == RoutingSource.Dashboard)
-            {
-                return new RoutingResult
-                {
-                    ActionName = Constants.Actions.OrderDashboard,
-                    ControllerName = Constants.Controllers.Orders,
-                    RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId },
-                };
-            }
+            var actionName = routeValues.Journey == JourneyType.Add
+                ? Constants.Actions.AddServiceRecipients
+                : Constants.Actions.EditServiceRecipients;
 
             return new RoutingResult
             {
-                ActionName = Constants.Actions.TaskList,
-                ControllerName = Constants.Controllers.TaskList,
+                ActionName = actionName,
+                ControllerName = Constants.Controllers.ServiceRecipients,
                 RouteValues = new
                 {
                     routeValues.InternalOrgId,
                     routeValues.CallOffId,
+                    routeValues.CatalogueItemId,
+                    routeValues.Source,
+                    routeValues.RecipientIds,
                 },
             };
         }

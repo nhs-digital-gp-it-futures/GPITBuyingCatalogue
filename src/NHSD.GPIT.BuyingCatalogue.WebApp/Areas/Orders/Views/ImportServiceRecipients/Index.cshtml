@@ -2,7 +2,7 @@
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InputBoxes
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
 @{
-    ViewBag.Title = "Import Service Recipients";
+    ViewBag.Title = "Upload Service Recipients";
 }
 
 <partial name="Partials/_BackLink" model="@Model" />
@@ -28,7 +28,7 @@
             <input type="hidden" asp-for="BackLink"/>
             <input type="hidden" asp-for="CatalogueItemName"/>
 
-            <nhs-fieldset-form-container asp-for="@Model" label-text="Import a file" size="Medium">
+            <nhs-fieldset-form-container asp-for="@Model" label-text="Upload a file" size="Medium">
                 <nhs-file-upload file-type="Csv" asp-for="File"></nhs-file-upload>
             </nhs-fieldset-form-container>
 

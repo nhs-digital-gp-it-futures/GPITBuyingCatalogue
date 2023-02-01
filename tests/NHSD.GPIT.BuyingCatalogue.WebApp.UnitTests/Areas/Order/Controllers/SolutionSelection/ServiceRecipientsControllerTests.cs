@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Routing;
 using Moq;
 using MoreLinq.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -88,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 })
                 .ToList();
 
-            var expected = new SelectRecipientsModel(solution, recipients, selectionMode)
+            var expected = new SelectRecipientsModel(solution, null, recipients, selectionMode)
             {
                 InternalOrgId = internalOrgId,
                 CallOffId = callOffId,
@@ -144,13 +145,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_AddServiceRecipients_WithModelErrors_ReturnsExpectedResult(
+        public static void Post_AddServiceRecipients_WithModelErrors_ReturnsExpectedResult(
             SelectRecipientsModel model,
             ServiceRecipientsController controller)
         {
             controller.ModelState.AddModelError("key", "errorMessage");
 
-            var result = await controller.AddServiceRecipients(model.InternalOrgId, model.CallOffId, model.CatalogueItemId, model);
+            var result = controller.AddServiceRecipients(model.InternalOrgId, model.CallOffId, model.CatalogueItemId, model);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
@@ -159,56 +160,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_AddServiceRecipients_ReturnsExpectedResult(
+        public static void Post_AddServiceRecipients_ReturnsExpectedResult(
             SelectRecipientsModel model,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IOrderItemRecipientService> mockOrderRecipientService,
-            [Frozen] Mock<IRoutingService> mockRoutingService,
             ServiceRecipientsController controller)
         {
-            IEnumerable<ServiceRecipientDto> serviceRecipients = null;
-
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
 
             var orderItem = order.OrderItems.First().CatalogueItem;
 
             orderItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithCatalogueItemAndPrices(model.CallOffId, model.InternalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            var selectedOdsCodes = model.ServiceRecipients.Where(x => x.Selected).Select(x => x.OdsCode);
+            var recipientIds = string.Join(ServiceRecipientsController.Separator, selectedOdsCodes);
 
-            mockOrderRecipientService
-                .Setup(x => x.AddOrderItemRecipients(order.Id, orderItem.Id, It.IsAny<List<ServiceRecipientDto>>()))
-                .Callback<int, CatalogueItemId, IEnumerable<ServiceRecipientDto>>((_, _, recipients) => serviceRecipients = recipients)
-                .Returns(Task.CompletedTask);
-
-            mockRoutingService
-                .Setup(x => x.GetRoute(RoutingPoint.SelectServiceRecipients, order, It.IsAny<RouteValues>()))
-                .Returns(Route(model.InternalOrgId, model.CallOffId, orderItem.Id));
-
-            var result = await controller.AddServiceRecipients(model.InternalOrgId, model.CallOffId, orderItem.Id, model);
-
-            mockOrderService.VerifyAll();
-            mockOrderRecipientService.VerifyAll();
-            mockRoutingService.VerifyAll();
-
-            var expected = model.ServiceRecipients
-                .Where(x => x.Selected)
-                .Select(x => x.Dto);
-
-            serviceRecipients.Should().BeEquivalentTo(expected);
+            var result = controller.AddServiceRecipients(model.InternalOrgId, model.CallOffId, orderItem.Id, model);
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
-            actualResult.ControllerName.Should().Be(typeof(PricesController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(PricesController.SelectPrice));
+            actualResult.ControllerName.Should().Be(typeof(ServiceRecipientsController).ControllerName());
+            actualResult.ActionName.Should().Be(nameof(ServiceRecipientsController.ConfirmChanges));
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "internalOrgId", model.InternalOrgId },
                 { "callOffId", model.CallOffId },
                 { "catalogueItemId", orderItem.Id },
+                { "recipientIds", recipientIds },
+                { "journey", JourneyType.Add },
+                { "source", model.Source },
             });
         }
 
@@ -256,7 +235,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 })
                 .ToList();
 
-            var expected = new SelectRecipientsModel(solution, recipients, selectionMode)
+            var expected = new SelectRecipientsModel(solution, null, recipients, selectionMode)
             {
                 InternalOrgId = internalOrgId,
                 CallOffId = callOffId,
@@ -269,13 +248,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_EditServiceRecipients_WithModelErrors_ReturnsExpectedResult(
+        public static void Post_EditServiceRecipients_WithModelErrors_ReturnsExpectedResult(
             SelectRecipientsModel model,
             ServiceRecipientsController controller)
         {
             controller.ModelState.AddModelError("key", "errorMessage");
 
-            var result = await controller.EditServiceRecipients(model.InternalOrgId, model.CallOffId, model.CatalogueItemId, model);
+            var result = controller.EditServiceRecipients(model.InternalOrgId, model.CallOffId, model.CatalogueItemId, model);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
@@ -284,64 +263,185 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_EditServiceRecipients_ReturnsExpectedResult(
+        public static void Post_EditServiceRecipients_ReturnsExpectedResult(
             SelectRecipientsModel model,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IOrderItemRecipientService> mockOrderRecipientService,
-            [Frozen] Mock<IRoutingService> mockRoutingService,
             ServiceRecipientsController controller)
         {
-            IEnumerable<ServiceRecipientDto> serviceRecipients = null;
-
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
 
             var orderItem = order.OrderItems.First().CatalogueItem;
 
             orderItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithCatalogueItemAndPrices(model.CallOffId, model.InternalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            var selectedOdsCodes = model.ServiceRecipients.Where(x => x.Selected).Select(x => x.OdsCode);
+            var recipientIds = string.Join(ServiceRecipientsController.Separator, selectedOdsCodes);
 
-            mockOrderRecipientService
-                .Setup(x => x.UpdateOrderItemRecipients(order.Id, orderItem.Id, It.IsAny<List<ServiceRecipientDto>>()))
-                .Callback<int, CatalogueItemId, IEnumerable<ServiceRecipientDto>>((_, _, recipients) => serviceRecipients = recipients)
-                .Returns(Task.CompletedTask);
-
-            mockRoutingService
-                .Setup(x => x.GetRoute(RoutingPoint.SelectServiceRecipients, order, It.IsAny<RouteValues>()))
-                .Returns(Route(model.InternalOrgId, model.CallOffId, orderItem.Id));
-
-            var result = await controller.EditServiceRecipients(model.InternalOrgId, model.CallOffId, orderItem.Id, model);
-
-            mockOrderService.VerifyAll();
-            mockOrderRecipientService.VerifyAll();
-            mockRoutingService.VerifyAll();
-
-            var expected = model.ServiceRecipients
-                .Where(x => x.Selected)
-                .Select(x => x.Dto);
-
-            serviceRecipients.Should().BeEquivalentTo(expected);
+            var result = controller.EditServiceRecipients(model.InternalOrgId, model.CallOffId, orderItem.Id, model);
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
-            actualResult.ControllerName.Should().Be(typeof(PricesController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(PricesController.SelectPrice));
+            actualResult.ControllerName.Should().Be(typeof(ServiceRecipientsController).ControllerName());
+            actualResult.ActionName.Should().Be(nameof(ServiceRecipientsController.ConfirmChanges));
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "internalOrgId", model.InternalOrgId },
                 { "callOffId", model.CallOffId },
                 { "catalogueItemId", orderItem.Id },
+                { "recipientIds", recipientIds },
+                { "journey", JourneyType.Edit },
+                { "source", model.Source },
             });
         }
 
-        private static RoutingResult Route(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId) => new()
+        [Theory]
+        [CommonAutoData]
+        public static void Post_EditServiceRecipients_NoSelectedRecipients_ReturnsExpectedResult(
+            SelectRecipientsModel model,
+            ServiceRecipientsController controller)
         {
-            ActionName = Constants.Actions.SelectPrice,
-            ControllerName = Constants.Controllers.Prices,
-            RouteValues = new { internalOrgId, callOffId, catalogueItemId },
-        };
+            model.ServiceRecipients.ForEach(x => x.Selected = false);
+
+            var result = controller.EditServiceRecipients(model.InternalOrgId, model.CallOffId, model.CatalogueItemId, model);
+
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actualResult.ControllerName.Should().Be(typeof(TaskListController).ControllerName());
+            actualResult.ActionName.Should().Be(nameof(TaskListController.TaskList));
+            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", model.InternalOrgId },
+                { "callOffId", model.CallOffId },
+            });
+        }
+
+        [Theory]
+        [CommonInlineAutoData(JourneyType.Add)]
+        [CommonInlineAutoData(JourneyType.Edit)]
+        public static async Task Get_ConfirmChanges_ReturnsExpectedResult(
+            JourneyType journeyType,
+            string internalOrgId,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            List<ServiceRecipient> serviceRecipients,
+            RoutingResult routingResult,
+            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] Mock<IOdsService> odsService,
+            [Frozen] Mock<IRoutingService> routingService,
+            ServiceRecipientsController controller)
+        {
+            callOffId = new CallOffId(callOffId.OrderNumber, 1);
+            order.AssociatedServicesOnly = false;
+            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+
+            var solution = order.OrderItems.First();
+
+            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+
+            orderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            odsService
+                .Setup(x => x.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))
+                .ReturnsAsync(serviceRecipients);
+
+            RouteValues routeValues = null;
+
+            routingService
+                .Setup(x => x.GetRoute(RoutingPoint.ConfirmServiceRecipientsBackLink, order, It.IsAny<RouteValues>()))
+                .Callback<RoutingPoint, EntityFramework.Ordering.Models.Order, RouteValues>((_, _, x) => routeValues = x)
+                .Returns(routingResult);
+
+            var recipientIds = solution.OrderItemRecipients.First().OdsCode;
+
+            var result = await controller.ConfirmChanges(
+                internalOrgId,
+                callOffId,
+                solution.CatalogueItemId,
+                recipientIds,
+                journeyType,
+                source: null);
+
+            orderService.VerifyAll();
+            odsService.VerifyAll();
+            routingService.VerifyAll();
+
+            routeValues.Should().BeEquivalentTo(new RouteValues(internalOrgId, callOffId, solution.CatalogueItemId)
+            {
+                Journey = journeyType,
+                RecipientIds = recipientIds,
+            });
+
+            var actual = result.Should().BeOfType<ViewResult>().Subject;
+
+            var expected = new ConfirmChangesModel
+            {
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+                CatalogueItemId = solution.CatalogueItemId,
+                Caption = solution.CatalogueItem.Name,
+                Advice = string.Format(ConfirmChangesModel.AdviceText, solution.CatalogueItem.CatalogueItemType.Name()),
+                Journey = journeyType,
+                Selected = new List<ServiceRecipientModel>(),
+                PreviouslySelected = new List<ServiceRecipientModel>(),
+            };
+
+            actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(o => o.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_ConfirmChanges_ReturnsExpectedResult(
+            ConfirmChangesModel model,
+            EntityFramework.Ordering.Models.Order order,
+            RoutingResult routingResult,
+            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] Mock<IOrderItemService> orderItemService,
+            [Frozen] Mock<IOrderItemRecipientService> orderItemRecipientService,
+            [Frozen] Mock<IRoutingService> routingService,
+            ServiceRecipientsController controller)
+        {
+            orderService
+                .Setup(x => x.GetOrderWithCatalogueItemAndPrices(model.CallOffId, model.InternalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            IEnumerable<CatalogueItemId> catalogueItemIds = null;
+
+            orderItemService
+                .Setup(x => x.AddOrderItems(model.InternalOrgId, model.CallOffId, It.IsAny<IEnumerable<CatalogueItemId>>()))
+                .Callback<string, CallOffId, IEnumerable<CatalogueItemId>>((_, _, x) => catalogueItemIds = x);
+
+            List<ServiceRecipientDto> serviceRecipientDtos = null;
+
+            orderItemRecipientService
+                .Setup(x => x.UpdateOrderItemRecipients(order.Id, model.CatalogueItemId, It.IsAny<List<ServiceRecipientDto>>()))
+                .Callback<int, CatalogueItemId, List<ServiceRecipientDto>>((_, _, x) => serviceRecipientDtos = x);
+
+            RouteValues routeValues = null;
+
+            routingService
+                .Setup(x => x.GetRoute(RoutingPoint.ConfirmServiceRecipients, order, It.IsAny<RouteValues>()))
+                .Callback<RoutingPoint, EntityFramework.Ordering.Models.Order, RouteValues>((_, _, x) => routeValues = x)
+                .Returns(routingResult);
+
+            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+
+            var result = await controller.ConfirmChanges(model.InternalOrgId, model.CallOffId, model.CatalogueItemId, model);
+
+            orderService.VerifyAll();
+            orderItemService.VerifyAll();
+            orderItemRecipientService.VerifyAll();
+            routingService.VerifyAll();
+
+            catalogueItemIds.Should().BeEquivalentTo(new[] { model.CatalogueItemId });
+            serviceRecipientDtos.Should().BeEquivalentTo(model.Selected.Select(x => x.Dto).ToList());
+            routeValues.Should().BeEquivalentTo(new RouteValues(model.InternalOrgId, model.CallOffId, model.CatalogueItemId) { Source = model.Source });
+
+            var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actual.ControllerName.Should().Be(routingResult.ControllerName);
+            actual.ActionName.Should().Be(routingResult.ActionName);
+        }
     }
 }

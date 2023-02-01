@@ -6,7 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
 {
-    public class SelectServiceRecipientsProvider : IRoutingResultProvider
+    public class ConfirmServiceRecipientsProvider : IRoutingResultProvider
     {
         public RoutingResult Process(Order order, RouteValues routeValues)
         {

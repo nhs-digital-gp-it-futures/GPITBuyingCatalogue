@@ -12,14 +12,14 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelectio
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.SolutionSelection.ServiceRecipients;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.AssociatedServices
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.CatalogueSolutions
 {
-    public class SelectAssociatedServiceRecipients : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    public class SelectCatalogueSolutionRecipientsAmendment : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         private const string InternalOrgId = "CG-03F";
-        private const int OrderId = 90008;
-        private static readonly CallOffId CallOffId = new(OrderId, 1);
-        private static readonly CatalogueItemId CatalogueItemId = new(99998, "S-999");
+        private const int OrderNumber = 90030;
+        private static readonly CallOffId CallOffId = new(OrderNumber, 2);
+        private static readonly CatalogueItemId CatalogueItemId = new(99998, "001");
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
@@ -28,24 +28,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
             { nameof(CatalogueItemId), $"{CatalogueItemId}" },
         };
 
-        public SelectAssociatedServiceRecipients(LocalWebApplicationFactory factory)
-            : base(factory, typeof(ServiceRecipientsController), nameof(ServiceRecipientsController.AddServiceRecipients), Parameters)
+        public SelectCatalogueSolutionRecipientsAmendment(LocalWebApplicationFactory factory)
+            : base(factory, typeof(ServiceRecipientsController), nameof(ServiceRecipientsController.EditServiceRecipients), Parameters)
         {
         }
 
         [Fact]
-        public void SelectAssociatedServiceRecipients_AllSectionsDisplayed()
+        public void SelectCatalogueSolutionRecipientsAmendment_AllSectionsDisplayed()
         {
-            CommonActions.PageTitle().Should().BeEquivalentTo("Service Recipients for Associated Service - E2E Single Price Added Associated Service".FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo("Service Recipients for Catalogue Solution - E2E With Contact Multiple Prices".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
-            CommonActions.ElementIsDisplayed(ServiceRecipientObjects.PreSelectedInset).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ServiceRecipientObjects.PreviouslySelectedInset).Should().BeTrue();
             CommonActions.ElementIsDisplayed(ServiceRecipientObjects.SelectAllLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(ServiceRecipientObjects.SelectNoneLink).Should().BeFalse();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
         }
 
         [Fact]
-        public void SelectAssociatedServiceRecipients_ClickGoBackLink_ExpectedResult()
+        public void SelectCatalogueSolutionRecipientsAmendment_ClickGoBackLink_ExpectedResult()
         {
             CommonActions.ClickGoBackLink();
 
@@ -55,13 +55,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
         }
 
         [Fact]
-        public void SelectAssociatedServiceRecipients_ClickSelectAllLink_ExpectedResult()
+        public void SelectCatalogueSolutionRecipientsAmendment_ClickSelectAllLink_ExpectedResult()
         {
             CommonActions.ClickLinkElement(ServiceRecipientObjects.SelectAllLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(ServiceRecipientsController),
-                nameof(ServiceRecipientsController.AddServiceRecipients)).Should().BeTrue();
+                nameof(ServiceRecipientsController.EditServiceRecipients)).Should().BeTrue();
 
             CommonActions.ElementIsDisplayed(ServiceRecipientObjects.PreSelectedInset).Should().BeFalse();
             CommonActions.GetNumberOfSelectedCheckBoxes().Should().Be(CommonActions.GetNumberOfCheckBoxesDisplayed());
@@ -70,20 +70,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(ServiceRecipientsController),
-                nameof(ServiceRecipientsController.AddServiceRecipients)).Should().BeTrue();
+                nameof(ServiceRecipientsController.EditServiceRecipients)).Should().BeTrue();
 
             CommonActions.ElementIsDisplayed(ServiceRecipientObjects.PreSelectedInset).Should().BeFalse();
             CommonActions.GetNumberOfSelectedCheckBoxes().Should().Be(0);
         }
 
         [Fact]
-        public void SelectAssociatedServiceRecipients_NoSelectionMade_DisplaysError()
+        public void SelectCatalogueSolutionRecipientsAmendment_NoSelectionMade_DisplaysError()
         {
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(ServiceRecipientsController),
-                nameof(ServiceRecipientsController.AddServiceRecipients)).Should().BeTrue();
+                nameof(ServiceRecipientsController.EditServiceRecipients)).Should().BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
@@ -94,9 +94,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
         }
 
         [Fact]
-        public void SelectAssociatedServiceRecipients_SelectionMade_ExpectedResult()
+        public void SelectCatalogueSolutionRecipientsAmendment_SelectionMade_ExpectedResult()
         {
-            GetOrderItem().OrderItemRecipients.Count.Should().Be(0);
+            GetOrderItem().Should().BeNull();
 
             CommonActions.ClickFirstCheckbox();
             CommonActions.ClickSave();
@@ -105,28 +105,36 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
                 typeof(ServiceRecipientsController),
                 nameof(ServiceRecipientsController.ConfirmChanges)).Should().BeTrue();
 
-            GetOrderItem().OrderItemRecipients.Count.Should().Be(0);
+            GetOrderItem().Should().BeNull();
         }
 
         public void Dispose()
         {
             var context = GetEndToEndDbContext();
+            var orderItem = GetOrderItem();
 
-            foreach (var recipient in GetOrderItem().OrderItemRecipients)
+            if (orderItem == null)
+            {
+                return;
+            }
+
+            foreach (var recipient in orderItem.OrderItemRecipients)
             {
                 context.OrderItemRecipients.Remove(recipient);
             }
 
+            context.OrderItems.Remove(orderItem);
             context.SaveChanges();
         }
 
         private OrderItem GetOrderItem()
         {
             var context = GetEndToEndDbContext();
+            var orderId = context.OrderId(InternalOrgId, CallOffId).Result;
 
             return context.OrderItems
                 .Include(x => x.OrderItemRecipients)
-                .First(x => x.OrderId == OrderId
+                .FirstOrDefault(x => x.OrderId == orderId
                     && x.CatalogueItemId == CatalogueItemId);
         }
     }

@@ -22,8 +22,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
 
         public string CatalogueItemName { get; set; }
 
-        public string Caption { get; set; }
-
         public CallOffId CallOffId { get; set; }
 
         public OrderItemFundingType SelectedFundingType { get; set; } = OrderItemFundingType.None;
