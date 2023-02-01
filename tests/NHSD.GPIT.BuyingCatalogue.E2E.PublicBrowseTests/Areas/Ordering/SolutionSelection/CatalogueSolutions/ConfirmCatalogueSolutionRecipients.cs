@@ -82,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
         [Fact]
         public void ConfirmCatalogueSolutionRecipients_ClickContinue_ExpectedResult()
         {
-            GetSolution().OrderItemRecipients.Count.Should().Be(0);
+            GetSolution().OrderItemRecipients.Should().BeEmpty();
 
             CommonActions.ClickSave();
 

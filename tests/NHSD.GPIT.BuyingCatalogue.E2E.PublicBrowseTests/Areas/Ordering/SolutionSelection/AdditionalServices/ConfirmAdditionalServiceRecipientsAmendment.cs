@@ -82,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
         [Fact]
         public void ConfirmAdditionalServiceRecipientsAmendment_ClickContinue_ExpectedResult()
         {
-            GetService().OrderItemRecipients.Count.Should().Be(0);
+            GetService().OrderItemRecipients.Should().BeEmpty();
 
             CommonActions.ClickSave();
 
