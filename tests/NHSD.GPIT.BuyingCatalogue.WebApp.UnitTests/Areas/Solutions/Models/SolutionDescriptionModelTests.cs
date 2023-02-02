@@ -1,6 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.TestData;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
@@ -16,6 +19,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             typeof(SolutionDescriptionModel)
                 .Should()
                 .BeAssignableTo<SolutionDisplayBaseModel>();
+        }
+
+        [Fact]
+        public static void SolutionDescriptionModel_NullCatalogueItem_ThrowsException()
+        {
+            var actual = Assert.Throws<ArgumentNullException>(() => new SolutionDescriptionModel(null, new CatalogueItemContentStatus()));
+            actual.ParamName.Should().Be("catalogueItem");
+        }
+
+        [Fact]
+        public static void SolutionDescriptionModel_NullSolution_ThrowsException()
+        {
+            var actual = Assert.Throws<ArgumentNullException>(() => new SolutionDescriptionModel(new CatalogueItem() { Solution = null }, new CatalogueItemContentStatus()));
+            actual.ParamName.Should().Be("Solution");
         }
 
         [Fact]

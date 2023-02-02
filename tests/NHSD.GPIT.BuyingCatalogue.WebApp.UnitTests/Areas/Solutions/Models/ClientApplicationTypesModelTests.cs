@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Text.Json;
@@ -16,6 +17,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 {
     public static class ClientApplicationTypesModelTests
     {
+        [Fact]
+        public static void ClientApplicationTypesModel_NullCatalogueItem_ThrowsException()
+        {
+            var actual = Assert.Throws<ArgumentNullException>(() => new ClientApplicationTypesModel(null, new CatalogueItemContentStatus()));
+            actual.ParamName.Should().Be("catalogueItem");
+        }
+
+        [Fact]
+        public static void ClientApplicationTypesModel_NullSolution_ThrowsException()
+        {
+            var actual = Assert.Throws<ArgumentNullException>(() => new ClientApplicationTypesModel(new CatalogueItem() { Solution = null }, new CatalogueItemContentStatus()));
+            actual.ParamName.Should().Be("Solution");
+        }
+
         [Fact]
         public static void ApplicationTypes_UIHintAttribute_ExpectedHint()
         {
