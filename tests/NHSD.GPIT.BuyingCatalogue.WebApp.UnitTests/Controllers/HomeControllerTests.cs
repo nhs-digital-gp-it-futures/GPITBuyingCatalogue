@@ -208,10 +208,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static void Get_AdvacedTelephony_ExpectedResult(HomeController controller)
+        public static void Get_Advancedelephony_ExpectedResult(HomeController controller)
         {
             var expected = new NavBaseModel();
-            var result = controller.AdvacedTelephonyBetterPurchaseFramework();
+            var result = controller.AdvancedTelephonyBetterPurchaseFramework();
 
             result.Should().NotBeNull();
 
