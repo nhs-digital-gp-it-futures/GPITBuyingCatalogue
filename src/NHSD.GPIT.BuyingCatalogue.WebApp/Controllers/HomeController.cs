@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         }
 
         [ExcludeFromCodeCoverage]
-        public IActionResult DownloadComissioningSupportPackPDF()
+        public IActionResult DownloadCommissioningSupportPackPDF()
         {
             var resourceStream = typeof(HomeController).Assembly.GetManifestResourceStream("NHSD.GPIT.BuyingCatalogue.WebApp.Files.Buyer's Guide for Advanced Cloud-based Telephony-Jan 2023.pdf");
             return File(resourceStream, "application/pdf", "Buyer's Guide for Advanced Cloud-based Telephony-Jan 2023.pdf");
@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         });
 
         [HttpGet("advanced-telephony-better-purchase")]
-        public IActionResult AdvacedTelephonyBetterPurchaseFramework() => View(new NavBaseModel
+        public IActionResult AdvancedTelephonyBetterPurchaseFramework() => View(new NavBaseModel
         {
             BackLink = Url.Action(
                 nameof(Index),
