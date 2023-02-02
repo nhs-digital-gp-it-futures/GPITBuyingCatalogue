@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
         [Fact]
         public void DownloadComissioningSupportPackPDF_ExpectedResult()
         {
-            var filePath = @$"{Path.GetTempPath()}Advanced GP Telephony Specification Commissioning Support Pack v1.12.pdf";
+            var filePath = @$"{Path.GetTempPath()}Buyer's Guide for Advanced Cloud-based Telephony-Jan 2023.pdf";
 
             FileHelper.DeleteDownloadFile(filePath);
 

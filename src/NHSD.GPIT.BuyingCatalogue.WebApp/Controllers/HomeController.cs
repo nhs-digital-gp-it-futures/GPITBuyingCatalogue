@@ -1,7 +1,5 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
-using System.Reflection;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
@@ -20,10 +18,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             this.contactUsService = contactUsService ?? throw new ArgumentNullException(nameof(contactUsService));
         }
 
+        [ExcludeFromCodeCoverage]
         public IActionResult DownloadComissioningSupportPackPDF()
         {
-            var resourceStream = typeof(HomeController).Assembly.GetManifestResourceStream("NHSD.GPIT.BuyingCatalogue.WebApp.Files.Advanced GP Telephony Specification Commissioning Support Pack v1.12.pdf");
-            return File(resourceStream, "application/pdf", "Advanced GP Telephony Specification Commissioning Support Pack v1.12.pdf");
+            var resourceStream = typeof(HomeController).Assembly.GetManifestResourceStream("NHSD.GPIT.BuyingCatalogue.WebApp.Files.Buyer's Guide for Advanced Cloud-based Telephony-Jan 2023.pdf");
+            return File(resourceStream, "application/pdf", "Buyer's Guide for Advanced Cloud-based Telephony-Jan 2023.pdf");
         }
 
         public IActionResult Index()
