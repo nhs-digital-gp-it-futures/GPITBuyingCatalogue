@@ -240,7 +240,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var model = result.Model.Should().BeAssignableTo<EditOrganisationModel>().Subject;
 
-            model.Should().BeEquivalentTo(new EditOrganisationModel(organisation),opt => opt.Excluding(m => m.BackLink));
+            model.Should().BeEquivalentTo(new EditOrganisationModel(organisation), opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]

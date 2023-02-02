@@ -188,7 +188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockSuppliersService.Setup(s => s.GetSupplier(supplier.Id)).ReturnsAsync(supplier);
             mockSuppliersService.Setup(x => x.GetAllSolutionsForSupplier(supplier.Id))
-                .ReturnsAsync(new List<CatalogueItem>() { new CatalogueItem() { PublishedStatus = PublicationStatus.Published} });
+                .ReturnsAsync(new List<CatalogueItem>() { new CatalogueItem() { PublishedStatus = PublicationStatus.Published } });
 
             var actual = (await controller.EditSupplier(supplier.Id, model)).As<ViewResult>();
 
