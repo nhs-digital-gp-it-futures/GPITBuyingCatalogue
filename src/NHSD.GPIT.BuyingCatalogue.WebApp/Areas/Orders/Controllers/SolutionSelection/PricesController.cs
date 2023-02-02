@@ -200,6 +200,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             return RedirectToAction(route.ActionName, route.ControllerName, route.RouteValues);
         }
 
+        [HttpGet("price/view")]
+        public async Task<IActionResult> ViewPrice(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId)
+        {
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Previous;
+
+            var model = new ViewPriceModel(order.OrderItem(catalogueItemId))
+            {
+                BackLink = Url.Action(
+                   nameof(TaskListController.TaskList),
+                   typeof(TaskListController).ControllerName(),
+                   new { internalOrgId, callOffId }),
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+            };
+
+            return View(model);
+        }
+
         private async Task<CataloguePrice> GetCataloguePrice(int priceId, CatalogueItemId catalogueItemId)
         {
             var catalogueItem = await listPriceService.GetCatalogueItemWithPublishedListPrices(catalogueItemId);

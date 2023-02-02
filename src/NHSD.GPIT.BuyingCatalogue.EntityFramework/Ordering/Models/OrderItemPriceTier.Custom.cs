@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 ? "+"
                 : $" to {UpperRange.Value}";
 
-            return $"{LowerRange}{upperRange} {OrderItemPrice.RangeDescription}";
+            return $"{LowerRange}{upperRange} {OrderItemPrice?.RangeDescription}".Trim();
         }
     }
 }
