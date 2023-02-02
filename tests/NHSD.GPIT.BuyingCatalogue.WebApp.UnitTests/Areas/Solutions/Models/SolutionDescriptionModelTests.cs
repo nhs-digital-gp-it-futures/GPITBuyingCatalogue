@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         public static void SolutionDescriptionModel_NullSolution_ThrowsException()
         {
             var actual = Assert.Throws<ArgumentNullException>(() => new SolutionDescriptionModel(new CatalogueItem() { Solution = null }, new CatalogueItemContentStatus()));
-            actual.ParamName.Should().Be("Solution");
+            actual.ParamName.Should().Be("catalogueItem");
         }
 
         [Fact]
