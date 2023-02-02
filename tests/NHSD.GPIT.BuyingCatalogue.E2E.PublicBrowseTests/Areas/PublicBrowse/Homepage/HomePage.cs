@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using FluentAssertions;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.TestHost;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
@@ -134,6 +139,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
                         typeof(HomeController),
                         nameof(HomeController.TechInnovationFramework)).Should().BeTrue();
             });
+        }
+
+        [Fact]
+        public void HomePage_ClickAdvancedTelephony_ExpectedResult()
+        {
+                CommonActions.ClickLinkElement(Objects.Home.HomeSelectors.AdvancedTelephonyLink);
+
+                CommonActions.PageLoadedCorrectGetIndex(
+                        typeof(HomeController),
+                        nameof(HomeController.AdvacedTelephonyBetterPurchaseFramework)).Should().BeTrue();
         }
 
         [Fact]

@@ -92,20 +92,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 return View(SelectViewName, await GetModel(internalOrgId, callOffId, returnToTaskList: true));
             }
 
-            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
+            var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
 
-            var existingServiceIds = order.GetAdditionalServices()
-                .Select(x => x.CatalogueItemId)
-                .ToList();
+            var currentServiceIds = GetCurrentServiceIds(callOffId, wrapper);
 
             var selectedServiceIds = model.Services?
                 .Where(x => x.IsSelected)
                 .Select(x => x.CatalogueItemId)
                 .ToList() ?? new List<CatalogueItemId>();
 
-            if (existingServiceIds.All(x => selectedServiceIds.Contains(x)))
+            if (currentServiceIds.All(selectedServiceIds.Contains))
             {
-                var newServiceIds = selectedServiceIds.Except(existingServiceIds).ToList();
+                var newServiceIds = selectedServiceIds.Except(currentServiceIds).ToList();
 
                 if (!newServiceIds.Any())
                 {
@@ -134,26 +132,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         [HttpGet("confirm-changes")]
         public async Task<IActionResult> ConfirmAdditionalServiceChanges(string internalOrgId, CallOffId callOffId, string serviceIds)
         {
-            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
-            var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionId(order.GetSolution().CatalogueItemId, publishedOnly: true);
+            var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var solution = wrapper.RolledUp.GetSolution();
 
-            var existingServiceIds = order.GetAdditionalServices()
-                .Select(x => x.CatalogueItemId)
-                .ToList();
+            var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionId(
+                solution.CatalogueItemId,
+                publishedOnly: true);
+
+            var currentServiceIds = GetCurrentServiceIds(callOffId, wrapper);
 
             var selectedServiceIds = serviceIds?.Split(Separator)
                 .Select(CatalogueItemId.ParseExact)
                 .ToList() ?? new List<CatalogueItemId>();
 
             var toAdd = selectedServiceIds
-                .Where(x => !existingServiceIds.Contains(x))
+                .Where(x => !currentServiceIds.Contains(x))
                 .Select(x => new ServiceModel
                 {
                     CatalogueItemId = x,
                     Description = additionalServices.FirstOrDefault(s => s.Id == x)?.Name,
                 });
 
-            var toRemove = existingServiceIds
+            var toRemove = currentServiceIds
                 .Where(x => !selectedServiceIds.Contains(x))
                 .Select(x => new ServiceModel
                 {
@@ -211,16 +211,41 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 new { internalOrgId, callOffId, model.ToAdd.First().CatalogueItemId });
         }
 
+        private static List<CatalogueItemId> GetCurrentServiceIds(CallOffId callOffId, OrderWrapper wrapper)
+        {
+            if (!callOffId.IsAmendment)
+            {
+                return wrapper.Order
+                    .GetAdditionalServices()
+                    .Select(x => x.CatalogueItemId)
+                    .ToList();
+            }
+
+            var existingServiceIds = wrapper.Previous
+                .GetAdditionalServices()
+                .Select(x => x.CatalogueItemId);
+
+            return wrapper.Order
+                .GetAdditionalServices()
+                .Select(x => x.CatalogueItemId)
+                .Except(existingServiceIds)
+                .ToList();
+        }
+
         private async Task<SelectServicesModel> GetModel(string internalOrgId, CallOffId callOffId, bool returnToTaskList = false)
         {
-            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
-            var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionId(order.GetSolution().CatalogueItemId, publishedOnly: true);
+            var wrapper = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var order = wrapper.RolledUp;
+
+            var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionId(
+                order.GetSolution().CatalogueItemId,
+                publishedOnly: true);
 
             var backLink = returnToTaskList
                 ? Url.Action(nameof(TaskListController.TaskList), typeof(TaskListController).ControllerName(), new { internalOrgId, callOffId })
                 : Url.Action(nameof(OrderController.Order), typeof(OrderController).ControllerName(), new { internalOrgId, callOffId });
 
-            return new SelectServicesModel(order, additionalServices, CatalogueItemType.AdditionalService)
+            return new SelectServicesModel(wrapper, additionalServices, CatalogueItemType.AdditionalService)
             {
                 BackLink = backLink,
                 InternalOrgId = internalOrgId,

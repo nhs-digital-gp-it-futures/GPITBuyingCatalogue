@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using MoreLinq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.ServiceRecipients;
@@ -11,6 +14,52 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
     public static class SelectRecipientsModelTests
     {
         [Theory]
+        [CommonAutoData]
+        public static void Constructor_BasicPropertiesCorrectlySet(
+            OrderItem orderItem,
+            OrderItem previousItem,
+            List<ServiceRecipientModel> serviceRecipients)
+        {
+            var itemName = previousItem.CatalogueItem.Name;
+            var itemType = previousItem.CatalogueItem.CatalogueItemType;
+
+            var model = new SelectRecipientsModel(orderItem, previousItem, serviceRecipients, null);
+
+            model.ItemName.Should().Be(itemName);
+            model.ItemType.Should().Be(itemType);
+
+            model.Title.Should().Be(string.Format(SelectRecipientsModel.TitleText, itemType.Name()));
+            model.Caption.Should().Be(itemName);
+            model.Advice.Should().Be(string.Format(SelectRecipientsModel.AdviceText, itemType.Name()));
+
+            model.PreviouslySelected.Should().BeEquivalentTo(previousItem.OrderItemRecipients.Select(x => x.Recipient?.Name));
+            model.ServiceRecipients.Should().BeEquivalentTo(serviceRecipients);
+            model.ServiceRecipients.ForEach(x => x.Selected.Should().BeFalse());
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Constructor_WithNoServiceRecipients_BasicPropertiesCorrectlySet(
+            OrderItem orderItem,
+            OrderItem previousItem)
+        {
+            var itemName = previousItem.CatalogueItem.Name;
+            var itemType = previousItem.CatalogueItem.CatalogueItemType;
+
+            var model = new SelectRecipientsModel(orderItem, previousItem, new List<ServiceRecipientModel>(), null);
+
+            model.ItemName.Should().Be(itemName);
+            model.ItemType.Should().Be(itemType);
+
+            model.Title.Should().Be(string.Format(SelectRecipientsModel.TitleText, itemType.Name()));
+            model.Caption.Should().Be(itemName);
+            model.Advice.Should().Be(SelectRecipientsModel.AdviceTextNoRecipientsAvailable);
+
+            model.PreviouslySelected.Should().BeEquivalentTo(previousItem.OrderItemRecipients.Select(x => x.Recipient?.Name));
+            model.ServiceRecipients.Should().BeEmpty();
+        }
+
+        [Theory]
         [CommonInlineAutoData(null)]
         [CommonInlineAutoData(SelectionMode.None)]
         public static void WithSelectionModeNone_PropertiesCorrectlySet(
@@ -18,8 +67,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             OrderItem orderItem,
             List<ServiceRecipientModel> serviceRecipients)
         {
-            var model = new SelectRecipientsModel(orderItem, serviceRecipients, selectionMode);
+            var model = new SelectRecipientsModel(orderItem, null, serviceRecipients, selectionMode);
 
+            model.HasImportedRecipients.Should().BeFalse();
             model.ItemName.Should().Be(orderItem.CatalogueItem.Name);
             model.ItemType.Should().Be(orderItem.CatalogueItem.CatalogueItemType);
             model.ServiceRecipients.ForEach(x => x.Selected.Should().BeFalse());
@@ -33,8 +83,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             OrderItem orderItem,
             List<ServiceRecipientModel> serviceRecipients)
         {
-            var model = new SelectRecipientsModel(orderItem, serviceRecipients, SelectionMode.All);
+            var model = new SelectRecipientsModel(orderItem, null, serviceRecipients, SelectionMode.All);
 
+            model.HasImportedRecipients.Should().BeFalse();
+            model.ServiceRecipients.ForEach(x => x.Selected.Should().BeTrue());
+            model.SelectionMode.Should().Be(SelectionMode.None);
+            model.SelectionCaption.Should().Be(SelectRecipientsModel.SelectNone);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void WithNullSelectionMode_AndImportedRecipients_PropertiesCorrectlySet(
+            OrderItem orderItem,
+            List<ServiceRecipientModel> serviceRecipients)
+        {
+            for (var i = 0; i < 3; i++)
+            {
+                serviceRecipients[i].OdsCode = orderItem.OrderItemRecipients.ElementAt(i).OdsCode.ToUpperInvariant();
+            }
+
+            var importedRecipients = serviceRecipients.Select(x => x.OdsCode).ToArray();
+
+            var model = new SelectRecipientsModel(orderItem, null, serviceRecipients, null, importedRecipients);
+
+            model.HasImportedRecipients.Should().BeTrue();
             model.ServiceRecipients.ForEach(x => x.Selected.Should().BeTrue());
             model.SelectionMode.Should().Be(SelectionMode.None);
             model.SelectionCaption.Should().Be(SelectRecipientsModel.SelectNone);
@@ -46,7 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             OrderItem orderItem,
             List<ServiceRecipientModel> serviceRecipients)
         {
-            var model = new SelectRecipientsModel(orderItem, serviceRecipients, null);
+            var model = new SelectRecipientsModel(orderItem, null, serviceRecipients, null);
 
             model.PreSelectRecipients(null);
 
@@ -60,7 +132,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             OrderItem orderItem,
             List<ServiceRecipientModel> serviceRecipients)
         {
-            var model = new SelectRecipientsModel(orderItem, serviceRecipients, null);
+            var model = new SelectRecipientsModel(orderItem, null, serviceRecipients, null);
 
             model.PreSelectRecipients(orderItem);
 
@@ -70,12 +142,87 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
         [Theory]
         [CommonAutoData]
+        public static void PreSelectSolutionServiceRecipients_NoMatchForServiceId_PropertiesCorrectlySet(
+            EntityFramework.Ordering.Models.Order order,
+            CatalogueItemId catalogueItemId,
+            List<ServiceRecipientModel> serviceRecipients)
+        {
+            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+            order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+
+            var model = new SelectRecipientsModel(order.OrderItems.ElementAt(1), null, serviceRecipients, null);
+
+            model.ServiceRecipients[0].Selected.Should().BeFalse();
+            model.ServiceRecipients[1].Selected.Should().BeFalse();
+            model.ServiceRecipients[2].Selected.Should().BeFalse();
+
+            model.PreSelectSolutionServiceRecipients(order, catalogueItemId);
+
+            model.PreSelected.Should().BeFalse();
+            model.ServiceRecipients[0].Selected.Should().BeFalse();
+            model.ServiceRecipients[1].Selected.Should().BeFalse();
+            model.ServiceRecipients[2].Selected.Should().BeFalse();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void PreSelectSolutionServiceRecipients_PropertiesCorrectlySet(
+            EntityFramework.Ordering.Models.Order order,
+            List<ServiceRecipientModel> serviceRecipients)
+        {
+            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+
+            var solution = order.OrderItems.First();
+            var service = order.OrderItems.ElementAt(1);
+
+            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            serviceRecipients.First().OdsCode = solution.OrderItemRecipients.First().OdsCode;
+
+            var model = new SelectRecipientsModel(service, null, serviceRecipients, null);
+
+            model.ServiceRecipients[0].Selected.Should().BeFalse();
+            model.ServiceRecipients[1].Selected.Should().BeFalse();
+            model.ServiceRecipients[2].Selected.Should().BeFalse();
+
+            model.PreSelectSolutionServiceRecipients(order, service.CatalogueItemId);
+
+            model.PreSelected.Should().BeTrue();
+            model.ServiceRecipients[0].Selected.Should().BeTrue();
+            model.ServiceRecipients[1].Selected.Should().BeFalse();
+            model.ServiceRecipients[2].Selected.Should().BeFalse();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void SelectRecipientIds_PropertiesCorrectlySet(
+            OrderItem orderItem,
+            List<ServiceRecipientModel> serviceRecipients)
+        {
+            var model = new SelectRecipientsModel(orderItem, null, serviceRecipients, null);
+
+            model.ServiceRecipients[0].Selected.Should().BeFalse();
+            model.ServiceRecipients[1].Selected.Should().BeFalse();
+            model.ServiceRecipients[2].Selected.Should().BeFalse();
+
+            var recipientIds = string.Join(
+                SelectRecipientsModel.Separator,
+                serviceRecipients.Select(x => x.OdsCode));
+
+            model.SelectRecipientIds(recipientIds);
+
+            model.ServiceRecipients[0].Selected.Should().BeTrue();
+            model.ServiceRecipients[1].Selected.Should().BeTrue();
+            model.ServiceRecipients[2].Selected.Should().BeTrue();
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static void PreSelectRecipients_WithDifferentOrderItem_PropertiesCorrectlySet(
             OrderItem orderItem,
             OrderItem baseOrderItem,
             List<ServiceRecipientModel> serviceRecipients)
         {
-            var model = new SelectRecipientsModel(orderItem, serviceRecipients, null);
+            var model = new SelectRecipientsModel(orderItem, null, serviceRecipients, null);
 
             baseOrderItem.OrderItemRecipients.First().OdsCode = serviceRecipients.First().OdsCode;
 
@@ -93,7 +240,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             OrderItem orderItem,
             List<ServiceRecipientModel> serviceRecipients)
         {
-            var model = new SelectRecipientsModel(orderItem, serviceRecipients, SelectionMode.None);
+            var model = new SelectRecipientsModel(orderItem, null, serviceRecipients, SelectionMode.None);
 
             var result = model.GetSelectedItems();
 
@@ -106,7 +253,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             OrderItem orderItem,
             List<ServiceRecipientModel> serviceRecipients)
         {
-            var model = new SelectRecipientsModel(orderItem, serviceRecipients, SelectionMode.All);
+            var model = new SelectRecipientsModel(orderItem, null, serviceRecipients, SelectionMode.All);
 
             var result = model.GetSelectedItems();
 

@@ -12,6 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.ToTable("CapabilityCategories", Schemas.Catalogue);
 
             builder.Property(c => c.Id).ValueGeneratedNever();
+
             builder.Property(c => c.Name)
                 .IsRequired()
                 .HasMaxLength(50);

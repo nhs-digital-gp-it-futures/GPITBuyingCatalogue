@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Serialization;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -11,10 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     public sealed class ClientApplicationTypesModel : SolutionDisplayBaseModel
     {
-        private const string KeyBrowserBased = "browser-based";
-        private const string KeyNativeDesktop = "native-desktop";
-        private const string KeyNativeMobile = "native-mobile";
-
         public ClientApplicationTypesModel(
             CatalogueItem catalogueItem,
             CatalogueItemContentStatus contentStatus)
@@ -33,13 +30,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             PaginationFooter.FullWidth = true;
         }
 
+        public override int Index => 9;
+
         [UIHint("DescriptionList")]
         public DescriptionListViewModel ApplicationTypes { get; init; }
 
         [UIHint("DescriptionList")]
         public DescriptionListViewModel BrowserBasedApplication { get; init; }
-
-        public override int Index => 9;
 
         [UIHint("DescriptionList")]
         public DescriptionListViewModel NativeDesktopApplication { get; init; }
@@ -49,12 +46,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public ClientApplication ClientApplication { get; init; }
 
-        public string HasApplicationType(string key) =>
-            (ClientApplication?.ClientApplicationTypes?.Any(s => s.EqualsIgnoreCase(key))).ToYesNo();
+        public bool HasApplicationType(ClientApplicationType clientApplicationType) =>
+            ClientApplication?.ClientApplicationTypes?.Any(
+                s => s.EqualsIgnoreCase(clientApplicationType.EnumMemberName())) ?? false;
 
         private DescriptionListViewModel GetBrowserBasedApplication()
         {
-            if (!ClientApplication.ClientApplicationTypes.Any(t => t.EqualsIgnoreWhiteSpace(KeyBrowserBased)))
+            if (!HasApplicationType(ClientApplicationType.BrowserBased))
                 return null;
 
             var items = new Dictionary<string, ListViewModel>();
@@ -132,7 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         private DescriptionListViewModel GetNativeDesktopApplication()
         {
-            if (!ClientApplication.ClientApplicationTypes.Any(t => t.EqualsIgnoreWhiteSpace(KeyNativeDesktop)))
+            if (!HasApplicationType(ClientApplicationType.Desktop))
                 return null;
 
             var items = new Dictionary<string, ListViewModel>();
@@ -228,7 +226,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         private DescriptionListViewModel GetNativeMobileApplication()
         {
-            if (!ClientApplication.ClientApplicationTypes.Any(t => t.EqualsIgnoreWhiteSpace(KeyNativeMobile)))
+            if (!HasApplicationType(ClientApplicationType.MobileTablet))
                 return null;
 
             var items = new Dictionary<string, ListViewModel>();
@@ -322,27 +320,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         private DescriptionListViewModel GetApplicationTypes()
         {
+            const string yesKey = "Yes";
             var items = new Dictionary<string, ListViewModel>();
 
-            if (ClientApplication.ClientApplicationTypes?.Any(t => t.EqualsIgnoreCase(KeyBrowserBased)) ?? false)
+            if (HasApplicationType(ClientApplicationType.BrowserBased))
             {
                 items.Add(
                     "Browser-based application",
-                    new ListViewModel { Text = HasApplicationType(KeyBrowserBased) });
+                    new ListViewModel { Text = yesKey });
             }
 
-            if (ClientApplication.ClientApplicationTypes?.Any(t => t.EqualsIgnoreCase(KeyNativeDesktop)) ?? false)
+            if (HasApplicationType(ClientApplicationType.Desktop))
             {
                 items.Add(
                     "Desktop application",
-                    new ListViewModel { Text = HasApplicationType(KeyNativeDesktop) });
+                    new ListViewModel { Text = yesKey });
             }
 
-            if (ClientApplication?.ClientApplicationTypes?.Any(t => t.EqualsIgnoreCase(KeyNativeMobile)) ?? false)
+            if (HasApplicationType(ClientApplicationType.MobileTablet))
             {
                 items.Add(
                     "Mobile or tablet application",
-                    new ListViewModel { Text = HasApplicationType(KeyNativeMobile) });
+                    new ListViewModel { Text = yesKey });
             }
 
             return new DescriptionListViewModel

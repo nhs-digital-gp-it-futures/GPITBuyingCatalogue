@@ -30,8 +30,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
 
         public IEnumerable<SelectOption<string>> Frameworks { get; set; }
 
-        public string Caption { get; set; }
-
         public bool AssociatedServicesOnly { get; set; }
 
         public void SetFrameworks(IList<EntityFramework.Catalogue.Models.Framework> frameworks) => Frameworks = frameworks

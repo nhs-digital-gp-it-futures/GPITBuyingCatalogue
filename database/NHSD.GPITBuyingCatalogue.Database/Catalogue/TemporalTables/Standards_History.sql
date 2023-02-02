@@ -4,6 +4,7 @@
     [Name] NVARCHAR(255) NOT NULL,
     [Description] NVARCHAR(500) NOT NULL,
     [Url] NVARCHAR(1000) NOT NULL,
+    [Version] NVARCHAR(10) NULL,
     StandardTypeId INT NOT NULL,
     LastUpdated datetime2(7) NOT NULL,
     LastUpdatedBy int NULL,

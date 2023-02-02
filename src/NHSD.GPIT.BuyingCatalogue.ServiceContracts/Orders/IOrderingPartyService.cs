@@ -5,6 +5,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 {
     public interface IOrderingPartyService
     {
-        Task SetOrderingPartyContact(Order order, Contact contact);
+        Task SetOrderingPartyContact(CallOffId callOffId, Contact contact);
     }
 }

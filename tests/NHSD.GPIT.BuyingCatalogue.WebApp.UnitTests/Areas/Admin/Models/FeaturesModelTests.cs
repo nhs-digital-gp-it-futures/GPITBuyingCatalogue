@@ -68,7 +68,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             expected.SolutionId = catalogueItem.Id;
             expected.SolutionName = catalogueItem.Name;
 
-            var actual = new FeaturesModel(catalogueItem);
+            var actual = new FeaturesModel(catalogueItem)
+            {
+                Title = expected.Title,
+                Caption = expected.Caption,
+                Advice = expected.Advice,
+                AdditionalAdvice = expected.AdditionalAdvice,
+            };
 
             actual.Should().BeEquivalentTo(
                 expected,

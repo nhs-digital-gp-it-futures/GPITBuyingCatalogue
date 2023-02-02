@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             .ToListAsync();
 
         public Task<List<Capability>> GetReferencedCapabilities() => dbContext.Capabilities.AsNoTracking()
-            .Where(x => x.CatalogueItemCapabilities.Any())
+            .Where(x => x.CatalogueItemCapabilities.Any(x => x.CatalogueItem.PublishedStatus == PublicationStatus.Published))
             .Include(x => x.Category)
             .OrderBy(x => x.Category.Name)
             .ThenBy(x => x.Name)

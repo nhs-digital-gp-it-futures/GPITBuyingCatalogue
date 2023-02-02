@@ -4,6 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
+    [Serializable]
     public sealed class Capability : IAudited
     {
         public Capability()
@@ -11,6 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
             CatalogueItemCapabilities = new HashSet<CatalogueItemCapability>();
             Epics = new HashSet<Epic>();
             StandardCapabilities = new HashSet<StandardCapability>();
+            FrameworkCapabilities = new HashSet<FrameworkCapability>();
         }
 
         public int Id { get; set; }

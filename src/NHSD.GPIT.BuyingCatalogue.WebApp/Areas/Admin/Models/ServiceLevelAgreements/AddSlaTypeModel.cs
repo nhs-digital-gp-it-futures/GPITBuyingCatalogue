@@ -30,8 +30,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreem
 
         public CatalogueItemId SolutionId { get; init; }
 
-        public string Title { get; init; }
-
         public SlaType? SlaLevel { get; set; }
 
         public string SolutionName { get; }

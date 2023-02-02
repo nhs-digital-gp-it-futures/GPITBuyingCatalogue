@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Linq;
-using AutoFixture;
-using AutoFixture.AutoMoq;
-using AutoFixture.Idioms;
 using BuyingCatalogueFunction.Adapters;
 using BuyingCatalogueFunction.Models.Ods;
 using FluentAssertions;
@@ -13,16 +10,6 @@ namespace BuyingCatalogueFunctionTests.Adapters
 {
     public static class OrganisationRolesAdapterTests
     {
-        [Fact]
-        public static void Constructor_VerifyGuardClauses()
-        {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
-            var assertion = new GuardClauseAssertion(fixture);
-            var constructors = typeof(OrganisationRolesAdapter).GetConstructors();
-
-            assertion.Verify(constructors);
-        }
-
         [Theory]
         [CommonAutoData]
         public static void Process_InputIsNull_ThrowsException(

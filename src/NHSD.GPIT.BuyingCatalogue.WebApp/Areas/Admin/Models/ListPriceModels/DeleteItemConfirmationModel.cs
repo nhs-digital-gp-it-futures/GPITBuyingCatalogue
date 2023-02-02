@@ -18,10 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             Advice = caption;
         }
 
-        public string Title { get; set; }
-
         public string CatalogueItemName { get; set; }
-
-        public string Advice { get; set; }
     }
 }

@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
 {
+    [Serializable]
     public sealed class AspNetRole : IdentityRole<int>
     {
         public AspNetRole()

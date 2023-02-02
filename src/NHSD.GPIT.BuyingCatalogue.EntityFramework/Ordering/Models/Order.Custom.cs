@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
@@ -207,6 +208,26 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public override int GetHashCode()
         {
             return Id.GetHashCode();
+        }
+
+        public Order Clone()
+        {
+            var inputSettings = new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.Objects,
+                TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
+            };
+
+            var outputSettings = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Objects,
+            };
+
+            var serialised = JsonConvert.SerializeObject(this, inputSettings);
+            var output = JsonConvert.DeserializeObject<Order>(serialised, outputSettings);
+
+            return output;
         }
     }
 }

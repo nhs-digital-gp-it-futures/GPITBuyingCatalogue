@@ -136,6 +136,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var expected = new SelectPriceModel(orderItem)
             {
+                Title = model.Title,
+                Caption = model.Caption,
+                Advice = model.Advice,
+                AdditionalAdvice = model.AdditionalAdvice,
                 SelectedPriceId = model.SelectedPriceId,
                 SolutionName = model.SolutionName,
                 SolutionType = model.SolutionType,

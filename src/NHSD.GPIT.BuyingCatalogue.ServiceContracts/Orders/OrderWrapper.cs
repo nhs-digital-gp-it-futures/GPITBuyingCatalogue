@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
                     return null;
                 }
 
-                var output = previous.First();
+                var output = previous.First().Clone();
 
                 previous.Skip(1).ToList().ForEach(output.Apply);
 
@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
         {
             get
             {
-                var output = Previous;
+                var output = Previous?.Clone();
 
                 if (output == null)
                 {
@@ -75,13 +75,21 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public bool HasCurrentAmendments(OrderItem orderItem)
         {
-            if (Previous == null)
+            var previous = Previous;
+
+            if (previous == null)
             {
                 return false;
             }
 
+            if (Order.OrderItems.Any(x => x.CatalogueItemId == orderItem.CatalogueItemId)
+                && previous.OrderItems.All(x => x.CatalogueItemId != orderItem.CatalogueItemId))
+            {
+                return true;
+            }
+
             return Order.OrderItems.Any(x => x.CatalogueItemId == orderItem.CatalogueItemId)
-                && Previous.OrderItems.Any(x => x.CatalogueItemId == orderItem.CatalogueItemId);
+                && previous.OrderItems.Any(x => x.CatalogueItemId == orderItem.CatalogueItemId);
         }
     }
 }

@@ -27,7 +27,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
             {
                 ActionName = Constants.Actions.TaskList,
                 ControllerName = Constants.Controllers.TaskList,
-                RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId },
+                RouteValues = new
+                {
+                    routeValues.InternalOrgId,
+                    routeValues.CallOffId,
+                },
             };
         }
     }

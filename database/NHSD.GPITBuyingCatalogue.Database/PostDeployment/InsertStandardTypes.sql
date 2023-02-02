@@ -3,5 +3,6 @@
     VALUES
     (1, 'Overarching'),
     (2, 'Interoperability'),
-    (3, 'Capability');
+    (3, 'Capability'),
+    (4, 'ContextSpecific');
 GO

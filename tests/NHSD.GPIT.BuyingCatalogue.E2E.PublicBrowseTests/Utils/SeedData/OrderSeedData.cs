@@ -50,9 +50,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 AddCompletedOrder(context, 90010, GetOrganisationId(context)),
                 AddCompletedOrder(context, 90011, GetOrganisationId(context, "CG-15F")),
                 AddCompletedOrder(context, 90030, GetOrganisationId(context)),
+                AddCompletedOrder(context, 90031, GetOrganisationId(context)),
                 AddAmendment(context, 90030, 2),
+                AddAmendment(context, 90031, 2),
                 AddOrderByAccountManager(context),
             };
+
+            var order90030V2 = orders.First(x => x.OrderNumber == 90030 && x.Revision == 2);
+            var order90031 = orders.First(x => x.OrderNumber == 90031 && x.Revision == 1);
+            var order90031V2 = orders.First(x => x.OrderNumber == 90031 && x.Revision == 2);
+
+            AddOrderItemToOrder(context, order90030V2, new CatalogueItemId(99998, "001"));
+            AddOrderItemToOrder(context, order90031, new CatalogueItemId(99998, "001A99"));
+            AddOrderItemToOrder(context, order90031V2, new CatalogueItemId(99998, "001A99"));
 
             context.InsertRangeWithIdentity(orders);
         }
@@ -1691,6 +1701,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             order.OrderItems.Add(addedSolution);
 
             return order;
+        }
+
+        private static void AddOrderItemToOrder(BuyingCatalogueDbContext context, Order order, CatalogueItemId catalogueItemId)
+        {
+            var orderItem = new OrderItem
+            {
+                Created = DateTime.UtcNow,
+                OrderId = order.Id,
+                CatalogueItem = context.CatalogueItems.First(c => c.Id == catalogueItemId),
+            };
+
+            order.OrderItems.Add(orderItem);
         }
 
         private static Order AddAmendment(BuyingCatalogueDbContext context, int orderNumber, int revision)

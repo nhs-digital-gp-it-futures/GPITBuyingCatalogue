@@ -1,9 +1,10 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
 {
     [ExcludeFromCodeCoverage]
-    public class NavBaseModel
+    public class NavBaseModel : PageTitleModel
     {
         public const string BackLinkDefault = "./";
 

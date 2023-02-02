@@ -121,6 +121,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             var expected = new ReviewBillingModel
             {
+                Title = model.Title,
+                Caption = model.Caption,
+                Advice = model.Advice,
+                AdditionalAdvice = model.AdditionalAdvice,
                 CallOffId = callOffId,
                 TargetMilestoneName = defaultPlan.Milestones.OrderBy(m => m.Order).Last().Title,
                 AssociatedServiceOrderItems = orderItems,
@@ -330,6 +334,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             var expected = new SpecificRequirementsModel
             {
+                Title = model.Title,
+                Caption = model.Caption,
+                Advice = model.Advice,
+                AdditionalAdvice = model.AdditionalAdvice,
                 CallOffId = callOffId,
                 ProceedWithoutSpecificRequirements = null,
             };

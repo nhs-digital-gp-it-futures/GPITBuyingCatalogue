@@ -6,8 +6,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models
     [ExcludeFromCodeCoverage(Justification = "Class currently only contains automatic properties")]
     public class OrderingBaseModel : NavBaseModel
     {
-        public string Title { get; set; }
-
         public string InternalOrgId { get; set; }
     }
 }

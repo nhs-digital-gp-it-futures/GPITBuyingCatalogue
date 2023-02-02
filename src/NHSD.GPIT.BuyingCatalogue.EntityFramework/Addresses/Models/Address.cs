@@ -1,5 +1,8 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models
+﻿using System;
+
+namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models
 {
+    [Serializable]
     public sealed class Address
     {
         public string Line1 { get; set; }

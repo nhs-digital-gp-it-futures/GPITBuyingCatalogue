@@ -51,10 +51,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
 
         public int SupplierId { get; init; }
 
-        public string Caption { get; init; }
-
-        public string Advice { get; init; }
-
         public IList<CatalogueItem> SolutionsReferencingThisContact { get; set; }
     }
 }

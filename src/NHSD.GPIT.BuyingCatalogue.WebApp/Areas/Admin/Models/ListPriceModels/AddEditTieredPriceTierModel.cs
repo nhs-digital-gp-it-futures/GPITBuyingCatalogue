@@ -46,8 +46,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 
         public int? TierId { get; set; }
 
-        public string Title { get; set; }
-
         public decimal? Price => InputPrice.AsNullableDecimal();
 
         public string InputPrice { get; set; }

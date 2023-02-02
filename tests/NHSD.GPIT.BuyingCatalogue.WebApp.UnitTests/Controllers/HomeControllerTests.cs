@@ -205,5 +205,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
         }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Get_AdvacedTelephony_ExpectedResult(HomeController controller)
+        {
+            var expected = new NavBaseModel();
+            var result = controller.AdvacedTelephonyBetterPurchaseFramework();
+
+            result.Should().NotBeNull();
+
+            var actualResult = result.Should().BeAssignableTo<ViewResult>().Subject;
+
+            actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
+        }
     }
 }
