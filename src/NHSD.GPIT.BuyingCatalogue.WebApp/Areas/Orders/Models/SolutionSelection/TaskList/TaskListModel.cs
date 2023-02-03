@@ -92,11 +92,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public bool AssociatedServicesOnly { get; set; }
 
-        public new string Title => IsAmendment
+        public override string Title => IsAmendment
             ? AmendmentTitle
             : Progress == TaskProgress.Completed ? CompletedTitle : InProgressTitle;
 
-        public new string Advice => IsAmendment
+        public override string Advice => IsAmendment
             ? AmendmentAdvice
             : Progress == TaskProgress.Completed ? CompletedAdvice : InProgressAdvice;
 
