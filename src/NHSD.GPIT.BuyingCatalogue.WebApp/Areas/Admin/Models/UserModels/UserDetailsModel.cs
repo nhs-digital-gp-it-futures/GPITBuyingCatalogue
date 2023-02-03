@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.UserModels
             IsActive = !user.Disabled;
         }
 
-        public new string Title
+        public override string Title
         {
             get
             {
