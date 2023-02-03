@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
             OrganisationName = organisation.Name;
         }
 
-        public new string Title
+        public override string Title
         {
             get
             {
