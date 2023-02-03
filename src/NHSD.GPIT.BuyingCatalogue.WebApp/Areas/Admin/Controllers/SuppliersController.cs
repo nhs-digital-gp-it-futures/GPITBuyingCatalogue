@@ -75,16 +75,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var supplier = await suppliersService.GetSupplier(supplierId);
 
             if (supplier.IsActive == model.SupplierStatus) // status hasn't changed
-                RedirectToAction(nameof(Index), typeof(SuppliersController).ControllerName());
+                return RedirectToAction(nameof(Index), typeof(SuppliersController).ControllerName());
 
-            var supplierStatus = new EditSupplierModel(supplier)
-            {
-                BackLink = Url.Action(
-                    nameof(Index),
-                    typeof(SuppliersController).ControllerName()),
-            };
-
-            if (model.SupplierStatus && !(supplierStatus.AddressStatus && supplierStatus.DetailsStatus && supplierStatus.ContactsStatus))
+            if (model.SupplierStatus && !(model.AddressStatus && model.DetailsStatus && model.ContactsStatus))
                 ModelState.AddModelError(nameof(model.SupplierStatus), "Mandatory section incomplete");
 
             if (!model.SupplierStatus)
@@ -100,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             }
 
             if (!ModelState.IsValid)
-                return View(supplierStatus);
+                return View(model);
 
             await suppliersService.UpdateSupplierActiveStatus(supplierId, model.SupplierStatus);
 

@@ -33,14 +33,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
 
         public bool SupplierStatus { get; init; }
 
-        public bool DetailsStatus { get; }
+        public bool DetailsStatus { get; init; }
 
-        public bool AddressStatus { get; }
+        public bool AddressStatus { get; init; }
 
-        public bool ContactsStatus { get; }
+        public bool ContactsStatus { get; init; }
 
-        public int SupplierId { get; }
+        public int SupplierId { get; init; }
 
-        public string SupplierName { get; }
+        public string SupplierName { get; init; }
     }
 }

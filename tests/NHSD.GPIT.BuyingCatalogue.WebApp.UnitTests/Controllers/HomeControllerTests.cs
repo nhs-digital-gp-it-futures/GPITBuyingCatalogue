@@ -171,6 +171,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
         [Theory]
         [CommonAutoData]
+        public static void Get_AccessibilityStatement_ReturnsDefaultView(
+            HomeController controller)
+        {
+            var result = controller.AccessibilityStatement().As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.ViewName.Should().BeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Get_NotAuthorised_ReturnsDefaultView(
+            HomeController controller)
+        {
+            var result = controller.NotAuthorized().As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.ViewName.Should().BeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static void Get_TechInnovation_ExpectedResult(
             HomeController controller)
         {

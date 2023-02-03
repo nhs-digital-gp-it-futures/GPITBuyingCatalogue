@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             CatalogueItem catalogueItem,
             CatalogueItemContentStatus contentStatus)
         {
-            if (catalogueItem is null)
+            if (catalogueItem?.Solution is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
 
             SolutionId = catalogueItem.Id;
