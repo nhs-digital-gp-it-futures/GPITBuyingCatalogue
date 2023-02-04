@@ -3,14 +3,18 @@ using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Prices;
+using NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.SolutionSelection.Prices.Base;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.SolutionSelection.Prices
 {
-    public static class ConfirmPriceModelTests
+    public class ConfirmPriceModelTests : PricingModelTests
     {
+        protected override Type ModelType => typeof(ConfirmPriceModel);
+
         [Theory]
         [CommonAutoData]
         public static void CatalogueItemIsNull_ThrowsException(int priceId)
@@ -30,86 +34,67 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
         [Theory]
         [CommonAutoData]
-        public static void WithValidCatalogueItem_PropertiesCorrectlySet(CatalogueItem item)
+        public static void WithDefaultConstructor_SpecificPropertiesCorrectlySet(
+            RoutingSource routingSource)
         {
-            var price = item.CataloguePrices.First();
-
-            var model = new ConfirmPriceModel(item, price.CataloguePriceId, null);
-
-            model.Basis.Should().Be(price.ToPriceUnitString());
-            model.ItemName.Should().Be(item.Name);
-            model.ItemType.Should().Be(item.CatalogueItemType);
-            model.NumberOfTiers.Should().Be(price.CataloguePriceTiers.Count);
-
-            foreach (var tier in model.Tiers)
+            var model = new ConfirmPriceModel
             {
-                var pricingTier = price.CataloguePriceTiers.First(x => x.Id == tier.Id);
+                Source = routingSource,
+            };
 
-                tier.AgreedPrice.Should().Be($"{pricingTier.Price:#,##0.00##}");
-                tier.Description.Should().Be(pricingTier.GetRangeDescription());
-                tier.ListPrice.Should().Be(pricingTier.Price);
-                tier.LowerRange.Should().Be(pricingTier.LowerRange);
-                tier.UpperRange.Should().Be(pricingTier.UpperRange);
-            }
+            model.Advice.Should().Be(ConfirmPriceModel.AdviceText);
+            model.Hint.Should().Be(ConfirmPriceModel.HintText);
+            model.Label.Should().Be(string.Format(ConfirmPriceModel.LabelText, model.Basis));
+            model.Source.Should().Be(routingSource);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void WithValidCatalogueItem_AndExistingOrderItem_PropertiesCorrectlySet(CatalogueItem item, OrderItem orderItem)
+        public static void WithValidCatalogueItem_SpecificPropertiesCorrectlySet(
+            CatalogueItem catalogueItem,
+            OrderItem orderItem,
+            RoutingSource routingSource)
         {
-            var price = item.CataloguePrices.First();
+            var priceId = catalogueItem.CataloguePrices.First().CataloguePriceId;
 
-            orderItem.OrderItemPrice.CataloguePriceId = price.CataloguePriceId;
-            orderItem.OrderItemPrice.OrderItemPriceTiers = price.CataloguePriceTiers
-                .Select(x => new OrderItemPriceTier(orderItem.OrderItemPrice, x)
-                {
-                    Price = x.Price / 2,
-                })
-                .ToList();
-
-            var model = new ConfirmPriceModel(item, price.CataloguePriceId, orderItem);
-
-            model.Basis.Should().Be(price.ToPriceUnitString());
-            model.ItemName.Should().Be(item.Name);
-            model.ItemType.Should().Be(item.CatalogueItemType);
-            model.NumberOfTiers.Should().Be(price.CataloguePriceTiers.Count);
-
-            foreach (var tier in model.Tiers)
+            var model = new ConfirmPriceModel(catalogueItem, priceId, orderItem)
             {
-                var pricingTier = price.CataloguePriceTiers.First(x => x.Id == tier.Id);
-                var tierPrice = pricingTier.Price / 2;
+                Source = routingSource,
+            };
 
-                tier.AgreedPrice.Should().Be($"{tierPrice:#,###,##0.00##}");
-                tier.Description.Should().Be(pricingTier.GetRangeDescription());
-                tier.ListPrice.Should().Be(pricingTier.Price);
-                tier.LowerRange.Should().Be(pricingTier.LowerRange);
-                tier.UpperRange.Should().Be(pricingTier.UpperRange);
-            }
+            model.Advice.Should().Be(ConfirmPriceModel.AdviceText);
+            model.Hint.Should().Be(ConfirmPriceModel.HintText);
+            model.Label.Should().Be(string.Format(ConfirmPriceModel.LabelText, model.Basis));
+            model.Source.Should().Be(routingSource);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void WithValidOrderItem_PropertiesCorrectlySet(OrderItem item)
+        public static void WithValidOrderItem_SpecificPropertiesCorrectlySet(
+            OrderItem orderItem,
+            RoutingSource routingSource)
         {
-            var price = item.OrderItemPrice;
-
-            var model = new ConfirmPriceModel(item);
-
-            model.Basis.Should().Be(price.ToPriceUnitString());
-            model.ItemName.Should().Be(item.CatalogueItem.Name);
-            model.ItemType.Should().Be(item.CatalogueItem.CatalogueItemType);
-            model.NumberOfTiers.Should().Be(price.OrderItemPriceTiers.Count);
-
-            foreach (var tier in model.Tiers)
+            var model = new ConfirmPriceModel(orderItem)
             {
-                var pricingTier = price.OrderItemPriceTiers.First(x => x.Id == tier.Id);
+                Source = routingSource,
+            };
 
-                tier.AgreedPrice.Should().Be($"{pricingTier.Price:#,##0.00##}");
-                tier.Description.Should().Be(pricingTier.GetRangeDescription());
-                tier.ListPrice.Should().Be(pricingTier.ListPrice);
-                tier.LowerRange.Should().Be(pricingTier.LowerRange);
-                tier.UpperRange.Should().Be(pricingTier.UpperRange);
-            }
+            model.Advice.Should().Be(ConfirmPriceModel.AdviceText);
+            model.Hint.Should().Be(ConfirmPriceModel.HintText);
+            model.Label.Should().Be(string.Format(ConfirmPriceModel.LabelText, model.Basis));
+            model.Source.Should().Be(routingSource);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void AgreedPrices_ExpectedResult(OrderItem orderItem)
+        {
+            var model = new ConfirmPriceModel(orderItem);
+
+            var actual = model.AgreedPrices;
+            var expected = model.Tiers.Select(x => x.AgreedPriceDto).ToList();
+
+            actual.Should().BeEquivalentTo(expected);
         }
     }
 }

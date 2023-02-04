@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
@@ -7,13 +8,16 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Prices.Base
 {
-    public class PricingModel : NavBaseModel
+    public abstract class PricingModel : NavBaseModel
     {
-        public PricingModel()
+        public const string FourDecimalPlaces = "#,##0.00##";
+        public const string TitleText = "Price of {0}";
+
+        protected PricingModel()
         {
         }
 
-        public PricingModel(CatalogueItem item, int priceId, OrderItem orderItem)
+        protected PricingModel(CatalogueItem item, int priceId, OrderItem orderItem)
         {
             if (item == null)
             {
@@ -35,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             ItemType = item.CatalogueItemType;
         }
 
-        public PricingModel(OrderItem item)
+        protected PricingModel(OrderItem item)
         {
             if (item == null)
             {
@@ -53,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             ItemType = item.CatalogueItem.CatalogueItemType;
         }
 
-        public override string Title => $"Price of {ItemType.Name()}";
+        public override string Title => string.Format(TitleText, ItemType.Name());
 
         public override string Caption => ItemName;
 
@@ -95,7 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                 {
                     Id = x.Id,
                     ListPrice = x.ListPrice,
-                    AgreedPrice = $"{x.Price:#,##0.00##}",
+                    AgreedPrice = x.Price.ToString(FourDecimalPlaces, CultureInfo.InvariantCulture),
                     Description = x.GetRangeDescription(),
                     LowerRange = x.LowerRange,
                     UpperRange = x.UpperRange,
@@ -109,8 +113,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                 .FirstOrDefault(x => x.LowerRange == tier.LowerRange && x.UpperRange == tier.UpperRange);
 
             return existingTier == null
-                ? $"{tier.Price:#,##0.00##}"
-                : $"{existingTier.Price:#,##0.00##}";
+                ? tier.Price.ToString(FourDecimalPlaces, CultureInfo.InvariantCulture)
+                : existingTier.Price.ToString(FourDecimalPlaces, CultureInfo.InvariantCulture);
         }
     }
 }

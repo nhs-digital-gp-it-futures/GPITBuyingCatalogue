@@ -24,7 +24,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.SolutionSelection
 {
-    public static class PriceControllerTests
+    public static class PricesControllerTests
     {
         private const int PriceId = 1;
 
@@ -453,6 +453,49 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 { "callOffId", callOffId },
                 { "catalogueItemId", orderItem.CatalogueItemId },
             });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_ViewPrice_ExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order original,
+            EntityFramework.Ordering.Models.Order amendment,
+            CatalogueItemId catalogueItemId,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            PricesController controller)
+        {
+            original.Revision = 1;
+            amendment.OrderNumber = original.OrderNumber;
+            amendment.Revision = 2;
+
+            var orders = new[] { original, amendment };
+
+            foreach (var tier in orders.SelectMany(x => x.OrderItems).Select(x => x.OrderItemPrice).SelectMany(x => x.PriceTiers))
+            {
+                ((OrderItemPriceTier)tier).CatalogueItemId = catalogueItemId;
+            }
+
+            var orderItem = original.Clone().OrderItems.First();
+
+            mockOrderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(orders));
+
+            var result = await controller.ViewPrice(internalOrgId, callOffId, orderItem.CatalogueItemId);
+
+            mockOrderService.VerifyAll();
+
+            var expected = new ViewPriceModel(orderItem)
+            {
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+            };
+
+            var actual = result.Should().BeOfType<ViewResult>().Subject;
+
+            actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
         }
     }
 }

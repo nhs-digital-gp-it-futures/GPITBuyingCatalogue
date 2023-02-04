@@ -10,7 +10,7 @@
     <div class="nhsuk-grid-column-two-thirds">
 		<nhs-page-title model="Model" />
 
-        <nhs-summary-list>
+        <nhs-summary-list id="view-price-tiers">
             @foreach (var (tier, i) in Model.Tiers.Select((x, i) => (x, i)))
             {
                 var price = string.Format(tier.AgreedPrice, "#,##0.00");
@@ -24,7 +24,7 @@
             }
         </nhs-summary-list>
 
-        <div class="nhsuk-u-margin-bottom-9" data-test-id="price-details">
+        <div class="nhsuk-u-margin-bottom-9" id="view-price-details">
             <partial name="PriceDetails/_PriceDetailsComponent"
                      model="new PriceCalculationDetailsModel(Model.ItemType, Model.PriceType, Model.CalculationType)" />
         </div>
