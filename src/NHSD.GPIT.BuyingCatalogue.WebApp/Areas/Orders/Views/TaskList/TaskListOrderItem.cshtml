@@ -45,7 +45,7 @@
             <nhs-tag status-enum="@Model.PriceStatus"/>
         </nhs-table-cell>
         <nhs-table-cell>
-            @if (Model.FromPreviousRevision)
+            @if (Model.CallOffId.IsAmendment)
             {
                 <a id="Price_@Model.CatalogueItemId"
                    href="@Url.Action(
