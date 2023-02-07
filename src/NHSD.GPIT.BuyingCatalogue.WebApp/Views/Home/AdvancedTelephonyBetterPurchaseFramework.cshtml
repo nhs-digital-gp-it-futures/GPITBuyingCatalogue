@@ -11,11 +11,6 @@
         nameof(ProcurementHubController.Index),
         typeof(ProcurementHubController).ControllerName(),
         new { returnUrl });
-
-    var comissioningSupportPackURL = Url.Action(
-        nameof(HomeController.DownloadCommissioningSupportPackPDF),
-        typeof(HomeController).ControllerName(),
-        new { returnUrl });
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -47,12 +42,12 @@
 
         <h2>Suppliers on the Better Purchasing Framework List</h2>
 
-        <p>These are the suppliers that are available from the list:</p>
+        <p>These are the suppliers that are available from the list. Some have provided information about their solutions which can be downloaded using the links:</p>
 
         <ul>
             <li>Storacall Technology Ltd (trading as X-on)</li>
-            <li>Daisy Communications Ltd</li>
-            <li>Think Healthcare</li>
+            <li><a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.DaisyPatientLinePdf)">Daisy Communications Ltd (PDF)</a></li>
+            <li><a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.ThinkHealthcarePdf)">Think Healthcare (PDF)</a></li>
             <li>Redcentric Solutions Ltd</li>
         </ul>
 
@@ -64,7 +59,9 @@
 
         <vc:nhs-secondary-button type="Secondary"
                                  text="Download buyer’s guide (PDF)"
-                                 url="@comissioningSupportPackURL" />
+                                 url="@Url.Action(
+                                               nameof(HomeController.DownloadCommissioningSupportPackPDF),
+                                               typeof(HomeController).ControllerName())" />
 
         <p>
             For more information on the Better Purchasing framework and the suppliers and solutions currently involved, contact National Commercial and Procurement Hub.
