@@ -145,6 +145,173 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [InMemoryDbAutoData]
+        public static void CopyOrderItems_ItemIdsAreNull_ThrowsException(
+            string internalOrgId,
+            CallOffId callOffId,
+            OrderItemService service)
+        {
+            FluentActions
+                .Awaiting(() => service.CopyOrderItems(internalOrgId, callOffId, null))
+                .Should().ThrowAsync<ArgumentNullException>();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task CopyOrderItems_NoOrder_NoActionTaken(
+            string internalOrgId,
+            CallOffId callOffId,
+            List<CatalogueItemId> itemIds,
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            OrderItemService service)
+        {
+            itemIds.ForEach(x => context.CatalogueItems.Add(new CatalogueItem { Id = x, Name = $"{x}" }));
+            await context.SaveChangesAsync();
+
+            mockOrderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper());
+
+            await service.CopyOrderItems(internalOrgId, callOffId, itemIds);
+
+            mockOrderService.VerifyAll();
+
+            itemIds.ForEach(x =>
+            {
+                var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == order.Id && o.CatalogueItemId == x);
+
+                actual.Should().BeNull();
+            });
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task CopyOrderItems_AddsOrderItemsToDatabase(
+            string internalOrgId,
+            CallOffId callOffId,
+            List<CatalogueItemId> itemIds,
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            OrderItemService service)
+        {
+            itemIds.ForEach(x => context.CatalogueItems.Add(new CatalogueItem { Id = x, Name = $"{x}" }));
+            await context.SaveChangesAsync();
+
+            mockOrderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            await service.CopyOrderItems(internalOrgId, callOffId, itemIds);
+
+            mockOrderService.VerifyAll();
+
+            itemIds.ForEach(x =>
+            {
+                var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == order.Id && o.CatalogueItemId == x);
+
+                actual.Should().NotBeNull();
+            });
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task CopyOrderItems_WithExistingItems_AddsOrderItemsToDatabase(
+            string internalOrgId,
+            CallOffId callOffId,
+            List<CatalogueItemId> itemIds,
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            OrderItemService service)
+        {
+            itemIds.ForEach(x => context.CatalogueItems.Add(new CatalogueItem { Id = x, Name = $"{x}" }));
+
+            await context.SaveChangesAsync();
+
+            order.OrderItems.First().CatalogueItem.Id = itemIds.First();
+
+            mockOrderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            await service.CopyOrderItems(internalOrgId, callOffId, itemIds);
+
+            mockOrderService.VerifyAll();
+
+            itemIds.ForEach(x =>
+            {
+                var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == order.Id && o.CatalogueItem.Id == x);
+
+                if (x == itemIds.First())
+                {
+                    actual.Should().BeNull();
+                }
+                else
+                {
+                    actual.Should().NotBeNull();
+                }
+            });
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task CopyOrderItems_Amendment_AddsOrderItemsToDatabaseWithExistingPrice(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            List<CatalogueItemId> itemIds,
+            CataloguePrice cataloguePrice,
+            Order original,
+            Order amendment,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            OrderItemService service)
+        {
+            original.Revision = 1;
+            amendment.OrderNumber = original.OrderNumber;
+            amendment.Revision = 2;
+
+            var orders = new[] { original, amendment };
+
+            foreach (var price in orders.SelectMany(x => x.OrderItems).Select(x => x.OrderItemPrice))
+            {
+                price.CataloguePriceId = cataloguePrice.CataloguePriceId;
+
+                foreach (var tier in price.OrderItemPriceTiers)
+                {
+                    tier.CatalogueItemId = catalogueItemId;
+                }
+            }
+
+            cataloguePrice.CatalogueItemId = itemIds.First();
+
+            context.CataloguePrices.Add(cataloguePrice);
+            itemIds.ForEach(x => context.CatalogueItems.Add(new CatalogueItem { Id = x, Name = $"{x}" }));
+
+            await context.SaveChangesAsync();
+
+            original.OrderItems.First().CatalogueItem.Id = itemIds.First();
+
+            mockOrderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(new[] { original, amendment }));
+
+            await service.CopyOrderItems(internalOrgId, callOffId, itemIds);
+
+            mockOrderService.VerifyAll();
+
+            itemIds.ForEach(x =>
+            {
+                var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == amendment.Id && o.CatalogueItem.Id == x);
+
+                actual.Should().NotBeNull();
+            });
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
         public static void DeleteOrderItems_ItemIdsAreNull_ThrowsException(
             string internalOrgId,
             CallOffId callOffId,
@@ -241,7 +408,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
 
-            actual.EstimationPeriod.Should().Be(TimeUnit.PerMonth);
+            actual!.EstimationPeriod.Should().Be(TimeUnit.PerMonth);
         }
 
         [Theory]
@@ -267,7 +434,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
 
-            actual.EstimationPeriod.Should().Be(TimeUnit.PerYear);
+            actual!.EstimationPeriod.Should().Be(TimeUnit.PerYear);
         }
 
         [Theory]
@@ -293,7 +460,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
 
-            actual.EstimationPeriod.Should().Be(TimeUnit.PerYear);
+            actual!.EstimationPeriod.Should().Be(TimeUnit.PerYear);
         }
 
         [Theory]
@@ -319,7 +486,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
 
-            actual.EstimationPeriod.Should().Be(price.BillingPeriod);
+            actual!.EstimationPeriod.Should().Be(price.BillingPeriod);
         }
     }
 }

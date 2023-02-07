@@ -258,7 +258,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             var order = (await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId)).Order;
 
-            await orderItemService.AddOrderItems(internalOrgId, callOffId, new[] { catalogueItemId });
+            await orderItemService.CopyOrderItems(internalOrgId, callOffId, new[] { catalogueItemId });
 
             await orderItemRecipientService.UpdateOrderItemRecipients(
                 order.Id,

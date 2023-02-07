@@ -45,13 +45,14 @@
             <nhs-tag status-enum="@Model.PriceStatus"/>
         </nhs-table-cell>
         <nhs-table-cell>
-            @if (Model.FromPreviousRevision)
+            @if (Model.CallOffId.IsAmendment
+                && Model.FromPreviousRevision)
             {
                 <a id="Price_@Model.CatalogueItemId"
                    href="@Url.Action(
-                             nameof(PricesController.EditPrice),
+                             nameof(PricesController.ViewPrice),
                              typeof(PricesController).ControllerName(),
-                             new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, source })">View</a>
+                             new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId })">View</a>
             }
             else
             {
