@@ -1,6 +1,9 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO.Compression;
 using System.Threading.Tasks;
+using Azure.Core.Extensions;
+using Azure.Storage.Blobs;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -10,6 +13,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
@@ -22,6 +26,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Storage;
 using NHSD.GPIT.BuyingCatalogue.Services.Email;
 using NHSD.GPIT.BuyingCatalogue.Services.Identity;
 using NHSD.GPIT.BuyingCatalogue.Services.Organisations;
@@ -356,6 +361,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             {
                 options.ValueCountLimit = 16384;
             });
+        }
+
+        public static void ConfigureBlobStorage(this IServiceCollection services, IConfiguration configuration)
+        {
+            var settings = configuration.GetSection("AzureBlobSettings").Get<AzureBlobSettings>();
+
+            services.AddSingleton(settings);
         }
     }
 }

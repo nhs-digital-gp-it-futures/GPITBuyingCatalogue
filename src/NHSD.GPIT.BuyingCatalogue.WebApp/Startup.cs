@@ -12,11 +12,13 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.Framework.Environments;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.Services;
 using NHSD.GPIT.BuyingCatalogue.Services.Organisations;
+using NHSD.GPIT.BuyingCatalogue.Services.Pdf;
 using NHSD.GPIT.BuyingCatalogue.Services.Routing;
 using NHSD.GPIT.BuyingCatalogue.Services.TaskList;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
@@ -114,10 +116,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigureAuthorization();
 
+            services.ConfigureBlobStorage(Configuration);
+
             services.AddSingleton<IGpPracticeCacheService, GpPracticeCacheService>();
             services.AddSingleton<IRoutingService, RoutingService>();
             services.AddSingleton<IOrderTaskProgressProviderService, OrderTaskProgressProviderService>();
             services.AddSingleton<OrganisationRestrictActionFilterAttribute>();
+            services.AddScoped<IOrderPdfService, OrderPdfService>();
+            services.Decorate<IOrderPdfService, CachedOrderPdfService>();
 
             ServicesStartup.Configure(services);
 

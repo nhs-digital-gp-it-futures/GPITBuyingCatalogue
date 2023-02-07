@@ -26,14 +26,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         private readonly IOrderService orderService;
         private readonly IOrderProgressService orderProgressService;
         private readonly IOrganisationsService organisationsService;
-        private readonly IPdfService pdfService;
+        private readonly IOrderPdfService pdfService;
         private readonly PdfSettings pdfSettings;
 
         public OrderController(
             IOrderService orderService,
             IOrderProgressService orderProgressService,
             IOrganisationsService organisationsService,
-            IPdfService pdfService,
+            IOrderPdfService pdfService,
             PdfSettings pdfSettings)
         {
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
@@ -200,7 +200,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         {
             var order = (await orderService.GetOrderForSummary(callOffId, internalOrgId)).Order;
 
-            var result = pdfService.Convert(OrderSummaryUri(internalOrgId, callOffId));
+            var result = await pdfService.CreateOrderSummaryPdf(order);
 
             var fileName = order.OrderStatus == OrderStatus.Completed
                 ? $"order-summary-completed-{callOffId}.pdf"
@@ -230,27 +230,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                 nameof(Order),
                 typeof(OrderController).ControllerName(),
                 new { internalOrgId, amendment.CallOffId });
-        }
-
-        private Uri OrderSummaryUri(string internalOrgId, CallOffId callOffId)
-        {
-            var uri = Url.Action(
-                nameof(OrderSummaryController.Index),
-                typeof(OrderSummaryController).ControllerName(),
-                new { internalOrgId, callOffId });
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                uri = $"{Request.Scheme}://{Request.Host}{uri}";
-            }
-            else
-            {
-                uri = pdfSettings.UseSslForPdf
-                    ? $"https://localhost{uri}"
-                    : $"http://localhost{uri}";
-            }
-
-            return new Uri(uri);
         }
     }
 }

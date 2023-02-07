@@ -14,7 +14,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using Notify.Client;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
@@ -28,14 +27,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         private readonly BuyingCatalogueDbContext dbContext;
         private readonly ICsvService csvService;
         private readonly IGovNotifyEmailService emailService;
-        private readonly IPdfService pdfService;
+        private readonly IOrderPdfService pdfService;
         private readonly OrderMessageSettings orderMessageSettings;
 
         public OrderService(
             BuyingCatalogueDbContext dbContext,
             ICsvService csvService,
             IGovNotifyEmailService emailService,
-            IPdfService pdfService,
+            IOrderPdfService pdfService,
             OrderMessageSettings orderMessageSettings)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
@@ -364,6 +363,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public async Task CompleteOrder(CallOffId callOffId, string internalOrgId, int userId, Uri orderSummaryUri)
         {
             var order = (await GetOrderThin(callOffId, internalOrgId)).Order;
+            order.Complete();
 
             await using var fullOrderStream = new MemoryStream();
             await using var patientOrderStream = new MemoryStream();
@@ -388,18 +388,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             }
 
             var userEmail = dbContext.Users.First(x => x.Id == userId).Email;
-            var pdfData = pdfService.Convert(orderSummaryUri);
+            using var pdfData = await pdfService.CreateOrderSummaryPdf(order);
 
             fullOrderStream.Position = 0;
             var userTokens = new Dictionary<string, dynamic>
             {
                 { OrderIdToken, $"{callOffId}" },
-                { OrderSummaryLinkToken, NotificationClient.PrepareUpload(pdfData) },
+                { OrderSummaryLinkToken, NotificationClient.PrepareUpload(pdfData.ToArray()) },
                 { OrderSummaryCsv, NotificationClient.PrepareUpload(fullOrderStream.ToArray(), true) },
             };
 
-            order = await dbContext.Order(callOffId);
-            order.Complete();
+            dbContext.Entry(order).State = EntityState.Modified;
 
             await Task.WhenAll(
                 emailService.SendEmailAsync(orderMessageSettings.Recipient.Address, templateId, adminTokens),
