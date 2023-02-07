@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                 throw new ArgumentNullException(nameof(wrapper));
             }
 
-            var current = wrapper.Order;
+            var previous = wrapper.Previous;
 
             InternalOrgId = internalOrgId;
             CallOffId = callOffId;
@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             {
                 taskModels.Add(CatalogueSolution.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, CatalogueSolution, wrapper.HasCurrentAmendments(CatalogueSolution))
                 {
-                    FromPreviousRevision = current.OrderItems.All(x => x.CatalogueItemId != CatalogueSolution.CatalogueItemId),
+                    FromPreviousRevision = previous.OrderItems.Any(x => x.CatalogueItemId == CatalogueSolution.CatalogueItemId),
                     NumberOfPrices = CatalogueSolution.CatalogueItem.CataloguePrices.Count,
                     PriceId = CatalogueSolution.CatalogueItem.CataloguePrices.Count == 1
                         ? CatalogueSolution.CatalogueItem.CataloguePrices.First().CataloguePriceId
@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
             AdditionalServices.ForEach(x => taskModels.Add(x.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, x, wrapper.HasCurrentAmendments(x))
             {
-                FromPreviousRevision = current.OrderItems.All(oi => oi.CatalogueItemId != x.CatalogueItemId),
+                FromPreviousRevision = previous.OrderItems.Any(oi => oi.CatalogueItemId == x.CatalogueItemId),
                 NumberOfPrices = x.CatalogueItem.CataloguePrices.Count,
                 PriceId = x.CatalogueItem.CataloguePrices.Count == 1
                     ? x.CatalogueItem.CataloguePrices.First().CataloguePriceId
@@ -76,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
             AssociatedServices.ForEach(x => taskModels.Add(x.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, x, wrapper.HasCurrentAmendments(x))
             {
-                FromPreviousRevision = current.OrderItems.All(oi => oi.CatalogueItemId != x.CatalogueItemId),
+                FromPreviousRevision = previous.OrderItems.Any(oi => oi.CatalogueItemId == x.CatalogueItemId),
                 NumberOfPrices = x.CatalogueItem.CataloguePrices.Count,
                 PriceId = x.CatalogueItem.CataloguePrices.Count == 1
                     ? x.CatalogueItem.CataloguePrices.First().CataloguePriceId

@@ -46,7 +46,7 @@
         </nhs-table-cell>
         <nhs-table-cell>
             @if (Model.CallOffId.IsAmendment
-                && !Model.HasCurrentAmendments)
+                && Model.FromPreviousRevision)
             {
                 <a id="Price_@Model.CatalogueItemId"
                    href="@Url.Action(
