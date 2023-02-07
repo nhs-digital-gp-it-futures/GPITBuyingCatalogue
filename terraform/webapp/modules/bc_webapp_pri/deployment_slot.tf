@@ -1,10 +1,10 @@
-resource "azurerm_app_service_slot" "slot" {
+resource "azurerm_linux_web_app_slot" "slot" {
   name                 = "staging"
   count                = var.create_slot
   app_service_name     = var.webapp_name
   location             = var.region
   resource_group_name  = var.rg_name
-  app_service_plan_id  = azurerm_app_service_plan.webapp_sp.id
+  app_service_plan_id  = azurerm_service_plan.webapp_sp.id
   
   app_settings = {
     # Main Settings
@@ -31,10 +31,16 @@ resource "azurerm_app_service_slot" "slot" {
   
   # Configure Docker Image to load on start
   site_config {
-    linux_fx_version          = "DOCKER|https://${var.docker_registry_server_url}/${var.repository_name}:latest"
     use_32_bit_worker_process = true
     always_on                 = var.always_on
     min_tls_version           = "1.2"
+
+    application_stack{
+      docker_image          = "https://${var.docker_registry_server_url}/${var.repository_name}"
+      docker_image_tag = "latest"
+      dotenet_version = "6.0"
+    }
+
     ip_restriction {
       name       = "APP_GATEWAY_ACCESS"
       ip_address = "${var.app_gateway_ip}/32"

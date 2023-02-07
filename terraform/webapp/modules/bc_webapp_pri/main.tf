@@ -1,14 +1,9 @@
-resource "azurerm_app_service_plan" "webapp_sp" {
+resource "azurerm_service_plan" "webapp_sp" {
   name                = "${var.webapp_name}-service-plan"
   location            = var.region
   resource_group_name = var.rg_name
-  kind                = "Linux"
-  reserved            = true
-
-  sku {
-    tier = var.sku_tier
-    size = var.sku_size
-  }
+  os_type                = "Linux"
+  sku_name  = var.sku_size
 
   tags                      = {
     environment             = var.environment,
@@ -16,11 +11,11 @@ resource "azurerm_app_service_plan" "webapp_sp" {
   }
 }
 
-resource "azurerm_app_service" "webapp" {
+resource "azurerm_linux_web_app" "webapp" {
   name                = var.webapp_name
   location            = var.region
   resource_group_name = var.rg_name
-  app_service_plan_id = azurerm_app_service_plan.webapp_sp.id
+  app_service_plan_id = azurerm_service_plan.webapp_sp.id
   
   app_settings = {
     # Main Settings
@@ -47,10 +42,16 @@ resource "azurerm_app_service" "webapp" {
   
   # Configure Docker Image to load on start
   site_config {
-    linux_fx_version          = "DOCKER|https://${var.docker_registry_server_url}/${var.repository_name}:latest"
+
     use_32_bit_worker_process = true
     always_on                 = var.always_on
     min_tls_version           = "1.2"
+
+    application_stack{
+      docker_image          = "https://${var.docker_registry_server_url}/${var.repository_name}"
+      docker_image_tag = "latest"
+      dotenet_version = "6.0"
+    }
     
     dynamic "ip_restriction" {
       for_each = var.app_gateway_ip == null ? [] : list(var.app_gateway_ip)
