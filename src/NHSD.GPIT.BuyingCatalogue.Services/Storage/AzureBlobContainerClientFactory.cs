@@ -9,11 +9,9 @@ public class AzureBlobContainerClientFactory : IAzureBlobContainerClientFactory
     private readonly BlobServiceClient blobClient;
 
     public AzureBlobContainerClientFactory(
-        AzureBlobSettings settings)
+        BlobServiceClient blobClient)
     {
-        if (settings == null) throw new ArgumentNullException(nameof(settings));
-
-        blobClient = new(settings.ConnectionString);
+        this.blobClient = blobClient ?? throw new ArgumentNullException(nameof(blobClient));
     }
 
     public BlobContainerClient GetBlobContainerClient(string containerName) =>

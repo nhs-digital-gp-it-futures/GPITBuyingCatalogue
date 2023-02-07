@@ -123,7 +123,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSingleton<IOrderTaskProgressProviderService, OrderTaskProgressProviderService>();
             services.AddSingleton<OrganisationRestrictActionFilterAttribute>();
             services.AddScoped<IOrderPdfService, OrderPdfService>();
-            services.Decorate<IOrderPdfService, CachedOrderPdfService>();
+
+            if (!IsE2ETestEnvironment())
+            {
+                services.Decorate<IOrderPdfService, CachedOrderPdfService>();
+            }
 
             ServicesStartup.Configure(services);
 

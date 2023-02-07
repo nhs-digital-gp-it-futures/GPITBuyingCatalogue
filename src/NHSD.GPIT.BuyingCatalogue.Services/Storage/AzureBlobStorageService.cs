@@ -27,7 +27,7 @@ public class AzureBlobStorageService : IAzureBlobStorageService
         {
             var client = clientFactory.GetBlobContainerClient(blobDocument.ContainerName);
 
-            var blobResponse = await client.GetBlobClient(blobDocument.Document).DownloadAsync();
+            var blobResponse = await client.GetBlobClient(blobDocument.DocumentName).DownloadAsync();
 
             var memoryStream = new MemoryStream();
 
@@ -38,7 +38,7 @@ public class AzureBlobStorageService : IAzureBlobStorageService
         }
         catch (RequestFailedException ex)
         {
-            logger.LogError(ex, "Blob file requested {BlobFile} but returned error", blobDocument.Document);
+            logger.LogError(ex, "Blob file requested {BlobFile} but returned error", blobDocument.DocumentName);
 
             return null;
         }
@@ -47,10 +47,10 @@ public class AzureBlobStorageService : IAzureBlobStorageService
     public async Task UploadAsync(BlobDocument blobDocument, Stream contents)
     {
         var client = clientFactory.GetBlobContainerClient(blobDocument.ContainerName);
-        var blobClient = client.GetBlobClient(blobDocument.Document);
+        var blobClient = client.GetBlobClient(blobDocument.DocumentName);
         if (await blobClient.ExistsAsync() == true)
         {
-            logger.LogError("Attempt to add a duplicate blob object {BlobFile}", blobDocument.Document);
+            logger.LogError("Attempt to add a duplicate blob object {BlobFile}", blobDocument.DocumentName);
 
             return;
         }

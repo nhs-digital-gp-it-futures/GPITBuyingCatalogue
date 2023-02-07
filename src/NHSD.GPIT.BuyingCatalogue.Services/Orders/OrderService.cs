@@ -360,7 +360,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task CompleteOrder(CallOffId callOffId, string internalOrgId, int userId, Uri orderSummaryUri)
+        public async Task CompleteOrder(CallOffId callOffId, string internalOrgId, int userId)
         {
             var order = (await GetOrderThin(callOffId, internalOrgId)).Order;
             order.Complete();

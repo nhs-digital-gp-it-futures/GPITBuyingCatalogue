@@ -30,6 +30,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Storage;
 using NHSD.GPIT.BuyingCatalogue.Services.Email;
 using NHSD.GPIT.BuyingCatalogue.Services.Identity;
 using NHSD.GPIT.BuyingCatalogue.Services.Organisations;
+using NHSD.GPIT.BuyingCatalogue.Services.Storage;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
 using Notify.Client;
@@ -368,6 +369,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             var settings = configuration.GetSection("AzureBlobSettings").Get<AzureBlobSettings>();
 
             services.AddSingleton(settings);
+            services.AddScoped<BlobServiceClient>(_ => new(settings.ConnectionString));
         }
     }
 }

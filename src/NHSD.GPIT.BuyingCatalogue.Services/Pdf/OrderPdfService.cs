@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -44,9 +45,10 @@ public class OrderPdfService : IOrderPdfService
 
         var pdfContents = await pdfService.Convert(url);
 
-        return new MemoryStream(pdfContents);
+        return new(pdfContents);
     }
 
+    [ExcludeFromCodeCoverage(Justification = "Code paths are OS dependent and can't be reliably tested.")]
     private Uri OrderSummaryUri(string internalOrgId, CallOffId callOffId)
     {
         var uri = urlHelper.GetUrlHelper(actionContextAccessor.ActionContext!)
