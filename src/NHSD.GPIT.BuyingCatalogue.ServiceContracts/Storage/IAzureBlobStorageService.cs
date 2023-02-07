@@ -6,7 +6,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Storage;
 
 public interface IAzureBlobStorageService
 {
-    Task<BlobDownloadInfo> DownloadAsync(BlobDocument blobDocument);
+    Task<MemoryStream> DownloadAsync(BlobDocument blobDocument);
 
     Task UploadAsync(BlobDocument blobDocument, Stream contents);
 }

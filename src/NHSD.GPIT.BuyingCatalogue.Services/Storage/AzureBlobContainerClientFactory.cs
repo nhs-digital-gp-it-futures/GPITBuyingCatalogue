@@ -1,4 +1,5 @@
-﻿using Azure.Storage.Blobs;
+﻿using System;
+using Azure.Storage.Blobs;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Storage;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Storage;
@@ -10,6 +11,8 @@ public class AzureBlobContainerClientFactory : IAzureBlobContainerClientFactory
     public AzureBlobContainerClientFactory(
         AzureBlobSettings settings)
     {
+        if (settings == null) throw new ArgumentNullException(nameof(settings));
+
         blobClient = new(settings.ConnectionString);
     }
 

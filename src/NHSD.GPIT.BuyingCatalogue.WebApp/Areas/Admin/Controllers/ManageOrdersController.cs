@@ -122,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 ? $"order-summary-completed-{callOffId}.pdf"
                 : $"order-summary-in-progress-{callOffId}.pdf";
 
-            return File(result, "application/pdf", fileName);
+            return File(result.ToArray(), "application/pdf", fileName);
         }
 
         [HttpGet("{callOFfId}/delete")]

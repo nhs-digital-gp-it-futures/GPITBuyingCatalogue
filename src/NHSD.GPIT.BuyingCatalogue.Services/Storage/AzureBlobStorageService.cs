@@ -21,7 +21,7 @@ public class AzureBlobStorageService : IAzureBlobStorageService
         this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<BlobDownloadInfo> DownloadAsync(BlobDocument blobDocument)
+    public async Task<MemoryStream> DownloadAsync(BlobDocument blobDocument)
     {
         try
         {
@@ -29,7 +29,12 @@ public class AzureBlobStorageService : IAzureBlobStorageService
 
             var blobResponse = await client.GetBlobClient(blobDocument.Document).DownloadAsync();
 
-            return blobResponse;
+            var memoryStream = new MemoryStream();
+
+            await blobResponse.Value.Content.CopyToAsync(memoryStream);
+            memoryStream.Seek(0, SeekOrigin.Begin);
+
+            return memoryStream;
         }
         catch (RequestFailedException ex)
         {
@@ -53,4 +58,3 @@ public class AzureBlobStorageService : IAzureBlobStorageService
         await blobClient.UploadAsync(contents);
     }
 }
-

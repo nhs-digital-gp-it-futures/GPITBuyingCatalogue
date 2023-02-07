@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -98,7 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderAdminService> orderServiceMock,
-            [Frozen] Mock<IPdfService> pdfServiceMock,
+            [Frozen] Mock<IOrderPdfService> pdfServiceMock,
             byte[] fileContents,
             ManageOrdersController controller)
         {
@@ -109,8 +110,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .ReturnsAsync(order);
 
             pdfServiceMock
-                .Setup(s => s.Convert(It.IsAny<System.Uri>()))
-                .Returns(fileContents);
+                .Setup(s => s.CreateOrderSummaryPdf(It.IsAny<EntityFramework.Ordering.Models.Order>()))
+                .ReturnsAsync(new MemoryStream(fileContents));
 
             SetControllerHttpContext(controller);
 
@@ -131,7 +132,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderAdminService> orderServiceMock,
-            [Frozen] Mock<IPdfService> pdfServiceMock,
+            [Frozen] Mock<IOrderPdfService> pdfServiceMock,
             byte[] fileContents,
             ManageOrdersController controller)
         {
@@ -142,8 +143,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .ReturnsAsync(order);
 
             pdfServiceMock
-                .Setup(s => s.Convert(It.IsAny<System.Uri>()))
-                .Returns(fileContents);
+                .Setup(s => s.CreateOrderSummaryPdf(It.IsAny<EntityFramework.Ordering.Models.Order>()))
+                .ReturnsAsync(new MemoryStream(fileContents));
 
             SetControllerHttpContext(controller);
 

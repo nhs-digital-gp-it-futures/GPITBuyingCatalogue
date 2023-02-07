@@ -34,15 +34,7 @@ public class CachedOrderPdfService : IOrderPdfService
         var blobDocument = $"{order.CallOffId.ToString()}.pdf";
         var cachedPdf = await azureBlobStorageService.DownloadAsync(new(settings.OrderPdfContainerName, blobDocument));
         if (cachedPdf != null)
-        {
-            var memoryStream = new MemoryStream();
-
-            await cachedPdf.Content.CopyToAsync(memoryStream);
-
-            memoryStream.Seek(0, SeekOrigin.Begin);
-
-            return memoryStream;
-        }
+            return cachedPdf;
 
         var file = await orderPdfService.CreateOrderSummaryPdf(order);
 

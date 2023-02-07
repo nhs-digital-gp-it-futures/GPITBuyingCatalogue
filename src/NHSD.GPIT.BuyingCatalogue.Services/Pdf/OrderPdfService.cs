@@ -36,15 +36,15 @@ public class OrderPdfService : IOrderPdfService
         this.pdfSettings = pdfSettings ?? throw new ArgumentNullException(nameof(pdfSettings));
     }
 
-    public Task<MemoryStream> CreateOrderSummaryPdf(Order order)
+    public async Task<MemoryStream> CreateOrderSummaryPdf(Order order)
     {
         if (order == null) throw new ArgumentNullException(nameof(order));
 
         var url = OrderSummaryUri(order.OrderingParty.InternalIdentifier, order.CallOffId);
 
-        var pdfContents = pdfService.Convert(url);
+        var pdfContents = await pdfService.Convert(url);
 
-        return Task.FromResult(new MemoryStream(pdfContents));
+        return new MemoryStream(pdfContents);
     }
 
     private Uri OrderSummaryUri(string internalOrgId, CallOffId callOffId)
