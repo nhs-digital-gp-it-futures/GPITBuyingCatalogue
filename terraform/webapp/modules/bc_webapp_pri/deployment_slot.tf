@@ -1,10 +1,7 @@
 resource "azurerm_linux_web_app_slot" "slot" {
   name                 = "staging"
   count                = var.create_slot
-  app_service_name     = var.webapp_name
-  location             = var.region
-  resource_group_name  = var.rg_name
-  app_service_plan_id  = azurerm_service_plan.webapp_sp.id
+  app_service_id     = azurerm_linux_web_app.webapp.id
   
   app_settings = {
     # Main Settings
@@ -31,14 +28,13 @@ resource "azurerm_linux_web_app_slot" "slot" {
   
   # Configure Docker Image to load on start
   site_config {
-    use_32_bit_worker_process = true
+    use_32_bit_worker = true
     always_on                 = var.always_on
-    min_tls_version           = "1.2"
+    minimum_tls_version           = "1.2"
 
     application_stack{
       docker_image          = "https://${var.docker_registry_server_url}/${var.repository_name}"
       docker_image_tag = "latest"
-      dotenet_version = "6.0"
     }
 
     ip_restriction {
@@ -68,7 +64,7 @@ resource "azurerm_linux_web_app_slot" "slot" {
 
   lifecycle {
     ignore_changes = [
-      site_config[0].linux_fx_version
+      site_config[0].application_stack[0].docker_image
     ]
   }
 }

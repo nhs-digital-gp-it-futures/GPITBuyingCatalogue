@@ -18,7 +18,7 @@ output "webapp_outbound_ip_addresses" {
 
 output "webapp_default_site_hostname" {
     description = "The new Web App URL"
-    value = azurerm_linux_web_app.webapp.default_site_hostname
+    value = azurerm_linux_web_app.webapp.default_hostname
     sensitive   = false
 }
 
