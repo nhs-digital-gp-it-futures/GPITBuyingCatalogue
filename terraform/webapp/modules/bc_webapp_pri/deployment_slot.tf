@@ -64,7 +64,11 @@ resource "azurerm_linux_web_app_slot" "slot" {
 
   lifecycle {
     ignore_changes = [
-      site_config[0].application_stack[0].docker_image
+      virtual_network_subnet_id,
+      site_config[0].scm_minimum_tls_version,
+      site_config[0].ftps_state,
+      site_config[0].application_stack[0].docker_image,
+      site_config[0].application_stack[0].docker_image_tag  
     ]
   }
 }
