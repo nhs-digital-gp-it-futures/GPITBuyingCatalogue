@@ -39,5 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public ICollection<CatalogueItem> CatalogueItems { get; set; }
 
         public ICollection<SupplierContact> SupplierContacts { get; set; }
+
+        public bool CanDeleteFromSupplierContacts() => !(IsActive && SupplierContacts.Count == 1);
     }
 }

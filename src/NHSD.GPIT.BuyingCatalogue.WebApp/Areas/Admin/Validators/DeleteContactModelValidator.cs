@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
         private bool NotBeLastContactOnActiveSupplier(DeleteContactModel model)
         {
             var supplier = suppliersService.GetSupplier(model.SupplierId).GetAwaiter().GetResult();
-            return !(supplier.IsActive && supplier.SupplierContacts.Count == 1);
+            return supplier.CanDeleteFromSupplierContacts();
         }
     }
 }

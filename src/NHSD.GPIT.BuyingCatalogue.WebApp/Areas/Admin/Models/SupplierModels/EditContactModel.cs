@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
 
             CanDelete = ContactId > 0
                 && SolutionsReferencingThisContact.Count == 0
-                && (supplier.SupplierContacts.Count > 1 || !supplier.IsActive);
+                && supplier.CanDeleteFromSupplierContacts();
         }
 
         public int? ContactId { get; init; }
