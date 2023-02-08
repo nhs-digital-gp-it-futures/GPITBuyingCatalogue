@@ -24,8 +24,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Pr
             CommonActions.PageTitle().Should().BeEquivalentTo(PageTitle.FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
-            CommonActions.ElementIsDisplayed(SelectPriceObjects.SelectPriceRadio).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(SelectPriceObjects.PriceTitle(1)).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(PriceObjects.SelectPriceRadio).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(PriceObjects.PriceTitle(1)).Should().BeTrue();
         }
 
         [Fact]
@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Pr
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementIsDisplayed(SelectPriceObjects.SelectPriceError).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(PriceObjects.SelectPriceError).Should().BeTrue();
         }
 
         [Fact]

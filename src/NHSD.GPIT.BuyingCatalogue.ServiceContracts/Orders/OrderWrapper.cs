@@ -75,21 +75,21 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public bool HasCurrentAmendments(OrderItem orderItem)
         {
-            var previous = Previous;
+            var previousOrder = Previous;
 
-            if (previous == null)
+            if (previousOrder == null)
             {
                 return false;
             }
 
             if (Order.OrderItems.Any(x => x.CatalogueItemId == orderItem.CatalogueItemId)
-                && previous.OrderItems.All(x => x.CatalogueItemId != orderItem.CatalogueItemId))
+                && previousOrder.OrderItems.All(x => x.CatalogueItemId != orderItem.CatalogueItemId))
             {
                 return true;
             }
 
             return Order.OrderItems.Any(x => x.CatalogueItemId == orderItem.CatalogueItemId)
-                && previous.OrderItems.Any(x => x.CatalogueItemId == orderItem.CatalogueItemId);
+                && previousOrder.OrderItems.Any(x => x.CatalogueItemId == orderItem.CatalogueItemId);
         }
     }
 }

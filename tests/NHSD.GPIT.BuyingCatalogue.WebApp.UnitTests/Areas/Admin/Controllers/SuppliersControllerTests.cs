@@ -125,6 +125,113 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
+        public static async Task Post_EditSupplier_StatusNotChanged_ReturnsRedirectToActionResult(
+            Supplier supplier,
+            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            EditSupplierModel model,
+            SuppliersController controller)
+        {
+            supplier.IsActive = model.SupplierStatus;
+
+            mockSuppliersService.Setup(s => s.GetSupplier(supplier.Id)).ReturnsAsync(supplier);
+
+            var actual = (await controller.EditSupplier(supplier.Id, model)).As<RedirectToActionResult>();
+
+            actual.Should().NotBeNull();
+            actual.ActionName.Should().Be(nameof(SuppliersController.Index));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditSupplier_Activate_MissingInformation_ReturnsExpectedView(
+            Supplier supplier,
+            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            SuppliersController controller)
+        {
+            supplier.IsActive = true;
+            supplier.Address = null;
+            supplier.Name = null;
+            supplier.SupplierContacts = new List<SupplierContact>();
+
+            var model = new EditSupplierModel(supplier);
+
+            supplier.IsActive = false;
+
+            mockSuppliersService.Setup(s => s.GetSupplier(supplier.Id)).ReturnsAsync(supplier);
+
+            var actual = (await controller.EditSupplier(supplier.Id, model)).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNullOrEmpty();
+            actual.Model.Should().BeEquivalentTo(model);
+
+            controller.ModelState.IsValid.Should().BeFalse();
+            controller.ModelState.ErrorCount.Should().Be(1);
+            controller.ModelState.Should().ContainKey(nameof(model.SupplierStatus));
+            controller.ModelState[nameof(model.SupplierStatus)]?.Errors.Should().Contain(x => x.ErrorMessage == "Mandatory section incomplete");
+
+            mockSuppliersService.Verify(s => s.GetSupplier(supplier.Id));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditSupplier_Deactivate_PublishedSolutions_ReturnsExpectedView(
+            Supplier supplier,
+            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            SuppliersController controller)
+        {
+            supplier.IsActive = false;
+
+            var model = new EditSupplierModel(supplier);
+
+            supplier.IsActive = true;
+
+            mockSuppliersService.Setup(s => s.GetSupplier(supplier.Id)).ReturnsAsync(supplier);
+            mockSuppliersService.Setup(x => x.GetAllSolutionsForSupplier(supplier.Id))
+                .ReturnsAsync(new List<CatalogueItem>() { new CatalogueItem() { PublishedStatus = PublicationStatus.Published } });
+
+            var actual = (await controller.EditSupplier(supplier.Id, model)).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNullOrEmpty();
+            actual.Model.Should().BeEquivalentTo(model);
+
+            controller.ModelState.IsValid.Should().BeFalse();
+            controller.ModelState.ErrorCount.Should().Be(1);
+            controller.ModelState.Should().ContainKey(nameof(model.SupplierStatus));
+            controller.ModelState[nameof(model.SupplierStatus)]?.Errors.Should().Contain(x => x.ErrorMessage == "Cannot set to inactive while 1 solutions for this supplier are still published");
+
+            mockSuppliersService.VerifyAll();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditSupplier_UpdateActiveStatus_ReturnsRedirectToAction(
+            Supplier supplier,
+            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            SuppliersController controller)
+        {
+            supplier.IsActive = false;
+
+            var model = new EditSupplierModel(supplier);
+
+            supplier.IsActive = true;
+
+            mockSuppliersService.Setup(s => s.GetSupplier(supplier.Id)).ReturnsAsync(supplier);
+            mockSuppliersService.Setup(x => x.GetAllSolutionsForSupplier(supplier.Id))
+                .ReturnsAsync(new List<CatalogueItem>() { new CatalogueItem() { PublishedStatus = PublicationStatus.Draft } });
+            mockSuppliersService.Setup(x => x.UpdateSupplierActiveStatus(supplier.Id, model.SupplierStatus))
+                .ReturnsAsync(supplier);
+
+            var actual = (await controller.EditSupplier(supplier.Id, model)).As<RedirectToActionResult>();
+
+            actual.Should().NotBeNull();
+            actual.ActionName.Should().Be(nameof(SuppliersController.Index));
+            mockSuppliersService.VerifyAll();
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static void Get_AddSupplierDetails_ReturnsViewWithExpectedViewModel(
             SuppliersController controller)
         {
@@ -340,6 +447,56 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
             actual.Model.Should().BeEquivalentTo(expectedResult);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditSupplierContact_InvalidViewModel_ReturnsViewWithExpectedViewModel(
+            Supplier supplier,
+            List<CatalogueItem> solutions,
+            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            EditContactModel model,
+            SuppliersController controller)
+        {
+            controller.ModelState.AddModelError("key", "errorMessage");
+
+            mockSuppliersService.Setup(s => s.GetSolutionsReferencingSupplierContact(supplier.SupplierContacts.First().Id))
+                .ReturnsAsync(solutions);
+
+            var actual = (await controller.EditSupplierContact(supplier.Id, supplier.SupplierContacts.First().Id, model)).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNull();
+            actual.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(x => x.SolutionsReferencingThisContact));
+            actual.Model.As<EditContactModel>().SolutionsReferencingThisContact.Should().BeEquivalentTo(solutions);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditSupplierContact_ReturnsRedirectToAction(
+            Supplier supplier,
+            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            EditContactModel model,
+            SuppliersController controller)
+        {
+            var updatedContact = new SupplierContact
+            {
+                Id = model.ContactId!.Value,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Email = model.Email,
+                PhoneNumber = model.PhoneNumber,
+                Department = model.Department,
+            };
+
+            mockSuppliersService.Setup(s => s.EditSupplierContact(supplier.Id, supplier.SupplierContacts.First().Id, updatedContact))
+                .ReturnsAsync(supplier);
+
+            var actual = (await controller.EditSupplierContact(supplier.Id, supplier.SupplierContacts.First().Id, model)).As<RedirectToActionResult>();
+
+            actual.Should().NotBeNull();
+            actual.ActionName.Should().Be(nameof(SuppliersController.ManageSupplierContacts));
+            actual.RouteValues["supplierId"].Should().Be(supplier.Id);
         }
 
         [Theory]
