@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using AutoFixture;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -72,6 +74,69 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Supplier
             actual.SolutionsReferencingThisContact.Should().NotBeEmpty().And.HaveCount(solutions.Count);
             actual.Caption.Should().Be(contact.NameOrDepartment);
             actual.Advice.Should().Be(string.Format(EditContactModel.EditContactAdvice, supplier.Name));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void ValidConstructor_WithActiveSupplierAndASingleUnreferencedContact_AssignsCanDelete_False(
+            Supplier supplier,
+            SupplierContact contact)
+        {
+            supplier.IsActive = true;
+            supplier.SupplierContacts = new List<SupplierContact>(new[] { contact });
+            var solutions = new List<CatalogueItem>();
+
+            var actual = new EditContactModel(supplier.SupplierContacts.First(), supplier, solutions);
+
+            actual.CanDelete.Should().Be(false);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void ValidConstructor_WithInactiveSupplierAndASingleUnreferencedContact_AssignsCanDelete_True(
+            Supplier supplier,
+            SupplierContact contact)
+        {
+            supplier.IsActive = false;
+            supplier.SupplierContacts = new List<SupplierContact>(new[] { contact });
+            var solutions = new List<CatalogueItem>();
+
+            var actual = new EditContactModel(supplier.SupplierContacts.First(), supplier, solutions);
+
+            actual.CanDelete.Should().Be(true);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void ValidConstructor_WithInactiveSupplierAndASingleReferencedContact_AssignsCanDelete_False(
+            Supplier supplier,
+            SupplierContact contact,
+            CatalogueItem catalogueItem)
+        {
+            supplier.IsActive = false;
+            supplier.SupplierContacts = new List<SupplierContact>(new[] { contact });
+            var solutions = new List<CatalogueItem>(new[] { catalogueItem });
+
+            var actual = new EditContactModel(supplier.SupplierContacts.First(), supplier, solutions);
+
+            actual.CanDelete.Should().Be(false);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void ValidConstructor_WithActiveSupplierAndUnreferencedContacts_AssignsCanDelete_True(
+            Supplier supplier,
+            IFixture fixture)
+        {
+            supplier.IsActive = true;
+            supplier.SupplierContacts = new List<SupplierContact>();
+            fixture.AddManyTo(supplier.SupplierContacts, 2);
+
+            var solutions = new List<CatalogueItem>();
+
+            var actual = new EditContactModel(supplier.SupplierContacts.First(), supplier, solutions);
+
+            actual.CanDelete.Should().Be(true);
         }
     }
 }

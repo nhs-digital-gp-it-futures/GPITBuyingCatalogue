@@ -40,7 +40,7 @@
                                                display-name="Text" />
                         </nhs-fieldset-form-label>
                     }
-                    else
+                    else if (Model.Contacts.Count == 1)
                     {
                         <input type="hidden" asp-for="SelectedContactId" value="@Model.Contacts.First().Id"/>
                         <h3>Contact for this order</h3>
