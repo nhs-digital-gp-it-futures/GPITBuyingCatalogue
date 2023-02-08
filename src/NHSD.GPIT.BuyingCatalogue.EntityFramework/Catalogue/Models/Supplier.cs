@@ -6,7 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     [Serializable]
-    public sealed class Supplier : IAudited
+    public sealed partial class Supplier : IAudited
     {
         public Supplier()
         {
@@ -39,7 +39,5 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public ICollection<CatalogueItem> CatalogueItems { get; set; }
 
         public ICollection<SupplierContact> SupplierContacts { get; set; }
-
-        public bool CanDeleteFromSupplierContacts() => !(IsActive && SupplierContacts.Count == 1);
     }
 }
