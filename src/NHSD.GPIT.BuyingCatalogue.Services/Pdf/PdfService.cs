@@ -8,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Pdf
 {
+    [ExcludeFromCodeCoverage(Justification = "Can't be tested as it stands up an instance of Google Chrome")]
     public sealed class PdfService : IPdfService
     {
         private const string ChromeArgs = "--no-sandbox --headless --disable-dev-shm-usage --disable-gpu --disable-software-rasterizer --ignore-certificate-errors";
