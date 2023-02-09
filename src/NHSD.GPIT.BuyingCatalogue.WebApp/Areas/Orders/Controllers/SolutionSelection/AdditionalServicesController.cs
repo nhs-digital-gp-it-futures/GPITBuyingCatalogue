@@ -221,9 +221,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     .ToList();
             }
 
-            var existingServiceIds = wrapper.Previous
+            var existingServiceIds = wrapper.Previous?
                 .GetAdditionalServices()
-                .Select(x => x.CatalogueItemId);
+                .Select(x => x.CatalogueItemId) ?? new List<CatalogueItemId>();
 
             return wrapper.Order
                 .GetAdditionalServices()

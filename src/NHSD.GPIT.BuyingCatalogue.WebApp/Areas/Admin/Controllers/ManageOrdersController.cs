@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,9 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
@@ -26,14 +23,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         private readonly IOrderAdminService orderAdminService;
         private readonly ICsvService csvService;
         private readonly IOrderService orderService;
-        private readonly IPdfService pdfService;
+        private readonly IOrderPdfService pdfService;
         private readonly PdfSettings pdfSettings;
 
         public ManageOrdersController(
             IOrderAdminService orderAdminService,
             ICsvService csvService,
             IOrderService orderService,
-            IPdfService pdfService,
+            IOrderPdfService pdfService,
             PdfSettings pdfSettings)
         {
             this.orderAdminService = orderAdminService ?? throw new ArgumentNullException(nameof(orderAdminService));
@@ -119,13 +116,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var order = await orderAdminService.GetOrder(callOffId);
 
-            var result = pdfService.Convert(OrderSummaryUri(internalOrgId, callOffId));
+            var result = await pdfService.CreateOrderSummaryPdf(order);
 
             var fileName = order.OrderStatus == OrderStatus.Completed
                 ? $"order-summary-completed-{callOffId}.pdf"
                 : $"order-summary-in-progress-{callOffId}.pdf";
 
-            return File(result, "application/pdf", fileName);
+            return File(result.ToArray(), "application/pdf", fileName);
         }
 
         [HttpGet("{callOFfId}/delete")]
@@ -151,27 +148,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             await orderAdminService.DeleteOrder(callOffId, model.NameOfRequester, model.NameOfApprover, model.ApprovalDate);
 
             return RedirectToAction(nameof(Index));
-        }
-
-        private Uri OrderSummaryUri(string internalOrgId, CallOffId callOffId)
-        {
-            var uri = Url.Action(
-                nameof(OrderSummaryController.Index),
-                typeof(OrderSummaryController).ControllerName(),
-                new { internalOrgId, callOffId });
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                uri = $"{Request.Scheme}://{Request.Host}{uri}";
-            }
-            else
-            {
-                uri = pdfSettings.UseSslForPdf
-                    ? $"https://localhost{uri}"
-                    : $"http://localhost{uri}";
-            }
-
-            return new(uri);
         }
     }
 }

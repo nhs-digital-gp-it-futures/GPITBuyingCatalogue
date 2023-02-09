@@ -1,34 +1,52 @@
 version: '3.9'
 
 services:
-    sqlserver:
-        image: "mcr.microsoft.com/mssql/server"
-        ports:
-          - 1432:1433
-        environment:
-            SA_PASSWORD: "Abc123Abc123"
-            ACCEPT_EULA: "Y"
+  sqlserver:
+    image: "mcr.microsoft.com/mssql/server"
+    ports:
+      - "1432:1433"
+    environment:
+      SA_PASSWORD: "Abc123Abc123"
+      ACCEPT_EULA: "Y"
 
-    nhsd_gpitbcdb_deploy:
-        image: ${DOCKER_REGISTRY}gpitbuyingcataloguedatabase
-        container_name: nhsd_gpitbcdb_deploy
-        build:
-            context: .
-            dockerfile: database/NHSD.GPITBuyingCatalogue.Database.Deployment/Docker/Dockerfile
-        environment:
-            SA_PASSWORD: "Abc123Abc123"
-            NHSD_PASSWORD: "DisruptTheMarket1!"
-            DB_NAME: "GPITBuyingCatalogue"
-            DB_SERVER: sqlserver
-            INCLUDE_IMPORT: "TRUE"
-            INCLUDE_PUBLISH: "TRUE"
-            INSERT_TEST_DATA: "TRUE"
-            SEED_ORGANISATIONS: "TRUE"
-            CREATE_EA_USER: "False"
-            EA_USER_FIRST_NAME: "Agency"
-            EA_USER_LAST_NAME: "User"
-            EA_USER_EMAIL: "user@agency.com"
-            EA_USER_PASSWORD_HASH: "AQAAAAEAACcQAAAAEEOFkNNrFpKmDC2TBv2CP/dzxfnjdXk97RoqRlunE/CGs2tmFcewKZj4M/fITiP2tg=="
-            EA_USER_PHONE: "01234567890"
-        depends_on:
-            - "sqlserver"
+  nhsd_gpitbcdb_deploy:
+    image: ${DOCKER_REGISTRY}gpitbuyingcataloguedatabase
+    container_name: nhsd_gpitbcdb_deploy
+    build:
+      context: .
+      dockerfile: database/NHSD.GPITBuyingCatalogue.Database.Deployment/Docker/Dockerfile
+    environment:
+      SA_PASSWORD: "Abc123Abc123"
+      NHSD_PASSWORD: "DisruptTheMarket1!"
+      DB_NAME: "GPITBuyingCatalogue"
+      DB_SERVER: sqlserver
+      INCLUDE_IMPORT: "TRUE"
+      INCLUDE_PUBLISH: "TRUE"
+      INSERT_TEST_DATA: "TRUE"
+      SEED_ORGANISATIONS: "TRUE"
+      CREATE_EA_USER: "False"
+      EA_USER_FIRST_NAME: "Agency"
+      EA_USER_LAST_NAME: "User"
+      EA_USER_EMAIL: "user@agency.com"
+      EA_USER_PASSWORD_HASH: "AQAAAAEAACcQAAAAEEOFkNNrFpKmDC2TBv2CP/dzxfnjdXk97RoqRlunE/CGs2tmFcewKZj4M/fITiP2tg=="
+      EA_USER_PHONE: "01234567890"
+    depends_on:
+          - "sqlserver"
+
+  nhsd_gpitbc_azurite:
+    image: "mcr.microsoft.com/azure-storage/azurite"
+    container_name: "nhsd_gpitbc_blob_store"
+    ports:
+      - "10000:10000"
+      - "10001:10001"
+      - "10002:10002"
+
+
+  nhsd_gpitbc_azurite_seed:
+    image: "mcr.microsoft.com/azure-cli"
+    depends_on:
+      - nhsd_gpitbc_azurite
+    restart: "no"
+    environment:
+      AZURE_STORAGE_CONNECTION_STRING: "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://nhsd_gpitbc_azurite:10000/devstoreaccount1;QueueEndpoint=http://nhsd_gpitbc_azurite:10001/devstoreaccount1;"
+    entrypoint: ["bash", "-c", "sleep 10 && az storage container create -n orderpdfs && az storage container create -n publicdocs"]

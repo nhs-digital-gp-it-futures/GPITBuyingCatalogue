@@ -126,7 +126,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 .ReturnsAsync(new OrderWrapper(order));
 
             orderService
-                .Setup(x => x.CompleteOrder(order.CallOffId, internalOrgId, 1, It.IsAny<Uri>()))
+                .Setup(x => x.CompleteOrder(order.CallOffId, internalOrgId, 1))
                 .Verifiable();
 
             var result = await controller.ContractSummary(internalOrgId, order.CallOffId, model);

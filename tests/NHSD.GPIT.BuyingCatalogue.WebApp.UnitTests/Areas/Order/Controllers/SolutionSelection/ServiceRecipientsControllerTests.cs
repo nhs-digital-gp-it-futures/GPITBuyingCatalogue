@@ -409,7 +409,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             IEnumerable<CatalogueItemId> catalogueItemIds = null;
 
             orderItemService
-                .Setup(x => x.AddOrderItems(model.InternalOrgId, model.CallOffId, It.IsAny<IEnumerable<CatalogueItemId>>()))
+                .Setup(x => x.CopyOrderItems(model.InternalOrgId, model.CallOffId, It.IsAny<IEnumerable<CatalogueItemId>>()))
                 .Callback<string, CallOffId, IEnumerable<CatalogueItemId>>((_, _, x) => catalogueItemIds = x);
 
             List<ServiceRecipientDto> serviceRecipientDtos = null;

@@ -55,6 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
             new RecursiveErrorsCustomisation(),
             new RecipientDateModelCustomization(),
             new SelectDateModelCustomization(),
+            new BlobServiceClientCustomization(),
         };
 
         internal static IFixture Create() => Create(Customizations);
