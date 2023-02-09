@@ -14,5 +14,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.Quantity
         public static By InputQuantityInput(int index) => By.Id($"ServiceRecipients_{index}__InputQuantity");
 
         public static By InputQuantityInputError(int index) => By.Id($"ServiceRecipients_{index}__InputQuantity-error");
+
+        public static By ViewOrderItemQuantity => By.Id("order-item-quantity");
+
+        public static By ViewServiceRecipientQuantity => By.Id("service-recipient-quantity");
     }
 }

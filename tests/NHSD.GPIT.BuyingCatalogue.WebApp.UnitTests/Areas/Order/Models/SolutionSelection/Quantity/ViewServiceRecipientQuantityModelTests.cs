@@ -10,26 +10,34 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.SolutionSelection.Quantity
 {
-    public static class SelectServiceRecipientQuantityModelTests
+    public static class ViewServiceRecipientQuantityModelTests
     {
         [Fact]
         public static void OrderItemIsNull_ThrowsException()
         {
             FluentActions
-                .Invoking(() => new SelectServiceRecipientQuantityModel(null, null))
+                .Invoking(() => new ViewServiceRecipientQuantityModel(null))
                 .Should().Throw<ArgumentNullException>();
         }
 
         [Theory]
-        [CommonAutoData]
-        public static void WithValidOrderItem_PropertiesCorrectlySet(OrderItem item)
+        [CommonInlineAutoData(ProvisioningType.Declarative)]
+        [CommonInlineAutoData(ProvisioningType.OnDemand)]
+        [CommonInlineAutoData(ProvisioningType.PerServiceRecipient)]
+        public static void WithValidOrderItem_PropertiesCorrectlySet(
+            ProvisioningType provisioningType,
+            OrderItem item)
         {
-            item.OrderItemPrice.ProvisioningType = ProvisioningType.Patient;
+            item.OrderItemPrice.ProvisioningType = provisioningType;
 
-            var model = new SelectServiceRecipientQuantityModel(item, null);
+            var model = new ViewServiceRecipientQuantityModel(item);
 
+            model.Title.Should().Be(string.Format(ViewServiceRecipientQuantityModel.TitleText, model.ItemType));
+            model.Caption.Should().Be(model.ItemName);
+            model.Advice.Should().Be(ViewServiceRecipientQuantityModel.AdviceText);
             model.ItemName.Should().Be(item.CatalogueItem.Name);
             model.ItemType.Should().Be(item.CatalogueItem.CatalogueItemType.Description());
+            model.QuantityColumnTitle.Should().Be(ViewServiceRecipientQuantityModel.QuantityColumnText);
             model.ServiceRecipients.Length.Should().Be(item.OrderItemRecipients.Count);
 
             foreach (var serviceRecipient in model.ServiceRecipients)
@@ -37,21 +45,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
                 var recipient = item.OrderItemRecipients.First(x => x.OdsCode == serviceRecipient.OdsCode);
 
                 serviceRecipient.Name.Should().Be(recipient.Recipient?.Name);
-                serviceRecipient.InputQuantity.Should().Be($"{recipient.Quantity}");
                 serviceRecipient.Quantity.Should().Be(recipient.Quantity);
             }
         }
 
         [Theory]
         [CommonAutoData]
-        public static void WithValidOrderItem_PerServiceRecipient_QuantityCorrectlySet(OrderItem item)
+        public static void WithValidOrderItem_Patient_PropertiesCorrectlySet(OrderItem item)
         {
-            item.OrderItemPrice.ProvisioningType = ProvisioningType.PerServiceRecipient;
+            item.OrderItemPrice.ProvisioningType = ProvisioningType.Patient;
 
-            var model = new SelectServiceRecipientQuantityModel(item, null);
+            var model = new ViewServiceRecipientQuantityModel(item);
 
+            model.Title.Should().Be(string.Format(ViewServiceRecipientQuantityModel.TitleText, model.ItemType));
+            model.Caption.Should().Be(model.ItemName);
+            model.Advice.Should().Be(ViewServiceRecipientQuantityModel.AdviceText);
             model.ItemName.Should().Be(item.CatalogueItem.Name);
             model.ItemType.Should().Be(item.CatalogueItem.CatalogueItemType.Description());
+            model.QuantityColumnTitle.Should().Be(ViewServiceRecipientQuantityModel.QuantityColumnPatientText);
             model.ServiceRecipients.Length.Should().Be(item.OrderItemRecipients.Count);
 
             foreach (var serviceRecipient in model.ServiceRecipients)
@@ -59,8 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
                 var recipient = item.OrderItemRecipients.First(x => x.OdsCode == serviceRecipient.OdsCode);
 
                 serviceRecipient.Name.Should().Be(recipient.Recipient?.Name);
-                serviceRecipient.InputQuantity.Should().BeNull();
-                serviceRecipient.Quantity.Should().Be(1);
+                serviceRecipient.Quantity.Should().Be(recipient.Quantity);
             }
         }
     }

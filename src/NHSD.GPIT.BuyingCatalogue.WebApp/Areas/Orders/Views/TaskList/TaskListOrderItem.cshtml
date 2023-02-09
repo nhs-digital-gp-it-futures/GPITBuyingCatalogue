@@ -96,15 +96,22 @@
         <nhs-table-cell>
             @if (Model.QuantityStatus != TaskProgress.CannotStart)
             {
-                var linkTitle = !Model.IsAmendment
-                    ? "Edit"
-                    : (Model.HasCurrentAmendments ? "Edit" : "View");
-
-                <a id="Quantity_@Model.CatalogueItemId" 
-                   href="@Url.Action(
-                             nameof(QuantityController.SelectQuantity),
-                             typeof(QuantityController).ControllerName(),
-                             new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, source })">@linkTitle</a>
+                if (Model.IsAmendment && !Model.HasCurrentAmendments)
+                {
+                    <a id="Quantity_@Model.CatalogueItemId" 
+                       href="@Url.Action(
+                                 nameof(QuantityController.ViewOrderItemQuantity),
+                                 typeof(QuantityController).ControllerName(),
+                                 new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId })">View</a>
+                }
+                else
+                {
+                    <a id="Quantity_@Model.CatalogueItemId" 
+                       href="@Url.Action(
+                                 nameof(QuantityController.SelectQuantity),
+                                 typeof(QuantityController).ControllerName(),
+                                 new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, source })">Edit</a>
+                }
             }
         </nhs-table-cell>
     </nhs-table-row-container>
