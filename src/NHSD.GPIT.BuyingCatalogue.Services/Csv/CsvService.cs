@@ -63,8 +63,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     Framework = oir.OrderItem.Order.SelectedFrameworkId,
                     InitialTerm = oir.OrderItem.Order.InitialPeriod,
                     MaximumTerm = oir.OrderItem.Order.MaximumTerm,
-                    PricingType = oir.OrderItem.OrderItemPrice.CataloguePriceType.ToString() == "Flat" ? "" : oir.OrderItem.OrderItemPrice.CataloguePriceType + " " + oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType,
-                    TieredArray = oir.OrderItem.OrderItemPrice.CataloguePriceType.ToString() == "Flat" ? "" : GetTieredArray(oir.OrderItem.OrderItemPrice.OrderItemPriceTiers),
+                    PricingType = oir.OrderItem.OrderItemPrice.CataloguePriceType.ToString() == "Flat" ? " " : oir.OrderItem.OrderItemPrice.CataloguePriceType + " " + oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType,
+                    TieredArray = oir.OrderItem.OrderItemPrice.CataloguePriceType.ToString() == "Flat" ? " " : GetTieredArray(oir.OrderItem.OrderItemPrice.OrderItemPriceTiers),
                 })
                 .OrderBy(o => o.ProductTypeId)
                 .ThenBy(o => o.ProductName)
@@ -129,17 +129,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
         private static string GetTieredArray(ICollection<OrderItemPriceTier> orderItemPriceTiers)
         {
             StringBuilder result = new StringBuilder();
-            result.Append("[");
+            result.Append(" [");
             for (int i = 0; i < orderItemPriceTiers.Count; i++)
             {
                 var item = orderItemPriceTiers.ElementAt(i);
                 result.Append("[" + item.LowerRange + ":" + item.Price + "]");
                 if (i < orderItemPriceTiers.Count - 1)
                 {
-                    result.Append(";");
+                    result.Append("; ");
                 }
             }
-            result.Append("]");
+
+            result.Append("] ");
             return result.ToString();
         }
 
