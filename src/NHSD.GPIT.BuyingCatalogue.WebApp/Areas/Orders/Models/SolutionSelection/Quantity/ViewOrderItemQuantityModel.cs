@@ -10,10 +10,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         public const string AdviceText = "These are the quantities you agreed in the original contract. You are unable to change the originally agreed quantities.";
         public const string TitleText = "Quantity of {0}";
 
-        public ViewOrderItemQuantityModel()
-        {
-        }
-
         public ViewOrderItemQuantityModel(OrderItem orderItem)
         {
             if (orderItem == null)

@@ -16,10 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         private readonly ProvisioningType? provisioningType;
 
-        public ViewServiceRecipientQuantityModel()
-        {
-        }
-
         public ViewServiceRecipientQuantityModel(OrderItem orderItem)
         {
             if (orderItem == null)
