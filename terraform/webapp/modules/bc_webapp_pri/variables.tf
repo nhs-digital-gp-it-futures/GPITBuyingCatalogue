@@ -27,7 +27,7 @@ variable "sku_size" {
 }
 
 variable "repository_name" {
-  type      = string
+  type = string
 }
 
 variable "always_on" {
@@ -35,7 +35,7 @@ variable "always_on" {
 }
 
 variable "cert_name" {
-  type      = string
+  type = string
 }
 
 variable "aspnet_environment" {
@@ -104,6 +104,11 @@ variable "sql_admin_username" {
 }
 
 variable "sql_admin_password" {
+  type      = string
+  sensitive = true
+}
+
+variable "blob_storage_connection_string" {
   type      = string
   sensitive = true
 }

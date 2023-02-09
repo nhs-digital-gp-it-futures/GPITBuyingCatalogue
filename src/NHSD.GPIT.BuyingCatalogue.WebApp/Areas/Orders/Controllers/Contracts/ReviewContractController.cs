@@ -75,34 +75,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             await orderService.CompleteOrder(
                 callOffId,
                 internalOrgId,
-                User.UserId(),
-                OrderSummaryUri(internalOrgId, callOffId));
+                User.UserId());
 
             return RedirectToAction(
                 nameof(OrderController.Completed),
                 typeof(OrderController).ControllerName(),
                 new { internalOrgId, callOffId });
-        }
-
-        private Uri OrderSummaryUri(string internalOrgId, CallOffId callOffId)
-        {
-            var uri = Url.Action(
-                nameof(OrderSummaryController.Index),
-                typeof(OrderSummaryController).ControllerName(),
-                new { internalOrgId, callOffId });
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                uri = $"{Request.Scheme ?? "https"}://{Request.Host}{uri}";
-            }
-            else
-            {
-                uri = pdfSettings.UseSslForPdf
-                    ? $"https://localhost{uri}"
-                    : $"http://localhost{uri}";
-            }
-
-            return new Uri(uri);
         }
     }
 }
