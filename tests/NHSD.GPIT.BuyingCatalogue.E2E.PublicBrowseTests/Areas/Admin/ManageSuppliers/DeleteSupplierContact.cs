@@ -93,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
                 .Should()
                 .BeTrue();
 
-            using var context = GetEndToEndDbContext();
+            await using var context = GetEndToEndDbContext();
 
             context.SupplierContacts.Count(sc => sc.Id == supplierContact.Id).Should().Be(0);
         }
