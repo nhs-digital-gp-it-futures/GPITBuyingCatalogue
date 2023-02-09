@@ -45,6 +45,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
 
             Caption = contact.NameOrDepartment;
             Advice = string.Format(EditContactAdvice, supplier.Name);
+
+            CanDelete = ContactId > 0
+                && SolutionsReferencingThisContact.Count == 0
+                && supplier.CanDeleteFromSupplierContacts();
         }
 
         public int? ContactId { get; init; }
@@ -52,5 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels
         public int SupplierId { get; init; }
 
         public IList<CatalogueItem> SolutionsReferencingThisContact { get; set; }
+
+        public bool CanDelete { get; init; }
     }
 }

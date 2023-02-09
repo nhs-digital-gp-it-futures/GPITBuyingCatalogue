@@ -6,7 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     [Serializable]
-    public sealed class Supplier : IAudited
+    public sealed partial class Supplier : IAudited
     {
         public Supplier()
         {

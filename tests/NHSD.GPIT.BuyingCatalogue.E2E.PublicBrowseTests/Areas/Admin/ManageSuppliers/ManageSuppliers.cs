@@ -12,6 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
     public sealed class ManageSuppliers : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         private const int TargetSupplierId = 99998;
+        private const int ActiveSupplierId = 99997;
 
         public ManageSuppliers(LocalWebApplicationFactory factory)
             : base(
@@ -154,7 +155,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             RunTestWithRetry(() =>
             {
                 using var context = GetEndToEndDbContext();
-                var supplier = context.Suppliers.First(s => s.IsActive);
+                var supplier = context.Suppliers.First(s => s.Id == ActiveSupplierId && s.IsActive);
 
                 CommonActions.ElementAddValue(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchBar, supplier.Name);
                 CommonActions.WaitUntilElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchListBox);
