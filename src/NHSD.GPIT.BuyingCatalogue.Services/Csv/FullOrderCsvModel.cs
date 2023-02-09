@@ -61,5 +61,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
         public int? InitialTerm { get; set; }
 
         public int? MaximumTerm { get; set; }
+
+        public string PricingType { get; set; }
+
+        public string TieredArray { get; set; }
     }
 }

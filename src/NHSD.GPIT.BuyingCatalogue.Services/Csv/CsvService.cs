@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
@@ -62,6 +63,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     Framework = oir.OrderItem.Order.SelectedFrameworkId,
                     InitialTerm = oir.OrderItem.Order.InitialPeriod,
                     MaximumTerm = oir.OrderItem.Order.MaximumTerm,
+                    PricingType = oir.OrderItem.OrderItemPrice.CataloguePriceType.ToString() == "Flat" ? "" : oir.OrderItem.OrderItemPrice.CataloguePriceType + " " + oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType,
+                    TieredArray = oir.OrderItem.OrderItemPrice.CataloguePriceType.ToString() == "Flat" ? "" : GetTieredArray(oir.OrderItem.OrderItemPrice.OrderItemPriceTiers),
                 })
                 .OrderBy(o => o.ProductTypeId)
                 .ThenBy(o => o.ProductName)
@@ -122,6 +125,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
         }
 
         private static string TimeUnitDescription(TimeUnit? timeUnit) => timeUnit?.Description() ?? string.Empty;
+
+        private static string GetTieredArray(ICollection<OrderItemPriceTier> orderItemPriceTiers)
+        {
+            StringBuilder result = new StringBuilder();
+            result.Append("[");
+            for (int i = 0; i < orderItemPriceTiers.Count; i++)
+            {
+                var item = orderItemPriceTiers.ElementAt(i);
+                result.Append("[" + item.LowerRange + ":" + item.Price + "]");
+                if (i < orderItemPriceTiers.Count - 1)
+                {
+                    result.Append(";");
+                }
+            }
+            result.Append("]");
+            return result.ToString();
+        }
 
         private async Task<Dictionary<CatalogueItemId, TimeUnit?>> GetBillingPeriods(int orderId)
         {

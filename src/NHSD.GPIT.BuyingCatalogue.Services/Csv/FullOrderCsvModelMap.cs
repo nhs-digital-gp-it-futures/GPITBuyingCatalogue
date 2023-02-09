@@ -32,6 +32,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             Map(o => o.Framework).Index(23).Name("Framework");
             Map(o => o.InitialTerm).Index(24).Name("Initial Term");
             Map(o => o.MaximumTerm).Index(25).Name("Contract Length (Months)");
+            Map(o => o.PricingType).Index(26).Name("Pricing Type");
+            Map(o => o.TieredArray).Index(27).Name("Tiered Array");
         }
     }
 }
