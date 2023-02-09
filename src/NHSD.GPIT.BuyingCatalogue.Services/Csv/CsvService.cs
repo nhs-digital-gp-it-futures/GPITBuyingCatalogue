@@ -63,9 +63,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     Framework = oir.OrderItem.Order.SelectedFrameworkId,
                     InitialTerm = oir.OrderItem.Order.InitialPeriod,
                     MaximumTerm = oir.OrderItem.Order.MaximumTerm,
-                    PricingType = oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Flat ? string.Empty
+                    PricingType = oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Flat || (oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Tiered && oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType != CataloguePriceCalculationType.Cumulative) ? string.Empty
                         : $"{oir.OrderItem.OrderItemPrice.CataloguePriceType} {oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType}",
-                    TieredArray = oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Flat ? string.Empty
+                    TieredArray = oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Flat || (oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Tiered && oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType != CataloguePriceCalculationType.Cumulative) ? string.Empty
                         : GetTieredArray(oir.OrderItem.OrderItemPrice.OrderItemPriceTiers),
                 })
                 .OrderBy(o => o.ProductTypeId)
