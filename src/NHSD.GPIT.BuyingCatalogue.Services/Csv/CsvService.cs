@@ -130,7 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
 
         private static string GetTieredArray(ICollection<OrderItemPriceTier> orderItemPriceTiers)
         {
-            return $" [{string.Join(";", orderItemPriceTiers.Select(item => $"[{item.LowerRange}:{item.Price}]"))}]";
+            return $"[{string.Join(";", orderItemPriceTiers.Select(item => $"[{item.LowerRange}:{item.Price}]"))}]";
         }
 
         private async Task<Dictionary<CatalogueItemId, TimeUnit?>> GetBillingPeriods(int orderId)
