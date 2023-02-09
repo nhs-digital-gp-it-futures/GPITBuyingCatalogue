@@ -28,25 +28,27 @@
                 <input type="hidden" asp-for="Title" />
                 <input type="hidden" asp-for="IsAmendment" />
 
-                <div class="nhsuk-u-margin-bottom-9">
-                    @if (Model.Contacts.Count > 1)
-                    {
+                @if (Model.Contacts.Count > 1)
+                {
+                    <div class="nhsuk-u-margin-bottom-9">
                         <nhs-fieldset-form-label asp-for="@Model"
-                                                 label-text="Who is your contact for this order?"
-                                                 label-hint="Select one option.">
+                                             label-text="Who is your contact for this order?"
+                                             label-hint="Select one option.">
                             <nhs-radio-buttons asp-for="SelectedContactId"
-                                               values="@Model.FormattedContacts.Cast<object>()"
-                                               value-name="Value"
-                                               display-name="Text" />
+                                           values="@Model.FormattedContacts.Cast<object>()"
+                                           value-name="Value"
+                                           display-name="Text" />
                         </nhs-fieldset-form-label>
-                    }
-                    else
-                    {
-                        <input type="hidden" asp-for="SelectedContactId" value="@Model.Contacts.First().Id"/>
+                    </div>
+                }
+                else if (Model.Contacts.Count == 1)
+                {
+                    <div class="nhsuk-u-margin-bottom-9">
+                        <input type="hidden" asp-for="SelectedContactId" value="@Model.Contacts.First().Id" />
                         <h3>Contact for this order</h3>
                         <p>@Model.FormattedContacts.First().Text</p>
-                    }
-                </div>
+                    </div>
+                }
 
                 @if (Model.TemporaryContact != null)
                 {
@@ -66,9 +68,9 @@
                             <nhs-table-cell>@Model.TemporaryContact.Email</nhs-table-cell>
                             <nhs-table-cell>
                                 <a asp-action="@nameof(SupplierController.NewContact)"
-                                   asp-controller="@typeof(SupplierController).ControllerName()"
-                                   asp-route-internalOrgId="@Model.InternalOrgId"
-                                   asp-route-callOffId="@Model.CallOffId">Edit</a>
+                               asp-controller="@typeof(SupplierController).ControllerName()"
+                               asp-route-internalOrgId="@Model.InternalOrgId"
+                               asp-route-callOffId="@Model.CallOffId">Edit</a>
                             </nhs-table-cell>
                         </nhs-table-row-container>
                     </nhs-table>
@@ -79,12 +81,12 @@
                                                  nameof(SupplierController.NewContact),
                                                  typeof(SupplierController).ControllerName(),
                                                  new { Model.InternalOrgId, Model.CallOffId })"
-                                        text="Add a new contact" />
+                                    text="Add a new contact" />
                     <p>
                         If your contact for this supplier is not listed, you can add their details using the link. The information will only appear on this order.
                     </p>
                 }
-                
+
                 <div class="nhsuk-u-margin-top-9">
                     <nhs-submit-button />
                 </div>

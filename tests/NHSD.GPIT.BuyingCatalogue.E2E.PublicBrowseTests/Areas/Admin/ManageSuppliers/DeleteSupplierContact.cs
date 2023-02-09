@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.RandomData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
@@ -17,6 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
     public sealed class DeleteSupplierContact : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         private const int SupplierId = 99998;
+        private const int SupplierWithSingleContactId = 99995;
         private const int ContactId = 3;
 
         private static readonly Dictionary<string, string> Parameters =
@@ -94,6 +96,36 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
             await using var context = GetEndToEndDbContext();
 
             context.SupplierContacts.Count(sc => sc.Id == supplierContact.Id).Should().Be(0);
+        }
+
+        [Fact]
+        public async Task DeleteSupplierContact_SupplierIsActiveWithOneContact_ContactNotDeleted()
+        {
+            await using var context = GetEndToEndDbContext();
+            var supplier = context.Suppliers
+                .Include(s => s.SupplierContacts)
+                .Single(x => x.Id == SupplierWithSingleContactId);
+
+            var supplierContact = supplier.SupplierContacts.First();
+
+            NavigateToUrl(
+                typeof(SuppliersController),
+                nameof(SuppliersController.DeleteSupplierContact),
+                new Dictionary<string, string>
+                {
+                    { nameof(SupplierId), supplier.Id.ToString() },
+                    { nameof(ContactId), supplierContact.Id.ToString() },
+                });
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(SuppliersController),
+                    nameof(SuppliersController.DeleteSupplierContact))
+                .Should()
+                .BeTrue();
+
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
         }
 
         private async Task<SupplierContact> AddSupplierContact()

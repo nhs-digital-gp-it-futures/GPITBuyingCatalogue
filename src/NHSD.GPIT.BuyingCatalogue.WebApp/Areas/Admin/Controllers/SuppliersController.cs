@@ -326,6 +326,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("{supplierId}/contacts/{contactId}/delete")]
         public async Task<IActionResult> DeleteSupplierContact(int supplierId, int contactId, DeleteContactModel model)
         {
+            if (!ModelState.IsValid)
+                return View(model);
+
             var supplier = await suppliersService.DeleteSupplierContact(supplierId, contactId);
 
             return RedirectToAction(
