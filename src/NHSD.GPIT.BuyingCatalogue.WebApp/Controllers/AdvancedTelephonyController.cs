@@ -26,5 +26,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 
             return File(resourceStream!, "application/pdf", fileName);
         }
+
+        [ExcludeFromCodeCoverage]
+        public IActionResult RedcentricPdf()
+        {
+            const string fileName = "Redcentric.pdf";
+            var resourceStream =
+                typeof(HomeController).Assembly.GetManifestResourceStream(
+                    $"NHSD.GPIT.BuyingCatalogue.WebApp.Files.{fileName}");
+
+            return File(resourceStream!, "application/pdf", fileName);
+        }
+
+        [ExcludeFromCodeCoverage]
+        public IActionResult SurgeryConnectPdf()
+        {
+            const string fileName = "Surgery Connect.pdf";
+            var resourceStream =
+                typeof(HomeController).Assembly.GetManifestResourceStream(
+                    $"NHSD.GPIT.BuyingCatalogue.WebApp.Files.{fileName}");
+
+            return File(resourceStream!, "application/pdf", fileName);
+        }
     }
 }
