@@ -400,9 +400,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             dbContext.Entry(order).State = EntityState.Modified;
 
+            var userTemplateId = order.AssociatedServicesOnly
+                ? orderMessageSettings.UserAssociatedServiceTemplateId
+                : orderMessageSettings.UserTemplateId;
+
             await Task.WhenAll(
                 emailService.SendEmailAsync(orderMessageSettings.Recipient.Address, templateId, adminTokens),
-                emailService.SendEmailAsync(userEmail, orderMessageSettings.UserTemplateId, userTokens),
+                emailService.SendEmailAsync(userEmail, userTemplateId, userTokens),
                 dbContext.SaveChangesAsync());
         }
 
