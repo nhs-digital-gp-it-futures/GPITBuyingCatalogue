@@ -4,7 +4,9 @@ using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
+using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -12,6 +14,8 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
@@ -151,8 +155,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
             executingContext.HttpContext.User = new ClaimsPrincipal(
                 new ClaimsIdentity(claims, "mock"));
 
-            settings.RevisionDate = DateTime.UtcNow.AddDays(-1);
-            user.AcceptedTermsOfUseDate = DateTime.UtcNow;
+            settings.RevisionDate = DateTime.UtcNow;
+            user.AcceptedTermsOfUseDate = DateTime.UtcNow.AddDays(-1);
 
             userManager.Setup(u => u.FindByIdAsync(It.IsAny<string>()))
                 .ReturnsAsync(user);
@@ -164,7 +168,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
 
             await filter.OnActionExecutionAsync(executingContext, nextDelegate.Object);
 
-            nextDelegate.Verify(d => d(), Times.Once());
+            nextDelegate.Verify(d => d(), Times.Never);
+            var result = executingContext.Result.As<RedirectToActionResult>();
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(TermsOfUseController.TermsOfUse));
+            result.RouteValues.Should().NotBeNull();
+            result.RouteValues.ContainsKey("returnUrl");
+            result.RouteValues["returnUrl"].Should().Be(executingContext.HttpContext.Request.Path);
         }
     }
 }

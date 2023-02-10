@@ -58,6 +58,51 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             await dbContext.SaveChangesAsync();
         }
 
+        public async Task CopyOrderItems(string internalOrgId, CallOffId callOffId, IEnumerable<CatalogueItemId> itemIds)
+        {
+            if (itemIds == null)
+            {
+                throw new ArgumentNullException(nameof(itemIds));
+            }
+
+            var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = wrapper.Order;
+
+            if (order == null)
+            {
+                return;
+            }
+
+            foreach (var id in itemIds)
+            {
+                if (order.OrderItem(id) != null)
+                {
+                    continue;
+                }
+
+                var catalogueItem = dbContext.CatalogueItems.First(x => x.Id == id);
+
+                var orderItem = new OrderItem
+                {
+                    OrderId = order.Id,
+                    CatalogueItemId = id,
+                    CatalogueItem = catalogueItem,
+                    Created = DateTime.UtcNow,
+                };
+
+                var copiedPrice = await CopyOrderItemPrice(wrapper, id);
+
+                if (copiedPrice != null)
+                {
+                    orderItem.OrderItemPrice = copiedPrice;
+                }
+
+                dbContext.OrderItems.Add(orderItem);
+            }
+
+            await dbContext.SaveChangesAsync();
+        }
+
         public async Task DeleteOrderItems(string internalOrgId, CallOffId callOffId, IEnumerable<CatalogueItemId> itemIds)
         {
             if (itemIds == null)
@@ -154,6 +199,36 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             };
 
             await dbContext.SaveChangesAsync();
+        }
+
+        private async Task<OrderItemPrice> CopyOrderItemPrice(OrderWrapper wrapper, CatalogueItemId catalogueItemId)
+        {
+            var existingPrice = wrapper.RolledUp.OrderItem(catalogueItemId)?.OrderItemPrice;
+
+            if (existingPrice is null)
+            {
+                return null;
+            }
+
+            var cataloguePrice = await dbContext.CataloguePrices
+                .Include(x => x.PricingUnit)
+                .FirstAsync(x => x.CataloguePriceId == existingPrice.CataloguePriceId);
+
+            var output = new OrderItemPrice(cataloguePrice);
+
+            foreach (var tier in existingPrice.OrderItemPriceTiers)
+            {
+                var newTier = output.OrderItemPriceTiers.FirstOrDefault(x => x.LowerRange == tier.LowerRange);
+
+                if (newTier is null)
+                {
+                    continue;
+                }
+
+                newTier.Price = tier.Price;
+            }
+
+            return output;
         }
 
         private async Task<OrderItem> GetOrderItemTracked(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId)

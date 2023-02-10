@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.DeleteOrder
 
         public bool IsAmendment { get; set; }
 
-        public new string Advice => IsAmendment
+        public override string Advice => IsAmendment
             ? AmendmentAdvice
             : OrderAdvice;
 

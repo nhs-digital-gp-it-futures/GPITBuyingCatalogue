@@ -189,6 +189,36 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Deleted = false,
                     IsActive = false,
                 },
+                new Supplier
+                {
+                    Id = 99995,
+                    Name = "E2E Test Active Supplier With Single Contact",
+                    LegalName = "E2E Supplier WSC",
+                    Deleted = false,
+                    Address = new Address
+                    {
+                        Line1 = "E2E Test Supplier",
+                        Line2 = "High Street",
+                        Town = "Cardiff",
+                        County = "Cardiff",
+                        Country = "UK",
+                    },
+                    Summary = "About this Supplier",
+                    SupplierUrl = "https://www.e2etest.com",
+                    SupplierContacts = new List<SupplierContact>
+                    {
+                        new()
+                        {
+                            SupplierId = 99995,
+                            FirstName = "Alice",
+                            LastName = "Smith",
+                            Department = "Test Department",
+                            Email = "Alice.Smith@e2etest.com",
+                            PhoneNumber = "123456789",
+                        },
+                    },
+                    IsActive = true,
+                },
             };
 
             context.AddRange(suppliers);

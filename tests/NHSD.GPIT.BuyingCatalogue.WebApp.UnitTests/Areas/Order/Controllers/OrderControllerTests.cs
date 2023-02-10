@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -213,7 +214,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
-            [Frozen] Mock<IPdfService> pdfServiceMock,
+            [Frozen] Mock<IOrderPdfService> pdfServiceMock,
             byte[] result,
             OrderController controller)
         {
@@ -224,8 +225,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 .ReturnsAsync(new OrderWrapper(order));
 
             pdfServiceMock
-                .Setup(s => s.Convert(It.IsAny<Uri>()))
-                .Returns(result);
+                .Setup(s => s.CreateOrderSummaryPdf(It.IsAny<EntityFramework.Ordering.Models.Order>()))
+                .ReturnsAsync(new MemoryStream(result));
 
             SetControllerHttpContext(controller);
 
@@ -246,7 +247,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
-            [Frozen] Mock<IPdfService> pdfServiceMock,
+            [Frozen] Mock<IOrderPdfService> pdfServiceMock,
             byte[] result,
             OrderController controller)
         {
@@ -257,8 +258,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 .ReturnsAsync(new OrderWrapper(order));
 
             pdfServiceMock
-                .Setup(s => s.Convert(It.IsAny<Uri>()))
-                .Returns(result);
+                .Setup(s => s.CreateOrderSummaryPdf(It.IsAny<EntityFramework.Ordering.Models.Order>()))
+                .ReturnsAsync(new MemoryStream(result));
 
             SetControllerHttpContext(controller);
 

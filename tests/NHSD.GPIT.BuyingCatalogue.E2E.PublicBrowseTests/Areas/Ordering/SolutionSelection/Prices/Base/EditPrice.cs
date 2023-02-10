@@ -35,14 +35,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Pr
         {
             CommonActions.PageTitle().Should().BeEquivalentTo(PageTitle.FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
-            CommonActions.ElementIsDisplayed(ConfirmPriceObjects.AgreedPriceInput(0)).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(PriceObjects.AgreedPriceInput(0)).Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
         }
 
         [Fact]
         public void EditPrice_PriceIsBlank_Error()
         {
-            CommonActions.ClearInputElement(ConfirmPriceObjects.AgreedPriceInput(0));
+            CommonActions.ClearInputElement(PriceObjects.AgreedPriceInput(0));
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -53,14 +53,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Pr
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementTextEqualTo(
-                ConfirmPriceObjects.AgreedPriceInputError(0),
+                PriceObjects.AgreedPriceInputError(0),
                 PricingTierModelValidator.PriceNotEnteredErrorMessage).Should().BeTrue();
         }
 
         [Fact]
         public void EditPrice_PriceNotANumber_Error()
         {
-            CommonActions.ElementAddValue(ConfirmPriceObjects.AgreedPriceInput(0), "abc");
+            CommonActions.ElementAddValue(PriceObjects.AgreedPriceInput(0), "abc");
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -71,14 +71,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Pr
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementTextEqualTo(
-                ConfirmPriceObjects.AgreedPriceInputError(0),
+                PriceObjects.AgreedPriceInputError(0),
                 PricingTierModelValidator.PriceNotNumericErrorMessage).Should().BeTrue();
         }
 
         [Fact]
         public void EditPrice_PriceNegative_Error()
         {
-            CommonActions.ElementAddValue(ConfirmPriceObjects.AgreedPriceInput(0), "-1");
+            CommonActions.ElementAddValue(PriceObjects.AgreedPriceInput(0), "-1");
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -89,14 +89,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Pr
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementTextEqualTo(
-                ConfirmPriceObjects.AgreedPriceInputError(0),
+                PriceObjects.AgreedPriceInputError(0),
                 PricingTierModelValidator.PriceNegativeErrorMessage).Should().BeTrue();
         }
 
         [Fact]
         public void EditPrice_PriceHasMoreThanFourDecimalPlaces_Error()
         {
-            CommonActions.ElementAddValue(ConfirmPriceObjects.AgreedPriceInput(0), "1.00001");
+            CommonActions.ElementAddValue(PriceObjects.AgreedPriceInput(0), "1.00001");
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -107,7 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Pr
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementTextEqualTo(
-                ConfirmPriceObjects.AgreedPriceInputError(0),
+                PriceObjects.AgreedPriceInputError(0),
                 PricingTierModelValidator.PriceNotWithinFourDecimalPlacesErrorMessage).Should().BeTrue();
         }
 
@@ -118,7 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Pr
         [InlineData(int.MaxValue)]
         public void EditPrice_PriceHigherThanListPrice_Error(decimal value)
         {
-            CommonActions.ElementAddValue(ConfirmPriceObjects.AgreedPriceInput(0), $"{value}");
+            CommonActions.ElementAddValue(PriceObjects.AgreedPriceInput(0), $"{value}");
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -129,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Pr
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementTextContains(
-                ConfirmPriceObjects.AgreedPriceInputError(0),
+                PriceObjects.AgreedPriceInputError(0),
                 PricingTierModelValidator.PriceHigherThanListPriceErrorMessage).Should().BeTrue();
         }
 
@@ -160,7 +160,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Pr
         [InlineData(0.0001)]
         public void EditPrice_PriceLowerThanListPrice_ExpectedResult(decimal value)
         {
-            CommonActions.ElementAddValue(ConfirmPriceObjects.AgreedPriceInput(0), $"{value}");
+            CommonActions.ElementAddValue(PriceObjects.AgreedPriceInput(0), $"{value}");
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -181,7 +181,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Pr
         [Fact]
         public void EditPrice_PriceIsZero_ExpectedResult()
         {
-            CommonActions.ElementAddValue(ConfirmPriceObjects.AgreedPriceInput(0), "0");
+            CommonActions.ElementAddValue(PriceObjects.AgreedPriceInput(0), "0");
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(

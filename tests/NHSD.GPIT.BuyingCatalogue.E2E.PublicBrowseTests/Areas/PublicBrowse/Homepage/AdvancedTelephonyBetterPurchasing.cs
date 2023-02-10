@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using System.IO;
-using System;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.PublicBrowse;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Utils.Files;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
@@ -14,12 +13,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
     public class AdvancedTelephonyBetterPurchasing : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         public AdvancedTelephonyBetterPurchasing(LocalWebApplicationFactory factory)
-               : base(factory, typeof(HomeController), nameof(HomeController.AdvacedTelephonyBetterPurchaseFramework))
+               : base(factory, typeof(HomeController), nameof(HomeController.AdvancedTelephonyBetterPurchaseFramework))
         {
         }
 
         [Fact]
-        public void AdvacedTelephony_AllSectionsDisplayed()
+        public void AdvancedTelephony_AllSectionsDisplayed()
         {
             CommonActions.PageTitle().Should().Be("Advanced Telephony Better Purchasing framework".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
@@ -27,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
         }
 
         [Fact]
-        public void AdvacedTelephony_ClickBackLink_ExpectedResult()
+        public void AdvancedTelephony_ClickBackLink_ExpectedResult()
         {
             CommonActions.ClickGoBackLink();
 
@@ -37,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
         }
 
         [Fact]
-        public void AdvacedTelephony_ClickHomepageButton_Redirects()
+        public void AdvancedTelephony_ClickHomepageButton_Redirects()
         {
             CommonActions.ClickLinkElement(AdvancedTelephonyObjects.HomepageButton);
 
@@ -47,13 +46,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
         }
 
         [Fact]
-        public void DownloadComissioningSupportPackPDF_ExpectedResult()
+        public void DownloadCommissioningSupportPackPDF_ExpectedResult()
         {
-            var filePath = @$"{Path.GetTempPath()}Advanced GP Telephony Specification Commissioning Support Pack v1.12.pdf";
+            var filePath = @$"{Path.GetTempPath()}Buyer's Guide for Advanced Cloud-based Telephony-Jan 2023.pdf";
 
             FileHelper.DeleteDownloadFile(filePath);
 
-            CommonActions.ClickLinkElement(AdvancedTelephonyObjects.DownloadComissioningSupportPackPDFButton);
+            CommonActions.ClickLinkElement(AdvancedTelephonyObjects.DownloadCommissioningSupportPackPDFButton);
 
             FileHelper.WaitForDownloadFile(filePath);
 

@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Pdf
 {
+    [ExcludeFromCodeCoverage(Justification = "Can't be tested as it stands up an instance of Google Chrome")]
     public sealed class PdfService : IPdfService
     {
         private const string ChromeArgs = "--no-sandbox --headless --disable-dev-shm-usage --disable-gpu --disable-software-rasterizer --ignore-certificate-errors";
@@ -13,22 +16,34 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Pdf
         private const string ChromeWindows64BitPath = @"C:\Program Files\Google\Chrome\Application\chrome.exe";
         private const string ChromeLinuxPath = "/usr/bin/chromium-browser";
 
-        public byte[] Convert(Uri url)
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Process is disposed of via the Exited event handler")]
+        public Task<byte[]> Convert(Uri url)
         {
             string filePath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.pdf");
 
-            try
+            var tcs = new TaskCompletionSource<byte[]>();
+            var psi = new ProcessStartInfo(GetChromePath(), $"{ChromeArgs} --print-to-pdf=\"{filePath}\" {url}");
+            var process = new Process { StartInfo = psi, EnableRaisingEvents = true };
+
+            process.Exited += (_, _) =>
             {
-                var psi = new ProcessStartInfo(GetChromePath(), $"{ChromeArgs} --print-to-pdf=\"{filePath}\" {url}");
-                var process = Process.Start(psi);
-                process.WaitForExit(30000);
-                return File.ReadAllBytes(filePath);
-            }
-            finally
-            {
-                if (File.Exists(filePath))
-                    File.Delete(filePath);
-            }
+                process.Dispose();
+
+                if (!File.Exists(filePath))
+                {
+                    tcs.SetException(new InvalidOperationException("Failed to generate PDF"));
+                    return;
+                }
+
+                var fileContents = File.ReadAllBytes(filePath);
+                File.Delete(filePath);
+
+                tcs.SetResult(fileContents);
+            };
+
+            process.Start();
+
+            return tcs.Task;
         }
 
         private static string GetChromePath()
@@ -37,10 +52,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Pdf
             {
                 return File.Exists(ChromeWindows64BitPath) ? ChromeWindows64BitPath : ChromeWindows32BitPath;
             }
-            else
-            {
-                return ChromeLinuxPath;
-            }
+
+            return ChromeLinuxPath;
         }
     }
 }

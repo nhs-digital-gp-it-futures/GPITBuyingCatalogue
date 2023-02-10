@@ -63,16 +63,23 @@
             </nhs-table-row-container>
         </nhs-table>
         <form method="post">
+            <input type="hidden" asp-for="SupplierId" />
+            <input type="hidden" asp-for="SupplierName" />
+            <input type="hidden" asp-for="ContactsStatus" />
+            <input type="hidden" asp-for="AddressStatus" />
+            <input type="hidden" asp-for="DetailsStatus" />
+            <input type="hidden" asp-for="BackLink" />
+
             <nhs-fieldset-form-label asp-for="@Model"
                                      label-text="Supplier status"
                                      label-hint="Select one option.">
                 <nhs-radio-buttons asp-for="SupplierStatus"
                                    values="@EditSupplierModel.EditSupplierRadioOptions"
                                    display-name="Display"
-                                   value-name="Value" />
+                                   value-name="Value"/>
             </nhs-fieldset-form-label>
 
-            <nhs-submit-button />
+            <nhs-submit-button/>
         </form>
     </div>
 </div>

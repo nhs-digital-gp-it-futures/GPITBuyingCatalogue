@@ -10,35 +10,35 @@
                         caption="@Model.Caption"
                         advice="@Model.Advice" />
 
-		@if (Model.ContactId > 0)
-		{
-			@if (Model.SolutionsReferencingThisContact.Count > 0)
-			{
-			    <nhs-table label-text="Solutions referencing this supplier contact" 
-                           data-test-id="supplier-contact-related-solutions-table">
-					<nhs-table-column>Solution ID</nhs-table-column>
-					<nhs-table-column>Solution name</nhs-table-column>
+        @if (Model.ContactId > 0)
+        {
+            @if (Model.SolutionsReferencingThisContact.Count > 0)
+            {
+                <nhs-table label-text="Solutions referencing this supplier contact"
+                   data-test-id="supplier-contact-related-solutions-table">
+                    <nhs-table-column>Solution ID</nhs-table-column>
+                    <nhs-table-column>Solution name</nhs-table-column>
                     <nhs-table-column>Action</nhs-table-column>
 
                     @foreach (var solution in Model.SolutionsReferencingThisContact)
-					{
-						<nhs-table-row-container>
-							<nhs-table-cell>@solution.Id</nhs-table-cell>
-							<nhs-table-cell>@solution.Name</nhs-table-cell>
-							<nhs-table-cell>
+                    {
+                        <nhs-table-row-container>
+                            <nhs-table-cell>@solution.Id</nhs-table-cell>
+                            <nhs-table-cell>@solution.Name</nhs-table-cell>
+                            <nhs-table-cell>
                                 <a asp-action="@nameof(CatalogueSolutionsController.EditSupplierDetails)"
-                                   asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
-                                   asp-route-solutionId="@solution.Id"
-                                   data-test-id="edit-contact-association-@solution.Id"
-                                   style="white-space: nowrap;">Edit</a>
-							</nhs-table-cell>
-						</nhs-table-row-container>
-					}
-				</nhs-table>
-			}
-			else
-			{
-			    <nhs-inset-text data-test-id="no-related-solutions-inset">
+                       asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
+                       asp-route-solutionId="@solution.Id"
+                       data-test-id="edit-contact-association-@solution.Id"
+                       style="white-space: nowrap;">Edit</a>
+                            </nhs-table-cell>
+                        </nhs-table-row-container>
+                    }
+                </nhs-table>
+            }
+            else
+            {
+                <nhs-inset-text data-test-id="no-related-solutions-inset">
                     <p>
                         <b>Solutions referencing this supplier contact</b>
                     </p>
@@ -46,8 +46,8 @@
                         This supplier contact is currently not being referenced by any solutions.
                     </p>
                 </nhs-inset-text>
-			}
-		}
+            }
+        }
 
         <nhs-inset-text data-test-id="add-contact-inset">
             <p>
@@ -62,7 +62,8 @@
             <input type="hidden" asp-for="ContactId" />
             <input type="hidden" asp-for="Caption" />
             <input type="hidden" asp-for="Advice" />
-            
+            <input type="hidden" asp-for="CanDelete" />
+
             <nhs-fieldset-form-container asp-for="@Model">
                 <nhs-input asp-for="FirstName"
                            label-text="First name" />
@@ -72,7 +73,7 @@
                            label-text="Department name" />
                 <nhs-input asp-for="PhoneNumber"
                            label-text="Telephone number"
-                           input-width="Ten"/>
+                           input-width="Ten" />
                 <nhs-input asp-for="Email"
                            label-text="Email address" />
             </nhs-fieldset-form-container>
@@ -82,14 +83,13 @@
             </div>
         </form>
 
-        @if (Model.ContactId > 0
-            && Model.SolutionsReferencingThisContact.Count == 0)
+        @if (Model.CanDelete)
         {
             <vc:nhs-delete-button text="Delete contact"
-                                  url="@Url.Action(
+                              url="@Url.Action(
                                            nameof(SuppliersController.DeleteSupplierContact),
                                            typeof(SuppliersController).ControllerName(),
-                                           new { Model.SupplierId, Model.ContactId })"/>
+                                           new { Model.SupplierId, Model.ContactId })" />
         }
     </div>
 </div>

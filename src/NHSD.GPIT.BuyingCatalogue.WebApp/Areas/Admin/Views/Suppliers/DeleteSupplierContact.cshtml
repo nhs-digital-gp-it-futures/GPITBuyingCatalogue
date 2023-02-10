@@ -13,6 +13,11 @@
         <div class="nhsuk-grid-row">
             <div class="nhsuk-grid-column-two-thirds">
                 <form method="post">
+                    <input type="hidden" asp-for="SupplierId" />
+                    <input type="hidden" asp-for="ContactId" />
+                    <input type="hidden" asp-for="FirstName" />
+                    <input type="hidden" asp-for="LastName" />
+                    <input type="hidden" asp-for="SupplierName" />
                     <div>
                         <nhs-submit-button text="Delete" />
                     </div>
