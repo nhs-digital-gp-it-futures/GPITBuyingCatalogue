@@ -20,6 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 {
     public sealed class OrderService : IOrderService
     {
+        public const string OrganisationNameToken = "organisation_name";
+        public const string FullOrderCsvToken = "full_order_csv";
         public const string OrderIdToken = "order_id";
         public const string OrderSummaryLinkToken = "order_summary_link";
         public const string OrderSummaryCsv = "order_summary_csv";
@@ -374,8 +376,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             var adminTokens = new Dictionary<string, dynamic>
             {
-                { "organisation_name", order.OrderingParty.Name },
-                { "full_order_csv", NotificationClient.PrepareUpload(fullOrderStream.ToArray(), true) },
+                { OrganisationNameToken, order.OrderingParty.Name },
+                { FullOrderCsvToken, NotificationClient.PrepareUpload(fullOrderStream.ToArray(), true) },
             };
 
             var templateId = orderMessageSettings.SingleCsvTemplateId;
