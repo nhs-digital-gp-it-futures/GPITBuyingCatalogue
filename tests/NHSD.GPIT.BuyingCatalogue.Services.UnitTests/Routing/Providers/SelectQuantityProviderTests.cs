@@ -68,6 +68,31 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
 
         [Theory]
         [CommonAutoData]
+        public void Process_FromAmendment_ExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            Order order,
+            SelectQuantityProvider provider)
+        {
+            callOffId = new CallOffId(callOffId.OrderNumber, 2);
+
+            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId));
+
+            var expected = new
+            {
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+                CatalogueItemId = catalogueItemId,
+            };
+
+            result.ActionName.Should().Be(Constants.Actions.AmendDeliveryDate);
+            result.ControllerName.Should().Be(Constants.Controllers.DeliveryDates);
+            result.RouteValues.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [CommonAutoData]
         public void Process_OrderHasAdditionalServiceWithNoServiceRecipients_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,

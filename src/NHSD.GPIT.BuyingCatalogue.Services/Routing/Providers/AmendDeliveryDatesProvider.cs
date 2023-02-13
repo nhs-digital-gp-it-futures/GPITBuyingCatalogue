@@ -18,37 +18,33 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 throw new ArgumentNullException(nameof(routeValues));
             }
 
-            var backToTaskList = new RoutingResult
-            {
-                ActionName = Constants.Actions.TaskList,
-                ControllerName = Constants.Controllers.TaskList,
-                RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId },
-            };
-
             if (routeValues.Source is RoutingSource.TaskList)
             {
-                return backToTaskList;
+                return new RoutingResult
+                {
+                    ActionName = Constants.Actions.TaskList,
+                    ControllerName = Constants.Controllers.TaskList,
+                    RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId },
+                };
             }
 
             var catalogueItemId = order.GetNextOrderItemId(routeValues.CatalogueItemId.Value);
 
             if (catalogueItemId == null)
             {
-                return backToTaskList;
-            }
-
-            var orderItem = order.OrderItem(catalogueItemId.Value);
-
-            if (orderItem == null)
-            {
-                return backToTaskList;
+                return new RoutingResult
+                {
+                    ActionName = Constants.Actions.TaskList,
+                    ControllerName = Constants.Controllers.TaskList,
+                    RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId },
+                };
             }
 
             return new RoutingResult
             {
                 ActionName = Constants.Actions.AddServiceRecipients,
                 ControllerName = Constants.Controllers.ServiceRecipients,
-                RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId, catalogueItemId, routeValues.Source },
+                RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId, CatalogueItemId = catalogueItemId, routeValues.Source },
             };
         }
     }
