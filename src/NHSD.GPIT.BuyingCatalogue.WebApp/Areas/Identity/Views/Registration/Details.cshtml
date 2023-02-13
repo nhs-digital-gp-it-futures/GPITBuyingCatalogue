@@ -1,7 +1,7 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models.Registration.RegistrationDetailsModel
 @{
     Layout = "Layouts/_AllBannersLayout";
-    ViewBag.Title = "Request an Account";
+    ViewBag.Title = "Request an account";
 }
 
 <div data-test-id="registration-details-page">
@@ -25,7 +25,7 @@
                                label-hint="We'll use your email address to resolve the issue you are contacting us about and reply to you. We'll not use it for any other purpose."/>
                     <nhs-input asp-for="OrganisationName"
                                label-text="Your organisation's name"
-                               label-hint="We currently only support buyers from Clinical Commissioning Groups (CCGs) and Commissioning Support Units (CSUs)."/>
+                               label-hint="We support organisations who want to buy solutions and services from the Buying Catalogue." />
                     <nhs-input asp-for="OdsCode"
                                label-text="Your organisation's ODS code (optional)"
                                label-hint="Provide the ODS code for your organisation if you know it."/>
