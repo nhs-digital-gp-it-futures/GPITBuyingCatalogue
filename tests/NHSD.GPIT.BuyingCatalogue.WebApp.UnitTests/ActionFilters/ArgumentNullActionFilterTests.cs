@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
             await actionArgumentFilter.OnActionExecutionAsync(actionExecutingContext, () => Task.FromResult(context));
 
             actionExecutingContext.Result.Should().BeOfType<OkResult>();
-            listOfLogStrings.Count.Should().Be(0);
+            listOfLogStrings.Should().BeEmpty();
         }
 
         [Theory]
