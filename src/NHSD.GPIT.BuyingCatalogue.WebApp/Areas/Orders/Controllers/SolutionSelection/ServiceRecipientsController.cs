@@ -153,6 +153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             if (orderItem == null
                 && selectionMode == null
                 && recipientIds == null
+                && importedRecipients == null
                 && !order.AssociatedServicesOnly)
             {
                 model.PreSelectSolutionServiceRecipients(wrapper.RolledUp, catalogueItemId);
