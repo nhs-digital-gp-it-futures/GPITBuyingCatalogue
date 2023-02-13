@@ -55,6 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var order = wrapper.Order;
             var orderItem = order.OrderItem(catalogueItemId);
             var previousItem = wrapper.Previous?.OrderItem(catalogueItemId);
+            var previousRecipients = previousItem?.OrderItemRecipients?.Select(x => x.OdsCode) ?? Enumerable.Empty<string>();
             var serviceRecipients = await GetServiceRecipients(internalOrgId);
             var splitImportedRecipients = importedRecipients?.Split(Separator, StringSplitOptions.RemoveEmptyEntries);
 
@@ -71,6 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 CatalogueItemId = catalogueItemId,
                 Source = source,
                 AssociatedServicesOnly = order.AssociatedServicesOnly,
+                HasMissingImportedRecipients = splitImportedRecipients?.Any(previousRecipients.Contains) ?? false,
             };
 
             if (recipientIds is null
@@ -127,6 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var order = wrapper.Order;
             var orderItem = order.OrderItem(catalogueItemId);
             var previousItem = wrapper.Previous?.OrderItem(catalogueItemId);
+            var previousRecipients = previousItem?.OrderItemRecipients?.Select(x => x.OdsCode) ?? Enumerable.Empty<string>();
             var serviceRecipients = await GetServiceRecipients(internalOrgId);
             var splitImportedRecipients = importedRecipients?.Split(Separator, StringSplitOptions.RemoveEmptyEntries);
 
@@ -143,12 +146,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 CatalogueItemId = catalogueItemId,
                 Source = source,
                 AssociatedServicesOnly = order.AssociatedServicesOnly,
+                HasMissingImportedRecipients = splitImportedRecipients?.Any(previousRecipients.Contains) ?? false,
                 IsAdding = false,
             };
 
             if (orderItem == null
                 && selectionMode == null
                 && recipientIds == null
+                && importedRecipients == null
                 && !order.AssociatedServicesOnly)
             {
                 model.PreSelectSolutionServiceRecipients(wrapper.RolledUp, catalogueItemId);
