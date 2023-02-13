@@ -126,7 +126,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
         [Fact]
         public void SelectAssociatedServices_SelectionMade_ExpectedResult()
         {
-            GetAssociatedServices().Count.Should().Be(0);
+            GetAssociatedServices().Should().BeEmpty();
 
             CommonActions.ClickFirstCheckbox();
             CommonActions.ClickSave();

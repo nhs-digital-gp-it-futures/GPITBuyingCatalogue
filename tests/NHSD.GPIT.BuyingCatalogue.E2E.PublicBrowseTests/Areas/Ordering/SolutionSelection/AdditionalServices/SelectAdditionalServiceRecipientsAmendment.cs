@@ -96,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
         [Fact]
         public void SelectAdditionalServiceRecipientsAmendment_SelectionMade_ExpectedResult()
         {
-            GetOrderItem().OrderItemRecipients.Count.Should().Be(0);
+            GetOrderItem().OrderItemRecipients.Should().BeEmpty();
 
             CommonActions.ClickFirstCheckbox();
             CommonActions.ClickSave();
@@ -105,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
                 typeof(ServiceRecipientsController),
                 nameof(ServiceRecipientsController.ConfirmChanges)).Should().BeTrue();
 
-            GetOrderItem().OrderItemRecipients.Count.Should().Be(0);
+            GetOrderItem().OrderItemRecipients.Should().BeEmpty();
         }
 
         public void Dispose()
