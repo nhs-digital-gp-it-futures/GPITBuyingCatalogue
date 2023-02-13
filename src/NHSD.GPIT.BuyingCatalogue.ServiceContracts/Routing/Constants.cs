@@ -19,6 +19,7 @@
         {
             public const string AddAssociatedServices = "AddAssociatedServices";
             public const string AddServiceRecipients = "AddServiceRecipients";
+            public const string AmendDeliveryDate = "AmendDate";
             public const string ConfirmPrice = "ConfirmPrice";
             public const string EditDeliveryDates = "EditDates";
             public const string EditPrice = "EditPrice";

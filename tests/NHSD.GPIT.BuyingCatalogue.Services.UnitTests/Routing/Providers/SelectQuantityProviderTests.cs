@@ -74,6 +74,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             Order order,
             SelectQuantityProvider provider)
         {
+            callOffId = new CallOffId(callOffId.OrderNumber, 1);
+
             order.OrderItems.ToList().ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
 
             var solution = order.OrderItems.First();
@@ -104,6 +106,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             Order order,
             SelectQuantityProvider provider)
         {
+            callOffId = new CallOffId(callOffId.OrderNumber, 1);
+
             order.OrderItems.ToList().ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
 
             var solution = order.OrderItems.First();
@@ -134,6 +138,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             Order order,
             SelectQuantityProvider provider)
         {
+            callOffId = new CallOffId(callOffId.OrderNumber, 1);
+
             order.OrderItems.ToList().ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
 
             var solution = order.OrderItems.First();
@@ -162,6 +168,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             [Frozen] Mock<IAssociatedServicesService> mockAssociatedServicesService,
             SelectQuantityProvider provider)
         {
+            callOffId = new CallOffId(callOffId.OrderNumber, 1);
+
             order.AssociatedServicesOnly = false;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
             order.OrderItems.ElementAt(0).CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
@@ -196,6 +204,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             Order order,
             SelectQuantityProvider provider)
         {
+            callOffId = new CallOffId(callOffId.OrderNumber, 1);
+
             order.OrderItems.ElementAt(0).CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             order.OrderItems.ElementAt(1).CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
             order.OrderItems.ElementAt(2).CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;

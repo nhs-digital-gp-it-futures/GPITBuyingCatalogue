@@ -126,6 +126,46 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                 new { model.InternalOrgId, model.CallOffId, catalogueItemId });
         }
 
+        [HttpGet("{catalogueItemId}/amend")]
+        public async Task<IActionResult> AmendDate(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, RoutingSource? source = null)
+        {
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
+            var deliveryDate = order.OrderItem(catalogueItemId)?.OrderItemRecipients?.FirstOrDefault()?.DeliveryDate;
+
+            var route = routingService.GetRoute(
+                RoutingPoint.AmendDeliveryDatesBackLink,
+                order,
+                new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
+
+            var model = new AmendDateModel(internalOrgId, callOffId, catalogueItemId, order, deliveryDate)
+            {
+                BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
+                Source = source,
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("{catalogueItemId}/amend")]
+        public async Task<IActionResult> AmendDate(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, AmendDateModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            await deliveryDateService.SetDeliveryDate(internalOrgId, callOffId, catalogueItemId, model.Date!.Value);
+
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
+
+            var route = routingService.GetRoute(
+                RoutingPoint.AmendDeliveryDates,
+                order,
+                new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = model.Source });
+
+            return RedirectToAction(route.ActionName, route.ControllerName, route.RouteValues);
+        }
+
         [HttpGet("{catalogueItemId}/edit")]
         public async Task<IActionResult> EditDates(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, RoutingSource? source = null)
         {
