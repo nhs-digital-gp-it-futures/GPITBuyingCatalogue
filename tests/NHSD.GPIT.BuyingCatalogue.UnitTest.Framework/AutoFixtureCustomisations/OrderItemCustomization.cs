@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Security.Claims;
 using AutoFixture;
 using AutoFixture.Dsl;
 using AutoFixture.Kernel;
+using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
@@ -72,6 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
                 price.CatalogueItemId = item.CatalogueItemId;
                 price.OrderId = item.OrderId;
                 price.OrderItem = item;
+                price.OrderItemPriceTiers.ForEach(x => x.CatalogueItemId = price.CatalogueItemId);
 
                 item.OrderItemPrice = price;
             }

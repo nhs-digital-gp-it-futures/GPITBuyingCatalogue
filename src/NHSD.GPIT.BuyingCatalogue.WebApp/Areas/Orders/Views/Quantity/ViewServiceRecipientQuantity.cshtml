@@ -1,0 +1,45 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Quantity.ViewServiceRecipientQuantityModel
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+        <nhs-page-title model="Model" />
+
+        <nhs-inset-text>
+            <p>
+                The latest practice list sizes are published on
+                <a href="https://digital.nhs.uk/data-and-information/publications/statistical/patients-registered-at-a-gp-practice"
+                   target="_blank">the NHS Digital website (opens in a new tab)</a>.
+            </p>
+        </nhs-inset-text>
+        
+        <div id="service-recipient-quantity">
+            <nhs-table label-text="Quantity per practice">
+                <nhs-table-column>Recipient name (ODS code)</nhs-table-column>
+                <nhs-table-column>@Model.QuantityColumnTitle</nhs-table-column>
+
+                @foreach (var recipient in Model.ServiceRecipients)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>
+                            @recipient.Description
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <div style="text-align: right">
+                                @($"{recipient.Quantity:N0}")
+                            </div>
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+            </nhs-table>
+        </div>
+
+        <div class="nhsuk-u-margin-top-6">
+            <vc:nhs-secondary-button text="Continue"
+                                     type="Primary"
+                                     url="@Model.BackLink"/>
+        </div>
+    </div>
+</div>

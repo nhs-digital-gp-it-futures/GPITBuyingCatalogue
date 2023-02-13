@@ -145,6 +145,56 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [CommonAutoData]
+        public static async Task Get_AddServiceRecipients_WithImportedSolutionRecipients_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            EntityFramework.Ordering.Models.Order amendment,
+            List<ServiceRecipient> serviceRecipients,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] Mock<IOdsService> mockOdsService,
+            ServiceRecipientsController controller)
+        {
+            order.Revision = 1;
+            amendment.OrderNumber = order.OrderNumber;
+            amendment.Revision = 2;
+
+            order.AssociatedServicesOnly = false;
+            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+
+            var additionalService = order.OrderItems.First();
+
+            for (var i = 0; i < 3; i++)
+            {
+                additionalService.OrderItemRecipients.ElementAt(i).OdsCode = serviceRecipients[i].OrgId;
+            }
+
+            var importedRecipients = string.Join(',', additionalService.OrderItemRecipients.Select(x => x.OdsCode));
+
+            mockOrderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(new[] { order, amendment }));
+
+            mockOdsService
+                .Setup(x => x.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))
+                .ReturnsAsync(serviceRecipients);
+
+            var result = await controller.AddServiceRecipients(internalOrgId, callOffId, additionalService.CatalogueItemId, importedRecipients: importedRecipients);
+
+            mockOrderService.VerifyAll();
+            mockOdsService.VerifyAll();
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+            var model = actualResult.Model.Should().BeAssignableTo<SelectRecipientsModel>().Subject;
+
+            model.HasImportedRecipients.Should().BeTrue();
+            model.HasMissingImportedRecipients.Should().BeTrue();
+            model.PreSelected.Should().BeFalse();
+            model.ServiceRecipients.ForEach(x => x.Selected.Should().BeFalse());
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static void Post_AddServiceRecipients_WithModelErrors_ReturnsExpectedResult(
             SelectRecipientsModel model,
             ServiceRecipientsController controller)
@@ -244,6 +294,56 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             };
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(o => o.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditServiceRecipients_WithImportedSolutionRecipients_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            EntityFramework.Ordering.Models.Order amendment,
+            List<ServiceRecipient> serviceRecipients,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] Mock<IOdsService> mockOdsService,
+            ServiceRecipientsController controller)
+        {
+            order.Revision = 1;
+            amendment.OrderNumber = order.OrderNumber;
+            amendment.Revision = 2;
+
+            order.AssociatedServicesOnly = false;
+            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+
+            var additionalService = order.OrderItems.First();
+
+            for (var i = 0; i < 3; i++)
+            {
+                additionalService.OrderItemRecipients.ElementAt(i).OdsCode = serviceRecipients[i].OrgId;
+            }
+
+            var importedRecipients = string.Join(',', additionalService.OrderItemRecipients.Select(x => x.OdsCode));
+
+            mockOrderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(new[] { order, amendment }));
+
+            mockOdsService
+                .Setup(x => x.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))
+                .ReturnsAsync(serviceRecipients);
+
+            var result = await controller.EditServiceRecipients(internalOrgId, callOffId, additionalService.CatalogueItemId, importedRecipients: importedRecipients);
+
+            mockOrderService.VerifyAll();
+            mockOdsService.VerifyAll();
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+            var model = actualResult.Model.Should().BeAssignableTo<SelectRecipientsModel>().Subject;
+
+            model.HasImportedRecipients.Should().BeTrue();
+            model.HasMissingImportedRecipients.Should().BeTrue();
+            model.PreSelected.Should().BeFalse();
+            model.ServiceRecipients.ForEach(x => x.Selected.Should().BeFalse());
         }
 
         [Theory]
