@@ -51,20 +51,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 AddCompletedOrder(context, 90011, GetOrganisationId(context, "CG-15F")),
                 AddCompletedOrder(context, 90030, GetOrganisationId(context)),
                 AddCompletedOrder(context, 90031, GetOrganisationId(context)),
-                AddAmendment(context, 90030, 2),
-                AddAmendment(context, 90031, 2),
                 AddOrderByAccountManager(context),
             };
 
-            var order90030V2 = orders.First(x => x.OrderNumber == 90030 && x.Revision == 2);
-            var order90031 = orders.First(x => x.OrderNumber == 90031 && x.Revision == 1);
-            var order90031V2 = orders.First(x => x.OrderNumber == 90031 && x.Revision == 2);
-
-            AddOrderItemToOrder(context, order90030V2, new CatalogueItemId(99998, "001"));
-            AddOrderItemToOrder(context, order90031, new CatalogueItemId(99998, "001A99"));
-            AddOrderItemToOrder(context, order90031V2, new CatalogueItemId(99998, "001A99"));
-
             context.InsertRangeWithIdentity(orders);
+
+            var amendments = new[]
+            {
+                AddAmendment(context, 90030, 2),
+                AddAmendment(context, 90031, 2),
+            };
+
+            context.InsertRangeWithIdentity(amendments);
+
+            AddOrderItemToOrder(context, 90030, 2, new CatalogueItemId(99998, "001"));
+            AddOrderItemToOrder(context, 90031, 1, new CatalogueItemId(99998, "001A99"));
+            AddOrderItemToOrder(context, 90031, 2, new CatalogueItemId(99998, "001A99"));
+
+            context.SaveChanges();
         }
 
         private static Order AddOrderAtDescriptionStage(BuyingCatalogueDbContext context)
@@ -1657,6 +1661,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
                 SelectedFrameworkId = DFOCVC,
                 CommencementDate = timeNow.AddDays(1),
+                InitialPeriod = 6,
+                MaximumTerm = 12,
+                OrderTriageValue = OrderTriageValue.Under40K,
                 LastUpdatedBy = user.Id,
             };
 
@@ -1703,8 +1710,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             return order;
         }
 
-        private static void AddOrderItemToOrder(BuyingCatalogueDbContext context, Order order, CatalogueItemId catalogueItemId)
+        private static void AddOrderItemToOrder(BuyingCatalogueDbContext context, int orderNumber, int revision, CatalogueItemId catalogueItemId)
         {
+            var order = context.Orders.First(x => x.OrderNumber == orderNumber && x.Revision == revision);
+
             var orderItem = new OrderItem
             {
                 Created = DateTime.UtcNow,
@@ -1718,34 +1727,37 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
         private static Order AddAmendment(BuyingCatalogueDbContext context, int orderNumber, int revision)
         {
             var timeNow = DateTime.UtcNow;
-            var organisation = GetOrganisationId(context);
-            var user = GetBuyerUser(context, organisation);
+            var user = GetBuyerUser(context, GetOrganisationId(context));
+            var original = context.Orders.First(x => x.OrderNumber == orderNumber && x.Revision == revision - 1);
 
             var order = new Order
             {
                 OrderNumber = orderNumber,
                 Revision = revision,
-                OrderingPartyId = organisation,
+                OrderingPartyId = original.OrderingPartyId,
                 Created = timeNow,
                 IsDeleted = false,
                 Description = "This is an Amendment",
                 OrderingPartyContact = new Contact
                 {
-                    FirstName = "Clark",
-                    LastName = "Kent",
-                    Email = "Clark.Kent@TheDailyPlanet.Fake",
-                    Phone = "123456789",
+                    FirstName = original.OrderingPartyContact.FirstName,
+                    LastName = original.OrderingPartyContact.LastName,
+                    Email = original.OrderingPartyContact.Email,
+                    Phone = original.OrderingPartyContact.Phone,
                 },
-                SupplierId = 99998,
+                SupplierId = original.SupplierId,
                 SupplierContact = new Contact
                 {
-                    FirstName = "Bruce",
-                    LastName = "Wayne",
-                    Email = "bat.man@Gotham.Fake",
-                    Phone = "123456789",
+                    FirstName = original.SupplierContact.FirstName,
+                    LastName = original.SupplierContact.LastName,
+                    Email = original.SupplierContact.Email,
+                    Phone = original.SupplierContact.Phone,
                 },
-                SelectedFrameworkId = DFOCVC,
-                CommencementDate = timeNow.AddDays(1),
+                SelectedFrameworkId = original.SelectedFrameworkId,
+                CommencementDate = original.CommencementDate,
+                InitialPeriod = original.InitialPeriod,
+                MaximumTerm = original.MaximumTerm,
+                OrderTriageValue = original.OrderTriageValue,
                 LastUpdatedBy = user.Id,
             };
 
