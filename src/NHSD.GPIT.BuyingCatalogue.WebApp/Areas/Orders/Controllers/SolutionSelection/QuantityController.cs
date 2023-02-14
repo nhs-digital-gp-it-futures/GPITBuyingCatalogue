@@ -67,6 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var model = new SelectOrderItemQuantityModel(orderItem)
             {
                 BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
+                IsAmendment = callOffId.IsAmendment,
                 Source = source,
             };
 
@@ -109,15 +110,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             CatalogueItemId catalogueItemId,
             RoutingSource? source = null)
         {
-            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
+            var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = wrapper.Order;
             var orderItem = order.OrderItem(catalogueItemId);
+            var previousItem = wrapper.Previous?.OrderItem(catalogueItemId);
 
             var route = routingService.GetRoute(
                 RoutingPoint.SelectQuantityBackLink,
                 order,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
 
-            var model = new SelectServiceRecipientQuantityModel(orderItem)
+            var model = new SelectServiceRecipientQuantityModel(orderItem, previousItem)
             {
                 BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
                 Source = source,
@@ -176,6 +179,58 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 new RouteValues(internalOrgId, callOffId) { Source = model.Source });
 
             return RedirectToAction(route.ActionName, route.ControllerName, route.RouteValues);
+        }
+
+        [HttpGet("quantity/{catalogueItemId}/view")]
+        public async Task<IActionResult> ViewOrderItemQuantity(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId)
+        {
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Previous;
+            var orderItem = order.OrderItem(catalogueItemId);
+
+            if (orderItem.OrderItemPrice?.IsPerServiceRecipient() ?? false)
+            {
+                return RedirectToAction(
+                    nameof(ViewServiceRecipientQuantity),
+                    typeof(QuantityController).ControllerName(),
+                    new { internalOrgId, callOffId, catalogueItemId });
+            }
+
+            var model = new ViewOrderItemQuantityModel(orderItem)
+            {
+                BackLink = Url.Action(
+                    nameof(TaskListController.TaskList),
+                    typeof(TaskListController).ControllerName(),
+                    new { internalOrgId, callOffId }),
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+            };
+
+            return View(model);
+        }
+
+        [HttpGet("quantity/{catalogueItemId}/service-recipient/view")]
+        public async Task<IActionResult> ViewServiceRecipientQuantity(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId)
+        {
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Previous;
+            var orderItem = order.OrderItem(catalogueItemId);
+
+            var model = new ViewServiceRecipientQuantityModel(orderItem)
+            {
+                BackLink = Url.Action(
+                    nameof(TaskListController.TaskList),
+                    typeof(TaskListController).ControllerName(),
+                    new { internalOrgId, callOffId }),
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+            };
+
+            return View(model);
         }
 
         private void SetPracticeSizes(SelectServiceRecipientQuantityModel model, OrderItem solution = null)
