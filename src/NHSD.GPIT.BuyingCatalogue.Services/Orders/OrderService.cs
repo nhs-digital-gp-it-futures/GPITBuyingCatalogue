@@ -25,6 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public const string OrderIdToken = "order_id";
         public const string OrderSummaryLinkToken = "order_summary_link";
         public const string OrderSummaryCsv = "order_summary_csv";
+        public const string PatientOrderCsvToken = "patient_order_csv";
 
         private readonly BuyingCatalogueDbContext dbContext;
         private readonly ICsvService csvService;
@@ -385,7 +386,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             if (await csvService.CreatePatientNumberCsvAsync(order.Id, patientOrderStream) > 0)
             {
                 patientOrderStream.Position = 0;
-                adminTokens.Add("patient_order_csv", NotificationClient.PrepareUpload(patientOrderStream.ToArray(), true));
+                adminTokens.Add(PatientOrderCsvToken, NotificationClient.PrepareUpload(patientOrderStream.ToArray(), true));
                 templateId = orderMessageSettings.DualCsvTemplateId;
             }
 
