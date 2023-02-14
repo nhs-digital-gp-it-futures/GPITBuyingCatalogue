@@ -63,6 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public async Task<OrderWrapper> GetOrderThin(CallOffId callOffId, string internalOrgId)
         {
             var orders = await dbContext.Orders
+                .Include(o => o.Solution)
                 .Include(o => o.OrderingParty)
                 .Include(o => o.OrderingPartyContact)
                 .Include(o => o.Supplier)
