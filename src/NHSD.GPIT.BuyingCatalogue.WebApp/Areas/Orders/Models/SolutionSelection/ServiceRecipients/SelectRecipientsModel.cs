@@ -18,13 +18,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         public const string AdviceText = "Manually select the organisations you want to receive this {0} or import them using a CSV file.";
         public const string AdviceTextImport = "Review the organisations that will receive this {0}.";
         public const string AdviceTextNoRecipientsAvailable = "All your Service Recipients were included in the original order, so there are no more available to add.";
-        public const string TitleText = "Service Recipients for {0}";
-
+        public const string PreSelectedAssociatedServicesOnly = "first Associated Service";
+        public const string PreSelectedCatalogueSolution = "Catalogue Solution";
         public const string SelectAll = "Select all";
         public const string SelectNone = "Deselect all";
         public const string Separator = ",";
-        public const string PreSelectedAssociatedServicesOnly = "first Associated Service";
-        public const string PreSelectedCatalogueSolution = "Catalogue Solution";
+        public const string TitleText = "Service Recipients for {0}";
 
         private readonly SelectionMode? selectionMode;
 
@@ -45,15 +44,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             ItemName = previousItem?.CatalogueItem.Name ?? orderItem.CatalogueItem.Name;
             ItemType = previousItem?.CatalogueItem.CatalogueItemType ?? orderItem.CatalogueItem.CatalogueItemType;
 
-            Title = string.Format(TitleText, ItemType.Name());
-            Caption = ItemName;
-
             PreviouslySelected = previousItem?.OrderItemRecipients?.Select(x => x.Recipient?.Name).ToList() ?? new List<string>();
             ServiceRecipients.RemoveAll(x => PreviouslySelected.Contains(x.Name));
 
             SetAdvice(importedRecipients);
             ApplySelection(importedRecipients, orderItem);
         }
+
+        public override string Title => string.Format(TitleText, ItemType.Name());
+
+        public override string Caption => ItemName;
 
         public string InternalOrgId { get; set; }
 
@@ -80,6 +80,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         public bool IsAdding { get; set; } = true;
 
         public bool HasImportedRecipients { get; set; }
+
+        public bool HasMissingImportedRecipients { get; set; }
 
         public List<string> PreviouslySelected { get; set; }
 

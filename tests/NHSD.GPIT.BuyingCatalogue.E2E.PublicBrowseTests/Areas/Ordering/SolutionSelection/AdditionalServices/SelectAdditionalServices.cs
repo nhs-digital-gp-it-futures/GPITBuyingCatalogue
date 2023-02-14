@@ -96,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
         [Fact]
         public void SelectAdditionalServices_SelectionMade_ExpectedResult()
         {
-            GetAdditionalServices().Count.Should().Be(0);
+            GetAdditionalServices().Should().BeEmpty();
 
             CommonActions.ClickFirstCheckbox();
             CommonActions.ClickSave();

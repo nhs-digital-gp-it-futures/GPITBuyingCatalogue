@@ -260,7 +260,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         public static async Task CopyOrderItems_Amendment_AddsOrderItemsToDatabaseWithExistingPrice(
             string internalOrgId,
             CallOffId callOffId,
-            CatalogueItemId catalogueItemId,
             List<CatalogueItemId> itemIds,
             CataloguePrice cataloguePrice,
             Order original,
@@ -278,11 +277,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             foreach (var price in orders.SelectMany(x => x.OrderItems).Select(x => x.OrderItemPrice))
             {
                 price.CataloguePriceId = cataloguePrice.CataloguePriceId;
-
-                foreach (var tier in price.OrderItemPriceTiers)
-                {
-                    tier.CatalogueItemId = catalogueItemId;
-                }
             }
 
             cataloguePrice.CatalogueItemId = itemIds.First();

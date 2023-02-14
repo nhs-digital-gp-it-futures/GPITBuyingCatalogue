@@ -28,7 +28,18 @@
                 <nhs-inset-text>
                     @if (Model.HasImportedRecipients)
                     {
-                        <p>Your Service Recipients have been imported successfully. If you need to make changes, you can do so manually or re-import them.</p>
+                        <p>
+                            @if (Model.HasMissingImportedRecipients)
+                            {
+                                <span>Some of your Service Recipients were already on the original order. The ones that were not have been uploaded successfully.</span>
+                            }
+                            else
+                            {
+                                <span>Your Service Recipients have been imported successfully.</span>
+                            }
+
+                            If you need to make changes, you can do so manually or re-import them.
+                        </p>
                     }
 
                     @if (Model.PreviouslySelected?.Any() ?? false)
@@ -70,6 +81,7 @@
             <input type="hidden" asp-for="@Model.BackLink"/>
             <input type="hidden" asp-for="@Model.CatalogueItemId"/>
             <input type="hidden" asp-for="@Model.HasImportedRecipients"/>
+            <input type="hidden" asp-for="@Model.HasMissingImportedRecipients"/>
             <input type="hidden" asp-for="@Model.ItemName"/>
             <input type="hidden" asp-for="@Model.ItemType"/>
             <input type="hidden" asp-for="@Model.SelectionCaption"/>
