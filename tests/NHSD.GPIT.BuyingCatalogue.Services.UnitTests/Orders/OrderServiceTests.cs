@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -9,14 +10,21 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using Newtonsoft.Json.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.Services.Orders;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using Notify.Client;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
@@ -145,6 +153,248 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             context.OrderItemPriceTiers.Should().BeEmpty();
             context.OrderItemPrices.Should().BeEmpty();
             context.OrderItemRecipients.Should().BeEmpty();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task CompleteOrder_RequestIsValid_OrderStatusUpdated(
+            AspNetUser user,
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            order.IsDeleted = false;
+            order.Completed = null;
+            await context.Orders.AddAsync(order);
+
+            await context.Users.AddAsync(user);
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            await service.CompleteOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id);
+            context.Orders.First(x => x.Id == order.Id).OrderStatus.Should().Be(OrderStatus.Completed);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task CompleteOrder_ContainsNoRecipients_SendsSingleCsvEmails(
+            AspNetUser user,
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IGovNotifyEmailService> mockEmailService,
+            [Frozen] Mock<ICsvService> mockCsvService,
+            [Frozen] Mock<IOrderPdfService> mockPdfService,
+            OrderMessageSettings settings)
+        {
+            Dictionary<string, dynamic> adminTokens = null;
+
+            await context.Orders.AddAsync(order);
+            await context.Users.AddAsync(user);
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            mockCsvService.Setup(x => x.CreatePatientNumberCsvAsync(order.Id, It.IsAny<MemoryStream>()))
+                .ReturnsAsync(0);
+
+            mockEmailService
+                .Setup(x => x.SendEmailAsync(settings.Recipient.Address, settings.SingleCsvTemplateId, It.IsAny<Dictionary<string, dynamic>>()))
+                .Callback<string, string, Dictionary<string, dynamic>>((_, _, x) => adminTokens = x)
+                .Returns(Task.CompletedTask);
+
+            var expectedToken = NotificationClient.PrepareUpload(new MemoryStream().ToArray(), true);
+
+            var service = new OrderService(
+                context,
+                mockCsvService.Object,
+                mockEmailService.Object,
+                mockPdfService.Object,
+                settings);
+
+            await service.CompleteOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id);
+
+            mockCsvService.VerifyAll();
+            mockEmailService.Verify(x => x.SendEmailAsync(settings.Recipient.Address, settings.SingleCsvTemplateId, It.IsAny<Dictionary<string, dynamic>>()));
+            adminTokens.Should().NotBeNull();
+            adminTokens.Should().HaveCount(2);
+            var organisationName = adminTokens.Should().ContainKey(OrderService.OrganisationNameToken).WhoseValue as string;
+            var fullOrderCsv = adminTokens.Should().ContainKey(OrderService.FullOrderCsvToken).WhoseValue as JObject;
+            organisationName.Should().Be(order.OrderingParty.Name);
+            fullOrderCsv.Should().BeEquivalentTo(expectedToken);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task CompleteOrder_ContainsRecipients_SendsDualCsvEmails(
+            AspNetUser user,
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IGovNotifyEmailService> mockEmailService,
+            [Frozen] Mock<ICsvService> mockCsvService,
+            [Frozen] Mock<IOrderPdfService> mockPdfService,
+            OrderMessageSettings settings)
+        {
+            Dictionary<string, dynamic> adminTokens = null;
+
+            await context.Orders.AddAsync(order);
+            await context.Users.AddAsync(user);
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            mockCsvService.Setup(x => x.CreatePatientNumberCsvAsync(order.Id, It.IsAny<MemoryStream>()))
+                .ReturnsAsync(1);
+
+            mockEmailService
+                .Setup(x => x.SendEmailAsync(settings.Recipient.Address, settings.DualCsvTemplateId, It.IsAny<Dictionary<string, dynamic>>()))
+                .Callback<string, string, Dictionary<string, dynamic>>((_, _, x) => adminTokens = x)
+                .Returns(Task.CompletedTask);
+
+            var expectedToken = NotificationClient.PrepareUpload(new MemoryStream().ToArray(), true);
+
+            var service = new OrderService(
+                context,
+                mockCsvService.Object,
+                mockEmailService.Object,
+                mockPdfService.Object,
+                settings);
+
+            await service.CompleteOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id);
+
+            mockCsvService.VerifyAll();
+            mockEmailService.Verify(x => x.SendEmailAsync(settings.Recipient.Address, settings.DualCsvTemplateId, It.IsAny<Dictionary<string, dynamic>>()));
+            adminTokens.Should().NotBeNull();
+            adminTokens.Should().HaveCount(3);
+            var patientOrderCsv = adminTokens.Should().ContainKey(OrderService.PatientOrderCsvToken).WhoseValue as JObject;
+            patientOrderCsv.Should().BeEquivalentTo(expectedToken);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task CompleteOrder_RequestIsValid_SendsUserEmails(
+            AspNetUser user,
+            Order order,
+            string email,
+            byte[] pdfContents,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IGovNotifyEmailService> mockEmailService,
+            [Frozen] Mock<ICsvService> mockCsvService,
+            [Frozen] Mock<IOrderPdfService> mockPdfService,
+            OrderMessageSettings settings)
+        {
+            Dictionary<string, dynamic> userTokens = null;
+
+            var pdfData = new MemoryStream(pdfContents);
+
+            order.AssociatedServicesOnly = false;
+            await context.Orders.AddAsync(order);
+
+            user.Email = email;
+            await context.Users.AddAsync(user);
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            mockPdfService.Setup(x => x.CreateOrderSummaryPdf(order))
+                .ReturnsAsync(pdfData);
+
+            mockEmailService
+                .Setup(x => x.SendEmailAsync(user.Email, settings.UserTemplateId, It.IsAny<Dictionary<string, dynamic>>()))
+                .Callback<string, string, Dictionary<string, dynamic>>((_, _, x) => userTokens = x)
+                .Returns(Task.CompletedTask);
+
+            var service = new OrderService(
+                context,
+                mockCsvService.Object,
+                mockEmailService.Object,
+                mockPdfService.Object,
+                settings);
+
+            var expectedOrderSummaryLink = NotificationClient.PrepareUpload(pdfData.ToArray());
+            var expectedOrderSummaryCsv = NotificationClient.PrepareUpload(new MemoryStream().ToArray(), true);
+
+            await service.CompleteOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id);
+
+            mockPdfService.VerifyAll();
+            mockEmailService.VerifyAll();
+
+            userTokens.Should().NotBeNull();
+            userTokens.Should().HaveCount(3);
+
+            var orderId = userTokens.Should().ContainKey(OrderService.OrderIdToken).WhoseValue as string;
+            var orderSummaryLink = userTokens.Should().ContainKey(OrderService.OrderSummaryLinkToken).WhoseValue as JObject;
+            var orderSummaryCsv = userTokens.Should().ContainKey(OrderService.OrderSummaryCsv).WhoseValue as JObject;
+
+            orderId.Should().Be($"{order.CallOffId}");
+            orderSummaryLink.Should().BeEquivalentTo(expectedOrderSummaryLink);
+            orderSummaryCsv.Should().BeEquivalentTo(expectedOrderSummaryCsv);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task CompleteOrder_CatalogueSolution_EmailsCatalogueSolutionEmail(
+            AspNetUser user,
+            Order order,
+            string email,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IGovNotifyEmailService> mockEmailService,
+            [Frozen] Mock<ICsvService> mockCsvService,
+            [Frozen] Mock<IOrderPdfService> mockPdfService,
+            OrderMessageSettings orderMessageSettings)
+        {
+            order.AssociatedServicesOnly = false;
+            await context.Orders.AddAsync(order);
+
+            user.Email = email;
+            await context.Users.AddAsync(user);
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            var service = new OrderService(
+                context,
+                mockCsvService.Object,
+                mockEmailService.Object,
+                mockPdfService.Object,
+                orderMessageSettings);
+
+            await service.CompleteOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id);
+
+            mockEmailService.Verify(x => x.SendEmailAsync(email, orderMessageSettings.UserTemplateId, It.IsAny<Dictionary<string, dynamic>>()));
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task CompleteOrder_AssociatedServiceOnly_EmailsAssociatedServiceEmail(
+            AspNetUser user,
+            Order order,
+            string email,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IGovNotifyEmailService> mockEmailService,
+            [Frozen] Mock<ICsvService> mockCsvService,
+            [Frozen] Mock<IOrderPdfService> mockPdfService,
+            OrderMessageSettings orderMessageSettings)
+        {
+            order.AssociatedServicesOnly = true;
+            await context.Orders.AddAsync(order);
+
+            user.Email = email;
+            await context.Users.AddAsync(user);
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            var service = new OrderService(
+                context,
+                mockCsvService.Object,
+                mockEmailService.Object,
+                mockPdfService.Object,
+                orderMessageSettings);
+
+            await service.CompleteOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id);
+
+            mockEmailService.Verify(x => x.SendEmailAsync(email, orderMessageSettings.UserAssociatedServiceTemplateId, It.IsAny<Dictionary<string, dynamic>>()));
         }
 
         [Theory]

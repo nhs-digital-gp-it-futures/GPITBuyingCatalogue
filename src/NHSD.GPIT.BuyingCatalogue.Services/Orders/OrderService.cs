@@ -20,9 +20,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 {
     public sealed class OrderService : IOrderService
     {
+        public const string OrganisationNameToken = "organisation_name";
+        public const string FullOrderCsvToken = "full_order_csv";
         public const string OrderIdToken = "order_id";
         public const string OrderSummaryLinkToken = "order_summary_link";
         public const string OrderSummaryCsv = "order_summary_csv";
+        public const string PatientOrderCsvToken = "patient_order_csv";
 
         private readonly BuyingCatalogueDbContext dbContext;
         private readonly ICsvService csvService;
@@ -374,8 +377,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             var adminTokens = new Dictionary<string, dynamic>
             {
-                { "organisation_name", order.OrderingParty.Name },
-                { "full_order_csv", NotificationClient.PrepareUpload(fullOrderStream.ToArray(), true) },
+                { OrganisationNameToken, order.OrderingParty.Name },
+                { FullOrderCsvToken, NotificationClient.PrepareUpload(fullOrderStream.ToArray(), true) },
             };
 
             var templateId = orderMessageSettings.SingleCsvTemplateId;
@@ -383,7 +386,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             if (await csvService.CreatePatientNumberCsvAsync(order.Id, patientOrderStream) > 0)
             {
                 patientOrderStream.Position = 0;
-                adminTokens.Add("patient_order_csv", NotificationClient.PrepareUpload(patientOrderStream.ToArray(), true));
+                adminTokens.Add(PatientOrderCsvToken, NotificationClient.PrepareUpload(patientOrderStream.ToArray(), true));
                 templateId = orderMessageSettings.DualCsvTemplateId;
             }
 
@@ -400,9 +403,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             dbContext.Entry(order).State = EntityState.Modified;
 
+            var userTemplateId = order.AssociatedServicesOnly
+                ? orderMessageSettings.UserAssociatedServiceTemplateId
+                : orderMessageSettings.UserTemplateId;
+
             await Task.WhenAll(
                 emailService.SendEmailAsync(orderMessageSettings.Recipient.Address, templateId, adminTokens),
-                emailService.SendEmailAsync(userEmail, orderMessageSettings.UserTemplateId, userTokens),
+                emailService.SendEmailAsync(userEmail, userTemplateId, userTokens),
                 dbContext.SaveChangesAsync());
         }
 
