@@ -10,11 +10,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 {
     public class SelectServiceRecipientQuantityModel : NavBaseModel
     {
+        public const string AdviceText = "Enter the quantity you want for each practice for the duration of your order.";
+        public const string AdviceTextPatient = "We’ve included the latest practice list sizes published by NHS Digital.";
+        public const string AdviceTextServiceRecipient = "You can only order one solution per Service Recipient.";
+        public const string QuantityColumnTitleText = "Quantity";
+        public const string QuantityColumnTitleTextPatient = "Practice list size";
+        public const string TitleText = "Quantity of {0}";
+
         public SelectServiceRecipientQuantityModel()
         {
         }
 
-        public SelectServiceRecipientQuantityModel(OrderItem orderItem)
+        public SelectServiceRecipientQuantityModel(OrderItem orderItem, OrderItem previousItem)
         {
             if (orderItem == null)
             {
@@ -26,10 +33,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             ProvisioningType = orderItem.OrderItemPrice.ProvisioningType;
             RangeDefinition = orderItem.OrderItemPrice.RangeDescription;
             BillingPeriod = orderItem.OrderItemPrice.BillingPeriod;
+
+            PreviouslySelected = previousItem?.OrderItemRecipients?
+                .Select(CreateServiceRecipient)
+                .ToArray() ?? Array.Empty<ServiceRecipientQuantityModel>();
+
             ServiceRecipients = orderItem.OrderItemRecipients
                 .Select(CreateServiceRecipient)
                 .ToArray();
         }
+
+        public override string Title => string.Format(TitleText, ItemType);
+
+        public override string Caption => ItemName;
+
+        public override string Advice => ProvisioningType switch
+        {
+            ProvisioningType.Patient => AdviceTextPatient,
+            ProvisioningType.PerServiceRecipient => AdviceTextServiceRecipient,
+            _ => AdviceText,
+        };
 
         public string ItemName { get; set; }
 
@@ -41,23 +64,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public TimeUnit? BillingPeriod { get; set; }
 
+        public ServiceRecipientQuantityModel[] PreviouslySelected { get; set; }
+
         public ServiceRecipientQuantityModel[] ServiceRecipients { get; set; }
 
         public RoutingSource? Source { get; set; }
 
         public bool ShouldShowInset => ProvisioningType is ProvisioningType.Patient;
 
-        public string LedeText => ProvisioningType switch
-        {
-            ProvisioningType.Patient => "We’ve included the latest practice list sizes published by NHS Digital.",
-            ProvisioningType.PerServiceRecipient => "You can only order one solution per Service Recipient.",
-            _ => "Enter the quantity you want for each practice for the duration of your order.",
-        };
-
         public string QuantityColumnTitle => ProvisioningType switch
         {
-            ProvisioningType.Patient => "Practice list size",
-            _ => "Quantity",
+            ProvisioningType.Patient => QuantityColumnTitleTextPatient,
+            _ => QuantityColumnTitleText,
         };
 
         private ServiceRecipientQuantityModel CreateServiceRecipient(OrderItemRecipient recipient)

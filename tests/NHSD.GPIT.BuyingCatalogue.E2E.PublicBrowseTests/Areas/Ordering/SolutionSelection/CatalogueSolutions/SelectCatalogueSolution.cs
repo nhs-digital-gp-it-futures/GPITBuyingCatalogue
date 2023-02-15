@@ -75,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
         [Fact]
         public void SelectCatalogueSolution_SelectSolution_ExpectedResult()
         {
-            GetOrderItems().Count.Should().Be(0);
+            GetOrderItems().Should().BeEmpty();
 
             CommonActions.ClickRadioButtonWithText(SolutionName);
             CommonActions.ClickSave();
@@ -94,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
         [Fact]
         public void SelectCatalogueSolution_SelectSolutionAndAdditionalService_ExpectedResult()
         {
-            GetOrderItems().Count.Should().Be(0);
+            GetOrderItems().Should().BeEmpty();
 
             CommonActions.ClickRadioButtonWithText(SolutionName);
             CommonActions.ClickCheckboxByLabel(AdditionalServiceName);

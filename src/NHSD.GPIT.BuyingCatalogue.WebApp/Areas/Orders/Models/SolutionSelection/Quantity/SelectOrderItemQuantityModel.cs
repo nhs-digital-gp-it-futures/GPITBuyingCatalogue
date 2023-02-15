@@ -9,6 +9,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 {
     public class SelectOrderItemQuantityModel : NavBaseModel
     {
+        public const string AdviceText = "Enter the total amount you want to order";
+        public const string AdviceTextAmendment = "Enter the amount you want to order as part of this amendment.";
+        public const string TitleText = "Quantity of {0}";
+
         public SelectOrderItemQuantityModel()
         {
         }
@@ -27,6 +31,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             ProvisioningType = orderItem.OrderItemPrice.ProvisioningType;
             BillingPeriod = orderItem.OrderItemPrice.BillingPeriod;
         }
+
+        public override string Title => string.Format(TitleText, ItemType);
+
+        public override string Caption => ItemName;
+
+        public override string Advice => IsAmendment
+            ? AdviceTextAmendment
+            : (string.IsNullOrWhiteSpace(TimeUnit) ? $"{AdviceText}." : $"{AdviceText} {TimeUnit}.");
+
+        public bool IsAmendment { get; set; }
+
+        public string TimeUnit => BillingPeriod?.Description() ?? string.Empty;
 
         public string ItemName { get; set; }
 

@@ -462,7 +462,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order original,
             EntityFramework.Ordering.Models.Order amendment,
-            CatalogueItemId catalogueItemId,
             [Frozen] Mock<IOrderService> mockOrderService,
             PricesController controller)
         {
@@ -471,11 +470,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             amendment.Revision = 2;
 
             var orders = new[] { original, amendment };
-
-            foreach (var tier in orders.SelectMany(x => x.OrderItems).Select(x => x.OrderItemPrice).SelectMany(x => x.PriceTiers))
-            {
-                ((OrderItemPriceTier)tier).CatalogueItemId = catalogueItemId;
-            }
 
             var orderItem = original.Clone().OrderItems.First();
 
