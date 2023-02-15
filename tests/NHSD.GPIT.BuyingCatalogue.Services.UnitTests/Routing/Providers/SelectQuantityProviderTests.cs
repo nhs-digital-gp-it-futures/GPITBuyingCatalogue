@@ -68,12 +68,39 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
 
         [Theory]
         [CommonAutoData]
+        public void Process_FromAmendment_ExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            Order order,
+            SelectQuantityProvider provider)
+        {
+            callOffId = new CallOffId(callOffId.OrderNumber, 2);
+
+            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId));
+
+            var expected = new
+            {
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+                CatalogueItemId = catalogueItemId,
+            };
+
+            result.ActionName.Should().Be(Constants.Actions.AmendDeliveryDate);
+            result.ControllerName.Should().Be(Constants.Controllers.DeliveryDates);
+            result.RouteValues.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [CommonAutoData]
         public void Process_OrderHasAdditionalServiceWithNoServiceRecipients_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             Order order,
             SelectQuantityProvider provider)
         {
+            callOffId = new CallOffId(callOffId.OrderNumber, 1);
+
             order.OrderItems.ToList().ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
 
             var solution = order.OrderItems.First();
@@ -104,6 +131,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             Order order,
             SelectQuantityProvider provider)
         {
+            callOffId = new CallOffId(callOffId.OrderNumber, 1);
+
             order.OrderItems.ToList().ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
 
             var solution = order.OrderItems.First();
@@ -134,6 +163,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             Order order,
             SelectQuantityProvider provider)
         {
+            callOffId = new CallOffId(callOffId.OrderNumber, 1);
+
             order.OrderItems.ToList().ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
 
             var solution = order.OrderItems.First();
@@ -162,6 +193,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             [Frozen] Mock<IAssociatedServicesService> mockAssociatedServicesService,
             SelectQuantityProvider provider)
         {
+            callOffId = new CallOffId(callOffId.OrderNumber, 1);
+
             order.AssociatedServicesOnly = false;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
             order.OrderItems.ElementAt(0).CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
@@ -196,6 +229,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             Order order,
             SelectQuantityProvider provider)
         {
+            callOffId = new CallOffId(callOffId.OrderNumber, 1);
+
             order.OrderItems.ElementAt(0).CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             order.OrderItems.ElementAt(1).CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
             order.OrderItems.ElementAt(2).CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;

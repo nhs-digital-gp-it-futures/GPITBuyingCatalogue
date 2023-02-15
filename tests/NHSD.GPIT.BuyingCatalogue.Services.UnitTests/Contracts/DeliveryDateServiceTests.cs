@@ -45,6 +45,44 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
         [Theory]
         [InMemoryDbAutoData]
+        public static async Task SetDeliveryDate_WithCatalogueItemId_UpdatesDatabase(
+            Order order,
+            DateTime deliveryDate,
+            [Frozen] BuyingCatalogueDbContext context,
+            DeliveryDateService service)
+        {
+            order.DeliveryDate = null;
+            order.OrderItems.ForEach(x => x.OrderItemRecipients.ForEach(r => r.DeliveryDate = null));
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            var dbOrder = await context.Orders.FirstAsync(x => x.Id == order.Id);
+
+            dbOrder.DeliveryDate.Should().BeNull();
+            dbOrder.OrderItems.ForEach(x => x.OrderItemRecipients.ForEach(r => r.DeliveryDate.Should().BeNull()));
+
+            var orderItem = order.OrderItems.First();
+
+            await service.SetDeliveryDate(order.OrderingParty.InternalIdentifier, order.CallOffId, orderItem.CatalogueItemId, deliveryDate);
+
+            dbOrder.DeliveryDate.Should().BeNull();
+            dbOrder.OrderItems.ForEach(x =>
+            {
+                if (x.CatalogueItemId == orderItem.CatalogueItemId)
+                {
+                    x.OrderItemRecipients.ForEach(r => r.DeliveryDate.Should().Be(deliveryDate));
+                }
+                else
+                {
+                    x.OrderItemRecipients.ForEach(r => r.DeliveryDate.Should().BeNull());
+                }
+            });
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
         public static async Task SetDeliveryDates_UpdatesDatabase(
             Order order,
             [Frozen] BuyingCatalogueDbContext context,

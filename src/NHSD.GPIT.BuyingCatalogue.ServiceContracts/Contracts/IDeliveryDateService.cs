@@ -10,6 +10,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts
     {
         public Task SetDeliveryDate(string internalOrgId, CallOffId callOffId, DateTime deliveryDate);
 
+        public Task SetDeliveryDate(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, DateTime deliveryDate);
+
         public Task SetDeliveryDates(int orderId, CatalogueItemId catalogueItemId, List<RecipientDeliveryDateDto> deliveryDates);
 
         public Task MatchDeliveryDates(int orderId, CatalogueItemId solutionId, CatalogueItemId serviceId);
