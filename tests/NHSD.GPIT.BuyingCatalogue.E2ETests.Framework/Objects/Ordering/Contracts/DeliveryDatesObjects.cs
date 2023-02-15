@@ -4,6 +4,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.Contract
 {
     public static class DeliveryDatesObjects
     {
+        public static By AmendDateError => By.Id("amend-date-error");
+
         public static By ConfirmChanges => By.Id("confirm-changes");
 
         public static By ConfirmChangesError => By.Id("confirm-changes-error");

@@ -2,6 +2,8 @@
 {
     public enum RoutingPoint
     {
+        AmendDeliveryDates,
+        AmendDeliveryDatesBackLink,
         ConfirmPrice,
         ConfirmPriceBackLink,
         ConfirmServiceRecipients,

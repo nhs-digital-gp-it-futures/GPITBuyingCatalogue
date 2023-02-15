@@ -15,6 +15,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing
 
         public RoutingService(IAssociatedServicesService associatedServicesService)
         {
+            providers.Add(RoutingPoint.AmendDeliveryDates, new AmendDeliveryDatesProvider());
+            providers.Add(RoutingPoint.AmendDeliveryDatesBackLink, new AmendDeliveryDatesBackLinkProvider());
             providers.Add(RoutingPoint.ConfirmPrice, new ConfirmPriceProvider());
             providers.Add(RoutingPoint.ConfirmPriceBackLink, new ConfirmPriceBackLinkProvider());
             providers.Add(RoutingPoint.ConfirmServiceRecipients, new ConfirmServiceRecipientsProvider());

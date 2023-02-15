@@ -191,6 +191,118 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
         [Theory]
         [CommonAutoData]
+        public static async Task Get_AmendDate_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            RoutingResult routingResult,
+            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] Mock<IRoutingService> routingService,
+            DeliveryDatesController controller)
+        {
+            var orderItem = order.OrderItems.First();
+            var catalogueItemId = orderItem.CatalogueItemId;
+            var date = orderItem.OrderItemRecipients.First().DeliveryDate;
+
+            orderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            RouteValues routeValues = null;
+
+            routingService
+                .Setup(x => x.GetRoute(RoutingPoint.AmendDeliveryDatesBackLink, order, It.IsAny<RouteValues>()))
+                .Callback<RoutingPoint, EntityFramework.Ordering.Models.Order, RouteValues>((_, _, x) => routeValues = x)
+                .Returns(routingResult);
+
+            var result = await controller.AmendDate(internalOrgId, callOffId, catalogueItemId);
+
+            orderService.VerifyAll();
+            routingService.VerifyAll();
+
+            routeValues.Should().BeEquivalentTo(new
+            {
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+            });
+
+            var expected = new AmendDateModel(internalOrgId, callOffId, catalogueItemId, order, date);
+            var actual = result.Should().BeOfType<ViewResult>().Subject;
+
+            actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AmendDate_WithModelErrors_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            AmendDateModel model,
+            DeliveryDatesController controller)
+        {
+            controller.ModelState.AddModelError("key", "errorMessage");
+
+            var result = await controller.AmendDate(internalOrgId, callOffId, catalogueItemId, model);
+            var actual = result.Should().BeOfType<ViewResult>().Subject;
+
+            actual.Model.Should().BeEquivalentTo(model, x => x.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AmendDate_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            AmendDateModel model,
+            EntityFramework.Ordering.Models.Order order,
+            RoutingResult routingResult,
+            [Frozen] Mock<IDeliveryDateService> deliveryDatesService,
+            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] Mock<IRoutingService> routingService,
+            DeliveryDatesController controller)
+        {
+            model.Day = "1";
+            model.Month = "1";
+            model.Year = "2000";
+
+            deliveryDatesService
+                .Setup(x => x.SetDeliveryDate(internalOrgId, callOffId, catalogueItemId, model.Date.Value))
+                .Verifiable();
+
+            orderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            RouteValues routeValues = null;
+
+            routingService
+                .Setup(x => x.GetRoute(RoutingPoint.AmendDeliveryDates, order, It.IsAny<RouteValues>()))
+                .Callback<RoutingPoint, EntityFramework.Ordering.Models.Order, RouteValues>((_, _, x) => routeValues = x)
+                .Returns(routingResult);
+
+            var result = await controller.AmendDate(internalOrgId, callOffId, catalogueItemId, model);
+
+            deliveryDatesService.VerifyAll();
+            orderService.VerifyAll();
+            routingService.VerifyAll();
+
+            routeValues.Should().BeEquivalentTo(new
+            {
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+                CatalogueItemId = catalogueItemId,
+            });
+
+            var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actual.ActionName.Should().Be(routingResult.ActionName);
+            actual.ControllerName.Should().Be(routingResult.ControllerName);
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static async Task Get_ConfirmChanges_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,

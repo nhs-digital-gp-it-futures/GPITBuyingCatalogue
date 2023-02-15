@@ -98,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var route = routingService.GetRoute(
                 RoutingPoint.SelectQuantity,
                 order,
-                new RouteValues(internalOrgId, callOffId) { Source = model.Source });
+                new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = model.Source });
 
             return RedirectToAction(route.ActionName, route.ControllerName, route.RouteValues);
         }
@@ -176,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var route = routingService.GetRoute(
                 RoutingPoint.SelectQuantity,
                 order,
-                new RouteValues(internalOrgId, callOffId) { Source = model.Source });
+                new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = model.Source });
 
             return RedirectToAction(route.ActionName, route.ControllerName, route.RouteValues);
         }
