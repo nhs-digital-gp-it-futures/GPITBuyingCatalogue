@@ -120,6 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
                 TaskProgress.Optional => TagColour.White,
                 TaskProgress.InProgress => TagColour.Yellow,
                 TaskProgress.Completed => TagColour.Green,
+                TaskProgress.Amended => TagColour.Orange,
                 _ => TagColour.Grey,
             };
 
@@ -131,6 +132,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
                 TaskProgress.Optional => "Optional",
                 TaskProgress.InProgress => "In progress",
                 TaskProgress.Completed => "Completed",
+                TaskProgress.Amended => "Amended",
                 _ => "Not started",
             };
 
