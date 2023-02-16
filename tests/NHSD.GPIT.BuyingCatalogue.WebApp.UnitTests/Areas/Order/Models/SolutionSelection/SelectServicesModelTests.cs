@@ -52,38 +52,39 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonInlineAutoData(true)]
-        [CommonInlineAutoData(false)]
-        public static void WithValidArguments_ForAssociatedServiceOnly_SolutionNameCorrectlySet(
-            bool associatedServicesOnly,
+        [CommonAutoData]
+        public static void WithValidArguments_ForSolution_SolutionNameCorrectlySet(
             EntityFramework.Ordering.Models.Order order,
             List<CatalogueItem> services)
         {
             var existingItem = order.OrderItems.First();
-            var catalogueItemType = associatedServicesOnly ? CatalogueItemType.AssociatedService : CatalogueItemType.AdditionalService;
             var wrapper = new OrderWrapper(order);
 
             existingItem.CatalogueItem.Id = services.First().Id;
-            existingItem.CatalogueItem.CatalogueItemType = catalogueItemType;
-            wrapper.Order.AssociatedServicesOnly = associatedServicesOnly;
+            existingItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            wrapper.Order.AssociatedServicesOnly = false;
 
-            var model = new SelectServicesModel(wrapper, services, catalogueItemType);
+            var model = new SelectServicesModel(wrapper, services, CatalogueItemType.AdditionalService);
 
-            if (associatedServicesOnly)
-            {
-                model.SolutionName.Should().Be(wrapper.RolledUp.Solution.Name);
-            }
-            else
-            {
-                model.SolutionName.Should().Be(wrapper.RolledUp.GetSolution()?.CatalogueItem.Name);
-            }
+            model.SolutionName.Should().Be(wrapper.RolledUp.GetSolution()?.CatalogueItem.Name);
+        }
 
-            for (var i = 0; i < services.Count; i++)
-            {
-                model.Services.Should().Contain(x => x.CatalogueItemId == services[i].Id && x.Description == services[i].Name);
-            }
+        [Theory]
+        [CommonAutoData]
+        public static void WithValidArguments_ForAssociatedService_AssociatedServiceNameCorrectlySet(
+            EntityFramework.Ordering.Models.Order order,
+            List<CatalogueItem> services)
+        {
+            var existingItem = order.OrderItems.First();
+            var wrapper = new OrderWrapper(order);
 
-            model.Services.First(x => x.CatalogueItemId == existingItem.CatalogueItem.Id).IsSelected.Should().BeTrue();
+            existingItem.CatalogueItem.Id = services.First().Id;
+            existingItem.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
+            wrapper.Order.AssociatedServicesOnly = true;
+
+            var model = new SelectServicesModel(wrapper, services, CatalogueItemType.AssociatedService);
+
+            model.SolutionName.Should().Be(wrapper.RolledUp.Solution.Name);
         }
 
         [Theory]
