@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
@@ -16,17 +15,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         public HomeController(IContactUsService contactUsService)
         {
             this.contactUsService = contactUsService ?? throw new ArgumentNullException(nameof(contactUsService));
-        }
-
-        [ExcludeFromCodeCoverage]
-        public IActionResult DownloadCommissioningSupportPackPDF()
-        {
-            const string fileName = "Buyer's Guide for Advanced Cloud-based Telephony-Jan 2023.pdf";
-            var resourceStream =
-                typeof(HomeController).Assembly.GetManifestResourceStream(
-                    $"NHSD.GPIT.BuyingCatalogue.WebApp.Files.{fileName}");
-
-            return File(resourceStream!, "application/pdf", fileName);
         }
 
         public IActionResult Index()
