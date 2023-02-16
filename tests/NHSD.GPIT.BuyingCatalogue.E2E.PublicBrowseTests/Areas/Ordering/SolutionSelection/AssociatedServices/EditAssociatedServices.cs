@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
         [Fact]
         public void EditAssociatedServices_AllSectionsDisplayed()
         {
-            CommonActions.PageTitle().Should().BeEquivalentTo($"Associated Services - Order {CallOffId}".FormatForComparison());
+            CommonActions.PageTitle().Should().BeEquivalentTo($"Associated Services - E2E With Contact Multiple Prices".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(AssociatedServicesObjects.ServicesToSelect).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AssociatedServicesObjects.NothingToSelect).Should().BeFalse();
