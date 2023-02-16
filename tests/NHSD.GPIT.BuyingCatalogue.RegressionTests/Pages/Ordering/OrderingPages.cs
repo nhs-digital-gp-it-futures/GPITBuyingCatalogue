@@ -44,6 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             OrderingStepThree = new OrderingStepThree(driver, commonActions);
             OrderingStepFour = new OrderingStepFour(driver, commonActions);
             ImportServiceReceipients = new ImportServiceReceipients(driver, commonActions);
+            ConfirmServieReceipients = new ConfirmServieReceipients(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -103,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         internal OrderingStepFour OrderingStepFour { get; }
 
         internal ImportServiceReceipients ImportServiceReceipients { get; }
-
+        internal ConfirmServieReceipients ConfirmServieReceipients { get; }
         internal IWebDriver Driver { get; }
 
         public void StepOnePrepareOrder(
@@ -161,6 +162,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                     ImportServiceReceipients.ImportServiceRecipients(fileName);
                 }
 
+                ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
                 SelectEditAndConfirmPrices.SelectAndConfirmPrice();
                 Quantity.AddQuantity();
 

@@ -38,5 +38,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree
                    nameof(DashboardController.Organisation))
                    .Should().BeTrue();
         }
+
+        public void AmendOrder()
+        {
+
+        }
     }
 }
