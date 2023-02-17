@@ -2,6 +2,7 @@
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Step_Five;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo;
@@ -45,6 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             OrderingStepFour = new OrderingStepFour(driver, commonActions);
             ImportServiceReceipients = new ImportServiceReceipients(driver, commonActions);
             ConfirmServieReceipients = new ConfirmServieReceipients(driver, commonActions);
+            AmendOrder = new AmendOrder(driver,commonActions, factory);
             Factory = factory;
             Driver = driver;
         }
@@ -105,6 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         internal ImportServiceReceipients ImportServiceReceipients { get; }
         internal ConfirmServieReceipients ConfirmServieReceipients { get; }
+        internal AmendOrder AmendOrder { get; }
         internal IWebDriver Driver { get; }
 
         public void StepOnePrepareOrder(
@@ -295,6 +298,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         {
             TaskList.ReviewAndCompleteOrderTask();
             OrderingStepFour.ReviewAndCompleteOrder();
+        }
+
+        public void StepFiveAmendOrder()
+        {
+            AmendOrder.AmendOrderClickAmend();
         }
 
         public void EditCatalogueSolution(string newSolutionName, string newAdditionalServiceName = "", string newAssociatedService = "", bool multipleServiceRecipients = false)
