@@ -160,7 +160,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             var item = await GetOrderItemTracked(callOffId, internalOrgId, catalogueItemId);
 
-            if (item.OrderItemFunding is null || !item.IsReadyForReview)
+            if (item.OrderItemFunding is null || !item.IsReadyForReview(callOffId.IsAmendment))
                 return;
 
             var newFundingType = item.FundingType;
