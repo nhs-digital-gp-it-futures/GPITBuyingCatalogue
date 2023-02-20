@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using FluentAssertions;
+using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers;
@@ -67,6 +68,38 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
 
             result.ActionName.Should().Be(Constants.Actions.TaskList);
             result.ControllerName.Should().Be(Constants.Controllers.TaskList);
+            result.RouteValues.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public void Process_FromTaskList_AttentionRequired_ExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            Order order,
+            ConfirmPriceProvider provider)
+        {
+            var orderItem = order.OrderItems.First();
+            var catalogueItemId = orderItem.CatalogueItemId;
+
+            orderItem.Quantity = null;
+            orderItem.OrderItemRecipients.ForEach(x => x.Quantity = null);
+
+            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId)
+            {
+                Source = RoutingSource.TaskList,
+            });
+
+            var expected = new
+            {
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+                CatalogueItemId = catalogueItemId,
+                Source = RoutingSource.TaskList,
+            };
+
+            result.ActionName.Should().Be(Constants.Actions.SelectQuantity);
+            result.ControllerName.Should().Be(Constants.Controllers.Quantity);
             result.RouteValues.Should().BeEquivalentTo(expected);
         }
 
