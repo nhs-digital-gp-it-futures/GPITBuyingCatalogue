@@ -19,6 +19,7 @@
         SelectQuantity,
         SelectQuantityBackLink,
         SelectServiceRecipientsBackLink,
+        TaskList,
         TaskListBackLink,
     }
 }

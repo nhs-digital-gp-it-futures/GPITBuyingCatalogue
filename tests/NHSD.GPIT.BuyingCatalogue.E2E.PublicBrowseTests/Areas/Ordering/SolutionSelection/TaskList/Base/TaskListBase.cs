@@ -23,6 +23,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ta
 
         protected virtual bool AdditionalServicesDisplayed => true;
 
+        protected virtual bool AssociatedServicesDisplayed => true;
+
+        protected virtual bool ChangeCatalogueSolutionLinkVisible => true;
+
         protected virtual bool ChangeAdditionalServicesLinkVisible => true;
 
         protected virtual bool ChangeAssociatedServicesLinkVisible => true;
@@ -42,10 +46,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ta
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
 
             CommonActions.ElementIsDisplayed(TaskListObjects.SolutionDetails).Should().Be(true);
-            CommonActions.ElementIsDisplayed(TaskListObjects.ChangeSolutionLink).Should().Be(true);
+            CommonActions.ElementIsDisplayed(TaskListObjects.ChangeSolutionLink).Should().Be(ChangeCatalogueSolutionLinkVisible);
             CommonActions.ElementIsDisplayed(TaskListObjects.AdditionalServiceDetails).Should().Be(AdditionalServicesDisplayed);
             CommonActions.ElementIsDisplayed(TaskListObjects.ChangeAdditionalServicesLink).Should().Be(ChangeAdditionalServicesLinkVisible);
-            CommonActions.ElementIsDisplayed(TaskListObjects.AssociatedServiceDetails).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(TaskListObjects.AssociatedServiceDetails).Should().Be(AssociatedServicesDisplayed);
             CommonActions.ElementIsDisplayed(TaskListObjects.ChangeAssociatedServicesLink).Should().Be(ChangeAssociatedServicesLinkVisible);
             CommonActions.ElementIsDisplayed(TaskListObjects.ContinueButton).Should().BeTrue();
 
@@ -70,6 +74,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ta
         [Fact]
         public void TaskList_ClickChangeCatalogueSolutionLink_ExpectedResult()
         {
+            if (!ChangeCatalogueSolutionLinkVisible)
+            {
+                return;
+            }
+
             CommonActions.ClickLinkElement(TaskListObjects.ChangeSolutionLink);
 
             CommonActions.PageLoadedCorrectGetIndex(typeof(CatalogueSolutionsController), ChangeSolutionAction).Should().BeTrue();
