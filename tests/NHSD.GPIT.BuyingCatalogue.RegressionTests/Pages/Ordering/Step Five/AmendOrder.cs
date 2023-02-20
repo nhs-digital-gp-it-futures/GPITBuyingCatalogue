@@ -8,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
 using OpenQA.Selenium;
+using Polly;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Step_Five
 {
@@ -24,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Step_Five
         public void AmendOrderClickAmend()
         {
             using var dbContext = Factory.DbContext;
-            var order = dbContext.Orders.OrderDescending().FirstOrDefault();
+            var order = dbContext.Orders.OrderByDescending(x => x.Completed).FirstOrDefault();
             order.Completed = DateTime.UtcNow;
 
             Driver.Navigate().Refresh();

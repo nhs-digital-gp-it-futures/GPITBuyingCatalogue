@@ -210,7 +210,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepFourReviewAndCompleteOrder();
 
-            
+            OrderingPages.StepFiveAmendOrder();
         }
 
         [Fact]
