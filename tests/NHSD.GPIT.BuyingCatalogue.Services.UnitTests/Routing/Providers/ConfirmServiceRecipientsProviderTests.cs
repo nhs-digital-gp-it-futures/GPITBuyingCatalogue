@@ -52,10 +52,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         public void Process_FromTaskList_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
-            CatalogueItemId catalogueItemId,
             Order order,
             ConfirmServiceRecipientsProvider provider)
         {
+            var catalogueItemId = order.OrderItems.First().CatalogueItemId;
             var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId)
             {
                 Source = RoutingSource.TaskList,

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
@@ -12,12 +13,34 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
     {
         [Theory]
         [CommonAutoData]
+        public void Process_OrderIsNull_ThrowsException(
+            RouteValues routeValues,
+            ConfirmPriceProvider provider)
+        {
+            FluentActions
+                .Invoking(() => provider.Process(null, routeValues))
+                .Should().Throw<ArgumentNullException>()
+                .WithParameterName("order");
+        }
+
+        [Theory]
+        [CommonAutoData]
         public void Process_RouteValuesIsNull_ThrowsException(
             Order order,
             ConfirmPriceProvider provider)
         {
             FluentActions
                 .Invoking(() => provider.Process(order, null))
+                .Should().Throw<ArgumentNullException>()
+                .WithParameterName("routeValues");
+
+            var routeValues = new RouteValues
+            {
+                CatalogueItemId = null,
+            };
+
+            FluentActions
+                .Invoking(() => provider.Process(order, routeValues))
                 .Should().Throw<ArgumentNullException>()
                 .WithParameterName("routeValues");
         }
@@ -27,10 +50,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         public void Process_FromTaskList_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
-            CatalogueItemId catalogueItemId,
             Order order,
             ConfirmPriceProvider provider)
         {
+            var catalogueItemId = order.OrderItems.First().CatalogueItemId;
             var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId)
             {
                 Source = RoutingSource.TaskList,
@@ -52,10 +75,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         public void Process_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
-            CatalogueItemId catalogueItemId,
             Order order,
             ConfirmPriceProvider provider)
         {
+            var catalogueItemId = order.OrderItems.First().CatalogueItemId;
             var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId));
 
             var expected = new

@@ -40,6 +40,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             }
         }
 
+        public bool AllDeliveryDatesEntered => (OrderItemRecipients?.Any() ?? false) && OrderItemRecipients.All(x => x.DeliveryDate != null);
+
         public bool AllQuantitiesEntered
         {
             get

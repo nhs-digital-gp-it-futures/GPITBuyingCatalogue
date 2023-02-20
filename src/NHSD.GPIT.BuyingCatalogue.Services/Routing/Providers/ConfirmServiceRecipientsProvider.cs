@@ -20,7 +20,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 throw new ArgumentNullException(nameof(routeValues));
             }
 
-            if (routeValues.Source == RoutingSource.TaskList)
+            var orderItem = order.OrderItem(routeValues.CatalogueItemId.Value);
+
+            var attentionRequired = orderItem.OrderItemPrice == null
+                || !orderItem.AllQuantitiesEntered
+                || (order.IsAmendment && !orderItem.AllDeliveryDatesEntered);
+
+            if (routeValues.Source == RoutingSource.TaskList
+                && !attentionRequired)
             {
                 return new RoutingResult
                 {
@@ -30,7 +37,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 };
             }
 
-            var orderItem = order.OrderItem(routeValues.CatalogueItemId.Value);
+            var defaultRouteValues = new
+            {
+                routeValues.InternalOrgId,
+                routeValues.CallOffId,
+                routeValues.CatalogueItemId,
+                routeValues.Source,
+            };
+
+            if (routeValues.FromPreviousRevision)
+            {
+                return new RoutingResult
+                {
+                    ActionName = Constants.Actions.ViewPrice,
+                    ControllerName = Constants.Controllers.Prices,
+                    RouteValues = defaultRouteValues,
+                };
+            }
 
             if (orderItem.OrderItemPrice != null)
             {
@@ -38,12 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 {
                     ActionName = Constants.Actions.EditPrice,
                     ControllerName = Constants.Controllers.Prices,
-                    RouteValues = new
-                    {
-                        routeValues.InternalOrgId,
-                        routeValues.CallOffId,
-                        routeValues.CatalogueItemId,
-                    },
+                    RouteValues = defaultRouteValues,
                 };
             }
 
@@ -57,12 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 {
                     ActionName = Constants.Actions.SelectPrice,
                     ControllerName = Constants.Controllers.Prices,
-                    RouteValues = new
-                    {
-                        routeValues.InternalOrgId,
-                        routeValues.CallOffId,
-                        routeValues.CatalogueItemId,
-                    },
+                    RouteValues = defaultRouteValues,
                 };
             }
 
@@ -76,6 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                     routeValues.CallOffId,
                     routeValues.CatalogueItemId,
                     priceId = publishedPrices[0].CataloguePriceId,
+                    routeValues.Source,
                 },
             };
         }

@@ -34,6 +34,7 @@
             public const string SelectQuantity = "SelectQuantity";
             public const string SelectSolutionAssociatedServicesOnly = "SelectSolutionAssociatedServicesOnly";
             public const string TaskList = "TaskList";
+            public const string ViewPrice = "ViewPrice";
         }
     }
 }
