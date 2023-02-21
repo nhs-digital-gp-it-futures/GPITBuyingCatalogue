@@ -55,9 +55,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
             if (CatalogueSolution != null)
             {
-                taskModels.Add(CatalogueSolution.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, CatalogueSolution, wrapper.HasCurrentAmendments(CatalogueSolution))
+                taskModels.Add(CatalogueSolution.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, CatalogueSolution)
                 {
                     FromPreviousRevision = previous?.OrderItems.Any(x => x.CatalogueItemId == CatalogueSolution.CatalogueItemId) ?? false,
+                    HasCurrentAmendments = wrapper.HasCurrentAmendments(CatalogueSolution),
                     NumberOfPrices = CatalogueSolution.CatalogueItem.CataloguePrices.Count,
                     PriceId = CatalogueSolution.CatalogueItem.CataloguePrices.Count == 1
                         ? CatalogueSolution.CatalogueItem.CataloguePrices.First().CataloguePriceId
@@ -65,18 +66,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                 });
             }
 
-            AdditionalServices.ForEach(x => taskModels.Add(x.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, x, wrapper.HasCurrentAmendments(x))
+            AdditionalServices.ForEach(x => taskModels.Add(x.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, x)
             {
                 FromPreviousRevision = previous?.OrderItems.Any(oi => oi.CatalogueItemId == x.CatalogueItemId) ?? false,
+                HasCurrentAmendments = wrapper.HasCurrentAmendments(x),
                 NumberOfPrices = x.CatalogueItem.CataloguePrices.Count,
                 PriceId = x.CatalogueItem.CataloguePrices.Count == 1
                     ? x.CatalogueItem.CataloguePrices.First().CataloguePriceId
                     : 0,
             }));
 
-            AssociatedServices.ForEach(x => taskModels.Add(x.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, x, wrapper.HasCurrentAmendments(x))
+            AssociatedServices.ForEach(x => taskModels.Add(x.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, x)
             {
                 FromPreviousRevision = previous?.OrderItems.Any(oi => oi.CatalogueItemId == x.CatalogueItemId) ?? false,
+                HasCurrentAmendments = wrapper.HasCurrentAmendments(x),
                 NumberOfPrices = x.CatalogueItem.CataloguePrices.Count,
                 PriceId = x.CatalogueItem.CataloguePrices.Count == 1
                     ? x.CatalogueItem.CataloguePrices.First().CataloguePriceId
@@ -95,6 +98,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         public override string Title => IsAmendment
             ? AmendmentTitle
             : Progress == TaskProgress.Completed ? CompletedTitle : InProgressTitle;
+
+        public override string Caption => $"Order {CallOffId}";
 
         public override string Advice => IsAmendment
             ? AmendmentAdvice
@@ -130,9 +135,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         {
             get
             {
-                if (taskModels.All(x => x.Value.ServiceRecipientsStatus == TaskProgress.Completed)
+                if (taskModels.All(x => x.Value.ServiceRecipientsStatus is TaskProgress.Completed or TaskProgress.Amended)
                     && taskModels.All(x => x.Value.PriceStatus == TaskProgress.Completed)
-                    && taskModels.All(x => x.Value.QuantityStatus == TaskProgress.Completed))
+                    && taskModels.All(x => x.Value.QuantityStatus is TaskProgress.Completed or TaskProgress.Amended))
                 {
                     return TaskProgress.Completed;
                 }
@@ -140,6 +145,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                 return TaskProgress.InProgress;
             }
         }
+
+        public string OnwardLink { get; set; }
 
         public TaskListOrderItemModel OrderItemModel(CatalogueItemId catalogueItemId) => taskModels.TryGetValue(catalogueItemId, out TaskListOrderItemModel value) ? value : null;
     }
