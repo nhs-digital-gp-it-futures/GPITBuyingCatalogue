@@ -5,7 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
 {
-    public class TaskListBackLinkProvider : IRoutingResultProvider
+    public class TaskListProvider : IRoutingResultProvider
     {
         public RoutingResult Process(Order order, RouteValues routeValues)
         {
@@ -17,16 +17,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
             if (routeValues == null)
             {
                 throw new ArgumentNullException(nameof(routeValues));
-            }
-
-            if (routeValues.Source == RoutingSource.Dashboard)
-            {
-                return new RoutingResult
-                {
-                    ActionName = Constants.Actions.OrderDashboard,
-                    ControllerName = Constants.Controllers.Orders,
-                    RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId },
-                };
             }
 
             var isAmendment = routeValues.CallOffId.IsAmendment;

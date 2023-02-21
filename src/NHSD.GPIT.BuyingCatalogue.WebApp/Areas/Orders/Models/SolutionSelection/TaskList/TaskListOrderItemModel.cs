@@ -6,23 +6,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 {
     public class TaskListOrderItemModel
     {
-        public TaskListOrderItemModel()
-        {
-        }
+        private readonly OrderItem orderItem;
 
-        public TaskListOrderItemModel(string internalOrgId, CallOffId callOffId, OrderItem orderItem, bool hasCurrentAmendments = false)
+        public TaskListOrderItemModel(string internalOrgId, CallOffId callOffId, OrderItem orderItem)
         {
+            this.orderItem = orderItem;
+
             InternalOrgId = internalOrgId;
             CallOffId = callOffId;
 
             CatalogueItemId = orderItem?.CatalogueItemId ?? default;
             Name = orderItem?.CatalogueItem?.Name ?? string.Empty;
-            HasCurrentAmendments = hasCurrentAmendments;
-
-            ServiceRecipientsStatus = GetServiceRecipientsStatus(orderItem);
-            PriceStatus = GetPriceStatus(orderItem);
-            QuantityStatus = GetQuantityStatus(orderItem);
-            DeliveryDatesStatus = GetDeliveryDateStatus(orderItem);
         }
 
         public string InternalOrgId { get; set; }
@@ -43,84 +37,96 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public int PriceId { get; set; }
 
-        public TaskProgress ServiceRecipientsStatus { get; set; }
-
-        public TaskProgress PriceStatus { get; set; }
-
-        public TaskProgress QuantityStatus { get; set; }
-
-        public TaskProgress DeliveryDatesStatus { get; set; }
-
-        private static TaskProgress GetDeliveryDateStatus(OrderItem orderItem)
+        public bool DisplayPriceViewLink
         {
-            if (!orderItem.OrderItemRecipients.Any())
+            get
             {
-                return TaskProgress.CannotStart;
-            }
+                var priceStatus = PriceStatus;
 
-            if (orderItem.OrderItemRecipients.All(x => x.DeliveryDate.HasValue))
-            {
-                return TaskProgress.Completed;
+                return FromPreviousRevision
+                    && priceStatus != TaskProgress.NotApplicable
+                    && priceStatus != TaskProgress.CannotStart;
             }
-
-            return orderItem.OrderItemRecipients.Any(x => x.DeliveryDate.HasValue)
-                ? TaskProgress.InProgress
-                : TaskProgress.NotStarted;
         }
 
-        private static TaskProgress GetServiceRecipientsStatus(OrderItem orderItem)
+        public TaskProgress ServiceRecipientsStatus
         {
-            return (orderItem?.OrderItemRecipients?.Count ?? 0) == 0
-                ? TaskProgress.NotStarted
-                : TaskProgress.Completed;
+            get
+            {
+                return (orderItem?.OrderItemRecipients?.Count ?? 0) == 0
+                    ? TaskProgress.NotStarted
+                    : (FromPreviousRevision && HasCurrentAmendments) ? TaskProgress.Amended : TaskProgress.Completed;
+            }
         }
 
-        private TaskProgress GetPriceStatus(OrderItem orderItem)
+        public TaskProgress PriceStatus
         {
-            if (ServiceRecipientsStatus == TaskProgress.NotStarted)
+            get
             {
-                return TaskProgress.CannotStart;
-            }
+                if (ServiceRecipientsStatus == TaskProgress.NotStarted)
+                {
+                    return TaskProgress.CannotStart;
+                }
 
-            return (orderItem?.OrderItemPrice?.OrderItemPriceTiers?.Count ?? 0) == 0
-                ? TaskProgress.NotStarted
-                : TaskProgress.Completed;
+                return (orderItem?.OrderItemPrice?.OrderItemPriceTiers?.Count ?? 0) == 0
+                    ? TaskProgress.NotStarted
+                    : TaskProgress.Completed;
+            }
         }
 
-        private TaskProgress GetQuantityStatus(OrderItem orderItem)
+        public TaskProgress QuantityStatus
         {
-            if (ServiceRecipientsStatus == TaskProgress.NotStarted
-                || PriceStatus == TaskProgress.NotStarted)
+            get
             {
-                return TaskProgress.CannotStart;
-            }
-
-            if (orderItem?.OrderItemPrice == null)
-            {
-                return TaskProgress.CannotStart;
-            }
-
-            if (orderItem.OrderItemPrice.IsPerServiceRecipient())
-            {
-                if (orderItem.OrderItemRecipients?.All(x => x.Quantity != null) ?? false)
+                if (ServiceRecipientsStatus == TaskProgress.NotStarted
+                    || PriceStatus == TaskProgress.NotStarted)
                 {
-                    return TaskProgress.Completed;
+                    return TaskProgress.CannotStart;
                 }
 
-                if (orderItem.OrderItemRecipients?.Any(x => x.Quantity != null) ?? false)
+                if (orderItem.OrderItemPrice.IsPerServiceRecipient())
                 {
-                    return TaskProgress.InProgress;
-                }
-            }
-            else
-            {
-                if (orderItem.Quantity != null)
-                {
-                    return TaskProgress.Completed;
-                }
-            }
+                    if (orderItem.OrderItemRecipients?.All(x => x.Quantity != null) ?? false)
+                    {
+                        return (FromPreviousRevision && HasCurrentAmendments) ? TaskProgress.Amended : TaskProgress.Completed;
+                    }
 
-            return TaskProgress.NotStarted;
+                    if (orderItem.OrderItemRecipients?.Any(x => x.Quantity != null) ?? false)
+                    {
+                        return TaskProgress.InProgress;
+                    }
+                }
+                else
+                {
+                    if (orderItem.Quantity != null)
+                    {
+                        return (FromPreviousRevision && HasCurrentAmendments) ? TaskProgress.Amended : TaskProgress.Completed;
+                    }
+                }
+
+                return TaskProgress.NotStarted;
+            }
+        }
+
+        public TaskProgress DeliveryDatesStatus
+        {
+            get
+            {
+                if ((QuantityStatus is TaskProgress.CannotStart or TaskProgress.NotStarted)
+                    || !orderItem.OrderItemRecipients.Any())
+                {
+                    return TaskProgress.CannotStart;
+                }
+
+                if (orderItem.OrderItemRecipients.All(x => x.DeliveryDate.HasValue))
+                {
+                    return (FromPreviousRevision && HasCurrentAmendments) ? TaskProgress.Amended : TaskProgress.Completed;
+                }
+
+                return orderItem.OrderItemRecipients.Any(x => x.DeliveryDate.HasValue)
+                    ? TaskProgress.InProgress
+                    : TaskProgress.NotStarted;
+            }
         }
     }
 }
