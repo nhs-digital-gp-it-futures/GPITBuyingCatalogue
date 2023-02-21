@@ -38,7 +38,7 @@ ORDER BY
 
 INSERT INTO @Milestones
 VALUES
-('Delivery date (Go Live)', 1, 'No payment.'),
+('Delivery date (go live)', 1, 'No payment.'),
 ('Service Stability', 2, 'Charges commence on achievement of delivery date (go live), but payments will not be made until service stability is achieved.');
 
 INSERT INTO @AcceptanceCriteria
