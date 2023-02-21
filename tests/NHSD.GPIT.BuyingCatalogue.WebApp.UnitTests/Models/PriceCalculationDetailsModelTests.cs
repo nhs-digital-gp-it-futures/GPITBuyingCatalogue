@@ -23,20 +23,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models
         }
 
         [Theory]
-        [AutoData]
-        public void Constructor_WhenTieredAndSingleFixed_ReturnsCorrectTitle(
-            CataloguePriceType priceType,
-            CataloguePriceCalculationType calculationType)
+        [InlineData(CataloguePriceType.Tiered, CataloguePriceCalculationType.Volume)]
+        [InlineData(CataloguePriceType.Tiered, CataloguePriceCalculationType.Cumulative)]
+        public void Constructor_WhenTieredAndNotSingleFixed_ReturnsCorrectTitle(CataloguePriceType priceType, CataloguePriceCalculationType calculationType)
         {
             var model = new PriceCalculationDetailsModel(
                 CatalogueItemType.Solution,
                 priceType,
                 calculationType);
 
-            if (priceType == CataloguePriceType.Tiered && calculationType != CataloguePriceCalculationType.SingleFixed)
-                Assert.Equal($"What is a {calculationType.Name().ToLowerInvariant()} price?", model.DetailsTitle);
-            else
-                Assert.Equal($"What is a {priceType.ToString().ToLowerInvariant()} {calculationType.Name().ToLowerInvariant()} price?", model.DetailsTitle);
+            Assert.Equal($"What is a {calculationType.Name().ToLowerInvariant()} price?", model.DetailsTitle);
+        }
+
+        [Theory]
+        [InlineData(CataloguePriceType.Flat, CataloguePriceCalculationType.Cumulative)]
+        [InlineData(CataloguePriceType.Flat, CataloguePriceCalculationType.Volume)]
+        [InlineData(CataloguePriceType.Flat, CataloguePriceCalculationType.SingleFixed)]
+        [InlineData(CataloguePriceType.Tiered, CataloguePriceCalculationType.SingleFixed)]
+        public void Constructor_TieredAndFlat_ReturnsCorrectTitle(CataloguePriceType priceType, CataloguePriceCalculationType calculationType)
+        {
+            var model = new PriceCalculationDetailsModel(
+                CatalogueItemType.Solution,
+                priceType,
+                calculationType);
+
+            Assert.Equal($"What is a {priceType.ToString().ToLowerInvariant()} {calculationType.Name().ToLowerInvariant()} price?", model.DetailsTitle);
         }
 
         [Theory]
@@ -53,8 +64,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models
         }
 
         [Theory]
-        [AutoData]
-        public void Constructor_WhenNotCumulative_ReturnsCorrectHeading(
+        [InlineData(CataloguePriceType.Flat, CataloguePriceCalculationType.SingleFixed)]
+        [InlineData(CataloguePriceType.Tiered, CataloguePriceCalculationType.SingleFixed)]
+        public void Constructor_WhenNotCumulativeAndSingleFixed_ReturnsCorrectHeading(
             CataloguePriceType priceType,
             CataloguePriceCalculationType calculationType)
         {
@@ -64,10 +76,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models
                 calculationType);
 
             var expectedHeading = $"The total price for this Catalogue Solution will be calculated as a {priceType.ToString().ToLowerInvariant()}";
-            if (calculationType == CataloguePriceCalculationType.SingleFixed)
-                expectedHeading += $" {calculationType.Name().ToLowerInvariant()} price (excluding VAT).";
-            else
-                expectedHeading += " price based on volume (excluding VAT).";
+            expectedHeading += $" {calculationType.Name().ToLowerInvariant()} price (excluding VAT).";
+
+            Assert.Equal(expectedHeading, model.DetailsHeading);
+        }
+
+        [Theory]
+        [InlineData(CataloguePriceType.Flat, CataloguePriceCalculationType.Volume)]
+        [InlineData(CataloguePriceType.Tiered, CataloguePriceCalculationType.Volume)]
+        public void Constructor_WhenNotCumulativeAndNotSingleFixed_ReturnsCorrectHeading(
+            CataloguePriceType priceType,
+            CataloguePriceCalculationType calculationType)
+        {
+            var model = new PriceCalculationDetailsModel(
+                CatalogueItemType.Solution,
+                priceType,
+                calculationType);
+
+            var expectedHeading = $"The total price for this Catalogue Solution will be calculated as a {priceType.ToString().ToLowerInvariant()}";
+            expectedHeading += " price based on volume (excluding VAT).";
 
             Assert.Equal(expectedHeading, model.DetailsHeading);
         }
