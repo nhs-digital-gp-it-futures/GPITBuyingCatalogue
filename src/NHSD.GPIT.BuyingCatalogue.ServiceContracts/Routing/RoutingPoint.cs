@@ -21,5 +21,6 @@
         SelectServiceRecipientsBackLink,
         TaskList,
         TaskListBackLink,
+        ViewPrice,
     }
 }

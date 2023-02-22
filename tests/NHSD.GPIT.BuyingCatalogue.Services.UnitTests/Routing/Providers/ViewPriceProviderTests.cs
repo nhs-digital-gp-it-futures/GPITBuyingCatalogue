@@ -10,13 +10,13 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
 {
-    public class EditPriceProviderTests
+    public class ViewPriceProviderTests
     {
         [Theory]
         [CommonAutoData]
         public void Process_OrderIsNull_ThrowsException(
             RouteValues routeValues,
-            EditPriceProvider provider)
+            ViewPriceProvider provider)
         {
             FluentActions
                 .Invoking(() => provider.Process(null, routeValues))
@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         [CommonAutoData]
         public void Process_RouteValuesIsNull_ThrowsException(
             Order order,
-            EditPriceProvider provider)
+            ViewPriceProvider provider)
         {
             FluentActions
                 .Invoking(() => provider.Process(order, null))
@@ -48,59 +48,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
 
         [Theory]
         [CommonAutoData]
-        public void Process_ExpectedResult(
+        public void Process_AttentionRequired_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             Order order,
-            EditPriceProvider provider)
-        {
-            var catalogueItemId = order.OrderItems.First().CatalogueItemId;
-            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId));
-
-            var expected = new
-            {
-                InternalOrgId = internalOrgId,
-                CallOffId = callOffId,
-                CatalogueItemId = catalogueItemId,
-            };
-
-            result.ActionName.Should().Be(Constants.Actions.SelectQuantity);
-            result.ControllerName.Should().Be(Constants.Controllers.Quantity);
-            result.RouteValues.Should().BeEquivalentTo(expected);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public void Process_FromTaskList_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            Order order,
-            EditPriceProvider provider)
-        {
-            var catalogueItemId = order.OrderItems.First().CatalogueItemId;
-            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId)
-            {
-                Source = RoutingSource.TaskList,
-            });
-
-            var expected = new
-            {
-                InternalOrgId = internalOrgId,
-                CallOffId = callOffId,
-            };
-
-            result.ActionName.Should().Be(Constants.Actions.TaskList);
-            result.ControllerName.Should().Be(Constants.Controllers.TaskList);
-            result.RouteValues.Should().BeEquivalentTo(expected);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public void Process_FromTaskList_AttentionRequired_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            Order order,
-            EditPriceProvider provider)
+            ViewPriceProvider provider)
         {
             var orderItem = order.OrderItems.First();
             var catalogueItemId = orderItem.CatalogueItemId;
@@ -118,10 +70,33 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
                 InternalOrgId = internalOrgId,
                 CallOffId = callOffId,
                 CatalogueItemId = catalogueItemId,
+                Source = RoutingSource.TaskList,
             };
 
             result.ActionName.Should().Be(Constants.Actions.SelectQuantity);
             result.ControllerName.Should().Be(Constants.Controllers.Quantity);
+            result.RouteValues.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public void Process_ExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            Order order,
+            ViewPriceProvider provider)
+        {
+            var catalogueItemId = order.OrderItems.First().CatalogueItemId;
+            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId));
+
+            var expected = new
+            {
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+            };
+
+            result.ActionName.Should().Be(Constants.Actions.TaskList);
+            result.ControllerName.Should().Be(Constants.Controllers.TaskList);
             result.RouteValues.Should().BeEquivalentTo(expected);
         }
     }
