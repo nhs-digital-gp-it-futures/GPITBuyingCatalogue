@@ -39,7 +39,7 @@
             @priceType.ToString()
         </nhs-summary-list-row>
 
-        <nhs-summary-list-row label-text="Price">
+        <nhs-summary-list-row label-text="Price (excluding VAT)">
             @foreach (var (price, index) in prices.Select((x, i) => (x, i)))
             {
                 if (index > 0) { <br/> }
