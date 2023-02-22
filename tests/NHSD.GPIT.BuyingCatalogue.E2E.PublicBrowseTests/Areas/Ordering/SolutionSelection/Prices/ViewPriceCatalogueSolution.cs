@@ -5,6 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
 using Xunit;
 
@@ -15,12 +16,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Pr
         private const string InternalOrgId = "CG-03F";
         private static readonly CallOffId CallOffId = new(90030, 2);
         private static readonly CatalogueItemId CatalogueItemId = new(99998, "001");
+        private static readonly RoutingSource Source = RoutingSource.TaskList;
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
             { nameof(InternalOrgId), InternalOrgId },
             { nameof(CallOffId), $"{CallOffId}" },
             { nameof(CatalogueItemId), $"{CatalogueItemId}" },
+            { nameof(Source), $"{Source}" },
         };
 
         public ViewPriceCatalogueSolution(LocalWebApplicationFactory factory)
@@ -54,8 +57,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Pr
             CommonActions.ClickContinue();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(TaskListController),
-                nameof(TaskListController.TaskList)).Should().BeTrue();
+                typeof(QuantityController),
+                nameof(QuantityController.SelectQuantity)).Should().BeTrue();
         }
     }
 }

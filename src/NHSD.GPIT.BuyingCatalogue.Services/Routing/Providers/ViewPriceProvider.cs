@@ -4,7 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
 {
-    public class ConfirmPriceProvider : IRoutingResultProvider
+    public class ViewPriceProvider : IRoutingResultProvider
     {
         public RoutingResult Process(Order order, RouteValues routeValues)
         {
@@ -19,10 +19,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
             }
 
             var orderItem = order.OrderItem(routeValues.CatalogueItemId.Value);
-            var attentionRequired = !orderItem.AllQuantitiesEntered || (order.IsAmendment && !orderItem.AllDeliveryDatesEntered);
 
-            if (routeValues.Source == RoutingSource.TaskList
-                && !attentionRequired)
+            var attentionRequired = orderItem != null
+                && (!orderItem.AllQuantitiesEntered || (order.IsAmendment && !orderItem.AllDeliveryDatesEntered));
+
+            if (!attentionRequired)
             {
                 return new RoutingResult
                 {

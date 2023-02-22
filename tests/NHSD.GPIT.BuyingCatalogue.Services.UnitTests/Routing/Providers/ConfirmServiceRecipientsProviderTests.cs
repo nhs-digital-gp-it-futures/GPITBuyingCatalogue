@@ -52,10 +52,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         public void Process_FromTaskList_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
-            CatalogueItemId catalogueItemId,
             Order order,
             ConfirmServiceRecipientsProvider provider)
         {
+            var catalogueItemId = order.OrderItems.First().CatalogueItemId;
             var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId)
             {
                 Source = RoutingSource.TaskList,
@@ -69,6 +69,32 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
 
             result.ActionName.Should().Be(Constants.Actions.TaskList);
             result.ControllerName.Should().Be(Constants.Controllers.TaskList);
+            result.RouteValues.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public void Process_FromPreviousRevision_ExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            Order order,
+            ConfirmServiceRecipientsProvider provider)
+        {
+            var catalogueItemId = order.OrderItems.First().CatalogueItemId;
+            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId)
+            {
+                FromPreviousRevision = true,
+            });
+
+            var expected = new
+            {
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+                CatalogueItemId = catalogueItemId,
+            };
+
+            result.ActionName.Should().Be(Constants.Actions.ViewPrice);
+            result.ControllerName.Should().Be(Constants.Controllers.Prices);
             result.RouteValues.Should().BeEquivalentTo(expected);
         }
 

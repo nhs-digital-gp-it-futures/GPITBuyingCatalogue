@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing
 {
@@ -35,5 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing
         public int? SelectedPriceId { get; set; }
 
         public string RecipientIds { get; set; }
+
+        public bool FromPreviousRevision { get; set; }
     }
 }
