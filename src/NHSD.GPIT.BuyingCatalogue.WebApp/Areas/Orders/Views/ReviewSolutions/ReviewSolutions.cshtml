@@ -1,6 +1,12 @@
 ﻿@using System.Linq;
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.ActionLink
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSecondaryButton
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.SummaryList
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Review
 
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Review.ReviewSolutionsModel
 @{
@@ -39,7 +45,7 @@
 		    <h2 id="catalogue-solutions-title">@solutionsTitle</h2>
 		    @foreach (var solution in Model.CatalogueSolutions)
 		    {
-		        <partial name="_ReviewExpander" model="solution" />
+                <partial name="_ReviewExpander" model="new ReviewExpanderModel(solution, Model.Previous?.OrderItem(solution.CatalogueItemId), Model.Order.IsAmendment)" />
 		    }
 		}
 
@@ -48,7 +54,7 @@
 			<h2 id="additional-services-title">Additional Services</h2>
 			@foreach (var service in Model.AdditionalServices)
 			{
-				<partial name="_ReviewExpander" model="service" />
+                <partial name="_ReviewExpander" model="new ReviewExpanderModel(service, Model.Previous?.OrderItem(service.CatalogueItemId), Model.Order.IsAmendment)" />
 			}
 		}
 
@@ -57,7 +63,7 @@
 			<h2 id="associated-services-title">Associated Services</h2>
 			@foreach (var service in Model.AssociatedServices)
 			{
-				<partial name="_ReviewExpander" model="service" />
+                <partial name="_ReviewExpander" model="new ReviewExpanderModel(service, Model.Previous?.OrderItem(service.CatalogueItemId), Model.Order.IsAmendment)" />
 			}
 		}
 
