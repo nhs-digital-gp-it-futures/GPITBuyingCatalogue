@@ -3,28 +3,44 @@
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.DetailsAndExpander
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
-@model NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models.OrderItem
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Review.ReviewExpanderModel
 @{
-	var totalCosts = Model.OrderItemPrice.CalculateTotalCostPerTier(Model.TotalQuantity);
+	var totalCosts = Model.OrderItem.OrderItemPrice.CalculateTotalCostPerTier(Model.OrderItem.TotalQuantity);
     var totalCost = totalCosts.Sum(tc => tc.Cost);
-    var billingPeriod = Model.OrderItemPrice?.BillingPeriod?.Description() ?? string.Empty;
-    var hasTieredPricing = Model.OrderItemPrice?.CataloguePriceType is CataloguePriceType.Tiered;
-    var hasServiceRecipientQuantities = Model.OrderItemPrice?.IsPerServiceRecipient() ?? false;
+    var billingPeriod = Model.OrderItem.OrderItemPrice?.BillingPeriod?.Description() ?? string.Empty;
+    var hasTieredPricing = Model.OrderItem.OrderItemPrice?.CataloguePriceType is CataloguePriceType.Tiered;
+    var hasServiceRecipientQuantities = Model.OrderItem.OrderItemPrice?.IsPerServiceRecipient() ?? false;
 }
 
-<nhs-expander label-text="@Model.CatalogueItem.Name"
+<nhs-expander label-text="@Model.OrderItem.CatalogueItem.Name"
+              added-sticker="@Model.IsAmendment && @Model.IsOrderItemAdded"
 			  colour-mode="BlackAndWhite"
 			  secondary-text-title="Subtotal: "
 			  secondary-text="£@($"{totalCost:N2} {billingPeriod}")"
 			  open="true"
 			  bold-title="true">
 	<br/>
-	<nhs-table label-text="Service Recipients">
-		<nhs-table-column>Recipient</nhs-table-column>
-		<nhs-table-column>Quantity</nhs-table-column>
-		@foreach(var recipient in Model.OrderItemRecipients)
-		{
-			<nhs-table-row-container>
+    <nhs-table label-text="Service Recipients">
+        @if (Model.IsAmendment)
+        {
+            <nhs-table-column>Status</nhs-table-column>
+        }
+        <nhs-table-column>Recipient</nhs-table-column>
+        <nhs-table-column>Quantity</nhs-table-column>
+        @foreach (var recipient in Model.OrderItem.OrderItemRecipients)
+        {
+            <nhs-table-row-container>
+                @if (Model.IsAmendment)
+                {
+                    <nhs-table-cell style="width: 50px;">
+                        @if (Model.IsServiceRecipientAdded(recipient.OdsCode))
+                        {
+                            <div class="bc-c-task-list__task-status">
+                                <strong class="nhsuk-tag nhsuk-tag--blue">Added</strong>
+                            </div>
+                        }
+                    </nhs-table-cell>
+                }
                 <nhs-table-cell>
                     @recipient.Recipient.Name
                 </nhs-table-cell>
@@ -38,9 +54,9 @@
                         @("N/A")
                     }
                 </nhs-table-cell>
-			</nhs-table-row-container>
-		}
-	</nhs-table>
+            </nhs-table-row-container>
+        }
+    </nhs-table>
 
     <nhs-table label-text="Pricing">
         @if (hasTieredPricing)
@@ -52,7 +68,7 @@
 
         @for (var i = 0; i < totalCosts.Count; i++)
         {
-            var price = Model.OrderItemPrice.OrderItemPriceTiers.ElementAt(i).Price;
+            var price = Model.OrderItem.OrderItemPrice.OrderItemPriceTiers.ElementAt(i).Price;
 
             <nhs-table-row-container>
                 @if (hasTieredPricing)
@@ -62,7 +78,7 @@
                     </nhs-table-cell>
                 }
                 <nhs-table-cell>
-                    £@($"{price:#,###,##0.00##}") @Model.OrderItemPrice.ToPriceUnitString()
+                    £@($"{price:#,###,##0.00##}") @Model.OrderItem.OrderItemPrice.ToPriceUnitString()
                 </nhs-table-cell>
                 <nhs-table-cell>
                     @($"{totalCosts[i].Quantity:N0}")

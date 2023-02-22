@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Review
@@ -11,15 +12,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         {
         }
 
-        public ReviewSolutionsModel(Order order, string internalOrgId)
+        public ReviewSolutionsModel(OrderWrapper wrapper, string internalOrgId)
         {
+            var order = wrapper.Order;
+
             CallOffId = order.CallOffId;
             InternalOrgId = internalOrgId;
             Order = order;
+            Previous = wrapper.Previous;
+            RolledUp = wrapper.RolledUp;
             AllOrderItems = order.OrderItems;
-            CatalogueSolutions = order.GetSolutions().ToList();
-            AdditionalServices = order.GetAdditionalServices().ToList();
-            AssociatedServices = order.GetAssociatedServices().ToList();
+            CatalogueSolutions = RolledUp.GetSolutions().ToList();
+            AdditionalServices = RolledUp.GetAdditionalServices().ToList();
+            AssociatedServices = RolledUp.GetAssociatedServices().ToList();
             ContractLength = order.MaximumTerm ?? 0;
             AssociatedServicesOnly = order.AssociatedServicesOnly;
         }
@@ -27,6 +32,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         public CallOffId CallOffId { get; set; }
 
         public Order Order { get; set; }
+
+        public Order Previous { get; set; }
+
+        public Order RolledUp { get; set; }
 
         public List<OrderItem> CatalogueSolutions { get; set; }
 

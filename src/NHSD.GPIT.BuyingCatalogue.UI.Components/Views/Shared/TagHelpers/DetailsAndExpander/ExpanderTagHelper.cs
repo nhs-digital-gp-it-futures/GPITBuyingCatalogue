@@ -9,6 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
     public sealed class ExpanderTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-expander";
+        public const string AddedStickerName = "added-sticker";
         public const string ColourModeName = "colour-mode";
         public const string SecondaryTextTitleName = "secondary-text-title";
         public const string SecondaryTextName = "secondary-text";
@@ -29,6 +30,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
 
         [HtmlAttributeName(TagHelperConstants.LabelTextName)]
         public string LabelText { get; set; }
+
+        [HtmlAttributeName(AddedStickerName)]
+        public bool AddedSticker { get; set; }
 
         [HtmlAttributeName(ColourModeName)]
         public ExpanderColourMode ColourMode { get; set; }
@@ -60,8 +64,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
             output.TagMode = TagMode.StartTagAndEndTag;
 
             var summary = string.IsNullOrWhiteSpace(SecondaryTextTitle)
-                ? DetailsAndExpanderTagHelperBuilders.GetSummaryLabelBuilder(HeadingText, LabelText, BoldTitle)
-                : DetailsAndExpanderTagHelperBuilders.GetSummaryLabelBuilderWithSecondaryInformation(LabelText, SecondaryTextTitle, SecondaryText, BoldTitle);
+                ? DetailsAndExpanderTagHelperBuilders.GetSummaryLabelBuilder(HeadingText, LabelText, BoldTitle, AddedSticker)
+                : DetailsAndExpanderTagHelperBuilders.GetSummaryLabelBuilderWithSecondaryInformation(LabelText, SecondaryTextTitle, SecondaryText, BoldTitle, AddedSticker);
 
             var textItem = DetailsAndExpanderTagHelperBuilders.GetTextItem();
 

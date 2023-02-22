@@ -24,9 +24,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         [HttpGet]
         public async Task<IActionResult> ReviewSolutions(string internalOrgId, CallOffId callOffId)
         {
-            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
+            var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
 
-            var model = new ReviewSolutionsModel(order, internalOrgId)
+            var model = new ReviewSolutionsModel(wrapper, internalOrgId)
             {
                 BackLink = Url.Action(
                     nameof(OrderController.Order),
