@@ -338,22 +338,6 @@
             </tbody>
         </table>
     </div>
-
-    @foreach (var milestone in Model.DefaultImplementationPlan.Milestones)
-    {
-        <div class="pdf-container">
-            <h3>@milestone.Title acceptance criteria</h3>
-            <table>
-                @foreach (var (criterion, index) in milestone.AcceptanceCriteria.Select((x, i) => (x, i + 1)))
-                {
-                    <tr>
-                        <td>@index</td>
-                        <td>@criterion.Description</td>
-                    </tr>
-                }
-            </table>
-        </div>
-    }
 }
 else
 {

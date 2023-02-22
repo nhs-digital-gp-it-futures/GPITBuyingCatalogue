@@ -38,8 +38,8 @@ ORDER BY
 
 INSERT INTO @Milestones
 VALUES
-('Milestone 1: Delivery date (Go Live)', 1, 'No payment.'),
-('Milestone 2: Service Stability', 2, 'Charges commence on achievement of Milestone 1, but payments will not be made until Milestone 2 is achieved.');
+('Delivery date (go live)', 1, 'No payment.'),
+('Service Stability', 2, 'Charges commence on achievement of delivery date (go live), but payments will not be made until service stability is achieved.');
 
 INSERT INTO @AcceptanceCriteria
 VALUES
