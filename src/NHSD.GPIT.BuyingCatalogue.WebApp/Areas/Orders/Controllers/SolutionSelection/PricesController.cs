@@ -128,7 +128,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 return View(model);
             }
 
-            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
             var price = await GetCataloguePrice(priceId, catalogueItemId);
 
             await orderPriceService.UpsertPrice(order.Id, price, model.AgreedPrices);
@@ -186,7 +186,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 return View(ConfirmPriceViewName, model);
             }
 
-            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
 
             await orderPriceService.UpdatePrice(order.Id, catalogueItemId, model.AgreedPrices);
 
@@ -204,9 +204,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         public async Task<IActionResult> ViewPrice(
             string internalOrgId,
             CallOffId callOffId,
-            CatalogueItemId catalogueItemId)
+            CatalogueItemId catalogueItemId,
+            RoutingSource? source = null)
         {
-            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Previous;
+            var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = wrapper.Previous;
+
+            var route = routingService.GetRoute(
+                RoutingPoint.ViewPrice,
+                wrapper.Order,
+                new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
 
             var model = new ViewPriceModel(order.OrderItem(catalogueItemId))
             {
@@ -216,6 +223,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                    new { internalOrgId, callOffId }),
                 InternalOrgId = internalOrgId,
                 CallOffId = callOffId,
+                OnwardLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
             };
 
             return View(model);

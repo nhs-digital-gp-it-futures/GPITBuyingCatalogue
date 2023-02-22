@@ -34,17 +34,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         public void WithValidOrderItem_SpecificPropertiesCorrectlySet(
             string internalOrgId,
             CallOffId callOffId,
+            string onwardLink,
             OrderItem orderItem)
         {
             var model = new ViewPriceModel(orderItem)
             {
                 InternalOrgId = internalOrgId,
                 CallOffId = callOffId,
+                OnwardLink = onwardLink,
             };
 
             model.Advice.Should().Be(ViewPriceModel.AdviceText);
             model.InternalOrgId.Should().Be(internalOrgId);
             model.CallOffId.Should().Be(callOffId);
+            model.OnwardLink.Should().Be(onwardLink);
         }
     }
 }
