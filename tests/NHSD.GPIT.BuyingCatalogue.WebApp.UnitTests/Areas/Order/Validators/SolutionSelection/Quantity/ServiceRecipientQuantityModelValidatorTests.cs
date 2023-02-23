@@ -95,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Solu
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_QuantityValid_NoErrors(
+        public static void Validate_QuantityValidAndInputQuantityNotEntered_ThrowsValidationError(
             ServiceRecipientQuantityModel model,
             ServiceRecipientQuantityModelValidator validator)
         {
@@ -104,7 +104,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Solu
 
             var result = validator.TestValidate(model);
 
-            result.ShouldNotHaveAnyValidationErrors();
+            result.ShouldHaveValidationErrorFor(x => x.InputQuantity)
+                .WithErrorMessage(ServiceRecipientQuantityModelValidator.ValueNotEnteredErrorMessage);
         }
     }
 }
