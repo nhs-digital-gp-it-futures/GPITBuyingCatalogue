@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 
@@ -17,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
-            Initialise();
+            Refresh();
         }
 
         public int? GetNumberOfPatients(string odsCode)
@@ -32,14 +33,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
         public void Refresh()
         {
-            Initialise();
-        }
-
-        private void Initialise()
-        {
-            practiceSizes = dbContext.GpPracticeSizes.ToDictionary(
-                x => x.OdsCode,
-                x => x.NumberOfPatients);
+            practiceSizes = dbContext.GpPracticeSizes
+                .AsNoTracking()
+                .ToDictionary(
+                    x => x.OdsCode,
+                    x => x.NumberOfPatients);
         }
     }
 }
