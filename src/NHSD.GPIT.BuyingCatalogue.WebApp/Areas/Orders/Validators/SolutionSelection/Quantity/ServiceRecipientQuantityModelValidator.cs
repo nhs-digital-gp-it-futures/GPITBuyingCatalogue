@@ -34,8 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.SolutionSelec
 
         private static bool HaveAValue(ServiceRecipientQuantityModel model)
         {
-            return model.Quantity > 0
-                || !string.IsNullOrWhiteSpace(model.InputQuantity);
+            return !string.IsNullOrWhiteSpace(model.InputQuantity);
         }
 
         private static bool HaveAnIntegerValue(ServiceRecipientQuantityModel model)
