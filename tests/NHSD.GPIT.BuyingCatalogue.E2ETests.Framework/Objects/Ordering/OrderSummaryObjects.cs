@@ -8,6 +8,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
         public static By ReviewAndCompleteOrderLink => By.LinkText("Review and complete order");
         public static By OrderIdSummary => ByExtensions.DataTestId("order-id-summary");
 
+        public static By AmendThisOrder => By.ClassName("nhsuk-action-link__text");
+
         public static By OrderDescriptionSummary => ByExtensions.DataTestId("order-description-summary");
 
         public static By DateCreatedSummary => ByExtensions.DataTestId("date-created-summary");
