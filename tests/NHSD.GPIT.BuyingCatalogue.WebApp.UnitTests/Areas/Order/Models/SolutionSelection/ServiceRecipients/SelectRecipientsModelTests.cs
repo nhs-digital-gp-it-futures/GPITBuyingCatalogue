@@ -33,8 +33,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             model.Advice.Should().Be(string.Format(SelectRecipientsModel.AdviceText, itemType.Name()));
 
             model.PreviouslySelected.Should().BeEquivalentTo(previousItem.OrderItemRecipients.Select(x => x.Recipient?.Name));
-            model.ServiceRecipients.Should().BeEquivalentTo(serviceRecipients);
-            model.ServiceRecipients.ForEach(x => x.Selected.Should().BeFalse());
+            model.GetServiceRecipients().Should().BeEquivalentTo(serviceRecipients);
+            model.GetServiceRecipients().ForEach(x => x.Selected.Should().BeFalse());
         }
 
         [Theory]
@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             model.Advice.Should().Be(SelectRecipientsModel.AdviceTextNoRecipientsAvailable);
 
             model.PreviouslySelected.Should().BeEquivalentTo(previousItem.OrderItemRecipients.Select(x => x.Recipient?.Name));
-            model.ServiceRecipients.Should().BeEmpty();
+            model.GetServiceRecipients().Should().BeEmpty();
         }
 
         [Theory]
@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             model.HasImportedRecipients.Should().BeFalse();
             model.ItemName.Should().Be(orderItem.CatalogueItem.Name);
             model.ItemType.Should().Be(orderItem.CatalogueItem.CatalogueItemType);
-            model.ServiceRecipients.ForEach(x => x.Selected.Should().BeFalse());
+            model.GetServiceRecipients().ForEach(x => x.Selected.Should().BeFalse());
             model.SelectionMode.Should().Be(SelectionMode.All);
             model.SelectionCaption.Should().Be(SelectRecipientsModel.SelectAll);
         }
@@ -86,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             var model = new SelectRecipientsModel(orderItem, null, serviceRecipients, SelectionMode.All);
 
             model.HasImportedRecipients.Should().BeFalse();
-            model.ServiceRecipients.ForEach(x => x.Selected.Should().BeTrue());
+            model.GetServiceRecipients().ForEach(x => x.Selected.Should().BeTrue());
             model.SelectionMode.Should().Be(SelectionMode.None);
             model.SelectionCaption.Should().Be(SelectRecipientsModel.SelectNone);
         }
@@ -107,7 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             var model = new SelectRecipientsModel(orderItem, null, serviceRecipients, null, importedRecipients);
 
             model.HasImportedRecipients.Should().BeTrue();
-            model.ServiceRecipients.ForEach(x => x.Selected.Should().BeTrue());
+            model.GetServiceRecipients().ForEach(x => x.Selected.Should().BeTrue());
             model.SelectionMode.Should().Be(SelectionMode.None);
             model.SelectionCaption.Should().Be(SelectRecipientsModel.SelectNone);
         }
@@ -123,7 +123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             model.PreSelectRecipients(null);
 
             model.PreSelected.Should().BeFalse();
-            model.ServiceRecipients.ForEach(x => x.Selected.Should().BeFalse());
+            model.GetServiceRecipients().ForEach(x => x.Selected.Should().BeFalse());
         }
 
         [Theory]
@@ -137,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             model.PreSelectRecipients(orderItem);
 
             model.PreSelected.Should().BeFalse();
-            model.ServiceRecipients.ForEach(x => x.Selected.Should().BeFalse());
+            model.GetServiceRecipients().ForEach(x => x.Selected.Should().BeFalse());
         }
 
         [Theory]
@@ -152,16 +152,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
             var model = new SelectRecipientsModel(order.OrderItems.ElementAt(1), null, serviceRecipients, null);
 
-            model.ServiceRecipients[0].Selected.Should().BeFalse();
-            model.ServiceRecipients[1].Selected.Should().BeFalse();
-            model.ServiceRecipients[2].Selected.Should().BeFalse();
+            model.GetServiceRecipients()[0].Selected.Should().BeFalse();
+            model.GetServiceRecipients()[1].Selected.Should().BeFalse();
+            model.GetServiceRecipients()[2].Selected.Should().BeFalse();
 
             model.PreSelectSolutionServiceRecipients(order, catalogueItemId);
 
             model.PreSelected.Should().BeFalse();
-            model.ServiceRecipients[0].Selected.Should().BeFalse();
-            model.ServiceRecipients[1].Selected.Should().BeFalse();
-            model.ServiceRecipients[2].Selected.Should().BeFalse();
+            model.GetServiceRecipients()[0].Selected.Should().BeFalse();
+            model.GetServiceRecipients()[1].Selected.Should().BeFalse();
+            model.GetServiceRecipients()[2].Selected.Should().BeFalse();
         }
 
         [Theory]
@@ -178,18 +178,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             serviceRecipients.First().OdsCode = solution.OrderItemRecipients.First().OdsCode;
 
-            var model = new SelectRecipientsModel(service, null, serviceRecipients, null);
+            serviceRecipients.ForEach(x => x.Selected = false);
 
-            model.ServiceRecipients[0].Selected.Should().BeFalse();
-            model.ServiceRecipients[1].Selected.Should().BeFalse();
-            model.ServiceRecipients[2].Selected.Should().BeFalse();
+            var model = new SelectRecipientsModel(service, null, serviceRecipients, null);
 
             model.PreSelectSolutionServiceRecipients(order, service.CatalogueItemId);
 
             model.PreSelected.Should().BeTrue();
-            model.ServiceRecipients[0].Selected.Should().BeTrue();
-            model.ServiceRecipients[1].Selected.Should().BeFalse();
-            model.ServiceRecipients[2].Selected.Should().BeFalse();
+            model.GetServiceRecipients().Where(x => x.Selected).Should().HaveCount(1);
         }
 
         [Theory]
@@ -200,9 +196,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         {
             var model = new SelectRecipientsModel(orderItem, null, serviceRecipients, null);
 
-            model.ServiceRecipients[0].Selected.Should().BeFalse();
-            model.ServiceRecipients[1].Selected.Should().BeFalse();
-            model.ServiceRecipients[2].Selected.Should().BeFalse();
+            model.GetServiceRecipients()[0].Selected.Should().BeFalse();
+            model.GetServiceRecipients()[1].Selected.Should().BeFalse();
+            model.GetServiceRecipients()[2].Selected.Should().BeFalse();
 
             var recipientIds = string.Join(
                 SelectRecipientsModel.Separator,
@@ -210,9 +206,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
             model.SelectRecipientIds(recipientIds);
 
-            model.ServiceRecipients[0].Selected.Should().BeTrue();
-            model.ServiceRecipients[1].Selected.Should().BeTrue();
-            model.ServiceRecipients[2].Selected.Should().BeTrue();
+            model.GetServiceRecipients()[0].Selected.Should().BeTrue();
+            model.GetServiceRecipients()[1].Selected.Should().BeTrue();
+            model.GetServiceRecipients()[2].Selected.Should().BeTrue();
         }
 
         [Theory]
@@ -222,6 +218,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             OrderItem baseOrderItem,
             List<ServiceRecipientModel> serviceRecipients)
         {
+            serviceRecipients.ForEach(x => x.Selected = false);
+
             var model = new SelectRecipientsModel(orderItem, null, serviceRecipients, null);
 
             baseOrderItem.OrderItemRecipients.First().OdsCode = serviceRecipients.First().OdsCode;
@@ -229,9 +227,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             model.PreSelectRecipients(baseOrderItem);
 
             model.PreSelected.Should().BeTrue();
-            model.ServiceRecipients[0].Selected.Should().BeTrue();
-            model.ServiceRecipients[1].Selected.Should().BeFalse();
-            model.ServiceRecipients[2].Selected.Should().BeFalse();
+            model.GetServiceRecipients().Where(x => x.Selected).Should().HaveCount(1);
         }
 
         [Theory]

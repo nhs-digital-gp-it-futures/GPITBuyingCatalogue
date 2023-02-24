@@ -18,8 +18,8 @@
     <div class="nhsuk-grid-column-full">
         <nhs-validation-summary />
         <nhs-page-title model="Model" />
-        
-        @if (Model.ServiceRecipients?.Any() ?? false)
+
+        @if (Model.SubLocations?.Any() ?? false)
         {
             if (Model.HasImportedRecipients
                 || (Model.PreviouslySelected?.Any() ?? false)
@@ -48,7 +48,7 @@
                             We're only showing the Service Recipients which were not included in the original order.
                         </p>
                     }
-                    
+
                     @if (Model.PreSelected
                         && Model.ItemType != CatalogueItemType.Solution)
                     {
@@ -95,30 +95,36 @@
                     <input type="hidden" asp-for="@Model.PreviouslySelected[i]"/>
                 }
             }
-            
-            @if (Model.ServiceRecipients?.Any() ?? false)
-            {
-                <nhs-table>
-                    <nhs-table-column>Organisation</nhs-table-column>
-                    <nhs-table-column>ODS code</nhs-table-column>
-                    @foreach (var (item, i) in Model.ServiceRecipients.Select((x, i) => (x, i)))
-                    {
-                        <nhs-table-row-container>
-                            <nhs-table-cell>
-                                <nhs-checkbox-container>
-                                    <nhs-checkbox asp-for="@Model.ServiceRecipients[i].Selected"
-                                                  label-text="@item.Name"
-                                                  hidden-input="@Model.ServiceRecipients[i].Name"/>
-                                </nhs-checkbox-container>
-                            </nhs-table-cell>
-                            <nhs-table-cell>
-                                <div class="nhsuk-input--width-10 nhsuk-u-margin-top-2">@item.OdsCode</div>
-                                <input type="hidden" asp-for="@Model.ServiceRecipients[i].OdsCode"/>
-                            </nhs-table-cell>
-                        </nhs-table-row-container>
-                    }
-                </nhs-table>
 
+            @if (Model.SubLocations?.Any() ?? false)
+            {
+                @foreach (var (location, lIndex) in Model.SubLocations.Select((x, i) => (x, i)))
+                {
+                    <input type="hidden" asp-for="@Model.SubLocations[lIndex].Name" />
+                    <nhs-expander label-text="@location.Name" open="false" bold-title="true">
+
+                    <nhs-table>
+                        <nhs-table-column>Organisation</nhs-table-column>
+                        <nhs-table-column>ODS code</nhs-table-column>
+                        @foreach (var (item, rIndex) in location.ServiceRecipients.Select((x, i) => (x, i)))
+                        {
+                            <nhs-table-row-container>
+                                <nhs-table-cell>
+                                    <nhs-checkbox-container>
+                                            <nhs-checkbox asp-for="@Model.SubLocations[lIndex].ServiceRecipients[rIndex].Selected"
+                                                      label-text="@item.Name"
+                                              hidden-input="@Model.SubLocations[lIndex].ServiceRecipients[rIndex].Name" />
+                                    </nhs-checkbox-container>
+                                </nhs-table-cell>
+                                <nhs-table-cell>
+                                    <div class="nhsuk-input--width-10 nhsuk-u-margin-top-2">@item.OdsCode</div>
+                                        <input type="hidden" asp-for="@Model.SubLocations[lIndex].ServiceRecipients[rIndex].OdsCode" />
+                                </nhs-table-cell>
+                            </nhs-table-row-container>
+                        }
+                    </nhs-table>
+                </nhs-expander>
+                }
                 <br/>
                 <nhs-submit-button/>
             }

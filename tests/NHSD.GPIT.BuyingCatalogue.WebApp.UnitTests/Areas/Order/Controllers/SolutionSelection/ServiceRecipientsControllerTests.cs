@@ -86,6 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 {
                     Name = x.Name,
                     OdsCode = x.OrgId,
+                    Location = x.Location,
                 })
                 .ToList();
 
@@ -140,7 +141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var model = actualResult.Model.Should().BeAssignableTo<SelectRecipientsModel>().Subject;
 
             model.PreSelected.Should().BeTrue();
-            model.ServiceRecipients.ForEach(x => x.Selected.Should().BeTrue());
+            model.GetServiceRecipients().ForEach(x => x.Selected.Should().BeTrue());
         }
 
         [Theory]
@@ -190,7 +191,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             model.HasImportedRecipients.Should().BeTrue();
             model.HasMissingImportedRecipients.Should().BeTrue();
             model.PreSelected.Should().BeFalse();
-            model.ServiceRecipients.ForEach(x => x.Selected.Should().BeFalse());
+            model.GetServiceRecipients().ForEach(x => x.Selected.Should().BeFalse());
         }
 
         [Theory]
@@ -221,7 +222,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             orderItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            var selectedOdsCodes = model.ServiceRecipients.Where(x => x.Selected).Select(x => x.OdsCode);
+            var selectedOdsCodes = model.GetServiceRecipients().Where(x => x.Selected).Select(x => x.OdsCode);
             var recipientIds = string.Join(ServiceRecipientsController.Separator, selectedOdsCodes);
 
             var result = controller.AddServiceRecipients(model.InternalOrgId, model.CallOffId, orderItem.Id, model);
@@ -282,6 +283,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 {
                     Name = x.Name,
                     OdsCode = x.OrgId,
+                    Location = x.Location,
                 })
                 .ToList();
 
@@ -343,7 +345,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             model.HasImportedRecipients.Should().BeTrue();
             model.HasMissingImportedRecipients.Should().BeTrue();
             model.PreSelected.Should().BeFalse();
-            model.ServiceRecipients.ForEach(x => x.Selected.Should().BeFalse());
+            model.GetServiceRecipients().ForEach(x => x.Selected.Should().BeFalse());
         }
 
         [Theory]
@@ -374,7 +376,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             orderItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            var selectedOdsCodes = model.ServiceRecipients.Where(x => x.Selected).Select(x => x.OdsCode);
+            var selectedOdsCodes = model.GetServiceRecipients().Where(x => x.Selected).Select(x => x.OdsCode);
             var recipientIds = string.Join(ServiceRecipientsController.Separator, selectedOdsCodes);
 
             var result = controller.EditServiceRecipients(model.InternalOrgId, model.CallOffId, orderItem.Id, model);
@@ -400,7 +402,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             SelectRecipientsModel model,
             ServiceRecipientsController controller)
         {
-            model.ServiceRecipients.ForEach(x => x.Selected = false);
+            model.GetServiceRecipients().ForEach(x => x.Selected = false);
 
             var result = controller.EditServiceRecipients(model.InternalOrgId, model.CallOffId, model.CatalogueItemId, model);
 

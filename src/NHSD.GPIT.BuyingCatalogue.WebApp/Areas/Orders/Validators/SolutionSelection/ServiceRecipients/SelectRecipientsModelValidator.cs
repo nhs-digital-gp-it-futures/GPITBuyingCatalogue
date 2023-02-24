@@ -11,14 +11,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.SolutionSelec
 
         public SelectRecipientsModelValidator()
         {
-            RuleFor(x => x.ServiceRecipients)
+            RuleFor(x => x.SubLocations)
                 .Must(HaveMadeASelection)
                 .WithMessage(NoSelectionMadeErrorMessage)
-                .OverridePropertyName("ServiceRecipients[0].Selected");
+                .OverridePropertyName("SubLocations[0].ServiceRecipients[0].Selected");
         }
 
-        private static bool HaveMadeASelection(List<ServiceRecipientModel> serviceRecipients)
+        private static bool HaveMadeASelection(List<SublocationModel> subLocations)
         {
+            var serviceRecipients = subLocations.SelectMany(x => x.ServiceRecipients).ToList();
+
             return !(serviceRecipients?.Any() ?? false)
                 || serviceRecipients.Any(x => x.Selected);
         }

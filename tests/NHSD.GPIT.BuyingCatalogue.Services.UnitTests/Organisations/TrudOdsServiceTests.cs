@@ -126,25 +126,45 @@ public class TrudOdsServiceTests
     [Theory]
     [InMemoryDbAutoData]
     public static async Task GetServiceRecipientsByParentInternalIdentifier_WithRelationships_ReturnsRecipients(
-        List<EntityFramework.OdsOrganisations.Models.OdsOrganisation> organisations,
+        EntityFramework.OdsOrganisations.Models.OdsOrganisation grandparentOrganisation,
+        EntityFramework.OdsOrganisations.Models.OdsOrganisation parentOrganisation,
+        List<EntityFramework.OdsOrganisations.Models.OdsOrganisation> childOrganisations,
         Organisation organisation,
-        RoleType roleType,
-        RelationshipType relationshipType,
+        RoleType gpRoleType,
+        RelationshipType commByRelType,
+        RoleType subLocationRoleType,
+        RelationshipType geogOfRelType,
         [Frozen] OdsSettings settings,
         [Frozen] BuyingCatalogueDbContext context,
         TrudOdsService service)
     {
-        var parentOrganisation = organisations.First();
-        var childOrganisations = organisations.Skip(1).ToList();
+        organisation.ExternalIdentifier = grandparentOrganisation.Id;
 
-        organisation.ExternalIdentifier = parentOrganisation.Id;
+        gpRoleType.Id = settings.GpPracticeRoleId;
+        commByRelType.Id = settings.IsCommissionedByRelType;
+        subLocationRoleType.Id = settings.SubLocationRoleId;
+        geogOfRelType.Id = settings.InGeographyOfRelType;
 
-        roleType.Id = settings.GpPracticeRoleId;
-        relationshipType.Id = TrudOdsService.RelationshipType;
+        grandparentOrganisation.Related.Clear();
+        grandparentOrganisation.Parents.Clear();
         parentOrganisation.Related.Clear();
         parentOrganisation.Parents.Clear();
 
         var random = new Random();
+        grandparentOrganisation.Related.Add(
+            new()
+            {
+                Id = random.Next(5000, 10000),
+                OwnerOrganisationId = grandparentOrganisation.Id,
+                TargetOrganisationId = parentOrganisation.Id,
+                RelationshipTypeId = geogOfRelType.Id,
+            });
+
+        parentOrganisation.Roles = new List<OrganisationRole>
+        {
+            new() { OrganisationId = parentOrganisation.Id, RoleId = subLocationRoleType.Id, IsPrimaryRole = false, },
+        };
+
         childOrganisations.ForEach(
             x =>
             {
@@ -153,7 +173,7 @@ public class TrudOdsServiceTests
 
                 x.Roles = new List<OrganisationRole>
                 {
-                    new() { OrganisationId = x.Id, RoleId = roleType.Id, IsPrimaryRole = true, },
+                    new() { OrganisationId = x.Id, RoleId = gpRoleType.Id, IsPrimaryRole = true, },
                 };
 
                 parentOrganisation.Related.Add(
@@ -162,13 +182,16 @@ public class TrudOdsServiceTests
                         Id = random.Next(5000, 10000),
                         OwnerOrganisationId = parentOrganisation.Id,
                         TargetOrganisationId = x.Id,
-                        RelationshipTypeId = relationshipType.Id,
+                        RelationshipTypeId = commByRelType.Id,
                     });
             });
 
-        context.Add(roleType);
+        context.Add(gpRoleType);
+        context.Add(subLocationRoleType);
         context.Add(organisation);
-        context.Add(relationshipType);
+        context.Add(commByRelType);
+        context.Add(geogOfRelType);
+        context.Add(grandparentOrganisation);
         context.Add(parentOrganisation);
         context.AddRange(childOrganisations);
         await context.SaveChangesAsync();

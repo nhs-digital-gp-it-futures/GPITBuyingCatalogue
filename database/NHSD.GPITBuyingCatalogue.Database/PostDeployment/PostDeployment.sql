@@ -12,6 +12,7 @@
 :r ./CreateExecutiveAgency.sql
 :r ./CreateExecutiveAgencyUser.sql
 :r ./CreateTestUsers.sql
+:r ./CreateIntegratedCareBoards.sql
 
 :r ./InsertAllowedEmailDomains.sql
 :r ./InsertCapabilityStatuses.sql

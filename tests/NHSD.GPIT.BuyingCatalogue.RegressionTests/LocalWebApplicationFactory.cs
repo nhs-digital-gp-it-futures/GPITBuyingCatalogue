@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests
             RootUri = host.Services.GetRequiredService<IServer>().Features.Get<IServerAddressesFeature>()!.Addresses.LastOrDefault()!;
 
             var browserFactory = new BrowserFactory(Browser);
-            Driver = browserFactory.Driver;
+            BrowserFactory = browserFactory;
 
             if (!Browser.Contains("local") && !Debugger.IsAttached && browserFactory.GridRunning)
             {
@@ -79,7 +79,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests
 
         public string RootUri { get; }
 
-        internal IWebDriver Driver { get; }
+        internal BrowserFactory BrowserFactory { get; }
+
+        internal IWebDriver Driver => BrowserFactory.Driver;
 
         internal IIdentityService GetIdentityService => host.Services.GetRequiredService<IIdentityService>();
 
@@ -159,10 +161,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests
         [ExcludeFromCodeCoverage]
         protected override void Dispose(bool disposing)
         {
-            Driver?.Quit();
             base.Dispose(disposing);
             if (disposing && !disposed)
             {
+                BrowserFactory?.Dispose();
                 host?.Dispose();
                 sqlConnection?.Dispose();
                 disposed = true;

@@ -39,13 +39,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             string[] importedRecipients = null)
         {
             this.selectionMode = selectionMode;
-            ServiceRecipients = serviceRecipients;
 
             ItemName = previousItem?.CatalogueItem.Name ?? orderItem.CatalogueItem.Name;
             ItemType = previousItem?.CatalogueItem.CatalogueItemType ?? orderItem.CatalogueItem.CatalogueItemType;
 
             PreviouslySelected = previousItem?.OrderItemRecipients?.Select(x => x.Recipient?.Name).ToList() ?? new List<string>();
-            ServiceRecipients.RemoveAll(x => PreviouslySelected.Contains(x.Name));
+            SubLocations = serviceRecipients.GroupBy(x => x.Location)
+                .Select(x => new SublocationModel(x.Key, x.OrderBy(x => x.Name).ToList()))
+                .OrderBy(x => x.Name)
+                .ToList();
 
             SetAdvice(importedRecipients);
             ApplySelection(importedRecipients, orderItem);
@@ -67,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public CatalogueItemType ItemType { get; set; }
 
-        public List<ServiceRecipientModel> ServiceRecipients { get; set; }
+        public List<SublocationModel> SubLocations { get; set; }
 
         public string SelectionCaption { get; set; }
 
@@ -97,9 +99,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             ? ServiceRecipientImportMode.Add
             : ServiceRecipientImportMode.Edit;
 
+        public List<ServiceRecipientModel> GetServiceRecipients()
+        {
+            return SubLocations.SelectMany(x => x.ServiceRecipients).ToList();
+        }
+
         public List<ServiceRecipientDto> GetSelectedItems()
         {
-            return ServiceRecipients
+            return GetServiceRecipients()
                 .Where(x => x.Selected)
                 .Select(x => x.Dto)
                 .ToList();
@@ -113,7 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
             odsCodes.ForEach(odsCode =>
             {
-                var recipient = ServiceRecipients.FirstOrDefault(x => x.OdsCode == odsCode);
+                var recipient = GetServiceRecipients().FirstOrDefault(x => x.OdsCode == odsCode);
 
                 if (recipient != null)
                 {
@@ -145,11 +152,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                 return;
             }
 
+            var serviceRecipients = GetServiceRecipients();
+
             order.GetSolution().OrderItemRecipients
                 .Select(x => x.OdsCode)
                 .ForEach(odsCode =>
                 {
-                    var recipient = ServiceRecipients.FirstOrDefault(x => x.OdsCode == odsCode);
+                    var recipient = serviceRecipients.FirstOrDefault(x => x.OdsCode == odsCode);
 
                     if (recipient != null)
                     {
@@ -157,7 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                     }
                 });
 
-            if (ServiceRecipients.Any(x => x.Selected))
+            if (serviceRecipients.Any(x => x.Selected))
             {
                 PreSelected = true;
             }
@@ -168,13 +177,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             switch (selectionMode)
             {
                 case SelectionMode.All:
-                    ServiceRecipients.ForEach(x => x.Selected = true);
+                    GetServiceRecipients().ForEach(x => x.Selected = true);
                     SelectionMode = SelectionMode.None;
                     SelectionCaption = SelectNone;
                     break;
 
                 case SelectionMode.None:
-                    ServiceRecipients.ForEach(x => x.Selected = false);
+                    GetServiceRecipients().ForEach(x => x.Selected = false);
                     SelectionMode = SelectionMode.All;
                     SelectionCaption = SelectAll;
                     break;
@@ -184,13 +193,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                     {
                         var odsCodes = importedRecipients.Select(x => x.ToUpperInvariant());
 
-                        ServiceRecipients
+                        var serviceRecipients = GetServiceRecipients();
+
+                        serviceRecipients
                             .Where(x => odsCodes.Contains(x.OdsCode))
                             .ForEach(x => x.Selected = true);
 
                         HasImportedRecipients = true;
 
-                        var allSelected = ServiceRecipients.All(x => x.Selected);
+                        var allSelected = serviceRecipients.All(x => x.Selected);
 
                         SelectionMode = allSelected ? SelectionMode.None : SelectionMode.All;
                         SelectionCaption = allSelected ? SelectNone : SelectAll;
@@ -206,7 +217,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         private void SetAdvice(IEnumerable importedRecipients)
         {
-            if (!ServiceRecipients.Any())
+            if (!GetServiceRecipients().Any())
             {
                 Advice = AdviceTextNoRecipientsAvailable;
             }
@@ -220,13 +231,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         private void SetSelectionsFromOrderItem(OrderItem orderItem)
         {
-            ServiceRecipients.ForEach(x => x.Selected = orderItem?.OrderItemRecipients?.Any(r => r.OdsCode == x.OdsCode) ?? false);
+            var serviceRecipients = GetServiceRecipients();
 
-            SelectionMode = ServiceRecipients.All(x => x.Selected)
+            serviceRecipients.ForEach(x => x.Selected = orderItem?.OrderItemRecipients?.Any(r => r.OdsCode == x.OdsCode) ?? false);
+
+            SelectionMode = serviceRecipients.All(x => x.Selected)
                 ? SelectionMode.None
                 : SelectionMode.All;
 
-            SelectionCaption = ServiceRecipients.All(x => x.Selected)
+            SelectionCaption = serviceRecipients.All(x => x.Selected)
                 ? SelectNone
                 : SelectAll;
         }

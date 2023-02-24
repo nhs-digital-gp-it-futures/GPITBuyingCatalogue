@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -107,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var recipientIds = string.Join(
                 Separator,
-                model.ServiceRecipients.Where(x => x.Selected).Select(x => x.OdsCode));
+                model.GetServiceRecipients().Where(x => x.Selected).Select(x => x.OdsCode));
 
             return RedirectToAction(
                 nameof(ConfirmChanges),
@@ -179,7 +180,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 return View("SelectRecipients", model);
             }
 
-            var odsCodes = model.ServiceRecipients?
+            var odsCodes = model.GetServiceRecipients()?
                 .Where(x => x.Selected)
                 .Select(x => x.OdsCode)
                 .ToList() ?? new List<string>();
@@ -217,12 +218,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var selected = serviceRecipients
                 .Where(x => selectedRecipientIds.Contains(x.OdsCode))
-                .Select(x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OdsCode })
+                .Select(x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OdsCode, Location = x.Location })
                 .ToList();
 
-            var previouslySelected = wrapper.Previous?.OrderItem(catalogueItemId)?
-                .OrderItemRecipients
-                .Select(x => new ServiceRecipientModel { Name = x.Recipient.Name, OdsCode = x.OdsCode })
+            var previouslySelectedIds = wrapper.Previous?.OrderItem(catalogueItemId)
+                ?.OrderItemRecipients.Select(x => x.OdsCode)
+                .ToList() ?? new List<string>();
+
+            var previouslySelected = serviceRecipients
+                .Where(x => previouslySelectedIds.Contains(x.OdsCode))
+                .Select(x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OdsCode, Location = x.Location })
                 .ToList() ?? new List<ServiceRecipientModel>();
 
             var route = routingService.GetRoute(
@@ -293,6 +298,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 {
                     Name = x.Name,
                     OdsCode = x.OrgId,
+                    Location = x.Location,
                 })
                 .ToList();
         }
