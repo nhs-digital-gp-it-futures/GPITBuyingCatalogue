@@ -12,6 +12,7 @@
 :r ./CreateIntegratedCareBoards.sql
 :r ./CreateCommissioningSupportUnits.sql
 :r ./CreateTestUsers.sql
+:r ./CreateIntegratedCareBoards.sql
 
 :r ./InsertAllowedEmailDomains.sql
 :r ./InsertCapabilityStatuses.sql
