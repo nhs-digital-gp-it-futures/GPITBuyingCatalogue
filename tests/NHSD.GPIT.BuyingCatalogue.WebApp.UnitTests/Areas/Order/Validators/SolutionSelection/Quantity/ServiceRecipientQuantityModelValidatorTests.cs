@@ -18,7 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Solu
             ServiceRecipientQuantityModel model,
             ServiceRecipientQuantityModelValidator validator)
         {
-            model.Quantity = 0;
             model.InputQuantity = inputQuantity;
 
             var result = validator.TestValidate(model);
@@ -35,7 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Solu
             ServiceRecipientQuantityModel model,
             ServiceRecipientQuantityModelValidator validator)
         {
-            model.Quantity = 0;
             model.InputQuantity = inputQuantity;
 
             var result = validator.TestValidate(model);
@@ -53,7 +51,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Solu
             ServiceRecipientQuantityModel model,
             ServiceRecipientQuantityModelValidator validator)
         {
-            model.Quantity = 0;
             model.InputQuantity = inputQuantity;
 
             var result = validator.TestValidate(model);
@@ -68,7 +65,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Solu
             ServiceRecipientQuantityModel model,
             ServiceRecipientQuantityModelValidator validator)
         {
-            model.Quantity = 0;
             model.InputQuantity = "-1";
 
             var result = validator.TestValidate(model);
@@ -86,43 +82,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Solu
             ServiceRecipientQuantityModel model,
             ServiceRecipientQuantityModelValidator validator)
         {
-            model.Quantity = 0;
             model.InputQuantity = inputQuantity;
 
             var result = validator.TestValidate(model);
 
-            result.ShouldNotHaveAnyValidationErrors();
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Validate_QuantityValidAndInputQuantityNotEntered_ThrowsValidationError(
-            ServiceRecipientQuantityModel model,
-            ServiceRecipientQuantityModelValidator validator)
-        {
-            model.Quantity = 1;
-            model.InputQuantity = string.Empty;
-
-            var result = validator.TestValidate(model);
-
-            result.ShouldHaveValidationErrorFor(x => x.InputQuantity)
-                .WithErrorMessage(ServiceRecipientQuantityModelValidator.ValueNotEnteredErrorMessage);
-        }
-
-        [Theory]
-        [CommonInlineAutoData("1")]
-        [CommonInlineAutoData("1234")]
-        [CommonInlineAutoData("999999")]
-        public static void Validate_WhenModelQuantityGreaterThanZero_ReturnsTrue(
-            string inputQuantity,
-            ServiceRecipientQuantityModel model,
-            ServiceRecipientQuantityModelValidator validator)
-        {
-            model.Quantity = 1;
-            model.InputQuantity = inputQuantity;
-            var result = validator.TestValidate(model);
-
-            result.IsValid.Should().BeTrue();
             result.ShouldNotHaveAnyValidationErrors();
         }
     }
