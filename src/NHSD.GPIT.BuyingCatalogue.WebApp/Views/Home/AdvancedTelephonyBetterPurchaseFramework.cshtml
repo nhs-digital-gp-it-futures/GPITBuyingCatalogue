@@ -49,6 +49,7 @@
             <li><a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.DaisyPatientLinePdf)">Daisy Communications Ltd (PDF)</a></li>
             <li><a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.ThinkHealthcarePdf)">Think Healthcare (PDF)</a></li>
             <li><a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.RedcentricPdf)">Redcentric Solutions Ltd (PDF)</a></li>
+            <li><a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.BabbleVoicePdf)">Babblevoice (PDF)</a></li>
         </ul>
 
         <p>The list will grow over time as more suppliers meet the qualification criteria.</p>
@@ -60,8 +61,8 @@
         <vc:nhs-secondary-button type="Secondary"
                                  text="Download buyer’s guide (PDF)"
                                  url="@Url.Action(
-                                               nameof(HomeController.DownloadCommissioningSupportPackPDF),
-                                               typeof(HomeController).ControllerName())" />
+                                               nameof(AdvancedTelephonyController.BuyersGuidePdf),
+                                               typeof(AdvancedTelephonyController).ControllerName())" />
 
         <p>
             For more information on the Better Purchasing framework and the suppliers and solutions currently involved, contact National Commercial and Procurement Hub.
