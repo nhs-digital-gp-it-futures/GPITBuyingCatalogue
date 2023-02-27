@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 {
+    [ExcludeFromCodeCoverage]
     public class AdvancedTelephonyController : Controller
     {
-        [ExcludeFromCodeCoverage]
         public IActionResult BuyersGuidePdf()
         {
             const string fileName = "Buyer's Guide for Advanced Cloud-based Telephony-Jan 2023.pdf";
@@ -14,7 +14,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             return GetFileStream(fileName);
         }
 
-        [ExcludeFromCodeCoverage]
         public IActionResult ThinkHealthcarePdf()
         {
             const string fileName = "Think Healthcare.pdf";
@@ -22,7 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             return GetFileStream(fileName);
         }
 
-        [ExcludeFromCodeCoverage]
         public IActionResult DaisyPatientLinePdf()
         {
             const string fileName = "Daisy Patient Line.pdf";
@@ -30,7 +28,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             return GetFileStream(fileName);
         }
 
-        [ExcludeFromCodeCoverage]
         public IActionResult RedcentricPdf()
         {
             const string fileName = "Redcentric.pdf";
@@ -38,7 +35,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             return GetFileStream(fileName);
         }
 
-        [ExcludeFromCodeCoverage]
         public IActionResult SurgeryConnectPdf()
         {
             const string fileName = "Surgery Connect.pdf";
@@ -46,7 +42,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             return GetFileStream(fileName);
         }
 
-        [ExcludeFromCodeCoverage]
         public IActionResult BabbleVoicePdf()
         {
             const string fileName = "Babblevoice.pdf";
