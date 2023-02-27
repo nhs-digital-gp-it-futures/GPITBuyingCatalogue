@@ -1,4 +1,5 @@
-﻿using FluentValidation.TestHelper;
+﻿using FluentAssertions;
+using FluentValidation.TestHelper;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Quantity;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.SolutionSelection.Quantity;
@@ -17,7 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Solu
             ServiceRecipientQuantityModel model,
             ServiceRecipientQuantityModelValidator validator)
         {
-            model.Quantity = 0;
             model.InputQuantity = inputQuantity;
 
             var result = validator.TestValidate(model);
@@ -34,7 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Solu
             ServiceRecipientQuantityModel model,
             ServiceRecipientQuantityModelValidator validator)
         {
-            model.Quantity = 0;
             model.InputQuantity = inputQuantity;
 
             var result = validator.TestValidate(model);
@@ -52,7 +51,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Solu
             ServiceRecipientQuantityModel model,
             ServiceRecipientQuantityModelValidator validator)
         {
-            model.Quantity = 0;
             model.InputQuantity = inputQuantity;
 
             var result = validator.TestValidate(model);
@@ -67,7 +65,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Solu
             ServiceRecipientQuantityModel model,
             ServiceRecipientQuantityModelValidator validator)
         {
-            model.Quantity = 0;
             model.InputQuantity = "-1";
 
             var result = validator.TestValidate(model);
@@ -85,22 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Solu
             ServiceRecipientQuantityModel model,
             ServiceRecipientQuantityModelValidator validator)
         {
-            model.Quantity = 0;
             model.InputQuantity = inputQuantity;
-
-            var result = validator.TestValidate(model);
-
-            result.ShouldNotHaveAnyValidationErrors();
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Validate_QuantityValid_NoErrors(
-            ServiceRecipientQuantityModel model,
-            ServiceRecipientQuantityModelValidator validator)
-        {
-            model.Quantity = 1;
-            model.InputQuantity = string.Empty;
 
             var result = validator.TestValidate(model);
 
