@@ -9,7 +9,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.Solution
         public static By AdditionalServicesSectionTitle => By.Id("additional-services-title");
 
         public static By AssociatedServicesSectionTitle => By.Id("associated-services-title");
-        public static By IndicativeCostsTitle => By.Id("indicative-costs-title");
 
         public static By ContinueButton => By.LinkText("Continue");
 
