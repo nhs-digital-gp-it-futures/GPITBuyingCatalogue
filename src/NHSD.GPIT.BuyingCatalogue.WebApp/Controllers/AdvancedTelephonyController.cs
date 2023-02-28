@@ -1,52 +1,61 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using Microsoft.AspNetCore.Mvc;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 {
+    [ExcludeFromCodeCoverage]
     public class AdvancedTelephonyController : Controller
     {
-        [ExcludeFromCodeCoverage]
+        public IActionResult BuyersGuidePdf()
+        {
+            const string fileName = "Buyer's Guide for Advanced Cloud-based Telephony-Jan 2023.pdf";
+
+            return GetFileStream(fileName);
+        }
+
         public IActionResult ThinkHealthcarePdf()
         {
             const string fileName = "Think Healthcare.pdf";
-            var resourceStream =
-                typeof(HomeController).Assembly.GetManifestResourceStream(
-                    $"NHSD.GPIT.BuyingCatalogue.WebApp.Files.{fileName}");
 
-            return File(resourceStream!, "application/pdf", fileName);
+            return GetFileStream(fileName);
         }
 
-        [ExcludeFromCodeCoverage]
         public IActionResult DaisyPatientLinePdf()
         {
             const string fileName = "Daisy Patient Line.pdf";
-            var resourceStream =
-                typeof(HomeController).Assembly.GetManifestResourceStream(
-                    $"NHSD.GPIT.BuyingCatalogue.WebApp.Files.{fileName}");
 
-            return File(resourceStream!, "application/pdf", fileName);
+            return GetFileStream(fileName);
         }
 
-        [ExcludeFromCodeCoverage]
         public IActionResult RedcentricPdf()
         {
             const string fileName = "Redcentric.pdf";
-            var resourceStream =
-                typeof(HomeController).Assembly.GetManifestResourceStream(
-                    $"NHSD.GPIT.BuyingCatalogue.WebApp.Files.{fileName}");
 
-            return File(resourceStream!, "application/pdf", fileName);
+            return GetFileStream(fileName);
         }
 
-        [ExcludeFromCodeCoverage]
         public IActionResult SurgeryConnectPdf()
         {
             const string fileName = "Surgery Connect.pdf";
-            var resourceStream =
-                typeof(HomeController).Assembly.GetManifestResourceStream(
-                    $"NHSD.GPIT.BuyingCatalogue.WebApp.Files.{fileName}");
 
-            return File(resourceStream!, "application/pdf", fileName);
+            return GetFileStream(fileName);
         }
+
+        public IActionResult BabbleVoicePdf()
+        {
+            const string fileName = "Babblevoice.pdf";
+
+            return GetFileStream(fileName);
+        }
+
+        private static Stream GetResourceStream(string fileName) =>
+            typeof(HomeController).Assembly.GetManifestResourceStream(
+                $"NHSD.GPIT.BuyingCatalogue.WebApp.Files.{fileName}");
+
+        private FileStreamResult GetFileStream(string fileName) => File(
+            GetResourceStream(fileName),
+            "application/pdf",
+            fileName);
     }
 }
