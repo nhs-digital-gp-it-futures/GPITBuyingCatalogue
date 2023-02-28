@@ -118,7 +118,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigureBlobStorage(Configuration);
 
-            services.AddSingleton<IGpPracticeCacheService, GpPracticeCacheService>();
             services.AddSingleton<IRoutingService, RoutingService>();
             services.AddSingleton<IOrderTaskProgressProviderService, OrderTaskProgressProviderService>();
             services.AddSingleton<OrganisationRestrictActionFilterAttribute>();
