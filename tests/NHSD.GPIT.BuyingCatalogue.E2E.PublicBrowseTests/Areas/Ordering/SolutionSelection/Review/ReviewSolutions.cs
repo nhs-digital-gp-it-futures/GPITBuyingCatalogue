@@ -42,6 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Re
             CommonActions.ElementIsDisplayed(ReviewSolutionsObjects.CatalogueSolutionSectionTitle).Should().BeTrue();
             CommonActions.ElementIsDisplayed(ReviewSolutionsObjects.AdditionalServicesSectionTitle).Should().BeTrue();
             CommonActions.ElementIsDisplayed(ReviewSolutionsObjects.AssociatedServicesSectionTitle).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ReviewSolutionsObjects.IndicativeCostsTitle).Should().BeTrue();
             CommonActions.ElementIsDisplayed(ReviewSolutionsObjects.ContinueButton).Should().BeTrue();
         }
 
