@@ -182,6 +182,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                             ImportServiceReceipients.ImportServiceRecipients(fileName);
                         }
 
+                        ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
                         SelectEditAndConfirmAdditionalServicePrice.SelectAndConfirmPrice();
                         Quantity.AddQuantity();
                     }
@@ -204,6 +205,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                                 ImportServiceReceipients.ImportServiceRecipients(fileName);
                             }
 
+                            ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
                             SelectEditAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
                             Quantity.AddQuantity();
                         }
@@ -231,6 +233,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                             ImportServiceReceipients.ImportServiceRecipients(fileName);
                         }
 
+                        ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
                         SelectEditAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
                         Quantity.AddQuantity();
                     }
@@ -335,6 +338,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                     foreach (var associatedService in newAssociatedServices)
                     {
                         SelectEditAssociatedServiceRecipientOnly.AddServiceRecipient(multipleServiceRecipients);
+                        ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
                         SelectEditAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
                         Quantity.AddQuantity();
                     }
@@ -345,6 +349,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 SelectEditCatalogueSolution.EditSolution(newSolutionName, newAdditionalServiceNames);
 
                 SelectEditCatalogueSolutionServiceRecipients.AddCatalogueSolutionServiceRecipient(multipleServiceRecipients);
+                ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
                 SelectEditAndConfirmPrices.SelectAndConfirmPrice();
                 Quantity.AddQuantity();
 
@@ -353,6 +358,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                     foreach (var additionalService in newAdditionalServiceNames)
                     {
                         SelectEditAdditionalServiceRecipients.AddServiceRecipients();
+                        ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
                         SelectEditAndConfirmAdditionalServicePrice.SelectAndConfirmPrice();
                         Quantity.AddQuantity();
                     }
@@ -366,6 +372,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                         foreach (var associatedService in newAssociatedServices)
                         {
                             SelectEditAssociatedServiceRecipents.AddServiceRecipient();
+                            ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
                             SelectEditAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
                             Quantity.AddQuantity();
                         }
@@ -422,6 +429,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 {
                     SelectEditAssociatedService.AddAssociatedService(newAssociatedServices, "Yes");
                     SelectEditAssociatedServiceRecipents.AddServiceRecipient();
+                    ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
                     SelectEditAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
                     Quantity.AddQuantity();
                 }
@@ -463,6 +471,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 foreach (var associatedService in newAssociatedServices)
                 {
                     SelectEditAssociatedServiceRecipents.AddServiceRecipient();
+                    ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
                     SelectEditAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
                     Quantity.AddQuantity();
                 }
@@ -495,6 +504,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             foreach (var associatedService in newAssociatedServices)
             {
                 SelectEditAssociatedServiceRecipientOnly.AddServiceRecipient();
+                ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
                 SelectEditAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
                 Quantity.AddQuantity();
             }
