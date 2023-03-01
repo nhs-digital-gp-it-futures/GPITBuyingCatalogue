@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
 {
     public class Add : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
-        private const string NhsDigitalOrganisationName = "NHS Digital";
+        private const string NhsDigitalOrganisationName = "NHS ENGLAND - X26";
         private const string ValidEmailAddress = "a@nhs.net";
 
         public Add(LocalWebApplicationFactory factory)

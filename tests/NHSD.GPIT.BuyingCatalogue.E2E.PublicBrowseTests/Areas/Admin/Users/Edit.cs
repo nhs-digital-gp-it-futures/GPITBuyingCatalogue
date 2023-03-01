@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
     {
         private const int UserId = 5;
 
-        private const string NhsDigitalOrganisationName = "NHS Digital";
+        private const string NhsDigitalOrganisationName = "NHS ENGLAND - X26";
         private const string ValidEmailAddress = "a@nhs.net";
 
         private static readonly Dictionary<string, string> Parameters = new()
