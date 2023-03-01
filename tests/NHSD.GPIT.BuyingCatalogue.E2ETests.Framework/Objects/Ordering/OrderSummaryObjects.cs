@@ -29,6 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
         public static By AdditionalServicesSection => By.Id("additional-services-title");
 
         public static By AssociatedServicesSection => By.Id("associated-services-title");
+        public static By IndicativeCostsSection => By.Id("associated-services-title");
 
         public static By OneOffCostSummary => ByExtensions.DataTestId("one-off-cost-summary");
 
