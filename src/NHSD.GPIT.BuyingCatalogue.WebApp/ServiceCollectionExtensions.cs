@@ -111,10 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.AddSingleton(odsSettings);
 
-            if (odsSettings.UseTrud)
-                services.AddScoped<IOdsService, TrudOdsService>();
-            else
-                services.AddScoped<IOdsService, OdsService>();
+            services.AddScoped<IOdsService, TrudOdsService>();
         }
 
         public static void ConfigureDbContexts(this IServiceCollection services, IConfiguration configuration)

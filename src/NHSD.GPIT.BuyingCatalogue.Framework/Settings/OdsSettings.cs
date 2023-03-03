@@ -14,7 +14,5 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
         public string GpPracticeRoleId { get; set; }
 
         public int GetChildOrganisationSearchLimit { get; set; }
-
-        public bool UseTrud { get; set; }
     }
 }
