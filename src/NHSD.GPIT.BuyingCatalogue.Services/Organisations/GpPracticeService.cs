@@ -78,7 +78,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
         public async Task<int?> GetNumberOfPatients(string odsCode)
         {
-            return (await dbContext.GpPracticeSizes.AsNoTracking().FirstOrDefaultAsync(x => x.OdsCode == odsCode))?.NumberOfPatients;
+            var gpPractice = await dbContext.GpPracticeSizes.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.OdsCode == odsCode);
+
+            return gpPractice?.NumberOfPatients;
         }
     }
 }
