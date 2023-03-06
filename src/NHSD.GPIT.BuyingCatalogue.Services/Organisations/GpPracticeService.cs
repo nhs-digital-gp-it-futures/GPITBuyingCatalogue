@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -13,15 +15,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
         public const string TotalRecordsToken = "total_records";
         public const string TotalUpdatedToken = "total_updated";
 
+        private readonly BuyingCatalogueDbContext dbContext;
         private readonly ImportPracticeListMessageSettings settings;
         private readonly IGovNotifyEmailService emailService;
         private readonly IGpPracticeImportService gpPracticeImportService;
 
         public GpPracticeService(
+            BuyingCatalogueDbContext dbContext,
             ImportPracticeListMessageSettings settings,
             IGovNotifyEmailService emailService,
             IGpPracticeImportService gpPracticeImportService)
         {
+            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
             this.emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
             this.gpPracticeImportService = gpPracticeImportService ?? throw new ArgumentNullException(nameof(gpPracticeImportService));
@@ -69,6 +74,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
                 default:
                     throw new ArgumentOutOfRangeException(nameof(result));
             }
+        }
+
+        public async Task<int?> GetNumberOfPatients(string odsCode)
+        {
+            var gpPractice = await dbContext.GpPracticeSizes.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.OdsCode == odsCode);
+
+            return gpPractice?.NumberOfPatients;
         }
     }
 }

@@ -14,16 +14,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
         private const string TruncateStatement = "TRUNCATE TABLE [organisations].[GpPracticeSize]";
 
         private readonly BuyingCatalogueDbContext dbContext;
-        private readonly IGpPracticeCacheService gpPracticeCacheService;
         private readonly IGpPracticeProvider gpPracticeProvider;
 
         public GpPracticeImportService(
             BuyingCatalogueDbContext dbContext,
-            IGpPracticeCacheService gpPracticeCacheService,
             IGpPracticeProvider gpPracticeProvider)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            this.gpPracticeCacheService = gpPracticeCacheService ?? throw new ArgumentNullException(nameof(gpPracticeCacheService));
             this.gpPracticeProvider = gpPracticeProvider ?? throw new ArgumentNullException(nameof(gpPracticeProvider));
         }
 
@@ -73,8 +70,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             }));
 
             await dbContext.SaveChangesAsync();
-
-            gpPracticeCacheService.Refresh();
 
             return new ImportGpPracticeListResult
             {
