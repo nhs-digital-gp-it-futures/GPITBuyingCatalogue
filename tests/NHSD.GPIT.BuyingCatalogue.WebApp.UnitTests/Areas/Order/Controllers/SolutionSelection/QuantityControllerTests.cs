@@ -223,7 +223,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IGpPracticeCacheService> mockCacheService,
+            [Frozen] Mock<IGpPracticeService> mockGpPracticeService,
             [Frozen] Mock<IOrderService> mockOrderService,
             QuantityController controller)
         {
@@ -237,14 +237,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));
 
-            mockCacheService
+            mockGpPracticeService
                 .Setup(x => x.GetNumberOfPatients(It.IsAny<string>()))
-                .Returns(NumberOfPatients);
+                .ReturnsAsync(NumberOfPatients);
 
             var result = await controller.SelectServiceRecipientQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId);
 
             mockOrderService.VerifyAll();
-            mockCacheService.VerifyAll();
+            mockGpPracticeService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeOfType<SelectServiceRecipientQuantityModel>().Subject;

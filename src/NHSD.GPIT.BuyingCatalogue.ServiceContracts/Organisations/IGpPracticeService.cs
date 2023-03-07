@@ -7,6 +7,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations
     {
         Task ImportGpPracticeData(Uri csvUri, string emailAddress);
 
-        Task SendConfirmationEmail(ImportGpPracticeListResult result, string emailAddress);
+        Task<int?> GetNumberOfPatients(string odsCode);
     }
 }
