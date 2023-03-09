@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.IO.Compression;
 using System.Threading.Tasks;
 using Azure.Core.Extensions;
@@ -38,6 +39,7 @@ using Notify.Interfaces;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp
 {
+    [ExcludeFromCodeCoverage]
     public static class ServiceCollectionExtensions
     {
         private const int DefaultSessionTimeout = 60;
