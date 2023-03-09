@@ -1,8 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using AutoFixture;
 using FluentAssertions;
+using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Xunit;
 
@@ -12,164 +17,99 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
     {
         [Theory]
         [CommonAutoData]
-        public static void CalculateTotalCost_FlatPrice_SingleFixed(
-            CataloguePrice price,
-            CataloguePriceTier tier,
-            OrderItem orderItem,
-            OrderItemRecipient orderItemRecipient)
+        public static void CalculateTotalCost_FlatPrice_SingleFixed_Ignores_Quantity(IFixture fixture)
         {
-            tier.Price = 3.14M;
-            tier.LowerRange = 1;
-            tier.UpperRange = null;
+            var quantity = 3587;
+            var price = 3.14M;
+            var calculationType = CataloguePriceCalculationType.SingleFixed;
 
-            price.CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed;
-            price.CataloguePriceTiers = new HashSet<CataloguePriceTier> { tier };
+            (decimal Price, int LowerRange, int? UpperRange) tier = (price, 1, null);
 
-            orderItemRecipient.Quantity = 3587;
-
-            orderItem.OrderItemRecipients = new HashSet<OrderItemRecipient> { orderItemRecipient };
-            orderItem.OrderItemPrice = new(price);
-            orderItem.Quantity = null;
+            OrderItem orderItem = BuildOrderItem(fixture, quantity, new[] { tier }, calculationType);
 
             var result = orderItem.OrderItemPrice.CalculateTotalCost(orderItem.TotalQuantity);
 
-            result.Should().Be(tier.Price);
+            result.Should().Be(price);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void CalculateTotalCostPerTier_FlatPrice_SingleFixed(
-            CataloguePrice price,
-            CataloguePriceTier tier,
-            OrderItem orderItem,
-            OrderItemRecipient orderItemRecipient)
+        public static void CalculateTotalCostPerTier_FlatPrice_SingleFixed_Ignores_Quantity(IFixture fixture)
         {
-            var expectedQuantity = 3587;
-            var expectedPrice = 3.14M;
+            var quantity = 3587;
+            var price = 3.14M;
+            var calculationType = CataloguePriceCalculationType.SingleFixed;
 
-            orderItem.Quantity = null;
-            tier.Price = expectedPrice;
-            tier.LowerRange = 1;
-            tier.UpperRange = null;
+            (decimal Price, int LowerRange, int? UpperRange) tier = (price, 1, null);
 
-            price.CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed;
-            price.CataloguePriceTiers = new HashSet<CataloguePriceTier> { tier };
-
-            orderItemRecipient.Quantity = expectedQuantity;
-
-            orderItem.OrderItemRecipients = new HashSet<OrderItemRecipient> { orderItemRecipient };
-            orderItem.OrderItemPrice = new(price);
+            OrderItem orderItem = BuildOrderItem(fixture, quantity, new[] { tier }, calculationType);
 
             var result = orderItem.OrderItemPrice.CalculateTotalCostPerTier(orderItem.TotalQuantity);
 
-            var expected = new PriceCalculationModel(1, expectedQuantity, expectedPrice);
+            var expected = new PriceCalculationModel(1, quantity, price);
 
             result.Should()
                 .NotBeEmpty()
-                .And.HaveCount(1)
-                .And.ContainEquivalentOf(expected);
+                .And.BeEquivalentTo(new List<PriceCalculationModel>() { expected });
         }
 
         [Theory]
         [CommonAutoData]
-        public static void CalculateTotalCost_FlatPrice_Volume(
-            CataloguePrice price,
-            CataloguePriceTier tier,
-            OrderItem orderItem,
-            OrderItemRecipient orderItemRecipient)
+        public static void CalculateTotalCost_FlatPrice_Volume_Uses_Quantity(IFixture fixture)
         {
-            orderItem.Quantity = null;
+            var quantity = 3587;
+            var price = 3.14M;
+            var calculationType = CataloguePriceCalculationType.Volume;
 
-            tier.Price = 3.14M;
-            tier.LowerRange = 1;
-            tier.UpperRange = null;
+            (decimal Price, int LowerRange, int? UpperRange) tier = (price, 1, null);
 
-            price.CataloguePriceCalculationType = CataloguePriceCalculationType.Volume;
-            price.CataloguePriceTiers = new HashSet<CataloguePriceTier> { tier };
-
-            orderItemRecipient.Quantity = 3587;
-
-            orderItem.OrderItemRecipients = new HashSet<OrderItemRecipient> { orderItemRecipient };
-            orderItem.OrderItemPrice = new(price);
+            OrderItem orderItem = BuildOrderItem(fixture, quantity, new[] { tier }, calculationType);
 
             var result = orderItem.OrderItemPrice.CalculateTotalCost(orderItem.TotalQuantity);
 
-            result.Should().Be(11263.18M);
+            result.Should().Be(quantity * price);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void CalculateTotalCostPerTier_FlatPrice_Volume(
-            CataloguePrice price,
-            CataloguePriceTier tier,
-            OrderItem orderItem,
-            OrderItemRecipient orderItemRecipient)
+        public static void CalculateTotalCostPerTier_FlatPrice_Volume_Uses_Quantity(IFixture fixture)
         {
-            var expectedQuantity = 3587;
-            var expectedCost = 11263.18M;
+            var quantity = 3587;
+            var price = 3.14M;
+            var calculationType = CataloguePriceCalculationType.Volume;
 
-            orderItem.Quantity = null;
-            tier.Price = 3.14M;
-            tier.LowerRange = 1;
-            tier.UpperRange = null;
+            (decimal Price, int LowerRange, int? UpperRange) tier = (price, 1, null);
 
-            price.CataloguePriceCalculationType = CataloguePriceCalculationType.Volume;
-            price.CataloguePriceTiers = new HashSet<CataloguePriceTier> { tier };
-
-            orderItemRecipient.Quantity = expectedQuantity;
-
-            orderItem.OrderItemRecipients = new HashSet<OrderItemRecipient> { orderItemRecipient };
-            orderItem.OrderItemPrice = new(price);
+            OrderItem orderItem = BuildOrderItem(fixture, quantity, new[] { tier }, calculationType);
 
             var result = orderItem.OrderItemPrice.CalculateTotalCostPerTier(orderItem.TotalQuantity);
 
-            var expected = new PriceCalculationModel(1, expectedQuantity, expectedCost);
+            var expected = new PriceCalculationModel(1, quantity, quantity * price);
 
             result.Should()
                 .NotBeEmpty()
-                .And.HaveCount(1)
-                .And.ContainEquivalentOf(expected);
+                .And.BeEquivalentTo(new List<PriceCalculationModel>() { expected });
         }
 
         [Theory]
         [CommonInlineAutoData(500, 3.14)]
         [CommonInlineAutoData(3587, 2)]
         [CommonInlineAutoData(7210, 1.5)]
-        public static void CalculateTotalCost_Tiered_SingleFixed(
+        public static void CalculateTotalCost_Tiered_SingleFixed_Ignores_Quantity(
             int quantity,
             decimal expected,
-            CataloguePrice price,
-            OrderItem orderItem,
-            OrderItemRecipient orderItemRecipient)
+            IFixture fixture)
         {
-            orderItem.Quantity = null;
-            price.CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed;
-            price.CataloguePriceTiers = new HashSet<CataloguePriceTier>
+            (decimal Price, int LowerRange, int? UpperRange)[] tiers =
             {
-                new()
-                {
-                    Price = 3.14M,
-                    LowerRange = 1,
-                    UpperRange = 999,
-                },
-                new()
-                {
-                    Price = 2M,
-                    LowerRange = 1000,
-                    UpperRange = 4999,
-                },
-                new()
-                {
-                    Price = 1.5M,
-                    LowerRange = 5000,
-                    UpperRange = null,
-                },
+                (3.14M, 1, 999),
+                (2M, 1000, 4999),
+                (1.5M, 5000, null),
             };
 
-            orderItemRecipient.Quantity = quantity;
+            var calculationType = CataloguePriceCalculationType.SingleFixed;
 
-            orderItem.OrderItemRecipients = new HashSet<OrderItemRecipient> { orderItemRecipient };
-            orderItem.OrderItemPrice = new(price);
+            OrderItem orderItem = BuildOrderItem(fixture, quantity, tiers, calculationType);
 
             var result = orderItem.OrderItemPrice.CalculateTotalCost(orderItem.TotalQuantity);
 
@@ -177,99 +117,54 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         }
 
         [Theory]
-        [CommonInlineAutoData(500, 0)]
-        [CommonInlineAutoData(3587, 1)]
-        [CommonInlineAutoData(7210, 2)]
-        public static void CalculateTotalCostPerTier_Tiered_SingleFixed(
+        [CommonInlineAutoData(500, 1, 3.14)]
+        [CommonInlineAutoData(3587, 2, 2)]
+        [CommonInlineAutoData(7210, 3, 1.5)]
+        public static void CalculateTotalCostPerTier_Tiered_SingleFixed_Ignores_Quantity(
             int quantity,
-            int index,
-            CataloguePrice price,
-            OrderItem orderItem,
-            OrderItemRecipient orderItemRecipient)
+            int tierId,
+            decimal expectedCost,
+            IFixture fixture)
         {
-            orderItem.Quantity = null;
-            price.CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed;
-            price.CataloguePriceTiers = new HashSet<CataloguePriceTier>
+            (decimal Price, int LowerRange, int? UpperRange)[] tiers =
             {
-                new()
-                {
-                    Price = 3.14M,
-                    LowerRange = 1,
-                    UpperRange = 999,
-                },
-                new()
-                {
-                    Price = 2M,
-                    LowerRange = 1000,
-                    UpperRange = 4999,
-                },
-                new()
-                {
-                    Price = 1.5M,
-                    LowerRange = 5000,
-                    UpperRange = null,
-                },
+                (3.14M, 1, 999),
+                (2M, 1000, 4999),
+                (1.5M, 5000, null),
             };
 
-            orderItemRecipient.Quantity = quantity;
+            var calculationType = CataloguePriceCalculationType.SingleFixed;
 
-            orderItem.OrderItemRecipients = new HashSet<OrderItemRecipient> { orderItemRecipient };
-            orderItem.OrderItemPrice = new(price);
+            OrderItem orderItem = BuildOrderItem(fixture, quantity, tiers, calculationType);
 
             var result = orderItem.OrderItemPrice.CalculateTotalCostPerTier(orderItem.TotalQuantity);
 
-            var expected = TieredSingleFixedExpected(index, quantity);
+            var expectedTemplate = GetCostTiersTemplate(tierId, quantity, expectedCost);
 
             result.Should()
                 .NotBeEmpty()
-                .And.HaveCount(3)
-                .And.ContainEquivalentOf(expected[0])
-                .And.ContainEquivalentOf(expected[1])
-                .And.ContainEquivalentOf(expected[2]);
+                .And.BeEquivalentTo(expectedTemplate);
         }
 
         [Theory]
-        [CommonInlineAutoData(500, 1570)]
-        [CommonInlineAutoData(1000, 3138.86)]
-        [CommonInlineAutoData(3587, 8312.86)]
-        [CommonInlineAutoData(4999, 11136.86)]
-        [CommonInlineAutoData(7210, 14453.36)]
-        [CommonInlineAutoData(10000, 18638.36)]
-        public static void CalculateTotalCost_Tiered_Cumulative(
+        [CommonInlineAutoData(500, 500 * 3.14)]
+        [CommonInlineAutoData(3587, 3587 * 2)]
+        [CommonInlineAutoData(7210, 7210 * 1.5)]
+        public static void CalculateTotalCost_Tiered_Volume_Uses_Quantity(
             int quantity,
             decimal expected,
-            CataloguePrice price,
-            OrderItem orderItem,
-            OrderItemRecipient orderItemRecipient)
+            IFixture fixture)
         {
-            orderItem.Quantity = null;
-            price.CataloguePriceCalculationType = CataloguePriceCalculationType.Cumulative;
-            price.CataloguePriceTiers = new HashSet<CataloguePriceTier>
+            (decimal Price, int LowerRange, int? UpperRange)[] tiers =
             {
-                new()
-                {
-                    Price = 3.14M,
-                    LowerRange = 1,
-                    UpperRange = 999,
-                },
-                new()
-                {
-                    Price = 2M,
-                    LowerRange = 1000,
-                    UpperRange = 4999,
-                },
-                new()
-                {
-                    Price = 1.5M,
-                    LowerRange = 5000,
-                    UpperRange = null,
-                },
+                (3.14M, 1, 999),
+                (2M, 1000, 4999),
+                (1.5M, 5000, null),
             };
 
-            orderItemRecipient.Quantity = quantity;
+            var calculationType = CataloguePriceCalculationType.Volume;
 
-            orderItem.OrderItemRecipients = new HashSet<OrderItemRecipient> { orderItemRecipient };
-            orderItem.OrderItemPrice = new(price);
+            OrderItem orderItem = BuildOrderItem(fixture, quantity, tiers, calculationType);
 
             var result = orderItem.OrderItemPrice.CalculateTotalCost(orderItem.TotalQuantity);
 
@@ -277,99 +172,57 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         }
 
         [Theory]
-        [CommonInlineAutoData(500, 0)]
-        [CommonInlineAutoData(1000, 1)]
-        [CommonInlineAutoData(3587, 2)]
-        [CommonInlineAutoData(4999, 3)]
-        [CommonInlineAutoData(7210, 4)]
-        [CommonInlineAutoData(10000, 5)]
-        public static void CalculateTotalCostPerTier_Tiered_Cumulative(
+        [CommonInlineAutoData(500, 1, 500 * 3.14)]
+        [CommonInlineAutoData(3587, 2, 3587 * 2)]
+        [CommonInlineAutoData(7210, 3, 7210 * 1.5)]
+        public static void CalculateTotalCostPerTier_Tiered_Volume_Uses_Quantity(
             int quantity,
-            int index,
-            CataloguePrice price,
-            OrderItem orderItem,
-            OrderItemRecipient orderItemRecipient)
+            int tierId,
+            decimal expectedCost,
+            IFixture fixture)
         {
-            orderItem.Quantity = null;
-            price.CataloguePriceCalculationType = CataloguePriceCalculationType.Cumulative;
-            price.CataloguePriceTiers = new HashSet<CataloguePriceTier>
+            (decimal Price, int LowerRange, int? UpperRange)[] tiers =
             {
-                new()
-                {
-                    Price = 3.14M,
-                    LowerRange = 1,
-                    UpperRange = 999,
-                },
-                new()
-                {
-                    Price = 2M,
-                    LowerRange = 1000,
-                    UpperRange = 4999,
-                },
-                new()
-                {
-                    Price = 1.5M,
-                    LowerRange = 5000,
-                    UpperRange = null,
-                },
+                (3.14M, 1, 999),
+                (2M, 1000, 4999),
+                (1.5M, 5000, null),
             };
 
-            orderItemRecipient.Quantity = quantity;
+            var calculationType = CataloguePriceCalculationType.Volume;
 
-            orderItem.OrderItemRecipients = new HashSet<OrderItemRecipient> { orderItemRecipient };
-            orderItem.OrderItemPrice = new(price);
+            OrderItem orderItem = BuildOrderItem(fixture, quantity, tiers, calculationType);
 
             var result = orderItem.OrderItemPrice.CalculateTotalCostPerTier(orderItem.TotalQuantity);
 
-            var expected = TieredCumulativeExpected(index);
+            var expectedTemplate = GetCostTiersTemplate(tierId, quantity, expectedCost);
 
             result.Should()
                 .NotBeEmpty()
-                .And.HaveCount(3)
-                .And.ContainEquivalentOf(expected[0])
-                .And.ContainEquivalentOf(expected[1])
-                .And.ContainEquivalentOf(expected[2]);
+                .And.BeEquivalentTo(expectedTemplate);
         }
 
         [Theory]
-        [CommonInlineAutoData(500, 1570)]
-        [CommonInlineAutoData(3587, 7174)]
-        [CommonInlineAutoData(7210, 10815)]
-        public static void CalculateTotalCost_Tiered_Volume(
+        [CommonInlineAutoData(500, 500 * 3.14)]
+        [CommonInlineAutoData(1000, (999 * 3.14) + (1 * 2))]
+        [CommonInlineAutoData(3587, (999 * 3.14) + (2588 * 2))]
+        [CommonInlineAutoData(4999, (999 * 3.14) + (4000 * 2))]
+        [CommonInlineAutoData(7210, (999 * 3.14) + (4000 * 2) + (2211 * 1.5))]
+        [CommonInlineAutoData(10000, (999 * 3.14) + (4000 * 2) + (5001 * 1.5))]
+        public static void CalculateTotalCost_Tiered_Cumulative_Splits_Quantity_By_Tiers(
             int quantity,
             decimal expected,
-            CataloguePrice price,
-            OrderItem orderItem,
-            OrderItemRecipient orderItemRecipient)
+            IFixture fixture)
         {
-            orderItem.Quantity = null;
-            price.CataloguePriceCalculationType = CataloguePriceCalculationType.Volume;
-            price.CataloguePriceTiers = new HashSet<CataloguePriceTier>
+            (decimal Price, int LowerRange, int? UpperRange)[] tiers =
             {
-                new()
-                {
-                    Price = 3.14M,
-                    LowerRange = 1,
-                    UpperRange = 999,
-                },
-                new()
-                {
-                    Price = 2M,
-                    LowerRange = 1000,
-                    UpperRange = 4999,
-                },
-                new()
-                {
-                    Price = 1.5M,
-                    LowerRange = 5000,
-                    UpperRange = null,
-                },
+                (3.14M, 1, 999),
+                (2M, 1000, 4999),
+                (1.5M, 5000, null),
             };
 
-            orderItemRecipient.Quantity = quantity;
+            var calculationType = CataloguePriceCalculationType.Cumulative;
 
-            orderItem.OrderItemRecipients = new HashSet<OrderItemRecipient> { orderItemRecipient };
-            orderItem.OrderItemPrice = new(price);
+            OrderItem orderItem = BuildOrderItem(fixture, quantity, tiers, calculationType);
 
             var result = orderItem.OrderItemPrice.CalculateTotalCost(orderItem.TotalQuantity);
 
@@ -377,154 +230,211 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         }
 
         [Theory]
-        [CommonInlineAutoData(500, 0)]
-        [CommonInlineAutoData(3587, 1)]
-        [CommonInlineAutoData(7210, 2)]
-        public static void CalculateTotalCostPerTier_Tiered_Volume(
+        [CommonInlineAutoData(500, new[] { 500 })]
+        [CommonInlineAutoData(1000, new[] { 999, 1 })]
+        [CommonInlineAutoData(3587, new[] { 999, 2588 })]
+        [CommonInlineAutoData(4999, new[] { 999, 4000 })]
+        [CommonInlineAutoData(7210, new[] { 999, 4000, 2211 })]
+        [CommonInlineAutoData(10000, new[] { 999, 4000, 5001 })]
+        public static void CalculateTotalCostPerTier_Tiered_Cumulative_Splits_Quantity_By_Tiers(
             int quantity,
-            int index,
-            CataloguePrice price,
-            OrderItem orderItem,
-            OrderItemRecipient orderItemRecipient)
+            int[] quantitySplits,
+            IFixture fixture)
         {
-            orderItem.Quantity = null;
-            price.CataloguePriceCalculationType = CataloguePriceCalculationType.Volume;
-            price.CataloguePriceTiers = new HashSet<CataloguePriceTier>
+            (decimal Price, int LowerRange, int? UpperRange)[] tiers =
             {
-                new()
-                {
-                    Price = 3.14M,
-                    LowerRange = 1,
-                    UpperRange = 999,
-                },
-                new()
-                {
-                    Price = 2M,
-                    LowerRange = 1000,
-                    UpperRange = 4999,
-                },
-                new()
-                {
-                    Price = 1.5M,
-                    LowerRange = 5000,
-                    UpperRange = null,
-                },
+                (3.14M, 1, 999),
+                (2M, 1000, 4999),
+                (1.5M, 5000, null),
             };
 
-            orderItemRecipient.Quantity = quantity;
+            var calculationType = CataloguePriceCalculationType.Cumulative;
 
-            orderItem.OrderItemRecipients = new HashSet<OrderItemRecipient> { orderItemRecipient };
-            orderItem.OrderItemPrice = new(price);
+            OrderItem orderItem = BuildOrderItem(fixture, quantity, tiers, calculationType);
 
             var result = orderItem.OrderItemPrice.CalculateTotalCostPerTier(orderItem.TotalQuantity);
 
-            var expected = TieredVolumeExpected(index);
+            var costs = new decimal[] { 3.14M, 2M, 1.5M };
+            var expectedTemplate = GetCostTiersTemplate(quantitySplits, costs);
 
             result.Should()
                 .NotBeEmpty()
-                .And.HaveCount(3)
-                .And.ContainEquivalentOf(expected[0])
-                .And.ContainEquivalentOf(expected[1])
-                .And.ContainEquivalentOf(expected[2]);
+                .And.BeEquivalentTo(expectedTemplate);
         }
 
-        private static List<PriceCalculationModel> TieredSingleFixedExpected(int index, int quantity)
+        [Theory]
+        [CommonInlineAutoData(TimeUnit.PerMonth, 0, 12, 12 * 12)]
+        [CommonInlineAutoData(TimeUnit.PerYear, 0, 1, 12)]
+        [CommonInlineAutoData(null, 12, 0, 0)]
+        public static void Order_Totals_Using_BillingPeriod(TimeUnit? billingPeriod, decimal oneOff, decimal monthly, decimal annual, IFixture fixture)
         {
-            var expected = new List<List<PriceCalculationModel>>()
-            {
-                new List<PriceCalculationModel>()
-                {
-                    new PriceCalculationModel(1, quantity, 3.14M),
-                    new PriceCalculationModel(2, 0, 0M),
-                    new PriceCalculationModel(3, 0, 0M),
-                },
-                new List<PriceCalculationModel>()
-                {
-                    new PriceCalculationModel(1, 0, 0),
-                    new PriceCalculationModel(2, quantity, 2M),
-                    new PriceCalculationModel(3, 0, 0M),
-                },
-                new List<PriceCalculationModel>()
-                {
-                    new PriceCalculationModel(1, 0, 0M),
-                    new PriceCalculationModel(2, 0, 0M),
-                    new PriceCalculationModel(3, quantity, 1.5M),
-                },
-            };
+            var price = 12M;
 
-            return expected[index];
+            (decimal Price, int LowerRange, int? UpperRange) tier = (price, 1, null);
+
+            OrderItem orderItem = BuildOrderItem(fixture, 1, new[] { tier }, CataloguePriceCalculationType.SingleFixed);
+            orderItem.OrderItemPrice.BillingPeriod = billingPeriod;
+
+            var order = fixture.Build<Order>()
+                .With(o => o.OrderItems, new HashSet<OrderItem> { orderItem })
+                .Create();
+
+            order.TotalOneOffCost().Should().Be(oneOff);
+            order.TotalMonthlyCost().Should().Be(monthly);
+            order.TotalAnnualCost().Should().Be(annual);
         }
 
-        private static List<PriceCalculationModel> TieredCumulativeExpected(int index)
+        [Theory]
+        [CommonInlineAutoData(TimeUnit.PerMonth, 12 * 24)]
+        [CommonInlineAutoData(TimeUnit.PerYear, 1 * 24)]
+        [CommonInlineAutoData(null, 12)]
+        public static void Order_TotalCost_PerMonth_And_PerYear_Use_MaximumTerm_But_OneOff_Costs_Dont(TimeUnit? billingPeriod, decimal total, IFixture fixture)
         {
-            var expected = new List<List<PriceCalculationModel>>()
-            {
-                new List<PriceCalculationModel>()
-                {
-                    new PriceCalculationModel(1, 500, 1570M),
-                    new PriceCalculationModel(2, 0, 0M),
-                    new PriceCalculationModel(3, 0, 0M),
-                },
-                new List<PriceCalculationModel>()
-                {
-                    new PriceCalculationModel(1, 999, 3136.86M),
-                    new PriceCalculationModel(2, 1, 2M),
-                    new PriceCalculationModel(3, 0, 0M),
-                },
-                new List<PriceCalculationModel>()
-                {
-                    new PriceCalculationModel(1, 999, 3136.86M),
-                    new PriceCalculationModel(2, 2588, 5176M),
-                    new PriceCalculationModel(3, 0, 0M),
-                },
-                new List<PriceCalculationModel>()
-                {
-                    new PriceCalculationModel(1, 999, 3136.86M),
-                    new PriceCalculationModel(2, 4000, 8000M),
-                    new PriceCalculationModel(3, 0, 0M),
-                },
-                new List<PriceCalculationModel>()
-                {
-                    new PriceCalculationModel(1, 999, 3136.86M),
-                    new PriceCalculationModel(2, 4000, 8000M),
-                    new PriceCalculationModel(3, 2211, 3316.5M),
-                },
-                new List<PriceCalculationModel>()
-                {
-                    new PriceCalculationModel(1, 999, 3136.86M),
-                    new PriceCalculationModel(2, 4000, 8000M),
-                    new PriceCalculationModel(3, 5001, 7501.5M),
-                },
-            };
+            var maximumTerm = 24;
+            var price = 12M;
 
-            return expected[index];
+            (decimal Price, int LowerRange, int? UpperRange) tier = (price, 1, null);
+
+            OrderItem orderItem = BuildOrderItem(fixture, 1, new[] { tier }, CataloguePriceCalculationType.SingleFixed);
+            orderItem.OrderItemPrice.BillingPeriod = billingPeriod;
+
+            var order = fixture.Build<Order>()
+                .With(o => o.OrderItems, new HashSet<OrderItem> { orderItem })
+                .With(o => o.MaximumTerm, maximumTerm)
+                .Create();
+
+            order.TotalCost().Should().Be(total);
         }
 
-        private static List<PriceCalculationModel> TieredVolumeExpected(int index)
+        [Theory]
+        [CommonAutoData]
+        public static void Order_TotalCost_Is_Sum_of_OrderItem_Costs(IFixture fixture)
         {
-            var expected = new List<List<PriceCalculationModel>>()
+            var maximumTerm = 24;
+            var price = 12M;
+
+            (decimal Price, int LowerRange, int? UpperRange) tier = (price, 1, null);
+
+            OrderItem oneOffCostOrderItem = BuildOrderItem(fixture, 1, new[] { tier }, CataloguePriceCalculationType.SingleFixed);
+            oneOffCostOrderItem.OrderItemPrice.BillingPeriod = null;
+
+            OrderItem perMonthOrderItem = BuildOrderItem(fixture, 1, new[] { tier }, CataloguePriceCalculationType.SingleFixed);
+            perMonthOrderItem.OrderItemPrice.BillingPeriod = TimeUnit.PerMonth;
+
+            var order = fixture.Build<Order>()
+                .With(o => o.OrderItems, new HashSet<OrderItem> { oneOffCostOrderItem, perMonthOrderItem })
+                .With(o => o.MaximumTerm, maximumTerm)
+                .Create();
+
+            order.TotalCost().Should().Be(12 + (12 * 24));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void OrderWrapper_TotalCost(IFixture fixture)
+        {
+            var maximumTerm = 12;
+            var price = 12M;
+            var commencementDate = new DateTime(2000, 1, 1);
+            var amendmentPlannedDelivery = commencementDate.AddMonths(6);
+
+            (decimal Price, int LowerRange, int? UpperRange) tier = (price, 1, null);
+
+            OrderItem orderItem = BuildOrderItem(fixture, 1, new[] { tier }, CataloguePriceCalculationType.SingleFixed);
+            orderItem.OrderItemPrice.BillingPeriod = TimeUnit.PerMonth;
+
+            OrderItem amendedOrderItem = BuildOrderItem(fixture, 1, new[] { tier }, CataloguePriceCalculationType.SingleFixed, amendmentPlannedDelivery);
+            amendedOrderItem.OrderItemPrice.BillingPeriod = TimeUnit.PerMonth;
+
+            var order = fixture.Build<Order>()
+                .With(o => o.Revision, 1)
+                .With(o => o.OrderTriageValue, OrderTriageValue.Under40K)
+                .With(o => o.CommencementDate, new DateTime(2000, 1, 1))
+                .With(o => o.OrderItems, new HashSet<OrderItem> { orderItem })
+                .With(o => o.MaximumTerm, maximumTerm)
+                .Create();
+
+            var amendedOrder = order.BuidAmendment(2);
+            amendedOrder.OrderItems = new HashSet<OrderItem> { amendedOrderItem };
+
+            var orderWrapper = new OrderWrapper(new[] { order, amendedOrder });
+
+            orderWrapper.TotalCost().Should().Be((12 * 12) + (12 * 6));
+        }
+
+        private static List<PriceCalculationModel> GetCostTiersTemplate(int[] quantitySplits, decimal[] costs)
+        {
+            var template = new List<PriceCalculationModel>()
             {
-                new List<PriceCalculationModel>()
-                {
-                    new PriceCalculationModel(1, 500, 1570M),
-                    new PriceCalculationModel(2, 0, 0M),
-                    new PriceCalculationModel(3, 0, 0M),
-                },
-                new List<PriceCalculationModel>()
-                {
-                    new PriceCalculationModel(1, 0, 0M),
-                    new PriceCalculationModel(2, 3587, 7174M),
-                    new PriceCalculationModel(3, 0, 0M),
-                },
-                new List<PriceCalculationModel>()
-                {
-                    new PriceCalculationModel(1, 0, 0M),
-                    new PriceCalculationModel(2, 0, 0M),
-                    new PriceCalculationModel(3, 7210, 10815M),
-                },
+                new(1, 0, 0M),
+                new(2, 0, 0M),
+                new(3, 0, 0M),
             };
 
-            return expected[index];
+            quantitySplits.ForEach((q, i) =>
+            {
+                template[i].Quantity = q;
+                template[i].Cost = costs[i] * q;
+            });
+
+            return template;
+        }
+
+        private static List<PriceCalculationModel> GetCostTiersTemplate(int id, int quantity, decimal cost)
+        {
+            var template = new List<PriceCalculationModel>()
+            {
+                new(1, 0, 0M),
+                new(2, 0, 0M),
+                new(3, 0, 0M),
+            };
+
+            var tier = template.First(p => p.Id == id);
+            tier.Quantity = quantity;
+            tier.Cost = cost;
+
+            return template;
+        }
+
+        private static OrderItem BuildOrderItem(
+            IFixture fixture,
+            int quantity,
+            (decimal Price, int LowerRange, int? UpperRange)[] tiers,
+            CataloguePriceCalculationType cataloguePriceCalculationType,
+            DateTime? plannedDeliveryDate = null)
+        {
+            var priceTiers = tiers.Select(tier => fixture.Build<OrderItemPriceTier>()
+                .Without(t => t.OrderItemPrice)
+                .With(t => t.Price, tier.Price)
+                .With(t => t.LowerRange, tier.LowerRange)
+                .With(t => t.UpperRange, tier.UpperRange)
+                .Create());
+
+            var itemPrice = fixture.Build<OrderItemPrice>()
+                .Without(p => p.OrderItem)
+                .With(p => p.CataloguePriceCalculationType, cataloguePriceCalculationType)
+                .With(p => p.ProvisioningType, ProvisioningType.Patient)
+                .With(p => p.OrderItemPriceTiers, new HashSet<OrderItemPriceTier>(priceTiers))
+                .Create();
+
+            var recipientBuilder = fixture.Build<OrderItemRecipient>()
+                .With(r => r.Quantity, itemPrice.IsPerServiceRecipient() ? quantity : null);
+
+            if (plannedDeliveryDate.HasValue)
+            {
+                recipientBuilder = recipientBuilder.With(r => r.DeliveryDate, plannedDeliveryDate.Value);
+            }
+
+            var recipient = recipientBuilder.Create();
+
+            var orderItem = fixture.Build<OrderItem>()
+                .Without(i => i.OrderItemFunding)
+                .With(i => i.OrderItemPrice, itemPrice)
+                .With(i => i.Quantity, itemPrice.IsPerServiceRecipient() ? null : quantity)
+                .With(i => i.OrderItemRecipients, new HashSet<OrderItemRecipient> { recipient })
+                .Create();
+
+            return orderItem;
         }
     }
 }

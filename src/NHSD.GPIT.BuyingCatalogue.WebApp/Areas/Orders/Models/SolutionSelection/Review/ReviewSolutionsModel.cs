@@ -8,47 +8,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 {
     public class ReviewSolutionsModel : NavBaseModel
     {
-        public ReviewSolutionsModel()
-        {
-        }
-
         public ReviewSolutionsModel(OrderWrapper wrapper, string internalOrgId)
         {
-            var order = wrapper.Order;
-
-            CallOffId = order.CallOffId;
+            OrderWrapper = wrapper;
             InternalOrgId = internalOrgId;
-            Order = order;
-            Previous = wrapper.Previous;
-            RolledUp = wrapper.RolledUp;
-            AllOrderItems = order.OrderItems;
-            CatalogueSolutions = RolledUp.GetSolutions().ToList();
-            AdditionalServices = RolledUp.GetAdditionalServices().ToList();
-            AssociatedServices = RolledUp.GetAssociatedServices().ToList();
-            ContractLength = order.MaximumTerm ?? 0;
-            AssociatedServicesOnly = order.AssociatedServicesOnly;
         }
 
-        public CallOffId CallOffId { get; set; }
+        public OrderWrapper OrderWrapper { get; }
 
-        public Order Order { get; set; }
+        public CallOffId CallOffId => OrderWrapper.Order.CallOffId;
 
-        public Order Previous { get; set; }
+        public Order Order => OrderWrapper.Order;
 
-        public Order RolledUp { get; set; }
+        public Order Previous => OrderWrapper.Previous;
 
-        public List<OrderItem> CatalogueSolutions { get; set; }
+        public Order RolledUp => OrderWrapper.RolledUp;
 
-        public List<OrderItem> AdditionalServices { get; set; }
+        public List<OrderItem> CatalogueSolutions => RolledUp.GetSolutions().ToList();
 
-        public List<OrderItem> AssociatedServices { get; set; }
+        public List<OrderItem> AdditionalServices => RolledUp.GetAdditionalServices().ToList();
 
-        public ICollection<OrderItem> AllOrderItems { get; set; }
+        public List<OrderItem> AssociatedServices => RolledUp.GetAssociatedServices().ToList();
 
-        public int ContractLength { get; set; }
+        public ICollection<OrderItem> AllOrderItems => OrderWrapper.Order.OrderItems;
+
+        public int ContractLength => OrderWrapper.Order.MaximumTerm ?? 0;
 
         public string InternalOrgId { get; set; }
 
-        public bool AssociatedServicesOnly { get; set; }
+        public bool AssociatedServicesOnly => OrderWrapper.Order.AssociatedServicesOnly;
     }
 }

@@ -3,6 +3,7 @@ using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
 {
@@ -10,15 +11,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
     {
         public static decimal CalculateTotalCost(this IPrice price, int quantity)
         {
-            if (price == null)
-                return decimal.Zero;
-
-            return price.CataloguePriceCalculationType switch
-            {
-                CataloguePriceCalculationType.SingleFixed => CalculateTotalCostSingleFixed(price, quantity),
-                CataloguePriceCalculationType.Cumulative => CalculateTotalCostCumulative(price, quantity),
-                CataloguePriceCalculationType.Volume or _ => CalculateTotalCostVolume(price, quantity),
-            };
+            var costPerTier = CalculateTotalCostPerTier(price, quantity);
+            return costPerTier.Sum(pcm => pcm.Cost);
         }
 
         public static IList<PriceCalculationModel> CalculateTotalCostPerTier(this IPrice price, int quantity)
@@ -99,6 +93,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
                 + (order.TotalMonthlyCost() * maximumTerm);
         }
 
+        public static decimal TotalCost(this OrderWrapper orderWrapper)
+        {
+            return (orderWrapper?.Previous?.TotalCost() ?? 0)
+                + (orderWrapper?.Order?.TotalCostForAmendment() ?? 0);
+        }
+
         public static decimal TotalCost(this OrderItem orderItem)
         {
             if (orderItem?.OrderItemPrice is null)
@@ -116,14 +116,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
             };
         }
 
-        private static decimal CalculateTotalCostCumulative(IPrice price, int quantity) =>
-            CalculateCostCumulative(price, quantity).Sum(pcm => pcm.Cost);
-
-        private static decimal CalculateTotalCostVolume(IPrice price, int quantity) =>
-            CalculateCostVolume(price, quantity).Sum(pcm => pcm.Cost);
-
-        private static decimal CalculateTotalCostSingleFixed(IPrice price, int quantity) =>
-            CalculateCostSingleFixed(price, quantity).Sum(pcm => pcm.Cost);
+        private static decimal TotalCostForAmendment(this Order order)
+        {
+            return order.TotalOneOffCost() + order?.OrderItems.Sum(i =>
+            {
+                var deliveryDate = i.OrderItemRecipients.First().DeliveryDate.Value;
+                var monthlyCost = i.OrderItemPrice.CalculateCostPerMonth(i.TotalQuantity);
+                var term = order.EndDate.RemainingTerm(deliveryDate);
+                return monthlyCost * term;
+            }) ?? decimal.Zero;
+        }
 
         private static List<PriceCalculationModel> CalculateCostCumulative(IPrice price, int quantity)
         {

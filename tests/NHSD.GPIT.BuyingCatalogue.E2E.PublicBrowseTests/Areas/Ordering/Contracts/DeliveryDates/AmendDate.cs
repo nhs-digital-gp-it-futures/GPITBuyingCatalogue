@@ -276,7 +276,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DeliveryDa
 
             context.SaveChanges();
 
-            var date = order.CommencementDate!.Value.AddMonths(AmendDateModel.MaximumTermForOnOffCatalogueOrders);
+            var date = order.CommencementDate!.Value.AddMonths(EndDate.MaximumTermForOnOffCatalogueOrders);
 
             Driver.Navigate().Refresh();
 

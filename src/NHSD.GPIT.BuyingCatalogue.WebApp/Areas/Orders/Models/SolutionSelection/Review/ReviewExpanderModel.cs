@@ -5,15 +5,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 {
     public class ReviewExpanderModel
     {
-        private readonly OrderItem previous;
-
         public ReviewExpanderModel(OrderItem orderItem, OrderItem previous, bool isAmendment = false)
         {
             IsAmendment = isAmendment;
             IsOrderItemAdded = orderItem != null && previous == null;
             OrderItem = orderItem;
-
-            this.previous = previous;
+            Previous = previous;
         }
 
         public bool IsAmendment { get; }
@@ -22,8 +19,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public OrderItem OrderItem { get; }
 
+        public OrderItem Previous { get; }
+
         public bool IsServiceRecipientAdded(string odsCode) =>
             OrderItem?.OrderItemRecipients?.FirstOrDefault(x => x.OdsCode == odsCode) != null
-            && previous?.OrderItemRecipients?.FirstOrDefault(x => x.OdsCode == odsCode) == null;
+            && Previous?.OrderItemRecipients?.FirstOrDefault(x => x.OdsCode == odsCode) == null;
     }
 }

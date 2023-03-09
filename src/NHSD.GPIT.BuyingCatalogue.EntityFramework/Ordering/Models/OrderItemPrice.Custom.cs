@@ -35,6 +35,26 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             }
         }
 
+        public OrderItemPrice(OrderItemPrice existingPrice)
+            : this()
+        {
+            CatalogueItemId = existingPrice.CatalogueItemId;
+            CataloguePriceId = existingPrice.CataloguePriceId;
+            ProvisioningType = existingPrice.ProvisioningType;
+            CataloguePriceType = existingPrice.CataloguePriceType;
+            CataloguePriceCalculationType = existingPrice.CataloguePriceCalculationType;
+            BillingPeriod = existingPrice.BillingPeriod;
+            CataloguePriceQuantityCalculationType = existingPrice.CataloguePriceQuantityCalculationType;
+            CurrencyCode = existingPrice.CurrencyCode;
+            Description = existingPrice.Description;
+            RangeDescription = existingPrice.RangeDescription;
+
+            foreach (var tier in existingPrice.OrderItemPriceTiers)
+            {
+                OrderItemPriceTiers.Add(new OrderItemPriceTier(this, tier));
+            }
+        }
+
         public ICollection<IPriceTier> PriceTiers => OrderItemPriceTiers.Cast<IPriceTier>().ToList();
 
         public string ToPriceUnitString()

@@ -104,11 +104,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
             model.TriageValue = triageValue;
 
             var contractEndDate = model.CommencementDate.Value
-                .AddMonths(AmendDateModel.MaximumTermForOnOffCatalogueOrders)
+                .AddMonths(EndDate.MaximumTermForOnOffCatalogueOrders)
                 .AddDays(-1);
 
             var invalidDate = model.CommencementDate.Value
-                .AddMonths(AmendDateModel.MaximumTermForOnOffCatalogueOrders);
+                .AddMonths(EndDate.MaximumTermForOnOffCatalogueOrders);
 
             model.Day = $"{invalidDate.Day}";
             model.Month = $"{invalidDate.Month}";

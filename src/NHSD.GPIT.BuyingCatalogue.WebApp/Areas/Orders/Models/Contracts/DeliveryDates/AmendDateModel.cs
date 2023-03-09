@@ -9,7 +9,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
     {
         public const string AdviceText = "Enter the date you expect this item to start being used by the Service Recipients.";
         public const string TitleText = "Planned delivery date";
-        public const int MaximumTermForOnOffCatalogueOrders = 48;
 
         public AmendDateModel()
         {
@@ -68,16 +67,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
         {
             get
             {
-                if (CommencementDate == null
-                    || MaximumTerm == null
-                    || TriageValue == null)
+                if (TriageValue == null)
                 {
                     return null;
                 }
 
-                return TriageValue == OrderTriageValue.Under40K
-                    ? CommencementDate.Value.AddMonths(MaximumTerm.Value).AddDays(-1)
-                    : CommencementDate.Value.AddMonths(MaximumTermForOnOffCatalogueOrders).AddDays(-1);
+                var endDate = new EndDate(CommencementDate, MaximumTerm, TriageValue);
+                return endDate.Value;
             }
         }
     }

@@ -145,7 +145,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             };
 
             var expected = order.CommencementDate!.Value
-                .AddMonths(AmendDateModel.MaximumTermForOnOffCatalogueOrders)
+                .AddMonths(EndDate.MaximumTermForOnOffCatalogueOrders)
                 .AddDays(-1);
 
             model.ContractEndDate.Should().Be(expected);

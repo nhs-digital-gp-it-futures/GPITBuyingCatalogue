@@ -11,12 +11,12 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Review
 {
-    public class ReviewSolutions : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+    public class ReviewSolutionsAmendment : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
+        private const int OrderId = 90032;
         private const string InternalOrgId = "CG-03F";
-        private const int OrderId = 90013;
 
-        private static readonly CallOffId CallOffId = new(OrderId, 1);
+        private static readonly CallOffId CallOffId = new(OrderId, 2);
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Re
             { nameof(CallOffId), $"{CallOffId}" },
         };
 
-        public ReviewSolutions(LocalWebApplicationFactory factory)
+        public ReviewSolutionsAmendment(LocalWebApplicationFactory factory)
             : base(
                   factory,
                   typeof(ReviewSolutionsController),
@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Re
         }
 
         [Fact]
-        public void ReviewSolutions_AllSectionsDisplayed()
+        public void ReviewSolutionsAmendment_AllSectionsDisplayed()
         {
             CommonActions.PageTitle().Should().BeEquivalentTo($"Catalogue Solution and services - Order {CallOffId}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
@@ -42,15 +42,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Re
             CommonActions.ElementIsDisplayed(ReviewSolutionsObjects.CatalogueSolutionSectionTitle).Should().BeTrue();
             CommonActions.ElementIsDisplayed(ReviewSolutionsObjects.AdditionalServicesSectionTitle).Should().BeTrue();
             CommonActions.ElementIsDisplayed(ReviewSolutionsObjects.AssociatedServicesSectionTitle).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(ReviewSolutionsObjects.IndicativeCostsAmendment).Should().BeFalse();
-            CommonActions.ElementIsDisplayed(ReviewSolutionsObjects.IndicativeCosts).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(ReviewSolutionsObjects.AddedStickers).Should().BeFalse();
-            CommonActions.ElementExists(ReviewSolutionsObjects.SreenReaderExisting).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(ReviewSolutionsObjects.IndicativeCostsAmendment).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ReviewSolutionsObjects.IndicativeCosts).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(ReviewSolutionsObjects.AddedStickers).Should().BeTrue();
+            CommonActions.ElementExists(ReviewSolutionsObjects.SreenReaderExisting).Should().BeTrue();
             CommonActions.ElementIsDisplayed(ReviewSolutionsObjects.ContinueButton).Should().BeTrue();
         }
 
         [Fact]
-        public void ReviewSolutions_ClickGoBackLink_ExpectedResult()
+        public void ReviewSolutionsAmendment_ClickGoBackLink_ExpectedResult()
         {
             CommonActions.ClickGoBackLink();
 
@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Re
         }
 
         [Fact]
-        public void ReviewSolutions_ClickContinueButton_ExpectedResult()
+        public void ReviewSolutionsAmendment_ClickContinueButton_ExpectedResult()
         {
             CommonActions.ClickLinkElement(ReviewSolutionsObjects.ContinueButton);
 

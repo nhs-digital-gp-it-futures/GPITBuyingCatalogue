@@ -315,22 +315,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             var order = (await GetOrderForSummary(callOffId, internalOrgId)).Order;
 
-            var amendment = new Order
-            {
-                OrderNumber = order.OrderNumber,
-                Revision = await dbContext.NextRevision(order.OrderNumber),
-                AssociatedServicesOnly = order.AssociatedServicesOnly,
-                CommencementDate = order.CommencementDate,
-                Description = order.Description,
-                InitialPeriod = order.InitialPeriod,
-                MaximumTerm = order.MaximumTerm,
-                OrderingPartyId = order.OrderingPartyId,
-                OrderingPartyContact = order.OrderingPartyContact.Clone(),
-                OrderTriageValue = order.OrderTriageValue,
-                SelectedFrameworkId = order.SelectedFrameworkId,
-                SupplierId = order.SupplierId,
-                SupplierContact = order.SupplierContact.Clone(),
-            };
+            var amendment = order.BuidAmendment(await dbContext.NextRevision(order.OrderNumber));
 
             dbContext.Add(amendment);
 
