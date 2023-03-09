@@ -19,7 +19,15 @@
             (667130, 'RE5', '8AR27', 'QWO'),
             (671458, 'RE5', '8E138', 'QWO'),
             (671483, 'RE5', '8E241', 'QWO'),
-            (667172, 'RE5', '8AR79', 'QWO');
+            (667172, 'RE5', '8AR79', 'QWO'),
+            (667173, 'RE5', '36J', 'QWO'),
+            (632028, 'RE4', 'B82007', '36J'),
+            (632090, 'RE4', 'B82053', '36J'),
+            (632138, 'RE4', 'B83002', '36J'),
+            (632139, 'RE5', '03F', 'QWO'),
+            (632040, 'RE4', 'B81046', '03F'),
+            (632041, 'RE4', 'B81047', '03F'),
+            (632142, 'RE4', 'B81048', '03F');
 
         MERGE INTO [ods_organisations].[OrganisationRelationships] AS TARGET
         USING @odsOrganisationRelationships AS SOURCE
