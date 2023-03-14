@@ -12,6 +12,7 @@
 :r ./CreateExecutiveAgency.sql
 :r ./CreateExecutiveAgencyUser.sql
 :r ./CreateTestUsers.sql
+:r ./CreateIntegratedCareBoards.sql
 
 :r ./InsertAllowedEmailDomains.sql
 :r ./InsertCapabilityStatuses.sql
@@ -60,3 +61,6 @@
 :r ./OrderSeedData/InsertTestOrderSeedData.sql
 :r ./InsertSupplierServiceAssociations.sql
 :r ./InsertDefaultImplementationPlan.sql
+
+:r ./UdpateOrdersToICB.sql
+:r ./UdpateUsersToICB.sql
