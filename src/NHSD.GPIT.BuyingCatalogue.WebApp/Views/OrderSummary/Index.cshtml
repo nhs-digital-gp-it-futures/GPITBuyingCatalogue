@@ -111,15 +111,27 @@
             text-align: right;
         }
 
-        .signature td {
-            padding-top: 40px;
-            width: auto;
-            border-bottom: 1px solid lightgray;
+        .signature-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            grid-gap: 10px;
         }
 
-        .signature td:first-child {
-            width: 20%;
-            border-bottom: none;
+        .signature-header {
+            padding: 1px;
+            text-align: left;
+            grid-column: span 3;
+        }
+
+        .signature-item {
+            padding: 2px;
+            text-align: left;
+            grid-column: span 1;
+        }
+
+        .signature-item-spacer {
+            grid-column: span 2;
+            border-bottom: 1px solid lightgray;
         }
 
         .pdf-summary-list {
@@ -163,7 +175,7 @@
 <main class="nhsuk-main-wrapper" id="maincontent">
 <div class="nhsuk-grid-row">
 <div class="nhsuk-grid-column-full">
-<nhs-page-title title="Order summary"
+<nhs-page-title title="Call-off Order Form"
                 caption="Order @Model.Order.CallOffId"/>
 
 <pdf-summary-list>
@@ -426,53 +438,42 @@ else
         </div>
     }
 </div>
-
-<div style="page-break-after: always"></div>
-
-<h1>Signatures</h1>
-
-<h2>On behalf of the buyer</h2>
-<table>
-    <tr class="signature">
-        <td>Name:</td>
-        <td></td>
-    </tr>
-    <tr class="signature">
-        <td>Job Role:</td>
-        <td></td>
-    </tr>
-    <tr class="signature">
-        <td>Signature:</td>
-        <td></td>
-    </tr>
-    <tr class="signature">
-        <td>Date:</td>
-        <td></td>
-    </tr>
-</table>
-
+ <div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-page-title title="Signature"
+              caption="Order @Model.Order.CallOffId" />
+    </div>    
+</div>
+<p>Both parties are entering into a Call-off Agreement in accordance with the provisions of the framework being procured from.</p>
+<p>The supplier will provide the solution and any services included in this Call-off Order Form for the duration identified. They must do this subject to the Call-off Terms and the information provided in this Call-off Order Form.</p>
+<p>No amendments to the Call-off Terms will be valid unless documented in a relevant template. A template will only be valid if it has been attached to this Call-off Order Form prior to it being signed by both parties.</p>
+<div class="signature-grid">
+     <div class="signature-header">
+         <p><strong>On behalf of the buyer</strong><br></p>
+         <p>@Model.Order.OrderingParty.Name (@Model.Order.OrderingParty.ExternalIdentifier)</p>
+     </div>
+     <div class="signature-header">
+         <p><strong>On behalf of the supplier</strong><br></p>
+         <p>@Model.Order.Supplier.Name</p>
+     </div>
+     <div class="signature-item">Name:</div>
+     <div class="signature-item-spacer"></div>
+     <div class="signature-item">Name:</div>
+     <div class="signature-item-spacer"></div>
+     <div class="signature-item">Job Role:</div>
+     <div class="signature-item-spacer"></div>
+     <div class="signature-item">Job Role:</div>
+     <div class="signature-item-spacer"></div>
+     <div class="signature-item">Signature:</div>
+     <div class="signature-item-spacer"></div>
+     <div class="signature-item">Signature:</div>
+     <div class="signature-item-spacer"></div>
+     <div class="signature-item">Date:</div>
+     <div class="signature-item-spacer"></div>
+     <div class="signature-item">Date:</div>
+     <div class="signature-item-spacer"></div>
+ </div>
 <br/>
-
-<h2>On behalf of the supplier</h2>
-<table>
-    <tr class="signature">
-        <td>Name:</td>
-        <td></td>
-    </tr>
-    <tr class="signature">
-        <td>Job Role:</td>
-        <td></td>
-    </tr>
-    <tr class="signature">
-        <td>Signature:</td>
-        <td></td>
-    </tr>
-    <tr class="signature">
-        <td>Date:</td>
-        <td></td>
-    </tr>
-</table>
-
 </div>
 </div>
 </main>
