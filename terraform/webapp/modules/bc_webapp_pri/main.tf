@@ -54,7 +54,7 @@ resource "azurerm_linux_web_app" "webapp" {
     }
 
     dynamic "ip_restriction" {
-      for_each = var.app_gateway_ip == null ? [] : list(var.app_gateway_ip)
+      for_each = var.app_gateway_ip == null ? [] : tolist([var.app_gateway_ip])
       content {
         name       = "APP_GATEWAY_ACCESS"
         ip_address = "${var.app_gateway_ip}/32"
