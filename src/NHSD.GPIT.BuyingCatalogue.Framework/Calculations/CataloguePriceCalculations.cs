@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
@@ -70,33 +71,68 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
                 : CalculateCostPerMonth(price, quantity) * maxTerm;
         }
 
-        public static decimal TotalOneOffCost(this Order order)
+        public static decimal TotalOneOffCost(this Order order, bool roundResult = false)
         {
-            return order?.OrderItems.Sum(x => x.OrderItemPrice.CalculateOneOffCost(x.TotalQuantity)) ?? decimal.Zero;
+            var total = order?.OrderItems.Sum(x => x.OrderItemPrice.CalculateOneOffCost(x.TotalQuantity)) ?? decimal.Zero;
+
+            if (roundResult)
+            {
+                total = Math.Round(total, 2, MidpointRounding.AwayFromZero);
+            }
+
+            return total;
         }
 
-        public static decimal TotalMonthlyCost(this Order order)
+        public static decimal TotalMonthlyCost(this Order order, bool roundResult = false)
         {
-            return order?.OrderItems.Sum(x => x.OrderItemPrice.CalculateCostPerMonth(x.TotalQuantity)) ?? decimal.Zero;
+            var total = order?.OrderItems.Sum(x => x.OrderItemPrice.CalculateCostPerMonth(x.TotalQuantity)) ?? decimal.Zero;
+
+            if (roundResult)
+            {
+                total = Math.Round(total, 2, MidpointRounding.AwayFromZero);
+            }
+
+            return total;
         }
 
-        public static decimal TotalAnnualCost(this Order order)
+        public static decimal TotalAnnualCost(this Order order, bool roundResult = false)
         {
-            return order?.OrderItems.Sum(x => x.OrderItemPrice.CalculateCostPerYear(x.TotalQuantity)) ?? decimal.Zero;
+            var total = order?.OrderItems.Sum(x => x.OrderItemPrice.CalculateCostPerYear(x.TotalQuantity)) ?? decimal.Zero;
+
+            if (roundResult)
+            {
+                total = Math.Round(total, 2, MidpointRounding.AwayFromZero);
+            }
+
+            return total;
         }
 
-        public static decimal TotalCost(this Order order)
+        public static decimal TotalCost(this Order order, bool roundResult = false)
         {
             var maximumTerm = order?.MaximumTerm ?? 36;
 
-            return order.TotalOneOffCost()
+            var total = order.TotalOneOffCost()
                 + (order.TotalMonthlyCost() * maximumTerm);
+
+            if (roundResult)
+            {
+                total = Math.Round(total, 2, MidpointRounding.AwayFromZero);
+            }
+
+            return total;
         }
 
-        public static decimal TotalCost(this OrderWrapper orderWrapper)
+        public static decimal TotalCost(this OrderWrapper orderWrapper, bool roundResult = false)
         {
-            return (orderWrapper?.Previous?.TotalCost() ?? 0)
+            var total = (orderWrapper?.Previous?.TotalCost() ?? 0)
                 + (orderWrapper?.Order?.TotalCostForAmendment() ?? 0);
+
+            if (roundResult)
+            {
+                total = Math.Round(total, 2, MidpointRounding.AwayFromZero);
+            }
+
+            return total;
         }
 
         public static decimal TotalCost(this OrderItem orderItem)

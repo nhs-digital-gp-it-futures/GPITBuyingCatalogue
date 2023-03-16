@@ -227,47 +227,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DeliveryDa
             VerifyNoChangesMade();
         }
 
-        [Fact]
-        public void AmendDate_DateAfterContractEndDate_DirectAward_ClickSave_ExpectedResult()
-        {
-            var context = GetEndToEndDbContext();
-            var order = context.Order(CallOffId).Result;
-
-            order.OrderTriageValue = OrderTriageValue.Under40K;
-
-            context.SaveChanges();
-
-            var date = order.CommencementDate!.Value.AddMonths(order.MaximumTerm!.Value);
-
-            Driver.Navigate().Refresh();
-
-            CommonActions.ElementAddValue(DeliveryDatesObjects.SelectDateDayInput, $"{date.Day:00}");
-            CommonActions.ElementAddValue(DeliveryDatesObjects.SelectDateMonthInput, $"{date.Month:00}");
-            CommonActions.ElementAddValue(DeliveryDatesObjects.SelectDateYearInput, $"{date.Year:0000}");
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(DeliveryDatesController),
-                nameof(DeliveryDatesController.AmendDate)).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            var errorMessage = string.Format(
-                AmendDateModelValidator.DeliveryDateAfterContractEndDateErrorMessage,
-                $"{date.AddDays(-1):d MMMM yyyy}");
-
-            CommonActions.ElementTextEqualTo(
-                DeliveryDatesObjects.AmendDateError,
-                $"Error: {errorMessage}").Should().BeTrue();
-
-            VerifyNoChangesMade();
-        }
-
         [Theory]
+        [InlineData(OrderTriageValue.Under40K)]
         [InlineData(OrderTriageValue.Between40KTo250K)]
         [InlineData(OrderTriageValue.Over250K)]
-        public void AmendDate_DateAfterContractEndDate_OnOffCatalogueAward_ClickSave_ExpectedResult(OrderTriageValue triageValue)
+        public void AmendDate_DateAfterContractEndDate_ClickSave_ExpectedResult(OrderTriageValue triageValue)
         {
             var context = GetEndToEndDbContext();
             var order = context.Order(CallOffId).Result;
@@ -276,13 +240,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DeliveryDa
 
             context.SaveChanges();
 
-            var date = order.CommencementDate!.Value.AddMonths(EndDate.MaximumTermForOnOffCatalogueOrders);
+            var endDate = new EndDate(order.CommencementDate.Value, order.MaximumTerm.Value);
+            var invalidDate = endDate.DateTime.Value!.AddDays(1);
 
             Driver.Navigate().Refresh();
 
-            CommonActions.ElementAddValue(DeliveryDatesObjects.SelectDateDayInput, $"{date.Day:00}");
-            CommonActions.ElementAddValue(DeliveryDatesObjects.SelectDateMonthInput, $"{date.Month:00}");
-            CommonActions.ElementAddValue(DeliveryDatesObjects.SelectDateYearInput, $"{date.Year:0000}");
+            CommonActions.ElementAddValue(DeliveryDatesObjects.SelectDateDayInput, $"{invalidDate.Day:00}");
+            CommonActions.ElementAddValue(DeliveryDatesObjects.SelectDateMonthInput, $"{invalidDate.Month:00}");
+            CommonActions.ElementAddValue(DeliveryDatesObjects.SelectDateYearInput, $"{invalidDate.Year:0000}");
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -294,7 +259,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DeliveryDa
 
             var errorMessage = string.Format(
                 AmendDateModelValidator.DeliveryDateAfterContractEndDateErrorMessage,
-                $"{date.AddDays(-1):d MMMM yyyy}");
+                $"{invalidDate.AddDays(-1):d MMMM yyyy}");
 
             CommonActions.ElementTextEqualTo(
                 DeliveryDatesObjects.AmendDateError,

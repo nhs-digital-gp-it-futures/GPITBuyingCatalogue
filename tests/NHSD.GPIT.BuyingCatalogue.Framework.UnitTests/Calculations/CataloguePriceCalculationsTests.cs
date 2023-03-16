@@ -263,13 +263,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         }
 
         [Theory]
-        [CommonInlineAutoData(TimeUnit.PerMonth, 0, 12, 12 * 12)]
-        [CommonInlineAutoData(TimeUnit.PerYear, 0, 1, 12)]
-        [CommonInlineAutoData(null, 12, 0, 0)]
-        public static void Order_Totals_Using_BillingPeriod(TimeUnit? billingPeriod, decimal oneOff, decimal monthly, decimal annual, IFixture fixture)
+        [CommonInlineAutoData(TimeUnit.PerMonth, 12, 0, 12, 12 * 12)]
+        [CommonInlineAutoData(TimeUnit.PerYear, 12, 0, 1, 12)]
+        [CommonInlineAutoData(TimeUnit.PerYear, 12.666, 0, 1.0555, 12.666)]
+        [CommonInlineAutoData(null, 12, 12, 0, 0)]
+        [CommonInlineAutoData(null, 12.666, 12.666, 0, 0)]
+        public static void Order_Totals_Using_BillingPeriod(TimeUnit? billingPeriod, decimal price, decimal oneOff, decimal monthly, decimal annual, IFixture fixture)
         {
-            var price = 12M;
-
             (decimal Price, int LowerRange, int? UpperRange) tier = (price, 1, null);
 
             OrderItem orderItem = BuildOrderItem(fixture, 1, new[] { tier }, CataloguePriceCalculationType.SingleFixed);
@@ -280,18 +280,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
                 .Create();
 
             order.TotalOneOffCost().Should().Be(oneOff);
+            order.TotalOneOffCost(true).Should().Be(Math.Round(oneOff, 2, MidpointRounding.AwayFromZero));
             order.TotalMonthlyCost().Should().Be(monthly);
+            order.TotalMonthlyCost(true).Should().Be(Math.Round(monthly, 2, MidpointRounding.AwayFromZero));
             order.TotalAnnualCost().Should().Be(annual);
+            order.TotalAnnualCost(true).Should().Be(Math.Round(annual, 2, MidpointRounding.AwayFromZero));
         }
 
         [Theory]
-        [CommonInlineAutoData(TimeUnit.PerMonth, 12 * 24)]
-        [CommonInlineAutoData(TimeUnit.PerYear, 1 * 24)]
-        [CommonInlineAutoData(null, 12)]
-        public static void Order_TotalCost_PerMonth_And_PerYear_Use_MaximumTerm_But_OneOff_Costs_Dont(TimeUnit? billingPeriod, decimal total, IFixture fixture)
+        [CommonInlineAutoData(TimeUnit.PerMonth, 12, 12 * 24)]
+        [CommonInlineAutoData(TimeUnit.PerYear, 12, 1 * 24)]
+        [CommonInlineAutoData(TimeUnit.PerYear, 12.666, 25.332)]
+        [CommonInlineAutoData(null, 12, 12)]
+        [CommonInlineAutoData(null, 12.666, 12.666)]
+        public static void Order_TotalCost_PerMonth_And_PerYear_Use_MaximumTerm_But_OneOff_Costs_Dont(TimeUnit? billingPeriod, decimal price, decimal total, IFixture fixture)
         {
             var maximumTerm = 24;
-            var price = 12M;
 
             (decimal Price, int LowerRange, int? UpperRange) tier = (price, 1, null);
 
@@ -304,6 +308,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
                 .Create();
 
             order.TotalCost().Should().Be(total);
+            order.TotalCost(true).Should().Be(Math.Round(total, 2, MidpointRounding.AwayFromZero));
         }
 
         [Theory]

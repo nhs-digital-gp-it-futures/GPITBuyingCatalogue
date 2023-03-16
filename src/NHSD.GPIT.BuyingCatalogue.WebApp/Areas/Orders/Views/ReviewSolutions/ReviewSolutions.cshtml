@@ -75,16 +75,20 @@
              <nhs-table id="review-solutions-amended-indicative-costs" label-text="Indicative costs">
                  <nhs-table-column>Cost type</nhs-table-column>
                  <nhs-table-column numeric="true">Previous cost</nhs-table-column>
+                 <nhs-table-column numeric="true">Difference</nhs-table-column>
                  <nhs-table-column numeric="true">New cost</nhs-table-column>
                  <nhs-table-row-container>
                     <nhs-table-cell>
                         <strong>Total one-off cost:</strong>
                     </nhs-table-cell>
                     <nhs-table-cell numeric="true">
-                        £@($"{Model.Previous.TotalOneOffCost():N2}")
+                        £@($"{Model.Previous.TotalOneOffCost(true):N2}")
                     </nhs-table-cell>
                     <nhs-table-cell numeric="true">
-                        £@($"{Model.RolledUp.TotalOneOffCost():N2}")
+                        £@($"{Model.RolledUp.TotalOneOffCost(true)-Model.Previous.TotalOneOffCost(true):N2}")
+                    </nhs-table-cell>
+                    <nhs-table-cell numeric="true">
+                        £@($"{Model.RolledUp.TotalOneOffCost(true):N2}")
                     </nhs-table-cell>
                  </nhs-table-row-container>
                  <nhs-table-row-container>
@@ -92,10 +96,13 @@
                         <strong>Total monthly cost:</strong>
                     </nhs-table-cell>
                     <nhs-table-cell numeric="true">
-                        £@($"{Model.Previous.TotalMonthlyCost():N2}")
+                        £@($"{Model.Previous.TotalMonthlyCost(true):N2}")
                     </nhs-table-cell>
                     <nhs-table-cell numeric="true">
-                        £@($"{Model.RolledUp.TotalMonthlyCost():N2}")
+                        £@($"{Model.RolledUp.TotalMonthlyCost(true)-Model.Previous.TotalMonthlyCost(true):N2}")
+                    </nhs-table-cell>
+                    <nhs-table-cell numeric="true">
+                        £@($"{Model.RolledUp.TotalMonthlyCost(true):N2}")
                     </nhs-table-cell>
                  </nhs-table-row-container>
                  <nhs-table-row-container>
@@ -103,10 +110,13 @@
                         <strong>Total cost for one year:</strong>
                     </nhs-table-cell>
                     <nhs-table-cell numeric="true">
-                        £@($"{Model.Previous.TotalAnnualCost():N2}")
+                        £@($"{Model.Previous.TotalAnnualCost(true):N2}")
                     </nhs-table-cell>
                     <nhs-table-cell numeric="true">
-                        £@($"{Model.RolledUp.TotalAnnualCost():N2}")
+                        £@($"{Model.RolledUp.TotalAnnualCost(true)-Model.Previous.TotalAnnualCost(true):N2}")
+                    </nhs-table-cell>
+                    <nhs-table-cell numeric="true">
+                        £@($"{Model.RolledUp.TotalAnnualCost(true):N2}")
                     </nhs-table-cell>
                  </nhs-table-row-container>
                  <nhs-table-row-container>
@@ -114,10 +124,13 @@
                         <strong>Total cost of contract:</strong>
                     </nhs-table-cell>
                     <nhs-table-cell numeric="true">
-                        £@($"{Model.Previous.TotalCost():N2}")
+                        £@($"{Model.Previous.TotalCost(true):N2}")
                     </nhs-table-cell>
                     <nhs-table-cell numeric="true">
-                        £@($"{Model.OrderWrapper.TotalCost():N2}")
+                        £@($"{Model.OrderWrapper.TotalCost(true)-Model.Previous.TotalCost(true):N2}")
+                    </nhs-table-cell>
+                    <nhs-table-cell numeric="true">
+                        £@($"{Model.OrderWrapper.TotalCost(true):N2}")
                     </nhs-table-cell>
                  </nhs-table-row-container>
              </nhs-table>
@@ -127,19 +140,19 @@
              <h2 id="review-solutions-indicative-costs">Indicative costs</h2>
              <nhs-summary-list>
                  <nhs-summary-list-row label-text="Total one-off cost:">
-                     £@($"{Model.Order.TotalOneOffCost():N2}")
+                     £@($"{Model.Order.TotalOneOffCost(true):N2}")
                  </nhs-summary-list-row>
 
                  <nhs-summary-list-row label-text="Total monthly cost:">
-                     £@($"{Model.Order.TotalMonthlyCost():N2}")
+                     £@($"{Model.Order.TotalMonthlyCost(true):N2}")
                  </nhs-summary-list-row>
 
                  <nhs-summary-list-row label-text="Total cost for one year:">
-                     £@($"{Model.Order.TotalAnnualCost():N2}")
+                     £@($"{Model.Order.TotalAnnualCost(true):N2}")
                  </nhs-summary-list-row>
 
                  <nhs-summary-list-row label-text="Total cost of contract (@Model.ContractLength months):">
-                     £@($"{Model.Order.TotalCost():N2}")
+                     £@($"{Model.Order.TotalCost(true):N2}")
                  </nhs-summary-list-row>
              </nhs-summary-list>
         }

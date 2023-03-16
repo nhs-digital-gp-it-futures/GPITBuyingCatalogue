@@ -67,13 +67,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
         {
             get
             {
-                if (TriageValue == null)
-                {
-                    return null;
-                }
-
-                var endDate = new EndDate(CommencementDate, MaximumTerm, TriageValue);
-                return endDate.Value;
+                var endDate = new EndDate(CommencementDate, MaximumTerm);
+                return endDate.DateTime;
             }
         }
     }

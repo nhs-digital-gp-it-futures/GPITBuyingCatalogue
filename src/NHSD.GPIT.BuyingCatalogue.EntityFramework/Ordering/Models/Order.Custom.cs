@@ -33,9 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             }
         }
 
-        public string EndDateDisplayValue => new EndDate(CommencementDate, MaximumTerm).DisplayValue;
-
-        public EndDate EndDate => new EndDate(CommencementDate, MaximumTerm, OrderTriageValue);
+        public EndDate EndDate => new EndDate(CommencementDate, MaximumTerm);
 
         public bool IsAmendment => CallOffId.IsAmendment;
 
