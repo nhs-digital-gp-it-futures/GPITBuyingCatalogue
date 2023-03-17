@@ -1,10 +1,10 @@
-﻿DECLARE @icbRoleId AS nchar(5) = 'RO261';
+﻿DECLARE @icbRoleId AS nchar(5) = 'RO318';
 
-IF UPPER('$(SEED_ORGANISATIONS)') = 'TRUE' AND NOT EXISTS (SELECT * FROM organisations.Organisations WHERE PrimaryRoleId = @icbRoleId)
+IF UPPER('$(SEED_ORGANISATIONS)') = 'TRUE' AND NOT EXISTS (SELECT * FROM organisations.Organisations WHERE OrganisationRoleId = @icbRoleId)
 
 
 
-    INSERT INTO organisations.Organisations ([Name], [Address], OdsCode, PrimaryRoleId, ExternalIdentifier, InternalIdentifier, OrganisationTypeId)
+    INSERT INTO organisations.Organisations ([Name], [Address], OdsCode, OrganisationRoleId, ExternalIdentifier, InternalIdentifier, OrganisationTypeId)
     VALUES
     ('NHS LANCASHIRE AND SOUTH CUMBRIA INTEGRATED CARE BOARD', '{"line1":"2ND FLOOR PRESTON BUSINESS CENTRE","line2":"WATLING STREET ROAD","line3":"FULWOOD","town":"PRESTON","county":"NULL","postcode":"PR2 8DY","country":"ENGLAND"}', 'QE1', @icbRoleId, 'QE1', 'IB-QE1', 3),
     ('NHS SOUTH YORKSHIRE INTEGRATED CARE BOARD', '{"line1":"COMMISSIONERS WORKING TOGETHER","line2":"722 PRINCE OF WALES ROAD","line3":"NULL","town":"SHEFFIELD","county":"NULL","postcode":"S9 4EU","country":"ENGLAND"}', 'QF7', @icbRoleId, 'QF7', 'IB-QF7', 3),

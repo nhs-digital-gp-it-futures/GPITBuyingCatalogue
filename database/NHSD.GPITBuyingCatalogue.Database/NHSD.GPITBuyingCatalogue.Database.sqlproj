@@ -107,8 +107,6 @@
   <ItemGroup>
     <Build Include="Security\Users\NHSD.sql" />
     <Build Include="Security\Logins\NHSD.sql" />
-    <None Include="PostDeployment\UpdateUsersToICB.sql" />
-    <None Include="PostDeployment\UpdateOrdersToICB.sql" />
     <None Include="PostDeployment\CreateIntegratedCareBoards.sql" />
     <None Include="PostDeployment\IntegrationTests\ClearData.sql" />
     <None Include="PostDeployment\IntegrationTests\DropRole.sql" />

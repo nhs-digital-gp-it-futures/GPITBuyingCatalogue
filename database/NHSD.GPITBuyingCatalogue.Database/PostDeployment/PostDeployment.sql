@@ -61,6 +61,3 @@
 :r ./OrderSeedData/InsertTestOrderSeedData.sql
 :r ./InsertSupplierServiceAssociations.sql
 :r ./InsertDefaultImplementationPlan.sql
-
-:r ./UdpateOrdersToICB.sql
-:r ./UdpateUsersToICB.sql
