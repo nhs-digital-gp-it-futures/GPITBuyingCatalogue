@@ -1,6 +1,6 @@
 ﻿DECLARE @icbRoleId AS nchar(5) = 'RO318';
 
-IF UPPER('$(SEED_ORGANISATIONS)') = 'TRUE' AND NOT EXISTS (SELECT * FROM organisations.Organisations WHERE OrganisationRoleId = @icbRoleId)
+IF UPPER('$(INSERT_TEST_DATA)') = 'TRUE' AND NOT EXISTS (SELECT * FROM organisations.Organisations WHERE OrganisationRoleId = @icbRoleId)
 
 
 
