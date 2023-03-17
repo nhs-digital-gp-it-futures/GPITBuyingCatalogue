@@ -23,7 +23,7 @@
       </PackageReference>
       <PackageReference Include="FluentAssertions" Version="6.7.0" />
       <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
-      <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="109.0.5414.7400" />
+      <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="111.0.5563.6400" />
       <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.435">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

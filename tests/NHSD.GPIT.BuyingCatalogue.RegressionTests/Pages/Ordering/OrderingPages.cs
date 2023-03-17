@@ -586,6 +586,142 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             SelectEditAndConfirmAssociatedServiceOnlyPrices.EditPrice(associatedServiceName);
         }
 
+        public void AmendSolutionsAndServices(string solutionName, string additionalService = "", string associatedService = "", bool multipleServiceRecipients = false, bool importServiceRecipients = false, string fileName = "")
+        {
+            AmendSolutionsAndServices(solutionName, new List<string> { additionalService }, new List<string> { associatedService }, multipleServiceRecipients, importServiceRecipients, fileName);
+        }
+
+        public void AmendSolutionsAndServices(string solutionName, IEnumerable<string>? additionalServices, string associatedService = "", bool multipleServiceRecipients = false, bool importServiceRecipients = false, string fileName = "")
+        {
+            AmendSolutionsAndServices(solutionName, additionalServices, new List<string> { associatedService }, multipleServiceRecipients, importServiceRecipients, fileName);
+        }
+
+        public void AmendSolutionsAndServices(string solutionName, string additionalService, IEnumerable<string>? associatedServices, bool multipleServiceRecipients = false, bool importServiceRecipients = false, string fileName = "")
+        {
+            AmendSolutionsAndServices(solutionName, new List<string> { additionalService }, associatedServices, multipleServiceRecipients, importServiceRecipients, fileName);
+        }
+
+        public void AmendSolutionsAndServices(string solutionName, IEnumerable<string>? additionalServices, IEnumerable<string>? associatedServices, bool multipleServiceRecipients = false, bool importServiceRecipients = false, string fileName = "")
+        {
+            //var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder();
+
+            //TaskList.SelectSolutionsAndServicesTask(isAssociatedServiceOnlyOrder);
+
+            //if (!isAssociatedServiceOnlyOrder)
+            //{
+                SelectEditCatalogueSolution.SelectSolution(solutionName, additionalServices);
+
+                if (!importServiceRecipients)
+                {
+                    SelectEditCatalogueSolutionServiceRecipients.AddCatalogueSolutionServiceRecipient(multipleServiceRecipients);
+                }
+                else
+                {
+                    ImportServiceReceipients.ImportServiceRecipients(fileName);
+                }
+
+                ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
+                SelectEditAndConfirmPrices.SelectAndConfirmPrice();
+                Quantity.AddQuantity();
+
+                if (HasAdditionalService(solutionName) && additionalServices != default && additionalServices.All(a => !string.IsNullOrWhiteSpace(a)))
+                {
+                    foreach (var additionalService in additionalServices)
+                    {
+                        if (!importServiceRecipients)
+                        {
+                            SelectEditAdditionalServiceRecipients.AddServiceRecipients();
+                        }
+                        else
+                        {
+                            ImportServiceReceipients.ImportServiceRecipients(fileName);
+                        }
+
+                        ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
+                        SelectEditAndConfirmAdditionalServicePrice.SelectAndConfirmPrice();
+                        Quantity.AddQuantity();
+                    }
+                }
+
+                //if (HasAssociatedServices(solutionName))
+                //{
+                //    if ((associatedServices != default) && associatedServices.All(a => !string.IsNullOrWhiteSpace(a)))
+                //    {
+                //        SelectEditAssociatedService.AddAssociatedService(associatedServices, "Yes");
+
+                //        foreach (var associatedService in associatedServices)
+                //        {
+                //            if (!importServiceRecipients)
+                //            {
+                //                SelectEditAssociatedServiceRecipents.AddServiceRecipient();
+                //            }
+                //            else
+                //            {
+                //                ImportServiceReceipients.ImportServiceRecipients(fileName);
+                //            }
+
+                //            ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
+                //            SelectEditAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
+                //            Quantity.AddQuantity();
+                //        }
+                //    }
+                //    else
+                //    {
+                //        SelectEditAssociatedService.AddAssociatedService();
+                //    }
+                //}
+            //}
+            //else
+            //{
+            //    SelectEditAssociatedServiceOnly.SelectAssociatedServices(solutionName, associatedServices);
+
+            //    if ((associatedServices != default) && associatedServices.All(a => !string.IsNullOrWhiteSpace(a)))
+            //    {
+            //        foreach (var associatedService in associatedServices)
+            //        {
+            //            if (!importServiceRecipients)
+            //            {
+            //                SelectEditAssociatedServiceRecipientOnly.AddServiceRecipient(multipleServiceRecipients);
+            //            }
+            //            else
+            //            {
+            //                ImportServiceReceipients.ImportServiceRecipients(fileName);
+            //            }
+
+            //            ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
+            //            SelectEditAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
+            //            Quantity.AddQuantity();
+            //        }
+            //    }
+            //}
+
+            SolutionAndServicesReview.ReviewSolutionAndServices();
+
+            TaskList.SelectPlannedDeliveryDatesTask();
+            //PlannedDeliveryDates.PlannedDeliveryDate(solutionName, isAssociatedServiceOnlyOrder, associatedServices, additionalServices);
+
+            //var isMultiFramework = IsMultiFramework();
+
+            //if (isMultiFramework)
+            //{
+            //    TaskList.SelectFrameWork();
+            //    SelectFundingSources.AddFundingSources(solutionName, isAssociatedServiceOnlyOrder, associatedServices, additionalServices);
+            //}
+            //else
+            //{
+            //    var isLocalFundingOnly = IsLocalFundingOnly();
+            //    if (isLocalFundingOnly)
+            //    {
+            //        TaskList.SelectLocalFundingSourcesTask();
+            //    }
+            //    else
+            //    {
+            //        TaskList.SelectFundingSourcesTask();
+            //        SelectFundingSources.AddFundingSources(solutionName, isAssociatedServiceOnlyOrder, associatedServices, additionalServices);
+            //    }
+            //}
+        }
+
         private bool IsAssociatedServiceOnlyOrder()
         {
             using var dbContext = Factory.DbContext;
