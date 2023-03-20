@@ -1,12 +1,19 @@
 ﻿@using System.Linq;
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.ActionLink
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSecondaryButton
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.SummaryList
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Review
 
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Review.ReviewSolutionsModel
 @{
-	ViewBag.Title = Model.AssociatedServicesOnly
+    ViewBag.Title = Model.AssociatedServicesOnly
         ? "Associated Services"
-	    : "Catalogue Solution and services";
+        : "Catalogue Solution and services";
 
     var advice = Model.AssociatedServicesOnly
         ? "Review the Associated Services that you've added to this order. You can edit the items that you've added at any time."
@@ -24,63 +31,131 @@
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
         <nhs-page-title title="@ViewBag.Title"
-						caption="Order @Model.CallOffId"
-						advice="@advice"/>
+                        caption="Order @Model.CallOffId"
+                        advice="@advice"/>
 
         <vc:nhs-action-link text="@editLinkTitle"
                             url="@Url.Action(
                                      nameof(TaskListController.TaskList),
                                      typeof(TaskListController).ControllerName(),
                                      new { Model.InternalOrgId, Model.CallOffId })" />
-		<hr />
+        <hr />
 
-		@if (Model.CatalogueSolutions.Any())
-		{
-		    <h2 id="catalogue-solutions-title">@solutionsTitle</h2>
-		    @foreach (var solution in Model.CatalogueSolutions)
-		    {
-		        <partial name="_ReviewExpander" model="solution" />
-		    }
-		}
+        @if (Model.CatalogueSolutions.Any())
+        {
+            <h2 id="catalogue-solutions-title">@solutionsTitle</h2>
+            @foreach (var solution in Model.CatalogueSolutions)
+            {
+                <partial name="_ReviewExpander" model="new ReviewExpanderModel(solution, Model.Previous?.OrderItem(solution.CatalogueItemId), Model.Order.IsAmendment)" />
+            }
+        }
 
-		@if (Model.AdditionalServices.Any())
-		{
-			<h2 id="additional-services-title">Additional Services</h2>
-			@foreach (var service in Model.AdditionalServices)
-			{
-				<partial name="_ReviewExpander" model="service" />
-			}
-		}
+        @if (Model.AdditionalServices.Any())
+        {
+            <h2 id="additional-services-title">Additional Services</h2>
+            @foreach (var service in Model.AdditionalServices)
+            {
+                <partial name="_ReviewExpander" model="new ReviewExpanderModel(service, Model.Previous?.OrderItem(service.CatalogueItemId), Model.Order.IsAmendment)" />
+            }
+        }
 
-		@if (Model.AssociatedServices.Any())
-		{
-			<h2 id="associated-services-title">Associated Services</h2>
-			@foreach (var service in Model.AssociatedServices)
-			{
-				<partial name="_ReviewExpander" model="service" />
-			}
-		}
+        @if (Model.AssociatedServices.Any())
+        {
+            <h2 id="associated-services-title">Associated Services</h2>
+            @foreach (var service in Model.AssociatedServices)
+            {
+                 <partial name="_ReviewExpander" model="new ReviewExpanderModel(service, Model.Previous?.OrderItem(service.CatalogueItemId), Model.Order.IsAmendment)" />
+            }
+        }
 
         <br/>
 
-        <h2>Indicative costs</h2>
-        <nhs-summary-list>
-            <nhs-summary-list-row label-text="Total one-off cost:">
-                £@($"{Model.Order.TotalOneOffCost():N2}")
-            </nhs-summary-list-row>
+        @if (Model.Order.IsAmendment)
+        {
+             <nhs-table id="review-solutions-amended-indicative-costs" label-text="Indicative costs">
+                 <nhs-table-column>Cost type</nhs-table-column>
+                 <nhs-table-column numeric="true">Previous cost</nhs-table-column>
+                 <nhs-table-column numeric="true">Difference</nhs-table-column>
+                 <nhs-table-column numeric="true">New cost</nhs-table-column>
+                 <nhs-table-row-container>
+                    <nhs-table-cell>
+                        <strong>Total one-off cost:</strong>
+                    </nhs-table-cell>
+                    <nhs-table-cell numeric="true">
+                        £@($"{Model.Previous.TotalOneOffCost(true):N2}")
+                    </nhs-table-cell>
+                    <nhs-table-cell numeric="true">
+                        £@($"{Model.RolledUp.TotalOneOffCost(true)-Model.Previous.TotalOneOffCost(true):N2}")
+                    </nhs-table-cell>
+                    <nhs-table-cell numeric="true">
+                        £@($"{Model.RolledUp.TotalOneOffCost(true):N2}")
+                    </nhs-table-cell>
+                 </nhs-table-row-container>
+                 <nhs-table-row-container>
+                    <nhs-table-cell>
+                        <strong>Total monthly cost:</strong>
+                    </nhs-table-cell>
+                    <nhs-table-cell numeric="true">
+                        £@($"{Model.Previous.TotalMonthlyCost(true):N2}")
+                    </nhs-table-cell>
+                    <nhs-table-cell numeric="true">
+                        £@($"{Model.RolledUp.TotalMonthlyCost(true)-Model.Previous.TotalMonthlyCost(true):N2}")
+                    </nhs-table-cell>
+                    <nhs-table-cell numeric="true">
+                        £@($"{Model.RolledUp.TotalMonthlyCost(true):N2}")
+                    </nhs-table-cell>
+                 </nhs-table-row-container>
+                 <nhs-table-row-container>
+                    <nhs-table-cell>
+                        <strong>Total cost for one year:</strong>
+                    </nhs-table-cell>
+                    <nhs-table-cell numeric="true">
+                        £@($"{Model.Previous.TotalAnnualCost(true):N2}")
+                    </nhs-table-cell>
+                    <nhs-table-cell numeric="true">
+                        £@($"{Model.RolledUp.TotalAnnualCost(true)-Model.Previous.TotalAnnualCost(true):N2}")
+                    </nhs-table-cell>
+                    <nhs-table-cell numeric="true">
+                        £@($"{Model.RolledUp.TotalAnnualCost(true):N2}")
+                    </nhs-table-cell>
+                 </nhs-table-row-container>
+                 <nhs-table-row-container>
+                    <nhs-table-cell>
+                        <strong>Total cost of contract:</strong>
+                    </nhs-table-cell>
+                    <nhs-table-cell numeric="true">
+                        £@($"{Model.Previous.TotalCost(true):N2}")
+                    </nhs-table-cell>
+                    <nhs-table-cell numeric="true">
+                        £@($"{Model.OrderWrapper.TotalCost(true)-Model.Previous.TotalCost(true):N2}")
+                    </nhs-table-cell>
+                    <nhs-table-cell numeric="true">
+                        £@($"{Model.OrderWrapper.TotalCost(true):N2}")
+                    </nhs-table-cell>
+                 </nhs-table-row-container>
+             </nhs-table>
+        }
+        else
+        {
+             <h2 id="review-solutions-indicative-costs">Indicative costs</h2>
+             <nhs-summary-list>
+                 <nhs-summary-list-row label-text="Total one-off cost:">
+                     £@($"{Model.Order.TotalOneOffCost(true):N2}")
+                 </nhs-summary-list-row>
 
-            <nhs-summary-list-row label-text="Total monthly cost:">
-                £@($"{Model.Order.TotalMonthlyCost():N2}")
-            </nhs-summary-list-row>
+                 <nhs-summary-list-row label-text="Total monthly cost:">
+                     £@($"{Model.Order.TotalMonthlyCost(true):N2}")
+                 </nhs-summary-list-row>
 
-            <nhs-summary-list-row label-text="Total cost for one year:">
-                £@($"{Model.Order.TotalAnnualCost():N2}")
-            </nhs-summary-list-row>
+                 <nhs-summary-list-row label-text="Total cost for one year:">
+                     £@($"{Model.Order.TotalAnnualCost(true):N2}")
+                 </nhs-summary-list-row>
 
-            <nhs-summary-list-row label-text="Total cost of contract (@Model.ContractLength months):">
-                £@($"{Model.Order.TotalCost():N2}")
-            </nhs-summary-list-row>
-		</nhs-summary-list>
+                 <nhs-summary-list-row label-text="Total cost of contract (@Model.ContractLength months):">
+                     £@($"{Model.Order.TotalCost(true):N2}")
+                 </nhs-summary-list-row>
+             </nhs-summary-list>
+        }
         <p><b>All prices exclude VAT.</b></p>
 
         <vc:nhs-secondary-button text="Continue"
@@ -89,6 +164,6 @@
                                           nameof(OrderController.Order),
                                           typeof(OrderController).ControllerName(),
                                           new { Model.InternalOrgId, Model.CallOffId })"/>
-	</div>
+    </div>
 </div>
 

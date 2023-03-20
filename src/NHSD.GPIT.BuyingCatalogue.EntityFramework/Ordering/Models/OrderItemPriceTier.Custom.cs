@@ -15,6 +15,17 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             OrderItemPrice = price;
         }
 
+        public OrderItemPriceTier(OrderItemPrice price, OrderItemPriceTier tier)
+        {
+            OrderId = price.OrderId;
+            CatalogueItemId = price.CatalogueItemId;
+            Price = tier.Price;
+            ListPrice = tier.Price;
+            LowerRange = tier.LowerRange;
+            UpperRange = tier.UpperRange;
+            OrderItemPrice = price;
+        }
+
         public string GetRangeDescription()
         {
             var upperRange = UpperRange == null

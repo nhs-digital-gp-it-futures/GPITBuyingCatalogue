@@ -23,11 +23,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Utils.Files
             {
                 if (FileExists(filePath))
                 {
-                    break;
+                    return;
                 }
 
                 Thread.Sleep(1000);
             }
+
+            throw new TimeoutException($"Timeout waiting for download file {filePath}");
         }
 
         public static void ValidateIsPdf(string filePath)
