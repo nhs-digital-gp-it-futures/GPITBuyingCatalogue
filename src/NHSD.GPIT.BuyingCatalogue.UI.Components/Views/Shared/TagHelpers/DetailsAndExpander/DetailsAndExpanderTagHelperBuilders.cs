@@ -14,6 +14,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
         private const string DetailsSummaryTextLetterClass = "nhsuk-details__summary-text__letter";
         private const string DetailsTextClass = "nhsuk-details__text";
         private const string SummaryTextSecondaryClass = "nhsuk-details__summary-text_secondary";
+        private const string TagTopLevelClass = "bc-c-task-list__task-status";
+        private const string TagClass = "nhsuk-tag";
+        private const string TagColourClass = "nhsuk-tag--blue";
         private const string VisuallyHidden = "nhsuk-u-visually-hidden";
 
         public static TagBuilder GetTextItem()
@@ -24,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
             return builder;
         }
 
-        public static TagBuilder GetSummaryLabelBuilder(string headingText, string labelText, bool bold)
+        public static TagBuilder GetSummaryLabelBuilder(string headingText, string labelText, bool bold, bool addedSticker = false)
         {
             var summaryBuilder = new TagBuilder("summary");
             summaryBuilder.AddCssClass(DetailsSummaryClass);
@@ -52,16 +55,26 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
             var spanBuilder = new TagBuilder(TagHelperConstants.Span);
             spanBuilder.AddCssClass(DetailsSummaryTextClass);
 
+            if (addedSticker)
+            {
+                spanBuilder.InnerHtml.AppendHtml(GetAddedStickerBuilder());
+            }
+
             if (bold)
             {
                 var boldBuilder = new TagBuilder("b");
+
                 boldBuilder.InnerHtml.Append(labelText);
+                boldBuilder.InnerHtml.AppendHtml("&nbsp");
+                boldBuilder.InnerHtml.AppendHtml("&nbsp");
 
                 spanBuilder.InnerHtml.AppendHtml(boldBuilder);
             }
             else
             {
                 spanBuilder.InnerHtml.Append(labelText);
+                spanBuilder.InnerHtml.AppendHtml("&nbsp");
+                spanBuilder.InnerHtml.AppendHtml("&nbsp");
             }
 
             if (!string.IsNullOrWhiteSpace(headingText))
@@ -78,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
             return summaryBuilder;
         }
 
-        public static TagBuilder GetSummaryLabelBuilderWithSecondaryInformation(string labelText, string secondaryTextTite, string secondaryText, bool bold)
+        public static TagBuilder GetSummaryLabelBuilderWithSecondaryInformation(string labelText, string secondaryTextTitle, string secondaryText, bool bold, bool addedSticker = false)
         {
             var summaryBuilder = new TagBuilder("summary");
             summaryBuilder.AddCssClass(DetailsSummaryClass);
@@ -86,23 +99,33 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
             var labelSpanBuilder = new TagBuilder(TagHelperConstants.Span);
             labelSpanBuilder.AddCssClass(DetailsSummaryTextClass);
 
+            if (addedSticker)
+            {
+                labelSpanBuilder.InnerHtml.AppendHtml(GetAddedStickerBuilder());
+            }
+
             if (bold)
             {
                 var boldBuilder = new TagBuilder("b");
+
                 boldBuilder.InnerHtml.Append(labelText);
+                boldBuilder.InnerHtml.AppendHtml("&nbsp");
+                boldBuilder.InnerHtml.AppendHtml("&nbsp");
 
                 labelSpanBuilder.InnerHtml.AppendHtml(boldBuilder);
             }
             else
             {
                 labelSpanBuilder.InnerHtml.Append(labelText);
+                labelSpanBuilder.InnerHtml.AppendHtml("&nbsp");
+                labelSpanBuilder.InnerHtml.AppendHtml("&nbsp");
             }
 
             var secondarySpanBuilder = new TagBuilder(TagHelperConstants.Span);
             secondarySpanBuilder.AddCssClass(SummaryTextSecondaryClass);
 
             var secondaryTitleBuilder = new TagBuilder("b");
-            secondaryTitleBuilder.InnerHtml.Append(secondaryTextTite);
+            secondaryTitleBuilder.InnerHtml.Append(secondaryTextTitle);
 
             secondarySpanBuilder.InnerHtml
                 .AppendHtml(secondaryTitleBuilder)
@@ -113,6 +136,23 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
                 .AppendHtml(secondarySpanBuilder);
 
             return summaryBuilder;
+        }
+
+        private static TagBuilder GetAddedStickerBuilder()
+        {
+            var output = new TagBuilder(TagHelperConstants.Div);
+
+            output.AddCssClass(TagTopLevelClass);
+
+            var inner = new TagBuilder(TagHelperConstants.Strong);
+
+            inner.AddCssClass(TagClass);
+            inner.AddCssClass(TagColourClass);
+            inner.InnerHtml.Append("Added");
+
+            output.InnerHtml.AppendHtml(inner);
+
+            return output;
         }
     }
 }

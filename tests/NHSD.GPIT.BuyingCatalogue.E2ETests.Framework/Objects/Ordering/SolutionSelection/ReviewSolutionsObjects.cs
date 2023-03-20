@@ -4,6 +4,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.Solution
 {
     public static class ReviewSolutionsObjects
     {
+        public static By AddedStickers => By.XPath("//*[contains(@class, 'nhsuk-tag') and text()='Added']");
+
+        public static By SreenReaderExisting => By.XPath("//span[@aria-label='Existing']");
+
+        public static By IndicativeCosts => By.Id("review-solutions-indicative-costs");
+
+        public static By IndicativeCostsAmendment => By.Id("review-solutions-amended-indicative-costs");
+
         public static By CatalogueSolutionSectionTitle => By.Id("catalogue-solutions-title");
 
         public static By AdditionalServicesSectionTitle => By.Id("additional-services-title");

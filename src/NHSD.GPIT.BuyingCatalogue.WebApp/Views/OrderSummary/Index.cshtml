@@ -236,7 +236,7 @@
         if (Model.Order.CommencementDate != null)
         {
             <pdf-summary-list-row label-text="End date">
-                @Model.Order.EndDate
+                @Model.Order.EndDate.DisplayValue
             </pdf-summary-list-row>
         }
     }
