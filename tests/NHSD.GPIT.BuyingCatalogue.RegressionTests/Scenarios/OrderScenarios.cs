@@ -211,6 +211,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.StepFourReviewAndCompleteOrder();
 
             OrderingPages.StepFiveAmendOrder();
+
+            OrderingPages.AmendSolutionsAndServices(SolutionName);
         }
 
         [Fact]

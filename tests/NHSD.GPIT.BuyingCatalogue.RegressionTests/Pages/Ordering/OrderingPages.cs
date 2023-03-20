@@ -609,6 +609,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
             //if (!isAssociatedServiceOnlyOrder)
             //{
+
+                TaskList.AmendSolutionAndServicesTask();
                 SelectEditCatalogueSolution.SelectSolution(solutionName, additionalServices);
 
                 if (!importServiceRecipients)

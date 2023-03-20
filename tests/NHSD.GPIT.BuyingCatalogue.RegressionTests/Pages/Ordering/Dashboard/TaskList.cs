@@ -79,6 +79,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
             }
         }
 
+        public void AmendSolutionAndServicesTask()
+        {
+            CommonActions.ClickLinkElement(CatalogueSolutionObjects.SelectSolutionsAndServicesLink);
+        }
+
         public void EditSolutionsAndServicesTask(bool isAssociatedServiceOnly)
         {
             CommonActions.ClickLinkElement(CatalogueSolutionObjects.SelectSolutionsAndServicesLink);
