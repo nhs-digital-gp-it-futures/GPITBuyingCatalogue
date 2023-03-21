@@ -2,9 +2,18 @@
 
 IF UPPER('$(INSERT_TEST_DATA)') = 'TRUE' AND NOT EXISTS (SELECT * FROM organisations.Organisations WHERE OrganisationRoleId = @icbRoleId)
 
+DECLARE @organisations AS TABLE
+(
+	[Name] [nvarchar](255) NOT NULL,
+	[Address] [nvarchar](max) NULL,
+	[OdsCode] [nvarchar](8) NULL,
+	[OrganisationRoleId] [nvarchar](8) NULL,
+	[ExternalIdentifier] [nvarchar](100) NULL,
+	[InternalIdentifier] [nvarchar](103) NULL,
+	[OrganisationTypeId] [int] NULL
+)
 
-
-    INSERT INTO organisations.Organisations ([Name], [Address], OdsCode, OrganisationRoleId, ExternalIdentifier, InternalIdentifier, OrganisationTypeId)
+    INSERT INTO @organisations ([Name], [Address], OdsCode, OrganisationRoleId, ExternalIdentifier, InternalIdentifier, OrganisationTypeId)
     VALUES
     ('NHS LANCASHIRE AND SOUTH CUMBRIA INTEGRATED CARE BOARD', '{"line1":"2ND FLOOR PRESTON BUSINESS CENTRE","line2":"WATLING STREET ROAD","line3":"FULWOOD","town":"PRESTON","county":"NULL","postcode":"PR2 8DY","country":"ENGLAND"}', 'QE1', @icbRoleId, 'QE1', 'IB-QE1', 3),
     ('NHS SOUTH YORKSHIRE INTEGRATED CARE BOARD', '{"line1":"COMMISSIONERS WORKING TOGETHER","line2":"722 PRINCE OF WALES ROAD","line3":"NULL","town":"SHEFFIELD","county":"NULL","postcode":"S9 4EU","country":"ENGLAND"}', 'QF7', @icbRoleId, 'QF7', 'IB-QF7', 3),
@@ -49,4 +58,19 @@ IF UPPER('$(INSERT_TEST_DATA)') = 'TRUE' AND NOT EXISTS (SELECT * FROM organisat
     ('NHS SURREY HEARTLANDS INTEGRATED CARE BOARD', '{"line1":"WOODHATCH PLACE","line2":"11 COCKSHOT HILL","line3":"NULL","town":"REIGATE","county":"NULL","postcode":"RH2 8EF","country":"ENGLAND"}', 'QXU', @icbRoleId, 'QXU', 'IB-QXU', 3),
     ('NHS CHESHIRE AND MERSEYSIDE INTEGRATED CARE BOARD', '{"line1":"WARRINGTON HOSPITAL","line2":"LOVELY LANE","line3":"NULL","town":"WARRINGTON","county":"NULL","postcode":"WA5 1QG","country":"ENGLAND"}', 'QYG', @icbRoleId, 'QYG', 'IB-QYG', 3)
 
+
+    MERGE INTO [organisations].[Organisations] AS TARGET
+     USING @organisations AS SOURCE ON TARGET.ExternalIdentifier = SOURCE.ExternalIdentifier
+      WHEN MATCHED THEN
+           UPDATE SET
+            TARGET.[Name] = SOURCE.[Name],
+            TARGET.[Address] = SOURCE.[Address],
+            TARGET.[OdsCode] = SOURCE.[OdsCode],
+            TARGET.[OrganisationRoleId] = SOURCE.[OrganisationRoleId],
+			TARGET.[ExternalIdentifier] = SOURCE.[ExternalIdentifier],
+            TARGET.[InternalIdentifier] = SOURCE.[InternalIdentifier],
+            TARGET.[OrganisationTypeId] = SOURCE.[OrganisationTypeId]
+      WHEN NOT MATCHED BY TARGET THEN
+           INSERT ([Name], [Address], [OdsCode], [OrganisationRoleId], [ExternalIdentifier], [InternalIdentifier], [OrganisationTypeId])
+           VALUES (SOURCE.[Name], SOURCE.[Address], SOURCE.[OdsCode], SOURCE.[OrganisationRoleId], SOURCE.[ExternalIdentifier], SOURCE.[InternalIdentifier], SOURCE.[OrganisationTypeId]);
 GO
