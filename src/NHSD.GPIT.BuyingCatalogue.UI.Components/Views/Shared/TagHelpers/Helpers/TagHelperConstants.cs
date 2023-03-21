@@ -21,6 +21,7 @@
         internal const string Input = "input";
         internal const string Nav = "nav";
         internal const string Script = "script";
+        internal const string Strong = "strong";
 
         /* Attributes*/
         internal const string For = "asp-for";

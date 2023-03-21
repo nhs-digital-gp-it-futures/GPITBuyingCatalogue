@@ -33,9 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             }
         }
 
-        public string EndDate => CommencementDate.HasValue && MaximumTerm.HasValue
-            ? $"{CommencementDate?.AddMonths(MaximumTerm.Value).AddDays(-1):d MMMM yyyy}"
-            : string.Empty;
+        public EndDate EndDate => new EndDate(CommencementDate, MaximumTerm);
 
         public bool IsAmendment => CallOffId.IsAmendment;
 
@@ -228,6 +226,26 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             var output = JsonConvert.DeserializeObject<Order>(serialised, outputSettings);
 
             return output;
+        }
+
+        public Order BuidAmendment(int newRevision)
+        {
+            return new Order
+            {
+                OrderNumber = OrderNumber,
+                Revision = newRevision,
+                AssociatedServicesOnly = AssociatedServicesOnly,
+                CommencementDate = CommencementDate,
+                Description = Description,
+                InitialPeriod = InitialPeriod,
+                MaximumTerm = MaximumTerm,
+                OrderingPartyId = OrderingPartyId,
+                OrderingPartyContact = OrderingPartyContact.Clone(),
+                OrderTriageValue = OrderTriageValue,
+                SelectedFrameworkId = SelectedFrameworkId,
+                SupplierId = SupplierId,
+                SupplierContact = SupplierContact.Clone(),
+            };
         }
     }
 }

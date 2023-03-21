@@ -3,28 +3,48 @@
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.DetailsAndExpander
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
-@model NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models.OrderItem
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Review.ReviewExpanderModel
 @{
-	var totalCosts = Model.OrderItemPrice.CalculateTotalCostPerTier(Model.TotalQuantity);
-    var totalCost = totalCosts.Sum(tc => tc.Cost);
-    var billingPeriod = Model.OrderItemPrice?.BillingPeriod?.Description() ?? string.Empty;
-    var hasTieredPricing = Model.OrderItemPrice?.CataloguePriceType is CataloguePriceType.Tiered;
-    var hasServiceRecipientQuantities = Model.OrderItemPrice?.IsPerServiceRecipient() ?? false;
+    var totalCostsRolledUp = Model.OrderItem.OrderItemPrice.CalculateTotalCostPerTier(Model.OrderItem.TotalQuantity);
+    var totalCostsPrevious = Model.IsAmendment && Model.Previous is not null
+        ? Model.Previous.OrderItemPrice.CalculateTotalCostPerTier(Model.Previous.TotalQuantity)
+        : Model.OrderItem.OrderItemPrice.CalculateTotalCostPerTier(0);
+    var hasTieredPricing = Model.OrderItem.OrderItemPrice?.CataloguePriceType is CataloguePriceType.Tiered;
+    var hasServiceRecipientQuantities = Model.OrderItem.OrderItemPrice?.IsPerServiceRecipient() ?? false;
+    var tableText = Model.IsAmendment ? "Pricing and total quantities" : "Pricing";
 }
 
-<nhs-expander label-text="@Model.CatalogueItem.Name"
+<nhs-expander label-text="@Model.OrderItem.CatalogueItem.Name"
+              added-sticker="@Model.IsAmendment && @Model.IsOrderItemAdded"
 			  colour-mode="BlackAndWhite"
-			  secondary-text-title="Subtotal: "
-			  secondary-text="£@($"{totalCost:N2} {billingPeriod}")"
 			  open="true"
 			  bold-title="true">
 	<br/>
-	<nhs-table label-text="Service Recipients">
-		<nhs-table-column>Recipient</nhs-table-column>
-		<nhs-table-column>Quantity</nhs-table-column>
-		@foreach(var recipient in Model.OrderItemRecipients)
-		{
-			<nhs-table-row-container>
+    <nhs-table label-text="Service Recipients">
+        @if (Model.IsAmendment)
+        {
+            <nhs-table-column>Status</nhs-table-column>
+        }
+        <nhs-table-column>Recipient</nhs-table-column>
+        <nhs-table-column>Quantity</nhs-table-column>
+        @foreach (var recipient in Model.OrderItem.OrderItemRecipients)
+        {
+            <nhs-table-row-container>
+                @if (Model.IsAmendment)
+                {
+                    <nhs-table-cell style="width: 50px;">
+                        @if (Model.IsServiceRecipientAdded(recipient.OdsCode))
+                        {
+                            <div class="bc-c-task-list__task-status">
+                                <strong class="nhsuk-tag nhsuk-tag--blue">Added</strong>
+                            </div>
+                        } 
+                        else
+                        {
+                            <span aria-label="Existing"></span>
+                        }
+                    </nhs-table-cell>
+                }
                 <nhs-table-cell>
                     @recipient.Recipient.Name
                 </nhs-table-cell>
@@ -38,35 +58,64 @@
                         @("N/A")
                     }
                 </nhs-table-cell>
-			</nhs-table-row-container>
-		}
-	</nhs-table>
+            </nhs-table-row-container>
+        }
+    </nhs-table>
 
-    <nhs-table label-text="Pricing">
+    <nhs-table label-text="@tableText">
         @if (hasTieredPricing)
         {
             <nhs-table-column>Pricing Tier</nhs-table-column>
         }
         <nhs-table-column>Price per unit</nhs-table-column>
-        <nhs-table-column>Quantity</nhs-table-column>
-
-        @for (var i = 0; i < totalCosts.Count; i++)
+        @if (Model.IsAmendment) {
+            <nhs-table-column>Old quantity</nhs-table-column>
+            <nhs-table-column>New quantity</nhs-table-column>
+            <nhs-table-column>Old price</nhs-table-column>
+            <nhs-table-column>New price</nhs-table-column>
+        } else {
+            <nhs-table-column>Quantity</nhs-table-column>
+        }
+        @for (var i = 0; i < totalCostsRolledUp.Count; i++)
         {
-            var price = Model.OrderItemPrice.OrderItemPriceTiers.ElementAt(i).Price;
+            var price = Model.OrderItem.OrderItemPrice.OrderItemPriceTiers.ElementAt(i).Price;
 
             <nhs-table-row-container>
                 @if (hasTieredPricing)
                 {
                     <nhs-table-cell>
-                        Tier @totalCosts[i].Id
+                        Tier @totalCostsRolledUp[i].Id
                     </nhs-table-cell>
                 }
                 <nhs-table-cell>
-                    £@($"{price:#,###,##0.00##}") @Model.OrderItemPrice.ToPriceUnitString()
+                    £@($"{price:#,###,##0.00##}") @Model.OrderItem.OrderItemPrice.ToPriceUnitString()
                 </nhs-table-cell>
+                @if (Model.IsAmendment)
+                {
+                    <nhs-table-cell>
+                        @(
+                            totalCostsPrevious[i].Quantity == 0
+                              ? "N/A"
+                              : $"{totalCostsPrevious[i].Quantity:N0}"
+                        )
+                    </nhs-table-cell>
+                }
                 <nhs-table-cell>
-                    @($"{totalCosts[i].Quantity:N0}")
+                    @($"{totalCostsRolledUp[i].Quantity:N0}")
                 </nhs-table-cell>
+                @if (Model.IsAmendment)
+                {
+                    <nhs-table-cell>
+                        @(
+                            totalCostsPrevious[i].Cost == 0
+                              ? "N/A"
+                              : $"£{totalCostsPrevious[i].Cost:N2}"
+                        )
+                    </nhs-table-cell>
+                    <nhs-table-cell>
+                        £@($"{totalCostsRolledUp[i].Cost:N2}")
+                    </nhs-table-cell>
+                }
             </nhs-table-row-container>
         }
     </nhs-table>

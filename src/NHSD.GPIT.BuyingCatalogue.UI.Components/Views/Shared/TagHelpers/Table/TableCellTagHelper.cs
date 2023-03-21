@@ -13,7 +13,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 
         private const string CellRole = "cell";
         private const string CellClass = "nhsuk-table__cell";
+        private const string CellClassNumeric = "nhsuk-table__cell--numeric";
         private const string HeadingClass = "nhsuk-table-responsive__heading";
+        private const string NumericName = "numeric";
+
+        [HtmlAttributeName(NumericName)]
+        public bool Numeric { get; set; }
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
@@ -21,7 +26,14 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
             output.TagMode = TagMode.StartTagAndEndTag;
 
             output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Role, CellRole));
-            output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, CellClass));
+            if (Numeric)
+            {
+                output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, CellClassNumeric));
+            }
+            else
+            {
+                output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, CellClass));
+            }
 
             var heading = GetHeadingBuilder(context);
 

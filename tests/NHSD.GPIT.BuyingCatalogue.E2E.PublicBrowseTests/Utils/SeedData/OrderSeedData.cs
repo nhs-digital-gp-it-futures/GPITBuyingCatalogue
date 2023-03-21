@@ -51,6 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 AddCompletedOrder(context, 90011, GetOrganisationId(context, "CG-15F")),
                 AddCompletedOrder(context, 90030, GetOrganisationId(context)),
                 AddCompletedOrder(context, 90031, GetOrganisationId(context)),
+                AddCompletedOrder(context, 90032, GetOrganisationId(context)),
                 AddOrderByAccountManager(context),
             };
 
@@ -58,8 +59,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var amendments = new[]
             {
-                AddAmendment(context, 90030, 2),
-                AddAmendment(context, 90031, 2),
+                AddAmendment(context, orders.First(o => o.OrderNumber == 90030), 2),
+                AddAmendment(context, orders.First(o => o.OrderNumber == 90031), 2),
+                AddAmendment(context, orders.First(o => o.OrderNumber == 90032), 2),
             };
 
             context.InsertRangeWithIdentity(amendments);
@@ -67,6 +69,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             AddOrderItemToOrder(context, 90030, 2, new CatalogueItemId(99998, "001"));
             AddOrderItemToOrder(context, 90031, 1, new CatalogueItemId(99998, "001A99"));
             AddOrderItemToOrder(context, 90031, 2, new CatalogueItemId(99998, "001A99"));
+            AddOrderItemWithPriceAndRecipientsToOrder(context, 90032, 2, new CatalogueItemId(99998, "001A99"));
+            AddOrderItemWithPriceAndRecipientsToOrder(context, 90032, 2, new CatalogueItemId(99998, "S-999"));
 
             context.SaveChanges();
         }
@@ -1724,44 +1728,51 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             order.OrderItems.Add(orderItem);
         }
 
-        private static Order AddAmendment(BuyingCatalogueDbContext context, int orderNumber, int revision)
+        private static void AddOrderItemWithPriceAndRecipientsToOrder(BuyingCatalogueDbContext context, int orderNumber, int revision, CatalogueItemId catalogueItemId)
         {
-            var timeNow = DateTime.UtcNow;
-            var user = GetBuyerUser(context, GetOrganisationId(context));
-            var original = context.Orders.First(x => x.OrderNumber == orderNumber && x.Revision == revision - 1);
+            var order = context.Orders.First(x => x.OrderNumber == orderNumber && x.Revision == revision);
 
-            var order = new Order
+            var catalogueItem = context.CatalogueItems.First(c => c.Id == catalogueItemId);
+
+            var price = context.CatalogueItems
+                            .Where(c => c.Id == catalogueItemId)
+                            .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
+                            .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                            .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
+                            .First();
+
+            var orderItem = new OrderItem
             {
-                OrderNumber = orderNumber,
-                Revision = revision,
-                OrderingPartyId = original.OrderingPartyId,
-                Created = timeNow,
-                IsDeleted = false,
-                Description = "This is an Amendment",
-                OrderingPartyContact = new Contact
-                {
-                    FirstName = original.OrderingPartyContact.FirstName,
-                    LastName = original.OrderingPartyContact.LastName,
-                    Email = original.OrderingPartyContact.Email,
-                    Phone = original.OrderingPartyContact.Phone,
-                },
-                SupplierId = original.SupplierId,
-                SupplierContact = new Contact
-                {
-                    FirstName = original.SupplierContact.FirstName,
-                    LastName = original.SupplierContact.LastName,
-                    Email = original.SupplierContact.Email,
-                    Phone = original.SupplierContact.Phone,
-                },
-                SelectedFrameworkId = original.SelectedFrameworkId,
-                CommencementDate = original.CommencementDate,
-                InitialPeriod = original.InitialPeriod,
-                MaximumTerm = original.MaximumTerm,
-                OrderTriageValue = original.OrderTriageValue,
-                LastUpdatedBy = user.Id,
+                OrderItemPrice = price,
+                Created = DateTime.UtcNow,
+                OrderId = order.Id,
+                CatalogueItem = catalogueItem,
             };
 
-            return order;
+            var recipients = context.ServiceRecipients.ToList();
+
+            recipients.ForEach(r =>
+            {
+                var recipient = new OrderItemRecipient
+                {
+                    Recipient = r,
+                    Quantity = 1000,
+                    DeliveryDate = DateTime.UtcNow.AddDays(1),
+                };
+
+                orderItem.OrderItemRecipients.Add(recipient);
+            });
+
+            order.OrderItems.Add(orderItem);
+        }
+
+        private static Order AddAmendment(BuyingCatalogueDbContext context, Order order, int revision)
+        {
+            var user = GetBuyerUser(context, GetOrganisationId(context));
+            var amendedOrder = order.BuidAmendment(revision);
+            amendedOrder.LastUpdatedBy = user.Id;
+            amendedOrder.Created = DateTime.UtcNow;
+            return amendedOrder;
         }
 
         private static Order AddOrderByAccountManager(BuyingCatalogueDbContext context)

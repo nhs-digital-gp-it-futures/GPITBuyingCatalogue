@@ -1,45 +1,41 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Review
 {
     public class ReviewSolutionsModel : NavBaseModel
     {
-        public ReviewSolutionsModel()
+        public ReviewSolutionsModel(OrderWrapper wrapper, string internalOrgId)
         {
-        }
-
-        public ReviewSolutionsModel(Order order, string internalOrgId)
-        {
-            CallOffId = order.CallOffId;
+            OrderWrapper = wrapper;
             InternalOrgId = internalOrgId;
-            Order = order;
-            AllOrderItems = order.OrderItems;
-            CatalogueSolutions = order.GetSolutions().ToList();
-            AdditionalServices = order.GetAdditionalServices().ToList();
-            AssociatedServices = order.GetAssociatedServices().ToList();
-            ContractLength = order.MaximumTerm ?? 0;
-            AssociatedServicesOnly = order.AssociatedServicesOnly;
         }
 
-        public CallOffId CallOffId { get; set; }
+        public OrderWrapper OrderWrapper { get; }
 
-        public Order Order { get; set; }
+        public CallOffId CallOffId => OrderWrapper.Order.CallOffId;
 
-        public List<OrderItem> CatalogueSolutions { get; set; }
+        public Order Order => OrderWrapper.Order;
 
-        public List<OrderItem> AdditionalServices { get; set; }
+        public Order Previous => OrderWrapper.Previous;
 
-        public List<OrderItem> AssociatedServices { get; set; }
+        public Order RolledUp => OrderWrapper.RolledUp;
 
-        public ICollection<OrderItem> AllOrderItems { get; set; }
+        public List<OrderItem> CatalogueSolutions => RolledUp.GetSolutions().ToList();
 
-        public int ContractLength { get; set; }
+        public List<OrderItem> AdditionalServices => RolledUp.GetAdditionalServices().ToList();
+
+        public List<OrderItem> AssociatedServices => RolledUp.GetAssociatedServices().ToList();
+
+        public ICollection<OrderItem> AllOrderItems => OrderWrapper.Order.OrderItems;
+
+        public int ContractLength => OrderWrapper.Order.MaximumTerm ?? 0;
 
         public string InternalOrgId { get; set; }
 
-        public bool AssociatedServicesOnly { get; set; }
+        public bool AssociatedServicesOnly => OrderWrapper.Order.AssociatedServicesOnly;
     }
 }
