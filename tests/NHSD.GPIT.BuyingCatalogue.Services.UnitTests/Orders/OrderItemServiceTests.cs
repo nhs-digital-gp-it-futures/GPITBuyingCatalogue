@@ -260,48 +260,39 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         public static async Task CopyOrderItems_Amendment_AddsOrderItemsToDatabaseWithExistingPrice(
             string internalOrgId,
             CallOffId callOffId,
-            List<CatalogueItemId> itemIds,
             CataloguePrice cataloguePrice,
             Order original,
-            Order amendment,
             [Frozen] BuyingCatalogueDbContext context,
             [Frozen] Mock<IOrderService> mockOrderService,
             OrderItemService service)
         {
             original.Revision = 1;
-            amendment.OrderNumber = original.OrderNumber;
-            amendment.Revision = 2;
+            var amendment = original.BuidAmendment(2);
 
             var orders = new[] { original, amendment };
 
-            foreach (var price in orders.SelectMany(x => x.OrderItems).Select(x => x.OrderItemPrice))
-            {
-                price.CataloguePriceId = cataloguePrice.CataloguePriceId;
-            }
-
-            cataloguePrice.CatalogueItemId = itemIds.First();
-
+            var orderItem = original.OrderItems.First();
+            var catalogueItemId = orderItem.CatalogueItem.Id;
+            cataloguePrice.CatalogueItemId = orderItem.CatalogueItem.Id;
+            context.Orders.Add(amendment);
             context.CataloguePrices.Add(cataloguePrice);
-            itemIds.ForEach(x => context.CatalogueItems.Add(new CatalogueItem { Id = x, Name = $"{x}" }));
-
+            context.CatalogueItems.Add(new CatalogueItem { Id = catalogueItemId, Name = $"{catalogueItemId}" });
             await context.SaveChangesAsync();
-
-            original.OrderItems.First().CatalogueItem.Id = itemIds.First();
 
             mockOrderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(new[] { original, amendment }));
 
-            await service.CopyOrderItems(internalOrgId, callOffId, itemIds);
+            await service.CopyOrderItems(internalOrgId, callOffId, new[] { catalogueItemId });
 
             mockOrderService.VerifyAll();
 
-            itemIds.ForEach(x =>
-            {
-                var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == amendment.Id && o.CatalogueItem.Id == x);
-
-                actual.Should().NotBeNull();
-            });
+            var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == amendment.Id && o.CatalogueItem.Id == catalogueItemId);
+            actual.Should().NotBeNull();
+            actual.OrderItemPrice.Should().NotBeNull();
+            actual.OrderItemPrice.PriceTiers.Select(x => new { x.LowerRange, x.UpperRange, x.Price })
+                .Should()
+                .BeEquivalentTo(orderItem.OrderItemPrice.PriceTiers.Select(x => new { x.LowerRange, x.UpperRange, x.Price }));
         }
 
         [Theory]

@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Browsers
 
             if (headless)
             {
-                options.AddArguments("headless", "window-size=1920,1080", "no-sandbox", "ignore-certificate-errors", "log-level=3");
+                options.AddArguments("headless=new", "window-size=1920,1080", "no-sandbox", "ignore-certificate-errors", "log-level=3");
             }
             else
             {

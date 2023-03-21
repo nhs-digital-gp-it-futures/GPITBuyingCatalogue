@@ -6,14 +6,11 @@
 
 @{
     var totalCost = Model.TotalCost();
-	var subTotalDescription = $"£{totalCost:N2} {Model.OrderItemPrice?.BillingPeriod?.Description() ?? string.Empty}";
     var hasServiceRecipientQuantities = Model.OrderItemPrice?.IsPerServiceRecipient() ?? false;
 }
 
 <nhs-expander colour-mode="BlackAndWhite"
               label-text="@Model.CatalogueItem.Name"
-              secondary-text-title="Subtotal: "
-              secondary-text="@subTotalDescription"
 			  open="true"
 			  bold-title="true">
     @if (Model.OrderItemRecipients.Any())
