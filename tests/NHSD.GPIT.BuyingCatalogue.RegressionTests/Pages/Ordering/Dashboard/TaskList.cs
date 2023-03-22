@@ -82,6 +82,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
         public void AmendSolutionAndServicesTask()
         {
             CommonActions.ClickLinkElement(CatalogueSolutionObjects.SelectSolutionsAndServicesLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+             typeof(TaskListController),
+             nameof(TaskListController.TaskList)).Should().BeTrue();
         }
 
         public void EditSolutionsAndServicesTask(bool isAssociatedServiceOnly)
