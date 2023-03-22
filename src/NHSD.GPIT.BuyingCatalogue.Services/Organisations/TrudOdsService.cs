@@ -80,7 +80,7 @@ public class TrudOdsService : IOdsService
                 {
                     Name = x.TargetOrganisation.Name,
                     OrgId = x.TargetOrganisationId,
-                    PrimaryRoleId = x.TargetOrganisation.Roles.FirstOrDefault(y => y.IsPrimaryRole).RoleId,
+                    OrganisationRoleId = x.TargetOrganisation.Roles.FirstOrDefault(y => y.IsPrimaryRole).RoleId,
                     Status = x.TargetOrganisation.IsActive ? ActiveStatus : InactiveStatus,
                 })
             .ToListAsync();
@@ -114,7 +114,7 @@ public class TrudOdsService : IOdsService
         IsActive = organisation.IsActive,
         OdsCode = organisation.Id,
         OrganisationName = organisation.Name,
-        PrimaryRoleId = GetPrimaryRoleId(organisation),
+        OrganisationRoleId = GetOrganisationRoleId(organisation),
         Address = new()
         {
             Line1 = organisation.AddressLine1,
@@ -127,9 +127,9 @@ public class TrudOdsService : IOdsService
         },
     };
 
-    private static string GetPrimaryRoleId(EntityFramework.OdsOrganisations.Models.OdsOrganisation organisation) =>
+    private static string GetOrganisationRoleId(EntityFramework.OdsOrganisations.Models.OdsOrganisation organisation) =>
         organisation.Roles.FirstOrDefault(x => x.IsPrimaryRole)?.RoleId;
 
     private bool IsBuyerOrganisation(EntityFramework.OdsOrganisations.Models.OdsOrganisation organisation) =>
-        settings.BuyerOrganisationRoleIds.Contains(GetPrimaryRoleId(organisation));
+        settings.BuyerOrganisationRoleIds.Contains(GetOrganisationRoleId(organisation));
 }

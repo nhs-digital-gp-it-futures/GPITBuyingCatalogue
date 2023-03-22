@@ -97,7 +97,6 @@
     <Folder Include="Ordering\TemporalTables" />
     <Folder Include="Users\TemporalTables" />
     <Folder Include="PostDeployment\OrderSeedData" />
-    <Folder Include="PostDeployment\" />
     <Folder Include="Catalogue\Types" />
     <Folder Include="Catalogue\Stored Procedures" />
     <Folder Include="Security\Schemas\" />
@@ -108,6 +107,7 @@
   <ItemGroup>
     <Build Include="Security\Users\NHSD.sql" />
     <Build Include="Security\Logins\NHSD.sql" />
+    <None Include="PostDeployment\InsertOrganisationRoleId.sql" />
     <None Include="PostDeployment\IntegrationTests\ClearData.sql" />
     <None Include="PostDeployment\IntegrationTests\DropRole.sql" />
     <None Include="PostDeployment\IntegrationTests\DropUserAndLogin.sql" />

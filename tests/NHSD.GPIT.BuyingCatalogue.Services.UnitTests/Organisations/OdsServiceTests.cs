@@ -249,7 +249,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             string odsCode,
             ServiceRecipient childOrg)
         {
-            childOrg.PrimaryRoleId = "RO177";
+            childOrg.OrganisationRoleId = "RO177";
 
             var json = CreatePageJson(childOrg);
 
@@ -295,8 +295,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             ServiceRecipient childOne,
             ServiceRecipient childTwo)
         {
-            childOne.PrimaryRoleId = "RO177";
-            childTwo.PrimaryRoleId = "RO177";
+            childOne.OrganisationRoleId = "RO177";
+            childTwo.OrganisationRoleId = "RO177";
             var jsonPageOne = CreatePageJson(childOne);
             var jsonPageTwo = CreatePageJson(childTwo);
             var jsonPageThree = CreatePageJson();
@@ -345,8 +345,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             ServiceRecipient childOne,
             ServiceRecipient childTwo)
         {
-            childOne.PrimaryRoleId = "RO177";
-            childTwo.PrimaryRoleId = "RO178";
+            childOne.OrganisationRoleId = "RO177";
+            childTwo.OrganisationRoleId = "RO178";
             var jsonPageOne = CreatePageJson(childOne, childTwo);
 
             using var httpTest = new HttpTest();
@@ -494,7 +494,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         {
             OdsCode = OdsCode,
             OrganisationName = "SOUTH EAST - H&J COMMISSIONING HUB",
-            PrimaryRoleId = "RO98",
+            OrganisationRoleId = "RO98",
             Address = new Address
             {
                 Line1 = "C/O NHS ENGLAND",
@@ -510,7 +510,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
         private static string CreatePageJson(params ServiceRecipient[] serviceRecipients)
         {
-            var recipientJson = serviceRecipients.Select(r => JsonSerializer.Serialize(r));
+            var odsServiceRecipients = serviceRecipients.Select(r => new OdsService.ODSServiceRecipient()
+            {
+                Name = r.Name,
+                OrgId = r.OrgId,
+                PrimaryRoleId = r.OrganisationRoleId,
+                Status = r.Status,
+            });
+            var recipientJson = odsServiceRecipients.Select(r => JsonSerializer.Serialize(r));
             var json = string.Join(',', recipientJson);
 
             return $@"{{""Organisations"": [{json}]}}";

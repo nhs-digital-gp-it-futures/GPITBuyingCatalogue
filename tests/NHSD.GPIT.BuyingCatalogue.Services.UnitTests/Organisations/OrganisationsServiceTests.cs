@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             newOrganisation.Name.Should().Be(odsOrganisation.OrganisationName);
             newOrganisation.ExternalIdentifier.Should().Be(odsOrganisation.OdsCode);
             newOrganisation.InternalIdentifier.Should().Be($"CG-{odsOrganisation.OdsCode}");
-            newOrganisation.PrimaryRoleId.Should().Be(odsOrganisation.PrimaryRoleId);
+            newOrganisation.OrganisationRoleId.Should().Be(odsOrganisation.OrganisationRoleId);
         }
 
         [Theory]
@@ -136,7 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             existing.Should().NotBeNull();
             existing!.Name.Should().Be(organisation.Name);
             existing.Address.Should().Be(organisation.Address);
-            existing.PrimaryRoleId.Should().Be(organisation.PrimaryRoleId);
+            existing.OrganisationRoleId.Should().Be(organisation.OrganisationRoleId);
 
             newOrganisation.OdsCode = organisation.ExternalIdentifier;
 
@@ -148,7 +148,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             actual.Should().NotBeNull();
             actual!.Name.Should().Be(newOrganisation.OrganisationName);
             actual.Address.Should().Be(newOrganisation.Address);
-            actual.PrimaryRoleId.Should().Be(newOrganisation.PrimaryRoleId);
+            actual.OrganisationRoleId.Should().Be(newOrganisation.OrganisationRoleId);
         }
 
         [Theory]

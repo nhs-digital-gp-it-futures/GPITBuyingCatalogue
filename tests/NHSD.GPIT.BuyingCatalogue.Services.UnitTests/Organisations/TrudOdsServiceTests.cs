@@ -98,7 +98,7 @@ public class TrudOdsServiceTests
             IsActive = organisation.IsActive,
             OdsCode = organisation.Id,
             OrganisationName = organisation.Name,
-            PrimaryRoleId = organisationRole.RoleId,
+            OrganisationRoleId = organisationRole.RoleId,
             Address = new()
             {
                 Line1 = organisation.AddressLine1,

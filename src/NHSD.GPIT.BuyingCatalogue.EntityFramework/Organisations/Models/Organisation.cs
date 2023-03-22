@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models
 
         public OrganisationType? OrganisationType { get; set; }
 
-        public string PrimaryRoleId { get; set; }
+        public string OrganisationRoleId { get; set; }
 
         public bool CatalogueAgreementSigned { get; set; }
 

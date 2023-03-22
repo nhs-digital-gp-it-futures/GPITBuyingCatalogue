@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
                 Name = odsOrganisation.OrganisationName,
                 ExternalIdentifier = odsOrganisation.OdsCode,
                 InternalIdentifier = $"{OrganisationType.CCG.AsString(EnumFormat.EnumMemberValue)}-{odsOrganisation.OdsCode}",
-                PrimaryRoleId = odsOrganisation.PrimaryRoleId,
+                OrganisationRoleId = odsOrganisation.OrganisationRoleId,
             };
 
             dbContext.Organisations.Add(organisation);
@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
             existing.Name = organisation.OrganisationName;
             existing.Address = organisation.Address;
-            existing.PrimaryRoleId = organisation.PrimaryRoleId;
+            existing.OrganisationRoleId = organisation.OrganisationRoleId;
 
             await dbContext.SaveChangesAsync();
         }

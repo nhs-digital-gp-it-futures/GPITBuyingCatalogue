@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations
 
         public string OrganisationName { get; set; }
 
-        public string PrimaryRoleId { get; set; }
+        public string OrganisationRoleId { get; set; }
 
         public Address Address { get; set; }
 

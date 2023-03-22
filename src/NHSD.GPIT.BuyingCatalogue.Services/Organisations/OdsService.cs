@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             {
                 OrganisationName = odsResponseOrganisation.Name,
                 OdsCode = odsResponseOrganisation.OrgId.Extension,
-                PrimaryRoleId = GetPrimaryRoleId(odsResponseOrganisation),
+                OrganisationRoleId = GetOrganisationRoleId(odsResponseOrganisation),
                 Address = OdsResponseAddressToAddress(odsResponseOrganisation.GeoLoc.Location),
                 IsActive = IsActive(odsResponseOrganisation),
                 IsBuyerOrganisation = IsBuyerOrganisation(odsResponseOrganisation),
@@ -116,7 +116,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
                     break;
                 }
 
-                var centres = serviceRecipientResponse.Organisations.Where(o => o.PrimaryRoleId == settings.GpPracticeRoleId);
+                var centres =
+                    serviceRecipientResponse.Organisations.Where(o => o.PrimaryRoleId == settings.GpPracticeRoleId)
+                        .Select(
+                            x => new ServiceRecipient
+                            {
+                                Name = x.Name, OrgId = x.OrgId, OrganisationRoleId = x.PrimaryRoleId, Status = x.Status,
+                            });
+
                 costCentres.AddRange(centres);
 
                 retrievedAll = serviceRecipientResponse.Organisations.Count() != searchLimit;
@@ -142,7 +149,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             await organisationsService.UpdateCcgOrganisation(organisation);
         }
 
-        private static string GetPrimaryRoleId(OdsResponseOrganisation organisation)
+        private static string GetOrganisationRoleId(OdsResponseOrganisation organisation)
         {
             return organisation.Roles.Role.FirstOrDefault(r => r.PrimaryRole)?.Id;
         }
@@ -169,12 +176,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
         private bool IsBuyerOrganisation(OdsResponseOrganisation organisation)
         {
-            return settings.BuyerOrganisationRoleIds.Contains(GetPrimaryRoleId(organisation));
+            return settings.BuyerOrganisationRoleIds.Contains(GetOrganisationRoleId(organisation));
         }
 
         internal sealed class ServiceRecipientResponse
         {
-            public IEnumerable<ServiceRecipient> Organisations { get; set; }
+            public IEnumerable<ODSServiceRecipient> Organisations { get; set; }
+        }
+
+        internal sealed class ODSServiceRecipient
+        {
+            public string Name { get; set; }
+
+            public string OrgId { get; set; }
+
+            public string Status { get; set; }
+
+            public string PrimaryRoleId { get; set; }
         }
     }
 }

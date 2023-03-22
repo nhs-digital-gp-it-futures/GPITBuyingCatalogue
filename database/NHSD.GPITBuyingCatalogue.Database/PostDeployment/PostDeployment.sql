@@ -33,6 +33,7 @@
 :r ./InsertStandardTypes.sql
 :r ./InsertStandards.sql
 :r ./InsertStandardsCapabilities.sql
+:r ./InsertOrganisationRoleId.sql
 
 :r ./InsertOrderStatuses.sql
 :r ./InsertOrderTriageValues.sql

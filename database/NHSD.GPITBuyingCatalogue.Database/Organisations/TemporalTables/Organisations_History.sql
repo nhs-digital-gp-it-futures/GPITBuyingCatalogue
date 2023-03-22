@@ -5,6 +5,7 @@
     [Address] nvarchar(max) NULL,
     OdsCode nvarchar(8) NULL,
     PrimaryRoleId nvarchar(8) NULL,
+    OrganisationRoleId nvarchar(8) NULL,
     CatalogueAgreementSigned bit NOT NULL,
     LastUpdated datetime2(7) NOT NULL,
     LastUpdatedBy int NULL,
