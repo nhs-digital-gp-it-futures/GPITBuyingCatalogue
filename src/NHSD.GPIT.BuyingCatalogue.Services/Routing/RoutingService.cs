@@ -31,7 +31,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing
             providers.Add(RoutingPoint.SelectQuantity, new SelectQuantityProvider(associatedServicesService));
             providers.Add(RoutingPoint.SelectQuantityBackLink, new SelectQuantityBackLinkProvider());
             providers.Add(RoutingPoint.SelectServiceRecipientsBackLink, new SelectServiceRecipientsBackLinkProvider());
+            providers.Add(RoutingPoint.TaskList, new TaskListProvider());
             providers.Add(RoutingPoint.TaskListBackLink, new TaskListBackLinkProvider());
+            providers.Add(RoutingPoint.ViewPrice, new ViewPriceProvider());
         }
 
         public RoutingResult GetRoute(RoutingPoint point, Order order, RouteValues routeValues)

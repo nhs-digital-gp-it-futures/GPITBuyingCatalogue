@@ -54,47 +54,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
         }
 
         [Theory]
-        [CommonAutoData]
-        public static void Validate_DateAfterContractEndDate_DirectAward_ThrowsValidationError(
-            AmendDateModel model,
-            AmendDateModelValidator validator)
-        {
-            model.CommencementDate = DateTime.UtcNow.AddDays(-1).Date;
-            model.MaximumTerm = 1;
-            model.TriageValue = OrderTriageValue.Under40K;
-
-            var contractEndDate = model.CommencementDate.Value
-                .AddMonths(model.MaximumTerm.Value)
-                .AddDays(-1);
-
-            var invalidDate = model.CommencementDate.Value
-                .AddMonths(model.MaximumTerm.Value);
-
-            model.Day = $"{invalidDate.Day}";
-            model.Month = $"{invalidDate.Month}";
-            model.Year = $"{invalidDate.Year}";
-
-            var result = validator.TestValidate(model);
-
-            var errorMessage = string.Format(
-                AmendDateModelValidator.DeliveryDateAfterContractEndDateErrorMessage,
-                $"{contractEndDate:d MMMM yyyy}");
-
-            result.ShouldHaveValidationErrorFor(x => x.Day).WithErrorMessage(errorMessage);
-
-            model.Day = $"{contractEndDate.Day}";
-            model.Month = $"{contractEndDate.Month}";
-            model.Year = $"{contractEndDate.Year}";
-
-            result = validator.TestValidate(model);
-
-            result.ShouldNotHaveAnyValidationErrors();
-        }
-
-        [Theory]
+        [CommonInlineAutoData(OrderTriageValue.Under40K)]
         [CommonInlineAutoData(OrderTriageValue.Between40KTo250K)]
         [CommonInlineAutoData(OrderTriageValue.Over250K)]
-        public static void Validate_DateAfterContractEndDate_CatalogueAward_ThrowsValidationError(
+        public static void Validate_DateAfterContractEndDate_ThrowsValidationError(
             OrderTriageValue triageValue,
             AmendDateModel model,
             AmendDateModelValidator validator)
@@ -103,12 +66,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
             model.MaximumTerm = 1;
             model.TriageValue = triageValue;
 
-            var contractEndDate = model.CommencementDate.Value
-                .AddMonths(AmendDateModel.MaximumTermForOnOffCatalogueOrders)
-                .AddDays(-1);
-
-            var invalidDate = model.CommencementDate.Value
-                .AddMonths(AmendDateModel.MaximumTermForOnOffCatalogueOrders);
+            var contractEndDate = new EndDate(model.CommencementDate, model.MaximumTerm).DateTime.Value;
+            var invalidDate = contractEndDate
+                .AddMonths(model.MaximumTerm.Value);
 
             model.Day = $"{invalidDate.Day}";
             model.Month = $"{invalidDate.Month}";

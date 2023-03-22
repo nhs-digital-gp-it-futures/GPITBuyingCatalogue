@@ -42,7 +42,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             }
 
             IsAmendment = wrapper.IsAmendment;
-            SolutionName = wrapper.RolledUp.GetSolution()?.CatalogueItem.Name;
+            AssociatedServicesOnly = wrapper.Order.AssociatedServicesOnly;
+            SolutionName = AssociatedServicesOnly ? wrapper.RolledUp.Solution.Name : wrapper.RolledUp.GetSolution()?.CatalogueItem.Name;
         }
 
         public string InternalOrgId { get; set; }

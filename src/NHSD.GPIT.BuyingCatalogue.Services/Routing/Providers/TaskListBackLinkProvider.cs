@@ -29,10 +29,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 };
             }
 
+            var isAmendment = routeValues.CallOffId.IsAmendment;
+
             if (!order.AssociatedServicesOnly)
             {
                 if (order.GetSolution() == null
-                    || order.OrderItems.Any(x => !x.IsReadyForReview))
+                    || order.OrderItems.Any(x => !x.IsReadyForReview(isAmendment)))
                 {
                     return new RoutingResult
                     {
@@ -44,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
             }
             else
             {
-                if (order.GetAssociatedServices().Any(x => !x.IsReadyForReview))
+                if (order.GetAssociatedServices().Any(x => !x.IsReadyForReview(isAmendment)))
                 {
                     return new RoutingResult
                     {

@@ -112,7 +112,7 @@
         }
 
         .signature td {
-            padding-top: 40px;
+            padding-top: 20px;
             width: auto;
             border-bottom: 1px solid lightgray;
         }
@@ -163,7 +163,7 @@
 <main class="nhsuk-main-wrapper" id="maincontent">
 <div class="nhsuk-grid-row">
 <div class="nhsuk-grid-column-full">
-<nhs-page-title title="Order summary"
+<nhs-page-title title="Call-off Order Form"
                 caption="Order @Model.Order.CallOffId"/>
 
 <pdf-summary-list>
@@ -236,7 +236,7 @@
         if (Model.Order.CommencementDate != null)
         {
             <pdf-summary-list-row label-text="End date">
-                @Model.Order.EndDate
+                @Model.Order.EndDate.DisplayValue
             </pdf-summary-list-row>
         }
     }
@@ -280,8 +280,8 @@
 }
 
 <div class="pdf-container">
-    <h1>Totals for this order</h1>
-    <h3>Totals</h3>
+    <h1>Indicative costs for this order</h1>
+    <h3>Indicative costs</h3>
 
     <pdf-summary-list>
         <pdf-summary-list-row label-text="Total one-off cost">
@@ -309,6 +309,7 @@
             }
         </pdf-summary-list-row>
     </pdf-summary-list>
+    <p><b>All prices exclude VAT.</b></p>
 </div>
 
 <div style="page-break-after: always"></div>
@@ -337,22 +338,6 @@
             </tbody>
         </table>
     </div>
-
-    @foreach (var milestone in Model.DefaultImplementationPlan.Milestones)
-    {
-        <div class="pdf-container">
-            <h3>@milestone.Title acceptance criteria</h3>
-            <table>
-                @foreach (var (criterion, index) in milestone.AcceptanceCriteria.Select((x, i) => (x, i + 1)))
-                {
-                    <tr>
-                        <td>@index</td>
-                        <td>@criterion.Description</td>
-                    </tr>
-                }
-            </table>
-        </div>
-    }
 }
 else
 {
@@ -365,7 +350,7 @@ else
         </pdf-summary-list>
 
         <div class="nhsuk-u-margin-bottom-6">
-            <p>Requirements are documented in Appendix 1.</p>
+                                <p>Requirements are documented in Implementation plan milestones template.</p>
         </div>
     </div>
 }
@@ -406,7 +391,7 @@ else
             </pdf-summary-list>
 
             <div class="nhsuk-u-margin-bottom-6">
-                <p>Requirements are documented in section 1 of Appendix 2.</p>
+                                    <p>Requirements are documented in section 1 Associated Service billing and requirements template.</p>
             </div>
         }
 
@@ -420,7 +405,7 @@ else
         @if (Model.HasSpecificRequirements)
         {
             <div class="nhsuk-u-margin-bottom-6">
-                <p>Requirements are documented in section 2 of Appendix 2.</p>
+                                    <p>Requirements are documented in section 2 Associated Service billing and requirements template.</p>
             </div>
         }
     </div>
@@ -437,57 +422,79 @@ else
     @if (!Model.UseDefaultDataProcessing)
     {
         <div class="nhsuk-u-margin-bottom-6">
-            <p>Requirements are documented in Appendix 3.</p>
+                                <p>Requirements are documented in Data processing information template.</p>
         </div>
     }
 </div>
 
 <div style="page-break-after: always"></div>
 
-<h1>Signatures</h1>
-
-<h2>On behalf of the buyer</h2>
-<table>
-    <tr class="signature">
-        <td>Name:</td>
-        <td></td>
-    </tr>
-    <tr class="signature">
-        <td>Job Role:</td>
-        <td></td>
-    </tr>
-    <tr class="signature">
-        <td>Signature:</td>
-        <td></td>
-    </tr>
-    <tr class="signature">
-        <td>Date:</td>
-        <td></td>
-    </tr>
-</table>
-
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-page-title title="Signatures"
+          caption="Order @Model.Order.CallOffId" />
+    </div>
+</div>
+<p>Both parties are entering into a Call-off Agreement in accordance with the provisions of the framework being procured from.</p>
+<p>The supplier will provide the solution and any services included in this Call-off Order Form for the duration identified. They must do this subject to the Call-off Terms and the information provided in this Call-off Order Form.</p>
+<p>No amendments to the Call-off Terms will be valid unless documented in a relevant template. A template will only be valid if it has been attached to this Call-off Order Form prior to it being signed by both parties.</p>
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-one-half">
+        <h4>
+            On behalf of the buyer
+            <span class="nhsuk-caption-m nhsuk-caption--bottom">@Model.Order.OrderingParty.Name (@Model.Order.OrderingParty.ExternalIdentifier)</span>
+        </h4>
+    </div>
+    <div class="nhsuk-grid-column-one-half">
+        <h4>
+            On behalf of the supplier
+            <span class="nhsuk-caption-m nhsuk-caption--bottom">@Model.Order.Supplier.Name</span>
+        </h4>
+    </div>
+</div>
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-one-half">
+        <table>
+            <tr class="signature">
+                <td>Name:</td>
+                <td></td>
+            </tr>
+            <tr class="signature">
+                <td>Job Role:</td>
+                <td></td>
+            </tr>
+            <tr class="signature">
+                <td>Signature:</td>
+                <td></td>
+            </tr>
+            <tr class="signature">
+                <td>Date:</td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+    <div class="nhsuk-grid-column-one-half">
+        <table>
+            <tr class="signature">
+                <td>Name:</td>
+                <td></td>
+            </tr>
+            <tr class="signature">
+                <td>Job Role:</td>
+                <td></td>
+            </tr>
+            <tr class="signature">
+                <td>Signature:</td>
+                <td></td>
+            </tr>
+            <tr class="signature">
+                <td>Date:</td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+</div>
 <br/>
-
-<h2>On behalf of the supplier</h2>
-<table>
-    <tr class="signature">
-        <td>Name:</td>
-        <td></td>
-    </tr>
-    <tr class="signature">
-        <td>Job Role:</td>
-        <td></td>
-    </tr>
-    <tr class="signature">
-        <td>Signature:</td>
-        <td></td>
-    </tr>
-    <tr class="signature">
-        <td>Date:</td>
-        <td></td>
-    </tr>
-</table>
-
 </div>
 </div>
 </main>

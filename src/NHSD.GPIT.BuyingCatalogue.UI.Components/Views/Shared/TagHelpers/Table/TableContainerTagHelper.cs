@@ -26,6 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
         private const string HeaderRowRole = "row";
         private const string HeaderRowColumnRole = "columnheader";
         private const string HeaderRowColumnScope = "col";
+        private const string HeadingClassNumeric = "nhsuk-table__header--numeric";
 
         private ParentChildContext parentChildContext;
 
@@ -41,8 +42,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
         [HtmlAttributeName(CatchErrorsName)]
         public bool CatchesErrors { get; set; } = true;
 
-        private List<TagHelperContent> ColumnNames { get; set; }
-
         public override void Init(TagHelperContext context)
         {
             if (CatchesErrors)
@@ -51,9 +50,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
                 context.Items.Add(typeof(ParentChildContext), parentChildContext);
             }
 
-            ColumnNames = new List<TagHelperContent>();
+            var columns = new List<(TagHelperContent, bool)>();
 
-            context.Items.Add(TagHelperConstants.ColumnNameContextName, ColumnNames);
+            context.Items.Add(TagHelperConstants.ColumnNameContextName, columns);
         }
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
@@ -161,12 +160,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
             if (DisableHeader)
                 return null;
 
-            if (!context.Items.TryGetValue(TagHelperConstants.ColumnNameContextName, out object columnNames))
+            if (!context.Items.TryGetValue(TagHelperConstants.ColumnNameContextName, out object columns))
                 return null;
 
-            var columnNamesConverted = (List<TagHelperContent>)columnNames;
+            var columnsConverted = (List<(TagHelperContent Content, bool Numeric)>)columns;
 
-            if (columnNamesConverted.Count == 0)
+            if (columnsConverted.Count == 0)
                 return null;
 
             var headerBuilder = new TagBuilder("thead");
@@ -177,9 +176,15 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
             var headerRowBuilder = new TagBuilder("tr");
             headerRowBuilder.MergeAttribute(TagHelperConstants.Role, HeaderRowRole);
 
-            foreach (var columnName in columnNamesConverted)
+            foreach (var columnDetails in columnsConverted)
             {
-                var column = GetHeaderColumnBuilder(columnName);
+                var column = GetHeaderColumnBuilder(columnDetails.Content);
+
+                if (columnDetails.Numeric)
+                {
+                    column.MergeAttribute(TagHelperConstants.Class, HeadingClassNumeric);
+                }
+
                 headerRowBuilder.InnerHtml.AppendHtml(column);
             }
 

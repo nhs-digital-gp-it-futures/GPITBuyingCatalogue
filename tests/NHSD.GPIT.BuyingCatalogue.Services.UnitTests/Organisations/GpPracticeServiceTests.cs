@@ -7,6 +7,8 @@ using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -19,6 +21,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
     public static class GpPracticeServiceTests
     {
         private const string EmailAddress = "a@b.com";
+        private const string OdsCode = "A00001";
+        private const int NumberOfPatients = 1234;
+
+        private static readonly DateTime ExtractDate = new(2000, 1, 1);
+
+        private static readonly GpPracticeSize GpPracticeSize = new()
+        {
+            ExtractDate = ExtractDate,
+            OdsCode = OdsCode,
+            NumberOfPatients = NumberOfPatients,
+        };
 
         private static readonly Uri Uri = new("http://www.test.com");
 
@@ -130,6 +143,30 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             extractDate.Should().Be($"{result.ExtractDate:dd MMMM yyyy}");
             totalRecords.Should().Be($"{result.TotalRecords}");
             totalUpdated.Should().Be($"{result.TotalRecordsUpdated}");
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetNumberOfPatients_ValueExists_ReturnsValue(
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            GpPracticeService systemUnderTest)
+        {
+            dbContext.GpPracticeSizes.Add(GpPracticeSize);
+            dbContext.SaveChanges();
+
+            var result = await systemUnderTest.GetNumberOfPatients(OdsCode);
+
+            result.Should().Be(NumberOfPatients);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetNumberOfPatients_ValueDoesNotExist_ReturnsNull(
+            GpPracticeService systemUnderTest)
+        {
+            var result = await systemUnderTest.GetNumberOfPatients(OdsCode);
+
+            result.Should().BeNull();
         }
     }
 }

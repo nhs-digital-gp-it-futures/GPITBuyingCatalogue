@@ -21,20 +21,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         private const string OrderItemViewName = "SelectOrderItemQuantity";
         private const string ServiceRecipientViewName = "SelectServiceRecipientQuantity";
 
-        private readonly IGpPracticeCacheService gpPracticeCache;
+        private readonly IGpPracticeService gpPracticeService;
         private readonly IOrderService orderService;
         private readonly IOrderQuantityService orderQuantityService;
         private readonly IRoutingService routingService;
         private readonly IOrderItemService orderItemService;
 
         public QuantityController(
-            IGpPracticeCacheService gpPracticeCache,
+            IGpPracticeService gpPracticeService,
             IOrderService orderService,
             IOrderQuantityService orderQuantityService,
             IRoutingService routingService,
             IOrderItemService orderItemService)
         {
-            this.gpPracticeCache = gpPracticeCache ?? throw new ArgumentNullException(nameof(gpPracticeCache));
+            this.gpPracticeService = gpPracticeService ?? throw new ArgumentNullException(nameof(gpPracticeService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.orderQuantityService = orderQuantityService ?? throw new ArgumentNullException(nameof(orderQuantityService));
             this.routingService = routingService ?? throw new ArgumentNullException(nameof(routingService));
@@ -136,11 +136,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             if (solution?.OrderItemPrice?.ProvisioningType is ProvisioningType.Patient
                 && solution.CatalogueItemId != catalogueItemId)
             {
-                SetPracticeSizes(model, solution);
+                await SetPracticeSizes(model, solution);
             }
             else
             {
-                SetPracticeSizes(model);
+                await SetPracticeSizes(model);
             }
 
             return View(ServiceRecipientViewName, model);
@@ -233,7 +233,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             return View(model);
         }
 
-        private void SetPracticeSizes(SelectServiceRecipientQuantityModel model, OrderItem solution = null)
+        private async Task SetPracticeSizes(SelectServiceRecipientQuantityModel model, OrderItem solution = null)
         {
             foreach (var serviceRecipient in model.ServiceRecipients)
             {
@@ -250,7 +250,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 }
                 else
                 {
-                    var quantity = gpPracticeCache.GetNumberOfPatients(serviceRecipient.OdsCode);
+                    var quantity = await gpPracticeService.GetNumberOfPatients(serviceRecipient.OdsCode);
 
                     if (quantity.HasValue)
                     {

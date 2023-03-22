@@ -87,8 +87,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(TaskListController),
-                nameof(TaskListController.TaskList)).Should().BeTrue();
+                typeof(PricesController),
+                nameof(PricesController.ViewPrice)).Should().BeTrue();
 
             GetService().OrderItemRecipients.Count.Should().Be(2);
         }

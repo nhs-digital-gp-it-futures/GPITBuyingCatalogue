@@ -23,5 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         public string InternalOrgId { get; set; }
 
         public CallOffId CallOffId { get; set; }
+
+        public string OnwardLink { get; set; }
     }
 }

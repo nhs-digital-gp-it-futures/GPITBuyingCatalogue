@@ -224,7 +224,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             catalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
             mockOrderService
-                .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));
 
             mockListPriceService
@@ -403,7 +403,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
             mockOrderService
-                .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));
 
             List<OrderPricingTierDto> actual = null;
@@ -489,7 +489,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 
-            actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
+            actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink).Excluding(m => m.OnwardLink));
         }
     }
 }

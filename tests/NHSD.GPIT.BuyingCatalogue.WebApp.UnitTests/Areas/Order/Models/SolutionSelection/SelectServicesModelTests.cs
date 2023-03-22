@@ -52,6 +52,42 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
+        [CommonAutoData]
+        public static void WithValidArguments_ForSolution_SolutionNameCorrectlySet(
+            EntityFramework.Ordering.Models.Order order,
+            List<CatalogueItem> services)
+        {
+            var existingItem = order.OrderItems.First();
+            var wrapper = new OrderWrapper(order);
+
+            existingItem.CatalogueItem.Id = services.First().Id;
+            existingItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            wrapper.Order.AssociatedServicesOnly = false;
+
+            var model = new SelectServicesModel(wrapper, services, CatalogueItemType.AdditionalService);
+
+            model.SolutionName.Should().Be(wrapper.RolledUp.GetSolution()?.CatalogueItem.Name);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void WithValidArguments_ForAssociatedService_AssociatedServiceNameCorrectlySet(
+            EntityFramework.Ordering.Models.Order order,
+            List<CatalogueItem> services)
+        {
+            var existingItem = order.OrderItems.First();
+            var wrapper = new OrderWrapper(order);
+
+            existingItem.CatalogueItem.Id = services.First().Id;
+            existingItem.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
+            wrapper.Order.AssociatedServicesOnly = true;
+
+            var model = new SelectServicesModel(wrapper, services, CatalogueItemType.AssociatedService);
+
+            model.SolutionName.Should().Be(wrapper.RolledUp.Solution.Name);
+        }
+
+        [Theory]
         [CommonInlineAutoData(CatalogueItemType.AdditionalService)]
         [CommonInlineAutoData(CatalogueItemType.AssociatedService)]
         public static void WithValidArguments_PropertiesCorrectlySet(

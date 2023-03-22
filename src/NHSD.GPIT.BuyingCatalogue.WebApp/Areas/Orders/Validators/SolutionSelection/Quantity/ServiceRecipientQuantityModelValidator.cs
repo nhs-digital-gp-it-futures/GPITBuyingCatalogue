@@ -32,40 +32,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.SolutionSelec
                 .WithMessage(ValueNegativeErrorMessage);
         }
 
-        private static bool HaveAValue(ServiceRecipientQuantityModel model)
-        {
-            return model.Quantity > 0
-                || !string.IsNullOrWhiteSpace(model.InputQuantity);
-        }
+        private static bool HaveAValue(ServiceRecipientQuantityModel model) => !string.IsNullOrWhiteSpace(model.InputQuantity);
 
-        private static bool HaveAnIntegerValue(ServiceRecipientQuantityModel model)
-        {
-            if (!string.IsNullOrWhiteSpace(model.InputQuantity))
-            {
-                return int.TryParse(model.InputQuantity, out _);
-            }
+        private static bool HaveAnIntegerValue(ServiceRecipientQuantityModel model) => int.TryParse(model.InputQuantity, out _);
 
-            return model.Quantity > 0;
-        }
+        private static bool HaveAPositiveValue(ServiceRecipientQuantityModel model) => int.Parse(model.InputQuantity) > 0;
 
-        private static bool HaveAPositiveValue(ServiceRecipientQuantityModel model)
-        {
-            if (!string.IsNullOrWhiteSpace(model.InputQuantity))
-            {
-                return int.Parse(model.InputQuantity) > 0;
-            }
-
-            return model.Quantity > 0;
-        }
-
-        private bool HaveANumericValue(ServiceRecipientQuantityModel model)
-        {
-            if (!string.IsNullOrWhiteSpace(model.InputQuantity))
-            {
-                return decimal.TryParse(model.InputQuantity, out _);
-            }
-
-            return model.Quantity > 0;
-        }
+        private bool HaveANumericValue(ServiceRecipientQuantityModel model) => decimal.TryParse(model.InputQuantity, out _);
     }
 }

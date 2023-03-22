@@ -102,7 +102,7 @@
                 && Model.Order.MaximumTerm.HasValue)
             {
                 <nhs-summary-list-row label-text="End date" data-test-id="end-date-summary">
-                    @Model.Order.EndDate
+                    @Model.Order.EndDate.DisplayValue
                 </nhs-summary-list-row>
             }
         </nhs-summary-list>
@@ -143,6 +143,7 @@
             }
 
             <br/>
+            <h3 data-test-id="indicative-costs-title">Indicative costs</h3>
             <nhs-summary-list>
                 <nhs-summary-list-row label-text="Total one-off cost:" data-test-id="one-off-cost-summary">
                     £@($"{Model.Order.TotalOneOffCost():N2}")
@@ -169,6 +170,7 @@
                     }
                 </nhs-summary-list-row>
             </nhs-summary-list>
+            <p><b>All prices exclude VAT</b></p>
         }
 
         <br />

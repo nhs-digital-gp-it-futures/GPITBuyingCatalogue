@@ -40,10 +40,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         public async Task<IActionResult> TaskList(string internalOrgId, CallOffId callOffId, RoutingSource? source = null)
         {
             var wrapper = await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId);
-            var order = wrapper.IsAmendment ? wrapper.Previous : wrapper.Order;
+            var order = wrapper.IsAmendment ? wrapper.RolledUp : wrapper.Order;
 
-            var route = routingService.GetRoute(
+            var backRoute = routingService.GetRoute(
                 RoutingPoint.TaskListBackLink,
+                order,
+                new RouteValues(internalOrgId, callOffId) { Source = source });
+
+            var onwardRoute = routingService.GetRoute(
+                RoutingPoint.TaskList,
                 order,
                 new RouteValues(internalOrgId, callOffId) { Source = source });
 
@@ -57,7 +62,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             return View(new TaskListModel(internalOrgId, callOffId, wrapper)
             {
-                BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
+                BackLink = Url.Action(backRoute.ActionName, backRoute.ControllerName, backRoute.RouteValues),
+                OnwardLink = Url.Action(onwardRoute.ActionName, onwardRoute.ControllerName, onwardRoute.RouteValues),
                 AdditionalServicesAvailable = additionalServices.Any(),
                 AssociatedServicesAvailable = associatedServices.Any(),
             });

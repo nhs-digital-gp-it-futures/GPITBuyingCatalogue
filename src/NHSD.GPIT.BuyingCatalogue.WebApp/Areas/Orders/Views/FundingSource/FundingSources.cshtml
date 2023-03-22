@@ -77,6 +77,7 @@
 					<nhs-table-cell></nhs-table-cell>
 				</nhs-table-row-container>
 			</nhs-table>
+                <p><b>All prices exclude VAT.</b></p>
 			<br/>
 		}
 		@if (Model.OrderItemsLocalOnly != null && Model.OrderItemsLocalOnly.Any())
@@ -98,10 +99,11 @@
 				</nhs-table-row-container>
 				}           
 				<nhs-table-row-container>
-					<nhs-table-cell><b>Total</b></nhs-table-cell>
+                    <nhs-table-cell><b>Total</b></nhs-table-cell>
 					<nhs-table-cell>@($"£{Model.OrderItemsLocalOnly.Sum(oi => CalculateTotalCost(oi)).ToString("N2")}")</nhs-table-cell>
 				</nhs-table-row-container>
 			</nhs-table>
+                <p><b>All prices exclude VAT.</b></p>
 			<br/>
 		}
 		@if (Model.OrderItemsNoFundingRequired != null && Model.OrderItemsNoFundingRequired.Any())

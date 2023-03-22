@@ -3,3 +3,10 @@ ignore:
   - "src/NHSD.GPIT.BuyingCatalogue.UI.Components"
   - "src/NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp"
   - "**/*.cshtml"
+
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+        removed_code_behavior: fully_covered_patch

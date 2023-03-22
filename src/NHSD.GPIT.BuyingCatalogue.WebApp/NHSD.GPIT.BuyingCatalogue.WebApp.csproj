@@ -34,6 +34,7 @@
     <EmbeddedResource Include="Files\Think Healthcare.pdf" />
     <EmbeddedResource Include="Files\Redcentric.pdf" />
     <EmbeddedResource Include="Files\Surgery Connect.pdf" />
+    <EmbeddedResource Include="Files\Babblevoice.pdf" />
   </ItemGroup>
 
   <ItemGroup>

@@ -2,7 +2,7 @@
 @{
     const string ContextualContent = "This Catalogue Solution is available at the following";
 
-    string Contextual() => Model.FlatListPrices.Count > 1 ? $"{ContextualContent} prices:" : $"{ContextualContent} price:";
+    string Contextual() => Model.FlatListPrices.Count > 1 ? $"{ContextualContent} prices excluding VAT:" : $"{ContextualContent} price excluding VAT:";
 }
 
 <article class="nhsuk-grid-row">

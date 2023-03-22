@@ -19,25 +19,6 @@
             }
         </nhs-table>
     </div>
-
-    @foreach (var (milestone, index) in milestones.Select((x, i) => (x, i)))
-    {
-        var className = index == milestones.Count - 1
-            ? string.Empty
-            : "nhsuk-u-margin-bottom-9";
-
-        <div class="@className">
-            <nhs-table label-text="@milestone.Title">
-                <nhs-table-column>Acceptance Criteria</nhs-table-column>
-                @foreach (var criterion in milestone.AcceptanceCriteria)
-                {
-                    <nhs-table-row-container>
-                        <nhs-table-cell>@criterion.Description</nhs-table-cell>
-                    </nhs-table-row-container>
-                }
-            </nhs-table>
-        </div>
-    }
 }
 else
 {

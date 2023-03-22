@@ -71,6 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.AdditionalServicesSection).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.AssociatedServicesSection).Should().BeTrue();
 
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.IndicativeCostsSection).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.OneOffCostSummary).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.MonthlyCostSummary).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.OneYearCostSummary).Should().BeTrue();

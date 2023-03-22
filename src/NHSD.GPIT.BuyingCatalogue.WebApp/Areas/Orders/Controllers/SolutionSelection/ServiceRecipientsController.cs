@@ -261,7 +261,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             CatalogueItemId catalogueItemId,
             ConfirmChangesModel model)
         {
-            var order = (await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId)).Order;
+            var wrapper = await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId);
+            var order = wrapper.Order;
 
             await orderItemService.CopyOrderItems(internalOrgId, callOffId, new[] { catalogueItemId });
 
@@ -273,7 +274,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var route = routingService.GetRoute(
                 RoutingPoint.ConfirmServiceRecipients,
                 order,
-                new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = model.Source });
+                new RouteValues(internalOrgId, callOffId, catalogueItemId)
+                {
+                    FromPreviousRevision = callOffId.IsAmendment && wrapper.Previous?.OrderItem(catalogueItemId) != null,
+                    Source = model.Source,
+                });
 
             return RedirectToAction(route.ActionName, route.ControllerName, route.RouteValues);
         }

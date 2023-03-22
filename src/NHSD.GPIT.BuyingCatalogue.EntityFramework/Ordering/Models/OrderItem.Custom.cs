@@ -6,11 +6,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
     public sealed partial class OrderItem
     {
-        public bool IsReadyForReview =>
-            (OrderItemRecipients?.Any() ?? false)
-            && OrderItemPrice != null
-            && TotalQuantity > 0;
-
         public OrderItemFundingType FundingType => OrderItemFunding?.OrderItemFundingType ?? OrderItemFundingType.None;
 
         public string FundingTypeDescription
@@ -45,6 +40,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             }
         }
 
+        public bool AllDeliveryDatesEntered => (OrderItemRecipients?.Any() ?? false) && OrderItemRecipients.All(x => x.DeliveryDate != null);
+
         public bool AllQuantitiesEntered
         {
             get
@@ -57,5 +54,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                     : Quantity.HasValue;
             }
         }
+
+        public bool IsReadyForReview(bool isAmendment) =>
+            (OrderItemRecipients?.Any() ?? false)
+            && OrderItemPrice != null
+            && TotalQuantity > 0
+            && (!isAmendment || OrderItemRecipients.All(x => x.DeliveryDate != null));
     }
 }

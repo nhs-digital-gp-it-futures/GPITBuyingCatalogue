@@ -8,12 +8,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
     {
         public RoutingResult Process(Order order, RouteValues routeValues)
         {
-            if (routeValues == null)
+            if (order == null)
+            {
+                throw new ArgumentNullException(nameof(order));
+            }
+
+            if (routeValues?.CatalogueItemId == null)
             {
                 throw new ArgumentNullException(nameof(routeValues));
             }
 
-            if (routeValues.Source == RoutingSource.TaskList)
+            var orderItem = order.OrderItem(routeValues.CatalogueItemId.Value);
+            var attentionRequired = !orderItem.AllQuantitiesEntered || (order.IsAmendment && !orderItem.AllDeliveryDatesEntered);
+
+            if (routeValues.Source == RoutingSource.TaskList
+                && !attentionRequired)
             {
                 return new RoutingResult
                 {
@@ -32,6 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                     routeValues.InternalOrgId,
                     routeValues.CallOffId,
                     routeValues.CatalogueItemId,
+                    routeValues.Source,
                 },
             };
         }

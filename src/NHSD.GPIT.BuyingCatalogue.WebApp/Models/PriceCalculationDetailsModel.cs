@@ -40,8 +40,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
             baseHeading += $" as a {priceType.ToString().ToLowerInvariant()}";
 
             return calculationType == CataloguePriceCalculationType.SingleFixed
-                ? $"{baseHeading} {calculationType.Name().ToLowerInvariant()} price."
-                : $"{baseHeading} price based on volume.";
+                ? $"{baseHeading} {calculationType.Name().ToLowerInvariant()} price (excluding VAT)."
+                : $"{baseHeading} price based on volume (excluding VAT).";
         }
     }
 }
