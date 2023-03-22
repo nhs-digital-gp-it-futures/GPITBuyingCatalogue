@@ -60,7 +60,7 @@ SET NOCOUNT ON;
 		AND ISNULL(COE.COUNT, 0) = ISNULL(CIE.COUNT, 0)
 	WHERE
 	CI.CatalogueItemTypeId IN (1,2) -- solutions and additional services
-	AND CI.PublishedStatusId IN (3, 4, 5) -- published, suspended or in remediation
+	AND CI.PublishedStatusId IN (3, 5) -- published or in remediation
 	AND SUP.IsActive = 1
 	UNION
 	--- This brings back the solutions for additional services that reference the capabilities/Epics
@@ -107,8 +107,8 @@ SET NOCOUNT ON;
 		AND ISNULL(COE.COUNT, 0) = ISNULL(CIE.COUNT, 0)
 	WHERE
 	CI.CatalogueItemTypeId IN (2) -- additional services only
-    AND CI.PublishedStatusId IN (3, 4, 5) -- published, suspended or in remediation
-    AND CIP.PublishedStatusId IN (3, 4, 5) -- Solution is either published, suspended or in remediation
+    AND CI.PublishedStatusId IN (3, 5) -- published or in remediation
+    AND CIP.PublishedStatusId IN (3, 5) -- Solution is either published or in remediation
 	AND SUP.IsActive = 1
 	ORDER BY CI.Id;
 
