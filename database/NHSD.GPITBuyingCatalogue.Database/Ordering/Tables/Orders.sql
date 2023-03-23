@@ -38,8 +38,8 @@
     CONSTRAINT FK_Orders_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
     CONSTRAINT FK_Orders_Solution FOREIGN KEY (SolutionId) REFERENCES catalogue.CatalogueItems(Id),
     CONSTRAINT FK_Orders_SelectedFramework FOREIGN KEY (SelectedFrameworkId) REFERENCES catalogue.Frameworks(Id),
-    /* INDEX IX_Orders_OrderNumber_Revision UNIQUE (OrderNumber, Revision), */
     INDEX IX_Orders_IsDeleted (IsDeleted)
 ) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = ordering.Orders_History));
 
+GO
 CREATE NONCLUSTERED INDEX IX_OrderNum_IsDeleted_Revision ON [ordering].[Orders] ([OrderNumber], [IsDeleted], [Revision], [OrderingPartyId], [SolutionId])
