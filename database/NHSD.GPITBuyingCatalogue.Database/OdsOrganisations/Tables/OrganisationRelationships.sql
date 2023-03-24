@@ -10,6 +10,4 @@
 )
 
 GO
-CREATE NONCLUSTERED INDEX IX_RelationshipType_OwnerOrganisationId       ON [ods_organisations].[OrganisationRelationships] ([RelationshipTypeId], [OwnerOrganisationId])
-GO
 CREATE NONCLUSTERED INDEX IX_RelationshipType_TargetOwnerOrganisationId ON [ods_organisations].[OrganisationRelationships] ([RelationshipTypeId], [OwnerOrganisationId], [TargetOrganisationId])
