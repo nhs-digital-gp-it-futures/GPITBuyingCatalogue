@@ -88,6 +88,25 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
              nameof(TaskListController.TaskList)).Should().BeTrue();
         }
 
+        public void EditCatalogueAdditionalAndAssociatedServiceTask()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+            typeof(TaskListController),
+            nameof(TaskListController.TaskList)).Should().BeTrue();
+
+            CommonActions.ClickContinue();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+             typeof(ReviewSolutionsController),
+             nameof(ReviewSolutionsController.ReviewSolutions)).Should().BeTrue();
+
+            CommonActions.ClickContinue();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+             typeof(OrderController),
+             nameof(OrderController.Order)).Should().BeTrue();
+        }
+
         public void EditSolutionsAndServicesTask(bool isAssociatedServiceOnly)
         {
             CommonActions.ClickLinkElement(CatalogueSolutionObjects.SelectSolutionsAndServicesLink);

@@ -51,10 +51,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Assoc
             CommonActions.ClickCheckboxByLabel("BEVAN LIMITED");
 
             CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-             typeof(TaskListController),
-             nameof(TaskListController.TaskList)).Should().BeTrue();
         }
 
         private string GetAssociatedServiceID(string associatedServiceName)

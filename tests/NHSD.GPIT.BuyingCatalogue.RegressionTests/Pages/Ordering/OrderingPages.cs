@@ -418,6 +418,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 foreach (var additionalService in newAdditionalServices)
                 {
                     SelectEditAdditionalServiceRecipients.AddServiceRecipients();
+                    ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
                     SelectEditAndConfirmAdditionalServicePrice.SelectAndConfirmPrice();
                     Quantity.AddQuantity();
                 }
@@ -520,8 +521,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder());
 
             SelectEditCatalogueSolutionServiceRecipients.EditCatalogueSolutionServiceRecipient(solutionName);
+            ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
+            SelectEditAndConfirmAdditionalServicePrice.EditConfirmPrice();
 
-            Quantity.EditQuantity(solutionName);
+            Quantity.AddQuantity();
+            TaskList.EditCatalogueAdditionalAndAssociatedServiceTask();
+            //Quantity.EditQuantity(solutionName);
         }
 
         public void EditCatalogueSolutionPrice(string solutionName)
@@ -536,6 +541,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder());
 
             SelectEditAdditionalServiceRecipients.EditAdditionalServiceRecipient(additionalServiceName);
+            ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
+            SelectEditAndConfirmAdditionalServicePrice.EditConfirmPrice();
 
             Quantity.EditQuantity(additionalServiceName);
         }
@@ -559,8 +566,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder());
 
             SelectEditAssociatedServiceRecipents.EditServiceRecipient(associatedServiceName);
+            ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
 
-            Quantity.EditQuantity(associatedServiceName);
+            TaskList.EditCatalogueAdditionalAndAssociatedServiceTask();
         }
 
         public void EditAssociatedServicePrice(string associatedServiceName)
@@ -575,8 +583,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder());
 
             SelectEditAssociatedServiceRecipientOnly.EditServiceRecipient(associatedServiceName);
+            ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
 
-            Quantity.EditQuantity(associatedServiceName);
+            TaskList.EditCatalogueAdditionalAndAssociatedServiceTask();
         }
 
         public void EditAssociatedServiceOnlyPrice(string associatedServiceName)

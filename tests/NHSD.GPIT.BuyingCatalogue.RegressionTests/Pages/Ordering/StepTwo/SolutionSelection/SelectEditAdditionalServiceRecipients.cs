@@ -40,9 +40,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
             CommonActions.ClickSave();
 
-            CommonActions.PageLoadedCorrectGetIndex(
-             typeof(TaskListController),
-             nameof(TaskListController.TaskList)).Should().BeTrue();
         }
 
         private string GetAdditionalServiceID(string additionalServiceName)
