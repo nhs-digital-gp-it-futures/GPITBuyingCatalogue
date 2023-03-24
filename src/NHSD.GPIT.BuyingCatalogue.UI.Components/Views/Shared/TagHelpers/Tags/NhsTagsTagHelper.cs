@@ -126,14 +126,14 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
 
             var tagText = progress switch
             {
-                TaskProgress.NotApplicable => "Not applicable",
-                TaskProgress.NotStarted => "Not started",
-                TaskProgress.CannotStart => "Cannot start yet",
+                TaskProgress.NotApplicable => "Not&nbsp;applicable",
+                TaskProgress.NotStarted => "Not&nbsp;started",
+                TaskProgress.CannotStart => "Cannot&nbsp;start&nbsp;yet",
                 TaskProgress.Optional => "Optional",
-                TaskProgress.InProgress => "In progress",
+                TaskProgress.InProgress => "In&nbsp;progress",
                 TaskProgress.Completed => "Completed",
                 TaskProgress.Amended => "Amended",
-                _ => "Not started",
+                _ => "Not&nbsp;started",
             };
 
             return (selectedColourClass, tagText);

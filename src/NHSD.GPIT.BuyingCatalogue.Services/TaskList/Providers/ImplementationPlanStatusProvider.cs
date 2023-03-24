@@ -1,4 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
+﻿using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 
@@ -16,7 +17,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
 
             var order = wrapper.Order;
 
-            if (state.FundingSource != TaskProgress.Completed)
+            var okToProgress = new[] { TaskProgress.Completed, TaskProgress.Amended };
+
+            if (!okToProgress.Contains(state.FundingSource))
             {
                 return order.ContractFlags?.UseDefaultImplementationPlan != null
                     ? TaskProgress.InProgress

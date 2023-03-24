@@ -29,8 +29,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
             }
 
             return SolutionsCompleted(order)
-                ? TaskProgress.Completed
+                ? CompletedOrAmended(order.IsAmendment)
                 : TaskProgress.InProgress;
+        }
+
+        private static TaskProgress CompletedOrAmended(bool isAmendment)
+        {
+            return isAmendment ? TaskProgress.Amended : TaskProgress.Completed;
         }
 
         private static bool SolutionsSelected(EntityFramework.Ordering.Models.Order order)

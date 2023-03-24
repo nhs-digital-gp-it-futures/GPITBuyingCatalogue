@@ -11,6 +11,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
 
         public static By LocalOnlyFundingSourcesTable => ByExtensions.DataTestId("funding-sources-items-local-only");
 
+        public static By ChangeFramework => ByExtensions.DataTestId("funding-sources-multiple-frameworks-change");
+
         public static By NoFundingRequiredSourcesTable => ByExtensions.DataTestId("funding-sources-items-no-funding-required");
 
         public static By EditLink => By.LinkText("Edit");

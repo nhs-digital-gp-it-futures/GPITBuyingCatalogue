@@ -116,8 +116,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonInlineAutoData(1, TaskProgress.Completed)]
+        [CommonInlineAutoData(2, TaskProgress.Amended)]
         public static void Get_SolutionSelected_EverythingPopulated_ReturnsCompleted(
+            int revision,
+            TaskProgress expectedTaskProgress,
             Order order,
             SolutionOrServiceStatusProvider service)
         {
@@ -126,13 +129,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 CommencementDateStatus = TaskProgress.Completed,
             };
 
+            order.Revision = revision;
             order.AssociatedServicesOnly = false;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
             var actual = service.Get(new OrderWrapper(order), state);
 
-            actual.Should().Be(TaskProgress.Completed);
+            actual.Should().Be(expectedTaskProgress);
         }
     }
 }
