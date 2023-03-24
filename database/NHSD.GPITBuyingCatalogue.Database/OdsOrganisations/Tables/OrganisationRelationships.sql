@@ -8,3 +8,8 @@
     CONSTRAINT FK_Relationships_OwnerOrganisation       FOREIGN KEY (OwnerOrganisationId)       REFERENCES ods_organisations.OdsOrganisations (Id),
     CONSTRAINT FK_Relationships_TargetOrganisation      FOREIGN KEY (TargetOrganisationId)      REFERENCES ods_organisations.OdsOrganisations (Id),
 )
+
+GO
+CREATE NONCLUSTERED INDEX IX_RelationshipType_OwnerOrganisationId       ON [ods_organisations].[OrganisationRelationships] ([RelationshipTypeId], [OwnerOrganisationId])
+GO
+CREATE NONCLUSTERED INDEX IX_RelationshipType_TargetOwnerOrganisationId ON [ods_organisations].[OrganisationRelationships] ([RelationshipTypeId], [OwnerOrganisationId], [TargetOrganisationId])
