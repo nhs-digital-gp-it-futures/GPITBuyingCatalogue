@@ -60,14 +60,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         [HttpGet("unauthorized")]
         public IActionResult NotAuthorized() => View();
 
-        [HttpGet("tech-innovation")]
-        public IActionResult TechInnovationFramework() => View(new NavBaseModel
-        {
-            BackLink = Url.Action(
-                nameof(Index),
-                typeof(HomeController).ControllerName()),
-        });
-
         [HttpGet("advanced-telephony-better-purchase")]
         public IActionResult AdvancedTelephonyBetterPurchaseFramework() => View(new NavBaseModel
         {
