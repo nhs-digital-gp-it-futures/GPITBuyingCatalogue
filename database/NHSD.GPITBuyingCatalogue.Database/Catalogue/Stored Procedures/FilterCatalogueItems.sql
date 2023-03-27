@@ -11,7 +11,7 @@ SET NOCOUNT ON;
 	);
 
 	INSERT INTO @ReferencedEpics
-	SELECT 
+	SELECT
 		E.CapabilityId,
 		E.Id
 	FROM catalogue.Epics E
@@ -33,14 +33,14 @@ SET NOCOUNT ON;
 		ON CAPI.Id = CIC.CapabilityId
 	-----------------------------------------------------
 	LEFT JOIN (
-		SELECT 
+		SELECT
 			COUNT(CIE.EpicId) AS COUNT,
 			CIE.CapabilityId,
 			CIE.CatalogueItemId
 		FROM @ReferencedEpics RE
 		LEFT JOIN catalogue.CatalogueItemEpics CIE
 			ON CIE.EpicId = RE.EpicId
-		GROUP BY 
+		GROUP BY
 			CIE.CapabilityId,
 			CIE.CatalogueItemId
 	) AS CIE
@@ -48,19 +48,19 @@ SET NOCOUNT ON;
 		AND CIE.CapabilityId = CAPI.Id
 	INNER JOIN(
 		SELECT
-			COUNT(RE.EpicId) COUNT, 
+			COUNT(RE.EpicId) COUNT,
 			CAPI.Id
 		FROM @CapabilityIds CAPI
 		LEFT JOIN @ReferencedEpics RE
 			ON RE.CapabilityId = CAPI.Id
-		GROUP BY 
+		GROUP BY
 			CAPI.Id
 	) AS COE
 		ON COE.Id = CAPI.Id
 		AND ISNULL(COE.COUNT, 0) = ISNULL(CIE.COUNT, 0)
 	WHERE
 	CI.CatalogueItemTypeId IN (1,2) -- solutions and additional services
-	AND CI.PublishedStatusId IN (3, 4, 5) -- published, suspended or in remediation
+	AND CI.PublishedStatusId IN (3, 5) -- published or in remediation
 	AND SUP.IsActive = 1
 	UNION
 	--- This brings back the solutions for additional services that reference the capabilities/Epics
@@ -80,14 +80,14 @@ SET NOCOUNT ON;
 	INNER JOIN catalogue.CatalogueItems CIP
 		ON ADIT.SolutionId = CIP.Id
 	LEFT JOIN (
-		SELECT 
+		SELECT
 			COUNT(CIE.EpicId) AS COUNT,
 			CIE.CapabilityId,
 			CIE.CatalogueItemId
 		FROM @ReferencedEpics RE
 		LEFT JOIN catalogue.CatalogueItemEpics CIE
 			ON CIE.EpicId = RE.EpicId
-		GROUP BY 
+		GROUP BY
 			CIE.CapabilityId,
 			CIE.CatalogueItemId
 	) AS CIE
@@ -95,7 +95,7 @@ SET NOCOUNT ON;
 		AND CIE.CapabilityId = CAPI.Id
 	INNER JOIN(
 		SELECT
-			COUNT(RE.EpicId) COUNT, 
+			COUNT(RE.EpicId) COUNT,
 			CAPI.Id
 		FROM @CapabilityIds CAPI
 		LEFT JOIN @ReferencedEpics RE
@@ -107,7 +107,8 @@ SET NOCOUNT ON;
 		AND ISNULL(COE.COUNT, 0) = ISNULL(CIE.COUNT, 0)
 	WHERE
 	CI.CatalogueItemTypeId IN (2) -- additional services only
-	AND CI.PublishedStatusId IN (3, 4, 5) -- published, suspended or in remediation
+    AND CI.PublishedStatusId IN (3, 5) -- published or in remediation
+    AND CIP.PublishedStatusId IN (3, 5) -- Solution is either published or in remediation
 	AND SUP.IsActive = 1
 	ORDER BY CI.Id;
 
@@ -117,7 +118,7 @@ SET NOCOUNT ON;
     -------------------------------------------------------------------------------------
     SELECT
         C.Id,
-	    C.Name, 
+	    C.Name,
         COUNT(RE.EpicId) AS CountOfEpics
 	FROM @CapabilityIds CI
 	INNER JOIN catalogue.Capabilities C
