@@ -67,8 +67,18 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .HasForeignKey(o => o.SelectedFrameworkId)
                 .HasConstraintName("FK_Orders_SelectedFramework");
 
-            // builder.HasIndex(o => new { o.OrderNumber, o.Revision }, "IX_Orders_OrderNumber_Revision").IsUnique();
             builder.HasIndex(o => o.IsDeleted, "IX_Orders_IsDeleted");
+
+            builder.HasIndex(
+                o => new
+                {
+                    o.OrderNumber,
+                    o.IsDeleted,
+                    o.Revision,
+                    o.OrderingPartyId,
+                    o.SolutionId,
+                },
+                "IX_OrderNum_IsDeleted_Revision");
 
             builder.HasQueryFilter(o => !o.IsDeleted);
         }
