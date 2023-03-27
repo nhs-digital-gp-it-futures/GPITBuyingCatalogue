@@ -106,8 +106,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         internal OrderingStepFour OrderingStepFour { get; }
 
         internal ImportServiceReceipients ImportServiceReceipients { get; }
+
         internal ConfirmServieReceipients ConfirmServieReceipients { get; }
+
         internal AmendOrder AmendOrder { get; }
+
         internal IWebDriver Driver { get; }
 
         public void StepOnePrepareOrder(
@@ -526,7 +529,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
             Quantity.AddQuantity();
             TaskList.EditCatalogueAdditionalAndAssociatedServiceTask();
-            //Quantity.EditQuantity(solutionName);
         }
 
         public void EditCatalogueSolutionPrice(string solutionName)
@@ -544,7 +546,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
             SelectEditAndConfirmAdditionalServicePrice.EditConfirmPrice();
 
-            Quantity.EditQuantity(additionalServiceName);
+            Quantity.AddQuantity();
+            TaskList.EditCatalogueAdditionalAndAssociatedServiceTask();
         }
 
         public void EditAdditionalServicePrice(string additionalServiceName)
@@ -612,125 +615,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         public void AmendSolutionsAndServices(string solutionName, IEnumerable<string>? additionalServices, IEnumerable<string>? associatedServices, bool multipleServiceRecipients = false, bool importServiceRecipients = false, string fileName = "")
         {
-            //var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder();
-
-            //TaskList.SelectSolutionsAndServicesTask(isAssociatedServiceOnlyOrder);
-
-            //if (!isAssociatedServiceOnlyOrder)
-            //{
-
-                TaskList.AmendSolutionAndServicesTask();
-                SelectEditCatalogueSolution.SelectSolution(solutionName, additionalServices);
-
-                if (!importServiceRecipients)
-                {
-                    SelectEditCatalogueSolutionServiceRecipients.AddCatalogueSolutionServiceRecipient(multipleServiceRecipients);
-                }
-                else
-                {
-                    ImportServiceReceipients.ImportServiceRecipients(fileName);
-                }
-
-                ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
-                SelectEditAndConfirmPrices.SelectAndConfirmPrice();
-                Quantity.AddQuantity();
-
-                if (HasAdditionalService(solutionName) && additionalServices != default && additionalServices.All(a => !string.IsNullOrWhiteSpace(a)))
-                {
-                    foreach (var additionalService in additionalServices)
-                    {
-                        if (!importServiceRecipients)
-                        {
-                            SelectEditAdditionalServiceRecipients.AddServiceRecipients();
-                        }
-                        else
-                        {
-                            ImportServiceReceipients.ImportServiceRecipients(fileName);
-                        }
-
-                        ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
-                        SelectEditAndConfirmAdditionalServicePrice.SelectAndConfirmPrice();
-                        Quantity.AddQuantity();
-                    }
-                }
-
-                //if (HasAssociatedServices(solutionName))
-                //{
-                //    if ((associatedServices != default) && associatedServices.All(a => !string.IsNullOrWhiteSpace(a)))
-                //    {
-                //        SelectEditAssociatedService.AddAssociatedService(associatedServices, "Yes");
-
-                //        foreach (var associatedService in associatedServices)
-                //        {
-                //            if (!importServiceRecipients)
-                //            {
-                //                SelectEditAssociatedServiceRecipents.AddServiceRecipient();
-                //            }
-                //            else
-                //            {
-                //                ImportServiceReceipients.ImportServiceRecipients(fileName);
-                //            }
-
-                //            ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
-                //            SelectEditAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
-                //            Quantity.AddQuantity();
-                //        }
-                //    }
-                //    else
-                //    {
-                //        SelectEditAssociatedService.AddAssociatedService();
-                //    }
-                //}
-            //}
-            //else
-            //{
-            //    SelectEditAssociatedServiceOnly.SelectAssociatedServices(solutionName, associatedServices);
-
-            //    if ((associatedServices != default) && associatedServices.All(a => !string.IsNullOrWhiteSpace(a)))
-            //    {
-            //        foreach (var associatedService in associatedServices)
-            //        {
-            //            if (!importServiceRecipients)
-            //            {
-            //                SelectEditAssociatedServiceRecipientOnly.AddServiceRecipient(multipleServiceRecipients);
-            //            }
-            //            else
-            //            {
-            //                ImportServiceReceipients.ImportServiceRecipients(fileName);
-            //            }
-
-            //            ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
-            //            SelectEditAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
-            //            Quantity.AddQuantity();
-            //        }
-            //    }
-            //}
-
-            SolutionAndServicesReview.ReviewSolutionAndServices();
-
-            TaskList.SelectPlannedDeliveryDatesTask();
-            //PlannedDeliveryDates.PlannedDeliveryDate(solutionName, isAssociatedServiceOnlyOrder, associatedServices, additionalServices);
-
-            //var isMultiFramework = IsMultiFramework();
-
-            //if (isMultiFramework)
-            //{
-            //    TaskList.SelectFrameWork();
-            //    SelectFundingSources.AddFundingSources(solutionName, isAssociatedServiceOnlyOrder, associatedServices, additionalServices);
-            //}
-            //else
-            //{
-            //    var isLocalFundingOnly = IsLocalFundingOnly();
-            //    if (isLocalFundingOnly)
-            //    {
-            //        TaskList.SelectLocalFundingSourcesTask();
-            //    }
-            //    else
-            //    {
-            //        TaskList.SelectFundingSourcesTask();
-            //        SelectFundingSources.AddFundingSources(solutionName, isAssociatedServiceOnlyOrder, associatedServices, additionalServices);
-            //    }
-            //}
+            TaskList.AmendSolutionAndServicesTask();
+            SelectEditCatalogueSolution.SelectSolution(solutionName, additionalServices);
         }
 
         private bool IsAssociatedServiceOnlyOrder()
@@ -760,18 +646,21 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         private bool IsLocalFundingOnly()
         {
             using var dbContext = Factory.DbContext;
-            var orderID = Driver.Url.Split('/').Last().Split('-')[0].Replace("C0", string.Empty);
+
+            var callOffId = CallOffId.Parse(Driver.Url.Split('/').Last()).Id;
+            var orderId = dbContext.OrderId(callOffId).Result;
 
             var frameworks = dbContext.OrderItems
-             .Where(oi => string.Equals(oi.OrderId.ToString(), orderID))
-             .SelectMany(oi => oi.CatalogueItem.Solution.FrameworkSolutions.Select(fs => fs.Framework)).ToList();
+                .Where(oi => oi.OrderId == orderId)
+                .SelectMany(oi => oi.CatalogueItem.Solution.FrameworkSolutions.Select(fs => fs.Framework))
+                .ToList();
 
             if (frameworks.Count == 0 || frameworks.Count > 1)
             {
                 return false;
             }
 
-            return frameworks.First().LocalFundingOnly;
+            return frameworks.First().ShortName == "DFOCVC";
         }
 
         private bool HasAdditionalService(string solutionName)
@@ -811,7 +700,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
             var orderID = Driver.Url.Split('/').ElementAt(index).Split('-')[0].Replace("C0", string.Empty);
 
-            var result = dbContext.Orders.Any(o => string.Equals(o.Id.ToString(), orderID) && o.OrderItems.Any(i => i.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService));
+            var result = dbContext.Orders
+                .Any(o => string.Equals(o.Id.ToString(), orderID) && o.OrderItems.Any(i => i.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService));
 
             return result;
         }
