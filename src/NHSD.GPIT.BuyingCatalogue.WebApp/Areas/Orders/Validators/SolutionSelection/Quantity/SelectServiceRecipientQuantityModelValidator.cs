@@ -7,7 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.SolutionSelec
     {
         public SelectServiceRecipientQuantityModelValidator()
         {
-            RuleForEach(x => x.ServiceRecipients).SetValidator(new ServiceRecipientQuantityModelValidator());
+            RuleForEach(x => x.ServiceRecipients).Cascade(CascadeMode.Continue).SetValidator(new ServiceRecipientQuantityModelValidator());
         }
     }
 }
