@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
     [Collection(nameof(SharedContextCollection))]
     public class NominatedOrganisations : AccountManagerTestBase, IDisposable
     {
-        private const int OrganisationId = 176;
+        private const int OrganisationId = 77;
         private const int RelatedOrganisationId = 5;
 
         private static readonly Dictionary<string, string> Parameters = new()
