@@ -152,7 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         public void StepTwoAddSolutionsAndServices(string solutionName, IEnumerable<string>? additionalServices, IEnumerable<string>? associatedServices, bool multipleServiceRecipients = false, bool importServiceRecipients = false, string fileName = "")
         {
 
-            var orderId = OrderID;
+            var orderId = OrderID();
             var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder();
 
             TaskList.SelectSolutionsAndServicesTask(isAssociatedServiceOnlyOrder);
@@ -259,7 +259,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             }
             else
             {
-                var isLocalFundingOnly = IsLocalFundingOnly();
+                var isLocalFundingOnly = IsLocalFundingOnly(orderId);
                 if (isLocalFundingOnly)
                 {
                     TaskList.SelectLocalFundingSourcesTask();
@@ -407,11 +407,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         public void EditAdditionalService(string solutionName, IEnumerable<string> newAdditionalServices, IEnumerable<string>? newAssociatedServices, IEnumerable<string>? oldAdditionalServices)
         {
+
+            var orderId = OrderID();
             var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder();
 
             TaskList.EditSolutionsAndServicesTask(isAssociatedServiceOnlyOrder);
 
-            SelectEditCatalogueSolution.EditAdditionalService(solutionName, oldAdditionalServices, newAdditionalServices, HasTheOriginalOrderAdditionalService());
+            SelectEditCatalogueSolution.EditAdditionalService(solutionName, oldAdditionalServices, newAdditionalServices, HasTheOriginalOrderAdditionalService(orderId));
 
             if (!HasAdditionalService(solutionName))
             {
@@ -441,7 +443,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 }
                 else
                 {
-                    if (!HasTheOriginalOrderAssociatedService())
+                    if (!HasTheOriginalOrderAssociatedService(orderId))
                     {
                         SelectEditAssociatedService.AddAssociatedService();
                     }
@@ -466,11 +468,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         public void EditAssociatedService(string solutionName, IEnumerable<string> newAssociatedServices, IEnumerable<string>? additionalServices, IEnumerable<string>? oldAssociatedServices)
         {
+
+            var orderId = OrderID();
             var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder();
 
             TaskList.EditSolutionsAndServicesTask(isAssociatedServiceOnlyOrder);
 
-            SelectEditAssociatedService.EditAssociatedService(solutionName, newAssociatedServices, HasTheOriginalOrderAssociatedService(), oldAssociatedServices);
+            SelectEditAssociatedService.EditAssociatedService(solutionName, newAssociatedServices, HasTheOriginalOrderAssociatedService(orderId), oldAssociatedServices);
 
             if (HasAssociatedServices(solutionName) && newAssociatedServices.All(a => !string.IsNullOrWhiteSpace(a)))
             {
@@ -655,12 +659,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             return frameworks.Count > 1;
         }
 
-        private bool IsLocalFundingOnly()
+        private bool IsLocalFundingOnly(int orderId)
         {
             using var dbContext = Factory.DbContext;
 
-            var callOffId = CallOffId.Parse(Driver.Url.Split('/').Last()).Id;
-            var orderId = dbContext.OrderId(callOffId).Result;
+            //var callOffId = CallOffId.Parse(Driver.Url.Split('/').Last()).Id;
+            //var orderId = dbContext.OrderId(callOffId).Result;
 
             var frameworks = dbContext.OrderItems
                 .Where(oi => oi.OrderId == orderId)
@@ -689,13 +693,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             return dbContext.SupplierServiceAssociations.Any(ssa => ssa.CatalogueItem.Name == solutionName);
         }
 
-        private bool HasTheOriginalOrderAdditionalService()
+        private bool HasTheOriginalOrderAdditionalService(int orderId)
         {
             using var dbContext = Factory.DbContext;
 
-            var index = Driver.Url.Split('/').Length - 2;
-            var callOffId = CallOffId.Parse(Driver.Url.Split('/').ElementAt(index)).Id;
-            var orderId = dbContext.OrderId(callOffId).Result;
+            //var index = Driver.Url.Split('/').Length - 2;
+            //var callOffId = CallOffId.Parse(Driver.Url.Split('/').ElementAt(index)).Id;
+            //var orderId = dbContext.OrderId(callOffId).Result;
 
             var result = dbContext.Orders
                 .Any(o => o.Id == orderId
@@ -704,16 +708,20 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             return result;
         }
 
-        private bool HasTheOriginalOrderAssociatedService()
+        private bool HasTheOriginalOrderAssociatedService(int orderId)
         {
             using var dbContext = Factory.DbContext;
 
-            var index = Driver.Url.Split('/').Count() - 2;
+            //var index = Driver.Url.Split('/').Count() - 2;
 
-            var orderID = Driver.Url.Split('/').ElementAt(index).Split('-')[0].Replace("C0", string.Empty);
+            //var orderID = Driver.Url.Split('/').ElementAt(index).Split('-')[0].Replace("C0", string.Empty);
+
+            //var result = dbContext.Orders
+            //    .Any(o => string.Equals(o.Id.ToString(), orderId) && o.OrderItems.Any(i => i.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService));
 
             var result = dbContext.Orders
-                .Any(o => string.Equals(o.Id.ToString(), orderID) && o.OrderItems.Any(i => i.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService));
+                .Any(o => o.Id == orderId
+                    && o.OrderItems.Any(i => i.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService));
 
             return result;
         }
