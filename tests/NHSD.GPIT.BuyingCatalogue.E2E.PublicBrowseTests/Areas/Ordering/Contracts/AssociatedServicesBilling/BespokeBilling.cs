@@ -8,7 +8,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.AssociatedServicesBilling
 {
-    public class BespokeBilling : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(OrderingCollection))]
+    public class BespokeBilling : BuyerTestBase
     {
         private const int OrderId = 90013;
         private const string InternalOrgId = "CG-03F";

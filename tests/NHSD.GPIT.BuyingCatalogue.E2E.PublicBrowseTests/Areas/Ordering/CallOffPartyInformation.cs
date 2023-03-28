@@ -13,8 +13,9 @@ using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 {
+    [Collection(nameof(OrderingCollection))]
     public sealed class CallOffPartyInformation
-        : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+        : BuyerTestBase
     {
         private const string InternalOrgId = "CG-03F";
         private static readonly CallOffId CallOffId = new(90001, 1);

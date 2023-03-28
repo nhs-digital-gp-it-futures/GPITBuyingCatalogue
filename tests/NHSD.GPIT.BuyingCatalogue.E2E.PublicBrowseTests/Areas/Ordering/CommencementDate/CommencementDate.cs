@@ -15,7 +15,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CommencementDate
 {
-    public sealed class CommencementDate : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(OrderingCollection))]
+    public sealed class CommencementDate : BuyerTestBase, IDisposable
     {
         private const string InternalOrgId = "CG-03F";
         private static readonly CallOffId CallOffId = new(90003, 1);

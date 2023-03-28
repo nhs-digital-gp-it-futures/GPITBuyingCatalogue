@@ -14,7 +14,7 @@ using Xunit;
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
 {
     [Collection(nameof(SharedContextCollection))]
-    public sealed class LockedAccount : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>
+    public sealed class LockedAccount : AnonymousTestBase
     {
         public LockedAccount(LocalWebApplicationFactory factory)
             : base(

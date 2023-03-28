@@ -15,7 +15,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DeliveryDates.Edit.Base
 {
-    public abstract class EditDates : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(OrderingCollection))]
+    public abstract class EditDates : BuyerTestBase
     {
         private readonly int orderId;
         private readonly CatalogueItemId catalogueItemId;

@@ -9,7 +9,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Prices.Base
 {
-    public abstract class SelectPrice : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(OrderingCollection))]
+    public abstract class SelectPrice : BuyerTestBase
     {
         protected SelectPrice(LocalWebApplicationFactory factory, Dictionary<string, string> parameters)
             : base(factory, typeof(PricesController), nameof(PricesController.SelectPrice), parameters)

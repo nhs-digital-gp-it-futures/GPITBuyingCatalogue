@@ -14,7 +14,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Prices.Base
 {
-    public abstract class EditPrice : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(OrderingCollection))]
+    public abstract class EditPrice : BuyerTestBase, IDisposable
     {
         private readonly int orderId;
         private readonly CatalogueItemId catalogueItemId;

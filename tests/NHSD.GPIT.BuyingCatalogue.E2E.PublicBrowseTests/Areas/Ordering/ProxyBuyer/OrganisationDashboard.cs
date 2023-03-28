@@ -13,7 +13,8 @@ using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.ProxyBuyer
 {
-    public sealed class OrganisationDashboard : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(OrderingCollection))]
+    public sealed class OrganisationDashboard : BuyerTestBase
     {
         private const string InternalOrgId = "CG-15F";
 

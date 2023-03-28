@@ -13,7 +13,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Quantity.Base
 {
-    public abstract class SelectQuantity : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(OrderingCollection))]
+    public abstract class SelectQuantity : BuyerTestBase, IDisposable
     {
         private readonly int orderId;
         private readonly CatalogueItemId catalogueItemId;

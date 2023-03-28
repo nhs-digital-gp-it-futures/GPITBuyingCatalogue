@@ -16,7 +16,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.CatalogueSolutions
 {
-    public class SelectCatalogueSolutionAssociatedServicesOnly : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(OrderingCollection))]
+    public class SelectCatalogueSolutionAssociatedServicesOnly : BuyerTestBase, IDisposable
     {
         private const string InternalOrgId = "CG-03F";
         private const string SolutionName = "E2E With Contact With Single Price";

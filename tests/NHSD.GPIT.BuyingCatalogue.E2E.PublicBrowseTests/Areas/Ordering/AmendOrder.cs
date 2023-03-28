@@ -14,7 +14,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 {
-    public class AmendOrder : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(OrderingCollection))]
+    public class AmendOrder : BuyerTestBase, IDisposable
     {
         private const string InternalOrgId = "CG-03F";
         private static readonly CallOffId CallOffId = new(90010, 1);

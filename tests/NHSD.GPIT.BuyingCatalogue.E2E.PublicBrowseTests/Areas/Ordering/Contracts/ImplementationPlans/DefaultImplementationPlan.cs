@@ -14,7 +14,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.ImplementationPlans
 {
-    public class DefaultImplementationPlan : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(OrderingCollection))]
+    public class DefaultImplementationPlan : BuyerTestBase, IDisposable
     {
         private const int OrderId = 90001;
         private const string InternalOrgId = "CG-03F";
