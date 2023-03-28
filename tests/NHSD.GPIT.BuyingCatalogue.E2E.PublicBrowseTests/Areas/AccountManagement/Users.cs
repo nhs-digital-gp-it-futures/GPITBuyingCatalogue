@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
     [Collection(nameof(SharedContextCollection))]
     public class Users : AccountManagerTestBase
     {
-        private const int OrganisationId = 176;
+        private const int OrganisationId = 77;
 
         private static readonly Dictionary<string, string> Parameters = new()
         {

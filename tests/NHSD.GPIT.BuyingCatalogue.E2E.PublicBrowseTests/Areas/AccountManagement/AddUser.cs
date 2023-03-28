@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
     [Collection(nameof(SharedContextCollection))]
     public sealed class AddUser : AccountManagerTestBase
     {
-        private const int OrganisationId = 176;
+        private const int OrganisationId = 77;
 
         private const string ValidEmail = "a@nhs.net";
         private const string FirstNameRequired = "Enter a first name";
