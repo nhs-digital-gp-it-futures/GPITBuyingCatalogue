@@ -153,7 +153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         {
 
             var orderId = OrderID();
-            var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder();
+            var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder(orderId);
 
             TaskList.SelectSolutionsAndServicesTask(isAssociatedServiceOnlyOrder);
 
@@ -274,7 +274,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         public void EditPlannedDeliveryDate(string solutionName, string additionalService, string associatedService, bool editplanneddeliverydate = true)
         {
-            var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder();
+            var orderId = OrderID();
+            var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder(orderId);
 
             TaskList.EditPlannedDeliveryDateTask();
             PlannedDeliveryDates.EditPlannedDeliveryDate(solutionName, isAssociatedServiceOnlyOrder, additionalService, associatedService, editplanneddeliverydate);
@@ -330,7 +331,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         public void EditCatalogueSolution(string newSolutionName, IEnumerable<string>? newAdditionalServiceNames, IEnumerable<string>? newAssociatedServices, bool multipleServiceRecipients = false)
         {
-            var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder();
+            var orderId = OrderID();
+            var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder(orderId);
 
             TaskList.EditSolutionsAndServicesTask(isAssociatedServiceOnlyOrder);
 
@@ -407,9 +409,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         public void EditAdditionalService(string solutionName, IEnumerable<string> newAdditionalServices, IEnumerable<string>? newAssociatedServices, IEnumerable<string>? oldAdditionalServices)
         {
-
             var orderId = OrderID();
-            var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder();
+            var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder(orderId);
 
             TaskList.EditSolutionsAndServicesTask(isAssociatedServiceOnlyOrder);
 
@@ -468,9 +469,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         public void EditAssociatedService(string solutionName, IEnumerable<string> newAssociatedServices, IEnumerable<string>? additionalServices, IEnumerable<string>? oldAssociatedServices)
         {
-
             var orderId = OrderID();
-            var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder();
+            var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder(orderId);
 
             TaskList.EditSolutionsAndServicesTask(isAssociatedServiceOnlyOrder);
 
@@ -505,7 +505,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         public void EditAssociatedServiceOnly(string solutionName, IEnumerable<string> newAssociatedServices, IEnumerable<string> oldAssociatedServices)
         {
-            var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder();
+            var orderId = OrderID();
+            var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder(orderId);
 
             TaskList.EditSolutionsAndServicesTask(isAssociatedServiceOnlyOrder);
 
@@ -527,7 +528,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         public void EditCatalogueSolutionServiceRecipient(string solutionName)
         {
-            TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder());
+            var orderId = OrderID();
+            TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder(orderId));
 
             SelectEditCatalogueSolutionServiceRecipients.EditCatalogueSolutionServiceRecipient(solutionName);
             ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
@@ -539,14 +541,16 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         public void EditCatalogueSolutionPrice(string solutionName)
         {
-            TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder());
+            var orderId = OrderID();
+            TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder(orderId));
 
             SelectEditAndConfirmPrices.EditCatalogueSolutionPrice(solutionName);
         }
 
         public void EditAdditionalServiceRecipient(string additionalServiceName)
         {
-            TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder());
+            var orderId = OrderID();
+            TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder(orderId));
 
             SelectEditAdditionalServiceRecipients.EditAdditionalServiceRecipient(additionalServiceName);
             ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
@@ -558,21 +562,24 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         public void EditAdditionalServicePrice(string additionalServiceName)
         {
-            TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder());
+            var orderId = OrderID();
+            TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder(orderId));
 
             SelectEditAndConfirmAdditionalServicePrice.EditAdditionalServicePrice(additionalServiceName);
         }
 
         public void EditCatalogueItemQuantity(string catalogueItemName)
         {
-            TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder());
+            var orderId = OrderID();
+            TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder(orderId));
 
             Quantity.EditQuantity(catalogueItemName);
         }
 
         public void EditAssociatedServiceRecipient(string associatedServiceName)
         {
-            TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder());
+            var orderId = OrderID();
+            TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder(orderId));
 
             SelectEditAssociatedServiceRecipents.EditServiceRecipient(associatedServiceName);
             ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
@@ -582,14 +589,16 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         public void EditAssociatedServicePrice(string associatedServiceName)
         {
-            TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder());
+            var orderId = OrderID();
+            TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder(orderId));
 
             SelectEditAndConfirmAssociatedServicePrices.EditAssociatedServicePrice(associatedServiceName);
         }
 
         public void EditAssociatedServiceOnlyServiceRecipients(string associatedServiceName)
         {
-            TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder());
+            var orderId = OrderID();
+            TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder(orderId));
 
             SelectEditAssociatedServiceRecipientOnly.EditServiceRecipient(associatedServiceName);
             ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
@@ -599,7 +608,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         public void EditAssociatedServiceOnlyPrice(string associatedServiceName)
         {
-            TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder());
+            var orderId = OrderID();
+            TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder(orderId));
 
             SelectEditAndConfirmAssociatedServiceOnlyPrices.EditPrice(associatedServiceName);
         }
@@ -625,13 +635,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             SelectEditCatalogueSolution.SelectSolution(solutionName, additionalServices);
         }
 
-        private bool IsAssociatedServiceOnlyOrder()
+        private bool IsAssociatedServiceOnlyOrder(int orderId)
         {
             using var dbContext = Factory.DbContext;
 
-            var callOffId = CallOffId.Parse(Driver.Url.Split('/').Last()).Id;
+            var result = dbContext.Orders
+               .Any(o => o.Id == orderId && o.AssociatedServicesOnly == true);
 
-            return dbContext.Order(callOffId).Result.AssociatedServicesOnly;
+            return result;
         }
 
         private int OrderID()
@@ -648,9 +659,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         {
             using var dbContext = Factory.DbContext;
 
-            //var callOffId = CallOffId.Parse(Driver.Url.Split('/').Last()).Id;
-            //var orderId = dbContext.OrderId(callOffId).Result;
-
             var frameworks = dbContext.OrderItems
                 .Where(oi => oi.OrderId == orderId)
                 .SelectMany(oi => oi.CatalogueItem.Solution.FrameworkSolutions.Select(fs => fs.Framework))
@@ -662,9 +670,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         private bool IsLocalFundingOnly(int orderId)
         {
             using var dbContext = Factory.DbContext;
-
-            //var callOffId = CallOffId.Parse(Driver.Url.Split('/').Last()).Id;
-            //var orderId = dbContext.OrderId(callOffId).Result;
 
             var frameworks = dbContext.OrderItems
                 .Where(oi => oi.OrderId == orderId)
@@ -697,10 +702,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         {
             using var dbContext = Factory.DbContext;
 
-            //var index = Driver.Url.Split('/').Length - 2;
-            //var callOffId = CallOffId.Parse(Driver.Url.Split('/').ElementAt(index)).Id;
-            //var orderId = dbContext.OrderId(callOffId).Result;
-
             var result = dbContext.Orders
                 .Any(o => o.Id == orderId
                     && o.OrderItems.Any(i => i.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService));
@@ -711,13 +712,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         private bool HasTheOriginalOrderAssociatedService(int orderId)
         {
             using var dbContext = Factory.DbContext;
-
-            //var index = Driver.Url.Split('/').Count() - 2;
-
-            //var orderID = Driver.Url.Split('/').ElementAt(index).Split('-')[0].Replace("C0", string.Empty);
-
-            //var result = dbContext.Orders
-            //    .Any(o => string.Equals(o.Id.ToString(), orderId) && o.OrderItems.Any(i => i.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService));
 
             var result = dbContext.Orders
                 .Any(o => o.Id == orderId
