@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
     public class AddNominatedOrganisation : AuthorityTestBase, IDisposable
     {
         private const int OrganisationId = 1;
-        private const string ValidOrganisationId = "CG-15F";
+        private const string ValidOrganisationId = "IB-QWO";
 
         private static readonly Dictionary<string, string> Parameters = new()
         {

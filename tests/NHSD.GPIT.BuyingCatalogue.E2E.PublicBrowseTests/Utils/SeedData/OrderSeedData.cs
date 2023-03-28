@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 AddAssociatedServicesOnlyOrderWithOnePopulatedOrderItem(context),
                 AddOrderReadyToComplete(context),
                 AddCompletedOrder(context, 90010, GetOrganisationId(context)),
-                AddCompletedOrder(context, 90011, GetOrganisationId(context, "CG-15F")),
+                AddCompletedOrder(context, 90011, GetOrganisationId(context)),
                 AddCompletedOrder(context, 90030, GetOrganisationId(context)),
                 AddCompletedOrder(context, 90031, GetOrganisationId(context)),
                 AddCompletedOrder(context, 90032, GetOrganisationId(context)),
@@ -1856,7 +1856,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
         {
             const int orderId = 95000;
             var timeNow = DateTime.UtcNow;
-            var organisation = GetOrganisationId(context, "CG-15H");
+            var organisation = GetOrganisationId(context);
             var user = GetAccountManagerUser(context, organisation);
 
             var order = new Order
@@ -1874,7 +1874,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             return order;
         }
 
-        private static int GetOrganisationId(BuyingCatalogueDbContext context, string internalOrgId = "CG-03F")
+        private static int GetOrganisationId(BuyingCatalogueDbContext context, string internalOrgId = "IB-QWO")
         {
             return context.Organisations.First(o => o.InternalIdentifier == internalOrgId).Id;
         }

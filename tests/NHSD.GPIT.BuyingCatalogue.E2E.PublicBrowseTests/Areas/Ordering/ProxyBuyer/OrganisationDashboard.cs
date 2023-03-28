@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.ProxyBuyer
     [Collection(nameof(OrderingCollection))]
     public sealed class OrganisationDashboard : BuyerTestBase
     {
-        private const string InternalOrgId = "CG-15F";
+        private const string InternalOrgId = "IB-QWO";
 
         private static readonly Dictionary<string, string> Parameters =
             new()

@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
     public sealed class CallOffPartyInformation
         : BuyerTestBase
     {
-        private const string InternalOrgId = "CG-03F";
+        private const string InternalOrgId = "IB-QWO";
         private static readonly CallOffId CallOffId = new(90001, 1);
 
         private static readonly Dictionary<string, string> Parameters =

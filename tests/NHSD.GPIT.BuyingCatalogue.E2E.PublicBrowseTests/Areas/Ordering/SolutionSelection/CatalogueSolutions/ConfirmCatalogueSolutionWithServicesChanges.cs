@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
     [Collection(nameof(OrderingCollection))]
     public class ConfirmCatalogueSolutionWithServicesChanges : BuyerTestBase, IDisposable
     {
-        private const string InternalOrgId = "CG-03F";
+        private const string InternalOrgId = "IB-QWO";
         private const int OrderId = 91012;
         private static readonly CallOffId CallOffId = new(OrderId, 1);
 

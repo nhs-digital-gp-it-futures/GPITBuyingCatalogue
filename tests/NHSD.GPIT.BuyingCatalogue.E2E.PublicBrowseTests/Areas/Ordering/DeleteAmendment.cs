@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
     [Collection(nameof(OrderingCollection))]
     public sealed class DeleteAmendment : BuyerTestBase, IDisposable
     {
-        private const string InternalOrgId = "CG-03F";
+        private const string InternalOrgId = "IB-QWO";
         private static readonly CallOffId CallOffId = new(90030, 2);
 
         private static readonly Dictionary<string, string> Parameters = new()

@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DeliveryDa
     public class Review : BuyerTestBase
     {
         private const int OrderId = 91007;
-        private const string InternalOrgId = "CG-03F";
+        private const string InternalOrgId = "IB-QWO";
         private const string SolutionName = "E2E With Contact Multiple Prices";
         private const string AdditionalServiceName = "E2E No Contact Single Price Additional Service";
         private static readonly CallOffId CallOffId = new(OrderId, 1);

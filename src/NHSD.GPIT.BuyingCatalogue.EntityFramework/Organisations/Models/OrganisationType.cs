@@ -12,5 +12,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models
         [Display(Name = "Executive Agency")]
         [EnumMember(Value = "EA")]
         EA = 2,
+
+        [Display(Name = "Integrated Care Board")]
+        [EnumMember(Value = "IB")]
+        IB = 3,
     }
 }
