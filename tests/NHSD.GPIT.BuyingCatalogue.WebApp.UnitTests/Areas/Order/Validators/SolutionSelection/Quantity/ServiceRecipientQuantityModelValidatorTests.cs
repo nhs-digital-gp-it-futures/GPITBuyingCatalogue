@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Solu
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(x => x.InputQuantity)
-                .WithErrorMessage(ServiceRecipientQuantityModelValidator.ValueNotEnteredErrorMessage);
+                .WithErrorMessage(string.Format(ServiceRecipientQuantityModelValidator.ValueNotEnteredErrorMessage, model.Name));
         }
 
         [Theory]
@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Solu
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(x => x.InputQuantity)
-                .WithErrorMessage(ServiceRecipientQuantityModelValidator.ValueNotNumericErrorMessage);
+                .WithErrorMessage(string.Format(ServiceRecipientQuantityModelValidator.ValueNotNumericErrorMessage, model.Name));
         }
 
         [Theory]
@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Solu
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(x => x.InputQuantity)
-                .WithErrorMessage(ServiceRecipientQuantityModelValidator.ValueNotAnIntegerErrorMessage);
+                .WithErrorMessage(string.Format(ServiceRecipientQuantityModelValidator.ValueNotAnIntegerErrorMessage,model.Name));
         }
 
         [Theory]
@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Solu
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(x => x.InputQuantity)
-                .WithErrorMessage(ServiceRecipientQuantityModelValidator.ValueNegativeErrorMessage);
+                .WithErrorMessage(string.Format(ServiceRecipientQuantityModelValidator.ValueNegativeErrorMessage,model.Name));
         }
 
         [Theory]

@@ -1,36 +1,38 @@
-﻿using FluentValidation;
+﻿using System.Collections.Generic;
+using FluentValidation;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Quantity;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.SolutionSelection.Quantity
 {
     public class ServiceRecipientQuantityModelValidator : AbstractValidator<ServiceRecipientQuantityModel>
     {
-        public const string ValueNotEnteredErrorMessage = "Enter a quantity for this organisation";
-        public const string ValueNotNumericErrorMessage = "Quantity must be a number";
-        public const string ValueNotAnIntegerErrorMessage = "Quantity must be a whole number";
-        public const string ValueNegativeErrorMessage = "Quantity must be greater than zero";
+        public const string ValueNotEnteredErrorMessage = "Enter a practice list size for {0}";
+        public const string ValueNotNumericErrorMessage = "Practice list size for {0} must be a number";
+        public const string ValueNotAnIntegerErrorMessage = "Practice list size for {0} must be a whole number";
+        public const string ValueNegativeErrorMessage = "Practice list size for {0} must be greater than zero";
 
         public ServiceRecipientQuantityModelValidator()
-        {
-            RuleFor(x => x)
+            {
+                RuleFor(x => x)
                 .Cascade(CascadeMode.Stop)
 
-                .Must(HaveAValue)
-                .OverridePropertyName(x => x.InputQuantity)
-                .WithMessage(ValueNotEnteredErrorMessage)
+                    .Must(HaveAValue)
+                    .OverridePropertyName(x => x.InputQuantity)
+                    .WithMessage(model => string.Format(ValueNotEnteredErrorMessage, model.Name))
 
-                .Must(HaveANumericValue)
-                .OverridePropertyName(x => x.InputQuantity)
-                .WithMessage(ValueNotNumericErrorMessage)
+                    .Must(HaveANumericValue)
+                    .OverridePropertyName(x => x.InputQuantity)
+                    .WithMessage(model => string.Format(ValueNotNumericErrorMessage, model.Name))
 
-                .Must(HaveAnIntegerValue)
-                .OverridePropertyName(x => x.InputQuantity)
-                .WithMessage(ValueNotAnIntegerErrorMessage)
+                    .Must(HaveAnIntegerValue)
+                    .OverridePropertyName(x => x.InputQuantity)
+                    .WithMessage(model => string.Format(ValueNotAnIntegerErrorMessage, model.Name))
 
-                .Must(HaveAPositiveValue)
-                .OverridePropertyName(x => x.InputQuantity)
-                .WithMessage(ValueNegativeErrorMessage);
-        }
+                    .Must(HaveAPositiveValue)
+                    .OverridePropertyName(x => x.InputQuantity)
+                    .WithMessage(model => string.Format(ValueNegativeErrorMessage, model.Name));
+            }
 
         private static bool HaveAValue(ServiceRecipientQuantityModel model) => !string.IsNullOrWhiteSpace(model.InputQuantity);
 
@@ -39,5 +41,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.SolutionSelec
         private static bool HaveAPositiveValue(ServiceRecipientQuantityModel model) => int.Parse(model.InputQuantity) > 0;
 
         private bool HaveANumericValue(ServiceRecipientQuantityModel model) => decimal.TryParse(model.InputQuantity, out _);
+        }
     }
-}
