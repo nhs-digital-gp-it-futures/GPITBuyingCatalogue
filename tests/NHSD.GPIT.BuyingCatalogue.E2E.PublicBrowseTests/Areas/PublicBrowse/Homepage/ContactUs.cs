@@ -9,7 +9,8 @@ using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
 {
-    public sealed class ContactUs : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(SharedContextCollection))]
+    public sealed class ContactUs : AnonymousTestBase
     {
         public ContactUs(LocalWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
                : base(

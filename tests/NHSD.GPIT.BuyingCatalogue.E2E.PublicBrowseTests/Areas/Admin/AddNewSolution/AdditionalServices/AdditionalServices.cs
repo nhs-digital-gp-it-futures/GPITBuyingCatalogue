@@ -13,7 +13,8 @@ using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.AdditionalServices
 {
-    public sealed class AdditionalServices : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(AdminCollection))]
+    public sealed class AdditionalServices : AuthorityTestBase
     {
         private static readonly CatalogueItemId SolutionId = new(99999, "001");
         private static readonly CatalogueItemId SolutionIdNoAdditionalService = new(99997, "001");

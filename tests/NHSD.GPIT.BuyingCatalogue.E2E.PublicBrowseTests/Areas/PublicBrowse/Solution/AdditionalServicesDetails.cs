@@ -17,7 +17,8 @@ using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 {
-    public sealed class AdditionalServicesDetails : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(SharedContextCollection))]
+    public sealed class AdditionalServicesDetails : AnonymousTestBase, IDisposable
     {
         private static readonly CatalogueItemId SolutionId = new(99999, "001");
 

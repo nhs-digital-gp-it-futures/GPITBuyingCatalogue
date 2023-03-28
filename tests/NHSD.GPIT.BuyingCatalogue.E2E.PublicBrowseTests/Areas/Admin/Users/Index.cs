@@ -14,7 +14,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
 {
-    public class Index : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(AdminCollection))]
+    public class Index : AuthorityTestBase
     {
         public Index(LocalWebApplicationFactory factory)
             : base(factory, typeof(UsersController), nameof(UsersController.Index))

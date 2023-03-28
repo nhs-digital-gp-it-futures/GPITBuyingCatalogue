@@ -17,7 +17,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
 {
-    public class Add : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(AdminCollection))]
+    public class Add : AuthorityTestBase, IDisposable
     {
         private const string NhsDigitalOrganisationName = "NHS Digital";
         private const string ValidEmailAddress = "a@nhs.net";

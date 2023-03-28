@@ -10,7 +10,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.EmailDomainManagement;
 
-public class AddEmailDomain : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+[Collection(nameof(AdminCollection))]
+public class AddEmailDomain : AuthorityTestBase
 {
     public AddEmailDomain(LocalWebApplicationFactory factory)
     : base(

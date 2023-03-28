@@ -13,7 +13,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Tiered
 {
-    public abstract class ListPriceTypeBase : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(AdminCollection))]
+    public abstract class ListPriceTypeBase : AuthorityTestBase
     {
         protected ListPriceTypeBase(
             LocalWebApplicationFactory factory,

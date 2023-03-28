@@ -15,7 +15,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
 {
-    public class AddNominatedOrganisation : AccountManagerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(AccountManagementCollection))]
+    public class AddNominatedOrganisation : AccountManagerTestBase, IDisposable
     {
         private const int OrganisationId = 176;
 

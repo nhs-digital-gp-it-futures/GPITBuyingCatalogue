@@ -12,7 +12,8 @@ using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.ProcurementHub
 {
-    public sealed class Index : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(SharedContextCollection))]
+    public sealed class Index : AnonymousTestBase
     {
         private const string PrivacyPolicyLabelText = "I have read and understood the privacy policy";
 

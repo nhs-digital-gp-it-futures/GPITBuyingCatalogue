@@ -10,7 +10,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.EmailDomainManagement;
 
-public class DeleteEmailDomain : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+[Collection(nameof(AdminCollection))]
+public class DeleteEmailDomain : AuthorityTestBase
 {
     private const int Id = 1;
     private static readonly Dictionary<string, string> Parameters = new() { { nameof(Id), Id.ToString() }, };

@@ -10,7 +10,8 @@ using CommonSelectors = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Com
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.HostingTypes
 {
-    public sealed class EditOnPremiseHostingType : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(AdminCollection))]
+    public sealed class EditOnPremiseHostingType : AuthorityTestBase
     {
         private static readonly CatalogueItemId SolutionId = new(99999, "001");
 

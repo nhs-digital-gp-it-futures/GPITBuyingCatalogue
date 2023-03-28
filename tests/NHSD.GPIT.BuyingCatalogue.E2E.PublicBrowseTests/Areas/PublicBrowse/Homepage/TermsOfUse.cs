@@ -14,9 +14,9 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
 {
+    [Collection(nameof(SharedContextCollection))]
     public sealed class TermsOfUse :
         AnonymousTestBase,
-        IClassFixture<LocalWebApplicationFactory>,
         IDisposable
     {
         public TermsOfUse(LocalWebApplicationFactory factory)

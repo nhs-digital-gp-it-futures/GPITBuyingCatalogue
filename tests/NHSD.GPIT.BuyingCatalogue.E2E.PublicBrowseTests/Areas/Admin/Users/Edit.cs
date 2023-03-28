@@ -21,7 +21,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
 {
-    public class Edit : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(AdminCollection))]
+    public class Edit : AuthorityTestBase, IDisposable
     {
         private const int UserId = 5;
 

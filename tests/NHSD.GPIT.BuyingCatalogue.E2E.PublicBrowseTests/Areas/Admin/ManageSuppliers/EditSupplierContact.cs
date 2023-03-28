@@ -15,7 +15,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
 {
-    public sealed class EditSupplierContact : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(AdminCollection))]
+    public sealed class EditSupplierContact : AuthorityTestBase
     {
         private const int SupplierId = 99998;
         private const int ContactId = 3;

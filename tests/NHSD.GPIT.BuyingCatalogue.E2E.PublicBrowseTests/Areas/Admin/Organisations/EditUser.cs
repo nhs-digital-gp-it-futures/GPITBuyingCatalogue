@@ -19,7 +19,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 {
-    public sealed class EditUser : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(AdminCollection))]
+    public sealed class EditUser : AuthorityTestBase, IDisposable
     {
         private const int NhsDigitalOrganisationId = 1;
         private const int OrganisationId = 176;

@@ -10,6 +10,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
 {
+    [Collection(nameof(SharedContextCollection))]
     public sealed class Login : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         private const string EmailError = "Enter your email address";

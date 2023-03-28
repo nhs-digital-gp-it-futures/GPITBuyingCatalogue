@@ -13,7 +13,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
 {
-    public sealed class ViewOrder : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(AdminCollection))]
+    public sealed class ViewOrder : AuthorityTestBase
     {
         private static readonly CallOffId CallOffId = new(90010, 1);
 

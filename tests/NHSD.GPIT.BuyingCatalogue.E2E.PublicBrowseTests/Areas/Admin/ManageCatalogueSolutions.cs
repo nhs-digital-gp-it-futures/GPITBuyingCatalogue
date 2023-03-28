@@ -13,7 +13,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
 {
-    public sealed class ManageCatalogueSolutions : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(AdminCollection))]
+    public sealed class ManageCatalogueSolutions : AuthorityTestBase
     {
         public ManageCatalogueSolutions(LocalWebApplicationFactory factory)
             : base(

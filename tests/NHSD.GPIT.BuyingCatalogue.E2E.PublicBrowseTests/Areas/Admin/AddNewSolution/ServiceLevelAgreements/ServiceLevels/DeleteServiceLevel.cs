@@ -15,7 +15,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceLevelAgreements
 {
-    public sealed class DeleteServiceLevel : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(AdminCollection))]
+    public sealed class DeleteServiceLevel : AuthorityTestBase
     {
         private const int CancelLinkServiceLevelId = 2;
         private const int ServiceLevelId = 3;

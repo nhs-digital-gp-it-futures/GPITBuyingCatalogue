@@ -9,7 +9,8 @@ using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
 {
-    public sealed class ManageSuppliers : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(AdminCollection))]
+    public sealed class ManageSuppliers : AuthorityTestBase
     {
         private const int TargetSupplierId = 99998;
         private const int ActiveSupplierId = 99997;

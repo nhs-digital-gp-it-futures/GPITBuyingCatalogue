@@ -18,7 +18,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
 {
-    public sealed class EditUser : AccountManagerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(AccountManagementCollection))]
+    public sealed class EditUser : AccountManagerTestBase, IDisposable
     {
         private const int OrganisationId = 176;
         private const int UserId = 5;

@@ -14,6 +14,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
 {
+    [Collection(nameof(SharedContextCollection))]
     public sealed class UpdatePassword : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
     {
         private const string ValidPassword = "Pass123$$$$$$";

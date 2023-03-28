@@ -14,7 +14,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base
 {
-    public abstract class ManageListPricesBase : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(AdminCollection))]
+    public abstract class ManageListPricesBase : AuthorityTestBase
     {
         protected ManageListPricesBase(
             LocalWebApplicationFactory factory,

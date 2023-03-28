@@ -12,7 +12,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Filtering
 {
-    public class FilterCapabilities : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(SharedContextCollection))]
+    public class FilterCapabilities : BuyerTestBase
     {
         public FilterCapabilities(LocalWebApplicationFactory factory)
             : base(factory, typeof(FilterController), nameof(FilterController.FilterCapabilities), null)

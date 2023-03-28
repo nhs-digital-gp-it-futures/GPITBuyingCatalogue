@@ -16,7 +16,8 @@ using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
 {
-    public sealed class Dashboard : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(AdminCollection))]
+    public sealed class Dashboard : AuthorityTestBase
     {
         public Dashboard(LocalWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
             : base(
