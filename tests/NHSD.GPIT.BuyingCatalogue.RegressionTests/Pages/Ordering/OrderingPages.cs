@@ -151,6 +151,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         public void StepTwoAddSolutionsAndServices(string solutionName, IEnumerable<string>? additionalServices, IEnumerable<string>? associatedServices, bool multipleServiceRecipients = false, bool importServiceRecipients = false, string fileName = "")
         {
+
+            var orderId = OrderID;
             var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder();
 
             TaskList.SelectSolutionsAndServicesTask(isAssociatedServiceOnlyOrder);
@@ -248,7 +250,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             TaskList.SelectPlannedDeliveryDatesTask();
             PlannedDeliveryDates.PlannedDeliveryDate(solutionName, isAssociatedServiceOnlyOrder, associatedServices, additionalServices);
 
-            var isMultiFramework = IsMultiFramework();
+            var isMultiFramework = IsMultiFramework(orderId);
 
             if (isMultiFramework)
             {
@@ -628,12 +630,22 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             return dbContext.Order(callOffId).Result.AssociatedServicesOnly;
         }
 
-        private bool IsMultiFramework()
+        private int OrderID()
         {
             using var dbContext = Factory.DbContext;
 
             var callOffId = CallOffId.Parse(Driver.Url.Split('/').Last()).Id;
             var orderId = dbContext.OrderId(callOffId).Result;
+
+            return orderId;
+        }
+
+        private bool IsMultiFramework(int orderId)
+        {
+            using var dbContext = Factory.DbContext;
+
+            //var callOffId = CallOffId.Parse(Driver.Url.Split('/').Last()).Id;
+            //var orderId = dbContext.OrderId(callOffId).Result;
 
             var frameworks = dbContext.OrderItems
                 .Where(oi => oi.OrderId == orderId)
