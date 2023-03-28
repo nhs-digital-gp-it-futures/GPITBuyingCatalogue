@@ -32,7 +32,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.SolutionSelec
                 .Must(HaveAPositiveValue)
                 .OverridePropertyName(x => x.InputQuantity)
                 .WithMessage(model => string.Format(ValueNegativeErrorMessage, model.Name));
-
         }
 
         private static bool HaveAValue(ServiceRecipientQuantityModel model) => !string.IsNullOrWhiteSpace(model.InputQuantity);
@@ -42,5 +41,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.SolutionSelec
         private static bool HaveAPositiveValue(ServiceRecipientQuantityModel model) => int.Parse(model.InputQuantity) > 0;
 
         private bool HaveANumericValue(ServiceRecipientQuantityModel model) => decimal.TryParse(model.InputQuantity, out _);
-        }
     }
+}
