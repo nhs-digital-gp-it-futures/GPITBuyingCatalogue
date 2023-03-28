@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
     [Collection(nameof(OrderingCollection))]
     public sealed class SelectFramework : BuyerTestBase, IDisposable
     {
-        private const string InternalOrgId = "CG-03F";
+        private const string InternalOrgId = "IB-QWO";
         private static readonly CallOffId CallOffIdMultipleFrameworks = new(90020, 1);
         private static readonly CallOffId CallOffIdSingleFramework = new(90021, 1);
         private static readonly CallOffId CallOffIdExistingFramework = new(90009, 1);

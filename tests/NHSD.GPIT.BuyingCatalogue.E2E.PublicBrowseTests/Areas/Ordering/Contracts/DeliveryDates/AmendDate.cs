@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DeliveryDa
     public class AmendDate : BuyerTestBase, IDisposable
     {
         private const int OrderNumber = 90031;
-        private const string InternalOrgId = "CG-03F";
+        private const string InternalOrgId = "IB-QWO";
         private static readonly CallOffId CallOffId = new(OrderNumber, 2);
         private static readonly CatalogueItemId CatalogueItemId = new(99998, "001A99");
         private static readonly RoutingSource Source = RoutingSource.TaskList;

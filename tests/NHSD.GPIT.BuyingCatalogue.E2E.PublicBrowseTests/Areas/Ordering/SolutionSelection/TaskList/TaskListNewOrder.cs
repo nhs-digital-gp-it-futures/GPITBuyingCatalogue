@@ -7,7 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ta
 {
     public class TaskListNewOrder : TaskListBase
     {
-        private const string InternalOrgId = "CG-03F";
+        private const string InternalOrgId = "IB-QWO";
         private const int OrderId = 90000;
         private static readonly CallOffId CallOffId = new(OrderId, 1);
 

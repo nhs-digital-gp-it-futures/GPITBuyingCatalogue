@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
             };
 
-            var bobOdsOrganisation = new OdsOrganisation
+            var nhsEnglandOrganisation = new OdsOrganisation
             {
                 Id = "X26",
                 Name = "NHS ENGLAND - X26",
@@ -107,7 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
             };
 
-            var sueOdsOrganisation = new OdsOrganisation
+            var sublocationOrganisation = new OdsOrganisation
             {
                 Id = "03F",
                 Name = "NHS HUMBER AND NORTH YORKSHIRE ICB - 03F",
@@ -127,7 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     .ToList(),
             };
 
-            var aliceOdsOrganisation = new OdsOrganisation
+            var sublocationOrganisation2 = new OdsOrganisation
             {
                 Id = "15F",
                 Name = "NHS WEST YORKSHIRE ICB - 15F",
@@ -147,7 +147,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     .ToList(),
             };
 
-            var daveOdsOrganisation = new OdsOrganisation
+            var commHubOrganisation = new OdsOrganisation
             {
                 Id = "15H",
                 Name = "SOUTH WEST NORTH COMMISSIONING HUB",
@@ -191,10 +191,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 new OdsOrganisation() { Id = "VLRE8", Name = "ST PHILIPS CLOSE (CARE HOME)", AddressLine1 = "MIDDLETON", Town = "LEEDS", Postcode = "LS10 3TR", Country = "ENGLAND", IsActive = true, },
                 gpPracticeOrganisation1,
                 gpPracticeOrganisation2,
-                bobOdsOrganisation,
-                sueOdsOrganisation,
-                aliceOdsOrganisation,
-                daveOdsOrganisation,
+                nhsEnglandOrganisation,
+                sublocationOrganisation,
+                sublocationOrganisation2,
+                commHubOrganisation,
             };
 
             context.AddRange(organisations);

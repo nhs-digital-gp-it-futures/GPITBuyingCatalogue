@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.ProxyBuyer
     public sealed class OrderReadyToStart
         : BuyerTestBase
     {
-        private const string InternalOrgId = "CG-15F";
+        private const string InternalOrgId = "IB-QWO";
 
         private static readonly Dictionary<string, string> Parameters =
             new()

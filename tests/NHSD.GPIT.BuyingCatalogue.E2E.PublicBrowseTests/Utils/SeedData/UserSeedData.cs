@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var adminRole = context.Roles.First(r => r.Name == OrganisationFunction.Authority.Name);
             var accountManagerRole = context.Roles.First(r => r.Name == OrganisationFunction.AccountManager.Name);
 
-            var bobOrganisation = new Organisation
+            var adminOrganisation = new Organisation
             {
                 Id = 1,
                 Name = "NHS ENGLAND - X26",
@@ -51,24 +51,28 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 LastUpdated = DateTime.UtcNow,
             };
 
-            var sueOrganisation = new Organisation
+            var ICBOrganisation = new Organisation
             {
                 Id = 77,
-                Name = "NHS Hull CCG",
+                Name = "NHS WEST YORKSHIRE INTEGRATED CARE BOARD",
                 Address = new Address
                 {
-                    Line1 = "WILBERFORCE COURT",
-                    Line2 = "ALFRED GELDER STREET",
-                    Town = "HULL",
-                    Postcode = "HU1 1UY",
+                    Line1 = "WHITE ROSE HOUSE",
+                    Town = "WAKEFIELD",
+                    Postcode = "WF1 1LT",
                     Country = "ENGLAND",
                 },
-                InternalIdentifier = "CG-03F",
-                ExternalIdentifier = "03F",
-                OrganisationType = OrganisationType.CCG,
-                PrimaryRoleId = "RO98",
+                InternalIdentifier = "IB-QWO",
+                ExternalIdentifier = "QWO",
+                OrganisationType = OrganisationType.IB,
+                PrimaryRoleId = "RO261",
                 CatalogueAgreementSigned = false,
                 LastUpdated = DateTime.UtcNow,
+                RelatedOrganisationOrganisations = new HashSet<RelatedOrganisation>
+                {
+                    new RelatedOrganisation(83, 2),
+                    new RelatedOrganisation(83, 3),
+                },
             };
 
             var aliceOrganisation = new Organisation
@@ -96,28 +100,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     new RelatedOrganisation(83, 2),
                     new RelatedOrganisation(83, 3),
                 },
-            };
-
-            var daveOrganisation = new Organisation
-            {
-                Id = 176,
-                Name = "South West North Commissioning Hub",
-                Address = new Address
-                {
-                    Line1 = "NHS ENGLAND",
-                    Line2 = "QUARRY HOUSE",
-                    Line3 = "QUARRY HILL",
-                    Town = "LEEDS",
-                    County = "WEST YORKSHIRE",
-                    Postcode = "LS2 7UE",
-                    Country = "ENGLAND",
-                },
-                InternalIdentifier = "CG-15H",
-                ExternalIdentifier = "15H",
-                OrganisationType = OrganisationType.CCG,
-                PrimaryRoleId = "RO98",
-                CatalogueAgreementSigned = false,
-                LastUpdated = DateTime.UtcNow,
             };
 
             // Organisations
@@ -172,7 +154,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 new Organisation { Id = 188, Name = "NHS Central Midlands Commissioning Support Unit", Address = new Address { Line1 = "KINGSTON HOUSE", Line2 = "438 HIGH STREET", Town = "WEST BROMWICH", County = "WEST MIDLANDS", Postcode = "B70 9LD", Country = "ENGLAND" }, PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow, ExternalIdentifier = "0AD", InternalIdentifier = "CG-0AD", OrganisationType = OrganisationType.CCG },
                 new Organisation { Id = 189, Name = "NHS Central Southern Commissioning Support Unit", Address = new Address { Line1 = "OXFORD ROAD", Town = "NEWBURY", County = "BERKSHIRE", Postcode = "RG14 1PA", Country = "ENGLAND" }, PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow, ExternalIdentifier = "0AE", InternalIdentifier = "CG-0AE", OrganisationType = OrganisationType.CCG },
                 new Organisation { Id = 190, Name = "NHS Cheshire and Merseyside Commissioning Support Unit", Address = new Address { Line1 = "65 STEPHENSON WAY", Line2 = "WAVERTREE", Line3 = "TECHNOLOGY PARK", Town = "LIVERPOOL", County = "MERSEYSIDE", Postcode = "L13 1HN", Country = "ENGLAND" }, PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow, ExternalIdentifier = "0CE", InternalIdentifier = "CG-0CE", OrganisationType = OrganisationType.CCG },
-                bobOrganisation,
+                adminOrganisation,
                 new Organisation { Id = 46, Name = "NHS Chorley and South Ribble CCG", Address = new Address { Line1 = "CHORLEY HOUSE", Line2 = "LANCASHIRE ENTERPRISE BUSINESS PARK", Line3 = "CENTURION WAY", Town = "LEYLAND", County = "LANCASHIRE", Postcode = "PR26 6TT", Country = "ENGLAND" }, PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow, ExternalIdentifier = "00X", InternalIdentifier = "CG-00X", OrganisationType = OrganisationType.CCG },
                 new Organisation { Id = 47, Name = "NHS City and Hackney CCG", Address = new Address { Line1 = "3RD FLOOR A BLOCK", Line2 = "ST LEONARDS HOSPITAL", Line3 = "NUTTALL STREET", Town = "LONDON", County = "GREATER LONDON", Postcode = "N1 5LZ", Country = "ENGLAND" }, PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow, ExternalIdentifier = "07T", InternalIdentifier = "CG-07T", OrganisationType = OrganisationType.CCG },
                 new Organisation { Id = 48, Name = "NHS County Durham CCG", Address = new Address { Line1 = "SALTERS LANE", Line2 = "SEDGEFIELD", Town = "STOCKTON-ON-TEES", Postcode = "TS21 3EE", Country = "ENGLAND" }, PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow, ExternalIdentifier = "84H", InternalIdentifier = "CG-84H", OrganisationType = OrganisationType.CCG },
@@ -205,7 +187,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 new Organisation { Id = 74, Name = "NHS Heywood, Middleton and Rochdale CCG", Address = new Address { Line1 = "3RD FLOOR", Line2 = "NUMBER ONE RIVERSIDE", Line3 = "SMITH STREET", Town = "ROCHDALE", Postcode = "OL16 1XU", Country = "ENGLAND" }, PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow, ExternalIdentifier = "01D", InternalIdentifier = "CG-01D", OrganisationType = OrganisationType.CCG },
                 new Organisation { Id = 75, Name = "NHS Hillingdon CCG", Address = new Address { Line1 = "BOUNDARY HOUSE", Line2 = "CRICKET FIELD ROAD", Town = "UXBRIDGE", County = "GREATER LONDON", Postcode = "UB8 1QG", Country = "ENGLAND" }, PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow, ExternalIdentifier = "08G", InternalIdentifier = "CG-08G", OrganisationType = OrganisationType.CCG },
                 new Organisation { Id = 76, Name = "NHS Hounslow CCG", Address = new Address { Line1 = "HOUNSLOW HOUSE", Line2 = "5TH FLOOR", Line3 = "7 BATH ROAD", Town = "HOUNSLOW", Postcode = "TW3 3EB", Country = "ENGLAND" }, PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow, ExternalIdentifier = "07Y", InternalIdentifier = "CG-07Y", OrganisationType = OrganisationType.CCG },
-                sueOrganisation,
+                ICBOrganisation,
                 new Organisation { Id = 78, Name = "NHS Ipswich and East Suffolk CCG", Address = new Address { Line1 = "ENDEAVOUR HOUSE", Line2 = "RUSSELL ROAD", Town = "IPSWICH", Postcode = "IP1 2BX", Country = "ENGLAND" }, PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow, ExternalIdentifier = "06L", InternalIdentifier = "CG-06L", OrganisationType = OrganisationType.CCG },
                 new Organisation { Id = 79, Name = "NHS Isle of Wight CCG", Address = new Address { Line1 = "UNIT A", Line2 = "THE APEX", Line3 = "ST CROSS BUSINESS PARK", Town = "NEWPORT", Postcode = "PO30 5XW", Country = "ENGLAND" }, PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow, ExternalIdentifier = "10L", InternalIdentifier = "CG-10L", OrganisationType = OrganisationType.CCG },
                 new Organisation { Id = 80, Name = "NHS Kent and Medway CCG", Address = new Address { Line1 = "WHARF HOUSE", Line2 = "MEDWAY WHARF ROAD", Town = "TONBRIDGE", Postcode = "TN9 1RE", Country = "ENGLAND" }, PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow, ExternalIdentifier = "91Q", InternalIdentifier = "CG-91Q", OrganisationType = OrganisationType.CCG },
@@ -316,7 +298,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 new Organisation { Id = 174, Name = "South East – H&J Commissioning Hub", Address = new Address { Line1 = "C/O NHS ENGLAND", Line2 = "1W09, 1ST FLOOR, QUARRY HOUSE", Line3 = "QUARRY HILL", Town = "LEEDS", Postcode = "LS2 7UA", Country = "ENGLAND" }, PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow, ExternalIdentifier = "97T", InternalIdentifier = "CG-97T", OrganisationType = OrganisationType.CCG },
                 new Organisation { Id = 173, Name = "South East Commissioning Hub", Address = new Address { Line1 = "C/O NHS ENGLAND, 1W09, 1ST FLOOR", Line2 = "QUARRY HOUSE", Line3 = "QUARRY HILL", Town = "LEEDS", County = "WEST YORKSHIRE", Postcode = "LS2 7UE", Country = "ENGLAND" }, PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow, ExternalIdentifier = "14G", InternalIdentifier = "CG-14G", OrganisationType = OrganisationType.CCG },
                 new Organisation { Id = 175, Name = "South West Commissioning Hub", Address = new Address { Line1 = "C/O NHS ENGLAND, 1W09, 1ST FLOOR", Line2 = "QUARRY HOUSE", Line3 = "QUARRY HILL", Town = "LEEDS", County = "WEST YORKSHIRE", Postcode = "LS2 7UE", Country = "ENGLAND" }, PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow, ExternalIdentifier = "14F", InternalIdentifier = "CG-14F", OrganisationType = OrganisationType.CCG },
-                daveOrganisation,
                 new Organisation { Id = 178, Name = "South West South – H&J Commissioning Hub", Address = new Address { Line1 = "C/O NHS ENGLAND", Line2 = "1W09, 1ST FLOOR, QUARRY HOUSE", Line3 = "QUARRY HILL", Town = "LEEDS", County = "WEST YORKSHIRE", Postcode = "LS2 7UE", Country = "ENGLAND" }, PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow, ExternalIdentifier = "14T", InternalIdentifier = "CG-14T", OrganisationType = OrganisationType.CCG },
                 new Organisation { Id = 177, Name = "South West South Commissioning Hub", Address = new Address { Line1 = "NHS ENGLAND", Line2 = "QUARRY HOUSE", Line3 = "QUARRY HILL", Town = "LEEDS", County = "WEST YORKSHIRE", Postcode = "LS2 7UE", Country = "ENGLAND" }, PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow, ExternalIdentifier = "15G", InternalIdentifier = "CG-15G", OrganisationType = OrganisationType.CCG },
                 new Organisation { Id = 179, Name = "Wessex Commissioning Hub", Address = new Address { Line1 = "C/O NHS ENGLAND", Line2 = "1W09, 1ST FLOOR, QUARRY HOUSE", Line3 = "QUARRY HILL", Town = "LEEDS", County = "WEST YORKSHIRE", Postcode = "LS2 7UE", Country = "ENGLAND" }, PrimaryRoleId = "RO98", CatalogueAgreementSigned = false, LastUpdated = DateTime.UtcNow, ExternalIdentifier = "13N", InternalIdentifier = "CG-13N", OrganisationType = OrganisationType.CCG },
@@ -340,8 +321,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 LastName = "Smith",
                 EmailConfirmed = true,
                 CatalogueAgreementSigned = true,
-                PrimaryOrganisation = bobOrganisation,
-                PrimaryOrganisationId = bobOrganisation.Id,
+                PrimaryOrganisation = adminOrganisation,
+                PrimaryOrganisationId = adminOrganisation.Id,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 HasOptedInUserResearch = false,
                 AcceptedTermsOfUseDate = DateTime.UtcNow,
@@ -361,8 +342,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 LastName = "Smith",
                 EmailConfirmed = true,
                 CatalogueAgreementSigned = true,
-                PrimaryOrganisation = sueOrganisation,
-                PrimaryOrganisationId = sueOrganisation.Id,
+                PrimaryOrganisation = ICBOrganisation,
+                PrimaryOrganisationId = ICBOrganisation.Id,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 HasOptedInUserResearch = false,
                 AcceptedTermsOfUseDate = DateTime.UtcNow,
@@ -382,8 +363,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 LastName = "Smith",
                 EmailConfirmed = true,
                 CatalogueAgreementSigned = true,
-                PrimaryOrganisation = aliceOrganisation,
-                PrimaryOrganisationId = aliceOrganisation.Id,
+                PrimaryOrganisation = ICBOrganisation,
+                PrimaryOrganisationId = ICBOrganisation.Id,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 HasOptedInUserResearch = true,
                 AcceptedTermsOfUseDate = DateTime.UtcNow,
@@ -403,8 +384,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 LastName = "Smith",
                 EmailConfirmed = true,
                 CatalogueAgreementSigned = true,
-                PrimaryOrganisation = daveOrganisation,
-                PrimaryOrganisationId = daveOrganisation.Id,
+                PrimaryOrganisation = ICBOrganisation,
+                PrimaryOrganisationId = ICBOrganisation.Id,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 HasOptedInUserResearch = false,
                 AcceptedTermsOfUseDate = DateTime.UtcNow,

@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
     [Collection(nameof(OrderingCollection))]
     public sealed class OrderDashboard : BuyerTestBase
     {
-        private const string InternalOrgId = "CG-03F";
+        private const string InternalOrgId = "IB-QWO";
         private static readonly CallOffId CallOffId = new(90009, 1);
 
         private static readonly Dictionary<string, string> Parameters =
