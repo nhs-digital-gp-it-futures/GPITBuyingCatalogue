@@ -57,8 +57,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonInlineAutoData(CatalogueItemType.AdditionalService)]
+        [CommonInlineAutoData(CatalogueItemType.AssociatedService)]
         public static void Get_NoSolutionSelected_ReturnsNotStarted(
+            CatalogueItemType itemType,
             Order order,
             SolutionOrServiceStatusProvider service)
         {
@@ -68,11 +70,64 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             };
 
             order.AssociatedServicesOnly = false;
-            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = itemType);
 
             var actual = service.Get(new OrderWrapper(order), state);
 
             actual.Should().Be(TaskProgress.NotStarted);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Get_NothingAmended_ReturnsNotStarted(
+            Order order,
+            SolutionOrServiceStatusProvider service)
+        {
+            var state = new OrderProgress
+            {
+                CommencementDateStatus = TaskProgress.Completed,
+            };
+
+            order.Revision = 1;
+            order.AssociatedServicesOnly = false;
+            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+            var amendedOrder = order.BuidAmendment(2);
+
+            var actual = service.Get(new OrderWrapper(new[] { order, amendedOrder }), state);
+
+            actual.Should().Be(TaskProgress.NotStarted);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(CatalogueItemType.Solution)]
+        [CommonInlineAutoData(CatalogueItemType.AdditionalService)]
+        [CommonInlineAutoData(CatalogueItemType.AssociatedService)]
+        public static void Get_Amending_ReturnsInProgress(
+            CatalogueItemType itemType,
+            Order order,
+            SolutionOrServiceStatusProvider service)
+        {
+            var state = new OrderProgress
+            {
+                CommencementDateStatus = TaskProgress.Completed,
+            };
+
+            order.Revision = 1;
+            order.AssociatedServicesOnly = false;
+            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = itemType);
+            var amendedOrder = order.BuidAmendment(2);
+            var orderItem = order.OrderItems.First();
+            var orderItemToAdd = new OrderItem
+            {
+                OrderId = order.Id,
+                CatalogueItemId = orderItem.CatalogueItemId,
+                CatalogueItem = orderItem.CatalogueItem,
+            };
+            amendedOrder.OrderItems.Add(orderItemToAdd);
+
+            var actual = service.Get(new OrderWrapper(new[] { order, amendedOrder }), state);
+
+            actual.Should().Be(TaskProgress.InProgress);
         }
 
         [Theory]
