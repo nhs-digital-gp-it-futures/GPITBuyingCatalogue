@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
     [Collection(nameof(OrderingCollection))]
     public sealed class SupplierInformation : BuyerTestBase, IDisposable
     {
-        private const string InternalOrgId = "CG-03F";
+        private const string InternalOrgId = "IB-QWO";
         private const string SupplierName = "E2E Test Supplier With Contact";
         private const string SupplierNameNoPublishedSolutions = "E2E Test Supplier-No Published Solutions";
         private static readonly CallOffId CallOffId = new(90002, 1);

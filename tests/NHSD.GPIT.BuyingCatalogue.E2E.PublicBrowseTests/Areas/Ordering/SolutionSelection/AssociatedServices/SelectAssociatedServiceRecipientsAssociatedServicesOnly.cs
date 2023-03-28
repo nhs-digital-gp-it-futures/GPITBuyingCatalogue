@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
     [Collection(nameof(OrderingCollection))]
     public class SelectAssociatedServiceRecipientsAssociatedServicesOnly : BuyerTestBase, IDisposable
     {
-        private const string InternalOrgId = "CG-03F";
+        private const string InternalOrgId = "IB-QWO";
         private const int OrderId = 90017;
         private static readonly CallOffId CallOffId = new(OrderId, 1);
         private static readonly CatalogueItemId CatalogueItemId = new(99998, "S-998");

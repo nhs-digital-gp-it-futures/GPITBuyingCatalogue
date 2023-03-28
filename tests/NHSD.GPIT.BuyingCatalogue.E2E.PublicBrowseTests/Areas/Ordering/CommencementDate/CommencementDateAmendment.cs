@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CommencementDate
     [Collection(nameof(OrderingCollection))]
     public sealed class CommencementDateAmendment : BuyerTestBase
     {
-        private const string InternalOrgId = "CG-03F";
+        private const string InternalOrgId = "IB-QWO";
         private static readonly CallOffId CallOffId = new(90030, 2);
 
         private static readonly Dictionary<string, string> Parameters = new()

@@ -128,7 +128,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
 
         private Organisation GetOrganisationNomination()
         {
-            const string validOrganisationId = "CG-15F";
+            const string validOrganisationId = "IB-QWO";
             using var context = GetEndToEndDbContext();
 
             return context.Organisations.AsNoTracking()
