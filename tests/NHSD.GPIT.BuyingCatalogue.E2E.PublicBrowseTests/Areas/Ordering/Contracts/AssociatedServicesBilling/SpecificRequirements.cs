@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.Associated
     public class SpecificRequirements : BuyerTestBase, IDisposable
     {
         private const int OrderId = 90013;
-        private const string InternalOrgId = "CG-03F";
+        private const string InternalOrgId = "IB-QWO";
         private static readonly CallOffId CallOffId = new(OrderId, 1);
 
         private static readonly Dictionary<string, string> Parameters = new()

@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DeliveryDa
     public class ConfirmChanges : BuyerTestBase, IDisposable
     {
         private const int OrderId = 90009;
-        private const string InternalOrgId = "CG-03F";
+        private const string InternalOrgId = "IB-QWO";
         private static readonly CallOffId CallOffId = new(OrderId, 1);
 
         private static readonly Dictionary<string, string> Parameters = new()

@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
     [Collection(nameof(OrderingCollection))]
     public sealed class FundingSources : BuyerTestBase
     {
-        private const string InternalOrgId = "CG-03F";
+        private const string InternalOrgId = "IB-QWO";
         private static readonly CallOffId DFOCVCCallOffId = new(90005, 1);
         private static readonly CallOffId GPITFuturesCallOffId = new(90006, 1);
         private static readonly CallOffId NoFundingCallOffId = new(90015, 1);

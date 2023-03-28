@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Im
 [Collection(nameof(OrderingCollection))]
 public class ValidateImportOdsCodes : BuyerTestBase
 {
-    private const string InternalOrgId = "CG-03F";
+    private const string InternalOrgId = "IB-QWO";
     private const int OrderId = 90005;
     private static readonly CallOffId CallOffId = new(OrderId, 1);
     private static readonly CatalogueItemId CatalogueItemId = new(99999, "001");
