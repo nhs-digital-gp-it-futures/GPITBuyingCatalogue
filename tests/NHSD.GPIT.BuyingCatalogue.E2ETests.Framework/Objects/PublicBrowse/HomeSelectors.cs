@@ -14,6 +14,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Home
 
         public static By TechInnovationLink => By.LinkText("Tech Innovation framework");
 
+        public static By DFOCVCframeworkLink => By.LinkText("DFOCVC framework");
+
         public static By AdvancedTelephonyLink => By.LinkText("Advanced Telephony Better Purchasing framework");
     }
 }

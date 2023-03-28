@@ -135,12 +135,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
             {
                 CommonActions.ClickLinkElement(Objects.Home.HomeSelectors.TechInnovationLink);
 
-                CommonActions.PageLoadedCorrectGetIndex(
-                        typeof(HomeController),
-                        nameof(HomeController.TechInnovationFramework)).Should().BeTrue();
+                Driver.Url.Should().Be("https://digital.nhs.uk/services/digital-care-services-catalogue/tech-innovation-framework");
             });
         }
 
+        [Fact]
+        public void HomePage_ClickDFOCVCframeworkLink_ExpectedResult()
+        {
+            RunTest(() =>
+            {
+                CommonActions.ClickLinkElement(Objects.Home.HomeSelectors.DFOCVCframeworkLink);
+
+                Driver.Url.Should().Be("https://digital.nhs.uk/services/digital-care-services-catalogue/digital-first-online-consultation-and-video-consultation-framework");
+            });
+        }
         [Fact]
         public void HomePage_ClickAdvancedTelephony_ExpectedResult()
         {

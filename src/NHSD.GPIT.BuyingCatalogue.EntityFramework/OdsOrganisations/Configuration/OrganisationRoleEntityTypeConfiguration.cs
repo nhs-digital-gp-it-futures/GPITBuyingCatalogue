@@ -22,5 +22,14 @@ public class OrganisationRoleEntityTypeConfiguration : IEntityTypeConfiguration<
 
         builder.Property(x => x.IsPrimaryRole)
             .IsRequired();
+
+        builder.HasIndex(x => x.RoleId)
+            .HasDatabaseName("IX_RoleId_OrganisationId")
+            .IncludeProperties(x => x.OrganisationId)
+            .IsClustered(false);
+
+        builder.HasIndex(x => new { x.OrganisationId, x.IsPrimaryRole })
+            .HasDatabaseName("IX_IsPrimaryRole_OrganisationId")
+            .IsClustered(false);
     }
 }
