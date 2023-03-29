@@ -18,6 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Qu
     {
         private readonly int orderId;
         private readonly CatalogueItemId catalogueItemId;
+        private string serviceRecipientName = "Test Service Recipient One";
 
         protected SelectRecipientQuantity(LocalWebApplicationFactory factory, Dictionary<string, string> parameters)
             : base(factory, typeof(QuantityController), nameof(QuantityController.SelectServiceRecipientQuantity), parameters)
@@ -61,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Qu
 
             CommonActions.ElementTextEqualTo(
                 QuantityObjects.InputQuantityInputError(0),
-                ServiceRecipientQuantityModelValidator.ValueNotEnteredErrorMessage).Should().BeTrue();
+                string.Format(ServiceRecipientQuantityModelValidator.ValueNotEnteredErrorMessage, serviceRecipientName)).Should().BeTrue();
         }
 
         [Fact]
@@ -79,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Qu
 
             CommonActions.ElementTextEqualTo(
                 QuantityObjects.InputQuantityInputError(0),
-                ServiceRecipientQuantityModelValidator.ValueNotNumericErrorMessage).Should().BeTrue();
+                string.Format(ServiceRecipientQuantityModelValidator.ValueNotNumericErrorMessage, serviceRecipientName)).Should().BeTrue();
         }
 
         [Fact]
@@ -97,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Qu
 
             CommonActions.ElementTextEqualTo(
                 QuantityObjects.InputQuantityInputError(0),
-                ServiceRecipientQuantityModelValidator.ValueNegativeErrorMessage).Should().BeTrue();
+                string.Format(ServiceRecipientQuantityModelValidator.ValueNegativeErrorMessage, serviceRecipientName)).Should().BeTrue();
         }
 
         [Fact]
@@ -115,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Qu
 
             CommonActions.ElementTextEqualTo(
                 QuantityObjects.InputQuantityInputError(0),
-                ServiceRecipientQuantityModelValidator.ValueNotAnIntegerErrorMessage).Should().BeTrue();
+                string.Format(ServiceRecipientQuantityModelValidator.ValueNotAnIntegerErrorMessage, serviceRecipientName)).Should().BeTrue();
         }
 
         [Fact]

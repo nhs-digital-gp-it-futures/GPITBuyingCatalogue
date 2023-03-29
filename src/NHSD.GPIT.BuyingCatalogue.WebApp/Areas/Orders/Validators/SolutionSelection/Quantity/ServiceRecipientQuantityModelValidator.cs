@@ -5,10 +5,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.SolutionSelec
 {
     public class ServiceRecipientQuantityModelValidator : AbstractValidator<ServiceRecipientQuantityModel>
     {
-        public const string ValueNotEnteredErrorMessage = "Enter a quantity for this organisation";
-        public const string ValueNotNumericErrorMessage = "Quantity must be a number";
-        public const string ValueNotAnIntegerErrorMessage = "Quantity must be a whole number";
-        public const string ValueNegativeErrorMessage = "Quantity must be greater than zero";
+        public const string ValueNotEnteredErrorMessage = "Enter a practice list size for {0}";
+        public const string ValueNotNumericErrorMessage = "Practice list size for {0} must be a number";
+        public const string ValueNotAnIntegerErrorMessage = "Practice list size for {0} must be a whole number";
+        public const string ValueNegativeErrorMessage = "Practice list size for {0} must be greater than zero";
 
         public ServiceRecipientQuantityModelValidator()
         {
@@ -17,19 +17,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.SolutionSelec
 
                 .Must(HaveAValue)
                 .OverridePropertyName(x => x.InputQuantity)
-                .WithMessage(ValueNotEnteredErrorMessage)
+                .WithMessage(model => string.Format(ValueNotEnteredErrorMessage, model.Name))
 
                 .Must(HaveANumericValue)
                 .OverridePropertyName(x => x.InputQuantity)
-                .WithMessage(ValueNotNumericErrorMessage)
+                .WithMessage(model => string.Format(ValueNotNumericErrorMessage, model.Name))
 
                 .Must(HaveAnIntegerValue)
                 .OverridePropertyName(x => x.InputQuantity)
-                .WithMessage(ValueNotAnIntegerErrorMessage)
+                .WithMessage(model => string.Format(ValueNotAnIntegerErrorMessage, model.Name))
 
                 .Must(HaveAPositiveValue)
                 .OverridePropertyName(x => x.InputQuantity)
-                .WithMessage(ValueNegativeErrorMessage);
+                .WithMessage(model => string.Format(ValueNegativeErrorMessage, model.Name));
         }
 
         private static bool HaveAValue(ServiceRecipientQuantityModel model) => !string.IsNullOrWhiteSpace(model.InputQuantity);
