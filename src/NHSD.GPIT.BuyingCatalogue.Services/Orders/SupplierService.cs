@@ -56,7 +56,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return dbContext.Suppliers
                 .Include(x => x.CatalogueItems)
                 .Where(x => x.IsActive
-                    && x.CatalogueItems.Any(ci => ci.CatalogueItemType == CatalogueItemType.Solution))
+                    && x.CatalogueItems.Any(ci => ci.CatalogueItemType == CatalogueItemType.Solution
+                        && ci.PublishedStatus == PublicationStatus.Published))
                 .OrderBy(x => x.Name)
                 .ToListAsync();
         }
