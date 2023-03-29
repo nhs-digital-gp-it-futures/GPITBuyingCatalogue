@@ -11,8 +11,8 @@
 :r ./CreateCommissioningSupportUnits.sql
 :r ./CreateExecutiveAgency.sql
 :r ./CreateExecutiveAgencyUser.sql
-:r ./CreateTestUsers.sql
 :r ./CreateIntegratedCareBoards.sql
+:r ./CreateTestUsers.sql
 
 :r ./InsertAllowedEmailDomains.sql
 :r ./InsertCapabilityStatuses.sql
