@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.Property(o => o.SupplierId).HasMaxLength(6);
 
             builder.HasOne(o => o.OrderingPartyContact)
-                .WithMany(c => c.OrderOrderingPartyContacts)
+                .WithMany()
                 .HasForeignKey(o => o.OrderingPartyContactId)
                 .HasConstraintName("FK_Orders_OrderingPartyContact");
 
@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .HasConstraintName("FK_Orders_OrderingParty");
 
             builder.HasOne(o => o.SupplierContact)
-                .WithMany(c => c.OrderSupplierContacts)
+                .WithMany()
                 .HasForeignKey(o => o.SupplierContactId)
                 .HasConstraintName("FK_Orders_SupplierContact");
 

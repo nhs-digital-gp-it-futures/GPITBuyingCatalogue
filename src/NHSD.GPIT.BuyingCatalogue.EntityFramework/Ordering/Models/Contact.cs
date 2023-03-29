@@ -8,12 +8,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
     [Serializable]
     public sealed partial class Contact : IAudited
     {
-        public Contact()
-        {
-            OrderOrderingPartyContacts = new HashSet<Order>();
-            OrderSupplierContacts = new HashSet<Order>();
-        }
-
         public int Id { get; set; }
 
         [Required(ErrorMessage = "First Name Required")]
@@ -41,10 +35,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public int? LastUpdatedBy { get; set; }
 
         public AspNetUser LastUpdatedByUser { get; set; }
-
-        public ICollection<Order> OrderOrderingPartyContacts { get; set; }
-
-        public ICollection<Order> OrderSupplierContacts { get; set; }
 
         public Contact Clone()
         {
