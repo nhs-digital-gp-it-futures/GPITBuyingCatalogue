@@ -34,7 +34,8 @@ public class ViewEmailDomains : AuthorityTestBase
         CommonActions.ElementIsDisplayed(EmailDomainManagementObjects.DomainsTable).Should().BeTrue();
 
         using var context = GetEndToEndDbContext();
-        context.EmailDomains.Remove(context.EmailDomains.AsNoTracking().First());
+        var emailDomains = context.EmailDomains.AsNoTracking().ToList();
+        context.EmailDomains.RemoveRange(context.EmailDomains.AsNoTracking());
         context.SaveChanges();
 
         Driver.Navigate().Refresh();
@@ -43,6 +44,9 @@ public class ViewEmailDomains : AuthorityTestBase
         CommonActions.ElementIsDisplayed(EmailDomainManagementObjects.DomainsTable).Should().BeFalse();
 
         CommonActions.ContinueButtonDisplayed().Should().BeTrue();
+
+        context.EmailDomains.AddRange(emailDomains);
+        context.SaveChanges();
     }
 
     [Fact]

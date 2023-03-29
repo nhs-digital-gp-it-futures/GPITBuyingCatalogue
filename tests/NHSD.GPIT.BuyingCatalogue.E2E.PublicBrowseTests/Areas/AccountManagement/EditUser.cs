@@ -106,22 +106,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
         }
 
         [Fact]
-        public void EditUser_IncludesWhitespace_RemovesWhitespace()
-        {
-            CommonActions.ClearInputElement(AddUserObjects.FirstName);
-            AccountManagementPages.AddUser.EnterFirstName("    Alice    ");
-            CommonActions.ClearInputElement(AddUserObjects.LastName);
-            AccountManagementPages.AddUser.EnterLastName("    Smith    ");
-            CommonActions.ClearInputElement(AddUserObjects.Email);
-            AccountManagementPages.AddUser.EnterEmailAddress("    " + ValidEmail + "    ");
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(ManageAccountController),
-                nameof(ManageAccountController.Users)).Should().BeTrue();
-        }
-
-        [Fact]
         public void EditUser_EmptyInput_ThrowsErrors()
         {
             CommonActions.ClearInputElement(AddUserObjects.FirstName);

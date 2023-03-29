@@ -85,6 +85,6 @@ public class DeleteEmailDomain : AuthorityTestBase
             .Should()
             .BeTrue();
 
-        context.EmailDomains.Count().Should().Be(1);
+        context.EmailDomains.Count().Should().Be(2);
     }
 }

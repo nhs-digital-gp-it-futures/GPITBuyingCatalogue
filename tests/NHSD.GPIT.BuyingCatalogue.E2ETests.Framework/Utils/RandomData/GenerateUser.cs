@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Utils.RandomData
             return new Faker<User>("en_GB")
                 .RuleFor(u => u.FirstName, f => f.Name.FirstName())
                 .RuleFor(u => u.LastName, f => f.Name.LastName())
-                .RuleFor(u => u.EmailAddress, (f, u) => f.Internet.Email(u.FirstName, u.LastName))
+                .RuleFor(u => u.EmailAddress, (f, u) => f.Internet.Email(u.FirstName, u.LastName, "nhs.net"))
                 .Generate();
         }
 

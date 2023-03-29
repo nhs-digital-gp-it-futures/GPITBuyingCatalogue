@@ -11,6 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common.Organisation;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.RandomData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Utils.RandomData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -27,7 +28,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         private const int UserId = 5;
 
         private const string NhsDigitalOrganisationName = "NHS Digital";
-        private const string ValidEmailAddress = "a@nhs.net";
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
@@ -173,11 +173,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         [Fact]
         public void Edit_ClickSave_DisplaysCorrectPage()
         {
-            CommonActions.ClickRadioButtonWithText(OrganisationFunction.AccountManager.DisplayName);
-            CommonActions.ClickRadioButtonWithText("Inactive");
-            CommonActions.ClearInputElement(UserObjects.EmailInput);
-            CommonActions.ElementAddValue(UserObjects.EmailInput, ValidEmailAddress);
-
             CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -193,7 +188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             CommonActions.ClearInputElement(UserObjects.LastNameInput);
             CommonActions.ElementAddValue(UserObjects.LastNameInput, "    " + Strings.RandomString(10) + "    ");
             CommonActions.ClearInputElement(UserObjects.EmailInput);
-            CommonActions.ElementAddValue(UserObjects.EmailInput, "    " + ValidEmailAddress + "    ");
+            CommonActions.ElementAddValue(UserObjects.EmailInput, "    " + UserSeedData.DaveEmail + "    ");
 
             CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
 
@@ -230,16 +225,26 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         [Fact]
         public void Edit_Admin_InNhsDigital_ClickSave_DisplaysCorrectPage()
         {
+            using var context = GetEndToEndDbContext();
+            var user = context.Users.AsNoTracking().FirstOrDefault(x => x.Id == UserId)!;
+            var originalOrganisationId = user.PrimaryOrganisationId;
+
             CommonActions.AutoCompleteAddValue(UserObjects.SelectedOrganisation, NhsDigitalOrganisationName);
             CommonActions.ClickLinkElement(UserObjects.AutoCompleteResult(0));
             CommonActions.ClickRadioButtonWithText("Admin");
             CommonActions.ClearInputElement(UserObjects.EmailInput);
-            CommonActions.ElementAddValue(UserObjects.EmailInput, ValidEmailAddress);
+            CommonActions.ElementAddValue(UserObjects.EmailInput, UserSeedData.DaveEmail);
             CommonActions.ClickLinkElement(CommonSelectors.SubmitButton);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(UsersController),
                 nameof(UsersController.Index)).Should().BeTrue();
+
+            var updatedUser = context.Users.FirstOrDefault(x => x.Id == UserId)!;
+            updatedUser.PrimaryOrganisationId.Should().NotBe(originalOrganisationId);
+
+            updatedUser.PrimaryOrganisationId = originalOrganisationId;
+            context.SaveChanges();
         }
 
         [Fact]

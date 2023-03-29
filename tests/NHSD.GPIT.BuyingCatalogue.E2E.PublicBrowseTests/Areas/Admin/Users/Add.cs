@@ -18,10 +18,9 @@ using Xunit;
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
 {
     [Collection(nameof(AdminCollection))]
-    public class Add : AuthorityTestBase, IDisposable
+    public class Add : AuthorityTestBase
     {
         private const string NhsDigitalOrganisationName = "NHS Digital";
-        private const string ValidEmailAddress = "a@nhs.net";
 
         public Add(LocalWebApplicationFactory factory)
             : base(factory, typeof(UsersController), nameof(UsersController.Add))
@@ -157,11 +156,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
                 .First(x => x.Name != NhsDigitalOrganisationName)
                 .Name;
 
+            var buyerEmail = Strings.RandomBuyerEmail();
+
             CommonActions.AutoCompleteAddValue(UserObjects.SelectedOrganisation, organisationName);
             CommonActions.ClickLinkElement(UserObjects.AutoCompleteResult(0));
             CommonActions.ElementAddValue(UserObjects.FirstNameInput, Strings.RandomString(10));
             CommonActions.ElementAddValue(UserObjects.LastNameInput, Strings.RandomString(10));
-            CommonActions.ElementAddValue(UserObjects.EmailInput, ValidEmailAddress);
+            CommonActions.ElementAddValue(UserObjects.EmailInput, buyerEmail);
             CommonActions.ClickRadioButtonWithText("Buyer");
             CommonActions.ClickRadioButtonWithText("Active");
 
@@ -170,6 +171,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(UsersController),
                 nameof(UsersController.Index)).Should().BeTrue();
+
+            RemoveUserByEmail(buyerEmail).GetAwaiter().GetResult();
         }
 
         [Fact]
@@ -181,11 +184,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
                 .First(x => x.Name != NhsDigitalOrganisationName)
                 .Name;
 
+            var buyerEmail = Strings.RandomBuyerEmail();
+
             CommonActions.AutoCompleteAddValue(UserObjects.SelectedOrganisation, organisationName);
             CommonActions.ClickLinkElement(UserObjects.AutoCompleteResult(0));
             CommonActions.ElementAddValue(UserObjects.FirstNameInput, "    " + Strings.RandomString(10) + "    ");
             CommonActions.ElementAddValue(UserObjects.LastNameInput, "    " + Strings.RandomString(10) + "    ");
-            CommonActions.ElementAddValue(UserObjects.EmailInput, "    " + ValidEmailAddress + "    ");
+            CommonActions.ElementAddValue(UserObjects.EmailInput, "    " + buyerEmail + "    ");
             CommonActions.ClickRadioButtonWithText("Buyer");
             CommonActions.ClickRadioButtonWithText("Active");
 
@@ -194,6 +199,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(UsersController),
                 nameof(UsersController.Index)).Should().BeTrue();
+
+            RemoveUserByEmail(buyerEmail).GetAwaiter().GetResult();
         }
 
         [Fact]
@@ -224,11 +231,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
         [Fact]
         public void Add_Admin_InNhsDigital_ClickSave_DisplaysCorrectPage()
         {
+            var buyerEmail = Strings.RandomBuyerEmail();
+
             CommonActions.AutoCompleteAddValue(UserObjects.SelectedOrganisation, NhsDigitalOrganisationName);
             CommonActions.ClickLinkElement(UserObjects.AutoCompleteResult(0));
             CommonActions.ElementAddValue(UserObjects.FirstNameInput, Strings.RandomString(10));
             CommonActions.ElementAddValue(UserObjects.LastNameInput, Strings.RandomString(10));
-            CommonActions.ElementAddValue(UserObjects.EmailInput, ValidEmailAddress);
+            CommonActions.ElementAddValue(UserObjects.EmailInput, buyerEmail);
             CommonActions.ClickRadioButtonWithText("Admin");
             CommonActions.ClickRadioButtonWithText("Active");
 
@@ -237,6 +246,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(UsersController),
                 nameof(UsersController.Index)).Should().BeTrue();
+
+            RemoveUserByEmail(buyerEmail).GetAwaiter().GetResult();
         }
 
         [Fact]
@@ -248,11 +259,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
                 .First(x => x.Name != NhsDigitalOrganisationName)
                 .Name;
 
+            var buyerEmail = Strings.RandomBuyerEmail();
+
             CommonActions.AutoCompleteAddValue(UserObjects.SelectedOrganisation, organisationName);
             CommonActions.ClickLinkElement(UserObjects.AutoCompleteResult(0));
             CommonActions.ElementAddValue(UserObjects.FirstNameInput, Strings.RandomString(10));
             CommonActions.ElementAddValue(UserObjects.LastNameInput, Strings.RandomString(10));
-            CommonActions.ElementAddValue(UserObjects.EmailInput, ValidEmailAddress);
+            CommonActions.ElementAddValue(UserObjects.EmailInput, buyerEmail);
             CommonActions.ClickRadioButtonWithText("Account manager");
             CommonActions.ClickRadioButtonWithText("Active");
 
@@ -261,6 +274,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(UsersController),
                 nameof(UsersController.Index)).Should().BeTrue();
+
+            RemoveUserByEmail(buyerEmail).GetAwaiter().GetResult();
         }
 
         [Fact]
@@ -316,12 +331,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
             await RemoveUser(user2);
         }
 
-        public void Dispose()
+        private async Task RemoveUserByEmail(string email)
         {
-            var context = GetEndToEndDbContext();
-            var users = context.AspNetUsers.Where(x => x.Email == ValidEmailAddress).ToList();
-            context.AspNetUsers.RemoveRange(users);
-            context.SaveChanges();
+            await using var context = GetEndToEndDbContext();
+            var user = context.Users.FirstOrDefault(x => x.Email == email);
+            if (user == null) return;
+
+            context.Remove(user);
+            await context.SaveChangesAsync();
         }
 
         private async Task<AspNetUser> CreateUser(int organisationId, bool isEnabled = true, string accountType = "Buyer")
