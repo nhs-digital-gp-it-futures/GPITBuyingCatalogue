@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering;
@@ -16,7 +17,7 @@ using Xunit;
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.CatalogueSolutions
 {
     [Collection(nameof(OrderingCollection))]
-    public class SelectCatalogueSolutionRecipients : BuyerTestBase, IDisposable
+    public class SelectCatalogueSolutionRecipients : BuyerTestBase
     {
         private const string InternalOrgId = "CG-03F";
         private const int OrderId = 90005;
@@ -29,6 +30,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
             { nameof(CallOffId), $"{CallOffId}" },
             { nameof(CatalogueItemId), $"{CatalogueItemId}" },
         };
+
+        private List<OrderItemRecipient> recipients;
 
         public SelectCatalogueSolutionRecipients(LocalWebApplicationFactory factory)
             : base(factory, typeof(ServiceRecipientsController), nameof(ServiceRecipientsController.AddServiceRecipients), Parameters)
@@ -122,9 +125,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
             GetSolution().OrderItemRecipients.Count.Should().Be(2);
         }
 
-        public void Dispose()
+        public override async Task InitializeAsync()
         {
-            var context = GetEndToEndDbContext();
+            await using var context = GetEndToEndDbContext();
+
+            recipients = await context.OrderItemRecipients.AsNoTracking()
+                .Where(x => x.OrderId == OrderId && x.CatalogueItemId == GetSolution().CatalogueItemId)
+                .ToListAsync();
+
+            await base.InitializeAsync();
+        }
+
+        public override async Task DisposeAsync()
+        {
+            await using var context = GetEndToEndDbContext();
             var solution = GetSolution();
 
             var recipients = context.OrderItemRecipients
@@ -132,12 +146,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
                     && x.CatalogueItemId == solution.CatalogueItemId)
                 .ToList();
 
-            foreach (var recipient in recipients)
-            {
-                context.OrderItemRecipients.Remove(recipient);
-            }
+            context.OrderItemRecipients.RemoveRange(recipients);
+            context.OrderItemRecipients.AddRange(this.recipients);
 
             context.SaveChanges();
+            await base.DisposeAsync();
         }
 
         private OrderItem GetSolution()
