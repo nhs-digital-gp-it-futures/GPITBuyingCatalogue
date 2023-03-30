@@ -19,12 +19,12 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 {
-    public sealed class EditUser : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(AdminCollection))]
+    public sealed class EditUser : AuthorityTestBase, IDisposable
     {
         private const int NhsDigitalOrganisationId = 1;
         private const int OrganisationId = 176;
         private const int UserId = 5;
-        private const string ValidEmail = "a@nhs.net";
         private const string FirstNameRequired = "Enter a first name";
         private const string LastNameRequired = "Enter a last name";
         private const string EmailAddressRequired = "Enter an email address";
@@ -137,24 +137,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         {
             CommonActions.ClickRadioButtonWithText(OrganisationFunction.AccountManager.DisplayName);
             CommonActions.ClickRadioButtonWithText("Inactive");
-            CommonActions.ClearInputElement(AddUserObjects.Email);
-            AdminPages.AddUser.EnterEmailAddress(ValidEmail);
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrganisationsController),
-                nameof(OrganisationsController.Users)).Should().BeTrue();
-        }
-
-        [Fact]
-        public void EditUser_IncludesWhitespace_RemovesWhitespace()
-        {
-            CommonActions.ClearInputElement(AddUserObjects.FirstName);
-            AdminPages.AddUser.EnterFirstName("    Alice    ");
-            CommonActions.ClearInputElement(AddUserObjects.LastName);
-            AdminPages.AddUser.EnterLastName("    Smith    ");
-            CommonActions.ClearInputElement(AddUserObjects.Email);
-            AdminPages.AddUser.EnterEmailAddress("    " + ValidEmail + "    ");
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(

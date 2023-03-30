@@ -15,7 +15,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CommencementDate
 {
-    public class ConfirmChanges : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(OrderingCollection))]
+    public class ConfirmChanges : BuyerTestBase, IDisposable
     {
         private const string InternalOrgId = "CG-03F";
 

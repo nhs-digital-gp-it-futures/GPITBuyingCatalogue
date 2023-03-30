@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.Quantity;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
@@ -13,10 +15,12 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Quantity.Base
 {
-    public abstract class SelectQuantity : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(OrderingCollection))]
+    public abstract class SelectQuantity : BuyerTestBase
     {
         private readonly int orderId;
         private readonly CatalogueItemId catalogueItemId;
+        private List<OrderItem> originalOrderItems;
 
         protected SelectQuantity(LocalWebApplicationFactory factory, Dictionary<string, string> parameters)
             : base(factory, typeof(QuantityController), nameof(QuantityController.SelectQuantity), parameters)
@@ -126,20 +130,29 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Qu
             orderItems.First().Quantity.Should().Be(1234);
         }
 
-        public void Dispose()
+        public override async Task InitializeAsync()
         {
-            var context = GetEndToEndDbContext();
-            var orderItems = GetOrderItems();
+            originalOrderItems = GetOrderItems();
 
-            orderItems.ForEach(x => x.Quantity = null);
+            await base.InitializeAsync();
+        }
 
-            context.UpdateRange(orderItems);
-            context.SaveChanges();
+        public override async Task DisposeAsync()
+        {
+            await using var context = GetEndToEndDbContext();
+
+            context.OrderItems.RemoveRange(GetOrderItems());
+            context.OrderItems.AddRange(originalOrderItems);
+
+            await context.SaveChangesAsync();
+
+            await base.DisposeAsync();
         }
 
         private List<OrderItem> GetOrderItems()
         {
             return GetEndToEndDbContext().OrderItems
+                .AsNoTracking()
                 .Where(x => x.OrderId == orderId
                     && x.CatalogueItemId == catalogueItemId)
                 .ToList();

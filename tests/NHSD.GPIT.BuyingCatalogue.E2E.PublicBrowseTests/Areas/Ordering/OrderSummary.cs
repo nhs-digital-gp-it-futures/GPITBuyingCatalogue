@@ -17,7 +17,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 {
-    public class OrderSummary : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(OrderingCollection))]
+    public class OrderSummary : BuyerTestBase
     {
         private const string InternalOrgId = "CG-03F";
 

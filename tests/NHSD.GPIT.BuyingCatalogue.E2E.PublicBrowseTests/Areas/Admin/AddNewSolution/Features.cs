@@ -13,7 +13,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 {
-    public sealed class Features : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(AdminCollection))]
+    public sealed class Features : AuthorityTestBase, IDisposable
     {
         private static readonly CatalogueItemId SolutionId = new(99999, "002");
 

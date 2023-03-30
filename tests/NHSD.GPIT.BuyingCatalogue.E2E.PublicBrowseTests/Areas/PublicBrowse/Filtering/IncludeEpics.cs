@@ -10,7 +10,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Filtering
 {
-    public class IncludeEpics : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(SharedContextCollection))]
+    public class IncludeEpics : BuyerTestBase
     {
         private const string ValidCapabilityId = "1";
         private const string InvalidCapabilityId = "41";

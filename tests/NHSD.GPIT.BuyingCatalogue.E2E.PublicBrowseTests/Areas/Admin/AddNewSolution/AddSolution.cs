@@ -11,7 +11,8 @@ using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 {
-    public sealed class AddSolution : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(AdminCollection))]
+    public sealed class AddSolution : AuthorityTestBase
     {
         public AddSolution(LocalWebApplicationFactory factory)
             : base(

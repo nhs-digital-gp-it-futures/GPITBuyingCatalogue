@@ -13,7 +13,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 {
-    public sealed class Index : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(AdminCollection))]
+    public sealed class Index : AuthorityTestBase
     {
         public Index(LocalWebApplicationFactory factory)
             : base(factory, typeof(OrganisationsController), nameof(OrganisationsController.Index), null)

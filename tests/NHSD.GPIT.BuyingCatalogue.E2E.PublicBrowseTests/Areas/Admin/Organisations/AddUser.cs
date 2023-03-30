@@ -17,11 +17,12 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 {
-    public sealed class AddUser : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(AdminCollection))]
+    public sealed class AddUser : AuthorityTestBase
     {
         private const int NhsDigitalOrganisationId = 1;
         private const int OrganisationId = 2;
-        private const string ValidEmail = "a@nhs.net";
+        private const string ValidEmail = "abc@nhs.net";
         private const string FirstNameRequired = "Enter a first name";
         private const string LastNameRequired = "Enter a last name";
         private const string EmailAddressRequired = "Enter an email address";
@@ -103,7 +104,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
         public async Task AddUser_AddUser_ExpectedResult()
         {
             var user = GenerateUser.Generate();
-            user.EmailAddress = ValidEmail;
 
             AdminPages.AddUser.EnterFirstName(user.FirstName);
             AdminPages.AddUser.EnterLastName(user.LastName);
@@ -117,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
                 typeof(OrganisationsController),
                 nameof(OrganisationsController.Users)).Should().BeTrue();
 
-            await RemoveUserByEmail(ValidEmail);
+            await RemoveUserByEmail(user.EmailAddress);
         }
 
         [Fact]

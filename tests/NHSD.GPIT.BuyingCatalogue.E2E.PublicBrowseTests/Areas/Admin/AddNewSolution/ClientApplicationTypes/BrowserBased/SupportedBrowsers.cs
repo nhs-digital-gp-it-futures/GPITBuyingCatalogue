@@ -15,7 +15,8 @@ using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientApplicationTypes.BrowserBased
 {
-    public sealed class SupportedBrowsers : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(AdminCollection))]
+    public sealed class SupportedBrowsers : AuthorityTestBase, IDisposable
     {
         private static readonly CatalogueItemId SolutionId = new(99999, "002");
 

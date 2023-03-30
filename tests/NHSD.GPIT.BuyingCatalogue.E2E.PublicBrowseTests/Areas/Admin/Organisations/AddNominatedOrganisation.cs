@@ -15,7 +15,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 {
-    public class AddNominatedOrganisation : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(AdminCollection))]
+    public class AddNominatedOrganisation : AuthorityTestBase, IDisposable
     {
         private const int OrganisationId = 1;
         private const string ValidOrganisationId = "CG-15F";

@@ -16,7 +16,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceLevelAgreements
 {
-    public sealed class EditSLAContact : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(AdminCollection))]
+    public sealed class EditSLAContact : AuthorityTestBase, IDisposable
     {
         private const string ChannelErrorNoInput = "Enter a contact channel";
         private const string ContactInformationNoInput = "Enter contact information";

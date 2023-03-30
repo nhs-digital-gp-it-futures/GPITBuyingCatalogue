@@ -14,7 +14,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.AdditionalServices
 {
-    public class SelectAdditionalServiceRecipients : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(OrderingCollection))]
+    public class SelectAdditionalServiceRecipients : BuyerTestBase, IDisposable
     {
         private const string InternalOrgId = "CG-03F";
         private const int OrderId = 90007;

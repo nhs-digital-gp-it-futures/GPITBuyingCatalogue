@@ -10,7 +10,8 @@ using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Registration
 {
-    public sealed class Details : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(SharedContextCollection))]
+    public sealed class Details : AnonymousTestBase
     {
         private const string PrivacyPolicyLabelText = "I have read and understood the privacy policy";
 

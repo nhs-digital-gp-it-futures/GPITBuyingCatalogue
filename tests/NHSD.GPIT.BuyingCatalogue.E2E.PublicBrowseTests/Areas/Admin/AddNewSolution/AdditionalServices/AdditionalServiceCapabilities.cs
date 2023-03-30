@@ -15,7 +15,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.AdditionalServices
 {
-    public sealed class AdditionalServiceCapabilities : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(AdminCollection))]
+    public sealed class AdditionalServiceCapabilities : AuthorityTestBase
     {
         private static readonly CatalogueItemId SolutionId = new(99999, "001");
         private static readonly CatalogueItemId AdditionalServiceId = new(99999, "001A99");

@@ -18,7 +18,8 @@ using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 {
-    public sealed class EditAssociatedService : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(AdminCollection))]
+    public sealed class EditAssociatedService : AuthorityTestBase, IDisposable
     {
         private static readonly CatalogueItemId IncompleteSolutionId = new(99999, "001");
         private static readonly CatalogueItemId IncompleteAssociatedServiceId = new(99999, "S-998");

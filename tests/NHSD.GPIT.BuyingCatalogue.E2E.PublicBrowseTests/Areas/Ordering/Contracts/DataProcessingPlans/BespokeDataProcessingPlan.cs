@@ -9,7 +9,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DataProcessingPlans
 {
-    public class BespokeDataProcessingPlan : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(OrderingCollection))]
+    public class BespokeDataProcessingPlan : BuyerTestBase
     {
         private const int OrderId = 90001;
         private const string InternalOrgId = "CG-03F";

@@ -15,7 +15,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ListPrices.Base.Flat
 {
-    public abstract class AddFlatListPriceBase : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(AdminCollection))]
+    public abstract class AddFlatListPriceBase : AuthorityTestBase
     {
         private const string ActionName = "AddFlatListPrice";
 

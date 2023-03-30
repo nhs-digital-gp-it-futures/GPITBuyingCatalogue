@@ -18,8 +18,9 @@ using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 {
+    [Collection(nameof(SharedContextCollection))]
     public sealed class CatalogueSolutions
-        : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>
+        : AnonymousTestBase
     {
         private static readonly Dictionary<string, string> Parameters = new();
 

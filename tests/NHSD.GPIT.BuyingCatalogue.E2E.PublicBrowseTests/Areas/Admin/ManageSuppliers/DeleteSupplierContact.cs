@@ -15,7 +15,8 @@ using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
 {
-    public sealed class DeleteSupplierContact : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(AdminCollection))]
+    public sealed class DeleteSupplierContact : AuthorityTestBase
     {
         private const int SupplierId = 99998;
         private const int SupplierWithSingleContactId = 99995;

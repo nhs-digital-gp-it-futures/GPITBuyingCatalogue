@@ -16,7 +16,8 @@ using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Interoperability
 {
-    public sealed class AddGPConnectIntegration : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(AdminCollection))]
+    public sealed class AddGPConnectIntegration : AuthorityTestBase, IDisposable
     {
         private static readonly CatalogueItemId SolutionId = new(99999, "002");
 

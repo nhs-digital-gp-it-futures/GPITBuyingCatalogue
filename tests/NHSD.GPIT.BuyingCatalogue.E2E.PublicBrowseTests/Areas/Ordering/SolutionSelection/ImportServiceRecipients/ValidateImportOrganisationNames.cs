@@ -11,7 +11,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.ImportServiceRecipients;
 
-public class ValidateImportOrganisationNames : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+[Collection(nameof(OrderingCollection))]
+public class ValidateImportOrganisationNames : BuyerTestBase
 {
     private const string InternalOrgId = "CG-03F";
     private const int OrderId = 90005;

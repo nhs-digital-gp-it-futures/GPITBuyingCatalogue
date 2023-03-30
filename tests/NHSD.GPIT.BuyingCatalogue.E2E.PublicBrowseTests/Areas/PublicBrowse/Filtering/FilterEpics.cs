@@ -12,7 +12,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Filtering
 {
-    public class FilterEpics : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(SharedContextCollection))]
+    public class FilterEpics : BuyerTestBase
     {
         private static readonly IEnumerable<int> CapabilityIds = new[] { 1, 2, 3, 4, 5 };
         private static readonly Dictionary<string, string> Parameters = new()
