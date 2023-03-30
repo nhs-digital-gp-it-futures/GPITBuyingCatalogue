@@ -21,6 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
     {
         private const string InternalOrgId = "CG-03F";
         private const string SupplierName = "E2E Test Supplier With Contact";
+        private const string SupplierNameNoPublishedSolutions = "E2E Test Supplier-No Published Solutions";
         private static readonly CallOffId CallOffId = new(90002, 1);
 
         private static readonly Dictionary<string, string> Parameters = new()
@@ -93,6 +94,25 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
         public void SupplierInformation_SelectSupplier_InvalidSupplierNameSupplied_DisplaysValidationErrors()
         {
             CommonActions.AutoCompleteAddValue(SupplierObjects.SupplierAutoComplete, Strings.RandomString(50));
+            CommonActions.ClickLinkElement(SupplierObjects.SearchResultsErrorMessage);
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(SupplierController),
+                nameof(SupplierController.SelectSupplier)).Should().BeTrue();
+
+            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+
+            CommonActions.ElementShowingCorrectErrorMessage(
+                SupplierObjects.SupplierAutoCompleteError,
+                SelectSupplierModelValidator.SupplierMissingErrorMessage).Should().BeTrue();
+        }
+
+        [Fact]
+        public void SupplierInformation_SelectSupplier_SupplierNoPublishedSolutions_DisplaysValidationErrors()
+        {
+            CommonActions.AutoCompleteAddValue(SupplierObjects.SupplierAutoComplete, SupplierNameNoPublishedSolutions);
             CommonActions.ClickLinkElement(SupplierObjects.SearchResultsErrorMessage);
             CommonActions.ClickSave();
 

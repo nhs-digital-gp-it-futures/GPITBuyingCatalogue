@@ -219,6 +219,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     },
                     IsActive = true,
                 },
+                new Supplier
+                {
+                    Id = 99991,
+                    Name = "E2E Test Supplier-No Published Solutions",
+                    LegalName = "E2E Supplier NPS",
+                    Deleted = false,
+                    Address = new Address
+                    {
+                        Line1 = "E2E Test Supplier",
+                        Line2 = "High Street",
+                        Town = "Cardiff",
+                        County = "Cardiff",
+                        Country = "UK",
+                    },
+                    Summary = "About this Supplier",
+                    SupplierUrl = "https://www.e2etest.com",
+                    IsActive = true,
+                },
             };
 
             context.AddRange(suppliers);
