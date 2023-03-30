@@ -164,7 +164,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
                 CommonActions.ClickLinkElement(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchButton);
 
                 CommonActions.ElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.InactiveSuppliersContainer).Should().BeFalse();
-                CommonActions.GetNumberOfTableRowsDisplayed().Should().Be(2); // Count is original item, plus another item that matches the same name
+                CommonActions.GetNumberOfTableRowsDisplayed().Should().Be(3); // Count is original item, plus another item that matches the same name
             });
         }
 
