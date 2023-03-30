@@ -17,7 +17,8 @@ using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
 {
-    public sealed class CookieSettings : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(SharedContextCollection))]
+    public sealed class CookieSettings : AuthorityTestBase, IDisposable
     {
         private const string OptInRadioButtonText = "Use cookies to measure my website use";
         private const string OptOutRadioButtonText = "Do not use cookies to measure my website use";

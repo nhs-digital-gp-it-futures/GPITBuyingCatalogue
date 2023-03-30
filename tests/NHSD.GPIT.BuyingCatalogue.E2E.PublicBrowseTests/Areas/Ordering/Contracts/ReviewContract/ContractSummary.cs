@@ -18,7 +18,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.ReviewContract
 {
-    public class ContractSummary : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(OrderingCollection))]
+    public class ContractSummary : BuyerTestBase, IDisposable
     {
         private const int OrderId = 90009;
         private const string InternalOrgId = "CG-03F";

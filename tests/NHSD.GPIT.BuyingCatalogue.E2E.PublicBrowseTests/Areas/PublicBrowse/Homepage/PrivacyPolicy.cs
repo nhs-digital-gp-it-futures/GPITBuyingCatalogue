@@ -10,7 +10,8 @@ using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
 {
-    public sealed class PrivacyPolicy : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(SharedContextCollection))]
+    public sealed class PrivacyPolicy : AnonymousTestBase
     {
         private static readonly Dictionary<string, string> Parameters = new();
 

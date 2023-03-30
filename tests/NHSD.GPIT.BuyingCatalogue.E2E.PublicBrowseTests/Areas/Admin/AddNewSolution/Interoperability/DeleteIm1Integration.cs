@@ -16,7 +16,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Interoperability
 {
-    public sealed class DeleteIm1Integration : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(AdminCollection))]
+    public sealed class DeleteIm1Integration : AuthorityTestBase, IDisposable
     {
         private static readonly CatalogueItemId SolutionId = new CatalogueItemId(99999, "001");
         private static readonly Guid IntegrationId = Integrations.GetIntegrations[0].Id;

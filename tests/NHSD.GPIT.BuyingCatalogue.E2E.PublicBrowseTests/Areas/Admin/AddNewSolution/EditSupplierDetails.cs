@@ -10,7 +10,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 {
-    public sealed class EditSupplierDetails : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(AdminCollection))]
+    public sealed class EditSupplierDetails : AuthorityTestBase
     {
         private static readonly CatalogueItemId SolutionId = new(99998, "001");
 

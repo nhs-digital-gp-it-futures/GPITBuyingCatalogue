@@ -10,7 +10,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Quantity
 {
-    public class ViewServiceRecipientQuantity : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(OrderingCollection))]
+    public class ViewServiceRecipientQuantity : BuyerTestBase
     {
         private const string InternalOrgId = "CG-03F";
         private static readonly CallOffId CallOffId = new(90031, 2);

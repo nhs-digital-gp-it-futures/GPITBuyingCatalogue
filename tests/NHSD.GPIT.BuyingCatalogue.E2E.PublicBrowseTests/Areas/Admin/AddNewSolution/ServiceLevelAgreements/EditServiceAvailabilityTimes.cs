@@ -16,7 +16,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceLevelAgreements
 {
-    public sealed class EditServiceAvailabilityTimes : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(AdminCollection))]
+    public sealed class EditServiceAvailabilityTimes : AuthorityTestBase, IDisposable
     {
         private const int SingleAvailabilityTimesId = 1;
         private const int ServiceAvailabilityTimesId = 2;

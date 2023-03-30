@@ -14,7 +14,8 @@ using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.AssociatedServices
 {
-    public sealed class AssociatedServices : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(AdminCollection))]
+    public sealed class AssociatedServices : AuthorityTestBase
     {
         private const string TargetServiceId = "99999-S-999";
         private static readonly CatalogueItemId SolutionId = new(99999, "001");

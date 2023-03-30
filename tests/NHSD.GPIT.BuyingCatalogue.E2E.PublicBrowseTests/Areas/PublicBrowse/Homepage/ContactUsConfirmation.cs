@@ -11,7 +11,8 @@ using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
 {
-    public class ContactUsConfirmation : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(SharedContextCollection))]
+    public class ContactUsConfirmation : AnonymousTestBase
     {
         private static readonly Dictionary<string, string> Parameters = new();
 

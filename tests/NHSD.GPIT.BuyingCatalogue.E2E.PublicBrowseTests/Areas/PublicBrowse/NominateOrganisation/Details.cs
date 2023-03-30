@@ -12,7 +12,8 @@ using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.NominateOrganisation
 {
-    public sealed class Details : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(SharedContextCollection))]
+    public sealed class Details : BuyerTestBase, IDisposable
     {
         public Details(LocalWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
             : base(

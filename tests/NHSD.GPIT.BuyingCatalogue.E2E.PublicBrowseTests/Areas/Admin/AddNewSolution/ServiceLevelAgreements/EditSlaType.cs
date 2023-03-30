@@ -12,7 +12,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceLevelAgreements
 {
-    public sealed class EditSlaType : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(AdminCollection))]
+    public sealed class EditSlaType : AuthorityTestBase
     {
         private static readonly CatalogueItemId SolutionId = new(99998, "001");
 

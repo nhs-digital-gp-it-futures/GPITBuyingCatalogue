@@ -12,7 +12,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.TaskList.Base
 {
-    public abstract class TaskListBase : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(OrderingCollection))]
+    public abstract class TaskListBase : BuyerTestBase
     {
         protected TaskListBase(LocalWebApplicationFactory factory, Dictionary<string, string> parameters)
             : base(factory, typeof(TaskListController), nameof(TaskListController.TaskList), parameters)

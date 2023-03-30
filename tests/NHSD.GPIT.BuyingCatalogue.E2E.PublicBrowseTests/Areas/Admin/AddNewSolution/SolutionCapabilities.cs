@@ -15,7 +15,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 {
-    public sealed class SolutionCapabilities : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(AdminCollection))]
+    public sealed class SolutionCapabilities : AuthorityTestBase
     {
         private static readonly CatalogueItemId SolutionId = new(99999, "001");
 

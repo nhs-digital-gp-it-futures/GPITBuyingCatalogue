@@ -10,7 +10,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
 {
-    public class AdvancedTelephonyBetterPurchasing : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(SharedContextCollection))]
+    public class AdvancedTelephonyBetterPurchasing : AnonymousTestBase
     {
         public AdvancedTelephonyBetterPurchasing(LocalWebApplicationFactory factory)
                : base(factory, typeof(HomeController), nameof(HomeController.AdvancedTelephonyBetterPurchaseFramework))

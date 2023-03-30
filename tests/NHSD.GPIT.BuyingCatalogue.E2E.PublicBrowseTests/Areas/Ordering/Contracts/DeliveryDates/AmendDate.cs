@@ -18,7 +18,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DeliveryDates
 {
-    public class AmendDate : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(OrderingCollection))]
+    public class AmendDate : BuyerTestBase, IDisposable
     {
         private const int OrderNumber = 90031;
         private const string InternalOrgId = "CG-03F";

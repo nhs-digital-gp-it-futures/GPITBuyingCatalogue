@@ -13,7 +13,8 @@ using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.DevelopmentPlans
 {
-    public sealed class EditWorkOffPlan : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(AdminCollection))]
+    public sealed class EditWorkOffPlan : AuthorityTestBase, IDisposable
     {
         private const int WorkOffPlanId = 1;
         private static readonly CatalogueItemId SolutionId = new(99998, "001");

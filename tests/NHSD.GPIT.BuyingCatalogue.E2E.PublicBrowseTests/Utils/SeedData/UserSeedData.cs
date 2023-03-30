@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
@@ -15,6 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
     internal static class UserSeedData
     {
         internal const string AliceEmail = "AliceSmith@email.com";
+        internal const string DaveEmail = "DaveSmith@email.com";
         internal const int BobId = 2;
         internal const int SueId = 3;
         internal const int AliceId = 4;
@@ -394,10 +394,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var accountManagerUser = new AspNetUser
             {
                 Id = DaveId,
-                Email = "DaveSmith@email.com",
-                NormalizedEmail = "DAVESMITH@EMAIL.COM",
-                UserName = "DaveSmith@email.com",
-                NormalizedUserName = "DAVESMITH@EMAIL.COM",
+                Email = DaveEmail,
+                NormalizedEmail = DaveEmail.ToUpperInvariant(),
+                UserName = DaveEmail,
+                NormalizedUserName = DaveEmail.ToUpperInvariant(),
                 Disabled = false,
                 FirstName = "Dave",
                 LastName = "Smith",

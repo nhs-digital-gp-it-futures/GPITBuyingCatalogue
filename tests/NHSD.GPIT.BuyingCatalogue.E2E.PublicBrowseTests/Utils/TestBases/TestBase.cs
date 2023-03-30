@@ -334,9 +334,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             }
         }
 
-        public Task InitializeAsync() => Task.CompletedTask;
+        public virtual Task InitializeAsync() => Task.CompletedTask;
 
-        public Task DisposeAsync()
+        public virtual Task DisposeAsync()
         {
             NavigateToUrl(
                 typeof(AccountController),

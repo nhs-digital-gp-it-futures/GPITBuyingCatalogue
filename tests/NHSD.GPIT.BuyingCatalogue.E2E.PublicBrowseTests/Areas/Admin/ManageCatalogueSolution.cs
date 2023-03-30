@@ -16,7 +16,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
 {
-    public sealed class ManageCatalogueSolution : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(AdminCollection))]
+    public sealed class ManageCatalogueSolution : AuthorityTestBase, IDisposable
     {
         private static readonly CatalogueItemId SolutionId = new(99999, "001");
         private static readonly CatalogueItemId UnpublishedSolutionId = new(99999, "002");

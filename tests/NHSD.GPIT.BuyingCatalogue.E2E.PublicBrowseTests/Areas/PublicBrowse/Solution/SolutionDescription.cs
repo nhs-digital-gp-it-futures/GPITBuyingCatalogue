@@ -17,7 +17,8 @@ using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 {
-    public sealed class SolutionDescription : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(SharedContextCollection))]
+    public sealed class SolutionDescription : AnonymousTestBase, IDisposable
     {
         private static readonly CatalogueItemId SolutionId = new(99999, "001");
 

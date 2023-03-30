@@ -10,7 +10,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
 {
-    public class SelectSupplierAssociatedServicesOnly : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(OrderingCollection))]
+    public class SelectSupplierAssociatedServicesOnly : BuyerTestBase
     {
         private const string InternalOrgId = "CG-03F";
         private const string SearchTerm = "E2E Test Supplier";

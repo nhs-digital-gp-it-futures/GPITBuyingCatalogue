@@ -9,7 +9,8 @@ using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
 {
-    public class AccessibilityStatement : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(SharedContextCollection))]
+    public class AccessibilityStatement : AnonymousTestBase
     {
         public AccessibilityStatement(LocalWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
             : base(factory, typeof(HomeController), nameof(HomeController.AccessibilityStatement), null, testOutputHelper)

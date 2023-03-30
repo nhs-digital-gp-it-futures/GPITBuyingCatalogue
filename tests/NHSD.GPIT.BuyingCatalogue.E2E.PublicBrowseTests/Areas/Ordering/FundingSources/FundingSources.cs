@@ -11,7 +11,8 @@ using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
 {
-    public sealed class FundingSources : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(OrderingCollection))]
+    public sealed class FundingSources : BuyerTestBase
     {
         private const string InternalOrgId = "CG-03F";
         private static readonly CallOffId DFOCVCCallOffId = new(90005, 1);

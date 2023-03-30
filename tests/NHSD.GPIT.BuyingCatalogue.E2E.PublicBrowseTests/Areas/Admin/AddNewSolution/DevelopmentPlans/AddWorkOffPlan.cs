@@ -13,7 +13,8 @@ using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.DevelopmentPlans
 {
-    public sealed class AddWorkOffPlan : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(AdminCollection))]
+    public sealed class AddWorkOffPlan : AuthorityTestBase
     {
         private const string NoStandardSelectedError = "Select a Standard";
         private const string NoDetailsError = "Enter Work-off Plan item details";

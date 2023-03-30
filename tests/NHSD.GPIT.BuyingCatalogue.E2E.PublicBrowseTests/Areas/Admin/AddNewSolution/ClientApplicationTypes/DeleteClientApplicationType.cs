@@ -16,7 +16,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientApplicationTypes
 {
-    public sealed class DeleteClientApplicationType : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(AdminCollection))]
+    public sealed class DeleteClientApplicationType : AuthorityTestBase
     {
         private static readonly CatalogueItemId SolutionId = new(99999, "001");
 

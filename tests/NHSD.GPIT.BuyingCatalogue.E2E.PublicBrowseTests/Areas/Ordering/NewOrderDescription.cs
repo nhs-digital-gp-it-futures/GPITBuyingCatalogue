@@ -14,8 +14,9 @@ using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 {
+    [Collection(nameof(OrderingCollection))]
     public sealed class NewOrderDescription
-        : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+        : BuyerTestBase
     {
         private const string InternalOrgId = "CG-03F";
         private const OrderTriageValue Option = OrderTriageValue.Over250K;

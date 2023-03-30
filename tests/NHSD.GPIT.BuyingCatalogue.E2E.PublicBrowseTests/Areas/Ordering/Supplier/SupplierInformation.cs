@@ -17,7 +17,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
 {
-    public sealed class SupplierInformation : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(OrderingCollection))]
+    public sealed class SupplierInformation : BuyerTestBase, IDisposable
     {
         private const string InternalOrgId = "CG-03F";
         private const string SupplierName = "E2E Test Supplier With Contact";

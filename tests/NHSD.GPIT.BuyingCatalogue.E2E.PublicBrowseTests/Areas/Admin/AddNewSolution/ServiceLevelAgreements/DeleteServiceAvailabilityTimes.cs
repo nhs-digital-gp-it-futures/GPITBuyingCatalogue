@@ -14,7 +14,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceLevelAgreements
 {
-    public sealed class DeleteServiceAvailabilityTimes : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(AdminCollection))]
+    public sealed class DeleteServiceAvailabilityTimes : AuthorityTestBase
     {
         private const int CancelLinkServiceAvailabilityTimesId = 2;
         private const int ServiceAvailabilityTimesId = 3;

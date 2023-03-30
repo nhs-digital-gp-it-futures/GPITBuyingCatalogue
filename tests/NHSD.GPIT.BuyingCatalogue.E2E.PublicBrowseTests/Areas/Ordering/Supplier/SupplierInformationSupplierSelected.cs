@@ -14,7 +14,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
 {
-    public sealed class SupplierInformationSupplierSelected : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IAsyncLifetime
+    [Collection(nameof(OrderingCollection))]
+    public sealed class SupplierInformationSupplierSelected : BuyerTestBase, IAsyncLifetime
     {
         private const string InternalOrgId = "CG-03F";
         private const int SupplierContactId = 2;
