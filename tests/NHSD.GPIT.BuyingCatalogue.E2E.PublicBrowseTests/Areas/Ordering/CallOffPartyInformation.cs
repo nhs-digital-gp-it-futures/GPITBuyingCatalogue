@@ -96,8 +96,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 .Should().BeTrue();
         }
 
-        [Fact]
-        public async Task OrderingPartyInformation_InputText_AddsPartyInformation()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task OrderingPartyInformation_InputText_AddsPartyInformation(bool orderWithOrderingPartyContact)
         {
             await using var context = GetEndToEndDbContext();
 
@@ -112,6 +114,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 IsDeleted = false,
                 Description = "This is an Order Description",
             };
+
+            if (orderWithOrderingPartyContact)
+            {
+                order.OrderingPartyContact = new Contact
+                {
+                    FirstName = "Clark",
+                    LastName = "Kent",
+                    Email = "Clark.Kent@TheDailyPlanet.com",
+                    Phone = "123456789",
+                };
+            }
 
             context.Orders.Add(order);
             context.SaveChanges();

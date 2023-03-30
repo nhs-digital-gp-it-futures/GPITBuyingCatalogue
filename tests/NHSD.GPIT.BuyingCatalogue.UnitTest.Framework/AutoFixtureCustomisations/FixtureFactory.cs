@@ -37,7 +37,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
             new OrderItemCustomization(),
             new OrderItemPriceCustomization(),
             new OrderItemPriceTierCustomization(),
-            new ContactCustomization(),
             new OrganisationCustomization(),
             new OrderCustomization(),
             new ControllerCustomization(),
