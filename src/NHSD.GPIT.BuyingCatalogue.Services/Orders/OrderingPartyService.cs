@@ -17,10 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task SetOrderingPartyContact(CallOffId callOffId, Contact contact)
         {
-            if (contact == null)
-            {
-                throw new ArgumentNullException(nameof(contact));
-            }
+            ArgumentNullException.ThrowIfNull(contact);
 
             var order = await dbContext.Order(callOffId);
 
