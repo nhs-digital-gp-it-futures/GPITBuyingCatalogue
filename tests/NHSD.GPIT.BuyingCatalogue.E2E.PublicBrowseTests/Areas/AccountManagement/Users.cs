@@ -15,7 +15,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
 {
-    [Collection(nameof(AccountManagementCollection))]
+    [Collection(nameof(SharedContextCollection))]
     public class Users : AccountManagerTestBase
     {
         private const int OrganisationId = 176;
