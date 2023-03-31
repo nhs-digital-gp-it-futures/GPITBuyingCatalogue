@@ -64,13 +64,15 @@
     <div class="nhsuk-grid-column-full">
         <nhs-page-title title="@ViewBag.Title"
                         advice="@Model.AdviceText" />
-
-        <vc:nhs-suggestion-search id="marketing-suggestion-search"
+        @if (!Model.SearchCriteriaApplied)
+        {
+            <vc:nhs-suggestion-search id="marketing-suggestion-search"
                                   ajax-url="@Url.Action(
                                                 nameof(SolutionsController.FilterSearchSuggestions),
                                                 typeof(SolutionsController).ControllerName())"
                                   title-text="Search for solution by solution name or supplier name"
                                   query-parameter-name="search"/>
+        }
 
         <nhs-warning-callout label-text="GP IT Futures framework expired">
             <p>Lot 1 of the GP IT Futures framework expired on 31 March 2023. This means you can no longer carry out new procurements of solutions and services offered under that framework.</p>
@@ -78,8 +80,9 @@
             <p>You’ll still be able to use the Buying Catalogue to browse and procure solutions and services from the Digital First Online Consultation and Video Consultation (DFOCVC) framework.</p>
             <p>However, orders placed under the GP IT Futures framework will not be completed until the replacement framework is live.</p>
         </nhs-warning-callout>
-
-        <vc:nhs-action-link text="Filter Catalogue Solutions"
+        @if (!Model.SearchCriteriaApplied)
+        {
+            <vc:nhs-action-link text="Filter Catalogue Solutions"
                             url="@Url.Action(
                                 nameof(FilterController.FilterCapabilities),
                                 typeof(FilterController).ControllerName(),
@@ -87,7 +90,7 @@
                                       SelectedEpicIds = Model.SearchSummary.SelectedEpicIds, 
                                       search = Model.SearchSummary.SearchTerm})" />
 
-
+        }
         @if (Model.SearchCriteriaApplied)
         {
             <hr />
@@ -95,7 +98,7 @@
             <br/>
 
             @if (!string.IsNullOrWhiteSpace(Model.SearchSummary.SearchTerm)){
-                <h3 data-test-id="search-term-title">Search term:</h3>
+                <h3 data-test-id="search-term-title">Selected Capabilities and Epics</h3>
                 <p data-test-id="search-term-content">@($"'{Model.SearchSummary.SearchTerm}'")</p>
             }
 
@@ -121,7 +124,8 @@
                     Edit Capabilities
                 </a>
 
-                <a asp-area="@typeof(FilterController).AreaName()"
+                <a  style="margin-right:20px";
+                    asp-area="@typeof(FilterController).AreaName()"
                     asp-controller="@typeof(FilterController).ControllerName()"
                     asp-action="@nameof(FilterController.FilterEpics)"
                     asp-route-selectedCapabilityIds="@Model.SearchSummary.SelectedCapabilityIds"
@@ -129,12 +133,13 @@
                     asp-route-search="@Model.SearchSummary.SearchTerm">
                     Edit Epics
                 </a>
-            </p>
 
-            <vc:nhs-secondary-button 
-                type="Secondary" 
-                url="@Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName())" 
-                text="Clear search criteria" />
+                <a asp-area="@typeof(SolutionsController).AreaName()"
+                    asp-controller="@typeof(SolutionsController).ControllerName()"
+                    asp-action="@nameof(SolutionsController.Index)">
+                    Start a new search
+                </a>
+            </p>
 
             @if (Model.CatalogueItems.Count == 0)
             {

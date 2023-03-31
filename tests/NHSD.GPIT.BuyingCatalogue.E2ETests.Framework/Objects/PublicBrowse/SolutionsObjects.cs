@@ -22,7 +22,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.PublicBrowse
 
         public static By FilterCatalogueSolutionsLink => By.LinkText("Filter Catalogue Solutions");
 
-        public static By ClearSearchCriteriaLink => By.LinkText("Clear search criteria");
+        public static By StartNewSearch => By.LinkText("Start a new search");
+        public static By EditCapabilities => By.LinkText("Edit Capabilities");
+        public static By EditEpics => By.LinkText("Edit Epics");
 
         public static By SolutionsLink => By.CssSelector("div.nhsuk-grid-column-two-thirds h2 a");
 
