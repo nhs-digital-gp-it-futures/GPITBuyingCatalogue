@@ -204,20 +204,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         [Fact]
         public void CatalogueSolutions_SearchTerm_DisplaysFilterSummary()
         {
-            RunTestWithRetry(() =>
-            {
-                using var context = GetEndToEndDbContext();
-                var solution = context.Solutions.Include(s => s.CatalogueItem).First(s => s.CatalogueItem.PublishedStatus == PublicationStatus.Published);
-                var solutionName = solution.CatalogueItem.Name;
+            using var context = GetEndToEndDbContext();
+            var solution = context.Solutions.Include(s => s.CatalogueItem).First(s => s.CatalogueItem.PublishedStatus == PublicationStatus.Published);
+            var solutionName = solution.CatalogueItem.Name;
 
-                CommonActions.ElementAddValue(SolutionsObjects.SearchBar, solutionName);
+            CommonActions.ElementAddValue(SolutionsObjects.SearchBar, solutionName);
 
-                CommonActions.ClickLinkElement(SolutionsObjects.SearchButton);
+            CommonActions.ClickLinkElement(SolutionsObjects.SearchButton);
 
-                CommonActions.ElementIsDisplayed(SolutionsObjects.SearchTermTitle).Should().BeTrue();
-                CommonActions.ElementIsDisplayed(SolutionsObjects.SearchTermContent).Should().BeTrue();
-                CommonActions.ElementTextContains(SolutionsObjects.SearchTermContent, $"'{solutionName}'").Should().BeTrue();
-            });
+            CommonActions.ElementIsDisplayed(SolutionsObjects.SearchTermTitle).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(SolutionsObjects.SearchTermContent).Should().BeTrue();
+            CommonActions.ElementTextContains(SolutionsObjects.SearchTermContent, $"'{solutionName}'").Should().BeTrue();
         }
 
         [Fact]
@@ -236,64 +233,55 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         [Fact]
         public void CatalogueSolutions_ClickStartNewSearchLink_ExpectedResult()
         {
-            RunTestWithRetry(() =>
-            {
-                using var context = GetEndToEndDbContext();
-                var solution = context.Solutions.Include(s => s.CatalogueItem).First(s => s.CatalogueItem.PublishedStatus == PublicationStatus.Published);
+            using var context = GetEndToEndDbContext();
+            var solution = context.Solutions.Include(s => s.CatalogueItem).First(s => s.CatalogueItem.PublishedStatus == PublicationStatus.Published);
 
-                CommonActions.ElementAddValue(SolutionsObjects.SearchBar, solution.CatalogueItem.Name);
-                CommonActions.WaitUntilElementIsDisplayed(SolutionsObjects.SearchListBox);
+            CommonActions.ElementAddValue(SolutionsObjects.SearchBar, solution.CatalogueItem.Name);
+            CommonActions.WaitUntilElementIsDisplayed(SolutionsObjects.SearchListBox);
 
-                CommonActions.ClickLinkElement(SolutionsObjects.SearchButton);
+            CommonActions.ClickLinkElement(SolutionsObjects.SearchButton);
 
-                CommonActions.ClickLinkElement(SolutionsObjects.StartNewSearch);
+            CommonActions.ClickLinkElement(SolutionsObjects.StartNewSearch);
 
-                CommonActions.PageLoadedCorrectGetIndex(typeof(SolutionsController), nameof(SolutionsController.Index))
-                    .Should()
-                    .BeTrue();
-            });
+            CommonActions.PageLoadedCorrectGetIndex(typeof(SolutionsController), nameof(SolutionsController.Index))
+                .Should()
+                .BeTrue();
         }
 
         [Fact]
         public void CatalogueSolutions_ClickEditCapabilitiesLink_ExpectedResult()
         {
-            RunTestWithRetry(() =>
-            {
-                using var context = GetEndToEndDbContext();
-                var solution = context.Solutions.Include(s => s.CatalogueItem).First(s => s.CatalogueItem.PublishedStatus == PublicationStatus.Published);
+            using var context = GetEndToEndDbContext();
+            var solution = context.Solutions.Include(s => s.CatalogueItem).First(s => s.CatalogueItem.PublishedStatus == PublicationStatus.Published);
 
-                CommonActions.ElementAddValue(SolutionsObjects.SearchBar, solution.CatalogueItem.Name);
-                CommonActions.WaitUntilElementIsDisplayed(SolutionsObjects.SearchListBox);
+            CommonActions.ElementAddValue(SolutionsObjects.SearchBar, solution.CatalogueItem.Name);
+            CommonActions.WaitUntilElementIsDisplayed(SolutionsObjects.SearchListBox);
 
-                CommonActions.ClickLinkElement(SolutionsObjects.SearchButton);
+            CommonActions.ClickLinkElement(SolutionsObjects.SearchButton);
 
-                CommonActions.ClickLinkElement(SolutionsObjects.EditCapabilities);
+            CommonActions.ClickLinkElement(SolutionsObjects.EditCapabilities);
 
-                CommonActions.PageLoadedCorrectGetIndex(typeof(FilterController), nameof(FilterController.FilterCapabilities))
-                    .Should()
-                    .BeTrue();
-            });
+            CommonActions.PageLoadedCorrectGetIndex(typeof(FilterController), nameof(FilterController.FilterCapabilities))
+                .Should()
+                .BeTrue();
         }
 
         [Fact]
         public void CatalogueSolutions_ClickEditEpicsLink_ExpectedResult()
         {
-            RunTestWithRetry(() =>
-            {
-                using var context = GetEndToEndDbContext();
-                var solution = context.Solutions.Include(s => s.CatalogueItem).First(s => s.CatalogueItem.PublishedStatus == PublicationStatus.Published);
+            using var context = GetEndToEndDbContext();
+            var solution = context.Solutions.Include(s => s.CatalogueItem).First(s => s.CatalogueItem.PublishedStatus == PublicationStatus.Published);
 
-                CommonActions.ElementAddValue(SolutionsObjects.SearchBar, solution.CatalogueItem.Name);
-                CommonActions.WaitUntilElementIsDisplayed(SolutionsObjects.SearchListBox);
+            CommonActions.ElementAddValue(SolutionsObjects.SearchBar, solution.CatalogueItem.Name);
+            CommonActions.WaitUntilElementIsDisplayed(SolutionsObjects.SearchListBox);
 
-                CommonActions.ClickLinkElement(SolutionsObjects.SearchButton);
+            CommonActions.ClickLinkElement(SolutionsObjects.SearchButton);
 
-                CommonActions.ClickLinkElement(SolutionsObjects.EditEpics);
+            CommonActions.ClickLinkElement(SolutionsObjects.EditEpics);
 
-                CommonActions.PageLoadedCorrectGetIndex(typeof(FilterController), nameof(FilterController.FilterEpics))
-                    .Should()
-                    .BeTrue();
-            });
+            CommonActions.PageLoadedCorrectGetIndex(typeof(FilterController), nameof(FilterController.FilterEpics))
+                .Should()
+                .BeTrue();
         }
 
         [Fact]
@@ -301,28 +289,28 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
         {
             await RunTestWithRetryAsync(async () =>
             {
-                using var context = GetEndToEndDbContext();
-                var solution = context.Solutions.Include(s => s.CatalogueItem).First(s => s.CatalogueItem.PublishedStatus == PublicationStatus.Published);
+            using var context = GetEndToEndDbContext();
+            var solution = context.Solutions.Include(s => s.CatalogueItem).First(s => s.CatalogueItem.PublishedStatus == PublicationStatus.Published);
 
-                await CommonActions.ElementAddValueWithDelay(SolutionsObjects.SearchBar, solution.CatalogueItem.Name);
+            await CommonActions.ElementAddValueWithDelay(SolutionsObjects.SearchBar, solution.CatalogueItem.Name);
 
-                CommonActions.WaitUntilElementIsDisplayed(SolutionsObjects.SearchListBox);
+            CommonActions.WaitUntilElementIsDisplayed(SolutionsObjects.SearchListBox);
 
-                CommonActions.ElementExists(SolutionsObjects.SearchResult(0))
-                    .Should()
-                    .BeTrue();
+            CommonActions.ElementExists(SolutionsObjects.SearchResult(0))
+                .Should()
+                .BeTrue();
 
-                CommonActions.ElementTextEqualTo(
-                    SolutionsObjects.SearchResultTitle(0),
-                    solution.CatalogueItem.Name)
-                    .Should()
-                    .BeTrue();
+            CommonActions.ElementTextEqualTo(
+                SolutionsObjects.SearchResultTitle(0),
+                solution.CatalogueItem.Name)
+                .Should()
+                .BeTrue();
 
-                CommonActions.ElementTextEqualTo(
-                    SolutionsObjects.SearchResultDescription(0),
-                    "Solution")
-                    .Should()
-                    .BeTrue();
+            CommonActions.ElementTextEqualTo(
+                 SolutionsObjects.SearchResultDescription(0),
+                 "Solution")
+                 .Should()
+                 .BeTrue();
             });
         }
 
