@@ -39,9 +39,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
             [Display(Name = "Z to A")]
             ZToA,
 
-            [Display(Name = "Framework")]
-            Framework,
-
             [Display(Name = "Last published")]
             LastPublished,
         }
