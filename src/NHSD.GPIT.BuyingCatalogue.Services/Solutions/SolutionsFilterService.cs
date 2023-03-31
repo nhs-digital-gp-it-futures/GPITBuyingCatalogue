@@ -52,8 +52,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 PageOptions.SortOptions.LastPublished => query.OrderByDescending(ci => ci.LastPublished)
                                                                 .ThenBy(ci => ci.Name),
                 PageOptions.SortOptions.ZToA => query.OrderByDescending(ci => ci.Name),
-                PageOptions.SortOptions.Framework => query.OrderBy(ci => ci.Solution.FrameworkSolutions.OrderBy(fs => fs.Framework.Name).First().Framework.Name)
-                                                            .ThenBy(ci => ci.Name),
                 PageOptions.SortOptions.AtoZ or _ => query.OrderBy(ci => ci.Name),
             };
 
