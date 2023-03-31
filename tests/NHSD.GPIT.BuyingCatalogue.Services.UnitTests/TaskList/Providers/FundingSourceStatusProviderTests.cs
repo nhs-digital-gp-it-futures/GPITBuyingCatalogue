@@ -96,8 +96,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonInlineAutoData(1, TaskProgress.Completed)]
+        [CommonInlineAutoData(2, TaskProgress.Amended)]
         public static void Get_AllFundingSourceInfoEntered_ReturnsCompleted(
+            int revision,
+            TaskProgress expectedTaskProgress,
             Order order,
             FundingSourceStatusProvider service)
         {
@@ -106,9 +109,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 DeliveryDates = TaskProgress.Completed,
             };
 
+            order.Revision = revision;
+
             var actual = service.Get(new OrderWrapper(order), state);
 
-            actual.Should().Be(TaskProgress.Completed);
+            actual.Should().Be(expectedTaskProgress);
         }
     }
 }

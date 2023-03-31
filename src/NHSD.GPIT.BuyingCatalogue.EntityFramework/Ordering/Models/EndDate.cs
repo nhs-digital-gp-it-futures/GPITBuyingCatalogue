@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public string DisplayValue => DateTime.HasValue ? $"{DateTime:d MMMM yyyy}" : string.Empty;
 
-        public decimal RemainingTerm(DateTime plannedDelivery)
+        public int RemainingTerm(DateTime plannedDelivery)
         {
             if (!DateTime.HasValue)
             {
@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             return Math.Max(0, DifferenceInMonths(plannedDelivery, DateTime.Value.AddDays(1)));
         }
 
-        private decimal DifferenceInMonths(DateTime plannedDelivery, DateTime endDate)
+        private int DifferenceInMonths(DateTime plannedDelivery, DateTime endDate)
         {
             return ((endDate.Year - plannedDelivery.Year) * 12) + (endDate.Month - plannedDelivery.Month);
         }

@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
             CallOffId = callOffId;
             CatalogueItemName = orderItem.CatalogueItem.Name;
             SelectedFundingType = orderItem.FundingType;
-            TotalCost = orderItem.OrderItemPrice.CalculateTotalCostForContractLength(orderItem.TotalQuantity, order.MaximumTerm!.Value);
+            TotalCost = order.TotalCostForOrderItem(orderItem.CatalogueItem.Id);
         }
 
         public string CatalogueItemName { get; set; }

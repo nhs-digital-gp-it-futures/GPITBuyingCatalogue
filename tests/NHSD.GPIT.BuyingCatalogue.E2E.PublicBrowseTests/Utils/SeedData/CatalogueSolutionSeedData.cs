@@ -810,6 +810,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     },
                     PublishedStatus = PublicationStatus.Published,
                 },
+                new CatalogueItem
+                {
+                    Id = new CatalogueItemId(99991, "009"),
+                    PublishedStatus = PublicationStatus.Draft,
+                    CatalogueItemType = CatalogueItemType.Solution,
+                    SupplierId = 99999,
+                    Name = "Draft Solution",
+                    Created = DateTime.UtcNow,
+                    Solution = new Solution
+                    {
+                        CatalogueItemId = new CatalogueItemId(99991, "009"),
+                    },
+                },
             };
 
             catalogueItems.AddRange(GetGeneratedCatalogueSolutionItems());

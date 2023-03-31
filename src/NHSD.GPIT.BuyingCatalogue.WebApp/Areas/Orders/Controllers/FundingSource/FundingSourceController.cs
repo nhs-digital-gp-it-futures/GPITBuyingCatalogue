@@ -155,7 +155,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.FundingSourc
         }
 
         [HttpPost]
-        public async Task<IActionResult> FundingSources(FundingSources model, string internalOrgId, CallOffId callOffId)
+        public async Task<IActionResult> FundingSourcesContinue(string internalOrgId, CallOffId callOffId)
         {
             await orderService.SetFundingSourceForForceFundedItems(internalOrgId, callOffId);
 
@@ -168,7 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.FundingSourc
         [HttpGet("{catalogueItemId}/funding-source")]
         public async Task<IActionResult> FundingSource(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId)
         {
-            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
+            var order = (await orderService.GetOrderWithOrderItemsForFunding(callOffId, internalOrgId)).Order;
 
             var item = await orderItemService.GetOrderItem(callOffId, internalOrgId, catalogueItemId);
 

@@ -17,8 +17,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
             model.IsAmendment.Should().BeFalse();
             model.IsOrderItemAdded.Should().BeTrue();
-            model.OrderItem.Should().Be(orderItem);
-
+            model.OrderItemPrice.Should().Be(orderItem.OrderItemPrice);
+            model.CatalogueItem.Should().Be(orderItem.CatalogueItem);
+            model.OrderItemRecipients.Should().BeEquivalentTo(orderItem.OrderItemRecipients);
+            model.RolledUpTotalQuantity.Should().Be(orderItem.TotalQuantity);
+            model.PreviousTotalQuantity.Should().Be(0);
             orderItem.OrderItemRecipients.ForEach(x => model.IsServiceRecipientAdded(x.OdsCode).Should().BeTrue());
         }
 
@@ -31,7 +34,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
             model.IsAmendment.Should().BeTrue();
             model.IsOrderItemAdded.Should().BeFalse();
-            model.OrderItem.Should().Be(orderItem);
+            model.OrderItemPrice.Should().Be(orderItem.OrderItemPrice);
+            model.CatalogueItem.Should().Be(orderItem.CatalogueItem);
+            model.OrderItemRecipients.Should().BeEquivalentTo(orderItem.OrderItemRecipients);
+            model.RolledUpTotalQuantity.Should().Be(orderItem.TotalQuantity);
+            model.PreviousTotalQuantity.Should().Be(orderItem.TotalQuantity);
 
             orderItem.OrderItemRecipients.ForEach(x => model.IsServiceRecipientAdded(x.OdsCode).Should().BeFalse());
         }
