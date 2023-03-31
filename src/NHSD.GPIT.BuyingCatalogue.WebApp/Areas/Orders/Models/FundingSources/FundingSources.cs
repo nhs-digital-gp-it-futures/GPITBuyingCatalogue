@@ -13,12 +13,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
 
         public FundingSources(string internalOrgId, CallOffId callOffId, Order order, int countOfOrderFrameworks)
         {
+            Order = order;
             Title = "Funding sources";
             InternalOrgId = internalOrgId;
             CallOffId = callOffId;
             Caption = $"Order {CallOffId}";
-            MaximumTerm = order.MaximumTerm!.Value;
             CountOfOrderFrameworks = countOfOrderFrameworks;
+
             SelectedFramework = order.SelectedFramework;
 
             var completedOrderItems = order.OrderItems.Where(oi => oi.AllQuantitiesEntered).ToList();
@@ -35,6 +36,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
             OrderItemsNoFundingRequired = completedOrderItems.Where(oi => oi.OrderItemPrice.CalculateTotalCost(oi.TotalQuantity) == 0).ToList();
         }
 
+        public Order Order { get; set; }
+
         public CallOffId CallOffId { get; set; }
 
         public List<OrderItem> OrderItemsSelectable { get; set; }
@@ -46,7 +49,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
         public EntityFramework.Catalogue.Models.Framework SelectedFramework { get; set; }
 
         public int CountOfOrderFrameworks { get; set; }
-
-        public int MaximumTerm { get; set; }
     }
 }

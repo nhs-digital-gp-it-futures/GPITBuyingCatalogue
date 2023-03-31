@@ -5,16 +5,14 @@
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Review.ReviewExpanderModel
 @{
-    var totalCostsRolledUp = Model.OrderItem.OrderItemPrice.CalculateTotalCostPerTier(Model.OrderItem.TotalQuantity);
-    var totalCostsPrevious = Model.IsAmendment && Model.Previous is not null
-        ? Model.Previous.OrderItemPrice.CalculateTotalCostPerTier(Model.Previous.TotalQuantity)
-        : Model.OrderItem.OrderItemPrice.CalculateTotalCostPerTier(0);
-    var hasTieredPricing = Model.OrderItem.OrderItemPrice?.CataloguePriceType is CataloguePriceType.Tiered;
-    var hasServiceRecipientQuantities = Model.OrderItem.OrderItemPrice?.IsPerServiceRecipient() ?? false;
+    var totalCostsRolledUp = Model.OrderItemPrice.CalculateTotalCostPerTier(Model.RolledUpTotalQuantity);
+    var totalCostsPrevious = Model.OrderItemPrice.CalculateTotalCostPerTier(Model.PreviousTotalQuantity);
+    var hasTieredPricing = Model.OrderItemPrice.CataloguePriceType is CataloguePriceType.Tiered;
+    var hasServiceRecipientQuantities = Model.OrderItemPrice.IsPerServiceRecipient();
     var tableText = Model.IsAmendment ? "Pricing and total quantities" : "Pricing";
 }
 
-<nhs-expander label-text="@Model.OrderItem.CatalogueItem.Name"
+<nhs-expander label-text="@Model.CatalogueItem.Name"
               added-sticker="@Model.IsAmendment && @Model.IsOrderItemAdded"
 			  colour-mode="BlackAndWhite"
 			  open="true"
@@ -27,7 +25,7 @@
         }
         <nhs-table-column>Recipient</nhs-table-column>
         <nhs-table-column>Quantity</nhs-table-column>
-        @foreach (var recipient in Model.OrderItem.OrderItemRecipients)
+        @foreach (var recipient in Model.OrderItemRecipients)
         {
             <nhs-table-row-container>
                 @if (Model.IsAmendment)
@@ -78,8 +76,6 @@
         }
         @for (var i = 0; i < totalCostsRolledUp.Count; i++)
         {
-            var price = Model.OrderItem.OrderItemPrice.OrderItemPriceTiers.ElementAt(i).Price;
-
             <nhs-table-row-container>
                 @if (hasTieredPricing)
                 {
@@ -88,7 +84,7 @@
                     </nhs-table-cell>
                 }
                 <nhs-table-cell>
-                    £@($"{price:#,###,##0.00##}") @Model.OrderItem.OrderItemPrice.ToPriceUnitString()
+                    £@($"{totalCostsRolledUp[i].Price:#,###,##0.00##}") @Model.OrderItemPrice.ToPriceUnitString()
                 </nhs-table-cell>
                 @if (Model.IsAmendment)
                 {

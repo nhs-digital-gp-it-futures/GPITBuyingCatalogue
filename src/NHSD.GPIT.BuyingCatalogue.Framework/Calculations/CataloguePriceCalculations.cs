@@ -64,13 +64,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
                 : cost * 12;
         }
 
-        public static decimal CalculateTotalCostForContractLength(this IPrice price, int quantity, int maxTerm)
-        {
-            return price?.BillingPeriod == null
-                ? CalculateOneOffCost(price, quantity)
-                : CalculateCostPerMonth(price, quantity) * maxTerm;
-        }
-
         public static decimal TotalOneOffCost(this Order order, bool roundResult = false)
         {
             var total = order?.OrderItems.Sum(x => x.OrderItemPrice.CalculateOneOffCost(x.TotalQuantity)) ?? decimal.Zero;
@@ -135,6 +128,26 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
             return total;
         }
 
+        public static decimal TotalCostForOrderItem(this Order order, CatalogueItemId catalogueItemId)
+        {
+            if (order == null)
+            {
+                return decimal.Zero;
+            }
+
+            var orderItem = order.OrderItem(catalogueItemId);
+
+            if (order.IsAmendment)
+            {
+                return CalculateForTerm(orderItem, GetTerm(order.EndDate, orderItem));
+            }
+            else
+            {
+                var maximumTerm = order.MaximumTerm ?? 36;
+                return CalculateForTerm(orderItem, maximumTerm);
+            }
+        }
+
         public static decimal TotalCost(this OrderItem orderItem)
         {
             if (orderItem?.OrderItemPrice is null)
@@ -152,15 +165,35 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
             };
         }
 
+        private static decimal CalculateForTerm(OrderItem orderItem, int term)
+        {
+            if (orderItem == null)
+                return decimal.Zero;
+
+            var price = orderItem.OrderItemPrice;
+            return price.CalculateOneOffCost(orderItem.TotalQuantity)
+                       + (price.CalculateCostPerMonth(orderItem.TotalQuantity) * term);
+        }
+
         private static decimal TotalCostForAmendment(this Order order)
         {
             return order.TotalOneOffCost() + order?.OrderItems.Sum(i =>
             {
-                var deliveryDate = i.OrderItemRecipients.First().DeliveryDate.Value;
-                var monthlyCost = i.OrderItemPrice.CalculateCostPerMonth(i.TotalQuantity);
-                var term = order.EndDate.RemainingTerm(deliveryDate);
-                return monthlyCost * term;
+                var term = GetTerm(order.EndDate, i);
+                return i.OrderItemPrice.CalculateCostPerMonth(i.TotalQuantity) * term;
             }) ?? decimal.Zero;
+        }
+
+        private static int GetTerm(EndDate endDate, OrderItem orderItem)
+        {
+            if (orderItem == null || endDate == null)
+            {
+                return 0;
+            }
+
+            var deliveryDate = orderItem.OrderItemRecipients.First().DeliveryDate.Value;
+            var term = endDate.RemainingTerm(deliveryDate);
+            return term;
         }
 
         private static List<PriceCalculationModel> CalculateCostCumulative(IPrice price, int quantity)
@@ -173,7 +206,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
                     ? (quantity < 0 ? 0 : quantity)
                     : tier.Quantity;
 
-                output.Add(new(index + 1, tierQuantity, tierQuantity * tier.Price));
+                output.Add(new(index + 1, tierQuantity, tier.Price, tierQuantity * tier.Price));
 
                 quantity -= tierQuantity;
             }
@@ -188,6 +221,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
                 .Select((x, i) => new PriceCalculationModel(
                     i + 1,
                     x.AppliesTo(quantity) ? quantity : 0,
+                    x.Price,
                     x.AppliesTo(quantity) ? quantity * x.Price : decimal.Zero))
                 .ToList();
         }
@@ -199,6 +233,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
                 .Select((x, i) => new PriceCalculationModel(
                     i + 1,
                     x.AppliesTo(quantity) ? quantity : 0,
+                    x.Price,
                     x.AppliesTo(quantity) ? x.Price : decimal.Zero))
                 .ToList();
         }
