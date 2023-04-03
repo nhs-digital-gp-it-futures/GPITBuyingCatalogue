@@ -13,8 +13,9 @@ using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 {
+    [Collection(nameof(OrderingCollection))]
     public sealed class CallOffPartyInformation
-        : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+        : BuyerTestBase
     {
         private const string InternalOrgId = "CG-03F";
         private static readonly CallOffId CallOffId = new(90001, 1);
@@ -96,8 +97,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 .Should().BeTrue();
         }
 
-        [Fact]
-        public async Task OrderingPartyInformation_InputText_AddsPartyInformation()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task OrderingPartyInformation_InputText_AddsPartyInformation(bool orderWithOrderingPartyContact)
         {
             await using var context = GetEndToEndDbContext();
 
@@ -112,6 +115,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 IsDeleted = false,
                 Description = "This is an Order Description",
             };
+
+            if (orderWithOrderingPartyContact)
+            {
+                order.OrderingPartyContact = new Contact
+                {
+                    FirstName = "Clark",
+                    LastName = "Kent",
+                    Email = "Clark.Kent@TheDailyPlanet.com",
+                    Phone = "123456789",
+                };
+            }
 
             context.Orders.Add(order);
             context.SaveChanges();

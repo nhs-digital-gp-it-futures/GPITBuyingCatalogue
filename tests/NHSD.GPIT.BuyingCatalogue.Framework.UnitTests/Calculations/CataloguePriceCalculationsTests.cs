@@ -37,6 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         public static void CalculateTotalCostPerTier_FlatPrice_SingleFixed_Ignores_Quantity(IFixture fixture)
         {
             var quantity = 3587;
+            var cost = 3.14M;
             var price = 3.14M;
             var calculationType = CataloguePriceCalculationType.SingleFixed;
 
@@ -46,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             var result = orderItem.OrderItemPrice.CalculateTotalCostPerTier(orderItem.TotalQuantity);
 
-            var expected = new PriceCalculationModel(1, quantity, price);
+            var expected = new PriceCalculationModel(1, quantity, price, cost);
 
             result.Should()
                 .NotBeEmpty()
@@ -76,6 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         {
             var quantity = 3587;
             var price = 3.14M;
+            var cost = quantity * price;
             var calculationType = CataloguePriceCalculationType.Volume;
 
             (decimal Price, int LowerRange, int? UpperRange) tier = (price, 1, null);
@@ -84,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             var result = orderItem.OrderItemPrice.CalculateTotalCostPerTier(orderItem.TotalQuantity);
 
-            var expected = new PriceCalculationModel(1, quantity, quantity * price);
+            var expected = new PriceCalculationModel(1, quantity, price, cost);
 
             result.Should()
                 .NotBeEmpty()
@@ -139,11 +141,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             var result = orderItem.OrderItemPrice.CalculateTotalCostPerTier(orderItem.TotalQuantity);
 
-            var expectedTemplate = GetCostTiersTemplate(tierId, quantity, expectedCost);
+            var template = new List<PriceCalculationModel>()
+            {
+                new(1, 0, 3.14M, 0M),
+                new(2, 0, 2M, 0M),
+                new(3, 0, 1.5M, 0M),
+            };
+
+            UpdateTier(template.First(p => p.Id == tierId), quantity, expectedCost);
 
             result.Should()
                 .NotBeEmpty()
-                .And.BeEquivalentTo(expectedTemplate);
+                .And.BeEquivalentTo(template);
         }
 
         [Theory]
@@ -194,11 +203,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             var result = orderItem.OrderItemPrice.CalculateTotalCostPerTier(orderItem.TotalQuantity);
 
-            var expectedTemplate = GetCostTiersTemplate(tierId, quantity, expectedCost);
+            var template = new List<PriceCalculationModel>()
+            {
+                new(1, 0, 3.14M, 0M),
+                new(2, 0, 2M, 0M),
+                new(3, 0, 1.5M, 0M),
+            };
+
+            UpdateTier(template.First(p => p.Id == tierId), quantity, expectedCost);
 
             result.Should()
                 .NotBeEmpty()
-                .And.BeEquivalentTo(expectedTemplate);
+                .And.BeEquivalentTo(template);
         }
 
         [Theory]
@@ -254,12 +270,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             var result = orderItem.OrderItemPrice.CalculateTotalCostPerTier(orderItem.TotalQuantity);
 
-            var costs = new decimal[] { 3.14M, 2M, 1.5M };
-            var expectedTemplate = GetCostTiersTemplate(quantitySplits, costs);
+            var template = new List<PriceCalculationModel>()
+            {
+                new(1, 0, 3.14M, 0M),
+                new(2, 0, 2M, 0M),
+                new(3, 0, 1.5M, 0M),
+            };
+
+            quantitySplits.ForEach((q, i) =>
+            {
+                template[i].Quantity = q;
+                template[i].Cost = template[i].Price * q;
+            });
 
             result.Should()
                 .NotBeEmpty()
-                .And.BeEquivalentTo(expectedTemplate);
+                .And.BeEquivalentTo(template);
         }
 
         [Theory]
@@ -327,11 +353,39 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             perMonthOrderItem.OrderItemPrice.BillingPeriod = TimeUnit.PerMonth;
 
             var order = fixture.Build<Order>()
-                .With(o => o.OrderItems, new HashSet<OrderItem> { oneOffCostOrderItem, perMonthOrderItem })
+                .With(o => o.OrderItems, new HashSet<OrderItem>(new[] { oneOffCostOrderItem, perMonthOrderItem }))
                 .With(o => o.MaximumTerm, maximumTerm)
                 .Create();
 
             order.TotalCost().Should().Be(12 + (12 * 24));
+        }
+
+        [Theory]
+        [CommonInlineAutoData(1, 12 * 24)]
+        [CommonInlineAutoData(2, 12 * 18)]
+        public static void Order_TotalCostForOrderItem_Amended_Orders_Use_The_Planned_Delivery_date(int revision, decimal total, IFixture fixture)
+        {
+            var maximumTerm = 24;
+            var price = 12M;
+            var commencementDate = new DateTime(2000, 1, 1);
+            var amendmentPlannedDelivery = commencementDate.AddMonths(6);
+
+            (decimal Price, int LowerRange, int? UpperRange) tier = (price, 1, null);
+
+            OrderItem oneOffCostOrderItemNotUsedInTotal = BuildOrderItem(fixture, 1, new[] { tier }, CataloguePriceCalculationType.SingleFixed);
+            oneOffCostOrderItemNotUsedInTotal.OrderItemPrice.BillingPeriod = null;
+
+            OrderItem perMonthOrderItemUsedForTotal = BuildOrderItem(fixture, 1, new[] { tier }, CataloguePriceCalculationType.SingleFixed, amendmentPlannedDelivery);
+            perMonthOrderItemUsedForTotal.OrderItemPrice.BillingPeriod = TimeUnit.PerMonth;
+
+            var order = fixture.Build<Order>()
+                .With(o => o.Revision, revision)
+                .With(o => o.CommencementDate, commencementDate)
+                .With(o => o.OrderItems, new HashSet<OrderItem>(new[] { oneOffCostOrderItemNotUsedInTotal, perMonthOrderItemUsedForTotal }))
+                .With(o => o.MaximumTerm, maximumTerm)
+                .Create();
+
+            order.TotalCostForOrderItem(perMonthOrderItemUsedForTotal.CatalogueItem.Id).Should().Be(total);
         }
 
         [Theory]
@@ -351,13 +405,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             OrderItem amendedOrderItem = BuildOrderItem(fixture, 1, new[] { tier }, CataloguePriceCalculationType.SingleFixed, amendmentPlannedDelivery);
             amendedOrderItem.OrderItemPrice.BillingPeriod = TimeUnit.PerMonth;
 
-            var order = fixture.Build<Order>()
-                .With(o => o.Revision, 1)
-                .With(o => o.OrderTriageValue, OrderTriageValue.Under40K)
-                .With(o => o.CommencementDate, new DateTime(2000, 1, 1))
-                .With(o => o.OrderItems, new HashSet<OrderItem> { orderItem })
-                .With(o => o.MaximumTerm, maximumTerm)
-                .Create();
+            Order order = BuildOrder(fixture, maximumTerm, new[] { orderItem }, commencementDate);
 
             var amendedOrder = order.BuidAmendment(2);
             amendedOrder.OrderItems = new HashSet<OrderItem> { amendedOrderItem };
@@ -367,38 +415,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             orderWrapper.TotalCost().Should().Be((12 * 12) + (12 * 6));
         }
 
-        private static List<PriceCalculationModel> GetCostTiersTemplate(int[] quantitySplits, decimal[] costs)
+        private static Order BuildOrder(IFixture fixture, int maximumTerm, OrderItem[] orderItems, DateTime commencementDate)
         {
-            var template = new List<PriceCalculationModel>()
-            {
-                new(1, 0, 0M),
-                new(2, 0, 0M),
-                new(3, 0, 0M),
-            };
-
-            quantitySplits.ForEach((q, i) =>
-            {
-                template[i].Quantity = q;
-                template[i].Cost = costs[i] * q;
-            });
-
-            return template;
+            return fixture.Build<Order>()
+                .With(o => o.Revision, 1)
+                .With(o => o.OrderTriageValue, OrderTriageValue.Under40K)
+                .With(o => o.CommencementDate, commencementDate)
+                .With(o => o.OrderItems, new HashSet<OrderItem>(orderItems))
+                .With(o => o.MaximumTerm, maximumTerm)
+                .Create();
         }
 
-        private static List<PriceCalculationModel> GetCostTiersTemplate(int id, int quantity, decimal cost)
+        private static void UpdateTier(PriceCalculationModel tier, int quantity, decimal cost)
         {
-            var template = new List<PriceCalculationModel>()
-            {
-                new(1, 0, 0M),
-                new(2, 0, 0M),
-                new(3, 0, 0M),
-            };
-
-            var tier = template.First(p => p.Id == id);
             tier.Quantity = quantity;
             tier.Cost = cost;
-
-            return template;
         }
 
         private static OrderItem BuildOrderItem(

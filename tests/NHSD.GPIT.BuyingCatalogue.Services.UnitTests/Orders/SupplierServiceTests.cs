@@ -54,6 +54,33 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [InMemoryDbAutoData]
+        public static async Task GetAllSuppliersFromBuyingCatalogue_SuppliersNoPublishedSolutions_ReturnsEmptySet(
+            [Frozen] BuyingCatalogueDbContext context,
+            List<CatalogueItem> catalogueItems,
+            List<Supplier> suppliers,
+            SupplierService service)
+        {
+            catalogueItems.ForEach(x => x.CatalogueItemType = CatalogueItemType.Solution);
+            catalogueItems.ForEach(x => x.PublishedStatus = PublicationStatus.Draft);
+            context.CatalogueItems.AddRange(catalogueItems);
+
+            for (var i = 0; i < suppliers.Count; i++)
+            {
+                suppliers[i].IsActive = true;
+                suppliers[i].CatalogueItems.Add(catalogueItems[i]);
+            }
+
+            context.Suppliers.AddRange(suppliers);
+
+            await context.SaveChangesAsync();
+
+            var result = await service.GetAllSuppliersFromBuyingCatalogue();
+
+            result.Should().BeEmpty();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
         public static async Task GetAllSuppliersFromBuyingCatalogue_MatchingSuppliers_ReturnsExpected(
             [Frozen] BuyingCatalogueDbContext context,
             List<CatalogueItem> catalogueItems,
@@ -61,6 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             SupplierService service)
         {
             catalogueItems.ForEach(x => x.CatalogueItemType = CatalogueItemType.Solution);
+            catalogueItems.ForEach(x => x.PublishedStatus = PublicationStatus.Published);
             context.CatalogueItems.AddRange(catalogueItems);
 
             for (var i = 0; i < suppliers.Count; i++)

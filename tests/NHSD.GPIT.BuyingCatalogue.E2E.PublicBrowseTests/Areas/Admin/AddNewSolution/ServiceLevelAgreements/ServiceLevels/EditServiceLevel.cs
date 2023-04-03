@@ -16,7 +16,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceLevelAgreements.ServiceLevels
 {
-    public sealed class EditServiceLevel : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(AdminCollection))]
+    public sealed class EditServiceLevel : AuthorityTestBase, IDisposable
     {
         private const int SingleServiceLevelId = 1;
         private const int ServiceLevelId = 2;

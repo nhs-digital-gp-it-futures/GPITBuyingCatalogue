@@ -11,38 +11,42 @@ using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
 {
-    public sealed class FundingSources : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(OrderingCollection))]
+    public sealed class FundingSources : BuyerTestBase
     {
         private const string InternalOrgId = "CG-03F";
         private static readonly CallOffId DFOCVCCallOffId = new(90005, 1);
         private static readonly CallOffId GPITFuturesCallOffId = new(90006, 1);
         private static readonly CallOffId NoFundingCallOffId = new(90015, 1);
 
-        private static readonly Dictionary<string, string> ParametersDFOCVC = new()
-        {
-            { nameof(InternalOrgId), InternalOrgId },
-            { "CallOffId", DFOCVCCallOffId.ToString() },
-        };
-
-        private static readonly Dictionary<string, string> ParametersGPITFutures = new()
-        {
-            { nameof(InternalOrgId), InternalOrgId },
-            { "CallOffId", GPITFuturesCallOffId.ToString() },
-        };
-
-        private static readonly Dictionary<string, string> ParametersNoFunding = new()
-        {
-            { nameof(InternalOrgId), InternalOrgId },
-            { "CallOffId", NoFundingCallOffId.ToString() },
-        };
-
         public FundingSources(LocalWebApplicationFactory factory)
             : base(
                  factory,
                  typeof(FundingSourceController),
                  nameof(FundingSourceController.FundingSources),
-                 ParametersGPITFutures)
+                 GetParameters(GPITFuturesCallOffId))
         {
+        }
+
+        [Theory]
+        [InlineData(90033, 1, true)]
+        [InlineData(90033, 2, false)]
+        public void FundingSources_MultipleFrameworks_AllSectionsDisplayed(int orderNumber, int revision, bool changeFrameworkDisplayed)
+        {
+            var callOffId = new CallOffId(orderNumber, revision);
+
+            NavigateToUrl(
+                typeof(FundingSourceController),
+                nameof(FundingSourceController.FundingSources),
+                GetParameters(callOffId));
+
+            CommonActions.PageTitle().Should().BeEquivalentTo($"Funding sources - Order {callOffId}".FormatForComparison());
+            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
+            CommonActions.SaveButtonDisplayed().Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.ChangeFramework).Should().Be(changeFrameworkDisplayed);
+            CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.LocalOnlyFundingSourcesTable).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.EditableFundingSourcesTable).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.NoFundingRequiredSourcesTable).Should().BeFalse();
         }
 
         [Fact]
@@ -51,11 +55,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
             NavigateToUrl(
                 typeof(FundingSourceController),
                 nameof(FundingSourceController.FundingSources),
-                ParametersDFOCVC);
+                GetParameters(DFOCVCCallOffId));
 
             CommonActions.PageTitle().Should().BeEquivalentTo($"Funding sources - Order {DFOCVCCallOffId}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.ChangeFramework).Should().BeFalse();
             CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.LocalOnlyFundingSourcesTable).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.EditableFundingSourcesTable).Should().BeFalse();
             CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.NoFundingRequiredSourcesTable).Should().BeFalse();
@@ -67,6 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
             CommonActions.PageTitle().Should().BeEquivalentTo($"Funding sources - Order {GPITFuturesCallOffId}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.ChangeFramework).Should().BeFalse();
             CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.LocalOnlyFundingSourcesTable).Should().BeFalse();
             CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.EditableFundingSourcesTable).Should().BeTrue();
             CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.NoFundingRequiredSourcesTable).Should().BeFalse();
@@ -78,11 +84,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
             NavigateToUrl(
                 typeof(FundingSourceController),
                 nameof(FundingSourceController.FundingSources),
-                ParametersNoFunding);
+                GetParameters(NoFundingCallOffId));
 
             CommonActions.PageTitle().Should().BeEquivalentTo($"Funding sources - Order {NoFundingCallOffId}".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
+            CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.ChangeFramework).Should().BeFalse();
             CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.LocalOnlyFundingSourcesTable).Should().BeFalse();
             CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.EditableFundingSourcesTable).Should().BeFalse();
             CommonActions.ElementIsDisplayed(Objects.Ordering.FundingSources.NoFundingRequiredSourcesTable).Should().BeTrue();
@@ -119,6 +126,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
                 typeof(FundingSourceController),
                 nameof(FundingSourceController.FundingSource))
                 .Should().BeTrue();
+        }
+
+        private static Dictionary<string, string> GetParameters(CallOffId callOffId)
+        {
+            return new()
+            {
+                { nameof(InternalOrgId), InternalOrgId },
+                { "CallOffId", callOffId.ToString() },
+            };
         }
     }
 }

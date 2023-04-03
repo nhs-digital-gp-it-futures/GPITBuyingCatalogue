@@ -29,18 +29,30 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
             }
 
             return SolutionsCompleted(order)
-                ? TaskProgress.Completed
+                ? CompletedOrAmended(order.IsAmendment)
                 : TaskProgress.InProgress;
+        }
+
+        private static TaskProgress CompletedOrAmended(bool isAmendment)
+        {
+            return isAmendment ? TaskProgress.Amended : TaskProgress.Completed;
         }
 
         private static bool SolutionsSelected(EntityFramework.Ordering.Models.Order order)
         {
-            if (order.AssociatedServicesOnly)
+            if (!order.IsAmendment)
             {
-                return order.SolutionId != null;
-            }
+              if (order.AssociatedServicesOnly)
+              {
+                  return order.SolutionId != null;
+              }
 
-            return order.OrderItems.Any(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution);
+              return order.OrderItems.Any(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution);
+            }
+            else
+            {
+                return order.OrderItems.Any();
+            }
         }
 
         private static bool SolutionsCompleted(EntityFramework.Ordering.Models.Order order)

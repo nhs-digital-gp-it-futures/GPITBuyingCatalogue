@@ -17,8 +17,9 @@ using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
 {
+    [Collection(nameof(SharedContextCollection))]
     public sealed class CookieBanner
-        : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+        : AnonymousTestBase, IDisposable
     {
         private static readonly Dictionary<string, string> Parameters = new();
 

@@ -8,7 +8,8 @@ using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
 {
-    public sealed class AdminDashboard : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(AdminCollection))]
+    public sealed class AdminDashboard : AuthorityTestBase
     {
         public AdminDashboard(LocalWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
             : base(factory, typeof(HomeController), nameof(HomeController.Index), null, testOutputHelper)

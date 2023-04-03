@@ -11,7 +11,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
 {
-    public sealed class OrderItemType : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(OrderingCollection))]
+    public sealed class OrderItemType : BuyerTestBase
     {
         private const string InternalOrgId = "CG-03F";
 

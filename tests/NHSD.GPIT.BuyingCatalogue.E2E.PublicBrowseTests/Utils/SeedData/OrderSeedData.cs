@@ -30,6 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 AddOrderWithAddedCatalogueSolutionAndServicesButNoData(context),
                 AddOrderWithAddedCatalogueSolution(context),
                 AddOrderWithAddedCatalogueSolutionNoSelectedFrameworkMultipleFrameworks(context),
+                AddOrderWithAddedCatalogueSolutionSelectedFrameworkMultipleFrameworks(context),
                 AddOrderWithAddedCatalogueSolutionNoSelectedFrameworkSingleFramework(context),
                 AddOrderWithAddedCatalogueSolutionNoFundingRequired(context),
                 AddOrderWithAddedNoContactCatalogueSolution(context),
@@ -62,6 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 AddAmendment(context, orders.First(o => o.OrderNumber == 90030), 2),
                 AddAmendment(context, orders.First(o => o.OrderNumber == 90031), 2),
                 AddAmendment(context, orders.First(o => o.OrderNumber == 90032), 2),
+                AddAmendment(context, orders.First(o => o.OrderNumber == 90033), 2),
             };
 
             context.InsertRangeWithIdentity(amendments);
@@ -71,6 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             AddOrderItemToOrder(context, 90031, 2, new CatalogueItemId(99998, "001A99"));
             AddOrderItemWithPriceAndRecipientsToOrder(context, 90032, 2, new CatalogueItemId(99998, "001A99"));
             AddOrderItemWithPriceAndRecipientsToOrder(context, 90032, 2, new CatalogueItemId(99998, "S-999"));
+            AddOrderItemWithPriceAndRecipientsToOrder(context, 90033, 2, new CatalogueItemId(99999, "003"));
 
             context.SaveChanges();
         }
@@ -479,6 +482,80 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 DeliveryDate = DateTime.Today.AddDays(2),
                 InitialPeriod = 6,
                 MaximumTerm = 36,
+                LastUpdatedBy = user.Id,
+            };
+
+            var price = context.CatalogueItems
+                    .Where(c => c.Id == new CatalogueItemId(99999, "003"))
+                    .Include(c => c.CataloguePrices).ThenInclude(cp => cp.CataloguePriceTiers)
+                    .Include(c => c.CataloguePrices).ThenInclude(cp => cp.PricingUnit)
+                    .Select(ci => new OrderItemPrice(ci.CataloguePrices.First()))
+                    .First();
+
+            var addedSolution = new OrderItem
+            {
+                OrderItemPrice = price,
+                Created = DateTime.UtcNow,
+                OrderId = orderId,
+                Quantity = 10,
+                CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99999, "003")),
+            };
+
+            var recipients = context.ServiceRecipients.ToList();
+
+            recipients.ForEach(r =>
+            {
+                var recipient = new OrderItemRecipient
+                {
+                    Recipient = r,
+                    Quantity = 1000,
+                    DeliveryDate = DateTime.Today.AddDays(2),
+                };
+
+                addedSolution.OrderItemRecipients.Add(recipient);
+            });
+
+            order.OrderItems.Add(addedSolution);
+
+            return order;
+        }
+
+        private static Order AddOrderWithAddedCatalogueSolutionSelectedFrameworkMultipleFrameworks(BuyingCatalogueDbContext context)
+        {
+            const int orderId = 90033;
+            var timeNow = DateTime.UtcNow;
+            var organisation = GetOrganisationId(context);
+            var user = GetBuyerUser(context, organisation);
+
+            var order = new Order
+            {
+                Id = orderId,
+                OrderNumber = orderId,
+                Revision = 1,
+                OrderingPartyId = organisation,
+                Created = timeNow,
+                IsDeleted = false,
+                Description = "This is an Order Description",
+                OrderingPartyContact = new Contact
+                {
+                    FirstName = "Clark",
+                    LastName = "Kent",
+                    Email = "Clark.Kent@TheDailyPlanet.Fake",
+                    Phone = "123456789",
+                },
+                SupplierId = 99999,
+                SupplierContact = new Contact
+                {
+                    FirstName = "Bruce",
+                    LastName = "Wayne",
+                    Email = "bat.man@Gotham.Fake",
+                    Phone = "123456789",
+                },
+                CommencementDate = DateTime.UtcNow.AddDays(1),
+                DeliveryDate = DateTime.Today.AddDays(2),
+                InitialPeriod = 6,
+                MaximumTerm = 36,
+                SelectedFramework = GetFramework(context, GPITFUTURES),
                 LastUpdatedBy = user.Id,
             };
 

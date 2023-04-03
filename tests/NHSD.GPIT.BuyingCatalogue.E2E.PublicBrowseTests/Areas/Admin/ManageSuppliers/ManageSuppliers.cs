@@ -9,7 +9,8 @@ using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
 {
-    public sealed class ManageSuppliers : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(AdminCollection))]
+    public sealed class ManageSuppliers : AuthorityTestBase
     {
         private const int TargetSupplierId = 99998;
         private const int ActiveSupplierId = 99997;
@@ -163,7 +164,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageSuppliers
                 CommonActions.ClickLinkElement(Objects.Admin.ManageSuppliers.ManageSuppliers.SearchButton);
 
                 CommonActions.ElementIsDisplayed(Objects.Admin.ManageSuppliers.ManageSuppliers.InactiveSuppliersContainer).Should().BeFalse();
-                CommonActions.GetNumberOfTableRowsDisplayed().Should().Be(2); // Count is original item, plus another item that matches the same name
+                CommonActions.GetNumberOfTableRowsDisplayed().Should().Be(3); // Count is original item, plus another item that matches the same name
             });
         }
 

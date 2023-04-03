@@ -12,7 +12,8 @@ using CommonSelectors = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Com
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.HostingTypes
 {
-    public sealed class DeleteHostingType : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(AdminCollection))]
+    public sealed class DeleteHostingType : AuthorityTestBase
     {
         private static readonly CatalogueItemId SolutionId = new(99999, "001");
         private static readonly ServiceContracts.Solutions.HostingType HostingType = ServiceContracts.Solutions.HostingType.Hybrid;

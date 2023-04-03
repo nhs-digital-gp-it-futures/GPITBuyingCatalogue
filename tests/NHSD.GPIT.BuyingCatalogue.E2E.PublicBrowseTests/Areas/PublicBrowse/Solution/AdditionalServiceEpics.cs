@@ -15,7 +15,8 @@ using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 {
-    public sealed class AdditionalServiceEpics : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(SharedContextCollection))]
+    public sealed class AdditionalServiceEpics : AnonymousTestBase, IDisposable
     {
         private static readonly int CapabilityId = 2;
 

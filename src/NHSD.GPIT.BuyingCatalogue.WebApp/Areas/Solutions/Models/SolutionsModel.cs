@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public const string AdviceTextNosearch = "Search for Catalogue Solutions that match the needs of your organisation.";
         public const string AdviceTextSearchNoresults = "There are no Catalogue Solutions that meet your search criteria.";
-        public const string AdviceTextSearchResults = "These are the Catalogue Solutions that meet your search criteria.";
+        public const string AdviceTextSearchResults = "These are the Catalogue Solutions that meet your search criteria. You can apply additional filters to refine your results further, or compare these results.";
 
         public SolutionsModel()
         {

@@ -25,8 +25,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
             }
 
             return AllFundingSourcesEntered(order)
-                ? TaskProgress.Completed
+                ? CompletedOrAmended(order.IsAmendment)
                 : (anyFundingSourcesEntered ? TaskProgress.InProgress : TaskProgress.NotStarted);
+        }
+
+        private static TaskProgress CompletedOrAmended(bool isAmendment)
+        {
+            return isAmendment ? TaskProgress.Amended : TaskProgress.Completed;
         }
 
         private static bool AllFundingSourcesEntered(EntityFramework.Ordering.Models.Order order)

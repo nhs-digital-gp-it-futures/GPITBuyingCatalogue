@@ -9,8 +9,9 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.ProxyBuyer
 {
+    [Collection(nameof(OrderingCollection))]
     public sealed class OrderItemType
-        : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+        : BuyerTestBase
     {
         private const string InternalOrgId = "CG-15F";
 

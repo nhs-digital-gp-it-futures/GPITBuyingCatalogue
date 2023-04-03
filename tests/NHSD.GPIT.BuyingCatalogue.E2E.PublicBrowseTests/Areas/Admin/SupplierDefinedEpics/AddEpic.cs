@@ -10,7 +10,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 {
-    public sealed class AddEpic : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(AdminCollection))]
+    public sealed class AddEpic : AuthorityTestBase
     {
         public AddEpic(LocalWebApplicationFactory factory)
             : base(

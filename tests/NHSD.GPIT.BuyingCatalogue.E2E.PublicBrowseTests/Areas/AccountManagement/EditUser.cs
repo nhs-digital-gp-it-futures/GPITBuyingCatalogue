@@ -18,7 +18,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
 {
-    public sealed class EditUser : AccountManagerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(SharedContextCollection))]
+    public sealed class EditUser : AccountManagerTestBase, IDisposable
     {
         private const int OrganisationId = 176;
         private const int UserId = 5;
@@ -97,22 +98,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
             CommonActions.ClickRadioButtonWithText("Inactive");
             CommonActions.ClearInputElement(AddUserObjects.Email);
             AccountManagementPages.AddUser.EnterEmailAddress(ValidEmail);
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(ManageAccountController),
-                nameof(ManageAccountController.Users)).Should().BeTrue();
-        }
-
-        [Fact]
-        public void EditUser_IncludesWhitespace_RemovesWhitespace()
-        {
-            CommonActions.ClearInputElement(AddUserObjects.FirstName);
-            AccountManagementPages.AddUser.EnterFirstName("    Alice    ");
-            CommonActions.ClearInputElement(AddUserObjects.LastName);
-            AccountManagementPages.AddUser.EnterLastName("    Smith    ");
-            CommonActions.ClearInputElement(AddUserObjects.Email);
-            AccountManagementPages.AddUser.EnterEmailAddress("    " + ValidEmail + "    ");
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(

@@ -14,8 +14,9 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 {
+    [Collection(nameof(OrderingCollection))]
     public sealed class OrderReadyToStart
-        : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+        : BuyerTestBase
     {
         private const string InternalOrgId = "CG-03F";
         private const OrderTriageValue Option = OrderTriageValue.Between40KTo250K;

@@ -11,7 +11,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DeliveryDates
 {
-    public class Review : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(OrderingCollection))]
+    public class Review : BuyerTestBase
     {
         private const int OrderId = 91007;
         private const string InternalOrgId = "CG-03F";

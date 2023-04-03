@@ -10,7 +10,8 @@ using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Registration
 {
-    public sealed class Index : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(SharedContextCollection))]
+    public sealed class Index : AnonymousTestBase
     {
         public Index(LocalWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
             : base(

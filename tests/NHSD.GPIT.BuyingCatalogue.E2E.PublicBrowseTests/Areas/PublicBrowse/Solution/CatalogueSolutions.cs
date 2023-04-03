@@ -18,8 +18,9 @@ using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 {
+    [Collection(nameof(SharedContextCollection))]
     public sealed class CatalogueSolutions
-        : AnonymousTestBase, IClassFixture<LocalWebApplicationFactory>
+        : AnonymousTestBase
     {
         private static readonly Dictionary<string, string> Parameters = new();
 
@@ -215,7 +216,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 
                 CommonActions.ElementIsDisplayed(SolutionsObjects.SearchTermTitle).Should().BeTrue();
                 CommonActions.ElementIsDisplayed(SolutionsObjects.SearchTermContent).Should().BeTrue();
-                CommonActions.ElementIsDisplayed(SolutionsObjects.ClearSearchCriteriaLink).Should().BeTrue();
                 CommonActions.ElementTextContains(SolutionsObjects.SearchTermContent, $"'{solutionName}'").Should().BeTrue();
             });
         }
@@ -231,6 +231,60 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
                     .Should()
                     .BeTrue();
             });
+        }
+
+        [Fact]
+        public void CatalogueSolutions_ClickStartNewSearchLink_ExpectedResult()
+        {
+            using var context = GetEndToEndDbContext();
+            var solution = context.Solutions.Include(s => s.CatalogueItem).First(s => s.CatalogueItem.PublishedStatus == PublicationStatus.Published);
+
+            CommonActions.ElementAddValue(SolutionsObjects.SearchBar, solution.CatalogueItem.Name);
+            CommonActions.WaitUntilElementIsDisplayed(SolutionsObjects.SearchListBox);
+
+            CommonActions.ClickLinkElement(SolutionsObjects.SearchButton);
+
+            CommonActions.ClickLinkElement(SolutionsObjects.StartNewSearch);
+
+            CommonActions.PageLoadedCorrectGetIndex(typeof(SolutionsController), nameof(SolutionsController.Index))
+                .Should()
+                .BeTrue();
+        }
+
+        [Fact]
+        public void CatalogueSolutions_ClickEditCapabilitiesLink_ExpectedResult()
+        {
+            using var context = GetEndToEndDbContext();
+            var solution = context.Solutions.Include(s => s.CatalogueItem).First(s => s.CatalogueItem.PublishedStatus == PublicationStatus.Published);
+
+            CommonActions.ElementAddValue(SolutionsObjects.SearchBar, solution.CatalogueItem.Name);
+            CommonActions.WaitUntilElementIsDisplayed(SolutionsObjects.SearchListBox);
+
+            CommonActions.ClickLinkElement(SolutionsObjects.SearchButton);
+
+            CommonActions.ClickLinkElement(SolutionsObjects.EditCapabilities);
+
+            CommonActions.PageLoadedCorrectGetIndex(typeof(FilterController), nameof(FilterController.FilterCapabilities))
+                .Should()
+                .BeTrue();
+        }
+
+        [Fact]
+        public void CatalogueSolutions_ClickEditEpicsLink_ExpectedResult()
+        {
+            using var context = GetEndToEndDbContext();
+            var solution = context.Solutions.Include(s => s.CatalogueItem).First(s => s.CatalogueItem.PublishedStatus == PublicationStatus.Published);
+
+            CommonActions.ElementAddValue(SolutionsObjects.SearchBar, solution.CatalogueItem.Name);
+            CommonActions.WaitUntilElementIsDisplayed(SolutionsObjects.SearchListBox);
+
+            CommonActions.ClickLinkElement(SolutionsObjects.SearchButton);
+
+            CommonActions.ClickLinkElement(SolutionsObjects.EditEpics);
+
+            CommonActions.PageLoadedCorrectGetIndex(typeof(FilterController), nameof(FilterController.FilterEpics))
+                .Should()
+                .BeTrue();
         }
 
         [Fact]
@@ -278,7 +332,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 
                 CommonActions.ClickLinkElement(SolutionsObjects.SearchButton);
 
-                CommonActions.ElementIsDisplayed(SolutionsObjects.SearchBar).Should().BeTrue();
                 CommonActions.ElementIsDisplayed(SolutionsObjects.NoResultsElement).Should().BeTrue();
                 CommonActions.ElementIsDisplayed(SolutionsObjects.SolutionsList).Should().BeFalse();
             });
@@ -294,8 +347,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
 
                 CommonActions.ClickLinkElement(SolutionsObjects.SearchButton);
                 CommonActions.WaitUntilElementIsDisplayed(SolutionsObjects.NoResultsElement);
-
-                CommonActions.ClickLinkElement(SolutionsObjects.ClearSearchCriteriaLink);
 
                 CommonActions.PageLoadedCorrectGetIndex(
                     typeof(SolutionsController),

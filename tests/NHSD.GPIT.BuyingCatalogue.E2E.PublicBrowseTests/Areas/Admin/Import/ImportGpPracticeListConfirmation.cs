@@ -8,7 +8,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Import
 {
-    public class ImportGpPracticeListConfirmation : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>
+    [Collection(nameof(AdminCollection))]
+    public class ImportGpPracticeListConfirmation : AuthorityTestBase
     {
         public ImportGpPracticeListConfirmation(LocalWebApplicationFactory factory)
             : base(factory, typeof(ImportController), nameof(ImportController.ImportGpPracticeListConfirmation), null)

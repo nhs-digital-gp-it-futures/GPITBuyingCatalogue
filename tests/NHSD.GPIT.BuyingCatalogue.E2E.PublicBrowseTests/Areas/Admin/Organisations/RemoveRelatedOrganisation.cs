@@ -14,7 +14,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
 {
-    public class RemoveRelatedOrganisation : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(AdminCollection))]
+    public class RemoveRelatedOrganisation : AuthorityTestBase, IDisposable
     {
         private const int OrganisationId = 2;
         private const int RelatedOrganisationId = 3;

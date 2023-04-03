@@ -79,14 +79,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonInlineAutoData(TaskProgress.Completed)]
+        [CommonInlineAutoData(TaskProgress.Amended)]
         public static void Get_ContractInfoNotEntered_ReturnsNotStarted(
+            TaskProgress fundingTaskProgress,
             Order order,
             ImplementationPlanStatusProvider service)
         {
             var state = new OrderProgress
             {
-                FundingSource = TaskProgress.Completed,
+                FundingSource = fundingTaskProgress,
             };
 
             order.ContractFlags.UseDefaultImplementationPlan = null;
@@ -97,16 +99,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonInlineAutoData(true)]
-        [CommonInlineAutoData(false)]
+        [CommonInlineAutoData(TaskProgress.Completed, true)]
+        [CommonInlineAutoData(TaskProgress.Completed, false)]
+        [CommonInlineAutoData(TaskProgress.Amended, true)]
+        [CommonInlineAutoData(TaskProgress.Amended, false)]
         public static void Get_ContractInfoEntered_ReturnsCompleted(
+            TaskProgress fundingTaskProgress,
             bool useDefaultImplementationPlan,
             Order order,
             ImplementationPlanStatusProvider service)
         {
             var state = new OrderProgress
             {
-                FundingSource = TaskProgress.Completed,
+                FundingSource = fundingTaskProgress,
             };
 
             order.ContractFlags.UseDefaultImplementationPlan = useDefaultImplementationPlan;

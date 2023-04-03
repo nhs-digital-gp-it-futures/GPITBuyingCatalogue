@@ -15,7 +15,8 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ServiceLevelAgreements.ServiceLevels
 {
-    public sealed class AddServiceLevel : AuthorityTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(AdminCollection))]
+    public sealed class AddServiceLevel : AuthorityTestBase, IDisposable
     {
         private static readonly CatalogueItemId SolutionId = new(99998, "001");
 

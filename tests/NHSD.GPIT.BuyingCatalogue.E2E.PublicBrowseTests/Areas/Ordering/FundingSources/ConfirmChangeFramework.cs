@@ -13,7 +13,8 @@ using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
 {
-    public sealed class ConfirmChangeFramework : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>, IDisposable
+    [Collection(nameof(OrderingCollection))]
+    public sealed class ConfirmChangeFramework : BuyerTestBase, IDisposable
     {
         private const string InternalOrgId = "CG-03F";
         private const string SelectedFrameworkId = "DFOCVC001";

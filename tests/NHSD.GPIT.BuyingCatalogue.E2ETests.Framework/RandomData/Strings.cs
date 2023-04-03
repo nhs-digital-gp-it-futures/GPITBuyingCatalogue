@@ -54,17 +54,21 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.RandomData
             var faker = new Faker("en_GB");
             return faker.Phone.PhoneNumber();
 
-        }       
+        }
 
         public static string RandomEmail(int numChars)
         {
             var faker = new Faker("en_GB");
             var email = faker.Internet.Email();
             var length = numChars - email.Length;
-            if (length > 0)
-                return string.Join(string.Empty, faker.Random.AlphaNumeric(numChars - email.Length), email);
+            return length > 0 ? string.Join(string.Empty, faker.Random.AlphaNumeric(numChars - email.Length), email) : email;
+        }
 
-            return email;
+        public static string RandomBuyerEmail()
+        {
+            var faker = new Faker("en_GB");
+
+            return faker.Internet.Email(provider: "nhs.net");
         }
 
         public static DateTime RandomDateSoon()

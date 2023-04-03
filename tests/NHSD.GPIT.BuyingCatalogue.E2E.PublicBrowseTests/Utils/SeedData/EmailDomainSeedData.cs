@@ -7,7 +7,8 @@ internal static class EmailDomainSeedData
 {
     internal static void Initialize(BuyingCatalogueDbContext context)
     {
-        context.EmailDomains.Add(new EmailDomain("@nhs.net"));
+        context.EmailDomains.Add(new("@nhs.net"));
+        context.EmailDomains.Add(new("@email.com"));
 
         context.SaveChanges();
     }
