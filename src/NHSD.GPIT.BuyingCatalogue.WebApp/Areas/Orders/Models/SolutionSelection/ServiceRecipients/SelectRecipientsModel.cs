@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 {
     public class SelectRecipientsModel : NavBaseModel
     {
-        public const string AdviceText = "Manually select the organisations you want to receive this {0} or import them using a CSV file.";
+        public const string AdviceText = "Select the organisations from the sublocations that you want to receive this {0} or upload them using a CSV file.";
         public const string AdviceTextImport = "Review the organisations that will receive this {0}.";
         public const string AdviceTextNoRecipientsAvailable = "All your Service Recipients were included in the original order, so there are no more available to add.";
         public const string PreSelectedAssociatedServicesOnly = "first Associated Service";
