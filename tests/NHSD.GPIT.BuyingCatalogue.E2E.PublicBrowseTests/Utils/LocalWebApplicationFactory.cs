@@ -188,7 +188,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                     OdsOrganisationsSeedData.Initialize(bcDb);
                     RolesSeedData.Initialize(bcDb);
                     UserSeedData.Initialize(bcDb);
-                    OdsOrganisationsSeedData.Initialize(bcDb);
                     BuyingCatalogueSeedData.Initialize(bcDb);
                     OrderSeedData.Initialize(bcDb);
                     ContractSeedData.Initialize(bcDb);
