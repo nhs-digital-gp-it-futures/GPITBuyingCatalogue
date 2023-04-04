@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Organisations
     public sealed class EditUser : AuthorityTestBase, IDisposable
     {
         private const int NhsDigitalOrganisationId = 1;
-        private const int OrganisationId = 77;
+        private const int OrganisationId = 176;
         private const int UserId = 5;
         private const string FirstNameRequired = "Enter a first name";
         private const string LastNameRequired = "Enter a last name";

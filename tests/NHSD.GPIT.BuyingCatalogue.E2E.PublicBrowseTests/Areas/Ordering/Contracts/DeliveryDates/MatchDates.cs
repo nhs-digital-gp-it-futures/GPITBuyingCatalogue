@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DeliveryDa
     public class MatchDates : BuyerTestBase, IDisposable
     {
         private const int OrderId = 91007;
-        private const string InternalOrgId = "IB-QWO";
+        private const string InternalOrgId = "CG-03F";
         private static readonly CallOffId CallOffId = new(OrderId, 1);
         private static readonly CatalogueItemId CatalogueItemId = new(99998, "002A999");
 

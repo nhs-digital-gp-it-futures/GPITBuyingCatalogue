@@ -76,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
             };
 
-            var nhsEnglandOrganisation = new OdsOrganisation
+            var bobOdsOrganisation = new OdsOrganisation
             {
                 Id = "X26",
                 Name = "NHS ENGLAND - X26",
@@ -106,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
             };
 
-            var sublocationOrganisation = new OdsOrganisation
+            var sueOdsOrganisation = new OdsOrganisation
             {
                 Id = "03F",
                 Name = "NHS HUMBER AND NORTH YORKSHIRE ICB - 03F",
@@ -137,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
             };
 
-            var sublocationOrganisation2 = new OdsOrganisation
+            var aliceOdsOrganisation = new OdsOrganisation
             {
                 Id = "15F",
                 Name = "NHS WEST YORKSHIRE ICB - 15F",
@@ -166,7 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 },
             };
 
-            var commHubOrganisation = new OdsOrganisation
+            var daveOdsOrganisation = new OdsOrganisation
             {
                 Id = "15H",
                 Name = "SOUTH WEST NORTH COMMISSIONING HUB",
@@ -204,10 +204,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 new OdsOrganisation() { Id = "VLRE8", Name = "ST PHILIPS CLOSE (CARE HOME)", AddressLine1 = "MIDDLETON", Town = "LEEDS", Postcode = "LS10 3TR", Country = "ENGLAND", IsActive = true, },
                 gpPracticeOrganisation1,
                 gpPracticeOrganisation2,
-                nhsEnglandOrganisation,
-                sublocationOrganisation,
-                sublocationOrganisation2,
-                commHubOrganisation,
+                bobOdsOrganisation,
+                sueOdsOrganisation,
+                aliceOdsOrganisation,
+                daveOdsOrganisation,
             };
 
             context.InsertRangeWithIdentity(organisations);

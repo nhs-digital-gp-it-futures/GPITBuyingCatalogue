@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
     [Collection(nameof(OrderingCollection))]
     public class OrderSummary : BuyerTestBase
     {
-        private const string InternalOrgId = "IB-QWO";
+        private const string InternalOrgId = "CG-03F";
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
@@ -220,7 +220,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         private Order CreateOrder(
             params OrderItem[] orderItems)
         {
-            int GetOrganisationId(BuyingCatalogueDbContext context, string internalOrgId = "IB-QWO")
+            int GetOrganisationId(BuyingCatalogueDbContext context, string internalOrgId = "CG-03F")
                 => context.Organisations.First(o => o.InternalIdentifier == internalOrgId).Id;
 
             AspNetUser GetBuyerUser(BuyingCatalogueDbContext context, int organisationId)
