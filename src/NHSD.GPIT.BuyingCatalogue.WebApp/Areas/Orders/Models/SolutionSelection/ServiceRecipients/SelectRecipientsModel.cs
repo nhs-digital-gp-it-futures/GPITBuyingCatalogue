@@ -43,10 +43,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             ItemName = previousItem?.CatalogueItem.Name ?? orderItem.CatalogueItem.Name;
             ItemType = previousItem?.CatalogueItem.CatalogueItemType ?? orderItem.CatalogueItem.CatalogueItemType;
 
-            PreviouslySelected = previousItem?.OrderItemRecipients?.Select(x => x.Recipient?.Name).ToList() ?? new List<string>();
-            SubLocations = serviceRecipients.Where(x => !PreviouslySelected.Contains(x.OdsCode))
+            PreviouslySelected = previousItem?.OrderItemRecipients?.Select(x => x.Recipient?.OdsCode).ToList() ?? new List<string>();
+            SubLocations = serviceRecipients
                 .GroupBy(x => x.Location)
-                .Select(x => new SublocationModel(x.Key, x.OrderBy(x => x.Name).ToList()))
+                .Select(
+                    x => new SublocationModel(
+                        x.Key,
+                        x.Where(x => !PreviouslySelected.Contains(x.OdsCode)).OrderBy(x => x.Name).ToList()))
                 .OrderBy(x => x.Name)
                 .ToList();
 
