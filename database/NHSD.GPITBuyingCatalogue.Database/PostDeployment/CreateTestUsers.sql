@@ -9,7 +9,7 @@ AND NOT EXISTS (
   FROM users.AspNetUsers
   WHERE UserName IN (@aliceEmail, @bobEmail, @sueEmail, @daveEmail))
 BEGIN
-    DECLARE @ccgRoleId AS nchar(4) = 'RO98';
+    DECLARE @icbRoleId AS nchar(5) = 'RO261';
     DECLARE @executiveAgencyRoleId AS nchar(5) = 'RO116';
     DECLARE @hullOdsCode AS nchar(3) = 'QOQ';
     DECLARE @wyICBOdsCode AS nchar(3) = 'QWO';
@@ -20,11 +20,11 @@ BEGIN
     DECLARE @bobOrganisationId AS int = (SELECT Id FROM organisations.Organisations WHERE PrimaryRoleId = @executiveAgencyRoleId);
     DECLARE @bobOrganisationName AS nvarchar(255) =  (SELECT TOP (1) [Name] FROM organisations.Organisations WHERE PrimaryRoleId = @executiveAgencyRoleId);
 
-    DECLARE @sueOrganisationId AS int = (SELECT TOP (1) Id FROM organisations.Organisations WHERE PrimaryRoleId = @ccgRoleId AND ExternalIdentifier = @hullCCGOdsCode);
-    DECLARE @sueOrganisationName AS nvarchar(255) =  (SELECT TOP (1) [Name] FROM organisations.Organisations WHERE PrimaryRoleId = @ccgRoleId AND ExternalIdentifier = @hullCCGOdsCode);
+    DECLARE @sueOrganisationId AS int = (SELECT TOP (1) Id FROM organisations.Organisations WHERE PrimaryRoleId = @icbRoleId AND ExternalIdentifier = @wyICBOdsCode);
+    DECLARE @sueOrganisationName AS nvarchar(255) =  (SELECT TOP (1) [Name] FROM organisations.Organisations WHERE PrimaryRoleId = @icbRoleId AND ExternalIdentifier = @wyICBOdsCode);
 
-    DECLARE @daveOrganisationId AS int = (SELECT TOP (1) Id FROM organisations.Organisations WHERE PrimaryRoleId = @ccgRoleId AND ExternalIdentifier = @hullCCGOdsCode);
-    DECLARE @daveOrganisationName AS nvarchar(255) =  (SELECT TOP (1) [Name] FROM organisations.Organisations WHERE PrimaryRoleId = @ccgRoleId AND ExternalIdentifier = @hullCCGOdsCode);
+    DECLARE @daveOrganisationId AS int = (SELECT TOP (1) Id FROM organisations.Organisations WHERE PrimaryRoleId = @icbRoleId AND ExternalIdentifier = @wyICBOdsCode);
+    DECLARE @daveOrganisationName AS nvarchar(255) =  (SELECT TOP (1) [Name] FROM organisations.Organisations WHERE PrimaryRoleId = @icbRoleId AND ExternalIdentifier = @wyICBOdsCode);
 
     DECLARE @address AS nchar(108) = N'{ "street_address": "One Hacker Way", "locality": "Heidelberg", "postal_code": 69118, "country": "Germany" }';
 

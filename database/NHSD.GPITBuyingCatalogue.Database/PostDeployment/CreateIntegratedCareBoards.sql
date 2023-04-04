@@ -59,18 +59,4 @@ VALUES
 ('NHS CHESHIRE AND MERSEYSIDE INTEGRATED CARE BOARD', '{"line1":"WARRINGTON HOSPITAL","line2":"LOVELY LANE","line3":"NULL","town":"WARRINGTON","county":"NULL","postcode":"WA5 1QG","country":"ENGLAND"}', 'QYG', @icbRoleId, 'QYG', 'IB-QYG', 3);
 END
 
-MERGE INTO [organisations].[Organisations] AS TARGET
-    USING @organisations AS SOURCE ON TARGET.ExternalIdentifier = SOURCE.ExternalIdentifier
-    WHEN MATCHED THEN
-        UPDATE SET
-        TARGET.[Name] = SOURCE.[Name],
-        TARGET.[Address] = SOURCE.[Address],
-        TARGET.[OdsCode] = SOURCE.[OdsCode],
-        TARGET.[PrimaryRoleId] = SOURCE.[PrimaryRoleId],
-		TARGET.[ExternalIdentifier] = SOURCE.[ExternalIdentifier],
-        TARGET.[InternalIdentifier] = SOURCE.[InternalIdentifier],
-        TARGET.[OrganisationTypeId] = SOURCE.[OrganisationTypeId]
-    WHEN NOT MATCHED BY TARGET THEN
-        INSERT ([Name], [Address], [OdsCode], [PrimaryRoleId], [ExternalIdentifier], [InternalIdentifier], [OrganisationTypeId])
-        VALUES (SOURCE.[Name], SOURCE.[Address], SOURCE.[OdsCode], SOURCE.[PrimaryRoleId], SOURCE.[ExternalIdentifier], SOURCE.[InternalIdentifier], SOURCE.[OrganisationTypeId]);
 GO
