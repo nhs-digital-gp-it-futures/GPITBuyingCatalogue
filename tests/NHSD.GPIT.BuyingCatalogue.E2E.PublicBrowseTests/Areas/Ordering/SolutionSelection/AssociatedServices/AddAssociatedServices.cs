@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
     [Collection(nameof(OrderingCollection))]
     public class AddAssociatedServices : BuyerTestBase
     {
-        private const string InternalOrgId = "IB-QWO";
+        private const string InternalOrgId = "CG-03F";
         private static readonly CallOffId CallOffId = new(90004, 1);
 
         private static readonly Dictionary<string, string> Parameters = new()

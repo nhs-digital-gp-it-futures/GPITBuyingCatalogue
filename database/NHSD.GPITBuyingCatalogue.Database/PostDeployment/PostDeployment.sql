@@ -9,6 +9,7 @@
 
 :r ./CreateExecutiveAgency.sql
 :r ./CreateExecutiveAgencyUser.sql
+:r ./CreateTestUsers.sql
 :r ./CreateIntegratedCareBoards.sql
 :r ./CreateCommissioningSupportUnits.sql
 :r ./CreateTestUsers.sql

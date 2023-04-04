@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
     [Collection(nameof(OrderingCollection))]
     public class ConfirmCatalogueSolutionRecipients : BuyerTestBase, IDisposable
     {
-        private const string InternalOrgId = "IB-QWO";
+        private const string InternalOrgId = "CG-03F";
         private const int OrderNumber = 91012;
         private const string RecipientIds = "Y03508,Y07021";
         private const JourneyType Journey = JourneyType.Add;

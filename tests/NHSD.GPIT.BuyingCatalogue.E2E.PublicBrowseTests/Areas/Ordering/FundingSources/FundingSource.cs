@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
     [Collection(nameof(OrderingCollection))]
     public sealed class FundingSource : BuyerTestBase, IDisposable
     {
-        private const string InternalOrgId = "IB-QWO";
+        private const string InternalOrgId = "CG-03F";
         private static readonly CallOffId CallOffId = new(90006, 1);
         private static readonly CatalogueItemId CatalogueItemId = new(99998, "002");
 

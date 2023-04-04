@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
     [Collection(nameof(OrderingCollection))]
     public sealed class NewContact : BuyerTestBase
     {
-        private const string InternalOrgId = "IB-QWO";
+        private const string InternalOrgId = "CG-03F";
         private static readonly CallOffId CallOffId = new(91002, 1);
 
         private static readonly Dictionary<string, string> Parameters = new()

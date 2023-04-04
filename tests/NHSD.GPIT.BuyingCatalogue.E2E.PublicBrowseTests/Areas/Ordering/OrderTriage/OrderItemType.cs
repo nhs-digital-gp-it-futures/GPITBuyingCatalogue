@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
     [Collection(nameof(OrderingCollection))]
     public sealed class OrderItemType : BuyerTestBase
     {
-        private const string InternalOrgId = "IB-QWO";
+        private const string InternalOrgId = "CG-03F";
 
         private static readonly Dictionary<string, string> Parameters =
             new()
