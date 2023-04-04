@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Re
     public class ReviewSolutionsAmendment : BuyerTestBase
     {
         private const int OrderId = 90032;
-        private const string InternalOrgId = "IB-QWO";
+        private const string InternalOrgId = "CG-03F";
 
         private static readonly CallOffId CallOffId = new(OrderId, 2);
 

@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
     [Collection(nameof(SharedContextCollection))]
     public class AddNominatedOrganisation : AccountManagerTestBase, IDisposable
     {
-        private const int OrganisationId = 77;
+        private const int OrganisationId = 176;
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
@@ -128,7 +128,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.AccountManagement
 
         private Organisation GetOrganisationNomination()
         {
-            const string validOrganisationId = "IB-QWO";
+            const string validOrganisationId = "CG-15F";
             using var context = GetEndToEndDbContext();
 
             return context.Organisations.AsNoTracking()

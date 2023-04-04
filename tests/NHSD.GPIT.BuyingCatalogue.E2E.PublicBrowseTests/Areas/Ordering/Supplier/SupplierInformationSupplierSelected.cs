@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
     [Collection(nameof(OrderingCollection))]
     public sealed class SupplierInformationSupplierSelected : BuyerTestBase, IAsyncLifetime
     {
-        private const string InternalOrgId = "IB-QWO";
+        private const string InternalOrgId = "CG-03F";
         private const int SupplierContactId = 2;
         private static readonly CallOffId CallOffId = new(91002, 1);
 

@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Qu
     [Collection(nameof(OrderingCollection))]
     public class ViewServiceRecipientQuantity : BuyerTestBase
     {
-        private const string InternalOrgId = "IB-QWO";
+        private const string InternalOrgId = "CG-03F";
         private static readonly CallOffId CallOffId = new(90031, 2);
         private static readonly CatalogueItemId CatalogueItemId = new(99998, "001");
 

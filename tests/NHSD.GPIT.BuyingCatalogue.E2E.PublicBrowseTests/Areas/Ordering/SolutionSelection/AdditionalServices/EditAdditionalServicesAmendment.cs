@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
     [Collection(nameof(OrderingCollection))]
     public class EditAdditionalServicesAmendment : BuyerTestBase, IDisposable
     {
-        private const string InternalOrgId = "IB-QWO";
+        private const string InternalOrgId = "CG-03F";
         private const int OrderId = 90031;
         private static readonly CallOffId CallOffId = new(OrderId, 2);
 

@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
     [Collection(nameof(OrderingCollection))]
     public class SelectSupplierAssociatedServicesOnly : BuyerTestBase
     {
-        private const string InternalOrgId = "IB-QWO";
+        private const string InternalOrgId = "CG-03F";
         private const string SearchTerm = "E2E Test Supplier";
         private const string ExpectedResult = "E2E Test Supplier With Contact";
         private static readonly CallOffId CallOffId = new(90019, 1);

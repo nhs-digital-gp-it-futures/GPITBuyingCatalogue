@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.OrderTriage
     public sealed class OrderTriageSelection
         : BuyerTestBase
     {
-        private const string InternalOrgId = "IB-QWO";
+        private const string InternalOrgId = "CG-03F";
         private const OrderTriageValue Option = OrderTriageValue.Under40K;
 
         private static readonly Dictionary<string, string> Parameters = new()
