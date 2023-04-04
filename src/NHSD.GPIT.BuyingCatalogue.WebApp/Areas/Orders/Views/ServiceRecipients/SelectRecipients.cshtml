@@ -101,7 +101,7 @@
                 @foreach (var (location, lIndex) in Model.SubLocations.Select((x, i) => (x, i)))
                 {
                     <input type="hidden" asp-for="@Model.SubLocations[lIndex].Name" />
-                    <nhs-expander label-text="@location.Name" open="false" bold-title="true">
+                    <nhs-expander label-text="@location.Name" open="true" bold-title="true">
 
                     <nhs-table>
                         <nhs-table-column>Organisation</nhs-table-column>

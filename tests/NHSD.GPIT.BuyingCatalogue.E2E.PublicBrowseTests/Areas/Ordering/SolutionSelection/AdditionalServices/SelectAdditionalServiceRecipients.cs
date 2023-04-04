@@ -80,6 +80,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
         [Fact]
         public void SelectAdditionalServiceRecipients_NoSelectionMade_DisplaysError()
         {
+            CommonActions.UncheckAllCheckboxes();
+
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(

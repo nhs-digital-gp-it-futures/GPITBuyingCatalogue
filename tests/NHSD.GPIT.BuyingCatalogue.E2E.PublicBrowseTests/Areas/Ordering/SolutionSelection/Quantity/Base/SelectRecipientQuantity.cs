@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Qu
     {
         private readonly int orderId;
         private readonly CatalogueItemId catalogueItemId;
-        private string serviceRecipientName = "Test Service Recipient One";
+        private string serviceRecipientName = "RECIPIENT 0";
 
         protected SelectRecipientQuantity(LocalWebApplicationFactory factory, Dictionary<string, string> parameters)
             : base(factory, typeof(QuantityController), nameof(QuantityController.SelectServiceRecipientQuantity), parameters)
