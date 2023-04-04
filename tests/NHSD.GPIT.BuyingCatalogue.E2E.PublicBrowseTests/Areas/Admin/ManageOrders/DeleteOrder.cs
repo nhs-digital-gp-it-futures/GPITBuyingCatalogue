@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
     public sealed class DeleteOrder
         : AuthorityTestBase, IDisposable
     {
-        private const string InternalOrgId = "IB-QWO";
+        private const string InternalOrgId = "CG-03F";
         private static readonly CallOffId CallOffId = new(90009, 1);
 
         private static readonly Dictionary<string, string> Parameters =

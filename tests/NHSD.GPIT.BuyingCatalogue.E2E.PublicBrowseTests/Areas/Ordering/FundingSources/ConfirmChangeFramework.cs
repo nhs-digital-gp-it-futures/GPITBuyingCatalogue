@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
     [Collection(nameof(OrderingCollection))]
     public sealed class ConfirmChangeFramework : BuyerTestBase, IDisposable
     {
-        private const string InternalOrgId = "IB-QWO";
+        private const string InternalOrgId = "CG-03F";
         private const string SelectedFrameworkId = "DFOCVC001";
         private static readonly CallOffId CallOffId = new(90009, 1);
 

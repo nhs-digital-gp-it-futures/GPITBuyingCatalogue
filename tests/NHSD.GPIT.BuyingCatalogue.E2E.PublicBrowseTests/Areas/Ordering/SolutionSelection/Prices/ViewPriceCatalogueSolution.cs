@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Pr
     [Collection(nameof(OrderingCollection))]
     public class ViewPriceCatalogueSolution : BuyerTestBase
     {
-        private const string InternalOrgId = "IB-QWO";
+        private const string InternalOrgId = "CG-03F";
         private static readonly CallOffId CallOffId = new(90030, 2);
         private static readonly CatalogueItemId CatalogueItemId = new(99998, "001");
         private static readonly RoutingSource Source = RoutingSource.TaskList;

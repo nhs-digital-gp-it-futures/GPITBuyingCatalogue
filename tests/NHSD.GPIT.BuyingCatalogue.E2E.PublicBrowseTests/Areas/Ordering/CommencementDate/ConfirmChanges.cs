@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CommencementDate
     [Collection(nameof(OrderingCollection))]
     public class ConfirmChanges : BuyerTestBase, IDisposable
     {
-        private const string InternalOrgId = "IB-QWO";
+        private const string InternalOrgId = "CG-03F";
 
         private const int OrderId = 90022;
         private const int OriginalInitialPeriod = 3;
