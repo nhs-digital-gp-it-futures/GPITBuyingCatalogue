@@ -44,7 +44,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             ItemType = previousItem?.CatalogueItem.CatalogueItemType ?? orderItem.CatalogueItem.CatalogueItemType;
 
             PreviouslySelected = previousItem?.OrderItemRecipients?.Select(x => x.Recipient?.Name).ToList() ?? new List<string>();
-            SubLocations = serviceRecipients.GroupBy(x => x.Location)
+            SubLocations = serviceRecipients.Where(x => !PreviouslySelected.Contains(x.OdsCode))
+                .GroupBy(x => x.Location)
                 .Select(x => new SublocationModel(x.Key, x.OrderBy(x => x.Name).ToList()))
                 .OrderBy(x => x.Name)
                 .ToList();

@@ -7,12 +7,11 @@
 :r ./OdsOrganisationsSeedData/InsertOrganisationRoles.sql
 :r ./OdsOrganisationsSeedData/InsertOrganisationRelationships.sql
 
-:r ./CreateClinicalCommissioningGroups.sql
-:r ./CreateCommissioningSupportUnits.sql
 :r ./CreateExecutiveAgency.sql
 :r ./CreateExecutiveAgencyUser.sql
-:r ./CreateTestUsers.sql
 :r ./CreateIntegratedCareBoards.sql
+:r ./CreateCommissioningSupportUnits.sql
+:r ./CreateTestUsers.sql
 
 :r ./InsertAllowedEmailDomains.sql
 :r ./InsertCapabilityStatuses.sql

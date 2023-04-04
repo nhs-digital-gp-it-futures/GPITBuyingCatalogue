@@ -9,22 +9,22 @@ AND NOT EXISTS (
   FROM users.AspNetUsers
   WHERE UserName IN (@aliceEmail, @bobEmail, @sueEmail, @daveEmail))
 BEGIN
-    DECLARE @ccgRoleId AS nchar(4) = 'RO98';
+    DECLARE @icbRoleId AS nchar(5) = 'RO261';
     DECLARE @executiveAgencyRoleId AS nchar(5) = 'RO116';
-    DECLARE @hullCCGOdsCode AS nchar(3) = '03F';
-    DECLARE @northLincsCcgOdsCode AS nchar(3) = '03K';
+    DECLARE @hullOdsCode AS nchar(3) = 'QOQ';
+    DECLARE @wyICBOdsCode AS nchar(3) = 'QWO';
 
-    DECLARE @aliceOrganisationId AS int = (SELECT TOP (1) Id FROM organisations.Organisations WHERE PrimaryRoleId = @ccgRoleId AND ExternalIdentifier = @northLincsCcgOdsCode);
-    DECLARE @aliceOrganisationName AS nvarchar(255) =  (SELECT TOP (1) [Name] FROM organisations.Organisations WHERE PrimaryRoleId = @ccgRoleId AND ExternalIdentifier = @northLincsCcgOdsCode);
+    DECLARE @aliceOrganisationId AS int = (SELECT TOP (1) Id FROM organisations.Organisations WHERE PrimaryRoleId = @icbRoleId AND ExternalIdentifier = @hullOdsCode);
+    DECLARE @aliceOrganisationName AS nvarchar(255) =  (SELECT TOP (1) [Name] FROM organisations.Organisations WHERE PrimaryRoleId = @icbRoleId AND ExternalIdentifier = @hullOdsCode);
 
     DECLARE @bobOrganisationId AS int = (SELECT Id FROM organisations.Organisations WHERE PrimaryRoleId = @executiveAgencyRoleId);
     DECLARE @bobOrganisationName AS nvarchar(255) =  (SELECT TOP (1) [Name] FROM organisations.Organisations WHERE PrimaryRoleId = @executiveAgencyRoleId);
 
-    DECLARE @sueOrganisationId AS int = (SELECT TOP (1) Id FROM organisations.Organisations WHERE PrimaryRoleId = @ccgRoleId AND ExternalIdentifier = @hullCCGOdsCode);
-    DECLARE @sueOrganisationName AS nvarchar(255) =  (SELECT TOP (1) [Name] FROM organisations.Organisations WHERE PrimaryRoleId = @ccgRoleId AND ExternalIdentifier = @hullCCGOdsCode);
+    DECLARE @sueOrganisationId AS int = (SELECT TOP (1) Id FROM organisations.Organisations WHERE PrimaryRoleId = @icbRoleId AND ExternalIdentifier = @wyICBOdsCode);
+    DECLARE @sueOrganisationName AS nvarchar(255) =  (SELECT TOP (1) [Name] FROM organisations.Organisations WHERE PrimaryRoleId = @icbRoleId AND ExternalIdentifier = @wyICBOdsCode);
 
-    DECLARE @daveOrganisationId AS int = (SELECT TOP (1) Id FROM organisations.Organisations WHERE PrimaryRoleId = @ccgRoleId AND ExternalIdentifier = @hullCCGOdsCode);
-    DECLARE @daveOrganisationName AS nvarchar(255) =  (SELECT TOP (1) [Name] FROM organisations.Organisations WHERE PrimaryRoleId = @ccgRoleId AND ExternalIdentifier = @hullCCGOdsCode);
+    DECLARE @daveOrganisationId AS int = (SELECT TOP (1) Id FROM organisations.Organisations WHERE PrimaryRoleId = @icbRoleId AND ExternalIdentifier = @wyICBOdsCode);
+    DECLARE @daveOrganisationName AS nvarchar(255) =  (SELECT TOP (1) [Name] FROM organisations.Organisations WHERE PrimaryRoleId = @icbRoleId AND ExternalIdentifier = @wyICBOdsCode);
 
     DECLARE @address AS nchar(108) = N'{ "street_address": "One Hacker Way", "locality": "Heidelberg", "postal_code": 69118, "country": "Germany" }';
 
@@ -65,7 +65,7 @@ BEGIN
     (@bobId, @bobEmail, @bobNormalizedEmail, @bobEmail, @bobNormalizedEmail, 0, NEWID(), @phoneNumber, 1, 1, @bobPassword, 0, 'OBDOPOU5YQ5WQXCR3DITKL6L5IDPYHHJ', 0, 'Bob', 'Smith', @bobOrganisationId, 0, 1, GETUTCDATE()),
     (@sueId, @sueEmail, @sueNormalizedEmail, @sueEmail, @sueNormalizedEmail, 0, NEWID(), @phoneNumber, 1, 1, @suePassword, 0, 'NNJ4SLBPCVUDKXAQXJHCBKQTFEYUAPBC', 0, 'Sue', 'Smith', @sueOrganisationId, 0, 1, GETUTCDATE()),
     (@daveId, @daveEmail, @daveNormalizedEmail, @daveEmail, @daveNormalizedEmail, 0, NEWID(), @phoneNumber, 1, 1, @davePassword, 0, 'NNJ4SLBPCVUDKXAQXJHCBKQTFEYUAPBC', 0, 'Dave', 'Smith', @daveOrganisationId, 0, 1, GETUTCDATE());
-    
+
     DECLARE @BuyerRoleId INT = (SELECT [Id] FROM users.AspNetRoles WHERE [Name] = 'Buyer');
     DECLARE @AdminRoleId INT = (SELECT [Id] FROM users.AspNetRoles WHERE [Name] = 'Authority');
     DECLARE @AccountManagerRoleId INT = (SELECT [Id] FROM users.AspNetRoles WHERE [Name] = 'AccountManager');

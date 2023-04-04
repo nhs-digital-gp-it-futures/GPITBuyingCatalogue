@@ -8,10 +8,11 @@
 
         INSERT INTO @odsRoleTypes ([Id], [Description])
         VALUES
-            ('RO261', 'STRATEGIC PARTNERSHIP'),
-            ('RO98', 'CCG'),
             ('RO177', 'PRESCRIBING COST CENTRE'),
-             ('RO157', 'NON-NHS ORGANISATION');
+            ('RO261', 'STRATEGIC PARTNERSHIP'),
+            ('RO262', 'SUSTAINABILITY TRANSFORMATION PARTNERSHIP'),
+            ('RO318', 'INTEGRATED CARE BOARD'),
+            ('RO319', 'SUB ICB LOCATION');
 
         MERGE INTO [ods_organisations].[RoleTypes] AS TARGET
         USING @odsRoleTypes AS SOURCE

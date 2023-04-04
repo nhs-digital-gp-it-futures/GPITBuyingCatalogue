@@ -98,9 +98,11 @@
     <Folder Include="Ordering\TemporalTables" />
     <Folder Include="Users\TemporalTables" />
     <Folder Include="PostDeployment\OrderSeedData" />
+    <Folder Include="PostDeployment\" />
     <Folder Include="Catalogue\Types" />
     <Folder Include="Catalogue\Stored Procedures" />
     <Folder Include="Security\Schemas\" />
+    <Folder Include="OdsOrganisations\" />
     <Folder Include="OdsOrganisations\Tables\" />
     <Folder Include="PostDeployment\OdsOrganisationsSeedData\" />
   </ItemGroup>
@@ -126,7 +128,6 @@
     <None Include="PostDeployment\InsertAdditionalServices.sql" />
     <PreDeploy Include="PreDeployment\PreDeployment.sql" />
     <None Include="PostDeployment\CreateTestUsers.sql" />
-    <None Include="PostDeployment\CreateClinicalCommissioningGroups.sql" />
     <None Include="PostDeployment\CreateCommissioningSupportUnits.sql" />
     <None Include="PostDeployment\CreateExecutiveAgency.sql" />
     <None Include="PostDeployment\CreateExecutiveAgencyUser.sql" />
