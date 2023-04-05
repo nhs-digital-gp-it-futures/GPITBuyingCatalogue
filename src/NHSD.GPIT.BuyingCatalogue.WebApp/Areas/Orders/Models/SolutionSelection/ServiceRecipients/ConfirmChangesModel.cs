@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         public ConfirmChangesModel()
         {
         }
-        
+
         public ConfirmChangesModel(Organisation organisation)
         {
             Title = $"{TitleText} for {organisation.Name} ({organisation.ExternalIdentifier})";

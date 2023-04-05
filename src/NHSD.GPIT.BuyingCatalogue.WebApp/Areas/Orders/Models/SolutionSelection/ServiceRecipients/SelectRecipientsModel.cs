@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
             PreviouslySelected = previousItem?.OrderItemRecipients?.Select(x => x.Recipient?.OdsCode).ToList()
                 ?? Enumerable.Empty<string>().ToList();
-            
+
             SubLocations = serviceRecipients
                 .GroupBy(x => x.Location)
                 .Select(
@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         public override string Caption => ItemName;
 
         public string InternalOrgId { get; set; }
-        
+
         public string OrganisationName { get; set; }
 
         public CallOffId CallOffId { get; set; }
