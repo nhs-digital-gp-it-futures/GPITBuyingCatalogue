@@ -6,6 +6,7 @@ using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
@@ -32,6 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         }
 
         public SelectRecipientsModel(
+            Organisation organisation,
             OrderItem orderItem,
             OrderItem previousItem,
             List<ServiceRecipientModel> serviceRecipients,
@@ -40,10 +42,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         {
             this.selectionMode = selectionMode;
 
+            OrganisationName = organisation.Name;
+
             ItemName = previousItem?.CatalogueItem.Name ?? orderItem.CatalogueItem.Name;
             ItemType = previousItem?.CatalogueItem.CatalogueItemType ?? orderItem.CatalogueItem.CatalogueItemType;
 
-            PreviouslySelected = previousItem?.OrderItemRecipients?.Select(x => x.Recipient?.OdsCode).ToList() ?? new List<string>();
+            PreviouslySelected = previousItem?.OrderItemRecipients?.Select(x => x.Recipient?.OdsCode).ToList()
+                ?? Enumerable.Empty<string>().ToList();
+            
             SubLocations = serviceRecipients
                 .GroupBy(x => x.Location)
                 .Select(
@@ -62,6 +68,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         public override string Caption => ItemName;
 
         public string InternalOrgId { get; set; }
+        
+        public string OrganisationName { get; set; }
 
         public CallOffId CallOffId { get; set; }
 
@@ -120,7 +128,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         {
             var odsCodes = recipientIds?
                 .Split(Separator, StringSplitOptions.RemoveEmptyEntries)
-                .ToList() ?? new List<string>();
+                .ToList() ?? Enumerable.Empty<string>();
 
             odsCodes.ForEach(odsCode =>
             {

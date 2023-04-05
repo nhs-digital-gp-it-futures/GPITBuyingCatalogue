@@ -77,16 +77,17 @@
 
         <form method="post">
             <hidden-inputs title="Title" caption="Caption" advice="Advice" />
-            <input type="hidden" asp-for="@Model.AssociatedServicesOnly"/>
-            <input type="hidden" asp-for="@Model.BackLink"/>
-            <input type="hidden" asp-for="@Model.CatalogueItemId"/>
-            <input type="hidden" asp-for="@Model.HasImportedRecipients"/>
-            <input type="hidden" asp-for="@Model.HasMissingImportedRecipients"/>
-            <input type="hidden" asp-for="@Model.ItemName"/>
-            <input type="hidden" asp-for="@Model.ItemType"/>
-            <input type="hidden" asp-for="@Model.SelectionCaption"/>
-            <input type="hidden" asp-for="@Model.SelectionMode"/>
-            <input type="hidden" asp-for="@Model.Source"/>
+            <input type="hidden" asp-for="AssociatedServicesOnly"/>
+            <input type="hidden" asp-for="BackLink"/>
+            <input type="hidden" asp-for="CatalogueItemId"/>
+            <input type="hidden" asp-for="HasImportedRecipients"/>
+            <input type="hidden" asp-for="HasMissingImportedRecipients"/>
+            <input type="hidden" asp-for="ItemName"/>
+            <input type="hidden" asp-for="ItemType"/>
+            <input type="hidden" asp-for="OrganisationName" />
+            <input type="hidden" asp-for="SelectionCaption"/>
+            <input type="hidden" asp-for="SelectionMode"/>
+            <input type="hidden" asp-for="Source"/>
 
             @if (Model.PreviouslySelected?.Any() ?? false)
             {
@@ -98,6 +99,7 @@
 
             @if (Model.SubLocations?.Any() ?? false)
             {
+                <h3 style="white-space:nowrap">Sublocations for @Model.OrganisationName</h3>
                 @foreach (var (location, lIndex) in Model.SubLocations.Select((x, i) => (x, i)))
                 {
                     <input type="hidden" asp-for="@Model.SubLocations[lIndex].Name" />

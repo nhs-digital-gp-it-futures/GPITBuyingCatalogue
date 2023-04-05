@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
@@ -13,7 +14,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public ConfirmChangesModel()
         {
-            Title = TitleText;
+        }
+        
+        public ConfirmChangesModel(Organisation organisation)
+        {
+            Title = $"{TitleText} for {organisation.Name} ({organisation.ExternalIdentifier})";
         }
 
         public string InternalOrgId { get; set; }
