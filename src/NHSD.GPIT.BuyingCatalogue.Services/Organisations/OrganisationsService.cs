@@ -38,17 +38,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
         {
             if (odsOrganisation is null)
                 throw new ArgumentNullException(nameof(odsOrganisation));
+
             return await dbContext.Organisations.AnyAsync(o => o.ExternalIdentifier == odsOrganisation.OdsCode || o.Name == odsOrganisation.OrganisationName);
         }
 
         public async Task<(int OrganisationId, string Error)> AddOrganisation(OdsOrganisation odsOrganisation, bool agreementSigned)
         {
-            if (odsOrganisation is null)
-                throw new ArgumentNullException(nameof(odsOrganisation));
-
-            var persistedOrganisation = await dbContext.Organisations.FirstOrDefaultAsync(o => o.ExternalIdentifier == odsOrganisation.OdsCode || o.Name == odsOrganisation.OrganisationName);
-
-            if (persistedOrganisation is not null)
+            if (await OrganisationExists(odsOrganisation))
                 return (0, $"The organisation with ODS code {odsOrganisation.OdsCode} already exists.");
 
             var orgType = settings.GetOrganisationType(odsOrganisation.PrimaryRoleId);
