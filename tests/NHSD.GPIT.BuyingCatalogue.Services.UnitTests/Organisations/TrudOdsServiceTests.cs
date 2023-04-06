@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
@@ -51,16 +53,34 @@ public class TrudOdsServiceTests
     [InMemoryDbAutoData]
     public static async Task GetOrganisationByOdsCode_InvalidType_ReturnsError(
         EntityFramework.OdsOrganisations.Models.OdsOrganisation organisation,
-        OrganisationRole organisationRole,
+        OrganisationRole primaryOrganisationRole,
+        OrganisationRole secondaryOrganisationRole,
+        string randomRole,
         [Frozen] BuyingCatalogueDbContext context,
-        TrudOdsService service)
+        IOrganisationsService orgService,
+        ILogger<TrudOdsService> logger)
     {
+        primaryOrganisationRole.IsPrimaryRole = true;
+        secondaryOrganisationRole.IsPrimaryRole = false;
+
         organisation.IsActive = true;
-        organisation.Roles.Add(organisationRole);
+        organisation.Roles = new List<OrganisationRole>() { primaryOrganisationRole, secondaryOrganisationRole };
 
         context.Add(organisation);
         await context.SaveChangesAsync();
 
+        var settings = new OdsSettings()
+        {
+            BuyerOrganisationRoles = new List<OrganisationRoleSettings>()
+            {
+                new OrganisationRoleSettings() { PrimaryRoleId = primaryOrganisationRole.RoleId, SecondaryRoleId = randomRole, },
+                new OrganisationRoleSettings() { PrimaryRoleId = randomRole, SecondaryRoleId = null, },
+                new OrganisationRoleSettings() { PrimaryRoleId = randomRole, SecondaryRoleId = randomRole, },
+                new OrganisationRoleSettings() { PrimaryRoleId = randomRole, SecondaryRoleId = secondaryOrganisationRole.RoleId, },
+            },
+        };
+
+        var service = new TrudOdsService(settings, context, orgService, logger);
         (OdsOrganisation _, string error) = await service.GetOrganisationByOdsCode(organisation.Id);
 
         error.Should().Be(TrudOdsService.InvalidOrgTypeError);
@@ -70,25 +90,30 @@ public class TrudOdsServiceTests
     [InMemoryDbAutoData]
     public static async Task GetOrganisationByOdsCode_Valid_ReturnsExpected(
         EntityFramework.OdsOrganisations.Models.OdsOrganisation organisation,
-        RoleType roleType,
-        [Frozen] OdsSettings settings,
+        OrganisationRole primaryOrganisationRole,
+        OrganisationRole secondaryOrganisationRole,
         [Frozen] BuyingCatalogueDbContext context,
-        TrudOdsService service)
+        IOrganisationsService orgService,
+        ILogger<TrudOdsService> logger)
     {
-        roleType.Id = settings.BuyerOrganisationRoles[0].PrimaryRoleId;
-        var organisationRole = new OrganisationRole
-        {
-            RoleId = roleType.Id, IsPrimaryRole = true, OrganisationId = organisation.Id,
-        };
+        primaryOrganisationRole.IsPrimaryRole = true;
+        secondaryOrganisationRole.IsPrimaryRole = false;
 
         organisation.IsActive = true;
-        organisation.Roles.Clear();
+        organisation.Roles = new List<OrganisationRole>() { primaryOrganisationRole, secondaryOrganisationRole };
 
-        context.Add(roleType);
         context.Add(organisation);
-        context.Add(organisationRole);
         await context.SaveChangesAsync();
 
+        var settings = new OdsSettings()
+        {
+            BuyerOrganisationRoles = new List<OrganisationRoleSettings>()
+            {
+                new OrganisationRoleSettings() { PrimaryRoleId = primaryOrganisationRole.RoleId, SecondaryRoleId = secondaryOrganisationRole.RoleId, },
+            },
+        };
+
+        var service = new TrudOdsService(settings, context, orgService, logger);
         (OdsOrganisation mappedOrganisation, string _) = await service.GetOrganisationByOdsCode(organisation.Id);
 
         mappedOrganisation.Should().NotBeNull();
@@ -98,7 +123,7 @@ public class TrudOdsServiceTests
             IsActive = organisation.IsActive,
             OdsCode = organisation.Id,
             OrganisationName = organisation.Name,
-            PrimaryRoleId = organisationRole.RoleId,
+            PrimaryRoleId = primaryOrganisationRole.RoleId,
             Address = new()
             {
                 Line1 = organisation.AddressLine1,

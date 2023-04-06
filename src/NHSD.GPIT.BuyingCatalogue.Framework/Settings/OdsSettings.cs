@@ -6,13 +6,9 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
 {
-    [ExcludeFromCodeCoverage(Justification = "Class currently only contains automatic properties")]
     public sealed class OdsSettings
     {
-        public Uri ApiBaseUrl { get; init; }
-
         public IReadOnlyList<OrganisationRoleSettings> BuyerOrganisationRoles { get; init; }
-
 
         public string SubLocationRoleId { get; set; }
 
@@ -20,10 +16,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
 
         public string InGeographyOfRelType { get; set; }
 
-
         public OrganisationType GetOrganisationType(string primaryRoleId)
         {
-            if (string.IsNullOrEmpty(primaryRoleId))
+            if (string.IsNullOrWhiteSpace(primaryRoleId))
                 throw new ArgumentNullException(nameof(primaryRoleId));
 
             var role = BuyerOrganisationRoles.FirstOrDefault(x => x.PrimaryRoleId == primaryRoleId);
