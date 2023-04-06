@@ -75,7 +75,7 @@ public class TrudOdsServiceTests
         [Frozen] BuyingCatalogueDbContext context,
         TrudOdsService service)
     {
-        roleType.Id = settings.BuyerOrganisationRoleIds[0];
+        roleType.Id = settings.BuyerOrganisationRoles[0].PrimaryRoleId;
         var organisationRole = new OrganisationRole
         {
             RoleId = roleType.Id, IsPrimaryRole = true, OrganisationId = organisation.Id,
@@ -140,7 +140,7 @@ public class TrudOdsServiceTests
     {
         organisation.ExternalIdentifier = grandparentOrganisation.Id;
 
-        gpRoleType.Id = settings.GpPracticeRoleId;
+        gpRoleType.Id = settings.GetPrimaryRoleId(OrganisationType.GP);
         commByRelType.Id = settings.IsCommissionedByRelType;
         subLocationRoleType.Id = settings.SubLocationRoleId;
         geogOfRelType.Id = settings.InGeographyOfRelType;
