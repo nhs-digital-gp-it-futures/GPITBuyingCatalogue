@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -235,6 +237,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
         private async Task SetPracticeSizes(SelectServiceRecipientQuantityModel model, OrderItem solution = null)
         {
+            var odsCodes = model.ServiceRecipients.Where(x => x.Quantity == 0).Select(x => x.OdsCode).ToArray();
+            var practiceSizes =
+                (await gpPracticeService.GetNumberOfPatients(odsCodes)).ToDictionary(
+                    x => x.OdsCode,
+                    x => x.NumberOfPatients);
+
             foreach (var serviceRecipient in model.ServiceRecipients)
             {
                 if (serviceRecipient.Quantity > 0)
@@ -250,11 +258,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 }
                 else
                 {
-                    var quantity = await gpPracticeService.GetNumberOfPatients(serviceRecipient.OdsCode);
-
-                    if (quantity.HasValue)
+                    if (practiceSizes.TryGetValue(serviceRecipient.OdsCode, out var quantity))
                     {
-                        serviceRecipient.InputQuantity = $"{quantity.Value}";
+                        serviceRecipient.InputQuantity = $"{quantity}";
                     }
                 }
             }
