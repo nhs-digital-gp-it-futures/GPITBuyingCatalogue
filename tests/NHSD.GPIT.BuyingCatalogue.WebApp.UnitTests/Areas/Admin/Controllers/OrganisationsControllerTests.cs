@@ -366,6 +366,36 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
+        public static async Task Post_Find_ExistingOrganisation_ReturnsExpectedResult(
+            FindOrganisationModel model,
+            [Frozen] Mock<IOdsService> mockOdsService,
+            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
+            OdsOrganisation organisation,
+            OrganisationsController controller)
+        {
+            mockOdsService
+                .Setup(x => x.GetOrganisationByOdsCode(model.OdsCode))
+                .ReturnsAsync((organisation, null));
+
+            mockOrganisationsService
+                .Setup(x => x.OrganisationExists(organisation))
+                .ReturnsAsync(true);
+
+            var result = (await controller.Find(model)).As<ViewResult>();
+
+            mockOdsService.VerifyAll();
+            mockOrganisationsService.VerifyAll();
+
+            result.Should().NotBeNull();
+            result.ViewName.Should().BeNull();
+
+            var actualModel = result.Model.Should().BeAssignableTo<FindOrganisationModel>().Subject;
+
+            actualModel.Should().BeEquivalentTo(model);
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static async Task Post_Find_ReturnsRedirectToActionResult(
             FindOrganisationModel model,
             [Frozen] Mock<IOdsService> mockOdsService,
