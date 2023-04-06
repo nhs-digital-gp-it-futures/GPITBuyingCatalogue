@@ -16,5 +16,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models
         [Display(Name = "Integrated Care Board")]
         [EnumMember(Value = "IB")]
         IB = 3,
+
+        [Display(Name = "GP Practice")]
+        [EnumMember(Value = "GP")]
+        GP = 4,
+
+        [Display(Name = "Commissioning Support Unit")]
+        [EnumMember(Value = "CS")]
+        CSU = 5,
     }
 }

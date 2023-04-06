@@ -16,7 +16,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations
 
         Task<List<Organisation>> GetOrganisationsBySearchTerm(string searchTerm);
 
-        Task<(int OrganisationId, string Error)> AddCcgOrganisation(OdsOrganisation odsOrganisation, bool agreementSigned);
+        Task<bool> OrganisationExists(OdsOrganisation odsOrganisation);
+
+        Task<(int OrganisationId, string Error)> AddOrganisation(OdsOrganisation odsOrganisation, bool agreementSigned);
 
         Task UpdateCcgOrganisation(OdsOrganisation organisation);
 
