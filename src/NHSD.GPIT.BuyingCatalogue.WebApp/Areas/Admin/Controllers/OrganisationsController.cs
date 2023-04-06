@@ -125,7 +125,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var (organisation, error) = await OdsService.GetOrganisationByOdsCode(model.OdsCode);
 
             if (organisation is null)
+            {
                 ModelState.AddModelError(nameof(model.OdsCode), error);
+            }
+            else if (await OrganisationsService.OrganisationExists(organisation))
+            {
+                ModelState.AddModelError(nameof(model.OdsCode), $"The organisation with ODS code {organisation.OdsCode} already exists.");
+            }
 
             if (!ModelState.IsValid)
                 return View(model);
@@ -182,7 +188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             (OdsOrganisation organisation, _) = await OdsService.GetOrganisationByOdsCode(model.OdsOrganisation.OdsCode);
 
-            var (orgId, error) = await OrganisationsService.AddCcgOrganisation(organisation, model.CatalogueAgreementSigned);
+            var (orgId, error) = await OrganisationsService.AddOrganisation(organisation, model.CatalogueAgreementSigned);
 
             if (orgId == 0)
             {
