@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         [InMemoryDbAutoData]
         public static Task AddCcgOrganisation_NullOdsOrganisation_ThrowsException(OrganisationsService service)
         {
-            return Assert.ThrowsAsync<ArgumentNullException>(() => service.AddCcgOrganisation(null, true));
+            return Assert.ThrowsAsync<ArgumentNullException>(() => service.AddOrganisation(null, true));
         }
 
         [Theory]
@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             context.Organisations.Add(organisation);
             await context.SaveChangesAsync();
 
-            (int orgId, var error) = await service.AddCcgOrganisation(odsOrganisation, agreementSigned);
+            (int orgId, var error) = await service.AddOrganisation(odsOrganisation, agreementSigned);
 
             orgId.Should().Be(0);
             error.Should().Be($"The organisation with ODS code {odsOrganisation.OdsCode} already exists.");
@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             bool agreementSigned,
             OrganisationsService service)
         {
-            (int orgId, var error) = await service.AddCcgOrganisation(odsOrganisation, agreementSigned);
+            (int orgId, var error) = await service.AddOrganisation(odsOrganisation, agreementSigned);
 
             orgId.Should().NotBe(0);
             error.Should().BeNull();
