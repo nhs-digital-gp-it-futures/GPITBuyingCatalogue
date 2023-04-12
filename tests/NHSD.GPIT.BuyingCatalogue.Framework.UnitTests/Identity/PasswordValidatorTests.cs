@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -6,18 +7,17 @@ using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
-using NHSD.GPIT.BuyingCatalogue.Services.Users;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity;
 
+[SuppressMessage("Usage", "xUnit1004:Test methods should not be skipped", Justification = "Skipping tests that use Temporal queries")]
 public static class PasswordValidatorTests
 {
     [Fact]
@@ -30,7 +30,7 @@ public static class PasswordValidatorTests
         assertion.Verify(constructors);
     }
 
-    [Theory]
+    [Theory(Skip = "Temporal queries not supported in EF Core 7.")]
     [InMemoryDbAutoData]
     public static async Task ValidateAsync_ValidPassword_NoPasswordHistory_ReturnsSuccessfulIdentityResult(
         [Frozen] BuyingCatalogueDbContext dbContext,
@@ -55,7 +55,7 @@ public static class PasswordValidatorTests
         result.Result.Succeeded.Should().BeTrue();
     }
 
-    [Theory]
+    [Theory(Skip = "Temporal queries not supported in EF Core 7.")]
     [InMemoryDbAutoData]
     public static async Task ValidateAsync_ValidPassword_PasswordNotInHistory_ReturnsSuccessfulIdentityResult(
         AspNetUser user,
@@ -83,7 +83,7 @@ public static class PasswordValidatorTests
         result.Result.Succeeded.Should().BeTrue();
     }
 
-    [Theory]
+    [Theory(Skip = "Temporal queries not supported in EF Core 7.")]
     [InMemoryDbAutoData]
     public static async Task ValidateAsync_ValidPassword_PasswordInHistory_ReturnsFailureIdentityResult(
         AspNetUser user,

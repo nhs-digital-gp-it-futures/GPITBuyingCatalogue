@@ -204,10 +204,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DeliveryDa
         {
             var context = GetEndToEndDbContext();
             var date = context.Order(CallOffId).Result.CommencementDate!.Value;
+            var invalidDate = date.AddDays(-1);
 
-            CommonActions.ElementAddValue(DeliveryDatesObjects.SelectDateDayInput, $"{date.Day:00}");
-            CommonActions.ElementAddValue(DeliveryDatesObjects.SelectDateMonthInput, $"{date.Month:00}");
-            CommonActions.ElementAddValue(DeliveryDatesObjects.SelectDateYearInput, $"{date.Year:0000}");
+            CommonActions.ElementAddValue(DeliveryDatesObjects.SelectDateDayInput, $"{invalidDate.Day:00}");
+            CommonActions.ElementAddValue(DeliveryDatesObjects.SelectDateMonthInput, $"{invalidDate.Month:00}");
+            CommonActions.ElementAddValue(DeliveryDatesObjects.SelectDateYearInput, $"{invalidDate.Year:0000}");
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -272,7 +273,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DeliveryDa
         [Fact]
         public void AmendDate_ValidDateEntered_ClickSave_ExpectedResult()
         {
-            var date = DateTime.Today.AddDays(2);
+            var date = DateTime.Today.AddMonths(3);
 
             CommonActions.ElementAddValue(DeliveryDatesObjects.SelectDateDayInput, $"{date.Day:00}");
             CommonActions.ElementAddValue(DeliveryDatesObjects.SelectDateMonthInput, $"{date.Month:00}");

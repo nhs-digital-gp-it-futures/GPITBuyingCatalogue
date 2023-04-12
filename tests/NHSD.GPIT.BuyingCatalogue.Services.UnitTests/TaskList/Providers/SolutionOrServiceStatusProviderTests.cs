@@ -91,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             order.Revision = 1;
             order.AssociatedServicesOnly = false;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
-            var amendedOrder = order.BuidAmendment(2);
+            var amendedOrder = order.BuildAmendment(2);
 
             var actual = service.Get(new OrderWrapper(new[] { order, amendedOrder }), state);
 
@@ -115,7 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             order.Revision = 1;
             order.AssociatedServicesOnly = false;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = itemType);
-            var amendedOrder = order.BuidAmendment(2);
+            var amendedOrder = order.BuildAmendment(2);
             var orderItem = order.OrderItems.First();
             var orderItemToAdd = new OrderItem
             {

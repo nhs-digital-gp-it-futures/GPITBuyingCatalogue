@@ -315,7 +315,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             var order = (await GetOrderForSummary(callOffId, internalOrgId)).Order;
 
-            var amendment = order.BuidAmendment(await dbContext.NextRevision(order.OrderNumber));
+            var amendment = order.BuildAmendment(await dbContext.NextRevision(order.OrderNumber));
 
             dbContext.Add(amendment);
 

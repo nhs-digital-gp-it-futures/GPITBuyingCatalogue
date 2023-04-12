@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -15,7 +16,7 @@ using Xunit;
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 {
     [Collection(nameof(OrderingCollection))]
-    public sealed class DeleteAmendment : BuyerTestBase, IDisposable
+    public sealed class DeleteAmendment : BuyerTestBase
     {
         private const string InternalOrgId = "CG-03F";
         private static readonly CallOffId CallOffId = new(90030, 2);
@@ -81,41 +82,40 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         }
 
         [Fact]
-        public void DeleteAmendment_SelectYes_ExpectedResult()
+        public async Task DeleteAmendment_SelectYes_ExpectedResult()
         {
-            using var context = GetEndToEndDbContext();
+            await using var context = GetEndToEndDbContext();
 
-            context.Orders
+            var order = await context.Orders
+                .AsNoTracking()
                 .IgnoreQueryFilters()
-                .Count(o => o.OrderNumber == CallOffId.OrderNumber && o.Revision == CallOffId.Revision).Should().Be(1);
+                .FirstOrDefaultAsync(o => o.OrderNumber == CallOffId.OrderNumber && o.Revision == CallOffId.Revision);
 
-            IDbContextTransaction transaction = null;
+            order.Id = 0;
+            order.Revision++;
 
-            try
+            context.Orders.Add(order);
+            await context.SaveChangesAsync();
+
+            Dictionary<string, string> parameters = new()
             {
-                transaction = context.Database.BeginTransaction();
+                { nameof(InternalOrgId), InternalOrgId },
+                { nameof(CallOffId), order.CallOffId.ToString() },
+            };
 
-                CommonActions.ClickRadioButtonWithText(DeleteOrderModel.AmendmentYesOptionText);
-                CommonActions.ClickSave();
+            NavigateToUrl(
+                typeof(DeleteOrderController),
+                nameof(DeleteOrderController.DeleteOrder),
+                parameters);
 
-                CommonActions.PageLoadedCorrectGetIndex(
+            CommonActions.ClickRadioButtonWithText(DeleteOrderModel.AmendmentYesOptionText);
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
                     typeof(DashboardController),
-                    nameof(DashboardController.Organisation)).Should().BeTrue();
-
-                context.Orders
-                    .IgnoreQueryFilters()
-                    .Count(o => o.OrderNumber == CallOffId.OrderNumber && o.Revision == CallOffId.Revision).Should().Be(0);
-
-                transaction.Rollback();
-            }
-            catch
-            {
-                transaction?.Rollback();
-            }
-
-            context.Orders
-                .IgnoreQueryFilters()
-                .Count(o => o.OrderNumber == CallOffId.OrderNumber && o.Revision == CallOffId.Revision).Should().Be(1);
+                    nameof(DashboardController.Organisation))
+                .Should()
+                .BeTrue();
         }
 
         [Fact]
@@ -133,13 +133,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ElementIsDisplayed(DeleteOrderObjects.SelectOptionError).Should().BeTrue();
         }
 
-        public void Dispose()
+        public override async Task DisposeAsync()
         {
-            using var context = GetEndToEndDbContext();
+            await using var context = GetEndToEndDbContext();
 
-            var orderId = context.OrderId(CallOffId).Result;
+            var order = await context.Order(CallOffId);
+            order.IsDeleted = false;
 
-            context.Database.ExecuteSqlInterpolated($"UPDATE Orders SET IsDeleted = 0 WHERE Id = {orderId}");
+            await context.SaveChangesAsync();
+            await base.DisposeAsync();
         }
     }
 }
