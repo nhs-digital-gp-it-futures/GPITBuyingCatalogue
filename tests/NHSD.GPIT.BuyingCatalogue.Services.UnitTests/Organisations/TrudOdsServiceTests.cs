@@ -220,7 +220,7 @@ public class TrudOdsServiceTests
     {
         await service.UpdateOrganisationDetails(odsCode);
 
-        organisationsService.Verify(x => x.UpdateCcgOrganisation(It.IsAny<OdsOrganisation>()), Times.Never());
+        organisationsService.Verify(x => x.UpdateOrganisation(It.IsAny<OdsOrganisation>()), Times.Never());
     }
 
     [Theory]
@@ -236,7 +236,7 @@ public class TrudOdsServiceTests
 
         await service.UpdateOrganisationDetails(organisation.InternalIdentifier);
 
-        organisationsService.Verify(x => x.UpdateCcgOrganisation(It.IsAny<OdsOrganisation>()), Times.Never());
+        organisationsService.Verify(x => x.UpdateOrganisation(It.IsAny<OdsOrganisation>()), Times.Never());
     }
 
     [Theory]
@@ -257,7 +257,7 @@ public class TrudOdsServiceTests
         OdsOrganisation actual = null;
 
         organisationsService
-            .Setup(x => x.UpdateCcgOrganisation(It.IsAny<OdsOrganisation>()))
+            .Setup(x => x.UpdateOrganisation(It.IsAny<OdsOrganisation>()))
             .Callback<OdsOrganisation>(x => actual = x);
 
         await service.UpdateOrganisationDetails(organisation.ExternalIdentifier);

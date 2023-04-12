@@ -121,7 +121,7 @@ public class TrudOdsService : IOdsService
             return;
         }
 
-        await organisationsService.UpdateCcgOrganisation(MapOrganisation(trudOrganisation));
+        await organisationsService.UpdateOrganisation(MapOrganisation(trudOrganisation));
     }
 
     internal static OdsOrganisation

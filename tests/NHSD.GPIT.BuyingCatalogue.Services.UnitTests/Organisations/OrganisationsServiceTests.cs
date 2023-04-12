@@ -144,17 +144,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
         [Theory]
         [InMemoryDbAutoData]
-        public static void UpdateCcgOrganisation_OrganisationIsNull_ThrowsException(
+        public static void UpdateOrganisation_OrganisationIsNull_ThrowsException(
             OrganisationsService service)
         {
             FluentActions
-                .Awaiting(() => service.UpdateCcgOrganisation(null))
+                .Awaiting(() => service.UpdateOrganisation(null))
                 .Should().ThrowAsync<ArgumentNullException>();
         }
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task UpdateCcgOrganisation_OrganisationNotInDatabase_NoActionTaken(
+        public static async Task UpdateOrganisation_OrganisationNotInDatabase_NoActionTaken(
             OdsOrganisation organisation,
             [Frozen] BuyingCatalogueDbContext dbContext,
             OrganisationsService service)
@@ -164,7 +164,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
             existing.Should().BeNull();
 
-            await service.UpdateCcgOrganisation(organisation);
+            await service.UpdateOrganisation(organisation);
 
             var actual = await dbContext.Organisations
                 .FirstOrDefaultAsync(x => x.ExternalIdentifier == organisation.OdsCode);
@@ -174,7 +174,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task UpdateCcgOrganisation_OrganisationInDatabase_ValuesUpdated(
+        public static async Task UpdateOrganisation_OrganisationInDatabase_ValuesUpdated(
             Organisation organisation,
             OdsOrganisation newOrganisation,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -194,7 +194,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
             newOrganisation.OdsCode = organisation.ExternalIdentifier;
 
-            await service.UpdateCcgOrganisation(newOrganisation);
+            await service.UpdateOrganisation(newOrganisation);
 
             var actual = await dbContext.Organisations
                 .FirstOrDefaultAsync(x => x.ExternalIdentifier == organisation.ExternalIdentifier);
