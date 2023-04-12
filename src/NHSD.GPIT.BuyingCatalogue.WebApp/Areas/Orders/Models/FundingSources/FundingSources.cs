@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
@@ -24,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
 
             var completedOrderItems = order.OrderItems.Where(oi => oi.AllQuantitiesEntered).ToList();
 
-            if (order.SelectedFramework.LocalFundingOnly)
+            if (order.SelectedFramework.LocalFundingOnly || order.OrderingParty.OrganisationType == OrganisationType.GP)
             {
                 OrderItemsLocalOnly = completedOrderItems.Where(oi => oi.OrderItemPrice.CalculateTotalCost(oi.TotalQuantity) != 0).ToList();
             }
