@@ -217,6 +217,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     .ThenInclude(ir => ir.Recipient)
                 .Include(oi => oi.Order)
                     .ThenInclude(o => o.SelectedFramework)
+                .Include(oi => oi.Order)
+                    .ThenInclude(o => o.OrderingParty)
                 .FirstOrDefaultAsync(oi => oi.OrderId == orderId
                     && oi.CatalogueItemId == catalogueItemId
                     && oi.Order.OrderingParty.InternalIdentifier == internalOrgId);
