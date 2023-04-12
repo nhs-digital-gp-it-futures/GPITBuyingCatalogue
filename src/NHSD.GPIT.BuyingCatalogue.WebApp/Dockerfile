@@ -8,7 +8,7 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:7.0.102-alpine3.17 AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0.203-alpine3.17 AS build
 WORKDIR /src
 COPY ["src/NHSD.GPIT.BuyingCatalogue.WebApp/NHSD.GPIT.BuyingCatalogue.WebApp.csproj", "src/NHSD.GPIT.BuyingCatalogue.WebApp/"]
 RUN dotnet restore "src/NHSD.GPIT.BuyingCatalogue.WebApp/NHSD.GPIT.BuyingCatalogue.WebApp.csproj"
