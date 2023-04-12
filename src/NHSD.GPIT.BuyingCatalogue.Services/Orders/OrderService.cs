@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
@@ -439,7 +440,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
                 if (orderItem.TotalCost() == 0)
                     selectedFundingType = OrderItemFundingType.NoFundingRequired;
-                else if (order.SelectedFramework.LocalFundingOnly)
+                else if (order.SelectedFramework.LocalFundingOnly || order.OrderingParty.OrganisationType == OrganisationType.GP)
                     selectedFundingType = OrderItemFundingType.LocalFundingOnly;
 
                 if (selectedFundingType != OrderItemFundingType.None)
