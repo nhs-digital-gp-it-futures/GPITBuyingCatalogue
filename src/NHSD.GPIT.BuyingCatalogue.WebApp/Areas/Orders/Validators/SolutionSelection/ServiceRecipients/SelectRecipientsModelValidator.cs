@@ -19,6 +19,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.SolutionSelec
 
         private static bool HaveMadeASelection(List<SublocationModel> subLocations)
         {
+            if (subLocations is null || !subLocations.Any())
+                return false;
+
             var serviceRecipients = subLocations.SelectMany(x => x.ServiceRecipients).ToList();
 
             return !(serviceRecipients?.Any() ?? false)

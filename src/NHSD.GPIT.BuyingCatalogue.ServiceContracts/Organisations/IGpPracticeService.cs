@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations
 {
@@ -7,6 +9,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations
     {
         Task ImportGpPracticeData(Uri csvUri, string emailAddress);
 
-        Task<int?> GetNumberOfPatients(string odsCode);
+        Task<IList<GpPracticeSize>> GetNumberOfPatients(IEnumerable<string> odsCodes);
     }
 }

@@ -320,14 +320,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             mockEmailService.VerifyAll();
 
             userTokens.Should().NotBeNull();
-            userTokens.Should().HaveCount(3);
+            userTokens.Should().HaveCount(2);
 
             var orderId = userTokens.Should().ContainKey(OrderService.OrderIdToken).WhoseValue as string;
-            var orderSummaryLink = userTokens.Should().ContainKey(OrderService.OrderSummaryLinkToken).WhoseValue as JObject;
             var orderSummaryCsv = userTokens.Should().ContainKey(OrderService.OrderSummaryCsv).WhoseValue as JObject;
 
             orderId.Should().Be($"{order.CallOffId}");
-            orderSummaryLink.Should().BeEquivalentTo(expectedOrderSummaryLink);
             orderSummaryCsv.Should().BeEquivalentTo(expectedOrderSummaryCsv);
         }
 

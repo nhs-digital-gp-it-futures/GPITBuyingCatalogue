@@ -48,7 +48,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
         [Fact]
         public void ConfirmCatalogueSolutionRecipients_AllSectionsDisplayed()
         {
-            CommonActions.PageTitle().Should().BeEquivalentTo("Confirm Service Recipients - E2E With Contact Multiple Prices".FormatForComparison());
+            using var context = GetEndToEndDbContext();
+            var organisation = context.Organisations.First(x => x.InternalIdentifier == InternalOrgId);
+            
+            CommonActions.PageTitle().Should().BeEquivalentTo($"Confirm Service Recipients for {organisation.Name} ({organisation.ExternalIdentifier}) - E2E With Contact Multiple Prices".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(ServiceRecipientObjects.AddOrRemoveLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(ServiceRecipientObjects.PreviouslySelectedServiceRecipients).Should().BeFalse();
