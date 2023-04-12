@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
@@ -14,6 +15,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
 
         public FundingSources(string internalOrgId, CallOffId callOffId, Order order, int countOfOrderFrameworks)
         {
+            if (order is null || order.OrderingParty is null || order.SelectedFramework is null)
+                throw new ArgumentNullException(nameof(order));
+
             Order = order;
             Title = "Funding sources";
             InternalOrgId = internalOrgId;

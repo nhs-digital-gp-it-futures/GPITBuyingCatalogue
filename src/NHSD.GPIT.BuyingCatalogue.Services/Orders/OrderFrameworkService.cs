@@ -47,6 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             var order = await dbContext.Orders
                 .Include(o => o.SelectedFramework)
+                .Include(o => o.OrderingParty)
                 .Include(o => o.OrderItems)
                     .ThenInclude(oi => oi.OrderItemFunding)
                 .FirstOrDefaultAsync(o => o.OrderNumber == callOffId.OrderNumber
