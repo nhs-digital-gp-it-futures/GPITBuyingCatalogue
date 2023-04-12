@@ -14,6 +14,7 @@ using MoreLinq.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -51,12 +52,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         [CommonInlineAutoData(SelectionMode.All)]
         public static async Task Get_AddServiceRecipients_ReturnsExpectedResult(
             SelectionMode? selectionMode,
+            Organisation organisation,
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             List<ServiceRecipient> serviceRecipients,
             [Frozen] Mock<IOrderService> mockOrderService,
             [Frozen] Mock<IOdsService> mockOdsService,
+            [Frozen] Mock<IOrganisationsService> organisationsService,
             ServiceRecipientsController controller)
         {
             order.AssociatedServicesOnly = false;
@@ -74,6 +77,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Setup(x => x.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))
                 .ReturnsAsync(serviceRecipients);
 
+            organisationsService
+                .Setup(x => x.GetOrganisationByInternalIdentifier(internalOrgId))
+                .ReturnsAsync(organisation);
+
             var result = await controller.AddServiceRecipients(internalOrgId, callOffId, solution.CatalogueItemId, selectionMode);
 
             mockOrderService.VerifyAll();
@@ -90,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 })
                 .ToList();
 
-            var expected = new SelectRecipientsModel(solution, null, recipients, selectionMode)
+            var expected = new SelectRecipientsModel(organisation, solution, null, recipients, selectionMode)
             {
                 InternalOrgId = internalOrgId,
                 CallOffId = callOffId,
@@ -104,11 +111,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         [CommonAutoData]
         public static async Task Get_AddServiceRecipients_WithPreSelectedSolutionRecipients_ReturnsExpectedResult(
             string internalOrgId,
+            Organisation organisation,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             List<ServiceRecipient> serviceRecipients,
             [Frozen] Mock<IOrderService> mockOrderService,
             [Frozen] Mock<IOdsService> mockOdsService,
+            [Frozen] Mock<IOrganisationsService> organisationsService,
             ServiceRecipientsController controller)
         {
             order.AssociatedServicesOnly = false;
@@ -132,6 +141,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Setup(x => x.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))
                 .ReturnsAsync(serviceRecipients);
 
+            organisationsService
+                .Setup(x => x.GetOrganisationByInternalIdentifier(internalOrgId))
+                .ReturnsAsync(organisation);
+
             var result = await controller.AddServiceRecipients(internalOrgId, callOffId, additionalService.CatalogueItemId);
 
             mockOrderService.VerifyAll();
@@ -148,12 +161,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         [CommonAutoData]
         public static async Task Get_AddServiceRecipients_WithImportedSolutionRecipients_ReturnsExpectedResult(
             string internalOrgId,
+            Organisation organisation,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             EntityFramework.Ordering.Models.Order amendment,
             List<ServiceRecipient> serviceRecipients,
             [Frozen] Mock<IOrderService> mockOrderService,
             [Frozen] Mock<IOdsService> mockOdsService,
+            [Frozen] Mock<IOrganisationsService> organisationsService,
             ServiceRecipientsController controller)
         {
             order.Revision = 1;
@@ -179,6 +194,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             mockOdsService
                 .Setup(x => x.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))
                 .ReturnsAsync(serviceRecipients);
+
+            organisationsService
+                .Setup(x => x.GetOrganisationByInternalIdentifier(internalOrgId))
+                .ReturnsAsync(organisation);
 
             var result = await controller.AddServiceRecipients(internalOrgId, callOffId, additionalService.CatalogueItemId, importedRecipients: importedRecipients);
 
@@ -248,12 +267,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         [CommonInlineAutoData(SelectionMode.All)]
         public static async Task Get_EditServiceRecipients_ReturnsExpectedResult(
             SelectionMode? selectionMode,
+            Organisation organisation,
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             List<ServiceRecipient> serviceRecipients,
             [Frozen] Mock<IOrderService> mockOrderService,
             [Frozen] Mock<IOdsService> mockOdsService,
+            [Frozen] Mock<IOrganisationsService> organisationsService,
             ServiceRecipientsController controller)
         {
             order.AssociatedServicesOnly = false;
@@ -271,6 +292,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Setup(x => x.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))
                 .ReturnsAsync(serviceRecipients);
 
+            organisationsService
+                .Setup(x => x.GetOrganisationByInternalIdentifier(internalOrgId))
+                .ReturnsAsync(organisation);
+
             var result = await controller.EditServiceRecipients(internalOrgId, callOffId, solution.CatalogueItemId, selectionMode);
 
             mockOrderService.VerifyAll();
@@ -287,7 +312,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 })
                 .ToList();
 
-            var expected = new SelectRecipientsModel(solution, null, recipients, selectionMode)
+            var expected = new SelectRecipientsModel(organisation, solution, null, recipients, selectionMode)
             {
                 InternalOrgId = internalOrgId,
                 CallOffId = callOffId,
@@ -302,12 +327,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         [CommonAutoData]
         public static async Task Get_EditServiceRecipients_WithImportedSolutionRecipients_ReturnsExpectedResult(
             string internalOrgId,
+            Organisation organisation,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             EntityFramework.Ordering.Models.Order amendment,
             List<ServiceRecipient> serviceRecipients,
             [Frozen] Mock<IOrderService> mockOrderService,
             [Frozen] Mock<IOdsService> mockOdsService,
+            [Frozen] Mock<IOrganisationsService> organisationsService,
             ServiceRecipientsController controller)
         {
             order.Revision = 1;
@@ -333,6 +360,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             mockOdsService
                 .Setup(x => x.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))
                 .ReturnsAsync(serviceRecipients);
+
+            organisationsService
+                .Setup(x => x.GetOrganisationByInternalIdentifier(internalOrgId))
+                .ReturnsAsync(organisation);
 
             var result = await controller.EditServiceRecipients(internalOrgId, callOffId, additionalService.CatalogueItemId, importedRecipients: importedRecipients);
 
@@ -477,7 +508,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new ConfirmChangesModel
+            var expected = new ConfirmChangesModel(order.OrderingParty)
             {
                 InternalOrgId = internalOrgId,
                 CallOffId = callOffId,

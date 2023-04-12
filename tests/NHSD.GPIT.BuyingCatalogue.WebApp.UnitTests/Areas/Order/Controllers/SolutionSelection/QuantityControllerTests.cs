@@ -13,6 +13,7 @@ using Moq;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -238,8 +239,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .ReturnsAsync(new OrderWrapper(order));
 
             mockGpPracticeService
-                .Setup(x => x.GetNumberOfPatients(It.IsAny<string>()))
-                .ReturnsAsync(NumberOfPatients);
+                .Setup(x => x.GetNumberOfPatients(It.IsAny<IEnumerable<string>>()))
+                .ReturnsAsync(
+                    orderItem.OrderItemRecipients.Select(
+                            x => new GpPracticeSize { OdsCode = x.OdsCode, NumberOfPatients = NumberOfPatients })
+                        .ToList());
 
             var result = await controller.SelectServiceRecipientQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId);
 

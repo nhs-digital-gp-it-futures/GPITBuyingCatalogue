@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -76,12 +79,26 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             }
         }
 
-        public async Task<int?> GetNumberOfPatients(string odsCode)
+        public async Task<IList<GpPracticeSize>> GetNumberOfPatients(IEnumerable<string> odsCodes)
         {
-            var gpPractice = await dbContext.GpPracticeSizes.AsNoTracking()
-                .FirstOrDefaultAsync(x => x.OdsCode == odsCode);
+            const int maxBatchSize = 500;
 
-            return gpPractice?.NumberOfPatients;
+            var sanitizedCodes = odsCodes.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+            var gpPracticeSizes = new List<GpPracticeSize>();
+
+            foreach (var odsBatch in sanitizedCodes.Batch(maxBatchSize))
+            {
+                var localBatch = odsBatch;
+
+                var practiceSizes = await dbContext
+                    .GpPracticeSizes.AsNoTracking()
+                    .Where(x => localBatch.Contains(x.OdsCode))
+                    .ToListAsync();
+
+                gpPracticeSizes.AddRange(practiceSizes);
+            }
+
+            return gpPracticeSizes;
         }
     }
 }

@@ -377,22 +377,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 templateId = orderMessageSettings.DualCsvTemplateId;
             }
 
-            var userEmail = dbContext.Users.First(x => x.Id == userId).Email;
-            using var pdfData = await pdfService.CreateOrderSummaryPdf(order);
-
             fullOrderStream.Position = 0;
             var userTokens = new Dictionary<string, dynamic>
             {
                 { OrderIdToken, $"{callOffId}" },
-                { OrderSummaryLinkToken, NotificationClient.PrepareUpload(pdfData.ToArray()) },
                 { OrderSummaryCsv, NotificationClient.PrepareUpload(fullOrderStream.ToArray(), true) },
             };
 
             dbContext.Entry(order).State = EntityState.Modified;
 
+            _ = await pdfService.CreateOrderSummaryPdf(order);
+
             var userTemplateId = order.AssociatedServicesOnly
                 ? orderMessageSettings.UserAssociatedServiceTemplateId
                 : orderMessageSettings.UserTemplateId;
+
+            var userEmail = dbContext.Users.First(x => x.Id == userId).Email;
 
             await Task.WhenAll(
                 emailService.SendEmailAsync(orderMessageSettings.Recipient.Address, templateId, adminTokens),

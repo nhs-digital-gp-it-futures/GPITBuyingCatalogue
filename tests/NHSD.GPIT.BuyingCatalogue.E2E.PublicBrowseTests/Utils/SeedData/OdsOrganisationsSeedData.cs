@@ -224,6 +224,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
         }
 
         private static string GetRandomOrgId() =>
-            $"{Alphabet[Random.Next(Alphabet.Length)]}{Random.Next(10, 100000000)}";
+            Guid.NewGuid().ToString();
     }
 }

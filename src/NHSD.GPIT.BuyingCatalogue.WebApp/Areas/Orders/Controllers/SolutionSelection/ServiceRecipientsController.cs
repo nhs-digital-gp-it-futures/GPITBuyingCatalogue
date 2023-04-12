@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -27,19 +26,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         private readonly IOrderItemService orderItemService;
         private readonly IOrderService orderService;
         private readonly IRoutingService routingService;
+        private readonly IOrganisationsService organisationsService;
 
         public ServiceRecipientsController(
             IOdsService odsService,
             IOrderItemService orderItemService,
             IOrderItemRecipientService orderItemRecipientService,
             IOrderService orderService,
-            IRoutingService routingService)
+            IRoutingService routingService,
+            IOrganisationsService organisationsService)
         {
             this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
             this.orderItemService = orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
             this.orderItemRecipientService = orderItemRecipientService ?? throw new ArgumentNullException(nameof(orderItemRecipientService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.routingService = routingService ?? throw new ArgumentNullException(nameof(routingService));
+            this.organisationsService =
+                organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
         }
 
         [HttpGet("add")]
@@ -52,6 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             string recipientIds = null,
             string importedRecipients = null)
         {
+            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
             var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
             var order = wrapper.Order;
             var orderItem = order.OrderItem(catalogueItemId);
@@ -65,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 order,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
 
-            var model = new SelectRecipientsModel(orderItem, previousItem, serviceRecipients, selectionMode, splitImportedRecipients)
+            var model = new SelectRecipientsModel(organisation, orderItem, previousItem, serviceRecipients, selectionMode, splitImportedRecipients)
             {
                 BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
                 InternalOrgId = internalOrgId,
@@ -126,6 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             string recipientIds = null,
             string importedRecipients = null)
         {
+            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
             var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
             var order = wrapper.Order;
             var orderItem = order.OrderItem(catalogueItemId);
@@ -139,7 +144,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 order,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
 
-            var model = new SelectRecipientsModel(orderItem, previousItem, serviceRecipients, selectionMode, splitImportedRecipients)
+            var model = new SelectRecipientsModel(organisation, orderItem, previousItem, serviceRecipients, selectionMode, splitImportedRecipients)
             {
                 BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
                 InternalOrgId = internalOrgId,
@@ -183,7 +188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var odsCodes = model.GetServiceRecipients()?
                 .Where(x => x.Selected)
                 .Select(x => x.OdsCode)
-                .ToList() ?? new List<string>();
+                .ToList() ?? Enumerable.Empty<string>().ToList();
 
             if (!odsCodes.Any())
             {
@@ -214,7 +219,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var order = wrapper.RolledUp;
             var catalogueItem = order.OrderItem(catalogueItemId).CatalogueItem;
             var serviceRecipients = await GetServiceRecipients(internalOrgId);
-            var selectedRecipientIds = recipientIds?.Split(Separator, StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>();
+            var selectedRecipientIds = recipientIds?.Split(Separator, StringSplitOptions.RemoveEmptyEntries) ?? Enumerable.Empty<string>();
 
             var selected = serviceRecipients
                 .Where(x => selectedRecipientIds.Contains(x.OdsCode))
@@ -223,12 +228,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var previouslySelectedIds = wrapper.Previous?.OrderItem(catalogueItemId)
                 ?.OrderItemRecipients.Select(x => x.OdsCode)
-                .ToList() ?? new List<string>();
+                .ToList() ?? Enumerable.Empty<string>();
 
             var previouslySelected = serviceRecipients
                 .Where(x => previouslySelectedIds.Contains(x.OdsCode))
                 .Select(x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OdsCode, Location = x.Location })
-                .ToList() ?? new List<ServiceRecipientModel>();
+                .ToList();
 
             var route = routingService.GetRoute(
                 RoutingPoint.ConfirmServiceRecipientsBackLink,
@@ -240,7 +245,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     Source = source,
                 });
 
-            var model = new ConfirmChangesModel
+            var model = new ConfirmChangesModel(order.OrderingParty)
             {
                 BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
                 Caption = catalogueItem.Name,
