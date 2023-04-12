@@ -135,6 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public async Task<OrderWrapper> GetOrderWithOrderItemsForFunding(CallOffId callOffId, string internalOrgId)
         {
             var orders = await dbContext.Orders
+                .Include(x => x.OrderingParty)
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.CatalogueItem)
                 .Include(o => o.OrderItems)
@@ -429,6 +430,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.OrderItems)
                     .ThenInclude(oi => oi.OrderItemFunding)
                 .Include(o => o.SelectedFramework)
+                .Include(o => o.OrderingParty)
                 .AsSplitQuery()
                 .FirstAsync(o => o.OrderNumber == callOffId.OrderNumber
                     && o.Revision == callOffId.Revision
