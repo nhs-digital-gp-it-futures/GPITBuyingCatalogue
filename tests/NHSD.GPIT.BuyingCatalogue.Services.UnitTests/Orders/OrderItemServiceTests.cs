@@ -12,6 +12,7 @@ using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.Services.Orders;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -368,6 +369,141 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
                 actual.Should().NotBeNull();
             });
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task DetectChangesInFundingAndDelete_NotReadyForReview_OrderItemFundingUnchanged(
+            Order order,
+            OrderItemFunding funding,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderItemService orderItemService)
+        {
+            var item = order.OrderItems.First();
+            item.OrderItemFunding = funding;
+            item.OrderItemRecipients = null;
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            await orderItemService.DetectChangesInFundingAndDelete(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId);
+            var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
+            actual!.OrderItemFunding.Should().BeEquivalentTo(funding);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task DetectChangesInFundingAndDelete_LocalFundingOnly_FrameworkLocalFundingOnly_OrderItemFundingUnchanged(
+            Order order,
+            OrderItemFunding funding,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderItemService orderItemService)
+        {
+            var item = order.OrderItems.First();
+            funding.OrderItemFundingType = OrderItemFundingType.LocalFundingOnly;
+            item.OrderItemFunding = funding;
+
+            order.OrderingParty.OrganisationType = OrganisationType.IB;
+            order.SelectedFramework.LocalFundingOnly = true;
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            await orderItemService.DetectChangesInFundingAndDelete(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId);
+
+            var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
+
+            actual!.OrderItemFunding.Should().BeEquivalentTo(funding);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task DetectChangesInFundingAndDelete_LocalFundingOnly_GPPRactice_OrderItemFundingUnchanged(
+            Order order,
+            OrderItemFunding funding,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderItemService orderItemService)
+        {
+            var item = order.OrderItems.First();
+            funding.OrderItemFundingType = OrderItemFundingType.LocalFundingOnly;
+            item.OrderItemFunding = funding;
+
+            order.OrderingParty.OrganisationType = OrganisationType.GP;
+            order.SelectedFramework.LocalFundingOnly = false;
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            await orderItemService.DetectChangesInFundingAndDelete(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId);
+
+            var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
+
+            actual!.OrderItemFunding.Should().BeEquivalentTo(funding);
+        }
+
+        [Theory]
+        [InMemoryDbInlineAutoData(OrderItemFundingType.CentralFunding)]
+        [InMemoryDbInlineAutoData(OrderItemFundingType.LocalFunding)]
+        [InMemoryDbInlineAutoData(OrderItemFundingType.MixedFunding)]
+        [InMemoryDbInlineAutoData(OrderItemFundingType.NoFundingRequired)]
+        [InMemoryDbInlineAutoData(OrderItemFundingType.None)]
+        public static async Task DetectChangesInFundingAndDelete_FundingTypeChanged_FrameworkLocalFundingOnly_OrderItemFundingNull(
+            OrderItemFundingType fundingType,
+            Order order,
+            OrderItemFunding funding,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderItemService orderItemService)
+        {
+            var item = order.OrderItems.First();
+            funding.OrderItemFundingType = fundingType;
+            item.OrderItemFunding = funding;
+
+            order.OrderingParty.OrganisationType = OrganisationType.IB;
+            order.SelectedFramework.LocalFundingOnly = true;
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            await orderItemService.DetectChangesInFundingAndDelete(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId);
+
+            var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
+
+            actual!.OrderItemFunding.Should().BeNull();
+        }
+
+        [Theory]
+        [InMemoryDbInlineAutoData(OrderItemFundingType.CentralFunding)]
+        [InMemoryDbInlineAutoData(OrderItemFundingType.LocalFunding)]
+        [InMemoryDbInlineAutoData(OrderItemFundingType.MixedFunding)]
+        [InMemoryDbInlineAutoData(OrderItemFundingType.NoFundingRequired)]
+        [InMemoryDbInlineAutoData(OrderItemFundingType.None)]
+        public static async Task DetectChangesInFundingAndDelete_FundingTypeChanged_GPPRactice_OrderItemFundingNull(
+            OrderItemFundingType fundingType,
+            Order order,
+            OrderItemFunding funding,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderItemService orderItemService)
+        {
+            var item = order.OrderItems.First();
+            funding.OrderItemFundingType = fundingType;
+            item.OrderItemFunding = funding;
+
+            order.OrderingParty.OrganisationType = OrganisationType.GP;
+            order.SelectedFramework.LocalFundingOnly = false;
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            await orderItemService.DetectChangesInFundingAndDelete(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId);
+
+            var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
+
+            actual!.OrderItemFunding.Should().BeNull();
         }
 
         [Theory]
