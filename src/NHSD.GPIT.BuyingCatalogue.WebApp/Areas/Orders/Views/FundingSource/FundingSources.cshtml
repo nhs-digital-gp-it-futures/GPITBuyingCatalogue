@@ -2,7 +2,6 @@
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 @using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.FundingSource
-@using static NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags.NhsTagsTagHelper
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources.FundingSources
 @{
     ViewBag.Title = Model.Title;
@@ -40,10 +39,6 @@
                                  new { Model.InternalOrgId, Model.CallOffId })">Change framework</a>
                 </p>
             </nhs-inset-text>
-        }
-        else
-        {
-            <p>You’re procuring these items from the @(Model.SelectedFramework.ShortName) framework.</p>
         }
 
         @if (Model.OrderItemsSelectable != null && Model.OrderItemsSelectable.Any())
