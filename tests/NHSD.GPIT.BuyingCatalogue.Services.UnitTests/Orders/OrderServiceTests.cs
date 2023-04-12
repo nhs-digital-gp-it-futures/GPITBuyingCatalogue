@@ -593,5 +593,57 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             (await context.Orders.FirstAsync(x => x.Id == order.Id)).SolutionId.Should().Be(solutionId);
         }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SetFundingSourceForForceFundedItems_FrameworkLocalFundingOnly_UpdatesDatabase(
+            Order order,
+            OrderItem orderItem,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            order.SelectedFramework.LocalFundingOnly = true;
+            orderItem.OrderItemFunding = null;
+            order.OrderItems = new List<OrderItem>() { orderItem };
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            await service.SetFundingSourceForForceFundedItems(order.OrderingParty.InternalIdentifier, order.CallOffId);
+
+            var result = await context.Orders.FirstAsync(x => x.Id == order.Id);
+            var orderItemFunding = result.OrderItems.First().OrderItemFunding;
+            orderItemFunding.Should().NotBeNull();
+            orderItemFunding.OrderId.Should().Be(order.Id);
+            orderItemFunding.CatalogueItemId.Should().Be(orderItem.CatalogueItemId);
+            orderItemFunding.OrderItemFundingType.Should().Be(OrderItemFundingType.LocalFundingOnly);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SetFundingSourceForForceFundedItems_GpPractice_UpdatesDatabase(
+            Order order,
+            Organisation organisation,
+            OrderItem orderItem,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            organisation.OrganisationType = OrganisationType.GP;
+            order.OrderingParty = organisation;
+            orderItem.OrderItemFunding = null;
+            order.OrderItems = new List<OrderItem>() { orderItem };
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            await service.SetFundingSourceForForceFundedItems(order.OrderingParty.InternalIdentifier, order.CallOffId);
+
+            var result = await context.Orders.FirstAsync(x => x.Id == order.Id);
+            var orderItemFunding = result.OrderItems.First().OrderItemFunding;
+            orderItemFunding.Should().NotBeNull();
+            orderItemFunding.OrderId.Should().Be(order.Id);
+            orderItemFunding.CatalogueItemId.Should().Be(orderItem.CatalogueItemId);
+            orderItemFunding.OrderItemFundingType.Should().Be(OrderItemFundingType.LocalFundingOnly);
+        }
     }
 }
