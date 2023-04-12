@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             return (organisation.Id, null);
         }
 
-        public async Task UpdateCcgOrganisation(OdsOrganisation organisation)
+        public async Task UpdateOrganisation(OdsOrganisation organisation)
         {
             if (organisation == null)
             {
@@ -85,7 +85,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
             existing.Name = organisation.OrganisationName;
             existing.Address = organisation.Address;
-            existing.PrimaryRoleId = organisation.PrimaryRoleId;
 
             await dbContext.SaveChangesAsync();
         }

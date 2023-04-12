@@ -7,6 +7,7 @@ using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
@@ -54,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             var selectedFramework = await dbContext.Frameworks.FirstAsync(f => f.Id == frameworkId);
 
-            if (selectedFramework.LocalFundingOnly != order.SelectedFramework.LocalFundingOnly)
+            if (selectedFramework.LocalFundingOnly != order.SelectedFramework.LocalFundingOnly && order.OrderingParty.OrganisationType != OrganisationType.GP)
             {
                 order.OrderItems.Where(oi => oi.OrderItemFunding != null).ForEach(oi =>
                 {
