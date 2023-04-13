@@ -33,12 +33,6 @@ jobs:
           version: $(dotnetVersion)
           includePreviewVersions: false
 
-      - task: UseDotNet@2
-        displayName: 'Use DotNet 6.x'
-        inputs:
-          version: '6.x'
-          includePreviewVersions: false
-
       - task: DotNetCoreCLI@2
         displayName: Build solution
         inputs:
