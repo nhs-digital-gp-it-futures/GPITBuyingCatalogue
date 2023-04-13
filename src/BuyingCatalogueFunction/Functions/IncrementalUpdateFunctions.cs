@@ -1,11 +1,10 @@
 ﻿using System;
+using System.Net;
 using System.Threading.Tasks;
-using System.Web.Http;
 using BuyingCatalogueFunction.Services.IncrementalUpdate.Interfaces;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 
 namespace BuyingCatalogueFunction.Functions
@@ -23,11 +22,13 @@ namespace BuyingCatalogueFunction.Functions
             _incrementalUpdateService = incrementalUpdateService ?? throw new ArgumentNullException(nameof(incrementalUpdateService));
         }
 
-        [FunctionName(nameof(IncrementalUpdateHttpTrigger))]
-        public async Task<IActionResult> IncrementalUpdateHttpTrigger(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest request)
+        [Function(nameof(IncrementalUpdateHttpTrigger))]
+        public async Task<HttpResponseData> IncrementalUpdateHttpTrigger(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequestData req)
         {
             _logger.LogInformation("HTTP-triggered incremental update starting at {Date}", DateTime.Now);
+
+            HttpResponseData response;
 
             try
             {
@@ -35,17 +36,19 @@ namespace BuyingCatalogueFunction.Functions
 
                 _logger.LogInformation("HTTP-triggered incremental update completed at {Date}", DateTime.Now);
 
-                return new OkResult();
+                response = req.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception e)
             {
                 _logger.LogError("Error occurred while processing request. {Exception}", e);
 
-                return new InternalServerErrorResult();
+                response = req.CreateResponse(HttpStatusCode.InternalServerError);
             }
+
+            return response;
         }
 
-        [FunctionName(nameof(IncrementalUpdateTimerTrigger))]
+        [Function(nameof(IncrementalUpdateTimerTrigger))]
         public async Task IncrementalUpdateTimerTrigger(
             [TimerTrigger("0 0 4 * * *")] TimerInfo info)
         {
