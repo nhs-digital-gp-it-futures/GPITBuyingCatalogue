@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.IO.Compression;
 using System.Threading.Tasks;
 using Azure.Core.Extensions;
@@ -38,6 +39,7 @@ using Notify.Interfaces;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp
 {
+    [ExcludeFromCodeCoverage]
     public static class ServiceCollectionExtensions
     {
         private const int DefaultSessionTimeout = 60;
@@ -111,10 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.AddSingleton(odsSettings);
 
-            if (odsSettings.UseTrud)
-                services.AddScoped<IOdsService, TrudOdsService>();
-            else
-                services.AddScoped<IOdsService, OdsService>();
+            services.AddScoped<IOdsService, TrudOdsService>();
         }
 
         public static void ConfigureDbContexts(this IServiceCollection services, IConfiguration configuration)

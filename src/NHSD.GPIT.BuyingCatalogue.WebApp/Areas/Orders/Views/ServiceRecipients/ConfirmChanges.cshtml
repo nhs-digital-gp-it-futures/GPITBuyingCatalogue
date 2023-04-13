@@ -1,4 +1,8 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.ServiceRecipients.ConfirmChangesModel;
+﻿@using System.Linq
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.DetailsAndExpander
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.HiddenInputs
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.ServiceRecipients.ConfirmChangesModel;
 @{
     ViewBag.Title = Model.Title;
 }
@@ -9,9 +13,6 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
         <nhs-page-title model="Model" />
-        
-        <h3>Selected Service Recipients</h3>
-        <p>You've selected @Model.Selected.Count Service @PluralOrSingular(Model.Selected.Count)</p>
 
         <form method="post">
             <hidden-inputs title="Title" caption="Caption" advice="Advice"/>
@@ -20,14 +21,28 @@
             <input type="hidden" asp-for="Source" />
             
             <div id="selected-service-recipients">
-                <ul>
-                    @foreach (var (recipient, index) in Model.Selected.Select((x, i) => (x, i)))
-                    {
-                        <input type="hidden" asp-for="Selected[index].Name"/>
-                        <input type="hidden" asp-for="Selected[index].OdsCode"/>
-                        <li>@recipient.Description</li>
-                    }
-                </ul>
+                
+                @foreach (var location in Model.Selected.GroupBy(x => x.Location))
+                {
+                    var count = location.Count();
+                    <nhs-expander
+                        label-text="@location.Key"
+                        open="true"
+                        bold-title="true">
+                        <p>You've selected @count.ToString() Service @PluralOrSingular(count)</p>
+                        <ul>
+                            @foreach (var item in location)
+                            {
+                                var index = Model.Selected.FindIndex(x => x.OdsCode.Contains(item.OdsCode));
+
+                                <input type="hidden" asp-for="@Model.Selected[index].Name"/>
+                                <input type="hidden" asp-for="@Model.Selected[index].OdsCode"/>
+                                <li>@item.Description</li>
+                            }
+                        </ul>
+
+                    </nhs-expander>
+                }
             </div>
 
             <div class="nhsuk-u-margin-top-6">
@@ -45,14 +60,25 @@
                         <p>
                             The original order had @Model.PreviouslySelected.Count Service @PluralOrSingular(Model.PreviouslySelected.Count)
                         </p>
-                        <ul>
-                            @foreach (var (recipient, index) in Model.PreviouslySelected.Select((x, i) => (x, i)))
-                            {
-                                <input type="hidden" asp-for="PreviouslySelected[index].Name"/>
-                                <input type="hidden" asp-for="PreviouslySelected[index].OdsCode"/>
-                                <li>@recipient.Description</li>
-                            }
-                        </ul>
+
+                        @foreach (var location in Model.PreviouslySelected.GroupBy(x => x.Location))
+                        {
+                            <nhs-expander 
+                                label-text="@location.Key"
+                                open="false"
+                                bold-title="true">
+                                    <ul>
+                                        @foreach (var item in location)
+                                        {
+                                            var index = Model.PreviouslySelected.FindIndex(x => x.OdsCode.Contains(item.OdsCode));
+                                            
+                                            <input type="hidden" asp-for="@Model.PreviouslySelected[index].Name"/>
+                                            <input type="hidden" asp-for="@Model.PreviouslySelected[index].OdsCode" />
+                                            <li>@item.Description</li>
+                                        }
+                                    </ul>
+                            </nhs-expander>
+                        }
                     </nhs-details>
                 </div>
             }

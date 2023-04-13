@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             var bobOrganisation = new Organisation
             {
                 Id = 1,
-                Name = "NHS Digital",
+                Name = "NHS ENGLAND - X26",
                 Address = new Address
                 {
                     Line1 = "1 TREVELYAN SQUARE",

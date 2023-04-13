@@ -19,10 +19,6 @@ public class TrudOdsService : IOdsService
     internal const string InvalidOrganisationError = "Organisation not found";
     internal const string InvalidOrgTypeError = "Not a buyer organisation";
     internal const string InvalidIdExceptionMessage = "Invalid ODS Code specified";
-    internal const string RelationshipType = "RE4";
-
-    private const string ActiveStatus = "Active";
-    private const string InactiveStatus = "Inactive";
 
     private readonly OdsSettings settings;
     private readonly BuyingCatalogueDbContext context;
@@ -65,23 +61,28 @@ public class TrudOdsService : IOdsService
         if (organisation is null)
             throw new ArgumentException(InvalidIdExceptionMessage, nameof(internalIdentifier));
 
-        var odsCode = organisation.ExternalIdentifier;
+        var subLocations = await context.OrganisationRelationships
+            .AsNoTracking()
+            .Where(x => x.OwnerOrganisationId == organisation.ExternalIdentifier
+                && x.RelationshipTypeId == settings.InGeographyOfRelType
+                && x.TargetOrganisation.IsActive
+                && x.TargetOrganisation.Roles.Any(y => y.RoleId == settings.SubLocationRoleId))
+            .Select(x => x.TargetOrganisation.Id)
+            .ToListAsync();
 
-        var serviceRecipients = await context
-            .OrganisationRelationships
-            .Include(x => x.TargetOrganisation)
+        var serviceRecipients = await context.OrganisationRelationships.AsNoTracking()
             .Where(
-                x =>
-                    x.RelationshipTypeId == RelationshipType
-                    && x.OwnerOrganisationId == odsCode
-                    && x.TargetOrganisation.Roles.Any(y => y.IsPrimaryRole && y.RoleId == settings.GpPracticeRoleId))
+                x => subLocations.Contains(x.OwnerOrganisationId)
+                    && x.TargetOrganisation.IsActive
+                    && x.RelationshipTypeId == settings.IsCommissionedByRelType
+                    && x.TargetOrganisation.Roles.Any(y => y.RoleId == settings.GpPracticeRoleId))
             .Select(
                 x => new ServiceRecipient
                 {
                     Name = x.TargetOrganisation.Name,
                     OrgId = x.TargetOrganisationId,
                     PrimaryRoleId = x.TargetOrganisation.Roles.FirstOrDefault(y => y.IsPrimaryRole).RoleId,
-                    Status = x.TargetOrganisation.IsActive ? ActiveStatus : InactiveStatus,
+                    Location = x.OwnerOrganisation.Name,
                 })
             .ToListAsync();
 
@@ -130,6 +131,11 @@ public class TrudOdsService : IOdsService
     private static string GetPrimaryRoleId(EntityFramework.OdsOrganisations.Models.OdsOrganisation organisation) =>
         organisation.Roles.FirstOrDefault(x => x.IsPrimaryRole)?.RoleId;
 
-    private bool IsBuyerOrganisation(EntityFramework.OdsOrganisations.Models.OdsOrganisation organisation) =>
-        settings.BuyerOrganisationRoleIds.Contains(GetPrimaryRoleId(organisation));
+    private static bool HasSecondaryRole(EntityFramework.OdsOrganisations.Models.OdsOrganisation organisation, string roleId) =>
+        organisation.Roles.Any(x => !x.IsPrimaryRole && x.RoleId == roleId);
+
+    private bool IsBuyerOrganisation(EntityFramework.OdsOrganisations.Models.OdsOrganisation organisation)
+    {
+        return HasSecondaryRole(organisation, settings.IcbRoleId) || settings.BuyerOrganisationRoleIds.Contains(GetPrimaryRoleId(organisation));
+    }
 }

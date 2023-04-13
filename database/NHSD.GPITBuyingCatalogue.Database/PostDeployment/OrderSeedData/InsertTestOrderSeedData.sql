@@ -3,15 +3,15 @@ BEGIN
     -- get sue from the db
     DECLARE @sueId INT,
     @OrderingParty INT;
-    SELECT 
+    SELECT
         @sueId = Id,
         @OrderingParty = PrimaryOrganisationId
-    FROM 
+    FROM
         users.AspNetUsers
-    WHERE 
+    WHERE
         UserName = 'SueSmith@email.com';
 
-    DECLARE 
+    DECLARE
         @OrderStatus INT = 2,
         @SupplierId INT = 99999, --notEmis Health,
         @CatalogueSolutionId NVARCHAR(14) = '99999-89', --NotEmis Web GP
@@ -36,7 +36,7 @@ BEGIN
     -- Insert Sue and Supplier Contacts
     -------------------------------------------------------
 
-    INSERT INTO @TestOrdersContacts 
+    INSERT INTO @TestOrdersContacts
     VALUES
     (
         1, --Buyer Contact
@@ -63,12 +63,12 @@ BEGIN
     -- Insert Orders
     -------------------------------------------------------
 
-    
+
     -------------------------------------------------------
     --Order with description
     -------------------------------------------------------
 
-    INSERT INTO ordering.Orders 
+    INSERT INTO ordering.Orders
     (OrderNumber, Revision, Description, OrderingPartyId, Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted, AssociatedServicesOnly)
     VALUES
     (
@@ -82,7 +82,7 @@ BEGIN
     @OrderStatus,
     0,
     @AssociatedServicesOnly);
-    
+
     -------------------------------------------------------
     --Order with description and ordering party contact
     -------------------------------------------------------
@@ -95,7 +95,7 @@ BEGIN
 
     SELECT @LastBuyerContactId = IDENT_CURRENT('ordering.Contacts');
 
-    INSERT INTO ordering.Orders 
+    INSERT INTO ordering.Orders
     (OrderNumber, Revision, Description, OrderingPartyId, OrderingPartyContactId, Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted, AssociatedServicesOnly)
     VALUES
     (
@@ -110,7 +110,7 @@ BEGIN
     @OrderStatus,
     0,
     @AssociatedServicesOnly);
-    
+
     -------------------------------------------------------
     --Order with description, ordering party contact and supplier with it's contact
     -------------------------------------------------------
@@ -131,7 +131,7 @@ BEGIN
 
     SELECT @LastSupplierContactId = IDENT_CURRENT('ordering.Contacts');
 
-    INSERT INTO ordering.Orders 
+    INSERT INTO ordering.Orders
     (OrderNumber, Revision, Description, OrderingPartyId, OrderingPartyContactId, SupplierId, SupplierContactId,
         Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted, AssociatedServicesOnly)
     VALUES
@@ -148,7 +148,7 @@ BEGIN
     @sueId,
     @OrderStatus,
     0,
-    @AssociatedServicesOnly);    
+    @AssociatedServicesOnly);
 
     -------------------------------------------------------
     --Order with description, ordering party contact, supplier with it's contact and timescales
@@ -170,7 +170,7 @@ BEGIN
 
     SELECT @LastSupplierContactId = IDENT_CURRENT('ordering.Contacts');
 
-    INSERT INTO ordering.Orders 
+    INSERT INTO ordering.Orders
     (OrderNumber, Revision, Description, OrderingPartyId, OrderingPartyContactId, SupplierId, SupplierContactId, CommencementDate,
         Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted, InitialPeriod, MaximumTerm, AssociatedServicesOnly)
     VALUES
@@ -216,7 +216,7 @@ BEGIN
 
     SELECT @LastSupplierContactId = IDENT_CURRENT('ordering.Contacts');
 
-    INSERT INTO ordering.Orders 
+    INSERT INTO ordering.Orders
     (OrderNumber, Revision, Description, OrderingPartyId, OrderingPartyContactId, SupplierId, SupplierContactId, CommencementDate,
         Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted, InitialPeriod, MaximumTerm, AssociatedServicesOnly)
         OUTPUT INSERTED.Id INTO @OrderIdCatSolAdditional (Id)
@@ -245,10 +245,10 @@ BEGIN
 	--insert service recipients
 	INSERT INTO ordering.ServiceRecipients (OdsCode, Name)
 	VALUES
-	('Y00427', 'Service Recipient 1'),
-	('Y03450', 'Service Recipient 2'),
-	('Y03508', 'Service Recipient 3'),
-	('Y04461', 'Service Recipient 4');
+	('B84007','BRIG ROYD SURGERY'),
+	('B84016','BANKFIELD SURGERY'),
+	('B84613','BEECHWOOD MEDICAL CENTRE'),
+	('Y02572', 'CALDER COMMUNITY PRACTICE');
 
     --insert cat sol
 
@@ -287,10 +287,10 @@ BEGIN
 
     INSERT INTO ordering.OrderItemRecipients (OrderId, CatalogueItemId, OdsCode, Quantity)
     VALUES
-    (@OrderId, @CatalogueSolutionId, 'Y00427', 123),
-    (@OrderId, @CatalogueSolutionId, 'Y03450', 234),
-    (@OrderId, @CatalogueSolutionId, 'Y03508', 345),
-    (@OrderId, @CatalogueSolutionId, 'Y04461', 456);
+    (@OrderId, @CatalogueSolutionId, 'B84007', 123),
+    (@OrderId, @CatalogueSolutionId, 'B84016', 234),
+    (@OrderId, @CatalogueSolutionId, 'B84613', 345),
+    (@OrderId, @CatalogueSolutionId, 'Y02572', 456);
 
     --insert add ser
 
@@ -328,10 +328,10 @@ BEGIN
 
     INSERT INTO ordering.OrderItemRecipients (OrderId, CatalogueItemId, OdsCode, Quantity)
     VALUES
-    (@OrderId, @AdditionalServiceId, 'Y00427', 123),
-    (@OrderId, @AdditionalServiceId, 'Y03450', 234),
-    (@OrderId, @AdditionalServiceId, 'Y03508', 345),
-    (@OrderId, @AdditionalServiceId, 'Y04461', 456);
+    (@OrderId, @AdditionalServiceId, 'B84007', 123),
+    (@OrderId, @AdditionalServiceId, 'B84016', 234),
+    (@OrderId, @AdditionalServiceId, 'B84613', 345),
+    (@OrderId, @AdditionalServiceId, 'Y02572', 456);
 
     UPDATE ordering.Orders SET OrderNumber = Id
 END
