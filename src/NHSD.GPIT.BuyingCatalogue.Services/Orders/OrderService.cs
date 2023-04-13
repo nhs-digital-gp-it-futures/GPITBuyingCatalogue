@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -167,6 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return new OrderWrapper(orders);
         }
 
+        [ExcludeFromCodeCoverage(Justification = "Method uses Temporal tables which the In-Memory provider doesn't support.")]
         public async Task<OrderWrapper> GetOrderForSummary(CallOffId callOffId, string internalOrgId)
         {
             var orders = await dbContext.Orders
@@ -311,6 +313,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return order;
         }
 
+        [ExcludeFromCodeCoverage(Justification = "Method indirectly uses Temporal tables which the In-Memory provider doesn't support.")]
         public async Task<Order> AmendOrder(string internalOrgId, CallOffId callOffId)
         {
             var order = (await GetOrderForSummary(callOffId, internalOrgId)).Order;
