@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
 
             var completedOrderItems = order.OrderItems.Where(oi => oi.AllQuantitiesEntered).ToList();
 
-            if (order.SelectedFramework.LocalFundingOnly || order.OrderingParty.OrganisationType == OrganisationType.GP)
+            if (order.IsLocalFundingOnly)
             {
                 OrderItemsLocalOnly = completedOrderItems.Where(oi => oi.OrderItemPrice.CalculateTotalCost(oi.TotalQuantity) != 0).ToList();
             }
