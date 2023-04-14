@@ -631,8 +631,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         public void AmendSolutionsAndServices(string solutionName, IEnumerable<string>? additionalServices, IEnumerable<string>? associatedServices, bool multipleServiceRecipients = false, bool importServiceRecipients = false, string fileName = "")
         {
+            var orderId = OrderID();
+
             TaskList.AmendSolutionAndServicesTask();
-            SelectEditCatalogueSolution.SelectSolution(solutionName, additionalServices);
+
+            SelectEditCatalogueSolutionServiceRecipients.AmendEditCatalogueSolutionServiceRecipient(solutionName);
+            ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
+            SelectEditAndConfirmPrices.AmendViewAndConfirmPrice();
+            Quantity.AddQuantity();
+            PlannedDeliveryDates.AmendPlannedDeliveryDate(solutionName);
         }
 
         private bool IsAssociatedServiceOnlyOrder(int orderId)

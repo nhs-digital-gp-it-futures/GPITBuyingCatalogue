@@ -46,6 +46,19 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             CommonActions.ClickSave();
         }
 
+        public void AmendEditCatalogueSolutionServiceRecipient(string solutionName)
+        {
+            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemServiceRecipientLink(GetCatalogueSolutionID(solutionName)));
+
+            CommonActions.PageLoadedCorrectGetIndex(
+              typeof(ServiceRecipientsController),
+              nameof(ServiceRecipientsController.EditServiceRecipients)).Should().BeTrue();
+
+            CommonActions.ClickFirstCheckbox();
+
+            CommonActions.ClickSave();
+        }
+
         private string GetCatalogueSolutionID(string solutionName)
         {
             using var dbContext = Factory.DbContext;
