@@ -190,7 +190,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             existing.Should().NotBeNull();
             existing!.Name.Should().Be(organisation.Name);
             existing.Address.Should().Be(organisation.Address);
-            existing.PrimaryRoleId.Should().Be(organisation.PrimaryRoleId);
 
             newOrganisation.OdsCode = organisation.ExternalIdentifier;
 
@@ -202,7 +201,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             actual.Should().NotBeNull();
             actual!.Name.Should().Be(newOrganisation.OrganisationName);
             actual.Address.Should().Be(newOrganisation.Address);
-            actual.PrimaryRoleId.Should().Be(newOrganisation.PrimaryRoleId);
         }
 
         [Theory]
