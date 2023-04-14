@@ -14,6 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.Services.Organisations;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NuGet.Configuration;
 using Xunit;
 using OdsOrganisation = NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations.OdsOrganisation;
 
@@ -131,6 +132,32 @@ public class TrudOdsServiceTests
         service.Invoking(x => x.GetServiceRecipientsByParentInternalIdentifier(internalIdentifier))
             .Should()
             .ThrowAsync<ArgumentException>(TrudOdsService.InvalidIdExceptionMessage);
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task GetServiceRecipientsByParentInternalIdentifier_GPPractice_ReturnsItself(
+        Organisation organisation,
+        [Frozen] BuyingCatalogueDbContext context,
+        OdsSettings settings,
+        IOrganisationsService orgService,
+        ILogger<TrudOdsService> logger)
+    {
+        organisation.PrimaryRoleId = settings.GetPrimaryRoleId(OrganisationType.GP);
+
+        context.Add(organisation);
+        await context.SaveChangesAsync();
+
+        var service = new TrudOdsService(settings, context, orgService, logger);
+        var results = (await service.GetServiceRecipientsByParentInternalIdentifier(organisation.InternalIdentifier))
+            .ToList();
+
+        results.Should().NotBeEmpty();
+        results.Should().HaveCount(1);
+        results.First().Name.Should().Be(organisation.Name);
+        results.First().OrgId.Should().Be(organisation.ExternalIdentifier);
+        results.First().PrimaryRoleId.Should().Be(organisation.PrimaryRoleId);
+        results.First().Location.Should().Be("GP Practice");
+    }
 
     [Theory]
     [InMemoryDbAutoData]
