@@ -86,7 +86,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             result.SelectedFramework.Should().BeEquivalentTo(selectedFramework);
         }
 
-
         [Theory]
         [InMemoryDbInlineAutoData(true)]
         [InMemoryDbInlineAutoData(false)]
