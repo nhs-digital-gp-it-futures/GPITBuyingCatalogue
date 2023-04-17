@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
         {
             if (catalogueItemId is null)
             {
-                return new List<CatalogueItem>();
+                return Enumerable.Empty<CatalogueItem>().ToList();
             }
 
             return await dbContext.SupplierServiceAssociations
@@ -114,11 +114,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
             await dbContext.SaveChangesAsync();
         }
 
+        public async Task RemoveServiceFromSolution(CatalogueItemId solutionId, CatalogueItemId associatedServiceId)
+        {
+            var associatedServiceAssociation = await dbContext.SupplierServiceAssociations.AsNoTracking()
+                .FirstOrDefaultAsync(
+                    x => x.CatalogueItemId == solutionId && x.AssociatedServiceId == associatedServiceId);
+
+            if (associatedServiceAssociation is null) return;
+
+            dbContext.SupplierServiceAssociations.Remove(associatedServiceAssociation);
+            await dbContext.SaveChangesAsync();
+        }
+
         public async Task<List<CatalogueItem>> GetAllSolutionsForAssociatedService(CatalogueItemId associatedServiceId)
             => await dbContext
                 .SupplierServiceAssociations
                 .Where(ssa => ssa.AssociatedServiceId == associatedServiceId)
-                .Select(ssa => ssa.CatalogueItem).ToListAsync();
+                .Select(ssa => ssa.CatalogueItem)
+                .ToListAsync();
 
         public async Task<CatalogueItemId> AddAssociatedService(
             CatalogueItem solution,
