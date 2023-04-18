@@ -1,6 +1,8 @@
 variables:
   - name: buildConfiguration
     value: Release
+  - name: dotnetVersion
+    value: '7.0.203'
 
 trigger:
   branches:
@@ -25,6 +27,12 @@ jobs:
     pool:
       vmImage: "ubuntu-latest"
     steps:
+      - task: UseDotNet@2
+        displayName: 'Use DotNet $(dotnetVersion)'
+        inputs:
+          version: $(dotnetVersion)
+          includePreviewVersions: false
+          
       - task: DotNetCoreCLI@2
         displayName: Build solution
         inputs:

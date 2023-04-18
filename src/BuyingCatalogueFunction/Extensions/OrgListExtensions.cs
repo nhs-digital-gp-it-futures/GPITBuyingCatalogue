@@ -9,7 +9,7 @@ namespace BuyingCatalogueFunction.Extensions
         public static IEnumerable<string> RelatedOrganisationIds(this List<Org> organisations)
         {
             return organisations?
-                .SelectMany(x => x.Rels?.Rel ?? new List<OrgRel>())
+                .SelectMany(x => x.Rels?.Rel ?? Enumerable.Empty<OrgRel>())
                 .Select(x => x.Target.OrgId.extension)
                 .Distinct()
                 .ToList() ?? Enumerable.Empty<string>();

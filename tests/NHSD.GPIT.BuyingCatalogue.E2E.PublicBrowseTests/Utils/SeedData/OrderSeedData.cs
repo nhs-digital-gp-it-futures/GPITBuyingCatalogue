@@ -66,7 +66,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 AddAmendment(context, orders.First(o => o.OrderNumber == 90033), 2),
             };
 
-            context.InsertRangeWithIdentity(amendments);
+            context.AddRange(amendments);
+            context.SaveChanges();
 
             AddOrderItemToOrder(context, 90030, 2, new CatalogueItemId(99998, "001"));
             AddOrderItemToOrder(context, 90031, 1, new CatalogueItemId(99998, "001A99"));
@@ -752,7 +753,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Email = "bat.man@Gotham.Fake",
                     Phone = "123456789",
                 },
-                CommencementDate = timeNow.AddDays(1),
+                CommencementDate = timeNow.AddMonths(1),
                 InitialPeriod = 6,
                 MaximumTerm = 36,
                 SelectedFramework = GetFramework(context, GPITFUTURES),
@@ -1741,7 +1742,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     Phone = "123456789",
                 },
                 SelectedFrameworkId = DFOCVC,
-                CommencementDate = timeNow.AddDays(1),
+                CommencementDate = timeNow.AddMonths(1),
                 InitialPeriod = 6,
                 MaximumTerm = 12,
                 OrderTriageValue = OrderTriageValue.Under40K,
@@ -1846,7 +1847,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
         private static Order AddAmendment(BuyingCatalogueDbContext context, Order order, int revision)
         {
             var user = GetBuyerUser(context, GetOrganisationId(context));
-            var amendedOrder = order.BuidAmendment(revision);
+            var amendedOrder = order.BuildAmendment(revision);
             amendedOrder.LastUpdatedBy = user.Id;
             amendedOrder.Created = DateTime.UtcNow;
             return amendedOrder;

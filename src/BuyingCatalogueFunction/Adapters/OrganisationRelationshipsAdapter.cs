@@ -15,7 +15,7 @@ namespace BuyingCatalogueFunction.Adapters
                 throw new ArgumentNullException(nameof(input));
             }
 
-            var relationships = input.Rels?.Rel ?? new List<OrgRel>();
+            var relationships = input.Rels?.Rel ?? Enumerable.Empty<OrgRel>();
 
             return relationships.Select(x => new OrganisationRelationship
             {

@@ -238,7 +238,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             }
             catch
             {
-                TakeScreenShot(callerMemberName, callerFilePath);
+                TakeScreenshot(callerMemberName, callerFilePath);
                 throw;
             }
         }
@@ -256,7 +256,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
                     (ex, sleepDuration, attempt, context) =>
                     {
                         if (attempt == MaxRetries)
-                            TakeScreenShot(callerMemberName, callerFilePath);
+                            TakeScreenshot(callerMemberName, callerFilePath);
 
                         Driver.Navigate().Refresh();
                         return Task.CompletedTask;
@@ -273,7 +273,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             }
             catch
             {
-                TakeScreenShot(callerMemberName, callerFilePath);
+                TakeScreenshot(callerMemberName, callerFilePath);
                 throw;
             }
         }
@@ -291,7 +291,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
                     (ex, sleepDuration, attempt, context) =>
                     {
                         if (attempt == MaxRetries)
-                            TakeScreenShot(callerMemberName, callerFilePath);
+                            TakeScreenshot(callerMemberName, callerFilePath);
 
                         Driver.Navigate().Refresh();
                     });
@@ -299,23 +299,24 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             policy.Execute(action);
         }
 
-        private void TakeScreenShot(string memberName, string fileName)
+        protected void TakeScreenshot([CallerMemberName] string memberName = "", [CallerFilePath] string fileName = "")
         {
-            var outputFolder = $"{AppContext.BaseDirectory.Substring(0, AppContext.BaseDirectory.IndexOf("bin"))}ScreenShots";
+            var projectDirectory = Directory.GetParent(AppContext.BaseDirectory)!.Parent!.Parent!.Parent!;
+            var outputFolder = Path.Combine(projectDirectory.FullName, "screenshots");
 
             LogMessage($"Writing screenshot to {outputFolder} folder");
 
             if (!Directory.Exists(outputFolder))
                 Directory.CreateDirectory(outputFolder);
 
-            var filePath = $@"{outputFolder}/{Path.GetFileNameWithoutExtension(fileName)}-{memberName}.png";
+            var filePath = Path.Combine(outputFolder, $"{Path.GetFileNameWithoutExtension(fileName)}-{memberName}.png");
 
             LogMessage($"Writing screenshot to {filePath}");
 
             if (File.Exists(filePath))
                 File.Delete(filePath);
 
-            var screenshot = (Driver as ITakesScreenshot).GetScreenshot();
+            var screenshot = ((ITakesScreenshot)Driver).GetScreenshot();
             screenshot.SaveAsFile(filePath);
 
             if (!File.Exists(filePath))

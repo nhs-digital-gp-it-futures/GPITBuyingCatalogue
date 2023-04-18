@@ -407,7 +407,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             Order order = BuildOrder(fixture, maximumTerm, new[] { orderItem }, commencementDate);
 
-            var amendedOrder = order.BuidAmendment(2);
+            var amendedOrder = order.BuildAmendment(2);
             amendedOrder.OrderItems = new HashSet<OrderItem> { amendedOrderItem };
 
             var orderWrapper = new OrderWrapper(new[] { order, amendedOrder });

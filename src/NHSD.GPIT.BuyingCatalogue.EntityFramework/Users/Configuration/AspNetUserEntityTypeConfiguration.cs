@@ -9,7 +9,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Configuration
     {
         public void Configure(EntityTypeBuilder<AspNetUser> builder)
         {
-            builder.ToTable("AspNetUsers", Schemas.Users);
+            builder.ToTable("AspNetUsers", Schemas.Users, b => b.IsTemporal(
+                temp =>
+                {
+                    temp.UseHistoryTable("AspNetUsers_History");
+                    temp.HasPeriodStart("SysStartTime");
+                    temp.HasPeriodEnd("SysEndTime");
+                }));
 
             builder.HasKey(u => u.Id);
             builder.Property(u => u.Id).ValueGeneratedOnAdd();
