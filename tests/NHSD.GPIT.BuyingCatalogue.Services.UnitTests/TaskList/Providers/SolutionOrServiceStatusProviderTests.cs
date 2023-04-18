@@ -193,5 +193,30 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
 
             actual.Should().Be(expectedTaskProgress);
         }
+
+        [Theory]
+        [CommonInlineAutoData(1, TaskProgress.Completed)]
+        [CommonInlineAutoData(2, TaskProgress.InProgress)]
+        public static void Get_SolutionSelected_With_Everything_But_DeliveryDates_Returns_InProgress_For_An_Amendment(
+            int revision,
+            TaskProgress expectedTaskProgress,
+            Order order,
+            SolutionOrServiceStatusProvider service)
+        {
+            var state = new OrderProgress
+            {
+                CommencementDateStatus = TaskProgress.Completed,
+            };
+
+            order.Revision = revision;
+            order.AssociatedServicesOnly = false;
+            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+            order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            order.OrderItems.ForEach(x => x.OrderItemRecipients.ForEach(r => r.DeliveryDate = null));
+
+            var actual = service.Get(new OrderWrapper(order), state);
+
+            actual.Should().Be(expectedTaskProgress);
+        }
     }
 }
