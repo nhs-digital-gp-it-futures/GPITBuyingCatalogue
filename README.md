@@ -11,25 +11,35 @@ Once complete, this will become the single repository required for the Buying Ca
 
 ### Architecture overview
 
-This application uses **.NET 7** to provide a Web Application capable of running on Linux or Windows.
+This application provides a Web Application capable of running on Linux or Windows.
 
 
 ## Setting up your development environment for the Buying Catalogue
 
 ### Requirements
 
-- .NET 7
-- Docker
+- [.NET 7](https://dotnet.microsoft.com/en-us/download/dotnet/7.0)
+- [NodeJS (v17.9.1)](https://nodejs.org/dist/latest-v17.x/node-v17.9.1-x64.msi)
+- [Rancher Desktop](https://rancherdesktop.io/)
 
-> Before you begin please install **.NET 7.0** & **Docker** on your machine.
+**Note**: Docker Desktop can also be used if you'd prefer. However, Docker Desktop frequently has installation or runtime issues that will go un-patched for several versions.
+
+### NodeJS Setup
+
+The latest version of NodeJS has an issue which prevents installation of the required dependencies.
+
+Upon installing v17.9.1, open an elevated command prompt and install the `windows-build-tools` package via `npm install -g windows-build-tools`.
+
+Next, `cd` to `<repository root>/src/NHSD.GPIT.BuyingCatalogue.WebApp` and from there run the following commands. 
+
+1. `npm install`
+2. `npx gulp min`
 
 ## Running the API
 
-### On a Windows Box
+*All scripts are meant to be run in PowerShell from within the repository root directory.*
 
-*All scripts are meant to be run in PowerShell from within this directory.*
-
-To run the application in a container in development environment, run the following script:
+To setup the application prerequisites (Database, test data and Azurite), run the following scripts:
 
 ```powershell
  & '.\docker-build.ps1'
@@ -40,10 +50,7 @@ and then:
  & '.\docker-start.ps1'
 ```
 
-You can now access the docker based Web App in your browser at <http://localhost:8000>.
-
-You can also simply open the solution in Visual Studio and run/debug NHSD.GPIT.BuyingCatalogue.WebApp
-
+Afterwards, open the solution in Visual Studio and run/debug NHSD.GPIT.BuyingCatalogue.WebApp
 
 ## Troubleshooting
 
