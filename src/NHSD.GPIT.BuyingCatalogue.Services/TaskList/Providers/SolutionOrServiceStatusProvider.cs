@@ -66,7 +66,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
                 x.CatalogueItem != null
                 && x.OrderItemPrice != null
                 && (x.OrderItemRecipients?.Any() ?? false)
-                && x.AllQuantitiesEntered);
+                && x.AllQuantitiesEntered)
+                && AllDeliveryDatesEnteredIfRequired(order);
+        }
+
+        private static bool AllDeliveryDatesEnteredIfRequired(EntityFramework.Ordering.Models.Order order)
+        {
+            if (order.IsAmendment)
+            {
+                var recipients = order.OrderItems
+                    .SelectMany(x => x.OrderItemRecipients)
+                    .ToList();
+
+                return recipients.Any()
+                    && recipients.All(x => x.DeliveryDate != null);
+            }
+
+            return true;
         }
     }
 }
