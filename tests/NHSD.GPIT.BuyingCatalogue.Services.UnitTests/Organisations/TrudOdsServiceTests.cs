@@ -267,6 +267,7 @@ public class TrudOdsServiceTests
 
         actual.Should().BeEquivalentTo(TrudOdsService.MapOrganisation(trudOrganisation));
     }
+
     private static void AddRole([Frozen] BuyingCatalogueDbContext context, EntityFramework.OdsOrganisations.Models.OdsOrganisation organisation, RoleType roleType, string roleId, bool isPrimaryRole)
     {
         if (roleId is not null)
