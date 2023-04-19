@@ -88,6 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public async Task<OrderWrapper> GetOrderWithCatalogueItemAndPrices(CallOffId callOffId, string internalOrgId)
         {
             var orders = await dbContext.Orders
+                .Include(x => x.OrderingParty)
                 .Include(x => x.Solution)
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.CatalogueItem)
@@ -99,6 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.OrderItemRecipients)
                     .ThenInclude(r => r.Recipient)
+                .Include(o => o.SelectedFramework)
                 .AsSplitQuery()
                 .Where(o => o.OrderNumber == callOffId.OrderNumber
                     && o.Revision <= callOffId.Revision
@@ -123,6 +125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.OrderItemRecipients.OrderBy(oir => oir.Recipient.Name))
                     .ThenInclude(r => r.Recipient)
+                .Include(o => o.SelectedFramework)
                 .AsSplitQuery()
                 .Where(o => o.OrderNumber == callOffId.OrderNumber
                     && o.Revision <= callOffId.Revision
