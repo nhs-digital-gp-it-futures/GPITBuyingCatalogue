@@ -15,7 +15,7 @@ namespace BuyingCatalogueFunction.Adapters
                 throw new ArgumentNullException(nameof(input));
             }
 
-            var roles = input.Roles?.Role ?? new List<OrgRole>();
+            var roles = input.Roles?.Role ?? Enumerable.Empty<OrgRole>();
 
             return roles.Select(x => new OrganisationRole
             {

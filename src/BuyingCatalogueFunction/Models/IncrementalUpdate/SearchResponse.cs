@@ -11,6 +11,6 @@ namespace BuyingCatalogueFunction.Models.IncrementalUpdate
         public List<string> OrganisationIds => Organisations?
             .Select(x => x.OrgLink.Split("/").Last())
             .Distinct()
-            .ToList() ?? new List<string>();
+            .ToList() ?? Enumerable.Empty<string>().ToList();
     }
 }

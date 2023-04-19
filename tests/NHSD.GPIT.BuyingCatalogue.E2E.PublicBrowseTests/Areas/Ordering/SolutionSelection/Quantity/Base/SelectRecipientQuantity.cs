@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.SolutionSelection.Quantity;
+using OpenQA.Selenium;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Quantity.Base
@@ -17,16 +19,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Qu
     [Collection(nameof(OrderingCollection))]
     public abstract class SelectRecipientQuantity : BuyerTestBase, IDisposable
     {
+        private const int ServiceRecipientIndex = 0;
         private readonly int orderId;
         private readonly CatalogueItemId catalogueItemId;
-        private string serviceRecipientName = "RECIPIENT 0";
 
         protected SelectRecipientQuantity(LocalWebApplicationFactory factory, Dictionary<string, string> parameters)
-            : base(factory, typeof(QuantityController), nameof(QuantityController.SelectServiceRecipientQuantity), parameters)
+            : base(
+                factory,
+                typeof(QuantityController),
+                nameof(QuantityController.SelectServiceRecipientQuantity),
+                parameters)
         {
             orderId = int.Parse(parameters["OrderId"]);
             catalogueItemId = CatalogueItemId.ParseExact(parameters["CatalogueItemId"]);
         }
+
+        private string ServiceRecipientName => GetServiceRecipientName();
 
         protected abstract string PageTitle { get; }
 
@@ -51,73 +59,97 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Qu
         [Fact]
         public void SelectServiceRecipientQuantity_QuantityIsBlank_Error()
         {
-            CommonActions.ClearInputElement(QuantityObjects.InputQuantityInput(0));
+            CommonActions.ClearInputElement(QuantityObjects.InputQuantityInput(ServiceRecipientIndex));
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(QuantityController),
-                nameof(QuantityController.SelectServiceRecipientQuantity)).Should().BeTrue();
+                    typeof(QuantityController),
+                    nameof(QuantityController.SelectServiceRecipientQuantity))
+                .Should()
+                .BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementTextEqualTo(
-                QuantityObjects.InputQuantityInputError(0),
-                string.Format(ServiceRecipientQuantityModelValidator.ValueNotEnteredErrorMessage, serviceRecipientName)).Should().BeTrue();
+                    QuantityObjects.InputQuantityInputError(ServiceRecipientIndex),
+                    string.Format(
+                        ServiceRecipientQuantityModelValidator.ValueNotEnteredErrorMessage,
+                        ServiceRecipientName))
+                .Should()
+                .BeTrue();
         }
 
         [Fact]
         public void SelectServiceRecipientQuantity_QuantityNotANumber_Error()
         {
-            CommonActions.ElementAddValue(QuantityObjects.InputQuantityInput(0), "abc");
+            CommonActions.ElementAddValue(QuantityObjects.InputQuantityInput(ServiceRecipientIndex), "abc");
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(QuantityController),
-                nameof(QuantityController.SelectServiceRecipientQuantity)).Should().BeTrue();
+                    typeof(QuantityController),
+                    nameof(QuantityController.SelectServiceRecipientQuantity))
+                .Should()
+                .BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementTextEqualTo(
-                QuantityObjects.InputQuantityInputError(0),
-                string.Format(ServiceRecipientQuantityModelValidator.ValueNotNumericErrorMessage, serviceRecipientName)).Should().BeTrue();
+                    QuantityObjects.InputQuantityInputError(ServiceRecipientIndex),
+                    string.Format(
+                        ServiceRecipientQuantityModelValidator.ValueNotNumericErrorMessage,
+                        ServiceRecipientName))
+                .Should()
+                .BeTrue();
         }
 
         [Fact]
         public void SelectServiceRecipientQuantity_QuantityNegative_Error()
         {
-            CommonActions.ElementAddValue(QuantityObjects.InputQuantityInput(0), "-1");
+            CommonActions.ElementAddValue(QuantityObjects.InputQuantityInput(ServiceRecipientIndex), "-1");
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(QuantityController),
-                nameof(QuantityController.SelectServiceRecipientQuantity)).Should().BeTrue();
+                    typeof(QuantityController),
+                    nameof(QuantityController.SelectServiceRecipientQuantity))
+                .Should()
+                .BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementTextEqualTo(
-                QuantityObjects.InputQuantityInputError(0),
-                string.Format(ServiceRecipientQuantityModelValidator.ValueNegativeErrorMessage, serviceRecipientName)).Should().BeTrue();
+                    QuantityObjects.InputQuantityInputError(ServiceRecipientIndex),
+                    string.Format(
+                        ServiceRecipientQuantityModelValidator.ValueNegativeErrorMessage,
+                        ServiceRecipientName))
+                .Should()
+                .BeTrue();
         }
 
         [Fact]
         public void SelectServiceRecipientQuantity_QuantityHasDecimalPlaces_Error()
         {
-            CommonActions.ElementAddValue(QuantityObjects.InputQuantityInput(0), "1.1");
+            CommonActions.ElementAddValue(QuantityObjects.InputQuantityInput(ServiceRecipientIndex), "1.1");
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(QuantityController),
-                nameof(QuantityController.SelectServiceRecipientQuantity)).Should().BeTrue();
+                    typeof(QuantityController),
+                    nameof(QuantityController.SelectServiceRecipientQuantity))
+                .Should()
+                .BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementTextEqualTo(
-                QuantityObjects.InputQuantityInputError(0),
-                string.Format(ServiceRecipientQuantityModelValidator.ValueNotAnIntegerErrorMessage, serviceRecipientName)).Should().BeTrue();
+                    QuantityObjects.InputQuantityInputError(ServiceRecipientIndex),
+                    string.Format(
+                        ServiceRecipientQuantityModelValidator.ValueNotAnIntegerErrorMessage,
+                        ServiceRecipientName))
+                .Should()
+                .BeTrue();
         }
 
         [Fact]
@@ -153,12 +185,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Qu
             context.SaveChanges();
         }
 
+        private string GetServiceRecipientName() =>
+            Driver.FindElement(QuantityObjects.InputHiddenServiceRecipientName(ServiceRecipientIndex))
+                .GetAttribute("Value");
+
         private List<OrderItem> GetOrderItems()
         {
-            return GetEndToEndDbContext().OrderItems
+            return GetEndToEndDbContext()
+                .OrderItems
                 .Include(x => x.OrderItemRecipients)
-                .Where(x => x.OrderId == orderId
-                    && x.CatalogueItemId == catalogueItemId)
+                .Where(
+                    x => x.OrderId == orderId
+                        && x.CatalogueItemId == catalogueItemId)
                 .ToList();
         }
     }

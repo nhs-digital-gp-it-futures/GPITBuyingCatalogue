@@ -135,11 +135,13 @@ public class CapabilitiesUpdateService : ICapabilitiesUpdateService
 
         if (!frameworkIds.Any()) return;
 
-        var frameworksToRemove = capability.FrameworkCapabilities.Where(x => !frameworkIds.Contains(x.FrameworkId)).ToList();
-        var frameworksToAdd = frameworkIds.Where(x => capability.FrameworkCapabilities.All(y => x != y.FrameworkId)).ToList();
+        var frameworksToRemove =
+            capability.FrameworkCapabilities.Where(x => !frameworkIds.Contains(x.FrameworkId)).ToList();
+        var frameworksToAdd = frameworkIds.Where(x => capability.FrameworkCapabilities.All(y => x != y.FrameworkId))
+            .Select(x => new FrameworkCapability(x, capability.Id)).ToList();
 
-        frameworksToRemove.ForEach(x => capability.FrameworkCapabilities.Remove(x));
-        frameworksToAdd.ForEach(x => capability.FrameworkCapabilities.Add(new() { FrameworkId = x }));
+        _dbContext.FrameworkCapabilities.RemoveRange(frameworksToRemove.ToList());
+        _dbContext.FrameworkCapabilities.AddRange(frameworksToAdd);
 
         await _dbContext.SaveChangesAsync();
     }

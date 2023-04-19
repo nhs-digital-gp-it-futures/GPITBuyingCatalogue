@@ -25,8 +25,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
         private const string CommissionedByRelationshipType = "RE4";
         private const string LocatedInRelationshipType = "RE5";
 
-        private static readonly Random Random = new();
-
         internal static void Initialize(BuyingCatalogueDbContext context)
         {
             AddDefaultData(context);
@@ -40,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 new() { Id = LocatedInRelationshipType, Description = "IS LOCATED IN THE GEOGRAPHY OF" },
             };
 
-            context.InsertRangeWithIdentity(relationshipTypes);
+            context.AddRange(relationshipTypes);
             context.SaveChanges();
 
             List<RoleType> roles = new()
@@ -51,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 new() { Id = SubLocationRoleType, Description = "SUB ICB LOCATION" },
             };
 
-            context.InsertRangeWithIdentity(roles);
+            context.AddRange(roles);
             context.SaveChanges();
 
             var bobOdsOrganisation = new OdsOrganisation
@@ -144,7 +142,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 daveOdsOrganisation,
             };
 
-            context.InsertRangeWithIdentity(organisations);
+            context.AddRange(organisations);
+            context.SaveChanges();
         }
 
         private static IEnumerable<OdsOrganisation> GetKnownOrgs() => new List<OdsOrganisation>
@@ -224,6 +223,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
         }
 
         private static string GetRandomOrgId() =>
-            Guid.NewGuid().ToString();
+            string.Join(string.Empty, Guid.NewGuid().ToString().Take(8));
     }
 }

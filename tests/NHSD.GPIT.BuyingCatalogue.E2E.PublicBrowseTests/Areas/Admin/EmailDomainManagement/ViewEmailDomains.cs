@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.EmailDomainManagement;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
@@ -45,7 +46,7 @@ public class ViewEmailDomains : AuthorityTestBase
 
         CommonActions.ContinueButtonDisplayed().Should().BeTrue();
 
-        context.EmailDomains.AddRange(emailDomains);
+        context.InsertRangeWithIdentity(emailDomains);
         context.SaveChanges();
     }
 

@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
                 .With(o => o.Revision, 1)
                 .Create();
 
-            var amendedOrder = order.BuidAmendment(2);
+            var amendedOrder = order.BuildAmendment(2);
             amendedOrder.Description = $"Edited-{order.Description}";
 
             var orderWrapper = new OrderWrapper(new[] { order, amendedOrder });
@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
             OrderItem amendedOrderItem = BuildOrderItem(fixture, catalogueItem, OrderItemFundingType.MixedFunding);
 
             Order order = BuildOrder(fixture, new[] { orderItem });
-            var amendedOrder = order.BuidAmendment(2);
+            var amendedOrder = order.BuildAmendment(2);
             amendedOrder.OrderItems = new HashSet<OrderItem> { amendedOrderItem };
 
             var orderWrapper = new OrderWrapper(new[] { order, amendedOrder });

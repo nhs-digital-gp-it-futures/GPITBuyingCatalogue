@@ -57,9 +57,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Qu
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementTextEqualTo(
-                QuantityObjects.QuantityInputError,
-                SelectOrderItemQuantityModelValidator.QuantityNotEnteredErrorMessage).Should().BeTrue();
+            try
+            {
+                CommonActions.ElementTextEqualTo(
+                        QuantityObjects.QuantityInputError,
+                        SelectOrderItemQuantityModelValidator.QuantityNotEnteredErrorMessage)
+                    .Should()
+                    .BeTrue();
+            }
+            catch
+            {
+                TakeScreenshot();
+                throw;
+            }
         }
 
         [Fact]
@@ -75,9 +85,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Qu
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementTextEqualTo(
-                QuantityObjects.QuantityInputError,
-                SelectOrderItemQuantityModelValidator.QuantityNotANumberErrorMessage).Should().BeTrue();
+            try
+            {
+                CommonActions.ElementTextEqualTo(
+                        QuantityObjects.QuantityInputError,
+                        SelectOrderItemQuantityModelValidator.QuantityNotANumberErrorMessage)
+                    .Should()
+                    .BeTrue();
+            }
+            catch
+            {
+                TakeScreenshot();
+                throw;
+            }
         }
 
         [Fact]
@@ -93,9 +113,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Qu
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementTextEqualTo(
-                QuantityObjects.QuantityInputError,
-                SelectOrderItemQuantityModelValidator.QuantityNegativeErrorMessage).Should().BeTrue();
+            try
+            {
+                CommonActions.ElementTextEqualTo(
+                        QuantityObjects.QuantityInputError,
+                        SelectOrderItemQuantityModelValidator.QuantityNegativeErrorMessage)
+                    .Should()
+                    .BeTrue();
+            }
+            catch
+            {
+                TakeScreenshot();
+                throw;
+            }
         }
 
         [Fact]
@@ -111,9 +141,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Qu
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-            CommonActions.ElementTextEqualTo(
-                QuantityObjects.QuantityInputError,
-                SelectOrderItemQuantityModelValidator.QuantityNotAWholeNumberErrorMessage).Should().BeTrue();
+            try
+            {
+                CommonActions.ElementTextEqualTo(
+                        QuantityObjects.QuantityInputError,
+                        SelectOrderItemQuantityModelValidator.QuantityNotAWholeNumberErrorMessage)
+                    .Should()
+                    .BeTrue();
+            }
+            catch
+            {
+                TakeScreenshot();
+                throw;
+            }
         }
 
         [Fact]
