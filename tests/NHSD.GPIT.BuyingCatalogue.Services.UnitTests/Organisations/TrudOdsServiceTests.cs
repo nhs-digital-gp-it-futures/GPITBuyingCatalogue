@@ -179,11 +179,10 @@ public class TrudOdsServiceTests
             {
                 x.Related.Clear();
                 x.Parents.Clear();
+                x.Roles.Clear();
 
-                x.Roles = new List<OrganisationRole>
-                {
-                    new() { OrganisationId = x.Id, RoleId = gpRoleType.Id, IsPrimaryRole = true, },
-                };
+                x.Roles.Add(
+                    new() { OrganisationId = x.Id, RoleId = gpRoleType.Id, IsPrimaryRole = true, });
 
                 parentOrganisation.Related.Add(
                     new()
