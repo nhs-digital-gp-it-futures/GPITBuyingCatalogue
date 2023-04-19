@@ -1,5 +1,4 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders.CompletedModel
 
 @{
@@ -20,37 +19,26 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-page-title title="Order completed"
                         caption="Order @Model.CallOffId"
-                        advice="You've successfully completed your order. Make sure you complete the listed tasks where relevant to finalise your procurement." />
+                        advice="You’ve successfully completed your Call-off Order Form. Make sure you carry out the listed tasks where relevant to finalise your procurement." />
 
         <div class="nhsuk-u-margin-bottom-6">
             <h3>Next steps</h3>
             <ul>
                 <li>
-                    download a copy of your order using the button on this page
+                    return a signed copy of your Call-off Order Form to gpitf.commercial1@nhs.net and gpitfutures.finance@nhs.net
                 </li>
                 <li>
-                    return a signed copy of your order to gpitf.commercial1@nhs.net, gpitfutures.finance@nhs.net and commercial.procurementhub@nhs.net
+                    if you’ve paid using your central allocation, we’ll process the payments for you
                 </li>
-
-                @if (Model.Order.ApproximateFundingType == Order.LocalFunding)
-                {
-                    <li>
-                        as you're paying for your order using local funding, you’ll need to contact the supplier to arrange payment
-                    </li>
-                }
-                else
-                {
-                    <li>
-                        as you're paying for your order using your central allocation, NHS Digital's finance team will process the payments for you
-                    </li>
-                    <li>
-                        once solutions and services are in use, enter the activation dates on the order tracker so we can start paying for centrally funded orders
-                    </li>
-                }
-
+                <li>
+                    if you’ve paid using local funding, you’ll need to contact the supplier to arrange payment
+                </li>
                 <li>
                     if you’ve ordered a migration, you can find more information on
                     <a href="https://digital.nhs.uk/services/gp-it-futures-systems/clinical-system-migration-guide" target="_blank">preparing and planning (opens in a new tab)</a>
+                </li>
+                <li>
+                    once solutions and services are in use, enter the activation dates on the order tracker so we can start paying for centrally funded orders
                 </li>
             </ul>
         </div>
@@ -65,8 +53,7 @@
             <div class="nhsuk-u-margin-bottom-9" id="supporting-documents">
                 <h2>Supporting documents</h2>
                 <p>
-                    You've referenced the following documents in your order.
-                    They must be completed and included when you send your order to the supplier for signature.
+                    A blank copy of the following templates must be included for the supplier to complete when you send your Call-off Order Form for signature..
                 </p>
 
                 <ul>
@@ -101,7 +88,7 @@
         }
 
         <div class="nhsuk-u-margin-bottom-6">
-            <vc:nhs-secondary-button text="Download order PDF"
+            <vc:nhs-secondary-button text="Download order form (PDF)"
                                      type="Secondary"
                                      url="@Url.Action(
                                               nameof(OrderController.Download),
