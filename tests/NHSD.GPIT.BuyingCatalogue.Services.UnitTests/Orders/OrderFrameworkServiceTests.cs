@@ -36,6 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         public static async Task UpdateFundingSourceAndSetSelectedFrameworkForOrder_NotGP_LocalFrameworkOnlyUnchanged_UpdatesSelectedFramework(
             bool localFundingOnly,
             Order order,
+            OrderItem orderItem,
             EntityFramework.Catalogue.Models.Framework selectedFramework,
             [Frozen] BuyingCatalogueDbContext context,
             OrderFrameworkService service)
@@ -43,6 +44,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             selectedFramework.LocalFundingOnly = localFundingOnly;
 
             context.Frameworks.Add(selectedFramework);
+
+            orderItem.OrderItemFunding.OrderItemFundingType = OrderItemFundingType.LocalFundingOnly;
+
+            order.OrderItems.Clear();
+
+            order.OrderItems.Add(orderItem);
 
             order.OrderingParty.OrganisationType = OrganisationType.IB;
 
@@ -56,6 +63,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             var result = await context.Orders.FirstAsync(x => x.Id == order.Id);
             result.SelectedFramework.Should().BeEquivalentTo(selectedFramework);
+            result.OrderItems.Count.Should().Be(order.OrderItems.Count);
+            result.OrderItems.First().OrderItemFunding.Should().BeEquivalentTo(orderItem.OrderItemFunding);
         }
 
         [Theory]
@@ -64,6 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         public static async Task UpdateFundingSourceAndSetSelectedFrameworkForOrder_GPPractice_LocalFrameworkOnlyChanged_UpdatesSelectedFramework(
             bool localFundingOnly,
             Order order,
+            OrderItem orderItem,
             EntityFramework.Catalogue.Models.Framework selectedFramework,
             [Frozen] BuyingCatalogueDbContext context,
             OrderFrameworkService service)
@@ -71,6 +81,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             selectedFramework.LocalFundingOnly = localFundingOnly;
 
             context.Frameworks.Add(selectedFramework);
+
+            orderItem.OrderItemFunding.OrderItemFundingType = OrderItemFundingType.LocalFundingOnly;
+
+            order.OrderItems.Clear();
+
+            order.OrderItems.Add(orderItem);
 
             order.OrderingParty.OrganisationType = OrganisationType.GP;
 
@@ -84,6 +100,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             var result = await context.Orders.FirstAsync(x => x.Id == order.Id);
             result.SelectedFramework.Should().BeEquivalentTo(selectedFramework);
+            result.OrderItems.Count.Should().Be(order.OrderItems.Count);
+            result.OrderItems.First().OrderItemFunding.Should().BeEquivalentTo(orderItem.OrderItemFunding);
         }
 
         [Theory]
