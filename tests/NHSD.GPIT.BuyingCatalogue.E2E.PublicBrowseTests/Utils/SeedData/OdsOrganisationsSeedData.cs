@@ -79,8 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     .Select(
                         x => new OrganisationRelationship
                         {
-                            RelationshipTypeId = LocatedInRelationshipType,
-                            TargetOrganisation = x,
+                            RelationshipTypeId = LocatedInRelationshipType, TargetOrganisation = x,
                         })
                     .ToList(),
             };
@@ -100,8 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     .Select(
                         x => new OrganisationRelationship
                         {
-                            RelationshipTypeId = LocatedInRelationshipType,
-                            TargetOrganisation = x,
+                            RelationshipTypeId = LocatedInRelationshipType, TargetOrganisation = x,
                         })
                     .ToList(),
             };
@@ -121,8 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     .Select(
                         x => new OrganisationRelationship
                         {
-                            RelationshipTypeId = LocatedInRelationshipType,
-                            TargetOrganisation = x,
+                            RelationshipTypeId = LocatedInRelationshipType, TargetOrganisation = x,
                         })
                     .ToList(),
             };
@@ -133,8 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     .Select(
                         x => new OrganisationRelationship
                         {
-                            TargetOrganisation = x,
-                            RelationshipTypeId = CommissionedByRelationshipType,
+                            TargetOrganisation = x, RelationshipTypeId = CommissionedByRelationshipType,
                         }));
 
             // Organisations
@@ -220,8 +216,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             .Select(
                                 x => new OrganisationRelationship
                                 {
-                                    TargetOrganisation = x,
-                                    RelationshipTypeId = CommissionedByRelationshipType,
+                                    TargetOrganisation = x, RelationshipTypeId = CommissionedByRelationshipType,
                                 })
                             .ToList(),
                     });
