@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
@@ -161,7 +162,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             if (item.TotalCost() == 0)
                 newFundingType = OrderItemFundingType.NoFundingRequired;
-            else if (item.Order.SelectedFramework.LocalFundingOnly)
+            else if (item.Order.IsLocalFundingOnly)
                 newFundingType = OrderItemFundingType.LocalFundingOnly;
 
             if (item.FundingType == newFundingType)
@@ -216,6 +217,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     .ThenInclude(ir => ir.Recipient)
                 .Include(oi => oi.Order)
                     .ThenInclude(o => o.SelectedFramework)
+                .Include(oi => oi.Order)
+                    .ThenInclude(o => o.OrderingParty)
                 .FirstOrDefaultAsync(oi => oi.OrderId == orderId
                     && oi.CatalogueItemId == catalogueItemId
                     && oi.Order.OrderingParty.InternalIdentifier == internalOrgId);

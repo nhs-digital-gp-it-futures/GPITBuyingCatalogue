@@ -62,6 +62,20 @@ public class TrudOdsService : IOdsService
         if (organisation is null)
             throw new ArgumentException(InvalidIdExceptionMessage, nameof(internalIdentifier));
 
+        if (organisation.PrimaryRoleId == settings.GetPrimaryRoleId(OrganisationType.GP))
+        {
+            return new List<ServiceRecipient>()
+            {
+                new()
+                {
+                    Name = organisation.Name,
+                    OrgId = organisation.ExternalIdentifier,
+                    PrimaryRoleId = organisation.PrimaryRoleId,
+                    Location = "GP Practice",
+                },
+            };
+        }
+
         var subLocations = await context.OrganisationRelationships
             .AsNoTracking()
             .Where(x => x.OwnerOrganisationId == organisation.ExternalIdentifier
@@ -107,7 +121,7 @@ public class TrudOdsService : IOdsService
             return;
         }
 
-        await organisationsService.UpdateCcgOrganisation(MapOrganisation(trudOrganisation));
+        await organisationsService.UpdateOrganisation(MapOrganisation(trudOrganisation));
     }
 
     internal static OdsOrganisation

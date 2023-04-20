@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
@@ -32,6 +33,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                     : CentralFunding;
             }
         }
+
+        public bool IsLocalFundingOnly =>
+            SelectedFramework.LocalFundingOnly || OrderingParty.OrganisationType == OrganisationType.GP;
 
         public EndDate EndDate => new EndDate(CommencementDate, MaximumTerm);
 

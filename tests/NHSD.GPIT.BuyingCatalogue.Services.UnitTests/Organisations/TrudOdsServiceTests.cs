@@ -14,6 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.Services.Organisations;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NuGet.Configuration;
 using Xunit;
 using OdsOrganisation = NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations.OdsOrganisation;
 
@@ -134,6 +135,32 @@ public class TrudOdsServiceTests
 
     [Theory]
     [InMemoryDbAutoData]
+    public static async Task GetServiceRecipientsByParentInternalIdentifier_GPPractice_ReturnsItself(
+        Organisation organisation,
+        [Frozen] BuyingCatalogueDbContext context,
+        OdsSettings settings,
+        IOrganisationsService orgService,
+        ILogger<TrudOdsService> logger)
+    {
+        organisation.PrimaryRoleId = settings.GetPrimaryRoleId(OrganisationType.GP);
+
+        context.Add(organisation);
+        await context.SaveChangesAsync();
+
+        var service = new TrudOdsService(settings, context, orgService, logger);
+        var results = (await service.GetServiceRecipientsByParentInternalIdentifier(organisation.InternalIdentifier))
+            .ToList();
+
+        results.Should().NotBeEmpty();
+        results.Should().HaveCount(1);
+        results.First().Name.Should().Be(organisation.Name);
+        results.First().OrgId.Should().Be(organisation.ExternalIdentifier);
+        results.First().PrimaryRoleId.Should().Be(organisation.PrimaryRoleId);
+        results.First().Location.Should().Be("GP Practice");
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
     public static async Task GetServiceRecipientsByParentInternalIdentifier_WithRelationships_ReturnsRecipients(
         EntityFramework.OdsOrganisations.Models.OdsOrganisation grandparentOrganisation,
         EntityFramework.OdsOrganisations.Models.OdsOrganisation parentOrganisation,
@@ -220,7 +247,7 @@ public class TrudOdsServiceTests
     {
         await service.UpdateOrganisationDetails(odsCode);
 
-        organisationsService.Verify(x => x.UpdateCcgOrganisation(It.IsAny<OdsOrganisation>()), Times.Never());
+        organisationsService.Verify(x => x.UpdateOrganisation(It.IsAny<OdsOrganisation>()), Times.Never());
     }
 
     [Theory]
@@ -236,7 +263,7 @@ public class TrudOdsServiceTests
 
         await service.UpdateOrganisationDetails(organisation.InternalIdentifier);
 
-        organisationsService.Verify(x => x.UpdateCcgOrganisation(It.IsAny<OdsOrganisation>()), Times.Never());
+        organisationsService.Verify(x => x.UpdateOrganisation(It.IsAny<OdsOrganisation>()), Times.Never());
     }
 
     [Theory]
@@ -257,7 +284,7 @@ public class TrudOdsServiceTests
         OdsOrganisation actual = null;
 
         organisationsService
-            .Setup(x => x.UpdateCcgOrganisation(It.IsAny<OdsOrganisation>()))
+            .Setup(x => x.UpdateOrganisation(It.IsAny<OdsOrganisation>()))
             .Callback<OdsOrganisation>(x => actual = x);
 
         await service.UpdateOrganisationDetails(organisation.ExternalIdentifier);
