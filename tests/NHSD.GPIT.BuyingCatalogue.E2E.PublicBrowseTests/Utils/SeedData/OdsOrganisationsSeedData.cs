@@ -49,34 +49,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 new() { Id = SubLocationRoleType, Description = "SUB ICB LOCATION" },
             };
 
-            context.InsertRangeWithIdentity(roles);
-            context.SaveChanges();
-
             context.AddRange(roles);
             context.SaveChanges();
-
-                Roles = new HashSet<OrganisationRole>
-                {
-                    new OrganisationRole { OrganisationId = "Y03508", RoleId = "RO177", IsPrimaryRole = true, },
-                },
-            };
-
-            var gpPracticeOrganisation2 = new OdsOrganisation
-            {
-                Id = "Y07021",
-                Name = "BEVAN LIMITED",
-                AddressLine1 = "BRANSHOLME HEALTH CENTRE",
-                AddressLine2 = "GOODHART ROAD",
-                Town = "HULL",
-                Postcode = "HU7 4DW",
-                Country = "ENGLAND",
-                IsActive = true,
-
-                Roles = new HashSet<OrganisationRole>
-                {
-                    new OrganisationRole { OrganisationId = "Y07021", RoleId = "RO177", IsPrimaryRole = true, },
-                },
-            };
 
             var bobOdsOrganisation = new OdsOrganisation
             {
@@ -104,8 +78,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Related = GetSubLocationOrgs()
                     .Select(
                         x => new OrganisationRelationship
-                {
-                            RelationshipTypeId = LocatedInRelationshipType, TargetOrganisation = x,
+                        {
+                            RelationshipTypeId = LocatedInRelationshipType,
+                            TargetOrganisation = x,
                         })
                     .ToList(),
             };
@@ -124,8 +99,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Related = GetSubLocationOrgs()
                     .Select(
                         x => new OrganisationRelationship
-                {
-                            RelationshipTypeId = LocatedInRelationshipType, TargetOrganisation = x,
+                        {
+                            RelationshipTypeId = LocatedInRelationshipType,
+                            TargetOrganisation = x,
                         })
                     .ToList(),
             };
@@ -144,8 +120,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Related = GetSubLocationOrgs()
                     .Select(
                         x => new OrganisationRelationship
-                {
-                            RelationshipTypeId = LocatedInRelationshipType, TargetOrganisation = x,
+                        {
+                            RelationshipTypeId = LocatedInRelationshipType,
+                            TargetOrganisation = x,
                         })
                     .ToList(),
             };
@@ -155,8 +132,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 GetKnownOrgs()
                     .Select(
                         x => new OrganisationRelationship
-                {
-                            TargetOrganisation = x, RelationshipTypeId = CommissionedByRelationshipType,
+                        {
+                            TargetOrganisation = x,
+                            RelationshipTypeId = CommissionedByRelationshipType,
                         }));
 
             // Organisations
@@ -242,7 +220,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             .Select(
                                 x => new OrganisationRelationship
                                 {
-                                    TargetOrganisation = x, RelationshipTypeId = CommissionedByRelationshipType,
+                                    TargetOrganisation = x,
+                                    RelationshipTypeId = CommissionedByRelationshipType,
                                 })
                             .ToList(),
                     });
