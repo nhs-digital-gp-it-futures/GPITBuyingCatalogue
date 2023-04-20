@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         {
             if (order == null)
             {
-                return new List<OrderItem>();
+                return Enumerable.Empty<OrderItem>().ToList();
             }
 
             return catalogueItemType switch
