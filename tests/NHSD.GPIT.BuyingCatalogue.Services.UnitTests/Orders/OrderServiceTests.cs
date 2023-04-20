@@ -46,6 +46,105 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [InMemoryDbAutoData]
+        public static async Task GetOrderWithCatalogueItemAndPrices_ReturnsExpectedResults(
+           Order order,
+           OrderItem orderItem,
+           CatalogueItem catalogueItem,
+           Organisation organisation,
+           EntityFramework.Catalogue.Models.Framework selectedFramework,
+           [Frozen] BuyingCatalogueDbContext context,
+           OrderService service)
+        {
+            order.OrderingPartyId = organisation.Id;
+            order.OrderingParty = organisation;
+
+            order.SelectedFrameworkId = selectedFramework.Id;
+            order.SelectedFramework = selectedFramework;
+
+            orderItem.CatalogueItem = catalogueItem;
+            order.OrderItems.Clear();
+            order.OrderItems .Add(orderItem);
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            var result = (await service.GetOrderWithCatalogueItemAndPrices(order.CallOffId, order.OrderingParty.InternalIdentifier)).Order;
+
+            result.OrderingParty.Should().BeEquivalentTo(organisation);
+            result.SelectedFramework.Should().BeEquivalentTo(selectedFramework);
+            result.OrderItems.Count.Should().Be(1);
+            result.OrderItems.First().Should().BeEquivalentTo(orderItem);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetOrderWithOrderItems_ReturnsExpectedResults(
+            Order order,
+            OrderItem orderItem,
+            CatalogueItem catalogueItem,
+            Organisation organisation,
+            EntityFramework.Catalogue.Models.Framework selectedFramework,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            order.OrderingPartyId = organisation.Id;
+            order.OrderingParty = organisation;
+
+            order.SelectedFrameworkId = selectedFramework.Id;
+            order.SelectedFramework = selectedFramework;
+
+            orderItem.CatalogueItem = catalogueItem;
+            order.OrderItems.Clear();
+            order.OrderItems.Add(orderItem);
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            var result = (await service.GetOrderWithOrderItems(order.CallOffId, order.OrderingParty.InternalIdentifier)).Order;
+
+            result.OrderingParty.Should().BeEquivalentTo(organisation);
+            result.SelectedFramework.Should().BeEquivalentTo(selectedFramework);
+            result.OrderItems.Count.Should().Be(1);
+            result.OrderItems.First().Should().BeEquivalentTo(orderItem);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetOrderWithOrderItemsForFunding_ReturnsExpectedResults(
+            Order order,
+            OrderItem orderItem,
+            CatalogueItem catalogueItem,
+            Organisation organisation,
+            EntityFramework.Catalogue.Models.Framework selectedFramework,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            order.OrderingPartyId = organisation.Id;
+            order.OrderingParty = organisation;
+
+            order.SelectedFrameworkId = selectedFramework.Id;
+            order.SelectedFramework = selectedFramework;
+
+            orderItem.CatalogueItem = catalogueItem;
+            order.OrderItems.Clear();
+            order.OrderItems.Add(orderItem);
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            var result = (await service.GetOrderWithOrderItemsForFunding(order.CallOffId, order.OrderingParty.InternalIdentifier)).Order;
+
+            result.OrderingParty.Should().BeEquivalentTo(organisation);
+            result.SelectedFramework.Should().BeEquivalentTo(selectedFramework);
+            result.OrderItems.Count.Should().Be(1);
+            result.OrderItems.First().Should().BeEquivalentTo(orderItem);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
         public static async Task CreateOrder_UpdatesDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             string description,
