@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -167,6 +169,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return new OrderWrapper(orders);
         }
 
+        [ExcludeFromCodeCoverage(Justification = "Method uses Temporal tables which the In-Memory provider doesn't support.")]
         public async Task<OrderWrapper> GetOrderForSummary(CallOffId callOffId, string internalOrgId)
         {
             var orders = await dbContext.Orders
@@ -245,12 +248,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             options ??= new PageOptions();
 
-            var query = await dbContext.Orders
-                .Include(o => o.LastUpdatedByUser)
-                .Where(o => o.OrderingPartyId == organisationId)
-                .OrderByDescending(o => o.LastUpdated)
-                .AsNoTracking()
-                .ToListAsync();
+            var query = (await dbContext.Orders
+                    .AsNoTracking()
+                    .Include(o => o.LastUpdatedByUser)
+                    .Where(o => o.OrderingPartyId == organisationId)
+                    .ToListAsync())
+                .GroupBy(x => x.OrderNumber)
+                .SelectMany(x => x.OrderByDescending(y => y.Revision).TakeUntil(y => y.OrderStatus == OrderStatus.Completed))
+                .ToList();
 
             if (!string.IsNullOrWhiteSpace(search))
             {
@@ -262,6 +267,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             options.TotalNumberOfItems = query.Count;
             var orderIds = query.Select(x => x.CallOffId);
 
+            query = query
+                .OrderByDescending(o => o.LastUpdated)
+                .ToList();
+
             if (options.PageNumber != 0)
                 query = query.Skip((options.PageNumber - 1) * options.PageSize).ToList();
 
@@ -272,11 +281,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task<IList<SearchFilterModel>> GetOrdersBySearchTerm(int organisationId, string searchTerm)
         {
-            var baseData = await dbContext
-                .Orders
-                .Where(o => o.OrderingPartyId == organisationId)
-                .AsNoTracking()
-                .ToListAsync();
+            var baseData = (await dbContext
+                    .Orders
+                    .AsNoTracking()
+                    .Where(o => o.OrderingPartyId == organisationId)
+                    .ToListAsync())
+                .GroupBy(x => x.OrderNumber)
+                .SelectMany(x => x.OrderByDescending(y => y.Revision).TakeUntil(y => y.OrderStatus == OrderStatus.Completed))
+                .ToList();
 
             var matches = baseData
                 .Where(o => o.CallOffId.ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
@@ -311,11 +323,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return order;
         }
 
+        [ExcludeFromCodeCoverage(Justification = "Method indirectly uses Temporal tables which the In-Memory provider doesn't support.")]
         public async Task<Order> AmendOrder(string internalOrgId, CallOffId callOffId)
         {
             var order = (await GetOrderForSummary(callOffId, internalOrgId)).Order;
 
-            var amendment = order.BuidAmendment(await dbContext.NextRevision(order.OrderNumber));
+            var amendment = order.BuildAmendment(await dbContext.NextRevision(order.OrderNumber));
 
             dbContext.Add(amendment);
 
@@ -376,22 +389,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 templateId = orderMessageSettings.DualCsvTemplateId;
             }
 
-            var userEmail = dbContext.Users.First(x => x.Id == userId).Email;
-            using var pdfData = await pdfService.CreateOrderSummaryPdf(order);
-
             fullOrderStream.Position = 0;
             var userTokens = new Dictionary<string, dynamic>
             {
                 { OrderIdToken, $"{callOffId}" },
-                { OrderSummaryLinkToken, NotificationClient.PrepareUpload(pdfData.ToArray()) },
                 { OrderSummaryCsv, NotificationClient.PrepareUpload(fullOrderStream.ToArray(), true) },
             };
 
             dbContext.Entry(order).State = EntityState.Modified;
 
+            _ = await pdfService.CreateOrderSummaryPdf(order);
+
             var userTemplateId = order.AssociatedServicesOnly
                 ? orderMessageSettings.UserAssociatedServiceTemplateId
                 : orderMessageSettings.UserTemplateId;
+
+            var userEmail = dbContext.Users.First(x => x.Id == userId).Email;
 
             await Task.WhenAll(
                 emailService.SendEmailAsync(orderMessageSettings.Recipient.Address, templateId, adminTokens),

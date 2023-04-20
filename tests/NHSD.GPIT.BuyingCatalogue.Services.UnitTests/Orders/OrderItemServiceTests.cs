@@ -267,7 +267,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             OrderItemService service)
         {
             original.Revision = 1;
-            var amendment = original.BuidAmendment(2);
+            var amendment = original.BuildAmendment(2);
 
             var orders = new[] { original, amendment };
 

@@ -2,7 +2,8 @@
 USING (
 VALUES 
     (1, 'Clinical Commissioning Group', 'CG'),
-    (2, 'Executive Agency', 'EA')
+    (2, 'Executive Agency', 'EA'),
+    (3, 'Integrated Care Board', 'IB')
 )
 AS SOURCE ([Id], [Name], [Identifier])
 ON TARGET.[Identifier] = SOURCE.[Identifier]

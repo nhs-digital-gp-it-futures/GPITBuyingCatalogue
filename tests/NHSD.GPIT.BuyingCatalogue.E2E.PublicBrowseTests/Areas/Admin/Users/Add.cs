@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.Users
     [Collection(nameof(AdminCollection))]
     public class Add : AuthorityTestBase
     {
-        private const string NhsDigitalOrganisationName = "NHS Digital";
+        private const string NhsDigitalOrganisationName = "NHS ENGLAND - X26";
 
         public Add(LocalWebApplicationFactory factory)
             : base(factory, typeof(UsersController), nameof(UsersController.Add))

@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 {
     public class OrderScenarios : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        private const string InternalOrgId = "CG-03F";
+        private const string InternalOrgId = "IB-QWO";
         private const string FileName = "valid_service_recipients.csv";
         private const string SupplierName = "EMIS Health";
         private const string SolutionName = "Anywhere Consult";

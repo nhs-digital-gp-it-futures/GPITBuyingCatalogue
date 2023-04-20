@@ -15,11 +15,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Solu
             SelectRecipientsModel model,
             SelectRecipientsModelValidator systemUnderTest)
         {
-            model.ServiceRecipients.ForEach(x => x.Selected = false);
+            model.GetServiceRecipients().ForEach(x => x.Selected = false);
 
             var result = systemUnderTest.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor("ServiceRecipients[0].Selected")
+            result.ShouldHaveValidationErrorFor("SubLocations[0].ServiceRecipients[0].Selected")
                 .WithErrorMessage(SelectRecipientsModelValidator.NoSelectionMadeErrorMessage);
         }
 
@@ -29,8 +29,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Solu
             SelectRecipientsModel model,
             SelectRecipientsModelValidator systemUnderTest)
         {
-            model.ServiceRecipients.ForEach(x => x.Selected = false);
-            model.ServiceRecipients.First().Selected = true;
+            model.GetServiceRecipients().ForEach(x => x.Selected = false);
+            model.GetServiceRecipients().First().Selected = true;
 
             var result = systemUnderTest.TestValidate(model);
 

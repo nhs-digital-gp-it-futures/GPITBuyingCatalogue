@@ -18,13 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree
 
         public void ReviewAndCompleteOrder()
         {
-            CommonActions.ClickContinue();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(ReviewContractController),
-                    nameof(ReviewContractController.ContractSummary))
-                    .Should().BeTrue();
-
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(

@@ -12,5 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
         public string Status { get; set; }
 
         public string PrimaryRoleId { get; set; }
+
+        public string Location { get; set; }
     }
 }

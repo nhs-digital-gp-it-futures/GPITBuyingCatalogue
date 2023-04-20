@@ -7,6 +7,6 @@
     "RelationshipsUri": "https://directory.spineservices.nhs.uk/ORD/2-0-0/rels",
     "RolesUri": "https://directory.spineservices.nhs.uk/ORD/2-0-0/roles",
     "SearchUri": "https://directory.spineservices.nhs.uk/ORD/2-0-0/sync",
-    "FUNCTIONS_WORKER_RUNTIME": "dotnet"
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated"
   }
 }

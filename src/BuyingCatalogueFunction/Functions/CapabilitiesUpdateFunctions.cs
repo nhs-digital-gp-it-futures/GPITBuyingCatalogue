@@ -2,9 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using BuyingCatalogueFunction.Services.CapabilitiesUpdate.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 
 namespace BuyingCatalogueFunction.Functions;
@@ -26,7 +24,7 @@ public class CapabilitiesUpdateFunctions
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    [FunctionName(nameof(CapabilitiesUpdateBlobTrigger))]
+    [Function(nameof(CapabilitiesUpdateBlobTrigger))]
     public async Task CapabilitiesUpdateBlobTrigger([BlobTrigger("capabilities-update/{name}")] Stream stream, string name)
     {
         _logger.LogInformation("Triggered {Function} for file {Name}", nameof(CapabilitiesUpdateBlobTrigger), name);

@@ -12,6 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public string Description => $"{Name}" + (string.IsNullOrEmpty(OdsCode) ? string.Empty : $" ({OdsCode})");
 
+        public string Location { get; set; }
+
         public ServiceRecipientDto Dto => new()
         {
             Name = Name,

@@ -68,6 +68,7 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
+    <Folder Include="OdsOrganisations\Functions\" />
     <Folder Include="Properties" />
     <Folder Include="Security\" />
     <Folder Include="Security\Users" />
@@ -108,6 +109,7 @@
   <ItemGroup>
     <Build Include="Security\Users\NHSD.sql" />
     <Build Include="Security\Logins\NHSD.sql" />
+    <None Include="PostDeployment\CreateIntegratedCareBoards.sql" />
     <None Include="PostDeployment\IntegrationTests\ClearData.sql" />
     <None Include="PostDeployment\IntegrationTests\DropRole.sql" />
     <None Include="PostDeployment\IntegrationTests\DropUserAndLogin.sql" />
@@ -126,7 +128,6 @@
     <None Include="PostDeployment\InsertAdditionalServices.sql" />
     <PreDeploy Include="PreDeployment\PreDeployment.sql" />
     <None Include="PostDeployment\CreateTestUsers.sql" />
-    <None Include="PostDeployment\CreateClinicalCommissioningGroups.sql" />
     <None Include="PostDeployment\CreateCommissioningSupportUnits.sql" />
     <None Include="PostDeployment\CreateExecutiveAgency.sql" />
     <None Include="PostDeployment\CreateExecutiveAgencyUser.sql" />

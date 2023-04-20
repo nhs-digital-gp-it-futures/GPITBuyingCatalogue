@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
 
         public void ClickLinkElement(By targetElement) =>
             Driver.FindElement(targetElement).Click();
-            
+
         public void ClickLinkElement(By targetElement, string hrefContains)
         {
             Driver.FindElements(targetElement)
@@ -52,6 +52,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
 
         public void ClickAllCheckboxes() =>
             Driver.FindElements(By.CssSelector("input[type=checkbox]")).ToList().ForEach(element => element.Click());
+
+        public void UncheckAllCheckboxes() =>
+            Driver.FindElements(By.CssSelector("input[type=checkbox]"))
+                .Where(x => x.GetAttribute("checked") != null)
+                .ToList()
+                .ForEach(x => x.Click());
 
         public void ClickSection(By targetField, string section) =>
             Driver.FindElements(targetField)

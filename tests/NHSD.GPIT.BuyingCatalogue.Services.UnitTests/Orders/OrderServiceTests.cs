@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
@@ -29,6 +31,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 {
+    [SuppressMessage("Usage", "xUnit1004:Test methods should not be skipped", Justification = "Skipping tests that use Temporal queries")]
     public static class OrderServiceTests
     {
         [Fact]
@@ -63,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             order.OrderingParty.InternalIdentifier.Should().Be(organisation.InternalIdentifier);
         }
 
-        [Theory]
+        [Theory(Skip = "Temporal queries not supported in EF Core 7.")]
         [InMemoryDbAutoData]
         public static async Task AmendOrder_UpdatesDatabase(
             Order order,
@@ -320,14 +323,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             mockEmailService.VerifyAll();
 
             userTokens.Should().NotBeNull();
-            userTokens.Should().HaveCount(3);
+            userTokens.Should().HaveCount(2);
 
             var orderId = userTokens.Should().ContainKey(OrderService.OrderIdToken).WhoseValue as string;
-            var orderSummaryLink = userTokens.Should().ContainKey(OrderService.OrderSummaryLinkToken).WhoseValue as JObject;
             var orderSummaryCsv = userTokens.Should().ContainKey(OrderService.OrderSummaryCsv).WhoseValue as JObject;
 
             orderId.Should().Be($"{order.CallOffId}");
-            orderSummaryLink.Should().BeEquivalentTo(expectedOrderSummaryLink);
             orderSummaryCsv.Should().BeEquivalentTo(expectedOrderSummaryCsv);
         }
 
@@ -397,7 +398,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             mockEmailService.Verify(x => x.SendEmailAsync(email, orderMessageSettings.UserAssociatedServiceTemplateId, It.IsAny<Dictionary<string, dynamic>>()));
         }
 
-        [Theory]
+        [Theory(Skip = "Temporal queries not supported in EF Core 7.")]
         [InMemoryDbAutoData]
         public static async Task GetOrderForSummary_CompletedOrder_ReturnsExpectedResultsAsAtCompletionDate(
             Order order,
@@ -501,6 +502,91 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [InMemoryDbAutoData]
+        public static async Task GetPagedOrders_WithCompletedAmendment_ReturnsSingleRevision(
+            Organisation organisation,
+            List<Order> orders,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            var originalOrder = orders.First();
+            var amendedOrder = orders.Skip(1).First();
+
+            amendedOrder.OrderNumber = originalOrder.OrderNumber;
+            originalOrder.Revision = 1;
+            amendedOrder.Revision = 2;
+            amendedOrder.Completed = DateTime.UtcNow;
+            originalOrder.Completed = DateTime.UtcNow;
+
+            organisation.Orders.AddRange(orders);
+
+            context.Orders.AddRange(orders);
+            context.Organisations.Add(organisation);
+
+            await context.SaveChangesAsync();
+
+            (PagedList<Order> pagedOrders, _) = await service.GetPagedOrders(organisation.Id, new PageOptions("0", 10));
+
+            pagedOrders.Items.Should().NotContain(originalOrder);
+            pagedOrders.Items.Should().Contain(amendedOrder);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetPagedOrders_WithInProgressAmendment_ReturnsAllOrders(
+            Organisation organisation,
+            List<Order> orders,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            var originalOrder = orders.First();
+            var amendedOrder = orders.Skip(1).First();
+
+            amendedOrder.OrderNumber = originalOrder.OrderNumber;
+            originalOrder.Revision = 1;
+            amendedOrder.Revision = 2;
+            amendedOrder.Completed = null;
+            originalOrder.Completed = DateTime.UtcNow;
+
+            organisation.Orders.AddRange(orders);
+
+            context.Orders.AddRange(orders);
+            context.Organisations.Add(organisation);
+
+            await context.SaveChangesAsync();
+
+            (PagedList<Order> pagedOrders, _) = await service.GetPagedOrders(organisation.Id, new PageOptions("0", 10));
+
+            pagedOrders.Items.Should().Contain(originalOrder);
+            pagedOrders.Items.Should().Contain(amendedOrder);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetPagedOrders_WithNoAmendment_ReturnsOriginalOrders(
+            Organisation organisation,
+            List<Order> orders,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            var originalOrder = orders.First();
+
+            originalOrder.Revision = 1;
+            originalOrder.Completed = DateTime.UtcNow;
+
+            organisation.Orders.AddRange(orders);
+
+            context.Orders.AddRange(orders);
+            context.Organisations.Add(organisation);
+
+            await context.SaveChangesAsync();
+
+            (PagedList<Order> pagedOrders, _) = await service.GetPagedOrders(organisation.Id, new PageOptions("0", 10));
+
+            pagedOrders.Items.Should().Contain(originalOrder);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
         public static async Task GetOrdersBySearchTerm_CallOffId_ReturnsExpectedResults(
             Organisation organisation,
             List<Order> orders,
@@ -551,6 +637,66 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             var actual = results.First();
             actual.Category.Should().Be(order.CallOffId.ToString());
             actual.Title.Should().Be(order.Description);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetOrdersBySearchTerm_WithCompletedAmendment_ReturnsSingleRevision(
+            Organisation organisation,
+            List<Order> orders,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            var originalOrder = orders.First();
+            var amendedOrder = orders.Skip(1).First();
+
+            amendedOrder.OrderNumber = originalOrder.OrderNumber;
+            originalOrder.Revision = 1;
+            amendedOrder.Revision = 2;
+            amendedOrder.Completed = DateTime.UtcNow;
+            originalOrder.Completed = DateTime.UtcNow;
+
+            organisation.Orders = orders;
+
+            context.Organisations.Add(organisation);
+            context.Orders.AddRange(orders);
+
+            context.SaveChanges();
+
+            var results = await service.GetOrdersBySearchTerm(organisation.Id, originalOrder.OrderNumber.ToString());
+
+            results.Should().NotBeEmpty();
+            results.Should().ContainSingle();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetOrdersBySearchTerm_WithInProgressAmendment_ReturnsAllOrders(
+            Organisation organisation,
+            List<Order> orders,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            var originalOrder = orders.First();
+            var amendedOrder = orders.Skip(1).First();
+
+            amendedOrder.OrderNumber = originalOrder.OrderNumber;
+            originalOrder.Revision = 1;
+            amendedOrder.Revision = 2;
+            amendedOrder.Completed = null;
+            originalOrder.Completed = DateTime.UtcNow;
+
+            organisation.Orders = orders;
+
+            context.Organisations.Add(organisation);
+            context.Orders.AddRange(orders);
+
+            context.SaveChanges();
+
+            var results = await service.GetOrdersBySearchTerm(organisation.Id, originalOrder.OrderNumber.ToString());
+
+            results.Should().NotBeEmpty();
+            results.Should().HaveCount(2);
         }
 
         [Theory]

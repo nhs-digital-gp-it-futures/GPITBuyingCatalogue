@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
     {
         [Theory]
         [CommonAutoData]
-        public static void CalculateTotalCost_FlatPrice_SingleFixed_Ignores_Quantity(IFixture fixture)
+        public static void CostForBillingPeriod_FlatPrice_SingleFixed_Ignores_Quantity(IFixture fixture)
         {
             var quantity = 3587;
             var price = 3.14M;
@@ -27,14 +27,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             OrderItem orderItem = BuildOrderItem(fixture, quantity, new[] { tier }, calculationType);
 
-            var result = orderItem.OrderItemPrice.CalculateTotalCost(orderItem.TotalQuantity);
+            var result = orderItem.OrderItemPrice.CostForBillingPeriod(orderItem.TotalQuantity);
 
             result.Should().Be(price);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void CalculateTotalCostPerTier_FlatPrice_SingleFixed_Ignores_Quantity(IFixture fixture)
+        public static void CostPerTierForBillingPeriod_FlatPrice_SingleFixed_Ignores_Quantity(IFixture fixture)
         {
             var quantity = 3587;
             var cost = 3.14M;
@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             OrderItem orderItem = BuildOrderItem(fixture, quantity, new[] { tier }, calculationType);
 
-            var result = orderItem.OrderItemPrice.CalculateTotalCostPerTier(orderItem.TotalQuantity);
+            var result = orderItem.OrderItemPrice.CostPerTierForBillingPeriod(orderItem.TotalQuantity);
 
             var expected = new PriceCalculationModel(1, quantity, price, cost);
 
@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
         [Theory]
         [CommonAutoData]
-        public static void CalculateTotalCost_FlatPrice_Volume_Uses_Quantity(IFixture fixture)
+        public static void CostForBillingPeriod_FlatPrice_Volume_Uses_Quantity(IFixture fixture)
         {
             var quantity = 3587;
             var price = 3.14M;
@@ -66,14 +66,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             OrderItem orderItem = BuildOrderItem(fixture, quantity, new[] { tier }, calculationType);
 
-            var result = orderItem.OrderItemPrice.CalculateTotalCost(orderItem.TotalQuantity);
+            var result = orderItem.OrderItemPrice.CostForBillingPeriod(orderItem.TotalQuantity);
 
             result.Should().Be(quantity * price);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void CalculateTotalCostPerTier_FlatPrice_Volume_Uses_Quantity(IFixture fixture)
+        public static void CostPerTierForBillingPeriod_FlatPrice_Volume_Uses_Quantity(IFixture fixture)
         {
             var quantity = 3587;
             var price = 3.14M;
@@ -84,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             OrderItem orderItem = BuildOrderItem(fixture, quantity, new[] { tier }, calculationType);
 
-            var result = orderItem.OrderItemPrice.CalculateTotalCostPerTier(orderItem.TotalQuantity);
+            var result = orderItem.OrderItemPrice.CostPerTierForBillingPeriod(orderItem.TotalQuantity);
 
             var expected = new PriceCalculationModel(1, quantity, price, cost);
 
@@ -97,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         [CommonInlineAutoData(500, 3.14)]
         [CommonInlineAutoData(3587, 2)]
         [CommonInlineAutoData(7210, 1.5)]
-        public static void CalculateTotalCost_Tiered_SingleFixed_Ignores_Quantity(
+        public static void CostForBillingPeriod_Tiered_SingleFixed_Ignores_Quantity(
             int quantity,
             decimal expected,
             IFixture fixture)
@@ -113,7 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             OrderItem orderItem = BuildOrderItem(fixture, quantity, tiers, calculationType);
 
-            var result = orderItem.OrderItemPrice.CalculateTotalCost(orderItem.TotalQuantity);
+            var result = orderItem.OrderItemPrice.CostForBillingPeriod(orderItem.TotalQuantity);
 
             result.Should().Be(expected);
         }
@@ -122,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         [CommonInlineAutoData(500, 1, 3.14)]
         [CommonInlineAutoData(3587, 2, 2)]
         [CommonInlineAutoData(7210, 3, 1.5)]
-        public static void CalculateTotalCostPerTier_Tiered_SingleFixed_Ignores_Quantity(
+        public static void CostPerTierForBillingPeriod_Tiered_SingleFixed_Ignores_Quantity(
             int quantity,
             int tierId,
             decimal expectedCost,
@@ -139,7 +139,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             OrderItem orderItem = BuildOrderItem(fixture, quantity, tiers, calculationType);
 
-            var result = orderItem.OrderItemPrice.CalculateTotalCostPerTier(orderItem.TotalQuantity);
+            var result = orderItem.OrderItemPrice.CostPerTierForBillingPeriod(orderItem.TotalQuantity);
 
             var template = new List<PriceCalculationModel>()
             {
@@ -159,7 +159,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         [CommonInlineAutoData(500, 500 * 3.14)]
         [CommonInlineAutoData(3587, 3587 * 2)]
         [CommonInlineAutoData(7210, 7210 * 1.5)]
-        public static void CalculateTotalCost_Tiered_Volume_Uses_Quantity(
+        public static void CostForBillingPeriod_Tiered_Volume_Uses_Quantity(
             int quantity,
             decimal expected,
             IFixture fixture)
@@ -175,7 +175,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             OrderItem orderItem = BuildOrderItem(fixture, quantity, tiers, calculationType);
 
-            var result = orderItem.OrderItemPrice.CalculateTotalCost(orderItem.TotalQuantity);
+            var result = orderItem.OrderItemPrice.CostForBillingPeriod(orderItem.TotalQuantity);
 
             result.Should().Be(expected);
         }
@@ -184,7 +184,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         [CommonInlineAutoData(500, 1, 500 * 3.14)]
         [CommonInlineAutoData(3587, 2, 3587 * 2)]
         [CommonInlineAutoData(7210, 3, 7210 * 1.5)]
-        public static void CalculateTotalCostPerTier_Tiered_Volume_Uses_Quantity(
+        public static void CostPerTierForBillingPeriod_Tiered_Volume_Uses_Quantity(
             int quantity,
             int tierId,
             decimal expectedCost,
@@ -201,7 +201,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             OrderItem orderItem = BuildOrderItem(fixture, quantity, tiers, calculationType);
 
-            var result = orderItem.OrderItemPrice.CalculateTotalCostPerTier(orderItem.TotalQuantity);
+            var result = orderItem.OrderItemPrice.CostPerTierForBillingPeriod(orderItem.TotalQuantity);
 
             var template = new List<PriceCalculationModel>()
             {
@@ -224,7 +224,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         [CommonInlineAutoData(4999, (999 * 3.14) + (4000 * 2))]
         [CommonInlineAutoData(7210, (999 * 3.14) + (4000 * 2) + (2211 * 1.5))]
         [CommonInlineAutoData(10000, (999 * 3.14) + (4000 * 2) + (5001 * 1.5))]
-        public static void CalculateTotalCost_Tiered_Cumulative_Splits_Quantity_By_Tiers(
+        public static void CostForBillingPeriod_Tiered_Cumulative_Splits_Quantity_By_Tiers(
             int quantity,
             decimal expected,
             IFixture fixture)
@@ -240,7 +240,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             OrderItem orderItem = BuildOrderItem(fixture, quantity, tiers, calculationType);
 
-            var result = orderItem.OrderItemPrice.CalculateTotalCost(orderItem.TotalQuantity);
+            var result = orderItem.OrderItemPrice.CostForBillingPeriod(orderItem.TotalQuantity);
 
             result.Should().Be(expected);
         }
@@ -252,7 +252,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         [CommonInlineAutoData(4999, new[] { 999, 4000 })]
         [CommonInlineAutoData(7210, new[] { 999, 4000, 2211 })]
         [CommonInlineAutoData(10000, new[] { 999, 4000, 5001 })]
-        public static void CalculateTotalCostPerTier_Tiered_Cumulative_Splits_Quantity_By_Tiers(
+        public static void CostPerTierForBillingPeriod_Tiered_Cumulative_Splits_Quantity_By_Tiers(
             int quantity,
             int[] quantitySplits,
             IFixture fixture)
@@ -268,7 +268,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             OrderItem orderItem = BuildOrderItem(fixture, quantity, tiers, calculationType);
 
-            var result = orderItem.OrderItemPrice.CalculateTotalCostPerTier(orderItem.TotalQuantity);
+            var result = orderItem.OrderItemPrice.CostPerTierForBillingPeriod(orderItem.TotalQuantity);
 
             var template = new List<PriceCalculationModel>()
             {
@@ -407,7 +407,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             Order order = BuildOrder(fixture, maximumTerm, new[] { orderItem }, commencementDate);
 
-            var amendedOrder = order.BuidAmendment(2);
+            var amendedOrder = order.BuildAmendment(2);
             amendedOrder.OrderItems = new HashSet<OrderItem> { amendedOrderItem };
 
             var orderWrapper = new OrderWrapper(new[] { order, amendedOrder });

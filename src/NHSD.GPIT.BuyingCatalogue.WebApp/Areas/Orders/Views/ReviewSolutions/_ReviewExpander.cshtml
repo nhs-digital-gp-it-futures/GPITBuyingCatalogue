@@ -5,8 +5,8 @@
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Review.ReviewExpanderModel
 @{
-    var totalCostsRolledUp = Model.OrderItemPrice.CalculateTotalCostPerTier(Model.RolledUpTotalQuantity);
-    var totalCostsPrevious = Model.OrderItemPrice.CalculateTotalCostPerTier(Model.PreviousTotalQuantity);
+    var totalCostsRolledUp = Model.OrderItemPrice.CostPerTierForBillingPeriod(Model.RolledUpTotalQuantity);
+    var totalCostsPrevious = Model.OrderItemPrice.CostPerTierForBillingPeriod(Model.PreviousTotalQuantity);
     var hasTieredPricing = Model.OrderItemPrice.CataloguePriceType is CataloguePriceType.Tiered;
     var hasServiceRecipientQuantities = Model.OrderItemPrice.IsPerServiceRecipient();
     var tableText = Model.IsAmendment ? "Pricing and total quantities" : "Pricing";

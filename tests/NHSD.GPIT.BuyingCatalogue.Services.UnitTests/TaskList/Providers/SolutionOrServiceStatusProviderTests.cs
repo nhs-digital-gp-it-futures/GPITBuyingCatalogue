@@ -91,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             order.Revision = 1;
             order.AssociatedServicesOnly = false;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
-            var amendedOrder = order.BuidAmendment(2);
+            var amendedOrder = order.BuildAmendment(2);
 
             var actual = service.Get(new OrderWrapper(new[] { order, amendedOrder }), state);
 
@@ -115,7 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             order.Revision = 1;
             order.AssociatedServicesOnly = false;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = itemType);
-            var amendedOrder = order.BuidAmendment(2);
+            var amendedOrder = order.BuildAmendment(2);
             var orderItem = order.OrderItems.First();
             var orderItemToAdd = new OrderItem
             {
@@ -188,6 +188,31 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             order.AssociatedServicesOnly = false;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+
+            var actual = service.Get(new OrderWrapper(order), state);
+
+            actual.Should().Be(expectedTaskProgress);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(1, TaskProgress.Completed)]
+        [CommonInlineAutoData(2, TaskProgress.InProgress)]
+        public static void Get_SolutionSelected_With_Everything_But_DeliveryDates_Returns_InProgress_For_An_Amendment(
+            int revision,
+            TaskProgress expectedTaskProgress,
+            Order order,
+            SolutionOrServiceStatusProvider service)
+        {
+            var state = new OrderProgress
+            {
+                CommencementDateStatus = TaskProgress.Completed,
+            };
+
+            order.Revision = revision;
+            order.AssociatedServicesOnly = false;
+            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+            order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            order.OrderItems.ForEach(x => x.OrderItemRecipients.ForEach(r => r.DeliveryDate = null));
 
             var actual = service.Get(new OrderWrapper(order), state);
 

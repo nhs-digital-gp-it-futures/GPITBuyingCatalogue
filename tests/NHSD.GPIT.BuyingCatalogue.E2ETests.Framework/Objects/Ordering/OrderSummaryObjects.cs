@@ -40,5 +40,21 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
         public static By OneYearCostSummary => ByExtensions.DataTestId("one-year-cost-summary");
 
         public static By TotalCostSummary => ByExtensions.DataTestId("total-cost-summary");
+
+        public static By DownloadPdfButton => By.LinkText("Download order form (PDF)");
+
+        public static By CompleteOrderButton => By.LinkText("Complete order");
+
+        public static By SaveForLaterButton => By.LinkText("Save for later");
+
+        public static By AssociatedServicesExpander => By.Id("associated-services-expander");
+
+        public static By DataProcessingExpander => By.Id("data-processing-expander");
+
+        public static By ImplementationPlanExpander => By.Id("implementation-plan-expander");
+
+        public static By BespokeDataProcessing => By.Id("bespoke-data-processing");
+
+        public static By BespokeImplementationPlan => By.Id("bespoke-implementation-plan");
     }
 }

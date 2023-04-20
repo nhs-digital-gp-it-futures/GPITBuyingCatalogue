@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -154,9 +155,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             dbContext.GpPracticeSizes.Add(GpPracticeSize);
             dbContext.SaveChanges();
 
-            var result = await systemUnderTest.GetNumberOfPatients(OdsCode);
+            var result = await systemUnderTest.GetNumberOfPatients(new[] { OdsCode });
 
-            result.Should().Be(NumberOfPatients);
+            result.Should().ContainSingle();
+            result.First().Should().BeEquivalentTo(GpPracticeSize);
         }
 
         [Theory]
@@ -164,9 +166,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         public static async Task GetNumberOfPatients_ValueDoesNotExist_ReturnsNull(
             GpPracticeService systemUnderTest)
         {
-            var result = await systemUnderTest.GetNumberOfPatients(OdsCode);
+            var result = await systemUnderTest.GetNumberOfPatients(new[] { OdsCode });
 
-            result.Should().BeNull();
+            result.Should().BeEmpty();
         }
     }
 }

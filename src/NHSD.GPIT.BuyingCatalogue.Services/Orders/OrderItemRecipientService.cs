@@ -74,13 +74,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
                 if (orderItemRecipient == null)
                 {
-                    context.OrderItemRecipients.Add(new OrderItemRecipient
-                    {
-                        OrderId = orderId,
-                        CatalogueItemId = catalogueItemId,
-                        OdsCode = recipient.OdsCode,
-                        DeliveryDate = deliveryDate,
-                    });
+                    context.OrderItemRecipients.Add(
+                        new OrderItemRecipient
+                        {
+                            OrderId = orderId,
+                            CatalogueItemId = catalogueItemId,
+                            OdsCode = recipient.OdsCode,
+                            DeliveryDate = deliveryDate,
+                        });
                 }
             }
 

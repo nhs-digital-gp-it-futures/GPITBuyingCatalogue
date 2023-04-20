@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using DotNet.Testcontainers.Builders;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
@@ -31,6 +33,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp;
 using OpenQA.Selenium;
 using Serilog;
 using Serilog.Events;
+using Testcontainers.MsSql;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -49,8 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
         private const string Browser = "chrome";
 
-        private SqliteConnection sqliteConnection = new($"DataSource=file:{Guid.NewGuid():N}?mode=memory&cache=shared");
-
+        private MsSqlContainer sqlContainer;
         private BrowserFactory browserFactory;
         private IHost host;
 
@@ -94,7 +96,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
         public async Task InitializeAsync()
         {
-            await sqliteConnection.OpenAsync();
+            sqlContainer = new MsSqlBuilder()
+                .WithName(Guid.NewGuid().ToString())
+                .WithPassword("Abc123Abc123")
+                .WithCleanUp(true)
+                .Build();
+
+            await sqlContainer.StartAsync();
             SetEnvVariables();
 
             host = CreateHostBuilder().Build();
@@ -118,8 +126,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
         public new async Task DisposeAsync()
         {
-            await sqliteConnection.DisposeAsync();
-
+            await sqlContainer.DisposeAsync();
+            
             browserFactory?.Dispose();
         }
 
@@ -165,7 +173,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                 services.AddDbContext<BuyingCatalogueDbContext, EndToEndDbContext>(
                     options =>
                     {
-                        options.UseSqlite(sqliteConnection.ConnectionString);
+                        options.UseSqlServer(sqlContainer.GetConnectionString());
                         options.EnableSensitiveDataLogging();
                     });
 
@@ -173,11 +181,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                 var scope = sp.CreateScope();
                 var bcDb = scope.ServiceProvider.GetRequiredService<EndToEndDbContext>();
 
-                bcDb.Database.EnsureDeleted();
                 bcDb.Database.EnsureCreated();
 
                 try
                 {
+                    OdsOrganisationsSeedData.Initialize(bcDb);
                     RolesSeedData.Initialize(bcDb);
                     UserSeedData.Initialize(bcDb);
                     BuyingCatalogueSeedData.Initialize(bcDb);
@@ -214,7 +222,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
         private void SetEnvVariables()
         {
-            SetEnvironmentVariable(nameof(BC_DB_CONNECTION), sqliteConnection.ConnectionString);
+            SetEnvironmentVariable(nameof(BC_DB_CONNECTION), sqlContainer.GetConnectionString());
 
             SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "E2ETest");
 

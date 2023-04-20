@@ -228,7 +228,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             return output;
         }
 
-        public Order BuidAmendment(int newRevision)
+        public Order BuildAmendment(int newRevision)
         {
             return new Order
             {

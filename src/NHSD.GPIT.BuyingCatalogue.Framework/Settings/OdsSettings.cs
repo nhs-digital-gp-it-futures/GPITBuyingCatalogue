@@ -13,8 +13,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
 
         public string GpPracticeRoleId { get; set; }
 
-        public int GetChildOrganisationSearchLimit { get; set; }
+        public string IcbRoleId { get; set; }
 
-        public bool UseTrud { get; set; }
+        public string SubLocationRoleId { get; set; }
+
+        public string IsCommissionedByRelType { get; set; }
+
+        public string InGeographyOfRelType { get; set; }
+
+        public int GetChildOrganisationSearchLimit { get; set; }
     }
 }

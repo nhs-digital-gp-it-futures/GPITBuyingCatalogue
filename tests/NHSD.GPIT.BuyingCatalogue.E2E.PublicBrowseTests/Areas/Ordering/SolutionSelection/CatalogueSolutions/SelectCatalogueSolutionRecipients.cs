@@ -84,6 +84,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
         [Fact]
         public void SelectCatalogueSolutionRecipients_NoSelectionMade_DisplaysError()
         {
+            CommonActions.UncheckAllCheckboxes();
+
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(

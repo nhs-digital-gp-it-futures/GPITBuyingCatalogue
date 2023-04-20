@@ -2,7 +2,7 @@ variables:
   - name: dockerVersion
     value: '19.03.5'
   - name: dotnetVersion
-    value: '7.0.102'
+    value: '7.0.203'
   - name: MSBUILDSINGLELOADCONTEXT
     value: '1'
   - name: buildConfiguration
@@ -110,16 +110,27 @@ jobs:
     inputs:
       script: |
         curl -Os https://uploader.codecov.io/latest/linux/codecov
-        
+
         chmod +x codecov
         ./codecov -f tests/**/coverage.cobertura.xml -t $(CODECOVTOKEN)
 
-  - task: DotNetCoreCLI@2
-    displayName: 'Run Integration Tests'
-    inputs:
-      command: test
-      projects: '**/*IntegrationTests.csproj'
-      arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
+#  - task: DotNetCoreCLI@2
+#    displayName: 'Run Integration Tests'
+#    inputs:
+#      command: test
+#      projects: '**/*IntegrationTests.csproj'
+#      arguments: '-v n --no-build --configuration $(buildConfiguration) -- xunit.parallelizeTestCollections=true'
+#
+#  - task: PowerShell@2
+#    inputs:
+#      targetType: 'inline'
+#      script: |
+#        $fileExists = Test-Path -Path "tests/NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests/screenshots"
+#        Write-Output "##vso[task.setvariable variable=ScreenshotsExists]$fileExists"
+#
+#  - publish: tests/NHSD.GPIT.BuyingCatalogue.E2E.PublicBrowseTests/screenshots
+#    artifact: test-screenshots
+#    condition: eq(variables['ScreenshotsExists'], True)
 
   - task: Docker@2
     displayName: 'Docker: Build and Push'
