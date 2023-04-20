@@ -730,10 +730,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
+        public static async Task Post_SetPublicationStatus_SameStatus_ReturnsRedirectResult(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] Mock<ISolutionPublicationStatusService> publicationStatusService,
+            CatalogueSolutionsController controller)
+        {
+            var catalogueItem = solution.CatalogueItem;
+            catalogueItem.PublishedStatus = PublicationStatus.Draft;
+
+            var manageCatalogueSolutionModel = new ManageCatalogueSolutionModel { SelectedPublicationStatus = catalogueItem.PublishedStatus };
+
+            solutionsService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
+
+            var actual = (await controller.SetPublicationStatus(catalogueItem.Id, manageCatalogueSolutionModel)).As<RedirectToActionResult>();
+
+            publicationStatusService.VerifyNoOtherCalls();
+
+            actual.Should().NotBeNull();
+            actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.Index));
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static async Task Post_SetPublicationStatus_CallsSavePublicationStatus(
             Solution solution,
             [Frozen] Mock<ISolutionsService> mockSolutionService,
-            [Frozen] Mock<IPublicationStatusService> mockPublicationStatusService,
+            [Frozen] Mock<ISolutionPublicationStatusService> mockPublicationStatusService,
             CatalogueSolutionsController controller)
         {
             var catalogueItem = solution.CatalogueItem;
@@ -747,24 +771,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             await controller.SetPublicationStatus(catalogueItem.Id, manageCatalogueSolutionModel);
 
             mockPublicationStatusService.Verify(s => s.SetPublicationStatus(catalogueItem.Id, manageCatalogueSolutionModel.SelectedPublicationStatus));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_SetPublicationStatus_ClearsFilterCache(
-            Solution solution,
-            [Frozen] Mock<ISolutionsService> mockSolutionService,
-            CatalogueSolutionsController controller)
-        {
-            var catalogueItem = solution.CatalogueItem;
-            catalogueItem.PublishedStatus = PublicationStatus.Draft;
-
-            var manageCatalogueSolutionModel = new ManageCatalogueSolutionModel { SelectedPublicationStatus = PublicationStatus.Published };
-
-            mockSolutionService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
-                .ReturnsAsync(catalogueItem);
-
-            await controller.SetPublicationStatus(catalogueItem.Id, manageCatalogueSolutionModel);
         }
 
         [Theory]
