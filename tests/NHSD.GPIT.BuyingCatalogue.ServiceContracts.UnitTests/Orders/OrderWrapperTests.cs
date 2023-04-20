@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using AutoFixture;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Xunit;
@@ -33,6 +31,63 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
             orderWrapper.Order.Description.Should().Be($"Edited-{order.Description}");
             orderWrapper.RolledUp.Revision.Should().Be(2);
             orderWrapper.RolledUp.Description.Should().Be(order.Description);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void OrderWrapper_FundingTypesForItem_Returnds_None_When_No_Funding(CatalogueItem catalogueItem, IFixture fixture)
+        {
+            OrderItem orderItem = BuildOrderItem(fixture, catalogueItem, null);
+
+            Order order = BuildOrder(fixture, new[] { orderItem });
+
+            var orderWrapper = new OrderWrapper(new[] { order });
+
+            var result = orderWrapper.FundingTypesForItem(catalogueItem.Id);
+
+            result.Should()
+                .NotBeEmpty()
+                .And.BeEquivalentTo(new OrderItemFundingType[] { OrderItemFundingType.None });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void OrderWrapper_FundingTypesForItem_Returnds_Multiple(CatalogueItem catalogueItem, IFixture fixture)
+        {
+            OrderItem orderItem = BuildOrderItem(fixture, catalogueItem, OrderItemFundingType.LocalFunding);
+            OrderItem amendedOrderItem = BuildOrderItem(fixture, catalogueItem, OrderItemFundingType.MixedFunding);
+
+            Order order = BuildOrder(fixture, new[] { orderItem });
+            var amendedOrder = order.BuildAmendment(2);
+            amendedOrder.OrderItems = new HashSet<OrderItem> { amendedOrderItem };
+
+            var orderWrapper = new OrderWrapper(new[] { order, amendedOrder });
+
+            var result = orderWrapper.FundingTypesForItem(catalogueItem.Id);
+
+            result.Should()
+                .NotBeEmpty()
+                .And.BeEquivalentTo(new OrderItemFundingType[] { OrderItemFundingType.LocalFunding, OrderItemFundingType.MixedFunding });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void OrderWrapper_FundingTypesForItem_Distinct_Result(CatalogueItem catalogueItem, IFixture fixture)
+        {
+            OrderItem orderItem = BuildOrderItem(fixture, catalogueItem, OrderItemFundingType.LocalFunding);
+            OrderItem amendedOrderItem = BuildOrderItem(fixture, catalogueItem, OrderItemFundingType.LocalFunding);
+
+            Order order = BuildOrder(fixture, new[] { orderItem });
+            var amendedOrder = order.BuildAmendment(2);
+            amendedOrder.OrderItems = new HashSet<OrderItem> { amendedOrderItem };
+
+            var orderWrapper = new OrderWrapper(new[] { order, amendedOrder });
+
+            var result = orderWrapper.FundingTypesForItem(catalogueItem.Id);
+
+            result.Should()
+                .NotBeEmpty()
+                .And.BeEquivalentTo(new OrderItemFundingType[] { OrderItemFundingType.LocalFunding });
         }
 
         [Theory]
@@ -70,7 +125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
         private static OrderItem BuildOrderItem(
             IFixture fixture,
             CatalogueItem catalogueItem,
-            OrderItemFundingType fundingType)
+            OrderItemFundingType? fundingType)
         {
             var quantity = 1;
 
@@ -83,10 +138,12 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
                 .With(r => r.Quantity, itemPrice.IsPerServiceRecipient() ? quantity : null)
                 .Create();
 
-            var funding = fixture.Build<OrderItemFunding>()
+            var funding = fundingType.HasValue
+                ? fixture.Build<OrderItemFunding>()
                 .Without(p => p.OrderItem)
                 .With(f => f.OrderItemFundingType, fundingType)
-                .Create();
+                .Create()
+                : null;
 
             var orderItem = fixture.Build<OrderItem>()
                 .Without(i => i.OrderItemFunding)

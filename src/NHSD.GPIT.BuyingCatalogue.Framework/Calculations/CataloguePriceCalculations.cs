@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -10,13 +11,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
 {
     public static class CataloguePriceCalculations
     {
-        public static decimal CalculateTotalCost(this IPrice price, int quantity)
+        public static decimal CostForBillingPeriod(this IPrice price, int quantity)
         {
-            var costPerTier = CalculateTotalCostPerTier(price, quantity);
+            var costPerTier = CostPerTierForBillingPeriod(price, quantity);
             return costPerTier.Sum(pcm => pcm.Cost);
         }
 
-        public static IList<PriceCalculationModel> CalculateTotalCostPerTier(this IPrice price, int quantity)
+        public static IList<PriceCalculationModel> CostPerTierForBillingPeriod(this IPrice price, int quantity)
         {
             if (price == null)
                 return new List<PriceCalculationModel>();
@@ -32,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
         public static decimal CalculateOneOffCost(this IPrice price, int quantity)
         {
             return price?.BillingPeriod is null
-                ? CalculateTotalCost(price, quantity)
+                ? CostForBillingPeriod(price, quantity)
                 : decimal.Zero;
         }
 
@@ -43,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
                 return decimal.Zero;
             }
 
-            var cost = CalculateTotalCost(price, quantity);
+            var cost = CostForBillingPeriod(price, quantity);
 
             return price.BillingPeriod == TimeUnit.PerMonth
                 ? cost
@@ -57,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
                 return decimal.Zero;
             }
 
-            var cost = CalculateTotalCost(price, quantity);
+            var cost = CostForBillingPeriod(price, quantity);
 
             return price.BillingPeriod == TimeUnit.PerYear
                 ? cost
@@ -117,8 +118,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
 
         public static decimal TotalCost(this OrderWrapper orderWrapper, bool roundResult = false)
         {
-            var total = (orderWrapper?.Previous?.TotalCost() ?? 0)
-                + (orderWrapper?.Order?.TotalCostForAmendment() ?? 0);
+            if (orderWrapper == null)
+            {
+                return decimal.Zero;
+            }
+
+            var total = orderWrapper.IsAmendment
+                ? (orderWrapper.Previous?.TotalCost() ?? decimal.Zero) + (orderWrapper.Order?.TotalCostForAmendment() ?? decimal.Zero)
+                : orderWrapper.Order?.TotalCost() ?? decimal.Zero;
 
             if (roundResult)
             {
@@ -191,9 +198,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
                 return 0;
             }
 
-            var deliveryDate = orderItem.OrderItemRecipients.First().DeliveryDate.Value;
-            var term = endDate.RemainingTerm(deliveryDate);
-            return term;
+            var deliveryDate = orderItem.OrderItemRecipients.First().DeliveryDate;
+            if (deliveryDate.HasValue)
+            {
+                var term = endDate.RemainingTerm(deliveryDate.Value);
+                return term;
+            }
+
+            return 0;
         }
 
         private static List<PriceCalculationModel> CalculateCostCumulative(IPrice price, int quantity)

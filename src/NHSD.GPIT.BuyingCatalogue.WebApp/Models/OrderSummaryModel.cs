@@ -1,5 +1,8 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
 {
@@ -9,13 +12,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
         {
         }
 
-        public OrderSummaryModel(Order order, ImplementationPlan defaultImplementationPlan)
+        public OrderSummaryModel(OrderWrapper orderWrapper, ImplementationPlan defaultImplementationPlan)
         {
-            Order = order;
+            OrderWrapper = orderWrapper;
             DefaultImplementationPlan = defaultImplementationPlan;
         }
 
-        public Order Order { get; set; }
+        public OrderWrapper OrderWrapper { get; }
+
+        public CallOffId CallOffId => OrderWrapper.Order.CallOffId;
+
+        public Order Order => OrderWrapper.Order;
+
+        public Order Previous => OrderWrapper.Previous;
+
+        public Order RolledUp => OrderWrapper.RolledUp;
 
         public ImplementationPlan DefaultImplementationPlan { get; set; }
 
@@ -28,5 +39,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
         public bool UseDefaultDataProcessing => Order?.ContractFlags?.UseDefaultDataProcessing == true;
 
         public bool UseDefaultImplementationPlan => Order?.ContractFlags?.UseDefaultImplementationPlan == true;
+
+        public FundingTypeDescriptionModel FundingTypeDescription(CatalogueItemId catalogueItemId)
+        {
+            return new FundingTypeDescriptionModel(OrderWrapper.FundingTypesForItem(catalogueItemId));
+        }
     }
 }

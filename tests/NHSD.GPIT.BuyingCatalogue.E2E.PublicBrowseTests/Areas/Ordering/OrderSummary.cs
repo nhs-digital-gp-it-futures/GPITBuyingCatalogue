@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Utils.Files;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.Extensions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -18,9 +22,11 @@ using Xunit;
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 {
     [Collection(nameof(OrderingCollection))]
-    public class OrderSummary : BuyerTestBase
+    public class OrderSummary : BuyerTestBase, IDisposable
     {
         private const string InternalOrgId = "CG-03F";
+        private const int OrderId = 90009;
+        private static readonly CallOffId CallOffId = new(OrderId, 1);
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
@@ -55,8 +61,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                   nameof(OrderController.Summary),
                   parameters);
 
-            CommonActions.PageTitle().Should().Be($"Review and complete your order summary - {order.CallOffId}".FormatForComparison());
-            CommonActions.LedeText().Should().Be("Review your order summary before completing it. Once the order summary is completed, you'll be unable to make changes.".FormatForComparison());
+            CommonActions.PageTitle().Should().Be($"Review order summary - {order.CallOffId}".FormatForComparison());
+            CommonActions.LedeText().Should().Be("Review the items you’ve added to your order before completing it.".FormatForComparison());
 
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.OrderIdSummary).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.OrderDescriptionSummary).Should().BeTrue();
@@ -78,7 +84,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.OneYearCostSummary).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.TotalCostSummary).Should().BeTrue();
 
-            CommonActions.ContinueButtonDisplayed().Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.ImplementationPlanExpander).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.BespokeImplementationPlan).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.AssociatedServicesExpander).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.DataProcessingExpander).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.BespokeDataProcessing).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.DownloadPdfButton).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.SaveForLaterButton).Should().BeTrue();
+            CommonActions.SaveButtonDisplayed().Should().BeTrue();
 
             RemoveOrder(order);
         }
@@ -208,6 +221,223 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             RemoveOrder(order);
         }
+
+        [Fact]
+        public void DefaultImplementationPlan_AllSectionsDisplayed()
+        {
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(InternalOrgId), InternalOrgId },
+                { nameof(CallOffId), CallOffId.ToString() },
+            };
+
+            NavigateToUrl(
+                typeof(OrderController),
+                nameof(OrderController.Summary),
+                parameters);
+
+            var context = GetEndToEndDbContext();
+            var flags = context.GetContractFlags(OrderId);
+
+            flags.UseDefaultImplementationPlan = true;
+
+            context.SaveChanges();
+
+            Driver.Navigate().Refresh();
+
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.ImplementationPlanExpander).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.BespokeImplementationPlan).Should().BeFalse();
+        }
+
+        [Fact]
+        public void DefaultDataProcessing_AllSectionsDisplayed()
+        {
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(InternalOrgId), InternalOrgId },
+                { nameof(CallOffId), CallOffId.ToString() },
+            };
+
+            NavigateToUrl(
+                typeof(OrderController),
+                nameof(OrderController.Summary),
+                parameters);
+
+            var context = GetEndToEndDbContext();
+            var flags = context.GetContractFlags(OrderId);
+
+            flags.UseDefaultDataProcessing = true;
+
+            context.SaveChanges();
+
+            Driver.Navigate().Refresh();
+
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.DataProcessingExpander).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.BespokeDataProcessing).Should().BeFalse();
+        }
+
+        [Fact]
+        public void ClickSaveForLaterButton_ExpectedResult()
+        {
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(InternalOrgId), InternalOrgId },
+                { nameof(CallOffId), CallOffId.ToString() },
+            };
+
+            NavigateToUrl(
+                typeof(OrderController),
+                nameof(OrderController.Summary),
+                parameters);
+
+            CommonActions.ClickLinkElement(OrderSummaryObjects.SaveForLaterButton);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(DashboardController),
+                nameof(DashboardController.Organisation)).Should().BeTrue();
+        }
+
+        [Fact]
+        public void ClickCompleteOrder_ExpectedResult()
+        {
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(InternalOrgId), InternalOrgId },
+                { nameof(CallOffId), CallOffId.ToString() },
+            };
+
+            NavigateToUrl(
+                typeof(OrderController),
+                nameof(OrderController.Summary),
+                parameters);
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrderController),
+                nameof(OrderController.Completed)).Should().BeTrue();
+        }
+
+        [Fact]
+        public void ClickDownloadPdfButton_ExpectedResult()
+        {
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(InternalOrgId), InternalOrgId },
+                { nameof(CallOffId), CallOffId.ToString() },
+            };
+
+            NavigateToUrl(
+                typeof(OrderController),
+                nameof(OrderController.Summary),
+                parameters);
+
+            string filePath = @$"{Path.GetTempPath()}order-summary-in-progress-C0{OrderId}-01.pdf";
+
+            FileHelper.DeleteDownloadFile(filePath);
+
+            CommonActions.ClickLinkElement(OrderSummaryObjects.DownloadPdfButton);
+
+            FileHelper.WaitForDownloadFile(filePath);
+
+            FileHelper.FileExists(filePath).Should().BeTrue();
+            FileHelper.FileLength(filePath).Should().BePositive();
+            FileHelper.ValidateIsPdf(filePath);
+
+            FileHelper.DeleteDownloadFile(filePath);
+        }
+
+        [Fact]
+        public void OrderNotReadyToComplete_ClickContinue_ExpectedResult()
+        {
+            const int orderId = 90001;
+
+            NavigateToUrl(
+                typeof(OrderController),
+                nameof(OrderController.Summary),
+                Parameters2(orderId));
+
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.CompleteOrderButton).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(CommonSelectors.ContinueButton).Should().BeTrue();
+
+            CommonActions.ClickContinue();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrderController),
+                nameof(OrderController.Order)).Should().BeTrue();
+        }
+
+        [Fact]
+        public void OrderCompleted_ClickContinue_ExpectedResult()
+        {
+            const int orderId = 90010;
+            var parameters = new Dictionary<string, string>
+            {
+                { nameof(InternalOrgId), InternalOrgId },
+                { nameof(CallOffId), CallOffId.ToString() },
+            };
+
+            NavigateToUrl(
+                typeof(OrderController),
+                nameof(OrderController.Summary),
+                Parameters2(orderId));
+
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.CompleteOrderButton).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(CommonSelectors.ContinueButton).Should().BeTrue();
+
+            CommonActions.ClickContinue();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(DashboardController),
+                nameof(DashboardController.Organisation)).Should().BeTrue();
+        }
+
+        [Fact]
+        public void OrderCompleted_ClickDownloadPdfButton_ExpectedResult()
+        {
+            const int orderId = 90010;
+
+            NavigateToUrl(
+                typeof(OrderController),
+                nameof(OrderController.Summary),
+                Parameters2(orderId));
+
+            string filePath = @$"{Path.GetTempPath()}order-summary-completed-C0{orderId}-01.pdf";
+
+            FileHelper.DeleteDownloadFile(filePath);
+
+            CommonActions.ClickLinkElement(OrderSummaryObjects.DownloadPdfButton);
+
+            FileHelper.WaitForDownloadFile(filePath);
+
+            FileHelper.FileExists(filePath).Should().BeTrue();
+            FileHelper.FileLength(filePath).Should().BePositive();
+            FileHelper.ValidateIsPdf(filePath);
+
+            FileHelper.DeleteDownloadFile(filePath);
+        }
+
+        public void Dispose()
+        {
+            var context = GetEndToEndDbContext();
+            var order = context.Orders.First(x => x.Id == OrderId);
+            order.Completed = null;
+
+            var flags = context.GetContractFlags(OrderId);
+
+            flags.HasSpecificRequirements = null;
+            flags.UseDefaultBilling = null;
+            flags.UseDefaultDataProcessing = null;
+            flags.UseDefaultImplementationPlan = null;
+
+            context.SaveChanges();
+        }
+
+        private static Dictionary<string, string> Parameters2(int orderId) => new()
+        {
+            { nameof(InternalOrgId), InternalOrgId },
+            { nameof(CallOffId), $"{new CallOffId(orderId, 1)}" },
+        };
 
         private static OrderItemFunding CreateOrderItemFunding(OrderItem orderItem)
             => new()

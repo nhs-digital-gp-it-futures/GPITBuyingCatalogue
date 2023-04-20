@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -7,16 +8,20 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Routing;
 using Moq;
+using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
@@ -31,6 +36,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
     public static class OrderControllerTests
     {
         private const int UserId = 1;
+
+        [Fact]
+        public static void ClassIsCorrectlyDecorated()
+        {
+            typeof(OrderController).Should().BeDecoratedWith<AuthorizeAttribute>();
+            typeof(OrderController).Should().BeDecoratedWith<AreaAttribute>(a => a.RouteValue == "Orders");
+        }
 
         [Fact]
         public static void Constructors_VerifyGuardClauses()
@@ -99,6 +111,101 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(OrderController.Summary));
             actualResult.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(OrderController).ControllerName());
             actualResult.As<RedirectToActionResult>().RouteValues.Should().BeEquivalentTo(new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", order.CallOffId } });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_Summary_ExpectedResult(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            ImplementationPlan defaultPlan,
+            [Frozen] Mock<IImplementationPlanService> implementationPlanService,
+            [Frozen] Mock<IOrderService> orderService,
+            OrderController controller)
+        {
+            implementationPlanService
+                .Setup(x => x.GetDefaultImplementationPlan())
+                .ReturnsAsync(defaultPlan);
+
+            orderService
+                .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            var result = await controller.Summary(internalOrgId, order.CallOffId);
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+            var expected = new SummaryModel(new OrderWrapper(order), internalOrgId, defaultPlan);
+
+            actualResult.Model.Should().BeEquivalentTo(
+                expected,
+                x => x.Excluding(m => m.BackLink)
+                      .Excluding(m => m.Title)
+                      .Excluding(m => m.AdviceText)
+                      .Excluding(m => m.CanBeAmended));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_Summary_CannotComplete_ExpectedResult(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            ImplementationPlan defaultPlan,
+            [Frozen] Mock<IImplementationPlanService> implementationPlanService,
+            [Frozen] Mock<IOrderService> orderService,
+            OrderController controller)
+        {
+            order.Description = null;
+
+            implementationPlanService
+                .Setup(x => x.GetDefaultImplementationPlan())
+                .ReturnsAsync(defaultPlan);
+
+            orderService
+                .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            var result = await controller.SummaryComplete(
+                internalOrgId,
+                order.CallOffId);
+
+            var modelState = result.Should().BeOfType<ViewResult>().Subject.ViewData.ModelState;
+
+            modelState.ValidationState.Should().Be(ModelValidationState.Invalid);
+            modelState.Keys.First().Should().Be(OrderController.ErrorKey);
+            modelState.Values.First().Errors.First().ErrorMessage.Should().Be(OrderController.ErrorMessage);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_Summary_CanComplete_ExpectedResult(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> orderService,
+            OrderController controller)
+        {
+            order.Completed = null;
+            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+            order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+
+            orderService
+                .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            orderService
+                .Setup(x => x.CompleteOrder(order.CallOffId, internalOrgId, 1))
+                .Verifiable();
+
+            var result = await controller.SummaryComplete(internalOrgId, order.CallOffId);
+
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actualResult.ControllerName.Should().Be(typeof(OrderController).ControllerName());
+            actualResult.ActionName.Should().Be(nameof(OrderController.Completed));
+            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
+                { "callOffId", order.CallOffId },
+            });
         }
 
         [Theory]
