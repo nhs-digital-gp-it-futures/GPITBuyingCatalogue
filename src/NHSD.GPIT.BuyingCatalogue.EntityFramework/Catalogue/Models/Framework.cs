@@ -6,6 +6,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
     [Serializable]
     public sealed class Framework : IAudited
     {
+        //public Framework(string id, string name)
+        //{
+        //    Id = id;
+        //    Name = name;
+        //}
+
         public string Id { get; set; }
 
         public string Name { get; set; }

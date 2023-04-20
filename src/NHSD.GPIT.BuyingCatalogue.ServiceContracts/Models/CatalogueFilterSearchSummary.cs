@@ -34,5 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
         public string SelectedCapabilityIds { get; init; }
 
         public string SelectedEpicIds { get; init; }
+
+        public string SelectedFrameworkIds { get; init; }
     }
 }

@@ -1,0 +1,30 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters.AdditionalFiltersModel
+
+<form method="post">
+    <nhs-expander label-text="Framework"
+                              open="true">
+        <input type="hidden" asp-for="@Model.SelectedFrameworkIds" />
+        <nhs-radio-button-container>
+        @for (int i = 0; i < Model.FrameworkOptions.Count(); i++)
+            {
+                <nhs-radio-button asp-for="@Model.SelectedFrameworkIds"
+                              display-name="Text"
+                              value="Model.FrameworkOptions.ElementAt(i)"
+                              value-name="Model.FrameworkOptions.ElementAt(i).Value"
+                              index="i" />
+            }
+        </nhs-radio-button-container>
+    </nhs-expander>
+    <vc:nhs-secondary-button type="Primary"
+                             text="Apply additional filters"
+                             onclick="submitForm()" />
+    <nhs-submit-button text="Apply additional filters" />
+</form>
+<script>
+    function submitForm() {
+        document.querySelector('form').submit();
+    }
+</script>

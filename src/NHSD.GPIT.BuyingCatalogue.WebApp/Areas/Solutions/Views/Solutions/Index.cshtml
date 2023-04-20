@@ -1,5 +1,6 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionsModel;
@@ -165,7 +166,35 @@
             <script type="text/javascript" src="@Url.Content("~/js/SolutionSort.min.js")" asp-append-version="true"></script>
 
             <hr />
-            <div id="solutions-list">
+
+            @if (Model.SearchCriteriaApplied)
+            {
+                <div class="nhsuk-grid-column-one-third">
+                    <h2>Additional Filters</h2>
+                   <partial name="_AdditionalFilters" model = "Model.AdditionalFilters"/>
+                   
+                   <nhs-submit-button text="Save All Filters" />
+
+                <br/>
+                <a asp-area="@typeof(SolutionsController).AreaName()"
+                    asp-controller="@typeof(SolutionsController).ControllerName()"
+                    asp-action="@nameof(SolutionsController.Index)"
+                    asp-route-selectedCapabilityIds="@Model.SearchSummary.SelectedCapabilityIds"
+                    asp-route-selectedEpicIds="@Model.SearchSummary.SelectedEpicIds"
+                    asp-route-search="@Model.SearchSummary.SearchTerm">
+                    Clear additional filters
+                </a>
+                <br/>
+                <br/>
+                <a asp-area="@typeof(SolutionsController).AreaName()"
+                    asp-controller="@typeof(SolutionsController).ControllerName()"
+                    asp-action="@nameof(SolutionsController.Index)">
+                    Start a new search
+                </a>
+            </div>
+            }
+            <div class= "nhsuk-grid-column-two-thirds" id="solutions-list">
+                <h2>Results</h2>
                 @foreach (var item in Model.CatalogueItems)
                 {
                     <partial name="_SolutionSearchDisplay" model="@(item, Model.SearchSummary.CapabilitiesAndEpics)" />
@@ -194,10 +223,10 @@
             {
                 capabilityText += $" and {numberOfEpics} {GetEpicDescriptor(numberOfEpics)}";
             }
-
+            
             searchSummary.Add(capabilityText);
         }        
-
+        
         return searchSummary;
     }
 

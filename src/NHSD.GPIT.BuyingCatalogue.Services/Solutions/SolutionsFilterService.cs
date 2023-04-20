@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -34,17 +35,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             PageOptions options,
             string selectedCapabilityIds = null,
             string selectedEpicIds = null,
-            string search = null)
+            string search = null,
+            string selectedFrameworkId = null)
         {
+            //selectedFrameworkId = "DFOCVC001";
             options ??= new PageOptions();
 
             var (query, count) = string.IsNullOrWhiteSpace(selectedCapabilityIds)
                 ? NonFilteredQuery(dbContext)
-                : await FilteredQuery(dbContext, selectedCapabilityIds, selectedEpicIds);
+                : await FilteredQuery(dbContext, selectedCapabilityIds, selectedEpicIds, selectedFrameworkId);
 
             if (!string.IsNullOrWhiteSpace(search))
                 query = query.Where(ci => ci.Supplier.Name.Contains(search) || ci.Name.Contains(search));
-
             options.TotalNumberOfItems = await query.CountAsync();
 
             query = options.Sort switch
@@ -112,22 +114,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         private static async Task<(IQueryable<CatalogueItem> Query, List<CapabilitiesAndCountModel> Count)> FilteredQuery(
             BuyingCatalogueDbContext dbContext,
             string selectedCapabilityIds,
-            string selectedEpicIds)
+            string selectedEpicIds,
+            string selectedFrameworkId)
         {
             var capabilityIds = SolutionsFilterHelper.ParseCapabilityIds(selectedCapabilityIds);
-
+            var framID = selectedFrameworkId;
             var epicIds = SolutionsFilterHelper.ParseEpicIds(selectedEpicIds);
 
             var capabilityParam = CreateIdListParameter(capabilityIds, CapabilityParamName, CapabilityParamType);
             var epicParam = CreateIdListParameter(epicIds, EpicParamName, EpicParamType);
+            var frameworkIdParn = CreateIdParameter(selectedFrameworkId, "@FrameworkId", "varchar");
 
-            // old school ADO.NET baby
             using var cmd = dbContext.Database.GetDbConnection().CreateCommand();
-
             cmd.CommandText = FilterProcName;
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.Add(capabilityParam);
             cmd.Parameters.Add(epicParam);
+            cmd.Parameters.Add(frameworkIdParn);
 
             var wasOpen = cmd.Connection.State == ConnectionState.Open;
 
@@ -206,6 +209,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 Value = table,
                 TypeName = type,
             };
+        }
+
+        private static SqlParameter CreateIdParameter(string frameworkID, string paramName, string type)
+        {
+            if (string.IsNullOrEmpty(frameworkID))
+            {
+                return null;
+            }
+
+            return new SqlParameter(paramName, frameworkID);
         }
     }
 }
