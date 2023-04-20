@@ -1,0 +1,62 @@
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.FrameworkModels.FrameworksDashboardModel;
+
+@{
+    ViewBag.Title = "Manage Frameworks";
+}
+
+@section Breadcrumbs {
+
+    <nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
+        <div class="nhsuk-width-container">
+            <ol class="nhsuk-breadcrumb__list">
+                <li class="nhsuk-breadcrumb__item">
+                    <a asp-action="@nameof(HomeController.Index)"
+                       asp-controller="@typeof(HomeController).ControllerName()"
+                       class="nhsuk-breadcrumb__link">Home</a>
+                </li>
+                <li class="nhsuk-breadcrumb__item">
+                    @ViewBag.Title
+                </li>
+            </ol>
+        </div>
+    </nav>
+}
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="@ViewBag.Title" advice="Add or edit Frameworks that Catalogue Solutions can reference."/>
+
+        <vc:nhs-action-link text="Add a Framework"
+                                url="@Url.Action(nameof(FrameworksController.Add), typeof(FrameworksController).ControllerName())" />
+
+            @if (!Model.Frameworks.Any())
+            {
+                <p data-test-id="no-frameworks-text">No Frameworks have been added yet.</p>
+            }
+            else
+            {
+                <nhs-table label-text="Frameworks" data-test-id="frameworks-table">
+                    <nhs-table-column>Name</nhs-table-column>
+                    <nhs-table-column>Local Funding Only</nhs-table-column>
+                    <nhs-table-column>Action</nhs-table-column>
+
+                    @foreach (var framework in Model.Frameworks.OrderBy(x => x.ShortName))
+                    {
+                        <nhs-table-row-container>
+                            <nhs-table-cell>@framework.ShortName</nhs-table-cell>
+                            <nhs-table-cell>@framework.LocalFundingOnly.ToYesNo()</nhs-table-cell>
+                            <nhs-table-cell>
+                                <a asp-controller="@typeof(FrameworksController).ControllerName()"
+                                    asp-action="@nameof(FrameworksController.Edit)"
+                                    asp-route-frameworkId="@framework.Id">Edit</a>
+                            </nhs-table-cell>
+                        </nhs-table-row-container>
+                    }
+                </nhs-table>
+            }
+
+            <vc:nhs-secondary-button text="Continue"
+                                     type="Primary"
+                                     url="@Url.Action(nameof(HomeController.Index), typeof(HomeController).ControllerName())"/>
+    </div>
+</div>

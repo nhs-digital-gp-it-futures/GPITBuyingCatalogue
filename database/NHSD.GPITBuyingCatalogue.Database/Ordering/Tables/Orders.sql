@@ -26,7 +26,7 @@
     MaximumTerm INT NULL CONSTRAINT Order_PositiveMaximumTerm CHECK (MaximumTerm >= 0),
     AssociatedServicesOnly BIT NULL,
     [SolutionId] NVARCHAR(14) NULL,
-    SelectedFrameworkId NVARCHAR(10) NULL,
+    SelectedFrameworkId NVARCHAR(36) NULL,
     [DeliveryDate] DATE NULL,
     CONSTRAINT PK_Orders PRIMARY KEY (Id),
     CONSTRAINT FK_Orders_OrderingParty FOREIGN KEY (OrderingPartyId) REFERENCES organisations.Organisations (Id),

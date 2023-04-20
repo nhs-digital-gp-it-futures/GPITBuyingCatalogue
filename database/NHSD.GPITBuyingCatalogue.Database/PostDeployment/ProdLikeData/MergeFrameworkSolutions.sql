@@ -6,7 +6,7 @@ BEGIN
 
     CREATE TABLE #FrameworkSolutions
     (
-        FrameworkId nvarchar(10) NOT NULL,
+        FrameworkId nvarchar(36) NOT NULL,
         SolutionId nvarchar(14) NOT NULL,
         IsFoundation bit CONSTRAINT DF_FrameworkSolutions_IsFoundation DEFAULT 0 NOT NULL,
         LastUpdated datetime2(7) NOT NULL,
@@ -16,7 +16,7 @@ BEGIN
     DECLARE @bobEmail AS nvarchar(50) = N'BobSmith@email.com';
     DECLARE @bobUser AS int = (SELECT Id FROM users.AspNetUsers WHERE Email = @bobEmail);
 
-    INSERT INTO #FrameworkSolutions (FrameworkId, SolutionId, IsFoundation, LastUpdated, LastUpdatedBy) 
+    INSERT INTO #FrameworkSolutions (FrameworkId, SolutionId, IsFoundation, LastUpdated, LastUpdatedBy)
          VALUES (N'NHSDGP001', N'10000-001', 1, CAST(N'2020-03-25T07:30:18.1133333' AS datetime2), @bobUser),
                 (N'NHSDGP001', N'10000-002', 0, CAST(N'2020-04-06T10:50:03.2166667' AS datetime2), @bobUser),
                 (N'DFOCVC001', N'10000-054', 0, CAST(N'2020-04-03T12:25:59.0566667' AS datetime2), @bobUser),
@@ -49,7 +49,7 @@ BEGIN
 
     MERGE INTO catalogue.FrameworkSolutions AS TARGET
     USING #FrameworkSolutions AS SOURCE
-    ON TARGET.FrameworkId = SOURCE.FrameworkId AND TARGET.SolutionId = SOURCE.SolutionId 
+    ON TARGET.FrameworkId = SOURCE.FrameworkId AND TARGET.SolutionId = SOURCE.SolutionId
     WHEN MATCHED THEN
            UPDATE SET TARGET.IsFoundation = SOURCE.IsFoundation,
                       TARGET.LastUpdated = SOURCE.LastUpdated,
