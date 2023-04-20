@@ -26,14 +26,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
 
             if (order.SelectedFramework.LocalFundingOnly)
             {
-                OrderItemsLocalOnly = completedOrderItems.Where(oi => oi.OrderItemPrice.CalculateTotalCost(oi.TotalQuantity) != 0).ToList();
+                OrderItemsLocalOnly = completedOrderItems.Where(oi => oi.OrderItemPrice.CostForBillingPeriod(oi.TotalQuantity) != 0).ToList();
             }
             else
             {
-                OrderItemsSelectable = completedOrderItems.Where(oi => oi.OrderItemPrice.CalculateTotalCost(oi.TotalQuantity) != 0).ToList();
+                OrderItemsSelectable = completedOrderItems.Where(oi => oi.OrderItemPrice.CostForBillingPeriod(oi.TotalQuantity) != 0).ToList();
             }
 
-            OrderItemsNoFundingRequired = completedOrderItems.Where(oi => oi.OrderItemPrice.CalculateTotalCost(oi.TotalQuantity) == 0).ToList();
+            OrderItemsNoFundingRequired = completedOrderItems.Where(oi => oi.OrderItemPrice.CostForBillingPeriod(oi.TotalQuantity) == 0).ToList();
         }
 
         public Order Order { get; set; }

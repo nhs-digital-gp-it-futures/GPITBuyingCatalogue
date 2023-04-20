@@ -2,38 +2,28 @@
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions;
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrderSummaryItemModel
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders.AmendOrderItemModel;
 
-<h3>@Model.OrderItem.CatalogueItem.Name</h3>
+<h3>@Model.CatalogueItem.Name</h3>
 
 @{
-    var itemType = Model.OrderItem.CatalogueItem.CatalogueItemType.DisplayName();
-    var orderItemCostBasis = Model.OrderItem.OrderItemPrice?.BillingPeriod?.Description() ?? string.Empty;
-    var hasServiceRecipientQuantities = Model.OrderItem.OrderItemPrice?.IsPerServiceRecipient() ?? false;
-    var tierCosts = Model.OrderItem.OrderItemPrice?.CalculateTotalCostPerTier(Model.OrderItem.TotalQuantity) ?? new List<PriceCalculationModel>();
-    var tiers = Model.OrderItem.OrderItemPrice?.OrderItemPriceTiers?.OrderBy(x => x.LowerRange).ToList() ?? new List<OrderItemPriceTier>();
+    var itemType = Model.CatalogueItem.CatalogueItemType.DisplayName();
+    var orderItemCostBasis = Model.OrderItemPrice?.BillingPeriod?.Description() ?? string.Empty;
+    var hasServiceRecipientQuantities = Model.OrderItemPrice?.IsPerServiceRecipient() ?? false;
+    var tierCosts = Model.OrderItemPrice?.CostPerTierForBillingPeriod(Model.RolledUpTotalQuantity) ?? new List<PriceCalculationModel>();
+    var tiers = Model.OrderItemPrice?.OrderItemPriceTiers?.OrderBy(x => x.LowerRange).ToList() ?? new List<OrderItemPriceTier>();
 }
 
-<pdf-summary-list>
-    @if (Model.OrderItem.Quantity.HasValue)
-    {
-        <pdf-summary-list-row label-text="Quantity">
-            @($"{Model.OrderItem.Quantity:N0} {Model.OrderItem.OrderItemPrice.RangeDescription}")
-        </pdf-summary-list-row>
-    }
-
-    <pdf-summary-list-row label-text="Sub-total">
-        @($"£{Model.OrderItem.TotalCost():N2} {orderItemCostBasis}")
-    </pdf-summary-list-row>
-</pdf-summary-list>
-
-<h3>Service Recipients</h3>
+<h3>Service Recipients, planned delivery dates and quantities</h3>
 
 <table>
     <thead>
     <tr>
-        <th>Recipient</th>
-        <th>ODS code</th>
+        @if (Model.IsAmendment)
+        {
+            <th>Status</th>
+        }
+        <th>Recipient (ODS code)</th>
         <th>Item ID</th>
         <th>Planned delivery date</th>
 
@@ -44,7 +34,7 @@
     </tr>
     </thead>
 
-    @if (!(Model.OrderItem.OrderItemRecipients?.Any() ?? false))
+    @if (!(Model.OrderItemRecipients?.Any() ?? false))
     {
         <tr>
             <td style="column-span: all">No Service Recipients have been entered for this @itemType.</td>
@@ -52,21 +42,27 @@
     }
     else
     {
-        @foreach (var recipient in Model.OrderItem.OrderItemRecipients)
+        @foreach (var recipient in Model.OrderItemRecipients)
         {
             var deliveryDate = recipient.DeliveryDate.HasValue
                 ? $"{recipient.DeliveryDate.Value:d MMM yyyy}"
                 : "No date entered";
 
             <tr class="alternating">
+                @if (Model.IsAmendment)
+                {
+                    <td>
+                        @if (Model.IsServiceRecipientAdded(recipient.OdsCode))
+                        {
+                            @("Added")
+                        } 
+                    </td>
+                }
                 <td>
-                    @recipient.Recipient.Name
+                    @($"{recipient.Recipient.Name} ({recipient.Recipient.OdsCode})")
                 </td>
                 <td>
-                    @recipient.Recipient.OdsCode
-                </td>
-                <td>
-                    @($"{Model.OrderItem.Order.CallOffId}-{recipient.Recipient.OdsCode}-{ViewContext.HttpContext.NextLineId()}")
+                    @($"{Model.CallOffId}-{recipient.Recipient.OdsCode}-{ViewContext.HttpContext.NextLineId()}")
                 </td>
                 <td>
                     @deliveryDate
@@ -82,15 +78,18 @@
         }
 
         @if (hasServiceRecipientQuantities
-            && Model.OrderItem.OrderItemRecipients.Count > 1)
+            && Model.OrderItemRecipients.Count > 1)
         {
             <tr class="totals">
-                <td/>
+                @if (Model.IsAmendment)
+                {
+                    <td/>
+                }
                 <td/>
                 <td/>
                 <td/>
                 <td class="numeric total">
-                    @($"{Model.OrderItem.OrderItemRecipients.Sum(x => x.Quantity ?? 0):N0}")
+                    @($"{Model.OrderItemRecipients.Sum(x => x.Quantity ?? 0):N0}")
                 </td>
             </tr>
         }
@@ -112,14 +111,14 @@
 
             <pdf-summary-list>
                 <pdf-summary-list-row label-text="Price per unit">
-                    @($"£{tier.Price:#,###,##0.00##}") @tier.OrderItemPrice.ToPriceUnitString()
+                    @($"£{tier.Price:#,###,##0.00##}") @Model.OrderItemPrice.ToPriceUnitString()
                 </pdf-summary-list-row>
 
                 <pdf-summary-list-row label-text="Quantity">
                     @($"{tierCosts[0].Quantity:N0}")
                 </pdf-summary-list-row>
 
-                <pdf-summary-list-row label-text="Total cost @(tier.OrderItemPrice.BillingPeriod == null ? "(one-off)" : "")">
+                <pdf-summary-list-row label-text="Total cost @(Model.OrderItemPrice.BillingPeriod == null ? "(one-off)" : "")">
                     @($"£{tierCosts[0].Cost:N2}") @orderItemCostBasis
                 </pdf-summary-list-row>
             </pdf-summary-list>
@@ -143,7 +142,7 @@
                             Tier @(index + 1)
                         </td>
                         <td>
-                            @($"£{tier.Price:#,###,##0.00##}") @tier.OrderItemPrice.ToPriceUnitString()
+                            @($"£{tier.Price:#,###,##0.00##}") @Model.OrderItemPrice.ToPriceUnitString()
                         </td>
                         <td class="numeric">
                             @($"{tierCosts[index].Quantity:N0}")
@@ -171,5 +170,5 @@
 
 <div class="pdf-container">
     <h3>Funding source</h3>
-    <p style="padding-top: 8px;">@Model.OrderItem.FundingTypeDescription</p>
+    <p style="padding-top: 8px;">@Model.FundingTypeDescription</p>
 </div>
