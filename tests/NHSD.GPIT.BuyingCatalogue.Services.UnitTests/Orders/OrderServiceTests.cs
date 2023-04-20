@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             orderItem.CatalogueItem = catalogueItem;
             order.OrderItems.Clear();
-            order.OrderItems .Add(orderItem);
+            order.OrderItems.Add(orderItem);
 
             context.Orders.Add(order);
 
