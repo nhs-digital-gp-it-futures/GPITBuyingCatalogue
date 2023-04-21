@@ -174,6 +174,7 @@ public class TrudOdsServiceTests
         [Frozen] BuyingCatalogueDbContext context,
         TrudOdsService service)
     {
+        organisation.PrimaryRoleId = settings.GetPrimaryRoleId(OrganisationType.IB);
         organisation.ExternalIdentifier = grandparentOrganisation.Id;
 
         gpRoleType.Id = settings.GetPrimaryRoleId(OrganisationType.GP);

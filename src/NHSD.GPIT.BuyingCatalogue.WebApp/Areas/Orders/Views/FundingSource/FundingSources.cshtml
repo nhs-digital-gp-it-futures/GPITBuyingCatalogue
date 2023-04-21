@@ -1,7 +1,15 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models
 @using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.DetailsAndExpander
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InsetText
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.FundingSource
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using ValidationSummaryTagHelper = Microsoft.AspNetCore.Mvc.TagHelpers.ValidationSummaryTagHelper
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources.FundingSources
 @{
     ViewBag.Title = Model.Title;
@@ -11,11 +19,11 @@
     @if (Model.OrderItemsSelectable != null && Model.OrderItemsSelectable.Any())
         advice = Model.Order.IsAmendment
             ? "Provide information on how you'll be paying for the amendments you've made to the previous order."
-            : "Provide information on how you'll be paying for this order.";
+            : "Allocate the funding sources you want to use to pay for the following solutions or services.";
     else if (Model.OrderItemsLocalOnly != null && Model.OrderItemsLocalOnly.Any())
-        advice = Model.Order.SelectedFramework.LocalFundingOnly
-            ? "You can only pay for the following solutions or services with local funding due to the framework they're available from."
-            : "As you are buying for a single practice, you can only pay for this order using local funding.";
+        advice = Model.Order.OrderingParty.OrganisationType == OrganisationType.GP
+            ? "As you are buying for a single practice, you can only pay for this order using local funding."
+            : "You can only pay for the following solutions or services with local funding due to the framework they're available from.";
     else
         advice = "You do not need to pay for the following solutions or services as they’re available free of charge.";
 }
@@ -54,8 +62,7 @@
             </nhs-details>
 
             <nhs-table data-test-id="funding-sources-items-editable"
-                   label-text="Allocate funding"
-                   label-hint="Allocate the funding sources you want to use to pay for the following solutions or services.">
+                   label-text="Allocate funding">
                 <nhs-table-column>Solution or service</nhs-table-column>
                 <nhs-table-column>Total cost</nhs-table-column>
                 <nhs-table-column>Funding type</nhs-table-column>
