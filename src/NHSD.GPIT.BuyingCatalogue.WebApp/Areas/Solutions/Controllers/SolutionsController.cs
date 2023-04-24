@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             [FromQuery] string search,
             string selectedFrameworkId)
         {
-            var frameworks = await frameworkService.GetFrameworks();
+            var frameworks = await frameworkService.GetFrameworksWithActiveSolutions();
             var additionalFilters = new Models.Filters.IncludeAdditionalfiltersModel(frameworks);
             var inputOptions = new PageOptions(page, sortBy);
             var (catalogueItems, options, capabilitiesAndCount) =

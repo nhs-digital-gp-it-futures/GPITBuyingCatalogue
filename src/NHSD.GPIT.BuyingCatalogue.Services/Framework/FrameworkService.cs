@@ -17,10 +17,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public Task<List<EntityFramework.Catalogue.Models.Framework>> GetFrameworks() => dbContext.Frameworks
+        public Task<List<EntityFramework.Catalogue.Models.Framework>> GetFrameworksWithActiveSolutions() => dbContext.Frameworks
+            .Where(f => dbContext.FrameworkSolutions.Any(fs => fs.FrameworkId == f.Id))
+            .OrderBy(f => f.Id)
+            .ThenBy(f => f.Name)
             .AsNoTracking()
-            .OrderBy(x => x.Id)
-            .ThenBy(x => x.Name)
             .ToListAsync();
 
         public async Task<EntityFramework.Catalogue.Models.Framework> GetFrameworksById(string frameworkId) =>

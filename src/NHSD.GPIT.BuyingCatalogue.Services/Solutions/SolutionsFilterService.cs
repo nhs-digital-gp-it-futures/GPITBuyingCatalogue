@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
@@ -16,6 +17,7 @@ using NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 {
+    [ExcludeFromCodeCoverage]
     public sealed class SolutionsFilterService : ISolutionsFilterService
     {
         private const string ColumnName = "Id";

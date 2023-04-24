@@ -42,17 +42,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Frameworks
 
         [Theory]
         [InMemoryDbAutoData]
-        public async Task GetFrameworks_ReturnsExpected(
-            List<EntityFramework.Catalogue.Models.Framework> frameworks,
+        public async Task GetFrameworksWithActiveSolutions_ReturnsExpected(
+            EntityFramework.Catalogue.Models.Framework framework,
+            EntityFramework.Catalogue.Models.FrameworkSolution frameworkSolutions,
             [Frozen] BuyingCatalogueDbContext dbContext,
             FrameworkService service)
         {
-            dbContext.Frameworks.AddRange(frameworks);
+            dbContext.Frameworks.Add(framework);
+            dbContext.FrameworkSolutions.Add(frameworkSolutions);
             await dbContext.SaveChangesAsync();
 
-            var expectedFrameworks = frameworks.OrderBy(f => f.Id).ThenBy(f => f.Name);
+            var expectedFrameworks = dbContext.Frameworks
+                .Where(f => dbContext.FrameworkSolutions.Any(fs => fs.FrameworkId == f.Id))
+                .OrderBy(f => f.Id)
+                .ThenBy(f => f.Name);
 
-            var result = await service.GetFrameworks();
+            var result = await service.GetFrameworksWithActiveSolutions();
 
             result.Should().BeEquivalentTo(expectedFrameworks);
         }
