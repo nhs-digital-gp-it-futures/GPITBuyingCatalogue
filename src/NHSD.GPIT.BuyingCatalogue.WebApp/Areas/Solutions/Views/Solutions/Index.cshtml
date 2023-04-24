@@ -1,5 +1,6 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionsModel;
@@ -142,7 +143,7 @@
                 </a>
             </p>
 
-            @if (Model.CatalogueItems.Count == 0)
+            @if (Model.CatalogueItems.Count == 0 && !Model.AdditionalFiltersApplicable)
             {
                 <p id="no-results">
                     Try a different search term or change any filters you've selected.
@@ -165,18 +166,64 @@
             <script type="text/javascript" src="@Url.Content("~/js/SolutionSort.min.js")" asp-append-version="true"></script>
 
             <hr />
-            <div id="solutions-list">
-                @foreach (var item in Model.CatalogueItems)
-                {
-                    <partial name="_SolutionSearchDisplay" model="@(item, Model.SearchSummary.CapabilitiesAndEpics)" />
-                }
+        }
+
+            @if (Model.AdditionalFiltersApplicable)
+            {
+                <div class="nhsuk-grid-column-one-third" >
+                    <h2>Additional Filters</h2>
+                    <partial name="IncludeAdditionalfilters" model="@(Model.AdditionalFilters)" />
+                    <partial name="IncludeAdditionalfilters" model="@(Model.AdditionalFilters)" />
+
+                <nhs-submit-button style = "width:100%"text="Save All Filters"/>
+                <br/>
+                <a asp-area="@typeof(SolutionsController).AreaName()"
+                    asp-controller="@typeof(SolutionsController).ControllerName()"
+                    asp-action="@nameof(SolutionsController.Index)"
+                    asp-route-selectedCapabilityIds="@Model.SearchSummary.SelectedCapabilityIds"
+                    asp-route-selectedEpicIds="@Model.SearchSummary.SelectedEpicIds"
+                    asp-route-search="@Model.SearchSummary.SearchTerm">
+                    Clear additional filters
+                </a>
+                <br/>
+                <br/>
+                <a asp-area="@typeof(SolutionsController).AreaName()"
+                    asp-controller="@typeof(SolutionsController).ControllerName()"
+                    asp-action="@nameof(SolutionsController.Index)">
+                    Start a new search
+                </a>
             </div>
+
+                <div class = "nhsuk-grid-column-two-thirds" id="solutions-list">
+                    <h2>Results</h2>
+                    @foreach (var item in Model.CatalogueItems)
+                    {
+                        <partial name="_SolutionSearchDisplay" model="@(item, Model.SearchSummary.CapabilitiesAndEpics)" />
+                    }
+                    @if (Model.CatalogueItems.Count == 0 )
+                    {
+                        <p>
+                          <strong>There was no Catalogue Solutions found with this search criteria.</strong>
+                        </p>
+                    <p>Try changing any filters you have selected.</p>
+                    }
+            </div>
+            }
+            else if (Model.CatalogueItems is not null && Model.CatalogueItems.Count > 0)
+            {
+                <div id="solutions-list">
+                    <h2>Results</h2>
+                    @foreach (var item in Model.CatalogueItems)
+                    {
+                        <partial name="_SolutionSearchDisplay" model="@(item, Model.SearchSummary.CapabilitiesAndEpics)" />
+                    }
+                </div>
+            }
             <div id="pagination">
                 <nhs-page-number-pagination current-page-number="@Model.PageOptions.PageNumber"
                                         total-number-of-pages="@Model.PageOptions.NumberOfPages" />
 
 			</div>
-		}
     </div>
 </div>
 
@@ -194,10 +241,10 @@
             {
                 capabilityText += $" and {numberOfEpics} {GetEpicDescriptor(numberOfEpics)}";
             }
-
+            
             searchSummary.Add(capabilityText);
         }        
-
+        
         return searchSummary;
     }
 

@@ -53,10 +53,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             var itemsToReturn = new List<CatalogueItem>() { solution.CatalogueItem };
 
-            mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null, null, null))
+            mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null, null, null, null))
                 .ReturnsAsync((itemsToReturn, options, new List<ServiceContracts.Models.SolutionsFilterModels.CapabilitiesAndCountModel>()));
 
-            await controller.Index(options.PageNumber.ToString(), options.Sort.ToString(), null, null, null);
+            await controller.Index(options.PageNumber.ToString(), options.Sort.ToString(), null, null, null,null);
 
             mockService.VerifyAll();
         }
@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             SolutionsModel solutionModel,
             SolutionsController controller)
         {
-            var result = controller.Index(solutionModel, null, null, null, null, null);
+            var result = controller.Index(solutionModel, null, null, null, null, null ,null);
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
@@ -80,6 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 { "search", null },
                 { "selectedCapabilityIds", null },
                 { "selectedEpicIds", null },
+                { "selectedFrameworkId", null },
             });
         }
 

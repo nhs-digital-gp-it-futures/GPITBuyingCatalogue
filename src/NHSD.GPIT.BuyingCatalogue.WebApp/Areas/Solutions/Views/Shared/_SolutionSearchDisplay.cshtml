@@ -15,7 +15,7 @@
 }
 
 <div data-test-id="solutions-card" class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-two-thirds">
+    <div class="nhsuk-grid-columns-full">
         <h2>
             <a asp-area="@typeof(SolutionsController).AreaName()"
                asp-controller="@typeof(SolutionsController).ControllerName()"
@@ -62,30 +62,6 @@
         <nhs-endnote>
             Published on: @Model.catalogueItem.LastPublished?.ToString("d MMMM yyyy")
         </nhs-endnote>
-
-
-    </div>
-    <div class="nhsuk-grid-column-one-third">
-        <div class="category-list">
-            <h3>Capabilities</h3>
-            <ul>
-                    @foreach (var capability in orderedCapabilities.Take(5))
-                    {
-                        <li>@capability.Capability.Name</li>
-                    }
-            </ul>
-            @if (orderedCapabilities.Count > 5)
-            {
-                <a data-test-id="capabilities-overcount-link"
-                   asp-area="@typeof(SolutionsController).AreaName()"
-                   asp-controller="@typeof(SolutionsController).ControllerName()"
-                   asp-action="@nameof(SolutionsController.Capabilities)"
-               asp-route-solutionId="@Model.catalogueItem.Id">
-                    See all @orderedCapabilities.Count Capabilities
-                </a>
-                <div style="margin-bottom:20px" ></div>
-            }
-        </div>
     </div>
 </div>
 <hr />

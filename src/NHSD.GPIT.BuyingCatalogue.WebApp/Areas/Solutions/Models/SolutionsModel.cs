@@ -6,6 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 using static NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.PageOptions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
@@ -25,6 +26,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         {
         }
 
+        public IncludeAdditionalfiltersModel AdditionalFilters { get; set; }
+
         public IList<CatalogueItem> CatalogueItems { get; init; }
 
         public CatalogueFilterSearchSummary SearchSummary { get; init; }
@@ -42,6 +45,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public bool SearchCriteriaApplied =>
             !string.IsNullOrWhiteSpace(SearchSummary?.SelectedCapabilityIds)
             || !string.IsNullOrWhiteSpace(SearchSummary?.SearchTerm);
+
+        public bool AdditionalFiltersApplicable =>
+            !string.IsNullOrWhiteSpace(SearchSummary?.SelectedCapabilityIds);
 
         public string TitleText =>
             !SearchCriteriaApplied

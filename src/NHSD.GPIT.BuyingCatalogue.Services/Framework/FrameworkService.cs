@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
@@ -15,7 +17,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task<EntityFramework.Catalogue.Models.Framework> GetFramework(string frameworkId) =>
+        public Task<List<EntityFramework.Catalogue.Models.Framework>> GetFrameworks() => dbContext.Frameworks
+            .AsNoTracking()
+            .OrderBy(x => x.Id)
+            .ThenBy(x => x.Name)
+            .ToListAsync();
+
+        public async Task<EntityFramework.Catalogue.Models.Framework> GetFrameworksById(string frameworkId) =>
             await dbContext.Frameworks.FirstOrDefaultAsync(f => f.Id == frameworkId);
     }
 }

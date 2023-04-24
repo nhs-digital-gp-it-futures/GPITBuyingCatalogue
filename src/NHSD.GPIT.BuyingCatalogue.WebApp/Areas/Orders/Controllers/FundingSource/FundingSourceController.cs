@@ -95,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.FundingSourc
             CallOffId callOffId,
             [FromQuery] string selectedFrameworkId)
         {
-            var selectedFramework = await frameworkService.GetFramework(selectedFrameworkId);
+            var selectedFramework = await frameworkService.GetFrameworksById(selectedFrameworkId);
 
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 

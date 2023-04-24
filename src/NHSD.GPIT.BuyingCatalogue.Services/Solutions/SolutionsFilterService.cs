@@ -34,7 +34,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             PageOptions options,
             string selectedCapabilityIds = null,
             string selectedEpicIds = null,
-            string search = null)
+            string search = null,
+            string selectedFrameworkId = null)
         {
             options ??= new PageOptions();
 
@@ -44,9 +45,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             if (!string.IsNullOrWhiteSpace(search))
                 query = query.Where(ci => ci.Supplier.Name.Contains(search) || ci.Name.Contains(search));
-
+            if (!string.IsNullOrWhiteSpace(selectedFrameworkId))
+                query = query.Where(ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == selectedFrameworkId));
             options.TotalNumberOfItems = await query.CountAsync();
-
             query = options.Sort switch
             {
                 PageOptions.SortOptions.LastPublished => query.OrderByDescending(ci => ci.LastPublished)
@@ -115,15 +116,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             string selectedEpicIds)
         {
             var capabilityIds = SolutionsFilterHelper.ParseCapabilityIds(selectedCapabilityIds);
-
             var epicIds = SolutionsFilterHelper.ParseEpicIds(selectedEpicIds);
 
             var capabilityParam = CreateIdListParameter(capabilityIds, CapabilityParamName, CapabilityParamType);
             var epicParam = CreateIdListParameter(epicIds, EpicParamName, EpicParamType);
 
-            // old school ADO.NET baby
             using var cmd = dbContext.Database.GetDbConnection().CreateCommand();
-
             cmd.CommandText = FilterProcName;
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.Add(capabilityParam);

@@ -13,7 +13,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
             PageOptions options = null,
             string selectedCapabilityIds = null,
             string selectedEpicIds = null,
-            string search = null);
+            string search = null,
+            string selectedFrameworkId = null);
 
         Task<List<SearchFilterModel>> GetSolutionsBySearchTerm(string searchTerm, int maxToBringBack = 15);
     }

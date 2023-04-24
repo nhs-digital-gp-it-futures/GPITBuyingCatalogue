@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
@@ -25,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Frameworks
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task GetFramework_ReturnsExpected(
+        public static async Task GetFrameworksById_ReturnsExpected(
             EntityFramework.Catalogue.Models.Framework framework,
             [Frozen] BuyingCatalogueDbContext dbContext,
             FrameworkService service)
@@ -33,9 +35,26 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Frameworks
             dbContext.Frameworks.Add(framework);
             await dbContext.SaveChangesAsync();
 
-            var result = await service.GetFramework(framework.Id);
+            var result = await service.GetFrameworksById(framework.Id);
 
             result.Should().BeEquivalentTo(framework);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public async Task GetFrameworks_ReturnsExpected(
+            List<EntityFramework.Catalogue.Models.Framework> frameworks,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            FrameworkService service)
+        {
+            dbContext.Frameworks.AddRange(frameworks);
+            await dbContext.SaveChangesAsync();
+
+            var expectedFrameworks = frameworks.OrderBy(f => f.Id).ThenBy(f => f.Name);
+
+            var result = await service.GetFrameworks();
+
+            result.Should().BeEquivalentTo(expectedFrameworks);
         }
     }
 }
