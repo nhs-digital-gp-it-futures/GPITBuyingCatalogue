@@ -9,9 +9,16 @@
     <div class="nhsuk-grid-row nhsuk-u-margin-bottom-6">
         <div class="nhsuk-grid-column-full">
             <nhs-validation-summary />
+			
             <nhs-page-title title="@ViewBag.Title"
-                            advice="Before you start your order, you should know:"
                             caption="@Model!.OrganisationName" />
+			<nhs-warning-callout label-text="GP IT Futures framework expired">
+				<p>Lot 1 of the GP IT Futures framework expired on 31 March 2023. This means you can no longer carry out new procurements of solutions and services offered under that framework.</p>
+				<p>Continuity contracts have been put in place to ensure that you continue to have access to purchased solutions and services between 1 April 2023 and the go live date of the replacement, which is scheduled for summer 2023.</p>
+				<p>You’ll still be able to use the Buying Catalogue to browse and procure solutions and services from the Digital First Online Consultation and Video Consultation (DFOCVC) framework.</p>
+				<p>However, orders placed under the GP IT Futures framework will not be completed until the replacement framework is live.</p>
+			</nhs-warning-callout>
+			<nhs-page-title advice="Before you start your order, you should know:" />
             <ul>
                 <li>the approximate value of your order</li>
                 <li>what solutions and services you want to order</li>
