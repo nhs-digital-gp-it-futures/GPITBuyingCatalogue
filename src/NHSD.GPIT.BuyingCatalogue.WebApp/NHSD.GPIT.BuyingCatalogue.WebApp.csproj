@@ -20,6 +20,10 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="Views\Shared\Partials\_FrameworkExpiredAlert.cshtml" />
+  </ItemGroup>
   
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
@@ -76,6 +80,10 @@
     <Content Update="tsconfig.json">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Shared\Partials\_FrameworkExpiredAlert.cshtml" />
   </ItemGroup>
 
 </Project>
