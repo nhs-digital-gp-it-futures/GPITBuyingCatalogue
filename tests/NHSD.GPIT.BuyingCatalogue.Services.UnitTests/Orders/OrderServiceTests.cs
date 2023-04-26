@@ -46,6 +46,105 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [InMemoryDbAutoData]
+        public static async Task GetOrderWithCatalogueItemAndPrices_ReturnsExpectedResults(
+           Order order,
+           OrderItem orderItem,
+           CatalogueItem catalogueItem,
+           Organisation organisation,
+           EntityFramework.Catalogue.Models.Framework selectedFramework,
+           [Frozen] BuyingCatalogueDbContext context,
+           OrderService service)
+        {
+            order.OrderingPartyId = organisation.Id;
+            order.OrderingParty = organisation;
+
+            order.SelectedFrameworkId = selectedFramework.Id;
+            order.SelectedFramework = selectedFramework;
+
+            orderItem.CatalogueItem = catalogueItem;
+            order.OrderItems.Clear();
+            order.OrderItems.Add(orderItem);
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            var result = (await service.GetOrderWithCatalogueItemAndPrices(order.CallOffId, order.OrderingParty.InternalIdentifier)).Order;
+
+            result.OrderingParty.Should().BeEquivalentTo(organisation);
+            result.SelectedFramework.Should().BeEquivalentTo(selectedFramework);
+            result.OrderItems.Count.Should().Be(1);
+            result.OrderItems.First().Should().BeEquivalentTo(orderItem);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetOrderWithOrderItems_ReturnsExpectedResults(
+            Order order,
+            OrderItem orderItem,
+            CatalogueItem catalogueItem,
+            Organisation organisation,
+            EntityFramework.Catalogue.Models.Framework selectedFramework,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            order.OrderingPartyId = organisation.Id;
+            order.OrderingParty = organisation;
+
+            order.SelectedFrameworkId = selectedFramework.Id;
+            order.SelectedFramework = selectedFramework;
+
+            orderItem.CatalogueItem = catalogueItem;
+            order.OrderItems.Clear();
+            order.OrderItems.Add(orderItem);
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            var result = (await service.GetOrderWithOrderItems(order.CallOffId, order.OrderingParty.InternalIdentifier)).Order;
+
+            result.OrderingParty.Should().BeEquivalentTo(organisation);
+            result.SelectedFramework.Should().BeEquivalentTo(selectedFramework);
+            result.OrderItems.Count.Should().Be(1);
+            result.OrderItems.First().Should().BeEquivalentTo(orderItem);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetOrderWithOrderItemsForFunding_ReturnsExpectedResults(
+            Order order,
+            OrderItem orderItem,
+            CatalogueItem catalogueItem,
+            Organisation organisation,
+            EntityFramework.Catalogue.Models.Framework selectedFramework,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            order.OrderingPartyId = organisation.Id;
+            order.OrderingParty = organisation;
+
+            order.SelectedFrameworkId = selectedFramework.Id;
+            order.SelectedFramework = selectedFramework;
+
+            orderItem.CatalogueItem = catalogueItem;
+            order.OrderItems.Clear();
+            order.OrderItems.Add(orderItem);
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            var result = (await service.GetOrderWithOrderItemsForFunding(order.CallOffId, order.OrderingParty.InternalIdentifier)).Order;
+
+            result.OrderingParty.Should().BeEquivalentTo(organisation);
+            result.SelectedFramework.Should().BeEquivalentTo(selectedFramework);
+            result.OrderItems.Count.Should().Be(1);
+            result.OrderItems.First().Should().BeEquivalentTo(orderItem);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
         public static async Task CreateOrder_UpdatesDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             string description,
@@ -740,6 +839,58 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await service.SetSolutionId(order.OrderingParty.InternalIdentifier, order.CallOffId, solutionId);
 
             (await context.Orders.FirstAsync(x => x.Id == order.Id)).SolutionId.Should().Be(solutionId);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SetFundingSourceForForceFundedItems_FrameworkLocalFundingOnly_UpdatesDatabase(
+            Order order,
+            OrderItem orderItem,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            order.SelectedFramework.LocalFundingOnly = true;
+            orderItem.OrderItemFunding = null;
+            order.OrderItems = new List<OrderItem>() { orderItem };
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            await service.SetFundingSourceForForceFundedItems(order.OrderingParty.InternalIdentifier, order.CallOffId);
+
+            var result = await context.Orders.FirstAsync(x => x.Id == order.Id);
+            var orderItemFunding = result.OrderItems.First().OrderItemFunding;
+            orderItemFunding.Should().NotBeNull();
+            orderItemFunding.OrderId.Should().Be(order.Id);
+            orderItemFunding.CatalogueItemId.Should().Be(orderItem.CatalogueItemId);
+            orderItemFunding.OrderItemFundingType.Should().Be(OrderItemFundingType.LocalFundingOnly);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SetFundingSourceForForceFundedItems_GpPractice_UpdatesDatabase(
+            Order order,
+            Organisation organisation,
+            OrderItem orderItem,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            organisation.OrganisationType = OrganisationType.GP;
+            order.OrderingParty = organisation;
+            orderItem.OrderItemFunding = null;
+            order.OrderItems = new List<OrderItem>() { orderItem };
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+
+            await service.SetFundingSourceForForceFundedItems(order.OrderingParty.InternalIdentifier, order.CallOffId);
+
+            var result = await context.Orders.FirstAsync(x => x.Id == order.Id);
+            var orderItemFunding = result.OrderItems.First().OrderItemFunding;
+            orderItemFunding.Should().NotBeNull();
+            orderItemFunding.OrderId.Should().Be(order.Id);
+            orderItemFunding.CatalogueItemId.Should().Be(orderItem.CatalogueItemId);
+            orderItemFunding.OrderItemFundingType.Should().Be(OrderItemFundingType.LocalFundingOnly);
         }
     }
 }

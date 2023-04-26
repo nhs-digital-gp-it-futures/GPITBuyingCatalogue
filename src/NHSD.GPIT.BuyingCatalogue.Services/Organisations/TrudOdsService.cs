@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -61,6 +62,20 @@ public class TrudOdsService : IOdsService
         if (organisation is null)
             throw new ArgumentException(InvalidIdExceptionMessage, nameof(internalIdentifier));
 
+        if (organisation.PrimaryRoleId == settings.GetPrimaryRoleId(OrganisationType.GP))
+        {
+            return new List<ServiceRecipient>()
+            {
+                new()
+                {
+                    Name = organisation.Name,
+                    OrgId = organisation.ExternalIdentifier,
+                    PrimaryRoleId = organisation.PrimaryRoleId,
+                    Location = "GP Practice",
+                },
+            };
+        }
+
         var subLocations = await context.OrganisationRelationships
             .AsNoTracking()
             .Where(x => x.OwnerOrganisationId == organisation.ExternalIdentifier
@@ -75,7 +90,7 @@ public class TrudOdsService : IOdsService
                 x => subLocations.Contains(x.OwnerOrganisationId)
                     && x.TargetOrganisation.IsActive
                     && x.RelationshipTypeId == settings.IsCommissionedByRelType
-                    && x.TargetOrganisation.Roles.Any(y => y.RoleId == settings.GpPracticeRoleId))
+                    && x.TargetOrganisation.Roles.Any(y => y.RoleId == settings.GetPrimaryRoleId(OrganisationType.GP)))
             .Select(
                 x => new ServiceRecipient
                 {
@@ -106,7 +121,7 @@ public class TrudOdsService : IOdsService
             return;
         }
 
-        await organisationsService.UpdateCcgOrganisation(MapOrganisation(trudOrganisation));
+        await organisationsService.UpdateOrganisation(MapOrganisation(trudOrganisation));
     }
 
     internal static OdsOrganisation
@@ -136,6 +151,8 @@ public class TrudOdsService : IOdsService
 
     private bool IsBuyerOrganisation(EntityFramework.OdsOrganisations.Models.OdsOrganisation organisation)
     {
-        return HasSecondaryRole(organisation, settings.IcbRoleId) || settings.BuyerOrganisationRoleIds.Contains(GetPrimaryRoleId(organisation));
+        return settings.BuyerOrganisationRoles.Any(
+            x => x.PrimaryRoleId == GetPrimaryRoleId(organisation)
+                && (x.SecondaryRoleId == null || HasSecondaryRole(organisation, x.SecondaryRoleId)));
     }
 }
