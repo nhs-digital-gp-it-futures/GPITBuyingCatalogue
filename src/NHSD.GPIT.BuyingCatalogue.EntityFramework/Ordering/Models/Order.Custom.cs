@@ -34,6 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             }
         }
 
+        [JsonIgnore]
         public bool IsLocalFundingOnly =>
             SelectedFramework.LocalFundingOnly || OrderingParty.OrganisationType == OrganisationType.GP;
 
