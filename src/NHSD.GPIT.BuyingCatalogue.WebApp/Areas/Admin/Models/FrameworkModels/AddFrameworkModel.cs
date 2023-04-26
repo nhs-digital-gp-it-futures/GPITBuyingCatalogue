@@ -2,7 +2,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.FrameworkModels;
 
-public class AddEditFrameworkModel : NavBaseModel
+public class AddFrameworkModel : NavBaseModel
 {
     public string FrameworkId { get; set; }
 

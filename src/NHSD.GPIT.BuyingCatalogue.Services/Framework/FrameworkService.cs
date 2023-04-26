@@ -56,18 +56,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task EditFramework(string frameworkId, string name, bool isLocalFundingOnly)
-        {
-            var framework = await GetFramework(frameworkId);
-            if (framework is null)
-                return;
-
-            framework.ShortName = name;
-            framework.LocalFundingOnly = isLocalFundingOnly;
-
-            await dbContext.SaveChangesAsync();
-        }
-
         public async Task MarkAsExpired(string frameworkId)
         {
             var framework = await GetFramework(frameworkId);

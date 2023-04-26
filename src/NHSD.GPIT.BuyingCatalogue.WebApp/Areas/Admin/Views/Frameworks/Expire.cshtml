@@ -1,7 +1,7 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.FrameworkModels.DeleteFrameworkModel;
 
 @{
-    ViewBag.Title = "Delete this framework?";
+    ViewBag.Title = "Expire this framework?";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -9,7 +9,7 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-page-title title="@ViewBag.Title" advice="Lorem Ipsum" />
 
-        <nhs-warning-callout label-text="Deleting a framework">
+        <nhs-warning-callout label-text="Expiring a framework">
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
             <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
             <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
@@ -21,7 +21,7 @@
             <input type="hidden" asp-for="BackLink"/>
 
             <div>
-                <nhs-submit-button text="Delete framework" />
+                <nhs-submit-button text="Expire framework" />
             </div>
             <div>
                 <a href="@Model.BackLink">Cancel</a>

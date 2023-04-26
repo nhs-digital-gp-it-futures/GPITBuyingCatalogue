@@ -47,8 +47,8 @@
                             <nhs-table-cell>@framework.LocalFundingOnly.ToYesNo()</nhs-table-cell>
                             <nhs-table-cell>
                                 <a asp-controller="@typeof(FrameworksController).ControllerName()"
-                                    asp-action="@nameof(FrameworksController.Edit)"
-                                    asp-route-frameworkId="@framework.Id">Edit</a>
+                                    asp-action="@nameof(FrameworksController.Expire)"
+                                    asp-route-frameworkId="@framework.Id">Expire</a>
                             </nhs-table-cell>
                         </nhs-table-row-container>
                     }

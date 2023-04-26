@@ -31,10 +31,10 @@ public class FrameworksController : Controller
     }
 
     [HttpGet("add")]
-    public IActionResult Add() => View(new AddEditFrameworkModel { BackLink = Url.Action(nameof(Dashboard)) });
+    public IActionResult Add() => View(new AddFrameworkModel { BackLink = Url.Action(nameof(Dashboard)) });
 
     [HttpPost("add")]
-    public async Task<IActionResult> Add(AddEditFrameworkModel model)
+    public async Task<IActionResult> Add(AddFrameworkModel model)
     {
         if (!ModelState.IsValid)
             return View(model);
@@ -44,35 +44,8 @@ public class FrameworksController : Controller
         return RedirectToAction(nameof(Dashboard));
     }
 
-    [HttpGet("edit/{frameworkId}")]
-    public async Task<IActionResult> Edit(string frameworkId)
-    {
-        var framework = await frameworkService.GetFramework(frameworkId);
-
-        if (framework is null)
-            return RedirectToAction(nameof(Dashboard));
-
-        var model = new AddEditFrameworkModel
-        {
-            FrameworkId = frameworkId, Name = framework.ShortName, IsLocalFundingOnly = framework.LocalFundingOnly,
-        };
-
-        return View(model);
-    }
-
-    [HttpPost("edit/{frameworkId}")]
-    public async Task<IActionResult> Edit(string frameworkId, AddEditFrameworkModel model)
-    {
-        if (!ModelState.IsValid)
-            return View(model);
-
-        await frameworkService.EditFramework(frameworkId, model.Name, model.IsLocalFundingOnly);
-
-        return RedirectToAction(nameof(Dashboard));
-    }
-
-    [HttpGet("delete/{frameworkId}")]
-    public async Task<IActionResult> Delete(string frameworkId)
+    [HttpGet("expire/{frameworkId}")]
+    public async Task<IActionResult> Expire(string frameworkId)
     {
         var framework = await frameworkService.GetFramework(frameworkId);
         if (framework is null)
@@ -80,14 +53,14 @@ public class FrameworksController : Controller
 
         var model = new DeleteFrameworkModel
         {
-            Name = framework.ShortName, BackLink = Url.Action(nameof(Edit), new { frameworkId }),
+            Name = framework.ShortName, BackLink = Url.Action(nameof(Dashboard), new { frameworkId }),
         };
 
         return View(model);
     }
 
-    [HttpPost("delete/{frameworkId}")]
-    public async Task<IActionResult> Delete(string frameworkId, DeleteFrameworkModel model)
+    [HttpPost("expire/{frameworkId}")]
+    public async Task<IActionResult> Expire(string frameworkId, DeleteFrameworkModel model)
     {
         _ = model;
 
