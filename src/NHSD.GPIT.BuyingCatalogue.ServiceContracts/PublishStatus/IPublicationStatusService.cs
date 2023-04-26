@@ -6,6 +6,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.PublishStatus
 {
     public interface IPublicationStatusService
     {
-        public Task SetPublicationStatus(CatalogueItemId catalogueItemId, PublicationStatus publicationStatus);
+        Task SetPublicationStatus(CatalogueItemId catalogueItemId, PublicationStatus publicationStatus);
     }
 }
