@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -22,6 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public int Revision { get; set; }
 
         [NotMapped]
+        [JsonIgnore]
         public CallOffId CallOffId => new(OrderNumber, Revision);
 
         public string Description { get; set; }
@@ -65,6 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public virtual OrderDeletionApproval OrderDeletionApproval { get; set; }
 
         [NotMapped]
+        [JsonIgnore]
         public OrderStatus OrderStatus
         {
             get
