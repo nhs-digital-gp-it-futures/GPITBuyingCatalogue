@@ -36,10 +36,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static void Get_Index_ReturnsDefaultView(
+        public static async Task Get_Index_ReturnsDefaultView(
             NominateOrganisationController systemUnderTest)
         {
-            var result = systemUnderTest.Index();
+            var result = await systemUnderTest.Index();
 
             Assert.IsAssignableFrom<ViewResult>(result);
             Assert.Null(((ViewResult)result).ViewName);

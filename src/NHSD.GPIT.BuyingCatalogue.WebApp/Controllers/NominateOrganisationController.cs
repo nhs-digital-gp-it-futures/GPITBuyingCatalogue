@@ -22,8 +22,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            if (await nominateOrganisationService.IsGpPractice(User.UserId()))
+            {
+                return RedirectToAction(
+                    nameof(Unavailable));
+            }
+            
             return View();
         }
 
@@ -56,6 +62,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 
         [HttpGet("confirmation")]
         public IActionResult Confirmation()
+        {
+            var model = new NavBaseModel
+            {
+                BackLink = Url.Action(
+                    nameof(HomeController.Index),
+                    typeof(HomeController).ControllerName()),
+                BackLinkText = "Go back to homepage",
+            };
+
+            return View(model);
+        }
+
+        [HttpGet("unavailable")]
+        public IActionResult Unavailable()
         {
             var model = new NavBaseModel
             {

@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
+using NHSD.GPIT.BuyingCatalogue.Services.Users;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 {
@@ -74,6 +76,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             await Task.WhenAll(
                 emailService.SendEmailAsync(user.Email, settings.UserTemplateId, null),
                 emailService.SendEmailAsync(settings.AdminRecipient.Address, settings.AdminTemplateId, tokens));
+        }
+
+        public async Task<bool> IsGpPractice(int userId)
+        {
+            var user = await usersService.GetUser(userId);
+
+            if (user == null)
+                throw new ArgumentOutOfRangeException(nameof(userId), userId.ToString(CultureInfo.InvariantCulture));
+            
+            if (string.IsNullOrWhiteSpace(user.Email))
+                throw new ArgumentException($"User id {userId} does not have an email address set");
+
+            if (user.PrimaryOrganisation == null)
+                throw new ArgumentException($"User id {userId} does not have a primary organisation set");
+
+            return user.PrimaryOrganisation.OrganisationType == OrganisationType.GP;
         }
     }
 }
