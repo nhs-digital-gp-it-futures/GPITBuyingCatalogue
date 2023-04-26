@@ -145,9 +145,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             var order = orderWrapper.Order;
             var hasSubsequentRevisions = await orderService.HasSubsequentRevisions(callOffId);
 
-            var canBeAmended = CurrentEnvironment.IsDevelopment
+            var amendableIfLatestAndComplete = CurrentEnvironment.IsDevelopment
+                && !order.AssociatedServicesOnly;
+
+            var canBeAmended = amendableIfLatestAndComplete
                 && order.OrderStatus == OrderStatus.Completed
-                && !order.AssociatedServicesOnly
                 && !hasSubsequentRevisions;
 
             var defaultPlan = await implementationPlanService.GetDefaultImplementationPlan();
@@ -155,8 +157,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             var model = new SummaryModel(orderWrapper, internalOrgId, defaultPlan)
             {
                 BackLink = GetBackLink(internalOrgId, callOffId, order),
-                Title = GetTitle(order, canBeAmended),
-                AdviceText = GetAdvice(order, canBeAmended),
+                Title = GetTitle(order),
+                AdviceText = GetAdvice(order, amendableIfLatestAndComplete, !hasSubsequentRevisions),
                 CanBeAmended = canBeAmended,
             };
 
@@ -173,9 +175,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                 ModelState.AddModelError(ErrorKey, ErrorMessage);
                 var hasSubsequentRevisions = await orderService.HasSubsequentRevisions(callOffId);
 
-                var canBeAmended = CurrentEnvironment.IsDevelopment
+                var amendableIfLatestAndComplete = CurrentEnvironment.IsDevelopment
+                    && !order.AssociatedServicesOnly;
+
+                var canBeAmended = amendableIfLatestAndComplete
                     && order.OrderStatus == OrderStatus.Completed
-                    && !order.AssociatedServicesOnly
                     && !hasSubsequentRevisions;
 
                 var defaultPlan = await implementationPlanService.GetDefaultImplementationPlan();
@@ -184,8 +188,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                 var model = new SummaryModel(orderWrapper, internalOrgId, defaultPlan)
                 {
                     BackLink = GetBackLink(internalOrgId, callOffId, order),
-                    Title = GetTitle(order, canBeAmended),
-                    AdviceText = GetAdvice(order, canBeAmended),
+                    Title = GetTitle(order),
+                    AdviceText = GetAdvice(order, amendableIfLatestAndComplete, !hasSubsequentRevisions),
                     CanBeAmended = canBeAmended,
                 };
 
@@ -255,11 +259,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                 new { internalOrgId, amendment.CallOffId });
         }
 
-        private static string GetAdvice(Order order, bool canBeAmended)
+        private static string GetAdvice(Order order, bool amendableIfLatestAndComplete, bool latestOrder)
         {
             return order.OrderStatus switch
             {
-                OrderStatus.Completed when canBeAmended => "This order has already been completed, but you can amend it if needed.",
+                OrderStatus.Completed when amendableIfLatestAndComplete && latestOrder => "This order has already been completed, but you can amend it if needed.",
+                OrderStatus.Completed when amendableIfLatestAndComplete && !latestOrder => "This order can no longer be changed as there is already an amendment in progress.",
                 OrderStatus.Completed => "This order has been confirmed and can no longer be changed.",
                 _ => order.CanComplete()
                     ? "Review the items you’ve added to your order before completing it."
@@ -267,7 +272,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             };
         }
 
-        private static string GetTitle(Order order, bool canBeAmended)
+        private static string GetTitle(Order order)
         {
             return order.OrderStatus switch
             {
