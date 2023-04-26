@@ -36,10 +36,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
             CommonActions.ClickFirstCheckbox();
 
-            CommonActions.ClickCheckboxByLabel("BEVAN LIMITED");
+            CommonActions.ClickCheckboxByLabel("BEECHWOOD MEDICAL CENTRE");
 
             CommonActions.ClickSave();
-
         }
 
         private string GetAdditionalServiceID(string additionalServiceName)
