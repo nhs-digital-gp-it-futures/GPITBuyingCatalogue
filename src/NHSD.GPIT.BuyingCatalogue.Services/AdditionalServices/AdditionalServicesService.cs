@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
         {
             if (!catalogueItemId.HasValue)
             {
-                return new List<CatalogueItem>();
+                return Enumerable.Empty<CatalogueItem>().ToList();
             }
 
             return publishedOnly

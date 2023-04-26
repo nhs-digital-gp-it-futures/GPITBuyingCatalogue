@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -247,12 +248,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             options ??= new PageOptions();
 
-            var query = await dbContext.Orders
-                .Include(o => o.LastUpdatedByUser)
-                .Where(o => o.OrderingPartyId == organisationId)
-                .OrderByDescending(o => o.LastUpdated)
-                .AsNoTracking()
-                .ToListAsync();
+            var query = (await dbContext.Orders
+                    .AsNoTracking()
+                    .Include(o => o.LastUpdatedByUser)
+                    .Where(o => o.OrderingPartyId == organisationId)
+                    .ToListAsync())
+                .GroupBy(x => x.OrderNumber)
+                .SelectMany(x => x.OrderByDescending(y => y.Revision).TakeUntil(y => y.OrderStatus == OrderStatus.Completed))
+                .ToList();
 
             if (!string.IsNullOrWhiteSpace(search))
             {
@@ -264,6 +267,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             options.TotalNumberOfItems = query.Count;
             var orderIds = query.Select(x => x.CallOffId);
 
+            query = query
+                .OrderByDescending(o => o.LastUpdated)
+                .ToList();
+
             if (options.PageNumber != 0)
                 query = query.Skip((options.PageNumber - 1) * options.PageSize).ToList();
 
@@ -274,11 +281,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task<IList<SearchFilterModel>> GetOrdersBySearchTerm(int organisationId, string searchTerm)
         {
-            var baseData = await dbContext
-                .Orders
-                .Where(o => o.OrderingPartyId == organisationId)
-                .AsNoTracking()
-                .ToListAsync();
+            var baseData = (await dbContext
+                    .Orders
+                    .AsNoTracking()
+                    .Where(o => o.OrderingPartyId == organisationId)
+                    .ToListAsync())
+                .GroupBy(x => x.OrderNumber)
+                .SelectMany(x => x.OrderByDescending(y => y.Revision).TakeUntil(y => y.OrderStatus == OrderStatus.Completed))
+                .ToList();
 
             var matches = baseData
                 .Where(o => o.CallOffId.ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase)

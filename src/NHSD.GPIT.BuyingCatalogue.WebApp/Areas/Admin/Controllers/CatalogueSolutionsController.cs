@@ -28,13 +28,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         private readonly ISolutionsService solutionsService;
         private readonly ISuppliersService suppliersService;
         private readonly ICapabilitiesService capabilitiesService;
-        private readonly IPublicationStatusService publicationStatusService;
+        private readonly ISolutionPublicationStatusService publicationStatusService;
 
         public CatalogueSolutionsController(
             ISolutionsService solutionsService,
             ISuppliersService suppliersService,
             ICapabilitiesService capabilitiesService,
-            IPublicationStatusService publicationStatusService)
+            ISolutionPublicationStatusService publicationStatusService)
         {
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
             this.suppliersService = suppliersService ?? throw new ArgumentNullException(nameof(suppliersService));
@@ -133,6 +133,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return View("ManageCatalogueSolution", model);
 
             var solution = await solutionsService.GetSolutionThin(solutionId);
+
+            if (solution.PublishedStatus == model.SelectedPublicationStatus) return RedirectToAction(nameof(Index));
 
             await publicationStatusService.SetPublicationStatus(solutionId, model.SelectedPublicationStatus);
 
