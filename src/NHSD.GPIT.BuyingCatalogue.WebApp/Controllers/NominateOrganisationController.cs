@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 return RedirectToAction(
                     nameof(Unavailable));
             }
-            
+
             return View();
         }
 

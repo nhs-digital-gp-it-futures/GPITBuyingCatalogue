@@ -49,5 +49,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.OrganisationModelsTe
 
             actual.CatalogueAgreementText.Should().Be("Organisation End User Agreement has been signed");
         }
+
+        [Theory]
+        [CommonAutoData]
+        public static void WithValidConstruction_IsGpPractice_PropertiesSetAsExpected(
+            Organisation organisation,
+            List<AspNetUser> users,
+            List<Organisation> relatedOrganisations)
+        {
+            organisation.OrganisationType = OrganisationType.GP;
+
+            var actual = new DetailsModel(organisation, users, relatedOrganisations);
+
+            actual.IsGpPractice.Should().BeTrue();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void WithValidConstruction_NotGpPractice_PropertiesSetAsExpected(
+            Organisation organisation,
+            List<AspNetUser> users,
+            List<Organisation> relatedOrganisations)
+        {
+            organisation.OrganisationType = OrganisationType.IB;
+
+            var actual = new DetailsModel(organisation, users, relatedOrganisations);
+
+            actual.IsGpPractice.Should().BeFalse();
+        }
     }
 }

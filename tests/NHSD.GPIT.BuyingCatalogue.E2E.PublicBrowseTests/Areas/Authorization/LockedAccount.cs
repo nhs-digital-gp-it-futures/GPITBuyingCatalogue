@@ -56,6 +56,5 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
                 .Should()
                 .BeTrue();
         }
-
     }
 }
