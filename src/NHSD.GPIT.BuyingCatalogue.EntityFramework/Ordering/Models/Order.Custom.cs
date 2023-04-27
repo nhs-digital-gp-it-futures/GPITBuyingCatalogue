@@ -29,6 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public bool CanComplete()
         {
+            Console.WriteLine(ContractFlags?.UseDefaultImplementationPlan is not null);
             return
                 !string.IsNullOrWhiteSpace(Description)
                 && OrderingPartyContact is not null
@@ -38,8 +39,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 && OrderItems.Count > 0
                 && OrderItems.All(x => x.OrderItemRecipients.All(r => r.DeliveryDate != null))
                 && OrderItems.All(oi => oi.OrderItemFunding is not null)
-                && ContractFlags.UseDefaultImplementationPlan is not null
-                && ContractFlags.UseDefaultDataProcessing is not null
+                && ContractFlags is not null
+                && ContractFlags?.UseDefaultImplementationPlan is not null
+                && ContractFlags?.UseDefaultDataProcessing is not null
                 && OrderStatus != OrderStatus.Completed;
         }
 
