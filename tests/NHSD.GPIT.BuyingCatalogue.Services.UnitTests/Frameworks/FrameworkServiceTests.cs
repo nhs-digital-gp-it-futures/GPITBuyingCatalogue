@@ -8,6 +8,7 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.Services.Framework;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Xunit;
@@ -44,25 +45,32 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Frameworks
         [Theory]
         [InMemoryDbAutoData]
         public async Task GetFrameworksWithActiveAndPublishedSolutions_ReturnsExpected(
-            EntityFramework.Catalogue.Models.Framework framework,
-            EntityFramework.Catalogue.Models.FrameworkSolution frameworkSolutions,
-            [Frozen] BuyingCatalogueDbContext dbContext,
-            FrameworkService service)
+             EntityFramework.Catalogue.Models.Framework framework,
+             FrameworkSolution frameworkSolutions,
+             CatalogueItem catalogueItem,
+             [Frozen] BuyingCatalogueDbContext dbContext,
+             FrameworkService service)
         {
             dbContext.Frameworks.Add(framework);
             dbContext.FrameworkSolutions.Add(frameworkSolutions);
+            dbContext.CatalogueItems.Add(catalogueItem);
             await dbContext.SaveChangesAsync();
 
             var expectedFrameworks = dbContext.Frameworks
-            .Join(dbContext.FrameworkSolutions, f => f.Id, fs => fs.FrameworkId, (f, fs) => new { Framework = f, FrameworkSolution = fs })
-            .Join(dbContext.Solutions, fs => fs.FrameworkSolution.SolutionId, s => s.CatalogueItemId, (fs, s) => new { fs.Framework, Solution = s })
-            .Join(dbContext.CatalogueItems, x => x.Solution.CatalogueItemId, ci => ci.Id, (x, ci) => new { x.Framework, x.Solution, CatalogueItem = ci })
-            .Where(x => x.CatalogueItem.PublishedStatus == PublicationStatus.Published)
-            .Select(x => x.Framework)
-            .OrderBy(f => f.Id)
-            .ThenBy(f => f.Name);
+                .Where(f => dbContext.FrameworkSolutions.Any(fs => fs.FrameworkId == f.Id && fs.SolutionId == catalogueItem.Id))
+                .GroupBy(f => f.Id)
+                .Select(g => new FrameworkFilterInfo
+                {
+                    Id = g.Key,
+                    ShortName = g.First().ShortName,
+                    Name = g.First().Name,
+                    CountOfActiveSolutions = dbContext.FrameworkSolutions.Count(fs => fs.FrameworkId == g.First().Id && fs.SolutionId == catalogueItem.Id),
+                })
+                .Distinct()
+                .OrderBy(f => f.Id)
+                .ThenBy(f => f.Name);
 
-            var result = await service.GetFrameworksWithActiveAndPublishedSolutions();
+            var result = await service.GetFrameworksWithActiveAndPublishedSolutions(new List<CatalogueItem> { catalogueItem });
 
             result.Should().BeEquivalentTo(expectedFrameworks);
         }

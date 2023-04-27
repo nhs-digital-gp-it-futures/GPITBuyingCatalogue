@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks
 {
     public interface IFrameworkService
     {
-        public Task<List<Framework>> GetFrameworksWithActiveAndPublishedSolutions();
+        public Task<List<FrameworkFilterInfo>> GetFrameworksWithActiveAndPublishedSolutions(IList<CatalogueItem> catalogueItems);
 
         public Task<Framework> GetFrameworksById(string frameworkId);
     }

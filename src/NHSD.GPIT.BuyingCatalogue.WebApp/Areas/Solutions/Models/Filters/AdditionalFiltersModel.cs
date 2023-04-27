@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 {
@@ -12,12 +11,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
         {
         }
 
-        public AdditionalFiltersModel(List<EntityFramework.Catalogue.Models.Framework> frameworks)
+        public AdditionalFiltersModel(List<FrameworkFilterInfo> frameworks)
         {
             FrameworkOptions = frameworks.Select(f => new SelectOption<string>
             {
                 Value = f.Id,
-                Text = f.ShortName,
+                Text = $"{f.ShortName} ({f.CountOfActiveSolutions})",
                 Selected = false,
             }).ToList();
         }
