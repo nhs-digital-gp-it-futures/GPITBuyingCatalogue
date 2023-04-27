@@ -5,6 +5,7 @@ using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
+using Azure.Core;
 using FluentAssertions;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
@@ -226,6 +227,87 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             var odsCode = tokens.Should().ContainKey(NominateOrganisationService.NominatedOrganisationOdsCodeToken).WhoseValue as string;
 
             odsCode.Should().Be(NominateOrganisationService.OdsCodeNotSupplied);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void IsGpPractice_UsersServiceReturnsNull_ThrowsError(
+            int userId,
+            [Frozen] Mock<IUsersService> mockUsersService,
+            NominateOrganisationService systemUnderTest)
+        {
+            mockUsersService
+                .Setup(x => x.GetUser(userId))
+                .ReturnsAsync((AspNetUser)null);
+
+            FluentActions
+                .Awaiting(() => systemUnderTest.IsGpPractice(userId))
+                .Should().ThrowAsync<ArgumentOutOfRangeException>();
+
+            mockUsersService.VerifyAll();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void IsGpPractice_UserPrimaryOrganisationNull_ThrowsError(
+            int userId,
+            [Frozen] Mock<IUsersService> mockUsersService,
+            AspNetUser user,
+            NominateOrganisationService systemUnderTest)
+        {
+            user.PrimaryOrganisation = null;
+            
+            mockUsersService
+                .Setup(x => x.GetUser(userId))
+                .ReturnsAsync(user);
+
+            FluentActions
+                .Awaiting(() => systemUnderTest.IsGpPractice(userId))
+                .Should().ThrowAsync<ArgumentException>();
+
+            mockUsersService.VerifyAll();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task IsGpPractice_ValidGPUser_ReturnsExpectedValue(
+            int userId,
+            [Frozen] Mock<IUsersService> mockUsersService,
+            AspNetUser user,
+            Organisation primaryOrganisation,
+            NominateOrganisationService systemUnderTest)
+        {
+            primaryOrganisation.OrganisationType = OrganisationType.GP;
+            user.PrimaryOrganisation = primaryOrganisation;
+
+            mockUsersService
+                .Setup(x => x.GetUser(userId))
+                .ReturnsAsync(user);
+
+            var result = await systemUnderTest.IsGpPractice(userId);
+            mockUsersService.VerifyAll();
+            result.Should().BeTrue();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task IsGpPractice_ValidNonGPUser_ReturnsExpectedValue(
+            int userId,
+            [Frozen] Mock<IUsersService> mockUsersService,
+            AspNetUser user,
+            Organisation primaryOrganisation,
+            NominateOrganisationService systemUnderTest)
+        {
+            primaryOrganisation.OrganisationType = OrganisationType.CCG;
+            user.PrimaryOrganisation = primaryOrganisation;
+
+            mockUsersService
+                .Setup(x => x.GetUser(userId))
+                .ReturnsAsync(user);
+
+            var result = await systemUnderTest.IsGpPractice(userId);
+            mockUsersService.VerifyAll();
+            result.Should().BeFalse();
         }
     }
 }

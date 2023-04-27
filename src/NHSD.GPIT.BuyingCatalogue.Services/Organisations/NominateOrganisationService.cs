@@ -84,9 +84,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
             if (user == null)
                 throw new ArgumentOutOfRangeException(nameof(userId), userId.ToString(CultureInfo.InvariantCulture));
-            
-            if (string.IsNullOrWhiteSpace(user.Email))
-                throw new ArgumentException($"User id {userId} does not have an email address set");
 
             if (user.PrimaryOrganisation == null)
                 throw new ArgumentException($"User id {userId} does not have a primary organisation set");
