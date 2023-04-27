@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
 
             var order = wrapper.Order;
 
-            if (!SolutionsSelected(order))
+            if (!ValidCatalogueItems(order))
             {
                 return TaskProgress.NotStarted;
             }
@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
             return isAmendment ? TaskProgress.Amended : TaskProgress.Completed;
         }
 
-        private static bool SolutionsSelected(EntityFramework.Ordering.Models.Order order)
+        private static bool ValidCatalogueItems(EntityFramework.Ordering.Models.Order order)
         {
             if (!order.IsAmendment)
             {
@@ -51,7 +51,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
             }
             else
             {
-                return order.OrderItems.Any();
+                return order.OrderItems.Any(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution
+                || x.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService);
             }
         }
 
