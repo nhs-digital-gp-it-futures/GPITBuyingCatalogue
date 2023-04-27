@@ -22,21 +22,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
         public Task<List<FrameworkFilterInfo>> GetFrameworksWithActiveAndPublishedSolutions(IList<CatalogueItem> catalogueItems)
         {
             var catalogueItemIds = catalogueItems.Select(ci => ci.Id).ToList();
-
-            return dbContext.Frameworks
-                .Where(f => dbContext.FrameworkSolutions.Any(fs => fs.FrameworkId == f.Id && catalogueItemIds.Contains(fs.SolutionId)))
-                .GroupBy(f => f.Id)
+            return dbContext.FrameworkSolutions
+                .Where(fs => catalogueItemIds.Contains(fs.SolutionId))
+                .GroupBy(fs => new { fs.FrameworkId, fs.Framework.ShortName })
                 .Select(g => new FrameworkFilterInfo
                 {
-                    Id = g.Key,
-                    ShortName = g.First().ShortName,
-                    Name = g.First().Name,
-                    CountOfActiveSolutions = dbContext.FrameworkSolutions.Where(fs => fs.FrameworkId == g.First().Id && catalogueItemIds.Contains(fs.SolutionId)).Count(),
+                    Id = g.Key.FrameworkId,
+                    ShortName = g.Key.ShortName,
+                    Name = g.First().Framework.Name,
+                    CountOfActiveSolutions = g.Count(),
                 })
-                .Distinct()
-                .OrderBy(f => f.Id)
-                .ThenBy(f => f.Name)
-                .AsNoTracking()
                 .ToListAsync();
         }
 

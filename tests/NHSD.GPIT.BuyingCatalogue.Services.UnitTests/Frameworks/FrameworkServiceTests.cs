@@ -45,28 +45,27 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Frameworks
         [Theory]
         [InMemoryDbAutoData]
         public async Task GetFrameworksWithActiveAndPublishedSolutions_ReturnsExpected(
-             EntityFramework.Catalogue.Models.Framework framework,
-             FrameworkSolution frameworkSolutions,
-             CatalogueItem catalogueItem,
-             [Frozen] BuyingCatalogueDbContext dbContext,
-             FrameworkService service)
+            EntityFramework.Catalogue.Models.Framework framework,
+            FrameworkSolution frameworkSolutions,
+            CatalogueItem catalogueItem,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            FrameworkService service)
         {
             dbContext.Frameworks.Add(framework);
             dbContext.FrameworkSolutions.Add(frameworkSolutions);
             dbContext.CatalogueItems.Add(catalogueItem);
             await dbContext.SaveChangesAsync();
 
-            var expectedFrameworks = dbContext.Frameworks
-                .Where(f => dbContext.FrameworkSolutions.Any(fs => fs.FrameworkId == f.Id && fs.SolutionId == catalogueItem.Id))
-                .GroupBy(f => f.Id)
+            var expectedFrameworks = dbContext.FrameworkSolutions
+                .Where(fs => fs.SolutionId == catalogueItem.Id)
+                .GroupBy(fs => new { fs.FrameworkId, fs.Framework.ShortName })
                 .Select(g => new FrameworkFilterInfo
                 {
-                    Id = g.Key,
-                    ShortName = g.First().ShortName,
-                    Name = g.First().Name,
-                    CountOfActiveSolutions = dbContext.FrameworkSolutions.Count(fs => fs.FrameworkId == g.First().Id && fs.SolutionId == catalogueItem.Id),
+                    Id = g.Key.FrameworkId,
+                    ShortName = g.Key.ShortName,
+                    Name = g.First().Framework.Name,
+                    CountOfActiveSolutions = g.Count(),
                 })
-                .Distinct()
                 .OrderBy(f => f.Id)
                 .ThenBy(f => f.Name);
 
