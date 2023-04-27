@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -41,6 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
         public async Task<IList<EntityFramework.Catalogue.Models.Framework>> GetFrameworks()
             => await dbContext.Frameworks.ToListAsync();
 
+        [ExcludeFromCodeCoverage(Justification = "Can't be tested until the ID migration due to another bizarre Entity Framework design choice where HasDefaultValue doesn't work for the In-memory provider.")]
         public async Task AddFramework(string name, bool isLocalFundingOnly)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -66,5 +68,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
 
             await dbContext.SaveChangesAsync();
         }
+
+        public async Task<bool> FrameworkNameExists(string frameworkName) =>
+            await dbContext.Frameworks.AsNoTracking().AnyAsync(x => x.ShortName == frameworkName);
     }
 }

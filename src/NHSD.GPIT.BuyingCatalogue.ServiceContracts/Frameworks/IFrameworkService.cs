@@ -17,5 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks
         Task AddFramework(string name, bool isLocalFundingOnly);
 
         Task MarkAsExpired(string frameworkId);
+
+        Task<bool> FrameworkNameExists(string frameworkName);
     }
 }

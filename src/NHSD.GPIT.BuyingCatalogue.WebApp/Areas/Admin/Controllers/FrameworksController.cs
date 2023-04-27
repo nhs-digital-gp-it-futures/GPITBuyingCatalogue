@@ -39,7 +39,7 @@ public class FrameworksController : Controller
         if (!ModelState.IsValid)
             return View(model);
 
-        await frameworkService.AddFramework(model.Name, model.IsLocalFundingOnly);
+        await frameworkService.AddFramework(model.Name, model.IsLocalFundingOnly.GetValueOrDefault());
 
         return RedirectToAction(nameof(Dashboard));
     }
@@ -51,7 +51,7 @@ public class FrameworksController : Controller
         if (framework is null)
             return RedirectToAction(nameof(Dashboard));
 
-        var model = new DeleteFrameworkModel
+        var model = new ExpireFrameworkModel
         {
             Name = framework.ShortName, BackLink = Url.Action(nameof(Dashboard), new { frameworkId }),
         };
@@ -60,7 +60,7 @@ public class FrameworksController : Controller
     }
 
     [HttpPost("expire/{frameworkId}")]
-    public async Task<IActionResult> Expire(string frameworkId, DeleteFrameworkModel model)
+    public async Task<IActionResult> Expire(string frameworkId, ExpireFrameworkModel model)
     {
         _ = model;
 

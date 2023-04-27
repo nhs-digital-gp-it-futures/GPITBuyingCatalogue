@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.ValueGeneration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
@@ -11,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
         {
             builder.ToTable("Frameworks", Schemas.Catalogue);
 
-            builder.Property(f => f.Id).HasDefaultValue(Guid.NewGuid().ToString()).HasMaxLength(10);
+            builder.Property(f => f.Id).HasDefaultValue(Guid.NewGuid().ToString()).HasMaxLength(36);
 
             builder.Property(f => f.ShortName).IsRequired().HasMaxLength(25);
             builder.Property(f => f.LastUpdated).HasDefaultValue(DateTime.UtcNow);
