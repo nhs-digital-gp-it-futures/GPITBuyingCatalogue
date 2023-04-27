@@ -4,7 +4,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
 {
     public static class OrderCompletedObjects
     {
-        public static By DownloadPdfButton => By.LinkText("Download order PDF");
+        public static By DownloadPdfButton => By.LinkText("Download order form (PDF)");
 
         public static By ReturnToDashboardButton => By.LinkText("Return to orders dashboard");
 

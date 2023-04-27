@@ -7,6 +7,7 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
 @using System.Linq
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.ServiceRecipients.SelectRecipientsModel;
 @{
     ViewBag.Title = $"Service Recipients for {Model.ItemType.Name()}";
@@ -19,7 +20,7 @@
         <nhs-validation-summary />
         <nhs-page-title model="Model" />
 
-        @if (Model.SubLocations?.Any() ?? false)
+        @if ((Model.SubLocations?.Any() ?? false) && Model.OrganisationType != OrganisationType.GP)
         {
             if (Model.HasImportedRecipients
                 || (Model.PreviouslySelected?.Any() ?? false)
@@ -99,7 +100,11 @@
 
             @if (Model.SubLocations?.Any() ?? false)
             {
-                <h3 style="white-space:nowrap">Sublocations for @Model.OrganisationName</h3>
+                @if (Model.OrganisationType != OrganisationType.GP)
+                {
+                    <h3 style="white-space:nowrap">Sublocations for @Model.OrganisationName</h3>
+                }
+
                 @foreach (var (location, lIndex) in Model.SubLocations.Select((x, i) => (x, i)))
                 {
                     <input type="hidden" asp-for="@Model.SubLocations[lIndex].Name" />

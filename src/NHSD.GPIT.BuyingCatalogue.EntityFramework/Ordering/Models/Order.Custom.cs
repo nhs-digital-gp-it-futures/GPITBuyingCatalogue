@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
@@ -11,30 +12,14 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public const string LocalFunding = "Local";
         public const string CentralFunding = "Central";
 
-        // TODO: remove with csv
-        public string ApproximateFundingType
-        {
-            get
-            {
-                var fundingTypes = OrderItems
-                    .Select(x => x.FundingType)
-                    .Where(x => x != OrderItemFundingType.NoFundingRequired
-                        && x != OrderItemFundingType.None)
-                    .ToList();
+        [JsonIgnore]
+        public bool IsLocalFundingOnly =>
+            SelectedFramework.LocalFundingOnly || OrderingParty.OrganisationType == OrganisationType.GP;
 
-                if (!fundingTypes.Any())
-                {
-                    return CentralFunding;
-                }
+        [JsonIgnore]
+        public EndDate EndDate => new(CommencementDate, MaximumTerm);
 
-                return fundingTypes.All(x => x is OrderItemFundingType.LocalFunding or OrderItemFundingType.LocalFundingOnly)
-                    ? LocalFunding
-                    : CentralFunding;
-            }
-        }
-
-        public EndDate EndDate => new EndDate(CommencementDate, MaximumTerm);
-
+        [JsonIgnore]
         public bool IsAmendment => CallOffId.IsAmendment;
 
         public void Complete()
