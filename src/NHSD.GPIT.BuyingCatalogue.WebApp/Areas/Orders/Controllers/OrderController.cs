@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,12 +8,11 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Environments;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 {
@@ -23,9 +21,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
     [Route("order/organisation/{internalOrgId}/order/{callOffId}")]
     public sealed class OrderController : Controller
     {
+        public const string ErrorKey = "Order";
+        public const string ErrorMessage = "Your order is incomplete. Please go back to the order and check again";
+
         private readonly IOrderService orderService;
         private readonly IOrderProgressService orderProgressService;
         private readonly IOrganisationsService organisationsService;
+        private readonly IImplementationPlanService implementationPlanService;
         private readonly IOrderPdfService pdfService;
         private readonly PdfSettings pdfSettings;
 
@@ -33,12 +35,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             IOrderService orderService,
             IOrderProgressService orderProgressService,
             IOrganisationsService organisationsService,
+            IImplementationPlanService implementationPlanService,
             IOrderPdfService pdfService,
             PdfSettings pdfSettings)
         {
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.orderProgressService = orderProgressService ?? throw new ArgumentNullException(nameof(orderProgressService));
             this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
+            this.implementationPlanService = implementationPlanService ?? throw new ArgumentNullException(nameof(implementationPlanService));
             this.pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
             this.pdfSettings = pdfSettings ?? throw new ArgumentNullException(nameof(pdfSettings));
         }
@@ -137,47 +141,70 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         [HttpGet("summary")]
         public async Task<IActionResult> Summary(string internalOrgId, CallOffId callOffId)
         {
-            var order = (await orderService.GetOrderForSummary(callOffId, internalOrgId)).Order;
+            var orderWrapper = await orderService.GetOrderForSummary(callOffId, internalOrgId);
+            var order = orderWrapper.Order;
             var hasSubsequentRevisions = await orderService.HasSubsequentRevisions(callOffId);
 
-            var canBeAmended = CurrentEnvironment.IsDevelopment
+            var amendableIfLatestAndComplete = CurrentEnvironment.IsDevelopment
+                && !order.AssociatedServicesOnly;
+
+            var canBeAmended = amendableIfLatestAndComplete
                 && order.OrderStatus == OrderStatus.Completed
-                && !order.AssociatedServicesOnly
                 && !hasSubsequentRevisions;
 
-            var model = new SummaryModel(internalOrgId, order)
+            var defaultPlan = await implementationPlanService.GetDefaultImplementationPlan();
+
+            var model = new SummaryModel(orderWrapper, internalOrgId, defaultPlan)
             {
-                BackLink = order.OrderStatus == OrderStatus.Completed
-                    ? Url.Action(
-                        nameof(DashboardController.Organisation),
-                        typeof(DashboardController).ControllerName(),
-                        new { internalOrgId })
-                    : Url.Action(
-                        nameof(Order),
-                        typeof(OrderController).ControllerName(),
-                        new { internalOrgId, callOffId }),
-
-                Title = order.OrderStatus switch
-                {
-                    OrderStatus.Completed => "Order confirmed",
-                    _ => order.CanComplete()
-                        ? "Review and complete your order summary"
-                        : "Order summary",
-                },
-
-                AdviceText = order.OrderStatus switch
-                {
-                    OrderStatus.Completed when canBeAmended => "This order has already been completed, but you can amend it if needed.",
-                    OrderStatus.Completed => "This order has been confirmed and can no longer be changed.",
-                    _ => order.CanComplete()
-                        ? "Review your order summary before completing it. Once the order summary is completed, you'll be unable to make changes."
-                        : "This is what's been added to your order so far. You must complete all mandatory steps before you can confirm your order.",
-                },
-
+                BackLink = GetBackLink(internalOrgId, callOffId, order),
+                Title = GetTitle(order),
+                AdviceText = GetAdvice(order, amendableIfLatestAndComplete, !hasSubsequentRevisions),
                 CanBeAmended = canBeAmended,
             };
 
             return View(model);
+        }
+
+        [HttpPost("summary")]
+        public async Task<IActionResult> SummaryComplete(string internalOrgId, CallOffId callOffId)
+        {
+            var orderWrapper = await orderService.GetOrderForSummary(callOffId, internalOrgId);
+            var order = orderWrapper.Order;
+            if (!order.CanComplete())
+            {
+                ModelState.AddModelError(ErrorKey, ErrorMessage);
+                var hasSubsequentRevisions = await orderService.HasSubsequentRevisions(callOffId);
+
+                var amendableIfLatestAndComplete = CurrentEnvironment.IsDevelopment
+                    && !order.AssociatedServicesOnly;
+
+                var canBeAmended = amendableIfLatestAndComplete
+                    && order.OrderStatus == OrderStatus.Completed
+                    && !hasSubsequentRevisions;
+
+                var defaultPlan = await implementationPlanService.GetDefaultImplementationPlan();
+                ModelState.AddModelError(ErrorKey, ErrorMessage);
+
+                var model = new SummaryModel(orderWrapper, internalOrgId, defaultPlan)
+                {
+                    BackLink = GetBackLink(internalOrgId, callOffId, order),
+                    Title = GetTitle(order),
+                    AdviceText = GetAdvice(order, amendableIfLatestAndComplete, !hasSubsequentRevisions),
+                    CanBeAmended = canBeAmended,
+                };
+
+                return View(model);
+            }
+
+            await orderService.CompleteOrder(
+                callOffId,
+                internalOrgId,
+                User.UserId());
+
+            return RedirectToAction(
+                nameof(OrderController.Completed),
+                typeof(OrderController).ControllerName(),
+                new { internalOrgId, callOffId });
         }
 
         [HttpGet("completed")]
@@ -230,6 +257,43 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                 nameof(Order),
                 typeof(OrderController).ControllerName(),
                 new { internalOrgId, amendment.CallOffId });
+        }
+
+        private static string GetAdvice(Order order, bool amendableIfLatestAndComplete, bool latestOrder)
+        {
+            return order.OrderStatus switch
+            {
+                OrderStatus.Completed when amendableIfLatestAndComplete && latestOrder => "This order has already been completed, but you can amend it if needed.",
+                OrderStatus.Completed when amendableIfLatestAndComplete && !latestOrder => "This order can no longer be changed as there is already an amendment in progress.",
+                OrderStatus.Completed => "This order has been confirmed and can no longer be changed.",
+                _ => order.CanComplete()
+                    ? "Review the items you’ve added to your order before completing it."
+                    : "This is what's been added to your order so far. You must complete all mandatory steps before you can confirm your order.",
+            };
+        }
+
+        private static string GetTitle(Order order)
+        {
+            return order.OrderStatus switch
+            {
+                OrderStatus.Completed => "Order confirmed",
+                _ => order.CanComplete()
+                    ? "Review order summary"
+                    : "Order summary",
+            };
+        }
+
+        private string GetBackLink(string internalOrgId, CallOffId callOffId, Order order)
+        {
+            return order.OrderStatus == OrderStatus.Completed
+                                ? Url.Action(
+                                    nameof(DashboardController.Organisation),
+                                    typeof(DashboardController).ControllerName(),
+                                    new { internalOrgId })
+                                : Url.Action(
+                                    nameof(Order),
+                                    typeof(OrderController).ControllerName(),
+                                    new { internalOrgId, callOffId });
         }
     }
 }

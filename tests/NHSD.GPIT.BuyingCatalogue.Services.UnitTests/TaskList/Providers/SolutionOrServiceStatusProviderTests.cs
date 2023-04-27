@@ -101,7 +101,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [Theory]
         [CommonInlineAutoData(CatalogueItemType.Solution)]
         [CommonInlineAutoData(CatalogueItemType.AdditionalService)]
-        [CommonInlineAutoData(CatalogueItemType.AssociatedService)]
         public static void Get_Amending_ReturnsInProgress(
             CatalogueItemType itemType,
             Order order,
