@@ -379,6 +379,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
         [Theory]
         [CommonAutoData]
+        public static async Task Get_RelatedOrganisations_GPOrganisation_ReturnsBadRequest(
+            int organisationId,
+            Organisation organisation,
+            [Frozen] Mock<IOrganisationsService> mockOrganisationService,
+            OrganisationBaseController controller)
+        {
+            organisation.OrganisationType = OrganisationType.GP;
+
+            mockOrganisationService
+                .Setup(x => x.GetOrganisation(organisationId))
+                .ReturnsAsync(organisation);
+
+            var result = (await controller.RelatedOrganisations(organisationId)).As<BadRequestResult>();
+
+            mockOrganisationService.VerifyAll();
+            mockOrganisationService.VerifyNoOtherCalls();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static async Task Get_RelatedOrganisations_ReturnsExpectedResult(
             Organisation organisation,
             Organisation relatedOrganisation,
@@ -468,6 +490,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             {
                 { "organisationId", model.OrganisationId },
             });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_NominatedOrganisations_GPOrganisation_ReturnsBadRequest(
+            int organisationId,
+            Organisation organisation,
+            [Frozen] Mock<IOrganisationsService> mockOrganisationService,
+            OrganisationBaseController controller)
+        {
+            organisation.OrganisationType = OrganisationType.GP;
+
+            mockOrganisationService
+                .Setup(x => x.GetOrganisation(organisationId))
+                .ReturnsAsync(organisation);
+
+            var result = (await controller.NominatedOrganisations(organisationId)).As<BadRequestResult>();
+
+            mockOrganisationService.VerifyAll();
+            mockOrganisationService.VerifyNoOtherCalls();
+
+            result.Should().NotBeNull();
         }
 
         [Theory]
