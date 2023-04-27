@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
 using Xunit;
@@ -13,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order)
         {
-            var model = new SummaryModel(internalOrgId, order);
+            var model = new SummaryModel(new OrderWrapper(order), internalOrgId);
 
             model.InternalOrgId.Should().Be(internalOrgId);
             model.Order.Should().BeEquivalentTo(order);
