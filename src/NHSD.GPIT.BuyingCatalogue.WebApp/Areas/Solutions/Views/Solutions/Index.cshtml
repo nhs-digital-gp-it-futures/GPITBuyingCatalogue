@@ -143,7 +143,7 @@
                 </a>
             </p>
 
-            @if (Model.CatalogueItems.Count == 0 && !Model.AdditionalFiltersApplicable)
+            @if (Model.CatalogueItems.Count == 0 && !Model.HasCapabilities)
             {
                 <p id="no-results">
                     Try a different search term or change any filters you've selected.
@@ -168,11 +168,11 @@
             <hr />
         }
 
-            @if (Model.AdditionalFiltersApplicable)
+        @if (Model.HasCapabilities)
             {
                 <div class="nhsuk-grid-column-one-third" >
                     <h2>Additional Filters</h2>
-                    <partial name="IncludeAdditionalfilters" model="@(Model.AdditionalFilters)" />
+                    <partial name="AdditionalFilters" model="@(Model.AdditionalFilters)" />
                 @if (Model.CatalogueItems.Count != 0)
                 {
                     <nhs-submit-button style = "width:100%"text="Save All Filters"/>

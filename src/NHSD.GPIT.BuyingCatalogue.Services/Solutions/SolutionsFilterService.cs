@@ -123,6 +123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             var capabilityParam = CreateIdListParameter(capabilityIds, CapabilityParamName, CapabilityParamType);
             var epicParam = CreateIdListParameter(epicIds, EpicParamName, EpicParamType);
 
+            // old school ADO.NET baby
             using var cmd = dbContext.Database.GetDbConnection().CreateCommand();
             cmd.CommandText = FilterProcName;
             cmd.CommandType = CommandType.StoredProcedure;

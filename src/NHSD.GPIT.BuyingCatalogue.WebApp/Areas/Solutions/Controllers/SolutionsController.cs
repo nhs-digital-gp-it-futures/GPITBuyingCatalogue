@@ -45,8 +45,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             [FromQuery] string search,
             string selectedFrameworkId)
         {
-            var frameworks = await frameworkService.GetFrameworksWithActiveSolutions();
-            var additionalFilters = new Models.Filters.IncludeAdditionalfiltersModel(frameworks);
+            var frameworks = await frameworkService.GetFrameworksWithActiveAndPublishedSolutions();
+            var additionalFilters = new Models.Filters.AdditionalFiltersModel(frameworks);
             var inputOptions = new PageOptions(page, sortBy);
 
             var (catalogueItems, options, capabilitiesAndCount) =
@@ -80,18 +80,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             [FromQuery] string selectedEpicIds,
             [FromQuery] string search,
             string selectedFrameworkId) =>
-        RedirectToAction(
-                nameof(Index),
-                typeof(SolutionsController).ControllerName(),
-                new
-                {
-                    page,
-                    selectedCapabilityIds,
-                    selectedEpicIds,
-                    search,
-                    sortBy = model.SelectedSortOption.ToString(),
-                    selectedFrameworkId,
-                });
+            RedirectToAction(
+                    nameof(Index),
+                    typeof(SolutionsController).ControllerName(),
+                    new
+                    {
+                        page,
+                        selectedCapabilityIds,
+                        selectedEpicIds,
+                        search,
+                        sortBy = model.SelectedSortOption.ToString(),
+                        selectedFrameworkId,
+                    });
 
         [HttpGet("search-suggestions")]
         public async Task<IActionResult> FilterSearchSuggestions([FromQuery] string search)

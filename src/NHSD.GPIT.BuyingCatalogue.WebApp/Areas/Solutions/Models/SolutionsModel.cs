@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         {
         }
 
-        public IncludeAdditionalfiltersModel AdditionalFilters { get; set; }
+        public AdditionalFiltersModel AdditionalFilters { get; set; }
 
         public IList<CatalogueItem> CatalogueItems { get; init; }
 
@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             !string.IsNullOrWhiteSpace(SearchSummary?.SelectedCapabilityIds)
             || !string.IsNullOrWhiteSpace(SearchSummary?.SearchTerm);
 
-        public bool AdditionalFiltersApplicable =>
+        public bool HasCapabilities =>
             !string.IsNullOrWhiteSpace(SearchSummary?.SelectedCapabilityIds);
 
         public string TitleText =>

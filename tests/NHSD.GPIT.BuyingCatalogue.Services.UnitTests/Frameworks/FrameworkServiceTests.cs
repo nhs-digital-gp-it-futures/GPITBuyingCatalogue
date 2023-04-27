@@ -7,6 +7,7 @@ using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Framework;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Xunit;
@@ -42,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Frameworks
 
         [Theory]
         [InMemoryDbAutoData]
-        public async Task GetFrameworksWithActiveSolutions_ReturnsExpected(
+        public async Task GetFrameworksWithActiveAndPublishedSolutions_ReturnsExpected(
             EntityFramework.Catalogue.Models.Framework framework,
             EntityFramework.Catalogue.Models.FrameworkSolution frameworkSolutions,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -53,11 +54,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Frameworks
             await dbContext.SaveChangesAsync();
 
             var expectedFrameworks = dbContext.Frameworks
-                .Where(f => dbContext.FrameworkSolutions.Any(fs => fs.FrameworkId == f.Id))
-                .OrderBy(f => f.Id)
-                .ThenBy(f => f.Name);
+            .Join(dbContext.FrameworkSolutions, f => f.Id, fs => fs.FrameworkId, (f, fs) => new { Framework = f, FrameworkSolution = fs })
+            .Join(dbContext.Solutions, fs => fs.FrameworkSolution.SolutionId, s => s.CatalogueItemId, (fs, s) => new { fs.Framework, Solution = s })
+            .Join(dbContext.CatalogueItems, x => x.Solution.CatalogueItemId, ci => ci.Id, (x, ci) => new { x.Framework, x.Solution, CatalogueItem = ci })
+            .Where(x => x.CatalogueItem.PublishedStatus == PublicationStatus.Published)
+            .Select(x => x.Framework)
+            .OrderBy(f => f.Id)
+            .ThenBy(f => f.Name);
 
-            var result = await service.GetFrameworksWithActiveSolutions();
+            var result = await service.GetFrameworksWithActiveAndPublishedSolutions();
 
             result.Should().BeEquivalentTo(expectedFrameworks);
         }

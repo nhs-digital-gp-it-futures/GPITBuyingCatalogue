@@ -6,7 +6,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks
 {
     public interface IFrameworkService
     {
-        public Task<List<Framework>> GetFrameworksWithActiveSolutions();
+        public Task<List<Framework>> GetFrameworksWithActiveAndPublishedSolutions();
 
         public Task<Framework> GetFrameworksById(string frameworkId);
     }

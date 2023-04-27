@@ -6,14 +6,13 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 {
-    [ExcludeFromCodeCoverage]
-    public class IncludeAdditionalfiltersModel
+    public class AdditionalFiltersModel
     {
-        public IncludeAdditionalfiltersModel()
+        public AdditionalFiltersModel()
         {
         }
 
-        public IncludeAdditionalfiltersModel(List<EntityFramework.Catalogue.Models.Framework> frameworks)
+        public AdditionalFiltersModel(List<EntityFramework.Catalogue.Models.Framework> frameworks)
         {
             FrameworkOptions = frameworks.Select(f => new SelectOption<string>
             {

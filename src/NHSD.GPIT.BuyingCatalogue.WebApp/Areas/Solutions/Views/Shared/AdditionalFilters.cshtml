@@ -1,8 +1,7 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters.IncludeAdditionalfiltersModel
-
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters.AdditionalFiltersModel
 <form method="post">
     @if(Model.FrameworkOptions.Count > 1)
     {
@@ -22,7 +21,6 @@
             <input type="hidden" asp-for="SelectedFrameworkId" />
         </nhs-expander>
     }
-    
     <nhs-submit-button style= "width:100%" text="Apply additional filters" class="nhsuk-button--secondary" />
     
 </form>
