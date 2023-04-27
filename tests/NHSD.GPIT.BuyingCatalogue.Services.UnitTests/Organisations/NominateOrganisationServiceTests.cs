@@ -260,11 +260,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             mockUsersService
                 .Setup(x => x.GetUser(userId))
                 .ReturnsAsync(user);
-
+            
             FluentActions
                 .Awaiting(() => systemUnderTest.IsGpPractice(userId))
                 .Should().ThrowAsync<ArgumentException>();
-
+            
             mockUsersService.VerifyAll();
         }
 
