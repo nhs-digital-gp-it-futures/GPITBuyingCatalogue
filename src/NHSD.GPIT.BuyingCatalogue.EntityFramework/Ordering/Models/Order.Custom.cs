@@ -29,7 +29,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public bool CanComplete()
         {
-            Console.WriteLine(ContractFlags?.UseDefaultImplementationPlan is not null);
             return
                 !string.IsNullOrWhiteSpace(Description)
                 && OrderingPartyContact is not null
