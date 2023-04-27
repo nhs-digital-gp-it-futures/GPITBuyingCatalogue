@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 && OrderingPartyContact is not null
                 && Supplier is not null
                 && CommencementDate is not null
-                && (HasSolution() || HasAssociatedService())
+                && (HasValidCatalogueItems() || HasAssociatedService())
                 && OrderItems.Count > 0
                 && OrderItems.All(x => x.OrderItemRecipients.All(r => r.DeliveryDate != null))
                 && OrderItems.All(oi => oi.OrderItemFunding is not null)
@@ -147,9 +147,17 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             return OrderItems.Any(o => o.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService);
         }
 
-        public bool HasSolution()
+        public bool HasValidCatalogueItems()
         {
-            return OrderItems.Any(o => o.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution);
+            if (!IsAmendment)
+            {
+                return OrderItems.Any(o => o.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution);
+            }
+            else
+            {
+                return OrderItems.Any(o => o.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution
+                    || o.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService);
+            }
         }
 
         public void Apply(Order order)

@@ -1,9 +1,10 @@
 ﻿@using System.Linq
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 @using NHSD.GPIT.BuyingCatalogue.Framework.Calculations
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrderSummaryModel
 @{
-	Layout = "";
+    Layout = "";
     var contractTerm = Model.Order.MaximumTerm.HasValue
         ? $"({Model.Order.MaximumTerm.Value} months)"
         : "(estimated)";
@@ -42,8 +43,8 @@
         @@media print {
             @@page {
                 size: A4 landscape;
-                max-height:100%;
-                max-width:100%
+                max-height: 100%;
+                max-width: 100%
             }
         }
 
@@ -117,10 +118,10 @@
             border-bottom: 1px solid lightgray;
         }
 
-        .signature td:first-child {
-            width: 20%;
-            border-bottom: none;
-        }
+            .signature td:first-child {
+                width: 20%;
+                border-bottom: none;
+            }
 
         .pdf-summary-list {
             -webkit-break-inside: avoid;
@@ -140,18 +141,18 @@
             margin-bottom: 32px;
         }
 
-        .pdf-summary-list-row div {
-            display: table-cell;
-            padding-top: 0;
-            padding-right: 24px;
-            padding-bottom: 0;
-            width: 50%;
-        }
+            .pdf-summary-list-row div {
+                display: table-cell;
+                padding-top: 0;
+                padding-right: 24px;
+                padding-bottom: 0;
+                width: 50%;
+            }
 
-        .pdf-summary-list-row div:first-child {
-            font-weight: 600;
-            width: 30%;
-        }
+                .pdf-summary-list-row div:first-child {
+                    font-weight: 600;
+                    width: 30%;
+                }
 
         .nhsuk-main-wrapper {
             padding-top: 5px;
@@ -159,345 +160,409 @@
     </style>
 </head>
 <body class="nhsuk-bc-print">
-<div class="nhsuk-width-container">
-<main class="nhsuk-main-wrapper" id="maincontent">
-<div class="nhsuk-grid-row">
-<div class="nhsuk-grid-column-full">
-<nhs-page-title title="Call-off Order Form"
-                caption="Order @Model.Order.CallOffId"/>
+    <div class="nhsuk-width-container">
+        <main class="nhsuk-main-wrapper" id="maincontent">
+            <div class="nhsuk-grid-row">
+                <div class="nhsuk-grid-column-full">
+                    <nhs-page-title title="Call-off Order Form"
+                                    caption="Order @Model.Order.CallOffId" />
 
-<pdf-summary-list>
-    <pdf-summary-list-row label-text="Order ID">
-        @Model.Order.CallOffId
-    </pdf-summary-list-row>
+                    <pdf-summary-list>
+                        <pdf-summary-list-row label-text="Order ID">
+                            @Model.Order.CallOffId
+                        </pdf-summary-list-row>
 
-    @if (Model.Order.SelectedFramework is not null)
-    {
-        <pdf-summary-list-row label-text="Framework">
-            @Model.Order.SelectedFramework.ShortName
-        </pdf-summary-list-row>
-    }
+                        @if (Model.Order.SelectedFramework is not null)
+                        {
+                            <pdf-summary-list-row label-text="Framework">
+                                @Model.Order.SelectedFramework.ShortName
+                            </pdf-summary-list-row>
+                        }
 
-    <pdf-summary-list-row label-text="Description">
-        @Model.Order.Description
-    </pdf-summary-list-row>
+                        <pdf-summary-list-row label-text="Description">
+                            @Model.Order.Description
+                        </pdf-summary-list-row>
 
-    <pdf-summary-list-row label-text="Date order summary created">
-        @DateTime.UtcNow.ToString("d MMMM yyyy")
-    </pdf-summary-list-row>
+                        <pdf-summary-list-row label-text="Date order summary created">
+                            @DateTime.UtcNow.ToString("d MMMM yyyy")
+                        </pdf-summary-list-row>
 
-    @if (Model.Order.OrderStatus == OrderStatus.Completed
-        && Model.Order.Completed.HasValue)
-    {
-        <pdf-summary-list-row label-text="Date order summary completed">
-            @Model.Order.Completed.Value.ToString("d MMMM yyyy")
-        </pdf-summary-list-row>
-    }
+                        @if (Model.Order.OrderStatus == OrderStatus.Completed
+                        && Model.Order.Completed.HasValue)
+                        {
+                            <pdf-summary-list-row label-text="Date order summary completed">
+                                @Model.Order.Completed.Value.ToString("d MMMM yyyy")
+                            </pdf-summary-list-row>
+                        }
 
-    @if (Model.Order.OrderingPartyContact != null)
-    {
-        <pdf-summary-list-row label-text="Call-off ordering party">
-            @Model.Order.OrderingPartyContact.FirstName @Model.Order.OrderingPartyContact.LastName <br/>
-            @Model.Order.OrderingParty.Name (@Model.Order.OrderingParty.ExternalIdentifier)<br/>
-            <vc:nhs-address address="@Model.Order.OrderingParty.Address"/>
-        </pdf-summary-list-row>
-    }
+                        @if (Model.Order.OrderingPartyContact != null)
+                        {
+                            <pdf-summary-list-row label-text="Call-off ordering party">
+                                @Model.Order.OrderingPartyContact.FirstName @Model.Order.OrderingPartyContact.LastName <br />
+                                @Model.Order.OrderingParty.Name (@Model.Order.OrderingParty.ExternalIdentifier)<br />
+                                <vc:nhs-address address="@Model.Order.OrderingParty.Address" />
+                            </pdf-summary-list-row>
+                        }
 
-    @if (Model.Order.Supplier != null
-        && Model.Order.SupplierContact != null)
-    {
-        <pdf-summary-list-row label-text="Supplier">
-            @Model.Order.SupplierContact.FirstName @Model.Order.SupplierContact.LastName <br/>
-            @Model.Order.Supplier.Name <br/>
-            <vc:nhs-address address="@Model.Order.Supplier.Address"/>
-        </pdf-summary-list-row>
-    }
+                        @if (Model.Order.Supplier != null
+                        && Model.Order.SupplierContact != null)
+                        {
+                            <pdf-summary-list-row label-text="Supplier">
+                                @Model.Order.SupplierContact.FirstName @Model.Order.SupplierContact.LastName <br />
+                                @Model.Order.Supplier.Name <br />
+                                <vc:nhs-address address="@Model.Order.Supplier.Address" />
+                            </pdf-summary-list-row>
+                        }
 
-    @if (Model.Order.CommencementDate != null)
-    {
-        <pdf-summary-list-row label-text="Commencement date">
-            @($"{Model.Order.CommencementDate.Value:d MMMM yyyy}")
-        </pdf-summary-list-row>
-    }
+                        @if (Model.Order.CommencementDate != null)
+                        {
+                            <pdf-summary-list-row label-text="Commencement date">
+                                @($"{Model.Order.CommencementDate.Value:d MMMM yyyy}")
+                            </pdf-summary-list-row>
+                        }
 
-    @if (Model.Order.InitialPeriod != null)
-    {
-        <pdf-summary-list-row label-text="Initial period">
-            @($"{Model.Order.InitialPeriod} Months")
-        </pdf-summary-list-row>
-    }
+                        @if (Model.Order.InitialPeriod != null)
+                        {
+                            <pdf-summary-list-row label-text="Initial period">
+                                @($"{Model.Order.InitialPeriod} Months")
+                            </pdf-summary-list-row>
+                        }
 
-    @if (Model.Order.MaximumTerm != null)
-    {
-        <pdf-summary-list-row label-text="Maximum term">
-            @($"{Model.Order.MaximumTerm} Months")
-        </pdf-summary-list-row>
+                        @if (Model.Order.MaximumTerm != null)
+                        {
+                            <pdf-summary-list-row label-text="Maximum term">
+                                @($"{Model.Order.MaximumTerm} Months")
+                            </pdf-summary-list-row>
 
-        if (Model.Order.CommencementDate != null)
-        {
-            <pdf-summary-list-row label-text="End date">
-                @Model.Order.EndDate.DisplayValue
-            </pdf-summary-list-row>
-        }
-    }
-</pdf-summary-list>
+                            if (Model.Order.CommencementDate != null)
+                            {
+                                <pdf-summary-list-row label-text="End date">
+                                    @Model.Order.EndDate.DisplayValue
+                                </pdf-summary-list-row>
+                            }
+                        }
+                    </pdf-summary-list>
 
-<div style="page-break-after: always"></div>
+                    <div style="page-break-after: always"></div>
 
-<h1>Items added to this order</h1>
+                    <h1>Items added to this order</h1>
 
-@if (Model.Order.GetSolutions().Any())
-{
-    <h2>@(Model.Order.GetSolutions().Count() > 1 ? "Catalogue Solutions" : "Catalogue Solution")</h2>
-    @foreach (var solution in Model.Order.GetSolutions())
-    {
-        <partial name="OrderItem"
-                 model="new OrderSummaryItemModel(solution)"/>
-        <div style="page-break-after: always"></div>
-    }
-}
+                    @if (Model.RolledUp.GetSolutions().Any())
+                    {
+                        <h2>@(Model.RolledUp.GetSolutions().Count() > 1 ? "Catalogue Solutions" : "Catalogue Solution")</h2>
+                        @foreach (var solution in Model.RolledUp.GetSolutions())
+                        {
+                            <partial name="OrderItem" model="new AmendOrderItemModel(Model.CallOffId, solution, Model.Previous?.OrderItem(solution.CatalogueItemId), Model.Order.IsAmendment, Model.FundingTypeDescription(solution.CatalogueItemId))" />
+                            <div style="page-break-after: always"></div>
+                        }
+                    }
 
-@if (Model.Order.GetAdditionalServices().Any())
-{
-    <h2>Additional Services</h2>
-    @foreach (var service in Model.Order.GetAdditionalServices())
-    {
-        <partial name="OrderItem"
-                 model="new OrderSummaryItemModel(service)"/>
-        <div style="page-break-after: always"></div>
-    }
-}
+                    @if (Model.RolledUp.GetAdditionalServices().Any())
+                    {
+                        <h2>Additional Services</h2>
+                        @foreach (var service in Model.RolledUp.GetAdditionalServices())
+                        {
+                            <partial name="OrderItem" model="new AmendOrderItemModel(Model.CallOffId, service, Model.Previous?.OrderItem(service.CatalogueItemId), Model.Order.IsAmendment, Model.FundingTypeDescription(service.CatalogueItemId))" />
+                            <div style="page-break-after: always"></div>
+                        }
+                    }
 
-@if (Model.Order.GetAssociatedServices().Any())
-{
-    <h2>Associated Services</h2>
-    @foreach (var service in Model.Order.GetAssociatedServices())
-    {
-        <partial name="OrderItem"
-                 model="new OrderSummaryItemModel(service)"/>
-        <div style="page-break-after: always"></div>
-    }
-}
+                    @if (Model.RolledUp.GetAssociatedServices().Any())
+                    {
+                        <h2>Associated Services</h2>
+                        @foreach (var service in Model.RolledUp.GetAssociatedServices())
+                        {
+                            <partial name="OrderItem" model="new AmendOrderItemModel(Model.CallOffId, service, Model.Previous?.OrderItem(service.CatalogueItemId), Model.Order.IsAmendment, Model.FundingTypeDescription(service.CatalogueItemId))" />
+                            <div style="page-break-after: always"></div>
+                        }
+                    }
 
-<div class="pdf-container">
-    <h1>Indicative costs for this order</h1>
-    <h3>Indicative costs</h3>
+                    <h2>Contract summary</h2>
+                    @if (Model.UseDefaultImplementationPlan)
+                    {
+                        <div class="pdf-container">
+                            <h3>Milestones and payment triggers</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Milestone</th>
+                                        <th>Payment trigger</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var milestone in Model.DefaultImplementationPlan.Milestones)
+                                    {
+                                        <tr>
+                                            <td>@milestone.Title</td>
+                                            <td>@milestone.PaymentTrigger</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="pdf-container">
+                            <h3>Implementation Plan</h3>
+                            <pdf-summary-list>
+                                <pdf-summary-list-row label-text="Using default implementation plan?">
+                                    @Model.UseDefaultImplementationPlan.ToYesNo()
+                                </pdf-summary-list-row>
+                            </pdf-summary-list>
 
-    <pdf-summary-list>
-        <pdf-summary-list-row label-text="Total one-off cost">
-            @($"£{Model.Order.TotalOneOffCost():N2}")
-        </pdf-summary-list-row>
-
-        <pdf-summary-list-row label-text="Total monthly cost">
-            @($"£{Model.Order.TotalMonthlyCost():N2}")
-        </pdf-summary-list-row>
-
-        <pdf-summary-list-row label-text="Total annual cost">
-            @($"£{Model.Order.TotalAnnualCost():N2}")
-        </pdf-summary-list-row>
-
-        <pdf-summary-list-row label-text="Total cost of contract @contractTerm">
-            @($"£{Model.Order.TotalCost():N2}")
-            @if (!Model.Order.MaximumTerm.HasValue)
-            {
-                <br/>
-                <br/>
-                <p>
-                    This is the total estimated cost for the entire duration of the Call-off Agreement, which is usually 3 years.
-                    The figure is made up of the one-off costs and the yearly cost multiplied by 3.
-                </p>
-            }
-        </pdf-summary-list-row>
-    </pdf-summary-list>
-    <p><b>All prices exclude VAT.</b></p>
-</div>
-
-<div style="page-break-after: always"></div>
-
-<h1>Contract summary</h1>
-
-@if (Model.UseDefaultImplementationPlan)
-{
-    <div class="pdf-container">
-        <h3>Milestones and payment triggers</h3>
-        <table>
-            <thead>
-            <tr>
-                <th>Milestone</th>
-                <th>Payment Trigger</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (var milestone in Model.DefaultImplementationPlan.Milestones)
-            {
-                <tr>
-                    <td>@milestone.Title</td>
-                    <td>@milestone.PaymentTrigger</td>
-                </tr>
-            }
-            </tbody>
-        </table>
-    </div>
-}
-else
-{
-    <div class="pdf-container">
-        <h3>Implementation Plan</h3>
-        <pdf-summary-list>
-            <pdf-summary-list-row label-text="Using default implementation plan?">
-                @Model.UseDefaultImplementationPlan.ToYesNo()
-            </pdf-summary-list-row>
-        </pdf-summary-list>
-
-        <div class="nhsuk-u-margin-bottom-6">
+                            <div class="nhsuk-u-margin-bottom-6">
                                 <p>Requirements are documented in Implementation plan milestones template.</p>
-        </div>
-    </div>
-}
+                            </div>
+                        </div>
+                    }
 
-@if (Model.Order.HasAssociatedService())
-{
-    <div class="pdf-container">
-        <h3>Associated Services billing</h3>
+                    @if (Model.Order.HasAssociatedService())
+                    {
+                        <div class="pdf-container">
+                            <h3>Associated Services billing</h3>
 
-        @if (Model.UseDefaultBilling)
-        {
-            <table>
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Quantity</th>
-                    <th>Payment trigger</th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach (var service in Model.Order.GetAssociatedServices())
-                {
-                    <tr>
-                        <td>@service.CatalogueItem.Name</td>
-                        <td>@($"{service.TotalQuantity:N0} {service.OrderItemPrice.RangeDescription}")</td>
-                        <td>@Model.DefaultBillingPaymentTrigger</td>
-                    </tr>
-                }
-                </tbody>
-            </table>
-        }
-        else
-        {
-            <pdf-summary-list>
-                <pdf-summary-list-row label-text="Using default billing?">
-                    @Model.UseDefaultBilling.ToYesNo()
-                </pdf-summary-list-row>
-            </pdf-summary-list>
+                            @if (Model.UseDefaultBilling)
+                            {
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Quantity</th>
+                                            <th>Payment trigger</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var service in Model.Order.GetAssociatedServices())
+                                        {
+                                            <tr>
+                                                <td>@service.CatalogueItem.Name</td>
+                                                <td>@($"{service.TotalQuantity:N0} {service.OrderItemPrice.RangeDescription}")</td>
+                                                <td>@Model.DefaultBillingPaymentTrigger</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                            else
+                            {
+                                <pdf-summary-list>
+                                    <pdf-summary-list-row label-text="Using default billing?">
+                                        @Model.UseDefaultBilling.ToYesNo()
+                                    </pdf-summary-list-row>
+                                </pdf-summary-list>
 
-            <div class="nhsuk-u-margin-bottom-6">
+                                <div class="nhsuk-u-margin-bottom-6">
                                     <p>Requirements are documented in section 1 Associated Service billing and requirements template.</p>
-            </div>
-        }
+                                </div>
+                            }
 
-        <h3>Associated Services requirements</h3>
-        <pdf-summary-list>
-            <pdf-summary-list-row label-text="Any specific requirements?">
-                @Model.HasSpecificRequirements.ToYesNo()
-            </pdf-summary-list-row>
-        </pdf-summary-list>
+                            <h3>Associated Services requirements</h3>
+                            <pdf-summary-list>
+                                <pdf-summary-list-row label-text="Any specific requirements?">
+                                    @Model.HasSpecificRequirements.ToYesNo()
+                                </pdf-summary-list-row>
+                            </pdf-summary-list>
 
-        @if (Model.HasSpecificRequirements)
-        {
-            <div class="nhsuk-u-margin-bottom-6">
+                            @if (Model.HasSpecificRequirements)
+                            {
+                                <div class="nhsuk-u-margin-bottom-6">
                                     <p>Requirements are documented in section 2 Associated Service billing and requirements template.</p>
-            </div>
-        }
-    </div>
-}
+                                </div>
+                            }
+                        </div>
+                    }
 
-<div class="pdf-container">
-    <h3>Data Processing Plan</h3>
-    <pdf-summary-list>
-        <pdf-summary-list-row label-text="Using default data processing plan?">
-            @Model.UseDefaultDataProcessing.ToYesNo()
-        </pdf-summary-list-row>
-    </pdf-summary-list>
+                    <div class="pdf-container">
+                        <h3>Data Processing Plan</h3>
+                        <pdf-summary-list>
+                            <pdf-summary-list-row label-text="Using default data processing plan?">
+                                @Model.UseDefaultDataProcessing.ToYesNo()
+                            </pdf-summary-list-row>
+                        </pdf-summary-list>
 
-    @if (!Model.UseDefaultDataProcessing)
-    {
-        <div class="nhsuk-u-margin-bottom-6">
+                        @if (!Model.UseDefaultDataProcessing)
+                        {
+                            <div class="nhsuk-u-margin-bottom-6">
                                 <p>Requirements are documented in Data processing information template.</p>
-        </div>
-    }
-</div>
+                            </div>
+                        }
+                    </div>
 
-<div style="page-break-after: always"></div>
+                    <div class="pdf-container">
+                        <h1>Indicative costs for this order</h1>
+                        <h3>Indicative costs not including VAT</h3>
+                        @if (Model.Order.IsAmendment)
+                        {
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Cost type</th>
+                                        <th>Previous cost</th>
+                                        <th>Difference</th>
+                                        <th>New cost</th>
+                                    </tr>
+                                </thead>
+                                <tr>
+                                    <td>
+                                        <strong>Total one-off cost</strong>
+                                    </td>
+                                    <td>
+                                        £@($"{Model.Previous.TotalOneOffCost(true):N2}")
+                                    </td>
+                                    <td>
+                                        £@($"{Model.RolledUp.TotalOneOffCost(true) - Model.Previous.TotalOneOffCost(true):N2}")
+                                    </td>
+                                    <td>
+                                        £@($"{Model.RolledUp.TotalOneOffCost(true):N2}")
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Total monthly cost</strong>
+                                    </td>
+                                    <td>
+                                        £@($"{Model.Previous.TotalMonthlyCost(true):N2}")
+                                    </td>
+                                    <td>
+                                        £@($"{Model.RolledUp.TotalMonthlyCost(true) - Model.Previous.TotalMonthlyCost(true):N2}")
+                                    </td>
+                                    <td>
+                                        £@($"{Model.RolledUp.TotalMonthlyCost(true):N2}")
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Total annual cost</strong>
+                                    </td>
+                                    <td>
+                                        £@($"{Model.Previous.TotalAnnualCost(true):N2}")
+                                    </td>
+                                    <td>
+                                        £@($"{Model.RolledUp.TotalAnnualCost(true) - Model.Previous.TotalAnnualCost(true):N2}")
+                                    </td>
+                                    <td>
+                                        £@($"{Model.RolledUp.TotalAnnualCost(true):N2}")
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Total cost of contract</strong>
+                                    </td>
+                                    <td>
+                                        £@($"{Model.Previous.TotalCost(true):N2}")
+                                    </td>
+                                    <td>
+                                        £@($"{Model.OrderWrapper.TotalCost(true) - Model.Previous.TotalCost(true):N2}")
+                                    </td>
+                                    <td>
+                                        £@($"{Model.RolledUp.TotalCost(true):N2}")
+                                    </td>
+                                </tr>
+                            </table>
+                        }
+                        else
+                        {
+                            <pdf-summary-list>
+                                <pdf-summary-list-row label-text="Total one-off cost">
+                                    @($"£{Model.Order.TotalOneOffCost():N2}")
+                                </pdf-summary-list-row>
 
-<div class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-full">
-        <nhs-page-title title="Signatures"
-          caption="Order @Model.Order.CallOffId" />
+                                <pdf-summary-list-row label-text="Total monthly cost">
+                                    @($"£{Model.Order.TotalMonthlyCost():N2}")
+                                </pdf-summary-list-row>
+
+                                <pdf-summary-list-row label-text="Total annual cost">
+                                    @($"£{Model.Order.TotalAnnualCost():N2}")
+                                </pdf-summary-list-row>
+
+                                <pdf-summary-list-row label-text="Total cost of contract @contractTerm">
+                                    @($"£{Model.Order.TotalCost():N2}")
+                                    @if (!Model.Order.MaximumTerm.HasValue)
+                                    {
+                                        <br />
+                                        <br />
+                                        <p>
+                                            This is the total estimated cost for the entire duration of the Call-off Agreement, which is usually 3 years.
+                                            The figure is made up of the one-off costs and the yearly cost multiplied by 3.
+                                        </p>
+                                    }
+                                </pdf-summary-list-row>
+                            </pdf-summary-list>
+                        }
+                    </div>
+
+                    <div style="page-break-after: always"></div>
+
+                    <div class="nhsuk-grid-row">
+                        <div class="nhsuk-grid-column-full">
+                            <nhs-page-title title="Signatures"
+                                            caption="Order @Model.Order.CallOffId" />
+                        </div>
+                    </div>
+                    <p>Both parties are entering into a Call-off Agreement in accordance with the provisions of the framework being procured from.</p>
+                    <p>The supplier will provide the solution and any services included in this Call-off Order Form for the duration identified. They must do this subject to the Call-off Terms and the information provided in this Call-off Order Form.</p>
+                    <p>No amendments to the Call-off Terms will be valid unless documented in a relevant template. A template will only be valid if it has been attached to this Call-off Order Form prior to it being signed by both parties.</p>
+                    <div class="nhsuk-grid-row">
+                        <div class="nhsuk-grid-column-one-half">
+                            <h4>
+                                On behalf of the buyer
+                                <span class="nhsuk-caption-m nhsuk-caption--bottom">@Model.Order.OrderingParty.Name (@Model.Order.OrderingParty.ExternalIdentifier)</span>
+                            </h4>
+                        </div>
+                        <div class="nhsuk-grid-column-one-half">
+                            <h4>
+                                On behalf of the supplier
+                                <span class="nhsuk-caption-m nhsuk-caption--bottom">@(Model.Order.Supplier?.Name ?? "")</span>
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="nhsuk-grid-row">
+                        <div class="nhsuk-grid-column-one-half">
+                            <table>
+                                <tr class="signature">
+                                    <td>Name:</td>
+                                    <td></td>
+                                </tr>
+                                <tr class="signature">
+                                    <td>Job Role:</td>
+                                    <td></td>
+                                </tr>
+                                <tr class="signature">
+                                    <td>Signature:</td>
+                                    <td></td>
+                                </tr>
+                                <tr class="signature">
+                                    <td>Date:</td>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="nhsuk-grid-column-one-half">
+                            <table>
+                                <tr class="signature">
+                                    <td>Name:</td>
+                                    <td></td>
+                                </tr>
+                                <tr class="signature">
+                                    <td>Job Role:</td>
+                                    <td></td>
+                                </tr>
+                                <tr class="signature">
+                                    <td>Signature:</td>
+                                    <td></td>
+                                </tr>
+                                <tr class="signature">
+                                    <td>Date:</td>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+            </div>
+        </main>
     </div>
-</div>
-<p>Both parties are entering into a Call-off Agreement in accordance with the provisions of the framework being procured from.</p>
-<p>The supplier will provide the solution and any services included in this Call-off Order Form for the duration identified. They must do this subject to the Call-off Terms and the information provided in this Call-off Order Form.</p>
-<p>No amendments to the Call-off Terms will be valid unless documented in a relevant template. A template will only be valid if it has been attached to this Call-off Order Form prior to it being signed by both parties.</p>
-<div class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-one-half">
-        <h4>
-            On behalf of the buyer
-            <span class="nhsuk-caption-m nhsuk-caption--bottom">@Model.Order.OrderingParty.Name (@Model.Order.OrderingParty.ExternalIdentifier)</span>
-        </h4>
-    </div>
-    <div class="nhsuk-grid-column-one-half">
-        <h4>
-            On behalf of the supplier
-            <span class="nhsuk-caption-m nhsuk-caption--bottom">@Model.Order.Supplier.Name</span>
-        </h4>
-    </div>
-</div>
-<div class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-one-half">
-        <table>
-            <tr class="signature">
-                <td>Name:</td>
-                <td></td>
-            </tr>
-            <tr class="signature">
-                <td>Job Role:</td>
-                <td></td>
-            </tr>
-            <tr class="signature">
-                <td>Signature:</td>
-                <td></td>
-            </tr>
-            <tr class="signature">
-                <td>Date:</td>
-                <td></td>
-            </tr>
-        </table>
-    </div>
-    <div class="nhsuk-grid-column-one-half">
-        <table>
-            <tr class="signature">
-                <td>Name:</td>
-                <td></td>
-            </tr>
-            <tr class="signature">
-                <td>Job Role:</td>
-                <td></td>
-            </tr>
-            <tr class="signature">
-                <td>Signature:</td>
-                <td></td>
-            </tr>
-            <tr class="signature">
-                <td>Date:</td>
-                <td></td>
-            </tr>
-        </table>
-    </div>
-</div>
-<br/>
-</div>
-</div>
-</main>
-</div>
 </body>
 </html>

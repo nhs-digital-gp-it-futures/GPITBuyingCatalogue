@@ -1,28 +1,20 @@
 ﻿@using System.Linq
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders.SummaryModel;
 @{
-	ViewBag.Title = Model.Title;
+    ViewBag.Title = Model.Title;
 }
 
-<style>
-    .nhsuk-table-responsive th {
-        font-size: 1em;
-        white-space: normal;
-    }
-
-    .nhsuk-table-responsive td {
-        font-size: 1em;
-    }
-</style>
 
 <partial name="Partials/_BackLink" model="Model" />
 
 @{
-    var solutions = Model.Order.GetSolutions().ToList();
-    var additionalServices = Model.Order.GetAdditionalServices().ToList();
-    var associatedServices = Model.Order.GetAssociatedServices().ToList();
+    var solutions = Model.RolledUp.GetSolutions().ToList();
+    var additionalServices = Model.RolledUp.GetAdditionalServices().ToList();
+    var associatedServices = Model.RolledUp.GetAssociatedServices().ToList();
     var contractTerm = Model.Order.MaximumTerm.HasValue ? $" ({Model.Order.MaximumTerm} months)" : " (estimated)";
     var solutionsTitle = solutions.Count > 1 ? "Catalogue Solutions" : "Catalogue Solution";
 }
@@ -37,10 +29,10 @@
         @if (Model.CanBeAmended)
         {
             <vc:nhs-action-link text="Amend this order"
-                                url="@Url.Action(
+                            url="@Url.Action(
                                          nameof(OrderController.AmendOrder),
                                          typeof(OrderController).ControllerName(),
-                                         new { Model.InternalOrgId, Model.CallOffId })"/>
+                                         new { Model.InternalOrgId, Model.CallOffId })" />
         }
 
         <nhs-summary-list>
@@ -57,23 +49,23 @@
             </nhs-summary-list-row>
 
             @if (Model.Order.OrderingParty != null
-                && Model.Order.OrderingPartyContact != null)
+            && Model.Order.OrderingPartyContact != null)
             {
                 <nhs-summary-list-row label-text="Call-off Ordering Party" data-test-id="ordering-party-summary">
-                    @($"{Model.Order.OrderingPartyContact.FirstName} {Model.Order.OrderingPartyContact.LastName}")<br/>
-                    @Model.Order.OrderingParty.Name<br/>
-                    @Model.Order.OrderingParty.ExternalIdentifier<br/>
-                    <vc:nhs-address address="@Model.Order.OrderingParty.Address"/>
+                    @($"{Model.Order.OrderingPartyContact.FirstName} {Model.Order.OrderingPartyContact.LastName}")<br />
+                    @Model.Order.OrderingParty.Name<br />
+                    @Model.Order.OrderingParty.ExternalIdentifier<br />
+                    <vc:nhs-address address="@Model.Order.OrderingParty.Address" />
                 </nhs-summary-list-row>
             }
 
             @if (Model.Order.Supplier != null
-                && Model.Order.SupplierContact != null)
+            && Model.Order.SupplierContact != null)
             {
                 <nhs-summary-list-row label-text="Supplier" data-test-id="supplier-summary">
-                    @($"{Model.Order.SupplierContact.FirstName} {Model.Order.SupplierContact.LastName}")<br/>
-                    @Model.Order.Supplier.Name<br/>
-                    <vc:nhs-address address="@Model.Order.Supplier.Address"/>
+                    @($"{Model.Order.SupplierContact.FirstName} {Model.Order.SupplierContact.LastName}")<br />
+                    @Model.Order.Supplier.Name<br />
+                    <vc:nhs-address address="@Model.Order.Supplier.Address" />
                 </nhs-summary-list-row>
             }
 
@@ -99,7 +91,7 @@
             }
 
             @if (Model.Order.CommencementDate.HasValue
-                && Model.Order.MaximumTerm.HasValue)
+            && Model.Order.MaximumTerm.HasValue)
             {
                 <nhs-summary-list-row label-text="End date" data-test-id="end-date-summary">
                     @Model.Order.EndDate.DisplayValue
@@ -107,80 +99,299 @@
             }
         </nhs-summary-list>
 
-        <h2>Items added to this order</h2>
         @if (!(Model.Order.OrderItems?.Any() ?? false))
         {
             <p>No items have been added to this order yet</p>
         }
         else
         {
-            <br/>
+            <br />
             @if (solutions.Any())
             {
-                <h3 id="catalogue-solutions-title">@solutionsTitle</h3>
+                <h2 id="catalogue-solutions-title">@solutionsTitle</h2>
                 @foreach (var solution in solutions)
                 {
-                    <partial name="_OrderItemSummary" model="solution"/>
+                    <partial name="_OrderItemSummary" model="new AmendOrderItemModel(Model.CallOffId, solution, Model.Previous?.OrderItem(solution.CatalogueItemId), Model.Order.IsAmendment, Model.FundingTypeDescription(solution.CatalogueItemId))" />
                 }
             }
 
             @if (additionalServices.Any())
             {
-                <h3 id="additional-services-title">Additional Services</h3>
+                <h2 id="additional-services-title">Additional Services</h2>
                 @foreach (var additionalService in additionalServices)
                 {
-                    <partial name="_OrderItemSummary" model="additionalService"/>
+                    <partial name="_OrderItemSummary" model="new AmendOrderItemModel(Model.CallOffId, additionalService, Model.Previous?.OrderItem(additionalService.CatalogueItemId), Model.Order.IsAmendment, Model.FundingTypeDescription(additionalService.CatalogueItemId))" />
                 }
             }
 
             @if (associatedServices.Any())
             {
-                <h3 id="associated-services-title">Associated Services</h3>
+                <h2 id="associated-services-title">Associated Services</h2>
                 @foreach (var associatedService in associatedServices)
                 {
-                    <partial name="_OrderItemSummary" model="associatedService"/>
+                    <partial name="_OrderItemSummary" model="new AmendOrderItemModel(Model.CallOffId, associatedService, Model.Previous?.OrderItem(associatedService.CatalogueItemId), Model.Order.IsAmendment, Model.FundingTypeDescription(associatedService.CatalogueItemId))" />
                 }
             }
 
-            <br/>
-            <h3 data-test-id="indicative-costs-title">Indicative costs</h3>
-            <nhs-summary-list>
-                <nhs-summary-list-row label-text="Total one-off cost:" data-test-id="one-off-cost-summary">
-                    £@($"{Model.Order.TotalOneOffCost():N2}")
-                </nhs-summary-list-row>
+            <nhs-expander label-text="Implementation plan"
+                      id="implementation-plan-expander"
+                      colour-mode="BlackAndWhite" open="true" bold-title="true">
+                <div class="nhsuk-u-margin-top-3">
+                    <nhs-summary-list>
+                        <nhs-summary-list-row label-text="Use default implementation plan?">
+                            @Model.UseDefaultImplementationPlan.ToYesNo()
+                        </nhs-summary-list-row>
+                    </nhs-summary-list>
+                </div>
 
-                <nhs-summary-list-row label-text="Total monthly cost:" data-test-id="monthly-cost-summary">
-                    £@($"{Model.Order.TotalMonthlyCost():N2}")
-                </nhs-summary-list-row>
+                @if (Model.UseDefaultImplementationPlan)
+                {
+                    <partial name="ImplementationPlan" model="Model.DefaultPlan" />
+                }
+                else
+                {
+                    <nhs-inset-text id="bespoke-implementation-plan">
+                        <p>Requirements are documented in Implementation plan milestones template.</p>
+                    </nhs-inset-text>
+                }
+            </nhs-expander>
 
-                <nhs-summary-list-row label-text="Total cost for one year:" data-test-id="one-year-cost-summary">
-                    £@($"{Model.Order.TotalAnnualCost():N2}")
-                </nhs-summary-list-row>
+            @if (Model.Order.HasAssociatedService())
+            {
+                <nhs-expander label-text="Associated Services billing and requirements"
+                      id="associated-services-expander"
+                      colour-mode="BlackAndWhite" open="true" bold-title="true">
 
-                <nhs-summary-list-row label-text="@($"Total cost of contract{contractTerm}:")" data-test-id="total-cost-summary">
-                    £@($"{Model.Order.TotalCost():N2}")
-                    @if (!Model.Order.MaximumTerm.HasValue)
+                    <div class="nhsuk-u-margin-top-3">
+                        <h3>Associated Services billing</h3>
+                        <nhs-summary-list>
+                            <nhs-summary-list-row label-text="Use default billing?">
+                                @((!Model.HasBespokeBilling).ToYesNo())
+                            </nhs-summary-list-row>
+                        </nhs-summary-list>
+                    </div>
+
+                    @if (Model.HasBespokeBilling)
                     {
-                        <br/>
-                        <br/>
-                        <p>
-                            This is the total estimated cost for the entire duration of the Call-off Agreement, which is usually 3 years.
-                            The figure is made up of the one-off costs and the yearly cost multiplied by 3.
-                        </p>
+                        <nhs-inset-text id="bespoke-billing">
+                            <p>Requirements are documented in section 1 of Associated Service billing and requirements template.</p>
+                        </nhs-inset-text>
                     }
-                </nhs-summary-list-row>
-            </nhs-summary-list>
-            <p><b>All prices exclude VAT</b></p>
+                    else
+                    {
+                        <div class="nhsuk-u-margin-bottom-6" id="default-billing">
+                            <nhs-table>
+                                <nhs-table-column>Name</nhs-table-column>
+                                <nhs-table-column>Quantity</nhs-table-column>
+                                <nhs-table-column>Payment trigger</nhs-table-column>
+                                @foreach (var service in Model.Order.GetAssociatedServices())
+                                {
+                                    <nhs-table-row-container>
+                                        <nhs-table-cell>@service.CatalogueItem.Name</nhs-table-cell>
+                                        <nhs-table-cell>@($"{service.TotalQuantity:N0} {service.OrderItemPrice?.RangeDescription}")</nhs-table-cell>
+                                        <nhs-table-cell>@Model.BillingPaymentTrigger</nhs-table-cell>
+                                    </nhs-table-row-container>
+                                }
+                            </nhs-table>
+                        </div>
+                    }
+
+                    <div class="nhsuk-u-margin-top-3">
+                        <h3>Associated Services requirements</h3>
+                        <nhs-summary-list>
+                            <nhs-summary-list-row label-text="Any specific requirements?">
+                                @Model.HasSpecificRequirements.ToYesNo()
+                            </nhs-summary-list-row>
+                        </nhs-summary-list>
+                    </div>
+
+                    @if (Model.HasSpecificRequirements)
+                    {
+                        <nhs-inset-text id="has-specific-requirements">
+                            <p>Requirements are documented in section 2 Associated Service billing and requirements template.</p>
+                        </nhs-inset-text>
+                    }
+                </nhs-expander>
+            }
+            <nhs-expander label-text="Data processing plan"
+                      id="data-processing-expander"
+                      colour-mode="BlackAndWhite" open="true" bold-title="true">
+                <div class="nhsuk-u-margin-top-3">
+                    <nhs-summary-list>
+                        <nhs-summary-list-row label-text="Use default data processing plan?">
+                            @Model.UseDefaultDataProcessing.ToYesNo()
+                        </nhs-summary-list-row>
+                    </nhs-summary-list>
+                </div>
+
+                @if (!Model.UseDefaultDataProcessing)
+                {
+                    <nhs-inset-text id="bespoke-data-processing">
+                        <p>Requirements are documented in Data processing information template.</p>
+                    </nhs-inset-text>
+                }
+            </nhs-expander>
+            @if (Model.Order.IsAmendment)
+            {
+                <nhs-table id="review-solutions-amended-indicative-costs" label-text="Indicative costs not including VAT">
+                    <nhs-table-column>Cost type</nhs-table-column>
+                    <nhs-table-column numeric="true">Previous cost</nhs-table-column>
+                    <nhs-table-column numeric="true">Difference</nhs-table-column>
+                    <nhs-table-column numeric="true">New cost</nhs-table-column>
+                    <nhs-table-row-container>
+                        <nhs-table-cell>
+                            <strong>Total one-off cost:</strong>
+                        </nhs-table-cell>
+                        <nhs-table-cell numeric="true">
+                            £@($"{Model.Previous.TotalOneOffCost(true):N2}")
+                        </nhs-table-cell>
+                        <nhs-table-cell numeric="true">
+                            £@($"{Model.RolledUp.TotalOneOffCost(true) - Model.Previous.TotalOneOffCost(true):N2}")
+                        </nhs-table-cell>
+                        <nhs-table-cell numeric="true">
+                            £@($"{Model.RolledUp.TotalOneOffCost(true):N2}")
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                    <nhs-table-row-container>
+                        <nhs-table-cell>
+                            <strong>Total monthly cost:</strong>
+                        </nhs-table-cell>
+                        <nhs-table-cell numeric="true">
+                            £@($"{Model.Previous.TotalMonthlyCost(true):N2}")
+                        </nhs-table-cell>
+                        <nhs-table-cell numeric="true">
+                            £@($"{Model.RolledUp.TotalMonthlyCost(true) - Model.Previous.TotalMonthlyCost(true):N2}")
+                        </nhs-table-cell>
+                        <nhs-table-cell numeric="true">
+                            £@($"{Model.RolledUp.TotalMonthlyCost(true):N2}")
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                    <nhs-table-row-container>
+                        <nhs-table-cell>
+                            <strong>Total cost for one year:</strong>
+                        </nhs-table-cell>
+                        <nhs-table-cell numeric="true">
+                            £@($"{Model.Previous.TotalAnnualCost(true):N2}")
+                        </nhs-table-cell>
+                        <nhs-table-cell numeric="true">
+                            £@($"{Model.RolledUp.TotalAnnualCost(true) - Model.Previous.TotalAnnualCost(true):N2}")
+                        </nhs-table-cell>
+                        <nhs-table-cell numeric="true">
+                            £@($"{Model.RolledUp.TotalAnnualCost(true):N2}")
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                    <nhs-table-row-container>
+                        <nhs-table-cell>
+                            <strong>Total cost of contract:</strong>
+                        </nhs-table-cell>
+                        <nhs-table-cell numeric="true">
+                            £@($"{Model.Previous.TotalCost(true):N2}")
+                        </nhs-table-cell>
+                        <nhs-table-cell numeric="true">
+                            £@($"{Model.OrderWrapper.TotalCost(true) - Model.Previous.TotalCost(true):N2}")
+                        </nhs-table-cell>
+                        <nhs-table-cell numeric="true">
+                            £@($"{Model.OrderWrapper.TotalCost(true):N2}")
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                </nhs-table>
+
+            }
+            else
+            {
+
+                <h4 data-test-id="indicative-costs-title">Indicative costs not including VAT</h4>
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Total one-off cost:" data-test-id="one-off-cost-summary">
+                        £@($"{Model.Order.TotalOneOffCost():N2}")
+                    </nhs-summary-list-row>
+
+                    <nhs-summary-list-row label-text="Total monthly cost:" data-test-id="monthly-cost-summary">
+                        £@($"{Model.Order.TotalMonthlyCost():N2}")
+                    </nhs-summary-list-row>
+
+                    <nhs-summary-list-row label-text="Total cost for one year:" data-test-id="one-year-cost-summary">
+                        £@($"{Model.Order.TotalAnnualCost():N2}")
+                    </nhs-summary-list-row>
+
+                    <nhs-summary-list-row label-text="@($"Total cost of contract{contractTerm}:")" data-test-id="total-cost-summary">
+                        £@($"{Model.Order.TotalCost():N2}")
+                        @if (!Model.Order.MaximumTerm.HasValue)
+                        {
+                            <br />
+                            <br />
+                            <p>
+                                This is the total estimated cost for the entire duration of the Call-off Agreement, which is usually 3 years.
+                                The figure is made up of the one-off costs and the yearly cost multiplied by 3.
+                            </p>
+                        }
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
         }
 
-        <br />
+        <div class="nhsuk-u-margin-top-9">
+            @if (Model.Order.OrderStatus == OrderStatus.InProgress)
+            {
+                <h3>Preview order</h3>
+                <p>You can download and review your order before sending it to the supplier for signature.</p>
+            }
+            else
+            {
+                <h3>Order summary</h3>
+                <p>You can download and review your order summary here.</p>
+            }
 
-        <vc:nhs-secondary-button text="Continue"
-                                 type="Primary"
-                                 url="@Url.Action(
-                                          nameof(ReviewContractController.ContractSummary),
-                                          typeof(ReviewContractController).ControllerName(),
-                                          new { Model.InternalOrgId, Model.Order.CallOffId })"/>
+            <vc:nhs-secondary-button text="Download order form (PDF)"
+                                     type="Secondary"
+                                     url="@Url.Action(
+                                              nameof(OrderController.Download),
+                                              typeof(OrderController).ControllerName(),
+                                              new { Model.InternalOrgId, Model.CallOffId })" />
+        </div>
+
+        <div class="nhsuk-u-margin-top-3">
+            @if (Model.Order.OrderStatus == OrderStatus.InProgress
+            && Model.Order.CanComplete())
+            {
+                <h3>Complete order</h3>
+                <p>After agreeing the contents of your order with the supplier, mark it complete, download your Call-off Order Form and send it to the supplier for signature. Make sure you include the blank templates for the supplier to fill out.</p>
+                <p>Once you receive a signed copy of your Call-off Order Form and the completed templates from the supplier, sign it and your Call-off Order will be finalised.</p>
+                <form method="post">
+                    <nhs-button-group>
+                        <nhs-submit-button text="Complete order" />
+                        <vc:nhs-secondary-button text="Save for later"
+                                             type="Secondary"
+                                             url="@Url.Action(
+                                    nameof(DashboardController.Organisation),
+                                    typeof(DashboardController).ControllerName(),
+                                    new { Model.InternalOrgId })" />
+                    </nhs-button-group>
+                </form>
+
+            }
+            else
+            {
+                if (Model.Order.OrderStatus == OrderStatus.InProgress)
+                {
+                    <vc:nhs-secondary-button text="Continue"
+                                     type="Primary"
+                                     url="@Url.Action(
+                                                      nameof(OrderController.Order),
+                                                      typeof(OrderController).ControllerName(),
+                                                      new { Model.InternalOrgId, Model.CallOffId })" />
+                }
+                else
+                {
+                    <vc:nhs-secondary-button text="Continue"
+                                     type="Primary"
+                                     url="@Url.Action(
+                                                      nameof(DashboardController.Organisation),
+                                                      typeof(DashboardController).ControllerName(),
+                                                      new { Model.InternalOrgId })" />
+                }
+            }
+        </div>
     </div>
 </div>
 
