@@ -54,20 +54,23 @@
                          new { organisationId = Model.Organisation.Id })"><strong>User accounts</strong></a>
             <p>Add, edit and view user accounts for @Model.Organisation.Name.</p>
         </li>
-        <li>
-            <a href="@Url.Action(
-                         nameof(OrganisationBaseController.RelatedOrganisations),
-                         Model.ControllerName,
-                         new { organisationId = Model.Organisation.Id })"><strong>Related organisations</strong></a>
-            <p>View and remove organisations that @Model.Organisation.Name can act on behalf of.</p>
-        </li>
-        <li>
-            <a href="@Url.Action(
-                         nameof(OrganisationBaseController.NominatedOrganisations),
-                         Model.ControllerName,
-                         new { organisationId = Model.Organisation.Id })"><strong>Nominated organisations</strong></a>
-            <p>Add, remove and view organisations that can act on behalf of @Model.Organisation.Name.</p>
-        </li>
+        @if (!Model.IsGpPractice)
+        {
+            <li>
+                <a href="@Url.Action(
+                             nameof(OrganisationBaseController.RelatedOrganisations),
+                             Model.ControllerName,
+                             new { organisationId = Model.Organisation.Id })"><strong>Related organisations</strong></a>
+                <p>View and remove organisations that @Model.Organisation.Name can act on behalf of.</p>
+            </li>
+            <li>
+                <a href="@Url.Action(
+                             nameof(OrganisationBaseController.NominatedOrganisations),
+                             Model.ControllerName,
+                             new { organisationId = Model.Organisation.Id })"><strong>Nominated organisations</strong></a>
+                <p>Add, remove and view organisations that can act on behalf of @Model.Organisation.Name.</p>
+            </li>
+        }
     </ul>
 </div>
 
