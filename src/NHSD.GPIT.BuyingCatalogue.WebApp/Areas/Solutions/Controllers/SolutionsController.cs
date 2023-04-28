@@ -47,15 +47,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         {
             var inputOptions = new PageOptions(page, sortBy);
 
-            var (catalogueItems, catalogueItemsWithoutFrameworkFilter, options, capabilitiesAndCount) =
+            var (catalogueItems, options, capabilitiesAndCount) =
                 await solutionsFilterService.GetAllSolutionsFiltered(
                     inputOptions,
                     selectedCapabilityIds,
                     selectedEpicIds,
                     search,
                     selectedFrameworkId);
-
-            var frameworks = await frameworkService.GetFrameworksByCatalogueItems(catalogueItemsWithoutFrameworkFilter);
+            var (catalogueItemsWithoutFrameworkFilter, capabilitiesAndCountWithoutFrameworkFilter) = await solutionsFilterService.GetFilteredAndNonFilteredQueryResults(selectedCapabilityIds, selectedEpicIds);
+            var frameworks = await frameworkService.GetFrameworksByCatalogueItems(catalogueItemsWithoutFrameworkFilter.ToList());
             var additionalFilters = new Models.Filters.AdditionalFiltersModel(frameworks);
 
             return View(new SolutionsModel()

@@ -32,7 +32,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public SolutionsFilterService(BuyingCatalogueDbContext dbContext) =>
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
-        public async Task<(IList<CatalogueItem> CatalogueItems, IList<CatalogueItem> CatalogueItemsWithoutFrameworkFilter, PageOptions Options, List<CapabilitiesAndCountModel> CapabilitiesAndCount)> GetAllSolutionsFiltered(
+        public async Task<(IQueryable<CatalogueItem> CatalogueItems, List<CapabilitiesAndCountModel> CapabilitiesAndCount)> GetFilteredAndNonFilteredQueryResults(
+            string selectedCapabilityIds = null,
+            string selectedEpicIds = null)
+        {
+            var (query, count) = string.IsNullOrWhiteSpace(selectedCapabilityIds)
+                ? NonFilteredQuery(dbContext)
+                : await FilteredQuery(dbContext, selectedCapabilityIds, selectedEpicIds);
+
+            return (query, count);
+        }
+
+        public async Task<(IList<CatalogueItem> CatalogueItems, PageOptions Options, List<CapabilitiesAndCountModel> CapabilitiesAndCount)> GetAllSolutionsFiltered(
             PageOptions options,
             string selectedCapabilityIds = null,
             string selectedEpicIds = null,
@@ -41,13 +52,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             options ??= new PageOptions();
 
-            var (query, count) = string.IsNullOrWhiteSpace(selectedCapabilityIds)
-                ? NonFilteredQuery(dbContext)
-                : await FilteredQuery(dbContext, selectedCapabilityIds, selectedEpicIds);
+            var (query, count) = await GetFilteredAndNonFilteredQueryResults(selectedCapabilityIds, selectedEpicIds);
 
             if (!string.IsNullOrWhiteSpace(search))
                 query = query.Where(ci => ci.Supplier.Name.Contains(search) || ci.Name.Contains(search));
-            var queryWithoutFrameworkFilter = query;
+
             if (!string.IsNullOrWhiteSpace(selectedFrameworkId))
                 query = query.Where(ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == selectedFrameworkId));
             options.TotalNumberOfItems = await query.CountAsync();
@@ -66,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             var results = await query.ToListAsync();
 
-            return (results, queryWithoutFrameworkFilter.ToList(), options, count);
+            return (results, options, count);
         }
 
         public async Task<List<SearchFilterModel>> GetSolutionsBySearchTerm(string searchTerm, int maxToBringBack = 15)
