@@ -22,17 +22,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
         public Task<List<FrameworkFilterInfo>> GetFrameworksByCatalogueItems(IList<CatalogueItem> catalogueItems)
         {
             var catalogueItemIds = catalogueItems.Select(ci => ci.Id).ToList();
-            return dbContext.FrameworkSolutions
-                .Where(fs => catalogueItemIds.Contains(fs.SolutionId))
-                .GroupBy(fs => new { fs.FrameworkId, fs.Framework.ShortName })
-                .Select(g => new FrameworkFilterInfo
-                {
-                    Id = g.Key.FrameworkId,
-                    ShortName = g.Key.ShortName,
-                    Name = g.First().Framework.Name,
-                    CountOfActiveSolutions = g.Count(),
-                })
-                .ToListAsync();
+
+            return dbContext.Frameworks
+                        .Where(f => dbContext.FrameworkSolutions.Any(fs => fs.FrameworkId == f.Id || catalogueItemIds.Contains(fs.SolutionId)))
+                        .Select(g => new FrameworkFilterInfo
+                        {
+                            Id = g.Id,
+                            ShortName = g.ShortName,
+                            Name = g.Name,
+                            CountOfActiveSolutions = dbContext.FrameworkSolutions.Count(fs => fs.FrameworkId == g.Id && catalogueItemIds.Contains(fs.SolutionId)),
+                        })
+                        .ToListAsync();
         }
 
         public async Task<EntityFramework.Catalogue.Models.Framework> GetFrameworksById(string frameworkId) =>

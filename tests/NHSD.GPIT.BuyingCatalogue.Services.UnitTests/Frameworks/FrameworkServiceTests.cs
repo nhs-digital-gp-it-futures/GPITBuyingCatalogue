@@ -56,18 +56,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Frameworks
             dbContext.CatalogueItems.Add(catalogueItem);
             await dbContext.SaveChangesAsync();
 
-            var expectedFrameworks = dbContext.FrameworkSolutions
-                .Where(fs => fs.SolutionId == catalogueItem.Id)
-                .GroupBy(fs => new { fs.FrameworkId, fs.Framework.ShortName })
-                .Select(g => new FrameworkFilterInfo
-                {
-                    Id = g.Key.FrameworkId,
-                    ShortName = g.Key.ShortName,
-                    Name = g.First().Framework.Name,
-                    CountOfActiveSolutions = g.Count(),
-                })
-                .OrderBy(f => f.Id)
-                .ThenBy(f => f.Name);
+            var expectedFrameworks = dbContext.Frameworks
+                        .Where(f => dbContext.FrameworkSolutions.Any(fs => fs.FrameworkId == f.Id || catalogueItem.Id == fs.SolutionId))
+                        .Select(g => new FrameworkFilterInfo
+                        {
+                            Id = g.Id,
+                            ShortName = g.ShortName,
+                            Name = g.Name,
+                            CountOfActiveSolutions = dbContext.FrameworkSolutions.Count(fs => fs.FrameworkId == g.Id && catalogueItem.Id == fs.SolutionId),
+                        });
 
             var result = await service.GetFrameworksByCatalogueItems(new List<CatalogueItem> { catalogueItem });
 
