@@ -28,6 +28,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
 
         public Address OrganisationAddress => Organisation.Address;
 
+        public bool IsGpPractice => Organisation.OrganisationType == OrganisationType.GP;
+
         public string CatalogueAgreementText { get; set; }
 
         public string ControllerName { get; set; }
