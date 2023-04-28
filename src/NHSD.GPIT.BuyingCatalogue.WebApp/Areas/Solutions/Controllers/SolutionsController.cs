@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         {
             var inputOptions = new PageOptions(page, sortBy);
 
-            var (catalogueItems, options, capabilitiesAndCount) =
+            var (catalogueItems, catalogueItemsWithoutFrameworkFilter, options, capabilitiesAndCount) =
                 await solutionsFilterService.GetAllSolutionsFiltered(
                     inputOptions,
                     selectedCapabilityIds,
@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     search,
                     selectedFrameworkId);
 
-            var frameworks = await frameworkService.GetFrameworksWithActiveAndPublishedSolutions(catalogueItems);
+            var frameworks = await frameworkService.GetFrameworksByCatalogueItems(catalogueItemsWithoutFrameworkFilter);
             var additionalFilters = new Models.Filters.AdditionalFiltersModel(frameworks);
 
             return View(new SolutionsModel()

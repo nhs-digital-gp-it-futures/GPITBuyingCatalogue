@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Frameworks
 
         [Theory]
         [InMemoryDbAutoData]
-        public async Task GetFrameworksWithActiveAndPublishedSolutions_ReturnsExpected(
+        public async Task GetFrameworksByCatalogueItems(
             EntityFramework.Catalogue.Models.Framework framework,
             FrameworkSolution frameworkSolutions,
             CatalogueItem catalogueItem,
@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Frameworks
                 .OrderBy(f => f.Id)
                 .ThenBy(f => f.Name);
 
-            var result = await service.GetFrameworksWithActiveAndPublishedSolutions(new List<CatalogueItem> { catalogueItem });
+            var result = await service.GetFrameworksByCatalogueItems(new List<CatalogueItem> { catalogueItem });
 
             result.Should().BeEquivalentTo(expectedFrameworks);
         }

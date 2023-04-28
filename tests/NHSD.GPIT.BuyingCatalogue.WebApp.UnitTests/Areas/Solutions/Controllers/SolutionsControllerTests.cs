@@ -19,6 +19,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SolutionsFilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -53,8 +54,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             var itemsToReturn = new List<CatalogueItem>() { solution.CatalogueItem };
 
-            mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null, null, null, null))
-                .ReturnsAsync((itemsToReturn, options, new List<ServiceContracts.Models.SolutionsFilterModels.CapabilitiesAndCountModel>()));
+            _ = mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null, null, null, null))
+                .ReturnsAsync((itemsToReturn, itemsToReturn, options, new List<CapabilitiesAndCountModel>()));
 
             await controller.Index(options.PageNumber.ToString(), options.Sort.ToString(), null, null, null, null);
 

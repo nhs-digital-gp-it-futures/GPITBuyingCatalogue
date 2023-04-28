@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 {
     public interface ISolutionsFilterService
     {
-        Task<(IList<CatalogueItem> CatalogueItems, PageOptions Options, List<CapabilitiesAndCountModel> CapabilitiesAndCount)> GetAllSolutionsFiltered(
+        Task<(IList<CatalogueItem> CatalogueItems, IList<CatalogueItem> CatalogueItemsWithoutFrameworkFilter, PageOptions Options, List<CapabilitiesAndCountModel> CapabilitiesAndCount)> GetAllSolutionsFiltered(
             PageOptions options = null,
             string selectedCapabilityIds = null,
             string selectedEpicIds = null,

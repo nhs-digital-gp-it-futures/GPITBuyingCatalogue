@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public Task<List<FrameworkFilterInfo>> GetFrameworksWithActiveAndPublishedSolutions(IList<CatalogueItem> catalogueItems)
+        public Task<List<FrameworkFilterInfo>> GetFrameworksByCatalogueItems(IList<CatalogueItem> catalogueItems)
         {
             var catalogueItemIds = catalogueItems.Select(ci => ci.Id).ToList();
             return dbContext.FrameworkSolutions
