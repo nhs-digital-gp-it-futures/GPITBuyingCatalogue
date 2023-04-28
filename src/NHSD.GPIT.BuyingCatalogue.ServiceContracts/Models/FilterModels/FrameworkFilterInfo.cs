@@ -8,6 +8,6 @@
 
         public string ShortName { get; init; }
 
-        public int CountOfActiveSolutions { get; init; }
+        public int CountOfActiveSolutions { get; set; }
     }
 }

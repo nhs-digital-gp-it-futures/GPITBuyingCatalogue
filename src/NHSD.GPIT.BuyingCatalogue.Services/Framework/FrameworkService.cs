@@ -19,20 +19,29 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public Task<List<FrameworkFilterInfo>> GetFrameworksByCatalogueItems(IList<CatalogueItem> catalogueItems)
+        public async Task<List<FrameworkFilterInfo>> GetFrameworksByCatalogueItems(IList<CatalogueItem> catalogueItems)
         {
-            var catalogueItemIds = catalogueItems.Select(ci => ci.Id).ToList();
+            var frameworks = await dbContext.FrameworkSolutions
+                .Include(fs => fs.Solution)
+                .ThenInclude(s => s.CatalogueItem)
+                .Where(
+                    fs => fs.Solution.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution
+                        && fs.Solution.CatalogueItem.PublishedStatus == PublicationStatus.Published)
+                .Select(f => new FrameworkFilterInfo
+                {
+                    Id = f.FrameworkId,
+                    ShortName = f.Framework.ShortName,
+                    Name = f.Framework.Name,
+                })
+                .Distinct()
+                .OrderBy(f => f.Name)
+                .ToListAsync();
+            foreach (var framework in frameworks)
+            {
+                framework.CountOfActiveSolutions = catalogueItems.Count(c => c.Solution.FrameworkSolutions.Any(x => x.FrameworkId == framework.Id));
+            }
 
-            return dbContext.Frameworks
-                        .Where(f => dbContext.FrameworkSolutions.Any(fs => fs.FrameworkId == f.Id))
-                        .Select(g => new FrameworkFilterInfo
-                        {
-                            Id = g.Id,
-                            ShortName = g.ShortName,
-                            Name = g.Name,
-                            CountOfActiveSolutions = dbContext.FrameworkSolutions.Count(fs => fs.FrameworkId == g.Id && catalogueItemIds.Contains(fs.SolutionId)),
-                        })
-                        .ToListAsync();
+            return frameworks;
         }
 
         public async Task<EntityFramework.Catalogue.Models.Framework> GetFrameworksById(string frameworkId) =>

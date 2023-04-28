@@ -6,6 +6,7 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
@@ -56,15 +57,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Frameworks
             dbContext.CatalogueItems.Add(catalogueItem);
             await dbContext.SaveChangesAsync();
 
-            var expectedFrameworks = dbContext.Frameworks
-                        .Where(f => dbContext.FrameworkSolutions.Any(fs => fs.FrameworkId == f.Id))
-                        .Select(g => new FrameworkFilterInfo
-                        {
-                            Id = g.Id,
-                            ShortName = g.ShortName,
-                            Name = g.Name,
-                            CountOfActiveSolutions = dbContext.FrameworkSolutions.Count(fs => fs.FrameworkId == g.Id && catalogueItem.Id == fs.SolutionId),
-                        });
+            var expectedFrameworks = await dbContext.FrameworkSolutions
+                .Include(fs => fs.Solution)
+                .ThenInclude(s => s.CatalogueItem)
+                .Where(
+                    fs => fs.Solution.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution
+                        && fs.Solution.CatalogueItem.PublishedStatus == PublicationStatus.Published)
+                .Select(f => new FrameworkFilterInfo
+                {
+                    Id = f.FrameworkId,
+                    ShortName = f.Framework.ShortName,
+                    Name = f.Framework.Name,
+                    CountOfActiveSolutions = dbContext.FrameworkSolutions.Count(fs => fs.FrameworkId == f.FrameworkId && catalogueItem.Id == fs.SolutionId),
+                })
+                .Distinct()
+                .OrderBy(f => f.Name)
+                .ToListAsync();
 
             var result = await service.GetFrameworksByCatalogueItems(new List<CatalogueItem> { catalogueItem });
 
