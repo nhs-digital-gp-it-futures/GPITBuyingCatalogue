@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Frameworks
             await dbContext.SaveChangesAsync();
 
             var expectedFrameworks = dbContext.Frameworks
-                        .Where(f => dbContext.FrameworkSolutions.Any(fs => fs.FrameworkId == f.Id || catalogueItem.Id == fs.SolutionId))
+                        .Where(f => dbContext.FrameworkSolutions.Any(fs => fs.FrameworkId == f.Id))
                         .Select(g => new FrameworkFilterInfo
                         {
                             Id = g.Id,

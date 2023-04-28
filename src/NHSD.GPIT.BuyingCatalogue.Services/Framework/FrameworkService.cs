@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
             var catalogueItemIds = catalogueItems.Select(ci => ci.Id).ToList();
 
             return dbContext.Frameworks
-                        .Where(f => dbContext.FrameworkSolutions.Any(fs => fs.FrameworkId == f.Id || catalogueItemIds.Contains(fs.SolutionId)))
+                        .Where(f => dbContext.FrameworkSolutions.Any(fs => fs.FrameworkId == f.Id))
                         .Select(g => new FrameworkFilterInfo
                         {
                             Id = g.Id,

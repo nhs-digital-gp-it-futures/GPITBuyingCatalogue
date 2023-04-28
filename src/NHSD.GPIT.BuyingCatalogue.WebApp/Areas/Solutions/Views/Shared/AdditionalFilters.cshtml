@@ -3,9 +3,7 @@
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters.AdditionalFiltersModel
 <form method="post">
-    @if(Model.FrameworkOptions.Count > 1)
-    {
-        <nhs-expander label-text="Framework"
+    <nhs-expander label-text="Framework"
                   open="true">
             <nhs-radio-button-container>
                 @foreach (var options in Model.FrameworkOptions)
@@ -19,8 +17,7 @@
                 }
             </nhs-radio-button-container>
             <input type="hidden" asp-for="SelectedFrameworkId" />
-        </nhs-expander>
-    }
+     </nhs-expander>
     <nhs-submit-button style= "width:100%" text="Apply additional filters" class="nhsuk-button--secondary" />
     
 </form>

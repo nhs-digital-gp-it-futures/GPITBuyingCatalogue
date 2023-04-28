@@ -168,11 +168,6 @@
                 <div class="nhsuk-grid-column-one-third" >
                     <h2>Additional Filters</h2>
                     <partial name="AdditionalFilters" model="@(Model.AdditionalFilters)" />
-                @if (Model.CatalogueItems.Count != 0)
-                {
-                    <nhs-submit-button style = "width:100%"text="Save All Filters"/>
-                }
-                <br/>
                 <a asp-area="@typeof(SolutionsController).AreaName()"
                     asp-controller="@typeof(SolutionsController).ControllerName()"
                     asp-action="@nameof(SolutionsController.Index)"
