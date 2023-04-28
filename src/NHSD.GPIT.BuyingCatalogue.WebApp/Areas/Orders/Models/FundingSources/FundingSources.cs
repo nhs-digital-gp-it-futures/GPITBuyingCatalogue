@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
@@ -13,6 +15,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
 
         public FundingSources(string internalOrgId, CallOffId callOffId, Order order, int countOfOrderFrameworks)
         {
+            if (order is null || order.OrderingParty is null || order.SelectedFramework is null)
+                throw new ArgumentNullException(nameof(order));
+
             Order = order;
             Title = "Funding sources";
             InternalOrgId = internalOrgId;
@@ -24,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
 
             var completedOrderItems = order.OrderItems.Where(oi => oi.AllQuantitiesEntered).ToList();
 
-            if (order.SelectedFramework.LocalFundingOnly)
+            if (order.IsLocalFundingOnly)
             {
                 OrderItemsLocalOnly = completedOrderItems.Where(oi => oi.OrderItemPrice.CostForBillingPeriod(oi.TotalQuantity) != 0).ToList();
             }

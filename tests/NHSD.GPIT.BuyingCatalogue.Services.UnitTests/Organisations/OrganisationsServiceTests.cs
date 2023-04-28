@@ -6,10 +6,14 @@ using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
+using Castle.Core.Logging;
+using EnumsNET;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.Services.Organisations;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -38,14 +42,59 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
         [Theory]
         [InMemoryDbAutoData]
-        public static Task AddCcgOrganisation_NullOdsOrganisation_ThrowsException(OrganisationsService service)
+        public static Task OrganisationExists_NullOdsOrganisation_ThrowsException(OrganisationsService service)
         {
-            return Assert.ThrowsAsync<ArgumentNullException>(() => service.AddCcgOrganisation(null, true));
+            return Assert.ThrowsAsync<ArgumentNullException>(() => service.OrganisationExists(null));
         }
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task AddCcgOrganisation_OrganisationAlreadyExists_ReturnsError(
+        public static async Task OrganisationExists_OrganisationOdsAlreadyExists_ReturnsTrue(
+            [Frozen] BuyingCatalogueDbContext context,
+            OdsOrganisation odsOrganisation,
+            Organisation organisation,
+            OrganisationsService service)
+        {
+            organisation.ExternalIdentifier = odsOrganisation.OdsCode;
+            context.Organisations.Add(organisation);
+            await context.SaveChangesAsync();
+
+            var result = await service.OrganisationExists(odsOrganisation);
+
+            result.Should().BeTrue();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task OrganisationExists_OrganisationNameAlreadyExists_ReturnsTrue(
+            [Frozen] BuyingCatalogueDbContext context,
+            OdsOrganisation odsOrganisation,
+            Organisation organisation,
+            OrganisationsService service)
+        {
+            organisation.Name = odsOrganisation.OrganisationName;
+            context.Organisations.Add(organisation);
+            await context.SaveChangesAsync();
+
+            var result = await service.OrganisationExists(odsOrganisation);
+
+            result.Should().BeTrue();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task OrganisationExists_OrganisationDoesNotExist_ReturnsFalse(
+            OdsOrganisation odsOrganisation,
+            OrganisationsService service)
+        {
+            var result = await service.OrganisationExists(odsOrganisation);
+
+            result.Should().BeFalse();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddOrganisation_OrganisationAlreadyExists_ReturnsError(
             [Frozen] BuyingCatalogueDbContext context,
             OdsOrganisation odsOrganisation,
             bool agreementSigned,
@@ -53,11 +102,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             OrganisationsService service)
         {
             organisation.ExternalIdentifier = odsOrganisation.OdsCode;
-            organisation.OrganisationType = OrganisationType.CCG;
             context.Organisations.Add(organisation);
             await context.SaveChangesAsync();
 
-            (int orgId, var error) = await service.AddCcgOrganisation(odsOrganisation, agreementSigned);
+            (int orgId, var error) = await service.AddOrganisation(odsOrganisation, agreementSigned);
 
             orgId.Should().Be(0);
             error.Should().Be($"The organisation with ODS code {odsOrganisation.OdsCode} already exists.");
@@ -65,13 +113,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task AddCcgOrganisation_OrganisationCreated(
+        public static async Task AddOrganisation_OrganisationCreated(
             [Frozen] BuyingCatalogueDbContext context,
+            ILogger<OrganisationsService> logger,
             OdsOrganisation odsOrganisation,
             bool agreementSigned,
-            OrganisationsService service)
+            OdsSettings settings)
         {
-            (int orgId, var error) = await service.AddCcgOrganisation(odsOrganisation, agreementSigned);
+            odsOrganisation.PrimaryRoleId = settings.BuyerOrganisationRoles[0].PrimaryRoleId;
+            var expectedOrgType = settings.GetOrganisationType(odsOrganisation.PrimaryRoleId);
+
+            var service = new OrganisationsService(context, logger, settings);
+            (int orgId, var error) = await service.AddOrganisation(odsOrganisation, agreementSigned);
 
             orgId.Should().NotBe(0);
             error.Should().BeNull();
@@ -84,23 +137,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             newOrganisation.LastUpdated.Date.Should().Be(DateTime.UtcNow.Date);
             newOrganisation.Name.Should().Be(odsOrganisation.OrganisationName);
             newOrganisation.ExternalIdentifier.Should().Be(odsOrganisation.OdsCode);
-            newOrganisation.InternalIdentifier.Should().Be($"CG-{odsOrganisation.OdsCode}");
+            newOrganisation.InternalIdentifier.Should().Be($"{expectedOrgType.AsString(EnumFormat.EnumMemberValue)}-{odsOrganisation.OdsCode}");
             newOrganisation.PrimaryRoleId.Should().Be(odsOrganisation.PrimaryRoleId);
+            newOrganisation.OrganisationType.Should().Be(expectedOrgType);
         }
 
         [Theory]
         [InMemoryDbAutoData]
-        public static void UpdateCcgOrganisation_OrganisationIsNull_ThrowsException(
+        public static void UpdateOrganisation_OrganisationIsNull_ThrowsException(
             OrganisationsService service)
         {
             FluentActions
-                .Awaiting(() => service.UpdateCcgOrganisation(null))
+                .Awaiting(() => service.UpdateOrganisation(null))
                 .Should().ThrowAsync<ArgumentNullException>();
         }
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task UpdateCcgOrganisation_OrganisationNotInDatabase_NoActionTaken(
+        public static async Task UpdateOrganisation_OrganisationNotInDatabase_NoActionTaken(
             OdsOrganisation organisation,
             [Frozen] BuyingCatalogueDbContext dbContext,
             OrganisationsService service)
@@ -110,7 +164,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
             existing.Should().BeNull();
 
-            await service.UpdateCcgOrganisation(organisation);
+            await service.UpdateOrganisation(organisation);
 
             var actual = await dbContext.Organisations
                 .FirstOrDefaultAsync(x => x.ExternalIdentifier == organisation.OdsCode);
@@ -120,7 +174,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task UpdateCcgOrganisation_OrganisationInDatabase_ValuesUpdated(
+        public static async Task UpdateOrganisation_OrganisationInDatabase_ValuesUpdated(
             Organisation organisation,
             OdsOrganisation newOrganisation,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -136,11 +190,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             existing.Should().NotBeNull();
             existing!.Name.Should().Be(organisation.Name);
             existing.Address.Should().Be(organisation.Address);
-            existing.PrimaryRoleId.Should().Be(organisation.PrimaryRoleId);
 
             newOrganisation.OdsCode = organisation.ExternalIdentifier;
 
-            await service.UpdateCcgOrganisation(newOrganisation);
+            await service.UpdateOrganisation(newOrganisation);
 
             var actual = await dbContext.Organisations
                 .FirstOrDefaultAsync(x => x.ExternalIdentifier == organisation.ExternalIdentifier);
@@ -148,7 +201,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             actual.Should().NotBeNull();
             actual!.Name.Should().Be(newOrganisation.OrganisationName);
             actual.Address.Should().Be(newOrganisation.Address);
-            actual.PrimaryRoleId.Should().Be(newOrganisation.PrimaryRoleId);
         }
 
         [Theory]

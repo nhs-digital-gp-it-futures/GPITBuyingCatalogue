@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
@@ -11,30 +12,14 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public const string LocalFunding = "Local";
         public const string CentralFunding = "Central";
 
-        // TODO: remove with csv
-        public string ApproximateFundingType
-        {
-            get
-            {
-                var fundingTypes = OrderItems
-                    .Select(x => x.FundingType)
-                    .Where(x => x != OrderItemFundingType.NoFundingRequired
-                        && x != OrderItemFundingType.None)
-                    .ToList();
+        [JsonIgnore]
+        public bool IsLocalFundingOnly =>
+            SelectedFramework.LocalFundingOnly || OrderingParty.OrganisationType == OrganisationType.GP;
 
-                if (!fundingTypes.Any())
-                {
-                    return CentralFunding;
-                }
+        [JsonIgnore]
+        public EndDate EndDate => new(CommencementDate, MaximumTerm);
 
-                return fundingTypes.All(x => x is OrderItemFundingType.LocalFunding or OrderItemFundingType.LocalFundingOnly)
-                    ? LocalFunding
-                    : CentralFunding;
-            }
-        }
-
-        public EndDate EndDate => new EndDate(CommencementDate, MaximumTerm);
-
+        [JsonIgnore]
         public bool IsAmendment => CallOffId.IsAmendment;
 
         public void Complete()
@@ -49,10 +34,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 && OrderingPartyContact is not null
                 && Supplier is not null
                 && CommencementDate is not null
-                && (HasSolution() || HasAssociatedService())
+                && (HasValidCatalogueItems() || HasAssociatedService())
                 && OrderItems.Count > 0
                 && OrderItems.All(x => x.OrderItemRecipients.All(r => r.DeliveryDate != null))
                 && OrderItems.All(oi => oi.OrderItemFunding is not null)
+                && ContractFlags is not null
+                && ContractFlags?.UseDefaultImplementationPlan is not null
+                && ContractFlags?.UseDefaultDataProcessing is not null
                 && OrderStatus != OrderStatus.Completed;
         }
 
@@ -162,9 +150,17 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             return OrderItems.Any(o => o.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService);
         }
 
-        public bool HasSolution()
+        public bool HasValidCatalogueItems()
         {
-            return OrderItems.Any(o => o.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution);
+            if (!IsAmendment)
+            {
+                return OrderItems.Any(o => o.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution);
+            }
+            else
+            {
+                return OrderItems.Any(o => o.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution
+                    || o.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService);
+            }
         }
 
         public void Apply(Order order)

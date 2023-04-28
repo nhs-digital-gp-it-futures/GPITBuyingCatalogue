@@ -43,6 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             this.selectionMode = selectionMode;
 
             OrganisationName = organisation.Name;
+            OrganisationType = organisation.OrganisationType;
 
             ItemName = previousItem?.CatalogueItem.Name ?? orderItem.CatalogueItem.Name;
             ItemType = previousItem?.CatalogueItem.CatalogueItemType ?? orderItem.CatalogueItem.CatalogueItemType;
@@ -70,6 +71,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         public string InternalOrgId { get; set; }
 
         public string OrganisationName { get; set; }
+
+        public OrganisationType? OrganisationType { get; init; }
 
         public CallOffId CallOffId { get; set; }
 
@@ -229,7 +232,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         private void SetAdvice(IEnumerable importedRecipients)
         {
-            if (!GetServiceRecipients().Any())
+            if (OrganisationType == EntityFramework.Organisations.Models.OrganisationType.GP)
+            {
+                Advice = string.Empty;
+            }
+            else if (!GetServiceRecipients().Any())
             {
                 Advice = AdviceTextNoRecipientsAvailable;
             }
