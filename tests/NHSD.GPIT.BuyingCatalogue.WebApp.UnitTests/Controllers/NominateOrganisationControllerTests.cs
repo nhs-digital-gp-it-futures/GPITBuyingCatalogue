@@ -10,6 +10,7 @@ using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.NominateOrganisation;
 using Xunit;
 
@@ -36,13 +37,35 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static void Get_Index_ReturnsDefaultView(
+        public static async Task Get_Index_ReturnsDefaultView(
+            [Frozen] Mock<INominateOrganisationService> mockNominateOrganisationService,
             NominateOrganisationController systemUnderTest)
         {
-            var result = systemUnderTest.Index();
+            mockNominateOrganisationService
+                .Setup(x => x.IsGpPractice(It.IsAny<int>()))
+                .ReturnsAsync(false);
 
-            Assert.IsAssignableFrom<ViewResult>(result);
+            var result = await systemUnderTest.Index();
+
+            mockNominateOrganisationService.VerifyAll();
             Assert.Null(((ViewResult)result).ViewName);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_Index_GP_Redirects(
+            [Frozen] Mock<INominateOrganisationService> mockNominateOrganisationService,
+            NominateOrganisationController systemUnderTest)
+        {
+            mockNominateOrganisationService
+                .Setup(x => x.IsGpPractice(It.IsAny<int>()))
+                .ReturnsAsync(true);
+
+            var result = await systemUnderTest.Index() as RedirectToActionResult;
+
+            mockNominateOrganisationService.VerifyAll();
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(NominateOrganisationController.Unavailable));
         }
 
         [Theory]
@@ -54,6 +77,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             Assert.IsAssignableFrom<ViewResult>(result);
             Assert.Null(((ViewResult)result).ViewName);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Get_Unavailable_ReturnsDefaultView(
+            NominateOrganisationController systemUnderTest)
+        {
+            var result = systemUnderTest.Unavailable() as ViewResult;
+
+            result.Should().NotBeNull();
+            result.Model.Should().NotBeNull();
+            result.Model.Should().BeAssignableTo<NavBaseModel>();
+            result.ViewName.Should().BeNull();
         }
 
         [Theory]
