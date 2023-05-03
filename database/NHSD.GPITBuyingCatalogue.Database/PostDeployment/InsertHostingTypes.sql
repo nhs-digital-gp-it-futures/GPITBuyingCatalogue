@@ -3,7 +3,7 @@ USING (
 VALUES 
     (1, 'PublicCloud', 'Public cloud'),
     (2, 'PrivateCloud', 'Private cloud'),
-    (3, 'HybridHostingType', 'Hybrid'),
+    (3, 'Hybrid', 'Hybrid'),
     (4, 'OnPremise', 'On premise')
 )
 AS SOURCE ([Id], [Name], [Description])
