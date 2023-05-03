@@ -1,7 +1,8 @@
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.FrameworkModels.FrameworksDashboardModel;
 
 @{
-    ViewBag.Title = "Manage Frameworks";
+    ViewBag.Title = "Manage frameworks";
 }
 
 @section Breadcrumbs {
@@ -12,7 +13,9 @@
                 <li class="nhsuk-breadcrumb__item">
                     <a asp-action="@nameof(HomeController.Index)"
                        asp-controller="@typeof(HomeController).ControllerName()"
-                       class="nhsuk-breadcrumb__link">Home</a>
+                       class="nhsuk-breadcrumb__link">
+                        Home
+                    </a>
                 </li>
                 <li class="nhsuk-breadcrumb__item">
                     @ViewBag.Title
@@ -24,39 +27,58 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-page-title title="@ViewBag.Title" advice="Add or edit Frameworks that Catalogue Solutions can reference."/>
+        <nhs-page-title title="@ViewBag.Title" advice="Add new frameworks or mark existing ones as expired."/>
 
-        <vc:nhs-action-link text="Add a Framework"
-                                url="@Url.Action(nameof(FrameworksController.Add), typeof(FrameworksController).ControllerName())" />
+        <vc:nhs-action-link text="Add a new framework"
+                            url="@Url.Action(nameof(FrameworksController.Add), typeof(FrameworksController).ControllerName())"/>
 
-            @if (!Model.Frameworks.Any())
-            {
-                <p data-test-id="no-frameworks-text">No Frameworks have been added yet.</p>
-            }
-            else
-            {
-                <nhs-table label-text="Frameworks" data-test-id="frameworks-table">
-                    <nhs-table-column>Name</nhs-table-column>
-                    <nhs-table-column>Local Funding Only</nhs-table-column>
-                    <nhs-table-column>Action</nhs-table-column>
+        @if (!Model.Frameworks.Any())
+        {
+            <p data-test-id="no-frameworks-text">No frameworks have been added yet.</p>
+        }
+        else
+        {
+            <nhs-table label-text="Frameworks" data-test-id="frameworks-table">
+                <nhs-table-column>Name</nhs-table-column>
+                <nhs-table-column>Funding type</nhs-table-column>
+                <nhs-table-column>Status</nhs-table-column>
+                <nhs-table-column>Action</nhs-table-column>
 
-                    @foreach (var framework in Model.Frameworks.OrderBy(x => x.ShortName))
-                    {
-                        <nhs-table-row-container>
-                            <nhs-table-cell>@framework.ShortName</nhs-table-cell>
-                            <nhs-table-cell>@framework.LocalFundingOnly.ToYesNo()</nhs-table-cell>
-                            <nhs-table-cell>
+                @foreach (var framework in Model.Frameworks.OrderBy(x => x.ShortName))
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>@framework.ShortName</nhs-table-cell>
+                        <nhs-table-cell>@GetFundingType(framework.LocalFundingOnly)</nhs-table-cell>
+                        <nhs-table-cell>
+                            <nhs-tag text="@GetTagText(framework.IsExpired)" colour="@GetTagColour(framework.IsExpired)" />
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            @if (framework.IsExpired)
+                            {
+                                @("N/A")
+                            }
+                            else
+                            {
                                 <a asp-controller="@typeof(FrameworksController).ControllerName()"
-                                    asp-action="@nameof(FrameworksController.Expire)"
-                                    asp-route-frameworkId="@framework.Id">Expire</a>
-                            </nhs-table-cell>
-                        </nhs-table-row-container>
-                    }
-                </nhs-table>
-            }
+                                   asp-action="@nameof(FrameworksController.Expire)"
+                                   asp-route-frameworkId="@framework.Id">
+                                    Expire
+                                </a>
+                            }
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+            </nhs-table>
+        }
 
-            <vc:nhs-secondary-button text="Continue"
-                                     type="Primary"
-                                     url="@Url.Action(nameof(HomeController.Index), typeof(HomeController).ControllerName())"/>
+        <vc:nhs-secondary-button text="Continue"
+                                 type="Primary"
+                                 url="@Url.Action(nameof(HomeController.Index), typeof(HomeController).ControllerName())"/>
     </div>
 </div>
+
+@{
+    string GetTagText(bool isExpired) => isExpired ? "Expired" : "Active";
+    NhsTagsTagHelper.TagColour GetTagColour(bool isExpired) => isExpired ? NhsTagsTagHelper.TagColour.Grey : NhsTagsTagHelper.TagColour.Green;
+    string GetFundingType(bool isLocallyFunded) => isLocallyFunded ? "Local funding" : "Central funding";
+}
