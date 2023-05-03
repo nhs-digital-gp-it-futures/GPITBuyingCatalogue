@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using EnumsNET;
@@ -7,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
@@ -15,13 +17,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
     {
         private readonly BuyingCatalogueDbContext dbContext;
         private readonly ILogger<OrganisationsService> logger;
+        private readonly OdsSettings settings;
 
         public OrganisationsService(
             BuyingCatalogueDbContext dbContext,
-            ILogger<OrganisationsService> logger)
+            ILogger<OrganisationsService> logger,
+            OdsSettings settings)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
 
         public async Task<IList<Organisation>> GetAllOrganisations()
@@ -29,15 +34,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             return await dbContext.Organisations.OrderBy(o => o.Name).ToListAsync();
         }
 
-        public async Task<(int OrganisationId, string Error)> AddCcgOrganisation(OdsOrganisation odsOrganisation, bool agreementSigned)
+        public async Task<bool> OrganisationExists(OdsOrganisation odsOrganisation)
         {
             if (odsOrganisation is null)
                 throw new ArgumentNullException(nameof(odsOrganisation));
 
-            var persistedOrganisation = await dbContext.Organisations.FirstOrDefaultAsync(o => o.ExternalIdentifier == odsOrganisation.OdsCode && o.OrganisationType == OrganisationType.CCG);
+            return await dbContext.Organisations.AnyAsync(o => o.ExternalIdentifier == odsOrganisation.OdsCode || o.Name == odsOrganisation.OrganisationName);
+        }
 
-            if (persistedOrganisation is not null)
+        public async Task<(int OrganisationId, string Error)> AddOrganisation(OdsOrganisation odsOrganisation, bool agreementSigned)
+        {
+            if (await OrganisationExists(odsOrganisation))
                 return (0, $"The organisation with ODS code {odsOrganisation.OdsCode} already exists.");
+
+            var orgType = settings.GetOrganisationType(odsOrganisation.PrimaryRoleId);
 
             var organisation = new Organisation
             {
@@ -46,8 +56,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
                 LastUpdated = DateTime.UtcNow,
                 Name = odsOrganisation.OrganisationName,
                 ExternalIdentifier = odsOrganisation.OdsCode,
-                InternalIdentifier = $"{OrganisationType.CCG.AsString(EnumFormat.EnumMemberValue)}-{odsOrganisation.OdsCode}",
+                InternalIdentifier = $"{orgType.AsString(EnumFormat.EnumMemberValue)}-{odsOrganisation.OdsCode}",
                 PrimaryRoleId = odsOrganisation.PrimaryRoleId,
+                OrganisationType = orgType,
             };
 
             dbContext.Organisations.Add(organisation);
@@ -56,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             return (organisation.Id, null);
         }
 
-        public async Task UpdateCcgOrganisation(OdsOrganisation organisation)
+        public async Task UpdateOrganisation(OdsOrganisation organisation)
         {
             if (organisation == null)
             {
@@ -74,7 +85,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
 
             existing.Name = organisation.OrganisationName;
             existing.Address = organisation.Address;
-            existing.PrimaryRoleId = organisation.PrimaryRoleId;
 
             await dbContext.SaveChangesAsync();
         }

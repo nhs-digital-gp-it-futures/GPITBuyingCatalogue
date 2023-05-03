@@ -10,8 +10,9 @@
         <div class="nhsuk-grid-column-full">
             <nhs-validation-summary />
             <nhs-page-title title="@ViewBag.Title"
-                            advice="Before you start your order, you should know:"
                             caption="@Model!.OrganisationName" />
+			<partial name="Partials/_FrameworkExpiredAlert" />
+			<nhs-page-title advice="Before you start your order, you should know:" />
             <ul>
                 <li>the approximate value of your order</li>
                 <li>what solutions and services you want to order</li>

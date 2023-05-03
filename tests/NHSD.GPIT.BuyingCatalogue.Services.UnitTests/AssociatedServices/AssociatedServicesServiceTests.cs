@@ -67,6 +67,61 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
 
         [Theory]
         [InMemoryDbAutoData]
+        public static async Task RemoveServiceFromSolution_Removes(
+            Solution solution,
+            AssociatedService associatedService,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            AssociatedServicesService service)
+        {
+            dbContext.Solutions.Add(solution);
+            dbContext.AssociatedServices.Add(associatedService);
+            dbContext.SupplierServiceAssociations.Add(
+                new SupplierServiceAssociation(solution.CatalogueItemId, associatedService.CatalogueItemId));
+
+            await dbContext.SaveChangesAsync();
+
+            dbContext.ChangeTracker.Clear();
+
+            await service.RemoveServiceFromSolution(solution.CatalogueItemId, associatedService.CatalogueItemId);
+
+            dbContext.SupplierServiceAssociations.AsNoTracking()
+                .FirstOrDefault(
+                    x => x.CatalogueItemId == solution.CatalogueItemId
+                        && x.AssociatedServiceId == associatedService.CatalogueItemId)
+                .Should()
+                .BeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task RemoveServiceFromSolution_InvalidKeys_DoesNotRemove(
+            Solution solution,
+            Solution secondSolution,
+            AssociatedService associatedService,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            AssociatedServicesService service)
+        {
+            dbContext.Solutions.Add(solution);
+            dbContext.AssociatedServices.Add(associatedService);
+            dbContext.SupplierServiceAssociations.Add(
+                new SupplierServiceAssociation(solution.CatalogueItemId, associatedService.CatalogueItemId));
+
+            await dbContext.SaveChangesAsync();
+
+            dbContext.ChangeTracker.Clear();
+
+            await service.RemoveServiceFromSolution(secondSolution.CatalogueItemId, associatedService.CatalogueItemId);
+
+            dbContext.SupplierServiceAssociations.AsNoTracking()
+                .FirstOrDefault(
+                    x => x.CatalogueItemId == solution.CatalogueItemId
+                        && x.AssociatedServiceId == associatedService.CatalogueItemId)
+                .Should()
+                .NotBeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
         public static Task AddAssociatedService_NullCatalogueItem_ThrowsException(
         AssociatedServicesDetailsModel model,
         AssociatedServicesService service)

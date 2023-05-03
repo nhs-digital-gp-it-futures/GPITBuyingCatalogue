@@ -1,26 +1,48 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+﻿using System.Collections.Generic;
+using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 {
     public sealed class SummaryModel : OrderingBaseModel
     {
-        public SummaryModel()
-        {
-        }
-
-        public SummaryModel(string internalOrgId, Order order)
+        public SummaryModel(OrderWrapper orderWrapper, string internalOrgId, ImplementationPlan defaultPlan = null)
         {
             InternalOrgId = internalOrgId;
-            CallOffId = order.CallOffId;
-            Order = order;
+            OrderWrapper = orderWrapper;
+            DefaultPlan = defaultPlan;
         }
 
-        public CallOffId CallOffId { get; set; }
+        public OrderWrapper OrderWrapper { get; }
 
-        public Order Order { get; set; }
+        public CallOffId CallOffId => OrderWrapper.Order.CallOffId;
+
+        public Order Order => OrderWrapper.Order;
+
+        public Order Previous => OrderWrapper.Previous;
+
+        public Order RolledUp => OrderWrapper.RolledUp;
 
         public string AdviceText { get; set; }
 
         public bool CanBeAmended { get; set; }
+
+        public ImplementationPlan DefaultPlan { get; set; }
+
+        public bool UseDefaultDataProcessing => Order?.ContractFlags?.UseDefaultDataProcessing == true;
+
+        public bool UseDefaultImplementationPlan => Order?.ContractFlags?.UseDefaultImplementationPlan == true;
+
+        public string BillingPaymentTrigger => DefaultPlan?.Milestones?.LastOrDefault()?.Title ?? "Bill on invoice";
+
+        public bool HasBespokeBilling => Order?.ContractFlags?.UseDefaultBilling == false;
+
+        public bool HasSpecificRequirements => Order?.ContractFlags?.HasSpecificRequirements == true;
+
+        public FundingTypeDescriptionModel FundingTypeDescription(CatalogueItemId catalogueItemId)
+        {
+            return new FundingTypeDescriptionModel(OrderWrapper.FundingTypesForItem(catalogueItemId));
+        }
     }
 }

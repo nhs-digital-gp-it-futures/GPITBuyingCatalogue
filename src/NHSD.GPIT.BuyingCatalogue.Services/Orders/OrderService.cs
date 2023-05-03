@@ -9,6 +9,7 @@ using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
@@ -89,6 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public async Task<OrderWrapper> GetOrderWithCatalogueItemAndPrices(CallOffId callOffId, string internalOrgId)
         {
             var orders = await dbContext.Orders
+                .Include(x => x.OrderingParty)
                 .Include(x => x.Solution)
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.CatalogueItem)
@@ -100,6 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.OrderItemRecipients)
                     .ThenInclude(r => r.Recipient)
+                .Include(o => o.SelectedFramework)
                 .AsSplitQuery()
                 .Where(o => o.OrderNumber == callOffId.OrderNumber
                     && o.Revision <= callOffId.Revision
@@ -124,6 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.OrderItemRecipients.OrderBy(oir => oir.Recipient.Name))
                     .ThenInclude(r => r.Recipient)
+                .Include(o => o.SelectedFramework)
                 .AsSplitQuery()
                 .Where(o => o.OrderNumber == callOffId.OrderNumber
                     && o.Revision <= callOffId.Revision
@@ -136,6 +140,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public async Task<OrderWrapper> GetOrderWithOrderItemsForFunding(CallOffId callOffId, string internalOrgId)
         {
             var orders = await dbContext.Orders
+                .Include(x => x.OrderingParty)
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.CatalogueItem)
                 .Include(o => o.OrderItems)
@@ -441,6 +446,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.OrderItems)
                     .ThenInclude(oi => oi.OrderItemFunding)
                 .Include(o => o.SelectedFramework)
+                .Include(o => o.OrderingParty)
                 .AsSplitQuery()
                 .FirstAsync(o => o.OrderNumber == callOffId.OrderNumber
                     && o.Revision == callOffId.Revision
@@ -452,7 +458,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
                 if (orderItem.TotalCost() == 0)
                     selectedFundingType = OrderItemFundingType.NoFundingRequired;
-                else if (order.SelectedFramework.LocalFundingOnly)
+                else if (order.IsLocalFundingOnly)
                     selectedFundingType = OrderItemFundingType.LocalFundingOnly;
 
                 if (selectedFundingType != OrderItemFundingType.None)

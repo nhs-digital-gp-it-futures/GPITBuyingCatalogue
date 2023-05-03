@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
                 : new List<Order>();
         }
 
-        public bool IsAmendment => previous.Any();
+        public bool IsAmendment => Order.CallOffId.IsAmendment;
 
         public Order Last => previous.Any()
             ? previous.Last()
@@ -90,6 +90,16 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
             return Order.OrderItems.Any(x => x.CatalogueItemId == orderItem.CatalogueItemId)
                 && previousOrder.OrderItems.Any(x => x.CatalogueItemId == orderItem.CatalogueItemId);
+        }
+
+        public IEnumerable<OrderItemFundingType> FundingTypesForItem(CatalogueItemId catalogueItemId)
+        {
+            var fundingTypes = previous
+                .SelectMany(o => o.OrderItems.Where(oi => oi.CatalogueItemId == catalogueItemId).Select(oi => oi.FundingType))
+                .ToList();
+
+            fundingTypes.AddRange(Order.OrderItems.Where(oi => oi.CatalogueItemId == catalogueItemId).Select(oi => oi.FundingType));
+            return fundingTypes.Distinct();
         }
     }
 }
