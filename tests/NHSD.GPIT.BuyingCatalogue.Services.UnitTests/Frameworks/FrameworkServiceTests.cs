@@ -46,32 +46,26 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Frameworks
         [Theory]
         [InMemoryDbAutoData]
         public async Task GetFrameworksByCatalogueItems(
-            EntityFramework.Catalogue.Models.Framework framework,
             FrameworkSolution frameworkSolutions,
             CatalogueItem catalogueItem,
             [Frozen] BuyingCatalogueDbContext dbContext,
             FrameworkService service)
         {
-            dbContext.Frameworks.Add(framework);
             dbContext.FrameworkSolutions.Add(frameworkSolutions);
             dbContext.CatalogueItems.Add(catalogueItem);
             await dbContext.SaveChangesAsync();
 
-            var expectedFrameworks = await dbContext.FrameworkSolutions
-                .Include(fs => fs.Solution)
-                .ThenInclude(s => s.CatalogueItem)
-                .Where(
-                    fs => fs.Solution.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution
-                        && fs.Solution.CatalogueItem.PublishedStatus == PublicationStatus.Published)
-                .Select(f => new FrameworkFilterInfo
-                {
-                    Id = f.FrameworkId,
-                    ShortName = f.Framework.ShortName,
-                    Name = f.Framework.Name,
-                    CountOfActiveSolutions = dbContext.FrameworkSolutions.Count(fs => fs.FrameworkId == f.FrameworkId && catalogueItem.Id == fs.SolutionId),
-                })
-                .Distinct()
-                .OrderBy(f => f.Name)
+            var expectedFrameworks = await dbContext.FrameworkSolutions.AsNoTracking()
+                .Where(fs => fs.SolutionId == catalogueItem.Id &&
+                       fs.Solution.CatalogueItem.PublishedStatus == PublicationStatus.Published)
+                .GroupBy(x => new { x.FrameworkId, x.Framework.ShortName })
+                .Select(
+                    x => new FrameworkFilterInfo
+                    {
+                        Id = x.Key.FrameworkId,
+                        ShortName = x.Key.ShortName,
+                        CountOfActiveSolutions = x.Count(),
+                    })
                 .ToListAsync();
 
             var result = await service.GetFrameworksByCatalogueItems(new List<CatalogueItem> { catalogueItem });
