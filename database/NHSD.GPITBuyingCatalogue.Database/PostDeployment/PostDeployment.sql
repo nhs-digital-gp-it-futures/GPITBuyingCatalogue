@@ -16,6 +16,7 @@
 :r ./InsertAllowedEmailDomains.sql
 :r ./InsertCapabilityStatuses.sql
 :r ./InsertCapabilityCategories.sql
+:r ./InsertClientApplicationTypes.sql
 :r ./InsertCompliancyLevels.sql
 :r ./InsertPublicationStatuses.sql
 :r ./InsertSolutionCapabilityStatuses.sql
@@ -27,6 +28,7 @@
 :r ./InsertCataloguePriceCalculationTypes.sql
 :r ./InsertCataloguePriceQuantityCalculationTypes.sql
 :r ./InsertEpics.sql
+:r ./InsertHostingTypes.sql
 :r ./InsertPricingUnits.sql
 :r ./InsertProvisioningTypes.sql
 :r ./InsertSuppliers.sql

@@ -98,7 +98,6 @@
     <Folder Include="Ordering\TemporalTables" />
     <Folder Include="Users\TemporalTables" />
     <Folder Include="PostDeployment\OrderSeedData" />
-    <Folder Include="PostDeployment\" />
     <Folder Include="Catalogue\Types" />
     <Folder Include="Catalogue\Stored Procedures" />
     <Folder Include="Security\Schemas\" />
@@ -110,6 +109,8 @@
     <Build Include="Security\Users\NHSD.sql" />
     <Build Include="Security\Logins\NHSD.sql" />
     <None Include="PostDeployment\CreateIntegratedCareBoards.sql" />
+    <None Include="PostDeployment\InsertClientApplicationTypes.sql" />
+    <None Include="PostDeployment\InsertHostingTypes.sql" />
     <None Include="PostDeployment\IntegrationTests\ClearData.sql" />
     <None Include="PostDeployment\IntegrationTests\DropRole.sql" />
     <None Include="PostDeployment\IntegrationTests\DropUserAndLogin.sql" />
