@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
@@ -12,6 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.Services.Organisations;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NuGet.Configuration;
 using Xunit;
 using OdsOrganisation = NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations.OdsOrganisation;
 
@@ -48,16 +51,27 @@ public class TrudOdsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [InMemoryDbInlineAutoData(null, null)]
+    [InMemoryDbInlineAutoData(null, "DEF")]
+    [InMemoryDbInlineAutoData(null, "RO318")]
+    [InMemoryDbInlineAutoData("ABC", null)]
+    [InMemoryDbInlineAutoData("ABC", "DEF")]
+    [InMemoryDbInlineAutoData("ABC", "RO318")]
+    [InMemoryDbInlineAutoData("RO261", null)]
+    [InMemoryDbInlineAutoData("RO261", "DEF")]
     public static async Task GetOrganisationByOdsCode_InvalidType_ReturnsError(
+        string primaryRoleId,
+        string secondaryRoleId,
         EntityFramework.OdsOrganisations.Models.OdsOrganisation organisation,
-        OrganisationRole organisationRole,
+        RoleType primaryRoleType,
+        RoleType secondaryRoleType,
         [Frozen] BuyingCatalogueDbContext context,
         TrudOdsService service)
     {
         organisation.IsActive = true;
-        organisation.Roles.Add(organisationRole);
-
+        organisation.Roles.Clear();
+        AddRole(context, organisation, primaryRoleType, primaryRoleId, true);
+        AddRole(context, organisation, secondaryRoleType, secondaryRoleId, false);
         context.Add(organisation);
         await context.SaveChangesAsync();
 
@@ -67,38 +81,31 @@ public class TrudOdsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [InMemoryDbInlineAutoData("RO213", null)]
+    [InMemoryDbInlineAutoData("RO261", "RO318")]
+    [InMemoryDbInlineAutoData("RO177", "RO76")]
     public static async Task GetOrganisationByOdsCode_Valid_ReturnsExpected(
+        string primaryRoleId,
+        string secondaryRoleId,
         EntityFramework.OdsOrganisations.Models.OdsOrganisation organisation,
-        RoleType roleType,
-        [Frozen] OdsSettings settings,
+        RoleType primaryRoleType,
+        RoleType secondaryRoleType,
         [Frozen] BuyingCatalogueDbContext context,
         TrudOdsService service)
     {
-        roleType.Id = settings.BuyerOrganisationRoleIds[0];
-        var organisationRole = new OrganisationRole
-        {
-            RoleId = roleType.Id, IsPrimaryRole = true, OrganisationId = organisation.Id,
-        };
-
         organisation.IsActive = true;
         organisation.Roles.Clear();
-
-        context.Add(roleType);
+        AddRole(context, organisation, primaryRoleType, primaryRoleId, true);
+        AddRole(context, organisation, secondaryRoleType, secondaryRoleId, false);
         context.Add(organisation);
-        context.Add(organisationRole);
         await context.SaveChangesAsync();
-
-        (OdsOrganisation mappedOrganisation, string _) = await service.GetOrganisationByOdsCode(organisation.Id);
-
-        mappedOrganisation.Should().NotBeNull();
 
         var expectedOrg = new OdsOrganisation
         {
             IsActive = organisation.IsActive,
             OdsCode = organisation.Id,
             OrganisationName = organisation.Name,
-            PrimaryRoleId = organisationRole.RoleId,
+            PrimaryRoleId = primaryRoleId,
             Address = new()
             {
                 Line1 = organisation.AddressLine1,
@@ -111,6 +118,9 @@ public class TrudOdsServiceTests
             },
         };
 
+        (OdsOrganisation mappedOrganisation, string _) = await service.GetOrganisationByOdsCode(organisation.Id);
+
+        mappedOrganisation.Should().NotBeNull();
         mappedOrganisation.Should().BeEquivalentTo(expectedOrg);
     }
 
@@ -122,6 +132,32 @@ public class TrudOdsServiceTests
         service.Invoking(x => x.GetServiceRecipientsByParentInternalIdentifier(internalIdentifier))
             .Should()
             .ThrowAsync<ArgumentException>(TrudOdsService.InvalidIdExceptionMessage);
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task GetServiceRecipientsByParentInternalIdentifier_GPPractice_ReturnsItself(
+        Organisation organisation,
+        [Frozen] BuyingCatalogueDbContext context,
+        OdsSettings settings,
+        IOrganisationsService orgService,
+        ILogger<TrudOdsService> logger)
+    {
+        organisation.PrimaryRoleId = settings.GetPrimaryRoleId(OrganisationType.GP);
+
+        context.Add(organisation);
+        await context.SaveChangesAsync();
+
+        var service = new TrudOdsService(settings, context, orgService, logger);
+        var results = (await service.GetServiceRecipientsByParentInternalIdentifier(organisation.InternalIdentifier))
+            .ToList();
+
+        results.Should().NotBeEmpty();
+        results.Should().HaveCount(1);
+        results.First().Name.Should().Be(organisation.Name);
+        results.First().OrgId.Should().Be(organisation.ExternalIdentifier);
+        results.First().PrimaryRoleId.Should().Be(organisation.PrimaryRoleId);
+        results.First().Location.Should().Be("GP Practice");
+    }
 
     [Theory]
     [InMemoryDbAutoData]
@@ -138,9 +174,10 @@ public class TrudOdsServiceTests
         [Frozen] BuyingCatalogueDbContext context,
         TrudOdsService service)
     {
+        organisation.PrimaryRoleId = settings.GetPrimaryRoleId(OrganisationType.IB);
         organisation.ExternalIdentifier = grandparentOrganisation.Id;
 
-        gpRoleType.Id = settings.GpPracticeRoleId;
+        gpRoleType.Id = settings.GetPrimaryRoleId(OrganisationType.GP);
         commByRelType.Id = settings.IsCommissionedByRelType;
         subLocationRoleType.Id = settings.SubLocationRoleId;
         geogOfRelType.Id = settings.InGeographyOfRelType;
@@ -170,11 +207,10 @@ public class TrudOdsServiceTests
             {
                 x.Related.Clear();
                 x.Parents.Clear();
+                x.Roles.Clear();
 
-                x.Roles = new List<OrganisationRole>
-                {
-                    new() { OrganisationId = x.Id, RoleId = gpRoleType.Id, IsPrimaryRole = true, },
-                };
+                x.Roles.Add(
+                    new() { OrganisationId = x.Id, RoleId = gpRoleType.Id, IsPrimaryRole = true, });
 
                 parentOrganisation.Related.Add(
                     new()
@@ -212,7 +248,7 @@ public class TrudOdsServiceTests
     {
         await service.UpdateOrganisationDetails(odsCode);
 
-        organisationsService.Verify(x => x.UpdateCcgOrganisation(It.IsAny<OdsOrganisation>()), Times.Never());
+        organisationsService.Verify(x => x.UpdateOrganisation(It.IsAny<OdsOrganisation>()), Times.Never());
     }
 
     [Theory]
@@ -228,7 +264,7 @@ public class TrudOdsServiceTests
 
         await service.UpdateOrganisationDetails(organisation.InternalIdentifier);
 
-        organisationsService.Verify(x => x.UpdateCcgOrganisation(It.IsAny<OdsOrganisation>()), Times.Never());
+        organisationsService.Verify(x => x.UpdateOrganisation(It.IsAny<OdsOrganisation>()), Times.Never());
     }
 
     [Theory]
@@ -249,7 +285,7 @@ public class TrudOdsServiceTests
         OdsOrganisation actual = null;
 
         organisationsService
-            .Setup(x => x.UpdateCcgOrganisation(It.IsAny<OdsOrganisation>()))
+            .Setup(x => x.UpdateOrganisation(It.IsAny<OdsOrganisation>()))
             .Callback<OdsOrganisation>(x => actual = x);
 
         await service.UpdateOrganisationDetails(organisation.ExternalIdentifier);
@@ -257,5 +293,21 @@ public class TrudOdsServiceTests
         organisationsService.VerifyAll();
 
         actual.Should().BeEquivalentTo(TrudOdsService.MapOrganisation(trudOrganisation));
+    }
+
+    private static void AddRole([Frozen] BuyingCatalogueDbContext context, EntityFramework.OdsOrganisations.Models.OdsOrganisation organisation, RoleType roleType, string roleId, bool isPrimaryRole)
+    {
+        if (roleId is not null)
+        {
+            roleType.Id = roleId;
+            var role = new OrganisationRole()
+            {
+                OrganisationId = organisation.Id,
+                RoleId = roleType.Id,
+                IsPrimaryRole = isPrimaryRole,
+            };
+            organisation.Roles.Add(role);
+            context.Add(roleType);
+        }
     }
 }

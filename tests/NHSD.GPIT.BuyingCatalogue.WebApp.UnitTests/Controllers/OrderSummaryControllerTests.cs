@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
                 .Setup(x => x.GetDefaultImplementationPlan())
                 .ReturnsAsync(defaultPlan);
 
-            var expectedViewData = new OrderSummaryModel(order, defaultPlan);
+            var expectedViewData = new OrderSummaryModel(new OrderWrapper(order), defaultPlan);
 
             var actualResult = await controller.Index(internalOrgId, order.CallOffId);
 
@@ -84,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
                 .Setup(x => x.GetDefaultImplementationPlan())
                 .ReturnsAsync(defaultPlan);
 
-            var expectedViewData = new OrderSummaryModel(order, defaultPlan);
+            var expectedViewData = new OrderSummaryModel(new OrderWrapper(order), defaultPlan);
 
             var actualResult = await controller.Index(internalOrgId, order.CallOffId);
 
