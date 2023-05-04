@@ -3,18 +3,13 @@
     <nhs-expander label-text="Framework"
                   open="true"
                   data-test-id="filter-framework-expander">
-        <nhs-radio-button-container>
-            @foreach (var options in Model.FrameworkOptions)
-            {
-                <nhs-radio-button asp-for="SelectedFrameworkId"
-                                  display-name="Text"
-                                  value="options"
-                                  value-name="Value"/>
 
-                <br/>
-            }
-        </nhs-radio-button-container>
-        <input type="hidden" asp-for="SelectedFrameworkId"/>
+        <nhs-fieldset-form-label asp-for="SelectedFrameworkId">
+            <nhs-radio-buttons asp-for="SelectedFrameworkId"
+                               values="Model.FrameworkOptions.Cast<object>()"
+                               value-name="Value"
+                               display-name="Text"/>
+        </nhs-fieldset-form-label>
     </nhs-expander>
     <nhs-submit-button style="width:100%" text="Apply additional filters" class="nhsuk-button--secondary"/>
 
