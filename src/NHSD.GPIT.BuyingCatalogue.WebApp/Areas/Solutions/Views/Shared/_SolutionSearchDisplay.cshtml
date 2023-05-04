@@ -3,7 +3,7 @@
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 @model (NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.CatalogueItem catalogueItem, ICollection<CapabilitiesAndCountModel> selectedCapabilityIds)
 
-@{ 
+@{
     var orderedCapabilities = Model.catalogueItem.CatalogueItemCapabilities.OrderBy(cic => cic.Capability.Name).ToList();
     var index = orderedCapabilities.FindIndex(oc => oc.Capability.Name == "Productivity");
     if (index >= 0)
@@ -53,7 +53,7 @@
         @if (Model.selectedCapabilityIds.Any()){
             <h4>Search information</h4>
             <p>
-            @(CapablitiesNotMet())
+            @(CapabilitiesNotMet())
             </p>
         }
 
@@ -67,7 +67,7 @@
 <hr />
 
 @{
-    string CapablitiesNotMet()
+    string CapabilitiesNotMet()
     {
         var claimedCapabilities = Model.catalogueItem.CatalogueItemCapabilities.Select(cic => cic.CapabilityId).ToList();
 

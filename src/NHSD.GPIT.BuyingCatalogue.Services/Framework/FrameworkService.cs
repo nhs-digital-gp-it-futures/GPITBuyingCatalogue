@@ -20,10 +20,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task<List<FrameworkFilterInfo>> GetFrameworksByCatalogueItems(IList<CatalogueItem> catalogueItems)
-        {
-            var catalogueItemIds = catalogueItems.Select(ci => ci.Id).ToList();
-            return await dbContext.FrameworkSolutions.AsNoTracking()
+        public async Task<List<FrameworkFilterInfo>> GetFrameworksByCatalogueItems(
+            IList<CatalogueItemId> catalogueItems) =>
+            await dbContext.FrameworkSolutions.AsNoTracking()
                 .Where(
                     x => x.Solution.CatalogueItem.PublishedStatus == PublicationStatus.Published)
                 .GroupBy(x => new { x.FrameworkId, x.Framework.ShortName })
@@ -32,10 +31,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
                     {
                         Id = x.Key.FrameworkId,
                         ShortName = x.Key.ShortName,
-                        CountOfActiveSolutions = x.Count(y => catalogueItemIds.Contains(y.SolutionId)),
+                        CountOfActiveSolutions = x.Count(y => catalogueItems.Contains(y.SolutionId)),
                     })
                 .ToListAsync();
-        }
 
         public async Task<EntityFramework.Catalogue.Models.Framework> GetFrameworksById(string frameworkId) =>
             await dbContext.Frameworks.FirstOrDefaultAsync(f => f.Id == frameworkId);

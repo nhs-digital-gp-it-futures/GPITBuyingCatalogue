@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.Services.Framework;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -46,30 +44,72 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Frameworks
 
         [Theory]
         [InMemoryDbAutoData]
-        public async Task GetFrameworksByCatalogueItems(
+        public async Task GetFrameworksByCatalogueItems_PublishedItem_ReturnsExpected(
             EntityFramework.Catalogue.Models.Framework framework,
-            FrameworkSolution frameworkSolutions,
+            FrameworkSolution frameworkSolution,
             CatalogueItem catalogueItem,
-            Solution solutions,
+            Solution solution,
             [Frozen] BuyingCatalogueDbContext dbContext,
             FrameworkService service)
         {
-            dbContext.FrameworkSolutions.Add(frameworkSolutions);
+            dbContext.FrameworkSolutions.RemoveRange(dbContext.FrameworkSolutions);
+
+            catalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            catalogueItem.PublishedStatus = PublicationStatus.Published;
+            solution.FrameworkSolutions.Clear();
+
+            solution.CatalogueItem = catalogueItem;
+            frameworkSolution.Solution = solution;
+            frameworkSolution.Framework = framework;
+
+            dbContext.FrameworkSolutions.Add(frameworkSolution);
             dbContext.Frameworks.Add(framework);
             dbContext.CatalogueItems.Add(catalogueItem);
-            dbContext.Solutions.Add(solutions);
+            dbContext.Solutions.Add(solution);
+
             await dbContext.SaveChangesAsync();
 
             var expectedFrameworks = new List<FrameworkFilterInfo>
             {
-               new FrameworkFilterInfo { Id = "Id6ac35090-33bb-4014-9e5d-6e5e930a8d6d", ShortName = "ShortName2f937c93-f70c-4481-84e1-2f6cf47c1690" },
-               new FrameworkFilterInfo { Id = "Id21a8dcf3-4a94-44c0-9070-15430dbce12b", ShortName = "ShortName9e0032bf-3cad-45a1-afd9-df7f351274c8" },
-               new FrameworkFilterInfo { Id = "Idf774ce4e-13f7-47d8-aa0f-e346d1df266f", ShortName = "ShortName3342fe21-4df6-4617-aa6b-4e7f7cb9025f" },
+               new() { Id = framework.Id, ShortName = framework.ShortName, CountOfActiveSolutions = 1 },
             };
 
-            var result = await service.GetFrameworksByCatalogueItems(new List<CatalogueItem> { catalogueItem });
+            var result = await service.GetFrameworksByCatalogueItems(new List<CatalogueItemId> { catalogueItem.Id });
 
-            result.Count().Equals(expectedFrameworks.Count());
+            result.Should().HaveCount(1);
+            result.Should().BeEquivalentTo(expectedFrameworks);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public async Task GetFrameworksByCatalogueItem_UnpublishedItem_ReturnsExpected(
+            EntityFramework.Catalogue.Models.Framework framework,
+            FrameworkSolution frameworkSolution,
+            CatalogueItem catalogueItem,
+            Solution solution,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            FrameworkService service)
+        {
+            dbContext.FrameworkSolutions.RemoveRange(dbContext.FrameworkSolutions);
+
+            catalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            catalogueItem.PublishedStatus = PublicationStatus.Unpublished;
+            solution.FrameworkSolutions.Clear();
+
+            solution.CatalogueItem = catalogueItem;
+            frameworkSolution.Solution = solution;
+            frameworkSolution.Framework = framework;
+
+            dbContext.FrameworkSolutions.Add(frameworkSolution);
+            dbContext.Frameworks.Add(framework);
+            dbContext.CatalogueItems.Add(catalogueItem);
+            dbContext.Solutions.Add(solution);
+
+            await dbContext.SaveChangesAsync();
+
+            var result = await service.GetFrameworksByCatalogueItems(new List<CatalogueItemId> { catalogueItem.Id });
+
+            result.Should().BeEmpty();
         }
     }
 }
