@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
@@ -18,6 +19,7 @@ using NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 {
+    [ExcludeFromCodeCoverage]
     public sealed class SolutionsFilterService : ISolutionsFilterService
     {
         private const string ColumnName = "Id";
@@ -38,23 +40,34 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         }
             
 
-        public async Task<(IList<CatalogueItem> CatalogueItems, PageOptions Options, List<CapabilitiesAndCountModel> CapabilitiesAndCount)> GetAllSolutionsFiltered(
-            PageOptions options,
+        public async Task<(IQueryable<CatalogueItem> CatalogueItems, List<CapabilitiesAndCountModel> CapabilitiesAndCount)> GetFilteredAndNonFilteredQueryResults(
             string selectedCapabilityIds = null,
-            string selectedEpicIds = null,
-            string search = null)
+            string selectedEpicIds = null)
         {
-            options ??= new PageOptions();
-
             var (query, count) = string.IsNullOrWhiteSpace(selectedCapabilityIds)
                 ? NonFilteredQuery(dbContext)
                 : await FilteredQuery(dbContext, selectedCapabilityIds, selectedEpicIds);
 
+            return (query, count);
+        }
+
+        public async Task<(IList<CatalogueItem> CatalogueItems, PageOptions Options, List<CapabilitiesAndCountModel> CapabilitiesAndCount)> GetAllSolutionsFiltered(
+            PageOptions options,
+            string selectedCapabilityIds = null,
+            string selectedEpicIds = null,
+            string search = null,
+            string selectedFrameworkId = null)
+        {
+            options ??= new PageOptions();
+
+            var (query, count) = await GetFilteredAndNonFilteredQueryResults(selectedCapabilityIds, selectedEpicIds);
+
             if (!string.IsNullOrWhiteSpace(search))
                 query = query.Where(ci => ci.Supplier.Name.Contains(search) || ci.Name.Contains(search));
 
+            if (!string.IsNullOrWhiteSpace(selectedFrameworkId))
+                query = query.Where(ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == selectedFrameworkId));
             options.TotalNumberOfItems = await query.CountAsync();
-
             query = options.Sort switch
             {
                 PageOptions.SortOptions.LastPublished => query.OrderByDescending(ci => ci.LastPublished)
@@ -219,7 +232,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             string selectedEpicIds)
         {
             var capabilityIds = SolutionsFilterHelper.ParseCapabilityIds(selectedCapabilityIds);
-
             var epicIds = SolutionsFilterHelper.ParseEpicIds(selectedEpicIds);
 
             var capabilityParam = CreateIdListParameter(capabilityIds, CapabilityParamName, CapabilityParamType);
@@ -227,7 +239,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             // old school ADO.NET baby
             using var cmd = dbContext.Database.GetDbConnection().CreateCommand();
-
             cmd.CommandText = FilterProcName;
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.Add(capabilityParam);

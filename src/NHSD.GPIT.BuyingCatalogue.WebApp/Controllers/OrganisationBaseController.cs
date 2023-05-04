@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -164,6 +165,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         public async Task<IActionResult> RelatedOrganisations(int organisationId)
         {
             var organisation = await OrganisationsService.GetOrganisation(organisationId);
+
+            if (organisation.OrganisationType == OrganisationType.GP)
+                return BadRequest();
+
             var relatedOrganisations = await OrganisationsService.GetRelatedOrganisations(organisationId);
 
             var model = new RelatedOrganisationsModel
@@ -209,6 +214,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         public async Task<IActionResult> NominatedOrganisations(int organisationId)
         {
             var organisation = await OrganisationsService.GetOrganisation(organisationId);
+
+            if (organisation.OrganisationType == OrganisationType.GP)
+                return BadRequest();
+
             var nominatedOrganisations = await OrganisationsService.GetNominatedOrganisations(organisationId);
             var model = new NominatedOrganisationsModel
             {

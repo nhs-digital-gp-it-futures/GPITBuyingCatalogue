@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
             LastPublished,
         }
 
-        public int PageSize { get; init; } = 20;
+        public int PageSize { get; init; } = 30;
 
         public int PageNumber { get; init; } = 1;
 
