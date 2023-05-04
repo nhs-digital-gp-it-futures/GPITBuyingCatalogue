@@ -244,7 +244,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
                 .Setup(o => o.GetOrderThin(order.CallOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));
 
-            frameworkMock.Setup(f => f.GetFramework(framework.Id))
+            frameworkMock.Setup(f => f.GetFrameworksById(framework.Id))
                 .ReturnsAsync(framework);
 
             var expectedModel = new ConfirmFrameworkChangeModel(order, framework);

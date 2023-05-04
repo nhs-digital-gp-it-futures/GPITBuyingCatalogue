@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Models
             var pageOptions = new PageOptions();
 
             pageOptions.PageNumber.Should().Be(1);
-            pageOptions.PageSize.Should().Be(20);
+            pageOptions.PageSize.Should().Be(30);
             pageOptions.Sort.Should().Be(PageOptions.SortOptions.AtoZ);
             pageOptions.NumberOfPages.Should().Be(0);
             pageOptions.TotalNumberOfItems.Should().Be(0);
@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Models
         [InlineData(0, 0)]
         [InlineData(1, 1)]
         [InlineData(20, 1)]
-        [InlineData(21, 2)]
+        [InlineData(31, 2)]
         [InlineData(-1, 0)]
         public static void PageOptions_NumberOfItemsSet_ExpectedNumberOfPages(int numberOfItems, int expectedResult)
         {
