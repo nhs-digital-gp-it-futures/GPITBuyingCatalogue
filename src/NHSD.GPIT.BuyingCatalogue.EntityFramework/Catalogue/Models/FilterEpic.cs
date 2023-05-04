@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public FilterEpic(
             string filterId,
-            int epicId)
+            string epicId)
         {
             FilterId = filterId;
             EpicId = epicId;
@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public string FilterId { get; set; }
 
-        public int EpicId { get; set; }
+        public string EpicId { get; set; }
 
         public DateTime LastUpdated { get; set; }
 

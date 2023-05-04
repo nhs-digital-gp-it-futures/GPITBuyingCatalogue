@@ -16,5 +16,15 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
             string search = null);
 
         Task<List<SearchFilterModel>> GetSolutionsBySearchTerm(string searchTerm, int maxToBringBack = 15);
+
+        Task<string> SaveFilter(
+            string name,
+            string description,
+            string organisationId,
+            List<int> capabilityIds,
+            List<string> epicIds,
+            string frameworkId,
+            List<ClientApplicationType> clientApplicationTypes,
+            List<HostingType> hostingTypes);
     }
 }
