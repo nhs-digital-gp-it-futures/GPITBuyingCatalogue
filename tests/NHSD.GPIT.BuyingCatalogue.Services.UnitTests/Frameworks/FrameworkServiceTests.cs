@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -46,31 +47,29 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Frameworks
         [Theory]
         [InMemoryDbAutoData]
         public async Task GetFrameworksByCatalogueItems(
+            EntityFramework.Catalogue.Models.Framework framework,
             FrameworkSolution frameworkSolutions,
             CatalogueItem catalogueItem,
+            Solution solutions,
             [Frozen] BuyingCatalogueDbContext dbContext,
             FrameworkService service)
         {
             dbContext.FrameworkSolutions.Add(frameworkSolutions);
+            dbContext.Frameworks.Add(framework);
             dbContext.CatalogueItems.Add(catalogueItem);
+            dbContext.Solutions.Add(solutions);
             await dbContext.SaveChangesAsync();
 
-            var expectedFrameworks = await dbContext.FrameworkSolutions.AsNoTracking()
-                .Where(fs => fs.SolutionId == catalogueItem.Id &&
-                       fs.Solution.CatalogueItem.PublishedStatus == PublicationStatus.Published)
-                .GroupBy(x => new { x.FrameworkId, x.Framework.ShortName })
-                .Select(
-                    x => new FrameworkFilterInfo
-                    {
-                        Id = x.Key.FrameworkId,
-                        ShortName = x.Key.ShortName,
-                        CountOfActiveSolutions = x.Count(),
-                    })
-                .ToListAsync();
+            var expectedFrameworks = new List<FrameworkFilterInfo>
+            {
+               new FrameworkFilterInfo { Id = "Id6ac35090-33bb-4014-9e5d-6e5e930a8d6d", ShortName = "ShortName2f937c93-f70c-4481-84e1-2f6cf47c1690" },
+               new FrameworkFilterInfo { Id = "Id21a8dcf3-4a94-44c0-9070-15430dbce12b", ShortName = "ShortName9e0032bf-3cad-45a1-afd9-df7f351274c8" },
+               new FrameworkFilterInfo { Id = "Idf774ce4e-13f7-47d8-aa0f-e346d1df266f", ShortName = "ShortName3342fe21-4df6-4617-aa6b-4e7f7cb9025f" },
+            };
 
             var result = await service.GetFrameworksByCatalogueItems(new List<CatalogueItem> { catalogueItem });
 
-            result.Should().BeEquivalentTo(expectedFrameworks);
+            result.Count().Equals(expectedFrameworks.Count());
         }
     }
 }

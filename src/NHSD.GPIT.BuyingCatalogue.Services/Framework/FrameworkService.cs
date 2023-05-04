@@ -24,15 +24,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
         {
             var catalogueItemIds = catalogueItems.Select(ci => ci.Id).ToList();
             return await dbContext.FrameworkSolutions.AsNoTracking()
-                .Where(fs => catalogueItemIds.Contains(fs.SolutionId) &&
-                       fs.Solution.CatalogueItem.PublishedStatus == PublicationStatus.Published)
+                .Where(
+                    x => x.Solution.CatalogueItem.PublishedStatus == PublicationStatus.Published)
                 .GroupBy(x => new { x.FrameworkId, x.Framework.ShortName })
                 .Select(
                     x => new FrameworkFilterInfo
                     {
                         Id = x.Key.FrameworkId,
                         ShortName = x.Key.ShortName,
-                        CountOfActiveSolutions = x.Count(),
+                        CountOfActiveSolutions = x.Count(y => catalogueItemIds.Contains(y.SolutionId)),
                     })
                 .ToListAsync();
         }
