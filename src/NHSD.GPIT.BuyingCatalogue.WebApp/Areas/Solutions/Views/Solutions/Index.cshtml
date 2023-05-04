@@ -168,7 +168,7 @@
         @if (Model.HasCapabilities)
         {
             <div class="nhsuk-grid-column-one-third">
-                <h2>Additional Filters</h2>
+                <h2>Additional filters</h2>
                 <partial name="_AdditionalFilters" model="@(Model.AdditionalFilters)"/>
 
                 <a asp-area="@typeof(SolutionsController).AreaName()"
