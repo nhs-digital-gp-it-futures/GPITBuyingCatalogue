@@ -1408,6 +1408,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 DeliveryDate = timeNow.AddDays(1).Date,
                 SelectedFramework = GetFramework(context, GPITFUTURES),
                 LastUpdatedBy = user.Id,
+                ContractFlags = new ContractFlags
+                {
+                    UseDefaultImplementationPlan = false,
+                    UseDefaultDataProcessing = false,
+                },
             };
 
             var price = context.CatalogueItems
