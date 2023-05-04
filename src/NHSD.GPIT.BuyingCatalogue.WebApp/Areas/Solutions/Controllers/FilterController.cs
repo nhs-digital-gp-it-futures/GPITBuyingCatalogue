@@ -19,7 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
     {
         private readonly ICapabilitiesService capabilitiesService;
         private readonly IEpicsService epicsService;
-        private readonly ISolutionsFilterService solutionsFilterService;
 
         public FilterController(
             ICapabilitiesService capabilitiesService,
@@ -28,7 +27,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         {
             this.capabilitiesService = capabilitiesService ?? throw new ArgumentNullException(nameof(capabilitiesService));
             this.epicsService = epicsService ?? throw new ArgumentNullException(nameof(epicsService));
-            this.solutionsFilterService = solutionsFilterService ?? throw new ArgumentNullException(nameof(solutionsFilterService));
         }
 
         [HttpGet("filter-capabilities")]
@@ -132,52 +130,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 nameof(SolutionsController.Index),
                 typeof(SolutionsController).ControllerName(),
                 new { selectedCapabilityIds = model.CapabilityIds, selectedEpicIds, search });
-        }
-
-
-        [HttpGet("manage-filter")]
-        public IActionResult ManageFilters()
-        {
-            return View();
-        }
-
-        [HttpGet("save-filter")]
-        public async Task<IActionResult> SaveFilter(
-            [FromQuery] string selectedCapabilityIds,
-            [FromQuery] string selectedEpicIds = null)
-        {
-            //ToDo replace with actual values from filtering
-
-            var capabilityIds = SolutionsFilterHelper.ParseCapabilityIds(selectedCapabilityIds);
-            var capabilities = await capabilitiesService.GetCapabilitiesByIds(capabilityIds);
-
-            var epics = new List<Epic>();//await epicsService.GetEpicsByIds(selectedEpicIds);
-            var framework = new EntityFramework.Catalogue.Models.Framework() { ShortName = "DFOCVC" };
-            var clientApplicationTypes = new List<ClientApplicationType>() { ClientApplicationType.BrowserBased };
-            var hostingTypes = new List<HostingType>() { HostingType.Hybrid, HostingType.OnPremise };
-
-            var model = new SaveFilterModel(capabilities, epics, framework, clientApplicationTypes, hostingTypes) 
-                { 
-                    BackLink = "/", 
-                    BackLinkText = "Go back",
-                };
-            return View(model);
-        }
-
-        [HttpPost("save-filter")]
-        public async Task<IActionResult> SaveFilter(
-            SaveFilterModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            await solutionsFilterService.SaveFilter(model.Name, model.Description, User.GetPrimaryOrganisationInternalIdentifier(), model.CapabilityIds, model.EpicIds, model.FrameworkId, model.ClientApplicationTypes, model.HostingTypes);
-
-            return RedirectToAction(
-                nameof(ManageFilters),
-                typeof(FilterController).ControllerName());
         }
 
         private static string EncodeIdString(SelectionModel[] selectedItems) =>

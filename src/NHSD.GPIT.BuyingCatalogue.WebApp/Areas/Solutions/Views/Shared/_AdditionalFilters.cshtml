@@ -1,4 +1,10 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters.AdditionalFiltersModel
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSecondaryButton
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.DetailsAndExpander
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters.AdditionalFiltersModel
 <form method="post">
     <nhs-expander label-text="Framework"
                   open="true"
@@ -12,5 +18,10 @@
         </nhs-fieldset-form-label>
     </nhs-expander>
     <nhs-submit-button style="width:100%" text="Apply additional filters" class="nhsuk-button--secondary"/>
-
+    
+    <vc:nhs-secondary-button text="Save all filters"
+                             url="@Url.Action(
+                                      nameof(ManageFiltersController.SaveFilter),
+                                      typeof(ManageFiltersController).ControllerName())"
+                             type="Primary" />
 </form>
