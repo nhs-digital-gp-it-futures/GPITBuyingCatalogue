@@ -6,6 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
@@ -21,15 +22,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         private readonly ISolutionsService solutionsService;
         private readonly IAdditionalServicesService additionalServicesService;
         private readonly ISolutionsFilterService solutionsFilterService;
+        private readonly IFrameworkService frameworkService;
 
         public SolutionsController(
             ISolutionsService solutionsService,
             IAdditionalServicesService additionalServicesService,
-            ISolutionsFilterService solutionsFilterService)
+            ISolutionsFilterService solutionsFilterService,
+            IFrameworkService frameworkService)
         {
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
             this.additionalServicesService = additionalServicesService ?? throw new ArgumentNullException(nameof(additionalServicesService));
             this.solutionsFilterService = solutionsFilterService ?? throw new ArgumentNullException(nameof(solutionsFilterService));
+            this.frameworkService = frameworkService ?? throw new ArgumentNullException(nameof(frameworkService));
         }
 
         [HttpGet]
@@ -38,7 +42,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             [FromQuery] string sortBy,
             [FromQuery] string selectedCapabilityIds,
             [FromQuery] string selectedEpicIds,
-            [FromQuery] string search)
+            [FromQuery] string search,
+            string selectedFrameworkId)
         {
             var inputOptions = new PageOptions(page, sortBy);
 
@@ -47,7 +52,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     inputOptions,
                     selectedCapabilityIds,
                     selectedEpicIds,
-                    search);
+                    search,
+                    selectedFrameworkId);
+            var (catalogueItemsWithoutFrameworkFilter, capabilitiesAndCountWithoutFrameworkFilter) = await solutionsFilterService.GetFilteredAndNonFilteredQueryResults(selectedCapabilityIds, selectedEpicIds);
+            var frameworks = await frameworkService.GetFrameworksByCatalogueItems(catalogueItemsWithoutFrameworkFilter.Select(x => x.Id).ToList());
+            var additionalFilters = new Models.Filters.AdditionalFiltersModel(frameworks);
 
             return View(new SolutionsModel()
             {
@@ -59,6 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     search,
                     selectedCapabilityIds,
                     selectedEpicIds),
+                AdditionalFilters = additionalFilters,
             });
         }
 
@@ -69,18 +79,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             [FromQuery] string sortBy,
             [FromQuery] string selectedCapabilityIds,
             [FromQuery] string selectedEpicIds,
-            [FromQuery] string search) =>
-        RedirectToAction(
-                nameof(Index),
-                typeof(SolutionsController).ControllerName(),
-                new
-                {
-                    page,
-                    selectedCapabilityIds,
-                    selectedEpicIds,
-                    search,
-                    sortBy = model.SelectedSortOption.ToString(),
-                });
+            [FromQuery] string search,
+            string selectedFrameworkId) =>
+            RedirectToAction(
+                    nameof(Index),
+                    typeof(SolutionsController).ControllerName(),
+                    new
+                    {
+                        page,
+                        selectedCapabilityIds,
+                        selectedEpicIds,
+                        search,
+                        sortBy = model.SelectedSortOption.ToString(),
+                        selectedFrameworkId,
+                    });
 
         [HttpGet("search-suggestions")]
         public async Task<IActionResult> FilterSearchSuggestions([FromQuery] string search)
