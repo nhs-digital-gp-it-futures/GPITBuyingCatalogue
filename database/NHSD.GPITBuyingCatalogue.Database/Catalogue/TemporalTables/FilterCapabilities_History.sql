@@ -1,6 +1,6 @@
 ﻿CREATE TABLE catalogue.FilterCapabilities_History
 (
-     FilterId nvarchar(10) NOT NULL,
+     FilterId int NOT NULL,
      CapabilityId int NOT NULL,
      LastUpdated datetime2(7)NOT NULL,
      LastUpdatedBy int NULL,

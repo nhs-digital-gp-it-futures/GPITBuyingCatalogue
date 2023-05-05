@@ -7,21 +7,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
     [Serializable]
     public sealed class FilterClientApplicationType : IAudited
     {
-        public FilterClientApplicationType()
-        {
-        }
+        public int FilterId { get; set; }
 
-        public FilterClientApplicationType(
-            string filterId,
-            int clientApplicationTypeId)
-        {
-            FilterId = filterId;
-            ClientApplicationTypeId = clientApplicationTypeId;
-        }
-
-        public string FilterId { get; set; }
-
-        public int ClientApplicationTypeId { get; set; }
+        public int FilterClientApplicationTypeId { get; set; }
 
         public DateTime LastUpdated { get; set; }
 

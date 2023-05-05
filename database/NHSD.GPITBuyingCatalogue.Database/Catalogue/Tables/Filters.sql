@@ -1,6 +1,6 @@
 ﻿CREATE TABLE catalogue.Filters
 (
-    Id nvarchar(10) NOT NULL,
+    Id int IDENTITY(1, 1) NOT NULL,
     [Name] nvarchar(255) NOT NULL,
     [Description] nvarchar(255) NOT NULL,
     OrganisationId int NOT NULL,

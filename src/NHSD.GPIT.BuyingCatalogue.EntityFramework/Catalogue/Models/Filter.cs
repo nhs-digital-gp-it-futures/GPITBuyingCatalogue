@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
             FilterClientApplicationTypes = new HashSet<FilterClientApplicationType>();
         }
 
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         public string Name { get; set; }
 

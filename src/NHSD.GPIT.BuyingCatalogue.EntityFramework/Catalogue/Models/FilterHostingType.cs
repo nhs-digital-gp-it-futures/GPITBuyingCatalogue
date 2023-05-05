@@ -7,21 +7,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
     [Serializable]
     public sealed class FilterHostingType : IAudited
     {
-        public FilterHostingType()
-        {
-        }
+        public int FilterId { get; set; }
 
-        public FilterHostingType(
-            string filterId,
-            int hostingTypeId)
-        {
-            FilterId = filterId;
-            HostingTypeId = hostingTypeId;
-        }
-
-        public string FilterId { get; set; }
-
-        public int HostingTypeId { get; set; }
+        public int FilterHostingTypeId { get; set; }
 
         public DateTime LastUpdated { get; set; }
 

@@ -11,21 +11,18 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
         {
             builder.ToTable("FilterCapabilities", Schemas.Catalogue);
 
-            builder.HasKey(fe => new { fe.FilterId, fe.CapabilityId });
+            builder.HasKey(fe => new { fe.FilterId, fe.CapabilityId }).HasName("PK_FilterCapabilities");
 
-            builder.Property(e => e.FilterId).HasMaxLength(10);
-            builder.Property(e => e.CapabilityId).HasMaxLength(10);
             builder.Property(e => e.LastUpdated).HasDefaultValue(DateTime.UtcNow);
 
-            builder.HasOne<Filter>()
-                .WithMany()
-                .HasForeignKey(e => e.FilterId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+            builder.HasOne(fc => fc.Filter)
+                .WithMany(f => f.FilterCapabilities)
+                .HasForeignKey(fc => fc.FilterId)
                 .HasConstraintName("FK_FilterCapabilities_Filter");
 
-            builder.HasOne(e => e.Capability)
+            builder.HasOne(fc => fc.Capability)
                 .WithMany()
-                .HasForeignKey(e => e.CapabilityId)
+                .HasForeignKey(fc => fc.CapabilityId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_FilterCapabilities_Capability");
 

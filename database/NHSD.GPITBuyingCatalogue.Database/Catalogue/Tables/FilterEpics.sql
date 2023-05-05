@@ -1,6 +1,6 @@
 ﻿CREATE TABLE catalogue.FilterEpics
 (
-     FilterId nvarchar(10) NOT NULL,
+     FilterId int NOT NULL,
      EpicId nvarchar(10) NOT NULL,
      LastUpdated datetime2(7) DEFAULT GETUTCDATE() NOT NULL,
      LastUpdatedBy int NULL,

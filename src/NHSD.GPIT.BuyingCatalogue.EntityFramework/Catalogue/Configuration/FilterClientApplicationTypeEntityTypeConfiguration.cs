@@ -11,15 +11,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
         {
             builder.ToTable("FilterClientApplicationTypes", Schemas.Catalogue);
 
-            builder.HasKey(fe => new { fe.FilterId, fe.ClientApplicationTypeId });
+            builder.HasKey(fcat => fcat.FilterClientApplicationTypeId);
 
-            builder.Property(e => e.FilterId).IsRequired().HasMaxLength(10);
             builder.Property(e => e.LastUpdated).HasDefaultValue(DateTime.UtcNow);
 
-            builder.HasOne<Filter>()
-                .WithMany()
+            builder.HasOne(fcat => fcat.Filter)
+                .WithMany(cat => cat.FilterClientApplicationTypes)
                 .HasForeignKey(e => e.FilterId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_FilterClientApplicationTypes_Filter");
 
             builder.Property(p => p.ClientApplicationType)

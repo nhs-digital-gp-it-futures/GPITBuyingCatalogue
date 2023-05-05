@@ -11,18 +11,16 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
         {
             builder.ToTable("FilterHostingTypes", Schemas.Catalogue);
 
-            builder.HasKey(fe => new { fe.FilterId, fe.HostingTypeId });
+            builder.HasKey(fht => fht.FilterHostingTypeId);
 
-            builder.Property(e => e.FilterId).IsRequired().HasMaxLength(10);
             builder.Property(e => e.LastUpdated).HasDefaultValue(DateTime.UtcNow);
 
-            builder.HasOne<Filter>()
-                .WithMany()
+            builder.HasOne(fht => fht.Filter)
+                .WithMany(ht => ht.FilterHostingTypes)
                 .HasForeignKey(e => e.FilterId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_FilterHostingTypes_Filter");
 
-            builder.Property(p => p.HostingType)
+            builder.Property(fht => fht.HostingType)
                 .HasConversion<int>()
                 .HasColumnName("HostingTypeId");
 

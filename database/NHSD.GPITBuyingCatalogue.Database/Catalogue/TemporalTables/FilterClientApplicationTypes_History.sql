@@ -1,6 +1,7 @@
 ﻿CREATE TABLE catalogue.FilterClientApplicationTypes_History
 (
-     FilterId nvarchar(10) NOT NULL,
+     FilterClientApplicationTypeId int NOT NULL,
+     FilterId int NOT NULL,
      ClientApplicationTypeId int NOT NULL,
      LastUpdated datetime2(7) NOT NULL,
      LastUpdatedBy int NULL,

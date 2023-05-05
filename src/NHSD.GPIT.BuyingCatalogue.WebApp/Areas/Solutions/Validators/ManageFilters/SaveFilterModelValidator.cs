@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
 using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Validators.ManageFilters
@@ -24,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Validators.ManageFilt
             RuleFor(x => x.Name)
                 .NotEmpty()
                 .WithMessage(NameRequiredErrorMessage)
-                .Must(NotBeDuplicated)
+                .Must((model, name) => NotBeDuplicated(name, model.OrganisationId))
                 .WithMessage(DuplicateNameErrorMessage);
 
             RuleFor(x => x.Description)
@@ -32,9 +28,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Validators.ManageFilt
                 .WithMessage(DescriptionRequiredErrorMessage);
         }
 
-        private bool NotBeDuplicated(string name)
+        private bool NotBeDuplicated(string name, int organisationId)
         {
-            return !manageFiltersService.FilterExists(name).GetAwaiter().GetResult();
+            return !manageFiltersService.FilterExists(name, organisationId).GetAwaiter().GetResult();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿CREATE TABLE catalogue.FilterHostingTypes_History
 (
-     FilterId nvarchar(10) NOT NULL,
+     FilterHostingTypeId int NOT NULL,
+     FilterId int NOT NULL,
      HostingTypeId int NOT NULL,
      LastUpdated datetime2(7) NOT NULL,
      LastUpdatedBy int NULL,

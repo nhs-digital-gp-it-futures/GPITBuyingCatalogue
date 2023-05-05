@@ -5,9 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters;
 
@@ -18,14 +21,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
     [Route("manage-filters")]
     public class ManageFiltersController : Controller
     {
-        private readonly ICapabilitiesService capabilitiesService;
+        private readonly IOrganisationsService organisationsService;
         private readonly IManageFiltersService manageFiltersService;
 
         public ManageFiltersController(
-            ICapabilitiesService capabilitiesService,
+            IOrganisationsService organisationsService,
             IManageFiltersService manageFiltersService)
         {
-            this.capabilitiesService = capabilitiesService ?? throw new ArgumentNullException(nameof(capabilitiesService));
+            this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
             this.manageFiltersService = manageFiltersService ?? throw new ArgumentNullException(nameof(manageFiltersService));
         }
 
@@ -53,7 +56,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var clientApplicationTypes = new List<ClientApplicationType>() { ClientApplicationType.BrowserBased };
             var hostingTypes = new List<HostingType>() { HostingType.Hybrid, HostingType.OnPremise };
 
-            var model = new SaveFilterModel(capabilities, epics, framework, clientApplicationTypes, hostingTypes) 
+            var organisationId = await GetUserOrganisationId();
+            var model = new SaveFilterModel(capabilities, epics, framework, clientApplicationTypes, hostingTypes, organisationId) 
                 { 
                     BackLink = "/", 
                     BackLinkText = "Go back",
@@ -73,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             await manageFiltersService.SaveFilter(
                 model.Name, 
                 model.Description, 
-                User.GetPrimaryOrganisationInternalIdentifier(), 
+                model.OrganisationId, 
                 model.CapabilityIds, 
                 model.EpicIds, 
                 model.FrameworkId, 
@@ -83,6 +87,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return RedirectToAction(
                 nameof(Index),
                 typeof(ManageFiltersController).ControllerName());
+        }
+
+        private async Task<int> GetUserOrganisationId()
+        {
+            var organisationInternalIdentifier = User.GetPrimaryOrganisationInternalIdentifier();
+            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(organisationInternalIdentifier);
+            return organisation.Id;
         }
     }
 }

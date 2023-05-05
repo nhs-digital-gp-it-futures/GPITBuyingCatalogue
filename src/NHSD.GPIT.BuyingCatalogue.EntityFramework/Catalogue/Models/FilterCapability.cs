@@ -7,19 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
     [Serializable]
     public sealed class FilterCapability : IAudited
     {
-        public FilterCapability()
-        {
-        }
-
-        public FilterCapability(
-            string filterId,
-            int capabilityId)
-        {
-            FilterId = filterId;
-            CapabilityId = capabilityId;
-        }
-
-        public string FilterId { get; set; }
+        public int FilterId { get; set; }
 
         public int CapabilityId { get; set; }
 

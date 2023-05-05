@@ -7,19 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
     [Serializable]
     public sealed class FilterEpic : IAudited
     {
-        public FilterEpic()
-        {
-        }
-
-        public FilterEpic(
-            string filterId,
-            string epicId)
-        {
-            FilterId = filterId;
-            EpicId = epicId;
-        }
-
-        public string FilterId { get; set; }
+        public int FilterId { get; set; }
 
         public string EpicId { get; set; }
 
