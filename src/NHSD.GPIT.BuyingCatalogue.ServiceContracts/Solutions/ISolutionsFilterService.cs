@@ -21,6 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
             string search = null,
             string selectedFrameworkId = null);
 
-        Task<List<SearchFilterModel>> GetSolutionsBySearchTerm(string searchTerm, int maxToBringBack = 15);
+       Task<List<SearchFilterModel>> GetSolutionsBySearchTerm(string searchTerm, int maxToBringBack = 15);
     }
 }

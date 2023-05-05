@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SolutionsFilterModels;
@@ -28,16 +27,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         private const string EpicParamType = "catalogue.EpicIds";
         private const string FilterProcName = "catalogue.FilterCatalogueItems";
 
-        private readonly ICapabilitiesService capabilityService;
-
         private readonly BuyingCatalogueDbContext dbContext;
 
-        public SolutionsFilterService(BuyingCatalogueDbContext dbContext, ICapabilitiesService capabilityService)
-        {
+        public SolutionsFilterService(BuyingCatalogueDbContext dbContext) =>
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            this.capabilityService = capabilityService ?? throw new ArgumentNullException(nameof(capabilityService));
-        }
-            
 
         public async Task<(IQueryable<CatalogueItem> CatalogueItems, List<CapabilitiesAndCountModel> CapabilitiesAndCount)> GetFilteredAndNonFilteredQueryResults(
             string selectedCapabilityIds = null,
