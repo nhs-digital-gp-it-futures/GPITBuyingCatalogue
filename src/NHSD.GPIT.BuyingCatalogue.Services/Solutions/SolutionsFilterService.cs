@@ -6,9 +6,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Serialization;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SolutionsFilterModels;
@@ -48,7 +50,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             string selectedCapabilityIds = null,
             string selectedEpicIds = null,
             string search = null,
-            string selectedFrameworkId = null)
+            string selectedFrameworkId = null,
+            string clientApplicationTypeSelected = null)
         {
             options ??= new PageOptions();
 
@@ -59,6 +62,27 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             if (!string.IsNullOrWhiteSpace(selectedFrameworkId))
                 query = query.Where(ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == selectedFrameworkId));
+            if (!string.IsNullOrWhiteSpace(clientApplicationTypeSelected))
+            {
+                string[] clientApplicationtypes = clientApplicationTypeSelected.Split(',');
+                foreach (var row in query)
+                {
+                    if (!string.IsNullOrEmpty(row.Solution.ClientApplication))
+                    {
+                        var clientApplication = JsonDeserializer.Deserialize<ClientApplication>(row.Solution.ClientApplication);
+                        bool isPresent = clientApplicationtypes.Intersect(clientApplication.ClientApplicationTypes).Any();
+                        if (!isPresent)
+                        {
+                            query = query.Where(ci => ci.Id != row.Id);
+                        }
+                    }
+                    else
+                    {
+                        query = query.Where(ci => ci.Id != row.Id);
+                    }
+                }
+            }
+
             options.TotalNumberOfItems = await query.CountAsync();
             query = options.Sort switch
             {

@@ -1,5 +1,8 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters.AdditionalFiltersModel
 <form method="post">
+    @{
+        var clientAppTypeIndex = 0;
+    }
     <nhs-expander label-text="Framework"
                   open="true"
                   data-test-id="filter-framework-expander">
@@ -10,6 +13,24 @@
                                value-name="Value"
                                display-name="Text"/>
         </nhs-fieldset-form-label>
+    </nhs-expander>
+    <nhs-expander label-text="Client application Type" open="true">
+        <nhs-table>
+            @foreach (var value in Model.ClientApplicationTypeCheckBoxItems)
+            {
+                <nhs-table-row-container>
+                    <nhs-table-cell>
+                        <nhs-checkbox-container>
+                            <nhs-checkbox asp-for="ClientApplicationTypeCheckBoxItems[clientAppTypeIndex].IsSelected"
+                                      hidden-input="ClientApplicationTypeCheckBoxItems[clientAppTypeIndex].ClientApplicationEnumMemberName"
+                                      label-text="@value.ClientApplicationType"
+                                      sub-group="@value.ClientApplicationType" />
+                        </nhs-checkbox-container>
+                    </nhs-table-cell>
+                </nhs-table-row-container>
+                clientAppTypeIndex++;
+            }
+        </nhs-table>
     </nhs-expander>
     <nhs-submit-button style="width:100%" text="Apply additional filters" class="nhsuk-button--secondary"/>
 

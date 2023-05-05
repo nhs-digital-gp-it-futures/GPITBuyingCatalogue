@@ -10,6 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 
@@ -19,6 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
     [Route("catalogue-solutions")]
     public sealed class SolutionsController : Controller
     {
+        public const string Separator = ",";
         private readonly ISolutionsService solutionsService;
         private readonly IAdditionalServicesService additionalServicesService;
         private readonly ISolutionsFilterService solutionsFilterService;
@@ -43,7 +45,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             [FromQuery] string selectedCapabilityIds,
             [FromQuery] string selectedEpicIds,
             [FromQuery] string search,
-            string selectedFrameworkId)
+            string selectedFrameworkId,
+            [FromQuery] string clientApplicationTypeSelected)
         {
             var inputOptions = new PageOptions(page, sortBy);
 
@@ -53,10 +56,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     selectedCapabilityIds,
                     selectedEpicIds,
                     search,
-                    selectedFrameworkId);
+                    selectedFrameworkId,
+                    clientApplicationTypeSelected);
             var (catalogueItemsWithoutFrameworkFilter, capabilitiesAndCountWithoutFrameworkFilter) = await solutionsFilterService.GetFilteredAndNonFilteredQueryResults(selectedCapabilityIds, selectedEpicIds);
             var frameworks = await frameworkService.GetFrameworksByCatalogueItems(catalogueItemsWithoutFrameworkFilter.Select(x => x.Id).ToList());
-            var additionalFilters = new Models.Filters.AdditionalFiltersModel(frameworks);
+            var additionalFilters = new Models.Filters.AdditionalFiltersModel(frameworks, clientApplicationTypeSelected);
 
             return View(new SolutionsModel()
             {
@@ -80,19 +84,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             [FromQuery] string selectedCapabilityIds,
             [FromQuery] string selectedEpicIds,
             [FromQuery] string search,
-            string selectedFrameworkId) =>
-            RedirectToAction(
-                    nameof(Index),
-                    typeof(SolutionsController).ControllerName(),
-                    new
-                    {
-                        page,
-                        selectedCapabilityIds,
-                        selectedEpicIds,
-                        search,
-                        sortBy = model.SelectedSortOption.ToString(),
-                        selectedFrameworkId,
-                    });
+            string selectedFrameworkId,
+            AdditionalFiltersModel additionalFiltersModel)
+        {
+            var clientApplicationTypeSelected = GetCommaSeparatedSelectedClientApplicationTypeFromModel(additionalFiltersModel);
+            return RedirectToAction(
+                   nameof(Index),
+                   typeof(SolutionsController).ControllerName(),
+                   new
+                   {
+                       page,
+                       selectedCapabilityIds,
+                       selectedEpicIds,
+                       search,
+                       sortBy = model.SelectedSortOption.ToString(),
+                       selectedFrameworkId,
+                       clientApplicationTypeSelected,
+                   });
+        }
 
         [HttpGet("search-suggestions")]
         public async Task<IActionResult> FilterSearchSuggestions([FromQuery] string search)
@@ -446,6 +455,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 model.BackLink = backlink;
 
             return View(model);
+        }
+
+        public string GetCommaSeparatedSelectedClientApplicationTypeFromModel(AdditionalFiltersModel additionalFiltersModel)
+        {
+            return string.Join(
+                Separator,
+                additionalFiltersModel.ClientApplicationTypeCheckBoxItems.Where(x => x.IsSelected).Select(x => x.ClientApplicationEnumMemberName));
         }
     }
 }
