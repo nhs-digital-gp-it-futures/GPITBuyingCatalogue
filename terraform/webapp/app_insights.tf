@@ -16,6 +16,8 @@ resource "azurerm_application_insights_standard_web_test" "app_webtest" {
   resource_group_name     = azurerm_resource_group.app-insights.name
   location                = var.region
   application_insights_id = azurerm_application_insights.appinsights.id
+  enabled                 = true
+  retry_enabled           = true
   geo_locations           = [
     "emea-se-sto-edge", // UK West
     "emea-ru-msa-edge", // UK South. Note: Contrary to the naming, this is not based in Russia. https://stackoverflow.com/a/57629988
