@@ -41,13 +41,22 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
             CommonActions.ClickFirstCheckbox();
 
-            CommonActions.ClickCheckboxByLabel("BEVAN LIMITED");
+            CommonActions.ClickCheckboxByLabel("BEECHWOOD MEDICAL CENTRE");
 
             CommonActions.ClickSave();
+        }
+
+        public void AmendEditCatalogueSolutionServiceRecipient(string solutionName)
+        {
+            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemServiceRecipientLink(GetCatalogueSolutionID(solutionName)));
 
             CommonActions.PageLoadedCorrectGetIndex(
-             typeof(TaskListController),
-             nameof(TaskListController.TaskList)).Should().BeTrue();
+            typeof(ServiceRecipientsController),
+            nameof(ServiceRecipientsController.EditServiceRecipients)).Should().BeTrue();
+
+            CommonActions.ClickFirstCheckbox();
+
+            CommonActions.ClickSave();
         }
 
         private string GetCatalogueSolutionID(string solutionName)
