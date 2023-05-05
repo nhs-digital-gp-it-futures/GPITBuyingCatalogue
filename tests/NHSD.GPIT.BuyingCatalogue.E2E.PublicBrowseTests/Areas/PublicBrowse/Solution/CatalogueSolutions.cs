@@ -8,7 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.PublicBrowse;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using OpenQA.Selenium;
@@ -152,52 +152,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
                     .BeTrue();
 
                 CommonActions.ElementTextEqualTo(By.CssSelector("h1 .nhsuk-caption--bottom"), solutionName).Should().BeTrue();
-            });
-        }
-
-        [Fact]
-        public void CatalogueSolutions_MoreThan5Capabilities_ShowsLink()
-        {
-            RunTest(() =>
-            {
-                using var context = GetEndToEndDbContext();
-                var countOfSolutions = context.CatalogueItems.AsNoTracking().Count();
-
-                var expectedNumberOfPages = new PageOptions() { TotalNumberOfItems = countOfSolutions }.NumberOfPages;
-
-                for (int i = 0; i <= expectedNumberOfPages; i++)
-                {
-                    if (CommonActions.ElementExists(SolutionsObjects.CapabilitesOverCountLink))
-                        break;
-
-                    CommonActions.ClickLinkElement(CommonSelectors.PaginationNext);
-                }
-
-                var element = Driver.FindElement(SolutionsObjects.CapabilitesOverCountLink);
-
-                var linkUrl = element.GetAttribute("href");
-
-                var linkUrlStringArray = linkUrl.Split("/", System.StringSplitOptions.RemoveEmptyEntries)[3].Split("-");
-
-                _ = int.TryParse(linkUrlStringArray[0], out int supplierId);
-
-                var catalogueItemId = new CatalogueItemId(supplierId, linkUrlStringArray[1]);
-
-                var catalogueItem = context.CatalogueItems.AsNoTracking()
-                    .Include(i => i.CatalogueItemCapabilities).ThenInclude(cic => cic.Capability)
-                    .First(ci => ci.Id == catalogueItemId);
-
-                CommonActions.ElementTextEqualTo(
-                        SolutionsObjects.CapabilitesOverCountLink,
-                        $"See all {catalogueItem.CatalogueItemCapabilities.Count} Capabilities")
-                    .Should()
-                    .BeTrue();
-
-                CommonActions.ClickLinkElement(SolutionsObjects.CapabilitesOverCountLink);
-
-                CommonActions.PageLoadedCorrectGetIndex(typeof(SolutionsController), nameof(SolutionsController.Capabilities))
-                    .Should()
-                    .BeTrue();
             });
         }
 

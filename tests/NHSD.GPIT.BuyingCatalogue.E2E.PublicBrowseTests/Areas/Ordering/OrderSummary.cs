@@ -311,6 +311,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 nameof(OrderController.Summary),
                 parameters);
 
+            CommonActions.SaveButtonDisplayed().Should().BeTrue();
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -483,6 +484,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 CommencementDate = timeNow.AddDays(1),
                 InitialPeriod = 6,
                 MaximumTerm = 36,
+                ContractFlags = new ContractFlags
+                {
+                    UseDefaultImplementationPlan = false,
+                    UseDefaultDataProcessing = false,
+                },
             };
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
