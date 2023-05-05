@@ -1,4 +1,4 @@
-﻿MERGE INTO catalogue.HostingTypes AS TARGET
+﻿MERGE INTO filtering.HostingTypes AS TARGET
 USING (
 VALUES 
     (1, 'PublicCloud', 'Public cloud'),

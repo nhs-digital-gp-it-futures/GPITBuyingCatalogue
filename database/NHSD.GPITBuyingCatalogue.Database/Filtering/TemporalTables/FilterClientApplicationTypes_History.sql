@@ -1,4 +1,4 @@
-﻿CREATE TABLE catalogue.FilterClientApplicationTypes_History
+﻿CREATE TABLE filtering.FilterClientApplicationTypes_History
 (
      FilterClientApplicationTypeId int NOT NULL,
      FilterId int NOT NULL,

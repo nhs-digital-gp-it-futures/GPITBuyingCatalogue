@@ -1,4 +1,4 @@
-﻿CREATE TABLE catalogue.Filters_History
+﻿CREATE TABLE filtering.Filters_History
 (
     Id int NOT NULL,
     [Name] nvarchar(255) NOT NULL,

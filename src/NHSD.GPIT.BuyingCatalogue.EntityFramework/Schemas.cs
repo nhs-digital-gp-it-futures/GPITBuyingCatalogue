@@ -7,5 +7,6 @@
         internal const string Organisations = "organisations";
         internal const string OdsOrganisations = "ods_organisations";
         internal const string Users = "users";
+        internal const string Filtering = "filtering";
     }
 }

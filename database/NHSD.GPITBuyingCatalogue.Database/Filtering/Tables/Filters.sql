@@ -1,4 +1,4 @@
-﻿CREATE TABLE catalogue.Filters
+﻿CREATE TABLE filtering.Filters
 (
     Id int IDENTITY(1, 1) NOT NULL,
     [Name] nvarchar(255) NOT NULL,
@@ -16,4 +16,4 @@
     CONSTRAINT FK_Filters_OrganisationId FOREIGN KEY (OrganisationId) REFERENCES organisations.Organisations(Id),
     CONSTRAINT FK_Filters_FrameworkId FOREIGN KEY (FrameworkId) REFERENCES catalogue.Frameworks(Id),
     CONSTRAINT FK_Filters_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
-) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = catalogue.Filters_History));
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = filtering.Filters_History));

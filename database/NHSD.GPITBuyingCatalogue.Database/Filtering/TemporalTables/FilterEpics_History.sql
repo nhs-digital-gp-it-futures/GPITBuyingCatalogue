@@ -1,4 +1,4 @@
-﻿CREATE TABLE catalogue.FilterEpics_History
+﻿CREATE TABLE filtering.FilterEpics_History
 (
      FilterId int NOT NULL,
      EpicId nvarchar(10) NOT NULL,

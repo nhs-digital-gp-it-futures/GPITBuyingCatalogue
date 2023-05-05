@@ -68,6 +68,8 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
+    <Folder Include="Filtering\TemporalTables\" />
+    <Folder Include="Filtering\Tables\" />
     <Folder Include="OdsOrganisations\Functions\" />
     <Folder Include="Properties" />
     <Folder Include="Security\" />
@@ -133,6 +135,7 @@
     <None Include="PostDeployment\CreateExecutiveAgency.sql" />
     <None Include="PostDeployment\CreateExecutiveAgencyUser.sql" />
     <Build Include="Security\Schemas\ordering.sql" />
+    <Build Include="Security\Schemas\filtering.sql" />
     <Build Include="Ordering\Tables\Contacts.sql" />
     <Build Include="Ordering\Tables\DefaultDeliveryDates.sql" />
     <Build Include="Ordering\Tables\OrderItemRecipients.sql" />

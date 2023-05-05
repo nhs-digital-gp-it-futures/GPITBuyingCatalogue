@@ -1,15 +1,15 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
+namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Configuration
 {
     internal sealed class FilterEpicEntityTypeConfiguration : IEntityTypeConfiguration<FilterEpic>
     {
         public void Configure(EntityTypeBuilder<FilterEpic> builder)
         {
-            builder.ToTable("FilterEpics", Schemas.Catalogue);
+            builder.ToTable("FilterEpics", Schemas.Filtering);
 
             builder.HasKey(fe => new { fe.FilterId, fe.EpicId }).HasName("PK_FilterEpics");
 

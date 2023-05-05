@@ -1,4 +1,4 @@
-﻿MERGE INTO catalogue.ClientApplicationTypes AS TARGET
+﻿MERGE INTO filtering.ClientApplicationTypes AS TARGET
 USING (
 VALUES 
     (1, 'browser-based', 'Browser-based'),

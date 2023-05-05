@@ -1,8 +1,9 @@
 ﻿using System;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models
 {
     [Serializable]
     public sealed class FilterEpic : IAudited

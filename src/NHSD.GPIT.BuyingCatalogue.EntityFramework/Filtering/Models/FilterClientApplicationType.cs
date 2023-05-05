@@ -2,7 +2,7 @@
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
-namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models
 {
     [Serializable]
     public sealed class FilterClientApplicationType : IAudited

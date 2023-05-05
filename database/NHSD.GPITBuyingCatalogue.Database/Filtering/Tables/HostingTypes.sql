@@ -1,4 +1,4 @@
-﻿CREATE TABLE catalogue.HostingTypes
+﻿CREATE TABLE filtering.HostingTypes
 (
     Id int NOT NULL,
     [Name] nvarchar(35) NOT NULL,

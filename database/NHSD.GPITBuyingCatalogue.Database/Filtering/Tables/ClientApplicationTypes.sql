@@ -1,4 +1,4 @@
-﻿CREATE TABLE catalogue.ClientApplicationTypes
+﻿CREATE TABLE filtering.ClientApplicationTypes
 (
     Id int NOT NULL,
     [Name] nvarchar(35) NOT NULL,

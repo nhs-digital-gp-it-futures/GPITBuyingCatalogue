@@ -1,4 +1,4 @@
-﻿CREATE TABLE catalogue.FilterCapabilities_History
+﻿CREATE TABLE filtering.FilterCapabilities_History
 (
      FilterId int NOT NULL,
      CapabilityId int NOT NULL,
