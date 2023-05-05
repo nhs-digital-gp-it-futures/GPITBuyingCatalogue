@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 {
     public class OrderScenarios : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
-        private const string InternalOrgId = "CG-03F";
+        private const string InternalOrgId = "IB-QWO";
         private const string FileName = "valid_service_recipients.csv";
         private const string SupplierName = "EMIS Health";
         private const string SolutionName = "Anywhere Consult";
@@ -209,6 +209,34 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.StepThreeCompleteContract();
 
             OrderingPages.StepFourReviewAndCompleteOrder();
+
+            OrderingPages.StepFiveAmendOrder();
+        }
+
+        [Fact]
+        public void OrderWithSolutionUnder40K_AmendCatalogueSolutionServiceRecipient()
+        {
+            string orderDescription = "OrderWithSolutionUnder40K_AmendCatalogueSolutionServiceRecipient";
+
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+
+            OrderingPages.StepFiveAmendOrder();
+
+            OrderingPages.AmendSolutionsAndServices(NewSolutionName);
         }
 
         [Fact]
