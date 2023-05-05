@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
@@ -56,15 +53,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return filter.Id;
         }
 
-        public async Task<bool> FilterExists(string filterName, int organisationId)
+        public async Task AddFilterCapabilities(int filterId, List<int> capabilityIds)
         {
-            return await dbContext.Filters.AnyAsync(f => f.Name == filterName && f.OrganisationId == organisationId);
-        }
+            if(capabilityIds is null || capabilityIds.Count == 0) return;
 
-        private async Task AddFilterCapabilities(int filterId, List<int> capabilityIds)
-        {
+            var filter = await dbContext.Filters.FirstAsync(o => o.Id == filterId);
+
+            if (filter is null)
+            {
+                return;
+            }
+
             foreach (var id in capabilityIds)
             {
+                if(filter.FilterCapabilities.Any(x => x.CapabilityId == id))
+                    continue;
+
                 var capability = dbContext.Capabilities.First(x => x.Id == id);
 
                 dbContext.FilterCapabilities.Add(new FilterCapability
@@ -78,10 +82,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await dbContext.SaveChangesAsync();
         }
 
-        private async Task AddFilterEpics(int filterId, List<string> epicIds)
+        public async Task AddFilterEpics(int filterId, List<string> epicIds)
         {
+            if (epicIds is null || epicIds.Count == 0) return;
+
+            var filter = await dbContext.Filters.FirstAsync(o => o.Id == filterId);
+
+            if (filter is null)
+            {
+                return;
+            }
+
             foreach (var id in epicIds)
             {
+                if (filter.FilterEpics.Any(x => x.EpicId == id))
+                    continue;
+
                 var epic = dbContext.Epics.First(x => x.Id == id);
 
                 dbContext.FilterEpics.Add(new FilterEpic()
@@ -95,10 +111,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await dbContext.SaveChangesAsync();
         }
 
-        private async Task AddFilterClientApplicationTypes(int filterId, List<ClientApplicationType> clientApplicationTypes)
+        public async Task AddFilterClientApplicationTypes(int filterId, List<ClientApplicationType> clientApplicationTypes)
         {
+            if (clientApplicationTypes is null || clientApplicationTypes.Count == 0) return;
+
+            var filter = await dbContext.Filters.FirstAsync(o => o.Id == filterId);
+
+            if (filter is null)
+            {
+                return;
+            }
+
             foreach (var type in clientApplicationTypes)
             {
+                if (filter.FilterClientApplicationTypes.Any(x => x.ClientApplicationType == type))
+                    continue;
+
                 dbContext.FilterClientApplicationTypes.Add(new FilterClientApplicationType()
                 {
                     FilterId = filterId,
@@ -109,10 +137,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await dbContext.SaveChangesAsync();
         }
 
-        private async Task AddFilterHostingTypes(int filterId, List<HostingType> hostingTypes)
+        public async Task AddFilterHostingTypes(int filterId, List<HostingType> hostingTypes)
         {
+            if (hostingTypes is null || hostingTypes.Count == 0) return;
+
+            var filter = await dbContext.Filters.FirstAsync(o => o.Id == filterId);
+
+            if (filter is null)
+            {
+                return;
+            }
+
             foreach (var type in hostingTypes)
             {
+                if (filter.FilterHostingTypes.Any(x => x.HostingType == type))
+                    continue;
+
                 dbContext.FilterHostingTypes.Add(new FilterHostingType()
                 {
                     FilterId = filterId,
@@ -121,6 +161,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             }
 
             await dbContext.SaveChangesAsync();
+        }
+        public async Task<bool> FilterExists(string filterName, int organisationId)
+        {
+            return await dbContext.Filters.AnyAsync(f => f.Name == filterName && f.OrganisationId == organisationId);
+        }
+
+        public async Task<List<Filter>> GetFilters(int organisationId)
+        {
+            return await dbContext.Filters.Where(o => o.OrganisationId == organisationId)
+                .Include(x => x.Framework)
+                .Include(x => x.FilterCapabilities)
+                    .ThenInclude(y => y.Capability)
+                .Include(x => x.FilterEpics)
+                    .ThenInclude(y => y.Epic)
+                .Include(x => x.FilterHostingTypes)
+                .Include(x => x.FilterClientApplicationTypes)
+                .ToListAsync();
         }
     }
 }

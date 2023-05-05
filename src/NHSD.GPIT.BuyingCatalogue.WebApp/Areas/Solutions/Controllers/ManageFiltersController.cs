@@ -13,6 +13,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 {
@@ -33,14 +34,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            //TODO Currently using to Display filters. Will become manage filters page
+            var organisationId = await GetUserOrganisationId();
+            var existingFilters = await manageFiltersService.GetFilters(organisationId);
+            return View(existingFilters);
         }
 
         [HttpGet("save-filter")]
         public async Task<IActionResult> SaveFilter()
         {
+            var organisationId = await GetUserOrganisationId();
+            var existingFilters = await manageFiltersService.GetFilters(organisationId);
+
+            if (existingFilters.Count > 10)
+                return RedirectToAction(
+                    nameof(CannotSaveFilter),
+                    typeof(ManageFiltersController).ControllerName());
+
             //ToDo replace with actual values from filtering
             var capabilities = new List<Capability>()
             {
@@ -56,7 +68,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var clientApplicationTypes = new List<ClientApplicationType>() { ClientApplicationType.BrowserBased };
             var hostingTypes = new List<HostingType>() { HostingType.Hybrid, HostingType.OnPremise };
 
-            var organisationId = await GetUserOrganisationId();
             var model = new SaveFilterModel(capabilities, epics, framework, clientApplicationTypes, hostingTypes, organisationId) 
                 { 
                     BackLink = "/", 
@@ -87,6 +98,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return RedirectToAction(
                 nameof(Index),
                 typeof(ManageFiltersController).ControllerName());
+        }
+
+        [HttpGet("save-failed")]
+        public IActionResult CannotSaveFilter()
+        {
+            var model = new NavBaseModel()
+            {
+                BackLink = "/",
+                BackLinkText = "Go back",
+            };
+            return View(model);
         }
 
         private async Task<int> GetUserOrganisationId()

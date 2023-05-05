@@ -22,8 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
         public FilterController(
             ICapabilitiesService capabilitiesService,
-            IEpicsService epicsService,
-            ISolutionsFilterService solutionsFilterService)
+            IEpicsService epicsService)
         {
             this.capabilitiesService = capabilitiesService ?? throw new ArgumentNullException(nameof(capabilitiesService));
             this.epicsService = epicsService ?? throw new ArgumentNullException(nameof(epicsService));
