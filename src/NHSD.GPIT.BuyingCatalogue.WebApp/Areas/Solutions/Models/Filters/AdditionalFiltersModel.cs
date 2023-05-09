@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using EnumsNET;
 using Microsoft.IdentityModel.Tokens;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
@@ -35,9 +36,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
         {
             ClientApplicationTypeCheckBoxItems = new List<ClientApplicationTypeSelectionModel>
            {
-               new ClientApplicationTypeSelectionModel { ClientApplicationType = ClientApplicationType.BrowserBased, ClientApplicationEnumMemberName = ClientApplicationType.BrowserBased.EnumMemberName() },
-               new ClientApplicationTypeSelectionModel { ClientApplicationType = ClientApplicationType.Desktop, ClientApplicationEnumMemberName = ClientApplicationType.Desktop.EnumMemberName() },
-               new ClientApplicationTypeSelectionModel { ClientApplicationType = ClientApplicationType.MobileTablet, ClientApplicationEnumMemberName = ClientApplicationType.MobileTablet.EnumMemberName() },
+               new ClientApplicationTypeSelectionModel { ClientApplicationType = ClientApplicationType.BrowserBased, ClientApplicationEnumMemberName = ClientApplicationType.BrowserBased.EnumMemberName(), ClientApplicationdisplayName = ClientApplicationType.BrowserBased.Name() },
+               new ClientApplicationTypeSelectionModel { ClientApplicationType = ClientApplicationType.Desktop, ClientApplicationEnumMemberName = ClientApplicationType.Desktop.EnumMemberName(), ClientApplicationdisplayName = ClientApplicationType.Desktop.Name() },
+               new ClientApplicationTypeSelectionModel { ClientApplicationType = ClientApplicationType.MobileTablet, ClientApplicationEnumMemberName = ClientApplicationType.MobileTablet.EnumMemberName(), ClientApplicationdisplayName = ClientApplicationType.MobileTablet.Name() },
            };
             if (!clientApplicationTypeSelected.IsNullOrEmpty())
             {

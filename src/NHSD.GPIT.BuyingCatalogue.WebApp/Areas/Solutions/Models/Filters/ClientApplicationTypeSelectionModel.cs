@@ -8,6 +8,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 
         public string ClientApplicationEnumMemberName { get; set; }
 
+        public string ClientApplicationdisplayName { get; set; }
+
         public bool IsSelected { get; set; }
     }
 }
