@@ -1,0 +1,24 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders.DeleteNotLatestModel;
+@{
+    var title = Model.IsAmendment
+    ? "This amendment cannot be deleted"
+    : "This order cannot be deleted";
+
+    var advice = Model.IsAmendment
+        ? "This amendment cannot be deleted as a more recent amendment already exists. Any more recent amendments must be deleted before you can delete this one."
+        : "This order cannot be deleted as a more recent amendment already exists. To delete this order you must first delete the amendment.";
+}
+
+<div data-test-id="delete-amendment-in-progress-page">
+    <partial name="Partials/_BackLink" model="Model" />
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-two-thirds">
+            <nhs-page-title title="@title"
+                            caption="Order @Model.CallOffId"
+                            advice="@advice" />
+
+            <br />
+            <vc:nhs-secondary-button text="Return to orders dashboard" url="@Url.Action(nameof(ManageOrdersController.Index))" type="Primary" />
+        </div>
+    </div>
+</div>
