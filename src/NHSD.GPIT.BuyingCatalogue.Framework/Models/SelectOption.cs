@@ -42,7 +42,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Models
 
         public static bool operator ==(SelectOption<TValue> left, SelectOption<TValue> right)
         {
-            return left.Equals(right);
+            if (left is null)
+                return right is null;
+            else
+                return left.Equals(right);
         }
 
         public static bool operator !=(SelectOption<TValue> left, SelectOption<TValue> right)
@@ -59,6 +62,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Models
 
         public bool Equals(SelectOption<TValue> other)
         {
+            if (other == null)
+            {
+                return false;
+            }
+
             return (Text ?? string.Empty).Equals(other.Text ?? string.Empty, StringComparison.Ordinal)
                 && (Advice ?? string.Empty).Equals(other.Advice ?? string.Empty, StringComparison.Ordinal)
                 && (Value?.ToString() ?? string.Empty).Equals(other.Value?.ToString() ?? string.Empty, StringComparison.Ordinal);
