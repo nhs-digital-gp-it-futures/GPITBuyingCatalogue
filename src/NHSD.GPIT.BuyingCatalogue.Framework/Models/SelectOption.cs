@@ -2,8 +2,12 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Models
 {
-    public struct SelectOption<TValue> : IEquatable<SelectOption<TValue>>
+    public class SelectOption<TValue> : IEquatable<SelectOption<TValue>>
     {
+        public SelectOption()
+        {
+        }
+
         public SelectOption(string text, TValue value)
         {
             Text = text;

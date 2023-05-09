@@ -461,7 +461,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         {
             return string.Join(
                 Separator,
-                additionalFiltersModel.ClientApplicationTypeCheckBoxItems.Where(x => x.IsSelected).Select(x => x.ClientApplicationEnumMemberName));
+                additionalFiltersModel.ClientApplicaitontypeOptions.Where(x => x.Selected).Select(x => x.Value));
         }
     }
 }

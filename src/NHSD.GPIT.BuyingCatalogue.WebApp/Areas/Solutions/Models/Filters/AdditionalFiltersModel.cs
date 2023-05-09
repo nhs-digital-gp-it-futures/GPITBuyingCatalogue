@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using EnumsNET;
 using Microsoft.IdentityModel.Tokens;
@@ -30,23 +31,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 
         public List<SelectOption<string>> FrameworkOptions { get; set; }
 
-        public List<ClientApplicationTypeSelectionModel> ClientApplicationTypeCheckBoxItems { get; set; }
+        public List<SelectOption<int>> ClientApplicaitontypeOptions { get; set; }
 
         public void GetClientApplicationType(string clientApplicationTypeSelected)
         {
-            ClientApplicationTypeCheckBoxItems = new List<ClientApplicationTypeSelectionModel>
-           {
-               new ClientApplicationTypeSelectionModel { ClientApplicationType = ClientApplicationType.BrowserBased, ClientApplicationEnumMemberName = ClientApplicationType.BrowserBased.EnumMemberName(), ClientApplicationdisplayName = ClientApplicationType.BrowserBased.Name() },
-               new ClientApplicationTypeSelectionModel { ClientApplicationType = ClientApplicationType.Desktop, ClientApplicationEnumMemberName = ClientApplicationType.Desktop.EnumMemberName(), ClientApplicationdisplayName = ClientApplicationType.Desktop.Name() },
-               new ClientApplicationTypeSelectionModel { ClientApplicationType = ClientApplicationType.MobileTablet, ClientApplicationEnumMemberName = ClientApplicationType.MobileTablet.EnumMemberName(), ClientApplicationdisplayName = ClientApplicationType.MobileTablet.Name() },
-           };
-            if (!clientApplicationTypeSelected.IsNullOrEmpty())
+            ClientApplicaitontypeOptions = Enum.GetValues(typeof(ClientApplicationType))
+            .Cast<ClientApplicationType>()
+            .Select(x => new SelectOption<int>
             {
-                foreach (var item in ClientApplicationTypeCheckBoxItems.Where(x => clientApplicationTypeSelected.Contains(x.ClientApplicationType.EnumMemberName().ToString())))
-                {
-                    item.IsSelected = true;
-                }
-            }
+                 Value = (int)x,
+                 Text = x.Name(),
+                 Selected = !string.IsNullOrEmpty(clientApplicationTypeSelected) && clientApplicationTypeSelected.Contains(((int)x).ToString()),
+            })
+           .ToList();
         }
     }
 }

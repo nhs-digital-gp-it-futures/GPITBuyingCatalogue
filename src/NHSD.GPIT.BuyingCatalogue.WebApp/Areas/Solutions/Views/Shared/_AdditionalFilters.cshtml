@@ -14,17 +14,17 @@
                                display-name="Text"/>
         </nhs-fieldset-form-label>
     </nhs-expander>
-    <nhs-expander label-text="Client application Type" open="true">
+     <nhs-expander label-text="Client application Type" open="true">
         <nhs-table>
-            @foreach (var value in Model.ClientApplicationTypeCheckBoxItems)
+            @foreach (var value in Model.ClientApplicaitontypeOptions)
             {
                 <nhs-table-row-container>
                     <nhs-table-cell>
                         <nhs-checkbox-container>
-                            <nhs-checkbox asp-for="ClientApplicationTypeCheckBoxItems[clientAppTypeIndex].IsSelected"
-                                      hidden-input="ClientApplicationTypeCheckBoxItems[clientAppTypeIndex].ClientApplicationEnumMemberName"
-                                      label-text="@value.ClientApplicationdisplayName"
-                                      sub-group="@value.ClientApplicationType" />
+                            <nhs-checkbox asp-for="@Model.ClientApplicaitontypeOptions[clientAppTypeIndex].Selected"
+                                      hidden-input="@Model.ClientApplicaitontypeOptions[clientAppTypeIndex].Value"
+                                      label-text="@Model.ClientApplicaitontypeOptions[clientAppTypeIndex].Text" 
+                                      />
                         </nhs-checkbox-container>
                     </nhs-table-cell>
                 </nhs-table-row-container>
@@ -32,6 +32,8 @@
             }
         </nhs-table>
     </nhs-expander>
+
+
     <nhs-submit-button style="width:100%" text="Apply additional filters" class="nhsuk-button--secondary"/>
 
 </form>

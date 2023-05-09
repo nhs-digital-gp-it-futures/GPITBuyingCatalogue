@@ -70,11 +70,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     if (!string.IsNullOrEmpty(row.Solution.ClientApplication))
                     {
                         var clientApplication = JsonDeserializer.Deserialize<ClientApplication>(row.Solution.ClientApplication);
-                        bool isPresent = clientApplicationtypes.Intersect(clientApplication.ClientApplicationTypes).Any();
-                        if (!isPresent)
+                        int presentCount = 0;
+                        foreach (string clientApplicationtype in clientApplicationtypes)
                         {
-                            query = query.Where(ci => ci.Id != row.Id);
+                            int enumValue = int.Parse(clientApplicationtype);
+                            bool isPresent = clientApplication.HasClientApplicationType((ClientApplicationType)enumValue);
+                            presentCount += isPresent ? 1 : 0;
                         }
+
+                        if (presentCount == 0)
+                            query = query.Where(ci => ci.Id != row.Id);
                     }
                     else
                     {
