@@ -25,6 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin
             CommonActions.ElementIsDisplayed(BannerObjects.LogOutLink).Should().BeTrue();
 
             CommonActions.ElementIsDisplayed(HomeObjects.ManageCatalogueSolutionsLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(HomeObjects.ManageFrameworksLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(HomeObjects.ManageSupplierDefinedEpicsLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(HomeObjects.ManageBuyerOrganisationsLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(HomeObjects.ManageSupplierOrganisationsLink).Should().BeTrue();
