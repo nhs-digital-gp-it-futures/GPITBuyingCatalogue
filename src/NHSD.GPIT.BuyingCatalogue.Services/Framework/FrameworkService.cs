@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
             var framework =
                 new EntityFramework.Catalogue.Models.Framework
                 {
-                    ShortName = name, LocalFundingOnly = isLocalFundingOnly,
+                    Name = name, ShortName = name, LocalFundingOnly = isLocalFundingOnly,
                 };
 
             dbContext.Frameworks.Add(framework);

@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 
             builder.Property(f => f.Id).HasDefaultValue(Guid.NewGuid().ToString()).HasMaxLength(36);
 
-            builder.Property(f => f.ShortName).IsRequired().HasMaxLength(25);
+            builder.Property(f => f.ShortName).HasMaxLength(25);
             builder.Property(f => f.LastUpdated).HasDefaultValue(DateTime.UtcNow);
 
             builder.Property(f => f.IsExpired);

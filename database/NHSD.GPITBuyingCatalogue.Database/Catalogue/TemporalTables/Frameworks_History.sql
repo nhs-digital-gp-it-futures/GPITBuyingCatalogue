@@ -1,8 +1,8 @@
 ﻿CREATE TABLE catalogue.Frameworks_History
 (
     Id nvarchar(36) NOT NULL,
-    [Name] nvarchar(100) NULL,
-    ShortName nvarchar(25) NOT NULL DEFAULT(''),
+    [Name] nvarchar(100) NOT NULL,
+    ShortName NVARCHAR(25) NULL,
     [Description] nvarchar(max) NULL,
     [Owner] nvarchar(100) NULL,
     ActiveDate date NULL,
