@@ -2,7 +2,7 @@
 (
     Id NVARCHAR(36) NOT NULL,
     [Name] NVARCHAR(100) NULL,
-    ShortName NVARCHAR(25) NOT NULL,
+    ShortName NVARCHAR(25) NOT NULL DEFAULT(''),
     [Description] NVARCHAR(max) NULL,
     [Owner] NVARCHAR(100) NULL,
     ActiveDate DATE NULL,

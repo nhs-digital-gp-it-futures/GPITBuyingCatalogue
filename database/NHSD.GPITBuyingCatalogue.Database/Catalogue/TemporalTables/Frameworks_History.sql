@@ -2,7 +2,7 @@
 (
     Id nvarchar(36) NOT NULL,
     [Name] nvarchar(100) NULL,
-    ShortName nvarchar(25) NOT NULL,
+    ShortName nvarchar(25) NOT NULL DEFAULT(''),
     [Description] nvarchar(max) NULL,
     [Owner] nvarchar(100) NULL,
     ActiveDate date NULL,
