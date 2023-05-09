@@ -32,20 +32,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         }
 
         [Theory]
-        [CommonAutoData]
+        [InlineData("0")]
+        [InlineData("1")]
+        [InlineData("2")]
         public static void Constructor_WithClientApplicationTypeSelected_CreatesClientApplicationTypeCheckBoxItems(string clientApplicationTypeSelected)
         {
             var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), clientApplicationTypeSelected);
 
-            model.ClientApplicationTypeCheckBoxItems.Should().NotBeNull();
-            model.ClientApplicationTypeCheckBoxItems.Should().HaveCount(3);
+            model.ClientApplicaitontypeOptions.Should().NotBeNull();
+            model.ClientApplicaitontypeOptions.Should().HaveCount(3);
 
-            foreach (var item in model.ClientApplicationTypeCheckBoxItems)
+            foreach (var item in model.ClientApplicaitontypeOptions)
             {
-                if (clientApplicationTypeSelected != null && clientApplicationTypeSelected.Contains(item.ClientApplicationType.EnumMemberName()))
-                    item.IsSelected.Should().BeTrue();
+                if (clientApplicationTypeSelected != null && clientApplicationTypeSelected.Contains(item.Value.ToString()))
+                    item.Selected.Should().BeTrue();
                 else
-                    item.IsSelected.Should().BeFalse();
+                    item.Selected.Should().BeFalse();
             }
         }
     }
