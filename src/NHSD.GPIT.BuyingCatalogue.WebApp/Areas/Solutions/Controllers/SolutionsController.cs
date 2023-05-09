@@ -45,7 +45,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             [FromQuery] string selectedEpicIds,
             [FromQuery] string search,
             [FromQuery] string selectedFrameworkId,
-            [FromQuery] string selectedClientApplicationTypeIds)
+            [FromQuery] string selectedClientApplicationTypeIds,
+			[FromQuery] string selectedHostingTypeIds)
         {
             var inputOptions = new PageOptions(page, sortBy);
 
@@ -57,7 +58,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     search,
                     selectedFrameworkId,
                     selectedClientApplicationTypeIds);
-            var (catalogueItemsWithoutFrameworkFilter, capabilitiesAndCountWithoutFrameworkFilter) = await solutionsFilterService.GetFilteredAndNonFilteredQueryResults(selectedCapabilityIds, selectedEpicIds);
+			        //selectedHostingTypeIds);
+			var (catalogueItemsWithoutFrameworkFilter, capabilitiesAndCountWithoutFrameworkFilter) = await solutionsFilterService.GetFilteredAndNonFilteredQueryResults(selectedCapabilityIds, selectedEpicIds);
             var frameworks = await frameworkService.GetFrameworksByCatalogueItems(catalogueItemsWithoutFrameworkFilter.Select(x => x.Id).ToList());
             var additionalFilters = new Models.Filters.AdditionalFiltersModel(frameworks, selectedClientApplicationTypeIds);
 
@@ -98,7 +100,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                        sortBy = model.SelectedSortOption.ToString(),
                        selectedFrameworkId,
                        selectedClientApplicationTypeIds = additionalFiltersModel.SelectedClientApplicationTypes,
-                   });
+					   selectedHostingTypeIds = additionalFiltersModel.SelectedHostingTypes(),
+				   });
         }
 
         [HttpGet("search-suggestions")]

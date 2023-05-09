@@ -34,6 +34,21 @@
          </nhs-fieldset-form-label>
         }
     </nhs-expander>
+	<nhs-expander label-text="Hosting Type"
+				  open="true"
+				data-test-id="filter-hosting-expander">
+
+		<nhs-fieldset-form-label asp-for="HostingTypeOptions">
+			<nhs-checkbox-container>
+				@for (var i = 0; i < Model.HostingTypeOptions.Count; i++)
+				{
+					<nhs-checkbox asp-for="@Model.HostingTypeOptions[i].Selected" 
+								label-text="@Model.HostingTypeOptions[i].Text" 
+								hidden-input="@Model.HostingTypeOptions[i].Value" />
+				}
+			</nhs-checkbox-container>
+		</nhs-fieldset-form-label>
+	</nhs-expander>
     <nhs-submit-button style="width:100%" text="Apply additional filters" class="nhsuk-button--secondary"/>
 
 </form>
