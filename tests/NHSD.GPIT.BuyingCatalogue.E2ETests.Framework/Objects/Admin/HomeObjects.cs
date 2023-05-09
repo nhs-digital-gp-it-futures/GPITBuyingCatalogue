@@ -6,6 +6,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin
     {
         public static By ManageCatalogueSolutionsLink => By.LinkText("Manage Catalogue Solutions");
 
+        public static By ManageFrameworksLink => By.LinkText("Manage Frameworks");
+
         public static By ManageSupplierDefinedEpicsLink => By.LinkText("Manage supplier defined Epics");
 
         public static By ManageBuyerOrganisationsLink => By.LinkText("Manage buyer organisations");
