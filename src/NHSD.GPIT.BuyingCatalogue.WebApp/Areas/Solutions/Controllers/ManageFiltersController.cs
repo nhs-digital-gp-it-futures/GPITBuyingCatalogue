@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var organisationId = await GetUserOrganisationId();
             var existingFilters = await manageFiltersService.GetFilters(organisationId);
 
-            if (existingFilters.Count > 10)
+            if (existingFilters.Count >= 10)
                 return RedirectToAction(
                     nameof(CannotSaveFilter),
                     typeof(ManageFiltersController).ControllerName());

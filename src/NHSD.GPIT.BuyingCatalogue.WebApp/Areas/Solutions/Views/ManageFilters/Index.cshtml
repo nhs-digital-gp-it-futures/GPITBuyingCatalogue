@@ -17,12 +17,8 @@
 
         @foreach (var filter in Model)
         {
+            <h2>Name: @filter.Name</h2>
             <nhs-summary-list>
-                <nhs-summary-list-row label-text="Name">
-                    <p>
-                        @filter.Name
-                    </p>
-                </nhs-summary-list-row>
                 <nhs-summary-list-row label-text="Description">
                     <p>
                         @filter.Description
