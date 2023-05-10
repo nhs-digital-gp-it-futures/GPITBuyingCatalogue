@@ -91,25 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 query = query.Where(ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == selectedFrameworkId));
             if (!string.IsNullOrWhiteSpace(clientApplicationTypeSelected))
             {
-                string[] clientApplicationTypes = clientApplicationTypeSelected.Split(',');
-                var clientApplicationTypeEnums = clientApplicationTypes.Select(t => (ClientApplicationType)Enum.Parse(typeof(ClientApplicationType), t));
-                foreach (var row in query)
-                {
-                    if (!string.IsNullOrEmpty(row.Solution.ClientApplication))
-                    {
-                        var clientApplication = JsonDeserializer.Deserialize<ClientApplication>(row.Solution.ClientApplication);
-                        var matchingTypes = clientApplicationTypeEnums.Where(t => clientApplication.HasClientApplicationType(t));
-
-                        if (matchingTypes.Count() < clientApplicationTypeEnums.Count())
-                        {
-                            query = query.Where(ci => ci.Id != row.Id);
-                        }
-                    }
-                    else
-                    {
-                        query = query.Where(ci => ci.Id != row.Id);
-                    }
-                }
+                query = GetClientApplicationTypeFilterQuery(query, clientApplicationTypeSelected);
             }
 
             options.TotalNumberOfItems = await query.CountAsync();

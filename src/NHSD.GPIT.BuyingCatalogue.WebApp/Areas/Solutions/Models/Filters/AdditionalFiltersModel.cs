@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using EnumsNET;
-using Microsoft.IdentityModel.Tokens;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
@@ -32,6 +30,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
         public List<SelectOption<string>> FrameworkOptions { get; set; }
 
         public List<SelectOption<int>> ClientApplicaitontypeOptions { get; set; }
+
+        public string SelectedClientApplicationTypes
+        {
+            get
+            {
+                return string.Join(
+                    ",",
+                    ClientApplicaitontypeOptions.Where(x => x.Selected).Select(x => x.Value));
+            }
+        }
 
         public void GetClientApplicationType(string clientApplicationTypeSelected)
         {

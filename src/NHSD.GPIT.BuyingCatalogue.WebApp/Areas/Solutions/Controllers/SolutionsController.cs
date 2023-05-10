@@ -20,7 +20,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
     [Route("catalogue-solutions")]
     public sealed class SolutionsController : Controller
     {
-        public const string Separator = ",";
         private readonly ISolutionsService solutionsService;
         private readonly IAdditionalServicesService additionalServicesService;
         private readonly ISolutionsFilterService solutionsFilterService;
@@ -87,7 +86,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             string selectedFrameworkId,
             AdditionalFiltersModel additionalFiltersModel)
         {
-            var clientApplicationTypeSelected = GetCommaSeparatedSelectedClientApplicationTypeFromModel(additionalFiltersModel);
             return RedirectToAction(
                    nameof(Index),
                    typeof(SolutionsController).ControllerName(),
@@ -99,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                        search,
                        sortBy = model.SelectedSortOption.ToString(),
                        selectedFrameworkId,
-                       clientApplicationTypeSelected,
+                       clientApplicationTypeSelected = additionalFiltersModel.SelectedClientApplicationTypes,
                    });
         }
 
@@ -455,13 +453,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 model.BackLink = backlink;
 
             return View(model);
-        }
-
-        public string GetCommaSeparatedSelectedClientApplicationTypeFromModel(AdditionalFiltersModel additionalFiltersModel)
-        {
-            return string.Join(
-                Separator,
-                additionalFiltersModel.ClientApplicaitontypeOptions.Where(x => x.Selected).Select(x => x.Value));
         }
     }
 }
