@@ -19,6 +19,18 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo
         {
             var names = SelectSolutionAndServices.SelectSolutionServices(solutionName, isAssociatedServiceOnly, associatedServices, additionalServices);
 
+            FundingSources(names);
+        }
+
+        public void AmendAddFundingSources(string solutionName, IEnumerable<string>? additionalServices)
+        {
+            var names = SelectSolutionAndServices.AmendSelectSolutionServices(solutionName, additionalServices);
+
+            FundingSources(names);
+        }
+
+        private void FundingSources(IEnumerable<string> names)
+        {
             foreach (var name in names)
             {
                 CommonActions.ClickLinkElement(ByExtensions.DataTestId(name.Trim().Replace(' ', '-')));

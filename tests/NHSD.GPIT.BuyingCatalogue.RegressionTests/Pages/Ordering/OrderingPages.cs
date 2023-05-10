@@ -639,6 +639,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             SelectEditAndConfirmPrices.AmendViewAndConfirmPrice();
             Quantity.AddQuantity();
             PlannedDeliveryDates.AmendPlannedDeliveryDate(solutionName);
+
+            SolutionAndServicesReview.ReviewSolutionAndServices();
+            TaskList.SelectFundingSourcesTask();
+            SelectFundingSources.AmendAddFundingSources(solutionName, additionalServices);
         }
 
 
