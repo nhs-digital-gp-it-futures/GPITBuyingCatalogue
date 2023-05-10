@@ -10,6 +10,14 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks
     {
         public Task<List<FrameworkFilterInfo>> GetFrameworksByCatalogueItems(IList<CatalogueItemId> catalogueItems);
 
-        public Task<Framework> GetFrameworksById(string frameworkId);
+        public Task<Framework> GetFramework(string frameworkId);
+
+        Task<IList<Framework>> GetFrameworks();
+
+        Task AddFramework(string name, bool isLocalFundingOnly);
+
+        Task MarkAsExpired(string frameworkId);
+
+        Task<bool> FrameworkNameExists(string frameworkName);
     }
 }

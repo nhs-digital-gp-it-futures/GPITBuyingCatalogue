@@ -1,0 +1,28 @@
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.FrameworkModels.ExpireFrameworkModel;
+
+@{
+    ViewBag.Title = "Are you sure you want to mark this framework as expired?";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="@ViewBag.Title" />
+
+        <nhs-warning-callout label-text="Expiring a framework" data-test-id="framework-expiry-warning">
+            Marking a framework as expired means solutions can no longer be procured using it. However, the solutions available under that framework will still be visible to buyers.
+        </nhs-warning-callout>
+
+        <form method="post">
+            <input type="hidden" asp-for="Name"/>
+            <input type="hidden" asp-for="BackLink"/>
+
+            <div>
+                <nhs-submit-button text="Confirm" />
+            </div>
+            <div>
+                <a href="@Model.BackLink">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

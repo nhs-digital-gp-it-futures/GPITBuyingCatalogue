@@ -198,7 +198,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
                 return 0;
             }
 
-            var deliveryDate = orderItem.OrderItemRecipients.First().DeliveryDate;
+            var deliveryDate = orderItem.OrderItemRecipients.FirstOrDefault()?.DeliveryDate;
             if (deliveryDate.HasValue)
             {
                 var term = endDate.RemainingTerm(deliveryDate.Value);

@@ -10,7 +10,7 @@ AS
         SupplierId int NULL,
         [Name] nvarchar(255) NOT NULL,
         IsFoundation bit DEFAULT 0 NULL,
-        FrameworkId nvarchar(10) NOT NULL
+        FrameworkId nvarchar(36) NOT NULL
     );
 
     INSERT INTO @items(Id, [Name], SupplierId, IsFoundation, FrameworkId)
