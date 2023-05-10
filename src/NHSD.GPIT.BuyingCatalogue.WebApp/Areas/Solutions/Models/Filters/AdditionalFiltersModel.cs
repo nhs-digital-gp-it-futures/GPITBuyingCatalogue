@@ -51,6 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                  Text = x.Name(),
                  Selected = !string.IsNullOrEmpty(clientApplicationTypeSelected) && clientApplicationTypeSelected.Contains(((int)x).ToString()),
             })
+           .OrderBy(x => x.Text)
            .ToList();
         }
     }

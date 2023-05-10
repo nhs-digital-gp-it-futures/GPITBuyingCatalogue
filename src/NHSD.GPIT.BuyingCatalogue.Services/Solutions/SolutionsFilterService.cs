@@ -46,25 +46,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public IQueryable<CatalogueItem> GetClientApplicationTypeFilterQuery(IQueryable<CatalogueItem> query, string clientApplicationTypeSelected)
         {
-            string[] clientApplicationTypes = clientApplicationTypeSelected?.Split(',');
-            var clientApplicationTypeEnums = clientApplicationTypes.Select(t => (ClientApplicationType)Enum.Parse(typeof(ClientApplicationType), t));
             if (query != null)
             {
+                var clientApplicationTypeEnums = clientApplicationTypeSelected?.Split(',').Select(t => (ClientApplicationType)Enum.Parse(typeof(ClientApplicationType), t));
                 foreach (var row in query)
                 {
-                    if (!string.IsNullOrEmpty(row.Solution.ClientApplication))
-                    {
-                        var clientApplication = JsonDeserializer.Deserialize<ClientApplication>(row.Solution.ClientApplication);
-                        var matchingTypes = clientApplicationTypeEnums?.Where(t => clientApplication.HasClientApplicationType(t));
-
-                        if (matchingTypes.Count() < clientApplicationTypeEnums?.Count())
-                        {
-                            query = query.Where(ci => ci.Id != row.Id);
-                        }
-                    }
-                    else
+                    if (string.IsNullOrEmpty(row.Solution.ClientApplication))
                     {
                         query = query.Where(ci => ci.Id != row.Id);
+                        continue;
+                    }
+
+                    var clientApplication = JsonDeserializer.Deserialize<ClientApplication>(row.Solution.ClientApplication);
+                    var matchingTypes = clientApplicationTypeEnums?.Where(t => clientApplication.HasClientApplicationType(t));
+
+                    if (matchingTypes.Count() < clientApplicationTypeEnums?.Count())
+                    {
+                       query = query.Where(ci => ci.Id != row.Id);
                     }
                 }
             }
