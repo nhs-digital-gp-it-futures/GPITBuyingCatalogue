@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Serialization;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
@@ -46,24 +47,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public IQueryable<CatalogueItem> GetClientApplicationTypeFilterQuery(IQueryable<CatalogueItem> query, string selectedClientApplicationTypeIds)
         {
-            if (query != null)
+            if (query == null)
+                return query;
+
+            var clientApplicationTypeEnums = selectedClientApplicationTypeIds?.Split(FilterConstants.Delimiter).Select(t => (ClientApplicationType)Enum.Parse(typeof(ClientApplicationType), t));
+            foreach (var row in query)
             {
-                var clientApplicationTypeEnums = selectedClientApplicationTypeIds?.Split(',').Select(t => (ClientApplicationType)Enum.Parse(typeof(ClientApplicationType), t));
-                foreach (var row in query)
+                if (string.IsNullOrEmpty(row.Solution.ClientApplication))
+                    continue;
+
+                var clientApplication = JsonDeserializer.Deserialize<ClientApplication>(row.Solution.ClientApplication);
+                var matchingTypes = clientApplicationTypeEnums?.Where(t => clientApplication.HasClientApplicationType(t));
+
+                if (matchingTypes.Count() < clientApplicationTypeEnums?.Count())
                 {
-                    if (string.IsNullOrEmpty(row.Solution.ClientApplication))
-                    {
-                        query = query.Where(ci => ci.Id != row.Id);
-                        continue;
-                    }
-
-                    var clientApplication = JsonDeserializer.Deserialize<ClientApplication>(row.Solution.ClientApplication);
-                    var matchingTypes = clientApplicationTypeEnums?.Where(t => clientApplication.HasClientApplicationType(t));
-
-                    if (matchingTypes.Count() < clientApplicationTypeEnums?.Count())
-                    {
-                       query = query.Where(ci => ci.Id != row.Id);
-                    }
+                   query = query.Where(ci => ci.Id != row.Id);
                 }
             }
 
