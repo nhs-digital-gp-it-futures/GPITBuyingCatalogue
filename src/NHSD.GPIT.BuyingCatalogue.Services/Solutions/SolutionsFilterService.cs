@@ -54,7 +54,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             foreach (var row in query)
             {
                 if (string.IsNullOrEmpty(row.Solution.ClientApplication))
+                {
+                    query = query.Where(ci => ci.Id != row.Id);
                     continue;
+                }
 
                 var clientApplication = JsonDeserializer.Deserialize<ClientApplication>(row.Solution.ClientApplication);
                 var matchingTypes = clientApplicationTypeEnums?.Where(t => clientApplication.HasClientApplicationType(t));
