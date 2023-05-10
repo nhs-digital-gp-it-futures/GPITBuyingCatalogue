@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.ManageOrders;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
@@ -34,6 +33,28 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.ManageOrders
               nameof(ManageOrdersController.DeleteOrder),
               Parameters)
         {
+        }
+
+        [Fact]
+        public void DeleteOrder_Redirects_When_Not_Latest()
+        {
+            var callOffId = new CallOffId(90030, 1);
+
+            NavigateToUrl(
+                typeof(ManageOrdersController),
+                nameof(ManageOrdersController.DeleteOrder),
+                new Dictionary<string, string>
+                {
+                    { nameof(InternalOrgId), InternalOrgId },
+                    { nameof(CallOffId), callOffId.ToString() },
+                });
+
+            CommonActions
+            .PageLoadedCorrectGetIndex(
+                typeof(ManageOrdersController),
+                nameof(ManageOrdersController.DeleteNotLatest))
+            .Should()
+            .BeTrue();
         }
 
         [Fact]
