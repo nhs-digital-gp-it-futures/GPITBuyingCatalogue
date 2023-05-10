@@ -44,8 +44,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Models
         {
             if (left is null)
                 return right is null;
-            else
-                return left.Equals(right);
+
+            return left.Equals(right);
         }
 
         public static bool operator !=(SelectOption<TValue> left, SelectOption<TValue> right)

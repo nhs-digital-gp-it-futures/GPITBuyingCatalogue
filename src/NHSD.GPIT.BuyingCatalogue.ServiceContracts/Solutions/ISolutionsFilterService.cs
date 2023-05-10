@@ -22,6 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
             string selectedFrameworkId = null,
             string clientApplicationTypeSelected = null);
 
+       IQueryable<CatalogueItem> GetClientApplicationTypeFilterQuery(IQueryable<CatalogueItem> query, string clientApplicationTypeSelected);
+
        Task<List<SearchFilterModel>> GetSolutionsBySearchTerm(string searchTerm, int maxToBringBack = 15);
     }
 }

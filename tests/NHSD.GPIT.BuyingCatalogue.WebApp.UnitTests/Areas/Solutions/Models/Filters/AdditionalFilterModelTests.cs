@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
@@ -32,22 +33,60 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         }
 
         [Theory]
-        [InlineData("0")]
-        [InlineData("1")]
-        [InlineData("2")]
-        public static void Constructor_WithClientApplicationTypeSelected_CreatesClientApplicationTypeCheckBoxItems(string clientApplicationTypeSelected)
+        [InlineData("0,1,2", new[] { 0, 1, 2 })]
+        public static void Constructor_WithClientApplicationTypeSelected_CreatesClientApplicationTypeCheckBoxItems_AllSelected(string clientApplicationTypeSelected, int[] expectedSelectedValues)
         {
+            var expectedCount = 3;
+
             var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), clientApplicationTypeSelected);
 
             model.ClientApplicaitontypeOptions.Should().NotBeNull();
-            model.ClientApplicaitontypeOptions.Should().HaveCount(3);
+            model.ClientApplicaitontypeOptions.Should().HaveCount(expectedCount);
 
             foreach (var item in model.ClientApplicaitontypeOptions)
             {
-                if (clientApplicationTypeSelected != null && clientApplicationTypeSelected.Contains(item.Value.ToString()))
-                    item.Selected.Should().BeTrue();
-                else
-                    item.Selected.Should().BeFalse();
+                var isSelected = expectedSelectedValues.Contains(item.Value);
+                item.Selected.Should().Be(isSelected);
+            }
+        }
+
+        [Theory]
+        [InlineData("0", new[] { 0 })]
+        [InlineData("1", new[] { 1 })]
+        [InlineData("2", new[] { 2 })]
+        [InlineData("0,1", new[] { 0, 1 })]
+        [InlineData("0,2", new[] { 0, 2 })]
+        [InlineData("1,2", new[] { 1, 2 })]
+        public static void Constructor_WithClientApplicationTypeSelected_CreatesClientApplicationTypeCheckBoxItems_WhenOneSelectedValueIsNotAsExpected(string clientApplicationTypeSelected, int[] expectedSelectedValues)
+        {
+            var expectedCount = 3;
+
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), clientApplicationTypeSelected);
+
+            model.ClientApplicaitontypeOptions.Should().NotBeNull();
+            model.ClientApplicaitontypeOptions.Should().HaveCount(expectedCount);
+
+            foreach (var item in model.ClientApplicaitontypeOptions)
+            {
+                var isSelected = expectedSelectedValues.Contains(item.Value);
+                item.Selected.Should().Be(isSelected);
+            }
+        }
+
+        [Theory]
+        [InlineData(null)]
+        public static void Constructor_WithNullClientApplicationTypeSelected_CreatesClientApplicationTypeCheckBoxItems_NoneSelected(string clientApplicationTypeSelected)
+        {
+            var expectedCount = 3;
+
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), clientApplicationTypeSelected);
+
+            model.ClientApplicaitontypeOptions.Should().NotBeNull();
+            model.ClientApplicaitontypeOptions.Should().HaveCount(expectedCount);
+
+            foreach (var item in model.ClientApplicaitontypeOptions)
+            {
+                item.Selected.Should().BeFalse();
             }
         }
     }
