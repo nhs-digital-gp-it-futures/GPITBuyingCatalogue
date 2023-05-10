@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 
         public List<SelectOption<string>> FrameworkOptions { get; set; }
 
-        public List<SelectOption<int>> ClientApplicaitontypeOptions { get; set; }
+        public List<SelectOption<int>> ClientApplicationTypeOptions { get; set; }
 
         public string SelectedClientApplicationTypes
         {
@@ -37,13 +37,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
             {
                 return string.Join(
                     ",",
-                    ClientApplicaitontypeOptions.Where(x => x.Selected).Select(x => x.Value));
+                    ClientApplicationTypeOptions.Where(x => x.Selected).Select(x => x.Value));
             }
         }
 
         public void GetClientApplicationType(string clientApplicationTypeSelected)
         {
-            ClientApplicaitontypeOptions = Enum.GetValues(typeof(ClientApplicationType))
+            ClientApplicationTypeOptions = Enum.GetValues(typeof(ClientApplicationType))
             .Cast<ClientApplicationType>()
             .Select(x => new SelectOption<int>
             {

@@ -40,10 +40,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
 
             var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), clientApplicationTypeSelected);
 
-            model.ClientApplicaitontypeOptions.Should().NotBeNull();
-            model.ClientApplicaitontypeOptions.Should().HaveCount(expectedCount);
+            model.ClientApplicationTypeOptions.Should().NotBeNull();
+            model.ClientApplicationTypeOptions.Should().HaveCount(expectedCount);
 
-            foreach (var item in model.ClientApplicaitontypeOptions)
+            foreach (var item in model.ClientApplicationTypeOptions)
             {
                 var isSelected = expectedSelectedValues.Contains(item.Value);
                 item.Selected.Should().Be(isSelected);
@@ -63,10 +63,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
 
             var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), clientApplicationTypeSelected);
 
-            model.ClientApplicaitontypeOptions.Should().NotBeNull();
-            model.ClientApplicaitontypeOptions.Should().HaveCount(expectedCount);
+            model.ClientApplicationTypeOptions.Should().NotBeNull();
+            model.ClientApplicationTypeOptions.Should().HaveCount(expectedCount);
 
-            foreach (var item in model.ClientApplicaitontypeOptions)
+            foreach (var item in model.ClientApplicationTypeOptions)
             {
                 var isSelected = expectedSelectedValues.Contains(item.Value);
                 item.Selected.Should().Be(isSelected);
@@ -81,10 +81,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
 
             var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), clientApplicationTypeSelected);
 
-            model.ClientApplicaitontypeOptions.Should().NotBeNull();
-            model.ClientApplicaitontypeOptions.Should().HaveCount(expectedCount);
+            model.ClientApplicationTypeOptions.Should().NotBeNull();
+            model.ClientApplicationTypeOptions.Should().HaveCount(expectedCount);
 
-            foreach (var item in model.ClientApplicaitontypeOptions)
+            foreach (var item in model.ClientApplicationTypeOptions)
             {
                 item.Selected.Should().BeFalse();
             }
