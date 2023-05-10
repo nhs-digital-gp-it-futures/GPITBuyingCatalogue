@@ -12,21 +12,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders
         {
         }
 
-        public DeleteOrderModel(Order order)
+        public DeleteOrderModel(CallOffId callOffId)
         {
-            CallOffId = order.CallOffId;
-
-            if (order.OrderDeletionApproval != null)
-            {
-                var approvalDate = order.OrderDeletionApproval.DateOfApproval;
-
-                ApprovalDay = approvalDate.Day.ToString("00");
-                ApprovalMonth = approvalDate.Month.ToString("00");
-                ApprovalYear = approvalDate.Year.ToString("0000");
-            }
+            CallOffId = callOffId;
         }
 
         public CallOffId CallOffId { get; set; }
+
+        public bool IsAmendment => CallOffId.IsAmendment;
 
         public string NameOfRequester { get; set; }
 
