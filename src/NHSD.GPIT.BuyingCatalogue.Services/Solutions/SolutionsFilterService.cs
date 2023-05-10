@@ -34,18 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public SolutionsFilterService(BuyingCatalogueDbContext dbContext) =>
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
-        public async Task<(IQueryable<CatalogueItem> CatalogueItems, List<CapabilitiesAndCountModel> CapabilitiesAndCount)> GetFilteredAndNonFilteredQueryResults(
-            string selectedCapabilityIds = null,
-            string selectedEpicIds = null)
-        {
-            var (query, count) = string.IsNullOrWhiteSpace(selectedCapabilityIds)
-                ? NonFilteredQuery(dbContext)
-                : await FilteredQuery(dbContext, selectedCapabilityIds, selectedEpicIds);
-
-            return (query, count);
-        }
-
-        public IQueryable<CatalogueItem> GetClientApplicationTypeFilterQuery(IQueryable<CatalogueItem> query, string selectedClientApplicationTypeIds)
+        public static IQueryable<CatalogueItem> GetClientApplicationTypeFilterQuery(IQueryable<CatalogueItem> query, string selectedClientApplicationTypeIds)
         {
             if (query == null)
                 return query;
@@ -64,11 +53,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
                 if (matchingTypes.Count() < clientApplicationTypeEnums?.Count())
                 {
-                   query = query.Where(ci => ci.Id != row.Id);
+                    query = query.Where(ci => ci.Id != row.Id);
                 }
             }
 
             return query;
+        }
+
+        public async Task<(IQueryable<CatalogueItem> CatalogueItems, List<CapabilitiesAndCountModel> CapabilitiesAndCount)> GetFilteredAndNonFilteredQueryResults(
+            string selectedCapabilityIds = null,
+            string selectedEpicIds = null)
+        {
+            var (query, count) = string.IsNullOrWhiteSpace(selectedCapabilityIds)
+                ? NonFilteredQuery(dbContext)
+                : await FilteredQuery(dbContext, selectedCapabilityIds, selectedEpicIds);
+
+            return (query, count);
         }
 
         public async Task<(IList<CatalogueItem> CatalogueItems, PageOptions Options, List<CapabilitiesAndCountModel> CapabilitiesAndCount)> GetAllSolutionsFiltered(
