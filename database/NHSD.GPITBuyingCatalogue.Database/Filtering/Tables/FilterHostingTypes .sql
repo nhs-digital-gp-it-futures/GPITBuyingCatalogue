@@ -10,6 +10,5 @@
      PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
      CONSTRAINT PK_FilterHostingTypes PRIMARY KEY (FilterHostingTypeId),
      CONSTRAINT FK_FilterHostingTypes_Filter FOREIGN KEY (FilterId) REFERENCES filtering.Filters(Id),
-     CONSTRAINT FK_FilterHostingTypes_HostingType FOREIGN KEY (HostingTypeId) REFERENCES filtering.HostingTypes(Id),
      CONSTRAINT FK_FilterHostingTypes_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
 ) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = filtering.FilterHostingTypes_History));
