@@ -76,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     && o.Revision == callOffId.Revision
                     && o.OrderingParty.InternalIdentifier == internalOrgId)
                 .SelectMany(o => o.Solution.Solution.FrameworkSolutions.Select(fs => fs.Framework))
-                .OrderBy(f => f.Name)
+                .OrderBy(f => f.ShortName)
                 .ToListAsync();
 
         private async Task<IList<EntityFramework.Catalogue.Models.Framework>> FindFrameworksFromCatalogueSolution(CallOffId callOffId, string internalOrgId)
@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     && oi.Order.OrderingParty.InternalIdentifier == internalOrgId
                     && oi.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution)
                 .SelectMany(oi => oi.CatalogueItem.Solution.FrameworkSolutions.Select(fs => fs.Framework))
-                .OrderBy(f => f.Name)
+                .OrderBy(f => f.ShortName)
                 .ToListAsync();
         }
     }

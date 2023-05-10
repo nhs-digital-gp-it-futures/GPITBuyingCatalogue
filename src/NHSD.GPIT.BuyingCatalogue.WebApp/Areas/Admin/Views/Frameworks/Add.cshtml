@@ -1,0 +1,38 @@
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.FrameworkModels.AddFrameworkModel
+
+@{
+    ViewBag.Title = "Add a framework";
+}
+
+<partial name="Partials/_BackLink" model="Model"/>
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary RadioId="IsLocalFundingOnly"/>
+
+        <nhs-page-title title="@ViewBag.Title" advice="Provide details for this framework."/>
+
+        <form method="post">
+            <input type="hidden" asp-for="BackLink"/>
+
+            <nhs-input label-text="Name"
+                       label-hint="Provide a unique name for this framework"
+                       asp-for="Name"/>
+
+            <nhs-fieldset-form-label asp-for="IsLocalFundingOnly"
+                                     label-text="What type of funding can be used"
+                                     size="Small">
+                <nhs-radio-buttons asp-for="IsLocalFundingOnly"
+                                   values="@Model.FundingTypes.Cast<object>()"
+                                   value-name="Value"
+                                   display-name="Text"/>
+            </nhs-fieldset-form-label>
+
+            <div>
+                <nhs-submit-button/>
+            </div>
+            <div>
+                <a href="@Model.BackLink">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

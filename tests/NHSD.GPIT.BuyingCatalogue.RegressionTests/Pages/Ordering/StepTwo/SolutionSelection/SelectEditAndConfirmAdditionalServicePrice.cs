@@ -27,6 +27,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             ConfirmPrice();
         }
 
+        public void EditConfirmPrice()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                 typeof(PricesController),
+                 nameof(PricesController.EditPrice)).Should().BeTrue();
+
+            CommonActions.ClickSave();
+        }
+
         public void EditAdditionalServicePrice(string additionalServiceName)
         {
             CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemPriceLink(GetAdditionalServiceID(additionalServiceName)));

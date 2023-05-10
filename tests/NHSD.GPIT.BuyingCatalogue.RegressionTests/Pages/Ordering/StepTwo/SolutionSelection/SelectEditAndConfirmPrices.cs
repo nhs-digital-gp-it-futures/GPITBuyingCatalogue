@@ -27,6 +27,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             ConfirmPrice();
         }
 
+        public void AmendViewAndConfirmPrice()
+        {
+            AmendViewCatalogueSOlutionPrice();
+        }
+
         public void EditCatalogueSolutionPrice(string solutionName)
         {
             CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemPriceLink(GetCatalogueSolutionID(solutionName)));
@@ -76,6 +81,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
             TextGenerators.PriceInputAddPrice(PriceObjects.AgreedPriceInput(0), MaxPrice);
             CommonActions.ClickSave();
+        }
+
+        private void AmendViewCatalogueSOlutionPrice()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+               typeof(PricesController),
+               nameof(PricesController.ViewPrice)).Should().BeTrue();
+
+            CommonActions.ClickContinue();
         }
 
         private string GetCatalogueSolutionID(string solutionName)
