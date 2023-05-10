@@ -23,10 +23,10 @@
                asp-route-solutionId="@Model.catalogueItem.Id">
                 @Model.catalogueItem.Name
             </a>
+            <span class="nhsuk-caption-m nhsuk-caption--bottom">
+                @Model.catalogueItem.Supplier.Name
+            </span>
         </h2>
-        <h3>
-            @Model.catalogueItem.Supplier.Name
-        </h3>
         <p>
             @Model.catalogueItem.Solution.Summary
         </p>
