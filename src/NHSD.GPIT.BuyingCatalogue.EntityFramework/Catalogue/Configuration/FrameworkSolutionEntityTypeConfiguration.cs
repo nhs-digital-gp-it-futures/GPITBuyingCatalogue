@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 
             builder.HasKey(f => new { f.FrameworkId, f.SolutionId });
 
-            builder.Property(f => f.FrameworkId).HasMaxLength(10);
+            builder.Property(f => f.FrameworkId).HasMaxLength(36);
             builder.Property(f => f.SolutionId)
                 .HasMaxLength(14)
                 .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));

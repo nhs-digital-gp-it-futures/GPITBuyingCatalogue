@@ -18,6 +18,7 @@ using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Browsers;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
+using NHSD.GPIT.BuyingCatalogue.Framework.Environments;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Validation;
 using NHSD.GPIT.BuyingCatalogue.WebApp;
@@ -32,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests
 
         // Need to find a better way of doing this
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1310:Field names should not contain underscore", Justification = "This name is used by the Webapp, so needs to be kept")]
-        private const string BC_DB_CONNECTION = "Server=localhost,1432;Database=GPITBuyingCatalogue;User=SA;password=Abc123Abc123;Integrated Security=false";
+        private const string BC_DB_CONNECTION = "Server=localhost,1432;Database=GPITBuyingCatalogue;User=SA;password=Abc123Abc123;Integrated Security=false;TrustServerCertificate=true";
 
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1310:Field names should not contain underscore", Justification = "This name is used by the Webapp, so needs to be kept")]
         private const string DOMAIN_NAME = "127.0.0.1";
@@ -59,6 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests
             sqlConnection.Open();
 
             host = CreateHostBuilder().Build();
+            CurrentEnvironment.IsDevelopment = true;
             host.Start();
 
             RootUri = host.Services.GetRequiredService<IServer>().Features.Get<IServerAddressesFeature>()!.Addresses.LastOrDefault()!;
