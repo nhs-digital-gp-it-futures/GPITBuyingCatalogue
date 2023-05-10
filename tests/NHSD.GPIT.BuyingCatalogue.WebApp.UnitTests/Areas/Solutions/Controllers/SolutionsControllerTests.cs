@@ -25,6 +25,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 using Xunit;
@@ -66,9 +67,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [CommonAutoData]
         public static void Post_Index_Redirects(
             SolutionsModel solutionModel,
+            AdditionalFiltersModel additionalFilters,
             SolutionsController controller)
         {
-            var result = controller.Index(solutionModel, null, null, null, null, null, null, null);
+            var result = controller.Index(solutionModel, null, null, null, null, null, null, additionalFilters);
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
@@ -82,6 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 { "selectedCapabilityIds", null },
                 { "selectedEpicIds", null },
                 { "selectedFrameworkId", null },
+                { "selectedClientApplicationTypeIds", additionalFilters.SelectedClientApplicationTypes },
             });
         }
 
