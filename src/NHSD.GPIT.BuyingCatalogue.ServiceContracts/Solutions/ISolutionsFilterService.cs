@@ -20,9 +20,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
             string selectedEpicIds = null,
             string search = null,
             string selectedFrameworkId = null,
-            string clientApplicationTypeSelected = null);
+            string selectedClientApplicationTypeIds = null);
 
-       IQueryable<CatalogueItem> GetClientApplicationTypeFilterQuery(IQueryable<CatalogueItem> query, string clientApplicationTypeSelected);
+       IQueryable<CatalogueItem> GetClientApplicationTypeFilterQuery(IQueryable<CatalogueItem> query, string selectedClientApplicationTypeIds);
 
        Task<List<SearchFilterModel>> GetSolutionsBySearchTerm(string searchTerm, int maxToBringBack = 15);
     }

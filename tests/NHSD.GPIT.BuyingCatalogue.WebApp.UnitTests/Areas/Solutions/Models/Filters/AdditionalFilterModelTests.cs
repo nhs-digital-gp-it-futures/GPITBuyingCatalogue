@@ -34,11 +34,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
 
         [Theory]
         [InlineData("0,1,2", new[] { 0, 1, 2 })]
-        public static void Constructor_WithClientApplicationTypeSelected_CreatesClientApplicationTypeCheckBoxItems_AllSelected(string clientApplicationTypeSelected, int[] expectedSelectedValues)
+        public static void Constructor_WithClientApplicationTypeSelected_CreatesClientApplicationTypeCheckBoxItems_AllSelected(string selectedClientApplicationTypeIds, int[] expectedSelectedValues)
         {
             var expectedCount = 3;
 
-            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), clientApplicationTypeSelected);
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), selectedClientApplicationTypeIds);
 
             model.ClientApplicationTypeOptions.Should().NotBeNull();
             model.ClientApplicationTypeOptions.Should().HaveCount(expectedCount);
@@ -57,11 +57,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         [InlineData("0,1", new[] { 0, 1 })]
         [InlineData("0,2", new[] { 0, 2 })]
         [InlineData("1,2", new[] { 1, 2 })]
-        public static void Constructor_WithClientApplicationTypeSelected_CreatesClientApplicationTypeCheckBoxItems_WhenOneSelectedValueIsNotAsExpected(string clientApplicationTypeSelected, int[] expectedSelectedValues)
+        public static void Constructor_WithClientApplicationTypeSelected_CreatesClientApplicationTypeCheckBoxItems_WhenOneSelectedValueIsNotAsExpected(string selectedClientApplicationTypeIds, int[] expectedSelectedValues)
         {
             var expectedCount = 3;
 
-            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), clientApplicationTypeSelected);
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), selectedClientApplicationTypeIds);
 
             model.ClientApplicationTypeOptions.Should().NotBeNull();
             model.ClientApplicationTypeOptions.Should().HaveCount(expectedCount);
@@ -75,11 +75,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
 
         [Theory]
         [InlineData(null)]
-        public static void Constructor_WithNullClientApplicationTypeSelected_CreatesClientApplicationTypeCheckBoxItems_NoneSelected(string clientApplicationTypeSelected)
+        public static void Constructor_WithNullClientApplicationTypeSelected_CreatesClientApplicationTypeCheckBoxItems_NoneSelected(string selectedClientApplicationTypeIds)
         {
             var expectedCount = 3;
 
-            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), clientApplicationTypeSelected);
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), selectedClientApplicationTypeIds);
 
             model.ClientApplicationTypeOptions.Should().NotBeNull();
             model.ClientApplicationTypeOptions.Should().HaveCount(expectedCount);

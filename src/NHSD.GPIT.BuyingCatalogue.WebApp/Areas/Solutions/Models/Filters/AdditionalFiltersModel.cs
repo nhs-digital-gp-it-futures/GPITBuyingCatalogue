@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
         {
         }
 
-        public AdditionalFiltersModel(List<FrameworkFilterInfo> frameworks, string clientApplicationTypeSelected)
+        public AdditionalFiltersModel(List<FrameworkFilterInfo> frameworks, string selectedClientApplicationTypeIds)
         {
             FrameworkOptions = frameworks.Select(f => new SelectOption<string>
             {
@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                 Text = $"{f.ShortName} ({f.CountOfActiveSolutions})",
                 Selected = false,
             }).ToList();
-            GetClientApplicationType(clientApplicationTypeSelected);
+            GetClientApplicationType(selectedClientApplicationTypeIds);
         }
 
         public string SelectedFrameworkId { get; set; }
@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
             }
         }
 
-        public void GetClientApplicationType(string clientApplicationTypeSelected)
+        public void GetClientApplicationType(string selectedClientApplicationTypeIds)
         {
             ClientApplicationTypeOptions = Enum.GetValues(typeof(ClientApplicationType))
             .Cast<ClientApplicationType>()
@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
             {
                  Value = (int)x,
                  Text = x.Name(),
-                 Selected = !string.IsNullOrEmpty(clientApplicationTypeSelected) && clientApplicationTypeSelected.Contains(((int)x).ToString()),
+                 Selected = !string.IsNullOrEmpty(selectedClientApplicationTypeIds) && selectedClientApplicationTypeIds.Contains(((int)x).ToString()),
             })
            .OrderBy(x => x.Text)
            .ToList();

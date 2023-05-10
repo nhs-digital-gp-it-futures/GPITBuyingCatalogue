@@ -44,11 +44,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return (query, count);
         }
 
-        public IQueryable<CatalogueItem> GetClientApplicationTypeFilterQuery(IQueryable<CatalogueItem> query, string clientApplicationTypeSelected)
+        public IQueryable<CatalogueItem> GetClientApplicationTypeFilterQuery(IQueryable<CatalogueItem> query, string selectedClientApplicationTypeIds)
         {
             if (query != null)
             {
-                var clientApplicationTypeEnums = clientApplicationTypeSelected?.Split(',').Select(t => (ClientApplicationType)Enum.Parse(typeof(ClientApplicationType), t));
+                var clientApplicationTypeEnums = selectedClientApplicationTypeIds?.Split(',').Select(t => (ClientApplicationType)Enum.Parse(typeof(ClientApplicationType), t));
                 foreach (var row in query)
                 {
                     if (string.IsNullOrEmpty(row.Solution.ClientApplication))
@@ -76,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             string selectedEpicIds = null,
             string search = null,
             string selectedFrameworkId = null,
-            string clientApplicationTypeSelected = null)
+            string selectedClientApplicationTypeIds = null)
         {
             options ??= new PageOptions();
 
@@ -87,9 +87,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             if (!string.IsNullOrWhiteSpace(selectedFrameworkId))
                 query = query.Where(ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == selectedFrameworkId));
-            if (!string.IsNullOrWhiteSpace(clientApplicationTypeSelected))
+            if (!string.IsNullOrWhiteSpace(selectedClientApplicationTypeIds))
             {
-                query = GetClientApplicationTypeFilterQuery(query, clientApplicationTypeSelected);
+                query = GetClientApplicationTypeFilterQuery(query, selectedClientApplicationTypeIds);
             }
 
             options.TotalNumberOfItems = await query.CountAsync();
