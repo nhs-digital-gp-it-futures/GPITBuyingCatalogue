@@ -1,8 +1,8 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders.DeleteNotLatestModel;
 @{
-    var title = Model.IsAmendment
-    ? "This amendment cannot be deleted"
-    : "This order cannot be deleted";
+    var orderOrAmendment = Model.IsAmendment
+        ? "amendment"
+        : "order";
 
     var advice = Model.IsAmendment
         ? "This amendment cannot be deleted as a more recent amendment already exists. Any more recent amendments must be deleted before you can delete this one."
@@ -13,7 +13,7 @@
     <partial name="Partials/_BackLink" model="Model" />
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
-            <nhs-page-title title="@title"
+            <nhs-page-title title="This @orderOrAmendment cannot be deleted"
                             caption="Order @Model.CallOffId"
                             advice="@advice" />
 
