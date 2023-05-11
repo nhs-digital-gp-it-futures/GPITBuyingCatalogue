@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         Task AddFilterClientApplicationTypes(int filterId, List<ClientApplicationType> clientApplicationTypes);
 
         Task AddFilterHostingTypes(int filterId, List<HostingType> hostingTypes);
-        
+
         Task<bool> FilterExists(string filterName, int organisationId);
 
         Task<List<Filter>> GetFilters(int organisationId);
