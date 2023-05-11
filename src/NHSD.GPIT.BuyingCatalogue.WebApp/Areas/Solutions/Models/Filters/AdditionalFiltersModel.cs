@@ -37,9 +37,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                     })
                 .OrderBy(x => x.Text)
                 .ToList();
-
-			SetHostingType(selectedHostingTypeIds);
-		}
+            SetFrameworkOptions(frameworks);
+            SetClientApplicationTypeOptions(selectedClientApplicationTypeIds);
+            SetHostingTypeOptions(selectedHostingTypeIds);
+        }
 
         public string SelectedFrameworkId { get; set; }
 
@@ -51,32 +52,39 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 
         public List<SelectOption<int>> HostingTypeOptions { get; set; }
 
-        public string SelectedClientApplicationTypes
-        {
-            get
-            {
-                return string.Join(
-                    FilterConstants.Delimiter,
-                    ClientApplicationTypeOptions?.Where(x => x.Selected)?.Select(x => x.Value) ?? Enumerable.Empty<int>());
-            }
-        }
-
-        // TODO: Try combining with SelectedClientApplicationTypes when that branch is merged
-        public string SelectedHostingTypes()
-        {
-            return string.Join(
-                    ",",
-                    HostingTypeOptions.Where(x => x.Selected).Select(x => x.Value));
-        }
-
         public string CombineSelectedOptions(List<SelectOption<int>> options)
         {
             return string.Join(
                     FilterConstants.Delimiter,
-                    options.Where(x => x.Selected).Select(x => x.Value));
+                    options?.Where(x => x.Selected)?.Select(x => x.Value) ?? Enumerable.Empty<int>());
+            }
         }
 
-        private void SetHostingType(string selectedHostingTypeIds)
+        private void SetFrameworkOptions(List<FrameworkFilterInfo> frameworks)
+        {
+            FrameworkOptions = frameworks.Select(f => new SelectOption<string>
+            {
+                Value = f.Id,
+                Text = $"{f.ShortName} ({f.CountOfActiveSolutions})",
+                Selected = false,
+            }).ToList();
+        }
+
+        private void SetClientApplicationTypeOptions(string selectedClientApplicationTypeIds)
+        {
+            ClientApplicationTypeOptions = Enum.GetValues(typeof(ClientApplicationType))
+            .Cast<ClientApplicationType>()
+            .Select(x => new SelectOption<int>
+            {
+                Value = (int)x,
+                Text = x.Name(),
+                Selected = !string.IsNullOrEmpty(selectedClientApplicationTypeIds) && selectedClientApplicationTypeIds.Contains(((int)x).ToString()),
+            })
+           .OrderBy(x => x.Text)
+           .ToList();
+        }
+
+        private void SetHostingTypeOptions(string selectedHostingTypeIds)
         {
             HostingTypeOptions = Enum.GetValues(typeof(HostingType))
             .Cast<HostingType>()
@@ -88,17 +96,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
             })
            .OrderByDescending(x => x.Text)
            .ToList();
-            /*HostingTypeOptions = new List<SelectOption<string>> { };
-            foreach (var host in Enum.GetValues(typeof(HostingType)))
-            {
-                HostingTypeOptions.Add(new SelectOption<string>
-                {
-                    Value = Enum.GetName(typeof(HostingType), host),
-                    Text = host.GetType().GetMember(host.ToString())
-                        .First().GetCustomAttribute<DisplayAttribute>()
-                        .GetName(),
-                    Selected = !string.IsNullOrEmpty(selectedHostingTypeIds) && selectedHostingTypeIds.Contains(host.ToString()),
-                });*/
         }
     }
 }
