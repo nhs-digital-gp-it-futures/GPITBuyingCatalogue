@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
+using NHSD.GPIT.BuyingCatalogue.Framework.Serialization;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SolutionsFilterModels;
@@ -32,6 +34,34 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public SolutionsFilterService(BuyingCatalogueDbContext dbContext) =>
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
+        public static IQueryable<CatalogueItem> GetClientApplicationTypeFilterQuery(IQueryable<CatalogueItem> query, string selectedClientApplicationTypeIds)
+        {
+            if (query == null)
+                return query;
+
+            var clientApplicationTypeEnums = selectedClientApplicationTypeIds?.Split(FilterConstants.Delimiter)
+                .Where(t => Enum.IsDefined(typeof(ClientApplicationType), t))
+                .Select(t => (ClientApplicationType)Enum.Parse(typeof(ClientApplicationType), t));
+            foreach (var row in query)
+            {
+                if (string.IsNullOrEmpty(row.Solution.ClientApplication))
+                {
+                    query = query.Where(ci => ci.Id != row.Id);
+                    continue;
+                }
+
+                var clientApplication = JsonDeserializer.Deserialize<ClientApplication>(row.Solution.ClientApplication);
+                var matchingTypes = clientApplicationTypeEnums?.Where(t => clientApplication.HasClientApplicationType(t));
+
+                if (matchingTypes.Count() < clientApplicationTypeEnums?.Count())
+                {
+                    query = query.Where(ci => ci.Id != row.Id);
+                }
+            }
+
+            return query;
+        }
+
         public async Task<(IQueryable<CatalogueItem> CatalogueItems, List<CapabilitiesAndCountModel> CapabilitiesAndCount)> GetFilteredAndNonFilteredQueryResults(
             string selectedCapabilityIds = null,
             string selectedEpicIds = null)
@@ -48,7 +78,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             string selectedCapabilityIds = null,
             string selectedEpicIds = null,
             string search = null,
-            string selectedFrameworkId = null)
+            string selectedFrameworkId = null,
+            string selectedClientApplicationTypeIds = null)
         {
             options ??= new PageOptions();
 
@@ -59,6 +90,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             if (!string.IsNullOrWhiteSpace(selectedFrameworkId))
                 query = query.Where(ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == selectedFrameworkId));
+            if (!string.IsNullOrWhiteSpace(selectedClientApplicationTypeIds))
+            {
+                query = GetClientApplicationTypeFilterQuery(query, selectedClientApplicationTypeIds);
+            }
+
             options.TotalNumberOfItems = await query.CountAsync();
             query = options.Sort switch
             {

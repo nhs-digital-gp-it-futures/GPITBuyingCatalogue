@@ -2,8 +2,12 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Models
 {
-    public struct SelectOption<TValue> : IEquatable<SelectOption<TValue>>
+    public class SelectOption<TValue> : IEquatable<SelectOption<TValue>>
     {
+        public SelectOption()
+        {
+        }
+
         public SelectOption(string text, TValue value)
         {
             Text = text;
@@ -38,6 +42,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Models
 
         public static bool operator ==(SelectOption<TValue> left, SelectOption<TValue> right)
         {
+            if (left is null)
+                return right is null;
+
             return left.Equals(right);
         }
 
@@ -55,6 +62,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Models
 
         public bool Equals(SelectOption<TValue> other)
         {
+            if (other == null)
+            {
+                return false;
+            }
+
             return (Text ?? string.Empty).Equals(other.Text ?? string.Empty, StringComparison.Ordinal)
                 && (Advice ?? string.Empty).Equals(other.Advice ?? string.Empty, StringComparison.Ordinal)
                 && (Value?.ToString() ?? string.Empty).Equals(other.Value?.ToString() ?? string.Empty, StringComparison.Ordinal);
