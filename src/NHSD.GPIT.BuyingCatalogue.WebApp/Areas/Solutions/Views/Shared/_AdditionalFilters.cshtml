@@ -20,6 +20,18 @@
                                display-name="Text"/>
         </nhs-fieldset-form-label>
     </nhs-expander>
+     <nhs-expander label-text="Client application type" open="true">
+        @for (int clientAppTypeIndex = 0; clientAppTypeIndex < Model.ClientApplicationTypeOptions.Count; clientAppTypeIndex++)
+        {
+         <nhs-fieldset-form-label asp-for="@Model">
+            <nhs-checkbox-container>
+                    <nhs-checkbox asp-for="@Model.ClientApplicationTypeOptions[clientAppTypeIndex].Selected"
+                              hidden-input="@Model.ClientApplicationTypeOptions[clientAppTypeIndex].Value"
+                              label-text="@Model.ClientApplicationTypeOptions[clientAppTypeIndex].Text" />
+            </nhs-checkbox-container>
+         </nhs-fieldset-form-label>
+        }
+    </nhs-expander>
     <nhs-submit-button style="width:100%" text="Apply additional filters" class="nhsuk-button--secondary"/>
 
     <nhs-submit-button style="width: 100%" text="Save all filters" formaction="@Url.Action(nameof(ManageFiltersController.SaveFilter), typeof(ManageFiltersController).ControllerName())" />

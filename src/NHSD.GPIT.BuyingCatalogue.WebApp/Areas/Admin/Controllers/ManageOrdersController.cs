@@ -125,12 +125,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return File(result.ToArray(), "application/pdf", fileName);
         }
 
-        [HttpGet("{callOFfId}/delete")]
+        [HttpGet("{callOffId}/delete/not-latest")]
+        public async Task<IActionResult> DeleteNotLatest(CallOffId callOffId)
+        {
+            var order = await orderAdminService.GetOrder(callOffId);
+
+            var model = new DeleteNotLatestModel(order.CallOffId)
+            {
+                BackLink = Url.Action(nameof(ViewOrder), new { callOffId }),
+            };
+
+            return View(model);
+        }
+
+        [HttpGet("{callOffId}/delete")]
         public async Task<IActionResult> DeleteOrder(CallOffId callOffId)
         {
             var order = await orderAdminService.GetOrder(callOffId);
 
-            var model = new DeleteOrderModel(order)
+            var hasSubsequentRevisions = await orderService.HasSubsequentRevisions(order.CallOffId);
+            if (hasSubsequentRevisions)
+            {
+                return RedirectToAction(
+                    nameof(ManageOrdersController.DeleteNotLatest),
+                    new { callOffId });
+            }
+
+            var model = new DeleteOrderModel(order.CallOffId)
             {
                 BackLink = Url.Action(nameof(ViewOrder), new { callOffId }),
                 OrderCreationDate = order.Created,
@@ -140,12 +161,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost("{callOffId}/delete")]
-        public async Task<IActionResult> DeleteOrder(CallOffId callOffId, DeleteOrderModel model)
+        public async Task<IActionResult> DeleteOrder(DeleteOrderModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            await orderAdminService.DeleteOrder(callOffId, model.NameOfRequester, model.NameOfApprover, model.ApprovalDate);
+            await orderAdminService.DeleteOrder(model.CallOffId, model.NameOfRequester, model.NameOfApprover, model.ApprovalDate);
 
             return RedirectToAction(nameof(Index));
         }

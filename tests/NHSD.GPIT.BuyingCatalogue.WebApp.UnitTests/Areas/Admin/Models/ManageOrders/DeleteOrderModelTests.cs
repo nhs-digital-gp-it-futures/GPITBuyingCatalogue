@@ -1,5 +1,4 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders;
@@ -12,20 +11,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ManageOr
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
-            EntityFramework.Ordering.Models.Order order)
+            CallOffId callOffId)
         {
-            var model = new DeleteOrderModel(order);
+            var model = new DeleteOrderModel(callOffId);
 
-            model.CallOffId.Should().Be(order.CallOffId);
+            model.CallOffId.Should().Be(callOffId);
+            model.IsAmendment.Should().Be(callOffId.IsAmendment);
         }
 
         [Theory]
         [CommonAutoData]
         public static void WithNullOrderDeletionApproval_PropertiesCorrectlySet(
-            EntityFramework.Ordering.Models.Order order)
+            CallOffId callOffId)
         {
-            order.OrderDeletionApproval = null;
-            var model = new DeleteOrderModel(order);
+            var model = new DeleteOrderModel(callOffId);
 
             model.ApprovalDay.Should().BeNull();
             model.ApprovalMonth.Should().BeNull();
@@ -34,29 +33,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ManageOr
 
         [Theory]
         [CommonAutoData]
-        public static void WithOrderDeletionApproval_PropertiesCorrectlySet(
-            EntityFramework.Ordering.Models.Order order)
-        {
-            const int testDay = 1;
-            const int testMonth = 1;
-            const int testYear = 2022;
-
-            var oda = new OrderDeletionApproval() { DateOfApproval = new DateTime(testYear, testMonth, testDay) };
-            order.OrderDeletionApproval = oda;
-            var model = new DeleteOrderModel(order);
-
-            model.ApprovalDate.Should().NotBeNull();
-            model.ApprovalDay.Should().Be(testDay.ToString("00"));
-            model.ApprovalMonth.Should().Be(testMonth.ToString("00"));
-            model.ApprovalYear.Should().Be(testYear.ToString("0000"));
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static void ApprovalDate_InvalidDayMonthYear_ReturnsNull(
-            EntityFramework.Ordering.Models.Order order)
+            CallOffId callOffId)
         {
-            var model = new DeleteOrderModel(order);
+            var model = new DeleteOrderModel(callOffId);
             model.ApprovalDay = "A";
             model.ApprovalMonth = "B";
             model.ApprovalYear = "C";
