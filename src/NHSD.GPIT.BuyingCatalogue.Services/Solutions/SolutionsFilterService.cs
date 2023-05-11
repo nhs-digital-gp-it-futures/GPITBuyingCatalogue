@@ -39,7 +39,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             if (query == null)
                 return query;
 
-            var clientApplicationTypeEnums = selectedClientApplicationTypeIds?.Split(FilterConstants.Delimiter).Select(t => (ClientApplicationType)Enum.Parse(typeof(ClientApplicationType), t));
+            var clientApplicationTypeEnums = selectedClientApplicationTypeIds?.Split(FilterConstants.Delimiter)
+                .Where(t => Enum.IsDefined(typeof(ClientApplicationType), t))
+                .Select(t => (ClientApplicationType)Enum.Parse(typeof(ClientApplicationType), t));
             foreach (var row in query)
             {
                 if (string.IsNullOrEmpty(row.Solution.ClientApplication))

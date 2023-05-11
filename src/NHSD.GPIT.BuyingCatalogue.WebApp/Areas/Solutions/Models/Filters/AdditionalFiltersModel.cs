@@ -23,7 +23,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                 Text = $"{f.ShortName} ({f.CountOfActiveSolutions})",
                 Selected = false,
             }).ToList();
-            GetClientApplicationType(selectedClientApplicationTypeIds);
+            ClientApplicationTypeOptions = Enum.GetValues(typeof(ClientApplicationType))
+            .Cast<ClientApplicationType>()
+            .Select(x => new SelectOption<int>
+            {
+                Value = (int)x,
+                Text = x.Name(),
+                Selected = !string.IsNullOrEmpty(selectedClientApplicationTypeIds) && selectedClientApplicationTypeIds.Contains(((int)x).ToString()),
+            })
+           .OrderBy(x => x.Text)
+           .ToList();
         }
 
         public string SelectedFrameworkId { get; set; }
@@ -40,20 +49,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                     FilterConstants.Delimiter,
                     ClientApplicationTypeOptions.Where(x => x.Selected).Select(x => x.Value));
             }
-        }
-
-        public void GetClientApplicationType(string selectedClientApplicationTypeIds)
-        {
-            ClientApplicationTypeOptions = Enum.GetValues(typeof(ClientApplicationType))
-            .Cast<ClientApplicationType>()
-            .Select(x => new SelectOption<int>
-            {
-                 Value = (int)x,
-                 Text = x.Name(),
-                 Selected = !string.IsNullOrEmpty(selectedClientApplicationTypeIds) && selectedClientApplicationTypeIds.Contains(((int)x).ToString()),
-            })
-           .OrderBy(x => x.Text)
-           .ToList();
         }
     }
 }
