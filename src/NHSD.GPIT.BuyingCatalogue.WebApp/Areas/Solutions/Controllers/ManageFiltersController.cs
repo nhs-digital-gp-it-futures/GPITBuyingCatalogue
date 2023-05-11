@@ -4,15 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
-using NHSD.GPIT.BuyingCatalogue.Services.Framework;
 using NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters;
@@ -62,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             AdditionalFiltersModel model)
         {
             return RedirectToAction(
-                nameof(ManageFiltersController.ConfirmSaveFilter),
+                nameof(ConfirmSaveFilter),
                 typeof(ManageFiltersController).ControllerName(),
                 new
                 {
@@ -102,7 +98,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var model = new SaveFilterModel(capabilities, epics, framework, clientApplicationTypes, hostingTypes, organisationId) 
                 { 
-                    BackLink = "/", 
+                    BackLink = Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new
+                    {
+                        selectedCapabilityIds,
+                        selectedEpicIds,
+                        selectedFrameworkId,
+                        selectedClientApplicationTypeIds,
+                        selectedHostingTypeIds,
+                    }), 
                     BackLinkText = "Go back",
                 };
             return View(model);
@@ -114,8 +117,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var capabilities = await capabilitiesService.GetCapabilitiesByIds(model.CapabilityIds);
-                var epics = await epicsService.GetEpicsByIds(model.EpicIds);
+                var capabilities = await capabilitiesService.GetCapabilitiesByIds(model.CapabilityIds ?? new List<int>());
+                var epics = await epicsService.GetEpicsByIds(model.EpicIds ?? new List<string>());
                 model.SetGroupedCapabilities(capabilities, epics);
                 return View(model);
             }

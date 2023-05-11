@@ -49,9 +49,12 @@
                     }
                 </nhs-summary-list-row>
                 <nhs-summary-list-row label-text="Framework">
-                    <p>
-                        @filter.Framework.Name
-                    </p>
+                    @if (filter.Framework != null)
+                    {
+                        <p>
+                            @filter.Framework.Name
+                        </p>                        
+                    }
                 </nhs-summary-list-row>
                 <nhs-summary-list-row label-text="Hosting Type">
                     @foreach (var type in filter.FilterHostingTypes)

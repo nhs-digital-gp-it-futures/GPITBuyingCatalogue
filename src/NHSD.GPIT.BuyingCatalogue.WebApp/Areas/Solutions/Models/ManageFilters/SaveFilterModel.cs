@@ -22,8 +22,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
         {
             CapabilityIds = capabilities.Select(x => x.Id).ToList();
             EpicIds = epics.Select(x => x.Id).ToList();
-            FrameworkId = framework.Id;
-            FrameworkName = framework.ShortName; 
+            
+            if (framework != null)
+            {
+                FrameworkId = framework.Id;
+                FrameworkName = framework.ShortName;
+            }
+            
             ClientApplicationTypes = clientApplicationTypes;
             HostingTypes = hostingTypes;
             OrganisationId = organisationId;

@@ -80,6 +80,12 @@
                                       title-text="Search for solution by solution name or supplier name"
                                       query-parameter-name="search"/>
         }
+        else
+        {
+            <nhs-inset-text>
+                <p>Once you’re happy with your results, you can save your filters to create a shortlist.</p>
+            </nhs-inset-text>
+        }
 
         <partial name="Partials/_FrameworkExpiredAlert"/>
         @if (!Model.SearchCriteriaApplied)

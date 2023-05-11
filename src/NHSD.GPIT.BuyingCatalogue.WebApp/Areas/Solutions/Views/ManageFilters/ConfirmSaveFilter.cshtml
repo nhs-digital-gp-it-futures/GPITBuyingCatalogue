@@ -62,11 +62,20 @@
                             @capability.Key
                         </nhs-table-cell>
                         <nhs-table-cell>
-                            @foreach (var epic in capability.Value)
+                            @if (capability.Value is null || !capability.Value.Any())
                             {
-                                <li>
-                                    @epic.Name
-                                </li>
+                                <p>
+                                    None selected
+                                </p>
+                            }
+                            else
+                            {
+                                @foreach (var epic in capability.Value)
+                                {
+                                    <li>
+                                        @epic.Name
+                                    </li>
+                                }
                             }
                         </nhs-table-cell>
                     </nhs-table-row-container>
@@ -77,7 +86,13 @@
             
             <nhs-summary-list>
                 <nhs-summary-list-row label-text="Client application type">
-                    @if (Model.ClientApplicationTypes != null)
+                    @if (Model.ClientApplicationTypes is null || !Model.ClientApplicationTypes.Any())
+                    {
+                        <p>
+                            None selected
+                        </p>
+                    }
+                    else
                     {
                         @for (var i = 0; i < Model.ClientApplicationTypes.Count; i++)
                         {
@@ -89,12 +104,27 @@
                     }
                 </nhs-summary-list-row>
                 <nhs-summary-list-row label-text="Framework">
-                    <p>
-                        @Model.FrameworkName
-                    </p>
+                    @if (string.IsNullOrEmpty(Model.FrameworkName))
+                    {
+                        <p>
+                            None selected
+                        </p>
+                    }
+                    else
+                    {
+                        <p>
+                            @Model.FrameworkName
+                        </p>
+                    }
                 </nhs-summary-list-row>
                 <nhs-summary-list-row label-text="Hosting Type">
-                    @if (Model.HostingTypes != null)
+                    @if (Model.HostingTypes is null || !Model.HostingTypes.Any())
+                    {
+                        <p>
+                            None selected
+                        </p>
+                    }
+                    else
                     {
                         @for (var i = 0; i < Model.HostingTypes.Count; i++)
                         {

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
@@ -14,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
     {
         private readonly BuyingCatalogueDbContext dbContext;
 
-        public ManageFiltersService(BuyingCatalogueDbContext dbContext, ICapabilitiesService capabilityService)
+        public ManageFiltersService(BuyingCatalogueDbContext dbContext)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
@@ -30,7 +29,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             List<HostingType> hostingTypes)
         {
             var organisation = await dbContext.Organisations.FirstAsync(o => o.Id == organisationId);
-            var framework = await dbContext.Frameworks.FirstAsync(o => o.Id == frameworkId);
+
+            var framework = !string.IsNullOrEmpty(frameworkId) ? await dbContext.Frameworks.FirstAsync(o => o.Id == frameworkId) : null;
 
             var filter = 
                 new Filter() 
@@ -164,6 +164,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         }
         public async Task<bool> FilterExists(string filterName, int organisationId)
         {
+            if(string.IsNullOrEmpty(filterName)) 
+                throw new ArgumentNullException(nameof(filterName));
+
             return await dbContext.Filters.AnyAsync(f => f.Name == filterName && f.OrganisationId == organisationId);
         }
 
