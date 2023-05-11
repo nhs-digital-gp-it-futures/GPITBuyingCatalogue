@@ -18,10 +18,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers
             epicIds?.Split(FilterConstants.Delimiter, StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries)
         .ToList() ?? new List<string>();
 
-        public static IEnumerable<ClientApplicationType> ParseClientApplicationTypeIds(string clientApplicationTypeIds) =>
-            clientApplicationTypeIds?.Split(FilterConstants.Delimiter).Select(t => (ClientApplicationType) Enum.Parse(typeof(ClientApplicationType), t));
+        public static ICollection<ClientApplicationType> ParseClientApplicationTypeIds(string clientApplicationTypeIds) =>
+            clientApplicationTypeIds?.Split(FilterConstants.Delimiter, StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries)
+                .Where(x => Enum.TryParse(typeof(ClientApplicationType), x, out var catValue) && Enum.IsDefined(typeof(ClientApplicationType), catValue))
+                .Select(t => (ClientApplicationType)Enum.Parse(typeof(ClientApplicationType), t))
+                .ToList() ?? new List<ClientApplicationType>();
 
-        public static IEnumerable<HostingType> ParseHostingTypeIds(string hostingTypeIds) =>
-            hostingTypeIds?.Split(FilterConstants.Delimiter).Select(t => (HostingType)Enum.Parse(typeof(HostingType), t));
+        public static ICollection<HostingType> ParseHostingTypeIds(string hostingTypeIds) =>
+            hostingTypeIds?.Split(FilterConstants.Delimiter, StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries)
+                .Where(x => Enum.TryParse(typeof(HostingType), x, out var hostingValue) && Enum.IsDefined(typeof(HostingType), hostingValue))
+                .Select(t => (HostingType)Enum.Parse(typeof(HostingType), t))
+                .ToList() ?? new List<HostingType>();
     }
 }
