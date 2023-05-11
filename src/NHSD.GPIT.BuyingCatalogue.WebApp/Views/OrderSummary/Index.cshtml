@@ -450,13 +450,13 @@
                                         <strong>Total cost of contract</strong>
                                     </td>
                                     <td>
-                                        £@($"{Model.Previous.TotalCost(true):N2}")
+                                        £@($"{Model.OrderWrapper.TotalPreviousCost(true):N2}")
                                     </td>
                                     <td>
-                                        £@($"{Model.OrderWrapper.TotalCost(true) - Model.Previous.TotalCost(true):N2}")
+                                        £@($"{Model.OrderWrapper.TotalCost(true) - Model.OrderWrapper.TotalPreviousCost(true):N2}")
                                     </td>
                                     <td>
-                                        £@($"{Model.RolledUp.TotalCost(true):N2}")
+                                        £@($"{Model.OrderWrapper.TotalCost(true):N2}")
                                     </td>
                                 </tr>
                             </table>
@@ -477,7 +477,7 @@
                                 </pdf-summary-list-row>
 
                                 <pdf-summary-list-row label-text="Total cost of contract @contractTerm">
-                                    @($"£{Model.Order.TotalCost():N2}")
+                                    @($"£{Model.OrderWrapper.TotalCost():N2}")
                                     @if (!Model.Order.MaximumTerm.HasValue)
                                     {
                                         <br />

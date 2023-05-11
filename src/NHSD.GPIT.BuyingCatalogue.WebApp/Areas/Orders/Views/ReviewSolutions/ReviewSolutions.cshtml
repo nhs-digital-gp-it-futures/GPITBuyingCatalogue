@@ -124,10 +124,10 @@
                         <strong>Total cost of contract:</strong>
                     </nhs-table-cell>
                     <nhs-table-cell numeric="true">
-                        £@($"{Model.Previous.TotalCost(true):N2}")
+                        £@($"{Model.OrderWrapper.TotalPreviousCost(true):N2}")
                     </nhs-table-cell>
                     <nhs-table-cell numeric="true">
-                        £@($"{Model.OrderWrapper.TotalCost(true)-Model.Previous.TotalCost(true):N2}")
+                        £@($"{Model.OrderWrapper.TotalCost(true)-Model.OrderWrapper.TotalPreviousCost(true):N2}")
                     </nhs-table-cell>
                     <nhs-table-cell numeric="true">
                         £@($"{Model.OrderWrapper.TotalCost(true):N2}")
@@ -152,7 +152,7 @@
                  </nhs-summary-list-row>
 
                  <nhs-summary-list-row label-text="Total cost of contract (@Model.ContractLength months):">
-                     £@($"{Model.Order.TotalCost(true):N2}")
+                     £@($"{Model.OrderWrapper.TotalCost(true):N2}")
                  </nhs-summary-list-row>
              </nhs-summary-list>
         }
