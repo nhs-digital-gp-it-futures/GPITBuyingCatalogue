@@ -36,7 +36,9 @@
             }
             
             <input type="hidden" asp-for="FrameworkId" />
+            <input type="hidden" asp-for="FrameworkName" />
             <input type="hidden" asp-for="OrganisationId" />
+            <input type="hidden" asp-for="BackLink" />
 
             <nhs-input
                 asp-for="@Model.Name"
@@ -75,12 +77,15 @@
             
             <nhs-summary-list>
                 <nhs-summary-list-row label-text="Client application type">
-                    @for(var i= 0; i< Model.ClientApplicationTypes.Count; i++)
+                    @if (Model.ClientApplicationTypes != null)
                     {
-                        <p>
-                            <input type="hidden" asp-for="ClientApplicationTypes[i]" />
-                            @Model.ClientApplicationTypes[i]
-                        </p>
+                        @for (var i = 0; i < Model.ClientApplicationTypes.Count; i++)
+                        {
+                            <p>
+                                <input type="hidden" asp-for="ClientApplicationTypes[i]"/>
+                                @Model.ClientApplicationTypes[i]
+                            </p>
+                        }
                     }
                 </nhs-summary-list-row>
                 <nhs-summary-list-row label-text="Framework">
@@ -89,12 +94,15 @@
                     </p>
                 </nhs-summary-list-row>
                 <nhs-summary-list-row label-text="Hosting Type">
-                    @for (var i = 0; i < Model.HostingTypes.Count; i++)
+                    @if (Model.HostingTypes != null)
                     {
-                        <p>
-                            <input type="hidden" asp-for="HostingTypes[i]" />
-                            @Model.HostingTypes[i]
-                        </p>
+                        @for (var i = 0; i < Model.HostingTypes.Count; i++)
+                        {
+                            <p>
+                                <input type="hidden" asp-for="HostingTypes[i]"/>
+                                @Model.HostingTypes[i]
+                            </p>
+                        }
                     }
                 </nhs-summary-list-row>
             </nhs-summary-list>

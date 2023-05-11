@@ -56,20 +56,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View(existingFilters);
         }
 
+        [AllowAnonymous]
         [HttpPost("save-filter")]
-        public async Task<IActionResult> SaveFilter(
+        public IActionResult SaveFilter(
             AdditionalFiltersModel model)
         {
-            var organisationId = await GetUserOrganisationId();
-            var existingFilters = await manageFiltersService.GetFilters(organisationId);
-
-            if (existingFilters.Count >= MaxNumberOfFilters)
-                return RedirectToAction(
-                    nameof(CannotSaveFilter),
-                    typeof(ManageFiltersController).ControllerName());
-
             return RedirectToAction(
-                nameof(ConfirmSaveFilter),
+                nameof(ManageFiltersController.ConfirmSaveFilter),
                 typeof(ManageFiltersController).ControllerName(),
                 new
                 {
@@ -79,7 +72,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 });
         }
 
-
         [HttpGet("save-filter-confirm")]
         public async Task<IActionResult> ConfirmSaveFilter(
             string selectedCapabilityIds,
@@ -88,6 +80,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             string selectedClientApplicationTypeIds,
             string selectedHostingTypeIds)
         {
+            var organisationId = await GetUserOrganisationId();
+            var existingFilters = await manageFiltersService.GetFilters(organisationId);
+
+            if (existingFilters.Count >= MaxNumberOfFilters)
+                return RedirectToAction(
+                    nameof(CannotSaveFilter),
+                    typeof(ManageFiltersController).ControllerName());
+
             var capabilities = await
                 capabilitiesService.GetCapabilitiesByIds(
                     SolutionsFilterHelper.ParseCapabilityIds(selectedCapabilityIds));
@@ -99,8 +99,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var clientApplicationTypes = SolutionsFilterHelper.ParseClientApplicationTypeIds(selectedClientApplicationTypeIds)?.ToList();
             var hostingTypes = SolutionsFilterHelper.ParseHostingTypeIds(selectedHostingTypeIds)?.ToList();
-
-            var organisationId = await GetUserOrganisationId();
 
             var model = new SaveFilterModel(capabilities, epics, framework, clientApplicationTypes, hostingTypes, organisationId) 
                 { 
@@ -116,6 +114,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         {
             if (!ModelState.IsValid)
             {
+                var capabilities = await capabilitiesService.GetCapabilitiesByIds(model.CapabilityIds);
+                var epics = await epicsService.GetEpicsByIds(model.EpicIds);
+                model.SetGroupedCapabilities(capabilities, epics);
                 return View(model);
             }
 

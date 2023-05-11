@@ -28,9 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
             HostingTypes = hostingTypes;
             OrganisationId = organisationId;
 
-            GroupedCapabilities = capabilities.ToDictionary(
-                x => x.Name,
-                x => epics.Where(c => c.Capability.Id == x.Id).OrderBy(c => c.Name));
+            SetGroupedCapabilities(capabilities, epics);
         }
 
         public string Name { get; set; }
@@ -51,7 +49,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
 
         public List<HostingType> HostingTypes { get; init; }
 
-        public Dictionary<string, IOrderedEnumerable<Epic>> GroupedCapabilities { get; init; } = new ();
+        public Dictionary<string, IOrderedEnumerable<Epic>> GroupedCapabilities { get; set; } = new ();
+
+        public void SetGroupedCapabilities(List<Capability> capabilities, List<Epic> epics)
+        {
+            GroupedCapabilities = capabilities.ToDictionary(
+                x => x.Name,
+                x => epics.Where(c => c.Capability.Id == x.Id).OrderBy(c => c.Name));
+        }
 
     }
 }
