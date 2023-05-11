@@ -4,7 +4,7 @@
     [Name] nvarchar(255) NOT NULL,
     [Description] nvarchar(255) NOT NULL,
     OrganisationId int NOT NULL,
-    FrameworkId NVARCHAR(10) NULL,
+    FrameworkId NVARCHAR(36) NULL,
     Created datetime2(7) NOT NULL,
     LastUpdated datetime2(7) NOT NULL,
     LastPublished datetime2(7) NULL,

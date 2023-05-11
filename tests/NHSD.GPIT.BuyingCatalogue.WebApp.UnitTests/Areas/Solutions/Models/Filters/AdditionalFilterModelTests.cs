@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         [CommonAutoData]
         public static void Constructor_WithFrameworks_CreatesFrameworkOptions(List<FrameworkFilterInfo> frameworks)
         {
-            var model = new AdditionalFiltersModel(frameworks);
+            var model = new AdditionalFiltersModel(frameworks, string.Empty, string.Empty);
 
             model.FrameworkOptions.Should().NotBeNull();
             model.FrameworkOptions.Should().HaveCount(frameworks.Count);

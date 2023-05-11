@@ -11,8 +11,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
         {
         }
 
-        public AdditionalFiltersModel(List<FrameworkFilterInfo> frameworks)
+        public AdditionalFiltersModel(List<FrameworkFilterInfo> frameworks, string selectedCapabilityIds, string selectedEpicIds)
         {
+            SelectedCapabilityIds = selectedCapabilityIds;
+            SelectedEpicIds = selectedEpicIds;
+
             FrameworkOptions = frameworks.Select(f => new SelectOption<string>
             {
                 Value = f.Id,
@@ -20,6 +23,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                 Selected = false,
             }).ToList();
         }
+
+        public string SelectedCapabilityIds { get; init; }
+
+        public string SelectedEpicIds { get; init; }
 
         public string SelectedFrameworkId { get; set; }
 

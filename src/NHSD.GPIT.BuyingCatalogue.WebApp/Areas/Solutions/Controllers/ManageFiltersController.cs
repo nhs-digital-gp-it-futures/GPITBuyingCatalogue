@@ -8,10 +8,13 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
+using NHSD.GPIT.BuyingCatalogue.Services.Framework;
 using NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
@@ -24,13 +27,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
     {
         private readonly IOrganisationsService organisationsService;
         private readonly IManageFiltersService manageFiltersService;
+        private readonly ICapabilitiesService capabilitiesService;
+        private readonly IEpicsService epicsService;
+        private readonly IFrameworkService frameworkService;
+
+        private const int MaxNumberOfFilters = 10;
 
         public ManageFiltersController(
             IOrganisationsService organisationsService,
+            ICapabilitiesService capabilitiesService,
+            IEpicsService epicsService,
+            IFrameworkService frameworkService,
             IManageFiltersService manageFiltersService)
         {
             this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
             this.manageFiltersService = manageFiltersService ?? throw new ArgumentNullException(nameof(manageFiltersService));
+            this.capabilitiesService = capabilitiesService ?? throw new ArgumentNullException(nameof(capabilitiesService));
+            this.epicsService = epicsService ?? throw new ArgumentNullException(nameof(epicsService));
+            this.frameworkService = frameworkService ?? throw new ArgumentNullException(nameof(frameworkService));
         }
 
         [HttpGet]
@@ -42,31 +56,51 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View(existingFilters);
         }
 
-        [HttpGet("save-filter")]
-        public async Task<IActionResult> SaveFilter()
+        [HttpPost("save-filter")]
+        public async Task<IActionResult> SaveFilter(
+            AdditionalFiltersModel model)
         {
             var organisationId = await GetUserOrganisationId();
             var existingFilters = await manageFiltersService.GetFilters(organisationId);
 
-            if (existingFilters.Count >= 10)
+            if (existingFilters.Count >= MaxNumberOfFilters)
                 return RedirectToAction(
                     nameof(CannotSaveFilter),
                     typeof(ManageFiltersController).ControllerName());
 
-            //ToDo replace with actual values from filtering
-            var capabilities = new List<Capability>()
-            {
-                new Capability(){Id = 1 , Name = "Appointments Management – Citizen" },
-                new Capability(){Id = 10 , Name = "GP Extracts Verification" },
-            };
-            var epics = new List<Epic>() { 
-                new Epic() { Id = "S020X01E05", Name = "Supplier-defined epic 5", Capability =  capabilities[0]}, 
-                new Epic() { Id = "S020X01E06", Name = "Supplier-defined epic 6", Capability = capabilities[0] },
-                new Epic() { Id = "C10E1", Name = "View GPES payment extract reports", Capability = capabilities[1] },
-            };
-            var framework = new EntityFramework.Catalogue.Models.Framework() { Id = "DFOCVC001", ShortName = "DFOCVC" };
-            var clientApplicationTypes = new List<ClientApplicationType>() { ClientApplicationType.BrowserBased };
-            var hostingTypes = new List<HostingType>() { HostingType.Hybrid, HostingType.OnPremise };
+            return RedirectToAction(
+                nameof(ConfirmSaveFilter),
+                typeof(ManageFiltersController).ControllerName(),
+                new
+                {
+                    model.SelectedCapabilityIds,
+                    model.SelectedEpicIds,
+                    model.SelectedFrameworkId,
+                });
+        }
+
+
+        [HttpGet("save-filter-confirm")]
+        public async Task<IActionResult> ConfirmSaveFilter(
+            string selectedCapabilityIds,
+            string selectedEpicIds,
+            string selectedFrameworkId,
+            string selectedClientApplicationTypeIds,
+            string selectedHostingTypeIds)
+        {
+            var capabilities = await
+                capabilitiesService.GetCapabilitiesByIds(
+                    SolutionsFilterHelper.ParseCapabilityIds(selectedCapabilityIds));
+
+            var epics = await epicsService.GetEpicsByIds(
+                    SolutionsFilterHelper.ParseEpicIds(selectedEpicIds));
+
+            var framework = await frameworkService.GetFramework(selectedFrameworkId);
+
+            var clientApplicationTypes = SolutionsFilterHelper.ParseClientApplicationTypeIds(selectedClientApplicationTypeIds)?.ToList();
+            var hostingTypes = SolutionsFilterHelper.ParseHostingTypeIds(selectedHostingTypeIds)?.ToList();
+
+            var organisationId = await GetUserOrganisationId();
 
             var model = new SaveFilterModel(capabilities, epics, framework, clientApplicationTypes, hostingTypes, organisationId) 
                 { 
@@ -76,8 +110,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View(model);
         }
 
-        [HttpPost("save-filter")]
-        public async Task<IActionResult> SaveFilter(
+        [HttpPost("save-filter-confirm")]
+        public async Task<IActionResult> ConfirmSaveFilter(
             SaveFilterModel model)
         {
             if (!ModelState.IsValid)

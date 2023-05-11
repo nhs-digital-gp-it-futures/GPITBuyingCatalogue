@@ -4,7 +4,7 @@
     [Name] nvarchar(255) NOT NULL,
     [Description] nvarchar(255) NOT NULL,
     OrganisationId int NOT NULL,
-    FrameworkId NVARCHAR(10) NULL,
+    FrameworkId NVARCHAR(36) NULL,
     Created datetime2(7) CONSTRAINT DF_Filter_Created DEFAULT GETUTCDATE() NOT NULL,
     LastUpdated datetime2(7) DEFAULT GETUTCDATE() NOT NULL,
     LastPublished datetime2(7) NULL,

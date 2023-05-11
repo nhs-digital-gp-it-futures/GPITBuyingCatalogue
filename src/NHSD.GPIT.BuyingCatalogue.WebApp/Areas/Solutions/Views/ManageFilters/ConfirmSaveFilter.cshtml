@@ -19,14 +19,22 @@
 
         <form method="post">
             <input type="hidden" asp-for="BackLink"/>
-            @for (var i = 0; i < Model.CapabilityIds.Count; i++)
+            @if (Model.CapabilityIds != null)
             {
-                <input type="hidden" asp-for="CapabilityIds[i]" />
+                @for (var i = 0; i < Model.CapabilityIds.Count; i++)
+                {
+                    <input type="hidden" asp-for="CapabilityIds[i]" />
+                }
             }
-            @for (var i = 0; i < Model.EpicIds.Count; i++)
+            
+            @if (Model.EpicIds != null)
             {
-                <input type="hidden" asp-for="EpicIds[i]" />
+                @for (var i = 0; i < Model.EpicIds.Count; i++)
+                {
+                    <input type="hidden" asp-for="EpicIds[i]" />
+                }
             }
+            
             <input type="hidden" asp-for="FrameworkId" />
             <input type="hidden" asp-for="OrganisationId" />
 
