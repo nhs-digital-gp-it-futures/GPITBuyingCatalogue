@@ -6,15 +6,13 @@ using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
-using EnumsNET;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
-using NHSD.GPIT.BuyingCatalogue.Services.Organisations;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Xunit;
@@ -23,13 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 {
     public static class ManageFiltersServiceTests
     {
-        private const int OrganisationId = 2;
-        private const int NominatedOrganisationId = 3;
-
-        private const string OdsCode = "OdsCode";
-        private const string OrganisationName = "OrganisationName";
-        private const string Junk = "Junk";
-
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
@@ -41,11 +32,291 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
-        public static Task FilterExists_NullOrEmptyFilterName_ThrowsException(ManageFiltersService service, int organisationId)
+        [CommonInlineAutoData(null)]
+        [CommonInlineAutoData("")]
+        [CommonInlineAutoData(" ")]
+        public static Task FilterExists_NullOrEmptyFilterName_ThrowsException(string name, ManageFiltersService service, int organisationId)
         {
-            return Assert.ThrowsAsync<ArgumentNullException>(() => service.FilterExists(null, organisationId));
+            return Assert.ThrowsAsync<ArgumentNullException>(() => service.FilterExists(name, organisationId));
         }
 
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task FilterExists_NameAlreadyExists_DifferentOrganisation_ReturnsFalse(
+            [Frozen] BuyingCatalogueDbContext context,
+            Filter filter,
+            ManageFiltersService service)
+        {
+            context.Filters.Add(filter);
+            await context.SaveChangesAsync();
+
+            var result = await service.FilterExists(filter.Name, filter.OrganisationId + 1);
+
+            result.Should().BeFalse();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task FilterExists_NameAlreadyExists_ReturnsTrue(
+            [Frozen] BuyingCatalogueDbContext context,
+            Filter filter,
+            ManageFiltersService service)
+        {
+            context.Filters.Add(filter);
+            await context.SaveChangesAsync();
+
+            var result = await service.FilterExists(filter.Name, filter.OrganisationId);
+
+            result.Should().BeTrue();
+        }
+
+        [Theory]
+        [CommonInlineAutoData(null)]
+        [CommonInlineAutoData("")]
+        [CommonInlineAutoData(" ")]
+        public static void AddFilter_NullOrEmptyName_ThrowsException(
+            string name,
+            string description,
+            int organisationId,
+            List<int> capabilityIds,
+            List<string> epicIds,
+            string frameworkId,
+            List<ClientApplicationType> clientApplicationTypes,
+            List<HostingType> hostingTypes,
+            ManageFiltersService service)
+        {
+            FluentActions.Awaiting(() => service.AddFilter(name,description, organisationId, capabilityIds, epicIds, frameworkId, clientApplicationTypes, hostingTypes)).Should().ThrowAsync<ArgumentNullException>(nameof(name));
+        }
+
+        [Theory]
+        [CommonInlineAutoData(null)]
+        [CommonInlineAutoData("")]
+        [CommonInlineAutoData(" ")]
+        public static void AddFilter_NullOrEmptyDescription_ThrowsException(
+            string description,
+            string name,
+            int organisationId,
+            List<int> capabilityIds,
+            List<string> epicIds,
+            string frameworkId,
+            List<ClientApplicationType> clientApplicationTypes,
+            List<HostingType> hostingTypes,
+            ManageFiltersService service)
+        {
+            FluentActions.Awaiting(() => service.AddFilter(name, description, organisationId, capabilityIds, epicIds, frameworkId, clientApplicationTypes, hostingTypes)).Should().ThrowAsync<ArgumentNullException>(nameof(description));
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static void AddFilter_NullOrganisation_ThrowsException(
+            string description,
+            string name,
+            int organisationId,
+            List<int> capabilityIds,
+            List<string> epicIds,
+            string frameworkId,
+            List<ClientApplicationType> clientApplicationTypes,
+            List<HostingType> hostingTypes,
+            ManageFiltersService service)
+        {
+            FluentActions.Awaiting(() => service.AddFilter(name, description, organisationId, capabilityIds, epicIds, frameworkId, clientApplicationTypes, hostingTypes)).Should().ThrowAsync<ArgumentNullException>("organisation");
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddFilter_ValidParameters_FilterCreated(
+            [Frozen] BuyingCatalogueDbContext context,
+            string description,
+            string name,
+            Organisation organisation,
+            EntityFramework.Catalogue.Models.Framework framework,
+            ManageFiltersService service)
+        {
+            context.Organisations.Add(organisation);
+            await context.SaveChangesAsync();
+
+            context.Frameworks.Add(framework);
+            await context.SaveChangesAsync();
+
+            var result = await service.AddFilter(name, description, organisation.Id, null, null, framework.Id, null, null);
+            result.Should().NotBe(0);
+
+            var newFilter = await context.Filters.FirstAsync(f => f.Id == result);
+            newFilter.Should().NotBeNull();
+
+            newFilter.Name.Should().Be(name);
+            newFilter.Description.Should().Be(description);
+            newFilter.OrganisationId.Should().Be(organisation.Id);
+            newFilter.FrameworkId.Should().Be(framework.Id);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddFilterCapabilities_NullCapabilityIds_NoCapabilitiesAdded(
+            [Frozen] BuyingCatalogueDbContext context,
+            Filter filter,
+            ManageFiltersService service)
+        {
+            filter.FilterCapabilities.Clear();
+            context.Filters.Add(filter);
+            await context.SaveChangesAsync();
+
+            await service.AddFilterCapabilities(filter.Id, null);
+
+            var result = await context.Filters.FirstAsync(f => f.Id == filter.Id);
+            result.Should().NotBeNull();
+
+            result.FilterCapabilities.Should().BeEmpty();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddFilterCapabilities_EmptyCapabilityIds_NoCapabilitiesAdded(
+            [Frozen] BuyingCatalogueDbContext context,
+            Filter filter,
+            ManageFiltersService service)
+        {
+            filter.FilterCapabilities.Clear();
+            context.Filters.Add(filter);
+            await context.SaveChangesAsync();
+
+            await service.AddFilterCapabilities(filter.Id, new List<int>());
+
+            var result = await context.Filters.FirstAsync(f => f.Id == filter.Id);
+            result.Should().NotBeNull();
+
+            result.FilterCapabilities.Should().BeEmpty();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddFilterCapabilities_NullFilter_NoCapabilitiesAdded(
+            [Frozen] BuyingCatalogueDbContext context,
+            List<int> capabilityIds,
+            int invalidFilterId,
+            ManageFiltersService service)
+        {
+            await service.AddFilterCapabilities(invalidFilterId, capabilityIds);
+
+            var filter = await context.Filters.FirstOrDefaultAsync(f => f.Id == invalidFilterId);
+            filter.Should().BeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddFilterCapabilities_ValidParameters_CapabilitiesAdded(
+                 [Frozen] BuyingCatalogueDbContext context,
+                 Filter filter,
+                 List<Capability> capabilities,
+                 ManageFiltersService service)
+        {
+            filter.FilterCapabilities.Clear();
+            context.Filters.Add(filter);
+            await context.SaveChangesAsync();
+
+            context.Capabilities.AddRange(capabilities);
+            await context.SaveChangesAsync();
+
+            var capabilityIds = capabilities.Select(c => c.Id).ToList();
+            
+            await service.AddFilterCapabilities(filter.Id, capabilityIds);
+            
+            var result = await context.Filters.FirstAsync(f => f.Id == filter.Id);
+            result.Should().NotBeNull();
+
+            result.FilterCapabilities.Should().NotBeNullOrEmpty();
+            result.FilterCapabilities.Count.Should().Be(capabilities.Count);
+
+            foreach (var fc in result.FilterCapabilities)
+            {
+                fc.FilterId.Should().Be(filter.Id);
+                capabilityIds.Should().Contain(fc.CapabilityId);
+            }
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddFilterEpics_NullEpicIds_NoEpicsAdded(
+            [Frozen] BuyingCatalogueDbContext context,
+            Filter filter,
+            ManageFiltersService service)
+        {
+            filter.FilterEpics.Clear();
+            context.Filters.Add(filter);
+            await context.SaveChangesAsync();
+
+            await service.AddFilterCapabilities(filter.Id, null);
+
+            var result = await context.Filters.FirstAsync(f => f.Id == filter.Id);
+            result.Should().NotBeNull();
+
+            result.FilterEpics.Should().BeEmpty();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddFilterEpics_EmptyEpicIds_NoEpicsAdded(
+            [Frozen] BuyingCatalogueDbContext context,
+            Filter filter,
+            ManageFiltersService service)
+        {
+            filter.FilterEpics.Clear();
+            context.Filters.Add(filter);
+            await context.SaveChangesAsync();
+
+            await service.AddFilterEpics(filter.Id, new List<string>());
+
+            var result = await context.Filters.FirstAsync(f => f.Id == filter.Id);
+            result.Should().NotBeNull();
+
+            result.FilterEpics.Should().BeEmpty();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddFilterEpics_NullFilter_NoEpicsAdded(
+            [Frozen] BuyingCatalogueDbContext context,
+            List<string> epicIds,
+            int invalidFilterId,
+            ManageFiltersService service)
+        {
+            await service.AddFilterEpics(invalidFilterId, epicIds);
+
+            var filter = await context.Filters.FirstOrDefaultAsync(f => f.Id == invalidFilterId);
+            filter.Should().BeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddFilterEpics_ValidParameters_EpicsAdded(
+                 [Frozen] BuyingCatalogueDbContext context,
+                 Filter filter,
+                 List<Epic> epics,
+                 ManageFiltersService service)
+        {
+            filter.FilterEpics.Clear();
+            context.Filters.Add(filter);
+            await context.SaveChangesAsync();
+
+            context.Epics.AddRange(epics);
+            await context.SaveChangesAsync();
+
+            var epicIds = epics.Select(c => c.Id).ToList();
+
+            await service.AddFilterEpics(filter.Id, epicIds);
+
+            var result = await context.Filters.FirstOrDefaultAsync(f => f.Id == filter.Id);
+            result.Should().NotBeNull();
+
+            result.FilterEpics.Should().NotBeNullOrEmpty();
+            result.FilterEpics.Count.Should().Be(epics.Count);
+
+            foreach (var fe in result.FilterEpics)
+            {
+                fe.FilterId.Should().Be(filter.Id);
+                epicIds.Should().Contain(fe.EpicId);
+            }
+        }
     }
 }

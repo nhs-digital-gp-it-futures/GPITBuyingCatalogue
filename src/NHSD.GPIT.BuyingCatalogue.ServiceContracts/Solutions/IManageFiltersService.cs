@@ -6,7 +6,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 {
     public interface IManageFiltersService
     {
-        Task<int> SaveFilter(
+        Task<int> AddFilter(
             string name,
             string description,
             int organisationId,

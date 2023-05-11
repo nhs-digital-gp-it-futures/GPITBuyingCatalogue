@@ -124,7 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return View(model);
             }
 
-            await manageFiltersService.SaveFilter(
+            await manageFiltersService.AddFilter(
                 model.Name, 
                 model.Description, 
                 model.OrganisationId, 
