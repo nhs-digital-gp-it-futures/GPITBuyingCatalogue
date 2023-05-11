@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -101,12 +100,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
             return total;
         }
 
-        public static decimal TotalCost(this Order order, bool roundResult = false)
+        public static decimal TotalPreviousCost(this OrderWrapper orderWrapper, bool roundResult = false)
         {
-            var maximumTerm = order?.MaximumTerm ?? 36;
+            if (orderWrapper == null)
+            {
+                return decimal.Zero;
+            }
 
-            var total = order.TotalOneOffCost()
-                + (order.TotalMonthlyCost() * maximumTerm);
+            var total = orderWrapper.PreviousOrders.Sum(o => o.TotalCost());
 
             if (roundResult)
             {
@@ -123,9 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
                 return decimal.Zero;
             }
 
-            var total = orderWrapper.IsAmendment
-                ? (orderWrapper.Previous?.TotalCost() ?? decimal.Zero) + (orderWrapper.Order?.TotalCostForAmendment() ?? decimal.Zero)
-                : orderWrapper.Order?.TotalCost() ?? decimal.Zero;
+            var total = orderWrapper.TotalPreviousCost() + orderWrapper.Order.TotalCost();
 
             if (roundResult)
             {
@@ -182,13 +181,27 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
                        + (price.CalculateCostPerMonth(orderItem.TotalQuantity) * term);
         }
 
-        private static decimal TotalCostForAmendment(this Order order)
+        private static decimal TotalCost(this Order order)
+        {
+            return order.IsAmendment
+                ? order.TotalCostByPlannedDelivery()
+                : order.TotalCostForMaximumTerm();
+        }
+
+        private static decimal TotalCostByPlannedDelivery(this Order order)
         {
             return order.TotalOneOffCost() + order?.OrderItems.Sum(i =>
             {
                 var term = GetTerm(order.EndDate, i);
                 return i.OrderItemPrice.CalculateCostPerMonth(i.TotalQuantity) * term;
             }) ?? decimal.Zero;
+        }
+
+        private static decimal TotalCostForMaximumTerm(this Order order)
+        {
+            var maximumTerm = order?.MaximumTerm ?? 36;
+
+            return order.TotalOneOffCost() + (order.TotalMonthlyCost() * maximumTerm);
         }
 
         private static int GetTerm(EndDate endDate, OrderItem orderItem)

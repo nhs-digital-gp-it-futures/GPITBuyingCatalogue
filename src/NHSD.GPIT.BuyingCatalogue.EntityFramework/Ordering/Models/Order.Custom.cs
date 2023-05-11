@@ -243,5 +243,23 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 SupplierContact = SupplierContact.Clone(),
             };
         }
+
+        public OrderItem InitialiseOrderItem(CatalogueItem catalogueItem)
+        {
+            return new OrderItem
+            {
+                OrderId = Id,
+                CatalogueItemId = catalogueItem.Id,
+                CatalogueItem = catalogueItem,
+                Created = DateTime.UtcNow,
+            };
+        }
+
+        public OrderItem InitialiseOrderItem(CatalogueItem catalogueItem, OrderItemPrice orderItemPrice)
+        {
+            var orderItem = InitialiseOrderItem(catalogueItem);
+            orderItem.OrderItemPrice = orderItemPrice;
+            return orderItem;
+        }
     }
 }

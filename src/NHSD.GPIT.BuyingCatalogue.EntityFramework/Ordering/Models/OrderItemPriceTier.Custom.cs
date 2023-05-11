@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             OrderItemPrice = price;
         }
 
-        public OrderItemPriceTier(OrderItemPrice price, OrderItemPriceTier tier)
+        internal OrderItemPriceTier(OrderItemPrice price, OrderItemPriceTier tier)
         {
             OrderId = price.OrderId;
             CatalogueItemId = price.CatalogueItemId;

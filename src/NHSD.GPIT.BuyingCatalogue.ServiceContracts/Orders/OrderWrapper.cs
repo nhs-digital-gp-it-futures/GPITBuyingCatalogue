@@ -30,6 +30,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
                 : new List<Order>();
         }
 
+        public IEnumerable<Order> PreviousOrders => previous;
+
         public bool IsAmendment => Order.CallOffId.IsAmendment;
 
         public Order Last => previous.Any()
