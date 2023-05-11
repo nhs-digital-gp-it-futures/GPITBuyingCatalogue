@@ -100,7 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                        sortBy = model.SelectedSortOption.ToString(),
                        selectedFrameworkId,
                        selectedClientApplicationTypeIds = additionalFiltersModel.SelectedClientApplicationTypes,
-					   selectedHostingTypeIds = additionalFiltersModel.SelectedHostingTypes(),
+					   selectedHostingTypeIds = additionalFiltersModel.CombineSelectedOptions(additionalFiltersModel.HostingTypeOptions),
 				   });
         }
 

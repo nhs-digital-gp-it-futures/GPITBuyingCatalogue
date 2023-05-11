@@ -49,6 +49,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 
         public List<SelectOption<int>> ClientApplicationTypeOptions { get; set; }
 
+        public List<SelectOption<int>> HostingTypeOptions { get; set; }
+
         public string SelectedClientApplicationTypes
         {
             get
@@ -59,11 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
             }
         }
 
-        public List<SelectOption<string>> HostOptions { get; set; }
-        public List<SelectOption<string>> HostingTypeOptions { get; set; }
-
-
-        //TODO: Try combining with SelectedClientApplicationTypes when that branch is merged
+        // TODO: Try combining with SelectedClientApplicationTypes when that branch is merged
         public string SelectedHostingTypes()
         {
             return string.Join(
@@ -71,9 +69,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                     HostingTypeOptions.Where(x => x.Selected).Select(x => x.Value));
         }
 
-        public void SetHostingType(string selectedHostingTypeIds)
+        public string CombineSelectedOptions(List<SelectOption<int>> options)
         {
-            HostingTypeOptions = new List<SelectOption<string>> { };
+            return string.Join(
+                    FilterConstants.Delimiter,
+                    options.Where(x => x.Selected).Select(x => x.Value));
+        }
+
+        private void SetHostingType(string selectedHostingTypeIds)
+        {
+            HostingTypeOptions = Enum.GetValues(typeof(HostingType))
+            .Cast<HostingType>()
+            .Select(x => new SelectOption<int>
+            {
+                Value = (int)x,
+                Text = x.Name(),
+                Selected = !string.IsNullOrEmpty(selectedHostingTypeIds) && selectedHostingTypeIds.Contains(((int)x).ToString()),
+            })
+           .OrderByDescending(x => x.Text)
+           .ToList();
+            /*HostingTypeOptions = new List<SelectOption<string>> { };
             foreach (var host in Enum.GetValues(typeof(HostingType)))
             {
                 HostingTypeOptions.Add(new SelectOption<string>
@@ -83,8 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                         .First().GetCustomAttribute<DisplayAttribute>()
                         .GetName(),
                     Selected = !string.IsNullOrEmpty(selectedHostingTypeIds) && selectedHostingTypeIds.Contains(host.ToString()),
-                });
-            }
+                });*/
         }
     }
 }
