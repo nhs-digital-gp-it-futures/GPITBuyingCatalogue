@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -63,6 +63,38 @@ public static class FrameworkServiceTests
         };
 
         var result = await service.GetFrameworksByCatalogueItems(new List<CatalogueItemId> { catalogueItem.Id });
+
+        result.Should().HaveCount(1);
+        result.Should().BeEquivalentTo(expectedFrameworks);
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task GetFrameworksByCatalogueItems_NoCatalogueItems_ReturnsExpected(
+    EntityFramework.Catalogue.Models.Framework framework,
+    FrameworkSolution frameworkSolution,
+    Solution solution,
+    [Frozen] BuyingCatalogueDbContext dbContext,
+    FrameworkService service)
+    {
+        dbContext.FrameworkSolutions.RemoveRange(dbContext.FrameworkSolutions);
+
+        solution.FrameworkSolutions.Clear();
+        frameworkSolution.Solution = solution;
+        frameworkSolution.Framework = framework;
+
+        dbContext.FrameworkSolutions.Add(frameworkSolution);
+        dbContext.Frameworks.Add(framework);
+        dbContext.Solutions.Add(solution);
+
+        await dbContext.SaveChangesAsync();
+
+        var expectedFrameworks = new List<FrameworkFilterInfo>
+        {
+            new() { Id = framework.Id, ShortName = framework.ShortName, CountOfActiveSolutions = 0 },
+        };
+
+        var result = await service.GetFrameworksByCatalogueItems(new List<CatalogueItemId>());
 
         result.Should().HaveCount(1);
         result.Should().BeEquivalentTo(expectedFrameworks);
