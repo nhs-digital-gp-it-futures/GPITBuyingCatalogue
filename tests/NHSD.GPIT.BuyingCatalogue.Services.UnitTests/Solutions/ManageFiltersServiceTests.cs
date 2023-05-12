@@ -43,7 +43,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             return Assert.ThrowsAsync<ArgumentNullException>(() => service.FilterExists(name, organisationId));
         }
 
-
         [Theory]
         [InMemoryDbAutoData]
         public static async Task FilterExists_NameAlreadyExists_DifferentOrganisation_ReturnsFalse(
@@ -159,7 +158,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                         clientApplicationTypes,
                         hostingTypes))
                 .Should()
-                .ThrowAsync<ArgumentNullException>("organisation");
+                .ThrowAsync<ArgumentException>("organisationId");
         }
 
         [Theory]

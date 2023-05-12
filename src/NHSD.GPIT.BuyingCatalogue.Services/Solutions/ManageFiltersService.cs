@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             var organisation = await dbContext.Organisations.FirstOrDefaultAsync(o => o.Id == organisationId);
 
             if (organisation == null)
-                throw new ArgumentNullException(nameof(organisation));
+                throw new ArgumentException("Invalid organisation", nameof(organisationId));
 
             var framework = !string.IsNullOrEmpty(frameworkId) ? await dbContext.Frameworks.FirstAsync(o => o.Id == frameworkId) : null;
 
@@ -173,7 +173,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task<bool> FilterExists(string filterName, int organisationId)
         {
-            if (string.IsNullOrWhiteSpace(filterName)) 
+            if (string.IsNullOrWhiteSpace(filterName))
                 throw new ArgumentNullException(nameof(filterName));
 
             return await dbContext.Filters.AnyAsync(f => f.Name == filterName && f.OrganisationId == organisationId);

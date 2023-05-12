@@ -22,13 +22,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
         {
             CapabilityIds = capabilities.Select(x => x.Id).ToList();
             EpicIds = epics.Select(x => x.Id).ToList();
-            
+
             if (framework != null)
             {
                 FrameworkId = framework.Id;
                 FrameworkName = framework.ShortName;
             }
-            
+
             ClientApplicationTypes = clientApplicationTypes;
             HostingTypes = hostingTypes;
             OrganisationId = organisationId;
@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
 
         public List<string> EpicIds { get; init; }
 
-        public string FrameworkId{ get; init; }
+        public string FrameworkId { get; init; }
 
         public string FrameworkName { get; init; }
 
@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
 
         public List<HostingType> HostingTypes { get; init; }
 
-        public Dictionary<string, IOrderedEnumerable<Epic>> GroupedCapabilities { get; set; } = new ();
+        public Dictionary<string, IOrderedEnumerable<Epic>> GroupedCapabilities { get; set; } = new();
 
         public void SetGroupedCapabilities(List<Capability> capabilities, List<Epic> epics)
         {
@@ -62,6 +62,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
                 x => x.Name,
                 x => epics.Where(c => c.Capability.Id == x.Id).OrderBy(c => c.Name));
         }
-
     }
 }

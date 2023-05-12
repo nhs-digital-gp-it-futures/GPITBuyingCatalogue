@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 
         public List<SelectOption<int>> ClientApplicationTypeOptions { get; set; }
 
-        public string SelectedClientApplicationTypes
+        public string SelectedClientApplicationTypeIds
         {
             get
             {

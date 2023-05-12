@@ -7,14 +7,14 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
     {
         [Display(Name = "Browser-based")]
         [EnumMember(Value = "browser-based")]
-        BrowserBased = 1,
+        BrowserBased,
 
         [Display(Name = "Mobile or tablet")]
         [EnumMember(Value = "native-mobile")]
-        MobileTablet = 2,
+        MobileTablet,
 
         [Display(Name = "Desktop")]
         [EnumMember(Value = "native-desktop")]
-        Desktop = 3,
+        Desktop,
     }
 }

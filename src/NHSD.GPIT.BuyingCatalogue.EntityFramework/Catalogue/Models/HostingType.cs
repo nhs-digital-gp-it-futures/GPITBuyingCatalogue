@@ -5,15 +5,15 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
     public enum HostingType
     {
         [Display(Name = "Public cloud")]
-        PublicCloud = 1,
+        PublicCloud,
 
         [Display(Name = "Private cloud")]
-        PrivateCloud = 2,
+        PrivateCloud,
 
         [Display(Name = "Hybrid")]
-        Hybrid = 3,
+        Hybrid,
 
         [Display(Name = "On premise")]
-        OnPremise = 4,
+        OnPremise,
     }
 }
