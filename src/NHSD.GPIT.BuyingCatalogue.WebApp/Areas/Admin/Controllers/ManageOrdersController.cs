@@ -96,8 +96,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             using var memoryStream = new MemoryStream();
             await csvService.CreateFullOrderCsvAsync(orderId, memoryStream);
             memoryStream.Position = 0;
+            var callOffIdPrefix = GetFileNamePrefix(callOffId);
 
-            return File(memoryStream.ToArray(), "application/octet-stream", $"{callOffId}_{externalOrgId}_full.csv");
+            return File(memoryStream.ToArray(), "application/octet-stream", $"{callOffIdPrefix}{externalOrgId}_full.csv");
         }
 
         [HttpGet("{callOffId}/download/patient-order-csv")]
@@ -107,8 +108,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             using var memoryStream = new MemoryStream();
             await csvService.CreatePatientNumberCsvAsync(orderId, memoryStream);
             memoryStream.Position = 0;
+            var callOffIdPrefix = GetFileNamePrefix(callOffId);
 
-            return File(memoryStream.ToArray(), "application/octet-stream", $"{callOffId}_{externalOrgId}_patient.csv");
+            return File(memoryStream.ToArray(), "application/octet-stream", $"{callOffIdPrefix}{externalOrgId}_patient.csv");
         }
 
         [HttpGet("{callOffId}/download/pdf")]
@@ -169,6 +171,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             await orderAdminService.DeleteOrder(model.CallOffId, model.NameOfRequester, model.NameOfApprover, model.ApprovalDate);
 
             return RedirectToAction(nameof(Index));
+        }
+
+        private static string GetFileNamePrefix(CallOffId callOffId)
+        {
+            return callOffId.IsAmendment
+                ? $"Amendment_{callOffId}_"
+                : $"{callOffId}_";
         }
     }
 }
