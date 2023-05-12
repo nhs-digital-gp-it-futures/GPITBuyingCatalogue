@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             string selectedCapabilityIds,
             string selectedEpicIds,
             string selectedFrameworkId,
-            string selectedClientApplicationTypeIds,
+            string selectedClientApplicationTypes,
             string selectedHostingTypeIds)
         {
             var organisationId = await GetUserOrganisationId();
@@ -94,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var framework = await frameworkService.GetFramework(selectedFrameworkId);
 
-            var clientApplicationTypes = SolutionsFilterHelper.ParseClientApplicationTypeIds(selectedClientApplicationTypeIds)?.ToList();
+            var clientApplicationTypes = SolutionsFilterHelper.ParseClientApplicationTypeIds(selectedClientApplicationTypes)?.ToList();
             var hostingTypes = SolutionsFilterHelper.ParseHostingTypeIds(selectedHostingTypeIds)?.ToList();
 
             var model = new SaveFilterModel(capabilities, epics, framework, clientApplicationTypes, hostingTypes, organisationId) 
@@ -104,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                         selectedCapabilityIds,
                         selectedEpicIds,
                         selectedFrameworkId,
-                        selectedClientApplicationTypeIds,
+                        selectedClientApplicationTypes,
                         selectedHostingTypeIds,
                     }), 
                     BackLinkText = "Go back",
