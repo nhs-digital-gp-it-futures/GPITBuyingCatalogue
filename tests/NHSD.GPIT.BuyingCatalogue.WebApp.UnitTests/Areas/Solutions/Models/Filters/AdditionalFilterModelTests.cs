@@ -89,5 +89,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
                 item.Selected.Should().BeFalse();
             }
         }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Constructor_WithSelectedCapabilityAndEpics_PropertiesSetCorrectly(string selectedCapabilityIds, string selectedEpicIds)
+        {
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, selectedCapabilityIds, selectedEpicIds);
+
+            model.SelectedCapabilityIds.Should().Be(selectedCapabilityIds);
+            model.SelectedEpicIds.Should().Be(selectedEpicIds);
+        }
     }
 }
