@@ -35,7 +35,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             // EF Core cannot translate Contains(string, StringComparison). However, as this is executed by the DB the
             // DB collation rules will apply so a case-insensitive comparison will occur.
 #pragma warning disable CA1307
-            Expression<Func<CatalogueItem, bool>> searchPredicate = ci => ci.Supplier.Name.Contains(searchString) && ci.CatalogueItemType == cIType;
+            Expression<Func<CatalogueItem, bool>> searchPredicate =
+                ci => ci.Supplier.Name.Contains(searchString) && ci.CatalogueItemType == cIType;
 #pragma warning restore CA1307
 
             IQueryable<CatalogueItem> query = dbContext.CatalogueItems.Where(searchPredicate);
@@ -55,9 +56,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             return dbContext.Suppliers
                 .Include(x => x.CatalogueItems)
-                .Where(x => x.IsActive
-                    && x.CatalogueItems.Any(ci => ci.CatalogueItemType == CatalogueItemType.Solution
-                        && ci.PublishedStatus == PublicationStatus.Published))
+                .Where(
+                    x => x.IsActive
+                        && x.CatalogueItems.Any(
+                            ci => ci.CatalogueItemType == CatalogueItemType.Solution
+                                && ci.PublishedStatus == PublicationStatus.Published
+                                && ci.Solution.FrameworkSolutions.Select(f => f.Framework).Distinct().Any(f => !f.IsExpired)))
                 .OrderBy(x => x.Name)
                 .ToListAsync();
         }
@@ -69,10 +73,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .AsNoTracking()
                 .Include(ci => ci.SupplierServiceAssociations)
                 .Include(ci => ci.Supplier)
-                .Where(ci =>
-                    ci.CatalogueItemType == CatalogueItemType.Solution
-                    && ci.PublishedStatus == PublicationStatus.Published
-                    && ci.SupplierServiceAssociations.Any())
+                .Where(
+                    ci =>
+                        ci.CatalogueItemType == CatalogueItemType.Solution
+                        && ci.PublishedStatus == PublicationStatus.Published
+                        && ci.SupplierServiceAssociations.Any()
+                        && ci.Solution.FrameworkSolutions.Select(f => f.Framework).Distinct().Any(f => !f.IsExpired))
                 .Select(ci => ci.Supplier)
                 .Where(s => s.IsActive)
                 .Distinct()
@@ -97,7 +103,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task AddOrUpdateOrderSupplierContact(CallOffId callOffId, string internalOrgId, SupplierContact contact)
+        public async Task AddOrUpdateOrderSupplierContact(
+            CallOffId callOffId,
+            string internalOrgId,
+            SupplierContact contact)
         {
             if (contact is null)
                 throw new ArgumentNullException(nameof(contact));
@@ -126,10 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             if (contact is null)
                 throw new ArgumentNullException(nameof(contact));
 
-            order.Supplier ??= await dbContext.Suppliers.FindAsync(supplier.Id) ?? new Supplier
-            {
-                Id = supplier.Id,
-            };
+            order.Supplier ??= await dbContext.Suppliers.FindAsync(supplier.Id) ?? new Supplier { Id = supplier.Id, };
 
             order.Supplier.Name = supplier.Name;
             order.Supplier.Address = supplier.Address;

@@ -34,6 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
             IsPilotSolution = catalogueItem.Solution.IsPilotSolution;
             LastReviewed = catalogueItem.Solution.LastUpdated;
+            Frameworks = catalogueItem.Solution.FrameworkSolutions.Select(x => x.Framework).Distinct().ToList();
 
             SetSections(contentStatus);
             SetPaginationFooter();
@@ -55,13 +56,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public bool IsPilotSolution { get; }
 
+        public List<BuyingCatalogue.EntityFramework.Catalogue.Models.Framework> Frameworks { get; set; }
+
+        public bool HasExpiredFrameworks => Frameworks.Any(x => x.IsExpired);
+
         public virtual IList<SectionModel> GetSections()
         {
             var sectionsToShow = new List<SectionModel>(sections.Where(s => s.Show));
 
             sectionsToShow.ForEach(s => s.SolutionId = SolutionId.ToString());
 
-            if (sectionsToShow.FirstOrDefault(s => s.Name.EqualsIgnoreCase(Section)) is { } sectionModel)
+            if (sectionsToShow.FirstOrDefault(s => s.Name.EqualsIgnoreCase(Section)) is {} sectionModel)
                 sectionModel.Selected = true;
 
             return sectionsToShow;
@@ -72,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public void SetPaginationFooter()
         {
             var sectionsToShow = new List<SectionModel>(sections.Where(s => s.Show));
-            if (sectionsToShow.FirstOrDefault(s => s.Name.EqualsIgnoreCase(Section)) is not { } sectionModel)
+            if (sectionsToShow.FirstOrDefault(s => s.Name.EqualsIgnoreCase(Section)) is not {} sectionModel)
                 return;
 
             var index = sectionsToShow.IndexOf(sectionModel);

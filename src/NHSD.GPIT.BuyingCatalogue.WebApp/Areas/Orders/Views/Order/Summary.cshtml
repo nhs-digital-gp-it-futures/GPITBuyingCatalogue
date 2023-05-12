@@ -8,13 +8,16 @@
     ViewBag.Title = Model.Title;
 }
 
-
 <partial name="Partials/_BackLink" model="Model" />
 
 @{
     var solutions = Model.RolledUp.GetSolutions().ToList();
     var additionalServices = Model.RolledUp.GetAdditionalServices().ToList();
     var associatedServices = Model.RolledUp.GetAssociatedServices().ToList();
+
+    var orderSolution = Model.Order.GetSolution();
+    var frameworks = orderSolution.CatalogueItem?.Solution?.FrameworkSolutions?.Select(x => x.Framework)?.Distinct()?.ToList();
+
     var contractTerm = Model.Order.MaximumTerm.HasValue ? $" ({Model.Order.MaximumTerm} months)" : " (estimated)";
     var solutionsTitle = solutions.Count > 1 ? "Catalogue Solutions" : "Catalogue Solution";
 }
@@ -22,11 +25,17 @@
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
         <nhs-validation-summary />
-        <nhs-page-title title="@ViewBag.Title"
-                        caption="@Model.Order.CallOffId"
-                        advice="@Model.AdviceText" />
+    <nhs-page-title title="@ViewBag.Title"
+                    caption="@Model.Order.CallOffId" />
 
-        @if (Model.CanBeAmended)
+    @if (frameworks.Any(x => x.IsExpired))
+    {
+        <partial name="Partials/_ExpiredFrameworks" model="@frameworks" />
+    }
+
+    <p class="nhsuk-lede-text">@Model.AdviceText</p>
+
+    @if (Model.CanBeAmended)
         {
             <vc:nhs-action-link text="Amend this order"
                             url="@Url.Action(

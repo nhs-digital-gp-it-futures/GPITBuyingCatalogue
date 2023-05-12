@@ -1,7 +1,5 @@
-@using NHSD.GPIT.BuyingCatalogue.Framework.Settings
 @using NHSD.GPIT.BuyingCatalogue.Framework.Constants
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
-@inject CookieExpirationSettings CookieExpirationSettings
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionDisplayBaseModel
 @{ ViewBag.Title = $"{Model.Section}"; }
 <!DOCTYPE html>
@@ -56,7 +54,12 @@
                                     caption="@Model.SolutionName" />
                 </div>
             </div>
-            
+
+            @if (Model.HasExpiredFrameworks)
+            {
+                <partial name="Partials/_ExpiredFrameworks" model="Model.Frameworks" />
+            }
+
             @if (Model.IsPilotSolution)
             {
                 <div class="nhsuk-grid-row">
