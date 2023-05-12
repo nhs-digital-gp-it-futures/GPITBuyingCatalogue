@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             }
         }
 
-        public OrderItemPrice(OrderItemPrice existingPrice)
+        private OrderItemPrice(OrderItemPrice existingPrice)
             : this()
         {
             CatalogueItemId = existingPrice.CatalogueItemId;
@@ -56,6 +56,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         }
 
         public ICollection<IPriceTier> PriceTiers => OrderItemPriceTiers.Cast<IPriceTier>().ToList();
+
+        public OrderItemPrice Copy()
+        {
+            return new OrderItemPrice(this);
+        }
 
         public string ToPriceUnitString()
         {
