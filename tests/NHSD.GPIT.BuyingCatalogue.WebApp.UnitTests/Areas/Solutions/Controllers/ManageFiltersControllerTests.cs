@@ -102,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             string primaryOrganisationInternalId,
             Organisation organisation)
         {
-            var existingFilters= new List<Filter>(new Filter[numberOfExistingFilters]);
+            var existingFilters = new List<Filter>(new Filter[numberOfExistingFilters]);
 
             organisationsService
                 .Setup(x => x.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId))
@@ -119,7 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 frameworkService,
                 manageFiltersService,
                 primaryOrganisationInternalId);
-            
+
             var result = await controller.ConfirmSaveFilter(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
 
             organisationsService.VerifyAll();
