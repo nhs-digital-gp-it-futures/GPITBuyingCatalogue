@@ -426,9 +426,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             orderItem.TotalCost().Should().Be(0);
         }
 
+        [Fact]
+        public static void OrderWrapper_Null_TotalPreviousCost_Returns_0()
+        {
+            ((OrderWrapper)null).TotalPreviousCost().Should().Be(0);
+        }
+
+        [Fact]
+        public static void OrderWrapper_Null_TotalCost_Returns_0()
+        {
+            ((OrderWrapper)null).TotalCost().Should().Be(0);
+        }
+
         [Theory]
         [CommonAutoData]
-        public static void OrderWrapper_TotalCost(IFixture fixture)
+        public static void OrderWrapper_TotalCost_And_TotalPreviousCost_One_Amendment(IFixture fixture)
         {
             var maximumTerm = 12;
             var price = 12M;
@@ -458,7 +470,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
         [Theory]
         [CommonAutoData]
-        public static void OrderWrapper_TotalCost_MultipleAmendments(IFixture fixture)
+        public static void OrderWrapper_TotalCost_And_TotalPreviousCosts_Multiple_Amendments(IFixture fixture)
         {
             var maximumTerm = 12;
             var price = 12M;
