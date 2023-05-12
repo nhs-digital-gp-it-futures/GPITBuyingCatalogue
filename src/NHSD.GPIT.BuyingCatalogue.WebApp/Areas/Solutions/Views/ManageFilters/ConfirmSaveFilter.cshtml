@@ -96,10 +96,10 @@
                     {
                         @for (var i = 0; i < Model.ClientApplicationTypes.Count; i++)
                         {
-                            <p>
+                            <li>
                                 <input type="hidden" asp-for="ClientApplicationTypes[i]"/>
                                 @Model.ClientApplicationTypes[i]
-                            </p>
+                            </li>
                         }
                     }
                 </nhs-summary-list-row>
@@ -128,10 +128,10 @@
                     {
                         @for (var i = 0; i < Model.HostingTypes.Count; i++)
                         {
-                            <p>
+                            <li>
                                 <input type="hidden" asp-for="HostingTypes[i]"/>
                                 @Model.HostingTypes[i]
-                            </p>
+                            </li>
                         }
                     }
                 </nhs-summary-list-row>

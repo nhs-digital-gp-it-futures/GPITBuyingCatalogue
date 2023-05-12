@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             var organisation = await dbContext.Organisations.FirstOrDefaultAsync(o => o.Id == organisationId);
 
-            if(organisation == null)
+            if (organisation == null)
                 throw new ArgumentNullException(nameof(organisation));
 
             var framework = !string.IsNullOrEmpty(frameworkId) ? await dbContext.Frameworks.FirstAsync(o => o.Id == frameworkId) : null;
@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task AddFilterCapabilities(int filterId, List<int> capabilityIds)
         {
-            if(capabilityIds is null || capabilityIds.Count == 0) return;
+            if (capabilityIds is null || capabilityIds.Count == 0) return;
 
             var filter = await dbContext.Filters.FirstOrDefaultAsync(o => o.Id == filterId);
 
@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             foreach (var id in capabilityIds)
             {
-                if(filter.FilterCapabilities.Any(x => x.CapabilityId == id))
+                if (filter.FilterCapabilities.Any(x => x.CapabilityId == id))
                     continue;
 
                 var capability = dbContext.Capabilities.First(x => x.Id == id);
@@ -170,6 +170,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             await dbContext.SaveChangesAsync();
         }
+
         public async Task<bool> FilterExists(string filterName, int organisationId)
         {
             if(string.IsNullOrWhiteSpace(filterName)) 
