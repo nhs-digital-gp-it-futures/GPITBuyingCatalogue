@@ -21,13 +21,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
     [Route("manage-filters")]
     public class ManageFiltersController : Controller
     {
+        private const int MaxNumberOfFilters = 10;
+
         private readonly IOrganisationsService organisationsService;
         private readonly IManageFiltersService manageFiltersService;
         private readonly ICapabilitiesService capabilitiesService;
         private readonly IEpicsService epicsService;
         private readonly IFrameworkService frameworkService;
-
-        private const int MaxNumberOfFilters = 10;
 
         public ManageFiltersController(
             IOrganisationsService organisationsService,
@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            //TODO Currently using to Display filters. Will become manage filters page
+            // TODO Currently using to Display filters. Will become manage filters page
             var organisationId = await GetUserOrganisationId();
             var existingFilters = await manageFiltersService.GetFilters(organisationId);
             return View(existingFilters);
@@ -81,13 +81,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var existingFilters = await manageFiltersService.GetFilters(organisationId);
 
             if (existingFilters.Count >= MaxNumberOfFilters)
-                return RedirectToAction(
-                    nameof(CannotSaveFilter),
-                    typeof(ManageFiltersController).ControllerName());
+                return RedirectToAction(nameof(CannotSaveFilter), typeof(ManageFiltersController).ControllerName());
 
-            var capabilities = await
-                capabilitiesService.GetCapabilitiesByIds(
-                    SolutionsFilterHelper.ParseCapabilityIds(selectedCapabilityIds));
+            var capabilities = await capabilitiesService.GetCapabilitiesByIds(SolutionsFilterHelper.ParseCapabilityIds(selectedCapabilityIds));
 
             var epics = await epicsService.GetEpicsByIds(
                     SolutionsFilterHelper.ParseEpicIds(selectedEpicIds));
@@ -97,8 +93,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var clientApplicationTypes = SolutionsFilterHelper.ParseClientApplicationTypeIds(selectedClientApplicationTypeIds)?.ToList();
             var hostingTypes = SolutionsFilterHelper.ParseHostingTypeIds(selectedHostingTypeIds)?.ToList();
 
-            var model = new SaveFilterModel(capabilities, epics, framework, clientApplicationTypes, hostingTypes, organisationId) 
-                { 
+            var model = new SaveFilterModel(capabilities, epics, framework, clientApplicationTypes, hostingTypes, organisationId)
+                {
                     BackLink = Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new
                     {
                         selectedCapabilityIds,
@@ -106,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                         selectedFrameworkId,
                         selectedClientApplicationTypeIds,
                         selectedHostingTypeIds,
-                    }), 
+                    }),
                     BackLinkText = "Go back",
                 };
             return View(model);
@@ -125,13 +121,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             }
 
             await manageFiltersService.AddFilter(
-                model.Name, 
-                model.Description, 
-                model.OrganisationId, 
-                model.CapabilityIds, 
-                model.EpicIds, 
-                model.FrameworkId, 
-                model.ClientApplicationTypes, 
+                model.Name,
+                model.Description,
+                model.OrganisationId,
+                model.CapabilityIds,
+                model.EpicIds,
+                model.FrameworkId,
+                model.ClientApplicationTypes,
                 model.HostingTypes);
 
             return RedirectToAction(
