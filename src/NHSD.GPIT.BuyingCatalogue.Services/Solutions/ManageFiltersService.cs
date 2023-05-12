@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
-        
+
         public async Task<int> AddFilter(
             string name,
             string description,
@@ -40,8 +40,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             var framework = !string.IsNullOrEmpty(frameworkId) ? await dbContext.Frameworks.FirstAsync(o => o.Id == frameworkId) : null;
 
-            var filter = 
-                new Filter() 
+            var filter =
+                new Filter()
                 {
                     Name = name,
                     Description = description,
@@ -123,7 +123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             if (clientApplicationTypes is null || clientApplicationTypes.Count == 0) return;
 
-            var filter = await dbContext.Filters.FirstAsync(o => o.Id == filterId);
+            var filter = await dbContext.Filters.FirstOrDefaultAsync(o => o.Id == filterId);
 
             if (filter is null)
             {
@@ -149,7 +149,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             if (hostingTypes is null || hostingTypes.Count == 0) return;
 
-            var filter = await dbContext.Filters.FirstAsync(o => o.Id == filterId);
+            var filter = await dbContext.Filters.FirstOrDefaultAsync(o => o.Id == filterId);
 
             if (filter is null)
             {
@@ -173,7 +173,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task<bool> FilterExists(string filterName, int organisationId)
         {
-            if(string.IsNullOrWhiteSpace(filterName)) 
+            if (string.IsNullOrWhiteSpace(filterName)) 
                 throw new ArgumentNullException(nameof(filterName));
 
             return await dbContext.Filters.AnyAsync(f => f.Name == filterName && f.OrganisationId == organisationId);

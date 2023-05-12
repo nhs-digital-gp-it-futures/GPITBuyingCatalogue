@@ -35,7 +35,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [CommonInlineAutoData(null)]
         [CommonInlineAutoData("")]
         [CommonInlineAutoData(" ")]
-        public static Task FilterExists_NullOrEmptyFilterName_ThrowsException(string name, ManageFiltersService service, int organisationId)
+        public static Task FilterExists_NullOrEmptyFilterName_ThrowsException(
+            string name,
+            ManageFiltersService service,
+            int organisationId)
         {
             return Assert.ThrowsAsync<ArgumentNullException>(() => service.FilterExists(name, organisationId));
         }
@@ -86,7 +89,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             List<HostingType> hostingTypes,
             ManageFiltersService service)
         {
-            FluentActions.Awaiting(() => service.AddFilter(name,description, organisationId, capabilityIds, epicIds, frameworkId, clientApplicationTypes, hostingTypes)).Should().ThrowAsync<ArgumentNullException>(nameof(name));
+            FluentActions
+                .Awaiting(
+                    () => service.AddFilter(
+                        name,
+                        description,
+                        organisationId,
+                        capabilityIds,
+                        epicIds,
+                        frameworkId,
+                        clientApplicationTypes,
+                        hostingTypes))
+                .Should()
+                .ThrowAsync<ArgumentNullException>(nameof(name));
         }
 
         [Theory]
@@ -104,7 +119,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             List<HostingType> hostingTypes,
             ManageFiltersService service)
         {
-            FluentActions.Awaiting(() => service.AddFilter(name, description, organisationId, capabilityIds, epicIds, frameworkId, clientApplicationTypes, hostingTypes)).Should().ThrowAsync<ArgumentNullException>(nameof(description));
+            FluentActions
+                .Awaiting(
+                    () => service.AddFilter(
+                        name,
+                        description,
+                        organisationId,
+                        capabilityIds,
+                        epicIds,
+                        frameworkId,
+                        clientApplicationTypes,
+                        hostingTypes))
+                .Should()
+                .ThrowAsync<ArgumentNullException>(nameof(description));
         }
 
         [Theory]
@@ -120,7 +147,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             List<HostingType> hostingTypes,
             ManageFiltersService service)
         {
-            FluentActions.Awaiting(() => service.AddFilter(name, description, organisationId, capabilityIds, epicIds, frameworkId, clientApplicationTypes, hostingTypes)).Should().ThrowAsync<ArgumentNullException>("organisation");
+            FluentActions
+                .Awaiting(
+                    () => service.AddFilter(
+                        name,
+                        description,
+                        organisationId,
+                        capabilityIds,
+                        epicIds,
+                        frameworkId,
+                        clientApplicationTypes,
+                        hostingTypes))
+                .Should()
+                .ThrowAsync<ArgumentNullException>("organisation");
         }
 
         [Theory]
@@ -139,7 +178,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             context.Frameworks.Add(framework);
             await context.SaveChangesAsync();
 
-            var result = await service.AddFilter(name, description, organisation.Id, null, null, framework.Id, null, null);
+            var result = await service.AddFilter(
+                name,
+                description,
+                organisation.Id,
+                null,
+                null,
+                framework.Id,
+                null,
+                null);
             result.Should().NotBe(0);
 
             var newFilter = await context.Filters.FirstAsync(f => f.Id == result);
@@ -206,10 +253,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Theory]
         [InMemoryDbAutoData]
         public static async Task AddFilterCapabilities_ValidParameters_CapabilitiesAdded(
-                 [Frozen] BuyingCatalogueDbContext context,
-                 Filter filter,
-                 List<Capability> capabilities,
-                 ManageFiltersService service)
+            [Frozen] BuyingCatalogueDbContext context,
+            Filter filter,
+            List<Capability> capabilities,
+            ManageFiltersService service)
         {
             filter.FilterCapabilities.Clear();
             context.Filters.Add(filter);
@@ -219,9 +266,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             await context.SaveChangesAsync();
 
             var capabilityIds = capabilities.Select(c => c.Id).ToList();
-            
+
             await service.AddFilterCapabilities(filter.Id, capabilityIds);
-            
+
             var result = await context.Filters.FirstAsync(f => f.Id == filter.Id);
             result.Should().NotBeNull();
 
@@ -290,10 +337,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Theory]
         [InMemoryDbAutoData]
         public static async Task AddFilterEpics_ValidParameters_EpicsAdded(
-                 [Frozen] BuyingCatalogueDbContext context,
-                 Filter filter,
-                 List<Epic> epics,
-                 ManageFiltersService service)
+            [Frozen] BuyingCatalogueDbContext context,
+            Filter filter,
+            List<Epic> epics,
+            ManageFiltersService service)
         {
             filter.FilterEpics.Clear();
             context.Filters.Add(filter);
@@ -317,6 +364,197 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 fe.FilterId.Should().Be(filter.Id);
                 epicIds.Should().Contain(fe.EpicId);
             }
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddFilterClientApplicationTypes_NullCatIds_NoCatsAdded(
+            [Frozen] BuyingCatalogueDbContext context,
+            Filter filter,
+            ManageFiltersService service)
+        {
+            filter.FilterClientApplicationTypes.Clear();
+            context.Filters.Add(filter);
+            await context.SaveChangesAsync();
+
+            await service.AddFilterClientApplicationTypes(filter.Id, null);
+
+            var result = await context.Filters.FirstAsync(f => f.Id == filter.Id);
+            result.Should().NotBeNull();
+
+            result.FilterClientApplicationTypes.Should().BeEmpty();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddFilterClientApplicationTypes_EmptyCatIds_NoCatsAdded(
+            [Frozen] BuyingCatalogueDbContext context,
+            Filter filter,
+            ManageFiltersService service)
+        {
+            filter.FilterClientApplicationTypes.Clear();
+            context.Filters.Add(filter);
+            await context.SaveChangesAsync();
+
+            await service.AddFilterClientApplicationTypes(filter.Id, new List<ClientApplicationType>());
+
+            var result = await context.Filters.FirstAsync(f => f.Id == filter.Id);
+            result.Should().NotBeNull();
+
+            result.FilterClientApplicationTypes.Should().BeEmpty();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddFilterClientApplicationTypes_NullFilter_NoCatsAdded(
+            [Frozen] BuyingCatalogueDbContext context,
+            List<ClientApplicationType> cats,
+            int invalidFilterId,
+            ManageFiltersService service)
+        {
+            await service.AddFilterClientApplicationTypes(invalidFilterId, cats);
+
+            var filter = await context.Filters.FirstOrDefaultAsync(f => f.Id == invalidFilterId);
+            filter.Should().BeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddFilterClientApplicationTypes_ValidParameters_CatsAdded(
+            [Frozen] BuyingCatalogueDbContext context,
+            Filter filter,
+            List<ClientApplicationType> cats,
+            ManageFiltersService service)
+        {
+            filter.FilterClientApplicationTypes.Clear();
+            context.Filters.Add(filter);
+            await context.SaveChangesAsync();
+
+            await service.AddFilterClientApplicationTypes(filter.Id, cats);
+
+            var result = await context.Filters.FirstOrDefaultAsync(f => f.Id == filter.Id);
+            result.Should().NotBeNull();
+
+            result.FilterClientApplicationTypes.Should().NotBeNullOrEmpty();
+            result.FilterClientApplicationTypes.Count.Should().Be(cats.Count);
+
+            foreach (var x in result.FilterClientApplicationTypes)
+            {
+                x.FilterId.Should().Be(filter.Id);
+                cats.Should().Contain(x.ClientApplicationType);
+            }
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddFilterHostingTypes_NullHostingTypeIds_NoHostingTypesAdded(
+            [Frozen] BuyingCatalogueDbContext context,
+            Filter filter,
+            ManageFiltersService service)
+        {
+            filter.FilterHostingTypes.Clear();
+            context.Filters.Add(filter);
+            await context.SaveChangesAsync();
+
+            await service.AddFilterHostingTypes(filter.Id, null);
+
+            var result = await context.Filters.FirstAsync(f => f.Id == filter.Id);
+            result.Should().NotBeNull();
+
+            result.FilterHostingTypes.Should().BeEmpty();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddFilterHostingTypes_EmptyHostingTypeIds_NoHostingTypesAdded(
+            [Frozen] BuyingCatalogueDbContext context,
+            Filter filter,
+            ManageFiltersService service)
+        {
+            filter.FilterHostingTypes.Clear();
+            context.Filters.Add(filter);
+            await context.SaveChangesAsync();
+
+            await service.AddFilterHostingTypes(filter.Id, new List<HostingType>());
+
+            var result = await context.Filters.FirstAsync(f => f.Id == filter.Id);
+            result.Should().NotBeNull();
+
+            result.FilterHostingTypes.Should().BeEmpty();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddFilterHostingTypes_NullFilter_NoHostingTypesAdded(
+            [Frozen] BuyingCatalogueDbContext context,
+            List<HostingType> hostingTypes,
+            int invalidFilterId,
+            ManageFiltersService service)
+        {
+            await service.AddFilterHostingTypes(invalidFilterId, hostingTypes);
+
+            var filter = await context.Filters.FirstOrDefaultAsync(f => f.Id == invalidFilterId);
+            filter.Should().BeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddFilterHostingTypes_ValidParameters_HostingTypesAdded(
+            [Frozen] BuyingCatalogueDbContext context,
+            Filter filter,
+            List<HostingType> hostingTypes,
+            ManageFiltersService service)
+        {
+            filter.FilterHostingTypes.Clear();
+            context.Filters.Add(filter);
+            await context.SaveChangesAsync();
+
+            await service.AddFilterHostingTypes(filter.Id, hostingTypes);
+
+            var result = await context.Filters.FirstOrDefaultAsync(f => f.Id == filter.Id);
+            result.Should().NotBeNull();
+
+            result.FilterHostingTypes.Should().NotBeNullOrEmpty();
+            result.FilterHostingTypes.Count.Should().Be(hostingTypes.Count);
+
+            foreach (var x in result.FilterHostingTypes)
+            {
+                x.FilterId.Should().Be(filter.Id);
+                hostingTypes.Should().Contain(x.HostingType);
+            }
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetFilters_ReturnsExpectedResults(
+            Filter filter,
+            Organisation organisation,
+            EntityFramework.Catalogue.Models.Framework framework,
+            [Frozen] BuyingCatalogueDbContext context,
+            ManageFiltersService service)
+        {
+            context.Organisations.Add(organisation);
+            await context.SaveChangesAsync();
+
+            context.Frameworks.Add(framework);
+            await context.SaveChangesAsync();
+
+            filter.Organisation = organisation;
+            filter.OrganisationId = organisation.Id;
+            filter.Framework = framework;
+            filter.FrameworkId = framework.Id;
+
+            await context.SaveChangesAsync();
+
+            context.Filters.Add(filter);
+            await context.SaveChangesAsync();
+
+            var result = await service.GetFilters(organisation.Id);
+
+            result.Should().NotBeNull();
+            result.Count.Should().Be(1);
+            result[0].OrganisationId.Should().Be(organisation.Id);
+            result[0].Framework.Should().BeEquivalentTo(framework);
         }
     }
 }
