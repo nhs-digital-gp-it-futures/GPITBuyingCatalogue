@@ -368,7 +368,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         [Theory]
         [CommonInlineAutoData(1, 12 * 24)]
         [CommonInlineAutoData(2, 12 * 18)]
-        public static void Order_TotalCostForOrderItem_Amended_Orders_Use_The_Planned_Delivery_date(int revision, decimal total, IFixture fixture)
+        public static void Order_TotalCostForOrderItem_Amended_Orders_Use_The_Planned_Delivery_date_Original_Orders_Dont(int revision, decimal total, IFixture fixture)
         {
             var maximumTerm = 24;
             var price = 12M;
@@ -377,20 +377,53 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             (decimal Price, int LowerRange, int? UpperRange) tier = (price, 1, null);
 
-            OrderItem oneOffCostOrderItemNotUsedInTotal = BuildOrderItem(fixture, 1, new[] { tier }, CataloguePriceCalculationType.SingleFixed);
-            oneOffCostOrderItemNotUsedInTotal.OrderItemPrice.BillingPeriod = null;
-
             OrderItem perMonthOrderItemUsedForTotal = BuildOrderItem(fixture, 1, new[] { tier }, CataloguePriceCalculationType.SingleFixed, amendmentPlannedDelivery);
             perMonthOrderItemUsedForTotal.OrderItemPrice.BillingPeriod = TimeUnit.PerMonth;
 
             var order = fixture.Build<Order>()
                 .With(o => o.Revision, revision)
                 .With(o => o.CommencementDate, commencementDate)
-                .With(o => o.OrderItems, new HashSet<OrderItem>(new[] { oneOffCostOrderItemNotUsedInTotal, perMonthOrderItemUsedForTotal }))
+                .With(o => o.OrderItems, new HashSet<OrderItem>(new[] { perMonthOrderItemUsedForTotal }))
                 .With(o => o.MaximumTerm, maximumTerm)
                 .Create();
 
             order.TotalCostForOrderItem(perMonthOrderItemUsedForTotal.CatalogueItem.Id).Should().Be(total);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(1)]
+        [CommonInlineAutoData(2)]
+        public static void Order_TotalCostForOrderItem_Returns_0_When_OrderItem_Not_Found(int revision, CatalogueItemId catalogueItemId, IFixture fixture)
+        {
+            var order = fixture.Build<Order>()
+                .With(o => o.Revision, revision)
+                .Create();
+
+            order.TotalCostForOrderItem(catalogueItemId).Should().Be(0);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(1)]
+        [CommonInlineAutoData(2)]
+        public static void Order_TotalCostForOrderItem_Returns_0_When_OrderItem_Has_No_Recipients(int revision, OrderItem orderItem, IFixture fixture)
+        {
+            orderItem.OrderItemRecipients.Clear();
+
+            var order = fixture.Build<Order>()
+                .With(o => o.Revision, revision)
+                .With(o => o.OrderItems, new HashSet<OrderItem>(new[] { orderItem }))
+                .Create();
+
+            order.TotalCostForOrderItem(orderItem.CatalogueItem.Id).Should().Be(0);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void OrderItem_TotalCost_Returns_0_When_No_Price(OrderItem orderItem)
+        {
+            orderItem.OrderItemPrice = null;
+
+            orderItem.TotalCost().Should().Be(0);
         }
 
         [Theory]
