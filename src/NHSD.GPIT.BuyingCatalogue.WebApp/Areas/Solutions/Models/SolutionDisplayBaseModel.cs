@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
             sectionsToShow.ForEach(s => s.SolutionId = SolutionId.ToString());
 
-            if (sectionsToShow.FirstOrDefault(s => s.Name.EqualsIgnoreCase(Section)) is {} sectionModel)
+            if (sectionsToShow.FirstOrDefault(s => s.Name.EqualsIgnoreCase(Section)) is { } sectionModel)
                 sectionModel.Selected = true;
 
             return sectionsToShow;
@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public void SetPaginationFooter()
         {
             var sectionsToShow = new List<SectionModel>(sections.Where(s => s.Show));
-            if (sectionsToShow.FirstOrDefault(s => s.Name.EqualsIgnoreCase(Section)) is not {} sectionModel)
+            if (sectionsToShow.FirstOrDefault(s => s.Name.EqualsIgnoreCase(Section)) is not { } sectionModel)
                 return;
 
             var index = sectionsToShow.IndexOf(sectionModel);
