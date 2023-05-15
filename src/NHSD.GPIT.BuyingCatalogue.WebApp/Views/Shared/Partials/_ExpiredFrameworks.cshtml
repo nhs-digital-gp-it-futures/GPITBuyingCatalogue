@@ -1,23 +1,9 @@
-@model List<NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.Framework>
-
-@{
-    var numberOfFrameworks = Model.Count;
-    var expiredFrameworks = Model.Where(x => x.IsExpired).ToList();
-}
-
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ExpiredFrameworksModel
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-warning-callout label-text="Framework expired">
-            @switch (numberOfFrameworks)
-            {
-                case 1:
-                    <span>This solution is currently only available from a framework which has expired. It cannot be purchased using the Buying Catalogue at this time. </span>
-                    break;
-                case > 1:
-                    <span>This solution is available from more than 1 framework. The @expiredFrameworks.FirstOrDefault()?.ShortName framework has expired, so this solution can no longer be purchased under that framework.</span>
-                    break;
-            }
+            <span>@Model.GetWarningText()</span>
         </nhs-warning-callout>
     </div>
 </div>

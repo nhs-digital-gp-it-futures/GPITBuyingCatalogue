@@ -3,6 +3,7 @@
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders.SummaryModel;
 @{
     ViewBag.Title = Model.Title;
@@ -30,7 +31,7 @@
 
     @if (frameworks.Any(x => x.IsExpired))
     {
-        <partial name="Partials/_ExpiredFrameworks" model="@frameworks" />
+        <partial name="Partials/_ExpiredFrameworks" model="new ExpiredFrameworksModel(frameworks)" />
     }
 
     <p class="nhsuk-lede-text">@Model.AdviceText</p>

@@ -1,5 +1,6 @@
 @using NHSD.GPIT.BuyingCatalogue.Framework.Constants
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionDisplayBaseModel
 @{ ViewBag.Title = $"{Model.Section}"; }
 <!DOCTYPE html>
@@ -57,7 +58,7 @@
 
             @if (Model.HasExpiredFrameworks)
             {
-                <partial name="Partials/_ExpiredFrameworks" model="Model.Frameworks" />
+                <partial name="Partials/_ExpiredFrameworks" model="new ExpiredFrameworksModel(Model.Frameworks)" />
             }
 
             @if (Model.IsPilotSolution)
