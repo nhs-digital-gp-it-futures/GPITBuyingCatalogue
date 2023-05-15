@@ -24,34 +24,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
         }
 
-        public Task<List<Supplier>> GetListFromBuyingCatalogue(
-            string searchString,
-            CatalogueItemType? catalogueItemType,
-            PublicationStatus? publicationStatus = null)
-        {
-            CatalogueItemType cIType =
-                catalogueItemType ?? CatalogueItemType.Solution;
-
-            // EF Core cannot translate Contains(string, StringComparison). However, as this is executed by the DB the
-            // DB collation rules will apply so a case-insensitive comparison will occur.
-#pragma warning disable CA1307
-            Expression<Func<CatalogueItem, bool>> searchPredicate =
-                ci => ci.Supplier.Name.Contains(searchString) && ci.CatalogueItemType == cIType;
-#pragma warning restore CA1307
-
-            IQueryable<CatalogueItem> query = dbContext.CatalogueItems.Where(searchPredicate);
-
-            if (publicationStatus is not null)
-                query = query.Where(ci => ci.PublishedStatus == publicationStatus);
-
-            return query.Select(ci => ci.Supplier)
-                .Distinct()
-                .Where(s => s.IsActive)
-                .OrderBy(s => s.Name)
-                .AsNoTracking()
-                .ToListAsync();
-        }
-
         public Task<List<Supplier>> GetAllSuppliersFromBuyingCatalogue()
         {
             return dbContext.Suppliers
