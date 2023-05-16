@@ -72,5 +72,4 @@ public static class ExpiredFrameworkModelTests
                     ExpiredFrameworksModel.MultipleExpiredWithActiveFrameworks,
                     string.Join(", ", expiredFrameworks.Select(x => x.ShortName))));
     }
-
 }
