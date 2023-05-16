@@ -35,10 +35,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
         public OrderSummary(LocalWebApplicationFactory factory)
             : base(
-                  factory,
-                  typeof(DashboardController),
-                  nameof(DashboardController.Organisation),
-                  Parameters)
+                factory,
+                typeof(DashboardController),
+                nameof(DashboardController.Organisation),
+                Parameters)
         {
         }
 
@@ -46,23 +46,25 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public void SolutionAndServices_AllSectionsDisplayed()
         {
             var order = CreateOrder(
+                false,
                 CreateSolutionOrderItem(),
                 CreateAdditionalServiceOrderItem(),
                 CreateAssociatedServiceOrderItem());
 
             var parameters = new Dictionary<string, string>
             {
-                { nameof(InternalOrgId), InternalOrgId },
-                { nameof(CallOffId), order.CallOffId.ToString() },
+                { nameof(InternalOrgId), InternalOrgId }, { nameof(CallOffId), order.CallOffId.ToString() },
             };
 
             NavigateToUrl(
-                  typeof(OrderController),
-                  nameof(OrderController.Summary),
-                  parameters);
+                typeof(OrderController),
+                nameof(OrderController.Summary),
+                parameters);
 
             CommonActions.PageTitle().Should().Be($"Review order summary - {order.CallOffId}".FormatForComparison());
-            CommonActions.LedeText().Should().Be("Review the items you’ve added to your order before completing it.".FormatForComparison());
+            CommonActions.LedeText()
+                .Should()
+                .Be("Review the items you’ve added to your order before completing it.".FormatForComparison());
 
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.OrderIdSummary).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.OrderDescriptionSummary).Should().BeTrue();
@@ -100,19 +102,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public void SolutionAndAdditionalService_RelevantSectionsDisplayed()
         {
             var order = CreateOrder(
+                false,
                 CreateSolutionOrderItem(),
                 CreateAdditionalServiceOrderItem());
 
             var parameters = new Dictionary<string, string>
             {
-                { nameof(InternalOrgId), InternalOrgId },
-                { nameof(CallOffId), order.CallOffId.ToString() },
+                { nameof(InternalOrgId), InternalOrgId }, { nameof(CallOffId), order.CallOffId.ToString() },
             };
 
             NavigateToUrl(
-                  typeof(OrderController),
-                  nameof(OrderController.Summary),
-                  parameters);
+                typeof(OrderController),
+                nameof(OrderController.Summary),
+                parameters);
 
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.SolutionSection).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.AdditionalServicesSection).Should().BeTrue();
@@ -125,19 +127,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public void SolutionAndAssociatedService_RelevantSectionsDisplayed()
         {
             var order = CreateOrder(
+                false,
                 CreateSolutionOrderItem(),
                 CreateAssociatedServiceOrderItem());
 
             var parameters = new Dictionary<string, string>
             {
-                { nameof(InternalOrgId), InternalOrgId },
-                { nameof(CallOffId), order.CallOffId.ToString() },
+                { nameof(InternalOrgId), InternalOrgId }, { nameof(CallOffId), order.CallOffId.ToString() },
             };
 
             NavigateToUrl(
-                  typeof(OrderController),
-                  nameof(OrderController.Summary),
-                  parameters);
+                typeof(OrderController),
+                nameof(OrderController.Summary),
+                parameters);
 
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.SolutionSection).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.AdditionalServicesSection).Should().BeFalse();
@@ -150,18 +152,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public void SolutionOnly_RelevantSectionsDisplayed()
         {
             var order = CreateOrder(
+                false,
                 CreateSolutionOrderItem());
 
             var parameters = new Dictionary<string, string>
             {
-                { nameof(InternalOrgId), InternalOrgId },
-                { nameof(CallOffId), order.CallOffId.ToString() },
+                { nameof(InternalOrgId), InternalOrgId }, { nameof(CallOffId), order.CallOffId.ToString() },
             };
 
             NavigateToUrl(
-                  typeof(OrderController),
-                  nameof(OrderController.Summary),
-                  parameters);
+                typeof(OrderController),
+                nameof(OrderController.Summary),
+                parameters);
 
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.SolutionSection).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.AdditionalServicesSection).Should().BeFalse();
@@ -174,18 +176,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public void AssociatedServiceOnly_RelevantSectionsDisplayed()
         {
             var order = CreateOrder(
+                true,
                 CreateAssociatedServiceOrderItem());
 
             var parameters = new Dictionary<string, string>
             {
-                { nameof(InternalOrgId), InternalOrgId },
-                { nameof(CallOffId), order.CallOffId.ToString() },
+                { nameof(InternalOrgId), InternalOrgId }, { nameof(CallOffId), order.CallOffId.ToString() },
             };
 
             NavigateToUrl(
-                  typeof(OrderController),
-                  nameof(OrderController.Summary),
-                  parameters);
+                typeof(OrderController),
+                nameof(OrderController.Summary),
+                parameters);
 
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.SolutionSection).Should().BeFalse();
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.AdditionalServicesSection).Should().BeFalse();
@@ -198,14 +200,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         public void ClickGoBackLink_ExpectedResult()
         {
             var order = CreateOrder(
+                false,
                 CreateSolutionOrderItem(),
                 CreateAdditionalServiceOrderItem(),
                 CreateAssociatedServiceOrderItem());
 
             var parameters = new Dictionary<string, string>
             {
-                { nameof(InternalOrgId), InternalOrgId },
-                { nameof(CallOffId), order.CallOffId.ToString() },
+                { nameof(InternalOrgId), InternalOrgId }, { nameof(CallOffId), order.CallOffId.ToString() },
             };
 
             NavigateToUrl(
@@ -216,8 +218,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ClickGoBackLink();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrderController),
-                nameof(OrderController.Order)).Should().BeTrue();
+                    typeof(OrderController),
+                    nameof(OrderController.Order))
+                .Should()
+                .BeTrue();
 
             RemoveOrder(order);
         }
@@ -227,8 +231,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         {
             var parameters = new Dictionary<string, string>
             {
-                { nameof(InternalOrgId), InternalOrgId },
-                { nameof(CallOffId), CallOffId.ToString() },
+                { nameof(InternalOrgId), InternalOrgId }, { nameof(CallOffId), CallOffId.ToString() },
             };
 
             NavigateToUrl(
@@ -254,8 +257,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         {
             var parameters = new Dictionary<string, string>
             {
-                { nameof(InternalOrgId), InternalOrgId },
-                { nameof(CallOffId), CallOffId.ToString() },
+                { nameof(InternalOrgId), InternalOrgId }, { nameof(CallOffId), CallOffId.ToString() },
             };
 
             NavigateToUrl(
@@ -281,8 +283,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         {
             var parameters = new Dictionary<string, string>
             {
-                { nameof(InternalOrgId), InternalOrgId },
-                { nameof(CallOffId), CallOffId.ToString() },
+                { nameof(InternalOrgId), InternalOrgId }, { nameof(CallOffId), CallOffId.ToString() },
             };
 
             NavigateToUrl(
@@ -293,8 +294,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ClickLinkElement(OrderSummaryObjects.SaveForLaterButton);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(DashboardController),
-                nameof(DashboardController.Organisation)).Should().BeTrue();
+                    typeof(DashboardController),
+                    nameof(DashboardController.Organisation))
+                .Should()
+                .BeTrue();
         }
 
         [Fact]
@@ -302,8 +305,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         {
             var parameters = new Dictionary<string, string>
             {
-                { nameof(InternalOrgId), InternalOrgId },
-                { nameof(CallOffId), CallOffId.ToString() },
+                { nameof(InternalOrgId), InternalOrgId }, { nameof(CallOffId), CallOffId.ToString() },
             };
 
             NavigateToUrl(
@@ -315,8 +317,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrderController),
-                nameof(OrderController.Completed)).Should().BeTrue();
+                    typeof(OrderController),
+                    nameof(OrderController.Completed))
+                .Should()
+                .BeTrue();
         }
 
         [Fact]
@@ -324,8 +328,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         {
             var parameters = new Dictionary<string, string>
             {
-                { nameof(InternalOrgId), InternalOrgId },
-                { nameof(CallOffId), CallOffId.ToString() },
+                { nameof(InternalOrgId), InternalOrgId }, { nameof(CallOffId), CallOffId.ToString() },
             };
 
             NavigateToUrl(
@@ -364,8 +367,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ClickContinue();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrderController),
-                nameof(OrderController.Order)).Should().BeTrue();
+                    typeof(OrderController),
+                    nameof(OrderController.Order))
+                .Should()
+                .BeTrue();
         }
 
         [Fact]
@@ -374,8 +379,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             const int orderId = 90010;
             var parameters = new Dictionary<string, string>
             {
-                { nameof(InternalOrgId), InternalOrgId },
-                { nameof(CallOffId), CallOffId.ToString() },
+                { nameof(InternalOrgId), InternalOrgId }, { nameof(CallOffId), CallOffId.ToString() },
             };
 
             NavigateToUrl(
@@ -389,8 +393,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ClickContinue();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(DashboardController),
-                nameof(DashboardController.Organisation)).Should().BeTrue();
+                    typeof(DashboardController),
+                    nameof(DashboardController.Organisation))
+                .Should()
+                .BeTrue();
         }
 
         [Fact]
@@ -436,8 +442,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
         private static Dictionary<string, string> Parameters2(int orderId) => new()
         {
-            { nameof(InternalOrgId), InternalOrgId },
-            { nameof(CallOffId), $"{new CallOffId(orderId, 1)}" },
+            { nameof(InternalOrgId), InternalOrgId }, { nameof(CallOffId), $"{new CallOffId(orderId, 1)}" },
         };
 
         private static OrderItemFunding CreateOrderItemFunding(OrderItem orderItem)
@@ -449,6 +454,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             };
 
         private Order CreateOrder(
+            bool isAssociatedServiceOnly,
             params OrderItem[] orderItems)
         {
             int GetOrganisationId(BuyingCatalogueDbContext context, string internalOrgId = "CG-03F")
@@ -462,6 +468,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             var order = new Order
             {
+                AssociatedServicesOnly = isAssociatedServiceOnly,
                 OrderingPartyId = GetOrganisationId(context),
                 Created = timeNow,
                 IsDeleted = false,
@@ -476,38 +483,40 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 SupplierId = 99998,
                 SupplierContact = new Contact
                 {
-                    FirstName = "Bruce",
-                    LastName = "Wayne",
-                    Email = "bat.man@Gotham.Fake",
-                    Phone = "123456789",
+                    FirstName = "Bruce", LastName = "Wayne", Email = "bat.man@Gotham.Fake", Phone = "123456789",
                 },
                 CommencementDate = timeNow.AddDays(1),
                 InitialPeriod = 6,
                 MaximumTerm = 36,
                 ContractFlags = new ContractFlags
                 {
-                    UseDefaultImplementationPlan = false,
-                    UseDefaultDataProcessing = false,
+                    UseDefaultImplementationPlan = false, UseDefaultDataProcessing = false,
                 },
             };
+
+            if (isAssociatedServiceOnly)
+            {
+                order.Solution = context.CatalogueItems.First(x => x.CatalogueItemType == CatalogueItemType.Solution);
+            }
 
             var user = GetBuyerUser(context, order.OrderingPartyId);
             var recipients = context.ServiceRecipients.ToList();
 
-            recipients.ForEach(r =>
-            {
-                OrderItemRecipient CreateRecipient(CatalogueItemId itemId)
-                    => new()
-                    {
-                        Recipient = r,
-                        Quantity = 1000,
-                        CatalogueItemId = itemId,
-                        DeliveryDate = timeNow.AddDays(2).Date,
-                    };
+            recipients.ForEach(
+                r =>
+                {
+                    OrderItemRecipient CreateRecipient(CatalogueItemId itemId)
+                        => new()
+                        {
+                            Recipient = r,
+                            Quantity = 1000,
+                            CatalogueItemId = itemId,
+                            DeliveryDate = timeNow.AddDays(2).Date,
+                        };
 
-                foreach (var orderItem in orderItems)
-                    orderItem.OrderItemRecipients.Add(CreateRecipient(orderItem.CatalogueItemId));
-            });
+                    foreach (var orderItem in orderItems)
+                        orderItem.OrderItemRecipients.Add(CreateRecipient(orderItem.CatalogueItemId));
+                });
 
             foreach (var orderItem in orderItems)
             {
@@ -572,8 +581,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 .CataloguePrices
                 .Include(cp => cp.CataloguePriceTiers)
                 .Include(cp => cp.PricingUnit)
-                .FirstOrDefault(cp =>
-                    cp.CataloguePriceType == priceType);
+                .FirstOrDefault(
+                    cp =>
+                        cp.CataloguePriceType == priceType);
         }
 
         private void RemoveOrder(Order order)

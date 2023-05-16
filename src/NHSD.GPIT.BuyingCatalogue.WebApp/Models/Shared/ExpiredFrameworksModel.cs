@@ -16,7 +16,7 @@ public class ExpiredFrameworksModel
         "This solution is available from more than 1 framework. The {0} framework has expired, so this solution can no longer be purchased under that framework.";
 
     internal const string MultipleExpiredWithActiveFrameworks =
-        "This solution is available from more than 1 framework. The {0} framework have expired, so this solution can no longer be purchased under those frameworks.";
+        "This solution is available from more than 1 framework. The {0} frameworks have expired, so this solution can no longer be purchased under those frameworks.";
 
     public ExpiredFrameworksModel(IList<EntityFramework.Catalogue.Models.Framework> frameworks)
     {
