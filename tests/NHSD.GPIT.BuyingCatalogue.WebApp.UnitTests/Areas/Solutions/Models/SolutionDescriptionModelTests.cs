@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Reflection;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -24,32 +26,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Fact]
         public static void SolutionDescriptionModel_NullCatalogueItem_ThrowsException()
         {
-            var actual = Assert.Throws<ArgumentNullException>(() => new SolutionDescriptionModel(null, new CatalogueItemContentStatus()));
+            var actual = Assert.Throws<ArgumentNullException>(
+                () => new SolutionDescriptionModel(null, new CatalogueItemContentStatus()));
             actual.ParamName.Should().Be("catalogueItem");
         }
 
         [Fact]
         public static void SolutionDescriptionModel_NullSolution_ThrowsException()
         {
-            var actual = Assert.Throws<ArgumentNullException>(() => new SolutionDescriptionModel(new CatalogueItem() { Solution = null }, new CatalogueItemContentStatus()));
+            var actual = Assert.Throws<ArgumentNullException>(
+                () => new SolutionDescriptionModel(
+                    new CatalogueItem() { Solution = null },
+                    new CatalogueItemContentStatus()));
             actual.ParamName.Should().Be("catalogueItem");
-        }
-
-        [Fact]
-        public static void Frameworks_UIHintAttribute_ExpectedHint()
-        {
-            typeof(SolutionDescriptionModel)
-                .GetProperty(nameof(SolutionDescriptionModel.Frameworks))
-                .GetCustomAttribute<UIHintAttribute>()
-                .UIHint.Should()
-                .Be("TableListCell");
         }
 
         [Theory]
         [CommonAutoData]
         public static void FrameworkTitle_FrameworksMoreThanOne_ReturnsPlural(SolutionDescriptionModel model)
         {
-            model.Frameworks.Length.Should().BeGreaterThan(1);
+            model.Frameworks.Count.Should().BeGreaterThan(1);
 
             var actual = model.FrameworkTitle();
 
@@ -58,9 +54,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
         [Theory]
         [CommonAutoData]
-        public static void FrameworkTitle_OneFramework_ReturnsSingle(string framework)
+        public static void FrameworkTitle_OneFramework_ReturnsSingle(
+            EntityFramework.Catalogue.Models.Framework framework)
         {
-            var model = new SolutionDescriptionModel { Frameworks = new[] { framework } };
+            var model = new SolutionDescriptionModel
+            {
+                Frameworks = new List<EntityFramework.Catalogue.Models.Framework>() { framework },
+            };
 
             var actual = model.FrameworkTitle();
 
@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Fact]
         public static void FrameworkTitle_NoFramework_ReturnsSingle()
         {
-            var model = new SolutionDescriptionModel { Frameworks = System.Array.Empty<string>() };
+            var model = new SolutionDescriptionModel { Frameworks = Enumerable.Empty<EntityFramework.Catalogue.Models.Framework>().ToList() };
 
             var actual = model.FrameworkTitle();
 

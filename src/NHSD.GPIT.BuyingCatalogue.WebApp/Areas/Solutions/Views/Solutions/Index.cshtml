@@ -167,41 +167,43 @@
 
         @if (Model.HasCapabilities)
         {
-            <div class="nhsuk-grid-column-one-third">
-                <h2>Additional filters</h2>
-                <partial name="_AdditionalFilters" model="@(Model.AdditionalFilters)"/>
+            <div class="nhsuk-grid-row">
+                <div class="nhsuk-grid-column-one-third">
+                    <h2 class="nhsuk-heading-s">Additional filters</h2>
+                    <partial name="_AdditionalFilters" model="@(Model.AdditionalFilters)"/>
 
-                <a asp-area="@typeof(SolutionsController).AreaName()"
-                   asp-controller="@typeof(SolutionsController).ControllerName()"
-                   asp-action="@nameof(SolutionsController.Index)"
-                   asp-route-selectedCapabilityIds="@Model.SearchSummary.SelectedCapabilityIds"
-                   asp-route-selectedEpicIds="@Model.SearchSummary.SelectedEpicIds"
-                   asp-route-search="@Model.SearchSummary.SearchTerm">
-                    Clear additional filters
-                </a>
-                <br/>
-                <br/>
-                <a asp-area="@typeof(SolutionsController).AreaName()"
-                   asp-controller="@typeof(SolutionsController).ControllerName()"
-                   asp-action="@nameof(SolutionsController.Index)">
-                    Start a new search
-                </a>
-            </div>
+                    <a asp-area="@typeof(SolutionsController).AreaName()"
+                       asp-controller="@typeof(SolutionsController).ControllerName()"
+                       asp-action="@nameof(SolutionsController.Index)"
+                       asp-route-selectedCapabilityIds="@Model.SearchSummary.SelectedCapabilityIds"
+                       asp-route-selectedEpicIds="@Model.SearchSummary.SelectedEpicIds"
+                       asp-route-search="@Model.SearchSummary.SearchTerm">
+                        Clear additional filters
+                    </a>
+                    <br/>
+                    <br/>
+                    <a asp-area="@typeof(SolutionsController).AreaName()"
+                       asp-controller="@typeof(SolutionsController).ControllerName()"
+                       asp-action="@nameof(SolutionsController.Index)">
+                        Start a new search
+                    </a>
+                </div>
 
-            <div class="nhsuk-grid-column-two-thirds" id="solutions-list">
-                <h2>Results</h2>
-                @foreach (var item in Model.CatalogueItems)
-                {
-                    <partial name="_SolutionSearchDisplay" model="@(item, Model.SearchSummary.CapabilitiesAndEpics)"/>
-                }
+                <div class="nhsuk-grid-column-two-thirds" id="solutions-list">
+                    <h2 class="nhsuk-heading-s">Results</h2>
+                    @foreach (var item in Model.CatalogueItems)
+                    {
+                        <partial name="_SolutionSearchDisplay" model="@(item, Model.SearchSummary.CapabilitiesAndEpics)"/>
+                    }
 
-                @if (Model.CatalogueItems.Count == 0)
-                {
-                    <p>
-                        <strong>There was no Catalogue Solutions found with this search criteria.</strong>
-                    </p>
-                    <p>Try changing any filters you have selected.</p>
-                }
+                    @if (Model.CatalogueItems.Count == 0)
+                    {
+                        <p>
+                            <strong>There was no Catalogue Solutions found with this search criteria.</strong>
+                        </p>
+                        <p>Try changing any filters you have selected.</p>
+                    }
+                </div>
             </div>
         }
         else if (Model.CatalogueItems is not null && Model.CatalogueItems.Count > 0)

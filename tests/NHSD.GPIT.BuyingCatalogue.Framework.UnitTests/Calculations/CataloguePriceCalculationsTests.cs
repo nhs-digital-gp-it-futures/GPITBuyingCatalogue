@@ -319,7 +319,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         [CommonInlineAutoData(TimeUnit.PerYear, 12.666, 25.332)]
         [CommonInlineAutoData(null, 12, 12)]
         [CommonInlineAutoData(null, 12.666, 12.666)]
-        public static void Order_TotalCost_PerMonth_And_PerYear_Use_MaximumTerm_But_OneOff_Costs_Dont(TimeUnit? billingPeriod, decimal price, decimal total, IFixture fixture)
+        public static void OrderWrapper_TotalCost_PerMonth_And_PerYear_Use_MaximumTerm_But_OneOff_Costs_Dont(TimeUnit? billingPeriod, decimal price, decimal total, IFixture fixture)
         {
             var maximumTerm = 24;
 
@@ -329,17 +329,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             orderItem.OrderItemPrice.BillingPeriod = billingPeriod;
 
             var order = fixture.Build<Order>()
+                .With(o => o.Revision, 1)
                 .With(o => o.OrderItems, new HashSet<OrderItem> { orderItem })
                 .With(o => o.MaximumTerm, maximumTerm)
                 .Create();
 
-            order.TotalCost().Should().Be(total);
-            order.TotalCost(true).Should().Be(Math.Round(total, 2, MidpointRounding.AwayFromZero));
+            var orderWrapper = new OrderWrapper(order);
+
+            orderWrapper.TotalCost().Should().Be(total);
+            orderWrapper.TotalCost(true).Should().Be(Math.Round(total, 2, MidpointRounding.AwayFromZero));
         }
 
         [Theory]
         [CommonAutoData]
-        public static void Order_TotalCost_Is_Sum_of_OrderItem_Costs(IFixture fixture)
+        public static void OrderWrapper_TotalCost_Is_Sum_of_OrderItem_Costs(IFixture fixture)
         {
             var maximumTerm = 24;
             var price = 12M;
@@ -353,17 +356,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             perMonthOrderItem.OrderItemPrice.BillingPeriod = TimeUnit.PerMonth;
 
             var order = fixture.Build<Order>()
+                .With(o => o.Revision, 1)
                 .With(o => o.OrderItems, new HashSet<OrderItem>(new[] { oneOffCostOrderItem, perMonthOrderItem }))
                 .With(o => o.MaximumTerm, maximumTerm)
                 .Create();
 
-            order.TotalCost().Should().Be(12 + (12 * 24));
+            var orderWrapper = new OrderWrapper(order);
+            orderWrapper.TotalCost().Should().Be(12 + (12 * 24));
         }
 
         [Theory]
         [CommonInlineAutoData(1, 12 * 24)]
         [CommonInlineAutoData(2, 12 * 18)]
-        public static void Order_TotalCostForOrderItem_Amended_Orders_Use_The_Planned_Delivery_date(int revision, decimal total, IFixture fixture)
+        public static void Order_TotalCostForOrderItem_Amended_Orders_Use_The_Planned_Delivery_date_Original_Orders_Dont(int revision, decimal total, IFixture fixture)
         {
             var maximumTerm = 24;
             var price = 12M;
@@ -372,16 +377,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             (decimal Price, int LowerRange, int? UpperRange) tier = (price, 1, null);
 
-            OrderItem oneOffCostOrderItemNotUsedInTotal = BuildOrderItem(fixture, 1, new[] { tier }, CataloguePriceCalculationType.SingleFixed);
-            oneOffCostOrderItemNotUsedInTotal.OrderItemPrice.BillingPeriod = null;
-
             OrderItem perMonthOrderItemUsedForTotal = BuildOrderItem(fixture, 1, new[] { tier }, CataloguePriceCalculationType.SingleFixed, amendmentPlannedDelivery);
             perMonthOrderItemUsedForTotal.OrderItemPrice.BillingPeriod = TimeUnit.PerMonth;
 
             var order = fixture.Build<Order>()
                 .With(o => o.Revision, revision)
                 .With(o => o.CommencementDate, commencementDate)
-                .With(o => o.OrderItems, new HashSet<OrderItem>(new[] { oneOffCostOrderItemNotUsedInTotal, perMonthOrderItemUsedForTotal }))
+                .With(o => o.OrderItems, new HashSet<OrderItem>(new[] { perMonthOrderItemUsedForTotal }))
                 .With(o => o.MaximumTerm, maximumTerm)
                 .Create();
 
@@ -389,13 +391,63 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         }
 
         [Theory]
+        [CommonInlineAutoData(1)]
+        [CommonInlineAutoData(2)]
+        public static void Order_TotalCostForOrderItem_Returns_0_When_OrderItem_Not_Found(int revision, CatalogueItemId catalogueItemId, IFixture fixture)
+        {
+            var order = fixture.Build<Order>()
+                .With(o => o.Revision, revision)
+                .Create();
+
+            order.TotalCostForOrderItem(catalogueItemId).Should().Be(0);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(1)]
+        [CommonInlineAutoData(2)]
+        public static void Order_TotalCostForOrderItem_Returns_0_When_OrderItem_Has_No_Recipients(int revision, OrderItem orderItem, IFixture fixture)
+        {
+            orderItem.OrderItemRecipients.Clear();
+
+            var order = fixture.Build<Order>()
+                .With(o => o.Revision, revision)
+                .With(o => o.OrderItems, new HashSet<OrderItem>(new[] { orderItem }))
+                .Create();
+
+            order.TotalCostForOrderItem(orderItem.CatalogueItem.Id).Should().Be(0);
+        }
+
+        [Theory]
         [CommonAutoData]
-        public static void OrderWrapper_TotalCost(IFixture fixture)
+        public static void OrderItem_TotalCost_Returns_0_When_No_Price(OrderItem orderItem)
+        {
+            orderItem.OrderItemPrice = null;
+
+            orderItem.TotalCost().Should().Be(0);
+        }
+
+        [Fact]
+        public static void OrderWrapper_Null_TotalPreviousCost_Returns_0()
+        {
+            ((OrderWrapper)null).TotalPreviousCost().Should().Be(0);
+        }
+
+        [Fact]
+        public static void OrderWrapper_Null_TotalCost_Returns_0()
+        {
+            ((OrderWrapper)null).TotalCost().Should().Be(0);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void OrderWrapper_TotalCost_And_TotalPreviousCost_One_Amendment(IFixture fixture)
         {
             var maximumTerm = 12;
             var price = 12M;
             var commencementDate = new DateTime(2000, 1, 1);
             var amendmentPlannedDelivery = commencementDate.AddMonths(6);
+            var expectedOriginalTotal = 12 * 12;
+            var expectedAmendmentTotal = 12 * 6;
 
             (decimal Price, int LowerRange, int? UpperRange) tier = (price, 1, null);
 
@@ -412,7 +464,46 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             var orderWrapper = new OrderWrapper(new[] { order, amendedOrder });
 
-            orderWrapper.TotalCost().Should().Be((12 * 12) + (12 * 6));
+            orderWrapper.TotalPreviousCost().Should().Be(expectedOriginalTotal);
+            orderWrapper.TotalCost().Should().Be(expectedOriginalTotal + expectedAmendmentTotal);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void OrderWrapper_TotalCost_And_TotalPreviousCosts_Multiple_Amendments(IFixture fixture)
+        {
+            var maximumTerm = 12;
+            var price = 12M;
+            var commencementDate = new DateTime(2000, 1, 1);
+            var revision2PlannedDelivery = commencementDate.AddMonths(6);
+            var revision3PlannedDelivery = commencementDate.AddMonths(9);
+            var expectedOriginalTotal = 12 * 12;
+            var expectedRevision2Total = 12 * 6;
+            var expectedRevision3Total = 12 * 3;
+
+            (decimal Price, int LowerRange, int? UpperRange) tier = (price, 1, null);
+
+            OrderItem orderItem = BuildOrderItem(fixture, 1, new[] { tier }, CataloguePriceCalculationType.SingleFixed);
+            orderItem.OrderItemPrice.BillingPeriod = TimeUnit.PerMonth;
+
+            OrderItem revision2OrderItem = BuildOrderItem(fixture, 1, new[] { tier }, CataloguePriceCalculationType.SingleFixed, revision2PlannedDelivery);
+            revision2OrderItem.OrderItemPrice.BillingPeriod = TimeUnit.PerMonth;
+
+            OrderItem revision3OrderItem = BuildOrderItem(fixture, 1, new[] { tier }, CataloguePriceCalculationType.SingleFixed, revision3PlannedDelivery);
+            revision3OrderItem.OrderItemPrice.BillingPeriod = TimeUnit.PerMonth;
+
+            Order order = BuildOrder(fixture, maximumTerm, new[] { orderItem }, commencementDate);
+
+            var revision2 = order.BuildAmendment(2);
+            revision2.OrderItems = new HashSet<OrderItem> { revision2OrderItem };
+
+            var revision3 = order.BuildAmendment(3);
+            revision3.OrderItems = new HashSet<OrderItem> { revision3OrderItem };
+
+            var orderWrapper = new OrderWrapper(new[] { order, revision2, revision3 });
+
+            orderWrapper.TotalPreviousCost().Should().Be(expectedOriginalTotal + expectedRevision2Total);
+            orderWrapper.TotalCost().Should().Be(expectedOriginalTotal + expectedRevision2Total + expectedRevision3Total);
         }
 
         private static Order BuildOrder(IFixture fixture, int maximumTerm, OrderItem[] orderItems, DateTime commencementDate)

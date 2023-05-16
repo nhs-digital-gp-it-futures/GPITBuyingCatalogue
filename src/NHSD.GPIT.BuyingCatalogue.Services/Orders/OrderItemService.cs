@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
@@ -43,14 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 }
 
                 var catalogueItem = dbContext.CatalogueItems.First(x => x.Id == id);
-
-                dbContext.OrderItems.Add(new OrderItem
-                {
-                    OrderId = order.Id,
-                    CatalogueItemId = id,
-                    CatalogueItem = catalogueItem,
-                    Created = DateTime.UtcNow,
-                });
+                dbContext.OrderItems.Add(order.InitialiseOrderItem(catalogueItem));
             }
 
             await dbContext.SaveChangesAsync();
@@ -76,23 +68,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 }
 
                 var catalogueItem = dbContext.CatalogueItems.First(x => x.Id == id);
-
-                var orderItem = new OrderItem
-                {
-                    OrderId = order.Id,
-                    CatalogueItemId = id,
-                    CatalogueItem = catalogueItem,
-                    Created = DateTime.UtcNow,
-                };
-
-                var copiedPrice = CopyOrderItemPrice(wrapper.RolledUp, id);
-
-                if (copiedPrice != null)
-                {
-                    orderItem.OrderItemPrice = copiedPrice;
-                }
-
-                dbContext.OrderItems.Add(orderItem);
+                dbContext.OrderItems.Add(
+                    order.InitialiseOrderItem(
+                        catalogueItem,
+                        wrapper.RolledUp.OrderItem(id)?.OrderItemPrice?.Copy()));
             }
 
             await dbContext.SaveChangesAsync();
@@ -194,14 +173,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             };
 
             await dbContext.SaveChangesAsync();
-        }
-
-        private static OrderItemPrice CopyOrderItemPrice(Order order, CatalogueItemId catalogueItemId)
-        {
-            var existingPrice = order.OrderItem(catalogueItemId)?.OrderItemPrice;
-            return existingPrice is not null
-                ? new OrderItemPrice(existingPrice)
-                : null;
         }
 
         private async Task<OrderItem> GetOrderItemTracked(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId)

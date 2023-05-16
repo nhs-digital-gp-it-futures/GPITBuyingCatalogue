@@ -34,6 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
             IsPilotSolution = catalogueItem.Solution.IsPilotSolution;
             LastReviewed = catalogueItem.Solution.LastUpdated;
+            Frameworks = catalogueItem.Solution.FrameworkSolutions.Select(x => x.Framework).Distinct().ToList();
 
             SetSections(contentStatus);
             SetPaginationFooter();
@@ -54,6 +55,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public PublicationStatus PublicationStatus { get; }
 
         public bool IsPilotSolution { get; }
+
+        public List<BuyingCatalogue.EntityFramework.Catalogue.Models.Framework> Frameworks { get; set; }
+
+        public bool HasExpiredFrameworks => Frameworks.Any(x => x.IsExpired);
 
         public virtual IList<SectionModel> GetSections()
         {

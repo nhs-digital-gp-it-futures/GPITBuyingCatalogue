@@ -90,11 +90,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 .ToArrayAsync();
 
             newContacts.Length.Should().Be(supplierContactsModel.Contacts.Length);
-            newContacts.Should().BeEquivalentTo(supplierContactsModel.Contacts, config => config
-                .Excluding(mc => mc.SolutionId)
-                .Excluding(mc => mc.LastUpdated)
-                .Excluding(mc => mc.LastUpdatedBy)
-                .Excluding(mc => mc.LastUpdatedByUser));
+            newContacts.Should()
+                .BeEquivalentTo(
+                    supplierContactsModel.Contacts,
+                    config => config
+                        .Excluding(mc => mc.SolutionId)
+                        .Excluding(mc => mc.LastUpdated)
+                        .Excluding(mc => mc.LastUpdatedBy)
+                        .Excluding(mc => mc.LastUpdatedByUser));
         }
 
         [Theory]
@@ -185,7 +188,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             await service.SaveSupplierContacts(model);
 
-            var marketingContacts = await context.MarketingContacts.AsAsyncEnumerable().Where(c => c.SolutionId == model.SolutionId).ToListAsync();
+            var marketingContacts = await context.MarketingContacts.AsAsyncEnumerable()
+                .Where(c => c.SolutionId == model.SolutionId)
+                .ToListAsync();
 
             marketingContacts.Should().BeEquivalentTo(model.ValidContacts());
         }
@@ -196,11 +201,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         {
             var service = new SolutionsService(Mock.Of<BuyingCatalogueDbContext>());
 
-            var actual = await Assert.ThrowsAsync<ArgumentException>(() => service.SaveSolutionDescription(
-                new CatalogueItemId(100000, "001"),
-                summary,
-                "Description",
-                "Link"));
+            var actual = await Assert.ThrowsAsync<ArgumentException>(
+                () => service.SaveSolutionDescription(
+                    new CatalogueItemId(100000, "001"),
+                    summary,
+                    "Description",
+                    "Link"));
 
             actual.ParamName.Should().Be("summary");
         }
@@ -219,7 +225,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             context.Solutions.Add(solution);
             await context.SaveChangesAsync();
 
-            await service.SaveSolutionDetails(solution.CatalogueItemId, expectedSolutionName, expectedSupplierId, expectedPilotState, new List<FrameworkModel>());
+            await service.SaveSolutionDetails(
+                solution.CatalogueItemId,
+                expectedSolutionName,
+                expectedSupplierId,
+                expectedPilotState,
+                new List<FrameworkModel>());
 
             var dbSolution = await context.CatalogueItems
                 .Include(s => s.Solution)
@@ -246,7 +257,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             await service.SaveSolutionDescription(solution.CatalogueItemId, summary, description, link);
 
-            var actual = await context.Solutions.AsQueryable().FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
+            var actual = await context.Solutions.AsQueryable()
+                .FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
 
             actual.Summary.Should().Be(summary);
             actual.FullDescription.Should().Be(description);
@@ -266,7 +278,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             await service.SaveSolutionFeatures(solution.CatalogueItemId, features);
 
-            var actual = await context.Solutions.AsQueryable().FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
+            var actual = await context.Solutions.AsQueryable()
+                .FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
 
             actual.Features.Should().Be(JsonSerializer.Serialize(features));
         }
@@ -284,7 +297,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             await service.SaveImplementationDetail(solution.CatalogueItemId, detail);
 
-            var actual = await context.Solutions.AsQueryable().FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
+            var actual = await context.Solutions.AsQueryable()
+                .FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
 
             actual.ImplementationDetail.Should().Be(detail);
         }
@@ -312,7 +326,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             await service.SaveClientApplication(solution.CatalogueItemId, clientApplication);
 
-            var actual = await context.Solutions.AsQueryable().FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
+            var actual = await context.Solutions.AsQueryable()
+                .FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
 
             actual.ClientApplication.Should().Be(JsonSerializer.Serialize(clientApplication));
         }
@@ -340,7 +355,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             await service.SaveHosting(solution.CatalogueItemId, hosting);
 
-            var actual = await context.Solutions.AsQueryable().FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
+            var actual = await context.Solutions.AsQueryable()
+                .FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
 
             actual.Hosting.Should().BeEquivalentTo(hosting);
         }
@@ -370,12 +386,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static async Task AddCatalogueSolution_NullModel_ThrowsException(SolutionsService service)
         {
             (await Assert.ThrowsAsync<ArgumentNullException>(() => service.AddCatalogueSolution(null)))
-                .ParamName.Should().Be("model");
+                .ParamName.Should()
+                .Be("model");
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task AddCatalogueSolution_NullListOfFrameWorkModels_ThrowsException(SolutionsService service)
+        public static async Task AddCatalogueSolution_NullListOfFrameWorkModels_ThrowsException(
+            SolutionsService service)
         {
             (await Assert.ThrowsAsync<ArgumentNullException>(
                     () => service.AddCatalogueSolution(new CreateSolutionModel())))
@@ -423,14 +441,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             [Frozen] BuyingCatalogueDbContext context,
             SolutionsService service)
         {
-            clientApplication.ClientApplicationTypes = new HashSet<string> { "browser-based", "native-mobile", "native-desktop" };
+            clientApplication.ClientApplicationTypes =
+                new HashSet<string> { "browser-based", "native-mobile", "native-desktop" };
             catalogueSolution.ClientApplication = JsonSerializer.Serialize(clientApplication);
             context.Solutions.Add(catalogueSolution);
             await context.SaveChangesAsync();
 
-            await service.DeleteClientApplication(catalogueSolution.CatalogueItemId, ClientApplicationType.BrowserBased);
+            await service.DeleteClientApplication(
+                catalogueSolution.CatalogueItemId,
+                ClientApplicationType.BrowserBased);
 
-            var actual = await context.Solutions.AsQueryable().FirstAsync(s => s.CatalogueItemId == catalogueSolution.CatalogueItemId);
+            var actual = await context.Solutions.AsQueryable()
+                .FirstAsync(s => s.CatalogueItemId == catalogueSolution.CatalogueItemId);
 
             var actualClientApplication = JsonDeserializer.Deserialize<ClientApplication>(actual.ClientApplication);
 
@@ -451,9 +473,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 ClientApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue),
             };
 
-            var updatedClientApplication = SolutionsService.RemoveClientApplicationType(clientApplication, ClientApplicationType.BrowserBased);
+            var updatedClientApplication = SolutionsService.RemoveClientApplicationType(
+                clientApplication,
+                ClientApplicationType.BrowserBased);
 
-            updatedClientApplication.ClientApplicationTypes.Should().BeEquivalentTo(
+            updatedClientApplication.ClientApplicationTypes.Should()
+                .BeEquivalentTo(
                     new HashSet<string>
                     {
                         ClientApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue),
@@ -471,21 +496,32 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             updatedClientApplication.Plugins.Should().BeNull();
 
             // Desktop
-            updatedClientApplication.NativeDesktopAdditionalInformation.Should().Be(clientApplication.NativeDesktopAdditionalInformation);
-            updatedClientApplication.NativeDesktopHardwareRequirements.Should().Be(clientApplication.NativeDesktopHardwareRequirements);
-            updatedClientApplication.NativeDesktopMemoryAndStorage.Should().BeEquivalentTo(clientApplication.NativeDesktopMemoryAndStorage);
-            updatedClientApplication.NativeDesktopMinimumConnectionSpeed.Should().Be(clientApplication.NativeDesktopMinimumConnectionSpeed);
-            updatedClientApplication.NativeDesktopOperatingSystemsDescription.Should().Be(clientApplication.NativeDesktopOperatingSystemsDescription);
-            updatedClientApplication.NativeDesktopThirdParty.Should().BeEquivalentTo(clientApplication.NativeDesktopThirdParty);
+            updatedClientApplication.NativeDesktopAdditionalInformation.Should()
+                .Be(clientApplication.NativeDesktopAdditionalInformation);
+            updatedClientApplication.NativeDesktopHardwareRequirements.Should()
+                .Be(clientApplication.NativeDesktopHardwareRequirements);
+            updatedClientApplication.NativeDesktopMemoryAndStorage.Should()
+                .BeEquivalentTo(clientApplication.NativeDesktopMemoryAndStorage);
+            updatedClientApplication.NativeDesktopMinimumConnectionSpeed.Should()
+                .Be(clientApplication.NativeDesktopMinimumConnectionSpeed);
+            updatedClientApplication.NativeDesktopOperatingSystemsDescription.Should()
+                .Be(clientApplication.NativeDesktopOperatingSystemsDescription);
+            updatedClientApplication.NativeDesktopThirdParty.Should()
+                .BeEquivalentTo(clientApplication.NativeDesktopThirdParty);
 
             // Mobile or Tablet
-            updatedClientApplication.MobileConnectionDetails.Should().BeEquivalentTo(clientApplication.MobileConnectionDetails);
-            updatedClientApplication.MobileMemoryAndStorage.Should().BeEquivalentTo(clientApplication.MobileMemoryAndStorage);
-            updatedClientApplication.MobileOperatingSystems.Should().BeEquivalentTo(clientApplication.MobileOperatingSystems);
+            updatedClientApplication.MobileConnectionDetails.Should()
+                .BeEquivalentTo(clientApplication.MobileConnectionDetails);
+            updatedClientApplication.MobileMemoryAndStorage.Should()
+                .BeEquivalentTo(clientApplication.MobileMemoryAndStorage);
+            updatedClientApplication.MobileOperatingSystems.Should()
+                .BeEquivalentTo(clientApplication.MobileOperatingSystems);
             updatedClientApplication.MobileThirdParty.Should().BeEquivalentTo(clientApplication.MobileThirdParty);
-            updatedClientApplication.NativeMobileAdditionalInformation.Should().Be(clientApplication.NativeMobileAdditionalInformation);
+            updatedClientApplication.NativeMobileAdditionalInformation.Should()
+                .Be(clientApplication.NativeMobileAdditionalInformation);
             updatedClientApplication.NativeMobileFirstDesign.Should().Be(clientApplication.NativeMobileFirstDesign);
-            updatedClientApplication.NativeMobileHardwareRequirements.Should().Be(clientApplication.NativeMobileHardwareRequirements);
+            updatedClientApplication.NativeMobileHardwareRequirements.Should()
+                .Be(clientApplication.NativeMobileHardwareRequirements);
         }
 
         [Theory]
@@ -499,9 +535,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 ClientApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue),
             };
 
-            var updatedClientApplication = SolutionsService.RemoveClientApplicationType(clientApplication, ClientApplicationType.Desktop);
+            var updatedClientApplication = SolutionsService.RemoveClientApplicationType(
+                clientApplication,
+                ClientApplicationType.Desktop);
 
-            updatedClientApplication.ClientApplicationTypes.Should().BeEquivalentTo(
+            updatedClientApplication.ClientApplicationTypes.Should()
+                .BeEquivalentTo(
                     new HashSet<string>
                     {
                         ClientApplicationType.BrowserBased.AsString(EnumFormat.EnumMemberValue),
@@ -527,13 +566,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             updatedClientApplication.NativeDesktopThirdParty.Should().BeNull();
 
             // Mobile or Tablet
-            updatedClientApplication.MobileConnectionDetails.Should().BeEquivalentTo(clientApplication.MobileConnectionDetails);
-            updatedClientApplication.MobileMemoryAndStorage.Should().BeEquivalentTo(clientApplication.MobileMemoryAndStorage);
-            updatedClientApplication.MobileOperatingSystems.Should().BeEquivalentTo(clientApplication.MobileOperatingSystems);
+            updatedClientApplication.MobileConnectionDetails.Should()
+                .BeEquivalentTo(clientApplication.MobileConnectionDetails);
+            updatedClientApplication.MobileMemoryAndStorage.Should()
+                .BeEquivalentTo(clientApplication.MobileMemoryAndStorage);
+            updatedClientApplication.MobileOperatingSystems.Should()
+                .BeEquivalentTo(clientApplication.MobileOperatingSystems);
             updatedClientApplication.MobileThirdParty.Should().BeEquivalentTo(clientApplication.MobileThirdParty);
-            updatedClientApplication.NativeMobileAdditionalInformation.Should().Be(clientApplication.NativeMobileAdditionalInformation);
+            updatedClientApplication.NativeMobileAdditionalInformation.Should()
+                .Be(clientApplication.NativeMobileAdditionalInformation);
             updatedClientApplication.NativeMobileFirstDesign.Should().Be(clientApplication.NativeMobileFirstDesign);
-            updatedClientApplication.NativeMobileHardwareRequirements.Should().Be(clientApplication.NativeMobileHardwareRequirements);
+            updatedClientApplication.NativeMobileHardwareRequirements.Should()
+                .Be(clientApplication.NativeMobileHardwareRequirements);
         }
 
         [Theory]
@@ -547,9 +591,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 ClientApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue),
             };
 
-            var updatedClientApplication = SolutionsService.RemoveClientApplicationType(clientApplication, ClientApplicationType.MobileTablet);
+            var updatedClientApplication = SolutionsService.RemoveClientApplicationType(
+                clientApplication,
+                ClientApplicationType.MobileTablet);
 
-            updatedClientApplication.ClientApplicationTypes.Should().BeEquivalentTo(
+            updatedClientApplication.ClientApplicationTypes.Should()
+                .BeEquivalentTo(
                     new HashSet<string>
                     {
                         ClientApplicationType.BrowserBased.AsString(EnumFormat.EnumMemberValue),
@@ -567,12 +614,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             updatedClientApplication.Plugins.Should().BeEquivalentTo(clientApplication.Plugins);
 
             // Desktop
-            updatedClientApplication.NativeDesktopAdditionalInformation.Should().Be(clientApplication.NativeDesktopAdditionalInformation);
-            updatedClientApplication.NativeDesktopHardwareRequirements.Should().Be(clientApplication.NativeDesktopHardwareRequirements);
-            updatedClientApplication.NativeDesktopMemoryAndStorage.Should().BeEquivalentTo(clientApplication.NativeDesktopMemoryAndStorage);
-            updatedClientApplication.NativeDesktopMinimumConnectionSpeed.Should().Be(clientApplication.NativeDesktopMinimumConnectionSpeed);
-            updatedClientApplication.NativeDesktopOperatingSystemsDescription.Should().Be(clientApplication.NativeDesktopOperatingSystemsDescription);
-            updatedClientApplication.NativeDesktopThirdParty.Should().BeEquivalentTo(clientApplication.NativeDesktopThirdParty);
+            updatedClientApplication.NativeDesktopAdditionalInformation.Should()
+                .Be(clientApplication.NativeDesktopAdditionalInformation);
+            updatedClientApplication.NativeDesktopHardwareRequirements.Should()
+                .Be(clientApplication.NativeDesktopHardwareRequirements);
+            updatedClientApplication.NativeDesktopMemoryAndStorage.Should()
+                .BeEquivalentTo(clientApplication.NativeDesktopMemoryAndStorage);
+            updatedClientApplication.NativeDesktopMinimumConnectionSpeed.Should()
+                .Be(clientApplication.NativeDesktopMinimumConnectionSpeed);
+            updatedClientApplication.NativeDesktopOperatingSystemsDescription.Should()
+                .Be(clientApplication.NativeDesktopOperatingSystemsDescription);
+            updatedClientApplication.NativeDesktopThirdParty.Should()
+                .BeEquivalentTo(clientApplication.NativeDesktopThirdParty);
 
             // Mobile or Tablet
             updatedClientApplication.MobileConnectionDetails.Should().BeNull();
@@ -594,7 +647,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         {
             FluentActions
                 .Awaiting(() => systemUnderTest.GetAllSolutionsForSearchTerm(searchTerm))
-                .Should().ThrowAsync<ArgumentNullException>();
+                .Should()
+                .ThrowAsync<ArgumentNullException>();
         }
 
         [Theory]
@@ -628,6 +682,74 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             var results = await systemUnderTest.GetAllSolutionsForSearchTerm(searchTerm);
 
             results.Should().BeEquivalentTo(solutions.Except(new[] { noMatch }));
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetSupplierSolutions_ReturnsExpectedResults(
+            Supplier supplier,
+            List<Solution> solutions,
+            [Frozen] BuyingCatalogueDbContext context,
+            SolutionsService service)
+        {
+            var expectedSolutions = solutions.Where(x => x.FrameworkSolutions.Any(y => !y.Framework.IsExpired))
+                .Select(x => x.CatalogueItem)
+                .ToList();
+
+            solutions.ForEach(
+                x =>
+                {
+                    x.CatalogueItem.Supplier = supplier;
+                    x.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+                });
+
+            context.Solutions.AddRange(solutions);
+            context.Suppliers.Add(supplier);
+
+            await context.SaveChangesAsync();
+
+            var result = await service.GetSupplierSolutions(supplier.Id);
+
+            result.Should().BeEquivalentTo(expectedSolutions);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetSupplierSolutionsWithAssociatedServices_ReturnsExpectedResults(
+            Supplier supplier,
+            AssociatedService associatedService,
+            List<Solution> solutions,
+            [Frozen] BuyingCatalogueDbContext context,
+            SolutionsService service)
+        {
+            supplier.CatalogueItems.Clear();
+            associatedService.CatalogueItem.Supplier = supplier;
+            associatedService.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+
+            solutions.ForEach(
+                x =>
+                {
+                    x.CatalogueItem.Supplier = supplier;
+                    x.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+                    x.CatalogueItem.SupplierServiceAssociations = new List<SupplierServiceAssociation>
+                    {
+                        new(x.CatalogueItemId, associatedService.CatalogueItemId),
+                    };
+                });
+
+            var expectedSolutions = solutions.Where(x => x.FrameworkSolutions.Any(y => !y.Framework.IsExpired))
+                .Select(x => x.CatalogueItem)
+                .ToList();
+
+            context.AssociatedServices.Add(associatedService);
+            context.Solutions.AddRange(solutions);
+            context.Suppliers.Add(supplier);
+
+            await context.SaveChangesAsync();
+
+            var result = await service.GetSupplierSolutionsWithAssociatedServices(supplier.Id);
+
+            result.Should().HaveCount(expectedSolutions.Count);
         }
 
         private static List<CatalogueItem> GetSolutionsForSearchTerm(string searchTerm)
