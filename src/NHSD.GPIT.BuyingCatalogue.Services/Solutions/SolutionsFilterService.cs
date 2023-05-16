@@ -229,7 +229,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     .ThenInclude(cic => cic.Capability)
                 .Where(i =>
                     i.CatalogueItemType == CatalogueItemType.Solution
-                    && selectedSolutions.Contains(i.Id)),
+                    && selectedSolutions.Contains(i.Id)
+                    && i.Solution.FrameworkSolutions.Select(f => f.Framework).Distinct().Any(f => !f.IsExpired)),
                 capabilitiesAndCount);
         }
 

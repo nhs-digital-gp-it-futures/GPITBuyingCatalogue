@@ -409,7 +409,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(i => i.Supplier)
                 .Where(i => i.SupplierId == supplierId.GetValueOrDefault()
                     && i.CatalogueItemType == CatalogueItemType.Solution
-                    && i.PublishedStatus == PublicationStatus.Published)
+                    && i.PublishedStatus == PublicationStatus.Published
+                    && i.Solution.FrameworkSolutions.Select(x => x.Framework).Distinct().Any(x => !x.IsExpired))
                 .OrderBy(i => i.Name)
                 .ToListAsync();
         }
@@ -426,7 +427,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     && i.PublishedStatus == PublicationStatus.Published
                     && i.SupplierServiceAssociations != null
                     && i.SupplierServiceAssociations.Any(x => x.AssociatedService != null
-                        && x.AssociatedService.CatalogueItem.PublishedStatus == PublicationStatus.Published))
+                        && x.AssociatedService.CatalogueItem.PublishedStatus == PublicationStatus.Published)
+                    && i.Solution.FrameworkSolutions.Select(x => x.Framework).Distinct().Any(x => !x.IsExpired))
                 .OrderBy(i => i.Name)
                 .ToListAsync();
         }

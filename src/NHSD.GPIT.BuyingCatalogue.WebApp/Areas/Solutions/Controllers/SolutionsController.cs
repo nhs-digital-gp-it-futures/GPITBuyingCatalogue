@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             [FromQuery] string selectedCapabilityIds,
             [FromQuery] string selectedEpicIds,
             [FromQuery] string search,
-            string selectedFrameworkId,
+            [FromQuery] string selectedFrameworkId,
             [FromQuery] string selectedClientApplicationTypeIds)
         {
             var inputOptions = new PageOptions(page, sortBy);

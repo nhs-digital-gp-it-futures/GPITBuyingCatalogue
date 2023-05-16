@@ -7,11 +7,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 {
     public interface ISupplierService
     {
-        public Task<List<Supplier>> GetListFromBuyingCatalogue(
-            string searchString,
-            CatalogueItemType? catalogueItemType,
-            PublicationStatus? publicationStatus);
-
         public Task<List<Supplier>> GetAllSuppliersFromBuyingCatalogue();
 
         public Task<List<Supplier>> GetAllSuppliersWithAssociatedServices();

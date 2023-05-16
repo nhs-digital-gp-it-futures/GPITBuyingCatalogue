@@ -21,7 +21,7 @@
             </nhs-summary-list-row>
             <nhs-summary-list-row label-text="@Model.FrameworkTitle()">
                 <p>
-                    @Html.DisplayFor(m => m.Frameworks)
+                    <partial name="DisplayTemplates/TableListCell" model="@Model.Frameworks.Select(x => x.ShortName).ToArray()" />
                 </p>
             </nhs-summary-list-row>
             <nhs-summary-list-row label-text="Foundation Solution">
