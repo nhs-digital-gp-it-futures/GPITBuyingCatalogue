@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             [FromQuery] string search,
             [FromQuery] string selectedFrameworkId,
             [FromQuery] string selectedClientApplicationTypeIds,
-			[FromQuery] string selectedHostingTypeIds)
+            [FromQuery] string selectedHostingTypeIds)
         {
             var inputOptions = new PageOptions(page, sortBy);
 
@@ -57,16 +57,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     selectedEpicIds,
                     search,
                     selectedFrameworkId,
-                    selectedClientApplicationTypeIds);
-			        //selectedHostingTypeIds);
-			var (catalogueItemsWithoutFrameworkFilter, capabilitiesAndCountWithoutFrameworkFilter) = await solutionsFilterService.GetFilteredAndNonFilteredQueryResults(selectedCapabilityIds, selectedEpicIds);
+                    selectedClientApplicationTypeIds,
+                    selectedHostingTypeIds);
+            var (catalogueItemsWithoutFrameworkFilter, capabilitiesAndCountWithoutFrameworkFilter) = await solutionsFilterService.GetFilteredAndNonFilteredQueryResults(selectedCapabilityIds, selectedEpicIds);
             var frameworks = await frameworkService.GetFrameworksByCatalogueItems(catalogueItemsWithoutFrameworkFilter.Select(x => x.Id).ToList());
             var additionalFilters = new Models.Filters.AdditionalFiltersModel(frameworks, selectedClientApplicationTypeIds, selectedHostingTypeIds);
 
             return View(new SolutionsModel()
             {
                 CatalogueItems = catalogueItems,
-                SelectedSortOption = options.Sort,
+                SelectedSortOption = options.Sort(),
                 PageOptions = options,
                 SearchSummary = new CatalogueFilterSearchSummary(
                     capabilitiesAndCount,
@@ -100,8 +100,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                        sortBy = model.SelectedSortOption.ToString(),
                        selectedFrameworkId,
                        selectedClientApplicationTypeIds = additionalFiltersModel.CombineSelectedOptions(additionalFiltersModel.ClientApplicationTypeOptions),
-					   selectedHostingTypeIds = additionalFiltersModel.CombineSelectedOptions(additionalFiltersModel.HostingTypeOptions),
-				   });
+                       selectedHostingTypeIds = additionalFiltersModel.CombineSelectedOptions(additionalFiltersModel.HostingTypeOptions),
+                   });
         }
 
         [HttpGet("search-suggestions")]

@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null, null, null, null, null))
                 .ReturnsAsync((itemsToReturn, options, new List<CapabilitiesAndCountModel>()));
 
-            await controller.Index(options.PageNumber.ToString(), options.Sort.ToString(), null, null, null, null, null);
+            await controller.Index(options.PageNumber.ToString(), options.Sort.ToString(), null, null, null, null, null, null);
 
             mockService.VerifyAll();
         }
