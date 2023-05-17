@@ -111,6 +111,7 @@
     <Build Include="Security\Users\NHSD.sql" />
     <Build Include="Security\Logins\NHSD.sql" />
     <None Include="PostDeployment\CreateIntegratedCareBoards.sql" />
+    <None Include="PostDeployment\InsertFilters.sql" />
     <None Include="PostDeployment\IntegrationTests\ClearData.sql" />
     <None Include="PostDeployment\IntegrationTests\DropRole.sql" />
     <None Include="PostDeployment\IntegrationTests\DropUserAndLogin.sql" />

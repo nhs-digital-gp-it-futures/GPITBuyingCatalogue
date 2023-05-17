@@ -9,7 +9,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Configuration
     {
         public void Configure(EntityTypeBuilder<FilterClientApplicationType> builder)
         {
-            builder.ToTable("FilterClientApplicationTypes", Schemas.Filtering);
+            builder.ToTable("FilterClientApplicationTypes", Schemas.Filtering, b => b.IsTemporal(
+                temp =>
+                {
+                    temp.UseHistoryTable("FilterClientApplicationTypes_History");
+                    temp.HasPeriodStart("SysStartTime");
+                    temp.HasPeriodEnd("SysEndTime");
+                }));
 
             builder.HasKey(fcat => fcat.FilterClientApplicationTypeId);
 

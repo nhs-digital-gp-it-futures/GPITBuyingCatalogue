@@ -9,7 +9,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Configuration
     {
         public void Configure(EntityTypeBuilder<FilterEpic> builder)
         {
-            builder.ToTable("FilterEpics", Schemas.Filtering);
+            builder.ToTable("FilterEpics", Schemas.Filtering, b => b.IsTemporal(
+                temp =>
+                {
+                    temp.UseHistoryTable("FilterEpics_History");
+                    temp.HasPeriodStart("SysStartTime");
+                    temp.HasPeriodEnd("SysEndTime");
+                }));
 
             builder.HasKey(fe => new { fe.FilterId, fe.EpicId }).HasName("PK_FilterEpics");
 

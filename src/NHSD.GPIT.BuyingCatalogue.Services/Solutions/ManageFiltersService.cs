@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return filter.Id;
         }
 
-        public async Task AddFilterCapabilities(int filterId, List<int> capabilityIds)
+        internal async Task AddFilterCapabilities(int filterId, List<int> capabilityIds)
         {
             if (capabilityIds is null || capabilityIds.Count == 0) return;
 
@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task AddFilterEpics(int filterId, List<string> epicIds)
+        internal async Task AddFilterEpics(int filterId, List<string> epicIds)
         {
             if (epicIds is null || epicIds.Count == 0) return;
 
@@ -119,7 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task AddFilterClientApplicationTypes(int filterId, List<ClientApplicationType> clientApplicationTypes)
+        internal async Task AddFilterClientApplicationTypes(int filterId, List<ClientApplicationType> clientApplicationTypes)
         {
             if (clientApplicationTypes is null || clientApplicationTypes.Count == 0) return;
 
@@ -145,7 +145,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task AddFilterHostingTypes(int filterId, List<HostingType> hostingTypes)
+        internal async Task AddFilterHostingTypes(int filterId, List<HostingType> hostingTypes)
         {
             if (hostingTypes is null || hostingTypes.Count == 0) return;
 

@@ -9,7 +9,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Configuration
     {
         public void Configure(EntityTypeBuilder<Filter> builder)
         {
-            builder.ToTable("Filters", Schemas.Filtering);
+            builder.ToTable("Filters", Schemas.Filtering, b => b.IsTemporal(
+                temp =>
+                {
+                    temp.UseHistoryTable("Filters_History");
+                    temp.HasPeriodStart("SysStartTime");
+                    temp.HasPeriodEnd("SysEndTime");
+                }));
 
             builder.HasKey(o => o.Id);
             builder.Property(o => o.Id).ValueGeneratedOnAdd();
@@ -27,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Configuration
                 .IsRequired();
 
             builder.Property(f => f.FrameworkId)
-                .HasMaxLength(10);
+                .HasMaxLength(36);
 
             builder.Property(i => i.Created).HasDefaultValue(DateTime.UtcNow);
 
