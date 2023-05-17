@@ -34,14 +34,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public SolutionsFilterService(BuyingCatalogueDbContext dbContext) =>
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
-        public static IQueryable<CatalogueItem> GetClientApplicationTypeFilterQuery(IQueryable<CatalogueItem> query, string selectedClientApplicationTypeIds)
+        private static IQueryable<CatalogueItem> GetClientApplicationTypeFilterQuery(IQueryable<CatalogueItem> query, string selectedClientApplicationTypeIds)
         {
-            if (query == null)
+            if (string.IsNullOrEmpty(selectedClientApplicationTypeIds))
                 return query;
 
-            var clientApplicationTypeEnums = selectedClientApplicationTypeIds?.Split(FilterConstants.Delimiter)
-                .Where(t => Enum.IsDefined(typeof(ClientApplicationType), t))
-                .Select(t => (ClientApplicationType)Enum.Parse(typeof(ClientApplicationType), t));
+            var clientApplicationTypeEnums = selectedClientApplicationTypeIds.Split(FilterConstants.Delimiter)
+                .Where(t => Enum.TryParse<ClientApplicationType>(t, out var enumVal) && Enum.IsDefined(enumVal))
+                .Select(Enum.Parse<ClientApplicationType>)
+                .ToList();
+
+            if (clientApplicationTypeEnums == null || !clientApplicationTypeEnums.Any())
+                throw new ArgumentException("Invalid filter format", nameof(selectedClientApplicationTypeIds));
+
             foreach (var row in query)
             {
                 if (string.IsNullOrEmpty(row.Solution.ClientApplication))
