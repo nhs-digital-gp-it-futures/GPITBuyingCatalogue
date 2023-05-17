@@ -10,6 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Serialization;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
@@ -104,10 +105,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     x => string.IsNullOrEmpty(x.ClientApplication));
             }
 
-            /*if (!string.IsNullOrWhiteSpace(selectedHostingTypeIds))
+            if (!string.IsNullOrWhiteSpace(selectedHostingTypeIds))
             {
-                query = GetClientApplicationTypeFilterQuery(query, selectedHostingTypeIds, new HostingType(), x => x.Hosting.ToString(),);
-            }*/
+                query = ApplyAdditionalFilterToQuery<HostingType>(
+                    query,
+                    selectedHostingTypeIds,
+                    GetSelectedFiltersHosting,
+                    x => string.IsNullOrEmpty(x.Hosting?.ToString() ?? string.Empty));
+            }
 
             options.TotalNumberOfItems = await query.CountAsync();
             query = options.Sort switch
@@ -274,6 +279,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             var clientApplication = JsonDeserializer.Deserialize<ClientApplication>(solution.ClientApplication);
             return selectedFilterEnums?.Where(t => clientApplication.HasClientApplicationType(t));
+        }
+
+        private static IEnumerable<HostingType> GetSelectedFiltersHosting(Solution solution, IEnumerable<HostingType> selectedFilterEnums)
+        {
+            return selectedFilterEnums?.Where(t => solution.Hosting.HasHostingType(t));
         }
     }
 }
