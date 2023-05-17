@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
@@ -26,8 +25,14 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.Property(s => s.IsPilotSolution).HasDefaultValue(false);
             builder.Property(s => s.LastUpdated).HasDefaultValue(DateTime.UtcNow);
 
-            builder.Property(s => s.Hosting)
-                .HasJsonConversion();
+            builder.OwnsOne(s => s.Hosting, h =>
+            {
+                h.OwnsOne(c => c.HybridHostingType);
+                h.OwnsOne(c => c.PublicCloud);
+                h.OwnsOne(c => c.PrivateCloud);
+                h.OwnsOne(c => c.OnPremise);
+                h.ToJson();
+            });
 
             builder.Property(s => s.RoadMap).HasMaxLength(1000);
             builder.Property(s => s.Summary).HasMaxLength(350);

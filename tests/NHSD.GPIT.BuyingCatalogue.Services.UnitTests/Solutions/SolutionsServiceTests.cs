@@ -354,6 +354,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             await context.SaveChangesAsync();
 
             await service.SaveHosting(solution.CatalogueItemId, hosting);
+            context.ChangeTracker.Clear();
 
             var actual = await context.Solutions.AsQueryable()
                 .FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);

@@ -294,38 +294,41 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_PublicCloud_CallsSaveHosting(
-            CatalogueItemId catalogueItemId,
+            CatalogueItem catalogueItem,
+            Solution solution,
             PublicCloudModel model,
-            Hosting hosting,
             [Frozen] Mock<ISolutionsService> mockService,
             HostingTypesController controller)
         {
-            mockService.Setup(s => s.GetHosting(catalogueItemId))
-                .ReturnsAsync(hosting);
-            await controller.PublicCloud(catalogueItemId, model);
+            catalogueItem.Solution = solution;
 
-            hosting.PublicCloud = new PublicCloud { Summary = model.Summary, Link = model.Link, RequiresHscn = model.RequiresHscn };
+            mockService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
 
-            mockService.Verify(s => s.SaveHosting(catalogueItemId, hosting));
+            await controller.PublicCloud(catalogueItem.Id, model);
+
+            mockService.Verify(s => s.SaveHosting(catalogueItem.Id, solution.Hosting));
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_PublicCloud_RedirectsToHostingType(
-            CatalogueItemId catalogueItemId,
-            Hosting hosting,
+            CatalogueItem catalogueItem,
+            Solution solution,
             PublicCloudModel model,
             [Frozen] Mock<ISolutionsService> mockService,
             HostingTypesController controller)
         {
-            mockService.Setup(s => s.GetHosting(catalogueItemId))
-                .ReturnsAsync(hosting);
+            catalogueItem.Solution = solution;
 
-            var actual = (await controller.PublicCloud(catalogueItemId, model)).As<RedirectToActionResult>();
+            mockService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
+
+            var actual = (await controller.PublicCloud(catalogueItem.Id, model)).As<RedirectToActionResult>();
 
             actual.ActionName.Should().Be(nameof(HostingTypesController.HostingType));
             actual.ControllerName.Should().BeNull();
-            actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
+            actual.RouteValues["solutionId"].Should().Be(catalogueItem.Id);
         }
 
         [Theory]
@@ -400,38 +403,41 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_PrivateCloud_CallsSaveHosting(
-            CatalogueItemId catalogueItemId,
+            CatalogueItem catalogueItem,
+            Solution solution,
             PrivateCloudModel model,
-            Hosting hosting,
             [Frozen] Mock<ISolutionsService> mockService,
             HostingTypesController controller)
         {
-            mockService.Setup(s => s.GetHosting(catalogueItemId))
-                .ReturnsAsync(hosting);
-            await controller.PrivateCloud(catalogueItemId, model);
+            catalogueItem.Solution = solution;
 
-            hosting.PrivateCloud = new PrivateCloud { Summary = model.Summary, Link = model.Link, RequiresHscn = model.RequiresHscn, HostingModel = model.HostingModel };
+            mockService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
 
-            mockService.Verify(s => s.SaveHosting(catalogueItemId, hosting));
+            await controller.PrivateCloud(catalogueItem.Id, model);
+
+            mockService.Verify(s => s.SaveHosting(catalogueItem.Id, solution.Hosting));
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_PrivateCloud_RedirectsToHostingType(
-            CatalogueItemId catalogueItemId,
-            Hosting hosting,
+            CatalogueItem catalogueItem,
+            Solution solution,
             PrivateCloudModel model,
             [Frozen] Mock<ISolutionsService> mockService,
             HostingTypesController controller)
         {
-            mockService.Setup(s => s.GetHosting(catalogueItemId))
-                .ReturnsAsync(hosting);
+            catalogueItem.Solution = solution;
 
-            var actual = (await controller.PrivateCloud(catalogueItemId, model)).As<RedirectToActionResult>();
+            mockService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
+
+            var actual = (await controller.PrivateCloud(catalogueItem.Id, model)).As<RedirectToActionResult>();
 
             actual.ActionName.Should().Be(nameof(HostingTypesController.HostingType));
             actual.ControllerName.Should().BeNull();
-            actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
+            actual.RouteValues["solutionId"].Should().Be(catalogueItem.Id);
         }
 
         [Theory]
@@ -506,38 +512,40 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_HybridCloud_CallsSaveHosting(
-            CatalogueItemId catalogueItemId,
+            CatalogueItem catalogueItem,
+            Solution solution,
             HybridModel model,
-            Hosting hosting,
             [Frozen] Mock<ISolutionsService> mockService,
             HostingTypesController controller)
         {
-            mockService.Setup(s => s.GetHosting(catalogueItemId))
-                .ReturnsAsync(hosting);
-            await controller.Hybrid(catalogueItemId, model);
+            catalogueItem.Solution = solution;
 
-            hosting.HybridHostingType = new HybridHostingType { Summary = model.Summary, Link = model.Link, RequiresHscn = model.RequiresHscn, HostingModel = model.HostingModel };
+            mockService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
+            await controller.Hybrid(catalogueItem.Id, model);
 
-            mockService.Verify(s => s.SaveHosting(catalogueItemId, hosting));
+            mockService.Verify(s => s.SaveHosting(catalogueItem.Id, solution.Hosting));
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_HybridCloud_RedirectsToHostingType(
-            CatalogueItemId catalogueItemId,
-            Hosting hosting,
+            CatalogueItem catalogueItem,
+            Solution solution,
             HybridModel model,
             [Frozen] Mock<ISolutionsService> mockService,
             HostingTypesController controller)
         {
-            mockService.Setup(s => s.GetHosting(catalogueItemId))
-                .ReturnsAsync(hosting);
+            catalogueItem.Solution = solution;
 
-            var actual = (await controller.Hybrid(catalogueItemId, model)).As<RedirectToActionResult>();
+            mockService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
+
+            var actual = (await controller.Hybrid(catalogueItem.Id, model)).As<RedirectToActionResult>();
 
             actual.ActionName.Should().Be(nameof(HostingTypesController.HostingType));
             actual.ControllerName.Should().BeNull();
-            actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
+            actual.RouteValues["solutionId"].Should().Be(catalogueItem.Id);
         }
 
         [Theory]
@@ -612,38 +620,41 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_OnPremise_CallsSaveHosting(
-            CatalogueItemId catalogueItemId,
+            CatalogueItem catalogueItem,
+            Solution solution,
             OnPremiseModel model,
-            Hosting hosting,
             [Frozen] Mock<ISolutionsService> mockService,
             HostingTypesController controller)
         {
-            mockService.Setup(s => s.GetHosting(catalogueItemId))
-                .ReturnsAsync(hosting);
-            await controller.OnPremise(catalogueItemId, model);
+            catalogueItem.Solution = solution;
 
-            hosting.OnPremise = new OnPremise { Summary = model.Summary, Link = model.Link, RequiresHscn = model.RequiresHscn, HostingModel = model.HostingModel };
+            mockService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
 
-            mockService.Verify(s => s.SaveHosting(catalogueItemId, hosting));
+            await controller.OnPremise(catalogueItem.Id, model);
+
+            mockService.Verify(s => s.SaveHosting(catalogueItem.Id, solution.Hosting));
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_OnPremise_RedirectsToHostingType(
-            CatalogueItemId catalogueItemId,
-            Hosting hosting,
+            CatalogueItem catalogueItem,
+            Solution solution,
             OnPremiseModel model,
             [Frozen] Mock<ISolutionsService> mockService,
             HostingTypesController controller)
         {
-            mockService.Setup(s => s.GetHosting(catalogueItemId))
-                .ReturnsAsync(hosting);
+            catalogueItem.Solution = solution;
 
-            var actual = (await controller.OnPremise(catalogueItemId, model)).As<RedirectToActionResult>();
+            mockService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
+
+            var actual = (await controller.OnPremise(catalogueItem.Id, model)).As<RedirectToActionResult>();
 
             actual.ActionName.Should().Be(nameof(HostingTypesController.HostingType));
             actual.ControllerName.Should().BeNull();
-            actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
+            actual.RouteValues["solutionId"].Should().Be(catalogueItem.Id);
         }
 
         [Theory]

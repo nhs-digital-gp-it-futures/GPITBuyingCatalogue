@@ -346,15 +346,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await SaveClientApplication(solutionId, clientApplication);
         }
 
-        public async Task<Hosting> GetHosting(CatalogueItemId solutionId)
-        {
-            var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
-            return solution.Hosting ?? new Hosting();
-        }
-
         public async Task SaveHosting(CatalogueItemId solutionId, Hosting hosting)
         {
             hosting.ValidateNotNull(nameof(hosting));
+
+            ArgumentNullException.ThrowIfNull(hosting);
+
+            var pub = hosting.PublicCloud;
+            Console.WriteLine(pub);
 
             var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
             solution.Hosting = hosting;
