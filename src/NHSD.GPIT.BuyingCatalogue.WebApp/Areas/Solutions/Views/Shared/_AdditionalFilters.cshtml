@@ -13,12 +13,23 @@
                   open="true"
                   data-test-id="filter-framework-expander">
 
-        <nhs-fieldset-form-label asp-for="SelectedFrameworkId">
-            <nhs-radio-buttons asp-for="SelectedFrameworkId"
-                               values="Model.FrameworkOptions.Cast<object>()"
-                               value-name="Value"
-                               display-name="Text"/>
-        </nhs-fieldset-form-label>
+        @if (Model.FrameworkOptions.Count == 1)
+        {
+            var framework = Model.FrameworkOptions.First();
+            Model.SelectedFrameworkId = framework.Value;
+
+            <input type="hidden" asp-for="SelectedFrameworkId" />
+            @(framework.Text)
+        }
+        else
+        {
+            <nhs-fieldset-form-label asp-for="SelectedFrameworkId">
+                <nhs-radio-buttons asp-for="SelectedFrameworkId"
+                                   values="Model.FrameworkOptions.Cast<object>()"
+                                   value-name="Value"
+                                   display-name="Text"/>
+            </nhs-fieldset-form-label>
+        }
     </nhs-expander>
      <nhs-expander label-text="Client application type" open="true">
         @for (int clientAppTypeIndex = 0; clientAppTypeIndex < Model.ClientApplicationTypeOptions.Count; clientAppTypeIndex++)

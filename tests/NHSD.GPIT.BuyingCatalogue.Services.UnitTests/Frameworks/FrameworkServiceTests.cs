@@ -42,6 +42,7 @@ public static class FrameworkServiceTests
     {
         dbContext.FrameworkSolutions.RemoveRange(dbContext.FrameworkSolutions);
 
+        framework.IsExpired = false;
         catalogueItem.CatalogueItemType = CatalogueItemType.Solution;
         catalogueItem.PublishedStatus = PublicationStatus.Published;
         solution.FrameworkSolutions.Clear();
@@ -70,6 +71,39 @@ public static class FrameworkServiceTests
 
     [Theory]
     [InMemoryDbAutoData]
+    public static async Task GetFrameworksByCatalogueItems_ExpiredFramework_ReturnsExpected(
+        EntityFramework.Catalogue.Models.Framework framework,
+        FrameworkSolution frameworkSolution,
+        CatalogueItem catalogueItem,
+        Solution solution,
+        [Frozen] BuyingCatalogueDbContext dbContext,
+        FrameworkService service)
+    {
+        dbContext.FrameworkSolutions.RemoveRange(dbContext.FrameworkSolutions);
+
+        framework.IsExpired = true;
+        catalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+        catalogueItem.PublishedStatus = PublicationStatus.Published;
+        solution.FrameworkSolutions.Clear();
+
+        solution.CatalogueItem = catalogueItem;
+        frameworkSolution.Solution = solution;
+        frameworkSolution.Framework = framework;
+
+        dbContext.FrameworkSolutions.Add(frameworkSolution);
+        dbContext.Frameworks.Add(framework);
+        dbContext.CatalogueItems.Add(catalogueItem);
+        dbContext.Solutions.Add(solution);
+
+        await dbContext.SaveChangesAsync();
+
+        var result = await service.GetFrameworksByCatalogueItems(new List<CatalogueItemId> { catalogueItem.Id });
+
+        result.Should().BeEmpty();
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
     public static async Task GetFrameworksByCatalogueItems_NoCatalogueItems_ReturnsExpected(
     EntityFramework.Catalogue.Models.Framework framework,
     FrameworkSolution frameworkSolution,
@@ -79,6 +113,7 @@ public static class FrameworkServiceTests
     {
         dbContext.FrameworkSolutions.RemoveRange(dbContext.FrameworkSolutions);
 
+        framework.IsExpired = false;
         solution.FrameworkSolutions.Clear();
         frameworkSolution.Solution = solution;
         frameworkSolution.Framework = framework;

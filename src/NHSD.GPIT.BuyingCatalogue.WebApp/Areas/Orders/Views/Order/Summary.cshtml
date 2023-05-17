@@ -3,11 +3,11 @@
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders.SummaryModel;
 @{
     ViewBag.Title = Model.Title;
 }
-
 
 <partial name="Partials/_BackLink" model="Model" />
 
@@ -15,6 +15,10 @@
     var solutions = Model.RolledUp.GetSolutions().ToList();
     var additionalServices = Model.RolledUp.GetAdditionalServices().ToList();
     var associatedServices = Model.RolledUp.GetAssociatedServices().ToList();
+
+    var orderSolution = Model.Order.AssociatedServicesOnly ? Model.Order.Solution : Model.Order.GetSolution()?.CatalogueItem;
+    var frameworks = orderSolution != null ? orderSolution?.Solution?.FrameworkSolutions?.Select(x => x.Framework).Distinct().ToList() : Enumerable.Empty<NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.Framework>().ToList();
+
     var contractTerm = Model.Order.MaximumTerm.HasValue ? $" ({Model.Order.MaximumTerm} months)" : " (estimated)";
     var solutionsTitle = solutions.Count > 1 ? "Catalogue Solutions" : "Catalogue Solution";
 }
@@ -22,11 +26,17 @@
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
         <nhs-validation-summary />
-        <nhs-page-title title="@ViewBag.Title"
-                        caption="@Model.Order.CallOffId"
-                        advice="@Model.AdviceText" />
+    <nhs-page-title title="@ViewBag.Title"
+                    caption="@Model.Order.CallOffId" />
 
-        @if (Model.CanBeAmended)
+    @if (frameworks.Any(x => x.IsExpired))
+    {
+        <partial name="Partials/_ExpiredFrameworks" model="new ExpiredFrameworksModel(frameworks)" />
+    }
+
+    <p class="nhsuk-lede-text">@Model.AdviceText</p>
+
+    @if (Model.CanBeAmended)
         {
             <vc:nhs-action-link text="Amend this order"
                             url="@Url.Action(

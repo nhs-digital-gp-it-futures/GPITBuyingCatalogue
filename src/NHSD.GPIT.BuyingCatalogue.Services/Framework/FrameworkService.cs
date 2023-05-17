@@ -25,7 +25,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
             IList<CatalogueItemId> catalogueItems) =>
             await dbContext.FrameworkSolutions.AsNoTracking()
                 .Where(
-                    x => x.Solution.CatalogueItem.PublishedStatus == PublicationStatus.Published)
+                    x => x.Solution.CatalogueItem.PublishedStatus == PublicationStatus.Published
+                        && !x.Framework.IsExpired)
                 .GroupBy(x => new { x.FrameworkId, x.Framework.ShortName })
                 .Select(
                     x => new FrameworkFilterInfo
@@ -44,7 +45,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
         public async Task<IList<EntityFramework.Catalogue.Models.Framework>> GetFrameworks()
             => await dbContext.Frameworks.ToListAsync();
 
-        [ExcludeFromCodeCoverage(Justification = "Can't be tested until the ID migration due to another bizarre Entity Framework design choice where HasDefaultValue doesn't work for the In-memory provider.")]
+        [ExcludeFromCodeCoverage(
+            Justification =
+                "Can't be tested until the ID migration due to another bizarre Entity Framework design choice where HasDefaultValue doesn't work for the In-memory provider.")]
         public async Task AddFramework(string name, bool isLocalFundingOnly)
         {
             if (string.IsNullOrWhiteSpace(name))

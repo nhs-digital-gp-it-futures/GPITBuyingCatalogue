@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.PublicBrowse
         public static By EditCapabilities => By.LinkText("Edit Capabilities");
         public static By EditEpics => By.LinkText("Edit Epics");
 
-        public static By SolutionsLink => By.CssSelector("div.nhsuk-grid-columns-full h2 a");
+        public static By SolutionsLink => By.CssSelector("div.nhsuk-grid-columns-full h3 a");
 
         public static By SolutionsList => By.Id("solutions-list");
 

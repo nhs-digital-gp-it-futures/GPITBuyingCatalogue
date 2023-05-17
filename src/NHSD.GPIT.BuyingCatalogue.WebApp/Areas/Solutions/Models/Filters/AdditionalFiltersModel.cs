@@ -20,22 +20,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
             SelectedCapabilityIds = selectedCapabilityIds;
             SelectedEpicIds = selectedEpicIds;
 
-            FrameworkOptions = frameworks.Select(f => new SelectOption<string>
-            {
-                Value = f.Id,
-                Text = $"{f.ShortName} ({f.CountOfActiveSolutions})",
-                Selected = false,
-            }).ToList();
+            FrameworkOptions = frameworks.Select(
+                    f => new SelectOption<string>
+                    {
+                        Value = f.Id, Text = $"{f.ShortName} ({f.CountOfActiveSolutions})", Selected = false,
+                    })
+                .ToList();
+
             ClientApplicationTypeOptions = Enum.GetValues(typeof(ClientApplicationType))
-            .Cast<ClientApplicationType>()
-            .Select(x => new SelectOption<int>
-            {
-                Value = (int)x,
-                Text = x.Name(),
-                Selected = !string.IsNullOrEmpty(selectedClientApplicationTypeIds) && selectedClientApplicationTypeIds.Contains(((int)x).ToString()),
-            })
-           .OrderBy(x => x.Text)
-           .ToList();
+                .Cast<ClientApplicationType>()
+                .Select(
+                    x => new SelectOption<int>
+                    {
+                        Value = (int)x,
+                        Text = x.Name(),
+                        Selected = !string.IsNullOrEmpty(selectedClientApplicationTypeIds)
+                            && selectedClientApplicationTypeIds.Contains(((int)x).ToString()),
+                    })
+                .OrderBy(x => x.Text)
+                .ToList();
         }
 
         public string SelectedCapabilityIds { get; init; }
@@ -54,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
             {
                 return string.Join(
                     FilterConstants.Delimiter,
-                    ClientApplicationTypeOptions.Where(x => x.Selected).Select(x => x.Value));
+                    ClientApplicationTypeOptions?.Where(x => x.Selected)?.Select(x => x.Value) ?? Enumerable.Empty<int>());
             }
         }
     }
