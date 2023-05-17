@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static void Get_CannotSaveFilter_ReturnsExpectedResult(
             ManageFiltersController controller)
         {
-            var result = controller.CannotSaveFilter();
+            var result = controller.CannotSaveFilter(string.Empty);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             actualResult.Model.Should().BeOfType<NavBaseModel>();
@@ -99,6 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             [Frozen] Mock<IEpicsService> epicsService,
             [Frozen] Mock<IFrameworkService> frameworkService,
             [Frozen] Mock<IManageFiltersService> manageFiltersService,
+            [Frozen] Mock<IUrlHelper> mockUrlHelper,
             string primaryOrganisationInternalId,
             Organisation organisation)
         {
@@ -119,6 +120,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 frameworkService,
                 manageFiltersService,
                 primaryOrganisationInternalId);
+
+            controller.Url = mockUrlHelper.Object;
 
             var result = await controller.ConfirmSaveFilter(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
 

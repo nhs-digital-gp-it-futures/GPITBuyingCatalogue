@@ -80,8 +80,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var organisationId = await GetUserOrganisationId();
             var existingFilters = await manageFiltersService.GetFilters(organisationId);
 
+            var backLink =
+                Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new
+                {
+                    selectedCapabilityIds,
+                    selectedEpicIds,
+                    selectedFrameworkId,
+                    selectedClientApplicationTypeIds,
+                    selectedHostingTypeIds,
+                });
+
             if (existingFilters.Count >= MaxNumberOfFilters)
-                return RedirectToAction(nameof(CannotSaveFilter), typeof(ManageFiltersController).ControllerName());
+                return RedirectToAction(nameof(CannotSaveFilter), typeof(ManageFiltersController).ControllerName(), new { backLink });
 
             var capabilities = await capabilitiesService.GetCapabilitiesByIds(SolutionsFilterHelper.ParseCapabilityIds(selectedCapabilityIds));
 
@@ -95,14 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var model = new SaveFilterModel(capabilities, epics, framework, clientApplicationTypes, hostingTypes, organisationId)
                 {
-                    BackLink = Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new
-                    {
-                        selectedCapabilityIds,
-                        selectedEpicIds,
-                        selectedFrameworkId,
-                        selectedClientApplicationTypeIds,
-                        selectedHostingTypeIds,
-                    }),
+                    BackLink = backLink,
                     BackLinkText = "Go back",
                 };
             return View(model);
@@ -136,11 +139,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         }
 
         [HttpGet("save-failed")]
-        public IActionResult CannotSaveFilter()
+        public IActionResult CannotSaveFilter(string backLink)
         {
             var model = new NavBaseModel()
             {
-                BackLink = "/",
+                BackLink = backLink,
                 BackLinkText = "Go back",
             };
             return View(model);

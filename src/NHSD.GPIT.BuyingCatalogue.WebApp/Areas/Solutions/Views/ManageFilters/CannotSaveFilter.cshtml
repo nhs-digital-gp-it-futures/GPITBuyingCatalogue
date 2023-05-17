@@ -24,7 +24,11 @@
                                  url="@Url.Action(
                                           nameof(ManageFiltersController.Index),
                                           typeof(ManageFiltersController).ControllerName())"
-                                   type="Primary" />
+                                 type="Primary" />
+        
+        <p>
+            <a href="@Model.BackLink">Cancel</a>
+        </p>
 
     </div>
 </div>
