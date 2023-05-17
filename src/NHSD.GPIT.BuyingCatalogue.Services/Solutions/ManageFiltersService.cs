@@ -61,6 +61,27 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return filter.Id;
         }
 
+        public async Task<bool> FilterExists(string filterName, int organisationId)
+        {
+            if (string.IsNullOrWhiteSpace(filterName))
+                throw new ArgumentNullException(nameof(filterName));
+
+            return await dbContext.Filters.AnyAsync(f => f.Name == filterName && f.OrganisationId == organisationId);
+        }
+
+        public async Task<List<Filter>> GetFilters(int organisationId)
+        {
+            return await dbContext.Filters.Where(o => o.OrganisationId == organisationId)
+                .Include(x => x.Framework)
+                .Include(x => x.FilterCapabilities)
+                .ThenInclude(y => y.Capability)
+                .Include(x => x.FilterEpics)
+                .ThenInclude(y => y.Epic)
+                .Include(x => x.FilterHostingTypes)
+                .Include(x => x.FilterClientApplicationTypes)
+                .ToListAsync();
+        }
+
         internal async Task AddFilterCapabilities(int filterId, List<int> capabilityIds)
         {
             if (capabilityIds is null || capabilityIds.Count == 0) return;
@@ -169,27 +190,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             }
 
             await dbContext.SaveChangesAsync();
-        }
-
-        public async Task<bool> FilterExists(string filterName, int organisationId)
-        {
-            if (string.IsNullOrWhiteSpace(filterName))
-                throw new ArgumentNullException(nameof(filterName));
-
-            return await dbContext.Filters.AnyAsync(f => f.Name == filterName && f.OrganisationId == organisationId);
-        }
-
-        public async Task<List<Filter>> GetFilters(int organisationId)
-        {
-            return await dbContext.Filters.Where(o => o.OrganisationId == organisationId)
-                .Include(x => x.Framework)
-                .Include(x => x.FilterCapabilities)
-                    .ThenInclude(y => y.Capability)
-                .Include(x => x.FilterEpics)
-                    .ThenInclude(y => y.Epic)
-                .Include(x => x.FilterHostingTypes)
-                .Include(x => x.FilterClientApplicationTypes)
-                .ToListAsync();
         }
     }
 }
