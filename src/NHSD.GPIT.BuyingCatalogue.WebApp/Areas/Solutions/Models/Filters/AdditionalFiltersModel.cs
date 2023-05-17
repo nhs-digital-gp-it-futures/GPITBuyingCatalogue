@@ -35,6 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                     })
                 .OrderBy(x => x.Text)
                 .ToList();
+
             SetFrameworkOptions(frameworks);
             SetClientApplicationTypeOptions(selectedClientApplicationTypeIds);
             SetHostingTypeOptions(selectedHostingTypeIds);
@@ -55,7 +56,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
             return string.Join(
                     FilterConstants.Delimiter,
                     options?.Where(x => x.Selected)?.Select(x => x.Value) ?? Enumerable.Empty<int>());
-            }
         }
 
         private void SetFrameworkOptions(List<FrameworkFilterInfo> frameworks)
@@ -71,15 +71,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
         private void SetClientApplicationTypeOptions(string selectedClientApplicationTypeIds)
         {
             ClientApplicationTypeOptions = Enum.GetValues(typeof(ClientApplicationType))
-            .Cast<ClientApplicationType>()
-            .Select(x => new SelectOption<int>
-            {
-                Value = (int)x,
-                Text = x.Name(),
-                Selected = !string.IsNullOrEmpty(selectedClientApplicationTypeIds) && selectedClientApplicationTypeIds.Contains(((int)x).ToString()),
-            })
-           .OrderBy(x => x.Text)
-           .ToList();
+                .Cast<ClientApplicationType>()
+                .Select(
+                    x => new SelectOption<int>
+                    {
+                        Value = (int)x,
+                        Text = x.Name(),
+                        Selected = !string.IsNullOrEmpty(selectedClientApplicationTypeIds)
+                            && selectedClientApplicationTypeIds.Contains(((int)x).ToString()),
+                    })
+                .OrderBy(x => x.Text)
+                .ToList();
         }
 
         private void SetHostingTypeOptions(string selectedHostingTypeIds)
@@ -90,7 +92,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
             {
                 Value = (int)x,
                 Text = x.Name(),
-                Selected = !string.IsNullOrEmpty(selectedHostingTypeIds) && selectedHostingTypeIds.Contains(((int)x).ToString()),
+                Selected = !string.IsNullOrEmpty(selectedHostingTypeIds)
+                    && selectedHostingTypeIds.Contains(((int)x).ToString()),
             })
            .OrderByDescending(x => x.Text)
            .ToList();
