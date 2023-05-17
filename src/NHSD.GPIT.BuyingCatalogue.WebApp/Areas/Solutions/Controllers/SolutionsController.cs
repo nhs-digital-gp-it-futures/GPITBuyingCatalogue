@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View(new SolutionsModel()
             {
                 CatalogueItems = catalogueItems,
-                SelectedSortOption = options.Sort(),
+                SelectedSortOption = options.Sort,
                 PageOptions = options,
                 SearchSummary = new CatalogueFilterSearchSummary(
                     capabilitiesAndCount,
