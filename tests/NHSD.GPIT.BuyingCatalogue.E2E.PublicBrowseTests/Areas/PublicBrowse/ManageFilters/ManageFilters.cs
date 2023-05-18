@@ -61,9 +61,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.ManageFilters
         {
             CommonActions.ClickLinkElement(BreadcrumbObjects.BuyerDashboardBreadcrumbLink);
 
-            //CommonActions.PageLoadedCorrectGetIndex(
-            //    typeof(ManageAccountController),
-            //    nameof(ManageAccountController.Details)).Should().BeTrue();
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(BuyerDashboardController),
+                nameof(BuyerDashboardController.Index)).Should().BeTrue();
         }
 
         [Fact]
