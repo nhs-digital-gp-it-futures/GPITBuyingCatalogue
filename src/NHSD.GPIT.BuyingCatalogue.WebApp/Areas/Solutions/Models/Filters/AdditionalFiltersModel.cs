@@ -17,25 +17,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 
         public AdditionalFiltersModel(List<FrameworkFilterInfo> frameworks, string selectedClientApplicationTypeIds, string selectedHostingTypeIds)
         {
-            /*FrameworkOptions = frameworks.Select(f => new SelectOption<string>
-            {
-                Value = f.Id,
-                Text = $"{f.ShortName} ({f.CountOfActiveSolutions})",
-                Selected = false,
-            }).ToList();
-            ClientApplicationTypeOptions = Enum.GetValues(typeof(ClientApplicationType))
-                .Cast<ClientApplicationType>()
-                .Select(
-                    x => new SelectOption<int>
-                    {
-                        Value = (int)x,
-                        Text = x.Name(),
-                        Selected = !string.IsNullOrEmpty(selectedClientApplicationTypeIds)
-                            && selectedClientApplicationTypeIds.Contains(((int)x).ToString()),
-                    })
-                .OrderBy(x => x.Text)
-                .ToList();*/
-
             SetFrameworkOptions(frameworks);
             SetClientApplicationTypeOptions(selectedClientApplicationTypeIds);
             SetHostingTypeOptions(selectedHostingTypeIds);
@@ -87,16 +68,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
         private void SetHostingTypeOptions(string selectedHostingTypeIds)
         {
             HostingTypeOptions = Enum.GetValues(typeof(HostingType))
-            .Cast<HostingType>()
-            .Select(x => new SelectOption<int>
-            {
-                Value = (int)x,
-                Text = x.Name(),
-                Selected = !string.IsNullOrEmpty(selectedHostingTypeIds)
-                    && selectedHostingTypeIds.Contains(((int)x).ToString()),
-            })
-           .OrderByDescending(x => x.Text)
-           .ToList();
+                .Cast<HostingType>()
+                .Select(x => new SelectOption<int>
+                {
+                    Value = (int)x,
+                    Text = x.Name(),
+                    Selected = !string.IsNullOrEmpty(selectedHostingTypeIds)
+                        && selectedHostingTypeIds.Contains(((int)x).ToString()),
+                })
+               .OrderByDescending(x => x.Text)
+               .ToList();
         }
     }
 }

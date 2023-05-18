@@ -39,15 +39,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             IQueryable<CatalogueItem> query,
             string selectedFilterIds,
             Func<Solution, IEnumerable<T>, IEnumerable<T>> getSelectedFilters,
-            Predicate<Solution> isEmpty = null)
+            Predicate<Solution> isValid)
             where T : struct, Enum
         {
             if (string.IsNullOrEmpty(selectedFilterIds))
                 return query;
-
-            /*var selectedFilterEnums = selectedFilterIds?.Split(FilterConstants.Delimiter)
-                .Where(t => Enum.IsDefined(typeof(T), t))
-                .Select(t => (T)Enum.Parse(typeof(T), t));*/
 
             var selectedFilterEnums = selectedFilterIds.Split(FilterConstants.Delimiter)
                 .Where(t => Enum.TryParse<T>(t, out var enumVal) && Enum.IsDefined(enumVal))
@@ -59,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             foreach (var row in query)
             {
-                if (isEmpty(row.Solution))
+                if (!isValid(row.Solution))
                 {
                     query = query.Where(ci => ci.Id != row.Id);
                     continue;
@@ -67,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
                 var matchingTypes = getSelectedFilters(row.Solution, selectedFilterEnums);
 
-                if (matchingTypes.Count() < selectedFilterEnums?.Count())
+                if (matchingTypes.Count() < selectedFilterEnums?.Count)
                 {
                     query = query.Where(ci => ci.Id != row.Id);
                 }
@@ -111,7 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     query,
                     selectedClientApplicationTypeIds,
                     GetSelectedFiltersClientApplication,
-                    x => string.IsNullOrEmpty(x.ClientApplication));
+                    x => !string.IsNullOrEmpty(x.ClientApplication));
             }
 
             if (!string.IsNullOrWhiteSpace(selectedHostingTypeIds))
@@ -120,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     query,
                     selectedHostingTypeIds,
                     GetSelectedFiltersHosting,
-                    x => string.IsNullOrEmpty(x.Hosting?.ToString() ?? string.Empty));
+                    x => x.Hosting.IsValid());
             }
 
             options.TotalNumberOfItems = await query.CountAsync();

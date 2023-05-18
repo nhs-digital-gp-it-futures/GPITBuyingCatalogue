@@ -23,16 +23,18 @@
         }
     </nhs-expander>
      <nhs-expander label-text="Client application type" open="true">
-        @for (int clientAppTypeIndex = 0; clientAppTypeIndex < Model.ClientApplicationTypeOptions.Count; clientAppTypeIndex++)
-        {
+        
          <nhs-fieldset-form-label asp-for="@Model">
             <nhs-checkbox-container>
+				@for (int clientAppTypeIndex = 0; clientAppTypeIndex < Model.ClientApplicationTypeOptions.Count; clientAppTypeIndex++)
+				{
                     <nhs-checkbox asp-for="@Model.ClientApplicationTypeOptions[clientAppTypeIndex].Selected"
                               hidden-input="@Model.ClientApplicationTypeOptions[clientAppTypeIndex].Value"
                               label-text="@Model.ClientApplicationTypeOptions[clientAppTypeIndex].Text" />
-            </nhs-checkbox-container>
+				}
+			</nhs-checkbox-container>
          </nhs-fieldset-form-label>
-        }
+        
     </nhs-expander>
 	<nhs-expander label-text="Hosting type"
 				  open="true"
