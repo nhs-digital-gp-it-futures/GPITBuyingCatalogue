@@ -1,0 +1,44 @@
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.BuyerDashboardModel
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Controllers
+@{
+    ViewBag.Title = "Buyer dashboard";
+}
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+
+        <nhs-page-title title="@ViewBag.Title"
+                        advice="@Model.Advice"
+                        caption="@Model.OrganisationName"/>
+
+        <h2>Orders</h2>
+        <ul>
+            <li>
+                <a asp-action="@nameof(DashboardController.Index)"
+                   asp-controller="@typeof(DashboardController).ControllerName()"
+                   asp-area="@typeof(DashboardController).AreaName()">
+                    Create or manage orders
+                </a>
+                <p>Manage orders currently in progress or view and amend orders that have been submitted for your organisation. </p>
+            </li>
+        </ul>
+
+        @if (User.IsAccountManager())
+        {
+            <h2>Your organisation</h2>
+            <ul>
+                <li>
+                    <a asp-action="@nameof(ManageAccountController.Index)"
+                       asp-controller="@typeof(ManageAccountController).ControllerName()"
+                       asp-area="@typeof(ManageAccountController).AreaName()">
+                        Manage organisation
+                    </a>
+                    <p>Add new users or edit the details for existing ones and nominate other organisations to act on your behalf.</p>
+                </li>
+            </ul>
+        }
+    </div>
+</div>
