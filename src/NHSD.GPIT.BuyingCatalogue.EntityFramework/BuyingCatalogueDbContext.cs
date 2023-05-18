@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -138,6 +139,16 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
         public DbSet<RelationshipType> OrganisationRelationshipTypes { get; set; }
 
         public DbSet<OrgImportJournal> OrgImportJournal { get; set; }
+
+        public DbSet<Filter> Filters { get; set; }
+
+        public DbSet<FilterCapability> FilterCapabilities { get; set; }
+
+        public DbSet<FilterEpic> FilterEpics { get; set; }
+
+        public DbSet<FilterHostingType> FilterHostingTypes { get; set; }
+
+        public DbSet<FilterClientApplicationType> FilterClientApplicationTypes { get; set; }
 
         public async Task<Order> Order(CallOffId callOffId)
         {

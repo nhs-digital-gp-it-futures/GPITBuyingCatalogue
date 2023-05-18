@@ -79,5 +79,48 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             result.Should().ContainSingle();
             result.First().Id.Should().Be(epics[0].Id);
         }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static void GetEpicsByIds_NullEpicIds_ThrowsException(
+            EpicsService service)
+        {
+            FluentActions
+                .Awaiting(() => service.GetEpicsByIds(null))
+                .Should().ThrowAsync<ArgumentNullException>();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetEpicsByIds_ExpectedResult(
+            List<Epic> epics,
+            List<Capability> capabilities,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            EpicsService service)
+        {
+            capabilities.ForEach(x =>
+            {
+                x.Epics.Clear();
+            });
+
+            dbContext.Capabilities.AddRange(capabilities);
+            await dbContext.SaveChangesAsync();
+
+            for (var i = 0; i < capabilities.Count; i++)
+            {
+                epics[i].CapabilityId = capabilities[i].Id;
+                epics[i].IsActive = false;
+            }
+
+            epics[0].IsActive = true;
+
+            dbContext.Epics.AddRange(epics);
+            await dbContext.SaveChangesAsync();
+
+            var result = await service.GetEpicsByIds(epics.Select(x => x.Id));
+
+            result.Should().ContainSingle();
+            result.First().Id.Should().Be(epics[0].Id);
+        }
     }
 }
