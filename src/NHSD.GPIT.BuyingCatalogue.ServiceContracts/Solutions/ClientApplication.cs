@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using EnumsNET;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Serialization;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
@@ -81,105 +80,5 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         public bool HasClientApplicationType(ClientApplicationType clientApplicationType)
             => ClientApplicationTypes?.Any(type => type.Equals(clientApplicationType.AsString(EnumFormat.EnumMemberValue), StringComparison.OrdinalIgnoreCase)) ?? false;
-
-        public TaskProgress AdditionalInformationStatus() => Status(AdditionalInformation);
-
-        public TaskProgress ConnectivityStatus() => Status(MinimumConnectionSpeed);
-
-        public TaskProgress HardwareRequirementsStatus() => Status(HardwareRequirements);
-
-        public TaskProgress NativeDesktopAdditionalInformationStatus() => Status(NativeDesktopAdditionalInformation);
-
-        public TaskProgress NativeDesktopConnectivityStatus() => Status(NativeDesktopMinimumConnectionSpeed);
-
-        public TaskProgress NativeDesktopHardwareRequirementsStatus() => Status(NativeDesktopHardwareRequirements);
-
-        public TaskProgress NativeDesktopMemoryAndStorageStatus() => Status(NativeDesktopMemoryAndStorage?.Status());
-
-        public TaskProgress NativeMobileMemoryAndStorageStatus() => Status(MobileMemoryAndStorage?.Status());
-
-        public TaskProgress NativeDesktopSupportedOperatingSystemsStatus() => Status(NativeDesktopOperatingSystemsDescription);
-
-        public TaskProgress NativeDesktopThirdPartyStatus() => Status(NativeDesktopThirdParty?.Status());
-
-        public TaskProgress NativeMobileConnectivityStatus() => Status(MobileConnectionDetails?.Status());
-
-        public TaskProgress NativeMobileSupportedOperatingSystemsStatus() => Status(MobileOperatingSystems?.Status());
-
-        public TaskProgress NativeMobileAdditionalInformationStatus() => Status(NativeMobileAdditionalInformation);
-
-        public TaskProgress NativeMobileHardwareRequirementsStatus() => Status(NativeMobileHardwareRequirements);
-
-        public TaskProgress PluginsStatus() => (Plugins?.Required != null) ? TaskProgress.Completed : TaskProgress.NotStarted;
-
-        public TaskProgress SupportedBrowsersStatus() =>
-            (BrowsersSupported != null && BrowsersSupported.Any() && MobileResponsive.HasValue) ? TaskProgress.Completed : TaskProgress.NotStarted;
-
-        public TaskProgress NativeMobileThirdPartyStatus() => Status(MobileThirdParty?.Status());
-
-        public TaskProgress ApplicationTypeStatus(ClientApplicationType applicationType)
-        {
-            if (applicationType == ClientApplicationType.BrowserBased)
-            {
-                if (SupportedBrowsersStatus() == TaskProgress.Completed && PluginsStatus() == TaskProgress.Completed)
-                    return TaskProgress.Completed;
-
-                if (SupportedBrowsersStatus() == TaskProgress.Completed ||
-                    PluginsStatus() == TaskProgress.Completed ||
-                    ConnectivityStatus() == TaskProgress.Completed ||
-                    HardwareRequirementsStatus() == TaskProgress.Completed ||
-                    AdditionalInformationStatus() == TaskProgress.Completed)
-                {
-                    return TaskProgress.InProgress;
-                }
-            }
-
-            if (applicationType == ClientApplicationType.Desktop)
-            {
-                if (NativeDesktopSupportedOperatingSystemsStatus() == TaskProgress.Completed &&
-                    NativeDesktopConnectivityStatus() == TaskProgress.Completed &&
-                    NativeDesktopMemoryAndStorageStatus() == TaskProgress.Completed)
-                {
-                    return TaskProgress.Completed;
-                }
-
-                if (NativeDesktopSupportedOperatingSystemsStatus() == TaskProgress.Completed ||
-                    NativeDesktopConnectivityStatus() == TaskProgress.Completed ||
-                    NativeDesktopMemoryAndStorageStatus() == TaskProgress.Completed ||
-                    NativeDesktopThirdPartyStatus() == TaskProgress.Completed ||
-                    NativeDesktopHardwareRequirementsStatus() == TaskProgress.Completed ||
-                    NativeDesktopAdditionalInformationStatus() == TaskProgress.Completed)
-                {
-                    return TaskProgress.InProgress;
-                }
-            }
-
-            if (applicationType == ClientApplicationType.MobileTablet)
-            {
-                if (NativeMobileSupportedOperatingSystemsStatus() == TaskProgress.Completed &&
-                    NativeMobileMemoryAndStorageStatus() == TaskProgress.Completed)
-                {
-                    return TaskProgress.Completed;
-                }
-
-                if (NativeMobileSupportedOperatingSystemsStatus() == TaskProgress.Completed ||
-                    NativeMobileConnectivityStatus() == TaskProgress.Completed ||
-                    NativeMobileMemoryAndStorageStatus() == TaskProgress.Completed ||
-                    NativeMobileThirdPartyStatus() == TaskProgress.Completed ||
-                    NativeMobileHardwareRequirementsStatus() == TaskProgress.Completed ||
-                    NativeMobileAdditionalInformationStatus() == TaskProgress.Completed)
-                {
-                    return TaskProgress.InProgress;
-                }
-            }
-
-            return TaskProgress.NotStarted;
-        }
-
-        private static TaskProgress Status(string value) => string.IsNullOrWhiteSpace(value)
-            ? TaskProgress.NotStarted
-            : TaskProgress.Completed;
-
-        private static TaskProgress Status(TaskProgress? progress) => progress ?? TaskProgress.NotStarted;
     }
 }

@@ -23,6 +23,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationT
 
         public ClientApplication ClientApplication { get; set; }
 
+        public ClientApplicationProgress ClientApplicationProgress => new ClientApplicationProgress(ClientApplication);
+
         public CatalogueItemId? SolutionId { get; set; }
 
         public ClientApplicationType ApplicationType { get; set; }

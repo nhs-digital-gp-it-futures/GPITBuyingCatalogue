@@ -1,6 +1,4 @@
-﻿using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
-
-namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
+﻿namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 {
     public sealed class NativeDesktopMemoryAndStorage
     {
@@ -11,17 +9,5 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         public string RecommendedResolution { get; set; }
 
         public string StorageRequirementsDescription { get; set; }
-
-        public TaskProgress Status()
-        {
-            if (!string.IsNullOrWhiteSpace(MinimumMemoryRequirement)
-                && !string.IsNullOrWhiteSpace(StorageRequirementsDescription)
-                && !string.IsNullOrWhiteSpace(MinimumCpu))
-            {
-                return TaskProgress.Completed;
-            }
-
-            return TaskProgress.NotStarted;
-        }
     }
 }

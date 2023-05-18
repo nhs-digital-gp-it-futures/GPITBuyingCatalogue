@@ -22,6 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BaseModels
 
         public ClientApplication ClientApplication { get; set; }
 
+        public ClientApplicationProgress ClientApplicationProgress => new ClientApplicationProgress(ClientApplication);
+
         protected CatalogueItem CatalogueItem { get; set; }
     }
 }
