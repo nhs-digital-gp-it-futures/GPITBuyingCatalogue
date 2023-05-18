@@ -52,12 +52,12 @@
 
         @if (Model.Filters is null || !Model.Filters.Any())
         {
-            <p data-test-id="no-filters">No filters have been added for your organisation yet.</p>
+            <h2 data-test-id="no-filters">No filters have been added for your organisation yet.</h2>
         }
         else
         {
             var filters = Model.Filters.Count() == 1 ? "filter" : "filters";
-            <p>@Model.Filters.Count() saved search @filters.</p>
+            <h2>@Model.Filters.Count() saved search @filters</h2>
 
             <nhs-table data-test-id="filters-table">
                 @foreach (var heading in new[] { "Name", "Description", "Last updated", "Action" })
