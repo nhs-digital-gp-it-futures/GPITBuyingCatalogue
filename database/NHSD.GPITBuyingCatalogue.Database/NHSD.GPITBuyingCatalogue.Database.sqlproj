@@ -108,16 +108,16 @@
   <ItemGroup>
     <Build Include="Security\Users\NHSD.sql" />
     <Build Include="Security\Logins\NHSD.sql" />
-    <None Include="Filtering\Tables\FilterCapabilities.sql" />
-    <None Include="Filtering\Tables\FilterClientApplicationTypes.sql" />
-    <None Include="Filtering\Tables\FilterEpics.sql" />
-    <None Include="Filtering\Tables\FilterHostingTypes.sql" />
-    <None Include="Filtering\Tables\Filters.sql" />
-    <None Include="Filtering\TemporalTables\FilterCapabilities_History.sql" />
-    <None Include="Filtering\TemporalTables\FilterClientApplicationTypes_History.sql" />
-    <None Include="Filtering\TemporalTables\FilterEpics_History.sql" />
-    <None Include="Filtering\TemporalTables\FilterHostingTypes_History.sql" />
-    <None Include="Filtering\TemporalTables\Filters_History.sql" />
+    <Build Include="Filtering\Tables\FilterCapabilities.sql" />
+    <Build Include="Filtering\Tables\FilterClientApplicationTypes.sql" />
+    <Build Include="Filtering\Tables\FilterEpics.sql" />
+    <Build Include="Filtering\Tables\FilterHostingTypes.sql" />
+    <Build Include="Filtering\Tables\Filters.sql" />
+    <Build Include="Filtering\TemporalTables\FilterCapabilities_History.sql" />
+    <Build Include="Filtering\TemporalTables\FilterClientApplicationTypes_History.sql" />
+    <Build Include="Filtering\TemporalTables\FilterEpics_History.sql" />
+    <Build Include="Filtering\TemporalTables\FilterHostingTypes_History.sql" />
+    <Build Include="Filtering\TemporalTables\Filters_History.sql" />
     <None Include="PostDeployment\CreateIntegratedCareBoards.sql" />
     <None Include="PostDeployment\InsertFilters.sql" />
     <None Include="PostDeployment\IntegrationTests\ClearData.sql" />
