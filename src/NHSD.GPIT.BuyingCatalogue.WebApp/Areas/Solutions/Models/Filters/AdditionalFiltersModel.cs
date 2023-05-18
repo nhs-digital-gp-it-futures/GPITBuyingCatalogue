@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 
         public AdditionalFiltersModel(List<FrameworkFilterInfo> frameworks, string selectedClientApplicationTypeIds, string selectedHostingTypeIds)
         {
-            FrameworkOptions = frameworks.Select(f => new SelectOption<string>
+            /*FrameworkOptions = frameworks.Select(f => new SelectOption<string>
             {
                 Value = f.Id,
                 Text = $"{f.ShortName} ({f.CountOfActiveSolutions})",
@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                             && selectedClientApplicationTypeIds.Contains(((int)x).ToString()),
                     })
                 .OrderBy(x => x.Text)
-                .ToList();
+                .ToList();*/
 
             SetFrameworkOptions(frameworks);
             SetClientApplicationTypeOptions(selectedClientApplicationTypeIds);

@@ -35,19 +35,28 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public SolutionsFilterService(BuyingCatalogueDbContext dbContext) =>
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
-        public static IQueryable<CatalogueItem> ApplyAdditionalFilterToQuery<T>(
+        private static IQueryable<CatalogueItem> ApplyAdditionalFilterToQuery<T>(
             IQueryable<CatalogueItem> query,
             string selectedFilterIds,
             Func<Solution, IEnumerable<T>, IEnumerable<T>> getSelectedFilters,
             Predicate<Solution> isEmpty = null)
-            where T : Enum
+            where T : struct, Enum
         {
-            if (query == null)
+            if (string.IsNullOrEmpty(selectedFilterIds))
                 return query;
 
-            var selectedFilterEnums = selectedFilterIds?.Split(FilterConstants.Delimiter)
+            /*var selectedFilterEnums = selectedFilterIds?.Split(FilterConstants.Delimiter)
                 .Where(t => Enum.IsDefined(typeof(T), t))
-                .Select(t => (T)Enum.Parse(typeof(T), t));
+                .Select(t => (T)Enum.Parse(typeof(T), t));*/
+
+            var selectedFilterEnums = selectedFilterIds.Split(FilterConstants.Delimiter)
+                .Where(t => Enum.TryParse<T>(t, out var enumVal) && Enum.IsDefined(enumVal))
+                .Select(Enum.Parse<T>)
+                .ToList();
+
+            if (selectedFilterEnums == null || !selectedFilterEnums.Any())
+                throw new ArgumentException("Invalid filter format", nameof(selectedFilterIds));
+
             foreach (var row in query)
             {
                 if (isEmpty(row.Solution))
