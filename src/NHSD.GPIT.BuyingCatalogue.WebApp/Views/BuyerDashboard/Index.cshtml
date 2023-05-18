@@ -1,8 +1,10 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.BuyerDashboardModel
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 @using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.Framework.Environments
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers
 @{
     ViewBag.Title = "Buyer dashboard";
 }
@@ -22,9 +24,24 @@
                    asp-area="@typeof(DashboardController).AreaName()">
                     Create or manage orders
                 </a>
-                <p>Manage orders currently in progress or view and amend orders that have been submitted for your organisation. </p>
+                <p>Manage orders currently in progress or view and amend orders that have been submitted for your organisation.</p>
             </li>
         </ul>
+
+        <environment name="Development,E2ETest">
+            <h2>Competitions</h2>
+            <ul>
+                <li>
+                    <a asp-action="@nameof(CompetitionsDashboardController.Index)"
+                       asp-controller="@typeof(CompetitionsDashboardController).ControllerName()"
+                       asp-area="@typeof(CompetitionsDashboardController).AreaName()"
+                       asp-route-internalOrgId="@Model.InternalOrgId">
+                        Create or manage competitions
+                    </a>
+                    <p>Create new procurement competitions or view and edit existing ones.</p>
+                </li>
+            </ul>
+        </environment>
 
         @if (User.IsAccountManager())
         {

@@ -1,0 +1,73 @@
+@model CompetitionDashboardModel
+
+@{
+    ViewBag.Title = "Manage competitions";
+}
+
+@section Breadcrumbs {
+    <nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
+        <div class="nhsuk-width-container">
+            <ol class="nhsuk-breadcrumb__list">
+                <li class="nhsuk-breadcrumb__item">
+                    <a asp-action="@nameof(HomeController.Index)"
+                       asp-controller="@typeof(HomeController).ControllerName()"
+                       class="nhsuk-breadcrumb__link">
+                        Home
+                    </a>
+                </li>
+                <li class="nhsuk-breadcrumb__item">
+                    <a asp-action="@nameof(BuyerDashboardController.Index)"
+                       asp-controller="@typeof(BuyerDashboardController).ControllerName()"
+                       class="nhsuk-breadcrumb__link">
+                        Buyer dashboard
+                    </a>
+                </li>
+                <li class="nhsuk-breadcrumb__item">
+                    @ViewBag.Title
+                </li>
+            </ol>
+        </div>
+    </nav>
+}
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="@ViewBag.Title"
+                        advice="Create new competitions or view and edit existing ones."
+                        caption="@Model.OrganisationName"/>
+
+        <vc:nhs-action-link url="#" text="Create a new competition"/>
+    </div>
+
+    <div class="nhsuk-grid-column-full">
+        @if (!Model.Competitions.Any())
+        {
+            <p>No competitions have been created for your organisation yet.</p>
+        }
+        else
+        {
+            <nhs-table label-text="Competitions for @Model.OrganisationName">
+                <nhs-table-column>Name</nhs-table-column>
+                <nhs-table-column>Description</nhs-table-column>
+                <nhs-table-column>Last updated</nhs-table-column>
+                <nhs-table-column>Status</nhs-table-column>
+                <nhs-table-column>Action</nhs-table-column>
+
+                @foreach (var competition in Model.Competitions)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>@competition.Name</nhs-table-cell>
+                        <nhs-table-cell>@competition.Description</nhs-table-cell>
+                        <nhs-table-cell>@competition.LastUpdated.ToShortDateString()</nhs-table-cell>
+                        <nhs-table-cell>
+                            <nhs-tag status-enum="@competition.Progress"/>
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            N/A
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+            </nhs-table>
+        }
+    </div>
+</div>

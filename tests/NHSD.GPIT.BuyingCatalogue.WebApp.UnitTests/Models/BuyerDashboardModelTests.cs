@@ -13,9 +13,10 @@ public static class BuyerDashboardModelTests
     public static void Construct_SetsAdvice(
         bool isAccountManager,
         string expectedAdvice,
-        string organisationName)
+        string organisationName,
+        string organisationId)
     {
-        var model = new BuyerDashboardModel(organisationName, isAccountManager);
+        var model = new BuyerDashboardModel(organisationId, organisationName, isAccountManager);
 
         model.Advice.Should().Be(expectedAdvice);
     }

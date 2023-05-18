@@ -34,7 +34,7 @@ public static class BuyerDashboardControllerTests
         [Frozen] Mock<IOrganisationsService> organisationsService,
         BuyerDashboardController controller)
     {
-        var expectedModel = new BuyerDashboardModel(organisation.Name, false);
+        var expectedModel = new BuyerDashboardModel(organisation.InternalIdentifier, organisation.Name, false);
 
         organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(It.IsAny<string>()))
             .ReturnsAsync(organisation);

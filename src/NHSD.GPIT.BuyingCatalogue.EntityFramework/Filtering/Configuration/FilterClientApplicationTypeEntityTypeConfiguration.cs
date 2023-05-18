@@ -5,17 +5,21 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Configuration
 {
-    internal sealed class FilterClientApplicationTypeEntityTypeConfiguration : IEntityTypeConfiguration<FilterClientApplicationType>
+    internal sealed class
+        FilterClientApplicationTypeEntityTypeConfiguration : IEntityTypeConfiguration<FilterClientApplicationType>
     {
         public void Configure(EntityTypeBuilder<FilterClientApplicationType> builder)
         {
-            builder.ToTable("FilterClientApplicationTypes", Schemas.Filtering, b => b.IsTemporal(
-                temp =>
-                {
-                    temp.UseHistoryTable("FilterClientApplicationTypes_History");
-                    temp.HasPeriodStart("SysStartTime");
-                    temp.HasPeriodEnd("SysEndTime");
-                }));
+            builder.ToTable(
+                "FilterClientApplicationTypes",
+                Schemas.Filtering,
+                b => b.IsTemporal(
+                    temp =>
+                    {
+                        temp.UseHistoryTable("FilterClientApplicationTypes_History");
+                        temp.HasPeriodStart("SysStartTime");
+                        temp.HasPeriodEnd("SysEndTime");
+                    }));
 
             builder.HasKey(fcat => fcat.Id);
 
