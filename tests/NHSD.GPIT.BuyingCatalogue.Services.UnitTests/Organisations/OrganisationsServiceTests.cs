@@ -97,7 +97,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         public static async Task AddOrganisation_OrganisationAlreadyExists_ReturnsError(
             [Frozen] BuyingCatalogueDbContext context,
             OdsOrganisation odsOrganisation,
-            bool agreementSigned,
             Organisation organisation,
             OrganisationsService service)
         {
@@ -117,7 +116,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             [Frozen] BuyingCatalogueDbContext context,
             ILogger<OrganisationsService> logger,
             OdsOrganisation odsOrganisation,
-            bool agreementSigned,
             OdsSettings settings)
         {
             odsOrganisation.PrimaryRoleId = settings.BuyerOrganisationRoles[0].PrimaryRoleId;
@@ -133,7 +131,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
             newOrganisation.Address.Should().BeEquivalentTo(odsOrganisation.Address);
             newOrganisation.Id.Should().Be(orgId);
-            newOrganisation.CatalogueAgreementSigned.Should().Be(agreementSigned);
             newOrganisation.LastUpdated.Date.Should().Be(DateTime.UtcNow.Date);
             newOrganisation.Name.Should().Be(odsOrganisation.OrganisationName);
             newOrganisation.ExternalIdentifier.Should().Be(odsOrganisation.OdsCode);
