@@ -1,0 +1,71 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using ValidationSummaryTagHelper = Microsoft.AspNetCore.Mvc.TagHelpers.ValidationSummaryTagHelper
+@model List<NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models.Filter>
+
+@{
+    Layout = "~/Views/Shared/Layouts/_AllBannersLayout.cshtml";
+    ViewBag.Title = "Manage Filters";
+}
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-validation-summary/>
+
+        <nhs-page-title title="@ViewBag.Title" />
+        
+
+        @foreach (var filter in Model)
+        {
+            <h2>Name: @filter.Name</h2>
+            <nhs-summary-list>
+                <nhs-summary-list-row label-text="Description">
+                    <p>
+                        @filter.Description
+                    </p>
+                </nhs-summary-list-row>
+                <nhs-summary-list-row label-text="Capabilities">
+                    @foreach (var cap in filter.FilterCapabilities)
+                    {
+                        <p>
+                            @cap.Capability.Name
+                        </p>
+                    }
+                </nhs-summary-list-row>
+                <nhs-summary-list-row label-text="Epics">
+                    @foreach (var epic in filter.FilterEpics)
+                    {
+                        <p>
+                            @epic.Epic.Name
+                        </p>
+                    }
+                </nhs-summary-list-row>
+                <nhs-summary-list-row label-text="Client application types">
+                    @foreach (var type in filter.FilterClientApplicationTypes)
+                    {
+                        <p>
+                            @type.ClientApplicationType
+                        </p>
+                    }
+                </nhs-summary-list-row>
+                <nhs-summary-list-row label-text="Framework">
+                    @if (filter.Framework != null)
+                    {
+                        <p>
+                            @filter.Framework.Name
+                        </p>                        
+                    }
+                </nhs-summary-list-row>
+                <nhs-summary-list-row label-text="Hosting Type">
+                    @foreach (var type in filter.FilterHostingTypes)
+                    {
+                        <p>
+                            @type.HostingType
+                        </p>
+                    }
+                </nhs-summary-list-row>
+            </nhs-summary-list>
+        }
+
+    </div>
+</div>
