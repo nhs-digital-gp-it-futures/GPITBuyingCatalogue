@@ -11,6 +11,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.PublicBrowse
 
         public static By CreateNewFilterLink => By.LinkText("Create a new filter");
 
+        public static By ManageFilterLink => By.LinkText("Go to saved filters");
+
         public static By FilterName => ByExtensions.DataTestId("filter-name");
 
         public static By FilterDescription => ByExtensions.DataTestId("filter-description");
