@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             return await dbContext.Organisations.AnyAsync(o => o.ExternalIdentifier == odsOrganisation.OdsCode || o.Name == odsOrganisation.OrganisationName);
         }
 
-        public async Task<(int OrganisationId, string Error)> AddOrganisation(OdsOrganisation odsOrganisation, bool agreementSigned)
+        public async Task<(int OrganisationId, string Error)> AddOrganisation(OdsOrganisation odsOrganisation)
         {
             if (await OrganisationExists(odsOrganisation))
                 return (0, $"The organisation with ODS code {odsOrganisation.OdsCode} already exists.");
@@ -52,7 +52,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             var organisation = new Organisation
             {
                 Address = odsOrganisation.Address,
-                CatalogueAgreementSigned = agreementSigned,
                 LastUpdated = DateTime.UtcNow,
                 Name = odsOrganisation.OrganisationName,
                 ExternalIdentifier = odsOrganisation.OdsCode,

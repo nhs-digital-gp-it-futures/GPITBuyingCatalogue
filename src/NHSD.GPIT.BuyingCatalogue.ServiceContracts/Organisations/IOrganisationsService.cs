@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations
 
         Task<bool> OrganisationExists(OdsOrganisation odsOrganisation);
 
-        Task<(int OrganisationId, string Error)> AddOrganisation(OdsOrganisation odsOrganisation, bool agreementSigned);
+        Task<(int OrganisationId, string Error)> AddOrganisation(OdsOrganisation odsOrganisation);
 
         Task UpdateOrganisation(OdsOrganisation organisation);
 

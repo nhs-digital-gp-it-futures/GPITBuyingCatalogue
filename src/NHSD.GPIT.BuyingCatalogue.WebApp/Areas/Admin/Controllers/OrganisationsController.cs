@@ -188,7 +188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             (OdsOrganisation organisation, _) = await OdsService.GetOrganisationByOdsCode(model.OdsOrganisation.OdsCode);
 
-            var (orgId, error) = await OrganisationsService.AddOrganisation(organisation, model.CatalogueAgreementSigned);
+            var (orgId, error) = await OrganisationsService.AddOrganisation(organisation);
 
             if (orgId == 0)
             {

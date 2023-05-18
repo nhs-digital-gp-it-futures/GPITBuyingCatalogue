@@ -44,14 +44,9 @@
             <form method="post">
                 <input type="hidden" asp-for="@Model.OdsOrganisation.OdsCode" />
                 <nhs-fieldset-form-label asp-for="@Model">
-                    <nhs-checkbox-container>
-                        <nhs-checkbox
-                        asp-for="@Model.CatalogueAgreementSigned" 
-                        label-text="Ensure this organisation has a signed Organisation End User Agreement before confirming" />
-                    </nhs-checkbox-container>
                 </nhs-fieldset-form-label>
                 <div data-test-id="save-button">
-                    <nhs-submit-button />
+                    <nhs-submit-button text="Create organisation" />
                 </div>
             </form>
         </div>

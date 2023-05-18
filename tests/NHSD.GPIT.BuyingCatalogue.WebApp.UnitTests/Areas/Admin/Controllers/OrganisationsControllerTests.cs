@@ -531,7 +531,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .ReturnsAsync((organisation, null));
 
             mockOrgService
-                .Setup(x => x.AddOrganisation(organisation, model.CatalogueAgreementSigned))
+                .Setup(x => x.AddOrganisation(organisation))
                 .ReturnsAsync((0, error));
 
             var result = (await controller.Create(model)).As<RedirectToActionResult>();
@@ -564,7 +564,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .ReturnsAsync((organisation, null));
 
             mockOrgService
-                .Setup(x => x.AddOrganisation(organisation, model.CatalogueAgreementSigned))
+                .Setup(x => x.AddOrganisation(organisation))
                 .ReturnsAsync((orgId, null));
 
             var result = (await controller.Create(model)).As<RedirectToActionResult>();
