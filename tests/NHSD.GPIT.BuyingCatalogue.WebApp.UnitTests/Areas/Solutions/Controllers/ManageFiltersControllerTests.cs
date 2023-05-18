@@ -11,29 +11,21 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Moq;
-using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.Services.Capabilities;
-using NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using Xunit;
-using static NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ClientApplicationTypeModel;
 using ClientApplicationType = NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.ClientApplicationType;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
@@ -55,6 +47,45 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var constructors = typeof(ManageFiltersController).GetConstructors();
 
             assertion.Verify(constructors);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_Index_ReturnsExpectedResult(
+            [Frozen] Mock<IOrganisationsService> organisationsService,
+            [Frozen] Mock<ICapabilitiesService> capabilitiesService,
+            [Frozen] Mock<IEpicsService> epicsService,
+            [Frozen] Mock<IFrameworkService> frameworkService,
+            [Frozen] Mock<IManageFiltersService> manageFiltersService,
+            [Frozen] Mock<IUrlHelper> mockUrlHelper,
+            string primaryOrganisationInternalId,
+            Organisation organisation,
+            List<Filter> existingFilters)
+        {
+            organisationsService
+                .Setup(x => x.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId))
+                .ReturnsAsync(organisation);
+
+            manageFiltersService
+                .Setup(x => x.GetFilters(organisation.Id))
+                .ReturnsAsync(existingFilters);
+
+            var controller = CreateController(
+                organisationsService,
+                capabilitiesService,
+                epicsService,
+                frameworkService,
+                manageFiltersService,
+                primaryOrganisationInternalId);
+
+            controller.Url = mockUrlHelper.Object;
+
+            var result = await controller.Index();
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+
+            var expected = new ManageFiltersModel(existingFilters, organisation.Name);
+            actualResult.Model.Should().BeEquivalentTo(expected);
         }
 
         [Theory]
