@@ -15,8 +15,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
         {
         }
 
-        public AdditionalFiltersModel(List<FrameworkFilterInfo> frameworks, string selectedClientApplicationTypeIds)
+        public AdditionalFiltersModel(List<FrameworkFilterInfo> frameworks, string selectedClientApplicationTypeIds, string selectedCapabilityIds, string selectedEpicIds)
         {
+            SelectedCapabilityIds = selectedCapabilityIds;
+            SelectedEpicIds = selectedEpicIds;
+
             FrameworkOptions = frameworks.Select(
                     f => new SelectOption<string>
                     {
@@ -38,13 +41,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                 .ToList();
         }
 
+        public string SelectedCapabilityIds { get; init; }
+
+        public string SelectedEpicIds { get; init; }
+
         public string SelectedFrameworkId { get; set; }
 
         public List<SelectOption<string>> FrameworkOptions { get; set; }
 
         public List<SelectOption<int>> ClientApplicationTypeOptions { get; set; }
 
-        public string SelectedClientApplicationTypes
+        public string SelectedClientApplicationTypeIds
         {
             get
             {

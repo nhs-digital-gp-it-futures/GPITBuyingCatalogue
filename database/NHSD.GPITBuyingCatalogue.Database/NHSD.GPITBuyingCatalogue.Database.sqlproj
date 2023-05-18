@@ -68,6 +68,8 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
+    <Folder Include="Filtering\TemporalTables\" />
+    <Folder Include="Filtering\Tables\" />
     <Folder Include="OdsOrganisations\Functions\" />
     <Folder Include="Properties" />
     <Folder Include="Security\" />
@@ -98,7 +100,6 @@
     <Folder Include="Ordering\TemporalTables" />
     <Folder Include="Users\TemporalTables" />
     <Folder Include="PostDeployment\OrderSeedData" />
-    <Folder Include="PostDeployment\" />
     <Folder Include="Catalogue\Types" />
     <Folder Include="Catalogue\Stored Procedures" />
     <Folder Include="Security\Schemas\" />
@@ -110,6 +111,7 @@
     <Build Include="Security\Users\NHSD.sql" />
     <Build Include="Security\Logins\NHSD.sql" />
     <None Include="PostDeployment\CreateIntegratedCareBoards.sql" />
+    <None Include="PostDeployment\InsertFilters.sql" />
     <None Include="PostDeployment\IntegrationTests\ClearData.sql" />
     <None Include="PostDeployment\IntegrationTests\DropRole.sql" />
     <None Include="PostDeployment\IntegrationTests\DropUserAndLogin.sql" />
@@ -132,6 +134,7 @@
     <None Include="PostDeployment\CreateExecutiveAgency.sql" />
     <None Include="PostDeployment\CreateExecutiveAgencyUser.sql" />
     <Build Include="Security\Schemas\ordering.sql" />
+    <Build Include="Security\Schemas\filtering.sql" />
     <Build Include="Ordering\Tables\Contacts.sql" />
     <Build Include="Ordering\Tables\DefaultDeliveryDates.sql" />
     <Build Include="Ordering\Tables\OrderItemRecipients.sql" />

@@ -34,6 +34,7 @@
 :r ./InsertStandards.sql
 :r ./InsertStandardsCapabilities.sql
 
+:r ./InsertFilters.sql
 :r ./InsertOrderStatuses.sql
 :r ./InsertOrderTriageValues.sql
 :r ./InsertOrderItemFundingTypes.sql
