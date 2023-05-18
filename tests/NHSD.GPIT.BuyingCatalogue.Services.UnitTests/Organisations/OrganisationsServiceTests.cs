@@ -105,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             context.Organisations.Add(organisation);
             await context.SaveChangesAsync();
 
-            (int orgId, var error) = await service.AddOrganisation(odsOrganisation, agreementSigned);
+            (int orgId, var error) = await service.AddOrganisation(odsOrganisation);
 
             orgId.Should().Be(0);
             error.Should().Be($"The organisation with ODS code {odsOrganisation.OdsCode} already exists.");
@@ -124,7 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             var expectedOrgType = settings.GetOrganisationType(odsOrganisation.PrimaryRoleId);
 
             var service = new OrganisationsService(context, logger, settings);
-            (int orgId, var error) = await service.AddOrganisation(odsOrganisation, agreementSigned);
+            (int orgId, var error) = await service.AddOrganisation(odsOrganisation);
 
             orgId.Should().NotBe(0);
             error.Should().BeNull();
