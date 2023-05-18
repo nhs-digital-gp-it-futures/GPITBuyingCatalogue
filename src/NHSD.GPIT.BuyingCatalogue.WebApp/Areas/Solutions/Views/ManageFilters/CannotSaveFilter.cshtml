@@ -1,0 +1,34 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSecondaryButton
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
+@using ValidationSummaryTagHelper = Microsoft.AspNetCore.Mvc.TagHelpers.ValidationSummaryTagHelper
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.NavBaseModel
+
+@{
+    Layout = "~/Views/Shared/Layouts/_AllBannersLayout.cshtml";
+    ViewBag.Title = "Filter cannot be saved";
+}
+
+<partial name="Partials/_BackLink" model="@Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-validation-summary/>
+
+        <nhs-page-title title="@ViewBag.Title"
+                        advice="You already have 10 filters saved which is the maximum allowed. You’ll need to delete an existing filter." />
+        
+        <vc:nhs-secondary-button text="Go to saved filters"
+                                 url="@Url.Action(
+                                          nameof(ManageFiltersController.Index),
+                                          typeof(ManageFiltersController).ControllerName())"
+                                 type="Primary" />
+        
+        <p>
+            <a href="@Model.BackLink">Cancel</a>
+        </p>
+
+    </div>
+</div>

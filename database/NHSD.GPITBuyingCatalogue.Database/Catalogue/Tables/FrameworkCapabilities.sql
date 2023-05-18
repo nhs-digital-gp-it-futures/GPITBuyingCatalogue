@@ -1,6 +1,6 @@
 ﻿CREATE TABLE catalogue.FrameworkCapabilities
 (
-     FrameworkId nvarchar(10) NOT NULL,
+     FrameworkId nvarchar(36) NOT NULL,
      CapabilityId int NOT NULL,
      IsFoundation bit CONSTRAINT DF_FrameworkCapabilities_IsFoundation DEFAULT 0 NOT NULL,
      LastUpdated datetime2(7) DEFAULT GETUTCDATE() NOT NULL,

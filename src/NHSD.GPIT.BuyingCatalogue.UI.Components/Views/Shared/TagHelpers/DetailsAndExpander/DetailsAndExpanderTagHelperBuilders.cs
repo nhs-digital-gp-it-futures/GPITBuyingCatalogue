@@ -13,6 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
         private const string DetailsSummaryTextClass = "nhsuk-details__summary-text";
         private const string DetailsSummaryTextLetterClass = "nhsuk-details__summary-text__letter";
         private const string DetailsTextClass = "nhsuk-details__text";
+        private const string PaddingTop = "nhsuk-u-padding-top-7";
         private const string SummaryTextSecondaryClass = "nhsuk-details__summary-text_secondary";
         private const string TagTopLevelClass = "bc-c-task-list__task-status";
         private const string TagClass = "nhsuk-tag";
@@ -34,6 +35,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
 
             if (!string.IsNullOrWhiteSpace(headingText))
             {
+                summaryBuilder.AddCssClass(PaddingTop);
+
                 var h3Builder = new TagBuilder(TagHelperConstants.HeaderThree);
                 h3Builder.AddCssClass(DetailsSummaryTextLetterClass);
 

@@ -160,50 +160,80 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonInlineAutoData(1, 1, "")]
+        [CommonInlineAutoData(1, 2, "Amendment_")]
         public static async Task Get_DownloadFullOrderCsv_ReturnsExpectedResult(
-            CallOffId callOffId,
+            int orderNumber,
+            int revision,
+            string prefix,
             string externalOrgId,
             [Frozen] Mock<ICsvService> csvService,
             ManageOrdersController controller)
         {
+            var callOffId = new CallOffId(orderNumber, revision);
             var result = (await controller.DownloadFullOrderCsv(callOffId, externalOrgId)).As<FileContentResult>();
 
             csvService.VerifyAll();
 
             result.Should().NotBeNull();
             result.ContentType.Should().Be("application/octet-stream");
-            result.FileDownloadName.Should().Be($"{callOffId}_{externalOrgId}_full.csv");
+            result.FileDownloadName.Should().Be($"{prefix}{callOffId}_{externalOrgId}_full.csv");
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonInlineAutoData(1, 1, "")]
+        [CommonInlineAutoData(1, 2, "Amendment_")]
         public static async Task Get_DownloadPatientNumberCsv_ReturnsExpectedResult(
-            CallOffId callOffId,
+            int orderNumber,
+            int revision,
+            string prefix,
             string externalOrgId,
             [Frozen] Mock<ICsvService> csvService,
             ManageOrdersController controller)
         {
+            var callOffId = new CallOffId(orderNumber, revision);
             var result = (await controller.DownloadPatientNumberCsv(callOffId, externalOrgId)).As<FileContentResult>();
 
             csvService.VerifyAll();
 
             result.Should().NotBeNull();
             result.ContentType.Should().Be("application/octet-stream");
-            result.FileDownloadName.Should().Be($"{callOffId}_{externalOrgId}_patient.csv");
+            result.FileDownloadName.Should().Be($"{prefix}{callOffId}_{externalOrgId}_patient.csv");
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_DeleteOrder_ReturnsViewWithModel(
+        public static async Task Get_DeleteNotLatest_ReturnsViewWithModel(
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderAdminService> orderAdminService,
             ManageOrdersController controller)
         {
-            var expectedModel = new DeleteOrderModel(order);
+            var expectedModel = new DeleteNotLatestModel(order.CallOffId);
 
             orderAdminService.Setup(s => s.GetOrder(order.CallOffId))
                 .ReturnsAsync(order);
+
+            var result = (await controller.DeleteNotLatest(order.CallOffId)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_DeleteOrder_ReturnsViewWithModel_When_Latest(
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderAdminService> orderAdminService,
+            [Frozen] Mock<IOrderService> orderService,
+            ManageOrdersController controller)
+        {
+            var expectedModel = new DeleteOrderModel(order.CallOffId);
+
+            orderAdminService.Setup(s => s.GetOrder(order.CallOffId))
+                .ReturnsAsync(order);
+
+            orderService.Setup(s => s.HasSubsequentRevisions(order.CallOffId))
+                .ReturnsAsync(false);
 
             var result = (await controller.DeleteOrder(order.CallOffId)).As<ViewResult>();
 
@@ -213,14 +243,35 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
+        public static async Task Get_DeleteOrder_Redirects_To_DeleteNotLatest_When_Not_Latest(
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderAdminService> orderAdminService,
+            [Frozen] Mock<IOrderService> orderService,
+            ManageOrdersController controller)
+        {
+            var expectedModel = new DeleteOrderModel(order.CallOffId);
+
+            orderAdminService.Setup(s => s.GetOrder(order.CallOffId))
+                .ReturnsAsync(order);
+
+            orderService.Setup(s => s.HasSubsequentRevisions(order.CallOffId))
+                .ReturnsAsync(true);
+
+            var result = (await controller.DeleteOrder(order.CallOffId)).As<RedirectToActionResult>();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(ManageOrdersController.DeleteNotLatest));
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static async Task Post_DeleteOrder_InvalidModelState(
-            CallOffId callOffId,
             DeleteOrderModel model,
             ManageOrdersController controller)
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var result = (await controller.DeleteOrder(callOffId, model)).As<ViewResult>();
+            var result = (await controller.DeleteOrder(model)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(model);
@@ -229,14 +280,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_DeleteOrder_ConfirmedDelete(
-            CallOffId callOffId,
             DeleteOrderModel model,
             [Frozen] Mock<IOrderAdminService> orderAdminService,
             ManageOrdersController controller)
         {
-            var result = (await controller.DeleteOrder(callOffId, model)).As<RedirectToActionResult>();
+            var result = (await controller.DeleteOrder(model)).As<RedirectToActionResult>();
 
-            orderAdminService.Verify(s => s.DeleteOrder(callOffId, model.NameOfRequester, model.NameOfApprover, model.ApprovalDate ?? null), Times.Once());
+            orderAdminService.Verify(s => s.DeleteOrder(model.CallOffId, model.NameOfRequester, model.NameOfApprover, model.ApprovalDate ?? null), Times.Once());
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.Index));

@@ -1,16 +1,49 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters.AdditionalFiltersModel
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.DetailsAndExpander
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters.AdditionalFiltersModel
 <form method="post">
+
+    <input type="hidden" asp-for="SelectedCapabilityIds"/>
+    <input type="hidden" asp-for="SelectedEpicIds"/>
+
     <nhs-expander label-text="Framework"
                   open="true"
                   data-test-id="filter-framework-expander">
 
-        <nhs-fieldset-form-label asp-for="SelectedFrameworkId">
-            <nhs-radio-buttons asp-for="SelectedFrameworkId"
-                               values="Model.FrameworkOptions.Cast<object>()"
-                               value-name="Value"
-                               display-name="Text"/>
-        </nhs-fieldset-form-label>
-    </nhs-expander>
-    <nhs-submit-button style="width:100%" text="Apply additional filters" class="nhsuk-button--secondary"/>
+        @if (Model.FrameworkOptions.Count == 1)
+        {
+            var framework = Model.FrameworkOptions.First();
+            Model.SelectedFrameworkId = framework.Value;
 
+            <input type="hidden" asp-for="SelectedFrameworkId" />
+            @(framework.Text)
+        }
+        else
+        {
+            <nhs-fieldset-form-label asp-for="SelectedFrameworkId">
+                <nhs-radio-buttons asp-for="SelectedFrameworkId"
+                                   values="Model.FrameworkOptions.Cast<object>()"
+                                   value-name="Value"
+                                   display-name="Text"/>
+            </nhs-fieldset-form-label>
+        }
+    </nhs-expander>
+     <nhs-expander label-text="Client application type" open="true">
+        @for (int clientAppTypeIndex = 0; clientAppTypeIndex < Model.ClientApplicationTypeOptions.Count; clientAppTypeIndex++)
+        {
+         <nhs-fieldset-form-label asp-for="@Model">
+            <nhs-checkbox-container>
+                    <nhs-checkbox asp-for="@Model.ClientApplicationTypeOptions[clientAppTypeIndex].Selected"
+                              hidden-input="@Model.ClientApplicationTypeOptions[clientAppTypeIndex].Value"
+                              label-text="@Model.ClientApplicationTypeOptions[clientAppTypeIndex].Text" />
+            </nhs-checkbox-container>
+         </nhs-fieldset-form-label>
+        }
+    </nhs-expander>
+    <nhs-submit-button style="width:100%" text="View results" class="nhsuk-button--secondary"/>
+
+    <nhs-submit-button style="width: 100%" text="Save all filters" formaction="@Url.Action(nameof(ManageFiltersController.SaveFilter), typeof(ManageFiltersController).ControllerName())" />
 </form>

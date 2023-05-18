@@ -14,25 +14,25 @@
     }
 }
 
-<div data-test-id="solutions-card" class="nhsuk-grid-row">
+<div data-test-id="solutions-card">
     <div class="nhsuk-grid-columns-full">
-        <h2>
+        <h3 class="nhsuk-heading-m">
             <a asp-area="@typeof(SolutionsController).AreaName()"
                asp-controller="@typeof(SolutionsController).ControllerName()"
                asp-action="@nameof(SolutionsController.Description)"
                asp-route-solutionId="@Model.catalogueItem.Id">
                 @Model.catalogueItem.Name
             </a>
-        </h2>
-        <h3>
-            @Model.catalogueItem.Supplier.Name
+            <span class="nhsuk-caption-m nhsuk-caption--bottom">
+                @Model.catalogueItem.Supplier.Name
+            </span>
         </h3>
         <p>
             @Model.catalogueItem.Solution.Summary
         </p>
         @if (Model.catalogueItem.Solution.AdditionalServices.Any())
         {
-            <h4>Additional Services relevant to your search</h4>
+            <h4 class="nhsuk-heading-xs">Additional Services relevant to your search</h4>
             <p>
                 @for (int i = 0; i < Model.catalogueItem.Solution.AdditionalServices.Count; i++)
                 {
@@ -51,14 +51,14 @@
             </p>
         }
         @if (Model.selectedCapabilityIds.Any()){
-            <h4>Search information</h4>
+            <h4 class="nhsuk-heading-xs">Search information</h4>
             <p>
             @(CapabilitiesNotMet())
             </p>
         }
 
-        <h4>Framework</h4>
-        <p>@(string.Join(", ", Model.catalogueItem.Solution.FrameworkSolutions.Select(fs => fs.Framework.ShortName)))</p>
+        <h4 class="nhsuk-heading-xs">@FrameworkHeading()</h4>
+        <p>@(string.Join(", ", Model.catalogueItem.Solution.FrameworkSolutions.Select(fs => $"{fs.Framework.ShortName}{(fs.Framework.IsExpired ? " (expired)": string.Empty)}")))</p>
         <nhs-endnote>
             Published on: @Model.catalogueItem.LastPublished?.ToString("d MMMM yyyy")
         </nhs-endnote>
@@ -82,4 +82,6 @@
 
         return excludedIds.Any() ? $"Missing from your search criteria: {string.Join(", ", excludedIds)}" : "All of the Capabilities you've selected have been met.";
     }
+
+    string FrameworkHeading() => Model.catalogueItem.Solution.FrameworkSolutions.Select(x => x.Framework).Count() > 1 ? "Frameworks" : "Framework";
 }

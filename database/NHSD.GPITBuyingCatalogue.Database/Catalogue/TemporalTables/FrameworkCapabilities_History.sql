@@ -1,6 +1,6 @@
 ﻿CREATE TABLE catalogue.FrameworkCapabilities_History
 (
-     FrameworkId nvarchar(10) NOT NULL,
+     FrameworkId nvarchar(36) NOT NULL,
      CapabilityId int NOT NULL,
      IsFoundation bit NOT NULL,
      LastUpdated datetime2(7) NOT NULL,

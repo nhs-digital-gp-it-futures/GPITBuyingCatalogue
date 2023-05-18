@@ -20,18 +20,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     public sealed class AssociatedServicesController : Controller
     {
         private readonly ISolutionsService solutionsService;
-        private readonly ISuppliersService suppliersService;
         private readonly IAssociatedServicesService associatedServicesService;
         private readonly IPublicationStatusService publicationStatusService;
 
         public AssociatedServicesController(
             ISolutionsService solutionsService,
-            ISuppliersService suppliersService,
             IAssociatedServicesService associatedServicesService,
             IPublicationStatusService publicationStatusService)
         {
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
-            this.suppliersService = suppliersService ?? throw new ArgumentNullException(nameof(suppliersService));
             this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
             this.publicationStatusService = publicationStatusService ?? throw new ArgumentNullException(nameof(publicationStatusService));
         }
