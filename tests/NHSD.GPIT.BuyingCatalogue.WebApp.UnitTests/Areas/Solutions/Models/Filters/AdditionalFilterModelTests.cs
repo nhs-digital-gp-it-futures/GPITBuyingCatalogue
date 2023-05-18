@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         [CommonAutoData]
         public static void Constructor_WithFrameworks_CreatesFrameworkOptions(List<FrameworkFilterInfo> frameworks)
         {
-            var model = new AdditionalFiltersModel(frameworks, null);
+            var model = new AdditionalFiltersModel(frameworks, null, string.Empty, string.Empty);
 
             model.FrameworkOptions.Should().NotBeNull();
             model.FrameworkOptions.Should().HaveCount(frameworks.Count);
@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         {
             var expectedCount = 3;
 
-            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), selectedClientApplicationTypeIds);
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), selectedClientApplicationTypeIds, string.Empty, string.Empty);
 
             model.ClientApplicationTypeOptions.Should().NotBeNull();
             model.ClientApplicationTypeOptions.Should().HaveCount(expectedCount);
@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         {
             var expectedCount = 3;
 
-            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), selectedClientApplicationTypeIds);
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), selectedClientApplicationTypeIds, string.Empty, string.Empty);
 
             model.ClientApplicationTypeOptions.Should().NotBeNull();
             model.ClientApplicationTypeOptions.Should().HaveCount(expectedCount);
@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         {
             var expectedCount = 3;
 
-            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), selectedClientApplicationTypeIds);
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), selectedClientApplicationTypeIds, string.Empty, string.Empty);
 
             model.ClientApplicationTypeOptions.Should().NotBeNull();
             model.ClientApplicationTypeOptions.Should().HaveCount(expectedCount);
@@ -88,6 +88,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
             {
                 item.Selected.Should().BeFalse();
             }
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Constructor_WithSelectedCapabilityAndEpics_PropertiesSetCorrectly(string selectedCapabilityIds, string selectedEpicIds)
+        {
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, selectedCapabilityIds, selectedEpicIds);
+
+            model.SelectedCapabilityIds.Should().Be(selectedCapabilityIds);
+            model.SelectedEpicIds.Should().Be(selectedEpicIds);
         }
     }
 }
