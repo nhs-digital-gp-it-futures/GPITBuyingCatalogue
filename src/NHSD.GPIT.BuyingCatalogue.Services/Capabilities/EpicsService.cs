@@ -19,6 +19,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
+        public async Task<List<Epic>> GetEpicsByIds(IEnumerable<string> epicIds)
+        {
+            if (epicIds == null)
+            {
+                throw new ArgumentNullException(nameof(epicIds));
+            }
+
+            return await dbContext.Epics.AsNoTracking()
+                .Include(x => x.Capability)
+                .Where(
+                    x => x.IsActive
+                        && epicIds.Contains(x.Id))
+                .ToListAsync();
+        }
+
         public async Task<List<Epic>> GetReferencedEpicsByCapabilityIds(IEnumerable<int> capabilityIds)
         {
             if (capabilityIds == null)
