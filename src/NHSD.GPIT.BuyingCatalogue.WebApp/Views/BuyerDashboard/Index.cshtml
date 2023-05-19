@@ -5,6 +5,7 @@
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 @{
     ViewBag.Title = "Buyer dashboard";
 }
@@ -24,7 +25,7 @@
                    asp-area="@typeof(DashboardController).AreaName()">
                     Create or manage orders
                 </a>
-                <p>Manage orders currently in progress or view and amend orders that have been submitted for your organisation.</p>
+                <p>Manage orders currently in progress or view and amend orders that have been submitted for your organisation. </p>
             </li>
         </ul>
 
@@ -43,6 +44,19 @@
                 </li>
             </ul>
         }
+
+
+        <h2>Filters</h2>
+        <ul>
+            <li>
+                <a asp-action="@nameof(ManageFiltersController.Index)"
+                   asp-controller="@typeof(ManageFiltersController).ControllerName()"
+                   asp-area="@typeof(ManageFiltersController).AreaName()">
+                    Create or manage filters
+                </a>
+                <p>Create new filters or view existing ones that you can use to produce a competition shortlist.</p>
+            </li>
+        </ul>
 
         @if (User.IsAccountManager())
         {
