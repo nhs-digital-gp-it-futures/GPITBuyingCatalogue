@@ -348,12 +348,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task SaveHosting(CatalogueItemId solutionId, Hosting hosting)
         {
-            hosting.ValidateNotNull(nameof(hosting));
-
             ArgumentNullException.ThrowIfNull(hosting);
-
-            var pub = hosting.PublicCloud;
-            Console.WriteLine(pub);
 
             var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
             solution.Hosting = hosting;
