@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         public async Task<IActionResult> Index()
         {
             var organisation = await GetUserOrganisation();
-            var existingFilters = await manageFiltersService.GetFiltersThin(organisation.Id);
+            var existingFilters = await manageFiltersService.GetFilters(organisation.Id);
             var model = new ManageFiltersModel(existingFilters, organisation.Name);
             return View(model);
         }
@@ -89,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 });
 
             var organisationId = (await GetUserOrganisation()).Id;
-            var existingFilters = await manageFiltersService.GetFiltersThin(organisationId);
+            var existingFilters = await manageFiltersService.GetFilters(organisationId);
             if (existingFilters.Count >= MaxNumberOfFilters)
                 return RedirectToAction(nameof(CannotSaveFilter), typeof(ManageFiltersController).ControllerName(), new { backLink });
 
