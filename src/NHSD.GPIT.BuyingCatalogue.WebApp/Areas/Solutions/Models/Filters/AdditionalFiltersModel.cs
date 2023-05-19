@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
         {
         }
 
-        public AdditionalFiltersModel(List<FrameworkFilterInfo> frameworks, string selectedClientApplicationTypeIds, string selectedHostingTypeIds)
+        public AdditionalFiltersModel(List<FrameworkFilterInfo> frameworks, string selectedClientApplicationTypeIds, string selectedHostingTypeIds, string selectedCapabilityIds, string selectedEpicIds)
         {
             SetFrameworkOptions(frameworks);
             SetClientApplicationTypeOptions(selectedClientApplicationTypeIds);
@@ -23,6 +23,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
         }
 
         public string SelectedFrameworkId { get; set; }
+
+        public string SelectedCapabilityIds { get; set; }
+
+        public string SelectedEpicIds { get; set; }
 
         public string SelectedHostId { get; set; }
 
