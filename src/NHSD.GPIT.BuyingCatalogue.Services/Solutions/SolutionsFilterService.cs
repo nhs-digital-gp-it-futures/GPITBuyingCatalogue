@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     query,
                     selectedClientApplicationTypeIds,
                     GetSelectedFiltersClientApplication,
-                    x => !string.IsNullOrEmpty(x.ClientApplication));
+                    x => x.ClientApplication != null);
             }
 
             if (!string.IsNullOrWhiteSpace(selectedHostingTypeIds))

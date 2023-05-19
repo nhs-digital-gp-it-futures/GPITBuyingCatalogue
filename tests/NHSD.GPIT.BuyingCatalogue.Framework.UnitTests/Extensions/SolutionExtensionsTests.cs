@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
         [InlineData(" ")]
         public static void GetClientApplication_ReturnsDefaultClientApplicationWhenNotSet(string clientApplication)
         {
-            var solution = new Solution() { ClientApplication = clientApplication };
+            var solution = new Solution();
 
             var result = solution.EnsureAndGetClientApplication();
 

@@ -553,7 +553,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [CommonAutoData]
         public static async Task Get_ClientApplicationTypes_ValidSolutionForId_ReturnsExpectedViewResult(
             CatalogueItemId id,
-            [Frozen] ClientApplication clientApplication,
             Solution solution,
             [Frozen] Mock<ISolutionsService> solutionsService,
             SolutionsController controller,

@@ -323,6 +323,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             await context.SaveChangesAsync();
 
             await service.SaveClientApplication(solution.CatalogueItemId, clientApplication);
+            context.ChangeTracker.Clear();
 
             var actual = await context.Solutions.AsQueryable()
                 .FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
@@ -449,6 +450,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             await service.DeleteClientApplication(
                 catalogueSolution.CatalogueItemId,
                 ClientApplicationType.BrowserBased);
+            context.ChangeTracker.Clear();
 
             var actual = await context.Solutions.AsQueryable()
                 .FirstAsync(s => s.CatalogueItemId == catalogueSolution.CatalogueItemId);

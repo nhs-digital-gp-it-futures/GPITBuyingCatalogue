@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
@@ -24,6 +27,20 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.Property(s => s.IntegrationsUrl).HasMaxLength(1000);
             builder.Property(s => s.IsPilotSolution).HasDefaultValue(false);
             builder.Property(s => s.LastUpdated).HasDefaultValue(DateTime.UtcNow);
+
+            // TODO: MJK - change clientApplciation to use OwnsOne and ToJson
+            var jsonSerializerOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var converter = new ValueConverter<ClientApplication, string>(
+                value => JsonSerializer.Serialize(value, (JsonSerializerOptions)null),
+                serializedValue => JsonSerializer.Deserialize<ClientApplication>(serializedValue, jsonSerializerOptions));
+
+            var comparer = new ValueComparer<ClientApplication>(
+                (left, right) => JsonSerializer.Serialize(left, (JsonSerializerOptions)null) == JsonSerializer.Serialize(right, (JsonSerializerOptions)null),
+                value => value == null ? 0 : JsonSerializer.Serialize(value, (JsonSerializerOptions)null).GetHashCode(),
+                value => JsonSerializer.Deserialize<ClientApplication>(JsonSerializer.Serialize(value, (JsonSerializerOptions)null), jsonSerializerOptions));
+
+            builder.Property(s => s.ClientApplication)
+                .HasConversion(converter, comparer);
 
             builder.OwnsOne(s => s.Hosting, h =>
             {

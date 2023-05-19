@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
@@ -25,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public string Features { get; set; }
 
-        public string ClientApplication { get; set; }
+        public ClientApplication ClientApplication { get; set; }
 
         public Hosting Hosting { get; set; }
 
@@ -59,21 +58,22 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public ICollection<WorkOffPlan> WorkOffPlans { get; set; }
 
+        // TODO: MJK Review
         public ClientApplication EnsureAndGetClientApplication()
         {
-            return string.IsNullOrWhiteSpace(ClientApplication)
-                ? new ClientApplication()
-                : JsonSerializer.Deserialize<ClientApplication>(ClientApplication, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return ClientApplication ?? new ClientApplication();
         }
 
+        // TODO: MJK Review
         public ClientApplication GetClientApplication()
         {
-            return JsonSerializer.Deserialize<ClientApplication>(ClientApplication, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return ClientApplication;
         }
 
+        // TODO: MJK Review
         public void SetClientApplication(ClientApplication clientApplication)
         {
-            ClientApplication = JsonSerializer.Serialize(clientApplication);
+            ClientApplication = clientApplication;
         }
     }
 }
