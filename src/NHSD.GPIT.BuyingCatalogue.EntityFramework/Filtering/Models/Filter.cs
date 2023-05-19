@@ -6,8 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models
 {
-    [Serializable]
-    public partial class Filter : IAudited
+    public sealed class Filter : IAudited
     {
         public Filter()
         {
@@ -31,15 +30,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models
 
         public DateTime LastUpdated { get; set; }
 
-        public DateTime? LastPublished { get; set; }
-
         public int? LastUpdatedBy { get; set; }
 
         public AspNetUser LastUpdatedByUser { get; set; }
 
-        public virtual Organisation Organisation { get; set; }
+        public Organisation Organisation { get; set; }
 
-        public virtual Framework Framework { get; set; }
+        public Framework Framework { get; set; }
 
         public ICollection<FilterCapability> FilterCapabilities { get; set; }
 

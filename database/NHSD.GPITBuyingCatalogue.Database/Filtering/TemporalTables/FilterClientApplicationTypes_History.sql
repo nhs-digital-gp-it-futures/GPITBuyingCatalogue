@@ -1,6 +1,6 @@
 ﻿CREATE TABLE filtering.FilterClientApplicationTypes_History
 (
-     FilterClientApplicationTypeId int NOT NULL,
+     Id int NOT NULL,
      FilterId int NOT NULL,
      ClientApplicationTypeId int NOT NULL,
      LastUpdated datetime2(7) NOT NULL,
