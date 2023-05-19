@@ -1,4 +1,4 @@
-﻿using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models
 {

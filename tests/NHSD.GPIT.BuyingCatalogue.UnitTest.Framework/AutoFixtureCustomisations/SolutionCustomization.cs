@@ -5,7 +5,6 @@ using AutoFixture;
 using AutoFixture.Dsl;
 using AutoFixture.Kernel;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
 {
@@ -45,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
 
                 solution.CatalogueItem = catalogueItem;
                 solution.CatalogueItemId = catalogueItem.Id;
-                solution.ClientApplication = JsonSerializer.Serialize(context.Create<ClientApplication>());
+                solution.SetClientApplication(context.Create<ClientApplication>());
                 solution.Features = JsonSerializer.Serialize(context.Create<string[]>());
                 solution.Integrations = JsonSerializer.Serialize(context.CreateMany<Integration>());
 

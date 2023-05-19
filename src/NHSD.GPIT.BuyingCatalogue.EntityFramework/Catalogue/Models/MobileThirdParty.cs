@@ -1,4 +1,4 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
+﻿namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     public sealed class MobileThirdParty
     {

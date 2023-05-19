@@ -325,7 +325,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public async Task<ClientApplication> GetClientApplication(CatalogueItemId solutionId)
         {
             var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
-            return solution.GetClientApplication();
+            return solution.EnsureAndGetClientApplication();
         }
 
         public async Task SaveClientApplication(CatalogueItemId solutionId, ClientApplication clientApplication)
@@ -333,7 +333,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             clientApplication.ValidateNotNull(nameof(clientApplication));
 
             var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
-            solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
+            solution.SetClientApplication(clientApplication);
             await dbContext.SaveChangesAsync();
         }
 

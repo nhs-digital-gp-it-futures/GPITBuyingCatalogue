@@ -11,7 +11,6 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.Framework.Serialization;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SolutionsFilterModels;
@@ -288,7 +287,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         private static IEnumerable<ClientApplicationType> GetSelectedFiltersClientApplication(Solution solution, IEnumerable<ClientApplicationType> selectedFilterEnums)
         {
-            var clientApplication = JsonDeserializer.Deserialize<ClientApplication>(solution.ClientApplication);
+            var clientApplication = solution.GetClientApplication();
             return selectedFilterEnums?.Where(t => clientApplication.HasClientApplicationType(t));
         }
 

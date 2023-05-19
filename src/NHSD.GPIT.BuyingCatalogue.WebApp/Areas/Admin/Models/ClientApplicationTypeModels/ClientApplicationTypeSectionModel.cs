@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationT
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
 
-            var applicationType = catalogueItem.Solution?.GetClientApplication();
+            var applicationType = catalogueItem.Solution?.EnsureAndGetClientApplication();
 
             SolutionName = catalogueItem.Name;
             ExistingClientApplicationTypes = applicationType!.ExistingClientApplicationTypes ?? Array.Empty<ClientApplicationType>();

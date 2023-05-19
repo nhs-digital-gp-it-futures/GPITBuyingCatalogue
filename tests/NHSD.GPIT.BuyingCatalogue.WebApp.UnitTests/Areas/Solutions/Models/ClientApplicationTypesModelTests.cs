@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
-using System.Text.Json;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
@@ -131,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 AdditionalInformation = "Test",
             };
 
-            solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
+            solution.SetClientApplication(clientApplication);
 
             var model = new ClientApplicationTypesModel(solution.CatalogueItem, contentStatus);
 
@@ -173,7 +171,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 NativeDesktopAdditionalInformation = "Monitor",
             };
 
-            solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
+            solution.SetClientApplication(clientApplication);
 
             var model = new ClientApplicationTypesModel(solution.CatalogueItem, contentStatus);
 
@@ -217,7 +215,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 NativeMobileAdditionalInformation = "Information",
             };
 
-            solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
+            solution.SetClientApplication(clientApplication);
 
             var model = new ClientApplicationTypesModel(solution.CatalogueItem, contentStatus);
 
@@ -254,7 +252,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 },
             };
 
-            solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
+            solution.SetClientApplication(clientApplication);
 
             var model = new ClientApplicationTypesModel(solution.CatalogueItem, contentStatus);
 

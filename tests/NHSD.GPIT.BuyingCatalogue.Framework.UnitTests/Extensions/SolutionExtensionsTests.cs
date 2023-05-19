@@ -3,31 +3,21 @@ using System.Text.Json;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
 {
     public static class SolutionExtensionsTests
     {
-        [Fact]
-        public static void GetClientApplication_NullSolution_ThrowsException()
-        {
-            Solution solution = null;
-
-            // ReSharper disable once ExpressionIsAlwaysNull
-            Assert.Throws<ArgumentNullException>(() => solution.GetClientApplication());
-        }
-
         [Theory]
         [InlineData(null)]
         [InlineData("")]
         [InlineData(" ")]
         public static void GetClientApplication_ReturnsDefaultClientApplicationWhenNotSet(string clientApplication)
         {
-            var solution = new Solution { ClientApplication = clientApplication };
+            var solution = new Solution() { ClientApplication = clientApplication };
 
-            var result = solution.GetClientApplication();
+            var result = solution.EnsureAndGetClientApplication();
 
             result.Should().BeEquivalentTo(new ClientApplication());
         }
@@ -36,10 +26,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
         public static void GetClientApplication_ReturnsClientApplicationWhenSet()
         {
             var clientApplication = new ClientApplication { AdditionalInformation = "Additional Information" };
-            var json = JsonSerializer.Serialize(clientApplication);
-            var solution = new Solution { ClientApplication = json };
+            var solution = new Solution();
 
-            var result = solution.GetClientApplication();
+            solution.SetClientApplication(clientApplication);
+            var result = solution.EnsureAndGetClientApplication();
 
             result.Should().BeEquivalentTo(clientApplication);
         }

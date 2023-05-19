@@ -14,9 +14,7 @@ using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Serialization;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.TestData;
@@ -329,7 +327,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             var actual = await context.Solutions.AsQueryable()
                 .FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
 
-            actual.ClientApplication.Should().Be(JsonSerializer.Serialize(clientApplication));
+            actual.GetClientApplication().Should().BeEquivalentTo(clientApplication);
         }
 
         [Theory]
@@ -444,7 +442,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         {
             clientApplication.ClientApplicationTypes =
                 new HashSet<string> { "browser-based", "native-mobile", "native-desktop" };
-            catalogueSolution.ClientApplication = JsonSerializer.Serialize(clientApplication);
+            catalogueSolution.SetClientApplication(clientApplication);
             context.Solutions.Add(catalogueSolution);
             await context.SaveChangesAsync();
 
@@ -455,7 +453,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             var actual = await context.Solutions.AsQueryable()
                 .FirstAsync(s => s.CatalogueItemId == catalogueSolution.CatalogueItemId);
 
-            var actualClientApplication = JsonDeserializer.Deserialize<ClientApplication>(actual.ClientApplication);
+            var actualClientApplication = actual.GetClientApplication();
 
             actualClientApplication.ClientApplicationTypes.Any(c => c.Equals("browser-based")).Should().BeFalse();
             actualClientApplication.ClientApplicationTypes.Any(c => c.Equals("native-mobile")).Should().BeTrue();

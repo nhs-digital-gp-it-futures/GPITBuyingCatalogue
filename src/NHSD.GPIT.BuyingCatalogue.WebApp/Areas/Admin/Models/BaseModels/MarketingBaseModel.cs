@@ -1,6 +1,5 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
@@ -11,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BaseModels
         protected MarketingBaseModel(CatalogueItem catalogueItem)
         {
             CatalogueItem = catalogueItem;
-            ClientApplication = CatalogueItem?.Solution?.GetClientApplication();
+            ClientApplication = CatalogueItem?.Solution?.EnsureAndGetClientApplication();
             SolutionId = CatalogueItem?.Id;
             SupplierId = CatalogueItem?.Supplier?.Id ?? 0;
         }

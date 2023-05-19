@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Serialization
+namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.Serialization
 {
     public sealed class SupportedBrowsersJsonConverter : JsonConverter<HashSet<SupportedBrowser>>
     {

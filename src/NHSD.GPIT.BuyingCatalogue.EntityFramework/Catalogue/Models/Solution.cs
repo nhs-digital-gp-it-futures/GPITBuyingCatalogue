@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
@@ -57,5 +58,22 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public ServiceLevelAgreements ServiceLevelAgreement { get; set; }
 
         public ICollection<WorkOffPlan> WorkOffPlans { get; set; }
+
+        public ClientApplication EnsureAndGetClientApplication()
+        {
+            return string.IsNullOrWhiteSpace(ClientApplication)
+                ? new ClientApplication()
+                : JsonSerializer.Deserialize<ClientApplication>(ClientApplication, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        }
+
+        public ClientApplication GetClientApplication()
+        {
+            return JsonSerializer.Deserialize<ClientApplication>(ClientApplication, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        }
+
+        public void SetClientApplication(ClientApplication clientApplication)
+        {
+            ClientApplication = JsonSerializer.Serialize(clientApplication);
+        }
     }
 }

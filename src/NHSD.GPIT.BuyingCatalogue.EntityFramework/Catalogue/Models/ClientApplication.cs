@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using EnumsNET;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Serialization;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.Serialization;
 
-namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
+namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     public sealed class ClientApplication
     {
