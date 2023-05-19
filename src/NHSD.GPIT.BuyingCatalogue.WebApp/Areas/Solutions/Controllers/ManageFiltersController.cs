@@ -138,9 +138,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         }
 
         [HttpGet("filter-details")]
-        public IActionResult FilterDetails(int filterId)
+        public async Task<IActionResult> FilterDetails(int filterId)
         {
-            var model = new NavBaseModel()
+            var organisation = await GetUserOrganisation();
+            var filter = await manageFiltersService.GetFilter(filterId);
+
+            if (filter == null || filter.OrganisationId != organisation.Id)
+                return NotFound();
+
+            var model = new FilterDetailsModel(filter, organisation.Name)
             {
                 BackLink = Url.Action(nameof(Index), typeof(ManageFiltersController).ControllerName()),
             };
@@ -153,6 +159,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var model = new NavBaseModel()
             {
                 BackLink = backLink,
+            };
+            return View(model);
+        }
+
+        [HttpGet("delete")]
+        public IActionResult DeleteFilter(int filterId)
+        {
+            var model = new NavBaseModel()
+            {
+                BackLink = string.Empty,
             };
             return View(model);
         }

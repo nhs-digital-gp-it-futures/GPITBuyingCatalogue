@@ -76,6 +76,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ToListAsync();
         }
 
+        public Task<Filter> GetFilter(int filterId)
+        {
+            return dbContext.Filters.Where(o => o.Id == filterId)
+                .Include(x => x.Framework)
+                .Include(x => x.FilterCapabilities)
+                .ThenInclude(y => y.Capability)
+                .Include(x => x.FilterEpics)
+                .ThenInclude(y => y.Epic)
+                .Include(x => x.FilterHostingTypes)
+                .Include(x => x.FilterClientApplicationTypes)
+                .FirstOrDefaultAsync();
+        }
+
         internal async Task AddFilterCapabilities(int filterId, List<int> capabilityIds)
         {
             if (capabilityIds is null || capabilityIds.Count == 0) return;

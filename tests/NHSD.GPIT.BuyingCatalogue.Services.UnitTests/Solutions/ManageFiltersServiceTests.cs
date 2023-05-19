@@ -548,5 +548,38 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             result[0].Name.Should().Be(filter.Name);
             result[0].Description.Should().Be(filter.Description);
         }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetFilter_ReturnsExpectedResults(
+            Filter filter,
+            Organisation organisation,
+            EntityFramework.Catalogue.Models.Framework framework,
+            [Frozen] BuyingCatalogueDbContext context,
+            ManageFiltersService service)
+        {
+            context.Organisations.Add(organisation);
+            await context.SaveChangesAsync();
+
+            context.Frameworks.Add(framework);
+            await context.SaveChangesAsync();
+
+            filter.Organisation = organisation;
+            filter.OrganisationId = organisation.Id;
+            filter.Framework = framework;
+            filter.FrameworkId = framework.Id;
+
+            await context.SaveChangesAsync();
+
+            context.Filters.Add(filter);
+            await context.SaveChangesAsync();
+
+            var result = await service.GetFilter(filter.Id);
+
+            result.Should().NotBeNull();
+            result.Id.Should().Be(filter.Id);
+            result.OrganisationId.Should().Be(filter.OrganisationId);
+            result.Framework.Should().BeEquivalentTo(filter.Framework);
+        }
     }
 }

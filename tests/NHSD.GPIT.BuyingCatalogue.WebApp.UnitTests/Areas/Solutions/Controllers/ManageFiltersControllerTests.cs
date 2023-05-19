@@ -111,11 +111,135 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static void Get_FilterDetails_ReturnsExpectedResult(
+        public static async Task Get_FilterDetails_NullFilter_ReturnsNotFound(
+            Filter filter,
+            [Frozen] Mock<IOrganisationsService> organisationsService,
+            [Frozen] Mock<ICapabilitiesService> capabilitiesService,
+            [Frozen] Mock<IEpicsService> epicsService,
+            [Frozen] Mock<IFrameworkService> frameworkService,
+            [Frozen] Mock<IManageFiltersService> manageFiltersService,
+            [Frozen] Mock<IUrlHelper> mockUrlHelper,
+            string primaryOrganisationInternalId,
+            Organisation organisation)
+        {
+            organisationsService
+                .Setup(x => x.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId))
+                .ReturnsAsync(organisation);
+
+            manageFiltersService
+                .Setup(x => x.GetFilter(filter.Id))
+                .ReturnsAsync((Filter)null);
+
+            var controller = CreateController(
+                organisationsService,
+                capabilitiesService,
+                epicsService,
+                frameworkService,
+                manageFiltersService,
+                primaryOrganisationInternalId);
+
+            controller.Url = mockUrlHelper.Object;
+
+            var result = await controller.FilterDetails(filter.Id);
+
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_FilterDetails_InvalidOrg_ReturnsNotFound(
+            Filter filter,
+            [Frozen] Mock<IOrganisationsService> organisationsService,
+            [Frozen] Mock<ICapabilitiesService> capabilitiesService,
+            [Frozen] Mock<IEpicsService> epicsService,
+            [Frozen] Mock<IFrameworkService> frameworkService,
+            [Frozen] Mock<IManageFiltersService> manageFiltersService,
+            [Frozen] Mock<IUrlHelper> mockUrlHelper,
+            string primaryOrganisationInternalId,
+            Organisation organisation)
+        {
+            organisationsService
+                .Setup(x => x.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId))
+                .ReturnsAsync(organisation);
+
+            manageFiltersService
+                .Setup(x => x.GetFilter(filter.Id))
+                .ReturnsAsync(filter);
+
+            var controller = CreateController(
+                organisationsService,
+                capabilitiesService,
+                epicsService,
+                frameworkService,
+                manageFiltersService,
+                primaryOrganisationInternalId);
+
+            controller.Url = mockUrlHelper.Object;
+
+            var result = await controller.FilterDetails(filter.Id);
+
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_FilterDetails_ReturnsExpectedResult(
+            Filter filter,
+            List<FilterEpic> filterEpics,
+            Capability capability,
+            [Frozen] Mock<IOrganisationsService> organisationsService,
+            [Frozen] Mock<ICapabilitiesService> capabilitiesService,
+            [Frozen] Mock<IEpicsService> epicsService,
+            [Frozen] Mock<IFrameworkService> frameworkService,
+            [Frozen] Mock<IManageFiltersService> manageFiltersService,
+            [Frozen] Mock<IUrlHelper> mockUrlHelper,
+            string primaryOrganisationInternalId,
+            Organisation organisation)
+        {
+            filter.Organisation = organisation;
+            filter.OrganisationId = organisation.Id;
+
+            foreach (var item in filterEpics)
+            {
+                item.Epic.Capability = capability;
+                item.Epic.CapabilityId = capability.Id;
+            }
+
+            filter.FilterEpics = filterEpics;
+
+            organisationsService
+                .Setup(x => x.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId))
+                .ReturnsAsync(organisation);
+
+            manageFiltersService
+                .Setup(x => x.GetFilter(filter.Id))
+                .ReturnsAsync(filter);
+
+            var controller = CreateController(
+                organisationsService,
+                capabilitiesService,
+                epicsService,
+                frameworkService,
+                manageFiltersService,
+                primaryOrganisationInternalId);
+
+            controller.Url = mockUrlHelper.Object;
+
+            var result = await controller.FilterDetails(filter.Id);
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+
+            var expected = new FilterDetailsModel(filter, organisation.Name);
+            actualResult.Model.Should().BeEquivalentTo(expected, opt => opt.Excluding(x => x.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Get_DeleteFilter_ReturnsExpectedResult(
             int filterId,
             ManageFiltersController controller)
         {
-            var result = controller.FilterDetails(filterId);
+            var result = controller.DeleteFilter(filterId);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             actualResult.Model.Should().BeOfType<NavBaseModel>();
