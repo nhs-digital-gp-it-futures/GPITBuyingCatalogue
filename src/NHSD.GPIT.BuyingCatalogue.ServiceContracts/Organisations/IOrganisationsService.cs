@@ -22,8 +22,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations
 
         Task UpdateOrganisation(OdsOrganisation organisation);
 
-        Task UpdateCatalogueAgreementSigned(int organisationId, bool signed);
-
         Task<List<Organisation>> GetUnrelatedOrganisations(int organisationId);
 
         Task<List<Organisation>> GetRelatedOrganisations(int organisationId);

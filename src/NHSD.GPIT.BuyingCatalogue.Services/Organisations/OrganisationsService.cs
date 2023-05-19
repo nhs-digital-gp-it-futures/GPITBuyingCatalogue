@@ -112,13 +112,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
                 .ToListAsync();
         }
 
-        public async Task UpdateCatalogueAgreementSigned(int organisationId, bool signed)
-        {
-            var organisation = await dbContext.Organisations.FirstAsync(o => o.Id == organisationId);
-            organisation.CatalogueAgreementSigned = signed;
-            await dbContext.SaveChangesAsync();
-        }
-
         public async Task<List<Organisation>> GetUnrelatedOrganisations(int organisationId)
         {
             return await dbContext.Organisations
