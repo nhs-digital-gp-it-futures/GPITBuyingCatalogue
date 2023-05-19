@@ -35,43 +35,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public SolutionsFilterService(BuyingCatalogueDbContext dbContext) =>
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
-        private static IQueryable<CatalogueItem> ApplyAdditionalFilterToQuery<T>(
-            IQueryable<CatalogueItem> query,
-            string selectedFilterIds,
-            Func<Solution, IEnumerable<T>, IEnumerable<T>> getSelectedFilters,
-            Predicate<Solution> isValid)
-            where T : struct, Enum
-        {
-            if (string.IsNullOrEmpty(selectedFilterIds))
-                return query;
-
-            var selectedFilterEnums = selectedFilterIds.Split(FilterConstants.Delimiter)
-                .Where(t => Enum.TryParse<T>(t, out var enumVal) && Enum.IsDefined(enumVal))
-                .Select(Enum.Parse<T>)
-                .ToList();
-
-            if (selectedFilterEnums == null || !selectedFilterEnums.Any())
-                throw new ArgumentException("Invalid filter format", nameof(selectedFilterIds));
-
-            foreach (var row in query)
-            {
-                if (!isValid(row.Solution))
-                {
-                    query = query.Where(ci => ci.Id != row.Id);
-                    continue;
-                }
-
-                var matchingTypes = getSelectedFilters(row.Solution, selectedFilterEnums);
-
-                if (matchingTypes.Count() < selectedFilterEnums?.Count)
-                {
-                    query = query.Where(ci => ci.Id != row.Id);
-                }
-            }
-
-            return query;
-        }
-
         public async Task<(IQueryable<CatalogueItem> CatalogueItems, List<CapabilitiesAndCountModel> CapabilitiesAndCount)> GetFilteredAndNonFilteredQueryResults(
             string selectedCapabilityIds = null,
             string selectedEpicIds = null)
@@ -165,6 +128,43 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .OrderBy(ssfm => ssfm.Title)
                 .Take(maxToBringBack)
                 .ToListAsync();
+        }
+
+        private static IQueryable<CatalogueItem> ApplyAdditionalFilterToQuery<T>(
+            IQueryable<CatalogueItem> query,
+            string selectedFilterIds,
+            Func<Solution, IEnumerable<T>, IEnumerable<T>> getSelectedFilters,
+            Predicate<Solution> isValid)
+            where T : struct, Enum
+        {
+            if (string.IsNullOrEmpty(selectedFilterIds))
+                return query;
+
+            var selectedFilterEnums = selectedFilterIds.Split(FilterConstants.Delimiter)
+                .Where(t => Enum.TryParse<T>(t, out var enumVal) && Enum.IsDefined(enumVal))
+                .Select(Enum.Parse<T>)
+                .ToList();
+
+            if (selectedFilterEnums == null || !selectedFilterEnums.Any())
+                throw new ArgumentException("Invalid filter format", nameof(selectedFilterIds));
+
+            foreach (var row in query)
+            {
+                if (!isValid(row.Solution))
+                {
+                    query = query.Where(ci => ci.Id != row.Id);
+                    continue;
+                }
+
+                var matchingTypes = getSelectedFilters(row.Solution, selectedFilterEnums);
+
+                if (matchingTypes.Count() < selectedFilterEnums?.Count)
+                {
+                    query = query.Where(ci => ci.Id != row.Id);
+                }
+            }
+
+            return query;
         }
 
         private static IQueryable<CatalogueItem> GetClientApplicationTypeFilterQuery(IQueryable<CatalogueItem> query, string selectedClientApplicationTypeIds)
