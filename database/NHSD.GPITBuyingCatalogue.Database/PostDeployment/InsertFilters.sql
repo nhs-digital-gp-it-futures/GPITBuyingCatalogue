@@ -1,4 +1,7 @@
-﻿DECLARE @icbRoleId AS nchar(5) = 'RO261';
+﻿IF UPPER('$(INSERT_TEST_DATA)') = 'TRUE'
+BEGIN
+
+DECLARE @icbRoleId AS nchar(5) = 'RO261';
 DECLARE @wyICBOdsCode AS nchar(3) = 'QWO';
 DECLARE @OrganisationId AS int = (SELECT TOP (1) Id FROM organisations.Organisations WHERE PrimaryRoleId = @icbRoleId AND ExternalIdentifier = @wyICBOdsCode);
 
@@ -79,4 +82,6 @@ UPDATE SET TARGET.HostingTypeId = SOURCE.HostingTypeId
       WHEN NOT MATCHED BY TARGET AND SOURCE.HostingTypeId IS NOT NULL THEN
     INSERT (FilterId, HostingTypeId)
     VALUES (SOURCE.Id, SOURCE.HostingTypeId);
+
+END
 GO
