@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(organisation);
 
             manageFiltersService
-                .Setup(x => x.GetFilters(organisation.Id))
+                .Setup(x => x.GetFiltersThin(organisation.Id))
                 .ReturnsAsync(existingFilters);
 
             var controller = CreateController(
@@ -141,7 +141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(organisation);
 
             manageFiltersService
-                .Setup(x => x.GetFilters(organisation.Id))
+                .Setup(x => x.GetFiltersThin(organisation.Id))
                 .ReturnsAsync(existingFilters);
 
             var controller = CreateController(
@@ -188,7 +188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(organisation);
 
             manageFiltersService
-                .Setup(x => x.GetFilters(organisation.Id))
+                .Setup(x => x.GetFiltersThin(organisation.Id))
                 .ReturnsAsync(existingFilters);
 
             capabilitiesService

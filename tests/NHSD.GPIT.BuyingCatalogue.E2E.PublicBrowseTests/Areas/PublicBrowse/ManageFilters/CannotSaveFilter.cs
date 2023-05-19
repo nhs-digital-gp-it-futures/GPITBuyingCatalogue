@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.ManageFilters
         }
 
         [Fact]
-        public async Task CannotSaveFilter_AllSectionsDisplayed()
+        public void CannotSaveFilter_AllSectionsDisplayed()
         {
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ElementTextEqualTo(CommonSelectors.Header1, "Filter cannot be saved");

@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         public async Task<IActionResult> Index()
         {
             var organisation = await GetUserOrganisation();
-            var existingFilters = await manageFiltersService.GetFilters(organisation.Id);
+            var existingFilters = await manageFiltersService.GetFiltersThin(organisation.Id);
             var model = new ManageFiltersModel(existingFilters, organisation.Name);
             return View(model);
         }
@@ -78,9 +78,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             string selectedClientApplicationTypeIds,
             string selectedHostingTypeIds)
         {
-            var organisationId = (await GetUserOrganisation()).Id;
-            var existingFilters = await manageFiltersService.GetFilters(organisationId);
-
             var backLink =
                 Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new
                 {
@@ -91,6 +88,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     selectedHostingTypeIds,
                 });
 
+            var organisationId = (await GetUserOrganisation()).Id;
+            var existingFilters = await manageFiltersService.GetFiltersThin(organisationId);
             if (existingFilters.Count >= MaxNumberOfFilters)
                 return RedirectToAction(nameof(CannotSaveFilter), typeof(ManageFiltersController).ControllerName(), new { backLink });
 
@@ -107,7 +106,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var model = new SaveFilterModel(capabilities, epics, framework, clientApplicationTypes, hostingTypes, organisationId)
                 {
                     BackLink = backLink,
-                    BackLinkText = "Go back",
                 };
             return View(model);
         }
@@ -145,7 +143,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var model = new NavBaseModel()
             {
                 BackLink = Url.Action(nameof(Index), typeof(ManageFiltersController).ControllerName()),
-                BackLinkText = "Go back",
             };
             return View(model);
         }
@@ -156,7 +153,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var model = new NavBaseModel()
             {
                 BackLink = backLink,
-                BackLinkText = "Go back",
             };
             return View(model);
         }

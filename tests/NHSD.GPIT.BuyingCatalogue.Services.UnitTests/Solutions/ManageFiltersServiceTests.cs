@@ -555,5 +555,25 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             result[0].OrganisationId.Should().Be(organisation.Id);
             result[0].Framework.Should().BeEquivalentTo(framework);
         }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetFiltersThin_ReturnsExpectedResults(
+            Filter filter,
+            int organisationId,
+            [Frozen] BuyingCatalogueDbContext context,
+            ManageFiltersService service)
+        {
+            filter.OrganisationId = organisationId;
+
+            context.Filters.Add(filter);
+            await context.SaveChangesAsync();
+
+            var result = await service.GetFilters(organisationId);
+
+            result.Should().NotBeNull();
+            result.Count.Should().Be(1);
+            result[0].OrganisationId.Should().Be(organisationId);
+        }
     }
 }
