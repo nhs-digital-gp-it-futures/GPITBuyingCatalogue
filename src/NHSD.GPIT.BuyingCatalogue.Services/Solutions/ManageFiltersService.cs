@@ -72,13 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public async Task<List<Filter>> GetFilters(int organisationId)
         {
             return await dbContext.Filters.Where(o => o.OrganisationId == organisationId)
-                .Include(x => x.Framework)
-                .Include(x => x.FilterCapabilities)
-                .ThenInclude(y => y.Capability)
-                .Include(x => x.FilterEpics)
-                .ThenInclude(y => y.Epic)
-                .Include(x => x.FilterHostingTypes)
-                .Include(x => x.FilterClientApplicationTypes)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
