@@ -47,6 +47,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 
         public static bool HasHostingType(this Hosting hosting, HostingType hostingType)
         {
+            if (hosting is null)
+                throw new ArgumentNullException(nameof(hosting));
+
             return hostingType switch
             {
                 HostingType.Hybrid => hosting.HybridHostingType != null && hosting.HybridHostingType.IsValid(),
