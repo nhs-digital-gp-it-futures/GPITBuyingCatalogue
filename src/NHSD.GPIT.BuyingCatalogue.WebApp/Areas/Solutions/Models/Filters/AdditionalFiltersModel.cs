@@ -20,6 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
             SetFrameworkOptions(frameworks);
             SetClientApplicationTypeOptions(selectedClientApplicationTypeIds);
             SetHostingTypeOptions(selectedHostingTypeIds);
+            SelectedCapabilityIds = selectedCapabilityIds;
+            SelectedEpicIds = selectedEpicIds;
         }
 
         public string SelectedFrameworkId { get; set; }
