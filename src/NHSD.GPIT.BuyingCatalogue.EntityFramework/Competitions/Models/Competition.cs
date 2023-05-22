@@ -21,7 +21,7 @@ public class Competition
 
     public DateTime? Completed { get; set; }
 
-    public int LastUpdatedBy { get; set; }
+    public int? LastUpdatedBy { get; set; }
 
     public bool IsDeleted { get; set; }
 

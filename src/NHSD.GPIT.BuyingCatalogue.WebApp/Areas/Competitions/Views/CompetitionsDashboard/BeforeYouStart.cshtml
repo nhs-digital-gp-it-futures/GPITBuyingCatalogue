@@ -1,0 +1,49 @@
+@model NavBaseModel
+
+@{
+    ViewBag.Title = "Before you create a competition";
+}
+
+<div>
+    <partial name="Partials/_BackLink" model="Model" />
+    <div class="nhsuk-grid-row nhsuk-u-margin-bottom-6">
+        <div class="nhsuk-grid-column-two-thirds">
+            <nhs-page-title title="@ViewBag.Title" advice="Before you create a competition you should have:" />
+
+            <ul>
+                <li>used filters that match the requirements identified in your business case to create a shortlist </li>
+                <li>saved your filters </li>
+                <li>checked if any price has been agreed with the supplier other than the list price </li>
+                <li>identified the Service Recipients and the volume you want so you know the approximate cost of your order </li>
+                <li>decided if you want to evaluate solutions based on price only or price and non-price elements </li>
+                <li>changed to a direct award if your filters returned only 1 solution </li>
+            </ul>
+
+            <form method="post">
+                <input type="hidden" asp-for="BackLink" />
+                <input type="hidden" asp-for="BackLinkText" />
+                <nhs-submit-button text="Create competition" />
+            </form>
+
+            <h2>Need help?</h2>
+            <p>
+                We've developed a
+                <a href="https://gpitbjss.atlassian.net/wiki/spaces/BG/pages/1931116641/Executing+a+procurement+a+step+by+step+guide"
+                   target="_blank">step-by-step guide to the procurement process
+                (opens in a new tab)</a>.
+            </p>
+
+            <p>
+                For help using the Buying Catalogue, contact the National and Commercial Procurement Hub:
+            </p>
+
+            <vc:nhs-action-link url="@Url.Action(
+                                         nameof(ProcurementHubController.Index),
+                                         typeof(ProcurementHubController).ControllerName(),
+                                         new { returnUrl = Url.Action(
+                                             nameof(CompetitionsDashboardController.BeforeYouStart),
+                                             typeof(CompetitionsDashboardController).ControllerName()) })"
+                                text="Get procurement support" />
+        </div>
+    </div>
+</div>

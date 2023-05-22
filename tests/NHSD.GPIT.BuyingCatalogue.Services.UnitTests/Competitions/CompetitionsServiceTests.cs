@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -14,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions;
 public static class CompetitionsServiceTests
 {
     [Theory]
-    [CommonAutoData]
+    [InMemoryDbAutoData]
     public static async Task GetCompetitions_ReturnsCompetitions(
         Organisation organisation,
         List<Competition> competitions,
@@ -26,6 +27,7 @@ public static class CompetitionsServiceTests
             {
                 x.OrganisationId = organisation.Id;
                 x.Organisation = organisation;
+                x.IsDeleted = false;
             });
 
         context.Organisations.Add(organisation);
@@ -37,6 +39,9 @@ public static class CompetitionsServiceTests
 
         var result = await service.GetCompetitions(organisation.Id);
 
-        result.Should().BeEquivalentTo(competitions);
+        result.Should()
+            .BeEquivalentTo(
+                competitions,
+                opt => opt.Excluding(x => x.Organisation).Excluding(x => x.LastUpdatedByUser).Excluding(x => x.Filter));
     }
 }

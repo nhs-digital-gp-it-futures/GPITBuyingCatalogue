@@ -45,4 +45,16 @@ public sealed class CompetitionsDashboard : BuyerTestBase
 
         CommonActions.ElementIsDisplayed(CompetitionsDashboardObjects.CompetitionsTable).Should().BeTrue();
     }
+
+    [Fact]
+    public void ClickCreateCompetition_NavigatesCorrectly()
+    {
+        CommonActions.ClickLinkElement(CompetitionsDashboardObjects.CreateCompetitionLink);
+
+        CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CompetitionsDashboardController),
+                nameof(CompetitionsDashboardController.BeforeYouStart))
+            .Should()
+            .BeTrue();
+    }
 }

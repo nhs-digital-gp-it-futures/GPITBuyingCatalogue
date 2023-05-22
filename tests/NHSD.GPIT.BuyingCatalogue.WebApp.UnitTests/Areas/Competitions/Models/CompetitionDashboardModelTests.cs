@@ -13,11 +13,13 @@ public static class CompetitionDashboardModelTests
     [Theory]
     [CommonAutoData]
     public static void Construct_SetsProperties(
+        string internalOrgId,
         string organisationName,
         List<Competition> competitions)
     {
-        var model = new CompetitionDashboardModel(organisationName, competitions);
+        var model = new CompetitionDashboardModel(internalOrgId, organisationName, competitions);
 
+        model.InternalOrgId.Should().Be(internalOrgId);
         model.OrganisationName.Should().Be(organisationName);
         model.Competitions.Should()
             .BeEquivalentTo(

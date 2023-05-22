@@ -36,7 +36,9 @@
                         advice="Create new competitions or view and edit existing ones."
                         caption="@Model.OrganisationName"/>
 
-        <vc:nhs-action-link url="#" text="Create a new competition"/>
+        <vc:nhs-action-link url="@Url.Action(nameof(CompetitionsDashboardController.BeforeYouStart),
+                                     typeof(CompetitionsDashboardController).ControllerName(),
+                                     new { Model.InternalOrgId })" text="Create a new competition"/>
     </div>
 
     <div class="nhsuk-grid-column-full">

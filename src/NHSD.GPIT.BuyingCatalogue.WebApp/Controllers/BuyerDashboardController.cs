@@ -29,7 +29,7 @@ public class BuyerDashboardController : Controller
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(organisationId);
 
         var model = new BuyerDashboardModel(
-            organisationId,
+            organisation.InternalIdentifier,
             organisation.Name,
             User.IsAccountManager());
 
