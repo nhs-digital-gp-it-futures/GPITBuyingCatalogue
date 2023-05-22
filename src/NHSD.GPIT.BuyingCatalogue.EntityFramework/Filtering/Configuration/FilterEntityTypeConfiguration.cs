@@ -42,13 +42,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Configuration
             builder.HasOne(i => i.Organisation)
                 .WithMany()
                 .HasForeignKey(i => i.OrganisationId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.NoAction)
                 .HasConstraintName("FK_Filters_OrganisationId");
 
             builder.HasOne(i => i.Framework)
                 .WithMany()
                 .HasForeignKey(i => i.FrameworkId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.NoAction)
                 .HasConstraintName("FK_Filters_FrameworkId");
 
             builder.HasOne(i => i.LastUpdatedByUser)
