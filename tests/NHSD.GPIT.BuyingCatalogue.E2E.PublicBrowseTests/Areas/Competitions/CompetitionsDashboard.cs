@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Competitions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -41,5 +42,7 @@ public sealed class CompetitionsDashboard : BuyerTestBase
         CommonActions.LedeText()
             .Should()
             .Be("Create new competitions or view and edit existing ones.".FormatForComparison());
+
+        CommonActions.ElementIsDisplayed(CompetitionsDashboardObjects.CompetitionsTable).Should().BeTrue();
     }
 }
