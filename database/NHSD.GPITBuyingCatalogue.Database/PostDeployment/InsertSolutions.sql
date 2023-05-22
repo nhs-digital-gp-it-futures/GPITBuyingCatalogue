@@ -23,6 +23,7 @@ DECLARE @workflowCapabilityId AS int = 20;
 DECLARE @onlineConsultationCapabilityId AS int = 43;
 DECLARE @videoConsultationCapabilityId AS int = 44;
 
+DECLARE @tifFrameworkId = NVARCHAR(10) = 'TIF001';
 DECLARE @gpitframeworkId AS nvarchar(10) = 'NHSDGP001';
 DECLARE @dfocvcframeworkId AS nvarchar(10) = 'DFOCVC001';
 DECLARE @bobEmail AS nvarchar(50) = N'BobSmith@email.com';
@@ -64,7 +65,7 @@ BEGIN
               WHERE CapabilityRef = 'C1';
 
         INSERT INTO catalogue.FrameworkSolutions(FrameworkId ,SolutionId ,IsFoundation, LastUpdated, LastUpdatedBy)
-             VALUES (@gpitframeworkId, @solutionId , 1, @now, @bobUser);
+             VALUES (@tifFrameworkId, @solutionId , 1, @now, @bobUser);
     END;
 
     /*************************************************************************************************************************************************************/
@@ -96,7 +97,7 @@ BEGIN
               WHERE CapabilityRef IN ('C1', 'C5');
 
         INSERT INTO catalogue.FrameworkSolutions(FrameworkId, SolutionId, IsFoundation, LastUpdated, LastUpdatedBy)
-             VALUES (@gpitframeworkId, @solutionId, 1, @now, @bobUser);
+             VALUES (@tifFrameworkId, @solutionId, 1, @now, @bobUser);
     END;
 
     /*************************************************************************************************************************************************************/
@@ -186,7 +187,7 @@ BEGIN
               WHERE CapabilityRef = 'C8';
 
         INSERT INTO catalogue.FrameworkSolutions(FrameworkId ,SolutionId ,IsFoundation, LastUpdated, LastUpdatedBy)
-             VALUES (@gpitframeworkId, @solutionId , 1, @now, @bobUser);
+             VALUES (@tifFrameworkId, @solutionId , 1, @now, @bobUser);
     END;
 
     /*************************************************************************************************************************************************************/
@@ -377,7 +378,7 @@ Using EMIS Web, healthcare professionals can provide the best possible patient c
         (@solutionId, @workflowCapabilityId, 1, @now, @bobUser);
 
         INSERT INTO catalogue.FrameworkSolutions(FrameworkId ,SolutionId ,IsFoundation, LastUpdated ,LastUpdatedBy)
-             VALUES (@gpitframeworkId, @solutionId , 1, @now, @bobUser);
+             VALUES (@tifFrameworkId, @solutionId , 1, @now, @bobUser);
 
         INSERT INTO catalogue.CatalogueItemEpics (CatalogueItemId, CapabilityId, EpicId, StatusId, LastUpdated, LastUpdatedBy)
         VALUES
@@ -660,7 +661,7 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
         );
 
         INSERT INTO @SolutionPrices (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CataloguePriceCalculationTypeId, CurrencyCode, LastUpdated, Price, PublishedStatusId)
-        VALUES 
+        VALUES
         ('100000-001', @patientProvisioningType, @flatPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 99.99, 3),
         ('100000-001', @patientProvisioningType, @tieredPriceType, @patient, @yearTimeUnit, @CataloguePriceCalculationTypeCumulativeId, 'GBP', @now, 0.5, 3),
         ('100000-001', @perServiceRecipientProvisioningType, @flatPriceType, @consultation, NULL, @CataloguePriceCalculationTypeSingleFixed, 'GBP', @now, 1001.010, 3),
@@ -684,7 +685,7 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
 	    MERGE INTO catalogue.CataloguePrices USING @SolutionPrices AS ASP ON 1 = 0
 	    WHEN NOT MATCHED THEN
 	    INSERT (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CataloguePriceCalculationTypeId, CurrencyCode, LastUpdated, PublishedStatusId)
-	    VALUES(    
+	    VALUES(
 	    ASP.CatalogueItemId,
         ASP.ProvisioningTypeId,
         ASP.CataloguePriceTypeId,

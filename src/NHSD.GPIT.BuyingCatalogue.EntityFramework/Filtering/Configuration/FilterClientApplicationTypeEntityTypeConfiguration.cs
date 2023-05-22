@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Configuration
                     temp.HasPeriodEnd("SysEndTime");
                 }));
 
-            builder.HasKey(fcat => fcat.FilterClientApplicationTypeId);
+            builder.HasKey(fcat => fcat.Id);
 
             builder.Property(e => e.LastUpdated).HasDefaultValue(DateTime.UtcNow);
 

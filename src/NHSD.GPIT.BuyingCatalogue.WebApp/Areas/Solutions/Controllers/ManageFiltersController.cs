@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
@@ -47,10 +46,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var organisation = await GetUserOrganisation();
-            var existingFilters = await manageFiltersService.GetFilters(organisation.Id);
-            var model = new ManageFiltersModel(existingFilters, organisation.Name);
-            return View(model);
+            // TODO Currently using to Display filters. Will become manage filters page
+            var organisationId = await GetUserOrganisationId();
+            var existingFilters = await manageFiltersService.GetFilters(organisationId);
+            return View(existingFilters);
         }
 
         [AllowAnonymous]
@@ -79,6 +78,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             string selectedClientApplicationTypeIds,
             string selectedHostingTypeIds)
         {
+            var organisationId = await GetUserOrganisationId();
+            var existingFilters = await manageFiltersService.GetFilters(organisationId);
+
             var backLink =
                 Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new
                 {
@@ -89,8 +91,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     selectedHostingTypeIds,
                 });
 
-            var organisationId = (await GetUserOrganisation()).Id;
-            var existingFilters = await manageFiltersService.GetFilters(organisationId);
             if (existingFilters.Count >= MaxNumberOfFilters)
                 return RedirectToAction(nameof(CannotSaveFilter), typeof(ManageFiltersController).ControllerName(), new { backLink });
 
@@ -107,6 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var model = new SaveFilterModel(capabilities, epics, framework, clientApplicationTypes, hostingTypes, organisationId)
                 {
                     BackLink = backLink,
+                    BackLinkText = "Go back",
                 };
             return View(model);
         }
@@ -138,31 +139,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 typeof(ManageFiltersController).ControllerName());
         }
 
-        [HttpGet("filter-details")]
-        public IActionResult FilterDetails(int filterId)
-        {
-            var model = new NavBaseModel()
-            {
-                BackLink = Url.Action(nameof(Index), typeof(ManageFiltersController).ControllerName()),
-            };
-            return View(model);
-        }
-
         [HttpGet("save-failed")]
         public IActionResult CannotSaveFilter(string backLink)
         {
             var model = new NavBaseModel()
             {
                 BackLink = backLink,
+                BackLinkText = "Go back",
             };
             return View(model);
         }
 
-        private async Task<Organisation> GetUserOrganisation()
+        private async Task<int> GetUserOrganisationId()
         {
             var organisationInternalIdentifier = User.GetPrimaryOrganisationInternalIdentifier();
             var organisation = await organisationsService.GetOrganisationByInternalIdentifier(organisationInternalIdentifier);
-            return organisation;
+            return organisation.Id;
         }
     }
 }
