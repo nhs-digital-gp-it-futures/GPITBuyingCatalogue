@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Configuration
             builder.HasOne(fc => fc.Capability)
                 .WithMany()
                 .HasForeignKey(fc => fc.CapabilityId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.NoAction)
                 .HasConstraintName("FK_FilterCapabilities_Capability");
 
             builder.HasOne(e => e.LastUpdatedByUser)
