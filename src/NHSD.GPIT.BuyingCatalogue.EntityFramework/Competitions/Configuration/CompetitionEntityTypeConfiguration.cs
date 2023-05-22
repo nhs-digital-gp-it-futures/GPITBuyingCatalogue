@@ -1,3 +1,4 @@
+using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
@@ -23,13 +24,15 @@ internal sealed class CompetitionEntityTypeConfiguration : IEntityTypeConfigurat
 
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.Name);
+        builder.Property(x => x.Name).HasMaxLength(255);
 
-        builder.Property(x => x.Description);
+        builder.Property(x => x.Description).HasMaxLength(250);
 
-        builder.Property(x => x.LastUpdated);
+        builder.Property(x => x.LastUpdated).HasDefaultValue(DateTime.UtcNow);
 
         builder.Property(x => x.Completed);
+
+        builder.Property(x => x.IsDeleted).HasDefaultValue(false);
 
         builder.HasOne(x => x.Filter)
             .WithMany()
