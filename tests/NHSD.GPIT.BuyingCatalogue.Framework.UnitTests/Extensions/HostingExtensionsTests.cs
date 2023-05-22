@@ -10,18 +10,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions;
 
 public static class HostingExtensionsTests
 {
-    [Theory]
-    [MemberAutoData(nameof(HasHostingTypesTestData))]
-    public static void HasHostingType_Expected(
-        Hosting hosting,
-        HostingType hostingType,
-        bool expectedOutcome)
-    {
-        var result = hosting.HasHostingType(hostingType);
-
-        result.Should().Be(expectedOutcome);
-    }
-
     public static IEnumerable<object[]> HasHostingTypesTestData => new[]
     {
         // Hybrid
@@ -35,8 +23,9 @@ public static class HostingExtensionsTests
                     new HybridHostingType { Summary = "Summary", HostingModel = "Hosting Model" },
             },
             HostingType.Hybrid,
-            true
+            true,
         },
+
         // On-premise
         new object[] { new Hosting { OnPremise = null }, HostingType.OnPremise, false },
         new object[] { new Hosting { OnPremise = new OnPremise() }, HostingType.OnPremise, false },
@@ -48,8 +37,9 @@ public static class HostingExtensionsTests
                     new OnPremise { Summary = "Summary", HostingModel = "Hosting Model" },
             },
             HostingType.OnPremise,
-            true
+            true,
         },
+
         // Private Cloud
         new object[] { new Hosting { PrivateCloud = null }, HostingType.PrivateCloud, false },
         new object[] { new Hosting { PrivateCloud = new PrivateCloud() }, HostingType.PrivateCloud, false },
@@ -61,8 +51,9 @@ public static class HostingExtensionsTests
                     new PrivateCloud { Summary = "Summary", HostingModel = "Hosting Model" },
             },
             HostingType.PrivateCloud,
-            true
+            true,
         },
+
         // Public Cloud
         new object[] { new Hosting { PublicCloud = null }, HostingType.PublicCloud, false },
         new object[] { new Hosting { PublicCloud = new PublicCloud() }, HostingType.PublicCloud, false },
@@ -74,7 +65,19 @@ public static class HostingExtensionsTests
                     new PublicCloud { Summary = "Summary" },
             },
             HostingType.PublicCloud,
-            true
+            true,
         },
     };
+
+    [Theory]
+    [MemberAutoData(nameof(HasHostingTypesTestData))]
+    public static void HasHostingType_Expected(
+        Hosting hosting,
+        HostingType hostingType,
+        bool expectedOutcome)
+    {
+        var result = hosting.HasHostingType(hostingType);
+
+        result.Should().Be(expectedOutcome);
+    }
 }
