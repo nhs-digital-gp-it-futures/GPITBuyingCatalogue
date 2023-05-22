@@ -1,6 +1,6 @@
 ﻿CREATE TABLE filtering.FilterHostingTypes_History
 (
-     FilterHostingTypeId int NOT NULL,
+     Id int NOT NULL,
      FilterId int NOT NULL,
      HostingTypeId int NOT NULL,
      LastUpdated datetime2(7) NOT NULL,

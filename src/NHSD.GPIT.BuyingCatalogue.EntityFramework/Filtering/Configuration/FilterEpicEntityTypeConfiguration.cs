@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Configuration
             builder.HasOne(fe => fe.Epic)
                 .WithMany()
                 .HasForeignKey(fe => fe.EpicId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.NoAction)
                 .HasConstraintName("FK_FilterEpics_Epic");
 
             builder.HasOne(e => e.LastUpdatedByUser)

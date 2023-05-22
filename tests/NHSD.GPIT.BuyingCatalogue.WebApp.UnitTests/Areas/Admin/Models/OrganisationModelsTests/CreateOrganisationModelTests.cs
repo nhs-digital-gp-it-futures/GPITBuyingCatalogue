@@ -25,7 +25,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Organisa
             var actual = new CreateOrganisationModel(organisation);
 
             actual.OdsOrganisation.Should().Be(organisation);
-            actual.CatalogueAgreementSigned.Should().Be(default);
         }
     }
 }
