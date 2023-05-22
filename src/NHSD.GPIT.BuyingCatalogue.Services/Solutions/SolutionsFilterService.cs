@@ -167,39 +167,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return query;
         }
 
-        private static IQueryable<CatalogueItem> GetClientApplicationTypeFilterQuery(IQueryable<CatalogueItem> query, string selectedClientApplicationTypeIds)
-        {
-            if (string.IsNullOrEmpty(selectedClientApplicationTypeIds))
-                return query;
-
-            var clientApplicationTypeEnums = selectedClientApplicationTypeIds.Split(FilterConstants.Delimiter)
-                .Where(t => Enum.TryParse<ClientApplicationType>(t, out var enumVal) && Enum.IsDefined(enumVal))
-                .Select(Enum.Parse<ClientApplicationType>)
-                .ToList();
-
-            if (clientApplicationTypeEnums == null || !clientApplicationTypeEnums.Any())
-                throw new ArgumentException("Invalid filter format", nameof(selectedClientApplicationTypeIds));
-
-            foreach (var row in query)
-            {
-                if (string.IsNullOrEmpty(row.Solution.ClientApplication))
-                {
-                    query = query.Where(ci => ci.Id != row.Id);
-                    continue;
-                }
-
-                var clientApplication = JsonDeserializer.Deserialize<ClientApplication>(row.Solution.ClientApplication);
-                var matchingTypes = clientApplicationTypeEnums.Where(t => clientApplication.HasClientApplicationType(t));
-
-                if (matchingTypes.Count() < clientApplicationTypeEnums.Count)
-                {
-                    query = query.Where(ci => ci.Id != row.Id);
-                }
-            }
-
-            return query;
-        }
-
         private static (IQueryable<CatalogueItem> Query, List<CapabilitiesAndCountModel> Count) NonFilteredQuery(BuyingCatalogueDbContext dbContext) =>
             (dbContext.CatalogueItems
                 .AsNoTracking()
