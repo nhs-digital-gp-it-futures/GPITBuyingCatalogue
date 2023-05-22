@@ -26,28 +26,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.OrganisationModelsTe
             List<AspNetUser> users,
             List<Organisation> relatedOrganisations)
         {
-            organisation.CatalogueAgreementSigned = false;
-
             var actual = new DetailsModel(organisation, users, relatedOrganisations);
 
             actual.Organisation.Should().Be(organisation);
-            actual.CatalogueAgreementText.Should().Be("Organisation End User Agreement has not been signed");
             actual.Users.Should().BeEquivalentTo(users);
             actual.RelatedOrganisations.Should().BeEquivalentTo(relatedOrganisations);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void WithValidConstruction_AgreementSigned_PropertiesSetAsExpected(
-            Organisation organisation,
-            List<AspNetUser> users,
-            List<Organisation> relatedOrganisations)
-        {
-            organisation.CatalogueAgreementSigned = true;
-
-            var actual = new DetailsModel(organisation, users, relatedOrganisations);
-
-            actual.CatalogueAgreementText.Should().Be("Organisation End User Agreement has been signed");
         }
 
         [Theory]

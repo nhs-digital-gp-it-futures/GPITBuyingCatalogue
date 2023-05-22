@@ -65,46 +65,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             }));
         }
 
-        [HttpGet("{organisationId}/edit")]
-        public async Task<IActionResult> EditOrganisation(int organisationId)
-        {
-            var organisation = await OrganisationsService.GetOrganisation(organisationId);
-
-            var model = new EditOrganisationModel(organisation)
-            {
-                BackLink = Url.Action(nameof(Details), new { organisationId }),
-            };
-
-            return View(model);
-        }
-
-        [HttpPost("{organisationId}/edit")]
-        public async Task<IActionResult> EditOrganisation(int organisationId, EditOrganisationModel model)
-        {
-            if (!ModelState.IsValid)
-                return View(model);
-
-            await OrganisationsService.UpdateCatalogueAgreementSigned(organisationId, model.CatalogueAgreementSigned);
-
-            return RedirectToAction(
-                nameof(EditConfirmation),
-                typeof(OrganisationsController).ControllerName(),
-                new { organisationId });
-        }
-
-        [HttpGet("{organisationId}/edit/confirmation")]
-        public async Task<IActionResult> EditConfirmation(int organisationId)
-        {
-            var organisation = await OrganisationsService.GetOrganisation(organisationId);
-
-            var model = new EditConfirmationModel(organisation.Name, organisationId)
-            {
-                BackLink = Url.Action(nameof(Details), new { organisationId }),
-            };
-
-            return View(model);
-        }
-
         [HttpGet("find")]
         public IActionResult Find(string ods)
         {
@@ -188,7 +148,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             (OdsOrganisation organisation, _) = await OdsService.GetOrganisationByOdsCode(model.OdsOrganisation.OdsCode);
 
-            var (orgId, error) = await OrganisationsService.AddOrganisation(organisation, model.CatalogueAgreementSigned);
+            var (orgId, error) = await OrganisationsService.AddOrganisation(organisation);
 
             if (orgId == 0)
             {
