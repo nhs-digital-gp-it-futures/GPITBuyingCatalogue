@@ -1,58 +1,45 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsDeleteButton
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.SummaryList
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
-@using ValidationSummaryTagHelper = Microsoft.AspNetCore.Mvc.TagHelpers.ValidationSummaryTagHelper
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters.SaveFilterModel
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters.FilterDetailsModel
 
 @{
     Layout = "~/Views/Shared/Layouts/_AllBannersLayout.cshtml";
-    ViewBag.Title = "Save filters";
+    ViewBag.Title = Model.Filter.Name;
 }
 
 <partial name="Partials/_BackLink" model="@Model" />
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
-        <nhs-validation-summary />
-
         <nhs-page-title title="@ViewBag.Title"
-                        advice="Save your selected filters so you can use them to carry out a competition using the results." />
+                        caption=@Model.OrganisationName
+                        advice="These are the details for this filter." />
 
-        <form method="post">
-            <input type="hidden" asp-for="BackLink" />
-            @if (Model.CapabilityIds != null)
-            {
-                @for (var i = 0; i < Model.CapabilityIds.Count; i++)
-                {
-                    <input type="hidden" asp-for="CapabilityIds[i]" />
-                }
-            }
+        <h2 data-test-id="name-and-description">Name and description</h2>
 
-            @if (Model.EpicIds != null)
-            {
-                @for (var i = 0; i < Model.EpicIds.Count; i++)
-                {
-                    <input type="hidden" asp-for="EpicIds[i]" />
-                }
-            }
+        <nhs-summary-list>
+            <nhs-summary-list-row label-text="Name">
+                <p>
+                    @Model.Filter.Name
+                </p>
+            </nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Description">
+                <p>
+                    @Model.Filter.Description
+                </p>
+            </nhs-summary-list-row>
+        </nhs-summary-list>
 
-            <input type="hidden" asp-for="FrameworkId" />
-            <input type="hidden" asp-for="FrameworkName" />
-            <input type="hidden" asp-for="OrganisationId" />
-            <input type="hidden" asp-for="BackLink" />
-
-            <nhs-input asp-for="@Model.Name"
-                       label-text="Filter name"
-                       label-hint="Provide a unique name for this set of filters so you can use them to carry out a competition." />
-
-            <nhs-textarea asp-for="@Model.Description"
-                          label-text="Filter description"
-                          label-hint="Provide a description for this set of filters to remind you what search criteria was used." />
-
-            <h2>Filters to be saved</h2>
-
+        @if (Model.FilterContainsEpics)
+        {
+            <h2 data-test-id="capabilities-and-epics">Capabilities and Epics</h2>
             <nhs-table>
                 <nhs-table-column>Capability</nhs-table-column>
                 <nhs-table-column>Epic</nhs-table-column>
@@ -91,12 +78,23 @@
                     </nhs-table-row-container>
                 }
             </nhs-table>
+        }
+        else
+        {
+            <h2 data-test-id="capabilities">Capabilities</h2>
+            @foreach (var capability in Model.GroupedCapabilities)
+            {
+                <p>@capability.Key</p>
+            }
+        }
 
-            <h2>Additional filters</h2>
+        @if (Model.FilterContainsAdditionalFilters)
+        {
+            <h2 data-test-id="additional-filters">Additional filters</h2>
 
             <nhs-summary-list>
                 <nhs-summary-list-row label-text="Client application type">
-                    @if (Model.ClientApplicationTypes is null || !Model.ClientApplicationTypes.Any())
+                    @if (Model.Filter.FilterClientApplicationTypes is null || !Model.Filter.FilterClientApplicationTypes.Any())
                     {
                         <p>
                             None selected
@@ -104,26 +102,25 @@
                     }
                     else
                     {
-                        @for (var i = 0; i < Model.ClientApplicationTypes.Count; i++)
+                        @foreach (var item in Model.Filter.FilterClientApplicationTypes)
                         {
-                            <input type="hidden" asp-for="ClientApplicationTypes[i]" />
-                            @if (Model.ClientApplicationTypes.Count == 1)
+                            @if (Model.Filter.FilterClientApplicationTypes.Count == 1)
                             {
                                 <p>
-                                    @Model.ClientApplicationTypes[i].Name()
+                                    @item.ClientApplicationType.Name()
                                 </p>
                             }
                             else
                             {
                                 <li>
-                                    @Model.ClientApplicationTypes[i].Name()
+                                    @item.ClientApplicationType.Name()
                                 </li>
                             }
                         }
                     }
                 </nhs-summary-list-row>
                 <nhs-summary-list-row label-text="Framework">
-                    @if (string.IsNullOrEmpty(Model.FrameworkName))
+                    @if (Model.Filter.Framework is null || string.IsNullOrEmpty(Model.Filter.Framework.ShortName))
                     {
                         <p>
                             None selected
@@ -132,12 +129,12 @@
                     else
                     {
                         <p>
-                            @Model.FrameworkName
+                            @Model.Filter.Framework.ShortName
                         </p>
                     }
                 </nhs-summary-list-row>
-                <nhs-summary-list-row label-text="Hosting Type">
-                    @if (Model.HostingTypes is null || !Model.HostingTypes.Any())
+                <nhs-summary-list-row label-text="Hosting type">
+                    @if (Model.Filter.FilterHostingTypes is null || !Model.Filter.FilterHostingTypes.Any())
                     {
                         <p>
                             None selected
@@ -145,30 +142,37 @@
                     }
                     else
                     {
-                        @for (var i = 0; i < Model.HostingTypes.Count; i++)
+                        @foreach (var item in Model.Filter.FilterHostingTypes)
                         {
-                            <input type="hidden" asp-for="HostingTypes[i]" />
-                            @if (Model.HostingTypes.Count == 1)
+                            @if (Model.Filter.FilterHostingTypes.Count == 1)
                             {
                                 <p>
-                                    @Model.HostingTypes[i].Name()
+                                    @item.HostingType.Name()
                                 </p>
                             }
                             else
                             {
                                 <li>
-                                    @Model.HostingTypes[i].Name()
+                                    @item.HostingType.Name()
                                 </li>
                             }
                         }
                     }
                 </nhs-summary-list-row>
             </nhs-summary-list>
+        }
 
-            <nhs-submit-button />
-
-        </form>
-
-        <a href="@Model.BackLink">Cancel</a>
+        <h2 data-test-id="view-solutions">View solutions</h2>
+        <p>
+            The results will be based on solutions currently available that match to this filter.
+        </p>
+        <p>
+            <a href="/" target="_blank">View results for this filter (opens in a new tab)</a>
+        </p>
+        <vc:nhs-delete-button url="@Url.Action(
+                                       nameof(ManageFiltersController.DeleteFilter),
+                                       typeof(ManageFiltersController).ControllerName(),
+                                       new { Model.FilterId })"
+                              text="Delete filter" />
     </div>
 </div>

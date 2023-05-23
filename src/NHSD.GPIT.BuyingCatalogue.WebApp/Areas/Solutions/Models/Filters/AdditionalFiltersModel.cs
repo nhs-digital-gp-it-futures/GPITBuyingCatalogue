@@ -85,5 +85,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                .OrderByDescending(x => x.Text)
                .ToList();
         }
+
+        public string SelectedClientApplicationTypeIds
+        {
+            get
+            {
+                return string.Join(
+                    FilterConstants.Delimiter,
+                    ClientApplicationTypeOptions?.Where(x => x.Selected)?.Select(x => x.Value) ?? Enumerable.Empty<int>());
+            }
+        }
     }
 }

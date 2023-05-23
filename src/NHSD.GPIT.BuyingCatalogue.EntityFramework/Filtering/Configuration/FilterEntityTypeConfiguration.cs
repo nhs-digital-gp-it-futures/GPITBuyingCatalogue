@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Configuration
                     temp.HasPeriodEnd("SysEndTime");
                 }));
 
-            builder.HasKey(o => o.Id);
+            builder.HasKey(o => o.Id).HasName("PK_Filters");
             builder.Property(o => o.Id).ValueGeneratedOnAdd();
 
             builder.Property(f => f.Name)
@@ -34,6 +34,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Configuration
 
             builder.Property(f => f.FrameworkId)
                 .HasMaxLength(36);
+
+            builder.Property(f => f.IsDeleted) // Add the IsDeleted field
+            .IsRequired()
+            .HasDefaultValue(false);
 
             builder.Property(i => i.Created).HasDefaultValue(DateTime.UtcNow);
 
@@ -55,6 +59,18 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Configuration
                 .WithMany()
                 .HasForeignKey(i => i.LastUpdatedBy)
                 .HasConstraintName("FK_Filters_LastUpdatedBy");
+
+            builder.HasIndex(o => o.IsDeleted, "IX_Filters_IsDeleted");
+
+            builder.HasIndex(
+               o => new
+               {
+                   o.Id,
+                   o.IsDeleted,
+               },
+               "IX_Id_IsDeleted_Revision");
+
+            builder.HasQueryFilter(o => !o.IsDeleted);
         }
     }
 }

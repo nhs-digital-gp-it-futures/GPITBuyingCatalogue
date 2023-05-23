@@ -72,6 +72,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public async Task<List<Filter>> GetFilters(int organisationId)
         {
             return await dbContext.Filters.Where(o => o.OrganisationId == organisationId)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public Task<Filter> GetFilter(int filterId)
+        {
+            return dbContext.Filters.Where(o => o.Id == filterId)
                 .Include(x => x.Framework)
                 .Include(x => x.FilterCapabilities)
                 .ThenInclude(y => y.Capability)
@@ -79,7 +86,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ThenInclude(y => y.Epic)
                 .Include(x => x.FilterHostingTypes)
                 .Include(x => x.FilterClientApplicationTypes)
-                .ToListAsync();
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task SoftDeleteFilter(int filterId)
+        {
+            var filter = await dbContext.Filters.FirstOrDefaultAsync(o => o.Id == filterId);
+
+            if (filter != null)
+            {
+                string updateQuery = "UPDATE Filters SET IsDeleted = 1 WHERE Id = {0}";
+                await dbContext.Database.ExecuteSqlRawAsync(updateQuery, filterId);
+            }
         }
 
         internal async Task AddFilterCapabilities(int filterId, List<int> capabilityIds)
