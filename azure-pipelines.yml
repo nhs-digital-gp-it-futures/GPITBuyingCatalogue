@@ -159,7 +159,7 @@ jobs:
     displayName: Copy DACPAC
     inputs:
       SourceFolder: 'database/NHSD.GPITBuyingCatalogue.Database'
-      Contents: '**/NHSD.GPITBuyingCatalogue.Database.dacpac'
+      Contents: '**/*.dacpac'
       TargetFolder: '$(build.artifactStagingDirectory)/dacpacs'
       CleanTargetFolder: false
       OverWrite: true
