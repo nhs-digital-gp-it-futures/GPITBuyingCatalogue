@@ -22,7 +22,7 @@
                         caption=@Model.OrganisationName 
                         advice="These are the details for this filter." />
         
-        <h2>Name and description</h2>
+        <h2 data-test-id="name-and-description">Name and description</h2>
 
         <nhs-summary-list>
             <nhs-summary-list-row label-text="Name">
@@ -39,7 +39,7 @@
 
         @if (Model.FilterContainsEpics)
         {
-            <h2>Capabilities and Epics</h2>
+            <h2 data-test-id="capabilities-and-epics">Capabilities and Epics</h2>
             <nhs-table>
                 <nhs-table-column>Capability</nhs-table-column>
                 <nhs-table-column>Epic</nhs-table-column>
@@ -81,7 +81,7 @@
         }
         else
         {
-            <h2>Capabilities</h2>
+            <h2 data-test-id="capabilities">Capabilities</h2>
             @foreach (var capability in Model.GroupedCapabilities)
             {
                 <p>@capability.Key</p>
@@ -90,7 +90,7 @@
 
         @if (Model.FilterContainsAdditionalFilters)
         {
-            <h2>Additional filters</h2>
+            <h2 data-test-id="additional-filters">Additional filters</h2>
 
             <nhs-summary-list>
                 <nhs-summary-list-row label-text="Client application type">
@@ -162,7 +162,7 @@
             </nhs-summary-list>
         }
 
-        <h2>View solutions</h2>
+        <h2 data-test-id="view-solutions">View solutions</h2>
         <p>
             The results will be based on solutions currently available that match to this filter.
         </p>
