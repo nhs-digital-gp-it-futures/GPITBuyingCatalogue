@@ -65,7 +65,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     model.SelectedCapabilityIds,
                     model.SelectedEpicIds,
                     model.SelectedFrameworkId,
-                    model.SelectedClientApplicationTypeIds,
+                    selectedClientApplicationTypeIds = model.CombineSelectedOptions(model.ClientApplicationTypeOptions),
+                    selectedHostingTypeIds = model.CombineSelectedOptions(model.HostingTypeOptions),
                 });
         }
 

@@ -7,7 +7,6 @@
     FrameworkId NVARCHAR(36) NULL,
     Created datetime2(7) NOT NULL,
     LastUpdated datetime2(7) NOT NULL,
-    LastPublished datetime2(7) NULL,
     LastUpdatedBy int NULL,
     SysStartTime datetime2(0) NOT NULL,
     SysEndTime datetime2(0) NOT NULL

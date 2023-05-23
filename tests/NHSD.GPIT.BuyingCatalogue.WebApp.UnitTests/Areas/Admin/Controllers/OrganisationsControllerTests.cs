@@ -222,94 +222,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_EditOrganisation_ReturnsExpectedResult(
-            Organisation organisation,
-            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
-            OrganisationsController controller)
-        {
-            mockOrganisationsService
-                .Setup(x => x.GetOrganisation(organisation.Id))
-                .ReturnsAsync(organisation);
-
-            var result = (await controller.EditOrganisation(organisation.Id)).As<ViewResult>();
-
-            mockOrganisationsService.VerifyAll();
-
-            result.Should().NotBeNull();
-            result.ViewName.Should().BeNull();
-
-            var model = result.Model.Should().BeAssignableTo<EditOrganisationModel>().Subject;
-
-            model.Should().BeEquivalentTo(new EditOrganisationModel(organisation), opt => opt.Excluding(m => m.BackLink));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_EditOrganisation_WithModelErrors_ReturnsExpectedResult(
-            int organisationId,
-            EditOrganisationModel model,
-            OrganisationsController controller)
-        {
-            controller.ModelState.AddModelError("key", "errorMessage");
-
-            var result = (await controller.EditOrganisation(organisationId, model)).As<ViewResult>();
-
-            result.Should().NotBeNull();
-            result.ViewName.Should().BeNull();
-
-            var actualModel = result.Model.Should().BeAssignableTo<EditOrganisationModel>().Subject;
-
-            actualModel.Should().BeEquivalentTo(model);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_EditOrganisation_ReturnsRedirectToActionResult(
-            int organisationId,
-            EditOrganisationModel model,
-            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
-            OrganisationsController controller)
-        {
-            mockOrganisationsService
-                .Setup(x => x.UpdateCatalogueAgreementSigned(organisationId, model.CatalogueAgreementSigned))
-                .Returns(Task.CompletedTask);
-
-            var result = (await controller.EditOrganisation(organisationId, model)).As<RedirectToActionResult>();
-
-            mockOrganisationsService.VerifyAll();
-            result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(OrganisationsController.EditConfirmation));
-            result.RouteValues.Should().BeEquivalentTo(new Dictionary<string, int>
-            {
-                { "organisationId", organisationId },
-            });
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_EditConfirmation_ReturnsExpectedResult(
-            Organisation organisation,
-            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
-            OrganisationsController controller)
-        {
-            mockOrganisationsService
-                .Setup(x => x.GetOrganisation(organisation.Id))
-                .ReturnsAsync(organisation);
-
-            var result = (await controller.EditConfirmation(organisation.Id)).As<ViewResult>();
-
-            mockOrganisationsService.VerifyAll();
-
-            result.Should().NotBeNull();
-            result.ViewName.Should().BeNull();
-
-            var model = result.Model.Should().BeAssignableTo<EditConfirmationModel>().Subject;
-
-            model.Should().BeEquivalentTo(new EditConfirmationModel(organisation.Name, organisation.Id), opt => opt.Excluding(m => m.BackLink));
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static void Get_Find_ReturnsExpectedResult(
             string ods,
             OrganisationsController controller)
@@ -531,7 +443,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .ReturnsAsync((organisation, null));
 
             mockOrgService
-                .Setup(x => x.AddOrganisation(organisation, model.CatalogueAgreementSigned))
+                .Setup(x => x.AddOrganisation(organisation))
                 .ReturnsAsync((0, error));
 
             var result = (await controller.Create(model)).As<RedirectToActionResult>();
@@ -564,7 +476,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .ReturnsAsync((organisation, null));
 
             mockOrgService
-                .Setup(x => x.AddOrganisation(organisation, model.CatalogueAgreementSigned))
+                .Setup(x => x.AddOrganisation(organisation))
                 .ReturnsAsync((orgId, null));
 
             var result = (await controller.Create(model)).As<RedirectToActionResult>();

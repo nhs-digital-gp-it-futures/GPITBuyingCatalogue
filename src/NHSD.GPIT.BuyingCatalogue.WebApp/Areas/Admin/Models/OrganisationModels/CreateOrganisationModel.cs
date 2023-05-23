@@ -16,7 +16,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.OrganisationModels
         }
 
         public OdsOrganisation OdsOrganisation { get; set; }
-
-        public bool CatalogueAgreementSigned { get; set; }
     }
 }

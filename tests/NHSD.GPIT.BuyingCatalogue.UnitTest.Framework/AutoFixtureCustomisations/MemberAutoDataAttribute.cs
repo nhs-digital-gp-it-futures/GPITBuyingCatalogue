@@ -22,7 +22,7 @@ public class MemberAutoDataAttribute : DataAttribute
     private readonly Lazy<IFixture> fixture;
     private readonly MemberDataAttribute memberDataAttribute;
 
-    protected MemberAutoDataAttribute(string memberName, params object[] parameters)
+    public MemberAutoDataAttribute(string memberName, params object[] parameters)
         : this(memberName, parameters, () => new Fixture())
     {
     }

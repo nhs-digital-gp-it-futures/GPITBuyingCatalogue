@@ -68,8 +68,6 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
-    <Folder Include="Filtering\TemporalTables\" />
-    <Folder Include="Filtering\Tables\" />
     <Folder Include="OdsOrganisations\Functions\" />
     <Folder Include="Properties" />
     <Folder Include="Security\" />
@@ -106,10 +104,22 @@
     <Folder Include="OdsOrganisations\" />
     <Folder Include="OdsOrganisations\Tables\" />
     <Folder Include="PostDeployment\OdsOrganisationsSeedData\" />
+    <Folder Include="Filtering\TemporalTables\" />
+    <Folder Include="Filtering\Tables\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Security\Users\NHSD.sql" />
     <Build Include="Security\Logins\NHSD.sql" />
+    <Build Include="Filtering\Tables\FilterCapabilities.sql" />
+    <Build Include="Filtering\Tables\FilterClientApplicationTypes.sql" />
+    <Build Include="Filtering\Tables\FilterEpics.sql" />
+    <Build Include="Filtering\Tables\FilterHostingTypes.sql" />
+    <Build Include="Filtering\Tables\Filters.sql" />
+    <Build Include="Filtering\TemporalTables\FilterCapabilities_History.sql" />
+    <Build Include="Filtering\TemporalTables\FilterClientApplicationTypes_History.sql" />
+    <Build Include="Filtering\TemporalTables\FilterEpics_History.sql" />
+    <Build Include="Filtering\TemporalTables\FilterHostingTypes_History.sql" />
+    <Build Include="Filtering\TemporalTables\Filters_History.sql" />
     <None Include="PostDeployment\CreateIntegratedCareBoards.sql" />
     <None Include="PostDeployment\InsertFilters.sql" />
     <None Include="PostDeployment\IntegrationTests\ClearData.sql" />

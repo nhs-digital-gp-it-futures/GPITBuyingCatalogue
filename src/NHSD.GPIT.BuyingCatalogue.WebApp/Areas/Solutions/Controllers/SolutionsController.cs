@@ -45,7 +45,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             [FromQuery] string selectedEpicIds,
             [FromQuery] string search,
             [FromQuery] string selectedFrameworkId,
-            [FromQuery] string selectedClientApplicationTypeIds)
+            [FromQuery] string selectedClientApplicationTypeIds,
+            [FromQuery] string selectedHostingTypeIds)
         {
             var inputOptions = new PageOptions(page, sortBy);
 
@@ -56,10 +57,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     selectedEpicIds,
                     search,
                     selectedFrameworkId,
-                    selectedClientApplicationTypeIds);
+                    selectedClientApplicationTypeIds,
+                    selectedHostingTypeIds);
             var (catalogueItemsWithoutFrameworkFilter, capabilitiesAndCountWithoutFrameworkFilter) = await solutionsFilterService.GetFilteredAndNonFilteredQueryResults(selectedCapabilityIds, selectedEpicIds);
             var frameworks = await frameworkService.GetFrameworksByCatalogueItems(catalogueItemsWithoutFrameworkFilter.Select(x => x.Id).ToList());
-            var additionalFilters = new Models.Filters.AdditionalFiltersModel(frameworks, selectedClientApplicationTypeIds, selectedCapabilityIds, selectedEpicIds);
+            var additionalFilters = new Models.Filters.AdditionalFiltersModel(frameworks, selectedClientApplicationTypeIds, selectedHostingTypeIds, selectedCapabilityIds, selectedEpicIds);
 
             return View(new SolutionsModel()
             {
@@ -97,7 +99,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                        search,
                        sortBy = model.SelectedSortOption.ToString(),
                        selectedFrameworkId,
-                       selectedClientApplicationTypeIds = additionalFiltersModel.SelectedClientApplicationTypeIds,
+                       selectedClientApplicationTypeIds = additionalFiltersModel.CombineSelectedOptions(additionalFiltersModel.ClientApplicationTypeOptions),
+                       selectedHostingTypeIds = additionalFiltersModel.CombineSelectedOptions(additionalFiltersModel.HostingTypeOptions),
                    });
         }
 
