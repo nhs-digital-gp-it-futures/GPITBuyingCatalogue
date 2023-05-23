@@ -28,7 +28,8 @@
             </li>
         </ul>
 
-        <environment name="Development,E2ETest">
+        @if (CurrentEnvironment.IsDevelopment)
+        {
             <h2>Competitions</h2>
             <ul>
                 <li>
@@ -41,7 +42,7 @@
                     <p>Create new procurement competitions or view and edit existing ones.</p>
                 </li>
             </ul>
-        </environment>
+        }
 
         @if (User.IsAccountManager())
         {
