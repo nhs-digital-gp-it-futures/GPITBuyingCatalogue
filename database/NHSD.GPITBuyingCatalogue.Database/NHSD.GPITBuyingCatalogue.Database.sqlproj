@@ -106,6 +106,8 @@
   <ItemGroup>
     <Build Include="**/*.sql" />
     <None Include="PostDeployment/**/*.sql" />
+    <Build Remove="obj/**/*.sql" />
+    <Build Remove="bin/**/*.sql" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="PostDeployment\" />
@@ -146,11 +148,17 @@
     <Folder Include="PostDeployment\OdsOrganisationsSeedData\" />
     <Folder Include="PostDeployment\OrderSeedData\" />
     <Folder Include="PostDeployment\ProdLikeData\" />
-    <Folder Include="obj\" />
-    <Folder Include="obj\Debug\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.SqlServer.Dacpacs.Azure.Master" Version="160.0.0" />
+    <PackageReference Include="Microsoft.SqlServer.Dacpacs.Azure.Master" Version="160.0.0">
+      <GeneratePathProperty>true</GeneratePathProperty>
+      <DacpacName>master</DacpacName>
+    </PackageReference>
+    <ArtifactReference Include="$(PkgMicrosoft_SqlServer_Dacpacs_Azure_Master)/tools/master.dacpac">
+      <HintPath>$(PkgMicrosoft_SqlServer_Dacpacs_Azure_Master)/tools/master.dacpac</HintPath>
+      <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
+      <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
+    </ArtifactReference>
   </ItemGroup>
   <PropertyGroup>
     <PreBuildEvent>
