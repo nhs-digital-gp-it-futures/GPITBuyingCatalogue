@@ -39,9 +39,8 @@ jobs:
     name: echovar
 
 - job: dockerBuildAndPush
-  displayName: Run all tests and build & push docker containers to the ACR
+  displayName: Build and Package
   variables:
-    dacpacTag: dacpac-$[ dependencies.version.outputs['setVersionStep.semVer'] ]
     semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]
     ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:
       latestTag: latest
@@ -68,7 +67,6 @@ jobs:
         NHSD.GPIT.BuyingCatalogue.Database.sln
       feedsToUse: config
       nugetConfigPath: 'NuGet.config'
-      arguments: '-v n'
 
   - task: NodeTool@0
     displayName: 'Install Node.js'
@@ -106,7 +104,7 @@ jobs:
     inputs:
       command: test
       projects: '**/*UnitTests.csproj'
-      arguments: '-v n --no-build --configuration $(buildConfiguration) --collect:"XPlat Code Coverage" -- xunit.parallelizeTestCollections=true'
+      arguments: '--no-build --configuration $(buildConfiguration) --collect:"XPlat Code Coverage" -- xunit.parallelizeTestCollections=true'
       publishTestResults: false
 
   - task: CmdLine@2
@@ -157,45 +155,22 @@ jobs:
         mkdir $(Build.ArtifactStagingDirectory)/code
         $release | Out-File $(Build.ArtifactStagingDirectory)/code/release.txt
 
+  - task: CopyFiles@2
+    displayName: Copy DACPAC
+    inputs:
+      SourceFolder: 'database/NHSD.GPITBuyingCatalogue.Database'
+      Contents: '**/NHSD.GPITBuyingCatalogue.Database.dacpac'
+      TargetFolder: '$(build.artifactStagingDirectory)/dacpacs'
+      CleanTargetFolder: false
+      OverWrite: true
+      flattenFolders: true 
+
   - publish: $(build.artifactStagingDirectory)/code
+    displayName: Publish Code Version
     artifact: code-version
 
-- job: buildDatabaseDacpacs
-  displayName: Build all Dacpacs and push
-  variables:
-    semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]
-    ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:
-      latestTag: latest
-    ${{ if ne(variables['Build.SourceBranchName'], 'main') }}:
-      latestTag: latestbuild
-
-  dependsOn: dockerBuildAndPush
-  pool:
-    vmImage: 'ubuntu-latest'
-
-  steps:
-  - task: Docker@2
-    displayName: 'Docker: Build Dacpacs'
-    condition: succeeded()
-    inputs:
-      containerRegistry: 'gpitfuturesdevacr'
-      repository: 'nhsd/buying-catalogue/nhsdgpitbuyingcataloguewebapp'
-      command: 'build'
-      Dockerfile: 'database/**/NHSD.GPITBuyingCatalogue.Database.Deployment/Docker/Dockerfile.Pipeline'
-      buildContext: './'
-      tags: |
-        $(semVer)
-        $(latestTag)
-
-  - pwsh: |
-      $id=docker images --filter "label=dacpac=true" -q | Select-Object -First 1
-      docker create --name dacpaccontainer $id      
-      mkdir $(Build.ArtifactStagingDirectory)/dacpacs
-      docker cp dacpaccontainer:/deploy-db/. $(Build.ArtifactStagingDirectory)/dacpacs
-      docker rm dacpaccontainer
-    displayName: 'Copy DACPACs'
-
   - publish: $(build.artifactStagingDirectory)/dacpacs
+    displayName: Publish DACPAC
     artifact: dacpacs
 
 - job: createBuildArtifact
