@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
 
             GroupedCapabilities = capabilities.ToDictionary(
                 x => x.Name,
-                x => epics.Where(c => c.Capability.Id == x.Id).OrderBy(c => c.Name));
+                x => epics.Where(c => c.Capability.Id == x.Id).OrderBy(c => c.Name).ToList().AsEnumerable<Epic>());
         }
 
         public string OrganisationName { get; set; }
@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
 
         public Filter Filter { get; init; }
 
-        public Dictionary<string, IOrderedEnumerable<Epic>> GroupedCapabilities { get; init; }
+        public Dictionary<string, IEnumerable<Epic>> GroupedCapabilities { get; init; }
 
         public bool FilterContainsEpics => Filter.FilterEpics != null && Filter.FilterEpics.Any();
 

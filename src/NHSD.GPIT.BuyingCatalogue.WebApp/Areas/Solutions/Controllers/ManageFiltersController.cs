@@ -163,16 +163,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View(model);
         }
 
-        [HttpGet("delete")]
-        public IActionResult DeleteFilter(int filterId)
-        {
-            var model = new NavBaseModel()
-            {
-                BackLink = string.Empty,
-            };
-            return View(model);
-        }
-
         private async Task<Organisation> GetUserOrganisation()
         {
             var organisationInternalIdentifier = User.GetPrimaryOrganisationInternalIdentifier();
