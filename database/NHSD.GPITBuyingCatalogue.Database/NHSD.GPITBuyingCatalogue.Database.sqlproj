@@ -104,6 +104,8 @@
     <Folder Include="OdsOrganisations\" />
     <Folder Include="OdsOrganisations\Tables\" />
     <Folder Include="PostDeployment\OdsOrganisationsSeedData\" />
+    <Folder Include="Filtering\TemporalTables\" />
+    <Folder Include="Filtering\Tables\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Security\Users\NHSD.sql" />
