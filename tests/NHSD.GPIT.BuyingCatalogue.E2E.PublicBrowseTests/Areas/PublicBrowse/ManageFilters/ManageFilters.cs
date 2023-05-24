@@ -86,6 +86,53 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.ManageFilters
                 nameof(ManageFiltersController.FilterDetails)).Should().BeTrue();
         }
 
+        [Fact]
+        public void ManageFilters_ClickGoBackLink_ExpectedResult()
+        {
+            var filterId = 1;
+            var parameters = new Dictionary<string, string>()
+            {
+                { nameof(filterId), filterId.ToString() },
+            };
+
+            NavigateToUrl(
+                typeof(ManageFiltersController),
+                nameof(ManageFiltersController.FilterDetails),
+                parameters,
+                parameters);
+            CommonActions.ClickGoBackLink();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(ManageFiltersController),
+                nameof(ManageFiltersController.Index)).Should().BeTrue();
+        }
+
+        [Fact]
+        public void ManageFilters_FilterDetails_DisplaysCorrectPage()
+        {
+            var filterId = 1;
+            var parameters = new Dictionary<string, string>()
+            {
+                { nameof(filterId), filterId.ToString() },
+            };
+
+            NavigateToUrl(
+                typeof(ManageFiltersController),
+                nameof(ManageFiltersController.FilterDetails),
+                parameters,
+                parameters);
+
+            CommonActions.GoBackLinkDisplayed().Should().BeTrue();
+            CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ManageFilterObjects.FilterDetailsNameAndDescription).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ManageFilterObjects.FilterDetailsCapabilities).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ManageFilterObjects.FilterDetailsCapabilitiesAndEpics).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(ManageFilterObjects.FilterDetailsAdditionalFilters).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ManageFilterObjects.FilterDetailsViewSolutions).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ManageFilterObjects.FilterDetailsViewLink).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(ManageFilterObjects.FilterDetailsDeleteLink).Should().BeTrue();
+        }
+
         private async Task<AspNetUser> GetUser()
         {
             await using var context = GetEndToEndDbContext();
