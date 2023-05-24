@@ -20,5 +20,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.PublicBrowse
         public static By FilterLastUpdated => ByExtensions.DataTestId("filter-last-updated");
 
         public static By FilterViewLink => ByExtensions.DataTestId("filter-view-link");
+
+        public static By FilterDetailsNameAndDescription => ByExtensions.DataTestId("name-and-description");
+
+        public static By FilterDetailsCapabilities => ByExtensions.DataTestId("capabilities");
+
+        public static By FilterDetailsCapabilitiesAndEpics => ByExtensions.DataTestId("capabilities-and-epics");
+
+        public static By FilterDetailsAdditionalFilters => ByExtensions.DataTestId("additional-filters");
+
+        public static By FilterDetailsViewSolutions => ByExtensions.DataTestId("view-solutions");
+
+        public static By FilterDetailsViewLink => By.LinkText("View results for this filter (opens in a new tab)");
+
+        public static By FilterDetailsDeleteLink => By.LinkText("Delete filter");
     }
 }
