@@ -555,5 +555,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             result[0].OrganisationId.Should().Be(organisation.Id);
             result[0].Framework.Should().BeEquivalentTo(framework);
         }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SoftDeleteFilter_SetsIsDeletedToTrue(
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            Filter filter,
+            ManageFiltersService service)
+        {
+            filter.IsDeleted = false;
+            dbContext.Filters.Add(filter);
+            await dbContext.SaveChangesAsync();
+
+            await service.SoftDeleteFilter(filter.Id);
+
+            var result = await dbContext.Filters.FirstOrDefaultAsync(f => f.Id == filter.Id);
+            result.Should().NotBeNull();
+            result.IsDeleted.Should().BeTrue();
+        }
     }
 }

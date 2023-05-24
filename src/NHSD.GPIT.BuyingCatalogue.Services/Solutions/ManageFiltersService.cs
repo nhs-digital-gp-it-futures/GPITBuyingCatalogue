@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
@@ -93,11 +94,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             var filter = await dbContext.Filters.FirstOrDefaultAsync(o => o.Id == filterId);
 
-            if (filter != null)
-            {
-                string updateQuery = "UPDATE Filters SET IsDeleted = 1 WHERE Id = {0}";
-                await dbContext.Database.ExecuteSqlRawAsync(updateQuery, filterId);
-            }
+            filter.IsDeleted = true;
+
+            await dbContext.SaveChangesAsync();
         }
 
         internal async Task AddFilterCapabilities(int filterId, List<int> capabilityIds)
