@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             }
 
             return await dbContext.Epics.AsNoTracking()
-                .Include(x => x.Capability)
+                .Include(x => x.Capabilities)
                 .Where(
                     x => x.IsActive
                         && epicIds.Contains(x.Id))
@@ -42,18 +42,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             }
 
             return await dbContext.Epics.AsNoTracking()
-                .Include(x => x.Capability)
+                .Include(x => x.Capabilities)
                 .Where(
                     x => x.IsActive
-                        && capabilityIds.Contains(x.Capability.Id)
+                        && x.Capabilities.Any(y => capabilityIds.Contains(y.Id))
                         && dbContext.CatalogueItemEpics.Any(y => y.EpicId == x.Id))
                 .ToListAsync();
         }
 
         public async Task<string> GetEpicsForSelectedCapabilities(IEnumerable<int> capabilityIds, IEnumerable<string> epicIds)
         {
-            var epics = await dbContext.Epics
-                .Where(e => epicIds.Contains(e.Id) && capabilityIds.Contains(e.CapabilityId))
+            var epics = await dbContext.Capabilities.Where(x => capabilityIds.Contains(x.Id))
+                .SelectMany(x => x.Epics.Where(y => epicIds.Contains(y.Id)))
                 .ToListAsync();
 
             return string.Join(FilterConstants.Delimiter, epics.Select(e => e.Id));

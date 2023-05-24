@@ -1,4 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+﻿using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics
 {
@@ -8,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpi
         {
             Id = epic.Id;
             Name = epic.Name;
-            Capability = epic.Capability?.Name;
+            Capability = epic.Capabilities.FirstOrDefault()?.Name;
             IsActive = epic.IsActive;
         }
 

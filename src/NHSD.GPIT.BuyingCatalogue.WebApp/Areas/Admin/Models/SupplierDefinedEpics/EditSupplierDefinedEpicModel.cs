@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics
@@ -15,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpi
             Name = epic.Name;
             Description = epic.Description;
             IsActive = epic.IsActive;
-            SelectedCapabilityId = epic.CapabilityId;
+            SelectedCapabilityId = epic.Capabilities.First().Id;
 
             RelatedItems = relatedItems;
 

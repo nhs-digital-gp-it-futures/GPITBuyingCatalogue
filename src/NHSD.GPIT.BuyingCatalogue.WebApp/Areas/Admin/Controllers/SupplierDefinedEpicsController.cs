@@ -43,12 +43,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var results = await GetFilteredEpics(search);
 
-            return Json(results.Take(15).Select(x => new SuggestionSearchResult
-            {
-                Title = x.Name,
-                Category = x.Capability.Name,
-                Url = Url.Action(nameof(EditEpic), new { epicId = $"{x.Id}" }),
-            }));
+            return Json(
+                results.Take(15)
+                    .SelectMany(
+                        x => x.Capabilities.Select(
+                            y => new SuggestionSearchResult
+                            {
+                                Title = x.Name,
+                                Category = y.Name,
+                                Url = Url.Action(nameof(EditEpic), new { epicId = $"{x.Id}" }),
+                            })));
         }
 
         [HttpGet("add-epic")]
