@@ -169,6 +169,10 @@
         <p>
             <a href="/" target="_blank">View results for this filter (opens in a new tab)</a>
         </p>
-        <vc:nhs-delete-button url="/" text="Delete filter" />
+        <vc:nhs-delete-button url="@Url.Action(
+                                       nameof(ManageFiltersController.DeleteFilter),
+                                       typeof(ManageFiltersController).ControllerName(),
+                                       new { Model.FilterId })"
+                              text="Delete filter" />
     </div>
 </div>

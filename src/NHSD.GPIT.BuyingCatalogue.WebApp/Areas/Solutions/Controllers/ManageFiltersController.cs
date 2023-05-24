@@ -163,6 +163,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View(model);
         }
 
+        [HttpGet("delete")]
+        public async Task<IActionResult> DeleteFilter(int filterId)
+        {
+            var filter = await manageFiltersService.GetFilter(filterId);
+            var model = new FilterDetailsModel()
+            {
+                BackLink = Url.Action(nameof(FilterDetails), typeof(ManageFiltersController).ControllerName(), new { filterId }),
+                FilterId = filterId,
+                FilterName = filter.Name,
+            };
+            return View(model);
+        }
+
+        [HttpPost("delete")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteFilterConfirmed(int filterId)
+        {
+            manageFiltersService.SoftDeleteFilter(filterId);
+            return RedirectToAction(nameof(Index));
+        }
+
         private async Task<Organisation> GetUserOrganisation()
         {
             var organisationInternalIdentifier = User.GetPrimaryOrganisationInternalIdentifier();

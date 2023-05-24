@@ -21,5 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         Task<List<Filter>> GetFilters(int organisationId);
 
         Task<Filter> GetFilter(int filterId);
+
+        Task SoftDeleteFilter(int filterId);
     }
 }

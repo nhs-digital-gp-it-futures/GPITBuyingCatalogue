@@ -10,5 +10,6 @@
     LastPublished datetime2(7) NULL,
     LastUpdatedBy int NULL,
     SysStartTime datetime2(0) NOT NULL,
-    SysEndTime datetime2(0) NOT NULL
+    SysEndTime datetime2(0) NOT NULL,
+    IsDeleted BIT NOT NULL
 );

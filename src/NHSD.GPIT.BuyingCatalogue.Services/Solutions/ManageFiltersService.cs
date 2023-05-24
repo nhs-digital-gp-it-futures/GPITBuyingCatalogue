@@ -76,6 +76,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ToListAsync();
         }
 
+        public async Task SoftDeleteFilter(int filterId)
+        {
+            var filter = await dbContext.Filters.FirstOrDefaultAsync(o => o.Id == filterId);
+
+            filter.IsDeleted = true;
+
+            await dbContext.SaveChangesAsync();
+        }
+
         public Task<Filter> GetFilter(int filterId)
         {
             return dbContext.Filters

@@ -55,6 +55,18 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Configuration
                 .WithMany()
                 .HasForeignKey(i => i.LastUpdatedBy)
                 .HasConstraintName("FK_Filters_LastUpdatedBy");
+
+            builder.HasIndex(o => o.IsDeleted, "IX_Filters_IsDeleted");
+
+            builder.HasIndex(
+               o => new
+               {
+                   o.Id,
+                   o.IsDeleted,
+               },
+               "IX_Id_IsDeleted_Revision");
+
+            builder.HasQueryFilter(o => !o.IsDeleted);
         }
     }
 }

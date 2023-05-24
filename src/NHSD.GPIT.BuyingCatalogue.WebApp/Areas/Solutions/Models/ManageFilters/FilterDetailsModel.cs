@@ -33,6 +33,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
 
         public int FilterId { get; set; }
 
+        public string FilterName { get; set; }
+
         public Filter Filter { get; init; }
 
         public Dictionary<string, List<Epic>> GroupedCapabilities { get; init; }
