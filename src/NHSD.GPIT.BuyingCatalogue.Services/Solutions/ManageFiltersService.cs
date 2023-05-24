@@ -72,14 +72,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task<List<Filter>> GetFilters(int organisationId)
         {
-            return await dbContext.Filters.Where(o => o.OrganisationId == organisationId)
+            return await dbContext.Filters.Where(o => o.OrganisationId == organisationId && !o.IsDeleted)
                 .AsNoTracking()
                 .ToListAsync();
         }
 
         public Task<Filter> GetFilter(int filterId)
         {
-            return dbContext.Filters.Where(o => o.Id == filterId)
+            return dbContext.Filters.Where(o => o.Id == filterId && !o.IsDeleted)
                 .Include(x => x.Framework)
                 .Include(x => x.FilterCapabilities)
                 .ThenInclude(y => y.Capability)
