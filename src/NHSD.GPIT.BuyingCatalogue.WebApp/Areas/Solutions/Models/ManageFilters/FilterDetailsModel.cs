@@ -31,6 +31,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
 
         public string OrganisationName { get; set; }
 
+        public string FilterName { get; set; }
+
         public int FilterId { get; set; }
 
         public Filter Filter { get; init; }

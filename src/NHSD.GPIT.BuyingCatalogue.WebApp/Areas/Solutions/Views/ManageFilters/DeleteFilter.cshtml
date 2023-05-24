@@ -15,17 +15,11 @@
         <nhs-validation-summary />
 
         <nhs-page-title title="@ViewBag.Title"
-        caption="@Model.FilterId"
+        caption="@Model.FilterName"
                         advice="" />
 
         <p>This filter will be deleted from your list of saved filters.</p>
-
-       @*<vc:nhs-secondary-button text="Delete filter"
-                                 url="@Url.Action(
-                                                  "DeleteFilter",
-                                                  "ManageFiltersController",
-                                                  new { Model.FilterId ,1 })"
-                                 type="Primary" />*@
+        <br/>
 
         <form method="post" action="@Url.Action("DeleteFilterConfirmed", "ManageFilters")">
             @Html.HiddenFor(model => model.FilterId)

@@ -164,12 +164,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         }
 
         [HttpGet("delete")]
-        public IActionResult DeleteFilter(int filterId)
+        public async Task<IActionResult> DeleteFilter(int filterId)
         {
+            var filter = await manageFiltersService.GetFilter(filterId);
             var model = new FilterDetailsModel()
             {
                 BackLink = Url.Action(nameof(FilterDetails), typeof(ManageFiltersController).ControllerName(), new { filterId }),
                 FilterId = filterId,
+                FilterName = filter.Name,
             };
             return View(model);
         }
