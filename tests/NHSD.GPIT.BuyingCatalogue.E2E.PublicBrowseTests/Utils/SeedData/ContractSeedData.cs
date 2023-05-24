@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 {
-    internal class ContractSeedData
+    internal class ContractSeedData : ISeedData
     {
-        internal static void Initialize(BuyingCatalogueDbContext context)
+        public static async Task Initialize(BuyingCatalogueDbContext context)
         {
             var plan = new ImplementationPlan
             {
@@ -33,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             };
 
             context.ImplementationPlanMilestones.AddRange(milestone1, milestone2);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
 
             var acceptanceCriteria = new List<ImplementationPlanAcceptanceCriteria>
             {
@@ -58,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             };
 
             context.ImplementationPlanAcceptanceCriteria.AddRange(acceptanceCriteria);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
     }
 }

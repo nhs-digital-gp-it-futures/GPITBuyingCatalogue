@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
@@ -14,10 +15,8 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 {
-    internal static class OdsOrganisationsSeedData
+    internal class OdsOrganisationsSeedData : ISeedData
     {
-        private const string Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
         private const string GpRoleType = "RO177";
         private const string IcbRoleType = "RO318";
         private const string SubLocationRoleType = "RO319";
@@ -25,12 +24,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
         private const string CommissionedByRelationshipType = "RE4";
         private const string LocatedInRelationshipType = "RE5";
 
-        internal static void Initialize(BuyingCatalogueDbContext context)
+        public static async Task Initialize(BuyingCatalogueDbContext context)
         {
-            AddDefaultData(context);
+            await AddDefaultData(context);
         }
 
-        private static void AddDefaultData(BuyingCatalogueDbContext context)
+        private static async Task AddDefaultData(BuyingCatalogueDbContext context)
         {
             var relationshipTypes = new List<RelationshipType>
             {
@@ -39,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             };
 
             context.AddRange(relationshipTypes);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
 
             List<RoleType> roles = new()
             {
@@ -143,7 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             };
 
             context.AddRange(organisations);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
         private static IEnumerable<OdsOrganisation> GetKnownOrgs() => new List<OdsOrganisation>

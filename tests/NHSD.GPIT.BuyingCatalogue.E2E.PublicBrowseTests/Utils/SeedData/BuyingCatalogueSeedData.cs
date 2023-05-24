@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
@@ -10,14 +11,14 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 {
-    internal static class BuyingCatalogueSeedData
+    internal class BuyingCatalogueSeedData : ISeedData
     {
-        internal static void Initialize(BuyingCatalogueDbContext context)
+        public static async Task Initialize(BuyingCatalogueDbContext context)
         {
             AddDefaultData(context);
             AddCatalogueItems(context);
             AddMockedItems(context);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
         private static void AddCatalogueItems(BuyingCatalogueDbContext context)

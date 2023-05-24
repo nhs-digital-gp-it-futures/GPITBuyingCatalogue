@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -127,7 +128,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
         public new async Task DisposeAsync()
         {
             await sqlContainer.DisposeAsync();
-            
+
             browserFactory?.Dispose();
         }
 
@@ -185,13 +186,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
                 try
                 {
-                    OdsOrganisationsSeedData.Initialize(bcDb);
-                    RolesSeedData.Initialize(bcDb);
-                    UserSeedData.Initialize(bcDb);
-                    BuyingCatalogueSeedData.Initialize(bcDb);
-                    OrderSeedData.Initialize(bcDb);
-                    ContractSeedData.Initialize(bcDb);
-                    EmailDomainSeedData.Initialize(bcDb);
+                    InvokeDataSeeder<OdsOrganisationsSeedData>(bcDb);
+                    InvokeDataSeeder<RolesSeedData>(bcDb);
+                    InvokeDataSeeder<UserSeedData>(bcDb);
+                    InvokeDataSeeder<BuyingCatalogueSeedData>(bcDb);
+                    InvokeDataSeeder<OrderSeedData>(bcDb);
+                    InvokeDataSeeder<ContractSeedData>(bcDb);
+                    InvokeDataSeeder<EmailDomainSeedData>(bcDb);
+                    InvokeDataSeeder<FiltersSeedData>(bcDb);
+                    InvokeDataSeeder<CompetitionsSeedData>(bcDb);
                 }
                 catch (Exception ex)
                 {
@@ -231,6 +234,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             SetEnvironmentVariable("DOTNET_USE_POLLING_FILE_WATCHER", "true");
 
             SetEnvironmentVariable("SESSION_IDLE_TIMEOUT", "60");
+        }
+
+        private static void InvokeDataSeeder<T>(BuyingCatalogueDbContext context)
+            where T : ISeedData
+        {
+            T.Initialize(context).GetAwaiter().GetResult();
         }
     }
 }

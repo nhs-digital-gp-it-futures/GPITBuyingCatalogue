@@ -9,13 +9,16 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Configuration
     {
         public void Configure(EntityTypeBuilder<FilterHostingType> builder)
         {
-            builder.ToTable("FilterHostingTypes", Schemas.Filtering, b => b.IsTemporal(
-                temp =>
-                {
-                    temp.UseHistoryTable("FilterHostingTypes_History");
-                    temp.HasPeriodStart("SysStartTime");
-                    temp.HasPeriodEnd("SysEndTime");
-                }));
+            builder.ToTable(
+                "FilterHostingTypes",
+                Schemas.Filtering,
+                b => b.IsTemporal(
+                    temp =>
+                    {
+                        temp.UseHistoryTable("FilterHostingTypes_History");
+                        temp.HasPeriodStart("SysStartTime");
+                        temp.HasPeriodEnd("SysEndTime");
+                    }));
 
             builder.HasKey(fht => fht.Id);
 
