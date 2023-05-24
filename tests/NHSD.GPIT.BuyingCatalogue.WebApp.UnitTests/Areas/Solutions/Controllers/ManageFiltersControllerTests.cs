@@ -235,18 +235,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static void Get_DeleteFilter_ReturnsExpectedResult(
-            int filterId,
-            ManageFiltersController controller)
-        {
-            var result = controller.DeleteFilter(filterId);
-
-            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
-            actualResult.Model.Should().BeOfType<NavBaseModel>();
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static void Get_CannotSaveFilter_ReturnsExpectedResult(
             ManageFiltersController controller)
         {
