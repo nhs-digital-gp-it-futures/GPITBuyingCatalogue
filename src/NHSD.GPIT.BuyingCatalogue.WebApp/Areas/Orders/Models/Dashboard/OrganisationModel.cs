@@ -38,8 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Dashboard
 
         public string LinkName(Order order)
         {
-            if (CurrentEnvironment.IsDevelopment
-                && !order.AssociatedServicesOnly
+            if (!order.AssociatedServicesOnly
                 && !AnySubsequentRevisions(order.CallOffId))
             {
                 return order.OrderStatus switch

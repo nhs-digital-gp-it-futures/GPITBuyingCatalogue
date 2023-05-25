@@ -29,22 +29,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         private readonly IOrganisationsService organisationsService;
         private readonly IImplementationPlanService implementationPlanService;
         private readonly IOrderPdfService pdfService;
-        private readonly PdfSettings pdfSettings;
 
         public OrderController(
             IOrderService orderService,
             IOrderProgressService orderProgressService,
             IOrganisationsService organisationsService,
             IImplementationPlanService implementationPlanService,
-            IOrderPdfService pdfService,
-            PdfSettings pdfSettings)
+            IOrderPdfService pdfService)
         {
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.orderProgressService = orderProgressService ?? throw new ArgumentNullException(nameof(orderProgressService));
             this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
             this.implementationPlanService = implementationPlanService ?? throw new ArgumentNullException(nameof(implementationPlanService));
             this.pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
-            this.pdfSettings = pdfSettings ?? throw new ArgumentNullException(nameof(pdfSettings));
         }
 
         [HttpGet]
@@ -145,10 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             var order = orderWrapper.Order;
             var hasSubsequentRevisions = await orderService.HasSubsequentRevisions(callOffId);
 
-            var amendableIfLatestAndComplete = CurrentEnvironment.IsDevelopment
-                && !order.AssociatedServicesOnly;
-
-            var canBeAmended = amendableIfLatestAndComplete
+            var canBeAmended = !order.AssociatedServicesOnly
                 && order.OrderStatus == OrderStatus.Completed
                 && !hasSubsequentRevisions;
 
@@ -158,7 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             {
                 BackLink = GetBackLink(internalOrgId, callOffId, order),
                 Title = GetTitle(order),
-                AdviceText = GetAdvice(order, amendableIfLatestAndComplete, !hasSubsequentRevisions),
+                AdviceText = GetAdvice(order, !hasSubsequentRevisions),
                 CanBeAmended = canBeAmended,
             };
 
@@ -175,21 +169,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                 ModelState.AddModelError(ErrorKey, ErrorMessage);
                 var hasSubsequentRevisions = await orderService.HasSubsequentRevisions(callOffId);
 
-                var amendableIfLatestAndComplete = CurrentEnvironment.IsDevelopment
-                    && !order.AssociatedServicesOnly;
-
-                var canBeAmended = amendableIfLatestAndComplete
+                var canBeAmended = !order.AssociatedServicesOnly
                     && order.OrderStatus == OrderStatus.Completed
                     && !hasSubsequentRevisions;
 
                 var defaultPlan = await implementationPlanService.GetDefaultImplementationPlan();
-                ModelState.AddModelError(ErrorKey, ErrorMessage);
 
                 var model = new SummaryModel(orderWrapper, internalOrgId, defaultPlan)
                 {
                     BackLink = GetBackLink(internalOrgId, callOffId, order),
                     Title = GetTitle(order),
-                    AdviceText = GetAdvice(order, amendableIfLatestAndComplete, !hasSubsequentRevisions),
+                    AdviceText = GetAdvice(order, !hasSubsequentRevisions),
                     CanBeAmended = canBeAmended,
                 };
 
@@ -259,13 +249,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                 new { internalOrgId, amendment.CallOffId });
         }
 
-        private static string GetAdvice(Order order, bool amendableIfLatestAndComplete, bool latestOrder)
+        private static string GetAdvice(Order order, bool latestOrder)
         {
             return order.OrderStatus switch
             {
-                OrderStatus.Completed when amendableIfLatestAndComplete && latestOrder => "This order has already been completed, but you can amend it if needed.",
-                OrderStatus.Completed when amendableIfLatestAndComplete && !latestOrder => "This order can no longer be changed as there is already an amendment in progress.",
-                OrderStatus.Completed => "This order has been confirmed and can no longer be changed.",
+                OrderStatus.Completed when order.AssociatedServicesOnly => "This order has been confirmed and can no longer be changed.",
+                OrderStatus.Completed when latestOrder => "This order has already been completed, but you can amend it if needed.",
+                OrderStatus.Completed => "This order can no longer be changed as there is already an amendment in progress.",
                 _ => order.CanComplete()
                     ? "Review the items you’ve added to your order before completing it."
                     : "This is what's been added to your order so far. You must complete all mandatory steps before you can confirm your order.",
