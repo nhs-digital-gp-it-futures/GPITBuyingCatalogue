@@ -448,11 +448,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static void Post_DeleteFilter_ReturnsRedirectToActionResult(
+        public static async Task Post_DeleteFilter_ReturnsRedirectToActionResult(
             int filterId,
             ManageFiltersController controller)
         {
-            var result = controller.DeleteFilterConfirmed(filterId);
+            var result = await controller.DeleteFilterConfirmed(filterId);
 
             var redirectToActionResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
             redirectToActionResult.ActionName.Should().Be("Index");

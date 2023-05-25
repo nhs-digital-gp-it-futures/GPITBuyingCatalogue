@@ -178,9 +178,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
         [HttpPost("delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteFilterConfirmed(int filterId)
+        public async Task<IActionResult> DeleteFilterConfirmed(int filterId)
         {
-            manageFiltersService.SoftDeleteFilter(filterId);
+            await manageFiltersService.SoftDeleteFilter(filterId);
             return RedirectToAction(nameof(Index));
         }
 
