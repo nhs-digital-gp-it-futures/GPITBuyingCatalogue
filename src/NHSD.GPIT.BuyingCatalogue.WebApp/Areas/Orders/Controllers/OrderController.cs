@@ -249,7 +249,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                 new { internalOrgId, amendment.CallOffId });
         }
 
-        private static string GetAdvice(Order order, bool latestOrder)
+        internal static string GetAdvice(Order order, bool latestOrder)
         {
             return order.OrderStatus switch
             {
