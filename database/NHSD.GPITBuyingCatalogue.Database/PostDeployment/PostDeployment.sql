@@ -34,7 +34,6 @@
 :r ./InsertStandards.sql
 :r ./InsertStandardsCapabilities.sql
 
-:r ./InsertFilters.sql
 :r ./InsertOrderStatuses.sql
 :r ./InsertOrderTriageValues.sql
 :r ./InsertOrderItemFundingTypes.sql
@@ -47,6 +46,8 @@
 :r ./DropImport.sql
 :r ./DropPublish.sql
 
+:r ./TestData/InsertFilters.sql
+:r ./TestData/Competitions/InsertCompetitions.sql
 :r ./ProdLikeData/MergeSuppliers.sql
 :r ./ProdLikeData/MergeCatalogueItems.sql
 :r ./ProdLikeData/MergeSolutions.sql

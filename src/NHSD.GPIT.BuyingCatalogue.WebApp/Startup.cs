@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            CurrentEnvironment.IsDevelopment = hostEnvironment.IsDevelopment();
+            CurrentEnvironment.IsDevelopment = hostEnvironment.IsDevelopment() || IsE2ETestEnvironment();
 
             if (!IsE2ETestEnvironment())
             {
