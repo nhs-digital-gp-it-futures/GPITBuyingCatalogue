@@ -24,14 +24,13 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
 {
     public static class OrderControllerTests
     {
@@ -424,6 +423,45 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 { "internalOrgId", internalOrgId },
                 { "callOffId", order.CallOffId },
             });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void GetAdvice_CompletedAssociatedServicesOnlyOrder_ReturnsExpectedAdvice(
+            EntityFramework.Ordering.Models.Order order)
+        {
+            order.AssociatedServicesOnly = true;
+            order.Completed = DateTime.UtcNow;
+
+            OrderController.GetAdvice(order, true)
+                .Should()
+                .Be("This order has been confirmed and can no longer be changed.");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void GetAdvice_CompletedOrderIsLatest_ReturnsExpectedAdvice(
+            EntityFramework.Ordering.Models.Order order)
+        {
+            order.AssociatedServicesOnly = false;
+            order.Completed = DateTime.UtcNow;
+
+            OrderController.GetAdvice(order, true)
+                .Should()
+                .Be("This order has already been completed, but you can amend it if needed.");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void GetAdvice_CompletedOrderIsNotLatest_ReturnsExpectedAdvice(
+            EntityFramework.Ordering.Models.Order order)
+        {
+            order.AssociatedServicesOnly = false;
+            order.Completed = DateTime.UtcNow;
+
+            OrderController.GetAdvice(order, false)
+                .Should()
+                .Be("This order can no longer be changed as there is already an amendment in progress.");
         }
 
         private static void SetControllerHttpContext(ControllerBase controller)
