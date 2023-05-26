@@ -5,12 +5,15 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.DashboardModels;
@@ -76,6 +79,67 @@ public static class CompetitionsDashboardControllerTests
         var result = controller.BeforeYouStart(internalOrgId, model).As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(CompetitionsDashboardController.Index));
+        result.ActionName.Should().Be(nameof(CompetitionsDashboardController.SelectFilter));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task SelectFilter_ReturnsViewWithModel(
+        Organisation organisation,
+        List<Filter> filters,
+        [Frozen] Mock<IOrganisationsService> organisationsService,
+        [Frozen] Mock<IManageFiltersService> filterService,
+        CompetitionsDashboardController controller)
+    {
+        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(It.IsAny<string>()))
+            .ReturnsAsync(organisation);
+
+        filterService.Setup(x => x.GetFilters(It.IsAny<int>()))
+            .ReturnsAsync(filters);
+
+        var expectedModel = new SelectFilterModel(organisation.Name, filters);
+
+        var result = (await controller.SelectFilter(organisation.InternalIdentifier)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(x => x.BackLink));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task Post_SelectFilter_InvalidModel_ReturnsViewWithModel(
+        Organisation organisation,
+        List<Filter> filters,
+        [Frozen] Mock<IOrganisationsService> organisationsService,
+        [Frozen] Mock<IManageFiltersService> filterService,
+        CompetitionsDashboardController controller)
+    {
+        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(It.IsAny<string>()))
+            .ReturnsAsync(organisation);
+
+        filterService.Setup(x => x.GetFilters(It.IsAny<int>()))
+            .ReturnsAsync(filters);
+
+        var expectedModel = new SelectFilterModel(organisation.Name, filters);
+
+        controller.ModelState.AddModelError("some-key", "some-error");
+
+        var result = (await controller.SelectFilter(organisation.InternalIdentifier, expectedModel)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(x => x.BackLink));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task Post_SelectFilter_Redirects(
+        string internalOrgId,
+        SelectFilterModel model,
+        CompetitionsDashboardController controller)
+    {
+        var result = (await controller.SelectFilter(internalOrgId, model)).As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.Index));
     }
 }

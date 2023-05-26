@@ -1,0 +1,37 @@
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
+@model SelectFilterModel
+
+@{
+    ViewBag.Title = "Select a saved filter";
+    var createFilterUrl = Url.Action(nameof(FilterController.FilterCapabilities), typeof(FilterController).ControllerName(), new { Area = typeof(FilterController).AreaName() });
+}
+
+<partial name="Partials/_BackLink" model="Model"/>
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+        <nhs-page-title title="@ViewBag.Title" caption="@Model.OrganisationName" advice="The results produced by your selected filter can be taken into your competition."/>
+
+        @if (Model.Filters.Any())
+        {
+            <form method="post">
+                <input type="hidden" asp-for="BackLink"/>
+                <input type="hidden" asp-for="BackLinkText"/>
+
+                <div>
+                    <label class="nhsuk-label" asp-for="SelectedFilterId">Which of your saved filters do you want to use for this competition?</label>
+                    <span class="nhsuk-hint">Choose a filter from the list. If you need to, you can <a href="@createFilterUrl">create a new filter</a>.</span>
+                </div>
+                <nhs-select asp-for="SelectedFilterId"
+                            asp-items="@Model.Filters"
+                            default-value="Select a filter"
+                            class="nhsuk-u-margin-bottom-7"/>
+                <nhs-submit-button/>
+            </form>
+        }
+        else
+        {
+            <p>No filters have been created for your organisation yet. You must <a href="@createFilterUrl">create a filter</a> before you can start a competition. </p>
+        }
+    </div>
+</div>
