@@ -23,7 +23,7 @@ DECLARE @workflowCapabilityId AS int = 20;
 DECLARE @onlineConsultationCapabilityId AS int = 43;
 DECLARE @videoConsultationCapabilityId AS int = 44;
 
-DECLARE @tifFrameworkId = NVARCHAR(10) = 'TIF001';
+DECLARE @tifFrameworkId AS NVARCHAR(10) = 'TIF001';
 DECLARE @gpitframeworkId AS nvarchar(10) = 'NHSDGP001';
 DECLARE @dfocvcframeworkId AS nvarchar(10) = 'DFOCVC001';
 DECLARE @bobEmail AS nvarchar(50) = N'BobSmith@email.com';

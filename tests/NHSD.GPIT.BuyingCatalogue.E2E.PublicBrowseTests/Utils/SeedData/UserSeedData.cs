@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
@@ -11,7 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 {
-    internal static class UserSeedData
+    internal class UserSeedData : ISeedData
     {
         internal const string AliceEmail = "AliceSmith@email.com";
         internal const string DaveEmail = "DaveSmith@email.com";
@@ -21,12 +22,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
         internal const int DaveId = 5;
         private const string TestPassword = "Th1sIsP4ssword!";
 
-        internal static void Initialize(BuyingCatalogueDbContext context)
+        public static async Task Initialize(BuyingCatalogueDbContext context)
         {
-            AddDefaultData(context);
+            await AddDefaultData(context);
         }
 
-        private static void AddDefaultData(BuyingCatalogueDbContext context)
+        private static async Task AddDefaultData(BuyingCatalogueDbContext context)
         {
             var buyerRole = context.Roles.First(r => r.Name == OrganisationFunction.Buyer.Name);
             var adminRole = context.Roles.First(r => r.Name == OrganisationFunction.Authority.Name);
@@ -321,7 +322,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 new Organisation { Id = 181, Name = "Yorkshire and Humber Commissioning Hub", Address = new Address { Line1 = "C/O NHS ENGLAND, 1W09, 1ST FLOOR", Line2 = "QUARRY HOUSE", Line3 = "QUARRY HILL", Town = "LEEDS", County = "WEST YORKSHIRE", Postcode = "LS2 7UE", Country = "ENGLAND" }, PrimaryRoleId = "RO98",  LastUpdated = DateTime.UtcNow, ExternalIdentifier = "13V", InternalIdentifier = "CG-13V", OrganisationType = OrganisationType.CCG },
             };
 
-            context.InsertRangeWithIdentity(organisations);
+            await context.InsertRangeWithIdentityAsync(organisations);
 
             // Users
             var adminUser = new AspNetUser
@@ -410,7 +411,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             var users = new[] { adminUser, buyUser, buyProxyUser, accountManagerUser };
 
-            context.InsertRangeWithIdentity(users);
+            await context.InsertRangeWithIdentityAsync(users);
         }
     }
 }

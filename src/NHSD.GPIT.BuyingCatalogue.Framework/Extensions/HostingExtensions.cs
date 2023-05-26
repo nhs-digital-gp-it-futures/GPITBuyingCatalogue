@@ -44,5 +44,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
                 _ => TaskProgress.NotStarted,
             };
         }
+
+        public static bool HasHostingType(this Hosting hosting, HostingType hostingType)
+        {
+            if (hosting is null)
+                throw new ArgumentNullException(nameof(hosting));
+
+            return hostingType switch
+            {
+                HostingType.Hybrid => hosting.HybridHostingType != null && hosting.HybridHostingType.IsValid(),
+                HostingType.OnPremise => hosting.OnPremise != null && hosting.OnPremise.IsValid(),
+                HostingType.PrivateCloud => hosting.PrivateCloud != null && hosting.PrivateCloud.IsValid(),
+                HostingType.PublicCloud => hosting.PublicCloud != null && hosting.PublicCloud.IsValid(),
+                _ => false,
+            };
+        }
     }
 }

@@ -10,6 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Serialization;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
@@ -51,7 +52,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             string selectedEpicIds = null,
             string search = null,
             string selectedFrameworkId = null,
-            string selectedClientApplicationTypeIds = null)
+            string selectedClientApplicationTypeIds = null,
+            string selectedHostingTypeIds = null)
         {
             options ??= new PageOptions();
 
@@ -64,7 +66,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 query = query.Where(ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == selectedFrameworkId));
             if (!string.IsNullOrWhiteSpace(selectedClientApplicationTypeIds))
             {
-                query = GetClientApplicationTypeFilterQuery(query, selectedClientApplicationTypeIds);
+                query = ApplyAdditionalFilterToQuery<ClientApplicationType>(
+                    query,
+                    selectedClientApplicationTypeIds,
+                    GetSelectedFiltersClientApplication,
+                    x => !string.IsNullOrEmpty(x.ClientApplication));
+            }
+
+            if (!string.IsNullOrWhiteSpace(selectedHostingTypeIds))
+            {
+                query = ApplyAdditionalFilterToQuery<HostingType>(
+                    query,
+                    selectedHostingTypeIds,
+                    GetSelectedFiltersHosting,
+                    x => x.Hosting.IsValid());
             }
 
             options.TotalNumberOfItems = await query.CountAsync();
@@ -115,31 +130,35 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ToListAsync();
         }
 
-        private static IQueryable<CatalogueItem> GetClientApplicationTypeFilterQuery(IQueryable<CatalogueItem> query, string selectedClientApplicationTypeIds)
+        private static IQueryable<CatalogueItem> ApplyAdditionalFilterToQuery<T>(
+            IQueryable<CatalogueItem> query,
+            string selectedFilterIds,
+            Func<Solution, IEnumerable<T>, IEnumerable<T>> getSelectedFilters,
+            Predicate<Solution> isValid)
+            where T : struct, Enum
         {
-            if (string.IsNullOrEmpty(selectedClientApplicationTypeIds))
+            if (string.IsNullOrEmpty(selectedFilterIds))
                 return query;
 
-            var clientApplicationTypeEnums = selectedClientApplicationTypeIds.Split(FilterConstants.Delimiter)
-                .Where(t => Enum.TryParse<ClientApplicationType>(t, out var enumVal) && Enum.IsDefined(enumVal))
-                .Select(Enum.Parse<ClientApplicationType>)
+            var selectedFilterEnums = selectedFilterIds.Split(FilterConstants.Delimiter)
+                .Where(t => Enum.TryParse<T>(t, out var enumVal) && Enum.IsDefined(enumVal))
+                .Select(Enum.Parse<T>)
                 .ToList();
 
-            if (clientApplicationTypeEnums == null || !clientApplicationTypeEnums.Any())
-                throw new ArgumentException("Invalid filter format", nameof(selectedClientApplicationTypeIds));
+            if (selectedFilterEnums == null || !selectedFilterEnums.Any())
+                throw new ArgumentException("Invalid filter format", nameof(selectedFilterIds));
 
             foreach (var row in query)
             {
-                if (string.IsNullOrEmpty(row.Solution.ClientApplication))
+                if (!isValid(row.Solution))
                 {
                     query = query.Where(ci => ci.Id != row.Id);
                     continue;
                 }
 
-                var clientApplication = JsonDeserializer.Deserialize<ClientApplication>(row.Solution.ClientApplication);
-                var matchingTypes = clientApplicationTypeEnums.Where(t => clientApplication.HasClientApplicationType(t));
+                var matchingTypes = getSelectedFilters(row.Solution, selectedFilterEnums);
 
-                if (matchingTypes.Count() < clientApplicationTypeEnums.Count)
+                if (matchingTypes.Count() < selectedFilterEnums?.Count)
                 {
                     query = query.Where(ci => ci.Id != row.Id);
                 }
@@ -259,6 +278,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 Value = table,
                 TypeName = type,
             };
+        }
+
+        private static IEnumerable<ClientApplicationType> GetSelectedFiltersClientApplication(Solution solution, IEnumerable<ClientApplicationType> selectedFilterEnums)
+        {
+            var clientApplication = JsonDeserializer.Deserialize<ClientApplication>(solution.ClientApplication);
+            return selectedFilterEnums?.Where(t => clientApplication.HasClientApplicationType(t));
+        }
+
+        private static IEnumerable<HostingType> GetSelectedFiltersHosting(Solution solution, IEnumerable<HostingType> selectedFilterEnums)
+        {
+            return selectedFilterEnums?.Where(t => solution.Hosting.HasHostingType(t));
         }
     }
 }

@@ -3,6 +3,7 @@
     internal static class Schemas
     {
         internal const string Catalogue = "catalogue";
+        internal const string Competitions = "competitions";
         internal const string Ordering = "ordering";
         internal const string Organisations = "organisations";
         internal const string OdsOrganisations = "ods_organisations";

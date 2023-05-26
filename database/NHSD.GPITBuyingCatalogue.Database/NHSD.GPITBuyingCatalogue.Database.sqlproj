@@ -68,6 +68,7 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
+    <Folder Include="Competitions\Stored Procedures" />
     <Folder Include="OdsOrganisations\Functions\" />
     <Folder Include="Properties" />
     <Folder Include="Security\" />
@@ -104,8 +105,11 @@
     <Folder Include="OdsOrganisations\" />
     <Folder Include="OdsOrganisations\Tables\" />
     <Folder Include="PostDeployment\OdsOrganisationsSeedData\" />
+    <Folder Include="Filtering\TemporalTables\" />
+    <Folder Include="Filtering\Tables\" />
   </ItemGroup>
   <ItemGroup>
+    <Build Include="Competitions\TemporalTables\Competitions_History.sql" />
     <Build Include="Security\Users\NHSD.sql" />
     <Build Include="Security\Logins\NHSD.sql" />
     <Build Include="Filtering\Tables\FilterCapabilities.sql" />
@@ -119,14 +123,13 @@
     <Build Include="Filtering\TemporalTables\FilterHostingTypes_History.sql" />
     <Build Include="Filtering\TemporalTables\Filters_History.sql" />
     <None Include="PostDeployment\CreateIntegratedCareBoards.sql" />
-    <None Include="PostDeployment\InsertFilters.sql" />
+    <None Include="PostDeployment\TestData\InsertFilters.sql" />
+    <None Include="PostDeployment\TestData\Competitions\InsertCompetitions.sql" />
     <None Include="PostDeployment\IntegrationTests\ClearData.sql" />
     <None Include="PostDeployment\IntegrationTests\DropRole.sql" />
     <None Include="PostDeployment\IntegrationTests\DropUserAndLogin.sql" />
     <None Include="PostDeployment\IntegrationTests\PostDeployment.sql" />
     <None Include="PostDeployment\IntegrationTests\RestoreUserAndLogin.sql" />
-    <Build Include="Security\Schemas\import.sql" />
-    <Build Include="Security\Schemas\publish.sql" />
     <Build Include="Security\Roles\Importer.sql" />
     <Build Include="Security\Roles\Publisher.sql" />
     <Build Include="Security\Roles\Api.sql" />
@@ -141,8 +144,6 @@
     <None Include="PostDeployment\CreateCommissioningSupportUnits.sql" />
     <None Include="PostDeployment\CreateExecutiveAgency.sql" />
     <None Include="PostDeployment\CreateExecutiveAgencyUser.sql" />
-    <Build Include="Security\Schemas\ordering.sql" />
-    <Build Include="Security\Schemas\filtering.sql" />
     <Build Include="Ordering\Tables\Contacts.sql" />
     <Build Include="Ordering\Tables\DefaultDeliveryDates.sql" />
     <Build Include="Ordering\Tables\OrderItemRecipients.sql" />
@@ -187,11 +188,8 @@
     <Build Include="Users\Tables\AspNetUserRoles.sql" />
     <Build Include="Users\Tables\AspNetUsers.sql" />
     <Build Include="Users\Tables\AspNetUserTokens.sql" />
-    <Build Include="Security\Schemas\users.sql" />
     <Build Include="Organisations\Tables\Organisations.sql" />
     <Build Include="Organisations\Tables\RelatedOrganisations.sql" />
-    <Build Include="Security\Schemas\organisations.sql" />
-    <Build Include="Security\Schemas\cache.sql" />
     <Build Include="Cache\SessionData.sql" />
     <Build Include="Users\Tables\DataProtectionKeys.sql" />
     <Build Include="Import\Functions\GetSupplierId.sql" />
@@ -212,7 +210,6 @@
     <Build Include="Catalogue\Tables\ServiceAvailabilityTimes.sql" />
     <Build Include="Catalogue\Tables\SlaServiceLevels.sql" />
     <Build Include="Catalogue\Tables\StandardTypes.sql" />
-    <Build Include="Security\Schemas\auditing.sql" />
     <Build Include="Catalogue\Tables\WorkOffPlans.sql" />
     <Build Include="Organisations\TemporalTables\Organisations_History.sql" />
     <Build Include="Organisations\TemporalTables\RelatedOrganisations_History.sql" />
@@ -352,7 +349,6 @@
     <None Include="PostDeployment\ProdLikeData\MergeFrameworkSolutions.sql" />
     <None Include="PostDeployment\ProdLikeData\MergeCataloguePrices.sql" />
     <None Include="PostDeployment\InsertAssociatedServices.sql" />
-    <Build Include="Security\Schemas\catalogue.sql" />
     <None Include="PostDeployment\InsertStandards.sql" />
     <None Include="PostDeployment\InsertStandardsCapabilities.sql" />
     <None Include="PostDeployment\InsertStandardTypes.sql" />
@@ -389,7 +385,6 @@
     <Build Include="OdsOrganisations\Tables\OrganisationRoles.sql" />
     <Build Include="OdsOrganisations\Tables\RoleTypes.sql" />
     <Build Include="OdsOrganisations\Tables\Journal.sql" />
-    <Build Include="Security\Schemas\ods_organisations.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PostDeployment\OdsOrganisationsSeedData\InsertOdsOrganisations.sql" />
@@ -397,6 +392,35 @@
     <None Include="PostDeployment\OdsOrganisationsSeedData\InsertOrganisationRoles.sql" />
     <None Include="PostDeployment\OdsOrganisationsSeedData\InsertRelationshipTypes.sql" />
     <None Include="PostDeployment\OdsOrganisationsSeedData\InsertRoleTypes.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Security\Schemas\import.sql" />
+    <Build Include="Security\Schemas\publish.sql" />
+    <Build Include="Security\Schemas\ordering.sql" />
+    <Build Include="Security\Schemas\filtering.sql" />
+    <Build Include="Security\Schemas\users.sql" />
+    <Build Include="Security\Schemas\organisations.sql" />
+    <Build Include="Security\Schemas\cache.sql" />
+    <Build Include="Security\Schemas\auditing.sql" />
+    <Build Include="Security\Schemas\catalogue.sql" />
+    <Build Include="Security\Schemas\ods_organisations.sql" />
+    <Build Include="Security\Schemas\competitions.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Competitions\Tables\Competitions.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Filtering\Tables\FilterCapabilities.sql" />
+    <Build Include="Filtering\Tables\FilterClientApplicationTypes.sql" />
+    <Build Include="Filtering\Tables\FilterEpics.sql" />
+    <Build Include="Filtering\Tables\FilterHostingTypes.sql" />
+    <Build Include="Filtering\Tables\Filters.sql" />
+    
+    <Build Include="Filtering\TemporalTables\FilterCapabilities_History.sql" />
+    <Build Include="Filtering\TemporalTables\FilterClientApplicationTypes_History.sql" />
+    <Build Include="Filtering\TemporalTables\FilterEpics_History.sql" />
+    <Build Include="Filtering\TemporalTables\FilterHostingTypes_History.sql" />
+    <Build Include="Filtering\TemporalTables\Filters_History.sql" />
   </ItemGroup>
   <PropertyGroup>
     <PreBuildEvent>
