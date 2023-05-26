@@ -50,10 +50,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
                 .ToListAsync();
         }
 
-        public async Task<string> GetEpicsForSelectedCapabilities(IEnumerable<int> capabilityIds, IEnumerable<string> epicIds)
+        public async Task<string> GetEpicsForSelectedCapabilities(
+            IEnumerable<int> capabilityIds,
+            IEnumerable<string> epicIds)
         {
-            var epics = await dbContext.Capabilities.Where(x => capabilityIds.Contains(x.Id))
-                .SelectMany(x => x.Epics.Where(y => epicIds.Contains(y.Id)))
+            var epics = await dbContext.Epics
+                .AsNoTracking()
+                .Where(x => x.Capabilities.Any(y => capabilityIds.Contains(y.Id)))
                 .ToListAsync();
 
             return string.Join(FilterConstants.Delimiter, epics.Select(e => e.Id));
