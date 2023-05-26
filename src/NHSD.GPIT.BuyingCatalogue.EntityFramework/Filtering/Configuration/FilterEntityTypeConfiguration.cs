@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Configuration
@@ -55,6 +57,56 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Configuration
                 .WithMany()
                 .HasForeignKey(i => i.LastUpdatedBy)
                 .HasConstraintName("FK_Filters_LastUpdatedBy");
+
+            builder.HasMany(x => x.Capabilities)
+                .WithMany()
+                .UsingEntity<Dictionary<string, object>>(
+                    r => r.HasOne<Capability>()
+                        .WithMany()
+                        .HasForeignKey("CapabilityId")
+                        .HasConstraintName("FK_FrameworkCapabilities_Capability"),
+                    l => l.HasOne<Filter>()
+                        .WithMany()
+                        .HasForeignKey("FilterId")
+                        .HasConstraintName("FK_FrameworkCapabilities_Filter"),
+                    j =>
+                    {
+                        j.ToTable(
+                            "FilterCapabilities",
+                            b => b.IsTemporal(
+                                temp =>
+                                {
+                                    temp.UseHistoryTable("AspNetUsers_History");
+                                    temp.HasPeriodStart("SysStartTime");
+                                    temp.HasPeriodEnd("SysEndTime");
+                                }));
+                        j.HasKey("CapabilityId", "FilterId");
+                    });
+
+            builder.HasMany(x => x.Epics)
+                .WithMany()
+                .UsingEntity<Dictionary<string, object>>(
+                    r => r.HasOne<Epic>()
+                        .WithMany()
+                        .HasForeignKey("EpicId")
+                        .HasConstraintName("FK_FrameworkEpics_Epic"),
+                    l => l.HasOne<Filter>()
+                        .WithMany()
+                        .HasForeignKey("FilterId")
+                        .HasConstraintName("FK_FrameworkEpics_Filter"),
+                    j =>
+                    {
+                        j.ToTable(
+                            "FilterEpics",
+                            b => b.IsTemporal(
+                                temp =>
+                                {
+                                    temp.UseHistoryTable("AspNetUsers_History");
+                                    temp.HasPeriodStart("SysStartTime");
+                                    temp.HasPeriodEnd("SysEndTime");
+                                }));
+                        j.HasKey("EpicId", "FilterId");
+                    });
         }
     }
 }

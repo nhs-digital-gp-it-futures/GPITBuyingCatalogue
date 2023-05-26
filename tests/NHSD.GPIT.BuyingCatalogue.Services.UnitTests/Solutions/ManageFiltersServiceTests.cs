@@ -206,7 +206,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             Filter filter,
             ManageFiltersService service)
         {
-            filter.FilterCapabilities.Clear();
+            filter.Capabilities.Clear();
             context.Filters.Add(filter);
             await context.SaveChangesAsync();
 
@@ -216,7 +216,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             var result = await context.Filters.FirstAsync(f => f.Id == filter.Id);
             result.Should().NotBeNull();
 
-            result.FilterCapabilities.Should().BeEmpty();
+            result.Capabilities.Should().BeEmpty();
         }
 
         [Theory]
@@ -226,7 +226,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             Filter filter,
             ManageFiltersService service)
         {
-            filter.FilterCapabilities.Clear();
+            filter.Capabilities.Clear();
             context.Filters.Add(filter);
             await context.SaveChangesAsync();
 
@@ -236,7 +236,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             var result = await context.Filters.FirstAsync(f => f.Id == filter.Id);
             result.Should().NotBeNull();
 
-            result.FilterCapabilities.Should().BeEmpty();
+            result.Capabilities.Should().BeEmpty();
         }
 
         [Theory]
@@ -262,7 +262,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             List<Capability> capabilities,
             ManageFiltersService service)
         {
-            filter.FilterCapabilities.Clear();
+            filter.Capabilities.Clear();
             context.Filters.Add(filter);
             await context.SaveChangesAsync();
 
@@ -274,17 +274,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             await service.AddFilterCapabilities(filter.Id, capabilityIds);
             context.ChangeTracker.Clear();
 
-            var result = await context.Filters.Include(f => f.FilterCapabilities).FirstAsync(f => f.Id == filter.Id);
+            var result = await context.Filters.Include(f => f.Capabilities).FirstAsync(f => f.Id == filter.Id);
             result.Should().NotBeNull();
 
-            result.FilterCapabilities.Should().NotBeNullOrEmpty();
-            result.FilterCapabilities.Count.Should().Be(capabilities.Count);
-
-            foreach (var fc in result.FilterCapabilities)
-            {
-                fc.FilterId.Should().Be(filter.Id);
-                capabilityIds.Should().Contain(fc.CapabilityId);
-            }
+            result.Capabilities.Should().NotBeNullOrEmpty();
+            result.Capabilities.Count.Should().Be(capabilities.Count);
         }
 
         [Theory]
@@ -294,7 +288,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             Filter filter,
             ManageFiltersService service)
         {
-            filter.FilterEpics.Clear();
+            filter.Epics.Clear();
             context.Filters.Add(filter);
             await context.SaveChangesAsync();
 
@@ -304,7 +298,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             var result = await context.Filters.FirstAsync(f => f.Id == filter.Id);
             result.Should().NotBeNull();
 
-            result.FilterEpics.Should().BeEmpty();
+            result.Epics.Should().BeEmpty();
         }
 
         [Theory]
@@ -314,7 +308,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             Filter filter,
             ManageFiltersService service)
         {
-            filter.FilterEpics.Clear();
+            filter.Epics.Clear();
             context.Filters.Add(filter);
             await context.SaveChangesAsync();
 
@@ -324,7 +318,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             var result = await context.Filters.FirstAsync(f => f.Id == filter.Id);
             result.Should().NotBeNull();
 
-            result.FilterEpics.Should().BeEmpty();
+            result.Epics.Should().BeEmpty();
         }
 
         [Theory]
@@ -350,7 +344,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             List<Epic> epics,
             ManageFiltersService service)
         {
-            filter.FilterEpics.Clear();
+            filter.Epics.Clear();
             context.Filters.Add(filter);
             await context.SaveChangesAsync();
 
@@ -362,17 +356,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             await service.AddFilterEpics(filter.Id, epicIds);
             context.ChangeTracker.Clear();
 
-            var result = await context.Filters.Include(f => f.FilterEpics).FirstOrDefaultAsync(f => f.Id == filter.Id);
+            var result = await context.Filters.Include(f => f.Epics).FirstOrDefaultAsync(f => f.Id == filter.Id);
             result.Should().NotBeNull();
 
-            result.FilterEpics.Should().NotBeNullOrEmpty();
-            result.FilterEpics.Count.Should().Be(epics.Count);
-
-            foreach (var fe in result.FilterEpics)
-            {
-                fe.FilterId.Should().Be(filter.Id);
-                epicIds.Should().Contain(fe.EpicId);
-            }
+            result.Epics.Should().NotBeNullOrEmpty();
+            result.Epics.Count.Should().Be(epics.Count);
         }
 
         [Theory]

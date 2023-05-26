@@ -186,7 +186,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [CommonAutoData]
         public static async Task Get_FilterDetails_ReturnsExpectedResult(
             Filter filter,
-            List<FilterEpic> filterEpics,
+            List<Epic> epics,
             Capability capability,
             [Frozen] Mock<IOrganisationsService> organisationsService,
             [Frozen] Mock<ICapabilitiesService> capabilitiesService,
@@ -200,13 +200,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             filter.Organisation = organisation;
             filter.OrganisationId = organisation.Id;
 
-            foreach (var item in filterEpics)
+            foreach (var item in epics)
             {
-                item.Epic.Capability = capability;
-                item.Epic.CapabilityId = capability.Id;
+                item.Capability = capability;
+                item.CapabilityId = capability.Id;
             }
 
-            filter.FilterEpics = filterEpics;
+            filter.Epics = epics;
 
             organisationsService
                 .Setup(x => x.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId))

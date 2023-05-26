@@ -21,8 +21,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
 
             OrganisationName = organisationName;
 
-            var capabilities = Filter.FilterCapabilities.Select(x => x.Capability).ToList();
-            var epics = Filter.FilterEpics != null ? Filter.FilterEpics.Select(x => x.Epic).ToList() : new List<Epic>();
+            var capabilities = Filter.Capabilities.ToList();
+            var epics = Filter.Epics.ToList();
 
             GroupedCapabilities = capabilities.ToDictionary(
                 x => x.Name,
@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
 
         public Dictionary<string, List<Epic>> GroupedCapabilities { get; init; }
 
-        public bool FilterContainsEpics => Filter.FilterEpics != null && Filter.FilterEpics.Any();
+        public bool FilterContainsEpics => Filter.Epics != null && Filter.Epics.Any();
 
         public bool FilterContainsAdditionalFilters =>
             (Filter.FilterClientApplicationTypes != null && Filter.FilterClientApplicationTypes.Any()) ||
