@@ -117,6 +117,9 @@
     <Folder Include="Catalogue\Tables\" />
     <Folder Include="Catalogue\TemporalTables\" />
     <Folder Include="Catalogue\Types\" />
+    <Folder Include="Competitions\" />
+    <Folder Include="Competitions\Tables\" />
+    <Folder Include="Competitions\TemporalTables\" />
     <Folder Include="Filtering\" />
     <Folder Include="Filtering\Tables\" />
     <Folder Include="Filtering\TemporalTables\" />
@@ -148,6 +151,8 @@
     <Folder Include="PostDeployment\OdsOrganisationsSeedData\" />
     <Folder Include="PostDeployment\OrderSeedData\" />
     <Folder Include="PostDeployment\ProdLikeData\" />
+    <Folder Include="PostDeployment\TestData\" />
+    <Folder Include="PostDeployment\TestData\Competitions\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.SqlServer.Dacpacs.Azure.Master" Version="160.0.0">
