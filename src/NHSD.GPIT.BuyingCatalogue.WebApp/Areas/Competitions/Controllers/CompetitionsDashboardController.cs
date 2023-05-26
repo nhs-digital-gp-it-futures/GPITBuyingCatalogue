@@ -88,4 +88,16 @@ public class CompetitionsDashboardController : Controller
 
         return RedirectToAction(nameof(Index), new { internalOrgId });
     }
+
+    [HttpGet("select-filter/{filterId}/review")]
+    public async Task<IActionResult> ReviewFilter(string internalOrgId, int filterId)
+    {
+        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
+        var filter = await filterService.GetFilter(organisation.Id, filterId);
+
+        if (filter == null)
+            return RedirectToAction(nameof(SelectFilter), new { internalOrgId });
+
+        return View(filter);
+    }
 }

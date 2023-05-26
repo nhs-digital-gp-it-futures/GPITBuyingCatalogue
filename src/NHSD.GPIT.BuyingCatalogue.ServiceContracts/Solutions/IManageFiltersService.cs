@@ -18,6 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task<bool> FilterExists(string filterName, int organisationId);
 
+        Task<Filter> GetFilter(int organisationId, int filterId);
+
         Task<List<Filter>> GetFilters(int organisationId);
     }
 }
