@@ -582,7 +582,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var result = await service.GetFilter(filter.Id);
+            var result = await service.GetFilter(organisation.Id, filter.Id);
 
             result.Should().NotBeNull();
             result.Id.Should().Be(filter.Id);

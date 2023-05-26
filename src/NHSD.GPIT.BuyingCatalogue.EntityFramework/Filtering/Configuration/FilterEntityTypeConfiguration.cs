@@ -64,22 +64,14 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Configuration
                     r => r.HasOne<Capability>()
                         .WithMany()
                         .HasForeignKey("CapabilityId")
-                        .HasConstraintName("FK_FrameworkCapabilities_Capability"),
+                        .HasConstraintName("FK_FilterCapabilities_Capability"),
                     l => l.HasOne<Filter>()
                         .WithMany()
                         .HasForeignKey("FilterId")
-                        .HasConstraintName("FK_FrameworkCapabilities_Filter"),
+                        .HasConstraintName("FK_FilterCapabilities_Filter"),
                     j =>
                     {
-                        j.ToTable(
-                            "FilterCapabilities",
-                            b => b.IsTemporal(
-                                temp =>
-                                {
-                                    temp.UseHistoryTable("AspNetUsers_History");
-                                    temp.HasPeriodStart("SysStartTime");
-                                    temp.HasPeriodEnd("SysEndTime");
-                                }));
+                        j.ToTable("FilterCapabilities", Schemas.Filtering);
                         j.HasKey("CapabilityId", "FilterId");
                     });
 
@@ -89,22 +81,14 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Configuration
                     r => r.HasOne<Epic>()
                         .WithMany()
                         .HasForeignKey("EpicId")
-                        .HasConstraintName("FK_FrameworkEpics_Epic"),
+                        .HasConstraintName("FK_FilterEpics_Epic"),
                     l => l.HasOne<Filter>()
                         .WithMany()
                         .HasForeignKey("FilterId")
-                        .HasConstraintName("FK_FrameworkEpics_Filter"),
+                        .HasConstraintName("FK_FilterEpics_Filter"),
                     j =>
                     {
-                        j.ToTable(
-                            "FilterEpics",
-                            b => b.IsTemporal(
-                                temp =>
-                                {
-                                    temp.UseHistoryTable("AspNetUsers_History");
-                                    temp.HasPeriodStart("SysStartTime");
-                                    temp.HasPeriodEnd("SysEndTime");
-                                }));
+                        j.ToTable("FilterEpics", Schemas.Filtering);
                         j.HasKey("EpicId", "FilterId");
                     });
         }

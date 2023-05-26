@@ -128,44 +128,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(organisation);
 
             manageFiltersService
-                .Setup(x => x.GetFilter(filter.Id))
+                .Setup(x => x.GetFilter(organisation.Id, filter.Id))
                 .ReturnsAsync((Filter)null);
-
-            var controller = CreateController(
-                organisationsService,
-                capabilitiesService,
-                epicsService,
-                frameworkService,
-                manageFiltersService,
-                primaryOrganisationInternalId);
-
-            controller.Url = mockUrlHelper.Object;
-
-            var result = await controller.FilterDetails(filter.Id);
-
-            result.Should().BeOfType<NotFoundResult>();
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_FilterDetails_InvalidOrg_ReturnsNotFound(
-            Filter filter,
-            [Frozen] Mock<IOrganisationsService> organisationsService,
-            [Frozen] Mock<ICapabilitiesService> capabilitiesService,
-            [Frozen] Mock<IEpicsService> epicsService,
-            [Frozen] Mock<IFrameworkService> frameworkService,
-            [Frozen] Mock<IManageFiltersService> manageFiltersService,
-            [Frozen] Mock<IUrlHelper> mockUrlHelper,
-            string primaryOrganisationInternalId,
-            Organisation organisation)
-        {
-            organisationsService
-                .Setup(x => x.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId))
-                .ReturnsAsync(organisation);
-
-            manageFiltersService
-                .Setup(x => x.GetFilter(filter.Id))
-                .ReturnsAsync(filter);
 
             var controller = CreateController(
                 organisationsService,
@@ -213,7 +177,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(organisation);
 
             manageFiltersService
-                .Setup(x => x.GetFilter(filter.Id))
+                .Setup(x => x.GetFilter(organisation.Id, filter.Id))
                 .ReturnsAsync(filter);
 
             var controller = CreateController(
