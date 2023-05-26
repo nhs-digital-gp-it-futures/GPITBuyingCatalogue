@@ -57,7 +57,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         {
             var supplierId = 10020;
             var supplierIdString = supplierId.ToString(CultureInfo.InvariantCulture);
-            var supplierKey = $"S{supplierIdString[^3..]}";
 
             var expectedCapabilities = await context
                 .CapabilityCategories
@@ -82,9 +81,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             int userId,
             CatalogueItem catalogueItem,
             Epic epic,
+            Capability capability,
             [Frozen] BuyingCatalogueDbContext context,
             CapabilitiesService capabilitiesService)
         {
+            epic.Capabilities.Add(capability);
             context.CatalogueItems.Add(catalogueItem);
             context.SaveChanges();
 
@@ -93,14 +94,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
                 UserId = userId,
                 Capabilities = new Dictionary<int, string[]>
                 {
-                    [epic.CapabilityId] = new string[1] { epic.Id },
+                    [capability.Id] = new string[1] { epic.Id },
                 },
             };
 
             await capabilitiesService.AddCapabilitiesToCatalogueItem(catalogueItem.Id, model);
 
-            catalogueItem.CatalogueItemCapabilities.FirstOrDefault(c => c.CapabilityId == epic.CapabilityId).Should().NotBeNull();
-            catalogueItem.CatalogueItemEpics.FirstOrDefault(e => e.CapabilityId == epic.CapabilityId && e.EpicId == epic.Id).Should().NotBeNull();
+            catalogueItem.CatalogueItemCapabilities.FirstOrDefault(c => c.CapabilityId == capability.Id).Should().NotBeNull();
+            catalogueItem.CatalogueItemEpics.FirstOrDefault(e => e.CapabilityId == capability.Id && e.EpicId == epic.Id).Should().NotBeNull();
         }
 
         [Theory]
@@ -109,9 +110,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             int userId,
             CatalogueItem catalogueItem,
             Epic epic,
+            Capability capability,
             [Frozen] BuyingCatalogueDbContext context,
             CapabilitiesService capabilitiesService)
         {
+            epic.Capabilities.Add(capability);
             context.CatalogueItems.Add(catalogueItem);
             context.SaveChanges();
 
@@ -122,7 +125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
                 UserId = userId,
                 Capabilities = new Dictionary<int, string[]>
                 {
-                    [epic.CapabilityId] = new string[1] { epic.Id },
+                    [capability.Id] = new string[1] { epic.Id },
                 },
             };
 
@@ -138,10 +141,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             int userId,
             CatalogueItem catalogueItem,
             Epic epic,
+            Capability capability,
             List<CatalogueItemEpic> staleEpics,
             [Frozen] BuyingCatalogueDbContext context,
             CapabilitiesService capabilitiesService)
         {
+            epic.Capabilities.Add(capability);
             staleEpics.ForEach(catalogueItem.CatalogueItemEpics.Add);
             context.CatalogueItems.Add(catalogueItem);
             context.SaveChanges();
@@ -151,7 +156,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
                 UserId = userId,
                 Capabilities = new Dictionary<int, string[]>
                 {
-                    [epic.CapabilityId] = new string[1] { epic.Id },
+                    [capability.Id] = new string[1] { epic.Id },
                 },
             };
 

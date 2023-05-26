@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
 
             for (var i = 0; i < capabilities.Count; i++)
             {
-                epics[i].CapabilityId = capabilities[i].Id;
+                epics[i].Capabilities.Add(capabilities[i]);
                 epics[i].IsActive = false;
             }
 
@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             dbContext.Epics.AddRange(epics);
             await dbContext.SaveChangesAsync();
 
-            dbContext.CatalogueItemEpics.Add(new(catalogueItem.Id, epics[0].CapabilityId, epics[0].Id));
+            dbContext.CatalogueItemEpics.Add(new(catalogueItem.Id, epics[0].Capabilities.First().Id, epics[0].Id));
             await dbContext.SaveChangesAsync();
 
             var result = await service.GetReferencedEpicsByCapabilityIds(capabilities.Select(x => x.Id));
@@ -94,28 +94,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         [InMemoryDbAutoData]
         public static async Task GetEpicsByIds_ExpectedResult(
             List<Epic> epics,
-            List<Capability> capabilities,
             [Frozen] BuyingCatalogueDbContext dbContext,
             EpicsService service)
         {
-            capabilities.ForEach(x =>
-            {
-                x.Epics.Clear();
-            });
-
-            dbContext.Capabilities.AddRange(capabilities);
-            await dbContext.SaveChangesAsync();
-
-            for (var i = 0; i < capabilities.Count; i++)
-            {
-                epics[i].CapabilityId = capabilities[i].Id;
-                epics[i].IsActive = false;
-            }
-
-            epics[0].IsActive = true;
+            epics.Skip(1).ToList().ForEach(x => x.IsActive = false);
+            epics.Take(1).ToList().ForEach(x => x.IsActive = true);
 
             dbContext.Epics.AddRange(epics);
             await dbContext.SaveChangesAsync();
+
+            dbContext.ChangeTracker.Clear();
 
             var result = await service.GetEpicsByIds(epics.Select(x => x.Id));
 

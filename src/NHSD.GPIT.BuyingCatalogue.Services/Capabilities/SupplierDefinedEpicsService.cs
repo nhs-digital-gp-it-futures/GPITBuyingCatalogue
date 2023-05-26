@@ -77,7 +77,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
 
         public Task<bool> EpicExists(
             string epicId,
-            int capabilityId,
             string name,
             string description,
             bool isActive) =>

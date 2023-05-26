@@ -6,6 +6,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     public sealed class Epic : IAudited
     {
+        public Epic()
+        {
+            Capabilities = new HashSet<Capability>();
+        }
+
         public string Id { get; set; }
 
         public string Name { get; set; }

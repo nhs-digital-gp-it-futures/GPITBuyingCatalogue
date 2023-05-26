@@ -111,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISupplierDefinedEpicsService> mockEpicsService,
             SupplierDefinedEpicsController systemUnderTest)
         {
-            epics.ForEach(x => x.Capability = capability);
+            epics.ForEach(x => x.Capabilities = new List<Capability> { capability });
 
             mockEpicsService
                 .Setup(o => o.GetSupplierDefinedEpicsBySearchTerm(searchTerm))
@@ -127,7 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             foreach (var epic in epics)
             {
-                actualResult.Should().Contain(x => x.Title == epic.Name && x.Category == epic.Capability.Name);
+                actualResult.Should().Contain(x => x.Title == epic.Name && x.Category == capability.Name);
             }
         }
 
@@ -277,6 +277,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISupplierDefinedEpicsService> supplierDefinedEpicsService,
             SupplierDefinedEpicsController controller)
         {
+            epic.Capabilities = capabilities;
+
             capabilitiesService.Setup(s => s.GetCapabilities())
                 .ReturnsAsync(capabilities);
 

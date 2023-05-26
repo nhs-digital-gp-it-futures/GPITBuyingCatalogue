@@ -109,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
             var pageSummary = GetPageSummary();
 
             pageSummary.Names.Should().BeEquivalentTo(epics.Select(x => x.Name.Trim()));
-            //TODO pageSummary.Capabilities.Should().BeEquivalentTo(epics.Select(x => x.Capability.Name.Trim()));
+            pageSummary.Capabilities.Should().BeEquivalentTo(epics.Select(x => x.Capabilities.First().Name.Trim()));
             pageSummary.Ids.Should().BeEquivalentTo(epics.Select(x => x.Id.Trim()));
         }
 
@@ -136,12 +136,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
                 .Should()
                 .BeTrue();
 
-            // TODO
-            // CommonActions.ElementTextEqualTo(
-            //         SupplierDefinedEpicsDashboardObjects.SearchResultDescription(0),
-            //         sampleEpic.Capability.Name)
-            //     .Should()
-            //     .BeTrue();
+            CommonActions.ElementTextEqualTo(
+                    SupplierDefinedEpicsDashboardObjects.SearchResultDescription(0),
+                    sampleEpic.Capabilities.First().Name)
+                .Should()
+                .BeTrue();
 
             CommonActions.ClickLinkElement(SupplierDefinedEpicsDashboardObjects.SearchButton);
 
@@ -154,7 +153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
             var pageSummary = GetPageSummary();
 
             pageSummary.Names.First().Should().Be(sampleEpic.Name.Trim());
-            pageSummary.Capabilities.First().Should().Be(sampleEpic.Capability.Name.Trim());
+            pageSummary.Capabilities.First().Should().Be(sampleEpic.Capabilities.First().Name.Trim());
             pageSummary.Ids.First().Should().Be(sampleEpic.Id);
         }
 
@@ -220,7 +219,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
             Ids = Driver.FindElements(SupplierDefinedEpicsDashboardObjects.EpicIds).Select(s => s.GetAttribute("data-id").Trim()),
         };
 
-        private class PageSummary
+        private readonly struct PageSummary
         {
             public IEnumerable<string> Names { get; init; }
 
