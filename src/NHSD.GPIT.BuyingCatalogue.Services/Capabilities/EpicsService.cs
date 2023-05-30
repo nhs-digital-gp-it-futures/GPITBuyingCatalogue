@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
         {
             var epics = await dbContext.Epics
                 .AsNoTracking()
-                .Where(x => x.Capabilities.Any(y => capabilityIds.Contains(y.Id)))
+                .Where(x => epicIds.Contains(x.Id) && x.Capabilities.Any(y => capabilityIds.Contains(y.Id)))
                 .ToListAsync();
 
             return string.Join(FilterConstants.Delimiter, epics.Select(e => e.Id));

@@ -65,7 +65,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.HasMany(x => x.Epics)
                 .WithMany(x => x.Capabilities)
                 .UsingEntity<Dictionary<string, object>>(
-                    "CapabilityEpics",
                     right => right.HasOne<Epic>()
                         .WithMany()
                         .HasForeignKey("EpicId")
@@ -74,7 +73,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                         .WithMany()
                         .HasForeignKey("CapabilityId")
                         .HasConstraintName("FK_CapabilityEpics_Capability"),
-                    j => j.HasKey("CapabilityId", "EpicId"));
+                    j =>
+                    {
+                        j.ToTable("CapabilityEpics", Schemas.Catalogue);
+                        j.HasKey("CapabilityId", "EpicId");
+                    });
         }
     }
 }
