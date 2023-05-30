@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
@@ -86,6 +87,29 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .AsNoTracking()
                 .ToListAsync();
         }
+
+        public async Task<FilterDetailsModel> GetFilterDetails(int organisationId, int filterId)
+            => await dbContext.Filters.Where(x => x.OrganisationId == organisationId && x.Id == filterId)
+                .Select(
+                    x => new FilterDetailsModel
+                    {
+                        Name = x.Name,
+                        Description = x.Description,
+                        FrameworkName = x.Framework.ShortName,
+                        HostingTypes = x.FilterHostingTypes.Select(y => y.HostingType).ToList(),
+                        ClientApplicationTypes =
+                            x.FilterClientApplicationTypes.Select(y => y.ClientApplicationType).ToList(),
+                        Capabilities = x.FilterCapabilities
+                            .Select(
+                                y => new KeyValuePair<string, List<string>>(
+                                    y.Capability.Name,
+                                    x.FilterEpics.Where(z => z.Epic.CapabilityId == y.CapabilityId)
+                                        .Select(z => z.Epic.Name)
+                                        .ToList()))
+                            .ToList(),
+                    })
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
 
         internal async Task AddFilterCapabilities(int filterId, List<int> capabilityIds)
         {

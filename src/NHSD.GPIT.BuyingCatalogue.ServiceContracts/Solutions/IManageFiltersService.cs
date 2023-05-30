@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 {
@@ -21,5 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         Task<Filter> GetFilter(int organisationId, int filterId);
 
         Task<List<Filter>> GetFilters(int organisationId);
+
+        Task<FilterDetailsModel> GetFilterDetails(int organisationId, int filterId);
     }
 }

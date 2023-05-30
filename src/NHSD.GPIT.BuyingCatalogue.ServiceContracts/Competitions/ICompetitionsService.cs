@@ -7,4 +7,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 public interface ICompetitionsService
 {
     Task<IEnumerable<Competition>> GetCompetitions(int organisationId);
+
+    Task AddCompetition(int organisationId, int filterId, string name, string description);
+
+    Task<bool> ExistsAsync(int organisationId, string competitionName);
 }

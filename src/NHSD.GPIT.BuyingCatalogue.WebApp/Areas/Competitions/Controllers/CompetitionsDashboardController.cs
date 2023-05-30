@@ -77,27 +77,65 @@ public class CompetitionsDashboardController : Controller
     [HttpPost("select-filter")]
     public async Task<IActionResult> SelectFilter(string internalOrgId, SelectFilterModel model)
     {
-        if (!ModelState.IsValid)
-        {
-            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-            var filters = await filterService.GetFilters(organisation.Id);
+        if (ModelState.IsValid)
+            return RedirectToAction(nameof(ReviewFilter), new { internalOrgId, filterId = model.SelectedFilterId });
 
-            model.WithFilters(filters);
-            return View(model);
-        }
+        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
+        var filters = await filterService.GetFilters(organisation.Id);
 
-        return RedirectToAction(nameof(Index), new { internalOrgId });
+        model.WithFilters(filters);
+        return View(model);
     }
 
     [HttpGet("select-filter/{filterId}/review")]
     public async Task<IActionResult> ReviewFilter(string internalOrgId, int filterId)
     {
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-        var filter = await filterService.GetFilter(organisation.Id, filterId);
+        var filterDetails = await filterService.GetFilterDetails(organisation.Id, filterId);
 
-        if (filter == null)
+        if (filterDetails == null)
             return RedirectToAction(nameof(SelectFilter), new { internalOrgId });
 
-        return View(filter);
+        var model = new ReviewFilterModel(filterDetails)
+        {
+            BackLink = Url.Action(nameof(SelectFilter), new { internalOrgId }),
+        };
+
+        return View(model);
+    }
+
+    [HttpPost("select-filter/{filterId}/review")]
+    public IActionResult ReviewFilter(string internalOrgId, int filterId, ReviewFilterModel model)
+    {
+        _ = model;
+
+        return RedirectToAction(nameof(SaveCompetition), new { internalOrgId, filterId });
+    }
+
+    [HttpGet("select-filter/{filterId}/save")]
+    public async Task<IActionResult> SaveCompetition(string internalOrgId, int filterId)
+    {
+        _ = filterId;
+        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
+
+        var model = new SaveCompetitionModel(organisation.Id, organisation.Name)
+        {
+            BackLink = Url.Action(nameof(ReviewFilter), new { internalOrgId, filterId }),
+        };
+
+        return View(model);
+    }
+
+    [HttpPost("select-filter/{filterId}/save")]
+    public async Task<IActionResult> SaveCompetition(string internalOrgId, int filterId, SaveCompetitionModel model)
+    {
+        if (!ModelState.IsValid)
+            return View(model);
+
+        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
+
+        await competitionsService.AddCompetition(organisation.Id, filterId, model.Name, model.Description);
+
+        return RedirectToAction(nameof(Index), new { internalOrgId });
     }
 }

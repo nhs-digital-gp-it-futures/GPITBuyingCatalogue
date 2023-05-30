@@ -12,6 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -138,6 +139,122 @@ public static class CompetitionsDashboardControllerTests
         CompetitionsDashboardController controller)
     {
         var result = (await controller.SelectFilter(internalOrgId, model)).As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.ReviewFilter));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task ReviewFilter_NullFilterDetails_Redirects(
+        Organisation organisation,
+        int filterId,
+        [Frozen] Mock<IOrganisationsService> organisationsService,
+        [Frozen] Mock<IManageFiltersService> filtersService,
+        CompetitionsDashboardController controller)
+    {
+        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
+            .ReturnsAsync(organisation);
+
+        filtersService.Setup(x => x.GetFilterDetails(It.IsAny<int>(), filterId))
+            .ReturnsAsync((FilterDetailsModel)null);
+
+        var result = (await controller.ReviewFilter(organisation.InternalIdentifier, filterId)).As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.SelectFilter));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task ReviewFilter_ValidFilter_ReturnsViewWithModel(
+        Organisation organisation,
+        int filterId,
+        FilterDetailsModel filterDetailsModel,
+        [Frozen] Mock<IOrganisationsService> organisationsService,
+        [Frozen] Mock<IManageFiltersService> filtersService,
+        CompetitionsDashboardController controller)
+    {
+        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
+            .ReturnsAsync(organisation);
+
+        filtersService.Setup(x => x.GetFilterDetails(organisation.Id, filterId))
+            .ReturnsAsync(filterDetailsModel);
+
+        var expectedModel = new ReviewFilterModel(filterDetailsModel);
+
+        var result = (await controller.ReviewFilter(organisation.InternalIdentifier, filterId)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void Post_ReviewFilter_Redirects(
+        string internalOrgId,
+        int filterId,
+        ReviewFilterModel model,
+        CompetitionsDashboardController controller)
+    {
+        var result = controller.ReviewFilter(internalOrgId, filterId, model).As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.SaveCompetition));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task SaveCompetition_ReturnsViewWithModel(
+        Organisation organisation,
+        int filterId,
+        [Frozen] Mock<IOrganisationsService> organisationsService,
+        CompetitionsDashboardController controller)
+    {
+        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
+            .ReturnsAsync(organisation);
+
+        var expectedModel = new SaveCompetitionModel(organisation.Id, organisation.Name);
+
+        var result = (await controller.SaveCompetition(organisation.InternalIdentifier, filterId)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task Post_SaveCompetition_InvalidModel_ReturnsViewWithModel(
+        string internalOrgId,
+        int filterId,
+        SaveCompetitionModel model,
+        CompetitionsDashboardController controller)
+    {
+        controller.ModelState.AddModelError("some-key", "some-error");
+
+        var result = (await controller.SaveCompetition(internalOrgId, filterId, model)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().BeEquivalentTo(model);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task Post_SaveCompetition_ValidInput_SavesCompetition(
+        Organisation organisation,
+        int filterId,
+        SaveCompetitionModel model,
+        [Frozen] Mock<IOrganisationsService> organisationsService,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionsDashboardController controller)
+    {
+        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
+            .ReturnsAsync(organisation);
+
+        var result = (await controller.SaveCompetition(organisation.InternalIdentifier, filterId, model))
+            .As<RedirectToActionResult>();
+
+        competitionsService.Verify(x => x.AddCompetition(organisation.Id, filterId, model.Name, model.Description));
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Index));
