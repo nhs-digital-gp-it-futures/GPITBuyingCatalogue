@@ -26,6 +26,19 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             CommonActions.ClickSave();
         }
 
+        public void AmendEditAdditionalServiceRecipient(string additionalService)
+        {
+            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemServiceRecipientLink(GetAdditionalServiceID(additionalService)));
+
+            CommonActions.PageLoadedCorrectGetIndex(
+            typeof(ServiceRecipientsController),
+            nameof(ServiceRecipientsController.EditServiceRecipients)).Should().BeTrue();
+
+            CommonActions.ClickCheckboxByLabel("BRIG ROYD SURGERY");
+
+            CommonActions.ClickSave();
+        }
+
         public void EditAdditionalServiceRecipient(string additionalServiceName)
         {
             CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemServiceRecipientLink(GetAdditionalServiceID(additionalServiceName)));
