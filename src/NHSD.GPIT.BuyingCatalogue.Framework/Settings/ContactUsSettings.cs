@@ -14,7 +14,5 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
         public string UserTemplateId { get; set; }
 
         public EmailAddressTemplate GeneralQueriesRecipient { get; set; }
-
-        public EmailAddressTemplate TechnicalFaultRecipient { get; set; }
     }
 }

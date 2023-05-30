@@ -26,8 +26,6 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-validation-summary RadioId="@nameof(Model.ContactMethod)"/>
-
         <nhs-page-title title="@ViewBag.Title"/>
 
         <h2>If you have a medical problem</h2>
@@ -53,14 +51,6 @@
         </nhs-inset-text>
 
         <form method="post">
-            <nhs-fieldset-form-label asp-for="ContactMethod"
-                                     label-text="What are you contacting us about?">
-                <nhs-radio-buttons asp-for="ContactMethod"
-                                    values="@Model.ContactMethodOptions"
-                                    value-name="Value"
-                                    display-name="Display" />
-            </nhs-fieldset-form-label>
-
             <nhs-textarea asp-for="Message"
                           label-text="Your message for us"
                           label-hint="Do not include confidential or medical information in your message. For example, your NHS number, date of birth, medical diagnosis or medical history.  Currently, we can only respond to messages written in English."
