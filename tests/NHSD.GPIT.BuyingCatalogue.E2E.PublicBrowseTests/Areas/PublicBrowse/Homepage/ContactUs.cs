@@ -28,18 +28,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
             RunTest(() =>
             {
                 CommonActions.PageTitle().Should().Be("Contact the NHS Buying Catalogue Team".FormatForComparison());
-                CommonActions
-                    .LedeText()
-                    .Should()
-                    .Be(("A description of the information NHS Digital collects as part of our operation of the Buying Catalogue website." +
-                         "We want you to understand why we hold and process this information, and your choices.").FormatForComparison());
 
                 CommonActions.SaveButtonDisplayed().Should().BeTrue();
 
                 CommonActions.ElementIsDisplayed(ContactUsObjects.HomeCrumb).Should().BeTrue();
                 CommonActions.ElementIsDisplayed(ContactUsObjects.ContactUsCrumb).Should().BeTrue();
                 CommonActions.ElementIsDisplayed(ContactUsObjects.TriageSection).Should().BeTrue();
-                CommonActions.ElementIsDisplayed(ContactUsObjects.ContactMethodInput).Should().BeTrue();
                 CommonActions.ElementIsDisplayed(ContactUsObjects.FullNameInput).Should().BeTrue();
                 CommonActions.ElementIsDisplayed(ContactUsObjects.MessageInput).Should().BeTrue();
                 CommonActions.ElementIsDisplayed(ContactUsObjects.EmailAddressInput).Should().BeTrue();
@@ -85,7 +79,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
                 CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
                 CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
-                CommonActions.ElementShowingCorrectErrorMessage(ContactUsObjects.ContactMethodInputError, "Error: Select your reason for contacting us").Should().BeTrue();
                 CommonActions.ElementShowingCorrectErrorMessage(ContactUsObjects.FullNameInputError, "Enter a full name").Should().BeTrue();
                 CommonActions.ElementShowingCorrectErrorMessage(ContactUsObjects.MessageInputError, "Enter your message for us").Should().BeTrue();
                 CommonActions.ElementShowingCorrectErrorMessage(ContactUsObjects.EmailAddressInputError, "Enter an email address").Should().BeTrue();
@@ -117,7 +110,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
                 TextGenerators.TextInputAddText(ContactUsObjects.MessageInput, 20);
                 TextGenerators.EmailInputAddText(ContactUsObjects.EmailAddressInput, 20);
 
-                CommonActions.ClickRadioButtonWithText("A technical fault with this website");
                 CommonActions.ClickCheckboxByLabel("I have read and understood the privacy policy");
 
                 CommonActions.ClickSave();
