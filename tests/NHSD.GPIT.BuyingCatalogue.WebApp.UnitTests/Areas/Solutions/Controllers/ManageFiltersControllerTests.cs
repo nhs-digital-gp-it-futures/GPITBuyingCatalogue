@@ -154,8 +154,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             string primaryOrganisationInternalId,
             int filterId,
             FilterDetailsModel filterDetailsModel,
-            List<Epic> epics,
-            Capability capability,
             Organisation organisation,
             [Frozen] Mock<IOrganisationsService> organisationsService,
             [Frozen] Mock<ICapabilitiesService> capabilitiesService,
