@@ -41,6 +41,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         [HtmlAttributeName(TagHelperConstants.UseDefaultValue)]
         public bool? UseDefaultValue { get; set; } = true;
 
+        [HtmlAttributeName(TagHelperConstants.DefaultValue)]
+        public string DefaultValue { get; set; } = "Please select";
+
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             var formGroup = BuildSelect();
@@ -60,6 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 ViewContext,
                 For,
                 new SelectList(Items, "Value", "Text", Items.FirstOrDefault(x => x.Selected)),
+                DefaultValue,
                 AllowMultiple,
                 UseDefaultValue);
 
