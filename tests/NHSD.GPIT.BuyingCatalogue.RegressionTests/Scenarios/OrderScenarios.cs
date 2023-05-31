@@ -214,9 +214,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        public void OrderWithSolutionUnder40K_AmendCatalogueSolutionServiceRecipient()
+        public void Amend_CatalogueSolution()
         {
-            string orderDescription = "OrderWithSolutionUnder40K_AmendCatalogueSolutionServiceRecipient";
+            string orderDescription = "Amend_CatalogueSolution";
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
@@ -237,6 +237,32 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.StepFiveAmendOrder();
 
             OrderingPages.AmendSolutionsAndServices(NewSolutionName);
+        }
+
+        [Fact]
+        public void AmendCatalogueSolutionsAndAdditionalService()
+        {
+            string orderDescription = "AmendCatalogueSolutionsAndAdditionalService";
+
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals");
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+
+            OrderingPages.StepFiveAmendOrder();
+
+            OrderingPages.AmendSolutionsAndServices(NewSolutionName, additionalService: "Automated Arrivals");
         }
 
         [Fact]
