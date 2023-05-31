@@ -5,7 +5,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
 {
     public class ContactUsModel : NavBaseModel
     {
-
         [StringLength(1500)]
         public string Message { get; set; }
 

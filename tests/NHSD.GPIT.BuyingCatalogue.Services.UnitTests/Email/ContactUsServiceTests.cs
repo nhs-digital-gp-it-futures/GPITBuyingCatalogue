@@ -31,7 +31,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
         [CommonInlineAutoData("")]
         public static Task SubmitQuery_NullOrEmptyFullName_ThrowsException(
             string fullName,
-            bool isTechnicalQuery,
             string emailAddress,
             string message,
             ContactUsService service) => Assert.ThrowsAsync<ArgumentNullException>(() => service.SubmitQuery(fullName, emailAddress, message));
@@ -41,7 +40,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
         [CommonInlineAutoData("")]
         public static Task SubmitQuery_NullOrEmptyEmailAddress_ThrowsException(
             string emailAddress,
-            bool isTechnicalQuery,
             string fullName,
             string message,
             ContactUsService service) => Assert.ThrowsAsync<ArgumentNullException>(() => service.SubmitQuery(fullName, emailAddress, message));
