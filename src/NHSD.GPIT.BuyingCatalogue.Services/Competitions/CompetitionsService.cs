@@ -22,4 +22,19 @@ public class CompetitionsService : ICompetitionsService
     public async Task<IEnumerable<Competition>> GetCompetitions(int organisationId)
         => await dbContext.Competitions.Where(x => x.OrganisationId == organisationId)
             .ToListAsync();
+
+    public async Task AddCompetition(int organisationId, int filterId, string name, string description)
+    {
+        var competition = new Competition
+        {
+            OrganisationId = organisationId, FilterId = filterId, Name = name, Description = description,
+        };
+
+        dbContext.Competitions.Add(competition);
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task<bool> ExistsAsync(int organisationId, string competitionName) =>
+        await dbContext.Competitions.AnyAsync(x => x.OrganisationId == organisationId && string.Equals(x.Name, competitionName));
 }
