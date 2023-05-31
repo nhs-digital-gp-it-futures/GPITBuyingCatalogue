@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                             .Select(
                                 y => new KeyValuePair<string, List<string>>(
                                     y.Capability.Name,
-                                    x.FilterEpics.Where(z => z.Epic.CapabilityId == y.CapabilityId)
+                                    x.FilterEpics.Where(z => z.Epic.Capabilities.Any(e => e.Id == y.CapabilityId))
                                         .Select(z => z.Epic.Name)
                                         .ToList()))
                             .ToList(),
