@@ -15,7 +15,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
         public DetailsModel(Organisation organisation, List<AspNetUser> users, List<Organisation> relatedOrganisations)
         {
             Organisation = organisation ?? throw new ArgumentNullException(nameof(organisation));
-            CatalogueAgreementText = organisation.CatalogueAgreementSigned ? "Organisation End User Agreement has been signed" : "Organisation End User Agreement has not been signed";
             Users = users;
             RelatedOrganisations = relatedOrganisations;
         }
@@ -29,8 +28,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels
         public Address OrganisationAddress => Organisation.Address;
 
         public bool IsGpPractice => Organisation.OrganisationType == OrganisationType.GP;
-
-        public string CatalogueAgreementText { get; set; }
 
         public string ControllerName { get; set; }
 

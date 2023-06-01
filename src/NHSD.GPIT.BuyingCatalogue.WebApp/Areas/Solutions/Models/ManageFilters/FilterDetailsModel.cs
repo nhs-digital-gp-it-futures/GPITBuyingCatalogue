@@ -21,25 +21,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
 
             OrganisationName = organisationName;
 
-            var capabilities = Filter.FilterCapabilities.Select(x => x.Capability).ToList();
-            var epics = Filter.FilterEpics != null ? Filter.FilterEpics.Select(x => x.Epic).ToList() : new List<Epic>();
-
-            GroupedCapabilities = capabilities.ToDictionary(
+            GroupedCapabilities = Filter.Capabilities.ToDictionary(
                 x => x.Name,
-                x => epics.Where(c => c.Capability.Id == x.Id).OrderBy(c => c.Name).ToList());
+                x => Filter.Epics.Where(c => c.Capability.Id == x.Id).OrderBy(c => c.Name).ToList());
         }
 
         public string OrganisationName { get; set; }
 
         public int FilterId { get; set; }
 
-        public string FilterName { get; set; }
-
         public Filter Filter { get; init; }
 
         public Dictionary<string, List<Epic>> GroupedCapabilities { get; init; }
 
-        public bool FilterContainsEpics => Filter.FilterEpics != null && Filter.FilterEpics.Any();
+        public bool FilterContainsEpics => Filter.Epics != null && Filter.Epics.Any();
 
         public bool FilterContainsAdditionalFilters =>
             (Filter.FilterClientApplicationTypes != null && Filter.FilterClientApplicationTypes.Any()) ||

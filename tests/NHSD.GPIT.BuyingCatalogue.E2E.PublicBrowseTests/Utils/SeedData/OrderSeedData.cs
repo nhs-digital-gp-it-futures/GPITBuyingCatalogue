@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
@@ -11,12 +12,12 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 {
-    internal static class OrderSeedData
+    internal class OrderSeedData : ISeedData
     {
         private const string DFOCVC = "DFOCVC001";
         private const string GPITFUTURES = "NHSDGP001";
 
-        internal static void Initialize(BuyingCatalogueDbContext context)
+        public static async Task Initialize(BuyingCatalogueDbContext context)
         {
             var orders = new List<Order>
             {
@@ -56,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 AddOrderByAccountManager(context),
             };
 
-            context.InsertRangeWithIdentity(orders);
+            await context.InsertRangeWithIdentityAsync(orders);
 
             var amendments = new[]
             {
@@ -67,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             };
 
             context.AddRange(amendments);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
 
             AddOrderItemToOrder(context, 90030, 2, new CatalogueItemId(99998, "001"));
             AddOrderItemToOrder(context, 90031, 1, new CatalogueItemId(99998, "001A99"));
@@ -76,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             AddOrderItemWithPriceAndRecipientsToOrder(context, 90032, 2, new CatalogueItemId(99998, "S-999"));
             AddOrderItemWithPriceAndRecipientsToOrder(context, 90033, 2, new CatalogueItemId(99999, "003"));
 
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
         private static Order AddOrderAtDescriptionStage(BuyingCatalogueDbContext context)

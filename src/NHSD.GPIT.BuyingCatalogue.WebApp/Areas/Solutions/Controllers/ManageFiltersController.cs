@@ -67,7 +67,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     model.SelectedCapabilityIds,
                     model.SelectedEpicIds,
                     model.SelectedFrameworkId,
-                    model.SelectedClientApplicationTypeIds,
+                    selectedClientApplicationTypeIds = model.CombineSelectedOptions(model.ClientApplicationTypeOptions),
+                    selectedHostingTypeIds = model.CombineSelectedOptions(model.HostingTypeOptions),
                 });
         }
 
@@ -142,9 +143,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         public async Task<IActionResult> FilterDetails(int filterId)
         {
             var organisation = await GetUserOrganisation();
-            var filter = await manageFiltersService.GetFilter(filterId);
+            var filter = await manageFiltersService.GetFilter(organisation.Id, filterId);
 
-            if (filter == null || filter.OrganisationId != organisation.Id)
+            if (filter == null)
                 return NotFound();
 
             var model = new FilterDetailsModel(filter, organisation.Name)

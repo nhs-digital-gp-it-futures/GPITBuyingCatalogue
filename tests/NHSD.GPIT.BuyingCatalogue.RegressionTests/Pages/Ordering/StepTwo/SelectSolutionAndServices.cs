@@ -60,5 +60,21 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo
 
             return names;
         }
+
+        public static List<string> AmendSelectSolutionServices(string solutionName, IEnumerable<string>? additionalServices)
+        {
+            var names = new List<string>();
+
+            names.Add(solutionName);
+            if (additionalServices != default && additionalServices.All(a => a != string.Empty))
+            {
+                foreach (var additionalService in additionalServices)
+                {
+                    names.Add(additionalService);
+                }
+            }
+
+            return names;
+        }
     }
 }

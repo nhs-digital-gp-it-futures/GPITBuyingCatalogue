@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Configuration
@@ -42,13 +44,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Configuration
             builder.HasOne(i => i.Organisation)
                 .WithMany()
                 .HasForeignKey(i => i.OrganisationId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.NoAction)
                 .HasConstraintName("FK_Filters_OrganisationId");
 
             builder.HasOne(i => i.Framework)
                 .WithMany()
                 .HasForeignKey(i => i.FrameworkId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.NoAction)
                 .HasConstraintName("FK_Filters_FrameworkId");
 
             builder.HasOne(i => i.LastUpdatedByUser)
@@ -56,17 +58,39 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Configuration
                 .HasForeignKey(i => i.LastUpdatedBy)
                 .HasConstraintName("FK_Filters_LastUpdatedBy");
 
-            builder.HasIndex(o => o.IsDeleted, "IX_Filters_IsDeleted");
+            builder.HasMany(x => x.Capabilities)
+                .WithMany()
+                .UsingEntity<Dictionary<string, object>>(
+                    r => r.HasOne<Capability>()
+                        .WithMany()
+                        .HasForeignKey("CapabilityId")
+                        .HasConstraintName("FK_FilterCapabilities_Capability"),
+                    l => l.HasOne<Filter>()
+                        .WithMany()
+                        .HasForeignKey("FilterId")
+                        .HasConstraintName("FK_FilterCapabilities_Filter"),
+                    j =>
+                    {
+                        j.ToTable("FilterCapabilities", Schemas.Filtering);
+                        j.HasKey("CapabilityId", "FilterId");
+                    });
 
-            builder.HasIndex(
-               o => new
-               {
-                   o.Id,
-                   o.IsDeleted,
-               },
-               "IX_Id_IsDeleted_Revision");
-
-            builder.HasQueryFilter(o => !o.IsDeleted);
+            builder.HasMany(x => x.Epics)
+                .WithMany()
+                .UsingEntity<Dictionary<string, object>>(
+                    r => r.HasOne<Epic>()
+                        .WithMany()
+                        .HasForeignKey("EpicId")
+                        .HasConstraintName("FK_FilterEpics_Epic"),
+                    l => l.HasOne<Filter>()
+                        .WithMany()
+                        .HasForeignKey("FilterId")
+                        .HasConstraintName("FK_FilterEpics_Filter"),
+                    j =>
+                    {
+                        j.ToTable("FilterEpics", Schemas.Filtering);
+                        j.HasKey("EpicId", "FilterId");
+                    });
         }
     }
 }

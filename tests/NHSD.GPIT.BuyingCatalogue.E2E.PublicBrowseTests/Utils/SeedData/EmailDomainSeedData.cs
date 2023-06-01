@@ -1,15 +1,15 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+﻿using System.Threading.Tasks;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData;
 
-internal static class EmailDomainSeedData
+internal class EmailDomainSeedData : ISeedData
 {
-    internal static void Initialize(BuyingCatalogueDbContext context)
+    public static async Task Initialize(BuyingCatalogueDbContext context)
     {
         context.EmailDomains.Add(new("@nhs.net"));
         context.EmailDomains.Add(new("@email.com"));
 
-        context.SaveChanges();
+        await context.SaveChangesAsync();
     }
 }

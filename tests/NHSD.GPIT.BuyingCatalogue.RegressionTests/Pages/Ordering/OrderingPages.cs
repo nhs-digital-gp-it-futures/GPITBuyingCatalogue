@@ -639,8 +639,34 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             SelectEditAndConfirmPrices.AmendViewAndConfirmPrice();
             Quantity.AddQuantity();
             PlannedDeliveryDates.AmendPlannedDeliveryDate(solutionName);
-        }
 
+            if (HasAdditionalService(solutionName) && additionalServices != default && additionalServices.All(a => !string.IsNullOrWhiteSpace(a)))
+            {
+                foreach (var additionalService in additionalServices)
+                {
+                    if (!importServiceRecipients)
+                    {
+                        SelectEditAdditionalServiceRecipients.AmendEditAdditionalServiceRecipient(additionalService);
+                    }
+                    else
+                    {
+                        ImportServiceReceipients.ImportServiceRecipients(fileName);
+                    }
+
+                    ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
+                    SelectEditAndConfirmPrices.AmendViewAndConfirmPrice();
+                    Quantity.AddQuantity();
+                    PlannedDeliveryDates.AmendPlannedDeliveryDate(additionalService);
+                }
+            }
+
+            SolutionAndServicesReview.AmendReviewSolutionAndServices();
+            TaskList.SelectFundingSourcesTask();
+            SelectFundingSources.AmendAddFundingSources(solutionName, additionalServices);
+
+            StepThreeCompleteContract();
+            StepFourReviewAndCompleteOrder();
+        }
 
         private bool IsAssociatedServiceOnlyOrder(int orderId)
         {

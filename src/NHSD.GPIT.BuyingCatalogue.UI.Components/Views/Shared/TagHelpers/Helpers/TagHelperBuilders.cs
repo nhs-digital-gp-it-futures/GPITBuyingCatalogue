@@ -164,16 +164,16 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             ViewContext viewContext,
             ModelExpression aspFor,
             SelectList items,
+            string defaultValue,
             bool? allowMultiple = null,
             bool? useDefaultValue = true)
         {
-            const string defaultSelectListMessage = "Please select";
             const string nhsSelectClass = "nhsuk-select";
 
             return htmlGenerator.GenerateSelect(
                 viewContext,
                 aspFor.ModelExplorer,
-                useDefaultValue.GetValueOrDefault() ? defaultSelectListMessage : null,
+                useDefaultValue.GetValueOrDefault() ? defaultValue : null,
                 aspFor.Name,
                 items,
                 allowMultiple == true,

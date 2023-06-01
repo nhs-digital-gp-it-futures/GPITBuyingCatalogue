@@ -30,8 +30,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models
 
         public string PrimaryRoleId { get; set; }
 
-        public bool CatalogueAgreementSigned { get; set; }
-
         public DateTime LastUpdated { get; set; }
 
         public int? LastUpdatedBy { get; set; }
