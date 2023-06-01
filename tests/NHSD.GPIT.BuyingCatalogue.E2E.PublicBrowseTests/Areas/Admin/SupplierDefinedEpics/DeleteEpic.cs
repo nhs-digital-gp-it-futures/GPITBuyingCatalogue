@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
                 Id = "S00999",
                 Name = Strings.RandomString(20),
                 Description = Strings.RandomString(20),
-                CapabilityId = context.Capabilities.First(x => x.CapabilityRef == "C44").Id,
+                Capabilities = context.Capabilities.Where(x => x.CapabilityRef == "C44").ToList(),
                 IsActive = false,
                 SupplierDefined = true,
             };

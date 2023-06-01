@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 
             GroupedItems = Groups.ToDictionary(
                 x => x.Id,
-                x => epics.Where(c => c.Capability.Id == x.Id).OrderBy(c => c.Name));
+                x => epics.Where(c => c.Capabilities.Any(y => y.Id == x.Id)).OrderBy(c => c.Name));
 
             var selected = SolutionsFilterHelper.ParseEpicIds(selectedIds);
 

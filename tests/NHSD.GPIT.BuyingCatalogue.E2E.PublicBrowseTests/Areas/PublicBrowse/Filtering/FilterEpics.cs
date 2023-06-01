@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Filtering
 
             using var context = GetEndToEndDbContext();
             var expected = context.Epics.Count(
-                x => CapabilityIds.Contains(x.CapabilityId) && x.IsActive
+                x => x.Capabilities.Any(y => CapabilityIds.Contains(y.Id)) && x.IsActive
                     && context.CatalogueItemEpics.Any(y => x.Id == y.EpicId));
 
             CommonActions.GetNumberOfCheckBoxesDisplayed().Should().Be(expected);
@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Filtering
             using var context = GetEndToEndDbContext();
             var selectedIds = context.Epics
                 .Where(
-                    x => CapabilityIds.Contains(x.CapabilityId) && x.IsActive
+                    x => x.Capabilities.Any(y => CapabilityIds.Contains(y.Id)) && x.IsActive
                         && context.CatalogueItemEpics.Any(y => x.Id == y.EpicId))
                 .Select(x => x.Id)
                 .ToList();

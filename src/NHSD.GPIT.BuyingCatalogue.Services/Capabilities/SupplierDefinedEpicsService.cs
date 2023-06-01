@@ -24,9 +24,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             if (epicModel is null)
                 throw new ArgumentNullException(nameof(epicModel));
 
+            var capability = await dbContext.Capabilities.FirstOrDefaultAsync(x => x.Id == epicModel.CapabilityId);
+
             var epic = new Epic
             {
-                CapabilityId = epicModel.CapabilityId,
+                Capabilities = new List<Capability> { capability },
                 Name = epicModel.Name,
                 Description = epicModel.Description,
                 IsActive = epicModel.IsActive,
@@ -45,6 +47,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
 
             var epic = await dbContext
                 .Epics
+                .Include(x => x.Capabilities)
+                .AsSplitQuery()
                 .FirstOrDefaultAsync(e => e.Id == epicModel.Id && e.SupplierDefined);
 
             if (epic is null)
@@ -52,8 +56,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
 
             epic.Name = epicModel.Name;
             epic.Description = epicModel.Description;
-            epic.CapabilityId = epicModel.CapabilityId;
             epic.IsActive = epicModel.IsActive;
+
+            var capability = await dbContext.Capabilities.FirstOrDefaultAsync(x => x.Id == epicModel.CapabilityId);
+            epic.Capabilities.Clear();
+            epic.Capabilities = new List<Capability> { capability };
 
             await dbContext.SaveChangesAsync();
         }
@@ -70,7 +77,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
 
         public Task<bool> EpicExists(
             string epicId,
-            int capabilityId,
             string name,
             string description,
             bool isActive) =>
@@ -78,7 +84,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
                .Epics
                .AnyAsync(e =>
                    e.Id != epicId
-                   && e.CapabilityId == capabilityId
                    && e.Name == name
                    && e.Description == description
                    && e.IsActive == isActive
@@ -88,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             => dbContext
                 .Epics
                 .AsNoTracking()
-                .Include(e => e.Capability)
+                .Include(e => e.Capabilities)
                 .Where(e => e.SupplierDefined)
                 .ToListAsync();
 
@@ -99,10 +104,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
 
             return dbContext.Epics
                 .AsNoTracking()
-                .Include(e => e.Capability)
+                .Include(e => e.Capabilities)
                 .Where(e => e.SupplierDefined
-                    && (EF.Functions.Like(e.Name, $"%{searchTerm}%")
-                        || EF.Functions.Like(e.Capability.Name, $"%{searchTerm}%")))
+                    && EF.Functions.Like(e.Name, $"%{searchTerm}%"))
                 .ToListAsync();
         }
 
@@ -113,7 +117,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
 
             return dbContext
                 .Epics
+                .Include(x => x.Capabilities)
                 .AsNoTracking()
+                .AsSplitQuery()
                 .FirstOrDefaultAsync(e =>
                     e.Id == epicId
                     && e.SupplierDefined == true);

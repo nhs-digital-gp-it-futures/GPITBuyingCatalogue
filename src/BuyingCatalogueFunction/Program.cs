@@ -4,8 +4,6 @@ using System.Threading.Tasks;
 using BuyingCatalogueFunction.Adapters;
 using BuyingCatalogueFunction.Models.Ods;
 using BuyingCatalogueFunction.Services;
-using BuyingCatalogueFunction.Services.CapabilitiesUpdate;
-using BuyingCatalogueFunction.Services.CapabilitiesUpdate.Interfaces;
 using BuyingCatalogueFunction.Services.IncrementalUpdate;
 using BuyingCatalogueFunction.Services.IncrementalUpdate.Interfaces;
 using BuyingCatalogueFunction.Settings;
@@ -47,8 +45,6 @@ public static class Program
                 services.AddTransient<IOdsService, OdsService>();
                 services.AddTransient<IOdsOrganisationService, OdsOrganisationService>();
                 services.AddTransient<IOrganisationUpdateService, OrganisationUpdateService>();
-                services.AddTransient<ICapabilitiesUpdateService, CapabilitiesUpdateService>();
-                services.AddTransient<ICapabilitiesService, CapabilitiesService>();
 
                 services.AddTransient<IAdapter<Org, OdsOrganisation>, OdsOrganisationAdapter>();
                 services.AddTransient<IAdapter<Org, IEnumerable<OrganisationRelationship>>, OrganisationRelationshipsAdapter>();

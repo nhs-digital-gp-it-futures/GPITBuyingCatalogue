@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
         {
             GroupedCapabilities = capabilities.ToDictionary(
                 x => x.Name,
-                x => epics.Where(c => c.Capability.Id == x.Id).OrderBy(c => c.Name));
+                x => epics.Where(c => c.Capabilities.Any(y => y.Id == x.Id)).OrderBy(c => c.Name));
         }
     }
 }

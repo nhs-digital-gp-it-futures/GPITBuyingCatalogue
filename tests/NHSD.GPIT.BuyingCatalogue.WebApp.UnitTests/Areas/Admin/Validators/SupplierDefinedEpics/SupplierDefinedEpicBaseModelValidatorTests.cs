@@ -81,7 +81,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
             service.Setup(s =>
                 s.EpicExists(
                     model.Id,
-                    model.SelectedCapabilityId!.Value,
                     model.Name,
                     model.Description,
                     model.IsActive!.Value))
@@ -110,7 +109,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
             service.Setup(s =>
                 s.EpicExists(
                     model.Id,
-                    model.SelectedCapabilityId!.Value,
                     model.Name,
                     model.Description,
                     model.IsActive!.Value))

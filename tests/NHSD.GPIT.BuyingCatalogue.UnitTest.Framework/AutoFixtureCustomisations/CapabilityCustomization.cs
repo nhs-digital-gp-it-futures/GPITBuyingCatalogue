@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AutoFixture;
 using AutoFixture.Dsl;
@@ -11,8 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
     {
         public void Customize(IFixture fixture)
         {
-            fixture.Customize<Epic>(c => c.Without(e => e.CapabilityId));
-
             static ISpecimenBuilder ComposerTransformation(ICustomizationComposer<Capability> composer) => composer
                 .FromFactory(new CapabilitySpecimenBuilder())
                 .Without(c => c.CatalogueItemCapabilities)
@@ -64,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
                 epics.ForEach(e =>
                 {
                     item.Epics.Add(e);
-                    e.CapabilityId = item.Id;
+                    e.Capabilities = new List<Capability> { item };
                 });
             }
         }
