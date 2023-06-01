@@ -8,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.DashboardModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 
@@ -99,6 +100,7 @@ public class CompetitionsDashboardController : Controller
         var model = new ReviewFilterModel(filterDetails)
         {
             BackLink = Url.Action(nameof(SelectFilter), new { internalOrgId }),
+            Caption = filterDetails.Name,
         };
 
         return View(model);

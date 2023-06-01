@@ -18,6 +18,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -25,6 +26,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 using Xunit;
 using ClientApplicationType = NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.ClientApplicationType;
 
@@ -128,8 +130,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(organisation);
 
             manageFiltersService
-                .Setup(x => x.GetFilter(organisation.Id, filter.Id))
-                .ReturnsAsync((Filter)null);
+                .Setup(x => x.GetFilterDetails(organisation.Id, filter.Id))
+                .ReturnsAsync((FilterDetailsModel)null);
 
             var controller = CreateController(
                 organisationsService,
@@ -149,36 +151,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_FilterDetails_ReturnsExpectedResult(
-            Filter filter,
-            List<Epic> epics,
-            Capability capability,
+            string primaryOrganisationInternalId,
+            int filterId,
+            FilterDetailsModel filterDetailsModel,
+            Organisation organisation,
             [Frozen] Mock<IOrganisationsService> organisationsService,
             [Frozen] Mock<ICapabilitiesService> capabilitiesService,
             [Frozen] Mock<IEpicsService> epicsService,
             [Frozen] Mock<IFrameworkService> frameworkService,
             [Frozen] Mock<IManageFiltersService> manageFiltersService,
-            [Frozen] Mock<IUrlHelper> mockUrlHelper,
-            string primaryOrganisationInternalId,
-            Organisation organisation)
+            [Frozen] Mock<IUrlHelper> mockUrlHelper)
         {
-            filter.Organisation = organisation;
-            filter.OrganisationId = organisation.Id;
-
-            foreach (var item in epics)
-            {
-                item.Capability = capability;
-                item.CapabilityId = capability.Id;
-            }
-
-            filter.Epics = epics;
-
             organisationsService
                 .Setup(x => x.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId))
                 .ReturnsAsync(organisation);
 
             manageFiltersService
-                .Setup(x => x.GetFilter(organisation.Id, filter.Id))
-                .ReturnsAsync(filter);
+                .Setup(x => x.GetFilterDetails(organisation.Id, filterId))
+                .ReturnsAsync(filterDetailsModel);
 
             var controller = CreateController(
                 organisationsService,
@@ -190,11 +180,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             controller.Url = mockUrlHelper.Object;
 
-            var result = await controller.FilterDetails(filter.Id);
+            var result = await controller.FilterDetails(filterId);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new FilterDetailsModel(filter, organisation.Name);
+            var expected = new ReviewFilterModel(filterDetailsModel) { Caption = organisation.Name };
             actualResult.Model.Should().BeEquivalentTo(expected, opt => opt.Excluding(x => x.BackLink));
         }
 
