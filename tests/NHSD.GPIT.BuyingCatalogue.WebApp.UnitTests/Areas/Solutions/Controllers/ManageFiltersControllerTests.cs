@@ -431,7 +431,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             var result = controller.DeleteFilterConfirmed(filterId);
 
-            manageFiltersServiceMock.Verify(s => s.SoftDeleteFilter(filterId), Times.Once);
+            manageFiltersServiceMock.Verify(s => s.DeleteFilter(filterId), Times.Once);
         }
 
         [Theory]

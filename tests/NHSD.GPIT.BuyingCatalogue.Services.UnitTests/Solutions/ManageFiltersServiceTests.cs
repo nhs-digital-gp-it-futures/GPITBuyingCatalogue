@@ -612,8 +612,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             filter.IsDeleted = false;
             dbContext.Filters.Add(filter);
             await dbContext.SaveChangesAsync();
+            dbContext.ChangeTracker.Clear();
 
-            await service.SoftDeleteFilter(filter.Id);
+            await service.DeleteFilter(filter.Id);
 
             var result = await dbContext.Filters.FirstOrDefaultAsync(f => f.Id == filter.Id);
             result.Should().NotBeNull();

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
@@ -167,10 +168,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         public async Task<IActionResult> DeleteFilter(int filterId)
         {
             var filter = await manageFiltersService.GetFilter(filterId);
-            var model = new FilterDetailsModel()
+            var model = new DeleteFilterModel()
             {
                 BackLink = Url.Action(nameof(FilterDetails), typeof(ManageFiltersController).ControllerName(), new { filterId }),
-                FilterId = filterId,
+                FilterId = filter.Id,
                 FilterName = filter.Name,
             };
             return View(model);
@@ -180,7 +181,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteFilterConfirmed(int filterId)
         {
-            await manageFiltersService.SoftDeleteFilter(filterId);
+            var organisationId = (await GetUserOrganisation()).Id;
+            var filter = await manageFiltersService.GetFilter(filterId);
+            if (filter.OrganisationId == organisationId)
+            {
+                await manageFiltersService.DeleteFilter(filterId);
+            }
+
             return RedirectToAction(nameof(Index));
         }
 

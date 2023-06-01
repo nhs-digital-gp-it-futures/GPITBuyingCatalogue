@@ -76,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ToListAsync();
         }
 
-        public async Task SoftDeleteFilter(int filterId)
+        public async Task DeleteFilter(int filterId)
         {
             var filter = await dbContext.Filters.FirstOrDefaultAsync(o => o.Id == filterId);
 
