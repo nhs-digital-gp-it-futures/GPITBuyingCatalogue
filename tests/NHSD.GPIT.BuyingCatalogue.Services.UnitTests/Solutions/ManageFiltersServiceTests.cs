@@ -589,7 +589,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task SoftDeleteFilter_SetsIsDeletedToTrue(
+        public static async Task DeleteFilter_SetsIsDeletedToTrue(
             [Frozen] BuyingCatalogueDbContext dbContext,
             Filter filter,
             ManageFiltersService service)
