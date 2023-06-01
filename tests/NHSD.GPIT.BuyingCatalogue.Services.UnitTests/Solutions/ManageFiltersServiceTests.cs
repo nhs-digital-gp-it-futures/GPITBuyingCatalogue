@@ -275,7 +275,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             context.ChangeTracker.Clear();
 
             var result = await context.Filters.Include(f => f.Capabilities).FirstAsync(f => f.Id == filter.Id);
-            var result = await context.Filters.Include(f => f.FilterCapabilities).FirstAsync(f => f.Id == filter.Id);
             result.Should().NotBeNull();
 
             result.Capabilities.Should().NotBeNullOrEmpty();
@@ -587,5 +586,25 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             filterDetails.Description.Should().Be(filter.Description);
             filterDetails.FrameworkName.Should().Be(framework.ShortName);
         }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SoftDeleteFilter_SetsIsDeletedToTrue(
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            Filter filter,
+            ManageFiltersService service)
+        {
+            filter.IsDeleted = false;
+            dbContext.Filters.Add(filter);
+            await dbContext.SaveChangesAsync();
+            dbContext.ChangeTracker.Clear();
+
+            await service.DeleteFilter(filter.Id);
+
+            var result = await dbContext.Filters.FirstOrDefaultAsync(f => f.Id == filter.Id);
+            result.Should().NotBeNull();
+            result.IsDeleted.Should().BeTrue();
+        }
+
     }
 }
