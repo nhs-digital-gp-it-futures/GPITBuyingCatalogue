@@ -605,6 +605,5 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             result.Should().NotBeNull();
             result.IsDeleted.Should().BeTrue();
         }
-
     }
 }
