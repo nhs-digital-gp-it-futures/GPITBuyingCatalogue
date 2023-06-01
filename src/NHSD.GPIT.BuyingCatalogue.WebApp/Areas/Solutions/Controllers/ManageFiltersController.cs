@@ -14,6 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 {
@@ -142,15 +143,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         public async Task<IActionResult> FilterDetails(int filterId)
         {
             var organisation = await GetUserOrganisation();
-            var filter = await manageFiltersService.GetFilter(organisation.Id, filterId);
+            var filter = await manageFiltersService.GetFilterDetails(organisation.Id, filterId);
 
             if (filter == null)
                 return NotFound();
 
-            var model = new FilterDetailsModel(filter, organisation.Name)
+            var model = new ReviewFilterModel(filter)
             {
                 BackLink = Url.Action(nameof(Index), typeof(ManageFiltersController).ControllerName()),
+                Caption = organisation.Name,
             };
+
             return View(model);
         }
 
