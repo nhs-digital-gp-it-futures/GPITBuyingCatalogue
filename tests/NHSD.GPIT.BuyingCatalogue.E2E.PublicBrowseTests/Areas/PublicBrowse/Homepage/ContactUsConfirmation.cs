@@ -49,29 +49,5 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
                     .Should().BeTrue();
             });
         }
-
-        [Theory]
-        [InlineData(ContactUsModel.ContactMethodTypes.TechnicalFault, "Helpdesk Team")]
-        [InlineData(ContactUsModel.ContactMethodTypes.Other, "Buying Catalogue Team")]
-        public void ContactUsConfirmation_SetsCorrectContactMethod(
-            ContactUsModel.ContactMethodTypes contactReason,
-            string expectedContactMethod)
-        {
-            RunTest(() =>
-            {
-                var parameters = new Dictionary<string, string>
-            {
-                { "ContactReason", contactReason.ToString() },
-            };
-
-                NavigateToUrl(
-                    typeof(HomeController),
-                    nameof(HomeController.ContactUsConfirmation),
-                    null,
-                    parameters);
-
-                CommonActions.ElementTextContains(ByExtensions.DataTestId("contact-method-text"), expectedContactMethod).Should().BeTrue();
-            });
-        }
     }
 }

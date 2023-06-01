@@ -45,7 +45,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.SupplierDefine
         {
             return !supplierDefinedEpicsService.EpicExists(
                 model.Id,
-                model.SelectedCapabilityId!.Value,
                 model.Name,
                 model.Description,
                 model.IsActive!.Value).GetAwaiter().GetResult();

@@ -28,10 +28,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation
                 .EmailAddress()
                 .WithMessage(EmailAddressWrongFormatErrorMessage);
 
-            RuleFor(m => m.ContactMethod)
-                .NotNull()
-                .WithMessage(ContactMethodMissingErrorMessage);
-
             RuleFor(m => m.PrivacyPolicyAccepted)
                 .Equal(true)
                 .WithMessage(PrivacyPolicyNotAcceptedErrorMessage);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -60,6 +61,23 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.HasOne(c => c.LastUpdatedByUser)
                 .WithMany()
                 .HasForeignKey(c => c.LastUpdatedBy);
+
+            builder.HasMany(x => x.Epics)
+                .WithMany(x => x.Capabilities)
+                .UsingEntity<Dictionary<string, object>>(
+                    right => right.HasOne<Epic>()
+                        .WithMany()
+                        .HasForeignKey("EpicId")
+                        .HasConstraintName("FK_CapabilityEpics_Epic"),
+                    left => left.HasOne<Capability>()
+                        .WithMany()
+                        .HasForeignKey("CapabilityId")
+                        .HasConstraintName("FK_CapabilityEpics_Capability"),
+                    j =>
+                    {
+                        j.ToTable("CapabilityEpics", Schemas.Catalogue);
+                        j.HasKey("CapabilityId", "EpicId");
+                    });
         }
     }
 }

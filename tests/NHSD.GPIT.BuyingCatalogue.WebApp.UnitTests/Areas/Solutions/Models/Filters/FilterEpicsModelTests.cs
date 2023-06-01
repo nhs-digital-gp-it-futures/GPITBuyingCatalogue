@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         {
             for (var i = 0; i < capabilities.Count; i++)
             {
-                epics[i].Capability = capabilities[i];
+                epics[i].Capabilities.Add(capabilities[i]);
             }
 
             var model = new FilterEpicsModel(capabilities, epics);
@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         {
             for (var i = 0; i < capabilities.Count; i++)
             {
-                epics[i].Capability = capabilities[i];
+                epics[i].Capabilities.Add(capabilities[i]);
             }
 
             var selectedIds = $"{epics.First().Id}{FilterConstants.Delimiter}{epics.Last().Id}";
@@ -66,14 +66,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         {
             for (var i = 0; i < capabilities.Count; i++)
             {
-                epics[i].Capability = capabilities[i];
+                epics[i].Capabilities.Add(capabilities[i]);
             }
 
             var model = new FilterEpicsModel(capabilities, epics);
 
             foreach (var capability in capabilities)
             {
-                var expected = epics.Where(x => x.Capability.Id == capability.Id);
+                var expected = epics.Where(x => x.Capabilities.Any(y => y.Id == capability.Id));
 
                 model.Items(capability.Id).Should().BeEquivalentTo(expected);
             }
