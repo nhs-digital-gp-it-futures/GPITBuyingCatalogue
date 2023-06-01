@@ -1,8 +1,7 @@
 ﻿using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.DashboardModels;
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 
 public class ReviewFilterModel : NavBaseModel
 {
