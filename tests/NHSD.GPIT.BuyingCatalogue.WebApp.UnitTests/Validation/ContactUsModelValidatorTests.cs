@@ -14,14 +14,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation
             ContactUsModel model,
             ContactUsModelValidator validator)
         {
-            model.ContactMethod = null;
             model.FullName = null;
             model.Message = null;
 
             var result = validator.TestValidate(model);
-
-            result.ShouldHaveValidationErrorFor(m => m.ContactMethod)
-                .WithErrorMessage(ContactUsModelValidator.ContactMethodMissingErrorMessage);
 
             result.ShouldHaveValidationErrorFor(m => m.FullName)
                 .WithErrorMessage(ContactUsModelValidator.FullNameMissingErrorMessage);
@@ -73,7 +69,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation
             model.FullName = fullName;
             model.Message = message;
             model.PrivacyPolicyAccepted = true;
-            model.ContactMethod = ContactUsModel.ContactMethodTypes.TechnicalFault;
             model.EmailAddress = "a@a.com";
 
             var result = validator.TestValidate(model);
