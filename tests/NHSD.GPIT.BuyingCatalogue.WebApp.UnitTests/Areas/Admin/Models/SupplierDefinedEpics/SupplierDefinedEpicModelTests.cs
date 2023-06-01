@@ -19,7 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Supplier
 
             model.Id.Should().Be(epic.Id);
             model.Name.Should().Be(epic.Name);
-            model.Capability.Should().Be(epic.Capability?.Name);
             model.IsActive.Should().Be(epic.IsActive);
         }
     }

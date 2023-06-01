@@ -33,12 +33,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.Property(e => e.SupplierDefined).IsRequired().HasDefaultValue(false);
             builder.Property(e => e.LastUpdated).HasDefaultValue(DateTime.UtcNow);
 
-            builder.HasOne(e => e.Capability)
-                .WithMany(c => c.Epics)
-                .HasForeignKey(e => e.CapabilityId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Epics_Capability");
-
             builder.HasOne(e => e.LastUpdatedByUser)
                 .WithMany()
                 .HasForeignKey(e => e.LastUpdatedBy)
