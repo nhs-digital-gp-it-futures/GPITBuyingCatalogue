@@ -86,28 +86,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await dbContext.SaveChangesAsync();
         }
 
-        public Task<Filter> GetFilter(int filterId)
-        {
-            return dbContext.Filters
-                .AsNoTracking()
-                .Include(x => x.Framework)
-                .Include(x => x.FilterCapabilities)
-                .ThenInclude(y => y.Capability)
-                .ThenInclude(c => c.Epics)
-                .Include(x => x.FilterEpics)
-                .ThenInclude(y => y.Epic)
-                .ThenInclude(y => y.Capability)
-                .Include(x => x.FilterHostingTypes)
-                .Include(x => x.FilterClientApplicationTypes)
-                .AsSplitQuery()
-                .FirstOrDefaultAsync(o => o.Id == filterId);
-        }
-
         public async Task<FilterDetailsModel> GetFilterDetails(int organisationId, int filterId)
             => await dbContext.Filters.Where(x => x.OrganisationId == organisationId && x.Id == filterId)
                 .Select(
                     x => new FilterDetailsModel
                     {
+                        Id = x.Id,
                         Name = x.Name,
                         Description = x.Description,
                         FrameworkName = x.Framework.ShortName,

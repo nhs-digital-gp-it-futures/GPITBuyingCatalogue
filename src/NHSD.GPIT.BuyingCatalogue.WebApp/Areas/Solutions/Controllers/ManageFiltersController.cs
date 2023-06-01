@@ -171,7 +171,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("delete")]
         public async Task<IActionResult> DeleteFilter(int filterId)
         {
-            var filter = await manageFiltersService.GetFilter(filterId);
+            var organisationId = (await GetUserOrganisation()).Id;
+            var filter = await manageFiltersService.GetFilterDetails(organisationId, filterId);
             var model = new DeleteFilterModel()
             {
                 BackLink = Url.Action(nameof(FilterDetails), typeof(ManageFiltersController).ControllerName(), new { filterId }),
@@ -185,9 +186,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteFilterConfirmed(int filterId)
         {
-            var organisationId = (await GetUserOrganisation()).Id;
-            var filter = await manageFiltersService.GetFilter(filterId);
-            if (filter.OrganisationId == organisationId)
+            int organisationId = (await GetUserOrganisation()).Id;
+            var filter = await manageFiltersService.GetFilterDetails(organisationId, filterId);
+            if (filter != null)
             {
                 await manageFiltersService.DeleteFilter(filterId);
             }
