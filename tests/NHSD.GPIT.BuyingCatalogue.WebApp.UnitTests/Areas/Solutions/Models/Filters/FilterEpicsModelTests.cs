@@ -3,6 +3,7 @@ using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 using Xunit;
@@ -24,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
 
             var model = new FilterEpicsModel(capabilities, epics);
 
-            model.CapabilityIds.Should().Be(string.Join(FilterConstants.Delimiter, capabilities.Select(x => x.Id)));
+            model.CapabilityIds.Should().Be(capabilities.Select(x => x.Id).ToFilterString());
             model.Groups.Should().BeEquivalentTo(capabilities);
             model.Total.Should().Be(epics.Count);
             model.SelectedItems.Should().BeEquivalentTo(epics.Select(x => new SelectionModel
@@ -45,10 +46,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
                 epics[i].Capability = capabilities[i];
             }
 
-            var selectedIds = $"{epics.First().Id}{FilterConstants.Delimiter}{epics.Last().Id}";
+            var selectedIds = new[] { epics.First().Id, epics.Last().Id }.ToFilterString();
             var model = new FilterEpicsModel(capabilities, epics, selectedIds);
 
-            model.CapabilityIds.Should().Be(string.Join(FilterConstants.Delimiter, capabilities.Select(x => x.Id)));
+            model.CapabilityIds.Should().Be(capabilities.Select(x => x.Id).ToFilterString());
             model.Groups.Should().BeEquivalentTo(capabilities);
             model.Total.Should().Be(epics.Count);
             model.SelectedItems.Should().BeEquivalentTo(epics.Select(x => new SelectionModel

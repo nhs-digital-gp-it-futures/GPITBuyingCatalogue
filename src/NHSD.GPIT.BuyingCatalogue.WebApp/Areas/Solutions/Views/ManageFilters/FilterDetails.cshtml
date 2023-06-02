@@ -1,7 +1,9 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsDeleteButton
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ReviewFilterModel
 
 @{
@@ -25,7 +27,15 @@
             The results will be based on solutions currently available that match to this filter.
         </p>
         <p>
-            <a href="/" target="_blank">View results for this filter (opens in a new tab)</a>
+            <a href="@Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new
+                            {
+                                selectedCapabilityIds = Model.FilterDetails.FilterStrings.CapabilityIds,
+                                selectedEpicIds = Model.FilterDetails.FilterStrings.EpicIds,
+                                selectedFrameworkId = Model.FilterDetails.FilterStrings.FrameworkId,
+                                selectedClientApplicationTypeIds = Model.FilterDetails.FilterStrings.ClientApplicationTypeIds,
+                                selectedHostingTypeIds = Model.FilterDetails.FilterStrings.HostingTypeIds,
+                                filterId = Model.FilterDetails.Id,
+                            })" target="_blank">View results for this filter (opens in a new tab)</a>
         </p>
         <vc:nhs-delete-button url="@Url.Action(nameof(ManageFiltersController.DeleteFilter),
                                                new { filterId = Model.FilterDetails.Id })"

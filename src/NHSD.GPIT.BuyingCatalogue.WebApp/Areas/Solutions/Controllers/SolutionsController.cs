@@ -4,10 +4,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
@@ -24,17 +26,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         private readonly IAdditionalServicesService additionalServicesService;
         private readonly ISolutionsFilterService solutionsFilterService;
         private readonly IFrameworkService frameworkService;
+        private readonly IOrganisationsService organisationsService;
+        private readonly IManageFiltersService manageFiltersService;
 
         public SolutionsController(
             ISolutionsService solutionsService,
             IAdditionalServicesService additionalServicesService,
             ISolutionsFilterService solutionsFilterService,
-            IFrameworkService frameworkService)
+            IFrameworkService frameworkService,
+            IOrganisationsService organisationsService,
+            IManageFiltersService manageFiltersService)
         {
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
             this.additionalServicesService = additionalServicesService ?? throw new ArgumentNullException(nameof(additionalServicesService));
             this.solutionsFilterService = solutionsFilterService ?? throw new ArgumentNullException(nameof(solutionsFilterService));
             this.frameworkService = frameworkService ?? throw new ArgumentNullException(nameof(frameworkService));
+            this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
+            this.manageFiltersService = manageFiltersService ?? throw new ArgumentNullException(nameof(manageFiltersService));
         }
 
         [HttpGet]
@@ -46,8 +54,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             [FromQuery] string search,
             [FromQuery] string selectedFrameworkId,
             [FromQuery] string selectedClientApplicationTypeIds,
-            [FromQuery] string selectedHostingTypeIds)
+            [FromQuery] string selectedHostingTypeIds,
+            [FromQuery] int? filterId)
         {
+            string filterName = null;
+            if (filterId.HasValue && User.Identity.IsAuthenticated)
+            {
+                var organisation = await GetUserOrganisation();
+                var filter = await manageFiltersService.GetFilterDetails(organisation.Id, filterId.Value);
+
+                if (filter == null)
+                    return NotFound();
+
+                filterName = filter.Name;
+            }
+
             var inputOptions = new PageOptions(page, sortBy);
 
             var (catalogueItems, options, capabilitiesAndCount) =
@@ -61,10 +82,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     selectedHostingTypeIds);
             var (catalogueItemsWithoutFrameworkFilter, capabilitiesAndCountWithoutFrameworkFilter) = await solutionsFilterService.GetFilteredAndNonFilteredQueryResults(selectedCapabilityIds, selectedEpicIds);
             var frameworks = await frameworkService.GetFrameworksByCatalogueItems(catalogueItemsWithoutFrameworkFilter.Select(x => x.Id).ToList());
-            var additionalFilters = new Models.Filters.AdditionalFiltersModel(frameworks, selectedClientApplicationTypeIds, selectedHostingTypeIds, selectedCapabilityIds, selectedEpicIds);
+            var additionalFilters = new Models.Filters.AdditionalFiltersModel(frameworks, selectedFrameworkId, selectedClientApplicationTypeIds, selectedHostingTypeIds, selectedCapabilityIds, selectedEpicIds);
 
             return View(new SolutionsModel()
             {
+                FilterName = filterName,
                 CatalogueItems = catalogueItems,
                 SelectedSortOption = options.Sort,
                 PageOptions = options,
@@ -86,7 +108,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             [FromQuery] string selectedEpicIds,
             [FromQuery] string search,
             string selectedFrameworkId,
-            AdditionalFiltersModel additionalFiltersModel)
+            AdditionalFiltersModel additionalFiltersModel,
+            [FromQuery] int? filterId)
         {
             return RedirectToAction(
                    nameof(Index),
@@ -101,6 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                        selectedFrameworkId,
                        selectedClientApplicationTypeIds = additionalFiltersModel.CombineSelectedOptions(additionalFiltersModel.ClientApplicationTypeOptions),
                        selectedHostingTypeIds = additionalFiltersModel.CombineSelectedOptions(additionalFiltersModel.HostingTypeOptions),
+                       filterId,
                    });
         }
 
@@ -456,6 +480,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 model.BackLink = backlink;
 
             return View(model);
+        }
+
+        private async Task<Organisation> GetUserOrganisation()
+        {
+            var organisationInternalIdentifier = User.GetPrimaryOrganisationInternalIdentifier();
+            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(organisationInternalIdentifier);
+            return organisation;
         }
     }
 }

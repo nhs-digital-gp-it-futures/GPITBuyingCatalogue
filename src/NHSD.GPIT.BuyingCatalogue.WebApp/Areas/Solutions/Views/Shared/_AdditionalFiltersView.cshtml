@@ -1,0 +1,55 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.DetailsAndExpander
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters.AdditionalFiltersModel
+
+<nhs-expander label-text="Framework" open="true">
+    @if (!string.IsNullOrWhiteSpace(Model.FrameworkFilter))
+    {
+        <ul>
+            <li>
+                @(Model.FrameworkFilter)
+            </li>
+        </ul>
+    }
+    else
+    {
+        @("None selected")
+    }
+</nhs-expander>
+<nhs-expander label-text="Client application type" open="true">
+    @if (Model.ClientApplicationTypeFilters.Any())
+    {
+        <ul>
+            @foreach (var filter in Model.ClientApplicationTypeFilters)
+            {
+                <li>
+                    @(filter)
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        @("None selected")
+    }
+</nhs-expander>
+<nhs-expander label-text="Hosting type" open="true" >
+    @if (Model.HostingTypeFilters.Any())
+    {
+        <ul>
+            @foreach (var thing in Model.HostingTypeFilters)
+            {
+                <li>
+                    @(thing)
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        @("None selected")
+    }
+</nhs-expander>

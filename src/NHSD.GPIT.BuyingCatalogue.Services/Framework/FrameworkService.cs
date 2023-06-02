@@ -24,10 +24,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
         public async Task<List<FrameworkFilterInfo>> GetFrameworksByCatalogueItems(
             IList<CatalogueItemId> catalogueItems) =>
             await dbContext.FrameworkSolutions.AsNoTracking()
-                .Where(
-                    x => x.Solution.CatalogueItem.PublishedStatus == PublicationStatus.Published
-                        && !x.Framework.IsExpired)
-                .GroupBy(x => new { x.FrameworkId, x.Framework.ShortName })
+                .Where(x => x.Solution.CatalogueItem.PublishedStatus == PublicationStatus.Published)
+                .GroupBy(x => new { x.FrameworkId, x.Framework.ShortName, x.Framework.IsExpired })
                 .Select(
                     x => new FrameworkFilterInfo
                     {
@@ -36,6 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
                         CountOfActiveSolutions = catalogueItems.Any()
                                         ? x.Count(y => catalogueItems.Contains(y.SolutionId))
                                         : 0,
+                        Expired = x.Key.IsExpired,
                     })
                 .ToListAsync();
 

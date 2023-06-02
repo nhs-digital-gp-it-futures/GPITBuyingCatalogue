@@ -14,17 +14,39 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
     [ExcludeFromCodeCoverage]
     public class SolutionsModel
     {
-        public const string TitleNoSearch = "Find Buying Catalogue Solutions";
-        public const string TitleSearchNoResults = "No Catalogue Solutions found";
-        public const string TitleSearchResults = "Catalogue Solutions found";
-
-        public const string AdviceTextNosearch = "Search for Catalogue Solutions that match the needs of your organisation.";
-        public const string AdviceTextSearchNoresults = "There are no Catalogue Solutions that meet your search criteria.";
-        public const string AdviceTextSearchResults = "These are the Catalogue Solutions that meet your search criteria. You can apply additional filters to refine your results further, or compare these results.";
-
-        public SolutionsModel()
+        public static readonly PageTitleModel NoSearchPageTitle = new()
         {
-        }
+            Title = "Find Buying Catalogue Solutions",
+            Advice = "Search for Catalogue Solutions that match the needs of your organisation.",
+        };
+
+        public static readonly PageTitleModel SearchNoResultsPageTitle = new()
+        {
+            Title = "No Catalogue Solutions found",
+            Advice = "There are no Catalogue Solutions that meet your search criteria.",
+        };
+
+        public static readonly PageTitleModel SearchNoResultsFilterPageTitle = new()
+        {
+            Title = "Catalogue Solutions found",
+            Advice = "These are the Catalogue Solutions that meet your search criteria.",
+        };
+
+        public static readonly PageTitleModel SearchResultsPageTitle = new()
+        {
+            Title = "Catalogue Solutions found",
+            Advice = "These are the Catalogue Solutions that meet your search criteria. You can apply additional filters to refine your results further, or compare these results.",
+        };
+
+        public static readonly PageTitleModel SearchResultsFilterPageTitle = new()
+        {
+            Title = "Catalogue Solutions found",
+            Advice = "These are the Catalogue Solutions currently available for your saved filter.",
+        };
+
+        public string FilterName { get; set; }
+
+        public bool FilterResultView => !string.IsNullOrEmpty(FilterName);
 
         public AdditionalFiltersModel AdditionalFilters { get; set; }
 
@@ -49,18 +71,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public bool HasCapabilities =>
             !string.IsNullOrWhiteSpace(SearchSummary?.SelectedCapabilityIds);
 
-        public string TitleText =>
-            !SearchCriteriaApplied
-                ? TitleNoSearch
-                : CatalogueItems?.Count == 0
-                   ? TitleSearchNoResults
-                   : TitleSearchResults;
+        public PageTitleModel GetPageTitle()
+        {
+            if (!SearchCriteriaApplied)
+            {
+                return NoSearchPageTitle;
+            }
 
-        public string AdviceText =>
-            !SearchCriteriaApplied
-            ? AdviceTextNosearch
-            : CatalogueItems?.Count == 0
-                ? AdviceTextSearchNoresults
-                : AdviceTextSearchResults;
+            if (CatalogueItems?.Count == 0)
+            {
+                return string.IsNullOrEmpty(FilterName)
+                    ? SearchNoResultsPageTitle
+                    : SearchNoResultsFilterPageTitle with { Caption = FilterName };
+            }
+
+            return string.IsNullOrEmpty(FilterName)
+                     ? SearchResultsPageTitle
+                     : SearchResultsFilterPageTitle with { Caption = FilterName };
+        }
     }
 }

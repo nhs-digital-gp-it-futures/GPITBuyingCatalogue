@@ -14,6 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -615,6 +616,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             filterDetails.Name.Should().Be(filter.Name);
             filterDetails.Description.Should().Be(filter.Description);
             filterDetails.FrameworkName.Should().Be(framework.ShortName);
+            filterDetails.FilterStrings.CapabilityIds.Should().Be(filter.Capabilities.Select(c => c.Id).ToFilterString());
+            filterDetails.FilterStrings.EpicIds.Should().Be(filter.Epics.Select(e => e.Id).ToFilterString());
+            filterDetails.FilterStrings.FrameworkId.Should().Be(filter.FrameworkId);
+            filterDetails.FilterStrings.ClientApplicationTypeIds.Should().Be(filter.FilterClientApplicationTypes.Select(fc => ((int)fc.ClientApplicationType).ToString()).ToFilterString());
+            filterDetails.FilterStrings.HostingTypeIds.Should().Be(filter.FilterHostingTypes.Select(fc => ((int)fc.HostingType).ToString()).ToFilterString());
+            filterDetails.Id.Should().Be(filter.Id);
         }
 
         [Theory]

@@ -17,8 +17,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 SearchSummary = new ServiceContracts.Models.CatalogueFilterSearchSummary(),
             };
 
-            model.TitleText.Should().Be(SolutionsModel.TitleNoSearch);
-            model.AdviceText.Should().Be(SolutionsModel.AdviceTextNosearch);
+            var pageTitle = model.GetPageTitle();
+            pageTitle.Title.Should().Be(SolutionsModel.NoSearchPageTitle.Title);
+            pageTitle.Advice.Should().Be(SolutionsModel.NoSearchPageTitle.Advice);
         }
 
         [Fact]
@@ -33,8 +34,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 CatalogueItems = new List<CatalogueItem>(),
             };
 
-            model.TitleText.Should().Be(SolutionsModel.TitleSearchNoResults);
-            model.AdviceText.Should().Be(SolutionsModel.AdviceTextSearchNoresults);
+            var pageTitle = model.GetPageTitle();
+            pageTitle.Title.Should().Be(SolutionsModel.SearchNoResultsPageTitle.Title);
+            pageTitle.Advice.Should().Be(SolutionsModel.SearchNoResultsPageTitle.Advice);
         }
 
         [Theory]
@@ -51,8 +53,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 CatalogueItems = solutions,
             };
 
-            model.TitleText.Should().Be(SolutionsModel.TitleSearchResults);
-            model.AdviceText.Should().Be(SolutionsModel.AdviceTextSearchResults);
+            var pageTitle = model.GetPageTitle();
+            pageTitle.Title.Should().Be(SolutionsModel.SearchResultsPageTitle.Title);
+            pageTitle.Advice.Should().Be(SolutionsModel.SearchResultsPageTitle.Advice);
         }
     }
 }

@@ -47,7 +47,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             var filter =
                 new Filter()
                 {
-                    Name = name, Description = description, Organisation = organisation, Framework = framework,
+                    Name = name,
+                    Description = description,
+                    Organisation = organisation,
+                    Framework = framework,
                 };
 
             dbContext.Filters.Add(filter);
@@ -87,7 +90,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         }
 
         public async Task<FilterDetailsModel> GetFilterDetails(int organisationId, int filterId)
-            => await dbContext.Filters.Where(x => x.OrganisationId == organisationId && x.Id == filterId)
+        {
+            return await dbContext.Filters.Where(x => x.OrganisationId == organisationId && x.Id == filterId)
                 .Select(
                     x => new FilterDetailsModel
                     {
@@ -106,9 +110,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                                         .Select(z => z.Name)
                                         .ToList()))
                             .ToList(),
+                        FilterStrings = new FilterStringsModel()
+                        {
+                            CapabilityIds = x.Capabilities.Select(c => c.Id).ToFilterString(),
+                            EpicIds = x.Epics.Select(e => e.Id).ToFilterString(),
+                            FrameworkId = x.FrameworkId,
+                            ClientApplicationTypeIds = x.FilterClientApplicationTypes.Select(fc => $"{(int)fc.ClientApplicationType}").ToFilterString(),
+                            HostingTypeIds = x.FilterHostingTypes.Select(fc => $"{(int)fc.HostingType}").ToFilterString(),
+                        },
                     })
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
+        }
 
         internal async Task AddFilterCapabilities(int filterId, List<int> capabilityIds)
         {
