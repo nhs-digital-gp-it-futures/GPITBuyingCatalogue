@@ -12,11 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Mana
         [CommonAutoData]
         public static void Constructor_InitializesProperties(string filterName, int filterId)
         {
-            var model = new DeleteFilterModel
-            {
-                FilterName = filterName,
-                FilterId = filterId,
-            };
+            var model = new DeleteFilterModel(filterId, filterName);
 
             model.FilterName.Should().Be(filterName);
             model.FilterId.Should().Be(filterId);
