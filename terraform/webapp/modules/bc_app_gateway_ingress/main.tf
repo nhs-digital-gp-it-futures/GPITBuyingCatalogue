@@ -68,6 +68,7 @@ resource "azurerm_application_gateway" "app_gateway" {
     rule_type                   = "Basic"
     http_listener_name          = "${var.ag_name_fragment}-appgateway-httplstn"
     redirect_configuration_name = "${var.ag_name_fragment}-appgateway-http-redirect"
+    rewrite_rule_set_name       = "${var.ag_name_fragment}-appgateway-rewrite-rules"
     priority                    = 10010
   }
 
@@ -80,11 +81,12 @@ resource "azurerm_application_gateway" "app_gateway" {
   }
 
   request_routing_rule {
-    name                       = "${var.ag_name_fragment}-appgateway-rqrt-https"
-    rule_type                  = "Basic"
-    http_listener_name         = "${var.ag_name_fragment}-appgateway-httpslstn"
-    backend_address_pool_name  = "${var.ag_name_fragment}-appgateway-beap"
-    backend_http_settings_name = "${var.ag_name_fragment}-appgateway-be-htst"
+    name                        = "${var.ag_name_fragment}-appgateway-rqrt-https"
+    rule_type                   = "Basic"
+    http_listener_name          = "${var.ag_name_fragment}-appgateway-httpslstn"
+    backend_address_pool_name   = "${var.ag_name_fragment}-appgateway-beap"
+    backend_http_settings_name  = "${var.ag_name_fragment}-appgateway-be-htst"
+    rewrite_rule_set_name       = "${var.ag_name_fragment}-appgateway-rewrite-rules"
     priority                    = 10020
   }
 
