@@ -625,6 +625,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             [Frozen] BuyingCatalogueDbContext context,
             ManageFiltersService service)
         {
+            filter.IsDeleted = false;
             context.Organisations.Add(organisation);
             context.Filters.Add(filter);
             await context.SaveChangesAsync();

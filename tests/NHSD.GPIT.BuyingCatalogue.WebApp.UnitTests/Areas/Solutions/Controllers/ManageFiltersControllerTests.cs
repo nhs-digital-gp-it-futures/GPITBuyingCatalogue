@@ -407,7 +407,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [CommonAutoData]
         public static async Task Post_DeleteFilter_ReturnsRedirectToActionResult(
             string primaryOrganisationInternalId,
-            int filterId,
             FilterDetailsModel filterDetailsModel,
             DeleteFilterModel deleteFilterModel,
             Organisation organisation,
@@ -421,8 +420,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             organisationsService
                 .Setup(x => x.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId))
                 .ReturnsAsync(organisation);
+            deleteFilterModel.FilterId = filterDetailsModel.Id;
             manageFiltersService
-                .Setup(x => x.GetFilterDetails(organisation.Id, filterId))
+                .Setup(x => x.GetFilterDetails(organisation.Id, deleteFilterModel.FilterId))
                 .ReturnsAsync(filterDetailsModel);
             var controller = CreateController(
                 organisationsService,
@@ -434,10 +434,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             controller.Url = mockUrlHelper.Object;
 
             var result = await controller.DeleteFilter(deleteFilterModel);
-
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
             actualResult.ActionName.Should().Be(nameof(ManageFiltersController.Index));
+            manageFiltersService.Verify(x => x.DeleteFilter(deleteFilterModel.FilterId), Times.Once);
         }
 
         private static ManageFiltersController CreateController(
