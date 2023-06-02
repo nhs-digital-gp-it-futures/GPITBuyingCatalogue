@@ -173,24 +173,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         {
             var oranisation = await GetUserOrganisation();
             var filter = await manageFiltersService.GetFilterDetails(oranisation.Id, filterId);
-            var model = new DeleteFilterModel()
+            var model = new DeleteFilterModel(filter.Id, filter.Name)
             {
-                BackLink = Url.Action(nameof(FilterDetails), typeof(ManageFiltersController).ControllerName(), new { filterId }),
-                FilterId = filter.Id,
-                FilterName = filter.Name,
+                BackLink = Url.Action(nameof(FilterDetails), new { filterId }),
             };
             return View(model);
         }
 
         [HttpPost("delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteFilterConfirmed(int filterId)
+        public async Task<IActionResult> DeleteFilter(DeleteFilterModel deleteFilterModel)
         {
             int organisationId = (await GetUserOrganisation()).Id;
-            var filter = await manageFiltersService.GetFilterDetails(organisationId, filterId);
+            var filter = await manageFiltersService.GetFilterDetails(organisationId, deleteFilterModel.FilterId);
             if (filter != null)
             {
-                await manageFiltersService.DeleteFilter(filterId);
+                await manageFiltersService.DeleteFilter(deleteFilterModel.FilterId);
             }
 
             return RedirectToAction(nameof(Index));

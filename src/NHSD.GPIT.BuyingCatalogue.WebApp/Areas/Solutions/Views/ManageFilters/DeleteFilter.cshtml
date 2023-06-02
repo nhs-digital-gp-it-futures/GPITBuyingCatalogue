@@ -8,7 +8,7 @@
     ViewBag.Title = "Delete this filter?";
 }
 
-<partial name="Partials/_BackLink" model="@Model" />
+<partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
         <nhs-validation-summary />
@@ -17,8 +17,9 @@
                         advice="" />
         <p>This filter will be deleted from your list of saved filters.</p>
         <br />
-        <form method="post" asp-action="DeleteFilterConfirmed" asp-controller="ManageFilters">
+        <form method="post">
             <input type="hidden" asp-for="FilterId" />
+            <input type="hidden" asp-for="FilterName" />
             <button type="submit" class="nhsuk-button">Delete filter</button>
         </form>
         <p>

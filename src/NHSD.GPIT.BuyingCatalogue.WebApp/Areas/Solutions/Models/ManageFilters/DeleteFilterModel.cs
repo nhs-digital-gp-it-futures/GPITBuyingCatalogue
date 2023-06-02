@@ -9,6 +9,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
         {
         }
 
+        public DeleteFilterModel(int filterId, string filterName)
+        {
+            FilterId = filterId;
+            FilterName = filterName;
+        }
+
         public string FilterName { get; set; }
 
         public int FilterId { get; set; }

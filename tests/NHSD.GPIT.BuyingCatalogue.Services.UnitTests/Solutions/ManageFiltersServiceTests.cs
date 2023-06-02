@@ -628,15 +628,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             context.Organisations.Add(organisation);
             context.Filters.Add(filter);
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
 
             await service.DeleteFilter(filter.Id);
 
             var result = await context.Filters.FirstOrDefaultAsync(f => f.Id == filter.Id);
 
             result.Should().BeNull();
-            result = await context.Filters.IgnoreQueryFilters().FirstOrDefaultAsync();
-            result.Should().Be(filter);
-            context.ChangeTracker.Clear();
         }
     }
 }

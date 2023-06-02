@@ -398,8 +398,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var result = await controller.DeleteFilter(filterId);
 
-            var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsType<DeleteFilterModel>(viewResult.Model);
+            result.Should().BeOfType<ViewResult>();
+            var viewResult = result.As<ViewResult>();
+            viewResult.Model.Should().BeOfType<DeleteFilterModel>();
         }
 
         [Theory]
@@ -408,6 +409,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             string primaryOrganisationInternalId,
             int filterId,
             FilterDetailsModel filterDetailsModel,
+            DeleteFilterModel deleteFilterModel,
             Organisation organisation,
             [Frozen] Mock<IOrganisationsService> organisationsService,
             [Frozen] Mock<ICapabilitiesService> capabilitiesService,
@@ -431,10 +433,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 primaryOrganisationInternalId);
             controller.Url = mockUrlHelper.Object;
 
-            var result = await controller.DeleteFilterConfirmed(filterId);
+            var result = await controller.DeleteFilter(deleteFilterModel);
 
-            var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
-            redirectToActionResult.ActionName.Should().Be("Index");
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actualResult.ActionName.Should().Be(nameof(ManageFiltersController.Index));
         }
 
         private static ManageFiltersController CreateController(
