@@ -77,11 +77,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ToListAsync();
         }
 
+        public async Task DeleteFilter(int filterId)
+        {
+            var filter = await dbContext.Filters.FirstOrDefaultAsync(o => o.Id == filterId);
+
+            filter.IsDeleted = true;
+
+            await dbContext.SaveChangesAsync();
+        }
+
         public async Task<FilterDetailsModel> GetFilterDetails(int organisationId, int filterId)
             => await dbContext.Filters.Where(x => x.OrganisationId == organisationId && x.Id == filterId)
                 .Select(
                     x => new FilterDetailsModel
                     {
+                        Id = x.Id,
                         Name = x.Name,
                         Description = x.Description,
                         FrameworkName = x.Framework.ShortName,

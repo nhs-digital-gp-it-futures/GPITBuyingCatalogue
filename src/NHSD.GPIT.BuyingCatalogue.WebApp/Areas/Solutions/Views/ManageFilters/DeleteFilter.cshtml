@@ -1,0 +1,29 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters.DeleteFilterModel
+
+@{
+    Layout = "~/Views/Shared/Layouts/_AllBannersLayout.cshtml";
+    ViewBag.Title = "Delete this filter?";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-validation-summary />
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.FilterName"
+                        advice="" />
+        <p>This filter will be deleted from your list of saved filters.</p>
+        <br />
+        <form method="post">
+            <input type="hidden" asp-for="FilterId" />
+            <input type="hidden" asp-for="FilterName" />
+            <button type="submit" class="nhsuk-button">Delete filter</button>
+        </form>
+        <p>
+            <a href="@Model.BackLink">Cancel</a>
+        </p>
+    </div>
+</div>

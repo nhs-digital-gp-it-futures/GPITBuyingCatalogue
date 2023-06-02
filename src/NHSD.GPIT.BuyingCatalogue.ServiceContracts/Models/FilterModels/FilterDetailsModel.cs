@@ -6,6 +6,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 
 public class FilterDetailsModel
 {
+    public int Id { get; set; }
+
     public string Name { get; set; }
 
     public string Description { get; set; }

@@ -8,9 +8,11 @@ using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Azure;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
@@ -62,10 +64,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Theory]
         [InMemoryDbAutoData]
         public static async Task FilterExists_NameAlreadyExists_ReturnsTrue(
-            [Frozen] BuyingCatalogueDbContext context,
+            Organisation organisation,
             Filter filter,
+            [Frozen] BuyingCatalogueDbContext context,
             ManageFiltersService service)
         {
+            context.Organisations.Add(organisation);
             context.Filters.Add(filter);
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
@@ -202,11 +206,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Theory]
         [InMemoryDbAutoData]
         public static async Task AddFilterCapabilities_NullCapabilityIds_NoCapabilitiesAdded(
-            [Frozen] BuyingCatalogueDbContext context,
+            Organisation organisation,
             Filter filter,
+            [Frozen] BuyingCatalogueDbContext context,
             ManageFiltersService service)
         {
             filter.Capabilities.Clear();
+
+            context.Organisations.Add(organisation);
             context.Filters.Add(filter);
             await context.SaveChangesAsync();
 
@@ -222,11 +229,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Theory]
         [InMemoryDbAutoData]
         public static async Task AddFilterCapabilities_EmptyCapabilityIds_NoCapabilitiesAdded(
-            [Frozen] BuyingCatalogueDbContext context,
+            Organisation organisation,
             Filter filter,
+            [Frozen] BuyingCatalogueDbContext context,
             ManageFiltersService service)
         {
             filter.Capabilities.Clear();
+
+            context.Organisations.Add(organisation);
             context.Filters.Add(filter);
             await context.SaveChangesAsync();
 
@@ -257,22 +267,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Theory]
         [InMemoryDbAutoData]
         public static async Task AddFilterCapabilities_ValidParameters_CapabilitiesAdded(
-            [Frozen] BuyingCatalogueDbContext context,
-            Filter filter,
             List<Capability> capabilities,
+            Organisation organisation,
+            Filter filter,
+            [Frozen] BuyingCatalogueDbContext context,
             ManageFiltersService service)
         {
             filter.Capabilities.Clear();
-            context.Filters.Add(filter);
-            await context.SaveChangesAsync();
 
             context.Capabilities.AddRange(capabilities);
+            context.Organisations.Add(organisation);
+            context.Filters.Add(filter);
+
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
 
             var capabilityIds = capabilities.Select(c => c.Id).ToList();
 
             await service.AddFilterCapabilities(filter.Id, capabilityIds);
-            context.ChangeTracker.Clear();
 
             var result = await context.Filters.Include(f => f.Capabilities).FirstAsync(f => f.Id == filter.Id);
             result.Should().NotBeNull();
@@ -284,16 +296,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Theory]
         [InMemoryDbAutoData]
         public static async Task AddFilterEpics_NullEpicIds_NoEpicsAdded(
-            [Frozen] BuyingCatalogueDbContext context,
+            Organisation organisation,
             Filter filter,
+            [Frozen] BuyingCatalogueDbContext context,
             ManageFiltersService service)
         {
             filter.Epics.Clear();
+
+            context.Organisations.Add(organisation);
             context.Filters.Add(filter);
+
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
 
             await service.AddFilterCapabilities(filter.Id, null);
-            context.ChangeTracker.Clear();
 
             var result = await context.Filters.FirstAsync(f => f.Id == filter.Id);
             result.Should().NotBeNull();
@@ -304,11 +320,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Theory]
         [InMemoryDbAutoData]
         public static async Task AddFilterEpics_EmptyEpicIds_NoEpicsAdded(
-            [Frozen] BuyingCatalogueDbContext context,
+            Organisation organisation,
             Filter filter,
+            [Frozen] BuyingCatalogueDbContext context,
             ManageFiltersService service)
         {
             filter.Epics.Clear();
+            context.Organisations.Add(organisation);
             context.Filters.Add(filter);
             await context.SaveChangesAsync();
 
@@ -339,16 +357,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Theory]
         [InMemoryDbAutoData]
         public static async Task AddFilterEpics_ValidParameters_EpicsAdded(
-            [Frozen] BuyingCatalogueDbContext context,
-            Filter filter,
             List<Epic> epics,
+            Organisation organisation,
+            Filter filter,
+            [Frozen] BuyingCatalogueDbContext context,
             ManageFiltersService service)
         {
             filter.Epics.Clear();
-            context.Filters.Add(filter);
-            await context.SaveChangesAsync();
-
             context.Epics.AddRange(epics);
+            context.Organisations.Add(organisation);
+            context.Filters.Add(filter);
             await context.SaveChangesAsync();
 
             var epicIds = epics.Select(c => c.Id).ToList();
@@ -367,10 +385,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [InMemoryDbAutoData]
         public static async Task AddFilterClientApplicationTypes_NullCatIds_NoCatsAdded(
             [Frozen] BuyingCatalogueDbContext context,
+            Organisation organisation,
             Filter filter,
             ManageFiltersService service)
         {
             filter.FilterClientApplicationTypes.Clear();
+            context.Organisations.Add(organisation);
             context.Filters.Add(filter);
             await context.SaveChangesAsync();
 
@@ -387,10 +407,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [InMemoryDbAutoData]
         public static async Task AddFilterClientApplicationTypes_EmptyCatIds_NoCatsAdded(
             [Frozen] BuyingCatalogueDbContext context,
+            Organisation organisation,
             Filter filter,
             ManageFiltersService service)
         {
             filter.FilterClientApplicationTypes.Clear();
+            context.Organisations.Add(organisation);
             context.Filters.Add(filter);
             await context.SaveChangesAsync();
 
@@ -422,11 +444,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [InMemoryDbAutoData]
         public static async Task AddFilterClientApplicationTypes_ValidParameters_CatsAdded(
             [Frozen] BuyingCatalogueDbContext context,
+            Organisation organisation,
             Filter filter,
             List<ClientApplicationType> cats,
             ManageFiltersService service)
         {
             filter.FilterClientApplicationTypes.Clear();
+            context.Organisations.Add(organisation);
             context.Filters.Add(filter);
             await context.SaveChangesAsync();
 
@@ -450,10 +474,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [InMemoryDbAutoData]
         public static async Task AddFilterHostingTypes_NullHostingTypeIds_NoHostingTypesAdded(
             [Frozen] BuyingCatalogueDbContext context,
+            Organisation organisation,
             Filter filter,
             ManageFiltersService service)
         {
             filter.FilterHostingTypes.Clear();
+            context.Organisations.Add(organisation);
             context.Filters.Add(filter);
             await context.SaveChangesAsync();
 
@@ -469,11 +495,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Theory]
         [InMemoryDbAutoData]
         public static async Task AddFilterHostingTypes_EmptyHostingTypeIds_NoHostingTypesAdded(
-            [Frozen] BuyingCatalogueDbContext context,
+            Organisation organisation,
             Filter filter,
+            [Frozen] BuyingCatalogueDbContext context,
             ManageFiltersService service)
         {
             filter.FilterHostingTypes.Clear();
+            context.Organisations.Add(organisation);
             context.Filters.Add(filter);
             await context.SaveChangesAsync();
 
@@ -504,12 +532,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Theory]
         [InMemoryDbAutoData]
         public static async Task AddFilterHostingTypes_ValidParameters_HostingTypesAdded(
-            [Frozen] BuyingCatalogueDbContext context,
-            Filter filter,
             List<HostingType> hostingTypes,
+            Organisation organisation,
+            Filter filter,
+            [Frozen] BuyingCatalogueDbContext context,
             ManageFiltersService service)
         {
             filter.FilterHostingTypes.Clear();
+            context.Organisations.Add(organisation);
             context.Filters.Add(filter);
             await context.SaveChangesAsync();
 
@@ -532,13 +562,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Theory]
         [InMemoryDbAutoData]
         public static async Task GetFilters_ReturnsExpectedResults(
-            Filter filter,
             Organisation organisation,
+            Filter filter,
             EntityFramework.Catalogue.Models.Framework framework,
             [Frozen] BuyingCatalogueDbContext context,
             ManageFiltersService service)
         {
             context.Organisations.Add(organisation);
+            context.Filters.Add(filter);
+
             await context.SaveChangesAsync();
 
             context.Frameworks.Add(framework);
@@ -551,8 +583,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             await context.SaveChangesAsync();
 
-            context.Filters.Add(filter);
-            await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
             var result = await service.GetFilters(organisation.Id);
@@ -585,6 +615,27 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             filterDetails.Name.Should().Be(filter.Name);
             filterDetails.Description.Should().Be(filter.Description);
             filterDetails.FrameworkName.Should().Be(framework.ShortName);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task DeleteFilter_SoftDeleteFilter_ValidateDeletion(
+            Organisation organisation,
+            Filter filter,
+            [Frozen] BuyingCatalogueDbContext context,
+            ManageFiltersService service)
+        {
+            filter.IsDeleted = false;
+            context.Organisations.Add(organisation);
+            context.Filters.Add(filter);
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            await service.DeleteFilter(filter.Id);
+
+            var result = await context.Filters.FirstOrDefaultAsync(f => f.Id == filter.Id);
+
+            result.Should().BeNull();
         }
     }
 }

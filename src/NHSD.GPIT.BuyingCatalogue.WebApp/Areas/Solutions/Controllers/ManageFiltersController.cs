@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
@@ -165,6 +166,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 BackLink = backLink,
             };
             return View(model);
+        }
+
+        [HttpGet("delete")]
+        public async Task<IActionResult> DeleteFilter(int filterId)
+        {
+            var oranisation = await GetUserOrganisation();
+            var filter = await manageFiltersService.GetFilterDetails(oranisation.Id, filterId);
+            var model = new DeleteFilterModel(filter.Id, filter.Name)
+            {
+                BackLink = Url.Action(nameof(FilterDetails), new { filterId }),
+            };
+            return View(model);
+        }
+
+        [HttpPost("delete")]
+        public async Task<IActionResult> DeleteFilter(DeleteFilterModel deleteFilterModel)
+        {
+            int organisationId = (await GetUserOrganisation()).Id;
+            var filter = await manageFiltersService.GetFilterDetails(organisationId, deleteFilterModel.FilterId);
+            if (filter != null)
+            {
+                await manageFiltersService.DeleteFilter(deleteFilterModel.FilterId);
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         private async Task<Organisation> GetUserOrganisation()

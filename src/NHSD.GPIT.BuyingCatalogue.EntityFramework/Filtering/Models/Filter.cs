@@ -32,6 +32,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models
 
         public int? LastUpdatedBy { get; set; }
 
+        public bool IsDeleted { get; set; }
+
         public AspNetUser LastUpdatedByUser { get; set; }
 
         public Organisation Organisation { get; set; }
