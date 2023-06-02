@@ -171,8 +171,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("delete")]
         public async Task<IActionResult> DeleteFilter(int filterId)
         {
-            var organisationId = (await GetUserOrganisation()).Id;
-            var filter = await manageFiltersService.GetFilterDetails(organisationId, filterId);
+            var oranisation = await GetUserOrganisation();
+            var filter = await manageFiltersService.GetFilterDetails(oranisation.Id, filterId);
             var model = new DeleteFilterModel()
             {
                 BackLink = Url.Action(nameof(FilterDetails), typeof(ManageFiltersController).ControllerName(), new { filterId }),
