@@ -367,52 +367,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actualResult.ControllerName.Should().Be(typeof(ManageFiltersController).ControllerName());
         }
 
-        [Theory]
-        [CommonAutoData]
-        public static async Task DeleteFilter_ReturnsViewResult(
-            int filterId, ManageFiltersController controller)
-        {
-            var result = await controller.DeleteFilter(filterId);
-
-            Assert.IsType<ViewResult>(result);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void DeleteFilterConfirmed_CallsSoftDeleteFilter(
-            int filterId,
-            [Frozen] Mock<IManageFiltersService> manageFiltersServiceMock,
-            ManageFiltersController controller)
-        {
-            var result = controller.DeleteFilterConfirmed(filterId);
-
-            manageFiltersServiceMock.Verify(s => s.DeleteFilter(filterId), Times.Once);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_DeleteFilter_ReturnsExpectedResult(
-            int filterId,
-            ManageFiltersController controller)
-        {
-            var result = await controller.DeleteFilter(filterId);
-
-            var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-            viewResult.Model.Should().BeOfType<FilterDetailsModel>();
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_DeleteFilter_ReturnsRedirectToActionResult(
-            int filterId,
-            ManageFiltersController controller)
-        {
-            var result = await controller.DeleteFilterConfirmed(filterId);
-
-            var redirectToActionResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
-            redirectToActionResult.ActionName.Should().Be("Index");
-        }
-
         private static ManageFiltersController CreateController(
             Mock<IOrganisationsService> organisationsService,
             Mock<ICapabilitiesService> capabilitiesService,
