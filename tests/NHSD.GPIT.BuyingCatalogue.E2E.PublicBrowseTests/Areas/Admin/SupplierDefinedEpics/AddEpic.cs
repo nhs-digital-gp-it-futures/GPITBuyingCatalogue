@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.SupplierDefinedEpics;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
@@ -86,11 +87,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
         public void AddEpic_DuplicatesExistingEpic_ThrowsError()
         {
             using var context = GetEndToEndDbContext();
-            var epic = context.Epics.First(e => e.Id == "S00001");
+            var epic = context.Epics.Include(x => x.Capabilities).First(e => e.Id == "S00001");
 
             CommonActions.ElementAddValue(AddSupplierDefinedEpicObjects.NameInput, epic.Name);
             CommonActions.ElementAddValue(AddSupplierDefinedEpicObjects.DescriptionInput, epic.Description);
-            CommonActions.SelectDropDownItemByValue(AddSupplierDefinedEpicObjects.CapabilityInput, epic.CapabilityId.ToString());
+            CommonActions.SelectDropDownItemByValue(AddSupplierDefinedEpicObjects.CapabilityInput, epic.Capabilities.First().Id.ToString());
             CommonActions.ClickRadioButtonWithValue(epic.IsActive.ToString());
 
             CommonActions.ClickSave();

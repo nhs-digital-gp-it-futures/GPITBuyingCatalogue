@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
@@ -38,15 +39,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             if (organisation == null)
                 throw new ArgumentException("Invalid organisation", nameof(organisationId));
 
-            var framework = !string.IsNullOrEmpty(frameworkId) ? await dbContext.Frameworks.FirstAsync(o => o.Id == frameworkId) : null;
+            var framework = !string.IsNullOrEmpty(frameworkId)
+                ? await dbContext.Frameworks.FirstAsync(o => o.Id == frameworkId)
+                : null;
 
             var filter =
                 new Filter()
                 {
-                    Name = name,
-                    Description = description,
-                    Organisation = organisation,
-                    Framework = framework,
+                    Name = name, Description = description, Organisation = organisation, Framework = framework,
                 };
 
             dbContext.Filters.Add(filter);
@@ -69,18 +69,47 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return await dbContext.Filters.AnyAsync(f => f.Name == filterName && f.OrganisationId == organisationId);
         }
 
+        public async Task<Filter> GetFilter(int organisationId, int filterId)
+            => await dbContext.Filters
+                .Include(x => x.FilterCapabilities)
+                .ThenInclude(x => x.Capability)
+                .Include(x => x.FilterEpics)
+                .ThenInclude(x => x.Epic)
+                .Include(x => x.FilterHostingTypes)
+                .Include(x => x.FilterClientApplicationTypes)
+                .AsNoTracking()
+                .AsSplitQuery()
+                .FirstOrDefaultAsync(x => x.Id == filterId && x.OrganisationId == organisationId);
+
         public async Task<List<Filter>> GetFilters(int organisationId)
         {
             return await dbContext.Filters.Where(o => o.OrganisationId == organisationId)
-                .Include(x => x.Framework)
-                .Include(x => x.FilterCapabilities)
-                .ThenInclude(y => y.Capability)
-                .Include(x => x.FilterEpics)
-                .ThenInclude(y => y.Epic)
-                .Include(x => x.FilterHostingTypes)
-                .Include(x => x.FilterClientApplicationTypes)
+                .AsNoTracking()
                 .ToListAsync();
         }
+
+        public async Task<FilterDetailsModel> GetFilterDetails(int organisationId, int filterId)
+            => await dbContext.Filters.Where(x => x.OrganisationId == organisationId && x.Id == filterId)
+                .Select(
+                    x => new FilterDetailsModel
+                    {
+                        Name = x.Name,
+                        Description = x.Description,
+                        FrameworkName = x.Framework.ShortName,
+                        HostingTypes = x.FilterHostingTypes.Select(y => y.HostingType).ToList(),
+                        ClientApplicationTypes =
+                            x.FilterClientApplicationTypes.Select(y => y.ClientApplicationType).ToList(),
+                        Capabilities = x.FilterCapabilities
+                            .Select(
+                                y => new KeyValuePair<string, List<string>>(
+                                    y.Capability.Name,
+                                    x.FilterEpics.Where(z => z.Epic.Capabilities.Any(e => e.Id == y.CapabilityId))
+                                        .Select(z => z.Epic.Name)
+                                        .ToList()))
+                            .ToList(),
+                    })
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
 
         internal async Task AddFilterCapabilities(int filterId, List<int> capabilityIds)
         {
@@ -100,12 +129,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
                 var capability = dbContext.Capabilities.First(x => x.Id == id);
 
-                dbContext.FilterCapabilities.Add(new FilterCapability
-                {
-                    FilterId = filterId,
-                    CapabilityId = id,
-                    Capability = capability,
-                });
+                dbContext.FilterCapabilities.Add(
+                    new FilterCapability { FilterId = filterId, CapabilityId = id, Capability = capability, });
             }
 
             await dbContext.SaveChangesAsync();
@@ -129,18 +154,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
                 var epic = dbContext.Epics.First(x => x.Id == id);
 
-                dbContext.FilterEpics.Add(new FilterEpic()
-                {
-                    FilterId = filterId,
-                    EpicId = id,
-                    Epic = epic,
-                });
+                dbContext.FilterEpics.Add(new FilterEpic() { FilterId = filterId, EpicId = id, Epic = epic, });
             }
 
             await dbContext.SaveChangesAsync();
         }
 
-        internal async Task AddFilterClientApplicationTypes(int filterId, List<ClientApplicationType> clientApplicationTypes)
+        internal async Task AddFilterClientApplicationTypes(
+            int filterId,
+            List<ClientApplicationType> clientApplicationTypes)
         {
             if (clientApplicationTypes is null || clientApplicationTypes.Count == 0) return;
 
@@ -156,11 +178,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 if (filter.FilterClientApplicationTypes.Any(x => x.ClientApplicationType == type))
                     continue;
 
-                dbContext.FilterClientApplicationTypes.Add(new FilterClientApplicationType()
-                {
-                    FilterId = filterId,
-                    ClientApplicationType = type,
-                });
+                dbContext.FilterClientApplicationTypes.Add(
+                    new FilterClientApplicationType() { FilterId = filterId, ClientApplicationType = type, });
             }
 
             await dbContext.SaveChangesAsync();
@@ -182,11 +201,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 if (filter.FilterHostingTypes.Any(x => x.HostingType == type))
                     continue;
 
-                dbContext.FilterHostingTypes.Add(new FilterHostingType()
-                {
-                    FilterId = filterId,
-                    HostingType = type,
-                });
+                dbContext.FilterHostingTypes.Add(new FilterHostingType() { FilterId = filterId, HostingType = type, });
             }
 
             await dbContext.SaveChangesAsync();

@@ -13,8 +13,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Supplier
         [Theory]
         [CommonAutoData]
         public static void CanDelete_InactiveEpicNoReferences_True(
-            Epic epic)
+            Epic epic,
+            Capability capability)
         {
+            epic.Capabilities.Add(capability);
             epic.IsActive = false;
 
             var model = new EditSupplierDefinedEpicModel(epic, Array.Empty<CatalogueItem>());
@@ -26,8 +28,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Supplier
         [CommonAutoData]
         public static void CanDelete_InactiveEpicWithReferences_False(
             Epic epic,
-            IList<CatalogueItem> referencingItems)
+            IList<CatalogueItem> referencingItems,
+            Capability capability)
         {
+            epic.Capabilities.Add(capability);
             epic.IsActive = false;
 
             var model = new EditSupplierDefinedEpicModel(epic, referencingItems);
@@ -38,8 +42,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Supplier
         [Theory]
         [CommonAutoData]
         public static void CanDelete_ActiveEpicNoReferences_False(
-            Epic epic)
+            Epic epic,
+            Capability capability)
         {
+            epic.Capabilities.Add(capability);
             epic.IsActive = true;
 
             var model = new EditSupplierDefinedEpicModel(epic, Array.Empty<CatalogueItem>());
@@ -51,8 +57,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Supplier
         [CommonAutoData]
         public static void CanDelete_ActiveEpicWithReferences_False(
             Epic epic,
-            IList<CatalogueItem> referencingItems)
+            IList<CatalogueItem> referencingItems,
+            Capability capability)
         {
+            epic.Capabilities.Add(capability);
             epic.IsActive = true;
 
             var model = new EditSupplierDefinedEpicModel(epic, referencingItems);

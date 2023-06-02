@@ -94,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
             await using var context = GetEndToEndDbContext();
 
             var epics = context.Epics
-                .Include(x => x.Capability)
+                .Include(x => x.Capabilities)
                 .Where(x => x.SupplierDefined);
 
             CommonActions.ElementAddValue(SupplierDefinedEpicsDashboardObjects.SearchBar, string.Empty);
@@ -109,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
             var pageSummary = GetPageSummary();
 
             pageSummary.Names.Should().BeEquivalentTo(epics.Select(x => x.Name.Trim()));
-            pageSummary.Capabilities.Should().BeEquivalentTo(epics.Select(x => x.Capability.Name.Trim()));
+            pageSummary.Capabilities.Should().BeEquivalentTo(epics.Select(x => x.Capabilities.First().Name.Trim()));
             pageSummary.Ids.Should().BeEquivalentTo(epics.Select(x => x.Id.Trim()));
         }
 
@@ -119,7 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
             await using var context = GetEndToEndDbContext();
 
             var sampleEpic = context.Epics
-                .Include(x => x.Capability)
+                .Include(x => x.Capabilities)
                 .Where(x => x.SupplierDefined)
                 .OrderByDescending(x => x.Name.Length)
                 .First();
@@ -135,9 +135,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
                     sampleEpic.Name)
                 .Should()
                 .BeTrue();
+
             CommonActions.ElementTextEqualTo(
                     SupplierDefinedEpicsDashboardObjects.SearchResultDescription(0),
-                    sampleEpic.Capability.Name)
+                    sampleEpic.Capabilities.First().Name)
                 .Should()
                 .BeTrue();
 
@@ -152,7 +153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
             var pageSummary = GetPageSummary();
 
             pageSummary.Names.First().Should().Be(sampleEpic.Name.Trim());
-            pageSummary.Capabilities.First().Should().Be(sampleEpic.Capability.Name.Trim());
+            pageSummary.Capabilities.First().Should().Be(sampleEpic.Capabilities.First().Name.Trim());
             pageSummary.Ids.First().Should().Be(sampleEpic.Id);
         }
 
@@ -218,7 +219,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
             Ids = Driver.FindElements(SupplierDefinedEpicsDashboardObjects.EpicIds).Select(s => s.GetAttribute("data-id").Trim()),
         };
 
-        private class PageSummary
+        private readonly struct PageSummary
         {
             public IEnumerable<string> Names { get; init; }
 

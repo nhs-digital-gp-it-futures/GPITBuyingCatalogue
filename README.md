@@ -54,6 +54,16 @@ Afterwards, open the solution in Visual Studio and run/debug NHSD.GPIT.BuyingCat
 
 ## Troubleshooting
 
+### Cannot build SQL Project in Visual Studio
+
+The database SQL Project has been migrated to Microsoft's [Microsoft.Build.Sql](https://github.com/microsoft/DacFx/tree/main/src/Microsoft.Build.Sql) SDK to enable .NET Core support for the database project.
+
+As a consequence, building in Visual Studio isn't currently supported. To build the database solution `dotnet build` must be used instead.
+
+Alternatively, the preexisting `docker-compose` approach will continue to work as normal.
+
+See [the following PR](https://github.com/nhs-digital-gp-it-futures/GPITBuyingCatalogue/pull/1134) for more information on the Microsoft.Build.Sql migration.
+
 ### SQL Server is running but there is no database
 
 The `dacpac` deployment takes a few seconds to initialize and complete so it is not unusual for there to be a slight delay between SQL server initializing and the database being ready for use; upon completion `<DB Name> database setup complete` is logged to the console.

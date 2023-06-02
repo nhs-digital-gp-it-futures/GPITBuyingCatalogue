@@ -35,18 +35,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 return View(model);
 
             await contactUsService.SubmitQuery(
-                model.ContactMethod == ContactUsModel.ContactMethodTypes.TechnicalFault,
                 model.FullName,
                 model.EmailAddress,
                 model.Message);
 
-            return RedirectToAction(nameof(ContactUsConfirmation), new { contactReason = model.ContactMethod });
+            return RedirectToAction(nameof(ContactUsConfirmation));
         }
 
         [HttpGet("contact-us/confirmation")]
-        public IActionResult ContactUsConfirmation(ContactUsModel.ContactMethodTypes contactReason)
+        public IActionResult ContactUsConfirmation()
         {
-            var model = new ContactUsConfirmationModel(contactReason)
+            var model = new ContactUsConfirmationModel()
             {
                 BackLink = Url.Action(nameof(Index)),
             };

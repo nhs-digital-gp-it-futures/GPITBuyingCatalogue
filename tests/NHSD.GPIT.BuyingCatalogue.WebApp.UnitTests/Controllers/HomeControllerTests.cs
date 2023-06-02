@@ -122,7 +122,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             _ = await controller.ContactUs(model);
 
             service.Verify(s => s.SubmitQuery(
-                model.ContactMethod == ContactUsModel.ContactMethodTypes.TechnicalFault,
                 model.FullName,
                 model.EmailAddress,
                 model.Message));
@@ -143,28 +142,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         [Theory]
         [CommonAutoData]
         public static void Get_ContactUsConfirmation_ReturnsView(
-            ContactUsModel.ContactMethodTypes contactMethod,
             HomeController controller)
         {
-            var result = controller.ContactUsConfirmation(contactMethod).As<ViewResult>();
+            var result = controller.ContactUsConfirmation().As<ViewResult>();
 
             result.Should().NotBeNull();
         }
 
         [Theory]
-        [CommonInlineAutoData(ContactUsModel.ContactMethodTypes.TechnicalFault, "Helpdesk Team")]
-        [CommonInlineAutoData(ContactUsModel.ContactMethodTypes.Other, "Buying Catalogue Team")]
+        [CommonAutoData]
         public static void Get_ContactUsConfirmation_ReturnsExpectedModel(
-            ContactUsModel.ContactMethodTypes contactReason,
-            string expectedContactTeam,
             HomeController controller)
         {
-            var model = new ContactUsConfirmationModel()
-            {
-                ContactTeam = expectedContactTeam,
-            };
+            var model = new ContactUsConfirmationModel();
 
-            var result = controller.ContactUsConfirmation(contactReason).As<ViewResult>();
+            var result = controller.ContactUsConfirmation().As<ViewResult>();
 
             result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
         }

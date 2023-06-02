@@ -24,7 +24,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Email
         }
 
         public async Task SubmitQuery(
-            bool isTechnicalQuery,
             string fullName,
             string emailAddress,
             string message)
@@ -45,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Email
                 [MessageToken] = message,
             };
 
-            EmailAddressTemplate recipient = isTechnicalQuery ? settings.TechnicalFaultRecipient : settings.GeneralQueriesRecipient;
+            EmailAddressTemplate recipient = settings.GeneralQueriesRecipient;
 
             await Task.WhenAll(
                 govNotifyEmailService.SendEmailAsync(recipient.Address, settings.AdminTemplateId, tokens),

@@ -94,11 +94,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
         public void EditEpic_DuplicatesExistingEpic_ThrowsError()
         {
             using var context = GetEndToEndDbContext();
-            var epic = context.Epics.First(e => e.Id == "S00002");
+            var epic = context.Epics.Include(x => x.Capabilities).First(e => e.Id == "S00002");
 
             CommonActions.ElementAddValue(AddSupplierDefinedEpicObjects.NameInput, epic.Name);
             CommonActions.ElementAddValue(AddSupplierDefinedEpicObjects.DescriptionInput, epic.Description);
-            CommonActions.SelectDropDownItemByValue(AddSupplierDefinedEpicObjects.CapabilityInput, epic.CapabilityId.ToString());
+            CommonActions.SelectDropDownItemByValue(AddSupplierDefinedEpicObjects.CapabilityInput, epic.Capabilities.First().Id.ToString());
             CommonActions.ClickRadioButtonWithValue(epic.IsActive.ToString());
 
             CommonActions.ClickSave();
@@ -121,7 +121,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
                 Description = descriptionText,
                 IsActive = true,
                 CompliancyLevel = CompliancyLevel.May,
-                CapabilityId = int.Parse(selectedCapabilityId),
                 SupplierDefined = true,
             };
 
@@ -141,7 +140,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
                     opt => opt
                         .Excluding(m => m.Id)
                         .Excluding(m => m.LastUpdated)
-                        .Excluding(m => m.LastUpdatedBy));
+                        .Excluding(m => m.LastUpdatedBy)
+                        .Excluding(m => m.Capabilities));
         }
 
         [Fact]

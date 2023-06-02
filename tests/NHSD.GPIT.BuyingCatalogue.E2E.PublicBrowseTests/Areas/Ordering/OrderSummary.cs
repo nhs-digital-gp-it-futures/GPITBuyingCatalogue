@@ -250,6 +250,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.ImplementationPlanExpander).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.BespokeImplementationPlan).Should().BeFalse();
+
+            flags.UseDefaultImplementationPlan = false;
+
+            context.SaveChanges();
         }
 
         [Fact]
@@ -276,6 +280,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.DataProcessingExpander).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.BespokeDataProcessing).Should().BeFalse();
+
+            flags.UseDefaultDataProcessing = false;
+
+            context.SaveChanges();
         }
 
         [Fact]
@@ -429,13 +437,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             var context = GetEndToEndDbContext();
             var order = context.Orders.First(x => x.Id == OrderId);
             order.Completed = null;
-
-            var flags = context.GetContractFlags(OrderId);
-
-            flags.HasSpecificRequirements = null;
-            flags.UseDefaultBilling = null;
-            flags.UseDefaultDataProcessing = null;
-            flags.UseDefaultImplementationPlan = null;
 
             context.SaveChanges();
         }

@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels;
@@ -29,8 +30,7 @@ public static class CapabilityEpicModelTests
         Capability capability,
         Epic epic)
     {
-        epic.CapabilityId = capability.Id;
-        epic.Capability = capability;
+        epic.Capabilities = new List<Capability> { capability };
 
         solution.CatalogueItem.CatalogueItemEpics.Add(
             new(solution.CatalogueItemId, capability.Id, epic.Id));

@@ -2,6 +2,7 @@
 {
     public enum CapabilityStatus
     {
+        Expired = 0,
         Effective = 1,
     }
 }

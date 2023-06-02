@@ -1,0 +1,30 @@
+@model SaveCompetitionModel
+
+@{
+    ViewBag.Title = "Create competition";
+}
+
+<partial name="Partials/_BackLink" model="Model"/>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary/>
+        <nhs-page-title title="@ViewBag.Title" caption="@Model.OrganisationName" advice="Provide a name and description for your competition."/>
+
+        <form method="post">
+            <input type="hidden" asp-for="BackLink" />
+            <input type="hidden" asp-for="OrganisationId" />
+            <input type="hidden" asp-for="OrganisationName" />
+
+            <nhs-input asp-for="Name"
+                       label-text="Competition name"
+                       label-hint="Provide a unique name for your competition." />
+
+            <nhs-textarea asp-for="Description"
+                          label-text="Competition description"
+                          label-hint="Provide a description to help you identify this competition from any others created for your organisation." />
+
+            <nhs-submit-button />
+        </form>
+    </div>
+</div>

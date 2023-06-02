@@ -62,3 +62,5 @@
 :r ./OrderSeedData/InsertTestOrderSeedData.sql
 :r ./InsertSupplierServiceAssociations.sql
 :r ./InsertDefaultImplementationPlan.sql
+
+:r ./MigrateEpics.sql

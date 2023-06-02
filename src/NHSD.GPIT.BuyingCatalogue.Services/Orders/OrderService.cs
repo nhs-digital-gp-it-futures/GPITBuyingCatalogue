@@ -410,7 +410,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             var userTemplateId = order.AssociatedServicesOnly
                 ? orderMessageSettings.UserAssociatedServiceTemplateId
-                : orderMessageSettings.UserTemplateId;
+                : order.IsAmendment
+                    ? orderMessageSettings.UserAmendTemplateId
+                    : orderMessageSettings.UserTemplateId;
 
             var userEmail = dbContext.Users.First(x => x.Id == userId).Email;
 
