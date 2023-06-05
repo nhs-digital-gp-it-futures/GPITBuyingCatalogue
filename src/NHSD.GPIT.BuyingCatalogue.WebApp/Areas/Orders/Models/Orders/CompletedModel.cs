@@ -21,14 +21,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
         public bool SupportingDocumentsRequired =>
             Order?.ContractFlags?.HasSpecificRequirements == true
             || Order?.ContractFlags?.UseDefaultBilling == false
-            || Order?.ContractFlags?.UseDefaultDataProcessing == false
+            || Order?.ContractFlags?.UseDefaultDataProcessing == true
             || Order?.ContractFlags?.UseDefaultImplementationPlan == false;
 
         public bool HasBespokeBilling =>
             Order?.ContractFlags?.HasSpecificRequirements == true
             || Order?.ContractFlags?.UseDefaultBilling == false;
 
-        public bool HasBespokeDataProcessing => Order?.ContractFlags?.UseDefaultDataProcessing == false;
+        public bool DataProcessingSeen => Order?.ContractFlags?.UseDefaultDataProcessing == false;
 
         public bool HasBespokeImplementationPlan => Order?.ContractFlags?.UseDefaultImplementationPlan == false;
     }

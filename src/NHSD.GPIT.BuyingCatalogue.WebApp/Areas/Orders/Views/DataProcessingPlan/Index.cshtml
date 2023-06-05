@@ -1,29 +1,29 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DataProcessing.DataProcessingPlanModel
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DataProcessing.BespokeDataProcessingModel
 @{
-    ViewBag.Title = "Personal data processing information";
+    ViewBag.Title = "Bespoke personal data processing information";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row nhsuk-u-margin-bottom-6">
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-validation-summary RadioId="@nameof(Model.UseDefaultDataProcessing)"/>
         <nhs-page-title title="@ViewBag.Title"
-                        advice="Make sure you've contacted the supplier and reviewed how they process personal data."
-                        caption="Order @Model.CallOffId" />
-        <form method="post">
-            <input type="hidden" asp-for="BackLink" />
-            <nhs-fieldset-form-label
-                label-text="Do you want to proceed using the supplier's default data processing information?"
-                size="Medium"
-                asp-for="UseDefaultDataProcessing">
-                <nhs-radio-buttons asp-for="UseDefaultDataProcessing"
-                                   values="Model.AvailableDataProcessingOptions.Cast<object>()"
-                                   display-name="Text"
-                                   value-name="Value">
-                </nhs-radio-buttons>
-            </nhs-fieldset-form-label>
+                        advice="Document the variations you want to make to the default data processing information."
+                        caption="Order @Model.CallOffId"/>
 
-            <nhs-submit-button/>
-        </form>
+        <p>
+            As you’ve agreed variations to the default data processing information with the supplier, you need to document your requirements.
+            You can do this by downloading and completing <a href="https://gpitbjss.atlassian.net/wiki/spaces/BG/pages/12207980954/Order+form+template+Data+processing+information" target="_blank">Data processing information template (opens in a new tab)</a>.
+        </p>
+        <p>
+            This document must be included when you send your order to the supplier. You can download it now or after you’ve completed your order.
+        </p>
+        <nhs-submit-button />
+        <vc:nhs-secondary-button text="Continue"
+                                 type="Primary"
+                                 url="@Url.Action(
+                                          nameof(OrderController.Order),
+                                          typeof(OrderController).ControllerName(),
+                                          new { Model.InternalOrgId, Model.CallOffId })"/>
     </div>
 </div>
