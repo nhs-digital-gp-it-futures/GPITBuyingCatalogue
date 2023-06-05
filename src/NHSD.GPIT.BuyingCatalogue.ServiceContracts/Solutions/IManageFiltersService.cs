@@ -23,6 +23,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task<FilterDetailsModel> GetFilterDetails(int organisationId, int filterId);
 
+        Task<FilterIdsModel> GetFilterIds(int organisationId, int filterId);
+
         Task DeleteFilter(int filterId);
     }
 }

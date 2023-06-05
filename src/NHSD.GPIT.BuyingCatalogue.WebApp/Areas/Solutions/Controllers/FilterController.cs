@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 
@@ -132,9 +128,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         }
 
         private static string EncodeIdString(SelectionModel[] selectedItems) =>
-            string.Join(
-                FilterConstants.Delimiter,
-                selectedItems.Where(x => x.Selected).Select(x => x.Id));
+                selectedItems.Where(x => x.Selected).Select(x => x.Id).ToFilterString();
 
         private async Task<FilterCapabilitiesModel> GetCapabilitiesModel(string selectedIds = null, string search = null)
         {

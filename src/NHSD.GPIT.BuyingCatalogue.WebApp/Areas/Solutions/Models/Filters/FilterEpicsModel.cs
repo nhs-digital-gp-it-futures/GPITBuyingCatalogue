@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
             string search = null)
         {
             Groups = capabilities;
-            CapabilityIds = string.Join(FilterConstants.Delimiter, Groups.Select(x => x.Id));
+            CapabilityIds = Groups.Select(x => x.Id).ToFilterString();
 
             GroupedItems = Groups.ToDictionary(
                 x => x.Id,

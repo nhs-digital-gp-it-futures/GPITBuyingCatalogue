@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -15,13 +15,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
         {
         }
 
-        public AdditionalFiltersModel(List<FrameworkFilterInfo> frameworks, string selectedClientApplicationTypeIds, string selectedHostingTypeIds, string selectedCapabilityIds, string selectedEpicIds)
+        public AdditionalFiltersModel(List<FrameworkFilterInfo> frameworks, string selectedFrameworkId, string selectedClientApplicationTypeIds, string selectedHostingTypeIds, string selectedCapabilityIds, string selectedEpicIds)
         {
-            SetFrameworkOptions(frameworks);
+            SetFrameworkOptions(frameworks, selectedFrameworkId);
             SetClientApplicationTypeOptions(selectedClientApplicationTypeIds);
             SetHostingTypeOptions(selectedHostingTypeIds);
             SelectedCapabilityIds = selectedCapabilityIds;
             SelectedEpicIds = selectedEpicIds;
+            SelectedFrameworkId = selectedFrameworkId;
         }
 
         public string SelectedFrameworkId { get; set; }
@@ -34,25 +35,44 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 
         public List<SelectOption<string>> FrameworkOptions { get; set; }
 
+        public string FrameworkFilter { get; set; }
+
         public List<SelectOption<int>> ClientApplicationTypeOptions { get; set; }
+
+        public string[] ClientApplicationTypeFilters => ClientApplicationTypeOptions
+            ?.Where(f => f.Selected)
+            ?.Select(f => f.Text)
+            ?.ToArray() ?? Array.Empty<string>();
 
         public List<SelectOption<int>> HostingTypeOptions { get; set; }
 
+        public string[] HostingTypeFilters => HostingTypeOptions
+            ?.Where(f => f.Selected)
+            ?.Select(f => f.Text)
+            ?.ToArray() ?? Array.Empty<string>();
+
         public string CombineSelectedOptions(List<SelectOption<int>> options)
         {
-            return string.Join(
-                    FilterConstants.Delimiter,
-                    options?.Where(x => x.Selected)?.Select(x => x.Value) ?? Enumerable.Empty<int>());
+            return (options?.Where(x => x.Selected)?.Select(x => x.Value) ?? Enumerable.Empty<int>()).ToFilterString();
         }
 
-        private void SetFrameworkOptions(List<FrameworkFilterInfo> frameworks)
+        private void SetFrameworkOptions(List<FrameworkFilterInfo> frameworks, string selectedFrameworkId)
         {
-            FrameworkOptions = frameworks.Select(f => new SelectOption<string>
-            {
-                Value = f.Id,
-                Text = $"{f.ShortName} ({f.CountOfActiveSolutions})",
-                Selected = false,
-            }).ToList();
+            FrameworkOptions = frameworks
+                .Where(f => !f.Expired)
+                .Select(f => new SelectOption<string>
+                    {
+                        Value = f.Id,
+                        Text = $"{f.ShortName} ({f.CountOfActiveSolutions})",
+                        Selected = false,
+                    }).ToList();
+
+            var framework = frameworks
+                .FirstOrDefault(f => f.Id == selectedFrameworkId);
+
+            FrameworkFilter = framework != null
+                ? $"{framework.ShortName} ({framework.CountOfActiveSolutions})"
+                : string.Empty;
         }
 
         private void SetClientApplicationTypeOptions(string selectedClientApplicationTypeIds)

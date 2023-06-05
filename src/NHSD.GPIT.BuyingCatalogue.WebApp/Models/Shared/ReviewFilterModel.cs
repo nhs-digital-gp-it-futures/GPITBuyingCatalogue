@@ -10,12 +10,15 @@ public class ReviewFilterModel : NavBaseModel
     }
 
     public ReviewFilterModel(
-        FilterDetailsModel model)
+        FilterDetailsModel filterDetails, FilterIdsModel filterIds = null)
     {
-        FilterDetails = model;
+        FilterDetails = filterDetails;
+        FilterIds = filterIds;
     }
 
     public FilterDetailsModel FilterDetails { get; set; }
+
+    public FilterIdsModel FilterIds { get; set; }
 
     public bool HasEpics() => FilterDetails.Capabilities.Any(x => x.Value.Any());
 

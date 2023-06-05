@@ -8,11 +8,9 @@ using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Azure;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
@@ -615,6 +613,33 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             filterDetails.Name.Should().Be(filter.Name);
             filterDetails.Description.Should().Be(filter.Description);
             filterDetails.FrameworkName.Should().Be(framework.ShortName);
+            filterDetails.Id.Should().Be(filter.Id);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetFilterIds_ReturnsExpected(
+            EntityFramework.Catalogue.Models.Framework framework,
+            Filter filter,
+            [Frozen] BuyingCatalogueDbContext context,
+            ManageFiltersService service)
+        {
+            filter.Framework = null;
+            filter.FrameworkId = framework.Id;
+
+            context.Frameworks.Add(framework);
+            context.Filters.Add(filter);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var filterIds = await service.GetFilterIds(filter.OrganisationId, filter.Id);
+
+            filterIds.CapabilityIds.Should().BeEquivalentTo(filter.Capabilities.Select(c => c.Id));
+            filterIds.EpicIds.Should().BeEquivalentTo(filter.Epics.Select(e => e.Id));
+            filterIds.FrameworkId.Should().Be(filter.FrameworkId);
+            filterIds.ClientApplicationTypeIds.Should().BeEquivalentTo(filter.FilterClientApplicationTypes.Select(fc => (int)fc.ClientApplicationType));
+            filterIds.HostingTypeIds.Should().BeEquivalentTo(filter.FilterHostingTypes.Select(fc => (int)fc.HostingType));
         }
 
         [Theory]

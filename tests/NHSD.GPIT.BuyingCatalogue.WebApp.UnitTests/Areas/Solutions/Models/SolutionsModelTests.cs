@@ -17,8 +17,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 SearchSummary = new ServiceContracts.Models.CatalogueFilterSearchSummary(),
             };
 
-            model.TitleText.Should().Be(SolutionsModel.TitleNoSearch);
-            model.AdviceText.Should().Be(SolutionsModel.AdviceTextNosearch);
+            var pageTitle = model.GetPageTitle();
+            pageTitle.Title.Should().Be(SolutionsModel.NoSearchPageTitle.Title);
+            pageTitle.Caption.Should().BeNullOrEmpty();
+            pageTitle.Advice.Should().Be(SolutionsModel.NoSearchPageTitle.Advice);
+            pageTitle.AdditionalAdvice.Should().BeNullOrEmpty();
         }
 
         [Fact]
@@ -33,8 +36,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 CatalogueItems = new List<CatalogueItem>(),
             };
 
-            model.TitleText.Should().Be(SolutionsModel.TitleSearchNoResults);
-            model.AdviceText.Should().Be(SolutionsModel.AdviceTextSearchNoresults);
+            var pageTitle = model.GetPageTitle();
+            pageTitle.Title.Should().Be(SolutionsModel.SearchNoResultsPageTitle.Title);
+            pageTitle.Caption.Should().BeNullOrEmpty();
+            pageTitle.Advice.Should().Be(SolutionsModel.SearchNoResultsPageTitle.Advice);
+            pageTitle.AdditionalAdvice.Should().BeNullOrEmpty();
+        }
+
+        [Fact]
+        public static void SolutionsModel_SearchNoResultsFilter_ReturnsTitle_Caption_And_Advice()
+        {
+            var filterName = "Filter Name";
+
+            var model = new SolutionsModel()
+            {
+                FilterName = filterName,
+                SearchSummary = new ServiceContracts.Models.CatalogueFilterSearchSummary()
+                {
+                    SearchTerm = "test",
+                },
+                CatalogueItems = new List<CatalogueItem>(),
+            };
+
+            var pageTitle = model.GetPageTitle();
+            pageTitle.Title.Should().Be(SolutionsModel.SearchNoResultsFilterPageTitle.Title);
+            pageTitle.Caption.Should().Be(filterName);
+            pageTitle.Advice.Should().Be(SolutionsModel.SearchNoResultsFilterPageTitle.Advice);
+            pageTitle.AdditionalAdvice.Should().BeNullOrEmpty();
         }
 
         [Theory]
@@ -51,8 +79,35 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 CatalogueItems = solutions,
             };
 
-            model.TitleText.Should().Be(SolutionsModel.TitleSearchResults);
-            model.AdviceText.Should().Be(SolutionsModel.AdviceTextSearchResults);
+            var pageTitle = model.GetPageTitle();
+            pageTitle.Title.Should().Be(SolutionsModel.SearchResultsPageTitle.Title);
+            pageTitle.Caption.Should().BeNullOrEmpty();
+            pageTitle.Advice.Should().Be(SolutionsModel.SearchResultsPageTitle.Advice);
+            pageTitle.AdditionalAdvice.Should().BeNullOrEmpty();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void SolutionsModel_SearchWithResultsFilter_ReturnsTitle_Caption_And_Advice(
+            IList<CatalogueItem> solutions)
+        {
+            var filterName = "Filter Name";
+
+            var model = new SolutionsModel()
+            {
+                FilterName = filterName,
+                SearchSummary = new ServiceContracts.Models.CatalogueFilterSearchSummary()
+                {
+                    SearchTerm = "test",
+                },
+                CatalogueItems = solutions,
+            };
+
+            var pageTitle = model.GetPageTitle();
+            pageTitle.Title.Should().Be(SolutionsModel.SearchResultsFilterPageTitle.Title);
+            pageTitle.Caption.Should().Be(filterName);
+            pageTitle.Advice.Should().Be(SolutionsModel.SearchResultsFilterPageTitle.Advice);
+            pageTitle.AdditionalAdvice.Should().BeNullOrEmpty();
         }
     }
 }
