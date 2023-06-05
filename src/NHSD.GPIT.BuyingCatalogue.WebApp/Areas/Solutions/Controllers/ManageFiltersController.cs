@@ -144,12 +144,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         public async Task<IActionResult> FilterDetails(int filterId)
         {
             var organisation = await GetUserOrganisation();
-            var filter = await manageFiltersService.GetFilterDetails(organisation.Id, filterId);
+            var filterDetails = await manageFiltersService.GetFilterDetails(organisation.Id, filterId);
+            var filterIds = await manageFiltersService.GetFilterIds(organisation.Id, filterId);
 
-            if (filter == null)
+            if (filterDetails == null || filterIds == null)
                 return NotFound();
 
-            var model = new ReviewFilterModel(filter)
+            var model = new ReviewFilterModel(filterDetails, filterIds)
             {
                 BackLink = Url.Action(nameof(Index), typeof(ManageFiltersController).ControllerName()),
                 Caption = organisation.Name,

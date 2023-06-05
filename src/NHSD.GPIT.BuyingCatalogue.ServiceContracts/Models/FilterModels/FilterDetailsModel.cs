@@ -19,6 +19,4 @@ public class FilterDetailsModel
     public List<ClientApplicationType> ClientApplicationTypes { get; set; } = Enumerable.Empty<ClientApplicationType>().ToList();
 
     public List<KeyValuePair<string, List<string>>> Capabilities { get; set; }
-
-    public FilterStringsModel FilterStrings { get; set; }
 }

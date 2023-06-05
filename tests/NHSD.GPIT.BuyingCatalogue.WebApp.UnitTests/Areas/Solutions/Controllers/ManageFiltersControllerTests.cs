@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -154,6 +153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             string primaryOrganisationInternalId,
             int filterId,
             FilterDetailsModel filterDetailsModel,
+            FilterIdsModel filterIdsModel,
             Organisation organisation,
             [Frozen] Mock<IOrganisationsService> organisationsService,
             [Frozen] Mock<ICapabilitiesService> capabilitiesService,
@@ -170,6 +170,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .Setup(x => x.GetFilterDetails(organisation.Id, filterId))
                 .ReturnsAsync(filterDetailsModel);
 
+            manageFiltersService
+                .Setup(x => x.GetFilterIds(organisation.Id, filterId))
+                .ReturnsAsync(filterIdsModel);
+
             var controller = CreateController(
                 organisationsService,
                 capabilitiesService,
@@ -184,7 +188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new ReviewFilterModel(filterDetailsModel) { Caption = organisation.Name };
+            var expected = new ReviewFilterModel(filterDetailsModel, filterIdsModel) { Caption = organisation.Name };
             actualResult.Model.Should().BeEquivalentTo(expected, opt => opt.Excluding(x => x.BackLink));
         }
 

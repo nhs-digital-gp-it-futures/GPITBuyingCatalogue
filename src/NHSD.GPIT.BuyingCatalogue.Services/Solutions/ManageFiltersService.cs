@@ -89,6 +89,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await dbContext.SaveChangesAsync();
         }
 
+        public async Task<FilterIdsModel> GetFilterIds(int organisationId, int filterId)
+        {
+            return await dbContext.Filters.Where(x => x.OrganisationId == organisationId && x.Id == filterId)
+                .Select(
+                    x => new FilterIdsModel()
+                    {
+                        CapabilityIds = x.Capabilities.Select(c => c.Id),
+                        EpicIds = x.Epics.Select(e => e.Id),
+                        FrameworkId = x.FrameworkId,
+                        ClientApplicationTypeIds = x.FilterClientApplicationTypes.Select(fc => (int)fc.ClientApplicationType),
+                        HostingTypeIds = x.FilterHostingTypes.Select(fc => (int)fc.HostingType),
+                    })
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<FilterDetailsModel> GetFilterDetails(int organisationId, int filterId)
         {
             return await dbContext.Filters.Where(x => x.OrganisationId == organisationId && x.Id == filterId)
@@ -110,14 +126,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                                         .Select(z => z.Name)
                                         .ToList()))
                             .ToList(),
-                        FilterStrings = new FilterStringsModel()
-                        {
-                            CapabilityIds = x.Capabilities.Select(c => c.Id).ToFilterString(),
-                            EpicIds = x.Epics.Select(e => e.Id).ToFilterString(),
-                            FrameworkId = x.FrameworkId,
-                            ClientApplicationTypeIds = x.FilterClientApplicationTypes.Select(fc => $"{(int)fc.ClientApplicationType}").ToFilterString(),
-                            HostingTypeIds = x.FilterHostingTypes.Select(fc => $"{(int)fc.HostingType}").ToFilterString(),
-                        },
                     })
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
