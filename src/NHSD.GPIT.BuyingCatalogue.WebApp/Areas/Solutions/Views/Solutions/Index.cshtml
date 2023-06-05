@@ -75,9 +75,7 @@
         @{
             var PageTitle = Model.GetPageTitle();
         }
-        <nhs-page-title title="@PageTitle.Title"
-                        caption="@PageTitle.Caption"
-                        advice="@PageTitle.Advice" />
+        <nhs-page-title model="@PageTitle" />
         @if (!Model.FilterResultView)
         {
             if (!Model.SearchCriteriaApplied)

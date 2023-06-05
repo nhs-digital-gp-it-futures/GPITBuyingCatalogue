@@ -6,6 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 using static NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.PageOptions;
 
