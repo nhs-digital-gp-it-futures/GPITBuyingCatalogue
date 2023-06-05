@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -30,4 +31,6 @@ public class Competition
     public virtual Filter Filter { get; set; }
 
     public virtual Organisation Organisation { get; set; }
+
+    public ICollection<CompetitionSolution> CompetitionSolutions { get; set; }
 }
