@@ -40,12 +40,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                     new { internalOrgId, callOffId }),
             };
 
-            await contractsService.UseDefaultDataProcessing(orderId, true);
-
-            /*return RedirectToAction(
-                nameof(OrderController.Order),
-                typeof(OrderController).ControllerName(),
-                new { internalOrgId, callOffId });*/
             return View(model);
         }
 
@@ -55,11 +49,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             CallOffId callOffId,
             BespokeDataProcessingModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
             var orderId = await orderService.GetOrderId(internalOrgId, callOffId);
 
             await contractsService.UseDefaultDataProcessing(orderId, true);
@@ -68,19 +57,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                 nameof(OrderController.Order),
                 typeof(OrderController).ControllerName(),
                 new { internalOrgId, callOffId });
-        }
-
-        [HttpGet("bespoke")]
-        public IActionResult BespokeDataProcessingPlan(
-            string internalOrgId,
-            CallOffId callOffId)
-        {
-            var model = new BespokeDataProcessingModel(internalOrgId, callOffId)
-            {
-                BackLink = Url.Action(nameof(Index), new { internalOrgId, callOffId }),
-            };
-
-            return View(model);
         }
     }
 }

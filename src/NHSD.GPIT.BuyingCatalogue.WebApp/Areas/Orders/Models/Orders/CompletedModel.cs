@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             Order?.ContractFlags?.HasSpecificRequirements == true
             || Order?.ContractFlags?.UseDefaultBilling == false;
 
-        public bool DataProcessingSeen => Order?.ContractFlags?.UseDefaultDataProcessing == false;
+        public bool HasBespokeDataProcessing => Order?.ContractFlags?.UseDefaultDataProcessing == false;
 
         public bool HasBespokeImplementationPlan => Order?.ContractFlags?.UseDefaultImplementationPlan == false;
     }

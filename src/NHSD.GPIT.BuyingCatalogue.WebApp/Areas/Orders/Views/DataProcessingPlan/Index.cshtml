@@ -18,12 +18,8 @@
         <p>
             This document must be included when you send your order to the supplier. You can download it now or after you’ve completed your order.
         </p>
-        <nhs-submit-button />
-        <vc:nhs-secondary-button text="Continue"
-                                 type="Primary"
-                                 url="@Url.Action(
-                                          nameof(OrderController.Order),
-                                          typeof(OrderController).ControllerName(),
-                                          new { Model.InternalOrgId, Model.CallOffId })"/>
+        <form method="post">
+            <nhs-submit-button text="Continue" />
+        </form>
     </div>
 </div>
