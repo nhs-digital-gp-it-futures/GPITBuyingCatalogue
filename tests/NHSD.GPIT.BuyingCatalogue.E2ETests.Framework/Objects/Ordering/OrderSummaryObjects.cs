@@ -19,6 +19,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
 
         public static By SupplierSummary => ByExtensions.DataTestId("supplier-summary");
 
+        public static By SupplierLegalName => ByExtensions.DataTestId("supplier-legal-name"); 
+        
         public static By StartDateSummary => ByExtensions.DataTestId("start-date-summary");
 
         public static By InitialPeriodSummary => ByExtensions.DataTestId("initial-period-summary");

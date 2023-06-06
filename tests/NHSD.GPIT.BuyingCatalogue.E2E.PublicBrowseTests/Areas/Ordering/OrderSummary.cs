@@ -71,6 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.DateCreatedSummary).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.OrderingPartySummary).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.SupplierSummary).Should().BeTrue();
+            CommonActions.ElementIsDisplayed(OrderSummaryObjects.SupplierLegalName).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.StartDateSummary).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.InitialPeriodSummary).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.MaximumTermSummary).Should().BeTrue();
