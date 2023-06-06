@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,7 +13,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.FundingTypes;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
 {
-    [ExcludeFromCodeCoverage]
     public class CsvService : CsvServiceBase, ICsvService
     {
         private readonly BuyingCatalogueDbContext dbContext;
@@ -31,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             var billingPeriods = await GetBillingPeriods(orderId);
             var fundingTypes = await GetFundingTypes(orderId);
             var prices = await GetPrices(orderId);
-            var supplier = await GetSupplierDetails(orderId);
+            var (supplierId, supplierName) = await GetSupplierDetails(orderId);
 
             var items = await dbContext.OrderItemRecipients
                 .Include(x => x.OrderItem).ThenInclude(x => x.OrderItemFunding)
@@ -45,8 +43,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     CommencementDate = oir.OrderItem.Order.CommencementDate,
                     ServiceRecipientId = oir.Recipient.OdsCode,
                     ServiceRecipientName = oir.Recipient.Name,
-                    SupplierId = $"{supplier.Id}",
-                    SupplierName = string.Equals(supplier.Name, supplier.LegalName, StringComparison.OrdinalIgnoreCase) ? supplier.Name : supplier.LegalName,
+                    SupplierId = $"{supplierId}",
+                    SupplierName = supplierName,
                     ProductId = oir.OrderItem.CatalogueItemId.ToString(),
                     ProductName = oir.OrderItem.CatalogueItem.Name,
                     ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
@@ -80,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
         {
             var fundingTypes = await GetFundingTypes(orderId);
             var prices = await GetPrices(orderId);
-            var supplier = await GetSupplierDetails(orderId);
+            var (supplierId, supplierName) = await GetSupplierDetails(orderId);
 
             var items = await dbContext.OrderItemRecipients
                 .Include(x => x.OrderItem).ThenInclude(x => x.OrderItemFunding)
@@ -94,8 +92,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     CommencementDate = oir.OrderItem.Order.CommencementDate,
                     ServiceRecipientId = oir.Recipient.OdsCode,
                     ServiceRecipientName = oir.Recipient.Name,
-                    SupplierId = supplier.Id,
-                    SupplierName = string.Equals(supplier.Name, supplier.LegalName, StringComparison.OrdinalIgnoreCase) ? supplier.Name : supplier.LegalName,
+                    SupplierId = supplierId,
+                    SupplierName = supplierName,
                     ProductId = oir.OrderItem.CatalogueItemId.ToString(),
                     ProductName = oir.OrderItem.CatalogueItem.Name,
                     ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
@@ -159,7 +157,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     x => x.OrderItemPrice?.OrderItemPriceTiers?.FirstOrDefault()?.Price ?? decimal.Zero);
         }
 
-        private async Task<Supplier> GetSupplierDetails(int orderId)
+        private async Task<(int SupplierId, string SupplierName)> GetSupplierDetails(int orderId)
         {
             var order = await dbContext.Orders
                 .Include(x => x.Supplier)
@@ -168,7 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
 
             if (order == null)
             {
-                return null;
+                return (0, string.Empty);
             }
 
             var output = order.Completed.HasValue
@@ -177,7 +175,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
 
             output ??= order.Supplier;
 
-            return output;
+            return (output?.Id ?? 0, string.Equals(output.Name, output.LegalName, StringComparison.OrdinalIgnoreCase) ? output.Name : output.LegalName ?? string.Empty);
         }
     }
 }
