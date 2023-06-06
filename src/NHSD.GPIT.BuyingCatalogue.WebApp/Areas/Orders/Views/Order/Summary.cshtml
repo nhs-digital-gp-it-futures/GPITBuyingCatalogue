@@ -74,9 +74,9 @@
             {
                 @if (!string.Equals(Model.Order.Supplier.LegalName, Model.Order.Supplier.Name, StringComparison.OrdinalIgnoreCase))
                 {
-                    <nhs-summary-list-row label-text="Supplier legal name" data-test-id="supplier-summary">
+                    <nhs-summary-list-row label-text="Supplier legal name" data-test-id="supplier-legal-name">
                         @Model.Order.Supplier.LegalName<br />
-                </nhs-summary-list-row>
+                    </nhs-summary-list-row>
                 }
 
                 <nhs-summary-list-row label-text="Supplier" data-test-id="supplier-summary">
