@@ -177,7 +177,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
 
             output ??= order.Supplier;
 
-            return (output?.Id ?? 0, string.Equals(output.Name, output.LegalName, StringComparison.OrdinalIgnoreCase) ? output.Name : output.LegalName ?? string.Empty);
+            var name = output?.Name ?? string.Empty;
+            var legalName = output?.LegalName ?? string.Empty;
+
+            return (output?.Id ?? 0, string.Equals(name, legalName, StringComparison.OrdinalIgnoreCase) ? name : legalName);
         }
     }
 }
