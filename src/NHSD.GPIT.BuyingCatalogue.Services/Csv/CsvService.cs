@@ -30,12 +30,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             var fundingTypes = await GetFundingTypes(orderId);
             var prices = await GetPrices(orderId);
             var (supplierId, supplierName, legalName) = await GetSupplierDetails(orderId);
-            if (string.Equals(supplierName, legalName, StringComparison.OrdinalIgnoreCase))
+            var isSameSupplierAndLegalName = string.Equals(supplierName, legalName, StringComparison.OrdinalIgnoreCase);
+            if (isSameSupplierAndLegalName)
             {
-                legalName = string.Empty;
-            }
-
-            var items = await dbContext.OrderItemRecipients
+                var items = await dbContext.OrderItemRecipients
                 .Include(x => x.OrderItem).ThenInclude(x => x.OrderItemFunding)
                 .AsNoTracking()
                 .Where(oir => oir.OrderId == orderId)
@@ -49,6 +47,49 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     ServiceRecipientName = oir.Recipient.Name,
                     SupplierId = $"{supplierId}",
                     SupplierName = supplierName,
+                    ProductId = oir.OrderItem.CatalogueItemId.ToString(),
+                    ProductName = oir.OrderItem.CatalogueItem.Name,
+                    ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
+                    ProductTypeId = (int)oir.OrderItem.CatalogueItem.CatalogueItemType,
+
+                    // TODO: Stop this reporting incorrectly when quantity is (erroneously) defined at both order item & recipient level
+                    QuantityOrdered = oir.Quantity ?? oir.OrderItem.Quantity ?? 0,
+                    UnitOfOrder = oir.OrderItem.OrderItemPrice.Description,
+                    UnitTime = TimeUnitDescription(billingPeriods[oir.OrderItem.CatalogueItemId]),
+                    EstimationPeriod = TimeUnitDescription(oir.OrderItem.EstimationPeriod),
+                    Price = prices[oir.OrderItem.CatalogueItemId],
+                    OrderType = (int)oir.OrderItem.OrderItemPrice.ProvisioningType,
+                    M1Planned = oir.DeliveryDate,
+                    FundingType = fundingTypeService.GetFundingType(fundingTypes, oir.OrderItem.FundingType).Description(),
+                    Framework = oir.OrderItem.Order.SelectedFrameworkId,
+                    InitialTerm = oir.OrderItem.Order.InitialPeriod,
+                    MaximumTerm = oir.OrderItem.Order.MaximumTerm,
+                })
+                .OrderBy(o => o.ProductTypeId)
+                .ThenBy(o => o.ProductName)
+                .ThenBy(o => o.ServiceRecipientName)
+                .ToListAsync();
+
+                for (int i = 0; i < items.Count; i++)
+                    items[i].ServiceRecipientItemId = $"{items[i].CallOffId}-{items[i].ServiceRecipientId}-{i}";
+
+                await WriteRecordsAsync<FullOrderCsvModel, FullOrderCsvModelMap>(stream, items);
+            }
+            else
+            {
+                var items = await dbContext.OrderItemRecipients
+                .Include(x => x.OrderItem).ThenInclude(x => x.OrderItemFunding)
+                .AsNoTracking()
+                .Where(oir => oir.OrderId == orderId)
+                .Select(oir => new FullOrderWithLegalNameCsvModel
+                {
+                    CallOffId = oir.OrderItem.Order.CallOffId,
+                    OdsCode = oir.OrderItem.Order.OrderingParty.ExternalIdentifier,
+                    OrganisationName = oir.OrderItem.Order.OrderingParty.Name,
+                    CommencementDate = oir.OrderItem.Order.CommencementDate,
+                    ServiceRecipientId = oir.Recipient.OdsCode,
+                    ServiceRecipientName = oir.Recipient.Name,
+                    SupplierId = $"{supplierId}",
                     LegalName = legalName,
                     ProductId = oir.OrderItem.CatalogueItemId.ToString(),
                     ProductName = oir.OrderItem.CatalogueItem.Name,
@@ -73,10 +114,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                 .ThenBy(o => o.ServiceRecipientName)
                 .ToListAsync();
 
-            for (int i = 0; i < items.Count; i++)
-                items[i].ServiceRecipientItemId = $"{items[i].CallOffId}-{items[i].ServiceRecipientId}-{i}";
+                for (int i = 0; i < items.Count; i++)
+                    items[i].ServiceRecipientItemId = $"{items[i].CallOffId}-{items[i].ServiceRecipientId}-{i}";
 
-            await WriteRecordsAsync<FullOrderCsvModel, FullOrderCsvModelMap>(stream, items);
+                await WriteRecordsAsync<FullOrderWithLegalNameCsvModel, FullOrdeWithLegalNamerCsvModelMap>(stream, items);
+            }
         }
 
         public async Task<int> CreatePatientNumberCsvAsync(int orderId, MemoryStream stream)

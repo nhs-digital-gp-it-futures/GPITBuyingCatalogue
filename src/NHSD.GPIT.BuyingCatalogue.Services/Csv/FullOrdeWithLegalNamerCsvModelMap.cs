@@ -2,9 +2,9 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
 {
-    public sealed class FullOrderCsvModelMap : ClassMap<FullOrderCsvModel>
+    public sealed class FullOrdeWithLegalNamerCsvModelMap : ClassMap<FullOrderWithLegalNameCsvModel>
     {
-        public FullOrderCsvModelMap()
+        public FullOrdeWithLegalNamerCsvModelMap()
         {
             Map(o => o.CallOffId).Index(0).Name("Call Off Agreement ID");
             Map(o => o.OdsCode).Index(1).Name("Call Off Ordering Party ID");
@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             Map(o => o.ServiceRecipientName).Index(5).Name("Service Recipient Name");
             Map(o => o.ServiceRecipientItemId).Index(6).Name("Service Recipient Item ID");
             Map(o => o.SupplierId).Index(7).Name("Supplier ID");
-            Map(o => o.SupplierName).Index(8).Name("Supplier Name");
+            Map(o => o.LegalName).Index(8).Name("Supplier Legal Name");
             Map(o => o.ProductId).Index(9).Name("Product ID");
             Map(o => o.ProductName).Index(10).Name("Product Name");
             Map(o => o.ProductType).Index(11).Name("Product Type");

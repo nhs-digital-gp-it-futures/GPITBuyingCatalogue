@@ -5,7 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
 {
     [ExcludeFromCodeCoverage(Justification = "Class currently only contains automatic properties")]
-    public sealed class FullOrderCsvModel
+    public sealed class FullOrderWithLegalNameCsvModel
     {
         public CallOffId CallOffId { get; set; }
 
@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
 
         public string SupplierId { get; set; }
 
-        public string SupplierName { get; set; }
+        public string LegalName { get; set; }
 
         public string ProductId { get; set; }
 
@@ -31,7 +31,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
 
         public string ProductType { get; set; }
 
-        // Used only for ordering the items correctly, is not to be displayed in the CSV
         public int ProductTypeId { get; set; }
 
         public int QuantityOrdered { get; set; }
