@@ -29,7 +29,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             var billingPeriods = await GetBillingPeriods(orderId);
             var fundingTypes = await GetFundingTypes(orderId);
             var prices = await GetPrices(orderId);
-            var (supplierId, supplierName) = await GetSupplierDetails(orderId);
+            var (supplierId, supplierName, legalName) = await GetSupplierDetails(orderId);
+            if (string.Equals(supplierName, legalName, StringComparison.OrdinalIgnoreCase))
+            {
+                legalName = string.Empty;
+            }
 
             var items = await dbContext.OrderItemRecipients
                 .Include(x => x.OrderItem).ThenInclude(x => x.OrderItemFunding)
@@ -45,6 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     ServiceRecipientName = oir.Recipient.Name,
                     SupplierId = $"{supplierId}",
                     SupplierName = supplierName,
+                    LegalName = legalName,
                     ProductId = oir.OrderItem.CatalogueItemId.ToString(),
                     ProductName = oir.OrderItem.CatalogueItem.Name,
                     ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
@@ -78,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
         {
             var fundingTypes = await GetFundingTypes(orderId);
             var prices = await GetPrices(orderId);
-            var (supplierId, supplierName) = await GetSupplierDetails(orderId);
+            var (supplierId, supplierName, legalName) = await GetSupplierDetails(orderId);
 
             var items = await dbContext.OrderItemRecipients
                 .Include(x => x.OrderItem).ThenInclude(x => x.OrderItemFunding)
@@ -157,7 +162,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     x => x.OrderItemPrice?.OrderItemPriceTiers?.FirstOrDefault()?.Price ?? decimal.Zero);
         }
 
-        private async Task<(int SupplierId, string SupplierName)> GetSupplierDetails(int orderId)
+        private async Task<(int SupplierId, string SupplierName, string LegalName)> GetSupplierDetails(int orderId)
         {
             var order = await dbContext.Orders
                 .Include(x => x.Supplier)
@@ -166,7 +171,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
 
             if (order == null)
             {
-                return (0, string.Empty);
+                return (0, string.Empty, string.Empty);
             }
 
             var output = order.Completed.HasValue
@@ -175,7 +180,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
 
             output ??= order.Supplier;
 
-            return (output?.Id ?? 0, output?.Name ?? string.Empty);
+            return (output?.Id ?? 0, output?.Name ?? string.Empty, output?.LegalName ?? string.Empty);
         }
     }
 }

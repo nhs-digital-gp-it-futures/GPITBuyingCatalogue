@@ -209,7 +209,14 @@
                         {
                             <pdf-summary-list-row label-text="Supplier">
                                 @Model.Order.SupplierContact.FirstName @Model.Order.SupplierContact.LastName <br />
-                                @Model.Order.Supplier.Name <br />
+                                @if (!string.Equals(Model.Order.Supplier.LegalName, Model.Order.Supplier.Name, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    @Model.Order.Supplier.LegalName<br />
+                                }
+                                else
+                                {
+                                    @Model.Order.Supplier.Name<br />
+                                }
                                 <vc:nhs-address address="@Model.Order.Supplier.Address" />
                             </pdf-summary-list-row>
                         }

@@ -15,6 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             Map(o => o.ServiceRecipientItemId).Index(6).Name("Service Recipient Item ID");
             Map(o => o.SupplierId).Index(7).Name("Supplier ID");
             Map(o => o.SupplierName).Index(8).Name("Supplier Name");
+            Map(o => o.LegalName).Index(8).Name("Supplier Legal Name");
             Map(o => o.ProductId).Index(9).Name("Product ID");
             Map(o => o.ProductName).Index(10).Name("Product Name");
             Map(o => o.ProductType).Index(11).Name("Product Type");
