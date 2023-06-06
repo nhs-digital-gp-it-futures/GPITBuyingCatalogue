@@ -29,11 +29,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             var billingPeriods = await GetBillingPeriods(orderId);
             var fundingTypes = await GetFundingTypes(orderId);
             var prices = await GetPrices(orderId);
-            var (supplierId, supplierName, legalName) = await GetSupplierDetails(orderId);
-            var isSameSupplierAndLegalName = string.Equals(supplierName, legalName, StringComparison.OrdinalIgnoreCase);
-            if (isSameSupplierAndLegalName)
-            {
-                var items = await dbContext.OrderItemRecipients
+            var supplier = await GetSupplierDetails(orderId);
+            var items = await dbContext.OrderItemRecipients
                 .Include(x => x.OrderItem).ThenInclude(x => x.OrderItemFunding)
                 .AsNoTracking()
                 .Where(oir => oir.OrderId == orderId)
@@ -45,8 +42,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     CommencementDate = oir.OrderItem.Order.CommencementDate,
                     ServiceRecipientId = oir.Recipient.OdsCode,
                     ServiceRecipientName = oir.Recipient.Name,
-                    SupplierId = $"{supplierId}",
-                    SupplierName = supplierName,
+                    SupplierId = $"{supplier.Id}",
+                    SupplierName = string.Equals(supplier.Name, supplier.LegalName, StringComparison.OrdinalIgnoreCase) ? supplier.Name : supplier.LegalName,
                     ProductId = oir.OrderItem.CatalogueItemId.ToString(),
                     ProductName = oir.OrderItem.CatalogueItem.Name,
                     ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
@@ -70,62 +67,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                 .ThenBy(o => o.ServiceRecipientName)
                 .ToListAsync();
 
-                for (int i = 0; i < items.Count; i++)
+            for (int i = 0; i < items.Count; i++)
                     items[i].ServiceRecipientItemId = $"{items[i].CallOffId}-{items[i].ServiceRecipientId}-{i}";
 
-                await WriteRecordsAsync<FullOrderCsvModel, FullOrderCsvModelMap>(stream, items);
-            }
-            else
-            {
-                var items = await dbContext.OrderItemRecipients
-                .Include(x => x.OrderItem).ThenInclude(x => x.OrderItemFunding)
-                .AsNoTracking()
-                .Where(oir => oir.OrderId == orderId)
-                .Select(oir => new FullOrderWithLegalNameCsvModel
-                {
-                    CallOffId = oir.OrderItem.Order.CallOffId,
-                    OdsCode = oir.OrderItem.Order.OrderingParty.ExternalIdentifier,
-                    OrganisationName = oir.OrderItem.Order.OrderingParty.Name,
-                    CommencementDate = oir.OrderItem.Order.CommencementDate,
-                    ServiceRecipientId = oir.Recipient.OdsCode,
-                    ServiceRecipientName = oir.Recipient.Name,
-                    SupplierId = $"{supplierId}",
-                    LegalName = legalName,
-                    ProductId = oir.OrderItem.CatalogueItemId.ToString(),
-                    ProductName = oir.OrderItem.CatalogueItem.Name,
-                    ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
-                    ProductTypeId = (int)oir.OrderItem.CatalogueItem.CatalogueItemType,
-
-                    // TODO: Stop this reporting incorrectly when quantity is (erroneously) defined at both order item & recipient level
-                    QuantityOrdered = oir.Quantity ?? oir.OrderItem.Quantity ?? 0,
-                    UnitOfOrder = oir.OrderItem.OrderItemPrice.Description,
-                    UnitTime = TimeUnitDescription(billingPeriods[oir.OrderItem.CatalogueItemId]),
-                    EstimationPeriod = TimeUnitDescription(oir.OrderItem.EstimationPeriod),
-                    Price = prices[oir.OrderItem.CatalogueItemId],
-                    OrderType = (int)oir.OrderItem.OrderItemPrice.ProvisioningType,
-                    M1Planned = oir.DeliveryDate,
-                    FundingType = fundingTypeService.GetFundingType(fundingTypes, oir.OrderItem.FundingType).Description(),
-                    Framework = oir.OrderItem.Order.SelectedFrameworkId,
-                    InitialTerm = oir.OrderItem.Order.InitialPeriod,
-                    MaximumTerm = oir.OrderItem.Order.MaximumTerm,
-                })
-                .OrderBy(o => o.ProductTypeId)
-                .ThenBy(o => o.ProductName)
-                .ThenBy(o => o.ServiceRecipientName)
-                .ToListAsync();
-
-                for (int i = 0; i < items.Count; i++)
-                    items[i].ServiceRecipientItemId = $"{items[i].CallOffId}-{items[i].ServiceRecipientId}-{i}";
-
-                await WriteRecordsAsync<FullOrderWithLegalNameCsvModel, FullOrdeWithLegalNamerCsvModelMap>(stream, items);
-            }
+            await WriteRecordsAsync<FullOrderCsvModel, FullOrderCsvModelMap>(stream, items);
         }
 
         public async Task<int> CreatePatientNumberCsvAsync(int orderId, MemoryStream stream)
         {
             var fundingTypes = await GetFundingTypes(orderId);
             var prices = await GetPrices(orderId);
-            var (supplierId, supplierName, legalName) = await GetSupplierDetails(orderId);
+            var supplier = await GetSupplierDetails(orderId);
 
             var items = await dbContext.OrderItemRecipients
                 .Include(x => x.OrderItem).ThenInclude(x => x.OrderItemFunding)
@@ -139,8 +91,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     CommencementDate = oir.OrderItem.Order.CommencementDate,
                     ServiceRecipientId = oir.Recipient.OdsCode,
                     ServiceRecipientName = oir.Recipient.Name,
-                    SupplierId = supplierId,
-                    SupplierName = supplierName,
+                    SupplierId = supplier.Id,
+                    SupplierName = string.Equals(supplier.Name, supplier.LegalName, StringComparison.OrdinalIgnoreCase) ? supplier.Name : supplier.LegalName,
                     ProductId = oir.OrderItem.CatalogueItemId.ToString(),
                     ProductName = oir.OrderItem.CatalogueItem.Name,
                     ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
@@ -204,7 +156,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     x => x.OrderItemPrice?.OrderItemPriceTiers?.FirstOrDefault()?.Price ?? decimal.Zero);
         }
 
-        private async Task<(int SupplierId, string SupplierName, string LegalName)> GetSupplierDetails(int orderId)
+        private async Task<Supplier> GetSupplierDetails(int orderId)
         {
             var order = await dbContext.Orders
                 .Include(x => x.Supplier)
@@ -213,7 +165,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
 
             if (order == null)
             {
-                return (0, string.Empty, string.Empty);
+                return null;
             }
 
             var output = order.Completed.HasValue
@@ -221,8 +173,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                 : order.Supplier;
 
             output ??= order.Supplier;
-
-            return (output?.Id ?? 0, output?.Name ?? string.Empty, output?.LegalName ?? string.Empty);
+            return output;
         }
     }
 }
