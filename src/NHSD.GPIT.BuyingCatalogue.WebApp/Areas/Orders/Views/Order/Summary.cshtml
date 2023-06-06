@@ -72,16 +72,16 @@
             @if (Model.Order.Supplier != null
             && Model.Order.SupplierContact != null)
             {
+                @if (!string.Equals(Model.Order.Supplier.LegalName, Model.Order.Supplier.Name, StringComparison.OrdinalIgnoreCase))
+                {
+                    <nhs-summary-list-row label-text="Supplier legal name" data-test-id="supplier-summary">
+                        @Model.Order.Supplier.LegalName<br />
+                </nhs-summary-list-row>
+                }
+
                 <nhs-summary-list-row label-text="Supplier" data-test-id="supplier-summary">
                     @($"{Model.Order.SupplierContact.FirstName} {Model.Order.SupplierContact.LastName}")<br />
-                   @if (!string.Equals(Model.Order.Supplier.LegalName, Model.Order.Supplier.Name, StringComparison.OrdinalIgnoreCase))
-                   {
-                        @Model.Order.Supplier.LegalName<br />
-                   }
-                   else
-                   {
-                        @Model.Order.Supplier.Name<br />
-                   }
+                    @Model.Order.Supplier.Name<br />
                     <vc:nhs-address address="@Model.Order.Supplier.Address" />
                 </nhs-summary-list-row>
             }
