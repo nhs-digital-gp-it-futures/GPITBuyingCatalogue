@@ -102,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                     Selected = !string.IsNullOrEmpty(selectedHostingTypeIds)
                         && selectedHostingTypeIds.Contains(((int)x).ToString()),
                 })
-               .OrderByDescending(x => x.Text)
+               .OrderBy(x => x.Text)
                .ToList();
         }
     }
