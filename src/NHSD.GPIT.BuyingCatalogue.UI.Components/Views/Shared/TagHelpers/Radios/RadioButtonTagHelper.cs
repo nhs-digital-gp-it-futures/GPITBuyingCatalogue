@@ -13,9 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
     public sealed class RadioButtonTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-radio-button";
-
-        private const string IndexName = "index";
-        private const string HintTextName = "hint-text";
         private const string DisplayedTextName = "display-text";
 
         private readonly IHtmlGenerator htmlGenerator;
@@ -44,10 +41,10 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
         [HtmlAttributeName(TagHelperConstants.HintName)]
         public string HintName { get; set; }
 
-        [HtmlAttributeName(HintTextName)]
+        [HtmlAttributeName(TagHelperConstants.HintTextName)]
         public string HintText { get; set; }
 
-        [HtmlAttributeName(IndexName)]
+        [HtmlAttributeName(TagHelperConstants.IndexName)]
         public int Index { get; set; }
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)

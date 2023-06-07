@@ -9,7 +9,7 @@ public sealed class CompetitionSolutionEntityTypeConfiguration : IEntityTypeConf
 {
     public void Configure(EntityTypeBuilder<CompetitionSolution> builder)
     {
-        builder.ToTable("Solutions", Schemas.Competitions);
+        builder.ToTable("CompetitionSolutions", Schemas.Competitions);
 
         builder.HasKey(x => new { x.CompetitionId, x.SolutionId });
 

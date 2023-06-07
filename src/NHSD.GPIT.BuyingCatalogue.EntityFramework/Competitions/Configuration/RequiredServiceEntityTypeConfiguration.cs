@@ -26,7 +26,8 @@ public sealed class RequiredServiceEntityTypeConfiguration : IEntityTypeConfigur
 
         builder.HasOne<CompetitionSolution>()
             .WithMany()
-            .HasForeignKey(x => new { x.CompetitionId, x.SolutionId })
+            .HasForeignKey(x => x.SolutionId)
+            .HasPrincipalKey(x => x.SolutionId)
             .HasConstraintName("FK_RequiredServices_Solution");
 
         builder.HasOne(x => x.Service)

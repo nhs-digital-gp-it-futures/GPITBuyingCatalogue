@@ -1,0 +1,41 @@
+@model SelectSolutionsModel
+
+@{
+    var solution = Model.Solutions.First();
+}
+
+<h3 class="nhsuk-heading-s">
+    <a asp-action="@nameof(SolutionsController.Description)"
+       asp-controller="@typeof(SolutionsController).ControllerName"
+       asp-area="@typeof(SolutionsController).AreaName()"
+       asp-route-solutionId="@solution.SolutionId">
+        @solution.SolutionName (opens in a new tab)
+    </a>
+    <span class="nhsuk-caption-m nhsuk-caption--bottom>">@solution.SupplierName</span>
+</h3>
+<h4 class="nhsuk-heading-xs nhsuk-u-margin-bottom-2">Additional Services required:</h4>
+<p class="nhsuk-body">@Model.GetAdditionalServicesList(solution)</p>
+
+<form method="post">
+    <input type="hidden" asp-for="BackLink"/>
+    <input type="hidden" asp-for="BackLinkText"/>
+    <input type="hidden" asp-for="CompetitionName"/>
+    <input type="hidden" asp-for="@Model.Solutions[0].SolutionId"/>
+    <input type="hidden" asp-for="@Model.Solutions[0].SolutionName"/>
+    <input type="hidden" asp-for="@Model.Solutions[0].SupplierName"/>
+
+    @for (var x = 0; x < Model.Solutions[0].RequiredServices.Count; x++)
+    {
+        <input type="hidden" asp-for="@Model.Solutions[0].RequiredServices[x]"/>
+    }
+
+    <nhs-fieldset-form-label asp-for="DirectAwardOptions"
+                             label-text="Do you want to use a direct award?">
+        <nhs-radio-buttons asp-for="IsDirectAward" values="@Model.DirectAwardOptions.Cast<object>()"
+                           value-name="Value"
+                           display-name="Text"
+                           hint-name="Advice"/>
+    </nhs-fieldset-form-label>
+
+    <nhs-submit-button/>
+</form>

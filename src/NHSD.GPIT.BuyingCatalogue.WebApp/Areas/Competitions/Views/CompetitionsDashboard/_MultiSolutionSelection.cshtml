@@ -1,0 +1,41 @@
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InsetText
+@model SelectSolutionsModel
+
+<nhs-inset-text>
+    <p>You must add between 2 and 8 solutions to your shortlist for this competition. A justification must be provided for any solutions that are not added.</p>
+</nhs-inset-text>
+
+<form method="post">
+    <input type="hidden" asp-for="BackLink"/>
+    <input type="hidden" asp-for="BackLinkText"/>
+    <input type="hidden" asp-for="CompetitionName"/>
+
+    <nhs-fieldset-form-label asp-for="Solutions"
+                             label-text="Which solutions would you like to add to your competition shortlist?"
+                             label-hint="Select at least 2 solutions and a maximum of 8 to take through to your competition.">
+        <nhs-checkbox-container>
+            @for (var i = 0; i < Model.Solutions.Count; i++)
+            {
+                <input type="hidden" asp-for="@Model.Solutions[i].SolutionId"/>
+                <input type="hidden" asp-for="@Model.Solutions[i].SolutionName"/>
+                <input type="hidden" asp-for="@Model.Solutions[i].SupplierName"/>
+                @for (var x = 0; x < Model.Solutions[i].RequiredServices.Count; x++)
+                {
+                    <input type="hidden" asp-for="@Model.Solutions[i].RequiredServices[x]"/>
+                }
+
+                <nhs-checkbox asp-for="@Model.Solutions[i].Selected"
+                              label-text="<a href='@GetSolutionMarketingPageUrl(Model.Solutions[i].SolutionId)' target='_blank'>@Model.Solutions[i].SolutionName (opens in a new tab)</a>"
+                              hint-text="@Model.Solutions[i].SupplierName"
+                              sub-hint="Additional Services required:<br/>@Model.GetAdditionalServicesList(Model.Solutions[i])"
+                              use-embedded-html="true"/>
+            }
+        </nhs-checkbox-container>
+    </nhs-fieldset-form-label>
+    <nhs-submit-button/>
+</form>
+
+@{
+    string GetSolutionMarketingPageUrl(CatalogueItemId catalogueItemId) => Url.Action(nameof(SolutionsController.Description), typeof(SolutionsController).ControllerName(), new { Area = typeof(SolutionsController).AreaName(), solutionId = catalogueItemId });
+}

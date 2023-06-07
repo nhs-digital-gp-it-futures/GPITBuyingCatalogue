@@ -1,0 +1,37 @@
+@model SelectSolutionsModel
+
+@{
+    ViewBag.Title = "Catalogue Solutions found";
+}
+
+<partial name="Partials/_BackLink" model="Model"/>
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary RadioId="@nameof(Model.IsDirectAward)"/>
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.CompetitionName"
+                        advice="@Model.GetAdvice()"/>
+
+        @if (!Model.Solutions.Any())
+        {
+            <nhs-inset-text>
+                <p>There were no Catalogue Solutions found using this search criteria.</p>
+
+                <p>You'll need to use a different filter.</p>
+            </nhs-inset-text>
+
+            <vc:nhs-secondary-button text="Start a new search"
+                                     type="Primary"
+                                     url="@Url.Action(nameof(FilterController.FilterCapabilities), typeof(FilterController).ControllerName(), new { Area = typeof(FilterController).AreaName() })"/>
+        }
+        else if (Model.HasSingleSolution())
+        {
+            <partial name="_SingleSolutionSelection" model="Model" />
+        }
+        else
+        {
+            <partial name="_MultiSolutionSelection" model="Model" />
+        }
+
+    </div>
+</div>

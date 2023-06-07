@@ -6,6 +6,16 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 
 public class CompetitionSolution
 {
+    public CompetitionSolution()
+    {
+    }
+
+    public CompetitionSolution(int competitionId, CatalogueItemId solutionId)
+    {
+        CompetitionId = competitionId;
+        SolutionId = solutionId;
+    }
+
     public int CompetitionId { get; set; }
 
     public CatalogueItemId SolutionId { get; set; }

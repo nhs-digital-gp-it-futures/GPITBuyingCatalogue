@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[RequiredServices]
+﻿CREATE TABLE [competitions].[RequiredServices]
 (
 	[CompetitionId] INT NOT NULL,
     [SolutionId] NVARCHAR(14) NOT NULL,
