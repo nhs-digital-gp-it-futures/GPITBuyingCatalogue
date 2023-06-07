@@ -197,7 +197,7 @@
 
                         @if (Model.Order.OrderingPartyContact != null)
                         {
-                            <pdf-summary-list-row label-text="Call-off ordering party">
+                            <pdf-summary-list-row label-text="Call-off Ordering Party">
                                 @Model.Order.OrderingPartyContact.FirstName @Model.Order.OrderingPartyContact.LastName <br />
                                 @Model.Order.OrderingParty.Name (@Model.Order.OrderingParty.ExternalIdentifier)<br />
                                 <vc:nhs-address address="@Model.Order.OrderingParty.Address" />
@@ -207,6 +207,12 @@
                         @if (Model.Order.Supplier != null
                         && Model.Order.SupplierContact != null)
                         {
+                            @if (!string.Equals(Model.Order.Supplier.LegalName, Model.Order.Supplier.Name, StringComparison.OrdinalIgnoreCase))
+                            {
+                                <pdf-summary-list-row label-text="Supplier legal name">
+                                    @Model.Order.Supplier.LegalName<br />
+                                </pdf-summary-list-row>
+                            }
                             <pdf-summary-list-row label-text="Supplier">
                                 @Model.Order.SupplierContact.FirstName @Model.Order.SupplierContact.LastName <br />
                                 @Model.Order.Supplier.Name <br />
