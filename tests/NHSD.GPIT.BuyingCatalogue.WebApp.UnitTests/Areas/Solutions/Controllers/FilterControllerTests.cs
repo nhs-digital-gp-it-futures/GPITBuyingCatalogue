@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .Setup(x => x.GetReferencedCapabilities())
                 .ReturnsAsync(capabilities);
 
-            var selected = $"{capabilities.First().Id}{FilterConstants.Delimiter}{capabilities.Last().Id}";
+            var selected = new[] { capabilities.First().Id, capabilities.Last().Id }.ToFilterString();
             var result = await controller.FilterCapabilities(selected);
 
             capabilitiesService.VerifyAll();
@@ -114,9 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             model.SelectedItems.ForEach(x => x.Selected = true);
 
-            var expected = string.Join(
-                FilterConstants.Delimiter,
-                model.SelectedItems.Select(x => x.Id));
+            var expected = model.SelectedItems.Select(x => x.Id).ToFilterString();
 
             var result = await controller.FilterCapabilities(model);
 
@@ -148,9 +146,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                     It.IsAny<IEnumerable<string>>()))
                 .ReturnsAsync(expectedEpics);
 
-            var expected = string.Join(
-                FilterConstants.Delimiter,
-                model.SelectedItems.Select(x => x.Id));
+            var expected = model.SelectedItems.Select(x => x.Id).ToFilterString();
 
             var result = await controller.FilterCapabilities(model);
 
@@ -294,7 +290,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             FilterController controller)
         {
             var capabilityIds = capabilities.Select(x => x.Id).ToList();
-            var selectedCapabilityIds = string.Join(FilterConstants.Delimiter, capabilityIds);
+            var selectedCapabilityIds = capabilityIds.ToFilterString();
 
             capabilitiesService
                 .Setup(x => x.GetCapabilitiesByIds(capabilityIds))
@@ -325,8 +321,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             FilterController controller)
         {
             var capabilityIds = capabilities.Select(x => x.Id).ToList();
-            var selectedCapabilityIds = string.Join(FilterConstants.Delimiter, capabilityIds);
-            var selectedEpicIds = $"{epics.First().Id}{FilterConstants.Delimiter}{epics.Last().Id}";
+            var selectedCapabilityIds = capabilityIds.ToFilterString();
+            var selectedEpicIds = new[] { epics.First().Id, epics.Last().Id }.ToFilterString();
 
             capabilitiesService
                 .Setup(x => x.GetCapabilitiesByIds(capabilityIds))
@@ -359,7 +355,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             var capabilityIds = capabilities.Select(x => x.Id).ToList();
 
-            model.CapabilityIds = string.Join(FilterConstants.Delimiter, capabilityIds);
+            model.CapabilityIds = capabilityIds.ToFilterString();
 
             capabilitiesService
                 .Setup(x => x.GetCapabilitiesByIds(capabilityIds))
@@ -390,7 +386,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             model.SelectedItems.ForEach(x => x.Selected = true);
 
-            var expected = string.Join(FilterConstants.Delimiter, model.SelectedItems.Select(x => x.Id));
+            var expected = model.SelectedItems.Select(x => x.Id).ToFilterString();
 
             var result = await controller.FilterEpics(model);
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;

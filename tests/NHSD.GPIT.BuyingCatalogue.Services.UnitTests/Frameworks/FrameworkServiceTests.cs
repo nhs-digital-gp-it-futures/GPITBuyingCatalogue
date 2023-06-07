@@ -99,7 +99,8 @@ public static class FrameworkServiceTests
 
         var result = await service.GetFrameworksByCatalogueItems(new List<CatalogueItemId> { catalogueItem.Id });
 
-        result.Should().BeEmpty();
+        result.Should().HaveCount(1);
+        result.All(f => f.Expired);
     }
 
     [Theory]

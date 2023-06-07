@@ -4,7 +4,7 @@ using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.DashboardModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Models;
@@ -63,12 +63,25 @@ public static class ReviewFilterModelTests
 
     [Theory]
     [CommonAutoData]
-    public static void Construct_SetsProperties(
+    public static void Construct_With_FilterDetails_SetsProperty(
         FilterDetailsModel filterDetailsModel)
     {
         var model = new ReviewFilterModel(filterDetailsModel);
 
         model.FilterDetails.Should().Be(filterDetailsModel);
+        model.FilterIds.Should().BeNull();
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void Construct_With_FilterDetails_And_FilterIds_SetsProperties(
+        FilterDetailsModel filterDetailsModel,
+        FilterIdsModel filterIdsModel)
+    {
+        var model = new ReviewFilterModel(filterDetailsModel, filterIdsModel);
+
+        model.FilterDetails.Should().Be(filterDetailsModel);
+        model.FilterIds.Should().Be(filterIdsModel);
     }
 
     [Theory]
