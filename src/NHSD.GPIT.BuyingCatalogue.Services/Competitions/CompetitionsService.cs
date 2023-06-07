@@ -70,6 +70,23 @@ public class CompetitionsService : ICompetitionsService
         await dbContext.SaveChangesAsync();
     }
 
+    public async Task SetSolutionJustifications(int organisationId, int competitionId, Dictionary<CatalogueItemId, string> solutionsJustification)
+    {
+        if (solutionsJustification == null || solutionsJustification.Count == 0)
+            return;
+
+        var competition = await dbContext.Competitions.Include(x => x.CompetitionSolutions)
+            .FirstOrDefaultAsync(x => x.OrganisationId == organisationId && x.Id == competitionId);
+
+        var solutions = competition.CompetitionSolutions.Where(x => solutionsJustification.ContainsKey(x.SolutionId));
+        foreach (var solution in solutions)
+        {
+            solution.Justification = solutionsJustification[solution.SolutionId];
+        }
+
+        await dbContext.SaveChangesAsync();
+    }
+
     public async Task CompleteCompetition(int organisationId, int competitionId)
     {
         var competition =

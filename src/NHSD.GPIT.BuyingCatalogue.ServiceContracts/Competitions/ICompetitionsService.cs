@@ -18,6 +18,11 @@ public interface ICompetitionsService
         int competitionId,
         IEnumerable<CatalogueItemId> shortlistedSolutions);
 
+    Task SetSolutionJustifications(
+        int organisationId,
+        int competitionId,
+        Dictionary<CatalogueItemId, string> solutionsJustification);
+
     Task CompleteCompetition(int organisationId, int competitionId);
 
     Task DeleteCompetition(int organisationId, int competitionId);

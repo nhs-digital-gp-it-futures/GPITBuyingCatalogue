@@ -197,6 +197,39 @@ public class CompetitionsDashboardController : Controller
             competitionId,
             model.Solutions.Where(x => x.Selected).Select(x => x.SolutionId));
 
+        return RedirectToAction(nameof(JustifySolutions), new { internalOrgId, competitionId });
+    }
+
+    [HttpGet("{competitionId:int}/justify-solutions")]
+    public async Task<IActionResult> JustifySolutions(string internalOrgId, int competitionId)
+    {
+        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
+        var competition = await competitionsService.GetCompetition(organisation.Id, competitionId);
+
+        if (competition.CompetitionSolutions.All(x => x.IsShortlisted))
+            return RedirectToAction(nameof(Index), new { internalOrgId });
+
+        var nonShortlistedSolutions = competition.CompetitionSolutions.Where(x => !x.IsShortlisted);
+
+        var model = new JustifySolutionsModel(competition.Name, nonShortlistedSolutions)
+        {
+            BackLink = Url.Action(nameof(SelectSolutions), new { internalOrgId, competitionId }),
+        };
+
+        return View(model);
+    }
+
+    [HttpPost("{competitionId:int}/justify-solutions")]
+    public async Task<IActionResult> JustifySolutions(string internalOrgId, int competitionId, JustifySolutionsModel model)
+    {
+        if (!ModelState.IsValid)
+            return View(model);
+
+        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
+        var solutionsJustification = model.Solutions.ToDictionary(x => x.SolutionId, x => x.Justification);
+
+        await competitionsService.SetSolutionJustifications(organisation.Id, competitionId, solutionsJustification);
+
         return RedirectToAction(nameof(Index), new { internalOrgId });
     }
 

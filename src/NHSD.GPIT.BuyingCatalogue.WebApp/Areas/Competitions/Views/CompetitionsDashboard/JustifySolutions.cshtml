@@ -1,0 +1,39 @@
+@model JustifySolutionsModel
+
+@{
+    ViewBag.Title = "Shortlisted Catalogue Solutions";
+}
+
+<partial name="Partials/_BackLink" model="Model"/>
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary/>
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.CompetitionName"
+                        advice="Provide a justification for why these solutions were not included in your shortlist."/>
+
+        <form method="post">
+            <input type="hidden" asp-for="BackLink"/>
+            <input type="hidden" asp-for="CompetitionName"/>
+
+            @for (var i = 0; i < Model.Solutions.Count; i++)
+            {
+                <input type="hidden" asp-for="@Model.Solutions[i].SolutionId"/>
+                <input type="hidden" asp-for="@Model.Solutions[i].SolutionName"/>
+                <input type="hidden" asp-for="@Model.Solutions[i].SupplierName"/>
+                <nhs-fieldset-form-label asp-for="@Model.Solutions[i]"
+                                         label-text="@Model.Solutions[i].SolutionName"
+                                         label-hint="@Model.Solutions[i].SupplierName" size="Medium">
+                    <nhs-textarea asp-for="@Model.Solutions[i].Justification"
+                                  label-text="Why has this solution not been included in your shortlist?"
+                                  label-hint="For example, it may not adequately meet your requirements or take too long to implement." character-count="false"/>
+                </nhs-fieldset-form-label>
+
+                <hr/>
+            }
+
+            <nhs-submit-button />
+        </form>
+
+    </div>
+</div>

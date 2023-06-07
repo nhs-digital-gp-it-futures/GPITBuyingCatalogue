@@ -20,6 +20,9 @@ public sealed class CompetitionSolutionEntityTypeConfiguration : IEntityTypeConf
             .IsRequired()
             .HasDefaultValue(false);
 
+        builder.Property(x => x.Justification)
+            .HasMaxLength(1000);
+
         builder.HasOne<Competition>()
             .WithMany(x => x.CompetitionSolutions)
             .HasForeignKey(x => x.CompetitionId)
