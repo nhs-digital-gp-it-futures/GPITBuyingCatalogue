@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [competitions].[CompetitionSolutions]
 (
-	[CompetitionId] INT NOT NULL,
+    [CompetitionId] INT NOT NULL,
     [SolutionId] NVARCHAR(14) NOT NULL,
     [IsShortlisted] BIT DEFAULT 0 NOT NULL,
     [Justification] NVARCHAR(1000) NULL,

@@ -6,7 +6,7 @@
 
 <h3 class="nhsuk-heading-s">
     <a asp-action="@nameof(SolutionsController.Description)"
-       asp-controller="@typeof(SolutionsController).ControllerName"
+       asp-controller="@typeof(SolutionsController).ControllerName()"
        asp-area="@typeof(SolutionsController).AreaName()"
        asp-route-solutionId="@solution.SolutionId">
         @solution.SolutionName (opens in a new tab)

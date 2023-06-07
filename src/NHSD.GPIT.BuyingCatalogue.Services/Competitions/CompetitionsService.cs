@@ -25,8 +25,12 @@ public class CompetitionsService : ICompetitionsService
         => await dbContext.Competitions.Where(x => x.OrganisationId == organisationId)
             .ToListAsync();
 
-    public async Task<Competition> GetCompetition(int organisationId, int competitionId)
-        => await dbContext.Competitions.Include(x => x.CompetitionSolutions)
+    public async Task<Competition> GetCompetitionWithServices(
+        int organisationId,
+        int competitionId,
+        bool shouldTrack = false)
+    {
+        var query = dbContext.Competitions.Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.Solution)
             .ThenInclude(x => x.CatalogueItem)
             .ThenInclude(x => x.Supplier)
@@ -34,7 +38,17 @@ public class CompetitionsService : ICompetitionsService
             .ThenInclude(x => x.RequiredServices)
             .ThenInclude(x => x.Service)
             .ThenInclude(x => x.CatalogueItem)
-            .AsSplitQuery()
+            .AsSplitQuery();
+
+        if (!shouldTrack)
+            query = query.AsNoTracking();
+
+        return await query.FirstOrDefaultAsync(x => x.OrganisationId == organisationId && x.Id == competitionId);
+    }
+
+    public async Task<Competition> GetCompetition(int organisationId, int competitionId)
+        => await dbContext.Competitions.Include(x => x.CompetitionSolutions)
+            .AsNoTracking()
             .FirstOrDefaultAsync(x => x.OrganisationId == organisationId && x.Id == competitionId);
 
     public async Task AddCompetitionSolutions(
@@ -61,7 +75,6 @@ public class CompetitionsService : ICompetitionsService
         var solutions = competition.CompetitionSolutions.ToList();
 
         solutions.ForEach(x => x.IsShortlisted = false);
-
         foreach (var competitionSolution in solutions.Where(x => shortlistedSolutions.Contains(x.SolutionId)))
         {
             competitionSolution.IsShortlisted = true;
@@ -78,11 +91,27 @@ public class CompetitionsService : ICompetitionsService
         var competition = await dbContext.Competitions.Include(x => x.CompetitionSolutions)
             .FirstOrDefaultAsync(x => x.OrganisationId == organisationId && x.Id == competitionId);
 
-        var solutions = competition.CompetitionSolutions.Where(x => solutionsJustification.ContainsKey(x.SolutionId));
-        foreach (var solution in solutions)
+        var solutions = competition.CompetitionSolutions.ToList();
+        solutions.ForEach(x => x.Justification = null);
+
+        foreach (var solution in solutions.Where(x => solutionsJustification.ContainsKey(x.SolutionId)))
         {
             solution.Justification = solutionsJustification[solution.SolutionId];
         }
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task SetShortlistLocked(int organisationId, int competitionId)
+    {
+        var competition =
+            await dbContext.Competitions.FirstOrDefaultAsync(
+                x => x.OrganisationId == organisationId && x.Id == competitionId);
+
+        if (competition.ShortlistAccepted.HasValue)
+            return;
+
+        competition.ShortlistAccepted = DateTime.UtcNow;
 
         await dbContext.SaveChangesAsync();
     }

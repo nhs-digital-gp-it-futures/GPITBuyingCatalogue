@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [competitions].[RequiredServices]
 (
-	[CompetitionId] INT NOT NULL,
+    [CompetitionId] INT NOT NULL,
     [SolutionId] NVARCHAR(14) NOT NULL,
     [ServiceId] NVARCHAR(14) NOT NULL,
     CONSTRAINT PK_CompetitionServices PRIMARY KEY ([CompetitionId], [SolutionId], [ServiceId]),

@@ -3,10 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
@@ -14,7 +11,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.DashboardModels;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 
@@ -100,7 +96,7 @@ public class CompetitionsDashboardController : Controller
         return View(model);
     }
 
-    [HttpGet("select-filter/{filterId}/review")]
+    [HttpGet("select-filter/{filterId:int}/review")]
     public async Task<IActionResult> ReviewFilter(string internalOrgId, int filterId)
     {
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
@@ -118,7 +114,7 @@ public class CompetitionsDashboardController : Controller
         return View(model);
     }
 
-    [HttpPost("select-filter/{filterId}/review")]
+    [HttpPost("select-filter/{filterId:int}/review")]
     public IActionResult ReviewFilter(string internalOrgId, int filterId, ReviewFilterModel model)
     {
         _ = model;
@@ -126,7 +122,7 @@ public class CompetitionsDashboardController : Controller
         return RedirectToAction(nameof(SaveCompetition), new { internalOrgId, filterId });
     }
 
-    [HttpGet("select-filter/{filterId}/save")]
+    [HttpGet("select-filter/{filterId:int}/save")]
     public async Task<IActionResult> SaveCompetition(string internalOrgId, int filterId)
     {
         _ = filterId;
@@ -140,7 +136,7 @@ public class CompetitionsDashboardController : Controller
         return View(model);
     }
 
-    [HttpPost("select-filter/{filterId}/save")]
+    [HttpPost("select-filter/{filterId:int}/save")]
     public async Task<IActionResult> SaveCompetition(string internalOrgId, int filterId, SaveCompetitionModel model)
     {
         if (!ModelState.IsValid)
@@ -156,109 +152,15 @@ public class CompetitionsDashboardController : Controller
 
         await AssignCompetitionSolutions(organisation.Id, competitionId, filterId);
 
-        return RedirectToAction(nameof(SelectSolutions), new { internalOrgId, competitionId });
-    }
-
-    [HttpGet("{competitionId:int}/select-solutions")]
-    public async Task<IActionResult> SelectSolutions(string internalOrgId, int competitionId)
-    {
-        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-        var competition = await competitionsService.GetCompetition(organisation.Id, competitionId);
-
-        var model = new SelectSolutionsModel(competition.Name, competition.CompetitionSolutions)
-        {
-            BackLinkText = "Go back to manage competitions",
-            BackLink = Url.Action(nameof(Index), new { internalOrgId }),
-        };
-
-        return View(model);
-    }
-
-    [HttpPost("{competitionId:int}/select-solutions")]
-    public async Task<IActionResult> SelectSolutions(
-        string internalOrgId,
-        int competitionId,
-        SelectSolutionsModel model)
-    {
-        if (!ModelState.IsValid)
-            return View(model);
-
-        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-
-        if (model.HasSingleSolution())
-        {
-            return model.IsDirectAward.GetValueOrDefault()
-                ? await HandleDirectAward(organisation, competitionId)
-                : await HandleDeleteOrder(organisation, competitionId);
-        }
-
-        await competitionsService.SetShortlistedSolutions(
-            organisation.Id,
-            competitionId,
-            model.Solutions.Where(x => x.Selected).Select(x => x.SolutionId));
-
-        return RedirectToAction(nameof(JustifySolutions), new { internalOrgId, competitionId });
-    }
-
-    [HttpGet("{competitionId:int}/justify-solutions")]
-    public async Task<IActionResult> JustifySolutions(string internalOrgId, int competitionId)
-    {
-        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-        var competition = await competitionsService.GetCompetition(organisation.Id, competitionId);
-
-        if (competition.CompetitionSolutions.All(x => x.IsShortlisted))
-            return RedirectToAction(nameof(Index), new { internalOrgId });
-
-        var nonShortlistedSolutions = competition.CompetitionSolutions.Where(x => !x.IsShortlisted);
-
-        var model = new JustifySolutionsModel(competition.Name, nonShortlistedSolutions)
-        {
-            BackLink = Url.Action(nameof(SelectSolutions), new { internalOrgId, competitionId }),
-        };
-
-        return View(model);
-    }
-
-    [HttpPost("{competitionId:int}/justify-solutions")]
-    public async Task<IActionResult> JustifySolutions(string internalOrgId, int competitionId, JustifySolutionsModel model)
-    {
-        if (!ModelState.IsValid)
-            return View(model);
-
-        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-        var solutionsJustification = model.Solutions.ToDictionary(x => x.SolutionId, x => x.Justification);
-
-        await competitionsService.SetSolutionJustifications(organisation.Id, competitionId, solutionsJustification);
-
-        return RedirectToAction(nameof(Index), new { internalOrgId });
-    }
-
-    private async Task<IActionResult> HandleDirectAward(Organisation organisation, int competitionId)
-    {
-        await competitionsService.CompleteCompetition(organisation.Id, competitionId);
-
         return RedirectToAction(
-            nameof(OrderController.NewOrder),
-            typeof(OrderController).ControllerName(),
-            new
-            {
-                Area = typeof(OrderController).AreaName(),
-                internalOrgId = organisation.InternalIdentifier,
-                option = OrderTriageValue.Under40K,
-                orderType = CatalogueItemType.Solution,
-            });
-    }
-
-    private async Task<IActionResult> HandleDeleteOrder(Organisation organisation, int competitionId)
-    {
-        await competitionsService.DeleteCompetition(organisation.Id, competitionId);
-
-        return RedirectToAction(nameof(Index), new { internalOrgId = organisation.InternalIdentifier });
+            nameof(CompetitionSelectSolutionsController.SelectSolutions),
+            typeof(CompetitionSelectSolutionsController).ControllerName(),
+            new { internalOrgId, competitionId });
     }
 
     private async Task AssignCompetitionSolutions(int organisationId, int competitionId, int filterId)
     {
-        var competition = await competitionsService.GetCompetition(organisationId, competitionId);
+        var competition = await competitionsService.GetCompetitionWithServices(organisationId, competitionId, true);
         var filter = await filterService.GetFilter(organisationId, filterId);
 
         var pageOptions = new PageOptions { PageSize = 100 };

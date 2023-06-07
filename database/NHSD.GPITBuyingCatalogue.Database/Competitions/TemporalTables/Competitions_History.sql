@@ -7,6 +7,7 @@ CREATE TABLE [competitions].[Competitions_History]
     [OrganisationId] INT NOT NULL,
     [LastUpdated] DATETIME2(7) NOT NULL,
     [LastUpdatedBy] INT NULL,
+    [ShortlistAccepted] DATETIME2(7) NULL,
     [Completed] DATETIME2(7) NULL,
     [IsDeleted] BIT NOT NULL,
     [SysStartTime] DATETIME2(0) NOT NULL,

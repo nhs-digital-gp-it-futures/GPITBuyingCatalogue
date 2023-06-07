@@ -9,6 +9,8 @@ public interface ICompetitionsService
 {
     Task<IEnumerable<Competition>> GetCompetitions(int organisationId);
 
+    Task<Competition> GetCompetitionWithServices(int organisationId, int competitionId, bool shouldTrack = false);
+
     Task<Competition> GetCompetition(int organisationId, int competitionId);
 
     Task AddCompetitionSolutions(int organisationId, int competitionId, IEnumerable<CompetitionSolution> competitionSolutions);
@@ -22,6 +24,8 @@ public interface ICompetitionsService
         int organisationId,
         int competitionId,
         Dictionary<CatalogueItemId, string> solutionsJustification);
+
+    Task SetShortlistLocked(int organisationId, int competitionId);
 
     Task CompleteCompetition(int organisationId, int competitionId);
 

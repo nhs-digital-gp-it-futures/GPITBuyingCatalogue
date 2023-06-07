@@ -22,9 +22,13 @@ public class Competition
 
     public DateTime? Completed { get; set; }
 
+    public DateTime? ShortlistAccepted { get; set; }
+
     public int? LastUpdatedBy { get; set; }
 
     public bool IsDeleted { get; set; }
+
+    public bool IsShortlistLocked => ShortlistAccepted.HasValue;
 
     public virtual AspNetUser LastUpdatedByUser { get; set; }
 

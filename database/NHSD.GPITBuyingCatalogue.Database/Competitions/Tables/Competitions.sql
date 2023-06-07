@@ -7,6 +7,7 @@ CREATE TABLE [competitions].[Competitions]
     [OrganisationId] INT NOT NULL,
     [LastUpdated] DATETIME2(7) DEFAULT GETUTCDATE() NOT NULL,
     [LastUpdatedBy] INT NULL,
+    [ShortlistAccepted] DATETIME2(7) NULL,
     [Completed] DATETIME2(7) NULL,
     [IsDeleted] BIT DEFAULT 0 NOT NULL,
     [SysStartTime] DATETIME2(0) GENERATED ALWAYS AS ROW START NOT NULL,
