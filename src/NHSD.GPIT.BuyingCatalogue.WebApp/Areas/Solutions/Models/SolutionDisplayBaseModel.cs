@@ -161,7 +161,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 {
                     Action = nameof(SolutionsController.ClientApplicationTypes),
                     Controller = ControllerName,
-                    Name = "Client application type",
+                    Name = "Application type",
                     Show = CatalogueItemContentStatus.ShowClientApplications,
                 },
                 new()
