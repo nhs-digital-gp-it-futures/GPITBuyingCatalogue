@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_DeleteApplicationTypeConfirmation_ValidId_ReturnsViewWithExpectedModel(
             CatalogueItem catalogueItem,
-            ClientApplicationType clientApplicationType,
+            ApplicationType clientApplicationType,
             [Frozen] Mock<ISolutionsService> mockService,
             DeleteApplicationTypeController controller)
         {
@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_DeleteApplicationTypeConfirmation_InvalidId_ReturnsBadRequest(
             CatalogueItem catalogueItem,
-            ClientApplicationType clientApplicationType,
+            ApplicationType clientApplicationType,
             [Frozen] Mock<ISolutionsService> mockService,
             DeleteApplicationTypeController controller)
         {
@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Post_DeleteApplicationTypeConfirmation_Saves_And_RedirectsToDesktop(
             CatalogueItemId catalogueItemId,
-            ClientApplicationType clientApplicationType,
+            ApplicationType clientApplicationType,
             DeleteApplicationTypeConfirmationModel model,
             ClientApplication clientApplication,
             [Frozen] Mock<ISolutionsService> mockService,
@@ -101,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             string errorKey,
             string errorMessage,
             CatalogueItemId catalogueItemId,
-            ClientApplicationType clientApplicationType,
+            ApplicationType clientApplicationType,
             DeleteApplicationTypeConfirmationModel model,
             DeleteApplicationTypeController controller)
         {

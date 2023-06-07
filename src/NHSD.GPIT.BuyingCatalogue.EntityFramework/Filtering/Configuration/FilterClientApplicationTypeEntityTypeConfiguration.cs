@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Configuration
 
             builder.HasKey(fcat => fcat.Id);
 
-            builder.Property(p => p.ClientApplicationType)
+            builder.Property(p => p.ApplicationType)
                 .HasConversion<int>()
                 .HasColumnName("ClientApplicationTypeId");
         }

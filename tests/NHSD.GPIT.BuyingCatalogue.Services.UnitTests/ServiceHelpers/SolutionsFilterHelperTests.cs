@@ -75,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseClientApplicationTypeIds(input);
 
-            var expected = new List<ClientApplicationType> { ClientApplicationType.BrowserBased, ClientApplicationType.Desktop, ClientApplicationType.MobileTablet };
+            var expected = new List<ApplicationType> { ApplicationType.BrowserBased, ApplicationType.Desktop, ApplicationType.MobileTablet };
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -87,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseClientApplicationTypeIds(input);
 
-            var expected = new List<ClientApplicationType> { ClientApplicationType.BrowserBased, ClientApplicationType.Desktop, ClientApplicationType.MobileTablet };
+            var expected = new List<ApplicationType> { ApplicationType.BrowserBased, ApplicationType.Desktop, ApplicationType.MobileTablet };
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -99,7 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseClientApplicationTypeIds(input);
 
-            var expected = new List<ClientApplicationType> { ClientApplicationType.BrowserBased, ClientApplicationType.Desktop, ClientApplicationType.MobileTablet };
+            var expected = new List<ApplicationType> { ApplicationType.BrowserBased, ApplicationType.Desktop, ApplicationType.MobileTablet };
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -111,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseClientApplicationTypeIds(input);
 
-            var expected = new List<ClientApplicationType>();
+            var expected = new List<ApplicationType>();
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -123,7 +123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseClientApplicationTypeIds(input);
 
-            var expected = new List<ClientApplicationType>();
+            var expected = new List<ApplicationType>();
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -135,7 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseClientApplicationTypeIds(input);
 
-            var expected = new List<ClientApplicationType> { ClientApplicationType.BrowserBased, ClientApplicationType.Desktop, ClientApplicationType.MobileTablet };
+            var expected = new List<ApplicationType> { ApplicationType.BrowserBased, ApplicationType.Desktop, ApplicationType.MobileTablet };
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -183,7 +183,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseHostingTypeIds(input);
 
-            var expected = new List<ClientApplicationType>();
+            var expected = new List<ApplicationType>();
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -195,7 +195,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseHostingTypeIds(input);
 
-            var expected = new List<ClientApplicationType>();
+            var expected = new List<ApplicationType>();
 
             result.Should().BeEquivalentTo(expected);
         }

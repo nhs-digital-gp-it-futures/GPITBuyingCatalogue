@@ -46,13 +46,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public ClientApplication ClientApplication { get; init; }
 
-        public bool HasApplicationType(ClientApplicationType clientApplicationType) =>
-            ClientApplication?.ClientApplicationTypes?.Any(
+        public bool HasApplicationType(ApplicationType clientApplicationType) =>
+            ClientApplication?.ApplicationTypes?.Any(
                 s => s.EqualsIgnoreCase(clientApplicationType.EnumMemberName())) ?? false;
 
         private DescriptionListViewModel GetBrowserBasedApplication()
         {
-            if (!HasApplicationType(ClientApplicationType.BrowserBased))
+            if (!HasApplicationType(ApplicationType.BrowserBased))
                 return null;
 
             var items = new Dictionary<string, ListViewModel>();
@@ -130,7 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         private DescriptionListViewModel GetNativeDesktopApplication()
         {
-            if (!HasApplicationType(ClientApplicationType.Desktop))
+            if (!HasApplicationType(ApplicationType.Desktop))
                 return null;
 
             var items = new Dictionary<string, ListViewModel>();
@@ -226,7 +226,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         private DescriptionListViewModel GetNativeMobileApplication()
         {
-            if (!HasApplicationType(ClientApplicationType.MobileTablet))
+            if (!HasApplicationType(ApplicationType.MobileTablet))
                 return null;
 
             var items = new Dictionary<string, ListViewModel>();
@@ -323,21 +323,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             const string yesKey = "Yes";
             var items = new Dictionary<string, ListViewModel>();
 
-            if (HasApplicationType(ClientApplicationType.BrowserBased))
+            if (HasApplicationType(ApplicationType.BrowserBased))
             {
                 items.Add(
                     "Browser-based application",
                     new ListViewModel { Text = yesKey });
             }
 
-            if (HasApplicationType(ClientApplicationType.Desktop))
+            if (HasApplicationType(ApplicationType.Desktop))
             {
                 items.Add(
                     "Desktop application",
                     new ListViewModel { Text = yesKey });
             }
 
-            if (HasApplicationType(ClientApplicationType.MobileTablet))
+            if (HasApplicationType(ApplicationType.MobileTablet))
             {
                 items.Add(
                     "Mobile or tablet application",

@@ -25,6 +25,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationT
 
         public CatalogueItemId? SolutionId { get; set; }
 
-        public ClientApplicationType ApplicationType { get; set; }
+        public ApplicationType ApplicationType { get; set; }
     }
 }

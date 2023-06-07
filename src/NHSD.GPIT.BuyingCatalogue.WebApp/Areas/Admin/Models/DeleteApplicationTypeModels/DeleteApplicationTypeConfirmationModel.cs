@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DeleteApplicationT
         {
         }
 
-        public DeleteApplicationTypeConfirmationModel(CatalogueItem solution, ClientApplicationType clientApplicationType)
+        public DeleteApplicationTypeConfirmationModel(CatalogueItem solution, ApplicationType clientApplicationType)
         {
             ApplicationType = clientApplicationType
                 .AsString(EnumFormat.DisplayName)

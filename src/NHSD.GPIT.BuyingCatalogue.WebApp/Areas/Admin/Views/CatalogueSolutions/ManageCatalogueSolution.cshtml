@@ -120,7 +120,7 @@
                     <nhs-table-cell>Application type</nhs-table-cell>
                     <nhs-table-cell>Yes</nhs-table-cell>
                     <nhs-table-cell>
-                        <nhs-tag status-enum="@Model.ClientApplicationTypeStatus" />
+                        <nhs-tag status-enum="@Model.ApplicationTypeStatus" />
                     </nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="@nameof(CatalogueSolutionsController.ClientApplicationType)"
@@ -242,7 +242,7 @@
             <input type="hidden" asp-for="ImplementationStatus" />
             <input type="hidden" asp-for="RoadmapStatus" />
             <input type="hidden" asp-for="HostingTypeStatus" />
-            <input type="hidden" asp-for="ClientApplicationTypeStatus" />
+            <input type="hidden" asp-for="ApplicationTypeStatus" />
             <input type="hidden" asp-for="InteroperabilityStatus" />
             <input type="hidden" asp-for="ListPriceStatus" />
             <input type="hidden" asp-for="AssociatedServicesStatus" />

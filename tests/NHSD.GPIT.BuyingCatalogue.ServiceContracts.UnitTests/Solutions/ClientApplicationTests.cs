@@ -354,24 +354,24 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonInlineAutoData(ClientApplicationType.BrowserBased)]
-        [CommonInlineAutoData(ClientApplicationType.MobileTablet)]
-        [CommonInlineAutoData(ClientApplicationType.Desktop)]
+        [CommonInlineAutoData(ApplicationType.BrowserBased)]
+        [CommonInlineAutoData(ApplicationType.MobileTablet)]
+        [CommonInlineAutoData(ApplicationType.Desktop)]
         public static void ClientApplicationTypes_IsUpdatedCorrectly(
-            ClientApplicationType clientApplicationType,
+            ApplicationType clientApplicationType,
             ClientApplication clientApplication)
         {
             clientApplication.EnsureClientApplicationTypePresent(clientApplicationType);
 
-            clientApplication.ClientApplicationTypes.Should().Contain(clientApplicationType.AsString(EnumFormat.EnumMemberValue));
+            clientApplication.ApplicationTypes.Should().Contain(clientApplicationType.AsString(EnumFormat.EnumMemberValue));
         }
 
         [Theory]
-        [CommonInlineAutoData(ClientApplicationType.BrowserBased)]
-        [CommonInlineAutoData(ClientApplicationType.MobileTablet)]
-        [CommonInlineAutoData(ClientApplicationType.Desktop)]
+        [CommonInlineAutoData(ApplicationType.BrowserBased)]
+        [CommonInlineAutoData(ApplicationType.MobileTablet)]
+        [CommonInlineAutoData(ApplicationType.Desktop)]
         public static void ApplicationTypeStatus_ReturnsComplete(
-            ClientApplicationType clientApplicationType,
+            ApplicationType clientApplicationType,
             ClientApplication clientApplication)
         {
             clientApplication.ApplicationTypeStatus(clientApplicationType).Should().Be(TaskProgress.Completed);
@@ -384,7 +384,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         {
             clientApplication.Plugins = null;
 
-            clientApplication.ApplicationTypeStatus(ClientApplicationType.BrowserBased).Should().Be(TaskProgress.InProgress);
+            clientApplication.ApplicationTypeStatus(ApplicationType.BrowserBased).Should().Be(TaskProgress.InProgress);
         }
 
         [Theory]
@@ -394,7 +394,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         {
             clientApplication.BrowsersSupported = null;
 
-            clientApplication.ApplicationTypeStatus(ClientApplicationType.BrowserBased).Should().Be(TaskProgress.InProgress);
+            clientApplication.ApplicationTypeStatus(ApplicationType.BrowserBased).Should().Be(TaskProgress.InProgress);
         }
 
         [Fact]
@@ -402,7 +402,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         {
             var clientApplication = new ClientApplication();
 
-            clientApplication.ApplicationTypeStatus(ClientApplicationType.BrowserBased).Should().Be(TaskProgress.NotStarted);
+            clientApplication.ApplicationTypeStatus(ApplicationType.BrowserBased).Should().Be(TaskProgress.NotStarted);
         }
 
         [Theory]
@@ -412,7 +412,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         {
             clientApplication.NativeDesktopOperatingSystemsDescription = null;
 
-            clientApplication.ApplicationTypeStatus(ClientApplicationType.Desktop).Should().Be(TaskProgress.InProgress);
+            clientApplication.ApplicationTypeStatus(ApplicationType.Desktop).Should().Be(TaskProgress.InProgress);
         }
 
         [Theory]
@@ -422,7 +422,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         {
             clientApplication.NativeDesktopMinimumConnectionSpeed = null;
 
-            clientApplication.ApplicationTypeStatus(ClientApplicationType.Desktop).Should().Be(TaskProgress.InProgress);
+            clientApplication.ApplicationTypeStatus(ApplicationType.Desktop).Should().Be(TaskProgress.InProgress);
         }
 
         [Theory]
@@ -432,7 +432,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         {
             clientApplication.NativeDesktopMemoryAndStorage = null;
 
-            clientApplication.ApplicationTypeStatus(ClientApplicationType.Desktop).Should().Be(TaskProgress.InProgress);
+            clientApplication.ApplicationTypeStatus(ApplicationType.Desktop).Should().Be(TaskProgress.InProgress);
         }
 
         [Fact]
@@ -440,7 +440,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         {
             var clientApplication = new ClientApplication();
 
-            clientApplication.ApplicationTypeStatus(ClientApplicationType.BrowserBased).Should().Be(TaskProgress.NotStarted);
+            clientApplication.ApplicationTypeStatus(ApplicationType.BrowserBased).Should().Be(TaskProgress.NotStarted);
         }
 
         [Theory]
@@ -450,7 +450,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         {
             clientApplication.MobileOperatingSystems = null;
 
-            clientApplication.ApplicationTypeStatus(ClientApplicationType.MobileTablet).Should().Be(TaskProgress.InProgress);
+            clientApplication.ApplicationTypeStatus(ApplicationType.MobileTablet).Should().Be(TaskProgress.InProgress);
         }
 
         [Theory]
@@ -460,7 +460,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         {
             clientApplication.MobileMemoryAndStorage = null;
 
-            clientApplication.ApplicationTypeStatus(ClientApplicationType.MobileTablet).Should().Be(TaskProgress.InProgress);
+            clientApplication.ApplicationTypeStatus(ApplicationType.MobileTablet).Should().Be(TaskProgress.InProgress);
         }
 
         [Fact]
@@ -468,7 +468,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         {
             var clientApplication = new ClientApplication();
 
-            clientApplication.ApplicationTypeStatus(ClientApplicationType.BrowserBased).Should().Be(TaskProgress.NotStarted);
+            clientApplication.ApplicationTypeStatus(ApplicationType.BrowserBased).Should().Be(TaskProgress.NotStarted);
         }
 
         [Theory]
@@ -476,9 +476,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         public static void HasClientApplicationType_True(
             ClientApplication clientApplication)
         {
-            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.BrowserBased);
+            clientApplication.EnsureClientApplicationTypePresent(ApplicationType.BrowserBased);
 
-            clientApplication.HasClientApplicationType(ClientApplicationType.BrowserBased).Should().BeTrue();
+            clientApplication.HasClientApplicationType(ApplicationType.BrowserBased).Should().BeTrue();
         }
 
         [Fact]
@@ -486,7 +486,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         {
             var clientApplication = new ClientApplication();
 
-            clientApplication.HasClientApplicationType(ClientApplicationType.BrowserBased).Should().BeFalse();
+            clientApplication.HasClientApplicationType(ApplicationType.BrowserBased).Should().BeFalse();
         }
 
         private static class ResultSetData

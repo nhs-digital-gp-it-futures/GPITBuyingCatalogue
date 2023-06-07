@@ -44,21 +44,21 @@
                                     <nhs-tag status-enum="@Model.ClientApplication.ApplicationTypeStatus(applicationType)" />
                                 </nhs-table-cell>
                                 <nhs-table-cell>
-                                    @if (applicationType == ClientApplicationType.MobileTablet)
+                                    @if (applicationType == ApplicationType.MobileTablet)
                                     {
                                         <a asp-action="@nameof(MobileTabletBasedController.MobileTablet)"
                                            asp-controller="@typeof(MobileTabletBasedController).ControllerName()"
                                            asp-route-solutionId="@Model.SolutionId"
                                            class="nhsuk-breadcrumb__link">Edit</a>
                                     }
-                                    else if (applicationType == ClientApplicationType.Desktop)
+                                    else if (applicationType == ApplicationType.Desktop)
                                     {
                                         <a asp-action="@nameof(DesktopBasedController.Desktop)"
                                            asp-controller="@typeof(DesktopBasedController).ControllerName()"
                                            asp-route-solutionId="@Model.SolutionId"
                                            class="nhsuk-breadcrumb__link">Edit</a>
                                     }
-                                    else if (applicationType == ClientApplicationType.BrowserBased)
+                                    else if (applicationType == ApplicationType.BrowserBased)
                                     {
                                         <a asp-action="@nameof(BrowserBasedController.BrowserBased)"
                                            asp-controller="@typeof(BrowserBasedController).ControllerName()"
@@ -84,9 +84,9 @@
 </div>
 
 @{
-    string FormatApplicationType(ClientApplicationType applicationType) => applicationType switch
+    string FormatApplicationType(ApplicationType applicationType) => applicationType switch
     {
-        ClientApplicationType.MobileTablet => "Mobile application",
+        ApplicationType.MobileTablet => "Mobile application",
         _ => $"{applicationType.AsString(EnumFormat.DisplayName)} application",
     };
 }

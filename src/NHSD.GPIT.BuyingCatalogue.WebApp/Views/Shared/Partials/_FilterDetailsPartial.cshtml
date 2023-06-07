@@ -84,16 +84,16 @@ else
             }
             else
             {
-                @if (Model.FilterDetails.ClientApplicationTypes.Count == 1)
+                @if (Model.FilterDetails.ApplicationTypes.Count == 1)
                 {
                     <p>
-                        @Model.FilterDetails.ClientApplicationTypes.First().Name()
+                        @Model.FilterDetails.ApplicationTypes.First().Name()
                     </p>
                 }
                 else
                 {
                     <ul>
-                        @foreach (var item in Model.FilterDetails.ClientApplicationTypes)
+                        @foreach (var item in Model.FilterDetails.ApplicationTypes)
                         {
                             <li>
                                 @item.Name()

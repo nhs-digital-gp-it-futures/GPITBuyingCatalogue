@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var clientApplication = solution.Solution.GetClientApplication();
             var model = new DesktopBasedModel(solution)
             {
-                BackLink = clientApplication?.HasClientApplicationType(ClientApplicationType.Desktop) ?? false
+                BackLink = clientApplication?.HasClientApplicationType(ApplicationType.Desktop) ?? false
                            ? Url.Action(
                                nameof(CatalogueSolutionsController.ClientApplicationType),
                                typeof(CatalogueSolutionsController).ControllerName(),
@@ -76,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             clientApplication.NativeDesktopOperatingSystemsDescription = model.Description;
 
-            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.Desktop);
+            clientApplication.EnsureClientApplicationTypePresent(ApplicationType.Desktop);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -112,7 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             clientApplication.NativeDesktopMinimumConnectionSpeed = model.SelectedConnectionSpeed;
 
-            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.Desktop);
+            clientApplication.EnsureClientApplicationTypePresent(ApplicationType.Desktop);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -153,7 +153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             clientApplication.NativeDesktopMemoryAndStorage.MinimumCpu = model.ProcessingPower;
             clientApplication.NativeDesktopMemoryAndStorage.RecommendedResolution = model.SelectedResolution;
 
-            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.Desktop);
+            clientApplication.EnsureClientApplicationTypePresent(ApplicationType.Desktop);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -192,7 +192,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             clientApplication.NativeDesktopThirdParty.ThirdPartyComponents = model.ThirdPartyComponents;
             clientApplication.NativeDesktopThirdParty.DeviceCapabilities = model.DeviceCapabilities;
 
-            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.Desktop);
+            clientApplication.EnsureClientApplicationTypePresent(ApplicationType.Desktop);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -228,7 +228,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             clientApplication.NativeDesktopHardwareRequirements = model.Description;
 
-            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.Desktop);
+            clientApplication.EnsureClientApplicationTypePresent(ApplicationType.Desktop);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -264,7 +264,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             clientApplication.NativeDesktopAdditionalInformation = model.AdditionalInformation;
 
-            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.Desktop);
+            clientApplication.EnsureClientApplicationTypePresent(ApplicationType.Desktop);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 

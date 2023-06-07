@@ -16,6 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationT
 
         public bool ApplicationTypesAvailableForSelection { get; set; }
 
-        public ClientApplicationType? SelectedApplicationType { get; set; }
+        public ApplicationType? SelectedApplicationType { get; set; }
     }
 }

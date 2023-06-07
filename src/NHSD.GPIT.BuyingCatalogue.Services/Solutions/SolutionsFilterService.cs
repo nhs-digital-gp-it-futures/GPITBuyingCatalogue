@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 query = query.Where(ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == selectedFrameworkId));
             if (!string.IsNullOrWhiteSpace(selectedClientApplicationTypeIds))
             {
-                query = ApplyAdditionalFilterToQuery<ClientApplicationType>(
+                query = ApplyAdditionalFilterToQuery<ApplicationType>(
                     query,
                     selectedClientApplicationTypeIds,
                     GetSelectedFiltersClientApplication,
@@ -280,7 +280,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             };
         }
 
-        private static IEnumerable<ClientApplicationType> GetSelectedFiltersClientApplication(Solution solution, IEnumerable<ClientApplicationType> selectedFilterEnums)
+        private static IEnumerable<ApplicationType> GetSelectedFiltersClientApplication(Solution solution, IEnumerable<ApplicationType> selectedFilterEnums)
         {
             var clientApplication = JsonDeserializer.Deserialize<ClientApplication>(solution.ClientApplication);
             return selectedFilterEnums?.Where(t => clientApplication.HasClientApplicationType(t));

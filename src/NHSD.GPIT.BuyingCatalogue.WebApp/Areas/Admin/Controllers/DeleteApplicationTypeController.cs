@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("manage/{solutionId}/client-application-type/delete/{applicationType}")]
-        public async Task<IActionResult> DeleteApplicationTypeConfirmation(CatalogueItemId solutionId, ClientApplicationType applicationType)
+        public async Task<IActionResult> DeleteApplicationTypeConfirmation(CatalogueItemId solutionId, ApplicationType applicationType)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
 
@@ -34,15 +34,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             {
                 BackLink = applicationType switch
                 {
-                    ClientApplicationType.BrowserBased => Url.Action(
+                    ApplicationType.BrowserBased => Url.Action(
                         nameof(BrowserBasedController.BrowserBased),
                         typeof(BrowserBasedController).ControllerName(),
                         new { solutionId }),
-                    ClientApplicationType.Desktop => Url.Action(
+                    ApplicationType.Desktop => Url.Action(
                         nameof(DesktopBasedController.Desktop),
                         typeof(DesktopBasedController).ControllerName(),
                         new { solutionId }),
-                    ClientApplicationType.MobileTablet => Url.Action(
+                    ApplicationType.MobileTablet => Url.Action(
                         nameof(MobileTabletBasedController.MobileTablet),
                         typeof(MobileTabletBasedController).ControllerName(),
                         new { solutionId }),
@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("manage/{solutionId}/client-application-type/delete/{applicationType}")]
         public async Task<IActionResult> DeleteApplicationTypeConfirmation(
             CatalogueItemId solutionId,
-            ClientApplicationType applicationType,
+            ApplicationType applicationType,
             DeleteApplicationTypeConfirmationModel model)
         {
             if (!ModelState.IsValid)

@@ -8,6 +8,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models
 
         public int FilterId { get; set; }
 
-        public ClientApplicationType ClientApplicationType { get; set; }
+        public ApplicationType ApplicationType { get; set; }
     }
 }

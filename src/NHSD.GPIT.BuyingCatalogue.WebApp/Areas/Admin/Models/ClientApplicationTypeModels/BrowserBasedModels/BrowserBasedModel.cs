@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationT
         public BrowserBasedModel(CatalogueItem catalogueItem)
             : base(catalogueItem)
         {
-            ApplicationType = ClientApplicationType.BrowserBased;
+            ApplicationType = ApplicationType.BrowserBased;
         }
 
         public TaskProgress SupportedBrowsersStatus() => ClientApplication.SupportedBrowsersStatus();

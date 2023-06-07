@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 {
     public sealed class ClientApplication
     {
-        public HashSet<string> ClientApplicationTypes { get; set; } = new();
+        public HashSet<string> ApplicationTypes { get; set; } = new();
 
         [JsonConverter(typeof(SupportedBrowsersJsonConverter))]
         public HashSet<SupportedBrowser> BrowsersSupported { get; set; } = new();
@@ -55,32 +55,32 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         public string NativeDesktopAdditionalInformation { get; set; }
 
-        public IReadOnlyList<ClientApplicationType> ExistingClientApplicationTypes
+        public IReadOnlyList<ApplicationType> ExistingClientApplicationTypes
         {
             get
             {
-                var result = new List<ClientApplicationType>(3);
+                var result = new List<ApplicationType>(3);
 
-                foreach (ClientApplicationType clientApplicationType in Enum.GetValues(typeof(ClientApplicationType)))
+                foreach (ApplicationType applicationType in Enum.GetValues(typeof(ApplicationType)))
                 {
-                    if (ClientApplicationTypes?.Any(type => type.Equals(clientApplicationType.AsString(EnumFormat.EnumMemberValue), StringComparison.OrdinalIgnoreCase)) ?? false)
-                        result.Add(clientApplicationType);
+                    if (ApplicationTypes?.Any(type => type.Equals(applicationType.AsString(EnumFormat.EnumMemberValue), StringComparison.OrdinalIgnoreCase)) ?? false)
+                        result.Add(applicationType);
                 }
 
                 return result;
             }
         }
 
-        public void EnsureClientApplicationTypePresent(ClientApplicationType clientApplicationType)
+        public void EnsureClientApplicationTypePresent(ApplicationType applicationType)
         {
-            ClientApplicationTypes ??= new HashSet<string>();
+            ApplicationTypes ??= new HashSet<string>();
 
-            if (!ClientApplicationTypes.Any(type => type.Equals(clientApplicationType.AsString(EnumFormat.EnumMemberValue), StringComparison.OrdinalIgnoreCase)))
-                ClientApplicationTypes.Add(clientApplicationType.AsString(EnumFormat.EnumMemberValue));
+            if (!ApplicationTypes.Any(type => type.Equals(applicationType.AsString(EnumFormat.EnumMemberValue), StringComparison.OrdinalIgnoreCase)))
+                ApplicationTypes.Add(applicationType.AsString(EnumFormat.EnumMemberValue));
         }
 
-        public bool HasClientApplicationType(ClientApplicationType clientApplicationType)
-            => ClientApplicationTypes?.Any(type => type.Equals(clientApplicationType.AsString(EnumFormat.EnumMemberValue), StringComparison.OrdinalIgnoreCase)) ?? false;
+        public bool HasClientApplicationType(ApplicationType applicationType)
+            => ApplicationTypes?.Any(type => type.Equals(applicationType.AsString(EnumFormat.EnumMemberValue), StringComparison.OrdinalIgnoreCase)) ?? false;
 
         public TaskProgress AdditionalInformationStatus() => Status(AdditionalInformation);
 
@@ -117,9 +117,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         public TaskProgress NativeMobileThirdPartyStatus() => Status(MobileThirdParty?.Status());
 
-        public TaskProgress ApplicationTypeStatus(ClientApplicationType applicationType)
+        public TaskProgress ApplicationTypeStatus(ApplicationType applicationType)
         {
-            if (applicationType == ClientApplicationType.BrowserBased)
+            if (applicationType == ApplicationType.BrowserBased)
             {
                 if (SupportedBrowsersStatus() == TaskProgress.Completed && PluginsStatus() == TaskProgress.Completed)
                     return TaskProgress.Completed;
@@ -134,7 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
                 }
             }
 
-            if (applicationType == ClientApplicationType.Desktop)
+            if (applicationType == ApplicationType.Desktop)
             {
                 if (NativeDesktopSupportedOperatingSystemsStatus() == TaskProgress.Completed &&
                     NativeDesktopConnectivityStatus() == TaskProgress.Completed &&
@@ -154,7 +154,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
                 }
             }
 
-            if (applicationType == ClientApplicationType.MobileTablet)
+            if (applicationType == ApplicationType.MobileTablet)
             {
                 if (NativeMobileSupportedOperatingSystemsStatus() == TaskProgress.Completed &&
                     NativeMobileMemoryAndStorageStatus() == TaskProgress.Completed)

@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var clientApplication = solution.Solution.GetClientApplication();
             var model = new MobileTabletBasedModel(solution)
             {
-                BackLink = clientApplication?.HasClientApplicationType(ClientApplicationType.MobileTablet) ?? false
+                BackLink = clientApplication?.HasClientApplicationType(ApplicationType.MobileTablet) ?? false
                            ? Url.Action(
                                nameof(CatalogueSolutionsController.ClientApplicationType),
                                typeof(CatalogueSolutionsController).ControllerName(),
@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             clientApplication.MobileOperatingSystems.OperatingSystemsDescription = model.Description;
 
-            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.MobileTablet);
+            clientApplication.EnsureClientApplicationTypePresent(ApplicationType.MobileTablet);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -140,7 +140,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 .Select(o => o.ConnectionType)
                 .ToHashSet();
 
-            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.MobileTablet);
+            clientApplication.EnsureClientApplicationTypePresent(ApplicationType.MobileTablet);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -178,7 +178,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             clientApplication.MobileMemoryAndStorage.MinimumMemoryRequirement = model.SelectedMemorySize;
             clientApplication.MobileMemoryAndStorage.Description = model.Description;
 
-            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.MobileTablet);
+            clientApplication.EnsureClientApplicationTypePresent(ApplicationType.MobileTablet);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -217,7 +217,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             clientApplication.MobileThirdParty.ThirdPartyComponents = model.ThirdPartyComponents;
             clientApplication.MobileThirdParty.DeviceCapabilities = model.DeviceCapabilities;
 
-            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.MobileTablet);
+            clientApplication.EnsureClientApplicationTypePresent(ApplicationType.MobileTablet);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -253,7 +253,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             clientApplication.NativeMobileHardwareRequirements = model.Description;
 
-            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.MobileTablet);
+            clientApplication.EnsureClientApplicationTypePresent(ApplicationType.MobileTablet);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -289,7 +289,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             clientApplication.NativeMobileAdditionalInformation = model.AdditionalInformation;
 
-            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.MobileTablet);
+            clientApplication.EnsureClientApplicationTypePresent(ApplicationType.MobileTablet);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 

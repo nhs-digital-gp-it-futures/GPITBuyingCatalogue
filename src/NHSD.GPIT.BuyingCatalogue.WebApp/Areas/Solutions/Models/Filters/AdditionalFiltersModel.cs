@@ -77,8 +77,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 
         private void SetClientApplicationTypeOptions(string selectedClientApplicationTypeIds)
         {
-            ClientApplicationTypeOptions = Enum.GetValues(typeof(ClientApplicationType))
-                .Cast<ClientApplicationType>()
+            ClientApplicationTypeOptions = Enum.GetValues(typeof(ApplicationType))
+                .Cast<ApplicationType>()
                 .Select(
                     x => new SelectOption<int>
                     {

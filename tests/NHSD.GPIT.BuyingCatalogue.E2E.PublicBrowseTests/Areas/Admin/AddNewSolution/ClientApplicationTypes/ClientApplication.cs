@@ -61,10 +61,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
         }
 
         [Theory]
-        [InlineData(ClientApplicationType.BrowserBased)]
-        [InlineData(ClientApplicationType.Desktop)]
-        [InlineData(ClientApplicationType.MobileTablet)]
-        public void ExistingClientApplications_Edit_NavigatesCorrectly(ClientApplicationType clientApplicationType)
+        [InlineData(ApplicationType.BrowserBased)]
+        [InlineData(ApplicationType.Desktop)]
+        [InlineData(ApplicationType.MobileTablet)]
+        public void ExistingClientApplications_Edit_NavigatesCorrectly(ApplicationType clientApplicationType)
         {
             NavigateToUrl(
                 typeof(CatalogueSolutionsController),
@@ -82,18 +82,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
                 .BeTrue();
         }
 
-        private static string FormatApplicationType(ClientApplicationType applicationType) => applicationType switch
+        private static string FormatApplicationType(ApplicationType applicationType) => applicationType switch
         {
-            ClientApplicationType.MobileTablet => "Mobile application",
+            ApplicationType.MobileTablet => "Mobile application",
             _ => $"{applicationType.AsString(EnumFormat.DisplayName)} application",
         };
 
-        private static (Type ControllerType, string ActionName) GetExpectedLinkForApplicationType(ClientApplicationType clientApplicationType)
+        private static (Type ControllerType, string ActionName) GetExpectedLinkForApplicationType(ApplicationType clientApplicationType)
             => clientApplicationType switch
             {
-                ClientApplicationType.MobileTablet => (typeof(MobileTabletBasedController), nameof(MobileTabletBasedController.MobileTablet)),
-                ClientApplicationType.Desktop => (typeof(DesktopBasedController), nameof(DesktopBasedController.Desktop)),
-                ClientApplicationType.BrowserBased => (typeof(BrowserBasedController), nameof(BrowserBasedController.BrowserBased)),
+                ApplicationType.MobileTablet => (typeof(MobileTabletBasedController), nameof(MobileTabletBasedController.MobileTablet)),
+                ApplicationType.Desktop => (typeof(DesktopBasedController), nameof(DesktopBasedController.Desktop)),
+                ApplicationType.BrowserBased => (typeof(BrowserBasedController), nameof(BrowserBasedController.BrowserBased)),
                 _ => throw new ArgumentOutOfRangeException(nameof(clientApplicationType)),
             };
     }

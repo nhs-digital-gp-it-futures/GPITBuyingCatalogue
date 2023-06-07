@@ -121,7 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         : ci.CataloguePrices.Any()
                             ? TaskProgress.InProgress
                             : TaskProgress.NotStarted,
-                    ClientApplicationType = !string.IsNullOrEmpty(ci.Solution.ClientApplication)
+                    ApplicationType = !string.IsNullOrEmpty(ci.Solution.ClientApplication)
                         ? TaskProgress.Completed
                         : TaskProgress.NotStarted,
                     HostingType = ci.Solution.Hosting != null && ci.Solution.Hosting.IsValid()
@@ -337,7 +337,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task DeleteClientApplication(CatalogueItemId solutionId, ClientApplicationType clientApplicationType)
+        public async Task DeleteClientApplication(CatalogueItemId solutionId, ApplicationType clientApplicationType)
         {
             var clientApplication = await GetClientApplication(solutionId);
 
@@ -548,18 +548,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(wp => wp.Standard)
                 .Where(wp => wp.SolutionId == solutionId).ToListAsync();
 
-        internal static ClientApplication RemoveClientApplicationType(ClientApplication clientApplication, ClientApplicationType clientApplicationType)
+        internal static ClientApplication RemoveClientApplicationType(ClientApplication clientApplication, ApplicationType clientApplicationType)
         {
             if (clientApplication is null)
                 throw new ArgumentNullException(nameof(clientApplication));
 
-            if (clientApplication.ClientApplicationTypes is not null)
+            if (clientApplication.ApplicationTypes is not null)
             {
-                if (clientApplication.ClientApplicationTypes.Contains(clientApplicationType.AsString(EnumFormat.EnumMemberValue)))
-                    clientApplication.ClientApplicationTypes.Remove(clientApplicationType.AsString(EnumFormat.EnumMemberValue));
+                if (clientApplication.ApplicationTypes.Contains(clientApplicationType.AsString(EnumFormat.EnumMemberValue)))
+                    clientApplication.ApplicationTypes.Remove(clientApplicationType.AsString(EnumFormat.EnumMemberValue));
             }
 
-            if (clientApplicationType == ClientApplicationType.BrowserBased)
+            if (clientApplicationType == ApplicationType.BrowserBased)
             {
                 clientApplication.AdditionalInformation = null;
                 clientApplication.BrowsersSupported = null;
@@ -570,7 +570,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 clientApplication.MobileResponsive = null;
                 clientApplication.Plugins = null;
             }
-            else if (clientApplicationType == ClientApplicationType.Desktop)
+            else if (clientApplicationType == ApplicationType.Desktop)
             {
                 clientApplication.NativeDesktopAdditionalInformation = null;
                 clientApplication.NativeDesktopHardwareRequirements = null;

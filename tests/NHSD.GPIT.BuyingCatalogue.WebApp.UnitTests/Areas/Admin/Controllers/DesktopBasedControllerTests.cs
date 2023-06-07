@@ -125,11 +125,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             DesktopBasedController controller)
         {
             mockService.Setup(s => s.GetClientApplication(catalogueItemId)).ReturnsAsync(clientApplication);
-            clientApplication.ClientApplicationTypes.Clear();
+            clientApplication.ApplicationTypes.Clear();
 
             var actual = (await controller.OperatingSystems(catalogueItemId, model)).As<RedirectToActionResult>();
 
-            clientApplication.ClientApplicationTypes.Add(ClientApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue));
+            clientApplication.ApplicationTypes.Add(ApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue));
             clientApplication.NativeDesktopOperatingSystemsDescription = model.Description;
 
             mockService.Verify(s => s.SaveClientApplication(catalogueItemId, clientApplication));
@@ -184,13 +184,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             DesktopBasedController controller)
         {
             mockService.Setup(s => s.GetClientApplication(catalogueItemId)).ReturnsAsync(clientApplication);
-            clientApplication.ClientApplicationTypes.Clear();
+            clientApplication.ApplicationTypes.Clear();
 
             var actual = (await controller.Connectivity(catalogueItemId, model)).As<RedirectToActionResult>();
 
             clientApplication.NativeDesktopMinimumConnectionSpeed = model.SelectedConnectionSpeed;
 
-            clientApplication.ClientApplicationTypes.Add(ClientApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue));
+            clientApplication.ApplicationTypes.Add(ApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue));
 
             mockService.Verify(s => s.SaveClientApplication(catalogueItemId, clientApplication));
             actual.ActionName.Should().Be(nameof(DesktopBasedController.Desktop));
@@ -244,7 +244,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             DesktopBasedController controller)
         {
             mockService.Setup(s => s.GetClientApplication(catalogueItemId)).ReturnsAsync(clientApplication);
-            clientApplication.ClientApplicationTypes.Clear();
+            clientApplication.ApplicationTypes.Clear();
 
             var actual = (await controller.MemoryAndStorage(catalogueItemId, model)).As<RedirectToActionResult>();
 
@@ -252,7 +252,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             clientApplication.NativeDesktopMemoryAndStorage.StorageRequirementsDescription = model.StorageSpace;
             clientApplication.NativeDesktopMemoryAndStorage.MinimumCpu = model.ProcessingPower;
             clientApplication.NativeDesktopMemoryAndStorage.RecommendedResolution = model.SelectedResolution;
-            clientApplication.ClientApplicationTypes.Add(ClientApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue));
+            clientApplication.ApplicationTypes.Add(ApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue));
 
             mockService.Verify(s => s.SaveClientApplication(catalogueItemId, clientApplication));
             actual.ActionName.Should().Be(nameof(DesktopBasedController.Desktop));
@@ -306,13 +306,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             DesktopBasedController controller)
         {
             mockService.Setup(s => s.GetClientApplication(catalogueItemId)).ReturnsAsync(clientApplication);
-            clientApplication.ClientApplicationTypes.Clear();
+            clientApplication.ApplicationTypes.Clear();
 
             var actual = (await controller.ThirdPartyComponents(catalogueItemId, model)).As<RedirectToActionResult>();
 
             clientApplication.NativeDesktopThirdParty.ThirdPartyComponents = model.ThirdPartyComponents;
             clientApplication.NativeDesktopThirdParty.DeviceCapabilities = model.DeviceCapabilities;
-            clientApplication.ClientApplicationTypes.Add(ClientApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue));
+            clientApplication.ApplicationTypes.Add(ApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue));
 
             mockService.Verify(s => s.SaveClientApplication(catalogueItemId, clientApplication));
             actual.ActionName.Should().Be(nameof(DesktopBasedController.Desktop));
@@ -366,12 +366,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             DesktopBasedController controller)
         {
             mockService.Setup(s => s.GetClientApplication(catalogueItemId)).ReturnsAsync(clientApplication);
-            clientApplication.ClientApplicationTypes.Clear();
+            clientApplication.ApplicationTypes.Clear();
 
             var actual = (await controller.HardwareRequirements(catalogueItemId, model)).As<RedirectToActionResult>();
 
             clientApplication.NativeDesktopHardwareRequirements = model.Description;
-            clientApplication.ClientApplicationTypes.Add(ClientApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue));
+            clientApplication.ApplicationTypes.Add(ApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue));
 
             mockService.Verify(s => s.SaveClientApplication(catalogueItemId, clientApplication));
             actual.ActionName.Should().Be(nameof(DesktopBasedController.Desktop));
@@ -425,12 +425,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             DesktopBasedController controller)
         {
             mockService.Setup(s => s.GetClientApplication(catalogueItemId)).ReturnsAsync(clientApplication);
-            clientApplication.ClientApplicationTypes.Clear();
+            clientApplication.ApplicationTypes.Clear();
 
             var actual = (await controller.AdditionalInformation(catalogueItemId, model)).As<RedirectToActionResult>();
 
             clientApplication.NativeDesktopAdditionalInformation = model.AdditionalInformation;
-            clientApplication.ClientApplicationTypes.Add(ClientApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue));
+            clientApplication.ApplicationTypes.Add(ApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue));
 
             mockService.Verify(s => s.SaveClientApplication(catalogueItemId, clientApplication));
             actual.ActionName.Should().Be(nameof(DesktopBasedController.Desktop));
