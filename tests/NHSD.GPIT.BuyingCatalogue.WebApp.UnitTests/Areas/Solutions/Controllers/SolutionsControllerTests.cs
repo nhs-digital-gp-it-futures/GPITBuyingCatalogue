@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -9,17 +10,18 @@ using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SolutionsFilterModels;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -58,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null, null, null, null, null, null))
                 .ReturnsAsync((itemsToReturn, options, new List<CapabilitiesAndCountModel>()));
 
-            await controller.Index(options.PageNumber.ToString(), options.Sort.ToString(), null, null, null, null, null, null);
+            await controller.Index(options.PageNumber.ToString(), options.Sort.ToString(), null, null, null, null, null, null, null);
 
             mockService.VerifyAll();
         }
@@ -70,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             AdditionalFiltersModel additionalFilters,
             SolutionsController controller)
         {
-            var result = controller.Index(solutionModel, null, null, null, null, null, null, additionalFilters);
+            var result = controller.Index(solutionModel, null, null, null, null, null, null, additionalFilters, null);
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
@@ -86,7 +88,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 { "selectedFrameworkId", null },
                 { "selectedClientApplicationTypeIds", additionalFilters.CombineSelectedOptions(additionalFilters.ClientApplicationTypeOptions) },
                 { "selectedHostingTypeIds", additionalFilters.CombineSelectedOptions(additionalFilters.HostingTypeOptions) },
+                { "filterId", null },
             });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_Index_NotFound_When_Invalid_FilterId(
+            [Frozen] Mock<IOrganisationsService> organisationsService,
+            [Frozen] Mock<IManageFiltersService> manageFiltersService,
+            Organisation organisation,
+            PageOptions options,
+            SolutionsController controller)
+        {
+            organisationsService
+                .Setup(x => x.GetOrganisationByInternalIdentifier(It.IsAny<string>()))
+                .ReturnsAsync(organisation);
+
+            manageFiltersService
+                .Setup(x => x.GetFilterDetails(It.IsAny<int>(), It.IsAny<int>()))
+                .ReturnsAsync((FilterDetailsModel)null);
+
+            var result = await controller.Index(options.PageNumber.ToString(), options.Sort.ToString(), null, null, null, null, null, null, int.MaxValue);
+            result.Should().BeOfType<NotFoundResult>();
         }
 
         [Theory]
@@ -396,7 +420,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(additionalCatalogueItem);
 
             var expectedModel = new CapabilitiesViewModel(catalogueItem, additionalCatalogueItem, contentStatus)
-                { Name = additionalCatalogueItem.Name, Description = additionalService.FullDescription, };
+            { Name = additionalCatalogueItem.Name, Description = additionalService.FullDescription, };
 
             var actual = (await controller.CapabilitiesAdditionalServices(catalogueItemId, additionalServiceId)).As<ViewResult>();
 

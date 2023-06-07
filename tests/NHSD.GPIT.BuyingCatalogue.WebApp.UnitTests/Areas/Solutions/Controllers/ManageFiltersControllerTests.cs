@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -11,29 +10,23 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Moq;
-using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.Services.Capabilities;
-using NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 using Xunit;
-using static NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ClientApplicationTypeModel;
 using ClientApplicationType = NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.ClientApplicationType;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
@@ -59,6 +52,45 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
         [Theory]
         [CommonAutoData]
+        public static async Task Get_Index_ReturnsExpectedResult(
+            [Frozen] Mock<IOrganisationsService> organisationsService,
+            [Frozen] Mock<ICapabilitiesService> capabilitiesService,
+            [Frozen] Mock<IEpicsService> epicsService,
+            [Frozen] Mock<IFrameworkService> frameworkService,
+            [Frozen] Mock<IManageFiltersService> manageFiltersService,
+            [Frozen] Mock<IUrlHelper> mockUrlHelper,
+            string primaryOrganisationInternalId,
+            Organisation organisation,
+            List<Filter> existingFilters)
+        {
+            organisationsService
+                .Setup(x => x.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId))
+                .ReturnsAsync(organisation);
+
+            manageFiltersService
+                .Setup(x => x.GetFilters(organisation.Id))
+                .ReturnsAsync(existingFilters);
+
+            var controller = CreateController(
+                organisationsService,
+                capabilitiesService,
+                epicsService,
+                frameworkService,
+                manageFiltersService,
+                primaryOrganisationInternalId);
+
+            controller.Url = mockUrlHelper.Object;
+
+            var result = await controller.Index();
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+
+            var expected = new ManageFiltersModel(existingFilters, organisation.Name);
+            actualResult.Model.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static void Post_SaveFilter_ReturnsExpectedResult(
             AdditionalFiltersModel model,
             ManageFiltersController controller)
@@ -77,6 +109,87 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 { "selectedClientApplicationTypeIds", model.CombineSelectedOptions(model.ClientApplicationTypeOptions) },
                 { "selectedHostingTypeIds", model.CombineSelectedOptions(model.HostingTypeOptions) },
             });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_FilterDetails_NullFilter_ReturnsNotFound(
+            Filter filter,
+            [Frozen] Mock<IOrganisationsService> organisationsService,
+            [Frozen] Mock<ICapabilitiesService> capabilitiesService,
+            [Frozen] Mock<IEpicsService> epicsService,
+            [Frozen] Mock<IFrameworkService> frameworkService,
+            [Frozen] Mock<IManageFiltersService> manageFiltersService,
+            [Frozen] Mock<IUrlHelper> mockUrlHelper,
+            string primaryOrganisationInternalId,
+            Organisation organisation)
+        {
+            organisationsService
+                .Setup(x => x.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId))
+                .ReturnsAsync(organisation);
+
+            manageFiltersService
+                .Setup(x => x.GetFilterDetails(organisation.Id, filter.Id))
+                .ReturnsAsync((FilterDetailsModel)null);
+
+            var controller = CreateController(
+                organisationsService,
+                capabilitiesService,
+                epicsService,
+                frameworkService,
+                manageFiltersService,
+                primaryOrganisationInternalId);
+
+            controller.Url = mockUrlHelper.Object;
+
+            var result = await controller.FilterDetails(filter.Id);
+
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_FilterDetails_ReturnsExpectedResult(
+            string primaryOrganisationInternalId,
+            int filterId,
+            FilterDetailsModel filterDetailsModel,
+            FilterIdsModel filterIdsModel,
+            Organisation organisation,
+            [Frozen] Mock<IOrganisationsService> organisationsService,
+            [Frozen] Mock<ICapabilitiesService> capabilitiesService,
+            [Frozen] Mock<IEpicsService> epicsService,
+            [Frozen] Mock<IFrameworkService> frameworkService,
+            [Frozen] Mock<IManageFiltersService> manageFiltersService,
+            [Frozen] Mock<IUrlHelper> mockUrlHelper)
+        {
+            organisationsService
+                .Setup(x => x.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId))
+                .ReturnsAsync(organisation);
+
+            manageFiltersService
+                .Setup(x => x.GetFilterDetails(organisation.Id, filterId))
+                .ReturnsAsync(filterDetailsModel);
+
+            manageFiltersService
+                .Setup(x => x.GetFilterIds(organisation.Id, filterId))
+                .ReturnsAsync(filterIdsModel);
+
+            var controller = CreateController(
+                organisationsService,
+                capabilitiesService,
+                epicsService,
+                frameworkService,
+                manageFiltersService,
+                primaryOrganisationInternalId);
+
+            controller.Url = mockUrlHelper.Object;
+
+            var result = await controller.FilterDetails(filterId);
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+
+            var expected = new ReviewFilterModel(filterDetailsModel, filterIdsModel) { Caption = organisation.Name };
+            actualResult.Model.Should().BeEquivalentTo(expected, opt => opt.Excluding(x => x.BackLink));
         }
 
         [Theory]
@@ -256,6 +369,79 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             actualResult.ActionName.Should().Be(nameof(ManageFiltersController.Index));
             actualResult.ControllerName.Should().Be(typeof(ManageFiltersController).ControllerName());
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_DeleteFilter_ReturnsViewResult(
+            string primaryOrganisationInternalId,
+            int filterId,
+            FilterDetailsModel filterDetailsModel,
+            Organisation organisation,
+            [Frozen] Mock<IOrganisationsService> organisationsService,
+            [Frozen] Mock<ICapabilitiesService> capabilitiesService,
+            [Frozen] Mock<IEpicsService> epicsService,
+            [Frozen] Mock<IFrameworkService> frameworkService,
+            [Frozen] Mock<IManageFiltersService> manageFiltersService,
+            [Frozen] Mock<IUrlHelper> mockUrlHelper)
+        {
+            organisationsService
+                .Setup(x => x.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId))
+                .ReturnsAsync(organisation);
+            manageFiltersService
+                .Setup(x => x.GetFilterDetails(organisation.Id, filterId))
+                .ReturnsAsync(filterDetailsModel);
+            var controller = CreateController(
+                organisationsService,
+                capabilitiesService,
+                epicsService,
+                frameworkService,
+                manageFiltersService,
+                primaryOrganisationInternalId);
+            controller.Url = mockUrlHelper.Object;
+
+            var result = await controller.DeleteFilter(filterId);
+
+            result.Should().BeOfType<ViewResult>();
+            var viewResult = result.As<ViewResult>();
+            viewResult.Model.Should().BeOfType<DeleteFilterModel>();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeleteFilter_ReturnsRedirectToActionResult(
+            string primaryOrganisationInternalId,
+            FilterDetailsModel filterDetailsModel,
+            DeleteFilterModel deleteFilterModel,
+            Organisation organisation,
+            [Frozen] Mock<IOrganisationsService> organisationsService,
+            [Frozen] Mock<ICapabilitiesService> capabilitiesService,
+            [Frozen] Mock<IEpicsService> epicsService,
+            [Frozen] Mock<IFrameworkService> frameworkService,
+            [Frozen] Mock<IManageFiltersService> manageFiltersService,
+            [Frozen] Mock<IUrlHelper> mockUrlHelper)
+        {
+            organisationsService
+                .Setup(x => x.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId))
+                .ReturnsAsync(organisation);
+            deleteFilterModel.FilterId = filterDetailsModel.Id;
+            manageFiltersService
+                .Setup(x => x.GetFilterDetails(organisation.Id, deleteFilterModel.FilterId))
+                .ReturnsAsync(filterDetailsModel);
+            var controller = CreateController(
+                organisationsService,
+                capabilitiesService,
+                epicsService,
+                frameworkService,
+                manageFiltersService,
+                primaryOrganisationInternalId);
+            controller.Url = mockUrlHelper.Object;
+
+            var result = await controller.DeleteFilter(deleteFilterModel);
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actualResult.ActionName.Should().Be(nameof(ManageFiltersController.Index));
+            manageFiltersService.Verify(x => x.DeleteFilter(deleteFilterModel.FilterId), Times.Once);
         }
 
         private static ManageFiltersController CreateController(

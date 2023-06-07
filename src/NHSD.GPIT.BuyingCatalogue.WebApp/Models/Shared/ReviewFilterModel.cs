@@ -1,8 +1,7 @@
 ﻿using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.DashboardModels;
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 
 public class ReviewFilterModel : NavBaseModel
 {
@@ -11,12 +10,15 @@ public class ReviewFilterModel : NavBaseModel
     }
 
     public ReviewFilterModel(
-        FilterDetailsModel model)
+        FilterDetailsModel filterDetails, FilterIdsModel filterIds = null)
     {
-        FilterDetails = model;
+        FilterDetails = filterDetails;
+        FilterIds = filterIds;
     }
 
     public FilterDetailsModel FilterDetails { get; set; }
+
+    public FilterIdsModel FilterIds { get; set; }
 
     public bool HasEpics() => FilterDetails.Capabilities.Any(x => x.Value.Any());
 
