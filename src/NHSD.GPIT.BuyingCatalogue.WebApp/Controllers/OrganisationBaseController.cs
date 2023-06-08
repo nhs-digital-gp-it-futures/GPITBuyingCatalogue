@@ -107,7 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 model.LastName,
                 model.EmailAddress,
                 model.SelectedAccountType,
-                !model.IsActive!.Value);
+                model.IsActive!.Value);
 
             return RedirectToAction(
                 nameof(Users),

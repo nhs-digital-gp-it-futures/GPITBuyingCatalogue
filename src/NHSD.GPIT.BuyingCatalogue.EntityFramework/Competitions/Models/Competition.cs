@@ -8,6 +8,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 
 public class Competition
 {
+    public Competition()
+    {
+        CompetitionSolutions = new HashSet<CompetitionSolution>();
+    }
+
     public int Id { get; set; }
 
     public string Name { get; set; }
@@ -28,7 +33,7 @@ public class Competition
 
     public bool IsDeleted { get; set; }
 
-    public bool IsShortlistLocked => ShortlistAccepted.HasValue;
+    public bool IsShortlistAccepted => ShortlistAccepted.HasValue;
 
     public virtual AspNetUser LastUpdatedByUser { get; set; }
 

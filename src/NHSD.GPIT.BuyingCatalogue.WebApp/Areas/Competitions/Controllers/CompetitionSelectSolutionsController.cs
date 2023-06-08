@@ -82,7 +82,7 @@ public class CompetitionSelectSolutionsController : Controller
         var competition = await competitionsService.GetCompetitionWithServices(organisation.Id, competitionId);
 
         if (competition.CompetitionSolutions.All(x => x.IsShortlisted))
-            return RedirectToAction(nameof(CompetitionsDashboardController.Index), typeof(CompetitionsDashboardController).ControllerName(), new { internalOrgId });
+            return RedirectToAction(nameof(ConfirmSolutions), new { internalOrgId, competitionId });
 
         var nonShortlistedSolutions = competition.CompetitionSolutions.Where(x => !x.IsShortlisted);
 
@@ -129,7 +129,7 @@ public class CompetitionSelectSolutionsController : Controller
 
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
-        await competitionsService.SetShortlistLocked(organisation.Id, competitionId);
+        await competitionsService.AcceptShortlist(organisation.Id, competitionId);
 
         return RedirectToAction(nameof(CompetitionsDashboardController.Index), typeof(CompetitionsDashboardController).ControllerName(), new { internalOrgId });
     }

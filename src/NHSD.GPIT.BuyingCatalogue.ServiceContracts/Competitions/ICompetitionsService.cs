@@ -25,7 +25,7 @@ public interface ICompetitionsService
         int competitionId,
         Dictionary<CatalogueItemId, string> solutionsJustification);
 
-    Task SetShortlistLocked(int organisationId, int competitionId);
+    Task AcceptShortlist(int organisationId, int competitionId);
 
     Task CompleteCompetition(int organisationId, int competitionId);
 

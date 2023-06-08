@@ -8,9 +8,11 @@ public class CompetitionSolution
 {
     public CompetitionSolution()
     {
+        RequiredServices = new HashSet<RequiredService>();
     }
 
     public CompetitionSolution(int competitionId, CatalogueItemId solutionId)
+        : this()
     {
         CompetitionId = competitionId;
         SolutionId = solutionId;

@@ -14,7 +14,7 @@
     <span class="nhsuk-caption-m nhsuk-caption--bottom>">@solution.SupplierName</span>
 </h3>
 <h4 class="nhsuk-heading-xs nhsuk-u-margin-bottom-2">Additional Services required:</h4>
-<p class="nhsuk-body">@Model.GetAdditionalServicesList(solution)</p>
+<p class="nhsuk-body">@solution.GetAdditionalServicesList()</p>
 
 <form method="post">
     <input type="hidden" asp-for="BackLink"/>

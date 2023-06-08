@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -47,8 +48,7 @@ public class CompetitionsService : ICompetitionsService
     }
 
     public async Task<Competition> GetCompetition(int organisationId, int competitionId)
-        => await dbContext.Competitions.Include(x => x.CompetitionSolutions)
-            .AsNoTracking()
+        => await dbContext.Competitions.AsNoTracking()
             .FirstOrDefaultAsync(x => x.OrganisationId == organisationId && x.Id == competitionId);
 
     public async Task AddCompetitionSolutions(
@@ -102,7 +102,7 @@ public class CompetitionsService : ICompetitionsService
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task SetShortlistLocked(int organisationId, int competitionId)
+    public async Task AcceptShortlist(int organisationId, int competitionId)
     {
         var competition =
             await dbContext.Competitions.FirstOrDefaultAsync(
@@ -122,6 +122,9 @@ public class CompetitionsService : ICompetitionsService
             await dbContext.Competitions.FirstOrDefaultAsync(
                 x => x.OrganisationId == organisationId && x.Id == competitionId);
 
+        if (competition.Completed.HasValue)
+            return;
+
         competition.Completed = DateTime.UtcNow;
 
         await dbContext.SaveChangesAsync();
@@ -132,6 +135,9 @@ public class CompetitionsService : ICompetitionsService
         var competition =
             await dbContext.Competitions.FirstOrDefaultAsync(
                 x => x.OrganisationId == organisationId && x.Id == competitionId);
+
+        if (competition == null)
+            return;
 
         competition.IsDeleted = true;
 

@@ -161,23 +161,17 @@ public class CompetitionsDashboardController : Controller
     private async Task AssignCompetitionSolutions(int organisationId, int competitionId, int filterId)
     {
         var competition = await competitionsService.GetCompetitionWithServices(organisationId, competitionId, true);
-        var filter = await filterService.GetFilter(organisationId, filterId);
+        var filter = await filterService.GetFilterIds(organisationId, filterId);
 
         var pageOptions = new PageOptions { PageSize = 100 };
         var solutionsAndServices =
             await solutionsFilterService.GetAllSolutionsFiltered(
                 pageOptions,
-                selectedCapabilityIds: string.Join(
-                    FilterConstants.Delimiter,
-                    filter.FilterCapabilities.Select(x => x.CapabilityId)),
-                selectedEpicIds: string.Join(FilterConstants.Delimiter, filter.FilterEpics.Select(x => x.EpicId)),
+                selectedCapabilityIds: filter.CapabilityIds.ToFilterString(),
+                selectedEpicIds: filter.EpicIds.ToFilterString(),
                 selectedFrameworkId: filter.FrameworkId,
-                selectedClientApplicationTypeIds: string.Join(
-                    FilterConstants.Delimiter,
-                    filter.FilterClientApplicationTypes.Select(x => (int)x.ClientApplicationType)),
-                selectedHostingTypeIds: string.Join(
-                    FilterConstants.Delimiter,
-                    filter.FilterHostingTypes.Select(x => (int)x.HostingType)));
+                selectedClientApplicationTypeIds: filter.ClientApplicationTypeIds.ToFilterString(),
+                selectedHostingTypeIds: filter.HostingTypeIds.ToFilterString());
 
         var competitionSolutions = solutionsAndServices.CatalogueItems.Select(
             x => new CompetitionSolution(competition.Id, x.Solution.CatalogueItemId)
@@ -187,6 +181,6 @@ public class CompetitionsDashboardController : Controller
                     .ToList(),
             });
 
-        await competitionsService.AddCompetitionSolutions(organisationId, competitionId, competitionSolutions);
+        await competitionsService.AddCompetitionSolutions(organisationId, competition.Id, competitionSolutions);
     }
 }

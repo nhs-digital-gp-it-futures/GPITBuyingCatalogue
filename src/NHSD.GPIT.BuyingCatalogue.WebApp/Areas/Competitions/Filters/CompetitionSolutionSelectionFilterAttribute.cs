@@ -11,20 +11,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Filters;
 
 public class CompetitionSolutionSelectionFilterAttribute : ActionFilterAttribute
 {
+    internal const string InternalOrgIdKey = "internalOrgId";
+    internal const string CompetitionIdKey = "competitionId";
+
     public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
-        if (!context.ActionArguments.TryGetValue("competitionId", out var routeCompetitionId) || !int.TryParse(routeCompetitionId!.ToString(), out var competitionId))
+        if (!context.ActionArguments.TryGetValue(InternalOrgIdKey, out var internalOrgId)
+            || !context.ActionArguments.TryGetValue(CompetitionIdKey, out var routeCompetitionId)
+            || routeCompetitionId is null
+            || !int.TryParse(routeCompetitionId.ToString(), out var competitionId))
+        {
+            await base.OnActionExecutionAsync(context, next);
             return;
+        }
 
         var organisationService = context.HttpContext.RequestServices.GetRequiredService<IOrganisationsService>();
         var competitionsService = context.HttpContext.RequestServices.GetRequiredService<ICompetitionsService>();
 
-        var internalOrgId = context.HttpContext.User.GetPrimaryOrganisationInternalIdentifier();
-
-        var organisation = await organisationService.GetOrganisationByInternalIdentifier(internalOrgId);
+        var organisation = await organisationService.GetOrganisationByInternalIdentifier(internalOrgId.ToString());
         var competition = await competitionsService.GetCompetition(organisation.Id, competitionId);
 
-        if (competition.IsShortlistLocked || competition.Completed.HasValue)
+        if (competition.IsShortlistAccepted || competition.Completed.HasValue)
         {
             context.Result = new RedirectToActionResult(
                 nameof(CompetitionsDashboardController.Index),

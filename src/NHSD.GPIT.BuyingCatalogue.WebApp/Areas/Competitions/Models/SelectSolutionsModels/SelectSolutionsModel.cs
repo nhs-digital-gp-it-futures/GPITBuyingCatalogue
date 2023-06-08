@@ -19,9 +19,7 @@ public class SelectSolutionsModel : NavBaseModel
         CompetitionName = competitionName;
         Solutions = competitionSolutions.Select(
                 x => new SolutionModel(
-                    x.SolutionId,
-                    x.Solution.CatalogueItem.Name,
-                    x.Solution.CatalogueItem.Supplier.Name,
+                    x.Solution.CatalogueItem,
                     x.RequiredServices.Select(y => y.Service.CatalogueItem.Name).ToList(),
                     x.IsShortlisted))
             .OrderBy(x => x.SolutionName)
@@ -50,14 +48,9 @@ public class SelectSolutionsModel : NavBaseModel
 
     public string GetAdvice() => Solutions switch
     {
-        [] => "There were no results from your chosen filter.",
+        [] or null => "There were no results from your chosen filter.",
         [not null] => "These are the results from your chosen filter.",
         [..] =>
             "These are the results from your chosen filter. You must provide a reason if any of the solutions listed are not taken through to your competition shortlist.",
-        _ => string.Empty,
     };
-
-    public string GetAdditionalServicesList(SolutionModel solutionModel) => solutionModel.RequiredServices.Any()
-        ? string.Join(", ", solutionModel.RequiredServices)
-        : "None";
 }
