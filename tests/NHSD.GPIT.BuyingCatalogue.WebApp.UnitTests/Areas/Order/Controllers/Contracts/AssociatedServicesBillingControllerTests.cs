@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 .ReturnsAsync(orderId);
 
             mockContractsService
-                .Setup(c => c.GetContract(orderId))
+                .Setup(c => c.GetContractFlags(orderId))
                 .ReturnsAsync(contract);
 
             var result = await controller.ReviewBilling(internalOrgId, callOffId);
@@ -256,7 +256,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 .ReturnsAsync(orderId);
 
             mockContractsService
-                .Setup(c => c.GetContract(orderId))
+                .Setup(c => c.GetContractFlags(orderId))
                 .ReturnsAsync(contract);
 
             var result = await controller.SpecificRequirements(internalOrgId, callOffId, fromBespoke: false);
@@ -295,7 +295,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 .ReturnsAsync(orderId);
 
             mockContractsService
-                .Setup(c => c.GetContract(orderId))
+                .Setup(c => c.GetContractFlags(orderId))
                 .ReturnsAsync(contract);
 
             var result = await controller.SpecificRequirements(internalOrgId, callOffId, true);

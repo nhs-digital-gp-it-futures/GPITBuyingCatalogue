@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task GetContract_ContractExists_ReturnsContract(
+        public static async Task GetContractFlags_ContractExists_ReturnsContract(
             int orderId,
             [Frozen] BuyingCatalogueDbContext dbContext,
             ContractsService service)
@@ -38,14 +38,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
             await dbContext.SaveChangesAsync();
 
-            var output = await service.GetContract(orderId);
+            var output = await service.GetContractFlags(orderId);
 
             output.Should().Be(flags);
         }
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task GetContract_ContractDoesNotExist_CreatesNewContract(
+        public static async Task GetContractFlags_ContractDoesNotExist_CreatesNewContract(
             int orderId,
             [Frozen] BuyingCatalogueDbContext dbContext,
             ContractsService service)
@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
             existing.Should().BeNull();
 
-            var output = await service.GetContract(orderId);
+            var output = await service.GetContractFlags(orderId);
 
             output.OrderId.Should().Be(orderId);
 

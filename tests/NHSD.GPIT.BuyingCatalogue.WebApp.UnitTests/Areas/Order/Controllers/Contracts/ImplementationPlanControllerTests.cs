@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_DefaultImplementationPlan_ReturnsExpectedResult(
+        public static async Task Get_Index_ReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             ContractFlags contract,
@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 .ReturnsAsync(new OrderWrapper(order));
 
             mockContractsService
-                .Setup(x => x.GetContract(order.Id))
+                .Setup(x => x.GetContractFlags(order.Id))
                 .ReturnsAsync(contract);
 
             mockSolutionsService
@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 .Setup(x => x.GetDefaultImplementationPlan())
                 .ReturnsAsync(defaultPlan);
 
-            var result = await controller.DefaultImplementationPlan(internalOrgId, order.CallOffId);
+            var result = await controller.Index(internalOrgId, order.CallOffId);
 
             mockOrderService.VerifyAll();
             mockContractsService.VerifyAll();
@@ -99,157 +99,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
         }
 
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_DefaultImplementationPlan_WithModelErrors_ReturnsExpectedResult(
-            string internalOrgId,
-            EntityFramework.Ordering.Models.Order order,
-            ContractFlags contract,
-            CatalogueItem catalogueItem,
-            ImplementationPlan defaultPlan,
-            DefaultImplementationPlanModel model,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IContractsService> mockContractsService,
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
-            [Frozen] Mock<IImplementationPlanService> mockImplementationPlanService,
-            ImplementationPlanController controller)
-        {
-            var solution = order.OrderItems.First();
-
-            contract.UseDefaultImplementationPlan = null;
-            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
-            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-
-            mockOrderService
-                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
-
-            mockContractsService
-                .Setup(x => x.GetContract(order.Id))
-                .ReturnsAsync(contract);
-
-            mockSolutionsService
-                .Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(catalogueItem);
-
-            mockImplementationPlanService
-                .Setup(x => x.GetDefaultImplementationPlan())
-                .ReturnsAsync(defaultPlan);
-
-            controller.ModelState.AddModelError("key", "errorMessage");
-
-            var result = await controller.DefaultImplementationPlan(internalOrgId, order.CallOffId, model);
-
-            mockOrderService.VerifyAll();
-            mockContractsService.VerifyAll();
-            mockSolutionsService.VerifyAll();
-            mockImplementationPlanService.VerifyAll();
-
-            var expected = new DefaultImplementationPlanModel
-            {
-                CallOffId = order.CallOffId,
-                Solution = catalogueItem.Solution,
-                Plan = defaultPlan,
-                UseDefaultMilestones = null,
-            };
-
-            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
-
-            actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_DefaultImplementationPlan_UseDefaultMilestones_ReturnsExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            int orderId,
-            DefaultImplementationPlanModel model,
-            [Frozen] Mock<IOrderService> orderService,
-            [Frozen] Mock<IContractsService> mockContractsService,
-            ImplementationPlanController controller)
-        {
-            orderService
-                .Setup(x => x.GetOrderId(internalOrgId, callOffId))
-                .ReturnsAsync(orderId);
-
-            mockContractsService
-                .Setup(x => x.UseDefaultImplementationPlan(orderId, true))
-                .Verifiable();
-
-            model.UseDefaultMilestones = true;
-
-            var result = await controller.DefaultImplementationPlan(internalOrgId, callOffId, model);
-
-            orderService.VerifyAll();
-            mockContractsService.VerifyAll();
-
-            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
-
-            actualResult.ActionName.Should().Be(nameof(OrderController.Order));
-            actualResult.ControllerName.Should().Be(typeof(OrderController).ControllerName());
-            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
-            {
-                { "internalOrgId", internalOrgId },
-                { "callOffId", callOffId },
-            });
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_DefaultImplementationPlan_DoNotUseDefaultMilestones_ReturnsExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            int orderId,
-            DefaultImplementationPlanModel model,
-            [Frozen] Mock<IOrderService> orderService,
-            [Frozen] Mock<IContractsService> mockContractsService,
-            ImplementationPlanController controller)
-        {
-            model.UseDefaultMilestones = false;
-
-            orderService
-                .Setup(x => x.GetOrderId(internalOrgId, callOffId))
-                .ReturnsAsync(orderId);
-
-            mockContractsService
-                .Setup(x => x.UseDefaultImplementationPlan(orderId, false))
-                .Verifiable();
-
-            var result = await controller.DefaultImplementationPlan(internalOrgId, callOffId, model);
-
-            orderService.VerifyAll();
-            mockContractsService.VerifyAll();
-
-            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
-
-            actualResult.ActionName.Should().Be(nameof(ImplementationPlanController.CustomImplementationPlan));
-            actualResult.ControllerName.Should().Be(typeof(ImplementationPlanController).ControllerName());
-            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
-            {
-                { "internalOrgId", internalOrgId },
-                { "callOffId", callOffId },
-            });
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Get_CustomImplementationPlan_ReturnsExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            ImplementationPlanController controller)
-        {
-            var result = controller.CustomImplementationPlan(internalOrgId, callOffId);
-
-            var expected = new CustomImplementationPlanModel
-            {
-                InternalOrgId = internalOrgId,
-                CallOffId = callOffId,
-            };
-
-            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
-
-            actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
-        }
     }
 }

@@ -4,18 +4,13 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
-    public class ImplementationPlan : IAudited
+    public class Contract : IAudited
     {
-        public ImplementationPlan()
-        {
-            Milestones = new List<ImplementationPlanMilestone>();
-        }
-
         public int Id { get; set; }
 
-        public int ContractId { get; set; }
+        public int OrderId { get; set; }
 
-        public bool IsDefault { get; set; }
+        public int? ImplementationPlanId { get; set; }
 
         public DateTime LastUpdated { get; set; }
 
@@ -23,8 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public AspNetUser LastUpdatedByUser { get; set; }
 
-        public ICollection<ImplementationPlanMilestone> Milestones { get; set; }
+        public ImplementationPlan ImplementationPlan { get; set; }
 
-        public virtual Contract Contract { get; set; }
+        public virtual Order Order { get; set; }
     }
 }

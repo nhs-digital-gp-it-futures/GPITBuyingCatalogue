@@ -1,0 +1,96 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.ActionLink
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSecondaryButton
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.DetailsAndExpander
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.ImplementationPlans.ImplementationPlanModel
+
+@{
+    ViewBag.Title = "Implementation milestones and payment triggers";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="Order @Model.CallOffId"
+                        advice="Review the implementation milestones that will act as payment triggers for this order. These milestones will apply to all Service Recipients." />
+
+        <div class="nhsuk-u-margin-bottom-9">
+            <nhs-details label-text="What is the supplier’s implementation guidance?">
+                <p style="white-space: pre-line">
+                    @Model.SupplierImplementationPlan
+                </p>
+            </nhs-details>
+        </div>
+
+        @if (Model.HasBespokeMilestones)
+        {
+            <div class="nhsuk-u-margin-bottom-9">
+                <nhs-table label-text="Bespoke milestones and payment triggers">
+                    <nhs-table-column>Milestone name</nhs-table-column>
+                    <nhs-table-column>Milestone payment trigger</nhs-table-column>
+                    <nhs-table-column>Action</nhs-table-column>
+                    @foreach (var milestone in Model.BespokePlan.Milestones)
+                    {
+                        <nhs-table-row-container>
+                            <nhs-table-cell>@milestone.Title</nhs-table-cell>
+                            <nhs-table-cell>@milestone.PaymentTrigger</nhs-table-cell>
+                            <nhs-table-cell>
+                                <span data-test-id="milestone-edit-link">
+                                    <a asp-action="@nameof(ImplementationPlanController.EditMilestone)"
+                                       asp-controller="@typeof(ImplementationPlanController).ControllerName()"
+                                       asp-route-internalOrgId="@Model.InternalOrgId"
+                                       asp-route-callOffId="@Model.CallOffId"
+                                       asp-route-milestoneId="@milestone.Id">Edit</a>
+                                </span>
+                            </nhs-table-cell>
+                        </nhs-table-row-container>
+                    }
+                </nhs-table>
+            </div>
+
+            <vc:nhs-action-link text="Add a milestone"
+                            url="@Url.Action(nameof(ImplementationPlanController.AddMilestone),
+                                         typeof(ImplementationPlanController).ControllerName(),
+                                     new { Model.InternalOrgId, Model.CallOffId })" />
+        }
+
+        <div class="nhsuk-u-margin-bottom-9">
+            <nhs-table label-text="@Model.DefaultMilestoneLabelText">
+                <nhs-table-column>Milestone name</nhs-table-column>
+                <nhs-table-column>Milestone payment trigger</nhs-table-column>
+                @foreach (var milestone in Model.DefaultPlan.Milestones)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>@milestone.Title</nhs-table-cell>
+                        <nhs-table-cell>@milestone.PaymentTrigger</nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+            </nhs-table>
+        </div>
+        
+        @if (!Model.HasBespokeMilestones)
+        {
+            <vc:nhs-action-link text="Add a milestone"
+                                url="@Url.Action(nameof(ImplementationPlanController.AddMilestone),
+                                         typeof(ImplementationPlanController).ControllerName(),
+                                         new { Model.InternalOrgId, Model.CallOffId })" />
+
+            <p>No bespoke milestones have been added to this order.</p>
+        }
+
+
+        <vc:nhs-secondary-button text="Continue"
+                                 type="Primary"
+                                 url="@Url.Action(
+                                          nameof(OrderController.Order),
+                                          typeof(OrderController).ControllerName(),
+                                          new { Model.InternalOrgId, Model.CallOffId })" />
+    </div>
+</div>

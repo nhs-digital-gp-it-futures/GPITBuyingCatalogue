@@ -33,48 +33,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
 
-        [HttpGet("default")]
-        public async Task<IActionResult> DefaultImplementationPlan(string internalOrgId, CallOffId callOffId)
+        [HttpGet]
+        public async Task<IActionResult> Index(string internalOrgId, CallOffId callOffId)
         {
-            return View(await GetDefaultViewModel(internalOrgId, callOffId));
-        }
+            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
+            var contract = await contractsService.GetContract(order.Id);
+            var catalogueItem = await solutionsService.GetSolutionThin(order.GetSolutionId().GetValueOrDefault());
+            var defaultPlan = await implementationPlanService.GetDefaultImplementationPlan();
 
-        [HttpPost("default")]
-        public async Task<IActionResult> DefaultImplementationPlan(string internalOrgId, CallOffId callOffId, DefaultImplementationPlanModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(await GetDefaultViewModel(internalOrgId, callOffId));
-            }
-
-            var orderId = await orderService.GetOrderId(internalOrgId, callOffId);
-
-            if (model.UseDefaultMilestones!.Value)
-            {
-                await contractsService.UseDefaultImplementationPlan(orderId, true);
-
-                return new RedirectToActionResult(
-                    nameof(OrderController.Order),
-                    typeof(OrderController).ControllerName(),
-                    new { internalOrgId, callOffId });
-            }
-
-            await contractsService.UseDefaultImplementationPlan(orderId, false);
-
-            return new RedirectToActionResult(
-                nameof(CustomImplementationPlan),
-                typeof(ImplementationPlanController).ControllerName(),
-                new { internalOrgId, callOffId });
-        }
-
-        [HttpGet("custom")]
-        public IActionResult CustomImplementationPlan(string internalOrgId, CallOffId callOffId)
-        {
-            var model = new CustomImplementationPlanModel
+            var model = new ImplementationPlanModel(defaultPlan, contract?.ImplementationPlan, catalogueItem?.Solution)
             {
                 BackLink = Url.Action(
-                    nameof(DefaultImplementationPlan),
-                    typeof(ImplementationPlanController).ControllerName(),
+                    nameof(OrderController.Order),
+                    typeof(OrderController).ControllerName(),
                     new { internalOrgId, callOffId }),
                 CallOffId = callOffId,
                 InternalOrgId = internalOrgId,
@@ -83,24 +54,42 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             return View(model);
         }
 
-        private async Task<DefaultImplementationPlanModel> GetDefaultViewModel(string internalOrgId, CallOffId callOffId)
+        [HttpGet("add-milestone")]
+        public IActionResult AddMilestone(string internalOrgId, CallOffId callOffId)
         {
-            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
-            var contract = await contractsService.GetContract(order.Id);
-            var catalogueItem = await solutionsService.GetSolutionThin(order.GetSolutionId().GetValueOrDefault());
-            var defaultPlan = await implementationPlanService.GetDefaultImplementationPlan();
-
-            return new DefaultImplementationPlanModel
+            var model = new MilestoneModel()
             {
                 BackLink = Url.Action(
                     nameof(OrderController.Order),
                     typeof(OrderController).ControllerName(),
                     new { internalOrgId, callOffId }),
                 CallOffId = callOffId,
-                Solution = catalogueItem?.Solution,
-                Plan = defaultPlan,
-                UseDefaultMilestones = contract?.UseDefaultImplementationPlan,
+                InternalOrgId = internalOrgId,
             };
+
+            return View("Milestone", model);
+        }
+
+        [HttpPost("add-milestone")]
+        public async Task<IActionResult> AddMilestone(string internalOrgId, CallOffId callOffId, MilestoneModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("Milestone", model);
+            }
+
+            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
+            var contract = await contractsService.GetContract(order.Id);
+
+            await implementationPlanService.AddImplementationPlan(contract.Id, model.Name, model.PaymentTrigger);
+
+            return View("Milestone", model);
+        }
+
+        [HttpGet("edit-milestone")]
+        public IActionResult EditMilestone(string internalOrgId, CallOffId callOffId, int milestoneId)
+        {
+            return View("Milestone", new MilestoneModel());
         }
     }
 }
