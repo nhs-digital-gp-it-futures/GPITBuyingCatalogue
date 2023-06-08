@@ -23,10 +23,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .WithOne(x => x.Plan)
                 .HasForeignKey(x => x.PlanId)
                 .HasConstraintName("FK_ImplementationPlanMilestones_Plan");
-
-            builder.HasOne(x => x.Contract)
-                .WithMany()
-                .HasForeignKey(x => x.ContractId);
         }
     }
 }

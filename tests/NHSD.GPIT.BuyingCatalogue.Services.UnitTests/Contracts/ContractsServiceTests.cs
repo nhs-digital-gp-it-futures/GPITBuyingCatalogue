@@ -137,30 +137,5 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
             actual.UseDefaultDataProcessing.Should().Be(value);
         }
-
-        [Theory]
-        [InMemoryDbInlineAutoData(true)]
-        [InMemoryDbInlineAutoData(false)]
-        public static async Task UseDefaultImplementationPlan_UpdatesValue(
-            bool value,
-            int orderId,
-            ContractFlags contractFlags,
-            [Frozen] BuyingCatalogueDbContext dbContext,
-            ContractsService service)
-        {
-            contractFlags.Order = null;
-            contractFlags.OrderId = orderId;
-            contractFlags.UseDefaultImplementationPlan = null;
-
-            dbContext.ContractFlags.Add(contractFlags);
-
-            await dbContext.SaveChangesAsync();
-
-            await service.UseDefaultImplementationPlan(orderId, value);
-
-            var actual = await dbContext.ContractFlags.FirstAsync(x => x.Id == contractFlags.Id);
-
-            actual.UseDefaultImplementationPlan.Should().Be(value);
-        }
     }
 }

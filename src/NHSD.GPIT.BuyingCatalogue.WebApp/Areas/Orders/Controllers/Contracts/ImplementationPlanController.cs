@@ -60,8 +60,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             var model = new MilestoneModel()
             {
                 BackLink = Url.Action(
-                    nameof(OrderController.Order),
-                    typeof(OrderController).ControllerName(),
+                    nameof(Index),
+                    typeof(ImplementationPlanController).ControllerName(),
                     new { internalOrgId, callOffId }),
                 CallOffId = callOffId,
                 InternalOrgId = internalOrgId,
@@ -81,9 +81,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
             var contract = await contractsService.GetContract(order.Id);
 
-            await implementationPlanService.AddImplementationPlan(contract.Id, model.Name, model.PaymentTrigger);
+            await implementationPlanService.AddBespokeMilestone(contract.Id, model.Name, model.PaymentTrigger);
 
-            return View("Milestone", model);
+            return RedirectToAction(nameof(Index), new { internalOrgId, callOffId });
         }
 
         [HttpGet("edit-milestone")]

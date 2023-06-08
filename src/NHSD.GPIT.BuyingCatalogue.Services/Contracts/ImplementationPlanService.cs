@@ -36,20 +36,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             if (string.IsNullOrEmpty(paymentTrigger))
                 throw new ArgumentNullException(nameof(paymentTrigger));
 
-            var contract = await dbContext.Contracts.FirstOrDefaultAsync(o => o.Id == contractId);
-
-            if (contract == null)
-                throw new ArgumentException("Invalid contract", nameof(contractId));
+            var contract = await dbContext.Contracts.Include(x => x.ImplementationPlan)
+                    .FirstOrDefaultAsync(o => o.Id == contractId) ?? throw new ArgumentException("Invalid contract", nameof(contractId));
 
             if (contract.ImplementationPlan == null)
             {
-                var implementationPlan = new ImplementationPlan() { Contract = contract, IsDefault = false, };
-                dbContext.ImplementationPlans.Add(implementationPlan);
+                var implementationPlan = new ImplementationPlan() { IsDefault = false, };
+                contract.ImplementationPlan = implementationPlan;
                 await dbContext.SaveChangesAsync();
             }
 
-            var implementationPlanMilestone = new ImplementationPlanMilestone() { Plan = contract.ImplementationPlan, Title = name, PaymentTrigger = paymentTrigger };
-            dbContext.ImplementationPlanMilestones.Add(implementationPlanMilestone);
+            contract.ImplementationPlan.Milestones.Add(new ImplementationPlanMilestone() { Title = name, PaymentTrigger = paymentTrigger });
             await dbContext.SaveChangesAsync();
 
             return contract.ImplementationPlan.Id;

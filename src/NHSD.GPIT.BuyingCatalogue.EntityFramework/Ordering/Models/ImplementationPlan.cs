@@ -13,8 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public int Id { get; set; }
 
-        public int ContractId { get; set; }
-
         public bool IsDefault { get; set; }
 
         public DateTime LastUpdated { get; set; }
@@ -24,7 +22,5 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public AspNetUser LastUpdatedByUser { get; set; }
 
         public ICollection<ImplementationPlanMilestone> Milestones { get; set; }
-
-        public virtual Contract Contract { get; set; }
     }
 }

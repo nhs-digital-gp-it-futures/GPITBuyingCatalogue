@@ -86,12 +86,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             mockSolutionsService.VerifyAll();
             mockImplementationPlanService.VerifyAll();
 
-            var expected = new DefaultImplementationPlanModel
+            var expected = new ImplementationPlanModel(defaultPlan, null, catalogueItem.Solution)
             {
                 CallOffId = order.CallOffId,
-                Solution = catalogueItem.Solution,
-                Plan = defaultPlan,
-                UseDefaultMilestones = null,
             };
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
