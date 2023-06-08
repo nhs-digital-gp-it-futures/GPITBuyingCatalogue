@@ -19,10 +19,12 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task<bool> FilterExists(string filterName, int organisationId);
 
-        Task<Filter> GetFilter(int organisationId, int filterId);
-
         Task<List<Filter>> GetFilters(int organisationId);
 
         Task<FilterDetailsModel> GetFilterDetails(int organisationId, int filterId);
+
+        Task<FilterIdsModel> GetFilterIds(int organisationId, int filterId);
+
+        Task DeleteFilter(int filterId);
     }
 }

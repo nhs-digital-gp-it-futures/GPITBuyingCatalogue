@@ -1,5 +1,8 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 @using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.SummaryList
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 @using ValidationSummaryTagHelper = Microsoft.AspNetCore.Mvc.TagHelpers.ValidationSummaryTagHelper
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters.SaveFilterModel
 
@@ -70,11 +73,20 @@
                             }
                             else
                             {
-                                @foreach (var epic in capability.Value)
+                                @if (capability.Value.Count() == 1)
                                 {
-                                    <li>
-                                        @epic.Name
-                                    </li>
+                                    <p>
+                                        @capability.Value.First().Name
+                                    </p>
+                                }
+                                else
+                                {
+                                    @foreach (var epic in capability.Value)
+                                    {
+                                        <li>
+                                            @epic.Name
+                                        </li>
+                                    }
                                 }
                             }
                         </nhs-table-cell>
@@ -96,10 +108,19 @@
                     {
                         @for (var i = 0; i < Model.ClientApplicationTypes.Count; i++)
                         {
-                            <li>
-                                <input type="hidden" asp-for="ClientApplicationTypes[i]"/>
-                                @Model.ClientApplicationTypes[i]
-                            </li>
+                            <input type="hidden" asp-for="ClientApplicationTypes[i]" />
+                            @if (Model.ClientApplicationTypes.Count == 1)
+                            {
+                                <p>
+                                    @Model.ClientApplicationTypes[i].Name()
+                                </p>
+                            }
+                            else
+                            {
+                                <li>
+                                    @Model.ClientApplicationTypes[i].Name()
+                                </li>
+                            }
                         }
                     }
                 </nhs-summary-list-row>
@@ -128,10 +149,19 @@
                     {
                         @for (var i = 0; i < Model.HostingTypes.Count; i++)
                         {
-                            <li>
-                                <input type="hidden" asp-for="HostingTypes[i]"/>
-                                @Model.HostingTypes[i]
-                            </li>
+                            <input type="hidden" asp-for="HostingTypes[i]"/>
+                            @if (Model.HostingTypes.Count == 1)
+                            {
+                                <p>
+                                    @Model.HostingTypes[i].Name()
+                                </p>
+                            }
+                            else
+                            {
+                                <li>
+                                    @Model.HostingTypes[i].Name()
+                                </li>
+                            }
                         }
                     }
                 </nhs-summary-list-row>

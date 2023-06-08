@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         }
 
         [HtmlAttributeName(ModelName)]
-        public PageTitleModel Model { get; set; }
+        public IPageTitleModel Model { get; set; }
 
         [HtmlAttributeName(TitleName)]
         public string Title { get; set; }
