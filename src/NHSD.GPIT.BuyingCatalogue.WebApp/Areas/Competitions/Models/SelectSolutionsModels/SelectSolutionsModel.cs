@@ -44,6 +44,8 @@ public class SelectSolutionsModel : NavBaseModel
             false),
     };
 
+    public bool HasNoSolutions() => !Solutions.Any();
+
     public bool HasSingleSolution() => Solutions.Count == 1;
 
     public string GetAdvice() => Solutions switch

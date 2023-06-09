@@ -40,11 +40,22 @@ public static class CompetitionSelectSolutionsControllerTests
     public static async Task SelectSolutions_ReturnsViewWithModel(
         Organisation organisation,
         Competition competition,
+        Solution solution,
+        List<CompetitionSolution> competitionSolutions,
         [Frozen] Mock<IOrganisationsService> organisationsService,
         [Frozen] Mock<ICompetitionsService> competitionsService,
         CompetitionSelectSolutionsController controller)
     {
         const bool shouldTrack = false;
+
+        competitionSolutions.ForEach(
+            x =>
+            {
+                x.Solution = solution;
+                x.RequiredServices = new List<RequiredService>();
+            });
+
+        competition.CompetitionSolutions = competitionSolutions;
 
         organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
             .ReturnsAsync(organisation);
@@ -59,6 +70,63 @@ public static class CompetitionSelectSolutionsControllerTests
 
         var result =
             (await controller.SelectSolutions(organisation.InternalIdentifier, competition.Id)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task SelectSolutions_NullCompetition_RedirectsToDashboard(
+        Organisation organisation,
+        int competitionId,
+        [Frozen] Mock<IOrganisationsService> organisationsService,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionSelectSolutionsController controller)
+    {
+        const bool shouldTrack = false;
+
+        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
+            .ReturnsAsync(organisation);
+
+        competitionsService.Setup(x => x.GetCompetitionWithServices(organisation.Id, competitionId, shouldTrack))
+            .ReturnsAsync((Competition)null);
+
+        var result =
+            (await controller.SelectSolutions(organisation.InternalIdentifier, competitionId)).As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(CompetitionsDashboardController.Index));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task SelectSolutions_NoSolutions_DeletesCompetition(
+        Organisation organisation,
+        Competition competition,
+        [Frozen] Mock<IOrganisationsService> organisationsService,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionSelectSolutionsController controller)
+    {
+        const bool shouldTrack = false;
+
+        competition.CompetitionSolutions = new List<CompetitionSolution>();
+
+        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
+            .ReturnsAsync(organisation);
+
+        competitionsService.Setup(x => x.GetCompetitionWithServices(organisation.Id, competition.Id, shouldTrack))
+            .ReturnsAsync(competition);
+
+        var expectedModel = new SelectSolutionsModel(competition.Name, competition.CompetitionSolutions)
+        {
+            BackLinkText = "Go back to manage competitions",
+        };
+
+        var result =
+            (await controller.SelectSolutions(organisation.InternalIdentifier, competition.Id)).As<ViewResult>();
+
+        competitionsService.Verify(x => x.DeleteCompetition(organisation.Id, competition.Id), Times.Once());
 
         result.Should().NotBeNull();
         result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));

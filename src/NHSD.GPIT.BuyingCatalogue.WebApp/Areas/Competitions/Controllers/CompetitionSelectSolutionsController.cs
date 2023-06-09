@@ -40,11 +40,22 @@ public class CompetitionSelectSolutionsController : Controller
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
         var competition = await competitionsService.GetCompetitionWithServices(organisation.Id, competitionId);
 
+        if (competition == null)
+        {
+            return RedirectToAction(
+                nameof(CompetitionsDashboardController.Index),
+                typeof(CompetitionsDashboardController).ControllerName(),
+                new { internalOrgId });
+        }
+
         var model = new SelectSolutionsModel(competition.Name, competition.CompetitionSolutions)
         {
             BackLinkText = "Go back to manage competitions",
             BackLink = Url.Action(nameof(CompetitionsDashboardController.Index), typeof(CompetitionsDashboardController).ControllerName(), new { internalOrgId }),
         };
+
+        if (model.HasNoSolutions())
+            await competitionsService.DeleteCompetition(organisation.Id, competition.Id);
 
         return View(model);
     }

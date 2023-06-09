@@ -12,7 +12,7 @@
                         caption="@Model.CompetitionName"
                         advice="@Model.GetAdvice()"/>
 
-        @if (!Model.Solutions.Any())
+        @if (Model.HasNoSolutions())
         {
             <nhs-inset-text>
                 <p>There were no Catalogue Solutions found using this search criteria.</p>
