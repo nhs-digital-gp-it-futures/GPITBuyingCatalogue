@@ -1,13 +1,13 @@
 ﻿namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Models
 {
-    public class PageTitleModel
+    public record PageTitleModel : IPageTitleModel
     {
-        public virtual string Title { get; set; }
+        public string Title { get; init; }
 
-        public virtual string Caption { get; set; }
+        public string Caption { get; init; }
 
-        public virtual string Advice { get; set; }
+        public string Advice { get; init; }
 
-        public virtual string AdditionalAdvice { get; set; }
+        public string AdditionalAdvice { get; init; }
     }
 }

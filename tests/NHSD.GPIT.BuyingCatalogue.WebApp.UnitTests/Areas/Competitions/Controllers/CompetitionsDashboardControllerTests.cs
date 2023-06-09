@@ -19,6 +19,7 @@ using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.DashboardModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Controllers;
@@ -181,7 +182,7 @@ public static class CompetitionsDashboardControllerTests
         filtersService.Setup(x => x.GetFilterDetails(organisation.Id, filterId))
             .ReturnsAsync(filterDetailsModel);
 
-        var expectedModel = new ReviewFilterModel(filterDetailsModel);
+        var expectedModel = new ReviewFilterModel(filterDetailsModel) { Caption = filterDetailsModel.Name };
 
         var result = (await controller.ReviewFilter(organisation.InternalIdentifier, filterId)).As<ViewResult>();
 

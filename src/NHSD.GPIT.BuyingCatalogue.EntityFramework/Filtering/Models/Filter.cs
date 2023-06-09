@@ -10,8 +10,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models
     {
         public Filter()
         {
-            FilterCapabilities = new HashSet<FilterCapability>();
-            FilterEpics = new HashSet<FilterEpic>();
+            Capabilities = new HashSet<Capability>();
+            Epics = new HashSet<Epic>();
             FilterHostingTypes = new HashSet<FilterHostingType>();
             FilterClientApplicationTypes = new HashSet<FilterClientApplicationType>();
         }
@@ -32,15 +32,17 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models
 
         public int? LastUpdatedBy { get; set; }
 
+        public bool IsDeleted { get; set; }
+
         public AspNetUser LastUpdatedByUser { get; set; }
 
         public Organisation Organisation { get; set; }
 
         public Framework Framework { get; set; }
 
-        public ICollection<FilterCapability> FilterCapabilities { get; set; }
+        public ICollection<Capability> Capabilities { get; set; }
 
-        public ICollection<FilterEpic> FilterEpics { get; set; }
+        public ICollection<Epic> Epics { get; set; }
 
         public ICollection<FilterHostingType> FilterHostingTypes { get; set; }
 

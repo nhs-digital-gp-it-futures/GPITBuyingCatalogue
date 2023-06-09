@@ -2,7 +2,7 @@
 using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 using Xunit;
@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         public static void Constructor_WithSelectedIds_PropertiesAreSetCorrectly(
             List<Capability> capabilities)
         {
-            var selectedIds = $"{capabilities.First().Id}{FilterConstants.Delimiter}{capabilities.Last().Id}";
+            var selectedIds = new[] { capabilities.First().Id, capabilities.Last().Id }.ToFilterString();
 
             var model = new FilterCapabilitiesModel(capabilities, selectedIds);
 

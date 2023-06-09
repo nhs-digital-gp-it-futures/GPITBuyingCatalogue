@@ -7,5 +7,7 @@
         public string ShortName { get; init; }
 
         public int CountOfActiveSolutions { get; set; }
+
+        public bool Expired { get; set; }
     }
 }

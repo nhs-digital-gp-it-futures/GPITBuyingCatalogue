@@ -143,14 +143,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<Filter> Filters { get; set; }
 
-        public DbSet<FilterCapability> FilterCapabilities { get; set; }
-
-        public DbSet<FilterEpic> FilterEpics { get; set; }
-
-        public DbSet<FilterHostingType> FilterHostingTypes { get; set; }
-
-        public DbSet<FilterClientApplicationType> FilterClientApplicationTypes { get; set; }
-
         public DbSet<Competition> Competitions { get; set; }
 
         public async Task<Order> Order(CallOffId callOffId)

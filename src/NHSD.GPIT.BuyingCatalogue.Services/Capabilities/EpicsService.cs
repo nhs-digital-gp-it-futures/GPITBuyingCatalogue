@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
                 .Where(x => epicIds.Contains(x.Id) && x.Capabilities.Any(y => capabilityIds.Contains(y.Id)))
                 .ToListAsync();
 
-            return string.Join(FilterConstants.Delimiter, epics.Select(e => e.Id));
+            return epics.Select(e => e.Id).ToFilterString();
         }
     }
 }

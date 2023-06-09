@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.FundingTypes;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
 {
+    [ExcludeFromCodeCoverage]
     public class CsvService : CsvServiceBase, ICsvService
     {
         private readonly BuyingCatalogueDbContext dbContext;
@@ -175,7 +177,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
 
             output ??= order.Supplier;
 
-            return (output?.Id ?? 0, output?.Name ?? string.Empty);
+            var name = output?.Name ?? string.Empty;
+            var legalName = output?.LegalName ?? string.Empty;
+
+            return (output?.Id ?? 0, string.Equals(name, legalName, StringComparison.OrdinalIgnoreCase) ? name : legalName);
         }
     }
 }
