@@ -1,0 +1,40 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Shared.MilestoneTableModel
+@{
+    var milestones = Model?.Milestones ?? new List<ImplementationPlanMilestone>();
+}
+
+<div class="nhsuk-u-margin-bottom-9">
+    <nhs-table label-text="@Model.Title">
+        <nhs-table-column>Milestone name</nhs-table-column>
+        <nhs-table-column>Milestone payment trigger</nhs-table-column>
+        @if (Model.IsAction)
+        {
+            <nhs-table-column>Action</nhs-table-column>
+        }
+        
+        @foreach (var milestone in milestones)
+        {
+            <nhs-table-row-container>
+                <nhs-table-cell>@milestone.Title</nhs-table-cell>
+                <nhs-table-cell>@milestone.PaymentTrigger</nhs-table-cell>
+                @if (Model.IsAction)
+                {
+                    <nhs-table-cell>
+                        <span data-test-id="milestone-edit-link">
+                            <a asp-action="@nameof(ImplementationPlanController.EditMilestone)"
+                               asp-controller="@typeof(ImplementationPlanController).ControllerName()"
+                               asp-route-internalOrgId="@Model.InternalOrgId"
+                               asp-route-callOffId="@Model.CallOffId"
+                               asp-route-milestoneId="@milestone.Id">Edit</a>
+                        </span>
+                    </nhs-table-cell>
+                }
+            </nhs-table-row-container>
+        }
+    </nhs-table>
+</div>
+

@@ -1,8 +1,8 @@
 ﻿@using System.Linq
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Shared
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders.SummaryModel;
 @{
@@ -149,28 +149,14 @@
                 }
             }
 
-            <nhs-expander label-text="Implementation plan"
-                      id="implementation-plan-expander"
-                      colour-mode="BlackAndWhite" open="true" bold-title="true">
-                <div class="nhsuk-u-margin-top-3">
-                    <nhs-summary-list>
-                        <nhs-summary-list-row label-text="Use default implementation plan?">
-                            @Model.UseDefaultImplementationPlan.ToYesNo()
-                        </nhs-summary-list-row>
-                    </nhs-summary-list>
-                </div>
+            <h2 id="milestones-title">Milestones and payment triggers for Catalogue Solution and Additional Services</h2>
 
-                @if (Model.UseDefaultImplementationPlan)
-                {
-                    <partial name="ImplementationPlan" model="Model.DefaultPlan" />
-                }
-                else
-                {
-                    <nhs-inset-text id="bespoke-implementation-plan">
-                        <p>Requirements are documented in Implementation plan milestones template.</p>
-                    </nhs-inset-text>
-                }
-            </nhs-expander>
+            <partial name="MilestoneTable" model="new MilestoneTableModel(Model.DefaultMilestoneLabelText, Model.DefaultPlan.Milestones, false, Model.CallOffId, Model.InternalOrgId)" />
+
+            @if (Model.HasBespokeMilestones)
+            {
+                <partial name="MilestoneTable" model="new MilestoneTableModel(Model.BespokeMilestoneLabelText, Model.BespokePlan.Milestones, false, Model.CallOffId, Model.InternalOrgId)"/>
+            }
 
             @if (Model.Order.HasAssociatedService())
             {

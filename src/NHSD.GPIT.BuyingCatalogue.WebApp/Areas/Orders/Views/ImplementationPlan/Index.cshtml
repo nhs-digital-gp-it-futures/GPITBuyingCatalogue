@@ -6,6 +6,7 @@
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.DetailsAndExpander
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Shared
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.ImplementationPlans.ImplementationPlanModel
 
 @{
@@ -31,50 +32,16 @@
 
         @if (Model.HasBespokeMilestones)
         {
-            <div class="nhsuk-u-margin-bottom-9">
-                <nhs-table label-text="Bespoke milestones and payment triggers">
-                    <nhs-table-column>Milestone name</nhs-table-column>
-                    <nhs-table-column>Milestone payment trigger</nhs-table-column>
-                    <nhs-table-column>Action</nhs-table-column>
-                    @foreach (var milestone in Model.BespokePlan.Milestones)
-                    {
-                        <nhs-table-row-container>
-                            <nhs-table-cell>@milestone.Title</nhs-table-cell>
-                            <nhs-table-cell>@milestone.PaymentTrigger</nhs-table-cell>
-                            <nhs-table-cell>
-                                <span data-test-id="milestone-edit-link">
-                                    <a asp-action="@nameof(ImplementationPlanController.EditMilestone)"
-                                       asp-controller="@typeof(ImplementationPlanController).ControllerName()"
-                                       asp-route-internalOrgId="@Model.InternalOrgId"
-                                       asp-route-callOffId="@Model.CallOffId"
-                                       asp-route-milestoneId="@milestone.Id">Edit</a>
-                                </span>
-                            </nhs-table-cell>
-                        </nhs-table-row-container>
-                    }
-                </nhs-table>
-            </div>
+            <partial name="MilestoneTable" model="new MilestoneTableModel(Model.BespokeMilestoneLabelText, Model.BespokePlan.Milestones, true, Model.CallOffId, Model.InternalOrgId)" />
 
             <vc:nhs-action-link text="Add a milestone"
                             url="@Url.Action(nameof(ImplementationPlanController.AddMilestone),
                                          typeof(ImplementationPlanController).ControllerName(),
                                      new { Model.InternalOrgId, Model.CallOffId })" />
         }
-
-        <div class="nhsuk-u-margin-bottom-9">
-            <nhs-table label-text="@Model.DefaultMilestoneLabelText">
-                <nhs-table-column>Milestone name</nhs-table-column>
-                <nhs-table-column>Milestone payment trigger</nhs-table-column>
-                @foreach (var milestone in Model.DefaultPlan.Milestones)
-                {
-                    <nhs-table-row-container>
-                        <nhs-table-cell>@milestone.Title</nhs-table-cell>
-                        <nhs-table-cell>@milestone.PaymentTrigger</nhs-table-cell>
-                    </nhs-table-row-container>
-                }
-            </nhs-table>
-        </div>
         
+        <partial name="MilestoneTable" model="new MilestoneTableModel(Model.DefaultMilestoneLabelText, Model.DefaultPlan.Milestones, false, Model.CallOffId, Model.InternalOrgId)" />
+
         @if (!Model.HasBespokeMilestones)
         {
             <vc:nhs-action-link text="Add a milestone"

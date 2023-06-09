@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -7,11 +8,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 {
     public sealed class SummaryModel : OrderingBaseModel
     {
-        public SummaryModel(OrderWrapper orderWrapper, string internalOrgId, ImplementationPlan defaultPlan = null)
+        public SummaryModel(OrderWrapper orderWrapper, string internalOrgId, ImplementationPlan defaultPlan)
         {
             InternalOrgId = internalOrgId;
             OrderWrapper = orderWrapper;
-            DefaultPlan = defaultPlan;
+            DefaultPlan = defaultPlan ?? throw new ArgumentNullException(nameof(defaultPlan));
         }
 
         public OrderWrapper OrderWrapper { get; }
@@ -30,15 +31,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public ImplementationPlan DefaultPlan { get; set; }
 
-        public bool UseDefaultDataProcessing => Order?.ContractFlags?.UseDefaultDataProcessing == true;
+        public ImplementationPlan BespokePlan => Order.Contract?.ImplementationPlan;
 
-        public bool UseDefaultImplementationPlan => Order?.ContractFlags?.UseDefaultImplementationPlan == true;
+        public bool UseDefaultDataProcessing => Order?.ContractFlags?.UseDefaultDataProcessing == true;
 
         public string BillingPaymentTrigger => DefaultPlan?.Milestones?.LastOrDefault()?.Title ?? "Bill on invoice";
 
         public bool HasBespokeBilling => Order?.ContractFlags?.UseDefaultBilling == false;
 
         public bool HasSpecificRequirements => Order?.ContractFlags?.HasSpecificRequirements == true;
+
+        public bool HasBespokeMilestones => BespokePlan != null && BespokePlan.Milestones.Any();
+
+        public string DefaultMilestoneLabelText => HasBespokeMilestones
+            ? "Milestones and payment triggers"
+            : "Default milestones and payment triggers";
+
+        public string BespokeMilestoneLabelText => "Bespoke milestones and payment triggers";
 
         public FundingTypeDescriptionModel FundingTypeDescription(CatalogueItemId catalogueItemId)
         {

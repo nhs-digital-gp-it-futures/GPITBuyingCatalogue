@@ -31,7 +31,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Impleme
             ?? "The supplier has not provided a standard implementation plan. You should contact them to discuss this.";
 
         public string DefaultMilestoneLabelText => HasBespokeMilestones
-            ? "Milestones and payment triggers"
-            : "Default milestones and payment triggers";
+            ? "Default milestones and payment triggers"
+            : "Milestones and payment triggers";
+
+        public string BespokeMilestoneLabelText => "Bespoke milestones and payment triggers";
     }
 }
