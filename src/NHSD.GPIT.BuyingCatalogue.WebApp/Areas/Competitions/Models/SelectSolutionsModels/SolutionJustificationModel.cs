@@ -11,11 +11,13 @@ public class SolutionJustificationModel
     }
 
     public SolutionJustificationModel(
-        CatalogueItem solution)
+        CatalogueItem solution,
+        string justification)
     {
         SolutionId = solution.Id;
         SolutionName = solution.Name;
         SupplierName = solution.Supplier.Name;
+        Justification = justification;
     }
 
     public CatalogueItemId SolutionId { get; set; }

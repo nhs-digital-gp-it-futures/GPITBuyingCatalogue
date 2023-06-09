@@ -6,6 +6,8 @@
     ViewBag.TItle = "Confirm shortlisted solutions";
 }
 
+<partial name="Partials/_BackLink" model="Model" />
+
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-page-title title="@ViewBag.Title" caption="@Model.CompetitionName" advice="Confirm the solutions you want to include as part of this competition."/>
@@ -47,6 +49,7 @@
                 }
             </nhs-table>
 
+            <br/>
             @if (Model.NonShortlistedSolutions.Any())
             {
                 <nhs-table label-text="Solutions not included">

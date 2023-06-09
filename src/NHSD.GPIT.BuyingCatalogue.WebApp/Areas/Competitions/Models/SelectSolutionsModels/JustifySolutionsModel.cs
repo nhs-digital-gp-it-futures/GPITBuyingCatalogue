@@ -15,7 +15,7 @@ public class JustifySolutionsModel : NavBaseModel
     {
         CompetitionName = competitionName;
         Solutions = nonShortlistedSolutions.Select(
-                x => new SolutionJustificationModel(x.Solution.CatalogueItem))
+                x => new SolutionJustificationModel(x.Solution.CatalogueItem, x.Justification))
             .OrderBy(x => x.SolutionName)
             .ToList();
     }

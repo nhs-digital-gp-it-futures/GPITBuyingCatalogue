@@ -28,6 +28,6 @@ public static class JustifySolutionsModelTests
         model.CompetitionName.Should().Be(competitionName);
         model.Solutions.Should()
             .BeEquivalentTo(
-                nonShortlistedSolutions.Select(x => new SolutionJustificationModel(x.Solution.CatalogueItem)));
+                nonShortlistedSolutions.Select(x => new SolutionJustificationModel(x.Solution.CatalogueItem, x.Justification)));
     }
 }
