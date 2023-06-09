@@ -27,7 +27,45 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task GetContractFlags_ContractExists_ReturnsContract(
+        public static async Task GetContract_ContractExists_ReturnsContract(
+            int orderId,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            ContractsService service)
+        {
+            var contract = new Contract { OrderId = orderId };
+
+            dbContext.Contracts.Add(contract);
+
+            await dbContext.SaveChangesAsync();
+
+            var output = await service.GetContract(orderId);
+
+            output.Should().BeEquivalentTo(contract);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetContract_ContractDoesNotExist_CreatesNewContract(
+            int orderId,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            ContractsService service)
+        {
+            var existing = await dbContext.Contracts.FirstOrDefaultAsync(x => x.OrderId == orderId);
+
+            existing.Should().BeNull();
+
+            var output = await service.GetContract(orderId);
+
+            output.OrderId.Should().Be(orderId);
+
+            var actual = await dbContext.Contracts.FirstOrDefaultAsync(x => x.OrderId == orderId);
+
+            actual.Should().Be(output);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetContractFlags_ContractFlagExists_ReturnsContractFlag(
             int orderId,
             [Frozen] BuyingCatalogueDbContext dbContext,
             ContractsService service)
@@ -45,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task GetContractFlags_ContractDoesNotExist_CreatesNewContract(
+        public static async Task GetContractFlags_ContractFlagDoesNotExist_CreatesNewContractFlag(
             int orderId,
             [Frozen] BuyingCatalogueDbContext dbContext,
             ContractsService service)

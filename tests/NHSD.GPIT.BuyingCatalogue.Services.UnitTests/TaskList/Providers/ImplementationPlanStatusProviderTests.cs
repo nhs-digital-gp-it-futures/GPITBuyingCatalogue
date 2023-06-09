@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 FundingSource = status,
             };
 
-            order.ContractFlags = null;
+            order.Contract = null;
 
             var actual = service.Get(new OrderWrapper(order), state);
 
@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 FundingSource = status,
             };
 
-            order.ContractFlags.UseDefaultImplementationPlan = true;
+            order.Contract = new Contract();
 
             var actual = service.Get(new OrderWrapper(order), state);
 
@@ -91,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 FundingSource = fundingTaskProgress,
             };
 
-            order.ContractFlags.UseDefaultImplementationPlan = null;
+            order.Contract = null;
 
             var actual = service.Get(new OrderWrapper(order), state);
 
@@ -99,13 +99,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonInlineAutoData(TaskProgress.Completed, true)]
-        [CommonInlineAutoData(TaskProgress.Completed, false)]
-        [CommonInlineAutoData(TaskProgress.Amended, true)]
-        [CommonInlineAutoData(TaskProgress.Amended, false)]
+        [CommonInlineAutoData(TaskProgress.Completed)]
+        [CommonInlineAutoData(TaskProgress.Amended)]
         public static void Get_ContractInfoEntered_ReturnsCompleted(
             TaskProgress fundingTaskProgress,
-            bool useDefaultImplementationPlan,
             Order order,
             ImplementationPlanStatusProvider service)
         {
@@ -114,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 FundingSource = fundingTaskProgress,
             };
 
-            order.ContractFlags.UseDefaultImplementationPlan = useDefaultImplementationPlan;
+            order.Contract = new Contract();
 
             var actual = service.Get(new OrderWrapper(order), state);
 
