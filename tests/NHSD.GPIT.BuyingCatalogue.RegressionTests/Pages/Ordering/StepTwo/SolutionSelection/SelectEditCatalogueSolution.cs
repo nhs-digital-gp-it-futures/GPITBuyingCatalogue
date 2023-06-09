@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.SolutionSelection;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
@@ -108,6 +109,17 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
                   typeof(OrderController),
                   nameof(OrderController.Order)).Should().BeTrue();
             }
+        }
+
+        public void AddAdditionalServices(string additionalService)
+        {
+            CommonActions.ClickLinkElement(ReviewSolutionsObjects.AddAdditionalServiceLink);
+            CommonActions.PageLoadedCorrectGetIndex(
+                      typeof(AdditionalServicesController),
+                      nameof(AdditionalServicesController.EditAdditionalServices)).Should().BeTrue();
+
+            CommonActions.ClickCheckboxByLabel(additionalService);
+            CommonActions.ClickSave();
         }
 
         private void ConfirmAdditionalServiceChanges()
