@@ -613,22 +613,17 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             SelectEditAndConfirmAssociatedServiceOnlyPrices.EditPrice(associatedServiceName);
         }
 
-        public void AmendSolutionsAndServices(string solutionName, string additionalService = "", string associatedService = "", bool multipleServiceRecipients = false, bool importServiceRecipients = false, string fileName = "")
+        public void AmendSolutionsAndServices(string solutionName, string additionalService = "", string associatedService = "", bool importServiceRecipients = false)
         {
-            AmendSolutionsAndServices(solutionName, new List<string> { additionalService }, new List<string> { associatedService }, multipleServiceRecipients, importServiceRecipients, fileName);
+            AmendSolutionsAndServices(solutionName, new List<string> { additionalService }, new List<string> { associatedService }, importServiceRecipients);
         }
 
-        public void AmendSolutionsAndServices(string solutionName, IEnumerable<string>? additionalServices, string associatedService = "", bool multipleServiceRecipients = false, bool importServiceRecipients = false, string fileName = "")
+        public void AmendSolutionsAndServices(string solutionName, IEnumerable<string>? additionalServices, string associatedService = "", bool importServiceRecipients = false)
         {
-            AmendSolutionsAndServices(solutionName, additionalServices, new List<string> { associatedService }, multipleServiceRecipients, importServiceRecipients, fileName);
+            AmendSolutionsAndServices(solutionName, additionalServices, new List<string> { associatedService }, importServiceRecipients);
         }
 
-        public void AmendSolutionsAndServices(string solutionName, string additionalService, IEnumerable<string>? associatedServices, bool multipleServiceRecipients = false, bool importServiceRecipients = false, string fileName = "")
-        {
-            AmendSolutionsAndServices(solutionName, new List<string> { additionalService }, associatedServices, multipleServiceRecipients, importServiceRecipients, fileName);
-        }
-
-        public void AmendSolutionsAndServices(string solutionName, IEnumerable<string>? additionalServices, IEnumerable<string>? associatedServices, bool multipleServiceRecipients = false, bool importServiceRecipients = false, string fileName = "")
+        public void AmendSolutionsAndServices(string solutionName, IEnumerable<string>? additionalServices, IEnumerable<string>? associatedServices, bool importServiceRecipients = false, string fileName = "")
         {
             var orderId = OrderID();
 
@@ -655,6 +650,52 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
                     ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
                     SelectEditAndConfirmPrices.AmendViewAndConfirmPrice();
+                    Quantity.AddQuantity();
+                    PlannedDeliveryDates.AmendPlannedDeliveryDate(additionalService);
+                }
+            }
+
+            SolutionAndServicesReview.AmendReviewSolutionAndServices();
+            TaskList.SelectFundingSourcesTask();
+            SelectFundingSources.AmendAddFundingSources(solutionName, additionalServices);
+
+            StepThreeCompleteContract();
+            StepFourReviewAndCompleteOrder();
+        }
+
+        public void AmendAddSolutionsAndServices(string solutionName, IEnumerable<string>? additionalServices, string associatedService = "", bool importServiceRecipients = false)
+        {
+            AmendAddSolutionsAndServices(solutionName, additionalServices, new List<string> { associatedService }, importServiceRecipients);
+        }
+
+        public void AmendAddSolutionsAndServices(string solutionName, IEnumerable<string>? additionalServices, IEnumerable<string>? associatedServices, bool importServiceRecipients = false, string fileName = "")
+        {
+            var orderId = OrderID();
+
+            TaskList.AmendSolutionAndServicesTask();
+
+            SelectEditCatalogueSolutionServiceRecipients.AmendEditCatalogueSolutionServiceRecipient(solutionName);
+            ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
+            SelectEditAndConfirmPrices.AmendViewAndConfirmPrice();
+            Quantity.AddQuantity();
+            PlannedDeliveryDates.AmendPlannedDeliveryDate(solutionName);
+
+            if (HasAdditionalService(solutionName) && additionalServices != default && additionalServices.All(a => !string.IsNullOrWhiteSpace(a)))
+            {
+                foreach (var additionalService in additionalServices)
+                {
+                    SelectEditCatalogueSolution.AddAdditionalServices(additionalService);
+                    if (!importServiceRecipients)
+                    {
+                        SelectEditAdditionalServiceRecipients.AddServiceRecipients();
+                    }
+                    else
+                    {
+                        ImportServiceReceipients.ImportServiceRecipients(fileName);
+                    }
+
+                    ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
+                    SelectEditAndConfirmAdditionalServicePrice.SelectAndConfirmPrice();
                     Quantity.AddQuantity();
                     PlannedDeliveryDates.AmendPlannedDeliveryDate(additionalService);
                 }
