@@ -7,6 +7,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.SelectSolut
 
 public class ConfirmSolutionsModel : NavBaseModel
 {
+    public ConfirmSolutionsModel()
+    {
+    }
+
     public ConfirmSolutionsModel(
         string competitionName,
         IList<CompetitionSolution> competitionSolutions)

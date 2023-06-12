@@ -4,6 +4,10 @@
     var solution = Model.Solutions.First();
 }
 
+<nhs-inset-text>
+    <p>Your selected filter has only returned 1 result. You therefore do not need to carry out a competition and can instead use a direct award to procure this solution.</p>
+</nhs-inset-text>
+
 <h3 class="nhsuk-heading-s">
     <a asp-action="@nameof(SolutionsController.Description)"
        asp-controller="@typeof(SolutionsController).ControllerName()"
