@@ -613,23 +613,26 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             SelectEditAndConfirmAssociatedServiceOnlyPrices.EditPrice(associatedServiceName);
         }
 
-        public void AmendSolutionsAndServices(string solutionName, string additionalService = "", string associatedService = "", bool importServiceRecipients = false)
+        public void AmendSolutionsAndServices(string solutionName, string additionalService = "", string associatedService = "", bool multipleServiceRecipients = false, bool importServiceRecipients = false, string fileName = "")
         {
-            AmendSolutionsAndServices(solutionName, new List<string> { additionalService }, new List<string> { associatedService }, importServiceRecipients);
+            AmendSolutionsAndServices(solutionName, new List<string> { additionalService }, new List<string> { associatedService }, multipleServiceRecipients, importServiceRecipients, fileName);
         }
 
-        public void AmendSolutionsAndServices(string solutionName, IEnumerable<string>? additionalServices, string associatedService = "", bool importServiceRecipients = false)
-        {
-            AmendSolutionsAndServices(solutionName, additionalServices, new List<string> { associatedService }, importServiceRecipients);
-        }
-
-        public void AmendSolutionsAndServices(string solutionName, IEnumerable<string>? additionalServices, IEnumerable<string>? associatedServices, bool importServiceRecipients = false, string fileName = "")
+        public void AmendSolutionsAndServices(string solutionName, IEnumerable<string>? additionalServices, IEnumerable<string>? associatedServices, bool multipleServiceRecipients = false, bool importServiceRecipients = false, string fileName = "")
         {
             var orderId = OrderID();
 
             TaskList.AmendSolutionAndServicesTask();
 
-            SelectEditCatalogueSolutionServiceRecipients.AmendEditCatalogueSolutionServiceRecipient(solutionName);
+            if (!importServiceRecipients)
+            {
+                SelectEditCatalogueSolutionServiceRecipients.AmendEditCatalogueSolutionServiceRecipient(solutionName, multipleServiceRecipients);
+            }
+            else
+            {
+                SelectEditCatalogueSolutionServiceRecipients.AmendImportServiceRecipients(solutionName, fileName);
+            }
+
             ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
             SelectEditAndConfirmPrices.AmendViewAndConfirmPrice();
             Quantity.AddQuantity();
@@ -639,14 +642,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             {
                 foreach (var additionalService in additionalServices)
                 {
-                    if (!importServiceRecipients)
-                    {
-                        SelectEditAdditionalServiceRecipients.AmendEditAdditionalServiceRecipient(additionalService);
-                    }
-                    else
-                    {
-                        ImportServiceReceipients.ImportServiceRecipients(fileName);
-                    }
+                    SelectEditAdditionalServiceRecipients.AmendEditAdditionalServiceRecipient(additionalService);
 
                     ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
                     SelectEditAndConfirmPrices.AmendViewAndConfirmPrice();
@@ -685,14 +681,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 foreach (var additionalService in additionalServices)
                 {
                     SelectEditCatalogueSolution.AddAdditionalServices(additionalService);
-                    if (!importServiceRecipients)
-                    {
-                        SelectEditAdditionalServiceRecipients.AddServiceRecipients();
-                    }
-                    else
-                    {
-                        ImportServiceReceipients.ImportServiceRecipients(fileName);
-                    }
+                    SelectEditAdditionalServiceRecipients.AddServiceRecipients();
 
                     ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
                     SelectEditAndConfirmAdditionalServicePrice.SelectAndConfirmPrice();
