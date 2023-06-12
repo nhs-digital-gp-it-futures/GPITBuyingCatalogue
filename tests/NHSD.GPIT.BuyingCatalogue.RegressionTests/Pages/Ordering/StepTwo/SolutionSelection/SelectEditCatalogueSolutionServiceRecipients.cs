@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
@@ -46,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             CommonActions.ClickSave();
         }
 
-        public void AmendEditCatalogueSolutionServiceRecipient(string solutionName)
+        public void AmendEditCatalogueSolutionServiceRecipient(string solutionName, bool multipleServiceRecipients = false)
         {
             CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemServiceRecipientLink(GetCatalogueSolutionID(solutionName)));
 
@@ -54,7 +55,37 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             typeof(ServiceRecipientsController),
             nameof(ServiceRecipientsController.EditServiceRecipients)).Should().BeTrue();
 
-            CommonActions.ClickFirstCheckbox();
+            if (!multipleServiceRecipients)
+            {
+                CommonActions.ClickFirstCheckbox();
+            }
+            else
+            {
+                CommonActions.ClickAllCheckboxes();
+            }
+
+            CommonActions.ClickSave();
+        }
+
+        public void AmendImportServiceRecipients(string solutionName, string fileName)
+        {
+            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemServiceRecipientLink(GetCatalogueSolutionID(solutionName)));
+
+            CommonActions.PageLoadedCorrectGetIndex(
+            typeof(ServiceRecipientsController),
+            nameof(ServiceRecipientsController.EditServiceRecipients)).Should().BeTrue();
+
+            CommonActions.ClickLinkElement(ServiceRecipientObjects.ImportServiceRecipients);
+
+            var importFile = CommonActions.GetRecipientImportCsv(fileName);
+
+            CommonActions.UploadFile(ServiceRecipientObjects.ImportRecipientsFileInput, importFile);
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+            typeof(ServiceRecipientsController),
+            nameof(ServiceRecipientsController.EditServiceRecipients)).Should().BeTrue();
 
             CommonActions.ClickSave();
         }
