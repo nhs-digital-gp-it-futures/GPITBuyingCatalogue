@@ -34,11 +34,20 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         [HtmlAttributeName(TagHelperConstants.LabelTextName)]
         public string LabelText { get; set; }
 
+        [HtmlAttributeName(TagHelperConstants.HintTextName)]
+        public string HintText { get; set; }
+
+        [HtmlAttributeName(TagHelperConstants.SubHintText)]
+        public string SubHintText { get; set; }
+
         [HtmlAttributeName(TagHelperConstants.LabelEmbedHtml)]
         public bool EmbedHtml { get; set; } = false;
 
         [HtmlAttributeName(TagHelperConstants.SubGroupName)]
         public string SubGroup { get; set; }
+
+        [HtmlAttributeName(TagHelperConstants.IndexName)]
+        public int Index { get; set; }
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
@@ -78,6 +87,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             output.Content.AppendHtml(input);
             output.Content.AppendHtml(label);
 
+            if (!string.IsNullOrWhiteSpace(HintText))
+                output.Content.AppendHtml(GetCheckboxHintBuilder(HintText));
+
+            if (!string.IsNullOrWhiteSpace(SubHintText))
+                output.Content.AppendHtml(GetCheckboxHintBuilder(SubHintText, true));
+
             if (HiddenFor != null)
                 output.Content.AppendHtml(GetHiddenInputBuilder());
 
@@ -105,13 +120,32 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 labelText,
                 new { @class = $"{TagHelperConstants.NhsLabel} {NhsCheckboxLabel}" });
 
-            if (EmbedHtml)
-            {
-                tagBuilder.InnerHtml.Clear();
-                tagBuilder.InnerHtml.AppendHtml(labelText);
-            }
+            if (!EmbedHtml) return tagBuilder;
+
+            tagBuilder.InnerHtml.Clear();
+            tagBuilder.InnerHtml.AppendHtml(labelText);
 
             return tagBuilder;
+        }
+
+        private TagBuilder GetCheckboxHintBuilder(
+            string value,
+            bool isSubHint = false)
+        {
+            var builder = new TagBuilder(TagHelperConstants.Div);
+            builder.AddCssClass(TagHelperConstants.NhsHint);
+            builder.AddCssClass(TagHelperConstants.NhsCheckboxHint);
+            if (isSubHint)
+                builder.AddCssClass(TagHelperConstants.NhsCheckboxSubHint);
+
+            builder.Attributes["id"] = TagBuilder.CreateSanitizedId($"{For.Name}_{Index}-item-hint", "_");
+
+            if (EmbedHtml)
+                builder.InnerHtml.AppendHtml(value);
+            else
+                builder.InnerHtml.Append(value);
+
+            return builder;
         }
 
         private TagBuilder GetHiddenInputBuilder()

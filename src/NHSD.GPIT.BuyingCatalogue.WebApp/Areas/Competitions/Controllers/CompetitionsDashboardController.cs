@@ -3,7 +3,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.DashboardModels;
@@ -21,16 +25,20 @@ public class CompetitionsDashboardController : Controller
     private readonly IOrganisationsService organisationsService;
     private readonly ICompetitionsService competitionsService;
     private readonly IManageFiltersService filterService;
+    private readonly ISolutionsFilterService solutionsFilterService;
 
     public CompetitionsDashboardController(
         IOrganisationsService organisationsService,
         ICompetitionsService competitionsService,
-        IManageFiltersService filterService)
+        IManageFiltersService filterService,
+        ISolutionsFilterService solutionsFilterService)
     {
         this.organisationsService =
             organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
         this.competitionsService = competitionsService ?? throw new ArgumentNullException(nameof(competitionsService));
         this.filterService = filterService ?? throw new ArgumentNullException(nameof(filterService));
+        this.solutionsFilterService =
+            solutionsFilterService ?? throw new ArgumentNullException(nameof(solutionsFilterService));
     }
 
     [HttpGet]
@@ -88,7 +96,7 @@ public class CompetitionsDashboardController : Controller
         return View(model);
     }
 
-    [HttpGet("select-filter/{filterId}/review")]
+    [HttpGet("select-filter/{filterId:int}/review")]
     public async Task<IActionResult> ReviewFilter(string internalOrgId, int filterId)
     {
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
@@ -106,7 +114,7 @@ public class CompetitionsDashboardController : Controller
         return View(model);
     }
 
-    [HttpPost("select-filter/{filterId}/review")]
+    [HttpPost("select-filter/{filterId:int}/review")]
     public IActionResult ReviewFilter(string internalOrgId, int filterId, ReviewFilterModel model)
     {
         _ = model;
@@ -114,7 +122,7 @@ public class CompetitionsDashboardController : Controller
         return RedirectToAction(nameof(SaveCompetition), new { internalOrgId, filterId });
     }
 
-    [HttpGet("select-filter/{filterId}/save")]
+    [HttpGet("select-filter/{filterId:int}/save")]
     public async Task<IActionResult> SaveCompetition(string internalOrgId, int filterId)
     {
         _ = filterId;
@@ -128,7 +136,7 @@ public class CompetitionsDashboardController : Controller
         return View(model);
     }
 
-    [HttpPost("select-filter/{filterId}/save")]
+    [HttpPost("select-filter/{filterId:int}/save")]
     public async Task<IActionResult> SaveCompetition(string internalOrgId, int filterId, SaveCompetitionModel model)
     {
         if (!ModelState.IsValid)
@@ -136,8 +144,43 @@ public class CompetitionsDashboardController : Controller
 
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
-        await competitionsService.AddCompetition(organisation.Id, filterId, model.Name, model.Description);
+        var competitionId = await competitionsService.AddCompetition(
+            organisation.Id,
+            filterId,
+            model.Name,
+            model.Description);
 
-        return RedirectToAction(nameof(Index), new { internalOrgId });
+        await AssignCompetitionSolutions(organisation.Id, competitionId, filterId);
+
+        return RedirectToAction(
+            nameof(CompetitionSelectSolutionsController.SelectSolutions),
+            typeof(CompetitionSelectSolutionsController).ControllerName(),
+            new { internalOrgId, competitionId });
+    }
+
+    private async Task AssignCompetitionSolutions(int organisationId, int competitionId, int filterId)
+    {
+        var competition = await competitionsService.GetCompetitionWithServices(organisationId, competitionId, true);
+        var filter = await filterService.GetFilterIds(organisationId, filterId);
+
+        var pageOptions = new PageOptions { PageSize = 100 };
+        var solutionsAndServices =
+            await solutionsFilterService.GetAllSolutionsFiltered(
+                pageOptions,
+                selectedCapabilityIds: filter.CapabilityIds.ToFilterString(),
+                selectedEpicIds: filter.EpicIds.ToFilterString(),
+                selectedFrameworkId: filter.FrameworkId,
+                selectedClientApplicationTypeIds: filter.ClientApplicationTypeIds.ToFilterString(),
+                selectedHostingTypeIds: filter.HostingTypeIds.ToFilterString());
+
+        var competitionSolutions = solutionsAndServices.CatalogueItems.Select(
+            x => new CompetitionSolution(competition.Id, x.Solution.CatalogueItemId)
+            {
+                RequiredServices = x.Solution.AdditionalServices.Select(
+                        y => new RequiredService(competition.Id, x.Solution.CatalogueItemId, y.CatalogueItemId))
+                    .ToList(),
+            });
+
+        await competitionsService.AddCompetitionSolutions(organisationId, competition.Id, competitionSolutions);
     }
 }

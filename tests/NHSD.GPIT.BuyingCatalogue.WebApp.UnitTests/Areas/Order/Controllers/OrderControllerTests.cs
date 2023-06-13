@@ -182,6 +182,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
             [Frozen] Mock<IOrderService> orderService,
             OrderController controller)
         {
+            order.ContractFlags.UseDefaultDataProcessing = true;
             order.Completed = null;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
