@@ -6,7 +6,9 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Flurl;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
@@ -357,6 +359,59 @@ public static class CompetitionSelectSolutionsControllerTests
 
         result.Should().NotBeNull();
         result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task ConfirmSolutions_AllSolutionsShortlisted_UsesCorrectBacklink(
+        Organisation organisation,
+        Competition competition,
+        List<CompetitionSolution> competitionSolutions,
+        [Frozen] Mock<IOrganisationsService> organisationsService,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] Mock<IUrlHelper> urlHelper,
+        CompetitionSelectSolutionsController controller)
+    {
+        competitionSolutions.ForEach(x => x.IsShortlisted = true);
+
+        competition.CompetitionSolutions = competitionSolutions;
+
+        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
+            .ReturnsAsync(organisation);
+
+        competitionsService.Setup(x => x.GetCompetitionWithServices(organisation.Id, competition.Id, false))
+            .ReturnsAsync(competition);
+
+        _ = (await controller.ConfirmSolutions(organisation.InternalIdentifier, competition.Id)).As<ViewResult>();
+
+        urlHelper.Verify(x => x.Action(It.Is<UrlActionContext>(x => x.Action == nameof(controller.SelectSolutions))));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task ConfirmSolutions_WithNonShortlistedSolutions_UsesCorrectBacklink(
+        Organisation organisation,
+        Competition competition,
+        List<CompetitionSolution> competitionSolutions,
+        [Frozen] Mock<IOrganisationsService> organisationsService,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] Mock<IUrlHelper> urlHelper,
+        CompetitionSelectSolutionsController controller)
+    {
+        competitionSolutions.Take(1).ToList().ForEach(x => x.IsShortlisted = false);
+        competitionSolutions.Skip(1).ToList().ForEach(x => x.IsShortlisted = true);
+
+        competition.CompetitionSolutions = competitionSolutions;
+
+        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
+            .ReturnsAsync(organisation);
+
+        competitionsService.Setup(x => x.GetCompetitionWithServices(organisation.Id, competition.Id, false))
+            .ReturnsAsync(competition);
+
+        _ = (await controller.ConfirmSolutions(organisation.InternalIdentifier, competition.Id)).As<ViewResult>();
+
+        urlHelper.Verify(x => x.Action(It.Is<UrlActionContext>(x => x.Action == nameof(controller.JustifySolutions))));
     }
 
     [Theory]

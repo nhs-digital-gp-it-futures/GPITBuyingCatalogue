@@ -77,6 +77,7 @@ public class CompetitionsService : ICompetitionsService
         solutions.ForEach(x => x.IsShortlisted = false);
         foreach (var competitionSolution in solutions.Where(x => shortlistedSolutions.Contains(x.SolutionId)))
         {
+            competitionSolution.Justification = null;
             competitionSolution.IsShortlisted = true;
         }
 

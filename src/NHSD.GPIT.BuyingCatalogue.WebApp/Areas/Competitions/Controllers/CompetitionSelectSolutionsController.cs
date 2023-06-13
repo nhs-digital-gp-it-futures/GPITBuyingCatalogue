@@ -125,9 +125,13 @@ public class CompetitionSelectSolutionsController : Controller
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
         var competition = await competitionsService.GetCompetitionWithServices(organisation.Id, competitionId);
 
+        var backlink = competition.CompetitionSolutions.All(x => x.IsShortlisted)
+            ? nameof(SelectSolutions)
+            : nameof(JustifySolutions);
+
         var model = new ConfirmSolutionsModel(competition.Name, competition.CompetitionSolutions.ToList())
         {
-            BackLink = Url.Action(nameof(JustifySolutions), new { internalOrgId, competitionId }),
+            BackLink = Url.Action(backlink, new { internalOrgId, competitionId }),
         };
 
         return View(model);
