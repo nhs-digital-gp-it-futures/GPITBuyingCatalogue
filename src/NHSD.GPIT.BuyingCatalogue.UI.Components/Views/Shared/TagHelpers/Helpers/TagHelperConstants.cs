@@ -58,6 +58,8 @@
         internal const string ValueName = "value-name";
         internal const string DisplayName = "display-name";
         internal const string HintName = "hint-name";
+        internal const string HintTextName = "hint-text";
+        internal const string SubHintText = "sub-hint";
         internal const string Values = "values";
         internal const string Value = "value";
         internal const string ConditionalContextName = "ConditionalContext";
@@ -102,6 +104,8 @@
         internal const string NhsVisuallyHidden = "nhsuk-u-visually-hidden";
         internal const string NhsVisuallyHiddenSpanContent = "Information: ";
         internal const string NhsCheckboxes = "nhsuk-checkboxes";
+        internal const string NhsCheckboxHint = "nhsuk-checkboxes__hint";
+        internal const string NhsCheckboxSubHint = "nhsuk-checkboxes__subhint";
         internal const string NhsCheckBoxParentConditionalClass = "nhsuk-checkboxes--conditional";
         internal const string NhsCheckBoxChildConditionalClass = "nhsuk-checkboxes__conditional";
         internal const string NhsCheckBoxChildConditionalHiddenClass = "nhsuk-checkboxes__conditional--hidden";
@@ -131,6 +135,7 @@
         internal const string NoBordersName = "no-borders";
         internal const string HeadingTextName = "heading-text";
         internal const string SubGroupName = "sub-group";
+        internal const string IndexName = "index";
 
         internal const string FileType = "file-type";
     }

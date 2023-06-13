@@ -12,7 +12,8 @@ public sealed class CompetitionCustomization : ICustomization
         static ISpecimenBuilder ComposerTransformation(ICustomizationComposer<Competition> composer) => composer
             .Without(x => x.Organisation)
             .Without(x => x.LastUpdatedByUser)
-            .Without(x => x.Filter);
+            .Without(x => x.Filter)
+            .Without(x => x.CompetitionSolutions);
 
         fixture.Customize<Competition>(ComposerTransformation);
     }

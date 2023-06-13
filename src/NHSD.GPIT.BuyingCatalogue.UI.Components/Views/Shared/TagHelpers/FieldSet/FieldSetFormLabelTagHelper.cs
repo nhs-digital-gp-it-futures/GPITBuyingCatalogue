@@ -10,15 +10,6 @@ using static NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Fie
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 {
     [HtmlTargetElement(TagHelperName)]
-    [RestrictChildren(
-        CheckboxContainerTagHelper.TagHelperName,
-        RadioButtonsTagHelper.TagHelperName,
-        YesNoRadioButtonTagHelper.TagHelperName,
-        NhsDateInputTagHelper.TagHelperName,
-        RadioButtonContainerTagHelper.TagHelperName,
-        DetailsTagHelper.TagHelperName,
-        NhsTimeRangeInputTagHelper.TagHelperName,
-        ExpanderTagHelper.TagHelperName)]
     public sealed class FieldSetFormLabelTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-fieldset-form-label";
