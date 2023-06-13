@@ -380,12 +380,13 @@
                     }
 
                     <div class="pdf-container">
-                        <h3>Data Processing Plan</h3>
-                        <pdf-summary-list>
-                            <pdf-summary-list-row label-text="Using default data processing plan?">
-                                @Model.UseDefaultDataProcessing.ToYesNo()
-                            </pdf-summary-list-row>
-                        </pdf-summary-list>
+                        <h3>Data Processing Information</h3>
+                        <nhs-inset-text>
+                            <p>
+                                Data processing information will be captured in a separate template
+                                that must be included with this Call-off Order Form
+                            </p>
+                        </nhs-inset-text>
 
                         @if (!Model.UseDefaultDataProcessing)
                         {

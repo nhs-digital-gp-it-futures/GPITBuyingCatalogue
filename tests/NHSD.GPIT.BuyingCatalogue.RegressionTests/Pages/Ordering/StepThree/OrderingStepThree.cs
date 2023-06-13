@@ -85,28 +85,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree
             nameof(OrderController.Order)).Should().BeTrue();
         }
 
-        public void SelectPersonalDataProcessingInformation(bool isDefault = true)
+        internal void ConfirmDataProcessing()
         {
-            if (isDefault)
-            {
-                CommonActions.ClickFirstRadio();
-                CommonActions.ClickSave();
-            }
-            else
-            {
-                CommonActions.ClickRadioButtonWithText(DataProcessingPlanObjects.VariationsToDefaultDataProcessingInfo);
-                CommonActions.ClickSave();
-
-                CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(DataProcessingPlanController),
-                    nameof(DataProcessingPlanController.BespokeDataProcessingPlan)).Should().BeTrue();
-
-                CommonActions.ClickContinue();
-            }
-
-            CommonActions.PageLoadedCorrectGetIndex(
-            typeof(OrderController),
-            nameof(OrderController.Order)).Should().BeTrue();
+            CommonActions.ClickContinue();
         }
     }
 }

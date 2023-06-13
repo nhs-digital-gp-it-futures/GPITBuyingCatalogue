@@ -229,23 +229,17 @@
                     }
                 </nhs-expander>
             }
-            <nhs-expander label-text="Data processing plan"
+            <nhs-expander label-text="Data Processing Information"
                       id="data-processing-expander"
                       colour-mode="BlackAndWhite" open="true" bold-title="true">
                 <div class="nhsuk-u-margin-top-3">
-                    <nhs-summary-list>
-                        <nhs-summary-list-row label-text="Use default data processing plan?">
-                            @Model.UseDefaultDataProcessing.ToYesNo()
-                        </nhs-summary-list-row>
-                    </nhs-summary-list>
-                </div>
-
-                @if (!Model.UseDefaultDataProcessing)
-                {
-                    <nhs-inset-text id="bespoke-data-processing">
-                        <p>Requirements are documented in Data processing information template.</p>
+                    <nhs-inset-text>
+                        <p>
+                            Data processing information will be captured in a separate template
+                            that must be included with this Call-off Order Form
+                        </p>
                     </nhs-inset-text>
-                }
+                </div>
             </nhs-expander>
             @if (Model.Order.IsAmendment)
             {
