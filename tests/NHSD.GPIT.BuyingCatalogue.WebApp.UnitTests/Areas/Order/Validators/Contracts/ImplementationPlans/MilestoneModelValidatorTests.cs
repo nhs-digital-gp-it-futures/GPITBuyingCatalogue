@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_Order_SelectedOptionsNull_SetsModelError(
+        public static void Validate_Milestone_PaymentTriggerNull_SetsModelError(
             MilestoneModel model,
             MilestoneModelValidator validator)
         {
