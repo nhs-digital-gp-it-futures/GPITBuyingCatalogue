@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
             new ControllerCustomization(),
             new ControllerBaseCustomization(),
             new HostingTypeSectionModelCustomization(),
-            new ClientApplicationTypeSectionModelCustomization(),
+            new ApplicationTypeSectionModelCustomization(),
             new ServiceLevelAgreementCustomization(),
             new ActionContextCustomization(),
             new ActionExecutedContextCustomization(),

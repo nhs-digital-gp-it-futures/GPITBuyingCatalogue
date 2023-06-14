@@ -34,9 +34,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
         [InlineData(ApplicationType.BrowserBased, typeof(BrowserBasedController), nameof(BrowserBasedController.BrowserBased))]
         [InlineData(ApplicationType.MobileTablet, typeof(MobileTabletBasedController), nameof(MobileTabletBasedController.MobileTablet))]
         [InlineData(ApplicationType.Desktop, typeof(DesktopBasedController), nameof(DesktopBasedController.Desktop))]
-        public void AddClientApplicationType_AddApplicationType(ApplicationType clientApplicationType, Type controller, string expectedControllerMethod)
+        public void AddApplicationType_AddApplicationType(ApplicationType applicationType, Type controller, string expectedControllerMethod)
         {
-            CommonActions.ClickRadioButtonWithValue(clientApplicationType.ToString());
+            CommonActions.ClickRadioButtonWithValue(applicationType.ToString());
 
             CommonActions.ClickSave();
 
@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
         }
 
         [Fact]
-        public void AddClientApplicationType_ErrorMessageThrownNoneSelected()
+        public void AddApplicationType_ErrorMessageThrownNoneSelected()
         {
             CommonActions.ClickSave();
 
@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
         }
 
         [Fact]
-        public void AddClientApplicationType_ClickGoBackLink()
+        public void AddApplicationType_ClickGoBackLink()
         {
             CommonActions.ClickGoBackLink();
 

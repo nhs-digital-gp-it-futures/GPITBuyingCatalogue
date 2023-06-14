@@ -4,14 +4,14 @@ using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Marketing
 {
-    public class ClientApplicationTypeActions : ActionBase
+    public class ApplicationTypeActions : ActionBase
     {
-        public ClientApplicationTypeActions(IWebDriver driver)
+        public ApplicationTypeActions(IWebDriver driver)
             : base(driver)
         {
         }
 
-        public void SelectClientApplicationCheckbox(string clientApplicationType)
+        public void SelectApplicationCheckbox(string clientApplicationType)
         {
             switch (clientApplicationType)
             {

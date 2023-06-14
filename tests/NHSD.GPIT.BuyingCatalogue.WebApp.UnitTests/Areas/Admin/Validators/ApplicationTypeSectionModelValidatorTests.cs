@@ -8,7 +8,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 {
-    public static class ClientApplicationTypeSectionModelValidatorTests
+    public static class ApplicationTypeSectionModelValidatorTests
     {
         [Theory]
         [CommonAutoData]
