@@ -22,17 +22,20 @@ public sealed class RequiredServiceEntityTypeConfiguration : IEntityTypeConfigur
         builder.HasOne<Competition>()
             .WithMany()
             .HasForeignKey(x => x.CompetitionId)
-            .HasConstraintName("FK_RequiredServices_Competition");
+            .HasConstraintName("FK_RequiredServices_Competition")
+            .OnDelete(DeleteBehavior.ClientCascade);
 
         builder.HasOne<CompetitionSolution>()
             .WithMany()
             .HasForeignKey(x => x.SolutionId)
             .HasPrincipalKey(x => x.SolutionId)
-            .HasConstraintName("FK_RequiredServices_Solution");
+            .HasConstraintName("FK_RequiredServices_Solution")
+            .OnDelete(DeleteBehavior.ClientCascade);
 
         builder.HasOne(x => x.Service)
             .WithMany()
             .HasForeignKey(x => x.ServiceId)
-            .HasConstraintName("FK_RequiredServices_Service");
+            .HasConstraintName("FK_RequiredServices_Service")
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }
