@@ -7,7 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 
 public interface ICompetitionsService
 {
-    Task<IEnumerable<Competition>> GetCompetitions(int organisationId);
+    Task<IEnumerable<Competition>> GetCompetitionsDashboard(int organisationId);
 
     Task<Competition> GetCompetitionWithServices(int organisationId, int competitionId, bool shouldTrack = false);
 
