@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DataProces
         };
 
         public BespokeDataProcessingPlan(LocalWebApplicationFactory factory)
-            : base(factory, typeof(DataProcessingPlanController), nameof(DataProcessingPlanController.BespokeDataProcessingPlan), Parameters)
+            : base(factory, typeof(DataProcessingPlanController), nameof(DataProcessingPlanController), Parameters)
         {
         }
 

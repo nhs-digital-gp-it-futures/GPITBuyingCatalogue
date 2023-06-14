@@ -17,6 +17,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
+using Polly;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
@@ -492,7 +493,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 MaximumTerm = 36,
                 ContractFlags = new ContractFlags
                 {
-                    UseDefaultImplementationPlan = false, UseDefaultDataProcessing = false,
+                    UseDefaultImplementationPlan = false, UseDefaultDataProcessing = true,
                 },
             };
 
