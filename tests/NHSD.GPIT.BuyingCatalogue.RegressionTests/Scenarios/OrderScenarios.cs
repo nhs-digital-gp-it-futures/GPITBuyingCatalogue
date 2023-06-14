@@ -240,6 +240,61 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        public void Amend_CatalogueSolution_multiple_servicereceipients()
+        {
+            string orderDescription = "Amend_CatalogueSolution_multiple_servicereceipients";
+
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+
+            OrderingPages.StepFiveAmendOrder();
+
+            OrderingPages.AmendSolutionsAndServices(NewSolutionName, multipleServiceRecipients: true);
+        }
+
+        [Fact]
+        public void Amend_CatalogueSolution_import_servicereceipients()
+        {
+            string orderDescription = "Amend_CatalogueSolution_import_servicereceipients";
+
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+
+            OrderingPages.StepFiveAmendOrder();
+
+            OrderingPages.AmendSolutionsAndServices(
+                NewSolutionName,
+                importServiceRecipients: true,
+                fileName: FileName);
+        }
+
+        [Fact]
         public void AmendCatalogueSolutionsAndAdditionalService()
         {
             string orderDescription = "AmendCatalogueSolutionsAndAdditionalService";
@@ -263,6 +318,38 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.StepFiveAmendOrder();
 
             OrderingPages.AmendSolutionsAndServices(NewSolutionName, additionalService: "Automated Arrivals");
+        }
+
+        [Fact]
+        public void AmendMultipleAdditionalService()
+        {
+            string orderDescription = "AmendMultipleAdditionalService";
+
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+
+            OrderingPages.StepFiveAmendOrder();
+
+            OrderingPages.AmendAddSolutionsAndServices(
+                NewSolutionName,
+                additionalServices: new List<string>()
+                {
+                    AdditionalServiceName,
+                    NewAdditionalServiceName,
+                });
         }
 
         [Fact]

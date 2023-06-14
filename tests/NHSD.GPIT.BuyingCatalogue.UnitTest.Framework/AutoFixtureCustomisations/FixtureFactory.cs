@@ -57,6 +57,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
             new BlobServiceClientCustomization(),
             new OdsSettingsCustomization(),
             new CompetitionCustomization(),
+            new CompetitionSolutionCustomization(),
+            new RequiredServiceCustomization(),
         };
 
         internal static IFixture Create() => Create(Customizations);
