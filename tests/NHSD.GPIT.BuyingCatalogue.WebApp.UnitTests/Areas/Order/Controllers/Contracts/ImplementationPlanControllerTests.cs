@@ -201,7 +201,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 .ReturnsAsync(contract);
 
             mockImplementationPlanService
-                .Setup(x => x.AddBespokeMilestone(contract.Id, model.Name, model.PaymentTrigger))
+                .Setup(x => x.AddBespokeMilestone(order.Id,contract.Id, model.Name, model.PaymentTrigger))
                 .ReturnsAsync(1);
 
             var result = await controller.AddMilestone(internalOrgId, order.CallOffId, model);
