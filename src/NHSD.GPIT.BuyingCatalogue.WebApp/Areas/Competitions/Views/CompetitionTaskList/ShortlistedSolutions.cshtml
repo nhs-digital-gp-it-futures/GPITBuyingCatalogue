@@ -1,0 +1,41 @@
+@model CompetitionShortlistedSolutionsModel
+
+@{
+    ViewBag.Title = "Shortlisted Catalogue Solutions";
+}
+
+
+<partial name="Partials/_BackLink" model="Model"/>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.CompetitionName"
+                        advice="These are the solutions you added to your shortlist for this competition."/>
+
+
+        <h2>Your shortlisted solutions</h2>
+        <br/>
+        @foreach (var solution in Model.Solutions)
+        {
+            <h3 class="nhsuk-heading-s">
+                <a asp-action="@nameof(SolutionsController.Description)"
+                   asp-controller="@typeof(SolutionsController).ControllerName()"
+                   asp-area="@typeof(SolutionsController).AreaName()"
+                   asp-route-solutionId="@solution.SolutionId">
+                    @solution.SolutionName (opens in a new tab)
+                </a>
+                <span class="nhsuk-caption-m nhsuk-caption--bottom">
+                    @solution.SupplierName
+                </span>
+            </h3>
+            <h4 class="nhsuk-heading-xs nhsuk-u-margin-bottom-2">Additional Services required:</h4>
+            <p class="nhsuk-body">@solution.GetAdditionalServicesList()</p>
+            <hr/>
+        }
+
+        <vc:nhs-secondary-button text="Continue"
+                                 type="Primary"
+                                 url="@Model.BackLink"/>
+    </div>
+</div>

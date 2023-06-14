@@ -49,14 +49,13 @@ public class CompetitionTaskListController : Controller
     public async Task<IActionResult> ShortlistedSolutions(string internalOrgId, int competitionId)
     {
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-        var competition = await competitionsService.GetCompetition(organisation.Id, competitionId);
+        var competition = await competitionsService.GetCompetitionWithServices(organisation.Id, competitionId);
 
-        var model = new CompetitionTaskListModel(organisation, competition)
+        var model = new CompetitionShortlistedSolutionsModel(competition)
         {
             BackLink = Url.Action(
-                nameof(CompetitionsDashboardController.Index),
-                typeof(CompetitionsDashboardController).ControllerName(),
-                new { internalOrgId }),
+                nameof(Index),
+                new { internalOrgId, competitionId }),
         };
 
         return View(model);

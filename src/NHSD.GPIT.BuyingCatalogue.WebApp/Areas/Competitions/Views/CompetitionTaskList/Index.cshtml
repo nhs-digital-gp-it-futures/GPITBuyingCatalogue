@@ -10,7 +10,7 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.OrganisationName"
-                        advice="Complete the following steps to carry out a competition." />
+                        advice="Complete the following steps to carry out a competition."/>
 
         <h2 class="nhsuk-heading-s">Description</h2>
         <p>@Model.Description</p>
@@ -19,64 +19,64 @@
             <nhs-task-list-section label-text="Prepare competition">
                 <nhs-task-list-item label-text="Shortlisted Catalogue Solutions"
                                     label-hint="View the solutions you added to your shortlist for this competition."
-                                    url="#"
-                                    status="CannotStart" />
+                                    url="@Url.Action(nameof(CompetitionTaskListController.ShortlistedSolutions), typeof(CompetitionTaskListController).ControllerName(), new { internalOrgId = Model.InternalOrgId, competitionId = Model.CompetitionId })"
+                                    status="Completed"/>
 
                 <nhs-task-list-item label-text="Service Recipients"
                                     label-hint="Confirm who’ll be receiving the winning solution to help calculate total costs."
                                     url="#"
-                                    status="CannotStart" />
+                                    status="CannotStart"/>
 
                 <nhs-task-list-item label-text="Contract length"
                                     label-hint="Confirm how long your contract will be in months."
                                     url="#"
-                                    status="CannotStart" />
+                                    status="CannotStart"/>
             </nhs-task-list-section>
 
             <nhs-task-list-section label-text="Define competition criteria">
                 <nhs-task-list-item label-text="Award criteria"
                                     label-hint="Select the award criteria you want to use to compare your shortlisted solutions."
                                     url="#"
-                                    status="CannotStart" />
+                                    status="CannotStart"/>
 
                 <nhs-task-list-item label-text="Award criteria weightings"
                                     label-hint="Give your chosen award criteria weightings based on how important they are to you."
                                     url="#"
-                                    status="CannotStart" />
+                                    status="CannotStart"/>
 
                 <nhs-task-list-item label-text="Non-price elements"
                                     label-hint="Select any non-price elements you want to add to help you score your shortlisted solutions."
                                     url="#"
-                                    status="CannotStart" />
+                                    status="CannotStart"/>
 
                 <nhs-task-list-item label-text="Non-price weightings"
                                     label-hint="Give your chosen non-price elements weightings based on how important they are to you."
                                     url="#"
-                                    status="CannotStart" />
+                                    status="CannotStart"/>
 
                 <nhs-task-list-item label-text="Review competition criteria"
                                     label-hint="Review your weightings and any non-price elements you’ve added to your competition."
                                     url="#"
-                                    status="CannotStart" />
+                                    status="CannotStart"/>
             </nhs-task-list-section>
 
             <nhs-task-list-section label-text="Compare and score solutions">
                 <nhs-task-list-item label-text="Compare and score non-price elements"
                                     label-hint="Compare and score your shortlisted solutions based on non-price elements."
                                     url="#"
-                                    status="CannotStart" />
+                                    status="CannotStart"/>
 
                 <nhs-task-list-item label-text="Calculate price"
                                     label-hint="Provide information to calculate the price for each of your shortlisted solutions."
                                     url="#"
-                                    status="CannotStart" />
+                                    status="CannotStart"/>
             </nhs-task-list-section>
 
             <nhs-task-list-section label-text="Finish and view results">
                 <nhs-task-list-item label-text="View results"
                                     label-hint="Confirm you’re ready to view the final results for this competition."
                                     url="#"
-                                    status="CannotStart" />
+                                    status="CannotStart"/>
             </nhs-task-list-section>
         </nhs-task-list>
     </div>

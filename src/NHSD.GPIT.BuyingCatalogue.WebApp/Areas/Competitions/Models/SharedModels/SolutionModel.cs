@@ -3,7 +3,7 @@ using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.SelectSolutionsModels;
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.SharedModels;
 
 public class SolutionModel
 {
