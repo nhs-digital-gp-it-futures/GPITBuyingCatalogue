@@ -104,10 +104,10 @@
     <PostDeploy Include="PostDeployment\PostDeployment.sql" />
   </ItemGroup>
   <ItemGroup>
-      <Build Include="**/*.sql" />
-      <None Include="PostDeployment/**/*.sql" />
-      <Build Remove="obj/**/*.sql" />
-      <Build Remove="bin/**/*.sql" />
+    <Build Include="**/*.sql" />
+    <None Include="PostDeployment/**/*.sql" />
+    <Build Remove="obj/**/*.sql" />
+    <Build Remove="bin/**/*.sql" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="PostDeployment\" />
