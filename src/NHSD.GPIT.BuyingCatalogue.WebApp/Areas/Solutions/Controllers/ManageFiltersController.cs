@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     model.SelectedCapabilityIds,
                     model.SelectedEpicIds,
                     model.SelectedFrameworkId,
-                    selectedClientApplicationTypeIds = model.CombineSelectedOptions(model.ClientApplicationTypeOptions),
+                    selectedClientApplicationTypeIds = model.CombineSelectedOptions(model.ApplicationTypeOptions),
                     selectedHostingTypeIds = model.CombineSelectedOptions(model.HostingTypeOptions),
                 });
         }
@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var framework = await frameworkService.GetFramework(selectedFrameworkId);
 
-            var clientApplicationTypes = SolutionsFilterHelper.ParseClientApplicationTypeIds(selectedClientApplicationTypeIds)?.ToList();
+            var clientApplicationTypes = SolutionsFilterHelper.ParseApplicationTypeIds(selectedClientApplicationTypeIds)?.ToList();
             var hostingTypes = SolutionsFilterHelper.ParseHostingTypeIds(selectedHostingTypeIds)?.ToList();
 
             var model = new SaveFilterModel(capabilities, epics, framework, clientApplicationTypes, hostingTypes, organisationId)

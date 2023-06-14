@@ -122,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                        search,
                        sortBy = model.SelectedSortOption.ToString(),
                        selectedFrameworkId,
-                       selectedClientApplicationTypeIds = additionalFiltersModel.CombineSelectedOptions(additionalFiltersModel.ClientApplicationTypeOptions),
+                       selectedClientApplicationTypeIds = additionalFiltersModel.CombineSelectedOptions(additionalFiltersModel.ApplicationTypeOptions),
                        selectedHostingTypeIds = additionalFiltersModel.CombineSelectedOptions(additionalFiltersModel.HostingTypeOptions),
                        filterId,
                    });
@@ -298,7 +298,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         }
 
         [HttpGet("{solutionId}/client-application-types")]
-        public async Task<IActionResult> ClientApplicationTypes(CatalogueItemId solutionId)
+        public async Task<IActionResult> ApplicationTypes(CatalogueItemId solutionId)
         {
             var item = await solutionsService.GetSolutionThin(solutionId);
 
@@ -310,7 +310,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
 
-            var model = new ClientApplicationTypesModel(item, contentStatus);
+            var model = new ApplicationTypesModel(item, contentStatus);
 
             return View(model);
         }

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels.DesktopBasedModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeModels.DesktopBasedModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
@@ -33,9 +33,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var clientApplication = solution.Solution.GetClientApplication();
             var model = new DesktopBasedModel(solution)
             {
-                BackLink = clientApplication?.HasClientApplicationType(ApplicationType.Desktop) ?? false
+                BackLink = clientApplication?.HasApplicationType(ApplicationType.Desktop) ?? false
                            ? Url.Action(
-                               nameof(CatalogueSolutionsController.ClientApplicationType),
+                               nameof(CatalogueSolutionsController.ApplicationType),
                                typeof(CatalogueSolutionsController).ControllerName(),
                                new { solutionId })
                            : Url.Action(
@@ -76,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             clientApplication.NativeDesktopOperatingSystemsDescription = model.Description;
 
-            clientApplication.EnsureClientApplicationTypePresent(ApplicationType.Desktop);
+            clientApplication.EnsureApplicationTypePresent(ApplicationType.Desktop);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -112,7 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             clientApplication.NativeDesktopMinimumConnectionSpeed = model.SelectedConnectionSpeed;
 
-            clientApplication.EnsureClientApplicationTypePresent(ApplicationType.Desktop);
+            clientApplication.EnsureApplicationTypePresent(ApplicationType.Desktop);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -153,7 +153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             clientApplication.NativeDesktopMemoryAndStorage.MinimumCpu = model.ProcessingPower;
             clientApplication.NativeDesktopMemoryAndStorage.RecommendedResolution = model.SelectedResolution;
 
-            clientApplication.EnsureClientApplicationTypePresent(ApplicationType.Desktop);
+            clientApplication.EnsureApplicationTypePresent(ApplicationType.Desktop);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -192,7 +192,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             clientApplication.NativeDesktopThirdParty.ThirdPartyComponents = model.ThirdPartyComponents;
             clientApplication.NativeDesktopThirdParty.DeviceCapabilities = model.DeviceCapabilities;
 
-            clientApplication.EnsureClientApplicationTypePresent(ApplicationType.Desktop);
+            clientApplication.EnsureApplicationTypePresent(ApplicationType.Desktop);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -228,7 +228,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             clientApplication.NativeDesktopHardwareRequirements = model.Description;
 
-            clientApplication.EnsureClientApplicationTypePresent(ApplicationType.Desktop);
+            clientApplication.EnsureApplicationTypePresent(ApplicationType.Desktop);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -264,7 +264,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             clientApplication.NativeDesktopAdditionalInformation = model.AdditionalInformation;
 
-            clientApplication.EnsureClientApplicationTypePresent(ApplicationType.Desktop);
+            clientApplication.EnsureApplicationTypePresent(ApplicationType.Desktop);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 

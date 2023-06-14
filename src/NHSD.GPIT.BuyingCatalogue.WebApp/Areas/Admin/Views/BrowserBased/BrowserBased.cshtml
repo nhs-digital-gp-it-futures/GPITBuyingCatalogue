@@ -1,4 +1,4 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels.BrowserBasedModels.BrowserBasedModel
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeModels.BrowserBasedModels.BrowserBasedModel
 @{
     ViewBag.Title = "Browser-based application";
 }
@@ -85,7 +85,7 @@
             <vc:nhs-secondary-button text="Continue"
                                      type="Primary"
                                      url="@Url.Action(
-                                     nameof(CatalogueSolutionsController.ClientApplicationType),
+                                     nameof(CatalogueSolutionsController.ApplicationType),
                                      typeof(CatalogueSolutionsController).ControllerName(),
                                      new { Model.SolutionId })" /><br />
 

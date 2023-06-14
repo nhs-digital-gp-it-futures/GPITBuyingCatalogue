@@ -10,9 +10,9 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
-    public sealed class ClientApplicationTypesModel : SolutionDisplayBaseModel
+    public sealed class ApplicationTypesModel : SolutionDisplayBaseModel
     {
-        public ClientApplicationTypesModel(
+        public ApplicationTypesModel(
             CatalogueItem catalogueItem,
             CatalogueItemContentStatus contentStatus)
             : base(catalogueItem, contentStatus)
@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public ClientApplication ClientApplication { get; init; }
 
         public bool HasApplicationType(ApplicationType clientApplicationType) =>
-            ClientApplication?.ApplicationTypes?.Any(
+            ClientApplication?.ClientApplicationTypes?.Any(
                 s => s.EqualsIgnoreCase(clientApplicationType.EnumMemberName())) ?? false;
 
         private DescriptionListViewModel GetBrowserBasedApplication()

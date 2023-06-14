@@ -392,7 +392,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             context.Filters.Add(filter);
             await context.SaveChangesAsync();
 
-            await service.AddFilterClientApplicationTypes(filter.Id, null);
+            await service.AddFilterApplicationTypes(filter.Id, null);
             context.ChangeTracker.Clear();
 
             var result = await context.Filters.FirstAsync(f => f.Id == filter.Id);
@@ -414,7 +414,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             context.Filters.Add(filter);
             await context.SaveChangesAsync();
 
-            await service.AddFilterClientApplicationTypes(filter.Id, new List<ApplicationType>());
+            await service.AddFilterApplicationTypes(filter.Id, new List<ApplicationType>());
             context.ChangeTracker.Clear();
 
             var result = await context.Filters.FirstAsync(f => f.Id == filter.Id);
@@ -431,7 +431,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             int invalidFilterId,
             ManageFiltersService service)
         {
-            await service.AddFilterClientApplicationTypes(invalidFilterId, cats);
+            await service.AddFilterApplicationTypes(invalidFilterId, cats);
             context.ChangeTracker.Clear();
 
             var filter = await context.Filters.FirstOrDefaultAsync(f => f.Id == invalidFilterId);
@@ -452,7 +452,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             context.Filters.Add(filter);
             await context.SaveChangesAsync();
 
-            await service.AddFilterClientApplicationTypes(filter.Id, cats);
+            await service.AddFilterApplicationTypes(filter.Id, cats);
             context.ChangeTracker.Clear();
 
             var result = await context.Filters.Include(f => f.FilterApplicationTypes).FirstOrDefaultAsync(f => f.Id == filter.Id);

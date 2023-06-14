@@ -341,7 +341,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             var clientApplication = await GetClientApplication(solutionId);
 
-            RemoveClientApplicationType(clientApplication, clientApplicationType);
+            RemoveApplicationType(clientApplication, clientApplicationType);
 
             await SaveClientApplication(solutionId, clientApplication);
         }
@@ -548,18 +548,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(wp => wp.Standard)
                 .Where(wp => wp.SolutionId == solutionId).ToListAsync();
 
-        internal static ClientApplication RemoveClientApplicationType(ClientApplication clientApplication, ApplicationType clientApplicationType)
+        internal static ClientApplication RemoveApplicationType(ClientApplication clientApplication, ApplicationType applicationType)
         {
             if (clientApplication is null)
                 throw new ArgumentNullException(nameof(clientApplication));
 
-            if (clientApplication.ApplicationTypes is not null)
+            if (clientApplication.ClientApplicationTypes is not null)
             {
-                if (clientApplication.ApplicationTypes.Contains(clientApplicationType.AsString(EnumFormat.EnumMemberValue)))
-                    clientApplication.ApplicationTypes.Remove(clientApplicationType.AsString(EnumFormat.EnumMemberValue));
+                if (clientApplication.ClientApplicationTypes.Contains(applicationType.AsString(EnumFormat.EnumMemberValue)))
+                    clientApplication.ClientApplicationTypes.Remove(applicationType.AsString(EnumFormat.EnumMemberValue));
             }
 
-            if (clientApplicationType == ApplicationType.BrowserBased)
+            if (applicationType == ApplicationType.BrowserBased)
             {
                 clientApplication.AdditionalInformation = null;
                 clientApplication.BrowsersSupported = null;
@@ -570,7 +570,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 clientApplication.MobileResponsive = null;
                 clientApplication.Plugins = null;
             }
-            else if (clientApplicationType == ApplicationType.Desktop)
+            else if (applicationType == ApplicationType.Desktop)
             {
                 clientApplication.NativeDesktopAdditionalInformation = null;
                 clientApplication.NativeDesktopHardwareRequirements = null;

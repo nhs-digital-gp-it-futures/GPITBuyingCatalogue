@@ -361,9 +361,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             ApplicationType clientApplicationType,
             ClientApplication clientApplication)
         {
-            clientApplication.EnsureClientApplicationTypePresent(clientApplicationType);
+            clientApplication.EnsureApplicationTypePresent(clientApplicationType);
 
-            clientApplication.ApplicationTypes.Should().Contain(clientApplicationType.AsString(EnumFormat.EnumMemberValue));
+            clientApplication.ClientApplicationTypes.Should().Contain(clientApplicationType.AsString(EnumFormat.EnumMemberValue));
         }
 
         [Theory]
@@ -476,9 +476,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         public static void HasClientApplicationType_True(
             ClientApplication clientApplication)
         {
-            clientApplication.EnsureClientApplicationTypePresent(ApplicationType.BrowserBased);
+            clientApplication.EnsureApplicationTypePresent(ApplicationType.BrowserBased);
 
-            clientApplication.HasClientApplicationType(ApplicationType.BrowserBased).Should().BeTrue();
+            clientApplication.HasApplicationType(ApplicationType.BrowserBased).Should().BeTrue();
         }
 
         [Fact]
@@ -486,7 +486,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         {
             var clientApplication = new ClientApplication();
 
-            clientApplication.HasClientApplicationType(ApplicationType.BrowserBased).Should().BeFalse();
+            clientApplication.HasApplicationType(ApplicationType.BrowserBased).Should().BeFalse();
         }
 
         private static class ResultSetData

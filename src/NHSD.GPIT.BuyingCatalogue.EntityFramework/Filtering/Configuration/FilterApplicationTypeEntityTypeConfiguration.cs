@@ -6,9 +6,9 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Configuration
 {
     internal sealed class
-        FilterClientApplicationTypeEntityTypeConfiguration : IEntityTypeConfiguration<FilterClientApplicationType>
+        FilterApplicationTypeEntityTypeConfiguration : IEntityTypeConfiguration<FilterApplicationType>
     {
-        public void Configure(EntityTypeBuilder<FilterClientApplicationType> builder)
+        public void Configure(EntityTypeBuilder<FilterApplicationType> builder)
         {
             builder.ToTable(
                 "FilterClientApplicationTypes",

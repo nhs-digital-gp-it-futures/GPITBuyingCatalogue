@@ -441,7 +441,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             [Frozen] BuyingCatalogueDbContext context,
             SolutionsService service)
         {
-            clientApplication.ApplicationTypes =
+            clientApplication.ClientApplicationTypes =
                 new HashSet<string> { "browser-based", "native-mobile", "native-desktop" };
             catalogueSolution.ClientApplication = JsonSerializer.Serialize(clientApplication);
             context.Solutions.Add(catalogueSolution);
@@ -456,9 +456,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             var actualClientApplication = JsonDeserializer.Deserialize<ClientApplication>(actual.ClientApplication);
 
-            actualClientApplication.ApplicationTypes.Any(c => c.Equals("browser-based")).Should().BeFalse();
-            actualClientApplication.ApplicationTypes.Any(c => c.Equals("native-mobile")).Should().BeTrue();
-            actualClientApplication.ApplicationTypes.Any(c => c.Equals("native-desktop")).Should().BeTrue();
+            actualClientApplication.ClientApplicationTypes.Any(c => c.Equals("browser-based")).Should().BeFalse();
+            actualClientApplication.ClientApplicationTypes.Any(c => c.Equals("native-mobile")).Should().BeTrue();
+            actualClientApplication.ClientApplicationTypes.Any(c => c.Equals("native-desktop")).Should().BeTrue();
         }
 
         [Theory]
@@ -466,18 +466,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static void Remove_BrowserBased_ClientApplication_RemovesBrowserBasedEntries(
             ClientApplication clientApplication)
         {
-            clientApplication.ApplicationTypes = new HashSet<string>
+            clientApplication.ClientApplicationTypes = new HashSet<string>
             {
                 ApplicationType.BrowserBased.AsString(EnumFormat.EnumMemberValue),
                 ApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue),
                 ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue),
             };
 
-            var updatedClientApplication = SolutionsService.RemoveClientApplicationType(
+            var updatedClientApplication = SolutionsService.RemoveApplicationType(
                 clientApplication,
                 ApplicationType.BrowserBased);
 
-            updatedClientApplication.ApplicationTypes.Should()
+            updatedClientApplication.ClientApplicationTypes.Should()
                 .BeEquivalentTo(
                     new HashSet<string>
                     {
@@ -528,18 +528,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [CommonAutoData]
         public static void Remove_Desktop_ClientApplication_RemovesDesktopEntries(ClientApplication clientApplication)
         {
-            clientApplication.ApplicationTypes = new HashSet<string>
+            clientApplication.ClientApplicationTypes = new HashSet<string>
             {
                 ApplicationType.BrowserBased.AsString(EnumFormat.EnumMemberValue),
                 ApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue),
                 ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue),
             };
 
-            var updatedClientApplication = SolutionsService.RemoveClientApplicationType(
+            var updatedClientApplication = SolutionsService.RemoveApplicationType(
                 clientApplication,
                 ApplicationType.Desktop);
 
-            updatedClientApplication.ApplicationTypes.Should()
+            updatedClientApplication.ClientApplicationTypes.Should()
                 .BeEquivalentTo(
                     new HashSet<string>
                     {
@@ -584,18 +584,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [CommonAutoData]
         public static void Remove_Mobile_ClientApplication_RemovesMobileEntries(ClientApplication clientApplication)
         {
-            clientApplication.ApplicationTypes = new HashSet<string>
+            clientApplication.ClientApplicationTypes = new HashSet<string>
             {
                 ApplicationType.BrowserBased.AsString(EnumFormat.EnumMemberValue),
                 ApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue),
                 ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue),
             };
 
-            var updatedClientApplication = SolutionsService.RemoveClientApplicationType(
+            var updatedClientApplication = SolutionsService.RemoveApplicationType(
                 clientApplication,
                 ApplicationType.MobileTablet);
 
-            updatedClientApplication.ApplicationTypes.Should()
+            updatedClientApplication.ClientApplicationTypes.Should()
                 .BeEquivalentTo(
                     new HashSet<string>
                     {

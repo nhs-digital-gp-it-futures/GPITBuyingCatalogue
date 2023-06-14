@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 {
     public sealed class ClientApplication
     {
-        public HashSet<string> ApplicationTypes { get; set; } = new();
+        public HashSet<string> ClientApplicationTypes { get; set; } = new();
 
         [JsonConverter(typeof(SupportedBrowsersJsonConverter))]
         public HashSet<SupportedBrowser> BrowsersSupported { get; set; } = new();
@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         public string NativeDesktopAdditionalInformation { get; set; }
 
-        public IReadOnlyList<ApplicationType> ExistingClientApplicationTypes
+        public IReadOnlyList<ApplicationType> ExistingApplicationTypes
         {
             get
             {
@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
                 foreach (ApplicationType applicationType in Enum.GetValues(typeof(ApplicationType)))
                 {
-                    if (ApplicationTypes?.Any(type => type.Equals(applicationType.AsString(EnumFormat.EnumMemberValue), StringComparison.OrdinalIgnoreCase)) ?? false)
+                    if (ClientApplicationTypes?.Any(type => type.Equals(applicationType.AsString(EnumFormat.EnumMemberValue), StringComparison.OrdinalIgnoreCase)) ?? false)
                         result.Add(applicationType);
                 }
 
@@ -71,16 +71,16 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
             }
         }
 
-        public void EnsureClientApplicationTypePresent(ApplicationType applicationType)
+        public void EnsureApplicationTypePresent(ApplicationType applicationType)
         {
-            ApplicationTypes ??= new HashSet<string>();
+            ClientApplicationTypes ??= new HashSet<string>();
 
-            if (!ApplicationTypes.Any(type => type.Equals(applicationType.AsString(EnumFormat.EnumMemberValue), StringComparison.OrdinalIgnoreCase)))
-                ApplicationTypes.Add(applicationType.AsString(EnumFormat.EnumMemberValue));
+            if (!ClientApplicationTypes.Any(type => type.Equals(applicationType.AsString(EnumFormat.EnumMemberValue), StringComparison.OrdinalIgnoreCase)))
+                ClientApplicationTypes.Add(applicationType.AsString(EnumFormat.EnumMemberValue));
         }
 
-        public bool HasClientApplicationType(ApplicationType applicationType)
-            => ApplicationTypes?.Any(type => type.Equals(applicationType.AsString(EnumFormat.EnumMemberValue), StringComparison.OrdinalIgnoreCase)) ?? false;
+        public bool HasApplicationType(ApplicationType applicationType)
+            => ClientApplicationTypes?.Any(type => type.Equals(applicationType.AsString(EnumFormat.EnumMemberValue), StringComparison.OrdinalIgnoreCase)) ?? false;
 
         public TaskProgress AdditionalInformationStatus() => Status(AdditionalInformation);
 

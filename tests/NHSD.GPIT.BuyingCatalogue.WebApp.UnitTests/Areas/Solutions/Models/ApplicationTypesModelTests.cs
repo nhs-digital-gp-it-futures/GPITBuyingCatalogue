@@ -15,27 +15,27 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 {
-    public static class ClientApplicationTypesModelTests
+    public static class ApplicationTypesModelTests
     {
         [Fact]
-        public static void ClientApplicationTypesModel_NullCatalogueItem_ThrowsException()
+        public static void ApplicationTypesModel_NullCatalogueItem_ThrowsException()
         {
-            var actual = Assert.Throws<ArgumentNullException>(() => new ClientApplicationTypesModel(null, new CatalogueItemContentStatus()));
+            var actual = Assert.Throws<ArgumentNullException>(() => new ApplicationTypesModel(null, new CatalogueItemContentStatus()));
             actual.ParamName.Should().Be("catalogueItem");
         }
 
         [Fact]
-        public static void ClientApplicationTypesModel_NullSolution_ThrowsException()
+        public static void ApplicationTypesModel_NullSolution_ThrowsException()
         {
-            var actual = Assert.Throws<ArgumentNullException>(() => new ClientApplicationTypesModel(new CatalogueItem() { Solution = null }, new CatalogueItemContentStatus()));
+            var actual = Assert.Throws<ArgumentNullException>(() => new ApplicationTypesModel(new CatalogueItem() { Solution = null }, new CatalogueItemContentStatus()));
             actual.ParamName.Should().Be("catalogueItem");
         }
 
         [Fact]
         public static void ApplicationTypes_UIHintAttribute_ExpectedHint()
         {
-            typeof(ClientApplicationTypesModel)
-                .GetProperty(nameof(ClientApplicationTypesModel.ApplicationTypes))
+            typeof(ApplicationTypesModel)
+                .GetProperty(nameof(ApplicationTypesModel.ApplicationTypes))
                 .GetCustomAttribute<UIHintAttribute>()
                 .UIHint.Should()
                 .Be("DescriptionList");
@@ -44,8 +44,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Fact]
         public static void BrowserBasedApplication_UIHintAttribute_ExpectedHint()
         {
-            typeof(ClientApplicationTypesModel)
-                .GetProperty(nameof(ClientApplicationTypesModel.BrowserBasedApplication))
+            typeof(ApplicationTypesModel)
+                .GetProperty(nameof(ApplicationTypesModel.BrowserBasedApplication))
                 .GetCustomAttribute<UIHintAttribute>()
                 .UIHint.Should()
                 .Be("DescriptionList");
@@ -54,8 +54,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Fact]
         public static void NativeMobileApplication_UIHintAttribute_ExpectedHint()
         {
-            typeof(ClientApplicationTypesModel)
-                .GetProperty(nameof(ClientApplicationTypesModel.NativeMobileApplication))
+            typeof(ApplicationTypesModel)
+                .GetProperty(nameof(ApplicationTypesModel.NativeMobileApplication))
                 .GetCustomAttribute<UIHintAttribute>()
                 .UIHint.Should()
                 .Be("DescriptionList");
@@ -64,8 +64,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Fact]
         public static void NativeDesktopApplication_UIHintAttribute_ExpectedHint()
         {
-            typeof(ClientApplicationTypesModel)
-                .GetProperty(nameof(ClientApplicationTypesModel.NativeDesktopApplication))
+            typeof(ApplicationTypesModel)
+                .GetProperty(nameof(ApplicationTypesModel.NativeDesktopApplication))
                 .GetCustomAttribute<UIHintAttribute>()
                 .UIHint.Should()
                 .Be("DescriptionList");
@@ -78,14 +78,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             [Frozen] CatalogueItem catalogueItem,
             [Frozen] Solution solution,
             [Frozen] ClientApplication clientApplication,
-            ClientApplicationTypesModel model)
+            ApplicationTypesModel model)
         {
             // CatalogueItem and Solution must be frozen so that a catalogue item instance with solution is passed
             // to the ClientApplicationTypesModel constructor
             _ = catalogueItem;
             _ = solution;
 
-            clientApplication.ApplicationTypes = new HashSet<string> { clientApplicationType.EnumMemberName() };
+            clientApplication.ClientApplicationTypes = new HashSet<string> { clientApplicationType.EnumMemberName() };
 
             var actual = model.HasApplicationType(clientApplicationType);
 
@@ -98,14 +98,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             [Frozen] CatalogueItem catalogueItem,
             [Frozen] Solution solution,
             [Frozen] ClientApplication clientApplication,
-            ClientApplicationTypesModel model)
+            ApplicationTypesModel model)
         {
             // CatalogueItem and Solution must be frozen so that a catalogue item instance with solution is passed
             // to the ClientApplicationTypesModel constructor
             _ = catalogueItem;
             _ = solution;
 
-            clientApplication.ApplicationTypes =
+            clientApplication.ClientApplicationTypes =
                 new HashSet<string> { ApplicationType.Desktop.EnumMemberName() };
 
             var actual = model.HasApplicationType(ApplicationType.MobileTablet);
@@ -121,7 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         {
             var clientApplication = new ClientApplication
             {
-                ApplicationTypes = new() { ApplicationType.BrowserBased.EnumMemberName() },
+                ClientApplicationTypes = new() { ApplicationType.BrowserBased.EnumMemberName() },
                 BrowsersSupported = new() { new() { BrowserName = "Chrome" } },
                 MobileResponsive = true,
                 Plugins = new() { Required = true, AdditionalInformation = "AdditionalInformation" },
@@ -133,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
             solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
 
-            var model = new ClientApplicationTypesModel(solution.CatalogueItem, contentStatus);
+            var model = new ApplicationTypesModel(solution.CatalogueItem, contentStatus);
 
             model.BrowserBasedApplication.Should().NotBeNull();
             model.BrowserBasedApplication.Items.Should().HaveCount(8);
@@ -157,7 +157,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         {
             var clientApplication = new ClientApplication
             {
-                ApplicationTypes = new() { ApplicationType.Desktop.EnumMemberName() },
+                ClientApplicationTypes = new() { ApplicationType.Desktop.EnumMemberName() },
                 NativeDesktopOperatingSystemsDescription = "Windows 95",
                 NativeDesktopMinimumConnectionSpeed = "10Gbps",
                 NativeDesktopMemoryAndStorage = new()
@@ -175,7 +175,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
             solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
 
-            var model = new ClientApplicationTypesModel(solution.CatalogueItem, contentStatus);
+            var model = new ApplicationTypesModel(solution.CatalogueItem, contentStatus);
 
             model.NativeDesktopApplication.Should().NotBeNull();
             model.NativeDesktopApplication.Items.Should().HaveCount(10);
@@ -201,7 +201,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         {
             var clientApplication = new ClientApplication
             {
-                ApplicationTypes = new() { ApplicationType.MobileTablet.EnumMemberName() },
+                ClientApplicationTypes = new() { ApplicationType.MobileTablet.EnumMemberName() },
                 MobileOperatingSystems =
                     new() { OperatingSystems = new() { "MS-DOS" }, OperatingSystemsDescription = "256MB DDR", },
                 MobileConnectionDetails =
@@ -219,7 +219,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
             solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
 
-            var model = new ClientApplicationTypesModel(solution.CatalogueItem, contentStatus);
+            var model = new ApplicationTypesModel(solution.CatalogueItem, contentStatus);
 
             model.NativeMobileApplication.Should().NotBeNull();
             model.NativeMobileApplication.Items.Should().HaveCount(11);
@@ -246,7 +246,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         {
             var clientApplication = new ClientApplication
             {
-                ApplicationTypes = new()
+                ClientApplicationTypes = new()
                 {
                     ApplicationType.Desktop.EnumMemberName(),
                     ApplicationType.BrowserBased.EnumMemberName(),
@@ -256,7 +256,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
             solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
 
-            var model = new ClientApplicationTypesModel(solution.CatalogueItem, contentStatus);
+            var model = new ApplicationTypesModel(solution.CatalogueItem, contentStatus);
 
             model.ApplicationTypes.Should().NotBeNull();
             model.ApplicationTypes.Items.Should()

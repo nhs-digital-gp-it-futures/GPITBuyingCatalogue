@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var actual = (await controller.DeleteApplicationTypeConfirmation(catalogueItemId, clientApplicationType, model)).As<RedirectToActionResult>();
 
             mockService.Verify(s => s.DeleteClientApplication(catalogueItemId, clientApplicationType));
-            actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ClientApplicationType));
+            actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ApplicationType));
             actual.ControllerName.Should().Be(typeof(CatalogueSolutionsController).ControllerName());
             actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
         }

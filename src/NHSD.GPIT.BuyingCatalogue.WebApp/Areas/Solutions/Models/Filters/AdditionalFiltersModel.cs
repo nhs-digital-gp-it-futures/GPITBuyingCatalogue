@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
         public AdditionalFiltersModel(List<FrameworkFilterInfo> frameworks, string selectedFrameworkId, string selectedClientApplicationTypeIds, string selectedHostingTypeIds, string selectedCapabilityIds, string selectedEpicIds)
         {
             SetFrameworkOptions(frameworks, selectedFrameworkId);
-            SetClientApplicationTypeOptions(selectedClientApplicationTypeIds);
+            SetApplicationTypeOptions(selectedClientApplicationTypeIds);
             SetHostingTypeOptions(selectedHostingTypeIds);
             SelectedCapabilityIds = selectedCapabilityIds;
             SelectedEpicIds = selectedEpicIds;
@@ -37,9 +37,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 
         public string FrameworkFilter { get; set; }
 
-        public List<SelectOption<int>> ClientApplicationTypeOptions { get; set; }
+        public List<SelectOption<int>> ApplicationTypeOptions { get; set; }
 
-        public string[] ClientApplicationTypeFilters => ClientApplicationTypeOptions
+        public string[] ApplicationTypeFilters => ApplicationTypeOptions
             ?.Where(f => f.Selected)
             ?.Select(f => f.Text)
             ?.ToArray() ?? Array.Empty<string>();
@@ -75,9 +75,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                 : string.Empty;
         }
 
-        private void SetClientApplicationTypeOptions(string selectedClientApplicationTypeIds)
+        private void SetApplicationTypeOptions(string selectedClientApplicationTypeIds)
         {
-            ClientApplicationTypeOptions = Enum.GetValues(typeof(ApplicationType))
+            ApplicationTypeOptions = Enum.GetValues(typeof(ApplicationType))
                 .Cast<ApplicationType>()
                 .Select(
                     x => new SelectOption<int>

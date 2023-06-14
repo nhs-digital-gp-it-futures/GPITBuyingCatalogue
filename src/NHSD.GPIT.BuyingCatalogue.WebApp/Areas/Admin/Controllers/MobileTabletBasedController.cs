@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels.MobileTabletBasedModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeModels.MobileTabletBasedModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
@@ -34,9 +34,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var clientApplication = solution.Solution.GetClientApplication();
             var model = new MobileTabletBasedModel(solution)
             {
-                BackLink = clientApplication?.HasClientApplicationType(ApplicationType.MobileTablet) ?? false
+                BackLink = clientApplication?.HasApplicationType(ApplicationType.MobileTablet) ?? false
                            ? Url.Action(
-                               nameof(CatalogueSolutionsController.ClientApplicationType),
+                               nameof(CatalogueSolutionsController.ApplicationType),
                                typeof(CatalogueSolutionsController).ControllerName(),
                                new { solutionId })
                            : Url.Action(
@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             clientApplication.MobileOperatingSystems.OperatingSystemsDescription = model.Description;
 
-            clientApplication.EnsureClientApplicationTypePresent(ApplicationType.MobileTablet);
+            clientApplication.EnsureApplicationTypePresent(ApplicationType.MobileTablet);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -140,7 +140,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 .Select(o => o.ConnectionType)
                 .ToHashSet();
 
-            clientApplication.EnsureClientApplicationTypePresent(ApplicationType.MobileTablet);
+            clientApplication.EnsureApplicationTypePresent(ApplicationType.MobileTablet);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -178,7 +178,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             clientApplication.MobileMemoryAndStorage.MinimumMemoryRequirement = model.SelectedMemorySize;
             clientApplication.MobileMemoryAndStorage.Description = model.Description;
 
-            clientApplication.EnsureClientApplicationTypePresent(ApplicationType.MobileTablet);
+            clientApplication.EnsureApplicationTypePresent(ApplicationType.MobileTablet);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -217,7 +217,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             clientApplication.MobileThirdParty.ThirdPartyComponents = model.ThirdPartyComponents;
             clientApplication.MobileThirdParty.DeviceCapabilities = model.DeviceCapabilities;
 
-            clientApplication.EnsureClientApplicationTypePresent(ApplicationType.MobileTablet);
+            clientApplication.EnsureApplicationTypePresent(ApplicationType.MobileTablet);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -253,7 +253,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             clientApplication.NativeMobileHardwareRequirements = model.Description;
 
-            clientApplication.EnsureClientApplicationTypePresent(ApplicationType.MobileTablet);
+            clientApplication.EnsureApplicationTypePresent(ApplicationType.MobileTablet);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -289,7 +289,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             clientApplication.NativeMobileAdditionalInformation = model.AdditionalInformation;
 
-            clientApplication.EnsureClientApplicationTypePresent(ApplicationType.MobileTablet);
+            clientApplication.EnsureApplicationTypePresent(ApplicationType.MobileTablet);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 

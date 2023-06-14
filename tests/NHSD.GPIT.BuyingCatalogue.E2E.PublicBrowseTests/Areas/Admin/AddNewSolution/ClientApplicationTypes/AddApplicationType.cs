@@ -9,10 +9,10 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientApplicationTypes
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ApplicationTypes
 {
     [Collection(nameof(AdminCollection))]
-    public sealed class AddClientApplicationType : AuthorityTestBase, IDisposable
+    public sealed class AddApplicationType : AuthorityTestBase, IDisposable
     {
         private static readonly CatalogueItemId SolutionId = new(99999, "002");
 
@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
             { nameof(SolutionId), SolutionId.ToString() },
         };
 
-        public AddClientApplicationType(LocalWebApplicationFactory factory)
+        public AddApplicationType(LocalWebApplicationFactory factory)
             : base(
                   factory,
                   typeof(CatalogueSolutionsController),
@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.ClientApplicationType))
+                nameof(CatalogueSolutionsController.ApplicationType))
                 .Should().BeTrue();
         }
 

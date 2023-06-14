@@ -8,7 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientApplicationTypes.BrowserBased
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ApplicationTypes.BrowserBased
 {
     [Collection(nameof(AdminCollection))]
     public sealed class BrowserBasedDashboard : AuthorityTestBase, IDisposable
@@ -80,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.ClientApplicationType))
+                nameof(CatalogueSolutionsController.ApplicationType))
                 .Should().BeTrue();
         }
 

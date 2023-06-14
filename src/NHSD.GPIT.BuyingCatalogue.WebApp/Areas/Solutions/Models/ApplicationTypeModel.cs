@@ -4,9 +4,9 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
-    public class ClientApplicationTypeModel
+    public class ApplicationTypeModel
     {
-        public ClientApplicationTypeModel(ClientApplicationType type, ClientApplication client)
+        public ApplicationTypeModel(ApplicationType type, ClientApplication client)
         {
             if (client == null)
             {
@@ -16,21 +16,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
             switch (type)
             {
-                case ClientApplicationType.BrowserBased:
+                case ApplicationType.BrowserBased:
                     LoadBrowserBasedDetails(client);
                     break;
 
-                case ClientApplicationType.NativeMobile:
+                case ApplicationType.NativeMobile:
                     LoadNativeMobileDetails(client);
                     break;
 
-                case ClientApplicationType.NativeDesktop:
+                case ApplicationType.NativeDesktop:
                     LoadNativeDesktopDetails(client);
                     break;
             }
         }
 
-        public enum ClientApplicationType
+        public enum ApplicationType
         {
             BrowserBased,
             NativeMobile,

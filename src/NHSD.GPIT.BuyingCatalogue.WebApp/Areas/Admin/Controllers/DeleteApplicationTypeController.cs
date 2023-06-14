@@ -65,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             await solutionsService.DeleteClientApplication(solutionId, applicationType);
 
             return RedirectToAction(
-                nameof(CatalogueSolutionsController.ClientApplicationType),
+                nameof(CatalogueSolutionsController.ApplicationType),
                 typeof(CatalogueSolutionsController).ControllerName(),
                 new { solutionId });
         }

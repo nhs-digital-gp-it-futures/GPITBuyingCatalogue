@@ -1,15 +1,15 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeModels
 {
-    public sealed class ClientApplicationTypeSelectionModel : ClientApplicationTypeSectionModel
+    public sealed class ApplicationTypeSelectionModel : ApplicationTypeSectionModel
     {
-        public ClientApplicationTypeSelectionModel()
+        public ApplicationTypeSelectionModel()
         {
         }
 
-        public ClientApplicationTypeSelectionModel(CatalogueItem catalogueItem)
+        public ApplicationTypeSelectionModel(CatalogueItem catalogueItem)
             : base(catalogueItem)
         {
         }

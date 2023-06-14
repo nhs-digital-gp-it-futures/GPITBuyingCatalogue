@@ -11,7 +11,7 @@ using OpenQA.Selenium;
 using Xunit;
 using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientApplicationTypes
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ApplicationTypes
 {
     [Collection(nameof(AdminCollection))]
     public sealed class ClientApplication : AuthorityTestBase
@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
             : base(
                   factory,
                   typeof(CatalogueSolutionsController),
-                  nameof(CatalogueSolutionsController.ClientApplicationType),
+                  nameof(CatalogueSolutionsController.ApplicationType),
                   Parameters)
         {
         }
@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
         {
             NavigateToUrl(
                 typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.ClientApplicationType),
+                nameof(CatalogueSolutionsController.ApplicationType),
                 ExistingClientApplicationsParameters);
 
             var formattedApplicationName = FormatApplicationType(clientApplicationType);

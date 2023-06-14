@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models
             Capabilities = new HashSet<Capability>();
             Epics = new HashSet<Epic>();
             FilterHostingTypes = new HashSet<FilterHostingType>();
-            FilterApplicationTypes = new HashSet<FilterClientApplicationType>();
+            FilterApplicationTypes = new HashSet<FilterApplicationType>();
         }
 
         public int Id { get; set; }
@@ -46,6 +46,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models
 
         public ICollection<FilterHostingType> FilterHostingTypes { get; set; }
 
-        public ICollection<FilterClientApplicationType> FilterApplicationTypes { get; set; }
+        public ICollection<FilterApplicationType> FilterApplicationTypes { get; set; }
     }
 }

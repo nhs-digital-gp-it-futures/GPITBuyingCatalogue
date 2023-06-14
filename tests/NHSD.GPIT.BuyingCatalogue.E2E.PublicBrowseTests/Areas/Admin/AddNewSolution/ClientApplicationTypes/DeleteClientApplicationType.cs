@@ -14,7 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientApplicationTypes
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ApplicationTypes
 {
     [Collection(nameof(AdminCollection))]
     public sealed class DeleteClientApplicationType : AuthorityTestBase
@@ -123,12 +123,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.ClientApplicationType))
+                nameof(CatalogueSolutionsController.ApplicationType))
                 .Should().BeTrue();
             var solution = await context.Solutions.AsNoTracking().FirstAsync(s => s.CatalogueItemId == SolutionId);
             var clientApplication = solution.GetClientApplication();
 
-            clientApplication.ApplicationTypes.Should().NotContain(clientApplicationType.AsString(EnumFormat.EnumMemberValue));
+            clientApplication.ClientApplicationTypes.Should().NotContain(clientApplicationType.AsString(EnumFormat.EnumMemberValue));
 
             solution.ClientApplication = originalClientApplication;
             context.Update(solution);

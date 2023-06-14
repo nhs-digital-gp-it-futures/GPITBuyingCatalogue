@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels.BrowserBasedModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeModels.BrowserBasedModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
@@ -34,8 +34,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var clientApplication = solution.Solution.GetClientApplication();
             var model = new BrowserBasedModel(solution)
             {
-                BackLink = clientApplication?.HasClientApplicationType(ApplicationType.BrowserBased) ?? false
-                           ? Url.Action(nameof(CatalogueSolutionsController.ClientApplicationType), typeof(CatalogueSolutionsController).ControllerName(), new { solutionId })
+                BackLink = clientApplication?.HasApplicationType(ApplicationType.BrowserBased) ?? false
+                           ? Url.Action(nameof(CatalogueSolutionsController.ApplicationType), typeof(CatalogueSolutionsController).ControllerName(), new { solutionId })
                            : Url.Action(nameof(CatalogueSolutionsController.AddApplicationType), typeof(CatalogueSolutionsController).ControllerName(), new { solutionId }),
             };
 
@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 ? null
                 : model.MobileResponsive.EqualsIgnoreCase("Yes");
 
-            clientApplication.EnsureClientApplicationTypePresent(ApplicationType.BrowserBased);
+            clientApplication.EnsureApplicationTypePresent(ApplicationType.BrowserBased);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -120,7 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                     : model.PlugInsRequired.EqualsIgnoreCase("Yes"),
             };
 
-            clientApplication.EnsureClientApplicationTypePresent(ApplicationType.BrowserBased);
+            clientApplication.EnsureApplicationTypePresent(ApplicationType.BrowserBased);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -152,7 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             clientApplication.MinimumConnectionSpeed = model.SelectedConnectionSpeed;
             clientApplication.MinimumDesktopResolution = model.SelectedScreenResolution;
-            clientApplication.EnsureClientApplicationTypePresent(ApplicationType.BrowserBased);
+            clientApplication.EnsureApplicationTypePresent(ApplicationType.BrowserBased);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -184,7 +184,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return BadRequest($"No Client Application found for Solution Id: {solutionId}");
 
             clientApplication.HardwareRequirements = model.Description;
-            clientApplication.EnsureClientApplicationTypePresent(ApplicationType.BrowserBased);
+            clientApplication.EnsureApplicationTypePresent(ApplicationType.BrowserBased);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -212,7 +212,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return BadRequest($"No Client Application found for Solution Id: {solutionId}");
 
             clientApplication.AdditionalInformation = model.AdditionalInformation;
-            clientApplication.EnsureClientApplicationTypePresent(ApplicationType.BrowserBased);
+            clientApplication.EnsureApplicationTypePresent(ApplicationType.BrowserBased);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 

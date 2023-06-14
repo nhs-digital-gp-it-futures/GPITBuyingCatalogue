@@ -18,8 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers
             epicIds?.Split(FilterConstants.Delimiter, StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries)
         .ToList() ?? new List<string>();
 
-        public static ICollection<ApplicationType> ParseClientApplicationTypeIds(string clientApplicationTypeIds) =>
-            clientApplicationTypeIds?.Split(FilterConstants.Delimiter, StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries)
+        public static ICollection<ApplicationType> ParseApplicationTypeIds(string applicationTypeIds) =>
+            applicationTypeIds?.Split(FilterConstants.Delimiter, StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries)
                 .Where(x => Enum.TryParse(typeof(ApplicationType), x, out var catValue) && Enum.IsDefined(typeof(ApplicationType), catValue))
                 .Select(t => (ApplicationType)Enum.Parse(typeof(ApplicationType), t))
                 .ToList() ?? new List<ApplicationType>();
