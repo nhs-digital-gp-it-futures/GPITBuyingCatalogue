@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DataProces
         };
 
         public BespokeDataProcessingPlan(LocalWebApplicationFactory factory)
-            : base(factory, typeof(DataProcessingPlanController), nameof(DataProcessingPlanController), Parameters)
+            : base(factory, typeof(DataProcessingPlanController), nameof(DataProcessingPlanController.Index), Parameters)
         {
         }
 
@@ -33,14 +33,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DataProces
             CommonActions.ClickGoBackLink();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(DataProcessingPlanController),
-                nameof(DataProcessingPlanController.Index)).Should().BeTrue();
+                typeof(OrderController),
+                nameof(OrderController.Order)).Should().BeTrue();
         }
 
         [Fact]
         public void BespokeDataProcessingPlan_ClickSave_ExpectedResult()
         {
-            CommonActions.ClickContinue();
+            CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderController),

@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DataProces
         [Fact]
         public void DefaultDataProcessingPlan_ClickContinue_ExpectedResult()
         {
-            CommonActions.ClickContinue();
+            CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderController),
