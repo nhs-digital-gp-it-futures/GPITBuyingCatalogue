@@ -8,10 +8,13 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -51,7 +54,10 @@ public static class CompetitionsDashboardControllerTests
         competitionsService.Setup(x => x.GetCompetitions(organisation.Id))
             .ReturnsAsync(competitions);
 
-        var expectedModel = new CompetitionDashboardModel(organisation.InternalIdentifier, organisation.Name, competitions);
+        var expectedModel = new CompetitionDashboardModel(
+            organisation.InternalIdentifier,
+            organisation.Name,
+            competitions);
 
         var result = (await controller.Index(organisation.InternalIdentifier)).As<ViewResult>();
 
@@ -160,7 +166,8 @@ public static class CompetitionsDashboardControllerTests
         filtersService.Setup(x => x.GetFilterDetails(It.IsAny<int>(), filterId))
             .ReturnsAsync((FilterDetailsModel)null);
 
-        var result = (await controller.ReviewFilter(organisation.InternalIdentifier, filterId)).As<RedirectToActionResult>();
+        var result = (await controller.ReviewFilter(organisation.InternalIdentifier, filterId))
+            .As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.SelectFilter));
@@ -243,21 +250,49 @@ public static class CompetitionsDashboardControllerTests
     [CommonAutoData]
     public static async Task Post_SaveCompetition_ValidInput_SavesCompetition(
         Organisation organisation,
+        Competition competition,
         int filterId,
+        FilterIdsModel filterIdsModel,
         SaveCompetitionModel model,
+        List<CatalogueItem> catalogueItems,
         [Frozen] Mock<IOrganisationsService> organisationsService,
         [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] Mock<ISolutionsFilterService> solutionsFilterService,
+        [Frozen] Mock<IManageFiltersService> filtersService,
         CompetitionsDashboardController controller)
     {
         organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
             .ReturnsAsync(organisation);
 
+        competitionsService.Setup(x => x.GetCompetitionWithServices(organisation.Id, It.IsAny<int>(), true))
+            .ReturnsAsync(competition);
+
+        filtersService.Setup(x => x.GetFilterIds(organisation.Id, filterId))
+            .ReturnsAsync(filterIdsModel);
+
+        solutionsFilterService.Setup(
+                x => x.GetAllSolutionsFiltered(
+                    It.IsAny<PageOptions>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()))
+            .ReturnsAsync((catalogueItems, null, null));
+
         var result = (await controller.SaveCompetition(organisation.InternalIdentifier, filterId, model))
             .As<RedirectToActionResult>();
 
         competitionsService.Verify(x => x.AddCompetition(organisation.Id, filterId, model.Name, model.Description));
+        competitionsService.Verify(
+            x => x.AddCompetitionSolutions(
+                organisation.Id,
+                competition.Id,
+                It.IsAny<IEnumerable<CompetitionSolution>>()));
 
         result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(controller.Index));
+        result.ActionName.Should().Be(nameof(CompetitionSelectSolutionsController.SelectSolutions));
+        result.ControllerName.Should().Be(typeof(CompetitionSelectSolutionsController).ControllerName());
     }
 }
