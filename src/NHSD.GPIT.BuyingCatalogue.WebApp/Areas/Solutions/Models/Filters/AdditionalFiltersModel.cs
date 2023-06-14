@@ -15,10 +15,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
         {
         }
 
-        public AdditionalFiltersModel(List<FrameworkFilterInfo> frameworks, string selectedFrameworkId, string selectedClientApplicationTypeIds, string selectedHostingTypeIds, string selectedCapabilityIds, string selectedEpicIds)
+        public AdditionalFiltersModel(List<FrameworkFilterInfo> frameworks, string selectedFrameworkId, string selectedApplicationTypeIds, string selectedHostingTypeIds, string selectedCapabilityIds, string selectedEpicIds)
         {
             SetFrameworkOptions(frameworks, selectedFrameworkId);
-            SetApplicationTypeOptions(selectedClientApplicationTypeIds);
+            SetApplicationTypeOptions(selectedApplicationTypeIds);
             SetHostingTypeOptions(selectedHostingTypeIds);
             SelectedCapabilityIds = selectedCapabilityIds;
             SelectedEpicIds = selectedEpicIds;
@@ -75,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                 : string.Empty;
         }
 
-        private void SetApplicationTypeOptions(string selectedClientApplicationTypeIds)
+        private void SetApplicationTypeOptions(string selectedApplicationTypeIds)
         {
             ApplicationTypeOptions = Enum.GetValues(typeof(ApplicationType))
                 .Cast<ApplicationType>()
@@ -84,8 +84,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                     {
                         Value = (int)x,
                         Text = x.Name(),
-                        Selected = !string.IsNullOrEmpty(selectedClientApplicationTypeIds)
-                            && selectedClientApplicationTypeIds.Contains(((int)x).ToString()),
+                        Selected = !string.IsNullOrEmpty(selectedApplicationTypeIds)
+                            && selectedApplicationTypeIds.Contains(((int)x).ToString()),
                     })
                 .OrderBy(x => x.Text)
                 .ToList();

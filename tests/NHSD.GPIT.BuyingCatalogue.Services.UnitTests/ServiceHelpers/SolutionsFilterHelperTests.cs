@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
         }
 
         [Fact]
-        public static void ParseClientApplicationTypeIds_OneItemNotParseable_GeneratesResults()
+        public static void ParseApplicationTypeIds_OneItemNotParseable_GeneratesResults()
         {
             var input = "0.1.hello.2";
 
@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
         }
 
         [Fact]
-        public static void ParseClientApplicationTypeIds_OneItemNotInEnum_GeneratesResults()
+        public static void ParseApplicationTypeIds_OneItemNotInEnum_GeneratesResults()
         {
             var input = "0.1.2.6";
 
@@ -93,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
         }
 
         [Fact]
-        public static void ParseClientApplicationTypeIds_EmptyAndWhiteSpace_GeneratesResults()
+        public static void ParseApplicationTypeIds_EmptyAndWhiteSpace_GeneratesResults()
         {
             var input = "0.1. .2..    ";
 
@@ -105,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
         }
 
         [Fact]
-        public static void ParseClientApplicationTypeIds_RandomInput_GeneratesResults()
+        public static void ParseApplicationTypeIds_RandomInput_GeneratesResults()
         {
             var input = "iogjhoiudfhjgouhouhagdf souihadsfgouihdsfg";
 
@@ -117,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
         }
 
         [Fact]
-        public static void ParseClientApplicationTypeIds_NullString_GeneratesResults()
+        public static void ParseApplicationTypeIds_NullString_GeneratesResults()
         {
             var input = string.Empty;
 
@@ -129,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
         }
 
         [Fact]
-        public static void ParseClientApplicationTypeIds_CorrectInput_GeneratesResults()
+        public static void ParseApplicationTypeIds_CorrectInput_GeneratesResults()
         {
             var input = "0.1.2";
 

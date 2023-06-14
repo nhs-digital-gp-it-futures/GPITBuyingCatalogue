@@ -381,7 +381,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task AddFilterClientApplicationTypes_NullCatIds_NoCatsAdded(
+        public static async Task AddFilterApplicationTypes_NullCatIds_NoCatsAdded(
             [Frozen] BuyingCatalogueDbContext context,
             Organisation organisation,
             Filter filter,
@@ -403,7 +403,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task AddFilterClientApplicationTypes_EmptyCatIds_NoCatsAdded(
+        public static async Task AddFilterApplicationTypes_EmptyCatIds_NoCatsAdded(
             [Frozen] BuyingCatalogueDbContext context,
             Organisation organisation,
             Filter filter,
@@ -425,7 +425,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task AddFilterClientApplicationTypes_NullFilter_NoCatsAdded(
+        public static async Task AddFilterApplicationTypes_NullFilter_NoCatsAdded(
             [Frozen] BuyingCatalogueDbContext context,
             List<ApplicationType> cats,
             int invalidFilterId,
@@ -440,7 +440,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task AddFilterClientApplicationTypes_ValidParameters_CatsAdded(
+        public static async Task AddFilterApplicationTypes_ValidParameters_CatsAdded(
             [Frozen] BuyingCatalogueDbContext context,
             Organisation organisation,
             Filter filter,

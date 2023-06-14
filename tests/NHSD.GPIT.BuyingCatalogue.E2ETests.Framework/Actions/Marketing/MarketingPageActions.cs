@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Marketing
                 ContactDetailsActions = new(driver),
                 DashboardActions = new(driver),
                 FeaturesActions = new(driver),
-                ClientApplicationTypeActions = new(driver),
+                ApplicationTypeActions = new(driver),
                 PreviewActions = new(driver),
                 HostingTypeActions = new(driver),
             };

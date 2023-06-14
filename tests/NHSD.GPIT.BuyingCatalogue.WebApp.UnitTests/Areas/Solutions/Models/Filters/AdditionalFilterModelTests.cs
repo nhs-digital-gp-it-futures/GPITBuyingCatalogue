@@ -116,11 +116,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
 
         [Theory]
         [InlineData(null)]
-        public static void Constructor_WithNullApplicationTypeSelected_CreatesApplicationTypeCheckBoxItems_NoneSelected(string selectedClientApplicationTypeIds)
+        public static void Constructor_WithNullApplicationTypeSelected_CreatesApplicationTypeCheckBoxItems_NoneSelected(string selectedApplicationTypeIds)
         {
             var expectedCount = 3;
 
-            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), string.Empty, selectedClientApplicationTypeIds, string.Empty, string.Empty, string.Empty);
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), string.Empty, selectedApplicationTypeIds, string.Empty, string.Empty, string.Empty);
 
             model.ApplicationTypeOptions.Should().NotBeNull();
             model.ApplicationTypeOptions.Should().HaveCount(expectedCount);

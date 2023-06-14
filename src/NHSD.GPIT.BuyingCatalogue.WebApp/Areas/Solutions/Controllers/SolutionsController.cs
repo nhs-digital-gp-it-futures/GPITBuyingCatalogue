@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             [FromQuery] string selectedEpicIds,
             [FromQuery] string search,
             [FromQuery] string selectedFrameworkId,
-            [FromQuery] string selectedClientApplicationTypeIds,
+            [FromQuery] string selectedApplicationTypeIds,
             [FromQuery] string selectedHostingTypeIds,
             [FromQuery] int? filterId)
         {
@@ -78,11 +78,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     selectedEpicIds,
                     search,
                     selectedFrameworkId,
-                    selectedClientApplicationTypeIds,
+                    selectedApplicationTypeIds,
                     selectedHostingTypeIds);
             var (catalogueItemsWithoutFrameworkFilter, capabilitiesAndCountWithoutFrameworkFilter) = await solutionsFilterService.GetFilteredAndNonFilteredQueryResults(selectedCapabilityIds, selectedEpicIds);
             var frameworks = await frameworkService.GetFrameworksByCatalogueItems(catalogueItemsWithoutFrameworkFilter.Select(x => x.Id).ToList());
-            var additionalFilters = new Models.Filters.AdditionalFiltersModel(frameworks, selectedFrameworkId, selectedClientApplicationTypeIds, selectedHostingTypeIds, selectedCapabilityIds, selectedEpicIds);
+            var additionalFilters = new Models.Filters.AdditionalFiltersModel(frameworks, selectedFrameworkId, selectedApplicationTypeIds, selectedHostingTypeIds, selectedCapabilityIds, selectedEpicIds);
 
             return View(new SolutionsModel()
             {
@@ -122,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                        search,
                        sortBy = model.SelectedSortOption.ToString(),
                        selectedFrameworkId,
-                       selectedClientApplicationTypeIds = additionalFiltersModel.CombineSelectedOptions(additionalFiltersModel.ApplicationTypeOptions),
+                       selectedApplicationTypeIds = additionalFiltersModel.CombineSelectedOptions(additionalFiltersModel.ApplicationTypeOptions),
                        selectedHostingTypeIds = additionalFiltersModel.CombineSelectedOptions(additionalFiltersModel.HostingTypeOptions),
                        filterId,
                    });

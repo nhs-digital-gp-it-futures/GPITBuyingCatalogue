@@ -8,7 +8,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 {
-    public static class ClientApplicationTypeSectionModelTests
+    public static class ApplicationTypeSectionModelTests
     {
         [Theory]
         [CommonAutoData]

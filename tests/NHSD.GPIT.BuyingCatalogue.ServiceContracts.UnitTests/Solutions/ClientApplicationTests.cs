@@ -357,7 +357,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [CommonInlineAutoData(ApplicationType.BrowserBased)]
         [CommonInlineAutoData(ApplicationType.MobileTablet)]
         [CommonInlineAutoData(ApplicationType.Desktop)]
-        public static void ClientApplicationTypes_IsUpdatedCorrectly(
+        public static void ApplicationTypes_IsUpdatedCorrectly(
             ApplicationType clientApplicationType,
             ClientApplication clientApplication)
         {
@@ -473,7 +473,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
 
         [Theory]
         [CommonAutoData]
-        public static void HasClientApplicationType_True(
+        public static void HasApplicationType_True(
             ClientApplication clientApplication)
         {
             clientApplication.EnsureApplicationTypePresent(ApplicationType.BrowserBased);
@@ -482,7 +482,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Fact]
-        public static void HasClientApplicationType_False()
+        public static void HasApplicationType_False()
         {
             var clientApplication = new ClientApplication();
 

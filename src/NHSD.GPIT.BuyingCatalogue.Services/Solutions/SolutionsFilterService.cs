@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             string selectedEpicIds = null,
             string search = null,
             string selectedFrameworkId = null,
-            string selectedClientApplicationTypeIds = null,
+            string selectedApplicationTypeIds = null,
             string selectedHostingTypeIds = null)
         {
             options ??= new PageOptions();
@@ -64,11 +64,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             if (!string.IsNullOrWhiteSpace(selectedFrameworkId))
                 query = query.Where(ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == selectedFrameworkId));
-            if (!string.IsNullOrWhiteSpace(selectedClientApplicationTypeIds))
+            if (!string.IsNullOrWhiteSpace(selectedApplicationTypeIds))
             {
                 query = ApplyAdditionalFilterToQuery<ApplicationType>(
                     query,
-                    selectedClientApplicationTypeIds,
+                    selectedApplicationTypeIds,
                     GetSelectedFiltersClientApplication,
                     x => !string.IsNullOrEmpty(x.ClientApplication));
             }

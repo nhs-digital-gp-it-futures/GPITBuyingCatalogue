@@ -22,12 +22,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
 
             ISpecimenBuilder ComposerTransformation(ICustomizationComposer<ClientApplication> composer) => composer
                 .With(c => c.BrowsersSupported, browsersSupported)
-                .With(c => c.ClientApplicationTypes, GetClientApplicationTypes);
+                .With(c => c.ClientApplicationTypes, GetApplicationTypes);
 
             fixture.Customize<ClientApplication>(ComposerTransformation);
         }
 
-        private static HashSet<string> GetClientApplicationTypes()
+        private static HashSet<string> GetApplicationTypes()
         {
             var result = new HashSet<string>();
 
