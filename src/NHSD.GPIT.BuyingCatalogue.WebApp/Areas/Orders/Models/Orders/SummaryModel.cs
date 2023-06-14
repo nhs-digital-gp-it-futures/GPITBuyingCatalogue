@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
         {
             InternalOrgId = internalOrgId;
             OrderWrapper = orderWrapper;
-            DefaultPlan = defaultPlan ?? throw new ArgumentNullException(nameof(defaultPlan));
+            DefaultPlan = defaultPlan;
         }
 
         public OrderWrapper OrderWrapper { get; }

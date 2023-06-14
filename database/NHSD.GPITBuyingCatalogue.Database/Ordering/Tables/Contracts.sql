@@ -4,12 +4,10 @@
     OrderId int NOT NULL, 
     ImplementationPlanId int NULL,
     LastUpdated datetime2(7) DEFAULT GETUTCDATE() NOT NULL,
-    LastUpdatedBy int NULL,
     SysStartTime datetime2(0) GENERATED ALWAYS AS ROW START NOT NULL,
     SysEndTime datetime2(0) GENERATED ALWAYS AS ROW END NOT NULL,
     PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
     CONSTRAINT PK_Contracts PRIMARY KEY (Id),
     CONSTRAINT FK_Contracts_Order FOREIGN KEY (OrderId) REFERENCES ordering.Orders(Id),
-    CONSTRAINT FK_Contracts_ImplementationPlan FOREIGN KEY (ImplementationPlanId) REFERENCES ordering.ImplementationPlans(Id),
-    CONSTRAINT FK_Contracts_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id)
-) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = ordering.Contracts_History));
+    CONSTRAINT FK_Contracts_ImplementationPlan FOREIGN KEY (ImplementationPlanId) REFERENCES ordering.ImplementationPlans(Id)
+);

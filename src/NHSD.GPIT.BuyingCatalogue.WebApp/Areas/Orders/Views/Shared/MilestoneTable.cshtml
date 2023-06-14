@@ -1,11 +1,7 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
+﻿@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Shared.MilestoneTableModel
-@{
-    var milestones = Model?.Milestones ?? new List<ImplementationPlanMilestone>();
-}
 
 <div class="nhsuk-u-margin-bottom-9">
     <nhs-table label-text="@Model.Title">
@@ -16,7 +12,7 @@
             <nhs-table-column>Action</nhs-table-column>
         }
         
-        @foreach (var milestone in milestones)
+        @foreach (var milestone in Model.Milestones)
         {
             <nhs-table-row-container>
                 <nhs-table-cell>@milestone.Title</nhs-table-cell>

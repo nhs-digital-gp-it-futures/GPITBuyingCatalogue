@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Shared
@@ -9,16 +10,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Shared
         {
         }
 
-        public MilestoneTableModel(string title, ICollection<ImplementationPlanMilestone> milestones, bool isAction, CallOffId callOffId, string internalOrgId)
+        public MilestoneTableModel(string title, IEnumerable<ImplementationPlanMilestone> milestones, bool isAction, CallOffId callOffId, string internalOrgId)
         {
             Title = title;
-            Milestones = milestones;
+            Milestones = milestones ?? Enumerable.Empty<ImplementationPlanMilestone>();
             IsAction = isAction;
             CallOffId = callOffId;
             InternalOrgId = internalOrgId;
         }
 
-        public ICollection<ImplementationPlanMilestone> Milestones { get; set; }
+        public IEnumerable<ImplementationPlanMilestone> Milestones { get; set; }
 
         public string Title { get; set; }
 

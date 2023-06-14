@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
                 .FirstOrDefaultAsync(x => x.IsDefault == true);
         }
 
-        public async Task<int> AddBespokeMilestone(int contractId, string name, string paymentTrigger)
+        public async Task<int> AddBespokeMilestone(int orderId, int contractId, string name, string paymentTrigger)
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException(nameof(name));
@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
                 throw new ArgumentNullException(nameof(paymentTrigger));
 
             var contract = await dbContext.Contracts.Include(x => x.ImplementationPlan)
-                    .FirstOrDefaultAsync(o => o.Id == contractId) ?? throw new ArgumentException("Invalid contract", nameof(contractId));
+                    .FirstOrDefaultAsync(o => o.Id == contractId && o.OrderId == orderId) ?? throw new ArgumentException("Invalid contract", nameof(contractId));
 
             if (contract.ImplementationPlan == null)
             {

@@ -7,6 +7,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts
     {
         Task<ImplementationPlan> GetDefaultImplementationPlan();
 
-        Task<int> AddBespokeMilestone(int contractId, string name, string paymentTrigger);
+        Task<int> AddBespokeMilestone(int orderId, int contractId, string name, string paymentTrigger);
     }
 }

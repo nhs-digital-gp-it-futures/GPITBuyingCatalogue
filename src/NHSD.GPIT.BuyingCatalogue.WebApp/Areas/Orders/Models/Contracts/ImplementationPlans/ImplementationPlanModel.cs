@@ -8,7 +8,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Impleme
 {
     public class ImplementationPlanModel : NavBaseModel
     {
-        public ImplementationPlanModel() { }
+        public ImplementationPlanModel()
+        {
+        }
 
         public ImplementationPlanModel(ImplementationPlan defaultPlan, ImplementationPlan bespokePlan, Solution solution)
         {

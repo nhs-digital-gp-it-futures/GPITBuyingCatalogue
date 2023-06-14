@@ -95,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
             var contract = await contractsService.AddContract(order.Id);
 
-            await implementationPlanService.AddBespokeMilestone(contract.Id, model.Name, model.PaymentTrigger);
+            await implementationPlanService.AddBespokeMilestone(order.Id, contract.Id, model.Name, model.PaymentTrigger);
 
             return RedirectToAction(nameof(Index), new { internalOrgId, callOffId });
         }

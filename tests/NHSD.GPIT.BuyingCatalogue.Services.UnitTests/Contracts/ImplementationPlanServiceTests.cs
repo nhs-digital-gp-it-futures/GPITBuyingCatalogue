@@ -60,6 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         [CommonInlineAutoData(" ")]
         public static void AddBespokeMilestone_NullOrEmptyName_ThrowsException(
             string name,
+            int orderId,
             int contractId,
             string paymentTrigger,
             ImplementationPlanService service)
@@ -67,6 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             FluentActions
                 .Awaiting(
                     () => service.AddBespokeMilestone(
+                        orderId,
                         contractId,
                         name,
                         paymentTrigger))
@@ -80,6 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         [CommonInlineAutoData(" ")]
         public static void AddBespokeMilestone_NullOrEmptyPaymentTrigger_ThrowsException(
             string paymentTrigger,
+            int orderId,
             int contractId,
             string name,
             ImplementationPlanService service)
@@ -87,6 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             FluentActions
                 .Awaiting(
                     () => service.AddBespokeMilestone(
+                        orderId,
                         contractId,
                         name,
                         paymentTrigger))
@@ -98,6 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         [InMemoryDbAutoData]
         public static void AddBespokeMilestone_NullContract_ThrowsException(
             string paymentTrigger,
+            int orderId,
             int contractId,
             string name,
             ImplementationPlanService service)
@@ -105,6 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             FluentActions
                 .Awaiting(
                     () => service.AddBespokeMilestone(
+                        orderId,
                         contractId,
                         name,
                         paymentTrigger))
@@ -114,18 +120,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task AddBespokeMilestone_NullImplementationPlan_IpAndMilestoneCreated(
+        public static async Task AddBespokeMilestone_NullImplementationPlan_PlanAndMilestoneCreated(
             [Frozen] BuyingCatalogueDbContext context,
             string paymentTrigger,
             string name,
             Contract contract,
+            Order order,
             ImplementationPlanService service)
         {
+            context.Orders.Add(order);
+            await context.SaveChangesAsync();
+
+            contract.Order = order;
             contract.ImplementationPlan = null;
             context.Contracts.Add(contract);
             await context.SaveChangesAsync();
 
             var result = await service.AddBespokeMilestone(
+                order.Id,
                 contract.Id,
                 name,
                 paymentTrigger);
@@ -139,6 +151,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             var newMilestone = actual.ImplementationPlan.Milestones.First();
             newMilestone.Title.Should().Be(name);
             newMilestone.PaymentTrigger.Should().Be(paymentTrigger);
+
+            context.ChangeTracker.Clear();
         }
 
         [Theory]
@@ -147,15 +161,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             [Frozen] BuyingCatalogueDbContext context,
             string paymentTrigger,
             string name,
+            Order order,
             Contract contract,
             ImplementationPlanService service)
         {
+            context.Orders.Add(order);
+            await context.SaveChangesAsync();
+
+            contract.Order = order;
+
             var numberOfMilestones = contract.ImplementationPlan?.Milestones?.Count;
             context.Contracts.Add(contract);
 
             await context.SaveChangesAsync();
 
             var result = await service.AddBespokeMilestone(
+                order.Id,
                 contract.Id,
                 name,
                 paymentTrigger);
@@ -166,6 +187,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             actual.ImplementationPlan.Should().BeEquivalentTo(contract.ImplementationPlan);
             actual.ImplementationPlan.Milestones.Should().NotBeNull();
             actual.ImplementationPlan.Milestones.Count.Should().Be(numberOfMilestones + 1);
+
+            context.ChangeTracker.Clear();
         }
     }
 }

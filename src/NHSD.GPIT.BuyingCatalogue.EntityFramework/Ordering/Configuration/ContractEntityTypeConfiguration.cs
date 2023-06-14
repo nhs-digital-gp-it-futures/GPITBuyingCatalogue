@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
@@ -14,14 +15,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
 
             builder.Property(x => x.OrderId).IsRequired();
 
-            builder.HasOne(x => x.LastUpdatedByUser)
-                .WithMany()
-                .HasForeignKey(x => x.LastUpdatedBy)
-                .HasConstraintName("FK_Contracts_LastUpdatedBy");
-
             builder.HasOne(x => x.ImplementationPlan)
-                .WithMany()
-                .HasForeignKey(x => x.ImplementationPlanId)
+                .WithOne(y => y.Contract)
+                .HasForeignKey<Contract>(x => x.ImplementationPlanId)
                 .HasConstraintName("FK_Contracts_ImplementationPlan");
 
             builder.HasOne(x => x.Order)
