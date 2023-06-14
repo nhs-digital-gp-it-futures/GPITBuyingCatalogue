@@ -43,9 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public bool HasBespokeMilestones => BespokePlan != null && BespokePlan.Milestones.Any();
 
-        public string DefaultMilestoneLabelText => HasBespokeMilestones
-            ? "Default milestones and payment triggers"
-            : "Milestones and payment triggers";
+        public string DefaultMilestoneLabelText => "Default milestones and payment triggers";
 
         public string BespokeMilestoneLabelText => "Bespoke milestones and payment triggers";
 

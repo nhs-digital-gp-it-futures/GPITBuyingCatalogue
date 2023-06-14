@@ -42,10 +42,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
 
         public bool HasBespokeMilestones => BespokePlan != null && BespokePlan.Milestones.Any();
 
-        public string DefaultMilestoneLabelText => HasBespokeMilestones
-            ? "Default milestones and payment triggers"
-            : "Milestones and payment triggers";
-
         public FundingTypeDescriptionModel FundingTypeDescription(CatalogueItemId catalogueItemId)
         {
             return new FundingTypeDescriptionModel(OrderWrapper.FundingTypesForItem(catalogueItemId));

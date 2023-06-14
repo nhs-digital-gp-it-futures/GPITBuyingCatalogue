@@ -54,6 +54,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             return View(model);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Index(string internalOrgId, CallOffId callOffId, ImplementationPlanModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var order = (await orderService.GetOrderThin(model.CallOffId, model.InternalOrgId)).Order;
+            await contractsService.AddContract(order.Id);
+
+            return RedirectToAction(nameof(Order), typeof(OrderController).ControllerName(), new { internalOrgId, callOffId });
+        }
+
         [HttpGet("add-milestone")]
         public IActionResult AddMilestone(string internalOrgId, CallOffId callOffId)
         {
@@ -79,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             }
 
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
-            var contract = await contractsService.GetContract(order.Id);
+            var contract = await contractsService.AddContract(order.Id);
 
             await implementationPlanService.AddBespokeMilestone(contract.Id, model.Name, model.PaymentTrigger);
 

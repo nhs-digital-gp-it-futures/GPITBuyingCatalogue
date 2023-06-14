@@ -7,6 +7,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts
     {
         Task<Contract> GetContract(int orderId);
 
+        Task<Contract> AddContract(int orderId);
+
         Task<ContractFlags> GetContractFlags(int orderId);
 
         Task RemoveContractFlags(int orderId);

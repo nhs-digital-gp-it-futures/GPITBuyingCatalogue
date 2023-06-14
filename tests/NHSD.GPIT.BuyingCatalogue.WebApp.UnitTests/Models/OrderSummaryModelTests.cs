@@ -31,7 +31,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models
             model.DefaultImplementationPlan.Should().Be(defaultPlan);
             model.BespokePlan.Should().BeEquivalentTo(order.Contract.ImplementationPlan);
             model.HasBespokeMilestones.Should().BeTrue();
-            model.DefaultMilestoneLabelText.Should().Be("Default milestones and payment triggers");
         }
 
         [Theory]
@@ -48,7 +47,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models
             var model = new OrderSummaryModel(new OrderWrapper(order), defaultPlan);
 
             model.HasBespokeMilestones.Should().BeFalse();
-            model.DefaultMilestoneLabelText.Should().Be("Milestones and payment triggers");
         }
 
         [Theory]
@@ -68,7 +66,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models
             var model = new OrderSummaryModel(new OrderWrapper(order), defaultPlan);
 
             model.HasBespokeMilestones.Should().BeFalse();
-            model.DefaultMilestoneLabelText.Should().Be("Milestones and payment triggers");
         }
     }
 }

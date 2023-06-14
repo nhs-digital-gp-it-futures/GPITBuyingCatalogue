@@ -8,6 +8,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Impleme
 {
     public class ImplementationPlanModel : NavBaseModel
     {
+        public ImplementationPlanModel() { }
+
         public ImplementationPlanModel(ImplementationPlan defaultPlan, ImplementationPlan bespokePlan, Solution solution)
         {
             DefaultPlan = defaultPlan ?? throw new ArgumentNullException(nameof(defaultPlan));
@@ -30,9 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Impleme
         public string SupplierImplementationPlan => Solution?.ImplementationDetail
             ?? "The supplier has not provided a standard implementation plan. You should contact them to discuss this.";
 
-        public string DefaultMilestoneLabelText => HasBespokeMilestones
-            ? "Default milestones and payment triggers"
-            : "Milestones and payment triggers";
+        public string DefaultMilestoneLabelText => "Default milestones and payment triggers";
 
         public string BespokeMilestoneLabelText => "Bespoke milestones and payment triggers";
     }

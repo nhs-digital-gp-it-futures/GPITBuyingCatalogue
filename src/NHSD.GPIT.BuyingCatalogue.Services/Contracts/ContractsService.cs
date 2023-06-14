@@ -19,10 +19,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
 
         public async Task<Contract> GetContract(int orderId)
         {
-            var output = await dbContext.Contracts
+            return await dbContext.Contracts
                 .AsNoTracking()
                 .Include(x => x.ImplementationPlan)
                 .ThenInclude(x => x.Milestones.OrderBy(m => m.Order))
+                .FirstOrDefaultAsync(x => x.OrderId == orderId);
+        }
+
+        public async Task<Contract> AddContract(int orderId)
+        {
+            var output = await dbContext.Contracts
+                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.OrderId == orderId);
 
             if (output != null)

@@ -15,6 +15,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.ImplementationPlans;
 using Xunit;
@@ -117,6 +118,52 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
         [Theory]
         [CommonAutoData]
+        public static async Task Post_Index_ModelError_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            ImplementationPlanModel model,
+            ImplementationPlanController controller)
+        {
+            controller.ModelState.AddModelError("some-property", "some-error");
+
+            var result = await controller.Index(internalOrgId, callOffId, model);
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+            actualResult.ViewName.Should().BeNull();
+            actualResult.Model.Should().BeEquivalentTo(model);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_Index_ReturnsExpectedResult(
+            string internalOrgId,
+            ImplementationPlanModel model,
+            EntityFramework.Ordering.Models.Order order,
+            Contract contract,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] Mock<IContractsService> mockContractsService,
+            ImplementationPlanController controller)
+        {
+            contract.Order = order;
+            mockOrderService
+                .Setup(s => s.GetOrderThin(model.CallOffId, model.InternalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            mockContractsService
+                .Setup(x => x.AddContract(order.Id))
+                .ReturnsAsync(contract);
+
+            var result = await controller.Index(internalOrgId, order.CallOffId, model);
+
+            mockOrderService.VerifyAll();
+            mockContractsService.VerifyAll();
+
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+            actualResult.ActionName.Should().Be(nameof(OrderController.Order));
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static async Task Post_AddMilestone_ModelError_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -150,7 +197,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 .ReturnsAsync(new OrderWrapper(order));
 
             mockContractsService
-                .Setup(x => x.GetContract(order.Id))
+                .Setup(x => x.AddContract(order.Id))
                 .ReturnsAsync(contract);
 
             mockImplementationPlanService
