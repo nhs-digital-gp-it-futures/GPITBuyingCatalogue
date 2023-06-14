@@ -138,24 +138,16 @@
             @if (Model.CallOffId != default)
             {
                 <nhs-button-group>
-                    <vc:nhs-secondary-button text="Preview order"
-                                             url="@Url.Action(
-                                                      nameof(OrderController.Summary),
-                                                      typeof(OrderController).ControllerName(),
-                                                      new { Model.InternalOrgId, Model.CallOffId })"
-                                             type="Secondary"/>
 
                     <vc:nhs-secondary-button text="Save for later"
                                      url="@Model.BackLink"
                                      type="Secondary" />
                 </nhs-button-group>
 
-                <vc:nhs-secondary-button text="@deleteButtonTitle"
-                                         url="@Url.Action(
-                                                  nameof(DeleteOrderController.DeleteOrder),
-                                                  typeof(DeleteOrderController).ControllerName(),
-                                                  new { Model.InternalOrgId, Model.CallOffId })"
-                                         type="Delete"/>
+                <vc:nhs-delete-button url="@Url.Action(nameof(DeleteOrderController.DeleteOrder),
+                                     typeof(DeleteOrderController).ControllerName(),
+                                     new { Model.InternalOrgId, Model.CallOffId })"
+                                  text="@deleteButtonTitle" />
             }
 
             @if (Model.LastUpdated is not null
