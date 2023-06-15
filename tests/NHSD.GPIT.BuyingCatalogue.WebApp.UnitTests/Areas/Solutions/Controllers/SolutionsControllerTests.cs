@@ -1333,6 +1333,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             result.Model.As<NavBaseModel>().BackLink.Should().Be(controller.Request.Headers.Referer);
         }
 
+        [Theory]
+        [CommonAutoData]
+        public static void SolutionSort_ReturnsViewWithModel(
+            SolutionsController controller)
+        {
+            var result = controller.SolutionSort().As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeOfType<SolutionSortModel>();
+        }
+
         private static string GetIntegrationsJson()
         {
             var integrations = new List<Integration>
