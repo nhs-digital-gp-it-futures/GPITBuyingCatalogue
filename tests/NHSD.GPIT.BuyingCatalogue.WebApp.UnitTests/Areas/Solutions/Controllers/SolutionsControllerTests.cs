@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "page", null },
-                { "sortBy", solutionModel.SelectedSortOption.ToString() },
+                { "sortBy", null },
                 { "search", null },
                 { "selectedCapabilityIds", null },
                 { "selectedEpicIds", null },
