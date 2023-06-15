@@ -14,6 +14,7 @@ using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -36,6 +37,37 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             var constructors = typeof(SolutionsService).GetConstructors();
 
             assertion.Verify(constructors);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetSolutionLoadingStatuses_With_Null_ClientApplicationType_Should_be_Status_NotStarted(
+            [Frozen] BuyingCatalogueDbContext context,
+            Solution solution,
+            SolutionsService service)
+        {
+            solution.ClientApplication = null;
+            context.Solutions.Add(solution);
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var actual = await service.GetSolutionLoadingStatuses(solution.CatalogueItemId);
+            actual.ClientApplicationType.Should().Be(TaskProgress.NotStarted);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetSolutionLoadingStatuses_With_ClientApplicationType_Should_be_Status_Completed(
+            [Frozen] BuyingCatalogueDbContext context,
+            Solution solution,
+            SolutionsService service)
+        {
+            context.Solutions.Add(solution);
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var actual = await service.GetSolutionLoadingStatuses(solution.CatalogueItemId);
+            actual.ClientApplicationType.Should().Be(TaskProgress.Completed);
         }
 
         [Theory]

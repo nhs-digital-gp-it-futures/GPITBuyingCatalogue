@@ -11,6 +11,7 @@ using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.PublishStatus;
@@ -37,6 +38,51 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var constructors = typeof(CatalogueSolutionsController).GetConstructors();
 
             assertion.Verify(constructors);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AddApplicationType_BrowserBased(
+            CatalogueItemId catalogueItemId,
+            ClientApplicationTypeSelectionModel model,
+            CatalogueSolutionsController controller)
+        {
+            model.SelectedApplicationType = ClientApplicationType.BrowserBased;
+
+            var result = (await controller.AddApplicationType(catalogueItemId, model)).As<RedirectToActionResult>();
+
+            result.ActionName.Should().Be(nameof(BrowserBasedController.BrowserBased));
+            result.ControllerName.Should().Be(typeof(BrowserBasedController).ControllerName());
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AddApplicationType_Desktop(
+            CatalogueItemId catalogueItemId,
+            ClientApplicationTypeSelectionModel model,
+            CatalogueSolutionsController controller)
+        {
+            model.SelectedApplicationType = ClientApplicationType.Desktop;
+
+            var result = (await controller.AddApplicationType(catalogueItemId, model)).As<RedirectToActionResult>();
+
+            result.ActionName.Should().Be(nameof(DesktopBasedController.Desktop));
+            result.ControllerName.Should().Be(typeof(DesktopBasedController).ControllerName());
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AddApplicationType_MobileTablet(
+            CatalogueItemId catalogueItemId,
+            ClientApplicationTypeSelectionModel model,
+            CatalogueSolutionsController controller)
+        {
+            model.SelectedApplicationType = ClientApplicationType.MobileTablet;
+
+            var result = (await controller.AddApplicationType(catalogueItemId, model)).As<RedirectToActionResult>();
+
+            result.ActionName.Should().Be(nameof(MobileTabletBasedController.MobileTablet));
+            result.ControllerName.Should().Be(typeof(MobileTabletBasedController).ControllerName());
         }
 
         [Theory]
