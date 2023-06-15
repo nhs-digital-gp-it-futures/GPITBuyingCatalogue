@@ -192,7 +192,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(ImplementationPlanController),
-                nameof(ImplementationPlanController.DefaultImplementationPlan))
+                nameof(ImplementationPlanController.Index))
                     .Should().BeTrue();
         }
 

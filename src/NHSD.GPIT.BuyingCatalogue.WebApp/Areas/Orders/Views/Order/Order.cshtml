@@ -96,7 +96,7 @@
                                         label-hint="@Model.StatusDescription(OrderSummaryField.ImplementationPlan, isAmendment)"
                                         data-test-id="test-implementation-milestones"
                                         url="@Url.Action(
-                                                 nameof(ImplementationPlanController.DefaultImplementationPlan),
+                                                 nameof(ImplementationPlanController.Index),
                                                  typeof(ImplementationPlanController).ControllerName(),
                                                  new { Model.InternalOrgId, Model.CallOffId })"
                                         status="@Model.Progress.ImplementationPlan" />

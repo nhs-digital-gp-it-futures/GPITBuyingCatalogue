@@ -896,7 +896,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             await controller.ConfirmSolutionChanges(internalOrgId, callOffId, model);
 
             orderService.VerifyAll();
-            mockContractsService.Verify(s => s.RemoveContract(orderId), Times.Once());
+            mockContractsService.Verify(s => s.RemoveContractFlags(orderId), Times.Once());
         }
 
         [Theory]
@@ -1038,7 +1038,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             await controller.ConfirmSolutionChangesAssociatedServicesOnly(internalOrgId, callOffId, model);
 
             orderService.VerifyAll();
-            mockContractsService.Verify(s => s.RemoveContract(orderId), Times.Once());
+            mockContractsService.Verify(s => s.RemoveContractFlags(orderId), Times.Once());
         }
     }
 }

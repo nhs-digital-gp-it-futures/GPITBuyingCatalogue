@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             var implementationPlan = await implementationPlanService.GetDefaultImplementationPlan();
             var targetMilestone = implementationPlan.Milestones.OrderBy(ms => ms.Order).LastOrDefault();
             var orderId = await orderService.GetOrderId(internalOrgId, callOffId);
-            var contractFlags = await contractsService.GetContract(orderId);
+            var contractFlags = await contractsService.GetContractFlags(orderId);
 
             var model = new ReviewBillingModel(callOffId, targetMilestone, contractFlags, associatedServiceItems)
             {
@@ -99,7 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         public async Task<IActionResult> SpecificRequirements(string internalOrgId, CallOffId callOffId, [FromQuery] bool? fromBespoke = false)
         {
             var orderId = await orderService.GetOrderId(internalOrgId, callOffId);
-            var contractFlags = await contractsService.GetContract(orderId);
+            var contractFlags = await contractsService.GetContractFlags(orderId);
 
             var goBackLink = fromBespoke!.Value
                 ? Url.Action(

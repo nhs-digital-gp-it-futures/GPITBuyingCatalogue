@@ -1,9 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Contracts;
@@ -45,10 +48,145 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             dbContext.ImplementationPlans.Add(plan);
 
             await dbContext.SaveChangesAsync();
+            dbContext.ChangeTracker.Clear();
 
             var output = await service.GetDefaultImplementationPlan();
 
-            output.Should().Be(plan);
+            output.Should().BeEquivalentTo(plan);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(null)]
+        [CommonInlineAutoData("")]
+        [CommonInlineAutoData(" ")]
+        public static void AddBespokeMilestone_NullOrEmptyName_ThrowsException(
+            string name,
+            int orderId,
+            int contractId,
+            string paymentTrigger,
+            ImplementationPlanService service)
+        {
+            FluentActions
+                .Awaiting(
+                    () => service.AddBespokeMilestone(
+                        orderId,
+                        contractId,
+                        name,
+                        paymentTrigger))
+                .Should()
+                .ThrowAsync<ArgumentNullException>(nameof(name));
+        }
+
+        [Theory]
+        [CommonInlineAutoData(null)]
+        [CommonInlineAutoData("")]
+        [CommonInlineAutoData(" ")]
+        public static void AddBespokeMilestone_NullOrEmptyPaymentTrigger_ThrowsException(
+            string paymentTrigger,
+            int orderId,
+            int contractId,
+            string name,
+            ImplementationPlanService service)
+        {
+            FluentActions
+                .Awaiting(
+                    () => service.AddBespokeMilestone(
+                        orderId,
+                        contractId,
+                        name,
+                        paymentTrigger))
+                .Should()
+                .ThrowAsync<ArgumentNullException>(nameof(paymentTrigger));
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static void AddBespokeMilestone_NullContract_ThrowsException(
+            string paymentTrigger,
+            int orderId,
+            int contractId,
+            string name,
+            ImplementationPlanService service)
+        {
+            FluentActions
+                .Awaiting(
+                    () => service.AddBespokeMilestone(
+                        orderId,
+                        contractId,
+                        name,
+                        paymentTrigger))
+                .Should()
+                .ThrowAsync<ArgumentException>(nameof(contractId));
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddBespokeMilestone_NullImplementationPlan_PlanAndMilestoneCreated(
+            [Frozen] BuyingCatalogueDbContext context,
+            string paymentTrigger,
+            string name,
+            Contract contract,
+            Order order,
+            ImplementationPlanService service)
+        {
+            context.Orders.Add(order);
+            await context.SaveChangesAsync();
+
+            contract.Order = order;
+            contract.ImplementationPlan = null;
+            context.Contracts.Add(contract);
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var result = await service.AddBespokeMilestone(
+                order.Id,
+                contract.Id,
+                name,
+                paymentTrigger);
+            result.Should().NotBe(0);
+
+            var actual = await context.Contracts.FirstAsync(f => f.Id == contract.Id);
+            actual.ImplementationPlan.Should().NotBeNull();
+            actual.ImplementationPlan.Milestones.Should().NotBeNull();
+            actual.ImplementationPlan.Milestones.Count.Should().Be(1);
+
+            var newMilestone = actual.ImplementationPlan.Milestones.First();
+            newMilestone.Title.Should().Be(name);
+            newMilestone.PaymentTrigger.Should().Be(paymentTrigger);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddBespokeMilestone_ExistingImplementationPlan_MilestoneAdded(
+            [Frozen] BuyingCatalogueDbContext context,
+            string paymentTrigger,
+            string name,
+            Order order,
+            Contract contract,
+            ImplementationPlanService service)
+        {
+            context.Orders.Add(order);
+            await context.SaveChangesAsync();
+
+            contract.Order = order;
+            contract.ImplementationPlan = new ImplementationPlan();
+
+            context.Contracts.Add(contract);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var result = await service.AddBespokeMilestone(
+                order.Id,
+                contract.Id,
+                name,
+                paymentTrigger);
+            result.Should().NotBe(0);
+
+            var actual = await context.Contracts.FirstAsync(f => f.Id == contract.Id);
+            actual.ImplementationPlan.Should().NotBeNull();
+            actual.ImplementationPlan.Milestones.Should().NotBeNull();
+            actual.ImplementationPlan.Milestones.Count.Should().Be(1);
         }
     }
 }

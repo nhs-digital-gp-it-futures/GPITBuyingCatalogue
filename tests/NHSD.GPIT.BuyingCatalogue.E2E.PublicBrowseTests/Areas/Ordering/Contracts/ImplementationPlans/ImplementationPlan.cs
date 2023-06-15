@@ -15,7 +15,7 @@ using Xunit;
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.ImplementationPlans
 {
     [Collection(nameof(OrderingCollection))]
-    public class DefaultImplementationPlan : BuyerTestBase, IDisposable
+    public class ImplementationPlan : BuyerTestBase, IDisposable
     {
         private const int OrderId = 90001;
         private const string InternalOrgId = "CG-03F";
@@ -27,13 +27,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.Implementa
             { nameof(CallOffId), CallOffId.ToString() },
         };
 
-        public DefaultImplementationPlan(LocalWebApplicationFactory factory)
-            : base(factory, typeof(ImplementationPlanController), nameof(ImplementationPlanController.DefaultImplementationPlan), Parameters)
+        public ImplementationPlan(LocalWebApplicationFactory factory)
+            : base(factory, typeof(ImplementationPlanController), nameof(ImplementationPlanController.Index), Parameters)
         {
         }
 
         [Fact]
-        public void DefaultImplementationPlan_ClickGoBackLink_ExpectedResult()
+        public void ImplementationPlan_ClickGoBackLink_ExpectedResult()
         {
             CommonActions.ClickGoBackLink();
 
@@ -43,50 +43,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.Implementa
         }
 
         [Fact]
-        public void DefaultImplementationPlan_ClickSave_ExpectedResult()
+        public void ImplementationPlan_ClickContinue_ExpectedResult()
         {
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(ImplementationPlanController),
-                nameof(ImplementationPlanController.DefaultImplementationPlan)).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
-                ImplementationPlanObjects.UseDefaultMilestonesError,
-                $"Error:{DefaultImplementationPlanModelValidator.NoSelectionErrorMessage}").Should().BeTrue();
-        }
-
-        [Fact]
-        public void DefaultImplementationPlan_SelectYes_ClickSave_ExpectedResult()
-        {
-            CommonActions.ClickRadioButtonWithText("Yes");
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderController),
                 nameof(OrderController.Order)).Should().BeTrue();
-
-            var flags = GetEndToEndDbContext().ContractFlags.First(x => x.OrderId == OrderId);
-
-            flags.UseDefaultImplementationPlan.Should().BeTrue();
-        }
-
-        [Fact]
-        public void DefaultImplementationPlan_SelectNo_ClickSave_ExpectedResult()
-        {
-            CommonActions.ClickRadioButtonWithText(DefaultImplementationPlanModel.NoOptionText);
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(ImplementationPlanController),
-                nameof(ImplementationPlanController.CustomImplementationPlan)).Should().BeTrue();
-
-            var flags = GetEndToEndDbContext().ContractFlags.First(x => x.OrderId == OrderId);
-
-            flags.UseDefaultImplementationPlan.Should().BeFalse();
         }
 
         public void Dispose()

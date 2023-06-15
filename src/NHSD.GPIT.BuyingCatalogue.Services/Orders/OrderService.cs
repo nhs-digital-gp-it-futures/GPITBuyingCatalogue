@@ -179,6 +179,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             var orders = await dbContext.Orders
                 .Include(x => x.ContractFlags)
+                .Include(x => x.Contract)
+                    .ThenInclude(i => i.ImplementationPlan)
+                        .ThenInclude(m => m.Milestones)
                 .Include(o => o.OrderingParty)
                 .Include(o => o.OrderingPartyContact)
                 .Include(o => o.Solution)
@@ -228,6 +231,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             var orders = await dbContext.Orders
                 .Include(x => x.ContractFlags)
+                .Include(x => x.Contract)
                 .Include(x => x.LastUpdatedByUser)
                 .Include(x => x.OrderItems)
                     .ThenInclude(x => x.CatalogueItem)

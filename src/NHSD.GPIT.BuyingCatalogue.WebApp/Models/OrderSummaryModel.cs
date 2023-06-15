@@ -30,6 +30,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
 
         public ImplementationPlan DefaultImplementationPlan { get; set; }
 
+        public ImplementationPlan BespokePlan => Order.Contract?.ImplementationPlan;
+
         public string DefaultBillingPaymentTrigger => DefaultImplementationPlan?.Milestones?.LastOrDefault()?.Title ?? "Bill on invoice";
 
         public bool HasSpecificRequirements => Order?.ContractFlags?.HasSpecificRequirements == true;
@@ -38,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
 
         public bool UseDefaultDataProcessing => Order?.ContractFlags?.UseDefaultDataProcessing == true;
 
-        public bool UseDefaultImplementationPlan => Order?.ContractFlags?.UseDefaultImplementationPlan == true;
+        public bool HasBespokeMilestones => BespokePlan != null && BespokePlan.Milestones.Any();
 
         public FundingTypeDescriptionModel FundingTypeDescription(CatalogueItemId catalogueItemId)
         {
