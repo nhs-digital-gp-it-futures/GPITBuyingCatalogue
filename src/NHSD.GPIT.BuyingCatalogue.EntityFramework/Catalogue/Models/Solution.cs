@@ -6,7 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     [Serializable]
-    public sealed class Solution : IAudited
+    public sealed partial class Solution : IAudited
     {
         public Solution()
         {
@@ -57,10 +57,5 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public ServiceLevelAgreements ServiceLevelAgreement { get; set; }
 
         public ICollection<WorkOffPlan> WorkOffPlans { get; set; }
-
-        public ClientApplication EnsureAndGetClientApplication()
-        {
-            return ClientApplication ?? new ClientApplication();
-        }
     }
 }
