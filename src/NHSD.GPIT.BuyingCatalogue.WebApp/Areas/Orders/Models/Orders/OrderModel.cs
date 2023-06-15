@@ -59,6 +59,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
                 TitleAdvice = order.IsAmendment
                     ? "You can amend parts of this order as required and will need to review other parts that cannot be changed. Your amendments will be saved as you progress through each section."
                     : "Complete the following steps to create an order summary.";
+                DeleteButtonTitle = order.IsAmendment ? "Delete amendment" : "Delete order";
+                SolutionsAndServicesSectionLabel = order.IsAmendment ? "Solution and services" : "Add solutions and services";
                 Description = order.Description;
                 OrganisationName = order.OrderingParty.Name;
 
@@ -77,6 +79,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
         public string DescriptionUrl { get; set; }
 
         public string TitleAdvice { get; set; }
+
+        public string DeleteButtonTitle { get; set; }
+
+        public string SolutionsAndServicesSectionLabel { get; set; }
 
         public string OrganisationName { get; set; }
 
