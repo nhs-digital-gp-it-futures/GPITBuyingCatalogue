@@ -308,7 +308,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static async Task SaveClientApplication_InvalidModel_ThrowsException(SolutionsService service)
         {
             var actual = await Assert.ThrowsAsync<ArgumentNullException>(
-                () => service.SaveClientApplication(new CatalogueItemId(100000, "001"), null));
+                () => service.SaveApplicationType(new CatalogueItemId(100000, "001"), null));
 
             actual.ParamName.Should().Be("clientApplication");
         }
@@ -318,13 +318,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static async Task SaveClientApplication_UpdatesDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution,
-            ClientApplication clientApplication,
+            ApplicationTypes clientApplication,
             SolutionsService service)
         {
             context.Solutions.Add(solution);
             await context.SaveChangesAsync();
 
-            await service.SaveClientApplication(solution.CatalogueItemId, clientApplication);
+            await service.SaveApplicationType(solution.CatalogueItemId, clientApplication);
 
             var actual = await context.Solutions.AsQueryable()
                 .FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
@@ -437,7 +437,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [InMemoryDbAutoData]
         public static async Task DeleteClientApplication_UpdatesDatabase(
             Solution catalogueSolution,
-            ClientApplication clientApplication,
+            ApplicationTypes clientApplication,
             [Frozen] BuyingCatalogueDbContext context,
             SolutionsService service)
         {
@@ -447,14 +447,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             context.Solutions.Add(catalogueSolution);
             await context.SaveChangesAsync();
 
-            await service.DeleteClientApplication(
+            await service.DeleteApplicationType(
                 catalogueSolution.CatalogueItemId,
                 ApplicationType.BrowserBased);
 
             var actual = await context.Solutions.AsQueryable()
                 .FirstAsync(s => s.CatalogueItemId == catalogueSolution.CatalogueItemId);
 
-            var actualClientApplication = JsonDeserializer.Deserialize<ClientApplication>(actual.ApplicationType);
+            var actualClientApplication = JsonDeserializer.Deserialize<ApplicationTypes>(actual.ApplicationType);
 
             actualClientApplication.ClientApplicationTypes.Any(c => c.Equals("browser-based")).Should().BeFalse();
             actualClientApplication.ClientApplicationTypes.Any(c => c.Equals("native-mobile")).Should().BeTrue();
@@ -464,7 +464,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Theory]
         [CommonAutoData]
         public static void Remove_BrowserBased_ClientApplication_RemovesBrowserBasedEntries(
-            ClientApplication clientApplication)
+            ApplicationTypes clientApplication)
         {
             clientApplication.ClientApplicationTypes = new HashSet<string>
             {
@@ -526,7 +526,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
         [Theory]
         [CommonAutoData]
-        public static void Remove_Desktop_ClientApplication_RemovesDesktopEntries(ClientApplication clientApplication)
+        public static void Remove_Desktop_ClientApplication_RemovesDesktopEntries(ApplicationTypes clientApplication)
         {
             clientApplication.ClientApplicationTypes = new HashSet<string>
             {
@@ -582,7 +582,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
         [Theory]
         [CommonAutoData]
-        public static void Remove_Mobile_ClientApplication_RemovesMobileEntries(ClientApplication clientApplication)
+        public static void Remove_Mobile_ClientApplication_RemovesMobileEntries(ApplicationTypes clientApplication)
         {
             clientApplication.ClientApplicationTypes = new HashSet<string>
             {

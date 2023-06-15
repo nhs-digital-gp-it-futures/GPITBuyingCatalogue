@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
             var catalogueItem = solution.CatalogueItem;
             var actual = new OperatingSystemsModel(catalogueItem);
 
-            var mobileOperatingSystems = solution.GetClientApplication().MobileOperatingSystems;
+            var mobileOperatingSystems = solution.GetApplicationTypes().MobileOperatingSystems;
 
             actual.Description.Should().Be(mobileOperatingSystems.OperatingSystemsDescription);
 

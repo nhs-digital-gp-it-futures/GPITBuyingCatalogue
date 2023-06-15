@@ -8,7 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Serialization;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 {
-    public sealed class ClientApplication
+    public sealed class ApplicationTypes
     {
         public HashSet<string> ClientApplicationTypes { get; set; } = new();
 

@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            await solutionsService.DeleteClientApplication(solutionId, applicationType);
+            await solutionsService.DeleteApplicationType(solutionId, applicationType);
 
             return RedirectToAction(
                 nameof(CatalogueSolutionsController.ApplicationType),

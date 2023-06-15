@@ -79,17 +79,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Post_DeleteApplicationTypeConfirmation_Saves_And_RedirectsToDesktop(
             CatalogueItemId catalogueItemId,
-            ApplicationType clientApplicationType,
+            ApplicationType applicationType,
             DeleteApplicationTypeConfirmationModel model,
-            ClientApplication clientApplication,
+            ApplicationTypes clientApplication,
             [Frozen] Mock<ISolutionsService> mockService,
             DeleteApplicationTypeController controller)
         {
-            mockService.Setup(s => s.GetClientApplication(catalogueItemId)).ReturnsAsync(clientApplication);
+            mockService.Setup(s => s.GetApplicationTypes(catalogueItemId)).ReturnsAsync(clientApplication);
 
-            var actual = (await controller.DeleteApplicationTypeConfirmation(catalogueItemId, clientApplicationType, model)).As<RedirectToActionResult>();
+            var actual = (await controller.DeleteApplicationTypeConfirmation(catalogueItemId, applicationType, model)).As<RedirectToActionResult>();
 
-            mockService.Verify(s => s.DeleteClientApplication(catalogueItemId, clientApplicationType));
+            mockService.Verify(s => s.DeleteApplicationType(catalogueItemId, applicationType));
             actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ApplicationType));
             actual.ControllerName.Should().Be(typeof(CatalogueSolutionsController).ControllerName());
             actual.RouteValues["solutionId"].Should().Be(catalogueItemId);

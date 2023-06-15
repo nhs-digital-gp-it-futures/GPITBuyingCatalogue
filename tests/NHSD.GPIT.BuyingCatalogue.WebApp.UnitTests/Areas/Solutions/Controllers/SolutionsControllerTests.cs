@@ -197,7 +197,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [CommonAutoData]
         public static async Task Get_AssociatedServices_ValidSolutionForId_ReturnsExpectedViewResult(
             [Frozen] Mock<ISolutionsService> solutionsServiceMock,
-            ClientApplication clientApplication,
+            ApplicationTypes clientApplication,
             Solution solution,
             SolutionsController controller,
             CatalogueItemContentStatus contentStatus)
@@ -555,7 +555,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [CommonAutoData]
         public static async Task Get_ApplicationTypes_ValidSolutionForId_ReturnsExpectedViewResult(
             CatalogueItemId id,
-            [Frozen] ClientApplication clientApplication,
+            [Frozen] ApplicationTypes clientApplication,
             Solution solution,
             [Frozen] Mock<ISolutionsService> solutionsService,
             SolutionsController controller,

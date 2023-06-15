@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
             Solution solution = null;
 
             // ReSharper disable once ExpressionIsAlwaysNull
-            Assert.Throws<ArgumentNullException>(() => solution.GetClientApplication());
+            Assert.Throws<ArgumentNullException>(() => solution.GetApplicationTypes());
         }
 
         [Theory]
@@ -27,19 +27,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
         {
             var solution = new Solution { ApplicationType = clientApplication };
 
-            var result = solution.GetClientApplication();
+            var result = solution.GetApplicationTypes();
 
-            result.Should().BeEquivalentTo(new ClientApplication());
+            result.Should().BeEquivalentTo(new ApplicationTypes());
         }
 
         [Fact]
         public static void GetClientApplication_ReturnsClientApplicationWhenSet()
         {
-            var clientApplication = new ClientApplication { AdditionalInformation = "Additional Information" };
+            var clientApplication = new ApplicationTypes { AdditionalInformation = "Additional Information" };
             var json = JsonSerializer.Serialize(clientApplication);
             var solution = new Solution { ApplicationType = json };
 
-            var result = solution.GetClientApplication();
+            var result = solution.GetApplicationTypes();
 
             result.Should().BeEquivalentTo(clientApplication);
         }

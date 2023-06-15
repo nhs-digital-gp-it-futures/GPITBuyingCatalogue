@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
 
             actual.ConnectionSpeeds.Should().BeEquivalentTo(Framework.Constants.SelectLists.ConnectionSpeeds);
 
-            var mobileConnectionDetails = solution.GetClientApplication().MobileConnectionDetails;
+            var mobileConnectionDetails = solution.GetApplicationTypes().MobileConnectionDetails;
 
             actual.SelectedConnectionSpeed.Should().Be(mobileConnectionDetails.MinimumConnectionSpeed);
             actual.Description.Should().Be(mobileConnectionDetails.Description);

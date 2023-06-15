@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             string input,
             TaskProgress expected)
         {
-            var clientApplication = new ClientApplication
+            var clientApplication = new ApplicationTypes
             {
                 AdditionalInformation = input,
             };
@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             string input,
             TaskProgress expected)
         {
-            var clientApplication = new ClientApplication
+            var clientApplication = new ApplicationTypes
             {
                 MinimumConnectionSpeed = input,
             };
@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             string input,
             TaskProgress expected)
         {
-            var clientApplication = new ClientApplication
+            var clientApplication = new ApplicationTypes
             {
                 HardwareRequirements = input,
             };
@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             string input,
             TaskProgress expected)
         {
-            var clientApplication = new ClientApplication
+            var clientApplication = new ApplicationTypes
             {
                 NativeDesktopAdditionalInformation = input,
             };
@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             string input,
             TaskProgress expected)
         {
-            var clientApplication = new ClientApplication
+            var clientApplication = new ApplicationTypes
             {
                 NativeDesktopMinimumConnectionSpeed = input,
             };
@@ -87,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             string input,
             TaskProgress expected)
         {
-            var clientApplication = new ClientApplication
+            var clientApplication = new ApplicationTypes
             {
                 NativeDesktopHardwareRequirements = input,
             };
@@ -98,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Theory]
         [CommonAutoData]
         public static void NativeDesktopMemoryAndStorageStatus_NativeDesktopMemoryAndStorageValid_ReturnsCompleted(
-            ClientApplication clientApplication)
+            ApplicationTypes clientApplication)
         {
             clientApplication.NativeDesktopMemoryAndStorageStatus().Should().Be(TaskProgress.Completed);
         }
@@ -107,7 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [CommonAutoData]
         public static void NativeDesktopMemoryAndStorageStatus_NativeDesktopMemoryAndStorageInvalid_ReturnsNotStarted(
             [Frozen] NativeDesktopMemoryAndStorage storage,
-            ClientApplication clientApplication)
+            ApplicationTypes clientApplication)
         {
             storage.MinimumCpu = null;
 
@@ -117,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Fact]
         public static void NativeDesktopMemoryAndStorageStatus_NativeDesktopMemoryAndStorageIsNull_ReturnsNotStarted()
         {
-            var clientApplication = new ClientApplication
+            var clientApplication = new ApplicationTypes
             {
                 NativeDesktopMemoryAndStorage = null,
             };
@@ -128,7 +128,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Theory]
         [CommonAutoData]
         public static void NativeMobileMemoryAndStorageStatus_MobileMemoryAndStorageValid_ReturnsCompleted(
-            ClientApplication clientApplication)
+            ApplicationTypes clientApplication)
         {
             clientApplication.NativeMobileMemoryAndStorageStatus().Should().Be(TaskProgress.Completed);
         }
@@ -137,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [CommonAutoData]
         public static void NativeMobileMemoryAndStorageStatus_MobileMemoryAndStorageInvalid_ReturnsNotStarted(
             [Frozen] MobileMemoryAndStorage storage,
-            ClientApplication clientApplication)
+            ApplicationTypes clientApplication)
         {
             storage.Description = null;
 
@@ -147,7 +147,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Fact]
         public static void NativeMobileMemoryAndStorageStatus_MobileMemoryAndStorageIsNull_ReturnsNotStarted()
         {
-            var clientApplication = new ClientApplication
+            var clientApplication = new ApplicationTypes
             {
                 MobileMemoryAndStorage = null,
             };
@@ -161,7 +161,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             string input,
             TaskProgress expected)
         {
-            var clientApplication = new ClientApplication
+            var clientApplication = new ApplicationTypes
             {
                 NativeDesktopOperatingSystemsDescription = input,
             };
@@ -172,7 +172,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Theory]
         [AutoData]
         public static void NativeMobileSupportedOperatingSystemsStatus_ValidMobileOperatingSystems_ReturnsCompleted(
-            ClientApplication clientApplication)
+            ApplicationTypes clientApplication)
         {
             clientApplication.MobileOperatingSystems.OperatingSystems.Should().NotBeNullOrEmpty();
 
@@ -182,7 +182,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Theory]
         [AutoData]
         public static void NativeMobileSupportedOperatingSystemsStatus_OperatingSystemsEmpty_ReturnsNotStarted(
-            ClientApplication clientApplication)
+            ApplicationTypes clientApplication)
         {
             clientApplication.MobileOperatingSystems.OperatingSystems = new HashSet<string>();
 
@@ -192,7 +192,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Theory]
         [AutoData]
         public static void NativeMobileSupportedOperatingSystemsStatus_OperatingSystemsNull_ReturnsNotStarted(
-            ClientApplication clientApplication)
+            ApplicationTypes clientApplication)
         {
             clientApplication.MobileOperatingSystems.OperatingSystems = null;
 
@@ -202,7 +202,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Theory]
         [AutoData]
         public static void NativeMobileSupportedOperatingSystemsStatus_MobileOperatingSystemsNull_ReturnsNotStarted(
-            ClientApplication clientApplication)
+            ApplicationTypes clientApplication)
         {
             clientApplication.MobileOperatingSystems = null;
 
@@ -215,7 +215,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             string input,
             TaskProgress expected)
         {
-            var clientApplication = new ClientApplication
+            var clientApplication = new ApplicationTypes
             {
                 NativeMobileAdditionalInformation = input,
             };
@@ -229,7 +229,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             string input,
             TaskProgress expected)
         {
-            var clientApplication = new ClientApplication
+            var clientApplication = new ApplicationTypes
             {
                 NativeMobileHardwareRequirements = input,
             };
@@ -242,7 +242,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [InlineData(true)]
         public static void PluginsStatus_PluginsRequiredHasValue_ReturnsCompleted(bool value)
         {
-            var clientApplication = new ClientApplication
+            var clientApplication = new ApplicationTypes
             {
                 Plugins = new Plugins
                 {
@@ -256,7 +256,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Fact]
         public static void PluginsStatus_PluginsRequiredHasNoValue_ReturnsNotStarted()
         {
-            var clientApplication = new ClientApplication
+            var clientApplication = new ApplicationTypes
             {
                 Plugins = new Plugins
                 {
@@ -270,7 +270,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Fact]
         public static void PluginsStatus_PluginsIsNull_ReturnsNotStarted()
         {
-            var clientApplication = new ClientApplication
+            var clientApplication = new ApplicationTypes
             {
                 Plugins = null,
             };
@@ -281,7 +281,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Theory]
         [AutoData]
         public static void SupportedBrowsersStatus_ValidValues_ReturnsCompleted(
-            ClientApplication clientApplication)
+            ApplicationTypes clientApplication)
         {
             clientApplication.BrowsersSupported.Should().NotBeNullOrEmpty();
             clientApplication.MobileResponsive.HasValue.Should().BeTrue();
@@ -292,7 +292,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Theory]
         [AutoData]
         public static void SupportedBrowsersStatus_BrowsersSupportedIsEmpty_ReturnsNotStarted(
-            ClientApplication clientApplication)
+            ApplicationTypes clientApplication)
         {
             clientApplication.BrowsersSupported = new HashSet<SupportedBrowser>();
             clientApplication.MobileResponsive.HasValue.Should().BeTrue();
@@ -303,7 +303,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Theory]
         [AutoData]
         public static void SupportedBrowsersStatus_BrowsersSupportedIsNull_ReturnsNotStarted(
-            ClientApplication clientApplication)
+            ApplicationTypes clientApplication)
         {
             clientApplication.BrowsersSupported = null;
             clientApplication.MobileResponsive.HasValue.Should().BeTrue();
@@ -314,7 +314,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Theory]
         [AutoData]
         public static void SupportedBrowsersStatus_MobileResponsiveIsNull_ReturnsNotStarted(
-            ClientApplication clientApplication)
+            ApplicationTypes clientApplication)
         {
             clientApplication.BrowsersSupported.Should().NotBeNullOrEmpty();
             clientApplication.MobileResponsive = null;
@@ -325,7 +325,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Theory]
         [CommonAutoData]
         public static void NativeMobileThirdPartyStatus_MobileThirdPartyValid_ReturnsCompleted(
-            ClientApplication clientApplication)
+            ApplicationTypes clientApplication)
         {
             clientApplication.NativeMobileThirdPartyStatus().Should().Be(TaskProgress.Completed);
         }
@@ -334,7 +334,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [CommonAutoData]
         public static void TNativeMobileThirdPartyStatus_MobileThirdPartyInvalid_ReturnsNotStarted(
             [Frozen] MobileThirdParty thirdParty,
-            ClientApplication clientApplication)
+            ApplicationTypes clientApplication)
         {
             thirdParty.DeviceCapabilities = null;
             thirdParty.ThirdPartyComponents = null;
@@ -345,7 +345,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Fact]
         public static void NativeMobileThirdPartyStatus_MobileThirdPartyNull_ReturnsNotStarted()
         {
-            var clientApplication = new ClientApplication
+            var clientApplication = new ApplicationTypes
             {
                 MobileThirdParty = null,
             };
@@ -359,7 +359,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [CommonInlineAutoData(ApplicationType.Desktop)]
         public static void ApplicationTypes_IsUpdatedCorrectly(
             ApplicationType clientApplicationType,
-            ClientApplication clientApplication)
+            ApplicationTypes clientApplication)
         {
             clientApplication.EnsureApplicationTypePresent(clientApplicationType);
 
@@ -372,7 +372,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [CommonInlineAutoData(ApplicationType.Desktop)]
         public static void ApplicationTypeStatus_ReturnsComplete(
             ApplicationType clientApplicationType,
-            ClientApplication clientApplication)
+            ApplicationTypes clientApplication)
         {
             clientApplication.ApplicationTypeStatus(clientApplicationType).Should().Be(TaskProgress.Completed);
         }
@@ -380,7 +380,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Theory]
         [CommonInlineAutoData]
         public static void ApplicationTypeStatus_BrowserBased_NoPlugins_ReturnsInProgress(
-            ClientApplication clientApplication)
+            ApplicationTypes clientApplication)
         {
             clientApplication.Plugins = null;
 
@@ -390,7 +390,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Theory]
         [CommonInlineAutoData]
         public static void ApplicationTypeStatus_BrowserBased_NoSupportedBrowsers_ReturnsInProgress(
-            ClientApplication clientApplication)
+            ApplicationTypes clientApplication)
         {
             clientApplication.BrowsersSupported = null;
 
@@ -400,7 +400,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Fact]
         public static void ApplicationTypeStatus_BrowserBased_NothingComplete_ReturnsNotStarted()
         {
-            var clientApplication = new ClientApplication();
+            var clientApplication = new ApplicationTypes();
 
             clientApplication.ApplicationTypeStatus(ApplicationType.BrowserBased).Should().Be(TaskProgress.NotStarted);
         }
@@ -408,7 +408,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Theory]
         [CommonInlineAutoData]
         public static void ApplicationTypeStatus_DesktopBased_NoOperatingSystemDescription_ReturnsInProgress(
-            ClientApplication clientApplication)
+            ApplicationTypes clientApplication)
         {
             clientApplication.NativeDesktopOperatingSystemsDescription = null;
 
@@ -418,7 +418,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Theory]
         [CommonInlineAutoData]
         public static void ApplicationTypeStatus_DesktopBased_NoNativeDesktopMinimumConnectionSpeed_ReturnsInProgress(
-            ClientApplication clientApplication)
+            ApplicationTypes clientApplication)
         {
             clientApplication.NativeDesktopMinimumConnectionSpeed = null;
 
@@ -428,7 +428,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Theory]
         [CommonInlineAutoData]
         public static void ApplicationTypeStatus_DesktopBased_NoNativeDesktopMemoryAndStorage_ReturnsInProgress(
-            ClientApplication clientApplication)
+            ApplicationTypes clientApplication)
         {
             clientApplication.NativeDesktopMemoryAndStorage = null;
 
@@ -438,7 +438,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Fact]
         public static void ApplicationTypeStatus_DesktopBased_NothingComplete_ReturnsNotStarted()
         {
-            var clientApplication = new ClientApplication();
+            var clientApplication = new ApplicationTypes();
 
             clientApplication.ApplicationTypeStatus(ApplicationType.BrowserBased).Should().Be(TaskProgress.NotStarted);
         }
@@ -446,7 +446,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Theory]
         [CommonInlineAutoData]
         public static void ApplicationTypeStatus_MobileTablet_NoMobileOperatingSystems_ReturnsInProgress(
-            ClientApplication clientApplication)
+            ApplicationTypes clientApplication)
         {
             clientApplication.MobileOperatingSystems = null;
 
@@ -456,7 +456,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Theory]
         [CommonInlineAutoData]
         public static void ApplicationTypeStatus_MobileTablet_NoMobileMemoryAndStorage_ReturnsInProgress(
-            ClientApplication clientApplication)
+            ApplicationTypes clientApplication)
         {
             clientApplication.MobileMemoryAndStorage = null;
 
@@ -466,7 +466,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Fact]
         public static void ApplicationTypeStatus_MobileTablet_NothingComplete_ReturnsNotStarted()
         {
-            var clientApplication = new ClientApplication();
+            var clientApplication = new ApplicationTypes();
 
             clientApplication.ApplicationTypeStatus(ApplicationType.BrowserBased).Should().Be(TaskProgress.NotStarted);
         }
@@ -474,7 +474,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Theory]
         [CommonAutoData]
         public static void HasApplicationType_True(
-            ClientApplication clientApplication)
+            ApplicationTypes clientApplication)
         {
             clientApplication.EnsureApplicationTypePresent(ApplicationType.BrowserBased);
 
@@ -484,7 +484,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Fact]
         public static void HasApplicationType_False()
         {
-            var clientApplication = new ClientApplication();
+            var clientApplication = new ApplicationTypes();
 
             clientApplication.HasApplicationType(ApplicationType.BrowserBased).Should().BeFalse();
         }

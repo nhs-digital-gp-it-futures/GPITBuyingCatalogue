@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             ApplicationType clientApplicationType,
             [Frozen] CatalogueItem catalogueItem,
             [Frozen] Solution solution,
-            [Frozen] ClientApplication clientApplication,
+            [Frozen] ApplicationTypes clientApplication,
             ApplicationTypesModel model)
         {
             // CatalogueItem and Solution must be frozen so that a catalogue item instance with solution is passed
@@ -97,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         public static void HasApplicationType_ValueNotValid_ReturnsNo(
             [Frozen] CatalogueItem catalogueItem,
             [Frozen] Solution solution,
-            [Frozen] ClientApplication clientApplication,
+            [Frozen] ApplicationTypes clientApplication,
             ApplicationTypesModel model)
         {
             // CatalogueItem and Solution must be frozen so that a catalogue item instance with solution is passed
@@ -119,7 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             Solution solution,
             CatalogueItemContentStatus contentStatus)
         {
-            var clientApplication = new ClientApplication
+            var clientApplication = new ApplicationTypes
             {
                 ClientApplicationTypes = new() { ApplicationType.BrowserBased.EnumMemberName() },
                 BrowsersSupported = new() { new() { BrowserName = "Chrome" } },
@@ -155,7 +155,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             Solution solution,
             CatalogueItemContentStatus contentStatus)
         {
-            var clientApplication = new ClientApplication
+            var clientApplication = new ApplicationTypes
             {
                 ClientApplicationTypes = new() { ApplicationType.Desktop.EnumMemberName() },
                 NativeDesktopOperatingSystemsDescription = "Windows 95",
@@ -199,7 +199,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             Solution solution,
             CatalogueItemContentStatus contentStatus)
         {
-            var clientApplication = new ClientApplication
+            var clientApplication = new ApplicationTypes
             {
                 ClientApplicationTypes = new() { ApplicationType.MobileTablet.EnumMemberName() },
                 MobileOperatingSystems =
@@ -244,7 +244,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             Solution solution,
             CatalogueItemContentStatus contentStatus)
         {
-            var clientApplication = new ClientApplication
+            var clientApplication = new ApplicationTypes
             {
                 ClientApplicationTypes = new()
                 {

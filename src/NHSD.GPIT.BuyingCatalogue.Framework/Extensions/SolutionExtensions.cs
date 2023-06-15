@@ -8,14 +8,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 {
     public static class SolutionExtensions
     {
-        public static ClientApplication GetClientApplication(this Solution solution)
+        public static ApplicationTypes GetApplicationTypes(this Solution solution)
         {
             if (solution is null)
                 throw new ArgumentNullException(nameof(solution));
 
             return string.IsNullOrWhiteSpace(solution.ApplicationType)
-                ? new ClientApplication()
-                : JsonDeserializer.Deserialize<ClientApplication>(solution.ApplicationType);
+                ? new ApplicationTypes()
+                : JsonDeserializer.Deserialize<ApplicationTypes>(solution.ApplicationType);
         }
 
         public static IEnumerable<string> GetFeatures(this Solution solution)

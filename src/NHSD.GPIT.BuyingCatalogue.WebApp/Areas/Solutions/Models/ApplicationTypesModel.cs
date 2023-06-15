@@ -18,8 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             : base(catalogueItem, contentStatus)
         {
             ClientApplication = string.IsNullOrWhiteSpace(catalogueItem.Solution.ApplicationType)
-                ? new ClientApplication()
-                : JsonDeserializer.Deserialize<ClientApplication>(catalogueItem.Solution.ApplicationType);
+                ? new ApplicationTypes()
+                : JsonDeserializer.Deserialize<ApplicationTypes>(catalogueItem.Solution.ApplicationType);
 
             BrowserBasedApplication = GetBrowserBasedApplication();
             NativeDesktopApplication = GetNativeDesktopApplication();
@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         [UIHint("DescriptionList")]
         public DescriptionListViewModel NativeMobileApplication { get; init; }
 
-        public ClientApplication ClientApplication { get; init; }
+        public ApplicationTypes ClientApplication { get; init; }
 
         public bool HasApplicationType(ApplicationType clientApplicationType) =>
             ClientApplication?.ClientApplicationTypes?.Any(

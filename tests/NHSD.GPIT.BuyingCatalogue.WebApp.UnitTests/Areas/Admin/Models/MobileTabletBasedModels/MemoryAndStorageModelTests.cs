@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
 
             actual.MemorySizes.Should().BeEquivalentTo(Framework.Constants.SelectLists.MemorySizes);
 
-            var mobileMemoryAndStorage = solution.GetClientApplication().MobileMemoryAndStorage;
+            var mobileMemoryAndStorage = solution.GetApplicationTypes().MobileMemoryAndStorage;
 
             actual.SelectedMemorySize.Should().Be(mobileMemoryAndStorage.MinimumMemoryRequirement);
             actual.Description.Should().Be(mobileMemoryAndStorage.Description);

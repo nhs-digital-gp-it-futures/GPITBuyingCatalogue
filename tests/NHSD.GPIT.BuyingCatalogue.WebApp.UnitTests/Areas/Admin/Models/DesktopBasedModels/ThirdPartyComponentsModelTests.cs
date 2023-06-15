@@ -18,8 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.DesktopB
             var catalogueItem = solution.CatalogueItem;
             var actual = new ThirdPartyComponentsModel(catalogueItem);
 
-            actual.ThirdPartyComponents.Should().Be(solution.GetClientApplication().NativeDesktopThirdParty.ThirdPartyComponents);
-            actual.DeviceCapabilities.Should().Be(solution.GetClientApplication().NativeDesktopThirdParty.DeviceCapabilities);
+            actual.ThirdPartyComponents.Should().Be(solution.GetApplicationTypes().NativeDesktopThirdParty.ThirdPartyComponents);
+            actual.DeviceCapabilities.Should().Be(solution.GetApplicationTypes().NativeDesktopThirdParty.DeviceCapabilities);
         }
 
         [Fact]

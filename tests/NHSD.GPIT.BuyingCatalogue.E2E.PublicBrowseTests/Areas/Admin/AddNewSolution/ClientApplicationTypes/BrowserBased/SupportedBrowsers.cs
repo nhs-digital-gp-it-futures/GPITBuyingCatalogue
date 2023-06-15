@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
             await using var context = GetEndToEndDbContext();
             var solution = await context.Solutions.FirstAsync(s => s.CatalogueItemId == SolutionId);
 
-            var clientApplication = JsonDeserializer.Deserialize<ServiceContracts.Solutions.ClientApplication>(solution.ApplicationType);
+            var clientApplication = JsonDeserializer.Deserialize<ServiceContracts.Solutions.ApplicationTypes>(solution.ApplicationType);
 
             clientApplication.Should().NotBeNull();
             clientApplication.BrowsersSupported.Should().Contain(b => b.BrowserName == expectedBrowser);
@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
             await using var context = GetEndToEndDbContext();
             var solution = await context.Solutions.FirstAsync(s => s.CatalogueItemId == SolutionId);
 
-            var clientApplication = JsonDeserializer.Deserialize<ServiceContracts.Solutions.ClientApplication>(solution.ApplicationType);
+            var clientApplication = JsonDeserializer.Deserialize<ServiceContracts.Solutions.ApplicationTypes>(solution.ApplicationType);
 
             clientApplication.Should().NotBeNull();
             clientApplication.BrowsersSupported.First(bs => bs.BrowserName == targetBrowser).MinimumBrowserVersion.Should().Be(browserVersion);

@@ -18,8 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
             var catalogueItem = solution.CatalogueItem;
             var actual = new ThirdPartyComponentsModel(catalogueItem);
 
-            actual.ThirdPartyComponents.Should().Be(solution.GetClientApplication().MobileThirdParty.ThirdPartyComponents);
-            actual.DeviceCapabilities.Should().Be(solution.GetClientApplication().MobileThirdParty.DeviceCapabilities);
+            actual.ThirdPartyComponents.Should().Be(solution.GetApplicationTypes().MobileThirdParty.ThirdPartyComponents);
+            actual.DeviceCapabilities.Should().Be(solution.GetApplicationTypes().MobileThirdParty.DeviceCapabilities);
         }
 
         [Fact]

@@ -288,7 +288,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         private static IEnumerable<ApplicationType> GetSelectedFiltersClientApplication(Solution solution, IEnumerable<ApplicationType> selectedFilterEnums)
         {
-            var clientApplication = JsonDeserializer.Deserialize<ClientApplication>(solution.ApplicationType);
+            var clientApplication = JsonDeserializer.Deserialize<ApplicationTypes>(solution.ApplicationType);
             return selectedFilterEnums?.Where(t => clientApplication.HasApplicationType(t));
         }
 

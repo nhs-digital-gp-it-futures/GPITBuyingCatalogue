@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var clientApplication = solution.Solution.GetClientApplication();
+            var clientApplication = solution.Solution.GetApplicationTypes();
             var model = new MobileTabletBasedModel(solution)
             {
                 BackLink = clientApplication?.HasApplicationType(ApplicationType.MobileTablet) ?? false
@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var clientApplication = await solutionsService.GetClientApplication(solutionId);
+            var clientApplication = await solutionsService.GetApplicationTypes(solutionId);
 
             if (clientApplication is null)
                 return BadRequest($"No Application Type found for Solution Id: {solutionId}");
@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             clientApplication.EnsureApplicationTypePresent(ApplicationType.MobileTablet);
 
-            await solutionsService.SaveClientApplication(solutionId, clientApplication);
+            await solutionsService.SaveApplicationType(solutionId, clientApplication);
 
             return RedirectToAction(nameof(MobileTablet), new { solutionId });
         }
@@ -119,7 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var clientApplication = await solutionsService.GetClientApplication(solutionId);
+            var clientApplication = await solutionsService.GetApplicationTypes(solutionId);
 
             if (clientApplication is null)
                 return BadRequest($"No Application Type found for Solution Id: {solutionId}");
@@ -142,7 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             clientApplication.EnsureApplicationTypePresent(ApplicationType.MobileTablet);
 
-            await solutionsService.SaveClientApplication(solutionId, clientApplication);
+            await solutionsService.SaveApplicationType(solutionId, clientApplication);
 
             return RedirectToAction(nameof(MobileTablet), new { solutionId });
         }
@@ -168,7 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var clientApplication = await solutionsService.GetClientApplication(solutionId);
+            var clientApplication = await solutionsService.GetApplicationTypes(solutionId);
 
             if (clientApplication is null)
                 return BadRequest($"No Application Type found for Solution Id: {solutionId}");
@@ -180,7 +180,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             clientApplication.EnsureApplicationTypePresent(ApplicationType.MobileTablet);
 
-            await solutionsService.SaveClientApplication(solutionId, clientApplication);
+            await solutionsService.SaveApplicationType(solutionId, clientApplication);
 
             return RedirectToAction(nameof(MobileTablet), new { solutionId });
         }
@@ -207,7 +207,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var clientApplication = await solutionsService.GetClientApplication(solutionId);
+            var clientApplication = await solutionsService.GetApplicationTypes(solutionId);
 
             if (clientApplication is null)
                 return BadRequest($"No Application Type found for Solution Id: {solutionId}");
@@ -219,7 +219,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             clientApplication.EnsureApplicationTypePresent(ApplicationType.MobileTablet);
 
-            await solutionsService.SaveClientApplication(solutionId, clientApplication);
+            await solutionsService.SaveApplicationType(solutionId, clientApplication);
 
             return RedirectToAction(nameof(MobileTablet), new { solutionId });
         }
@@ -246,7 +246,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var clientApplication = await solutionsService.GetClientApplication(solutionId);
+            var clientApplication = await solutionsService.GetApplicationTypes(solutionId);
 
             if (clientApplication is null)
                 return BadRequest($"No Application Type found for Solution Id: {solutionId}");
@@ -255,7 +255,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             clientApplication.EnsureApplicationTypePresent(ApplicationType.MobileTablet);
 
-            await solutionsService.SaveClientApplication(solutionId, clientApplication);
+            await solutionsService.SaveApplicationType(solutionId, clientApplication);
 
             return RedirectToAction(nameof(MobileTablet), new { solutionId });
         }
@@ -282,7 +282,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var clientApplication = await solutionsService.GetClientApplication(solutionId);
+            var clientApplication = await solutionsService.GetApplicationTypes(solutionId);
 
             if (clientApplication is null)
                 return BadRequest($"No Application Type found for Solution Id: {solutionId}");
@@ -291,7 +291,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             clientApplication.EnsureApplicationTypePresent(ApplicationType.MobileTablet);
 
-            await solutionsService.SaveClientApplication(solutionId, clientApplication);
+            await solutionsService.SaveApplicationType(solutionId, clientApplication);
 
             return RedirectToAction(nameof(MobileTablet), new { solutionId });
         }

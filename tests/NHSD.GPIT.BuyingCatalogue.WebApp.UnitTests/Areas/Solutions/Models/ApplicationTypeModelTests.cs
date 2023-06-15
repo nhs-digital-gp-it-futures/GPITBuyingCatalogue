@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Theory]
         [CommonAutoData]
         public static void Constructor_BrowserBasedType_LoadsBrowserBasedDetails(
-            ClientApplication client,
+            ApplicationTypes client,
             SupportedBrowser browser)
         {
             client.BrowsersSupported = new HashSet<SupportedBrowser>() { browser };
@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Theory]
         [CommonAutoData]
         public static void Constructor_NativeMobileType_LoadsNativeMobileDetails(
-            ClientApplication client,
+            ApplicationTypes client,
             string operatingSystem)
         {
             client.MobileOperatingSystems =
@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Theory]
         [CommonAutoData]
         public static void Constructor_NativeDesktopType_LoadsNativeDesktopDetails(
-            ClientApplication client,
+            ApplicationTypes client,
             string description)
         {
             client.NativeDesktopOperatingSystemsDescription = description;

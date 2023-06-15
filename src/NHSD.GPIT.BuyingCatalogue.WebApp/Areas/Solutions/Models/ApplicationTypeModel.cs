@@ -6,7 +6,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     public class ApplicationTypeModel
     {
-        public ApplicationTypeModel(ApplicationType type, ClientApplication client)
+        public ApplicationTypeModel(ApplicationType type, ApplicationTypes client)
         {
             if (client == null)
             {
@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public string ProcessingPower { get; set; }
 
-        private void LoadBrowserBasedDetails(ClientApplication client)
+        private void LoadBrowserBasedDetails(ApplicationTypes client)
         {
             Label = "Browser-based application";
             DataTestTag = "browser-based";
@@ -104,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 !string.IsNullOrWhiteSpace(AdditionalInformation);
         }
 
-        private void LoadNativeMobileDetails(ClientApplication client)
+        private void LoadNativeMobileDetails(ApplicationTypes client)
         {
             Label = "Native mobile or tablet application";
             DataTestTag = "native-mobile";
@@ -133,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 !string.IsNullOrWhiteSpace(AdditionalInformation);
         }
 
-        private void LoadNativeDesktopDetails(ClientApplication client)
+        private void LoadNativeDesktopDetails(ApplicationTypes client)
         {
             Label = "Native desktop application";
             DataTestTag = "native-desktop";

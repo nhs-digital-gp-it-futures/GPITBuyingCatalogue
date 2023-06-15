@@ -322,28 +322,28 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<ClientApplication> GetClientApplication(CatalogueItemId solutionId)
+        public async Task<ApplicationTypes> GetApplicationTypes(CatalogueItemId solutionId)
         {
             var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
-            return solution.GetClientApplication();
+            return solution.GetApplicationTypes();
         }
 
-        public async Task SaveClientApplication(CatalogueItemId solutionId, ClientApplication clientApplication)
+        public async Task SaveApplicationType(CatalogueItemId solutionId, ApplicationTypes applicationTypes)
         {
-            clientApplication.ValidateNotNull(nameof(clientApplication));
+            applicationTypes.ValidateNotNull(nameof(applicationTypes));
 
             var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
-            solution.ApplicationType = JsonSerializer.Serialize(clientApplication);
+            solution.ApplicationType = JsonSerializer.Serialize(applicationTypes);
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task DeleteClientApplication(CatalogueItemId solutionId, ApplicationType clientApplicationType)
+        public async Task DeleteApplicationType(CatalogueItemId solutionId, ApplicationType applicationType)
         {
-            var clientApplication = await GetClientApplication(solutionId);
+            var clientApplication = await GetApplicationTypes(solutionId);
 
-            RemoveApplicationType(clientApplication, clientApplicationType);
+            RemoveApplicationType(clientApplication, applicationType);
 
-            await SaveClientApplication(solutionId, clientApplication);
+            await SaveApplicationType(solutionId, clientApplication);
         }
 
         public async Task<Hosting> GetHosting(CatalogueItemId solutionId)
@@ -548,7 +548,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(wp => wp.Standard)
                 .Where(wp => wp.SolutionId == solutionId).ToListAsync();
 
-        internal static ClientApplication RemoveApplicationType(ClientApplication clientApplication, ApplicationType applicationType)
+        internal static ApplicationTypes RemoveApplicationType(ApplicationTypes clientApplication, ApplicationType applicationType)
         {
             if (clientApplication is null)
                 throw new ArgumentNullException(nameof(clientApplication));
