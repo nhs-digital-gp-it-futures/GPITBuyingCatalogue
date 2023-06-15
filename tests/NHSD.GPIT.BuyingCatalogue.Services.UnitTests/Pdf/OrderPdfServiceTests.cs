@@ -38,9 +38,6 @@ public static class OrderPdfServiceTests
         [Frozen] Mock<IActionContextAccessor> actionContextAccessor,
         OrderPdfService orderPdfService)
     {
-        actionContext.HttpContext.Request.Scheme = "https";
-        actionContext.HttpContext.Request.Host = new("localhost");
-
         actionContextAccessor
             .SetupGet(x => x.ActionContext)
             .Returns(actionContext);
@@ -48,6 +45,10 @@ public static class OrderPdfServiceTests
         pdfService
             .Setup(x => x.Convert(It.IsAny<Uri>()))
             .ReturnsAsync(fileContents);
+
+        pdfService
+            .Setup(x => x.BaseUri())
+            .Returns(new Uri("https://localhost"));
 
         var pdfContents = await orderPdfService.CreateOrderSummaryPdf(order);
 
