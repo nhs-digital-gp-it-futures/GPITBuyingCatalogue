@@ -37,6 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             dbContext.Contracts.Add(contract);
 
             await dbContext.SaveChangesAsync();
+            dbContext.ChangeTracker.Clear();
 
             var output = await service.GetContract(orderId);
 
@@ -71,6 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             dbContext.Contracts.Add(contract);
 
             await dbContext.SaveChangesAsync();
+            dbContext.ChangeTracker.Clear();
 
             var output = await service.AddContract(orderId);
 
@@ -109,6 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             dbContext.ContractFlags.Add(flags);
 
             await dbContext.SaveChangesAsync();
+            dbContext.ChangeTracker.Clear();
 
             var output = await service.GetContractFlags(orderId);
 

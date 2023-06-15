@@ -48,6 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             dbContext.ImplementationPlans.Add(plan);
 
             await dbContext.SaveChangesAsync();
+            dbContext.ChangeTracker.Clear();
 
             var output = await service.GetDefaultImplementationPlan();
 
@@ -135,6 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             contract.ImplementationPlan = null;
             context.Contracts.Add(contract);
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
 
             var result = await service.AddBespokeMilestone(
                 order.Id,
@@ -151,8 +153,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             var newMilestone = actual.ImplementationPlan.Milestones.First();
             newMilestone.Title.Should().Be(name);
             newMilestone.PaymentTrigger.Should().Be(paymentTrigger);
-
-            context.ChangeTracker.Clear();
         }
 
         [Theory]
@@ -174,6 +174,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             context.Contracts.Add(contract);
 
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
 
             var result = await service.AddBespokeMilestone(
                 order.Id,
@@ -187,8 +188,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             actual.ImplementationPlan.Should().BeEquivalentTo(contract.ImplementationPlan);
             actual.ImplementationPlan.Milestones.Should().NotBeNull();
             actual.ImplementationPlan.Milestones.Count.Should().Be(numberOfMilestones + 1);
-
-            context.ChangeTracker.Clear();
         }
     }
 }

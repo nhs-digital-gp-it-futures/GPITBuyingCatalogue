@@ -13,8 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public int? ImplementationPlanId { get; set; }
 
-        public DateTime LastUpdated { get; set; }
-
         public ImplementationPlan ImplementationPlan { get; set; }
 
         public virtual Order Order { get; set; }
