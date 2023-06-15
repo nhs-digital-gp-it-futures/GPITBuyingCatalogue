@@ -1,0 +1,38 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.ImplementationPlans.DeleteMilestoneModel
+
+@{
+    ViewBag.Title = "Delete this milestone?";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+
+        <nhs-page-title title="@Model.Title"
+                        caption="The bespoke milestone will be deleted from this order." />
+
+        <form method="post">
+            <div class="nhsuk-u-margin-top-9">
+
+                <form method="post">
+                    
+                    <input type="hidden" asp-for="BackLink" />
+                    <input type="hidden" asp-for="CallOffId" />
+                    <input type="hidden" asp-for="InternalOrgId" />
+                    <input type="hidden" asp-for="MilestoneId" />
+
+                    <div>
+                        <nhs-submit-button text="Delete milestone"/>
+                    </div>
+                    <div>
+                        <a href="@Model.BackLink">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </form>
+    </div>
+</div>

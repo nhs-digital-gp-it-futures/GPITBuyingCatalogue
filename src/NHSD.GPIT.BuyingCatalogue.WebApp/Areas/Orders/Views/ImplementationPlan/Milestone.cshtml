@@ -1,11 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
 @using ValidationSummaryTagHelper = Microsoft.AspNetCore.Mvc.TagHelpers.ValidationSummaryTagHelper
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.ImplementationPlans.MilestoneModel
-
-@{
-    ViewBag.Title = "Add a bespoke implementation milestone";
-}
 
 <partial name="Partials/_BackLink" model="Model" />
 
@@ -13,7 +10,7 @@
     <div class="nhsuk-grid-column-full">
         <nhs-validation-summary/>
 
-        <nhs-page-title title="@ViewBag.Title"
+        <nhs-page-title title="@Model.Title"
                         caption="Order @Model.CallOffId"
                         advice="Add any implementation plan milestones you’ve agreed with the supplier." />
 
@@ -32,6 +29,14 @@
                               label-text="Milestone payment trigger"
                               label-hint="Provide a description of how this milestone will trigger payments as part of this order"/>
                 <nhs-submit-button text="Save and continue"/>
+                
+                @if (Model.IsEdit)
+                {
+                    <vc:nhs-delete-button url="@Url.Action(nameof(ImplementationPlanController.DeleteMilestone),
+                                                   typeof(ImplementationPlanController).ControllerName(),
+                                                   new { Model.InternalOrgId, Model.CallOffId, Model.MilestoneId })"
+                                          text="Delete Milestone" />
+                }
             </div>
         </form>
     </div>

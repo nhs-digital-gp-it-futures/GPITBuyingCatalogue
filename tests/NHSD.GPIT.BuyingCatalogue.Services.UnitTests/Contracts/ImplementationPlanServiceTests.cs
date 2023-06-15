@@ -138,12 +138,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var result = await service.AddBespokeMilestone(
+            await service.AddBespokeMilestone(
                 order.Id,
                 contract.Id,
                 name,
                 paymentTrigger);
-            result.Should().NotBe(0);
 
             var actual = await context.Contracts.FirstAsync(f => f.Id == contract.Id);
             actual.ImplementationPlan.Should().NotBeNull();
@@ -176,12 +175,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var result = await service.AddBespokeMilestone(
+            await service.AddBespokeMilestone(
                 order.Id,
                 contract.Id,
                 name,
                 paymentTrigger);
-            result.Should().NotBe(0);
 
             var actual = await context.Contracts.FirstAsync(f => f.Id == contract.Id);
             actual.ImplementationPlan.Should().NotBeNull();
