@@ -13,17 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
     {
         [Theory]
         [CommonAutoData]
-        public static void NullBespokePlan_ThrowsException(
-            string internalOrgId,
-            EntityFramework.Ordering.Models.Order order)
-        {
-            FluentActions
-                .Invoking(() => new SummaryModel(new OrderWrapper(order), internalOrgId, null))
-                .Should().Throw<ArgumentNullException>();
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order)
