@@ -84,10 +84,5 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree
             typeof(OrderController),
             nameof(OrderController.Order)).Should().BeTrue();
         }
-
-        internal void ConfirmDataProcessing()
-        {
-            CommonActions.ClickContinue();
-        }
     }
 }

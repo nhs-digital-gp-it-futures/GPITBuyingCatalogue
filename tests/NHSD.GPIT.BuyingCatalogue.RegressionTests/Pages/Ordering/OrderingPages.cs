@@ -299,7 +299,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             }
 
             TaskList.DataProcessingInformationTask();
-            OrderingStepThree.ConfirmDataProcessing();
         }
 
         public void StepFourReviewAndCompleteOrder()
