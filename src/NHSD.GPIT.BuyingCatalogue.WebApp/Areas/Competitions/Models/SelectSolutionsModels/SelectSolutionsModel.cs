@@ -19,10 +19,7 @@ public class SelectSolutionsModel : NavBaseModel
     {
         CompetitionName = competitionName;
         Solutions = competitionSolutions.Select(
-                x => new SolutionModel(
-                    x.Solution.CatalogueItem,
-                    x.RequiredServices.Select(y => y.Service.CatalogueItem.Name).ToList(),
-                    x.IsShortlisted))
+                x => new SolutionModel(x))
             .OrderBy(x => x.SolutionName)
             .ToList();
     }

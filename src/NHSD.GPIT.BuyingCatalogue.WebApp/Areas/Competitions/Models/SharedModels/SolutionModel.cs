@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.SharedModels;
@@ -12,15 +12,13 @@ public class SolutionModel
     }
 
     public SolutionModel(
-        CatalogueItem solution,
-        List<string> requiredServices,
-        bool isSelected = false)
+        CompetitionSolution competitionSolution)
     {
-        SolutionId = solution.Id;
-        SolutionName = solution.Name;
-        SupplierName = solution.Supplier.Name;
-        RequiredServices = requiredServices;
-        Selected = isSelected;
+        SolutionId = competitionSolution.Solution.CatalogueItemId;
+        SolutionName = competitionSolution.Solution.CatalogueItem.Name;
+        SupplierName = competitionSolution.Solution.CatalogueItem.Supplier.Name;
+        RequiredServices = competitionSolution.RequiredServices.Select(y => y.Service.CatalogueItem.Name).ToList();
+        Selected = competitionSolution.IsShortlisted;
     }
 
     public CatalogueItemId SolutionId { get; set; }
