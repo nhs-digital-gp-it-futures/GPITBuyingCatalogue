@@ -12,7 +12,7 @@
 
         public static bool ShowCapabilities => true;
 
-        public static bool ShowClientApplications => true;
+        public static bool ShowApplicationType => true;
 
         public static bool ShowServiceLevelAgreements => true;
 
