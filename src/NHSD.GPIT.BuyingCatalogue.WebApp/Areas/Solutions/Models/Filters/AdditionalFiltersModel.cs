@@ -25,6 +25,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
             SelectedFrameworkId = selectedFrameworkId;
         }
 
+        public int? FilterId { get; set; }
+
         public string SelectedFrameworkId { get; set; }
 
         public string SelectedCapabilityIds { get; set; }

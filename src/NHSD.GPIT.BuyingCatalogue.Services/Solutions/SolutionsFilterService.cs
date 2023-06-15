@@ -55,8 +55,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             string selectedApplicationTypeIds = null,
             string selectedHostingTypeIds = null)
         {
-            options ??= new PageOptions();
-
             var (query, count) = await GetFilteredAndNonFilteredQueryResults(selectedCapabilityIds, selectedEpicIds);
 
             if (!string.IsNullOrWhiteSpace(search))
@@ -82,8 +80,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     x => x.Hosting.IsValid());
             }
 
-            options.TotalNumberOfItems = await query.CountAsync();
-            query = options.Sort switch
+            var totalNumberOfItems = await query.CountAsync();
+            query = (options?.Sort ?? PageOptions.SortOptions.AtoZ) switch
             {
                 PageOptions.SortOptions.LastPublished => query.OrderByDescending(ci => ci.LastPublished)
                                                                 .ThenBy(ci => ci.Name),
@@ -91,11 +89,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 PageOptions.SortOptions.AtoZ or _ => query.OrderBy(ci => ci.Name),
             };
 
-            if (options.PageNumber != 0)
-                query = query.Skip((options.PageNumber - 1) * options.PageSize);
+            if (options != null)
+            {
+                if (options.PageNumber != 0)
+                    query = query.Skip((options.PageNumber - 1) * options.PageSize);
 
-            query = query.Take(options.PageSize);
+                query = query.Take(options.PageSize);
+            }
+            else
+            {
+                options = new PageOptions("1", totalNumberOfItems);
+            }
 
+            options.TotalNumberOfItems = totalNumberOfItems;
             var results = await query.ToListAsync();
 
             return (results, options, count);
