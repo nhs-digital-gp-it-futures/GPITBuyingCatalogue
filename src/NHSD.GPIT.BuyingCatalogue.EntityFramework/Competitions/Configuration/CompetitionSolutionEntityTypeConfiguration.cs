@@ -26,7 +26,8 @@ public sealed class CompetitionSolutionEntityTypeConfiguration : IEntityTypeConf
         builder.HasOne<Competition>()
             .WithMany(x => x.CompetitionSolutions)
             .HasForeignKey(x => x.CompetitionId)
-            .HasConstraintName("FK_CompetitionSolutions_Competition");
+            .HasConstraintName("FK_CompetitionSolutions_Competition")
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(x => x.Solution)
             .WithMany()
