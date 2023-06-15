@@ -11,7 +11,6 @@
     ViewBag.Title = Model.Title;
 
     var isAmendment = Model.IsAmendment;
-    var solutionsAndServicesSectionLabel = isAmendment ? "Solution and services" : "Add solutions and services";
 }
 
 <div data-test-id="@Model.CallOffId-page">
@@ -67,7 +66,7 @@
                                         status="@Model.Progress.CommencementDateStatus" />
                 </nhs-task-list-section>
 
-                <nhs-task-list-section label-text="@solutionsAndServicesSectionLabel">
+                <nhs-task-list-section label-text="@Model.SolutionsAndServicesSectionLabel">
                     <nhs-task-list-item label-text="Select solutions and services"
                                         label-hint="@Model.StatusDescription(OrderSummaryField.SolutionsAndServices, isAmendment)"
                                         data-test-id="test-solutions-and-services"
