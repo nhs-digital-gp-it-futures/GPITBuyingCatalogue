@@ -1,10 +1,10 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SolutionsFilterModels
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-@model (NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.CatalogueItem catalogueItem, ICollection<CapabilitiesAndCountModel> selectedCapabilityIds)
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionSearchResultModel;
 
 @{
-    var orderedCapabilities = Model.catalogueItem.CatalogueItemCapabilities.OrderBy(cic => cic.Capability.Name).ToList();
+    var orderedCapabilities = Model.CatalogueItem.CatalogueItemCapabilities.OrderBy(cic => cic.Capability.Name).ToList();
     var index = orderedCapabilities.FindIndex(oc => oc.Capability.Name == "Productivity");
     if (index >= 0)
     {
@@ -17,50 +17,66 @@
 <div data-test-id="solutions-card">
     <div class="nhsuk-grid-columns-full">
         <h3 class="nhsuk-heading-m">
-            <a asp-area="@typeof(SolutionsController).AreaName()"
+            @if (Model.NoLinks)
+            {
+                @Model.CatalogueItem.Name
+            }
+            else
+            {
+                <a asp-area="@typeof(SolutionsController).AreaName()"
                asp-controller="@typeof(SolutionsController).ControllerName()"
                asp-action="@nameof(SolutionsController.Description)"
-               asp-route-solutionId="@Model.catalogueItem.Id">
-                @Model.catalogueItem.Name
-            </a>
+               asp-route-solutionId="@Model.CatalogueItem.Id">
+                    @Model.CatalogueItem.Name
+                </a>
+            }
             <span class="nhsuk-caption-m nhsuk-caption--bottom">
-                @Model.catalogueItem.Supplier.Name
+                @Model.CatalogueItem.Supplier.Name
             </span>
         </h3>
         <p>
-            @Model.catalogueItem.Solution.Summary
+            @Model.CatalogueItem.Solution.Summary
         </p>
-        @if (Model.catalogueItem.Solution.AdditionalServices.Any())
+        @if (Model.CatalogueItem.Solution.AdditionalServices.Any())
         {
             <h4 class="nhsuk-heading-xs">Additional Services relevant to your search</h4>
             <p>
-                @for (int i = 0; i < Model.catalogueItem.Solution.AdditionalServices.Count; i++)
+                @for (int i = 0; i < Model.CatalogueItem.Solution.AdditionalServices.Count; i++)
                 {
-                    <a asp-area="@typeof(SolutionsController).AreaName()"
-                       asp-controller="@typeof(SolutionsController).ControllerName()"
-                       asp-action="@nameof(SolutionsController.AdditionalServices)"
-                       asp-fragment="@Model.catalogueItem.Solution.AdditionalServices.ElementAt(i).CatalogueItemId"
-                       asp-route-solutionId="@Model.catalogueItem.Id">
-                        @Model.catalogueItem.Solution.AdditionalServices.ElementAt(i).CatalogueItem.Name
-                   </a>
-                    @if (i + 1 != Model.catalogueItem.Solution.AdditionalServices.Count)
+                    @if (Model.NoLinks)
+                    {
+                        @Model.CatalogueItem.Solution.AdditionalServices.ElementAt(i).CatalogueItem.Name
+                    }
+                    else
+                    {
+
+                        <a asp-area="@typeof(SolutionsController).AreaName()"
+               asp-controller="@typeof(SolutionsController).ControllerName()"
+               asp-action="@nameof(SolutionsController.AdditionalServices)"
+               asp-fragment="@Model.CatalogueItem.Solution.AdditionalServices.ElementAt(i).CatalogueItemId"
+               asp-route-solutionId="@Model.CatalogueItem.Id">
+                            @Model.CatalogueItem.Solution.AdditionalServices.ElementAt(i).CatalogueItem.Name
+                        </a>
+                    }
+                    @if (i + 1 != Model.CatalogueItem.Solution.AdditionalServices.Count)
                     {
                         @(", ")
                     }
                 }
             </p>
         }
-        @if (Model.selectedCapabilityIds.Any()){
+        @if (Model.SelectedCapabilityIds.Any())
+        {
             <h4 class="nhsuk-heading-xs">Search information</h4>
             <p>
-            @(CapabilitiesNotMet())
+                @(CapabilitiesNotMet())
             </p>
         }
 
         <h4 class="nhsuk-heading-xs">@FrameworkHeading()</h4>
-        <p>@(string.Join(", ", Model.catalogueItem.Solution.FrameworkSolutions.Select(fs => $"{fs.Framework.ShortName}{(fs.Framework.IsExpired ? " (expired)": string.Empty)}")))</p>
+        <p>@(string.Join(", ", Model.CatalogueItem.Solution.FrameworkSolutions.Select(fs => $"{fs.Framework.ShortName}{(fs.Framework.IsExpired ? " (expired)" : string.Empty)}")))</p>
         <nhs-endnote>
-            Published on: @Model.catalogueItem.LastPublished?.ToString("d MMMM yyyy")
+            Published on: @Model.CatalogueItem.LastPublished?.ToString("d MMMM yyyy")
         </nhs-endnote>
     </div>
 </div>
@@ -69,13 +85,13 @@
 @{
     string CapabilitiesNotMet()
     {
-        var claimedCapabilities = Model.catalogueItem.CatalogueItemCapabilities.Select(cic => cic.CapabilityId).ToList();
+        var claimedCapabilities = Model.CatalogueItem.CatalogueItemCapabilities.Select(cic => cic.CapabilityId).ToList();
 
-        claimedCapabilities.AddRange(Model.catalogueItem.Solution.AdditionalServices.SelectMany(adit => adit.CatalogueItem.CatalogueItemCapabilities.Select(cic => cic.CapabilityId)));
+        claimedCapabilities.AddRange(Model.CatalogueItem.Solution.AdditionalServices.SelectMany(adit => adit.CatalogueItem.CatalogueItemCapabilities.Select(cic => cic.CapabilityId)));
 
         claimedCapabilities = claimedCapabilities.Distinct().ToList();
 
-        var excludedIds = Model.selectedCapabilityIds
+        var excludedIds = Model.SelectedCapabilityIds
             .Where(sci => !claimedCapabilities.Contains(sci.CapabilityId))
             .Select(sci => sci.CapabilityName)
             .OrderBy(sci => sci);
@@ -83,5 +99,5 @@
         return excludedIds.Any() ? $"Missing from your search criteria: {string.Join(", ", excludedIds)}" : "All of the Capabilities you've selected have been met.";
     }
 
-    string FrameworkHeading() => Model.catalogueItem.Solution.FrameworkSolutions.Select(x => x.Framework).Count() > 1 ? "Frameworks" : "Framework";
+    string FrameworkHeading() => Model.CatalogueItem.Solution.FrameworkSolutions.Select(x => x.Framework).Count() > 1 ? "Frameworks" : "Framework";
 }

@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 
@@ -22,19 +19,16 @@ public class OrderPdfService : IOrderPdfService
     private readonly IPdfService pdfService;
     private readonly IUrlHelperFactory urlHelper;
     private readonly IActionContextAccessor actionContextAccessor;
-    private readonly PdfSettings pdfSettings;
 
     public OrderPdfService(
         IPdfService pdfService,
         IUrlHelperFactory urlHelper,
-        IActionContextAccessor actionContextAccessor,
-        PdfSettings pdfSettings)
+        IActionContextAccessor actionContextAccessor)
     {
         this.pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
         this.urlHelper = urlHelper ?? throw new ArgumentNullException(nameof(urlHelper));
         this.actionContextAccessor =
             actionContextAccessor ?? throw new ArgumentNullException(nameof(actionContextAccessor));
-        this.pdfSettings = pdfSettings ?? throw new ArgumentNullException(nameof(pdfSettings));
     }
 
     public async Task<MemoryStream> CreateOrderSummaryPdf(Order order)
@@ -57,18 +51,6 @@ public class OrderPdfService : IOrderPdfService
                 ControllerName,
                 new { internalOrgId, callOffId });
 
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-        {
-            var httpContext = actionContextAccessor.ActionContext!.HttpContext!;
-            uri = $"{httpContext.Request.Scheme}://{httpContext.Request.Host}{uri}";
-        }
-        else
-        {
-            uri = pdfSettings.UseSslForPdf
-                ? $"https://localhost{uri}"
-                : $"http://localhost{uri}";
-        }
-
-        return new(uri);
+        return new(pdfService.BaseUri(), uri);
     }
 }

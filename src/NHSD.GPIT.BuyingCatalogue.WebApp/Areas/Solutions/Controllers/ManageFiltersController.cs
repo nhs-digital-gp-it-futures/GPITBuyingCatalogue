@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 
@@ -31,19 +33,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         private readonly ICapabilitiesService capabilitiesService;
         private readonly IEpicsService epicsService;
         private readonly IFrameworkService frameworkService;
+        private readonly IPdfService pdfService;
 
         public ManageFiltersController(
             IOrganisationsService organisationsService,
             ICapabilitiesService capabilitiesService,
             IEpicsService epicsService,
             IFrameworkService frameworkService,
-            IManageFiltersService manageFiltersService)
+            IManageFiltersService manageFiltersService,
+            IPdfService pdfService)
         {
             this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
             this.manageFiltersService = manageFiltersService ?? throw new ArgumentNullException(nameof(manageFiltersService));
             this.capabilitiesService = capabilitiesService ?? throw new ArgumentNullException(nameof(capabilitiesService));
             this.epicsService = epicsService ?? throw new ArgumentNullException(nameof(epicsService));
             this.frameworkService = frameworkService ?? throw new ArgumentNullException(nameof(frameworkService));
+            this.pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
         }
 
         [HttpGet]
@@ -107,9 +112,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var hostingTypes = SolutionsFilterHelper.ParseHostingTypeIds(selectedHostingTypeIds)?.ToList();
 
             var model = new SaveFilterModel(capabilities, epics, framework, clientApplicationTypes, hostingTypes, organisationId)
-                {
-                    BackLink = backLink,
-                };
+            {
+                BackLink = backLink,
+            };
             return View(model);
         }
 
@@ -192,6 +197,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet("download-results")]
+        public async Task<IActionResult> DownloadResults(int filterId)
+        {
+            var organisation = await GetUserOrganisation();
+            var filter = await manageFiltersService.GetFilterDetails(organisation.Id, filterId);
+
+            if (filter == null)
+                return NotFound();
+
+            var uri = Url.Action(
+                    nameof(SolutionsFilterResultsController.Index),
+                    typeof(SolutionsFilterResultsController).ControllerName(),
+                    new
+                    {
+                        internalOrgId = organisation.InternalIdentifier,
+                        filterId = filter.Id,
+                    });
+
+            var result = await pdfService.Convert(new(pdfService.BaseUri(), uri));
+
+            var fileName = $"{filter.Name} Catalogue Solutions.pdf";
+            return File(result, "application/pdf", fileName);
         }
 
         private async Task<Organisation> GetUserOrganisation()
