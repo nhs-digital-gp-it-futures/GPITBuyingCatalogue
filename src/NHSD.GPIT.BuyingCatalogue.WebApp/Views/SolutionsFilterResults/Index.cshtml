@@ -212,7 +212,7 @@
                                 </p>
                             </pdf-summary-list-row>
                             <pdf-summary-list-row label-text="Client application type">
-                                @if (!Model.ReviewFilter.HasClientApplicationTypes())
+                                @if (!Model.ReviewFilter.HasApplicationTypes())
                                 {
                                     <p>
                                         None selected
@@ -220,16 +220,16 @@
                                 }
                                 else
                                 {
-                                    @if (Model.ReviewFilter.FilterDetails.ClientApplicationTypes.Count == 1)
+                                    @if (Model.ReviewFilter.FilterDetails.ApplicationTypes.Count == 1)
                                     {
                                         <p>
-                                            @Model.ReviewFilter.FilterDetails.ClientApplicationTypes.First().Name()
+                                            @Model.ReviewFilter.FilterDetails.ApplicationTypes.First().Name()
                                         </p>
                                     }
                                     else
                                     {
                                         <ul>
-                                            @foreach (var item in Model.ReviewFilter.FilterDetails.ClientApplicationTypes)
+                                            @foreach (var item in Model.ReviewFilter.FilterDetails.ApplicationTypes)
                                             {
                                                 <li>
                                                     @item.Name()
