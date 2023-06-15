@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
             var clientApplication = new ClientApplication { AdditionalInformation = "Additional Information" };
             var solution = new Solution();
 
-            solution.SetClientApplication(clientApplication);
+            solution.ClientApplication = clientApplication;
             var result = solution.EnsureAndGetClientApplication();
 
             result.Should().BeEquivalentTo(clientApplication);

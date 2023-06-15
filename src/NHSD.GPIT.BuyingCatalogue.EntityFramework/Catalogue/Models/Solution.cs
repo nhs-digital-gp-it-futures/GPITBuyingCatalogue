@@ -58,22 +58,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public ICollection<WorkOffPlan> WorkOffPlans { get; set; }
 
-        // TODO: MJK Review
         public ClientApplication EnsureAndGetClientApplication()
         {
             return ClientApplication ?? new ClientApplication();
-        }
-
-        // TODO: MJK Review
-        public ClientApplication GetClientApplication()
-        {
-            return ClientApplication;
-        }
-
-        // TODO: MJK Review
-        public void SetClientApplication(ClientApplication clientApplication)
-        {
-            ClientApplication = clientApplication;
         }
     }
 }

@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
 
             var solution = await context.Solutions.FirstOrDefaultAsync(s => s.CatalogueItemId == SolutionId);
 
-            var memoryAndStorage = solution.GetClientApplication()?.MobileMemoryAndStorage;
+            var memoryAndStorage = solution.ClientApplication?.MobileMemoryAndStorage;
 
             memoryAndStorage.Should().NotBeNull();
             memoryAndStorage.MinimumMemoryRequirement.Should().Be(memorySize);

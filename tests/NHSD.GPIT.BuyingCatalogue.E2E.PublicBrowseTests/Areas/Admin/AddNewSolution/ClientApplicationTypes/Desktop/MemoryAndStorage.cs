@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
 
             var solution = await context.Solutions.FirstOrDefaultAsync(s => s.CatalogueItemId == SolutionId);
 
-            var memoryAndStorage = solution.GetClientApplication()?.NativeDesktopMemoryAndStorage;
+            var memoryAndStorage = solution.ClientApplication?.NativeDesktopMemoryAndStorage;
 
             memoryAndStorage.Should().NotBeNull();
             memoryAndStorage.MinimumMemoryRequirement.Should().Be(memorySize);

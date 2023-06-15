@@ -328,7 +328,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             var actual = await context.Solutions.AsQueryable()
                 .FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
 
-            actual.GetClientApplication().Should().BeEquivalentTo(clientApplication);
+            actual.ClientApplication.Should().BeEquivalentTo(clientApplication);
         }
 
         [Theory]
@@ -443,7 +443,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         {
             clientApplication.ClientApplicationTypes =
                 new HashSet<string> { "browser-based", "native-mobile", "native-desktop" };
-            catalogueSolution.SetClientApplication(clientApplication);
+            catalogueSolution.ClientApplication = clientApplication;
             context.Solutions.Add(catalogueSolution);
             await context.SaveChangesAsync();
 
@@ -455,7 +455,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             var actual = await context.Solutions.AsQueryable()
                 .FirstAsync(s => s.CatalogueItemId == catalogueSolution.CatalogueItemId);
 
-            var actualClientApplication = actual.GetClientApplication();
+            var actualClientApplication = actual.ClientApplication;
 
             actualClientApplication.ClientApplicationTypes.Any(c => c.Equals("browser-based")).Should().BeFalse();
             actualClientApplication.ClientApplicationTypes.Any(c => c.Equals("native-mobile")).Should().BeTrue();

@@ -125,7 +125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
                 nameof(CatalogueSolutionsController.ClientApplicationType))
                 .Should().BeTrue();
             var solution = await context.Solutions.AsNoTracking().FirstAsync(s => s.CatalogueItemId == SolutionId);
-            var clientApplication = solution.GetClientApplication();
+            var clientApplication = solution.ClientApplication;
 
             clientApplication.ClientApplicationTypes.Should().NotContain(clientApplicationType.AsString(EnumFormat.EnumMemberValue));
 

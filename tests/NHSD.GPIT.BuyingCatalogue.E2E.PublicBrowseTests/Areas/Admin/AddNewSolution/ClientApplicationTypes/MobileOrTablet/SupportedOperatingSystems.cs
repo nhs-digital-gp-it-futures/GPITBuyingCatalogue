@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
 
             var solution = await context.Solutions.FirstOrDefaultAsync(s => s.CatalogueItemId == SolutionId);
 
-            var mobileOperatingSystems = solution.GetClientApplication()?.MobileOperatingSystems;
+            var mobileOperatingSystems = solution.ClientApplication?.MobileOperatingSystems;
 
             mobileOperatingSystems.Should().NotBeNull();
             mobileOperatingSystems.OperatingSystems.Should().ContainEquivalentOf(operatingSystem);

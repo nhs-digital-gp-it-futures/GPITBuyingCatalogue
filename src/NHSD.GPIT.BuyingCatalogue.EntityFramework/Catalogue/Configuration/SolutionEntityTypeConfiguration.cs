@@ -28,7 +28,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.Property(s => s.IsPilotSolution).HasDefaultValue(false);
             builder.Property(s => s.LastUpdated).HasDefaultValue(DateTime.UtcNow);
 
-            // TODO: MJK - change clientApplciation to use OwnsOne and ToJson
             var jsonSerializerOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             var converter = new ValueConverter<ClientApplication, string>(
                 value => JsonSerializer.Serialize(value, (JsonSerializerOptions)null),

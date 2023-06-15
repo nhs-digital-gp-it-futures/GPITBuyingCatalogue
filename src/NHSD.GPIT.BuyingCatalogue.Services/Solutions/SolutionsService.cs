@@ -333,7 +333,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             clientApplication.ValidateNotNull(nameof(clientApplication));
 
             var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
-            solution.SetClientApplication(clientApplication);
+            solution.ClientApplication = clientApplication;
             await dbContext.SaveChangesAsync();
         }
 

@@ -129,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 AdditionalInformation = "Test",
             };
 
-            solution.SetClientApplication(clientApplication);
+            solution.ClientApplication = clientApplication;
 
             var model = new ClientApplicationTypesModel(solution.CatalogueItem, contentStatus);
 
@@ -171,7 +171,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 NativeDesktopAdditionalInformation = "Monitor",
             };
 
-            solution.SetClientApplication(clientApplication);
+            solution.ClientApplication = clientApplication;
 
             var model = new ClientApplicationTypesModel(solution.CatalogueItem, contentStatus);
 
@@ -215,7 +215,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 NativeMobileAdditionalInformation = "Information",
             };
 
-            solution.SetClientApplication(clientApplication);
+            solution.ClientApplication = clientApplication;
 
             var model = new ClientApplicationTypesModel(solution.CatalogueItem, contentStatus);
 
@@ -252,7 +252,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 },
             };
 
-            solution.SetClientApplication(clientApplication);
+            solution.ClientApplication = clientApplication;
 
             var model = new ClientApplicationTypesModel(solution.CatalogueItem, contentStatus);
 
