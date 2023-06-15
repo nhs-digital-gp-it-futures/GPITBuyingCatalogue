@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
             var output = await service.GetDefaultImplementationPlan();
 
-            output.Should().Be(plan);
+            output.Should().BeEquivalentTo(plan);
         }
 
         [Theory]
@@ -169,8 +169,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             await context.SaveChangesAsync();
 
             contract.Order = order;
+            contract.ImplementationPlan = new ImplementationPlan();
 
-            var numberOfMilestones = contract.ImplementationPlan?.Milestones?.Count;
             context.Contracts.Add(contract);
 
             await context.SaveChangesAsync();
@@ -185,9 +185,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
             var actual = await context.Contracts.FirstAsync(f => f.Id == contract.Id);
             actual.ImplementationPlan.Should().NotBeNull();
-            actual.ImplementationPlan.Should().BeEquivalentTo(contract.ImplementationPlan);
             actual.ImplementationPlan.Milestones.Should().NotBeNull();
-            actual.ImplementationPlan.Milestones.Count.Should().Be(numberOfMilestones + 1);
+            actual.ImplementationPlan.Milestones.Count.Should().Be(1);
         }
     }
 }

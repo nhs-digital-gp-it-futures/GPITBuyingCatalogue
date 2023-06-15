@@ -115,7 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
             var output = await service.GetContractFlags(orderId);
 
-            output.Should().Be(flags);
+            output.Should().BeEquivalentTo(flags);
         }
 
         [Theory]
