@@ -121,7 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         : ci.CataloguePrices.Any()
                             ? TaskProgress.InProgress
                             : TaskProgress.NotStarted,
-                    ApplicationType = !string.IsNullOrEmpty(ci.Solution.ClientApplication)
+                    ApplicationType = !string.IsNullOrEmpty(ci.Solution.ApplicationType)
                         ? TaskProgress.Completed
                         : TaskProgress.NotStarted,
                     HostingType = ci.Solution.Hosting != null && ci.Solution.Hosting.IsValid()
@@ -333,7 +333,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             clientApplication.ValidateNotNull(nameof(clientApplication));
 
             var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
-            solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
+            solution.ApplicationType = JsonSerializer.Serialize(clientApplication);
             await dbContext.SaveChangesAsync();
         }
 

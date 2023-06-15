@@ -109,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
             await using var context = GetEndToEndDbContext();
             var originalSolution =
                 await context.Solutions.AsNoTracking().FirstAsync(x => x.CatalogueItemId == SolutionId);
-            var originalClientApplication = originalSolution.ClientApplication;
+            var originalClientApplication = originalSolution.ApplicationType;
 
             var queryParam = new Dictionary<string, string>
             {
@@ -130,7 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
 
             clientApplication.ClientApplicationTypes.Should().NotContain(clientApplicationType.AsString(EnumFormat.EnumMemberValue));
 
-            solution.ClientApplication = originalClientApplication;
+            solution.ApplicationType = originalClientApplication;
             context.Update(solution);
             await context.SaveChangesAsync();
         }

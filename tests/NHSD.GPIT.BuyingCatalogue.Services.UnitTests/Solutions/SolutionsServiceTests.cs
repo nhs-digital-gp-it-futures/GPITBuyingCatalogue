@@ -329,7 +329,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             var actual = await context.Solutions.AsQueryable()
                 .FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
 
-            actual.ClientApplication.Should().Be(JsonSerializer.Serialize(clientApplication));
+            actual.ApplicationType.Should().Be(JsonSerializer.Serialize(clientApplication));
         }
 
         [Theory]
@@ -443,7 +443,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         {
             clientApplication.ClientApplicationTypes =
                 new HashSet<string> { "browser-based", "native-mobile", "native-desktop" };
-            catalogueSolution.ClientApplication = JsonSerializer.Serialize(clientApplication);
+            catalogueSolution.ApplicationType = JsonSerializer.Serialize(clientApplication);
             context.Solutions.Add(catalogueSolution);
             await context.SaveChangesAsync();
 
@@ -454,7 +454,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             var actual = await context.Solutions.AsQueryable()
                 .FirstAsync(s => s.CatalogueItemId == catalogueSolution.CatalogueItemId);
 
-            var actualClientApplication = JsonDeserializer.Deserialize<ClientApplication>(actual.ClientApplication);
+            var actualClientApplication = JsonDeserializer.Deserialize<ClientApplication>(actual.ApplicationType);
 
             actualClientApplication.ClientApplicationTypes.Any(c => c.Equals("browser-based")).Should().BeFalse();
             actualClientApplication.ClientApplicationTypes.Any(c => c.Equals("native-mobile")).Should().BeTrue();

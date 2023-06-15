@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
             var solution = await context.Solutions.FirstAsync(s => s.CatalogueItemId == SolutionId);
 
             var hardwareRequirements = JsonDeserializer.Deserialize<ServiceContracts.Solutions.ClientApplication>(
-                solution.ClientApplication)
+                solution.ApplicationType)
                 ?.NativeMobileHardwareRequirements;
 
             hardwareRequirements.Should().NotBeNull();

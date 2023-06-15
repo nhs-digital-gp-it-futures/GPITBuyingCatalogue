@@ -203,7 +203,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             CatalogueItemContentStatus contentStatus)
         {
             var catalogueItem = solution.CatalogueItem;
-            solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
+            solution.ApplicationType = JsonSerializer.Serialize(clientApplication);
             var associatedServices = solution.CatalogueItem.SupplierServiceAssociations.Select(ssa => ssa.CatalogueItem).ToList();
             var associatedServicesModel = new AssociatedServicesModel(catalogueItem, associatedServices, contentStatus);
 
@@ -562,7 +562,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             CatalogueItemContentStatus contentStatus)
         {
             var catalogueItem = solution.CatalogueItem;
-            solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
+            solution.ApplicationType = JsonSerializer.Serialize(clientApplication);
 
             var expectedModel = new ApplicationTypesModel(catalogueItem, contentStatus);
             solutionsService.Setup(s => s.GetSolutionThin(id)).ReturnsAsync(catalogueItem);

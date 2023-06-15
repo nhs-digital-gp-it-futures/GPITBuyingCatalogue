@@ -17,9 +17,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             CatalogueItemContentStatus contentStatus)
             : base(catalogueItem, contentStatus)
         {
-            ClientApplication = string.IsNullOrWhiteSpace(catalogueItem.Solution.ClientApplication)
+            ClientApplication = string.IsNullOrWhiteSpace(catalogueItem.Solution.ApplicationType)
                 ? new ClientApplication()
-                : JsonDeserializer.Deserialize<ClientApplication>(catalogueItem.Solution.ClientApplication);
+                : JsonDeserializer.Deserialize<ClientApplication>(catalogueItem.Solution.ApplicationType);
 
             BrowserBasedApplication = GetBrowserBasedApplication();
             NativeDesktopApplication = GetNativeDesktopApplication();

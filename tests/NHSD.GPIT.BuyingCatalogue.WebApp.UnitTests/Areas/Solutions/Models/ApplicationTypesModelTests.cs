@@ -131,7 +131,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 AdditionalInformation = "Test",
             };
 
-            solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
+            solution.ApplicationType = JsonSerializer.Serialize(clientApplication);
 
             var model = new ApplicationTypesModel(solution.CatalogueItem, contentStatus);
 
@@ -173,7 +173,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 NativeDesktopAdditionalInformation = "Monitor",
             };
 
-            solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
+            solution.ApplicationType = JsonSerializer.Serialize(clientApplication);
 
             var model = new ApplicationTypesModel(solution.CatalogueItem, contentStatus);
 
@@ -217,7 +217,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 NativeMobileAdditionalInformation = "Information",
             };
 
-            solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
+            solution.ApplicationType = JsonSerializer.Serialize(clientApplication);
 
             var model = new ApplicationTypesModel(solution.CatalogueItem, contentStatus);
 
@@ -254,7 +254,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 },
             };
 
-            solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
+            solution.ApplicationType = JsonSerializer.Serialize(clientApplication);
 
             var model = new ApplicationTypesModel(solution.CatalogueItem, contentStatus);
 

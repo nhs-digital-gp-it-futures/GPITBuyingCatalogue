@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         Summary = "SUMMARY - DFOCVC Solution",
                         Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interoperable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
                         Hosting = hosting,
-                        ClientApplication = @"{
+                        ApplicationType = @"{
                             ""ClientApplicationTypes"": [
                                 ""browser-based"",
                                 ""native-mobile"",
@@ -250,7 +250,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         Summary = "SUMMARY - GPIT Solution",
                         Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interoperable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
                         Hosting = hosting,
-                        ClientApplication = @"{
+                        ApplicationType = @"{
                             ""ClientApplicationTypes"": [
                                 ""browser-based"",
                                 ""native-mobile"",
@@ -358,7 +358,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         Summary = "SUMMARY - GPIT Solution 2",
                         Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interoperable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
                         Hosting = hosting,
-                        ClientApplication = @"{
+                        ApplicationType = @"{
                             ""ClientApplicationTypes"": [
                                 ""browser-based"",
                                 ""native-mobile"",
@@ -479,7 +479,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         Summary = "SUMMARY - DFOCVC Solution",
                         Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interoperable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
                         Hosting = hosting,
-                        ClientApplication = @"{
+                        ApplicationType = @"{
                             ""ClientApplicationTypes"": [
                                 ""browser-based"",
                                 ""native-mobile"",
@@ -586,7 +586,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         Summary = "SUMMARY - E2E With Contact Multiple Prices",
                         Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interoperable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
                         Hosting = hosting,
-                        ClientApplication = @"{
+                        ApplicationType = @"{
                             ""ClientApplicationTypes"": [
                                 ""browser-based"",
                                 ""native-mobile"",
@@ -717,7 +717,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         Summary = "SUMMARY - E2E With Contact With Single Price",
                         Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interoperable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
                         Hosting = hosting,
-                        ClientApplication = @"{
+                        ApplicationType = @"{
                             ""ClientApplicationTypes"": [
                                 ""browser-based"",
                                 ""native-mobile"",

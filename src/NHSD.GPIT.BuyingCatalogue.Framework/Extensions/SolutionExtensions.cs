@@ -13,9 +13,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
             if (solution is null)
                 throw new ArgumentNullException(nameof(solution));
 
-            return string.IsNullOrWhiteSpace(solution.ClientApplication)
+            return string.IsNullOrWhiteSpace(solution.ApplicationType)
                 ? new ClientApplication()
-                : JsonDeserializer.Deserialize<ClientApplication>(solution.ClientApplication);
+                : JsonDeserializer.Deserialize<ClientApplication>(solution.ApplicationType);
         }
 
         public static IEnumerable<string> GetFeatures(this Solution solution)

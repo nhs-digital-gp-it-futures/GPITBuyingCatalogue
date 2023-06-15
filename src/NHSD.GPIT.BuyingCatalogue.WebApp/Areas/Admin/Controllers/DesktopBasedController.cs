@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var clientApplication = await solutionsService.GetClientApplication(solutionId);
 
             if (clientApplication is null)
-                return BadRequest($"No Client Application found for Solution Id: {solutionId}");
+                return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
             clientApplication.NativeDesktopOperatingSystemsDescription = model.Description;
 
@@ -108,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var clientApplication = await solutionsService.GetClientApplication(solutionId);
 
             if (clientApplication is null)
-                return BadRequest($"No Client Application found for Solution Id: {solutionId}");
+                return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
             clientApplication.NativeDesktopMinimumConnectionSpeed = model.SelectedConnectionSpeed;
 
@@ -144,7 +144,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var clientApplication = await solutionsService.GetClientApplication(solutionId);
 
             if (clientApplication is null)
-                return BadRequest($"No Client Application found for Solution Id: {solutionId}");
+                return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
             clientApplication.NativeDesktopMemoryAndStorage ??= new NativeDesktopMemoryAndStorage();
 
@@ -185,7 +185,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var clientApplication = await solutionsService.GetClientApplication(solutionId);
 
             if (clientApplication is null)
-                return BadRequest($"No Client Application found for Solution Id: {solutionId}");
+                return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
             clientApplication.NativeDesktopThirdParty ??= new NativeDesktopThirdParty();
 
@@ -224,7 +224,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var clientApplication = await solutionsService.GetClientApplication(solutionId);
 
             if (clientApplication is null)
-                return BadRequest($"No Client Application found for Solution Id: {solutionId}");
+                return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
             clientApplication.NativeDesktopHardwareRequirements = model.Description;
 
@@ -260,7 +260,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var clientApplication = await solutionsService.GetClientApplication(solutionId);
 
             if (clientApplication is null)
-                return BadRequest($"No Client Application found for Solution Id: {solutionId}");
+                return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
             clientApplication.NativeDesktopAdditionalInformation = model.AdditionalInformation;
 

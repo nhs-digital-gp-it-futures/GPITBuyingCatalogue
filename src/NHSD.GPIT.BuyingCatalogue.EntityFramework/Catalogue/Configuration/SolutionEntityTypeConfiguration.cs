@@ -29,6 +29,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.Property(s => s.Hosting)
                 .HasJsonConversion();
 
+            builder.Property(s => s.ApplicationType)
+                .HasColumnName("ClientApplication");
+
             builder.Property(s => s.RoadMap).HasMaxLength(1000);
             builder.Property(s => s.Summary).HasMaxLength(350);
 

@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var clientApplication = await solutionsService.GetClientApplication(solutionId);
 
             if (clientApplication is null)
-                return BadRequest($"No Client Application found for Solution Id: {solutionId}");
+                return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
             if (clientApplication.MobileOperatingSystems is null)
                 clientApplication.MobileOperatingSystems = new MobileOperatingSystems();
@@ -122,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var clientApplication = await solutionsService.GetClientApplication(solutionId);
 
             if (clientApplication is null)
-                return BadRequest($"No Client Application found for Solution Id: {solutionId}");
+                return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
             if (clientApplication.MobileConnectionDetails is null)
                 clientApplication.MobileConnectionDetails = new MobileConnectionDetails();
@@ -171,7 +171,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var clientApplication = await solutionsService.GetClientApplication(solutionId);
 
             if (clientApplication is null)
-                return BadRequest($"No Client Application found for Solution Id: {solutionId}");
+                return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
             clientApplication.MobileMemoryAndStorage ??= new MobileMemoryAndStorage();
 
@@ -210,7 +210,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var clientApplication = await solutionsService.GetClientApplication(solutionId);
 
             if (clientApplication is null)
-                return BadRequest($"No Client Application found for Solution Id: {solutionId}");
+                return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
             clientApplication.MobileThirdParty ??= new MobileThirdParty();
 
@@ -249,7 +249,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var clientApplication = await solutionsService.GetClientApplication(solutionId);
 
             if (clientApplication is null)
-                return BadRequest($"No Client Application found for Solution Id: {solutionId}");
+                return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
             clientApplication.NativeMobileHardwareRequirements = model.Description;
 
@@ -285,7 +285,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var clientApplication = await solutionsService.GetClientApplication(solutionId);
 
             if (clientApplication is null)
-                return BadRequest($"No Client Application found for Solution Id: {solutionId}");
+                return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
             clientApplication.NativeMobileAdditionalInformation = model.AdditionalInformation;
 

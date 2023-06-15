@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     query,
                     selectedApplicationTypeIds,
                     GetSelectedFiltersClientApplication,
-                    x => !string.IsNullOrEmpty(x.ClientApplication));
+                    x => !string.IsNullOrEmpty(x.ApplicationType));
             }
 
             if (!string.IsNullOrWhiteSpace(selectedHostingTypeIds))
@@ -288,7 +288,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         private static IEnumerable<ApplicationType> GetSelectedFiltersClientApplication(Solution solution, IEnumerable<ApplicationType> selectedFilterEnums)
         {
-            var clientApplication = JsonDeserializer.Deserialize<ClientApplication>(solution.ClientApplication);
+            var clientApplication = JsonDeserializer.Deserialize<ClientApplication>(solution.ApplicationType);
             return selectedFilterEnums?.Where(t => clientApplication.HasApplicationType(t));
         }
 

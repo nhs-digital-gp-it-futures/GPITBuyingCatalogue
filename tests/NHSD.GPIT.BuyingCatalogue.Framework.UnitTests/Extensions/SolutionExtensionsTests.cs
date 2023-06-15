@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
         [InlineData(" ")]
         public static void GetClientApplication_ReturnsDefaultClientApplicationWhenNotSet(string clientApplication)
         {
-            var solution = new Solution { ClientApplication = clientApplication };
+            var solution = new Solution { ApplicationType = clientApplication };
 
             var result = solution.GetClientApplication();
 
@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
         {
             var clientApplication = new ClientApplication { AdditionalInformation = "Additional Information" };
             var json = JsonSerializer.Serialize(clientApplication);
-            var solution = new Solution { ClientApplication = json };
+            var solution = new Solution { ApplicationType = json };
 
             var result = solution.GetClientApplication();
 
