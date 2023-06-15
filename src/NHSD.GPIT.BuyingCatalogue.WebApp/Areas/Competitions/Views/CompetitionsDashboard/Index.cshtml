@@ -90,18 +90,13 @@
     {
         var routingArgs = new { Area = typeof(CompetitionSelectSolutionsController).AreaName(), internalOrgId = Model.InternalOrgId, competitionId = competition.Id };
 
-        if (competition.Solutions.All(x => !x.IsShortlisted))
+        if (competition.Solutions.All(x => !x.IsShortlisted)
+            || competition.Solutions.Any(x => !x.IsShortlisted && string.IsNullOrWhiteSpace(x.Justification))
+            || !competition.ShortlistAccepted.HasValue)
         {
             return Url.Action(nameof(CompetitionSelectSolutionsController.SelectSolutions), typeof(CompetitionSelectSolutionsController).ControllerName(), routingArgs);
         }
 
-        if (competition.Solutions.Any(x => !x.IsShortlisted && string.IsNullOrWhiteSpace(x.Justification)))
-        {
-            return Url.Action(nameof(CompetitionSelectSolutionsController.JustifySolutions), typeof(CompetitionSelectSolutionsController).ControllerName(), routingArgs);
-        }
-
-        return !competition.ShortlistAccepted.HasValue
-            ? Url.Action(nameof(CompetitionSelectSolutionsController.ConfirmSolutions), typeof(CompetitionSelectSolutionsController).ControllerName(), routingArgs)
-            : Url.Action(nameof(CompetitionTaskListController.Index), typeof(CompetitionTaskListController).ControllerName(), routingArgs);
+        return Url.Action(nameof(CompetitionTaskListController.Index), typeof(CompetitionTaskListController).ControllerName(), routingArgs);
     }
 }

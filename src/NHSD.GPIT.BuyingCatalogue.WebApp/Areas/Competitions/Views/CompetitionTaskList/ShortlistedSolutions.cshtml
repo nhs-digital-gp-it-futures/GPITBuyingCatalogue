@@ -21,7 +21,8 @@
                 <a asp-action="@nameof(SolutionsController.Description)"
                    asp-controller="@typeof(SolutionsController).ControllerName()"
                    asp-area="@typeof(SolutionsController).AreaName()"
-                   asp-route-solutionId="@solution.SolutionId">
+                   asp-route-solutionId="@solution.SolutionId"
+                   target="_blank">
                     @solution.SolutionName (opens in a new tab)
                 </a>
                 <span class="nhsuk-caption-m nhsuk-caption--bottom">
