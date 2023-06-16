@@ -1,6 +1,4 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels.BrowserBasedModels
 {
@@ -16,15 +14,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationT
         {
             ApplicationType = ClientApplicationType.BrowserBased;
         }
-
-        public TaskProgress SupportedBrowsersStatus() => ClientApplicationProgress.SupportedBrowsersStatus();
-
-        public TaskProgress PluginsStatus() => ClientApplicationProgress.PluginsStatus();
-
-        public TaskProgress ConnectivityStatus() => ClientApplicationProgress.ConnectivityStatus();
-
-        public TaskProgress HardwareRequirementsStatus() => ClientApplicationProgress.HardwareRequirementsStatus();
-
-        public TaskProgress AdditionalInformationStatus() => ClientApplicationProgress.AdditionalInformationStatus();
     }
 }

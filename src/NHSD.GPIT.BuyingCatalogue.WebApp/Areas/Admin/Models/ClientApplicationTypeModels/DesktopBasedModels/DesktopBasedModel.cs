@@ -1,7 +1,5 @@
 ﻿using System;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels.DesktopBasedModels
 {
@@ -19,17 +17,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationT
 
             ApplicationType = ClientApplicationType.Desktop;
         }
-
-        public TaskProgress SupportedOperatingSystemsStatus() => ClientApplicationProgress.NativeDesktopSupportedOperatingSystemsStatus();
-
-        public TaskProgress ConnectivityStatus() => ClientApplicationProgress.NativeDesktopConnectivityStatus();
-
-        public TaskProgress MemoryAndStorageStatus() => ClientApplicationProgress.NativeDesktopMemoryAndStorageStatus();
-
-        public TaskProgress StatusThirdParty() => ClientApplicationProgress.NativeDesktopThirdPartyStatus();
-
-        public TaskProgress StatusHardware() => ClientApplicationProgress.NativeDesktopHardwareRequirementsStatus();
-
-        public TaskProgress StatusAdditionalInformation() => ClientApplicationProgress.NativeDesktopAdditionalInformationStatus();
     }
 }
