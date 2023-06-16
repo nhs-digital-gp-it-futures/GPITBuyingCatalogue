@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
@@ -7,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 
+[ExcludeFromCodeCoverage(Justification = "Class of auto properties")]
 public class SolutionSortModel
 {
     public PageOptions.SortOptions SelectedSortOption { get; init; }
