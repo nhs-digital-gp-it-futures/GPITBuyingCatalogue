@@ -130,7 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             return RedirectToAction(nameof(Index), new { internalOrgId, callOffId });
         }
 
-        [HttpGet("edit-milestone")]
+        [HttpGet("delete-milestone")]
         public async Task<IActionResult> DeleteMilestone(string internalOrgId, CallOffId callOffId, int milestoneId)
         {
             var model = new DeleteMilestoneModel(callOffId, internalOrgId, milestoneId)
@@ -143,7 +143,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             return View(model);
         }
 
-        [HttpPost("edit-milestone")]
+        [HttpPost("delete-milestone")]
         public async Task<IActionResult> DeleteMilestone(string internalOrgId, CallOffId callOffId, DeleteMilestoneModel model)
         {
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;

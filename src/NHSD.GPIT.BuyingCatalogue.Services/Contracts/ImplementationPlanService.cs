@@ -54,9 +54,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
         public async Task<ImplementationPlanMilestone> GetBespokeMilestone(int orderId, int milestoneId)
         {
             return await dbContext.ImplementationPlanMilestones
-                .AsNoTracking()
-                .Include(x => x.Plan)
-                    .ThenInclude(x => x.Contract)
                 .FirstOrDefaultAsync(x => x.Id == milestoneId && x.Plan.Contract.OrderId == orderId);
         }
 
