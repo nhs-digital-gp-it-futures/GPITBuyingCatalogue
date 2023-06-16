@@ -1,5 +1,6 @@
 using System;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.DashboardModels;
@@ -12,28 +13,24 @@ public static class CompetitionDashboardItemTests
     [Theory]
     [CommonAutoData]
     public static void Construct_SetsValues(
-        int id,
-        string name,
-        string description,
-        DateTime lastUpdated)
+        Competition competition)
     {
-        var model = new CompetitionDashboardItem(id, name, description, lastUpdated, null);
+        var model = new CompetitionDashboardItem(competition);
 
-        model.Id.Should().Be(id);
-        model.Name.Should().Be(name);
-        model.Description.Should().Be(description);
-        model.LastUpdated.Should().Be(lastUpdated);
+        model.Id.Should().Be(competition.Id);
+        model.Name.Should().Be(competition.Name);
+        model.Description.Should().Be(competition.Description);
+        model.LastUpdated.Should().Be(competition.LastUpdated);
     }
 
     [Theory]
     [CommonAutoData]
     public static void Construct_NullCompletedDate_SetsProgressStatus(
-        int id,
-        string name,
-        string description,
-        DateTime lastUpdated)
+        Competition competition)
     {
-        var model = new CompetitionDashboardItem(id, name, description, lastUpdated, null);
+        competition.Completed = null;
+
+        var model = new CompetitionDashboardItem(competition);
 
         model.Progress.Should().Be(TaskProgress.InProgress);
     }
@@ -41,13 +38,11 @@ public static class CompetitionDashboardItemTests
     [Theory]
     [CommonAutoData]
     public static void Construct_ValidCompletedDate_SetsProgressStatus(
-        int id,
-        string name,
-        string description,
-        DateTime lastUpdated,
-        DateTime completed)
+        Competition competition)
     {
-        var model = new CompetitionDashboardItem(id, name, description, lastUpdated, completed);
+        competition.Completed = DateTime.UtcNow;
+
+        var model = new CompetitionDashboardItem(competition);
 
         model.Progress.Should().Be(TaskProgress.Completed);
     }

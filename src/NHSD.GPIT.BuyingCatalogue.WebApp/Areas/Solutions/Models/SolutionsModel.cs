@@ -55,15 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public CatalogueFilterSearchSummary SearchSummary { get; init; }
 
-        // only used for the UI component
-        public SortOptions SelectedSortOption { get; init; }
-
         public PageOptions PageOptions { get; set; }
-
-        public IEnumerable<SelectOption<string>> SortOptions => Enum.GetValues(typeof(SortOptions))
-            .Cast<SortOptions>()
-            .Where(e => !e.Equals(PageOptions.SortOptions.None))
-            .Select(e => new SelectOption<string>(e.Name(), e.ToString(), e == SelectedSortOption));
 
         public bool SearchCriteriaApplied =>
             !string.IsNullOrWhiteSpace(SearchSummary?.SelectedCapabilityIds)

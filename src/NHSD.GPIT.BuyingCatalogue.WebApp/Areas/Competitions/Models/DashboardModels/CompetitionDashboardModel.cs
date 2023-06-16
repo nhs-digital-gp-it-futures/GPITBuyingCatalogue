@@ -16,7 +16,7 @@ public sealed class CompetitionDashboardModel
         OrganisationName = organisationName;
 
         Competitions = competitions.Select(
-                x => new CompetitionDashboardItem(x.Id, x.Name, x.Description, x.LastUpdated, x.Completed))
+                x => new CompetitionDashboardItem(x))
             .ToList();
     }
 

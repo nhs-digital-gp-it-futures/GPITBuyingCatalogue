@@ -41,7 +41,7 @@ public static class CompetitionsServiceTests
 
         context.ChangeTracker.Clear();
 
-        var result = await service.GetCompetitions(organisation.Id);
+        var result = await service.GetCompetitionsDashboard(organisation.Id);
 
         result.Should()
             .BeEquivalentTo(
