@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         public async Task<IActionResult> EditMilestone(string internalOrgId, CallOffId callOffId, int milestoneId)
         {
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
-            var milestone = await implementationPlanService.GetBespokeMilestone(order.Id, milestoneId);
+            var milestone = await implementationPlanService.GetMilestone(order.Id, milestoneId);
 
             var model = new MilestoneModel(milestone, callOffId, internalOrgId)
             {
@@ -125,7 +125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
 
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
-            await implementationPlanService.EditBespokeMilestone(order.Id, model.MilestoneId, model.Name, model.PaymentTrigger);
+            await implementationPlanService.EditMilestone(order.Id, model.MilestoneId, model.Name, model.PaymentTrigger);
 
             return RedirectToAction(nameof(Index), new { internalOrgId, callOffId });
         }
@@ -148,7 +148,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         {
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
-            await implementationPlanService.DeleteBespokeMilestone(order.Id, model.MilestoneId);
+            await implementationPlanService.DeleteMilestone(order.Id, model.MilestoneId);
 
             return RedirectToAction(nameof(Index), new { internalOrgId, callOffId });
         }

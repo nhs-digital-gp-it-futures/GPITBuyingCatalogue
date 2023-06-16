@@ -51,20 +51,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<ImplementationPlanMilestone> GetBespokeMilestone(int orderId, int milestoneId)
+        public async Task<ImplementationPlanMilestone> GetMilestone(int orderId, int milestoneId)
         {
             return await dbContext.ImplementationPlanMilestones
                 .FirstOrDefaultAsync(x => x.Id == milestoneId && x.Plan.Contract.OrderId == orderId);
         }
 
-        public async Task EditBespokeMilestone(int orderId, int milestoneId, string name, string paymentTrigger)
+        public async Task EditMilestone(int orderId, int milestoneId, string name, string paymentTrigger)
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException(nameof(name));
             if (string.IsNullOrEmpty(paymentTrigger))
                 throw new ArgumentNullException(nameof(paymentTrigger));
 
-            var milestone = await GetBespokeMilestone(orderId, milestoneId) ?? throw new ArgumentException("Invalid milestone", nameof(milestoneId));
+            var milestone = await GetMilestone(orderId, milestoneId) ?? throw new ArgumentException("Invalid milestone", nameof(milestoneId));
 
             milestone.Title = name;
             milestone.PaymentTrigger = paymentTrigger;
@@ -72,9 +72,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task DeleteBespokeMilestone(int orderId, int milestoneId)
+        public async Task DeleteMilestone(int orderId, int milestoneId)
         {
-            var milestone = await GetBespokeMilestone(orderId, milestoneId);
+            var milestone = await GetMilestone(orderId, milestoneId);
 
             if (milestone == null)
             {
