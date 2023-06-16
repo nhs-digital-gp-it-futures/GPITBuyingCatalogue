@@ -46,9 +46,9 @@ public class CompetitionsDashboardController : Controller
     {
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
-        var competitions = await competitionsService.GetCompetitions(organisation.Id);
+        var competitions = await competitionsService.GetCompetitionsDashboard(organisation.Id);
 
-        var model = new CompetitionDashboardModel(internalOrgId, organisation.Name, competitions.ToList());
+        var model = new CompetitionDashboardModel(internalOrgId, organisation.Name, competitions);
 
         return View(model);
     }

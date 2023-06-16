@@ -18,6 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.EditSolutio
 
         public static By DeleteApplicationTypeLink => By.LinkText("Delete application type");
 
-        public static By DeleteClientApplicationCancelLink => By.LinkText("Cancel");
+        public static By DeleteApplicationTypeCancelLink => By.LinkText("Cancel");
     }
 }

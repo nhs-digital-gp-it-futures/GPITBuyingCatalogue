@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "page", null },
-                { "sortBy", solutionModel.SelectedSortOption.ToString() },
+                { "sortBy", null },
                 { "search", null },
                 { "selectedCapabilityIds", null },
                 { "selectedEpicIds", null },
@@ -1331,6 +1331,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             result.Should().NotBeNull();
             result.Model.Should().BeOfType<NavBaseModel>();
             result.Model.As<NavBaseModel>().BackLink.Should().Be(controller.Request.Headers.Referer);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void SolutionSort_ReturnsViewWithModel(
+            SolutionsController controller)
+        {
+            var result = controller.SolutionSort().As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeOfType<SolutionSortModel>();
         }
 
         private static string GetIntegrationsJson()

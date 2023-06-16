@@ -40,12 +40,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
         [InlineData(ServiceContracts.Solutions.ApplicationType.BrowserBased)]
         [InlineData(ServiceContracts.Solutions.ApplicationType.MobileTablet)]
         [InlineData(ServiceContracts.Solutions.ApplicationType.Desktop)]
-        public void DeleteApplicationType_CorrectlyDisplayed(ServiceContracts.Solutions.ApplicationType clientApplicationType)
+        public void DeleteApplicationType_CorrectlyDisplayed(ServiceContracts.Solutions.ApplicationType applicationType)
         {
             var queryParam = new Dictionary<string, string>
             {
                 { "solutionId", SolutionId.ToString() },
-                { "applicationType", clientApplicationType.ToString() },
+                { "applicationType", applicationType.ToString() },
             };
 
             NavigateToUrl(typeof(DeleteApplicationTypeController), nameof(DeleteApplicationTypeController.DeleteApplicationTypeConfirmation), parameters: queryParam);
@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
-            CommonActions.ElementIsDisplayed(ApplicationTypeObjects.DeleteClientApplicationCancelLink);
+            CommonActions.ElementIsDisplayed(ApplicationTypeObjects.DeleteApplicationTypeCancelLink);
         }
 
         [Theory]
@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
 
             NavigateToUrl(typeof(DeleteApplicationTypeController), nameof(DeleteApplicationTypeController.DeleteApplicationTypeConfirmation), parameters: queryParam);
 
-            CommonActions.ClickLinkElement(ApplicationTypeObjects.DeleteClientApplicationCancelLink);
+            CommonActions.ClickLinkElement(ApplicationTypeObjects.DeleteApplicationTypeCancelLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 controller,
@@ -104,17 +104,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
         [InlineData(ServiceContracts.Solutions.ApplicationType.BrowserBased)]
         [InlineData(ServiceContracts.Solutions.ApplicationType.MobileTablet)]
         [InlineData(ServiceContracts.Solutions.ApplicationType.Desktop)]
-        public async Task DeleteApplicationType_DeleteButton_DeletesApplicationType(ServiceContracts.Solutions.ApplicationType clientApplicationType)
+        public async Task DeleteApplicationType_DeleteButton_DeletesApplicationType(ServiceContracts.Solutions.ApplicationType applicationType)
         {
             await using var context = GetEndToEndDbContext();
             var originalSolution =
                 await context.Solutions.AsNoTracking().FirstAsync(x => x.CatalogueItemId == SolutionId);
-            var originalClientApplication = originalSolution.ApplicationType;
+            var originalApplicationType = originalSolution.ApplicationType;
 
             var queryParam = new Dictionary<string, string>
             {
                 { "solutionId", SolutionId.ToString() },
-                { "applicationType", clientApplicationType.ToString() },
+                { "applicationType", applicationType.ToString() },
             };
 
             NavigateToUrl(typeof(DeleteApplicationTypeController), nameof(DeleteApplicationTypeController.DeleteApplicationTypeConfirmation), parameters: queryParam);
@@ -126,11 +126,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
                 nameof(CatalogueSolutionsController.ApplicationType))
                 .Should().BeTrue();
             var solution = await context.Solutions.AsNoTracking().FirstAsync(s => s.CatalogueItemId == SolutionId);
-            var clientApplication = solution.GetApplicationTypes();
+            var applicationTypes = solution.GetApplicationTypes();
 
-            clientApplication.ClientApplicationTypes.Should().NotContain(clientApplicationType.AsString(EnumFormat.EnumMemberValue));
+            applicationTypes.ClientApplicationTypes.Should().NotContain(applicationType.AsString(EnumFormat.EnumMemberValue));
 
-            solution.ApplicationType = originalClientApplication;
+            solution.ApplicationType = originalApplicationType;
             context.Update(solution);
             await context.SaveChangesAsync();
         }

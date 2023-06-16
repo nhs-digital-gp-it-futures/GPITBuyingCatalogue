@@ -33,6 +33,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 
         public string SelectedEpicIds { get; set; }
 
+        public string SortBy { get; set; }
+
         public string SelectedHostId { get; set; }
 
         public List<SelectOption<string>> FrameworkOptions { get; set; }
@@ -62,12 +64,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
         {
             FrameworkOptions = frameworks
                 .Where(f => !f.Expired)
-                .Select(f => new SelectOption<string>
+                .Select(
+                    f => new SelectOption<string>
                     {
-                        Value = f.Id,
-                        Text = $"{f.ShortName} ({f.CountOfActiveSolutions})",
-                        Selected = false,
-                    }).ToList();
+                        Value = f.Id, Text = $"{f.ShortName} ({f.CountOfActiveSolutions})", Selected = false,
+                    })
+                .ToList();
 
             var framework = frameworks
                 .FirstOrDefault(f => f.Id == selectedFrameworkId);
@@ -97,15 +99,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
         {
             HostingTypeOptions = Enum.GetValues(typeof(HostingType))
                 .Cast<HostingType>()
-                .Select(x => new SelectOption<int>
-                {
-                    Value = (int)x,
-                    Text = x.Name(),
-                    Selected = !string.IsNullOrEmpty(selectedHostingTypeIds)
-                        && selectedHostingTypeIds.Contains(((int)x).ToString()),
-                })
-               .OrderBy(x => x.Text)
-               .ToList();
+                .Select(
+                    x => new SelectOption<int>
+                    {
+                        Value = (int)x,
+                        Text = x.Name(),
+                        Selected = !string.IsNullOrEmpty(selectedHostingTypeIds)
+                            && selectedHostingTypeIds.Contains(((int)x).ToString()),
+                    })
+                .OrderBy(x => x.Text)
+                .ToList();
         }
     }
 }

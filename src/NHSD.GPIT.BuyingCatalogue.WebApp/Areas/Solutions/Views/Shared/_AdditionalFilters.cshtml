@@ -8,6 +8,7 @@
 
     <input type="hidden" asp-for="SelectedCapabilityIds"/>
     <input type="hidden" asp-for="SelectedEpicIds"/>
+    <input type="hidden" asp-for="SortBy" />
 
     <nhs-expander label-text="Framework"
                   open="true"
@@ -21,7 +22,7 @@
             <input type="hidden" asp-for="SelectedFrameworkId" />
             @(framework.Text)
         }
-        else 
+        else
         {
             <nhs-fieldset-form-label asp-for="SelectedFrameworkId">
                 <nhs-radio-buttons asp-for="SelectedFrameworkId"
