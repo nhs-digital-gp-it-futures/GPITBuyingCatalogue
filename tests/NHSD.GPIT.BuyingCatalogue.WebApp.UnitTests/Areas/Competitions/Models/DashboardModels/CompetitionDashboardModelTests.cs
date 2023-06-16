@@ -24,6 +24,6 @@ public static class CompetitionDashboardModelTests
         model.Competitions.Should()
             .BeEquivalentTo(
                 competitions.Select(
-                    x => new CompetitionDashboardItem(x.Id, x.Name, x.Description, x.LastUpdated, x.Completed)));
+                    x => new CompetitionDashboardItem(x)));
     }
 }
