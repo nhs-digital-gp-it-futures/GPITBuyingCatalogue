@@ -272,26 +272,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
         [Theory]
         [InMemoryDbAutoData]
-        public static void EditMilestone_NullContract_ThrowsException(
-            string paymentTrigger,
-            int orderId,
-            int milestoneId,
-            string name,
-            ImplementationPlanService service)
-        {
-            FluentActions
-                .Awaiting(
-                    () => service.EditMilestone(
-                        orderId,
-                        milestoneId,
-                        name,
-                        paymentTrigger))
-                .Should()
-                .ThrowAsync<ArgumentException>(nameof(milestoneId));
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
         public static async Task EditMilestone_ExistingMilestone_MilestoneUpdated(
             [Frozen] BuyingCatalogueDbContext context,
             string paymentTrigger,

@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         [HttpGet("add-milestone")]
         public IActionResult AddMilestone(string internalOrgId, CallOffId callOffId)
         {
-            var model = new MilestoneModel()
+            var model = new MilestoneModel(callOffId, internalOrgId)
             {
                 BackLink = Url.Action(
                     nameof(Index),

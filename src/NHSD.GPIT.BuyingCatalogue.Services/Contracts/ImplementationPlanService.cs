@@ -64,7 +64,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             if (string.IsNullOrEmpty(paymentTrigger))
                 throw new ArgumentNullException(nameof(paymentTrigger));
 
-            var milestone = await GetMilestone(orderId, milestoneId) ?? throw new ArgumentException("Invalid milestone", nameof(milestoneId));
+            var milestone = await GetMilestone(orderId, milestoneId);
+
+            if (milestone == null)
+            {
+                return;
+            }
 
             milestone.Title = name;
             milestone.PaymentTrigger = paymentTrigger;
