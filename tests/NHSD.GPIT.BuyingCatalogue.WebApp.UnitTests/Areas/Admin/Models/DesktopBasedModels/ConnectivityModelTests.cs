@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.DesktopB
             var actual = new ConnectivityModel(catalogueItem);
 
             actual.ConnectionSpeeds.Should().BeEquivalentTo(Framework.Constants.SelectLists.ConnectionSpeeds);
-            actual.SelectedConnectionSpeed.Should().Be(solution.GetClientApplication().NativeDesktopMinimumConnectionSpeed);
+            actual.SelectedConnectionSpeed.Should().Be(solution.ClientApplication.NativeDesktopMinimumConnectionSpeed);
         }
 
         [Fact]

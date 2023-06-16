@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
-namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
+namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     public enum ClientApplicationType
     {

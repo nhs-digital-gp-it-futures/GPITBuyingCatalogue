@@ -95,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             [Frozen] Mock<ISolutionsService> solutionsService,
             ManageCatalogueSolutionModelValidator validator)
         {
-            solution.ClientApplication = string.Empty;
+            solution.ClientApplication = null;
             solution.ServiceLevelAgreement.ServiceHours = serviceAvailabilityTimes;
             solution.ServiceLevelAgreement.ServiceLevels = slaServiceLevels;
             solution.ServiceLevelAgreement.Contacts = slaContacts;

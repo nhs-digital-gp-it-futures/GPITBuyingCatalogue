@@ -197,13 +197,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [CommonAutoData]
         public static async Task Get_AssociatedServices_ValidSolutionForId_ReturnsExpectedViewResult(
             [Frozen] Mock<ISolutionsService> solutionsServiceMock,
-            ClientApplication clientApplication,
             Solution solution,
             SolutionsController controller,
             CatalogueItemContentStatus contentStatus)
         {
             var catalogueItem = solution.CatalogueItem;
-            solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
             var associatedServices = solution.CatalogueItem.SupplierServiceAssociations.Select(ssa => ssa.CatalogueItem).ToList();
             var associatedServicesModel = new AssociatedServicesModel(catalogueItem, associatedServices, contentStatus);
 
@@ -555,14 +553,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [CommonAutoData]
         public static async Task Get_ClientApplicationTypes_ValidSolutionForId_ReturnsExpectedViewResult(
             CatalogueItemId id,
-            [Frozen] ClientApplication clientApplication,
             Solution solution,
             [Frozen] Mock<ISolutionsService> solutionsService,
             SolutionsController controller,
             CatalogueItemContentStatus contentStatus)
         {
             var catalogueItem = solution.CatalogueItem;
-            solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
 
             var expectedModel = new ClientApplicationTypesModel(catalogueItem, contentStatus);
             solutionsService.Setup(s => s.GetSolutionThin(id)).ReturnsAsync(catalogueItem);

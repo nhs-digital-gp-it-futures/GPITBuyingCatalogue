@@ -6,7 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     [Serializable]
-    public sealed class Solution : IAudited
+    public sealed partial class Solution : IAudited
     {
         public Solution()
         {
@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public string Features { get; set; }
 
-        public string ClientApplication { get; set; }
+        public ClientApplication ClientApplication { get; set; }
 
         public Hosting Hosting { get; set; }
 
