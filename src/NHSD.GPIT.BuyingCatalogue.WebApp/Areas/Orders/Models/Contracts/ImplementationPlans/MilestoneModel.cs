@@ -38,6 +38,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Impleme
         [StringLength(500)]
         public string PaymentTrigger { get; set; }
 
-        public override string Title => IsEdit ? "Edit a bespoke implementation milestone" : "Add a bespoke implementation milestone";
+        public override string Advice => IsEdit ? "Edit this implementation plan milestone." : "Add an implementation plan milestone.";
     }
 }

@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             model.CallOffId.Should().Be(callOffId);
             model.InternalOrgId.Should().Be(internalOrgId);
             model.IsEdit.Should().BeFalse();
-            model.Title.Should().Be("Add a bespoke implementation milestone");
+            model.Advice.Should().Be("Add an implementation plan milestone.");
         }
 
         [Theory]
@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             model.Name.Should().Be(milestone.Title);
             model.PaymentTrigger.Should().Be(milestone.PaymentTrigger);
             model.IsEdit.Should().BeTrue();
-            model.Title.Should().Be("Edit a bespoke implementation milestone");
+            model.Advice.Should().Be("Edit this implementation plan milestone.");
         }
     }
 }
