@@ -13,13 +13,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         [Theory]
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
-            CallOffId callOffId, string internalOrgId, int milestoneId)
+            CallOffId callOffId, string internalOrgId, ImplementationPlanMilestone milestone)
         {
-            var model = new DeleteMilestoneModel(callOffId, internalOrgId, milestoneId);
+            var model = new DeleteMilestoneModel(callOffId, internalOrgId, milestone);
 
             model.CallOffId.Should().Be(callOffId);
             model.InternalOrgId.Should().Be(internalOrgId);
-            model.MilestoneId.Should().Be(milestoneId);
+            model.MilestoneId.Should().Be(milestone.Id);
+            model.MilestoneName.Should().Be(milestone.Title);
         }
     }
 }

@@ -290,17 +290,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
         [Theory]
         [CommonAutoData]
-        public static void Get_DeleteMilestone_ReturnsExpectedResult(
+        public static async Task Get_DeleteMilestone_ReturnsExpectedResult(
             string internalOrgId,
-            CallOffId callOffId,
-            int milestoneId,
+            EntityFramework.Ordering.Models.Order order,
+            ImplementationPlanMilestone milestone,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] Mock<IImplementationPlanService> mockImplementationPlanService,
             ImplementationPlanController controller)
         {
-            var result = controller.DeleteMilestone(internalOrgId, callOffId, milestoneId);
+            mockOrderService
+                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            mockImplementationPlanService
+                .Setup(x => x.GetMilestone(order.Id, milestone.Id))
+                .ReturnsAsync(milestone);
+
+            var result = await controller.DeleteMilestone(internalOrgId, order.CallOffId, milestone.Id);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             actualResult.ViewName.Should().BeNull();
-            actualResult.Model.Should().BeEquivalentTo(new DeleteMilestoneModel(callOffId, internalOrgId, milestoneId), x => x.Excluding(m => m.BackLink));
+            actualResult.Model.Should().BeEquivalentTo(new DeleteMilestoneModel(order.CallOffId, internalOrgId, milestone), x => x.Excluding(m => m.BackLink));
         }
 
         [Theory]

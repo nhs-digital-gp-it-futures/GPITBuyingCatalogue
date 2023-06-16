@@ -10,14 +10,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Impleme
         {
         }
 
-        public DeleteMilestoneModel(CallOffId callOffId, string internalOrgId, int milestoneId)
+        public DeleteMilestoneModel(CallOffId callOffId, string internalOrgId, ImplementationPlanMilestone milestone)
         {
             CallOffId = callOffId;
             InternalOrgId = internalOrgId;
-            MilestoneId = milestoneId;
+            MilestoneId = milestone.Id;
+            MilestoneName = milestone.Title;
         }
 
         public int MilestoneId { get; set; }
+
+        public string MilestoneName { get; set; }
 
         public CallOffId CallOffId { get; set; }
 

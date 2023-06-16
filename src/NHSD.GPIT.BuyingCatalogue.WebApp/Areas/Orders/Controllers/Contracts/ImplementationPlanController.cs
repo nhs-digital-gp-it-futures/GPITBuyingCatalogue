@@ -131,9 +131,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         }
 
         [HttpGet("delete-milestone")]
-        public IActionResult DeleteMilestone(string internalOrgId, CallOffId callOffId, int milestoneId)
+        public async Task<IActionResult> DeleteMilestone(string internalOrgId, CallOffId callOffId, int milestoneId)
         {
-            var model = new DeleteMilestoneModel(callOffId, internalOrgId, milestoneId)
+            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
+            var milestone = await implementationPlanService.GetMilestone(order.Id, milestoneId);
+
+            var model = new DeleteMilestoneModel(callOffId, internalOrgId, milestone)
             {
                 BackLink = Url.Action(
                     nameof(EditMilestone),
