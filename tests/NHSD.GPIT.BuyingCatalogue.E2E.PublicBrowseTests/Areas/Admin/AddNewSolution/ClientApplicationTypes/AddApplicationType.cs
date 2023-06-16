@@ -31,10 +31,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
         }
 
         [Theory]
-        [InlineData(ApplicationType.BrowserBased, typeof(BrowserBasedController), nameof(BrowserBasedController.BrowserBased))]
-        [InlineData(ApplicationType.MobileTablet, typeof(MobileTabletBasedController), nameof(MobileTabletBasedController.MobileTablet))]
-        [InlineData(ApplicationType.Desktop, typeof(DesktopBasedController), nameof(DesktopBasedController.Desktop))]
-        public void AddApplicationType_AddApplicationType(ApplicationType applicationType, Type controller, string expectedControllerMethod)
+        [InlineData(ServiceContracts.Solutions.ApplicationType.BrowserBased, typeof(BrowserBasedController), nameof(BrowserBasedController.BrowserBased))]
+        [InlineData(ServiceContracts.Solutions.ApplicationType.MobileTablet, typeof(MobileTabletBasedController), nameof(MobileTabletBasedController.MobileTablet))]
+        [InlineData(ServiceContracts.Solutions.ApplicationType.Desktop, typeof(DesktopBasedController), nameof(DesktopBasedController.Desktop))]
+        public void AddApplicationType_AddApplicationType(ServiceContracts.Solutions.ApplicationType applicationType, Type controller, string expectedControllerMethod)
         {
             CommonActions.ClickRadioButtonWithValue(applicationType.ToString());
 

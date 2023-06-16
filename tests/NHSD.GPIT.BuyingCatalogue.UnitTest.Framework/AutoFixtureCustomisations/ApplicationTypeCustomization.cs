@@ -7,7 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
 {
-    public sealed class ClientApplicationCustomization : ICustomization
+    public sealed class ApplicationTypeCustomization : ICustomization
     {
         public void Customize(IFixture fixture)
         {

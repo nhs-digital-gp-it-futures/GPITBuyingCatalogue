@@ -127,7 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_SupportedBrowsers_CallsSaveClientApplication(
+        public static async Task Post_SupportedBrowsers_CallsSaveApplicationType(
             CatalogueItemId catalogueItemId,
             CatalogueItem catalogueItem,
             SupportedBrowsersModel model,
@@ -238,7 +238,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_PlugInsOrExtensions_CallsSaveClientApplication(
+        public static async Task Post_PlugInsOrExtensions_CallsSaveApplicationType(
             CatalogueItemId catalogueItemId,
             CatalogueItem catalogueItem,
             PlugInsOrExtensionsModel model,
@@ -349,7 +349,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_ConnectivityAndResolution_CallsSaveClientApplication(
+        public static async Task Post_ConnectivityAndResolution_CallsSaveApplicationType(
             CatalogueItemId catalogueItemId,
             CatalogueItem catalogueItem,
             ConnectivityAndResolutionModel model,
@@ -460,7 +460,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_HardwareRequirements_CallsSaveClientApplication(
+        public static async Task Post_HardwareRequirements_CallsSaveApplicationType(
             CatalogueItemId catalogueItemId,
             CatalogueItem catalogueItem,
             HardwareRequirementsModel model,
@@ -571,7 +571,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_AdditionalInformation_CallsSaveClientApplication(
+        public static async Task Post_AdditionalInformation_CallsSaveApplicationType(
             CatalogueItemId catalogueItemId,
             CatalogueItem catalogueItem,
             AdditionalInformationModel model,

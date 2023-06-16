@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
             new FrameworkSolutionCustomization(),
             new MobileConnectionDetailsCustomization(),
             new MobileOperatingSystemsCustomization(),
-            new ClientApplicationCustomization(),
+            new ApplicationTypeCustomization(),
             new AdditionalServiceCustomization(),
             new AssociatedServiceCustomization(),
             new SolutionCustomization(),

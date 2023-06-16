@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
         private static readonly Dictionary<string, string> Parameters = new()
         {
             { nameof(SolutionId), SolutionId.ToString() },
-            { "applicationType", ApplicationType.BrowserBased.ToString() },
+            { "applicationType", ServiceContracts.Solutions.ApplicationType.BrowserBased.ToString() },
         };
 
         public DeleteApplicationType(LocalWebApplicationFactory factory)
@@ -37,10 +37,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
         }
 
         [Theory]
-        [InlineData(ApplicationType.BrowserBased)]
-        [InlineData(ApplicationType.MobileTablet)]
-        [InlineData(ApplicationType.Desktop)]
-        public void DeleteApplicationType_CorrectlyDisplayed(ApplicationType clientApplicationType)
+        [InlineData(ServiceContracts.Solutions.ApplicationType.BrowserBased)]
+        [InlineData(ServiceContracts.Solutions.ApplicationType.MobileTablet)]
+        [InlineData(ServiceContracts.Solutions.ApplicationType.Desktop)]
+        public void DeleteApplicationType_CorrectlyDisplayed(ServiceContracts.Solutions.ApplicationType clientApplicationType)
         {
             var queryParam = new Dictionary<string, string>
             {
@@ -57,10 +57,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
         }
 
         [Theory]
-        [InlineData(ApplicationType.BrowserBased, typeof(BrowserBasedController), nameof(BrowserBasedController.BrowserBased))]
-        [InlineData(ApplicationType.MobileTablet, typeof(MobileTabletBasedController), nameof(MobileTabletBasedController.MobileTablet))]
-        [InlineData(ApplicationType.Desktop, typeof(DesktopBasedController), nameof(DesktopBasedController.Desktop))]
-        public void DeleteApplicationType_ClickGoBackLink_NavigatesToCorrectPage(ApplicationType clientApplicationType, Type controller, string expectedControllerMethod)
+        [InlineData(ServiceContracts.Solutions.ApplicationType.BrowserBased, typeof(BrowserBasedController), nameof(BrowserBasedController.BrowserBased))]
+        [InlineData(ServiceContracts.Solutions.ApplicationType.MobileTablet, typeof(MobileTabletBasedController), nameof(MobileTabletBasedController.MobileTablet))]
+        [InlineData(ServiceContracts.Solutions.ApplicationType.Desktop, typeof(DesktopBasedController), nameof(DesktopBasedController.Desktop))]
+        public void DeleteApplicationType_ClickGoBackLink_NavigatesToCorrectPage(ServiceContracts.Solutions.ApplicationType clientApplicationType, Type controller, string expectedControllerMethod)
         {
             var queryParam = new Dictionary<string, string>
             {
@@ -79,10 +79,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
         }
 
         [Theory]
-        [InlineData(ApplicationType.BrowserBased, typeof(BrowserBasedController), nameof(BrowserBasedController.BrowserBased))]
-        [InlineData(ApplicationType.MobileTablet, typeof(MobileTabletBasedController), nameof(MobileTabletBasedController.MobileTablet))]
-        [InlineData(ApplicationType.Desktop, typeof(DesktopBasedController), nameof(DesktopBasedController.Desktop))]
-        public void DeleteApplicationType_ClickCancelLink_NavigatesToCorrectPage(ApplicationType clientApplicationType, Type controller, string expectedControllerMethod)
+        [InlineData(ServiceContracts.Solutions.ApplicationType.BrowserBased, typeof(BrowserBasedController), nameof(BrowserBasedController.BrowserBased))]
+        [InlineData(ServiceContracts.Solutions.ApplicationType.MobileTablet, typeof(MobileTabletBasedController), nameof(MobileTabletBasedController.MobileTablet))]
+        [InlineData(ServiceContracts.Solutions.ApplicationType.Desktop, typeof(DesktopBasedController), nameof(DesktopBasedController.Desktop))]
+        public void DeleteApplicationType_ClickCancelLink_NavigatesToCorrectPage(ServiceContracts.Solutions.ApplicationType clientApplicationType, Type controller, string expectedControllerMethod)
         {
             var queryParam = new Dictionary<string, string>
             {
@@ -101,10 +101,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
         }
 
         [Theory]
-        [InlineData(ApplicationType.BrowserBased)]
-        [InlineData(ApplicationType.MobileTablet)]
-        [InlineData(ApplicationType.Desktop)]
-        public async Task DeleteApplicationType_DeleteButton_DeletesApplicationType(ApplicationType clientApplicationType)
+        [InlineData(ServiceContracts.Solutions.ApplicationType.BrowserBased)]
+        [InlineData(ServiceContracts.Solutions.ApplicationType.MobileTablet)]
+        [InlineData(ServiceContracts.Solutions.ApplicationType.Desktop)]
+        public async Task DeleteApplicationType_DeleteButton_DeletesApplicationType(ServiceContracts.Solutions.ApplicationType clientApplicationType)
         {
             await using var context = GetEndToEndDbContext();
             var originalSolution =

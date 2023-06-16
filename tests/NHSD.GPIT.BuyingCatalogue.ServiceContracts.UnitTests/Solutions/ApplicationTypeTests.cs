@@ -9,7 +9,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
 {
-    public static class ClientApplicationTests
+    public static class ApplicationTypeTests
     {
         [Theory]
         [MemberData(nameof(ResultSetData.TestData), MemberType = typeof(ResultSetData))]
@@ -17,12 +17,12 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             string input,
             TaskProgress expected)
         {
-            var clientApplication = new ApplicationTypes
+            var applicationTypes = new ApplicationTypes
             {
                 AdditionalInformation = input,
             };
 
-            clientApplication.AdditionalInformationStatus().Should().Be(expected);
+            applicationTypes.AdditionalInformationStatus().Should().Be(expected);
         }
 
         [Theory]
@@ -31,12 +31,12 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             string input,
             TaskProgress expected)
         {
-            var clientApplication = new ApplicationTypes
+            var applicationTypes = new ApplicationTypes
             {
                 MinimumConnectionSpeed = input,
             };
 
-            clientApplication.ConnectivityStatus().Should().Be(expected);
+            applicationTypes.ConnectivityStatus().Should().Be(expected);
         }
 
         [Theory]
@@ -45,12 +45,12 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             string input,
             TaskProgress expected)
         {
-            var clientApplication = new ApplicationTypes
+            var applicationTypes = new ApplicationTypes
             {
                 HardwareRequirements = input,
             };
 
-            clientApplication.HardwareRequirementsStatus().Should().Be(expected);
+            applicationTypes.HardwareRequirementsStatus().Should().Be(expected);
         }
 
         [Theory]
@@ -59,12 +59,12 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             string input,
             TaskProgress expected)
         {
-            var clientApplication = new ApplicationTypes
+            var applicationTypes = new ApplicationTypes
             {
                 NativeDesktopAdditionalInformation = input,
             };
 
-            clientApplication.NativeDesktopAdditionalInformationStatus().Should().Be(expected);
+            applicationTypes.NativeDesktopAdditionalInformationStatus().Should().Be(expected);
         }
 
         [Theory]
@@ -73,12 +73,12 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             string input,
             TaskProgress expected)
         {
-            var clientApplication = new ApplicationTypes
+            var applicationTypes = new ApplicationTypes
             {
                 NativeDesktopMinimumConnectionSpeed = input,
             };
 
-            clientApplication.NativeDesktopConnectivityStatus().Should().Be(expected);
+            applicationTypes.NativeDesktopConnectivityStatus().Should().Be(expected);
         }
 
         [Theory]
@@ -87,72 +87,72 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             string input,
             TaskProgress expected)
         {
-            var clientApplication = new ApplicationTypes
+            var applicationTypes = new ApplicationTypes
             {
                 NativeDesktopHardwareRequirements = input,
             };
 
-            clientApplication.NativeDesktopHardwareRequirementsStatus().Should().Be(expected);
+            applicationTypes.NativeDesktopHardwareRequirementsStatus().Should().Be(expected);
         }
 
         [Theory]
         [CommonAutoData]
         public static void NativeDesktopMemoryAndStorageStatus_NativeDesktopMemoryAndStorageValid_ReturnsCompleted(
-            ApplicationTypes clientApplication)
+            ApplicationTypes applicationTypes)
         {
-            clientApplication.NativeDesktopMemoryAndStorageStatus().Should().Be(TaskProgress.Completed);
+            applicationTypes.NativeDesktopMemoryAndStorageStatus().Should().Be(TaskProgress.Completed);
         }
 
         [Theory]
         [CommonAutoData]
         public static void NativeDesktopMemoryAndStorageStatus_NativeDesktopMemoryAndStorageInvalid_ReturnsNotStarted(
             [Frozen] NativeDesktopMemoryAndStorage storage,
-            ApplicationTypes clientApplication)
+            ApplicationTypes applicationTypes)
         {
             storage.MinimumCpu = null;
 
-            clientApplication.NativeDesktopMemoryAndStorageStatus().Should().Be(TaskProgress.NotStarted);
+            applicationTypes.NativeDesktopMemoryAndStorageStatus().Should().Be(TaskProgress.NotStarted);
         }
 
         [Fact]
         public static void NativeDesktopMemoryAndStorageStatus_NativeDesktopMemoryAndStorageIsNull_ReturnsNotStarted()
         {
-            var clientApplication = new ApplicationTypes
+            var applicationTypes = new ApplicationTypes
             {
                 NativeDesktopMemoryAndStorage = null,
             };
 
-            clientApplication.NativeDesktopMemoryAndStorageStatus().Should().Be(TaskProgress.NotStarted);
+            applicationTypes.NativeDesktopMemoryAndStorageStatus().Should().Be(TaskProgress.NotStarted);
         }
 
         [Theory]
         [CommonAutoData]
         public static void NativeMobileMemoryAndStorageStatus_MobileMemoryAndStorageValid_ReturnsCompleted(
-            ApplicationTypes clientApplication)
+            ApplicationTypes applicationTypes)
         {
-            clientApplication.NativeMobileMemoryAndStorageStatus().Should().Be(TaskProgress.Completed);
+            applicationTypes.NativeMobileMemoryAndStorageStatus().Should().Be(TaskProgress.Completed);
         }
 
         [Theory]
         [CommonAutoData]
         public static void NativeMobileMemoryAndStorageStatus_MobileMemoryAndStorageInvalid_ReturnsNotStarted(
             [Frozen] MobileMemoryAndStorage storage,
-            ApplicationTypes clientApplication)
+            ApplicationTypes applicationTypes)
         {
             storage.Description = null;
 
-            clientApplication.NativeMobileMemoryAndStorageStatus().Should().Be(TaskProgress.NotStarted);
+            applicationTypes.NativeMobileMemoryAndStorageStatus().Should().Be(TaskProgress.NotStarted);
         }
 
         [Fact]
         public static void NativeMobileMemoryAndStorageStatus_MobileMemoryAndStorageIsNull_ReturnsNotStarted()
         {
-            var clientApplication = new ApplicationTypes
+            var applicationTypes = new ApplicationTypes
             {
                 MobileMemoryAndStorage = null,
             };
 
-            clientApplication.NativeMobileMemoryAndStorageStatus().Should().Be(TaskProgress.NotStarted);
+            applicationTypes.NativeMobileMemoryAndStorageStatus().Should().Be(TaskProgress.NotStarted);
         }
 
         [Theory]
@@ -161,52 +161,52 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             string input,
             TaskProgress expected)
         {
-            var clientApplication = new ApplicationTypes
+            var applicationTypes = new ApplicationTypes
             {
                 NativeDesktopOperatingSystemsDescription = input,
             };
 
-            clientApplication.NativeDesktopSupportedOperatingSystemsStatus().Should().Be(expected);
+            applicationTypes.NativeDesktopSupportedOperatingSystemsStatus().Should().Be(expected);
         }
 
         [Theory]
         [AutoData]
         public static void NativeMobileSupportedOperatingSystemsStatus_ValidMobileOperatingSystems_ReturnsCompleted(
-            ApplicationTypes clientApplication)
+            ApplicationTypes applicationTypes)
         {
-            clientApplication.MobileOperatingSystems.OperatingSystems.Should().NotBeNullOrEmpty();
+            applicationTypes.MobileOperatingSystems.OperatingSystems.Should().NotBeNullOrEmpty();
 
-            clientApplication.NativeMobileSupportedOperatingSystemsStatus().Should().Be(TaskProgress.Completed);
+            applicationTypes.NativeMobileSupportedOperatingSystemsStatus().Should().Be(TaskProgress.Completed);
         }
 
         [Theory]
         [AutoData]
         public static void NativeMobileSupportedOperatingSystemsStatus_OperatingSystemsEmpty_ReturnsNotStarted(
-            ApplicationTypes clientApplication)
+            ApplicationTypes applicationTypes)
         {
-            clientApplication.MobileOperatingSystems.OperatingSystems = new HashSet<string>();
+            applicationTypes.MobileOperatingSystems.OperatingSystems = new HashSet<string>();
 
-            clientApplication.NativeMobileSupportedOperatingSystemsStatus().Should().Be(TaskProgress.NotStarted);
+            applicationTypes.NativeMobileSupportedOperatingSystemsStatus().Should().Be(TaskProgress.NotStarted);
         }
 
         [Theory]
         [AutoData]
         public static void NativeMobileSupportedOperatingSystemsStatus_OperatingSystemsNull_ReturnsNotStarted(
-            ApplicationTypes clientApplication)
+            ApplicationTypes applicationTypes)
         {
-            clientApplication.MobileOperatingSystems.OperatingSystems = null;
+            applicationTypes.MobileOperatingSystems.OperatingSystems = null;
 
-            clientApplication.NativeMobileSupportedOperatingSystemsStatus().Should().Be(TaskProgress.NotStarted);
+            applicationTypes.NativeMobileSupportedOperatingSystemsStatus().Should().Be(TaskProgress.NotStarted);
         }
 
         [Theory]
         [AutoData]
         public static void NativeMobileSupportedOperatingSystemsStatus_MobileOperatingSystemsNull_ReturnsNotStarted(
-            ApplicationTypes clientApplication)
+            ApplicationTypes applicationTypes)
         {
-            clientApplication.MobileOperatingSystems = null;
+            applicationTypes.MobileOperatingSystems = null;
 
-            clientApplication.NativeMobileSupportedOperatingSystemsStatus().Should().Be(TaskProgress.NotStarted);
+            applicationTypes.NativeMobileSupportedOperatingSystemsStatus().Should().Be(TaskProgress.NotStarted);
         }
 
         [Theory]
@@ -215,12 +215,12 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             string input,
             TaskProgress expected)
         {
-            var clientApplication = new ApplicationTypes
+            var applicationTypes = new ApplicationTypes
             {
                 NativeMobileAdditionalInformation = input,
             };
 
-            clientApplication.NativeMobileAdditionalInformationStatus().Should().Be(expected);
+            applicationTypes.NativeMobileAdditionalInformationStatus().Should().Be(expected);
         }
 
         [Theory]
@@ -229,12 +229,12 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
             string input,
             TaskProgress expected)
         {
-            var clientApplication = new ApplicationTypes
+            var applicationTypes = new ApplicationTypes
             {
                 NativeMobileHardwareRequirements = input,
             };
 
-            clientApplication.NativeMobileHardwareRequirementsStatus().Should().Be(expected);
+            applicationTypes.NativeMobileHardwareRequirementsStatus().Should().Be(expected);
         }
 
         [Theory]
@@ -242,7 +242,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [InlineData(true)]
         public static void PluginsStatus_PluginsRequiredHasValue_ReturnsCompleted(bool value)
         {
-            var clientApplication = new ApplicationTypes
+            var applicationTypes = new ApplicationTypes
             {
                 Plugins = new Plugins
                 {
@@ -250,13 +250,13 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
                 },
             };
 
-            clientApplication.PluginsStatus().Should().Be(TaskProgress.Completed);
+            applicationTypes.PluginsStatus().Should().Be(TaskProgress.Completed);
         }
 
         [Fact]
         public static void PluginsStatus_PluginsRequiredHasNoValue_ReturnsNotStarted()
         {
-            var clientApplication = new ApplicationTypes
+            var applicationTypes = new ApplicationTypes
             {
                 Plugins = new Plugins
                 {
@@ -264,93 +264,93 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
                 },
             };
 
-            clientApplication.PluginsStatus().Should().Be(TaskProgress.NotStarted);
+            applicationTypes.PluginsStatus().Should().Be(TaskProgress.NotStarted);
         }
 
         [Fact]
         public static void PluginsStatus_PluginsIsNull_ReturnsNotStarted()
         {
-            var clientApplication = new ApplicationTypes
+            var applicationTypes = new ApplicationTypes
             {
                 Plugins = null,
             };
 
-            clientApplication.PluginsStatus().Should().Be(TaskProgress.NotStarted);
+            applicationTypes.PluginsStatus().Should().Be(TaskProgress.NotStarted);
         }
 
         [Theory]
         [AutoData]
         public static void SupportedBrowsersStatus_ValidValues_ReturnsCompleted(
-            ApplicationTypes clientApplication)
+            ApplicationTypes applicationTypes)
         {
-            clientApplication.BrowsersSupported.Should().NotBeNullOrEmpty();
-            clientApplication.MobileResponsive.HasValue.Should().BeTrue();
+            applicationTypes.BrowsersSupported.Should().NotBeNullOrEmpty();
+            applicationTypes.MobileResponsive.HasValue.Should().BeTrue();
 
-            clientApplication.SupportedBrowsersStatus().Should().Be(TaskProgress.Completed);
+            applicationTypes.SupportedBrowsersStatus().Should().Be(TaskProgress.Completed);
         }
 
         [Theory]
         [AutoData]
         public static void SupportedBrowsersStatus_BrowsersSupportedIsEmpty_ReturnsNotStarted(
-            ApplicationTypes clientApplication)
+            ApplicationTypes applicationTypes)
         {
-            clientApplication.BrowsersSupported = new HashSet<SupportedBrowser>();
-            clientApplication.MobileResponsive.HasValue.Should().BeTrue();
+            applicationTypes.BrowsersSupported = new HashSet<SupportedBrowser>();
+            applicationTypes.MobileResponsive.HasValue.Should().BeTrue();
 
-            clientApplication.SupportedBrowsersStatus().Should().Be(TaskProgress.NotStarted);
+            applicationTypes.SupportedBrowsersStatus().Should().Be(TaskProgress.NotStarted);
         }
 
         [Theory]
         [AutoData]
         public static void SupportedBrowsersStatus_BrowsersSupportedIsNull_ReturnsNotStarted(
-            ApplicationTypes clientApplication)
+            ApplicationTypes applicationTypes)
         {
-            clientApplication.BrowsersSupported = null;
-            clientApplication.MobileResponsive.HasValue.Should().BeTrue();
+            applicationTypes.BrowsersSupported = null;
+            applicationTypes.MobileResponsive.HasValue.Should().BeTrue();
 
-            clientApplication.SupportedBrowsersStatus().Should().Be(TaskProgress.NotStarted);
+            applicationTypes.SupportedBrowsersStatus().Should().Be(TaskProgress.NotStarted);
         }
 
         [Theory]
         [AutoData]
         public static void SupportedBrowsersStatus_MobileResponsiveIsNull_ReturnsNotStarted(
-            ApplicationTypes clientApplication)
+            ApplicationTypes applicationTypes)
         {
-            clientApplication.BrowsersSupported.Should().NotBeNullOrEmpty();
-            clientApplication.MobileResponsive = null;
+            applicationTypes.BrowsersSupported.Should().NotBeNullOrEmpty();
+            applicationTypes.MobileResponsive = null;
 
-            clientApplication.SupportedBrowsersStatus().Should().Be(TaskProgress.NotStarted);
+            applicationTypes.SupportedBrowsersStatus().Should().Be(TaskProgress.NotStarted);
         }
 
         [Theory]
         [CommonAutoData]
         public static void NativeMobileThirdPartyStatus_MobileThirdPartyValid_ReturnsCompleted(
-            ApplicationTypes clientApplication)
+            ApplicationTypes applicationTypes)
         {
-            clientApplication.NativeMobileThirdPartyStatus().Should().Be(TaskProgress.Completed);
+            applicationTypes.NativeMobileThirdPartyStatus().Should().Be(TaskProgress.Completed);
         }
 
         [Theory]
         [CommonAutoData]
         public static void TNativeMobileThirdPartyStatus_MobileThirdPartyInvalid_ReturnsNotStarted(
             [Frozen] MobileThirdParty thirdParty,
-            ApplicationTypes clientApplication)
+            ApplicationTypes applicationTypes)
         {
             thirdParty.DeviceCapabilities = null;
             thirdParty.ThirdPartyComponents = null;
 
-            clientApplication.NativeMobileThirdPartyStatus().Should().Be(TaskProgress.NotStarted);
+            applicationTypes.NativeMobileThirdPartyStatus().Should().Be(TaskProgress.NotStarted);
         }
 
         [Fact]
         public static void NativeMobileThirdPartyStatus_MobileThirdPartyNull_ReturnsNotStarted()
         {
-            var clientApplication = new ApplicationTypes
+            var applicationTypes = new ApplicationTypes
             {
                 MobileThirdParty = null,
             };
 
-            clientApplication.NativeMobileThirdPartyStatus().Should().Be(TaskProgress.NotStarted);
+            applicationTypes.NativeMobileThirdPartyStatus().Should().Be(TaskProgress.NotStarted);
         }
 
         [Theory]
@@ -358,12 +358,12 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [CommonInlineAutoData(ApplicationType.MobileTablet)]
         [CommonInlineAutoData(ApplicationType.Desktop)]
         public static void ApplicationTypes_IsUpdatedCorrectly(
-            ApplicationType clientApplicationType,
-            ApplicationTypes clientApplication)
+            ApplicationType applicationType,
+            ApplicationTypes applicationTypes)
         {
-            clientApplication.EnsureApplicationTypePresent(clientApplicationType);
+            applicationTypes.EnsureApplicationTypePresent(applicationType);
 
-            clientApplication.ClientApplicationTypes.Should().Contain(clientApplicationType.AsString(EnumFormat.EnumMemberValue));
+            applicationTypes.ClientApplicationTypes.Should().Contain(applicationType.AsString(EnumFormat.EnumMemberValue));
         }
 
         [Theory]
@@ -371,122 +371,122 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [CommonInlineAutoData(ApplicationType.MobileTablet)]
         [CommonInlineAutoData(ApplicationType.Desktop)]
         public static void ApplicationTypeStatus_ReturnsComplete(
-            ApplicationType clientApplicationType,
-            ApplicationTypes clientApplication)
+            ApplicationType applicationType,
+            ApplicationTypes applicationTypes)
         {
-            clientApplication.ApplicationTypeStatus(clientApplicationType).Should().Be(TaskProgress.Completed);
+            applicationTypes.ApplicationTypeStatus(applicationType).Should().Be(TaskProgress.Completed);
         }
 
         [Theory]
         [CommonInlineAutoData]
         public static void ApplicationTypeStatus_BrowserBased_NoPlugins_ReturnsInProgress(
-            ApplicationTypes clientApplication)
+            ApplicationTypes applicationTypes)
         {
-            clientApplication.Plugins = null;
+            applicationTypes.Plugins = null;
 
-            clientApplication.ApplicationTypeStatus(ApplicationType.BrowserBased).Should().Be(TaskProgress.InProgress);
+            applicationTypes.ApplicationTypeStatus(ApplicationType.BrowserBased).Should().Be(TaskProgress.InProgress);
         }
 
         [Theory]
         [CommonInlineAutoData]
         public static void ApplicationTypeStatus_BrowserBased_NoSupportedBrowsers_ReturnsInProgress(
-            ApplicationTypes clientApplication)
+            ApplicationTypes applicationTypes)
         {
-            clientApplication.BrowsersSupported = null;
+            applicationTypes.BrowsersSupported = null;
 
-            clientApplication.ApplicationTypeStatus(ApplicationType.BrowserBased).Should().Be(TaskProgress.InProgress);
+            applicationTypes.ApplicationTypeStatus(ApplicationType.BrowserBased).Should().Be(TaskProgress.InProgress);
         }
 
         [Fact]
         public static void ApplicationTypeStatus_BrowserBased_NothingComplete_ReturnsNotStarted()
         {
-            var clientApplication = new ApplicationTypes();
+            var applicationType = new ApplicationTypes();
 
-            clientApplication.ApplicationTypeStatus(ApplicationType.BrowserBased).Should().Be(TaskProgress.NotStarted);
+            applicationType.ApplicationTypeStatus(ApplicationType.BrowserBased).Should().Be(TaskProgress.NotStarted);
         }
 
         [Theory]
         [CommonInlineAutoData]
         public static void ApplicationTypeStatus_DesktopBased_NoOperatingSystemDescription_ReturnsInProgress(
-            ApplicationTypes clientApplication)
+            ApplicationTypes applicationTypes)
         {
-            clientApplication.NativeDesktopOperatingSystemsDescription = null;
+            applicationTypes.NativeDesktopOperatingSystemsDescription = null;
 
-            clientApplication.ApplicationTypeStatus(ApplicationType.Desktop).Should().Be(TaskProgress.InProgress);
+            applicationTypes.ApplicationTypeStatus(ApplicationType.Desktop).Should().Be(TaskProgress.InProgress);
         }
 
         [Theory]
         [CommonInlineAutoData]
         public static void ApplicationTypeStatus_DesktopBased_NoNativeDesktopMinimumConnectionSpeed_ReturnsInProgress(
-            ApplicationTypes clientApplication)
+            ApplicationTypes applicationTypes)
         {
-            clientApplication.NativeDesktopMinimumConnectionSpeed = null;
+            applicationTypes.NativeDesktopMinimumConnectionSpeed = null;
 
-            clientApplication.ApplicationTypeStatus(ApplicationType.Desktop).Should().Be(TaskProgress.InProgress);
+            applicationTypes.ApplicationTypeStatus(ApplicationType.Desktop).Should().Be(TaskProgress.InProgress);
         }
 
         [Theory]
         [CommonInlineAutoData]
         public static void ApplicationTypeStatus_DesktopBased_NoNativeDesktopMemoryAndStorage_ReturnsInProgress(
-            ApplicationTypes clientApplication)
+            ApplicationTypes applicationTypes)
         {
-            clientApplication.NativeDesktopMemoryAndStorage = null;
+            applicationTypes.NativeDesktopMemoryAndStorage = null;
 
-            clientApplication.ApplicationTypeStatus(ApplicationType.Desktop).Should().Be(TaskProgress.InProgress);
+            applicationTypes.ApplicationTypeStatus(ApplicationType.Desktop).Should().Be(TaskProgress.InProgress);
         }
 
         [Fact]
         public static void ApplicationTypeStatus_DesktopBased_NothingComplete_ReturnsNotStarted()
         {
-            var clientApplication = new ApplicationTypes();
+            var applicationTypes = new ApplicationTypes();
 
-            clientApplication.ApplicationTypeStatus(ApplicationType.BrowserBased).Should().Be(TaskProgress.NotStarted);
+            applicationTypes.ApplicationTypeStatus(ApplicationType.BrowserBased).Should().Be(TaskProgress.NotStarted);
         }
 
         [Theory]
         [CommonInlineAutoData]
         public static void ApplicationTypeStatus_MobileTablet_NoMobileOperatingSystems_ReturnsInProgress(
-            ApplicationTypes clientApplication)
+            ApplicationTypes applicationTypes)
         {
-            clientApplication.MobileOperatingSystems = null;
+            applicationTypes.MobileOperatingSystems = null;
 
-            clientApplication.ApplicationTypeStatus(ApplicationType.MobileTablet).Should().Be(TaskProgress.InProgress);
+            applicationTypes.ApplicationTypeStatus(ApplicationType.MobileTablet).Should().Be(TaskProgress.InProgress);
         }
 
         [Theory]
         [CommonInlineAutoData]
         public static void ApplicationTypeStatus_MobileTablet_NoMobileMemoryAndStorage_ReturnsInProgress(
-            ApplicationTypes clientApplication)
+            ApplicationTypes applicationTypes)
         {
-            clientApplication.MobileMemoryAndStorage = null;
+            applicationTypes.MobileMemoryAndStorage = null;
 
-            clientApplication.ApplicationTypeStatus(ApplicationType.MobileTablet).Should().Be(TaskProgress.InProgress);
+            applicationTypes.ApplicationTypeStatus(ApplicationType.MobileTablet).Should().Be(TaskProgress.InProgress);
         }
 
         [Fact]
         public static void ApplicationTypeStatus_MobileTablet_NothingComplete_ReturnsNotStarted()
         {
-            var clientApplication = new ApplicationTypes();
+            var applicationTypes = new ApplicationTypes();
 
-            clientApplication.ApplicationTypeStatus(ApplicationType.BrowserBased).Should().Be(TaskProgress.NotStarted);
+            applicationTypes.ApplicationTypeStatus(ApplicationType.BrowserBased).Should().Be(TaskProgress.NotStarted);
         }
 
         [Theory]
         [CommonAutoData]
         public static void HasApplicationType_True(
-            ApplicationTypes clientApplication)
+            ApplicationTypes applicationTypes)
         {
-            clientApplication.EnsureApplicationTypePresent(ApplicationType.BrowserBased);
+            applicationTypes.EnsureApplicationTypePresent(ApplicationType.BrowserBased);
 
-            clientApplication.HasApplicationType(ApplicationType.BrowserBased).Should().BeTrue();
+            applicationTypes.HasApplicationType(ApplicationType.BrowserBased).Should().BeTrue();
         }
 
         [Fact]
         public static void HasApplicationType_False()
         {
-            var clientApplication = new ApplicationTypes();
+            var applicationTypes = new ApplicationTypes();
 
-            clientApplication.HasApplicationType(ApplicationType.BrowserBased).Should().BeFalse();
+            applicationTypes.HasApplicationType(ApplicationType.BrowserBased).Should().BeFalse();
         }
 
         private static class ResultSetData
