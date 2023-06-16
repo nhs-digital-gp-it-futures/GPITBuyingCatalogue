@@ -332,7 +332,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View("CheckEpics", model);
         }
 
-        [HttpGet("{solutionId}/client-application-types")]
+        [HttpGet("{solutionId}/application-types")]
         public async Task<IActionResult> ApplicationTypes(CatalogueItemId solutionId)
         {
             var item = await solutionsService.GetSolutionThin(solutionId);
