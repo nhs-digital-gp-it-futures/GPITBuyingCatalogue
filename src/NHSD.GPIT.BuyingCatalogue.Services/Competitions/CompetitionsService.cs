@@ -22,8 +22,9 @@ public class CompetitionsService : ICompetitionsService
         this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
-    public async Task<IEnumerable<Competition>> GetCompetitions(int organisationId)
-        => await dbContext.Competitions.Where(x => x.OrganisationId == organisationId)
+    public async Task<IEnumerable<Competition>> GetCompetitionsDashboard(int organisationId)
+        => await dbContext.Competitions.Include(x => x.CompetitionSolutions)
+            .Where(x => x.OrganisationId == organisationId)
             .ToListAsync();
 
     public async Task<Competition> GetCompetitionWithServices(
