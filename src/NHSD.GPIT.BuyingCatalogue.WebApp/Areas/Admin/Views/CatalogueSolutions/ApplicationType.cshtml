@@ -41,7 +41,7 @@
                             <nhs-table-row-container>
                                 <nhs-table-cell>@FormatApplicationType(applicationType)</nhs-table-cell>
                                 <nhs-table-cell>
-                                    <nhs-tag status-enum="@Model.ClientApplication.ApplicationTypeStatus(applicationType)" />
+                                    <nhs-tag status-enum="@Model.ApplicationType.ApplicationTypeStatus(applicationType)" />
                                 </nhs-table-cell>
                                 <nhs-table-cell>
                                     @if (applicationType == ApplicationType.MobileTablet)

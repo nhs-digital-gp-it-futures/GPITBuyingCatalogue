@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
-            CommonActions.ElementIsDisplayed(ClientApplicationObjects.DeleteClientApplicationCancelLink);
+            CommonActions.ElementIsDisplayed(ApplicationTypeObjects.DeleteClientApplicationCancelLink);
         }
 
         [Theory]
@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
 
             NavigateToUrl(typeof(DeleteApplicationTypeController), nameof(DeleteApplicationTypeController.DeleteApplicationTypeConfirmation), parameters: queryParam);
 
-            CommonActions.ClickLinkElement(ClientApplicationObjects.DeleteClientApplicationCancelLink);
+            CommonActions.ClickLinkElement(ApplicationTypeObjects.DeleteClientApplicationCancelLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 controller,

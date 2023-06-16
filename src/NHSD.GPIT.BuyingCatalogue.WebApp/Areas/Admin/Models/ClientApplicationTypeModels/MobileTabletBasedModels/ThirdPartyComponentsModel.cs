@@ -16,8 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeMod
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
 
-            ThirdPartyComponents = ClientApplication?.MobileThirdParty?.ThirdPartyComponents;
-            DeviceCapabilities = ClientApplication?.MobileThirdParty?.DeviceCapabilities;
+            ThirdPartyComponents = ApplicationTypes?.MobileThirdParty?.ThirdPartyComponents;
+            DeviceCapabilities = ApplicationTypes?.MobileThirdParty?.DeviceCapabilities;
         }
 
         [StringLength(500)]

@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeMod
 
             ConnectionSpeeds = Framework.Constants.SelectLists.ConnectionSpeeds;
 
-            SelectedConnectionSpeed = ClientApplication?.NativeDesktopMinimumConnectionSpeed;
+            SelectedConnectionSpeed = ApplicationTypes?.NativeDesktopMinimumConnectionSpeed;
         }
 
         public string SelectedConnectionSpeed { get; set; }

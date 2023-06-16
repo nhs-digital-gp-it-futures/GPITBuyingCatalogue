@@ -14,14 +14,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeMod
 
         public ApplicationTypeBaseModel(CatalogueItem catalogueItem)
         {
-            ClientApplication = catalogueItem?.Solution?.GetApplicationTypes() ?? new ApplicationTypes();
+            ApplicationTypes = catalogueItem?.Solution?.GetApplicationTypes() ?? new ApplicationTypes();
             SolutionId = catalogueItem?.Id;
             SolutionName = catalogueItem?.Name;
         }
 
         public string SolutionName { get; set; }
 
-        public ApplicationTypes ClientApplication { get; set; }
+        public ApplicationTypes ApplicationTypes { get; set; }
 
         public CatalogueItemId? SolutionId { get; set; }
 

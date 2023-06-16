@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
 
         public void Dispose()
         {
-            ClearClientApplication(SolutionId);
+            ClearApplicationType(SolutionId);
         }
     }
 }

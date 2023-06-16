@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
         [Fact]
         public async Task MemoryAndStorage_SaveData()
         {
-            var memorySize = CommonActions.SelectRandomDropDownItem(Objects.Admin.EditSolution.ClientApplicationObjects.MinimumMemoryDropDown);
+            var memorySize = CommonActions.SelectRandomDropDownItem(Objects.Admin.EditSolution.ApplicationTypeObjects.MinimumMemoryDropDown);
 
             var description = TextGenerators.TextInputAddText(Objects.Common.CommonSelectors.Description, 300);
 
@@ -80,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
 
         public void Dispose()
         {
-            ClearClientApplication(SolutionId);
+            ClearApplicationType(SolutionId);
         }
     }
 }

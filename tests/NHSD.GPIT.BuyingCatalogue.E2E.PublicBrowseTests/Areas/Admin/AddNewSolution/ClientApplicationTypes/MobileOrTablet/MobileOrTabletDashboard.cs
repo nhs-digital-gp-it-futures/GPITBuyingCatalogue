@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
         [Fact]
         public void MobileOrTabletDashboard_ClickDeleteLink_NavigatesToDeleteConfirmation()
         {
-            CommonActions.ClickLinkElement(ClientApplicationObjects.DeleteClientApplicationLink);
+            CommonActions.ClickLinkElement(ApplicationTypeObjects.DeleteApplicationTypeLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(DeleteApplicationTypeController),
@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
 
         public void Dispose()
         {
-            ClearClientApplication(SolutionId);
+            ClearApplicationType(SolutionId);
         }
     }
 }

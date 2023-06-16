@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeMod
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
 
-            Description = ClientApplication?.NativeMobileHardwareRequirements;
+            Description = ApplicationTypes?.NativeMobileHardwareRequirements;
         }
 
         [StringLength(500)]

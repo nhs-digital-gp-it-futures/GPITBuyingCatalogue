@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeMod
 
             CheckOperatingSystems();
 
-            Description = ClientApplication?.MobileOperatingSystems?.OperatingSystemsDescription;
+            Description = ApplicationTypes?.MobileOperatingSystems?.OperatingSystemsDescription;
         }
 
         public SupportedOperatingSystemModel[] OperatingSystems { get; set; }
@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeMod
             foreach (var browser in OperatingSystems)
             {
                 browser.Checked =
-                    (ClientApplication?.MobileOperatingSystems?.OperatingSystems ?? new HashSet<string>()).Any(
+                    (ApplicationTypes?.MobileOperatingSystems?.OperatingSystems ?? new HashSet<string>()).Any(
                         s => s.Equals(browser.OperatingSystemName, StringComparison.InvariantCultureIgnoreCase));
             }
         }

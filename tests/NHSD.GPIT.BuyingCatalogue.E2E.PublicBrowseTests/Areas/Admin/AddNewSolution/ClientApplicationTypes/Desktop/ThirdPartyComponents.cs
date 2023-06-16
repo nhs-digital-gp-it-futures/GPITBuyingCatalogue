@@ -35,9 +35,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
         [Fact]
         public async Task ThirdPartyComponents_SaveData()
         {
-            var thirdPartyComponentDescription = TextGenerators.TextInputAddText(Objects.Admin.EditSolution.ClientApplicationObjects.ThirdPartyComponents, 500);
+            var thirdPartyComponentDescription = TextGenerators.TextInputAddText(Objects.Admin.EditSolution.ApplicationTypeObjects.ThirdPartyComponents, 500);
 
-            var deviceCapabilities = TextGenerators.TextInputAddText(Objects.Admin.EditSolution.ClientApplicationObjects.DeviceCapabilities, 500);
+            var deviceCapabilities = TextGenerators.TextInputAddText(Objects.Admin.EditSolution.ApplicationTypeObjects.DeviceCapabilities, 500);
 
             CommonActions.ClickSave();
 
@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
 
         public void Dispose()
         {
-            ClearClientApplication(SolutionId);
+            ClearApplicationType(SolutionId);
         }
     }
 }

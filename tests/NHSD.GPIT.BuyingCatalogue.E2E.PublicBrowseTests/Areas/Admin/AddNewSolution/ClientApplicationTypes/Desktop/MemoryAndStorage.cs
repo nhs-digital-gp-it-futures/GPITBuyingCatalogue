@@ -36,13 +36,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
         [Fact]
         public async Task MemoryAndStorage_SaveData()
         {
-            var memorySize = CommonActions.SelectRandomDropDownItem(Objects.Admin.EditSolution.ClientApplicationObjects.MinimumMemoryDropDown);
+            var memorySize = CommonActions.SelectRandomDropDownItem(Objects.Admin.EditSolution.ApplicationTypeObjects.MinimumMemoryDropDown);
 
-            var storageSize = TextGenerators.TextInputAddText(Objects.Admin.EditSolution.ClientApplicationObjects.StorageSpace, 300);
+            var storageSize = TextGenerators.TextInputAddText(Objects.Admin.EditSolution.ApplicationTypeObjects.StorageSpace, 300);
 
-            var minimumCpu = TextGenerators.TextInputAddText(Objects.Admin.EditSolution.ClientApplicationObjects.ProcessingPower, 300);
+            var minimumCpu = TextGenerators.TextInputAddText(Objects.Admin.EditSolution.ApplicationTypeObjects.ProcessingPower, 300);
 
-            var resolution = CommonActions.SelectRandomDropDownItem(Objects.Admin.EditSolution.ClientApplicationObjects.ResolutionDropdown);
+            var resolution = CommonActions.SelectRandomDropDownItem(Objects.Admin.EditSolution.ApplicationTypeObjects.ResolutionDropdown);
 
             CommonActions.ClickSave();
 
@@ -100,7 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
 
         public void Dispose()
         {
-            ClearClientApplication(SolutionId);
+            ClearApplicationType(SolutionId);
         }
     }
 }

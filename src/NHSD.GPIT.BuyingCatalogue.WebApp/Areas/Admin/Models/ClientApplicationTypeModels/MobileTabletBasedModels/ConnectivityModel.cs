@@ -24,11 +24,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeMod
             ConnectionSpeeds = Framework.Constants.SelectLists.ConnectionSpeeds;
             SetConnectionTypes();
 
-            SelectedConnectionSpeed = ClientApplication?.MobileConnectionDetails?.MinimumConnectionSpeed;
+            SelectedConnectionSpeed = ApplicationTypes?.MobileConnectionDetails?.MinimumConnectionSpeed;
 
             CheckConnectionTypes();
 
-            Description = ClientApplication?.MobileConnectionDetails?.Description;
+            Description = ApplicationTypes?.MobileConnectionDetails?.Description;
         }
 
         public string SelectedConnectionSpeed { get; set; }
@@ -44,8 +44,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeMod
         {
             foreach (var connectionType in ConnectionTypes)
             {
-                if (ClientApplication?.MobileConnectionDetails?.ConnectionType != null &&
-                    ClientApplication.MobileConnectionDetails.ConnectionType.Any(s => s.Equals(connectionType.ConnectionType, StringComparison.InvariantCultureIgnoreCase)))
+                if (ApplicationTypes?.MobileConnectionDetails?.ConnectionType != null &&
+                    ApplicationTypes.MobileConnectionDetails.ConnectionType.Any(s => s.Equals(connectionType.ConnectionType, StringComparison.InvariantCultureIgnoreCase)))
                 {
                     connectionType.Checked = true;
                 }

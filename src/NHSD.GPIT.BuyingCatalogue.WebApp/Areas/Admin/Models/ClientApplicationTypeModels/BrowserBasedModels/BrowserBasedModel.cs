@@ -17,14 +17,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeMod
             ApplicationType = ApplicationType.BrowserBased;
         }
 
-        public TaskProgress SupportedBrowsersStatus() => ClientApplication.SupportedBrowsersStatus();
+        public TaskProgress SupportedBrowsersStatus() => ApplicationTypes.SupportedBrowsersStatus();
 
-        public TaskProgress PluginsStatus() => ClientApplication.PluginsStatus();
+        public TaskProgress PluginsStatus() => ApplicationTypes.PluginsStatus();
 
-        public TaskProgress ConnectivityStatus() => ClientApplication.ConnectivityStatus();
+        public TaskProgress ConnectivityStatus() => ApplicationTypes.ConnectivityStatus();
 
-        public TaskProgress HardwareRequirementsStatus() => ClientApplication.HardwareRequirementsStatus();
+        public TaskProgress HardwareRequirementsStatus() => ApplicationTypes.HardwareRequirementsStatus();
 
-        public TaskProgress AdditionalInformationStatus() => ClientApplication.AdditionalInformationStatus();
+        public TaskProgress AdditionalInformationStatus() => ApplicationTypes.AdditionalInformationStatus();
     }
 }

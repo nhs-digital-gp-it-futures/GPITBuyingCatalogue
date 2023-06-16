@@ -20,16 +20,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeMod
             ApplicationType = ApplicationType.MobileTablet;
         }
 
-        public TaskProgress SupportedOperatingSystemsStatus() => ClientApplication.NativeMobileSupportedOperatingSystemsStatus();
+        public TaskProgress SupportedOperatingSystemsStatus() => ApplicationTypes.NativeMobileSupportedOperatingSystemsStatus();
 
-        public TaskProgress ConnectivityStatus() => ClientApplication.NativeMobileConnectivityStatus();
+        public TaskProgress ConnectivityStatus() => ApplicationTypes.NativeMobileConnectivityStatus();
 
-        public TaskProgress MemoryStatus() => ClientApplication.NativeMobileMemoryAndStorageStatus();
+        public TaskProgress MemoryStatus() => ApplicationTypes.NativeMobileMemoryAndStorageStatus();
 
-        public TaskProgress ThirdPartyStatus() => ClientApplication.NativeMobileThirdPartyStatus();
+        public TaskProgress ThirdPartyStatus() => ApplicationTypes.NativeMobileThirdPartyStatus();
 
-        public TaskProgress HardwareStatus() => ClientApplication.NativeMobileHardwareRequirementsStatus();
+        public TaskProgress HardwareStatus() => ApplicationTypes.NativeMobileHardwareRequirementsStatus();
 
-        public TaskProgress AdditionalInformationStatus() => ClientApplication.NativeMobileAdditionalInformationStatus();
+        public TaskProgress AdditionalInformationStatus() => ApplicationTypes.NativeMobileAdditionalInformationStatus();
     }
 }

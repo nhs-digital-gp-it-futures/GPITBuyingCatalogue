@@ -34,8 +34,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeMod
 
             CheckBrowsers();
 
-            if (ClientApplication.MobileResponsive.HasValue)
-                MobileResponsive = ClientApplication.MobileResponsive.ToYesNo();
+            if (ApplicationTypes.MobileResponsive.HasValue)
+                MobileResponsive = ApplicationTypes.MobileResponsive.ToYesNo();
         }
 
         public SupportedBrowserModel[] Browsers { get; set; }
@@ -46,12 +46,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeMod
         {
             foreach (var browser in Browsers)
             {
-                browser.Checked = ClientApplication.BrowsersSupported is not null &&
-                    ClientApplication.BrowsersSupported.Any(bs => bs.BrowserName.Contains(browser.BrowserName));
+                browser.Checked = ApplicationTypes.BrowsersSupported is not null &&
+                    ApplicationTypes.BrowsersSupported.Any(bs => bs.BrowserName.Contains(browser.BrowserName));
 
-                if (ClientApplication.BrowsersSupported.Any(bs => bs.BrowserName.Contains(browser.BrowserName)))
+                if (ApplicationTypes.BrowsersSupported.Any(bs => bs.BrowserName.Contains(browser.BrowserName)))
                 {
-                    browser.MinimumBrowserVersion = ClientApplication.BrowsersSupported
+                    browser.MinimumBrowserVersion = ApplicationTypes.BrowsersSupported
                         .FirstOrDefault(bs => bs.BrowserName.Contains(browser.BrowserName)).MinimumBrowserVersion;
                 }
             }

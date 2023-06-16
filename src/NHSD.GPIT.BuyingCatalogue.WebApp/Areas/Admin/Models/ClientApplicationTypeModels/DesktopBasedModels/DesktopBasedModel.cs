@@ -20,16 +20,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeMod
             ApplicationType = ApplicationType.Desktop;
         }
 
-        public TaskProgress SupportedOperatingSystemsStatus() => ClientApplication.NativeDesktopSupportedOperatingSystemsStatus();
+        public TaskProgress SupportedOperatingSystemsStatus() => ApplicationTypes.NativeDesktopSupportedOperatingSystemsStatus();
 
-        public TaskProgress ConnectivityStatus() => ClientApplication.NativeDesktopConnectivityStatus();
+        public TaskProgress ConnectivityStatus() => ApplicationTypes.NativeDesktopConnectivityStatus();
 
-        public TaskProgress MemoryAndStorageStatus() => ClientApplication.NativeDesktopMemoryAndStorageStatus();
+        public TaskProgress MemoryAndStorageStatus() => ApplicationTypes.NativeDesktopMemoryAndStorageStatus();
 
-        public TaskProgress StatusThirdParty() => ClientApplication.NativeDesktopThirdPartyStatus();
+        public TaskProgress StatusThirdParty() => ApplicationTypes.NativeDesktopThirdPartyStatus();
 
-        public TaskProgress StatusHardware() => ClientApplication.NativeDesktopHardwareRequirementsStatus();
+        public TaskProgress StatusHardware() => ApplicationTypes.NativeDesktopHardwareRequirementsStatus();
 
-        public TaskProgress StatusAdditionalInformation() => ClientApplication.NativeDesktopAdditionalInformationStatus();
+        public TaskProgress StatusAdditionalInformation() => ApplicationTypes.NativeDesktopAdditionalInformationStatus();
     }
 }

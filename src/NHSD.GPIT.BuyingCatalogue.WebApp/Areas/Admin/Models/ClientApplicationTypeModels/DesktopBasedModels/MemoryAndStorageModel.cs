@@ -23,10 +23,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeMod
             MemorySizes = Framework.Constants.SelectLists.MemorySizes;
             Resolutions = Framework.Constants.SelectLists.ScreenResolutions;
 
-            SelectedMemorySize = ClientApplication?.NativeDesktopMemoryAndStorage?.MinimumMemoryRequirement;
-            StorageSpace = ClientApplication?.NativeDesktopMemoryAndStorage?.StorageRequirementsDescription;
-            ProcessingPower = ClientApplication?.NativeDesktopMemoryAndStorage?.MinimumCpu;
-            SelectedResolution = ClientApplication?.NativeDesktopMemoryAndStorage?.RecommendedResolution;
+            SelectedMemorySize = ApplicationTypes?.NativeDesktopMemoryAndStorage?.MinimumMemoryRequirement;
+            StorageSpace = ApplicationTypes?.NativeDesktopMemoryAndStorage?.StorageRequirementsDescription;
+            ProcessingPower = ApplicationTypes?.NativeDesktopMemoryAndStorage?.MinimumCpu;
+            SelectedResolution = ApplicationTypes?.NativeDesktopMemoryAndStorage?.RecommendedResolution;
         }
 
         public string SelectedMemorySize { get; set; }

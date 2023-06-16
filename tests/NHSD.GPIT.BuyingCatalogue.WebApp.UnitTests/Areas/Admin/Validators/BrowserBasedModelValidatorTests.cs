@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             BrowserBasedModel model,
             BrowserBasedModelValidator validator)
         {
-            model.ClientApplication.Plugins = null;
+            model.ApplicationTypes.Plugins = null;
 
             var result = validator.TestValidate(model);
 

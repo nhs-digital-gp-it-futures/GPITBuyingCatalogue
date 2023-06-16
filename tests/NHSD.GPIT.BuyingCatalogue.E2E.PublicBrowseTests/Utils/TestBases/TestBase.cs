@@ -99,7 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
             return Factory.DbContext;
         }
 
-        internal void ClearClientApplication(CatalogueItemId solutionId)
+        internal void ClearApplicationType(CatalogueItemId solutionId)
         {
             using var context = GetEndToEndDbContext();
             var solution = context.Solutions.First(s => s.CatalogueItemId == solutionId);
