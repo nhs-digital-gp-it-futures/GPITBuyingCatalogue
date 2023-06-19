@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.SupportedBrowsersStatus() == TaskProgress.Completed && m.PluginsStatus() == TaskProgress.Completed)
+            result.ShouldHaveValidationErrorFor(m => m.ClientApplicationProgress.SupportedBrowsersStatus() == TaskProgress.Completed && m.ClientApplicationProgress.PluginsStatus() == TaskProgress.Completed)
                 .WithErrorMessage(BrowserBasedModelValidator.MandatoryRequiredMessage);
         }
 
@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         {
             var result = validator.TestValidate(model);
 
-            result.ShouldNotHaveValidationErrorFor(m => m.SupportedBrowsersStatus() == TaskProgress.Completed && m.PluginsStatus() == TaskProgress.Completed);
+            result.ShouldNotHaveValidationErrorFor(m => m.ClientApplicationProgress.SupportedBrowsersStatus() == TaskProgress.Completed && m.ClientApplicationProgress.PluginsStatus() == TaskProgress.Completed);
         }
     }
 }

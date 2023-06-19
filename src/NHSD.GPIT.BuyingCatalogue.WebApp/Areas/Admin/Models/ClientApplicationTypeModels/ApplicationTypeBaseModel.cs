@@ -1,6 +1,5 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
@@ -14,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeMod
 
         public ApplicationTypeBaseModel(CatalogueItem catalogueItem)
         {
-            ApplicationTypes = catalogueItem?.Solution?.GetApplicationTypes() ?? new ApplicationTypes();
+            ClientApplication = catalogueItem?.Solution?.EnsureAndGetClientApplication() ?? new ClientApplication();
             SolutionId = catalogueItem?.Id;
             SolutionName = catalogueItem?.Name;
         }
@@ -22,6 +21,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeMod
         public string SolutionName { get; set; }
 
         public ApplicationTypes ApplicationTypes { get; set; }
+
+        public ClientApplicationProgress ClientApplicationProgress => new ClientApplicationProgress(ClientApplication);
 
         public CatalogueItemId? SolutionId { get; set; }
 

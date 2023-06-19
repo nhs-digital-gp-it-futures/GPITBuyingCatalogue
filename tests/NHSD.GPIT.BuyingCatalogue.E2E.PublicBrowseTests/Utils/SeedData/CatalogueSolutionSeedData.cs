@@ -11,37 +11,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
     {
         public static List<CatalogueItem> GetCatalogueSolutionItems()
         {
-            var hosting = new Hosting
-            {
-                HybridHostingType = new HybridHostingType
-                {
-                    HostingModel = "Hosting environment description",
-                    Link = "External URL link",
-                    RequiresHscn = "Link to HSCN or N3 network required to access service",
-                    Summary = "Summary description",
-                },
-                OnPremise = new OnPremise
-                {
-                    HostingModel = "Hosting environment description",
-                    Link = "External URL link",
-                    RequiresHscn = "Link to HSCN or N3 network required to access service",
-                    Summary = "Summary description",
-                },
-                PrivateCloud = new PrivateCloud
-                {
-                    HostingModel = "Hosting environment description",
-                    Link = "External URL link",
-                    RequiresHscn = "Link to HSCN or N3 network required to access service",
-                    Summary = "Summary description",
-                },
-                PublicCloud = new PublicCloud
-                {
-                    Link = "External URL link",
-                    RequiresHscn = "Link to HSCN or N3 network required to access service",
-                    Summary = "Summary description",
-                },
-            };
-
             var catalogueItems = new List<CatalogueItem>
             {
                 new CatalogueItem
@@ -57,75 +26,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         AboutUrl = "https://test.com",
                         Summary = "SUMMARY - DFOCVC Solution",
                         Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interoperable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
-                        Hosting = hosting,
-                        ApplicationType = @"{
-                            ""ClientApplicationTypes"": [
-                                ""browser-based"",
-                                ""native-mobile"",
-                                ""native-desktop""
-                            ],
-                            ""BrowsersSupported"": [
-                                ""Google Chrome"",
-                                ""Chromium"",
-                                ""Internet Explorer 11"",
-                                ""Internet Explorer 10""
-                            ],
-                            ""MobileResponsive"": true,
-                            ""Plugins"": {
-                                ""Required"": false,
-                                ""AdditionalInformation"": ""Additional information""
-                            },
-                            ""MinimumConnectionSpeed"": ""2Mbps"",
-                            ""MinimumDesktopResolution"": ""16:9 – 1366 x 768"",
-                            ""HardwareRequirements"": ""Something related to Desktop Hardware Requirements"",
-                            ""NativeMobileHardwareRequirements"": ""Something related to Mobile requirements"",
-                            ""NativeDesktopHardwareRequirements"": ""Something related to Desktop Hardware Requirements"",
-                            ""AdditionalInformation"": ""Here is some additional information"",
-                            ""MobileFirstDesign"": true,
-                            ""NativeMobileFirstDesign"": true,
-                            ""MobileOperatingSystems"": {
-                                ""OperatingSystems"": [
-                                    ""Apple IOS"",
-                                    ""Android"",
-                                    ""Other""
-                                ],
-                                ""OperatingSystemsDescription"": ""•\tiOS v 10.3.3.3 and above\r\n\r\n•\tAndroid v 6 and above\r\n\r\n•\tWindows 10 (Build 14393)""
-                            },
-                            ""MobileConnectionDetails"": {
-                                ""MinimumConnectionSpeed"": ""2Mbps"",
-                                ""ConnectionType"": [
-                                    ""GPRS"",
-                                    ""3G"",
-                                    ""LTE"",
-                                    ""4G"",
-                                    ""5G"",
-                                    ""Wifi""
-                                ],
-                                ""Description"": ""Mobile connection required""
-                            },
-                            ""MobileMemoryAndStorage"": {
-                                ""MinimumMemoryRequirement"": ""2GB"",
-                                ""Description"": ""All compliant devices must have a minimum 16GB storage.""
-                            },
-                            ""MobileThirdParty"": {
-                                ""ThirdPartyComponents"": ""Some third party stuff may be supported"",
-                                ""DeviceCapabilities"": ""Must have app""
-                            },
-                            ""NativeMobileAdditionalInformation"": ""Tested on multiple operating systems"",
-                            ""NativeDesktopOperatingSystemsDescription"": ""Microsoft Windows 7 (x86 x64)\r\n\r\nMicrosoft Windows 8.1 (x86 x64)\r\n\r\nMicrosoft Windows 10 (x86 x64)"",
-                            ""NativeDesktopMinimumConnectionSpeed"": ""2Mbps"",
-                            ""NativeDesktopThirdParty"": {
-                                ""ThirdPartyComponents"": "".NET framework 4."",
-                                ""DeviceCapabilities"": ""The application requires connectivity to the Internet""
-                            },
-                            ""NativeDesktopMemoryAndStorage"": {
-                                ""MinimumMemoryRequirement"": ""4GB"",
-                                ""StorageRequirementsDescription"": ""10GB free disk space."",
-                                ""MinimumCpu"": ""Intel Core i3 equivalent or higher."",
-                                ""RecommendedResolution"": ""16:9 – 1366 x 768""
-                            },
-                            ""NativeDesktopAdditionalInformation"": ""The minimum connection speed is dependent on the number of clients that need to be supported.""
-                        }",
+                        Hosting = BuildHosting(),
+                        ClientApplication = BuildClientApplication(),
                         LastUpdated = DateTime.UtcNow,
                         FullDescription = "FULL DESCRIPTION – Digital First, Online Consultation and Video Consultation Solution.",
                         ImplementationDetail = "Some implementation detail",
@@ -249,75 +151,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         AboutUrl = "https://test.com",
                         Summary = "SUMMARY - GPIT Solution",
                         Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interoperable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
-                        Hosting = hosting,
-                        ApplicationType = @"{
-                            ""ClientApplicationTypes"": [
-                                ""browser-based"",
-                                ""native-mobile"",
-                                ""native-desktop""
-                            ],
-                            ""BrowsersSupported"": [
-                                ""Google Chrome"",
-                                ""Chromium"",
-                                ""Internet Explorer 11"",
-                                ""Internet Explorer 10""
-                            ],
-                            ""MobileResponsive"": true,
-                            ""Plugins"": {
-                                ""Required"": false,
-                                ""AdditionalInformation"": ""Additional information""
-                            },
-                            ""MinimumConnectionSpeed"": ""2Mbps"",
-                            ""MinimumDesktopResolution"": ""16:9 – 1366 x 768"",
-                            ""HardwareRequirements"": ""Something related to Desktop Hardware Requirements"",
-                            ""NativeMobileHardwareRequirements"": ""Something related to Mobile requirements"",
-                            ""NativeDesktopHardwareRequirements"": ""Something related to Desktop Hardware Requirements"",
-                            ""AdditionalInformation"": ""Here is some additional information"",
-                            ""MobileFirstDesign"": true,
-                            ""NativeMobileFirstDesign"": true,
-                            ""MobileOperatingSystems"": {
-                                ""OperatingSystems"": [
-                                    ""Apple IOS"",
-                                    ""Android"",
-                                    ""Other""
-                                ],
-                                ""OperatingSystemsDescription"": ""•\tiOS v 10.3.3.3 and above\r\n\r\n•\tAndroid v 6 and above\r\n\r\n•\tWindows 10 (Build 14393)""
-                            },
-                            ""MobileConnectionDetails"": {
-                                ""MinimumConnectionSpeed"": ""2Mbps"",
-                                ""ConnectionType"": [
-                                    ""GPRS"",
-                                    ""3G"",
-                                    ""LTE"",
-                                    ""4G"",
-                                    ""5G"",
-                                    ""Wifi""
-                                ],
-                                ""Description"": ""Mobile connection required""
-                            },
-                            ""MobileMemoryAndStorage"": {
-                                ""MinimumMemoryRequirement"": ""2GB"",
-                                ""Description"": ""All compliant devices must have a minimum 16GB storage.""
-                            },
-                            ""MobileThirdParty"": {
-                                ""ThirdPartyComponents"": ""Some third party stuff may be supported"",
-                                ""DeviceCapabilities"": ""Must have app""
-                            },
-                            ""NativeMobileAdditionalInformation"": ""Tested on multiple operating systems"",
-                            ""NativeDesktopOperatingSystemsDescription"": ""Microsoft Windows 7 (x86 x64)\r\n\r\nMicrosoft Windows 8.1 (x86 x64)\r\n\r\nMicrosoft Windows 10 (x86 x64)"",
-                            ""NativeDesktopMinimumConnectionSpeed"": ""2Mbps"",
-                            ""NativeDesktopThirdParty"": {
-                                ""ThirdPartyComponents"": "".NET framework 4."",
-                                ""DeviceCapabilities"": ""The application requires connectivity to the Internet""
-                            },
-                            ""NativeDesktopMemoryAndStorage"": {
-                                ""MinimumMemoryRequirement"": ""4GB"",
-                                ""StorageRequirementsDescription"": ""10GB free disk space."",
-                                ""MinimumCpu"": ""Intel Core i3 equivalent or higher."",
-                                ""RecommendedResolution"": ""16:9 – 1366 x 768""
-                            },
-                            ""NativeDesktopAdditionalInformation"": ""The minimum connection speed is dependent on the number of clients that need to be supported.""
-                        }",
+                        Hosting = BuildHosting(),
+                        ClientApplication = BuildClientApplication(),
                         LastUpdated = DateTime.UtcNow,
                         FullDescription = "FULL DESCRIPTION – GP IT Futures Solution.",
                         ImplementationDetail = "Some implementation detail",
@@ -357,75 +192,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         AboutUrl = "https://test.com",
                         Summary = "SUMMARY - GPIT Solution 2",
                         Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interoperable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
-                        Hosting = hosting,
-                        ApplicationType = @"{
-                            ""ClientApplicationTypes"": [
-                                ""browser-based"",
-                                ""native-mobile"",
-                                ""native-desktop""
-                            ],
-                            ""BrowsersSupported"": [
-                                ""Google Chrome"",
-                                ""Chromium"",
-                                ""Internet Explorer 11"",
-                                ""Internet Explorer 10""
-                            ],
-                            ""MobileResponsive"": true,
-                            ""Plugins"": {
-                                ""Required"": false,
-                                ""AdditionalInformation"": ""Additional information""
-                            },
-                            ""MinimumConnectionSpeed"": ""2Mbps"",
-                            ""MinimumDesktopResolution"": ""16:9 – 1366 x 768"",
-                            ""HardwareRequirements"": ""Something related to Desktop Hardware Requirements"",
-                            ""NativeMobileHardwareRequirements"": ""Something related to Mobile requirements"",
-                            ""NativeDesktopHardwareRequirements"": ""Something related to Desktop Hardware Requirements"",
-                            ""AdditionalInformation"": ""Here is some additional information"",
-                            ""MobileFirstDesign"": true,
-                            ""NativeMobileFirstDesign"": true,
-                            ""MobileOperatingSystems"": {
-                                ""OperatingSystems"": [
-                                    ""Apple IOS"",
-                                    ""Android"",
-                                    ""Other""
-                                ],
-                                ""OperatingSystemsDescription"": ""•\tiOS v 10.3.3.3 and above\r\n\r\n•\tAndroid v 6 and above\r\n\r\n•\tWindows 10 (Build 14393)""
-                            },
-                            ""MobileConnectionDetails"": {
-                                ""MinimumConnectionSpeed"": ""2Mbps"",
-                                ""ConnectionType"": [
-                                    ""GPRS"",
-                                    ""3G"",
-                                    ""LTE"",
-                                    ""4G"",
-                                    ""5G"",
-                                    ""Wifi""
-                                ],
-                                ""Description"": ""Mobile connection required""
-                            },
-                            ""MobileMemoryAndStorage"": {
-                                ""MinimumMemoryRequirement"": ""2GB"",
-                                ""Description"": ""All compliant devices must have a minimum 16GB storage.""
-                            },
-                            ""MobileThirdParty"": {
-                                ""ThirdPartyComponents"": ""Some third party stuff may be supported"",
-                                ""DeviceCapabilities"": ""Must have app""
-                            },
-                            ""NativeMobileAdditionalInformation"": ""Tested on multiple operating systems"",
-                            ""NativeDesktopOperatingSystemsDescription"": ""Microsoft Windows 7 (x86 x64)\r\n\r\nMicrosoft Windows 8.1 (x86 x64)\r\n\r\nMicrosoft Windows 10 (x86 x64)"",
-                            ""NativeDesktopMinimumConnectionSpeed"": ""2Mbps"",
-                            ""NativeDesktopThirdParty"": {
-                                ""ThirdPartyComponents"": "".NET framework 4."",
-                                ""DeviceCapabilities"": ""The application requires connectivity to the Internet""
-                            },
-                            ""NativeDesktopMemoryAndStorage"": {
-                                ""MinimumMemoryRequirement"": ""4GB"",
-                                ""StorageRequirementsDescription"": ""10GB free disk space."",
-                                ""MinimumCpu"": ""Intel Core i3 equivalent or higher."",
-                                ""RecommendedResolution"": ""16:9 – 1366 x 768""
-                            },
-                            ""NativeDesktopAdditionalInformation"": ""The minimum connection speed is dependent on the number of clients that need to be supported.""
-                        }",
+                        Hosting = BuildHosting(),
+                        ClientApplication = BuildClientApplication(),
                         LastUpdated = DateTime.UtcNow,
                         FullDescription = "FULL DESCRIPTION – GP IT Futures Solution 2.",
                         ImplementationDetail = "Some implementation detail",
@@ -478,75 +246,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         AboutUrl = "https://test.com",
                         Summary = "SUMMARY - DFOCVC Solution",
                         Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interoperable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
-                        Hosting = hosting,
-                        ApplicationType = @"{
-                            ""ClientApplicationTypes"": [
-                                ""browser-based"",
-                                ""native-mobile"",
-                                ""native-desktop""
-                            ],
-                            ""BrowsersSupported"": [
-                                ""Google Chrome"",
-                                ""Chromium"",
-                                ""Internet Explorer 11"",
-                                ""Internet Explorer 10""
-                            ],
-                            ""MobileResponsive"": true,
-                            ""Plugins"": {
-                                ""Required"": false,
-                                ""AdditionalInformation"": ""Additional information""
-                            },
-                            ""MinimumConnectionSpeed"": ""2Mbps"",
-                            ""MinimumDesktopResolution"": ""16:9 – 1366 x 768"",
-                            ""HardwareRequirements"": ""Something related to Desktop Hardware Requirements"",
-                            ""NativeMobileHardwareRequirements"": ""Something related to Mobile requirements"",
-                            ""NativeDesktopHardwareRequirements"": ""Something related to Desktop Hardware Requirements"",
-                            ""AdditionalInformation"": ""Here is some additional information"",
-                            ""MobileFirstDesign"": true,
-                            ""NativeMobileFirstDesign"": true,
-                            ""MobileOperatingSystems"": {
-                                ""OperatingSystems"": [
-                                    ""Apple IOS"",
-                                    ""Android"",
-                                    ""Other""
-                                ],
-                                ""OperatingSystemsDescription"": ""•\tiOS v 10.3.3.3 and above\r\n\r\n•\tAndroid v 6 and above\r\n\r\n•\tWindows 10 (Build 14393)""
-                            },
-                            ""MobileConnectionDetails"": {
-                                ""MinimumConnectionSpeed"": ""2Mbps"",
-                                ""ConnectionType"": [
-                                    ""GPRS"",
-                                    ""3G"",
-                                    ""LTE"",
-                                    ""4G"",
-                                    ""5G"",
-                                    ""Wifi""
-                                ],
-                                ""Description"": ""Mobile connection required""
-                            },
-                            ""MobileMemoryAndStorage"": {
-                                ""MinimumMemoryRequirement"": ""2GB"",
-                                ""Description"": ""All compliant devices must have a minimum 16GB storage.""
-                            },
-                            ""MobileThirdParty"": {
-                                ""ThirdPartyComponents"": ""Some third party stuff may be supported"",
-                                ""DeviceCapabilities"": ""Must have app""
-                            },
-                            ""NativeMobileAdditionalInformation"": ""Tested on multiple operating systems"",
-                            ""NativeDesktopOperatingSystemsDescription"": ""Microsoft Windows 7 (x86 x64)\r\n\r\nMicrosoft Windows 8.1 (x86 x64)\r\n\r\nMicrosoft Windows 10 (x86 x64)"",
-                            ""NativeDesktopMinimumConnectionSpeed"": ""2Mbps"",
-                            ""NativeDesktopThirdParty"": {
-                                ""ThirdPartyComponents"": "".NET framework 4."",
-                                ""DeviceCapabilities"": ""The application requires connectivity to the Internet""
-                            },
-                            ""NativeDesktopMemoryAndStorage"": {
-                                ""MinimumMemoryRequirement"": ""4GB"",
-                                ""StorageRequirementsDescription"": ""10GB free disk space."",
-                                ""MinimumCpu"": ""Intel Core i3 equivalent or higher."",
-                                ""RecommendedResolution"": ""16:9 – 1366 x 768""
-                            },
-                            ""NativeDesktopAdditionalInformation"": ""The minimum connection speed is dependent on the number of clients that need to be supported.""
-                        }",
+                        Hosting = BuildHosting(),
+                        ClientApplication = BuildClientApplication(),
                         LastUpdated = DateTime.UtcNow,
                         FullDescription = "FULL DESCRIPTION – Digital First, Online Consultation and Video Consultation Solution.",
                         ImplementationDetail = "Some implementation detail",
@@ -585,75 +286,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         AboutUrl = "https://test.com",
                         Summary = "SUMMARY - E2E With Contact Multiple Prices",
                         Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interoperable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
-                        Hosting = hosting,
-                        ApplicationType = @"{
-                            ""ClientApplicationTypes"": [
-                                ""browser-based"",
-                                ""native-mobile"",
-                                ""native-desktop""
-                            ],
-                            ""BrowsersSupported"": [
-                                ""Google Chrome"",
-                                ""Chromium"",
-                                ""Internet Explorer 11"",
-                                ""Internet Explorer 10""
-                            ],
-                            ""MobileResponsive"": true,
-                            ""Plugins"": {
-                                ""Required"": false,
-                                ""AdditionalInformation"": ""Additional information""
-                            },
-                            ""MinimumConnectionSpeed"": ""2Mbps"",
-                            ""MinimumDesktopResolution"": ""16:9 – 1366 x 768"",
-                            ""HardwareRequirements"": ""Something related to Desktop Hardware Requirements"",
-                            ""NativeMobileHardwareRequirements"": ""Something related to Mobile requirements"",
-                            ""NativeDesktopHardwareRequirements"": ""Something related to Desktop Hardware Requirements"",
-                            ""AdditionalInformation"": ""Here is some additional information"",
-                            ""MobileFirstDesign"": true,
-                            ""NativeMobileFirstDesign"": true,
-                            ""MobileOperatingSystems"": {
-                                ""OperatingSystems"": [
-                                    ""Apple IOS"",
-                                    ""Android"",
-                                    ""Other""
-                                ],
-                                ""OperatingSystemsDescription"": ""•\tiOS v 10.3.3.3 and above\r\n\r\n•\tAndroid v 6 and above\r\n\r\n•\tWindows 10 (Build 14393)""
-                            },
-                            ""MobileConnectionDetails"": {
-                                ""MinimumConnectionSpeed"": ""2Mbps"",
-                                ""ConnectionType"": [
-                                    ""GPRS"",
-                                    ""3G"",
-                                    ""LTE"",
-                                    ""4G"",
-                                    ""5G"",
-                                    ""Wifi""
-                                ],
-                                ""Description"": ""Mobile connection required""
-                            },
-                            ""MobileMemoryAndStorage"": {
-                                ""MinimumMemoryRequirement"": ""2GB"",
-                                ""Description"": ""All compliant devices must have a minimum 16GB storage.""
-                            },
-                            ""MobileThirdParty"": {
-                                ""ThirdPartyComponents"": ""Some third party stuff may be supported"",
-                                ""DeviceCapabilities"": ""Must have app""
-                            },
-                            ""NativeMobileAdditionalInformation"": ""Tested on multiple operating systems"",
-                            ""NativeDesktopOperatingSystemsDescription"": ""Microsoft Windows 7 (x86 x64)\r\n\r\nMicrosoft Windows 8.1 (x86 x64)\r\n\r\nMicrosoft Windows 10 (x86 x64)"",
-                            ""NativeDesktopMinimumConnectionSpeed"": ""2Mbps"",
-                            ""NativeDesktopThirdParty"": {
-                                ""ThirdPartyComponents"": "".NET framework 4."",
-                                ""DeviceCapabilities"": ""The application requires connectivity to the Internet""
-                            },
-                            ""NativeDesktopMemoryAndStorage"": {
-                                ""MinimumMemoryRequirement"": ""4GB"",
-                                ""StorageRequirementsDescription"": ""10GB free disk space."",
-                                ""MinimumCpu"": ""Intel Core i3 equivalent or higher."",
-                                ""RecommendedResolution"": ""16:9 – 1366 x 768""
-                            },
-                            ""NativeDesktopAdditionalInformation"": ""The minimum connection speed is dependent on the number of clients that need to be supported.""
-                        }",
+                        Hosting = BuildHosting(),
+                        ClientApplication = BuildClientApplication(),
                         LastUpdated = DateTime.UtcNow,
                         FullDescription = "FULL DESCRIPTION – Digital First, Online Consultation and Video Consultation Solution.",
                         ImplementationDetail = "Some implementation detail",
@@ -716,75 +350,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         AboutUrl = "https://test.com",
                         Summary = "SUMMARY - E2E With Contact With Single Price",
                         Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interoperable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
-                        Hosting = hosting,
-                        ApplicationType = @"{
-                            ""ClientApplicationTypes"": [
-                                ""browser-based"",
-                                ""native-mobile"",
-                                ""native-desktop""
-                            ],
-                            ""BrowsersSupported"": [
-                                ""Google Chrome"",
-                                ""Chromium"",
-                                ""Internet Explorer 11"",
-                                ""Internet Explorer 10""
-                            ],
-                            ""MobileResponsive"": true,
-                            ""Plugins"": {
-                                ""Required"": false,
-                                ""AdditionalInformation"": ""Additional information""
-                            },
-                            ""MinimumConnectionSpeed"": ""2Mbps"",
-                            ""MinimumDesktopResolution"": ""16:9 – 1366 x 768"",
-                            ""HardwareRequirements"": ""Something related to Desktop Hardware Requirements"",
-                            ""NativeMobileHardwareRequirements"": ""Something related to Mobile requirements"",
-                            ""NativeDesktopHardwareRequirements"": ""Something related to Desktop Hardware Requirements"",
-                            ""AdditionalInformation"": ""Here is some additional information"",
-                            ""MobileFirstDesign"": true,
-                            ""NativeMobileFirstDesign"": true,
-                            ""MobileOperatingSystems"": {
-                                ""OperatingSystems"": [
-                                    ""Apple IOS"",
-                                    ""Android"",
-                                    ""Other""
-                                ],
-                                ""OperatingSystemsDescription"": ""•\tiOS v 10.3.3.3 and above\r\n\r\n•\tAndroid v 6 and above\r\n\r\n•\tWindows 10 (Build 14393)""
-                            },
-                            ""MobileConnectionDetails"": {
-                                ""MinimumConnectionSpeed"": ""2Mbps"",
-                                ""ConnectionType"": [
-                                    ""GPRS"",
-                                    ""3G"",
-                                    ""LTE"",
-                                    ""4G"",
-                                    ""5G"",
-                                    ""Wifi""
-                                ],
-                                ""Description"": ""Mobile connection required""
-                            },
-                            ""MobileMemoryAndStorage"": {
-                                ""MinimumMemoryRequirement"": ""2GB"",
-                                ""Description"": ""All compliant devices must have a minimum 16GB storage.""
-                            },
-                            ""MobileThirdParty"": {
-                                ""ThirdPartyComponents"": ""Some third party stuff may be supported"",
-                                ""DeviceCapabilities"": ""Must have app""
-                            },
-                            ""NativeMobileAdditionalInformation"": ""Tested on multiple operating systems"",
-                            ""NativeDesktopOperatingSystemsDescription"": ""Microsoft Windows 7 (x86 x64)\r\n\r\nMicrosoft Windows 8.1 (x86 x64)\r\n\r\nMicrosoft Windows 10 (x86 x64)"",
-                            ""NativeDesktopMinimumConnectionSpeed"": ""2Mbps"",
-                            ""NativeDesktopThirdParty"": {
-                                ""ThirdPartyComponents"": "".NET framework 4."",
-                                ""DeviceCapabilities"": ""The application requires connectivity to the Internet""
-                            },
-                            ""NativeDesktopMemoryAndStorage"": {
-                                ""MinimumMemoryRequirement"": ""4GB"",
-                                ""StorageRequirementsDescription"": ""10GB free disk space."",
-                                ""MinimumCpu"": ""Intel Core i3 equivalent or higher."",
-                                ""RecommendedResolution"": ""16:9 – 1366 x 768""
-                            },
-                            ""NativeDesktopAdditionalInformation"": ""The minimum connection speed is dependent on the number of clients that need to be supported.""
-                        }",
+                        Hosting = BuildHosting(),
+                        ClientApplication = BuildClientApplication(),
                         LastUpdated = DateTime.UtcNow,
                         FullDescription = "FULL DESCRIPTION – Digital First, Online Consultation and Video Consultation Solution.",
                         ImplementationDetail = "Some implementation detail",
@@ -828,6 +395,125 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             catalogueItems.AddRange(GetGeneratedCatalogueSolutionItems());
 
             return catalogueItems;
+        }
+
+        private static ClientApplication BuildClientApplication()
+        {
+            return new ClientApplication()
+            {
+                ClientApplicationTypes = new HashSet<string>
+                {
+                    "browser-based",
+                    "native-mobile",
+                    "native-desktop",
+                },
+                BrowsersSupported = new HashSet<SupportedBrowser>
+                {
+                    new SupportedBrowser() { BrowserName = "Google Chrome" },
+                    new SupportedBrowser() { BrowserName = "Chromium" },
+                    new SupportedBrowser() { BrowserName = "Internet Explorer 11" },
+                    new SupportedBrowser() { BrowserName = "Internet Explorer 10" },
+
+                },
+                MobileResponsive = true,
+                Plugins = new Plugins()
+                {
+                    Required = false,
+                    AdditionalInformation = "Additional information",
+                },
+                MinimumConnectionSpeed = "2Mbps",
+                MinimumDesktopResolution = "16:9 – 1366 x 768",
+                HardwareRequirements = "Something related to Desktop Hardware Requirements",
+                NativeMobileHardwareRequirements = "Something related to Mobile requirements",
+                NativeDesktopHardwareRequirements = "Something related to Desktop Hardware Requirements",
+                AdditionalInformation = "Here is some additional information",
+                MobileFirstDesign = true,
+                NativeMobileFirstDesign = true,
+                MobileOperatingSystems = new MobileOperatingSystems()
+                {
+                    OperatingSystems = new HashSet<string>
+                    {
+                        "Apple IOS",
+                        "Android",
+                        "Other",
+                    },
+                    OperatingSystemsDescription = "•\tiOS v 10.3.3.3 and above\r\n\r\n•\tAndroid v 6 and above\r\n\r\n•\tWindows 10 (Build 14393)",
+                },
+                MobileConnectionDetails = new MobileConnectionDetails()
+                {
+                    MinimumConnectionSpeed = "2Mbps",
+                    ConnectionType = new HashSet<string>
+                    {
+                        "GPRS",
+                        "3G",
+                        "LTE",
+                        "4G",
+                        "5G",
+                        "Wifi",
+                    },
+                    Description = "Mobile connection required",
+                },
+                MobileMemoryAndStorage = new MobileMemoryAndStorage()
+                {
+                    MinimumMemoryRequirement = "2GB",
+                    Description = "All compliant devices must have a minimum 16GB storage.",
+                },
+                MobileThirdParty = new MobileThirdParty()
+                {
+                    ThirdPartyComponents = "Some third party stuff may be supported",
+                    DeviceCapabilities = "Must have app",
+                },
+                NativeMobileAdditionalInformation = "Tested on multiple operating systems",
+                NativeDesktopOperatingSystemsDescription = "Microsoft Windows 7 (x86 x64)\r\n\r\nMicrosoft Windows 8.1 (x86 x64)\r\n\r\nMicrosoft Windows 10 (x86 x64)",
+                NativeDesktopMinimumConnectionSpeed = "2Mbps",
+                NativeDesktopThirdParty = new NativeDesktopThirdParty()
+                {
+                    ThirdPartyComponents = ".NET framework 4.",
+                    DeviceCapabilities = "The application requires connectivity to the Internet",
+                },
+                NativeDesktopMemoryAndStorage = new NativeDesktopMemoryAndStorage()
+                {
+                    MinimumMemoryRequirement = "4GB",
+                    StorageRequirementsDescription = "10GB free disk space.",
+                    MinimumCpu = "Intel Core i3 equivalent or higher.",
+                    RecommendedResolution = "16:9 – 1366 x 768",
+                },
+                NativeDesktopAdditionalInformation = "The minimum connection speed is dependent on the number of clients that need to be supported.",
+            };
+        }
+
+        private static Hosting BuildHosting()
+        {
+            return new Hosting
+            {
+                HybridHostingType = new HybridHostingType
+                {
+                    HostingModel = "Hosting environment description",
+                    Link = "External URL link",
+                    RequiresHscn = "Link to HSCN or N3 network required to access service",
+                    Summary = "Summary description",
+                },
+                OnPremise = new OnPremise
+                {
+                    HostingModel = "Hosting environment description",
+                    Link = "External URL link",
+                    RequiresHscn = "Link to HSCN or N3 network required to access service",
+                    Summary = "Summary description",
+                },
+                PrivateCloud = new PrivateCloud
+                {
+                    HostingModel = "Hosting environment description",
+                    Link = "External URL link",
+                    RequiresHscn = "Link to HSCN or N3 network required to access service",
+                    Summary = "Summary description",
+                },
+                PublicCloud = new PublicCloud
+                {
+                    Link = "External URL link",
+                    RequiresHscn = "Link to HSCN or N3 network required to access service",
+                    Summary = "Summary description",
+                },
+            };
         }
 
         private static IEnumerable<CatalogueItem> GetGeneratedCatalogueSolutionItems(int count = 100)

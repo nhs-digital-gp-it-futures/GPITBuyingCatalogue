@@ -3,47 +3,12 @@ using System.Text.Json;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
 {
     public static class SolutionExtensionsTests
     {
-        [Fact]
-        public static void GetClientApplication_NullSolution_ThrowsException()
-        {
-            Solution solution = null;
-
-            // ReSharper disable once ExpressionIsAlwaysNull
-            Assert.Throws<ArgumentNullException>(() => solution.GetApplicationTypes());
-        }
-
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        [InlineData(" ")]
-        public static void GetClientApplication_ReturnsDefaultClientApplicationWhenNotSet(string clientApplication)
-        {
-            var solution = new Solution { ApplicationType = clientApplication };
-
-            var result = solution.GetApplicationTypes();
-
-            result.Should().BeEquivalentTo(new ApplicationTypes());
-        }
-
-        [Fact]
-        public static void GetClientApplication_ReturnsClientApplicationWhenSet()
-        {
-            var clientApplication = new ApplicationTypes { AdditionalInformation = "Additional Information" };
-            var json = JsonSerializer.Serialize(clientApplication);
-            var solution = new Solution { ApplicationType = json };
-
-            var result = solution.GetApplicationTypes();
-
-            result.Should().BeEquivalentTo(clientApplication);
-        }
-
         [Fact]
         public static void GetFeatures_NullSolution_ThrowsException()
         {

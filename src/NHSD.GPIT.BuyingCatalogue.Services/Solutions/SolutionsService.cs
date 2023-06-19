@@ -325,7 +325,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public async Task<ApplicationTypes> GetApplicationTypes(CatalogueItemId solutionId)
         {
             var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
-            return solution.GetApplicationTypes();
+            return solution.EnsureAndGetClientApplication();
         }
 
         public async Task SaveApplicationType(CatalogueItemId solutionId, ApplicationTypes applicationTypes)
@@ -346,15 +346,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await SaveApplicationType(solutionId, clientApplication);
         }
 
-        public async Task<Hosting> GetHosting(CatalogueItemId solutionId)
-        {
-            var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
-            return solution.Hosting ?? new Hosting();
-        }
-
         public async Task SaveHosting(CatalogueItemId solutionId, Hosting hosting)
         {
-            hosting.ValidateNotNull(nameof(hosting));
+            ArgumentNullException.ThrowIfNull(hosting);
 
             var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
             solution.Hosting = hosting;

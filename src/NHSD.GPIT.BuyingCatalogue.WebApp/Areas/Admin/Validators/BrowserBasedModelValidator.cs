@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 
         public BrowserBasedModelValidator()
         {
-            RuleFor(m => m.SupportedBrowsersStatus() == TaskProgress.Completed && m.PluginsStatus() == TaskProgress.Completed)
+            RuleFor(m => m.ClientApplicationProgress.SupportedBrowsersStatus() == TaskProgress.Completed && m.ClientApplicationProgress.PluginsStatus() == TaskProgress.Completed)
                 .NotEmpty()
                 .WithMessage(MandatoryRequiredMessage);
         }

@@ -58,8 +58,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task DeleteApplicationType(CatalogueItemId solutionId, ApplicationType applicationType);
 
-        Task<Hosting> GetHosting(CatalogueItemId solutionId);
-
         Task SaveHosting(CatalogueItemId solutionId, Hosting hosting);
 
         Task SaveSupplierDescriptionAndLink(int supplierId, string description, string link);

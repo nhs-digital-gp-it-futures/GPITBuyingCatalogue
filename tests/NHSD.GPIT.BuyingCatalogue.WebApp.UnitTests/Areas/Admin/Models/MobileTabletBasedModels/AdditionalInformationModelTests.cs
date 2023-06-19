@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
             var catalogueItem = solution.CatalogueItem;
             var actual = new AdditionalInformationModel(catalogueItem);
 
-            actual.AdditionalInformation.Should().Be(solution.GetApplicationTypes().NativeMobileAdditionalInformation);
+            actual.AdditionalInformation.Should().Be(solution.ClientApplication.NativeMobileAdditionalInformation);
         }
 
         [Fact]

@@ -1,4 +1,5 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 @using EnumsNET
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeModels.ApplicationTypeSectionModel;
 @{
@@ -41,7 +42,7 @@
                             <nhs-table-row-container>
                                 <nhs-table-cell>@FormatApplicationType(applicationType)</nhs-table-cell>
                                 <nhs-table-cell>
-                                    <nhs-tag status-enum="@Model.ApplicationType.ApplicationTypeStatus(applicationType)" />
+                                    <nhs-tag status-enum="@Model.ClientApplicationProgress.ApplicationTypeStatus(applicationType)" />
                                 </nhs-table-cell>
                                 <nhs-table-cell>
                                     @if (applicationType == ApplicationType.MobileTablet)
