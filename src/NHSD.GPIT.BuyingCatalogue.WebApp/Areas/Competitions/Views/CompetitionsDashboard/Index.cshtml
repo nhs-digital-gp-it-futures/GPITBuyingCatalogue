@@ -1,3 +1,10 @@
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.ActionLink
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Filters
+@using Microsoft.AspNetCore.Routing
+@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums
 @model CompetitionDashboardModel
 
 @{
@@ -36,9 +43,7 @@
                         advice="Create new competitions or view and edit existing ones."
                         caption="@Model.OrganisationName"/>
 
-        <vc:nhs-action-link url="@Url.Action(nameof(CompetitionsDashboardController.BeforeYouStart),
-                                     typeof(CompetitionsDashboardController).ControllerName(),
-                                     new { Model.InternalOrgId })" text="Create a new competition"/>
+        <vc:nhs-action-link url="@Url.Action(nameof(CompetitionsDashboardController.BeforeYouStart), typeof(CompetitionsDashboardController).ControllerName(), new { Model.InternalOrgId })" text="Create a new competition"/>
     </div>
 
     <div class="nhsuk-grid-column-full">
@@ -65,7 +70,10 @@
                             <nhs-tag status-enum="@competition.Progress"/>
                         </nhs-table-cell>
                         <nhs-table-cell>
-                            N/A
+                            @{
+                                var competitionAction = GetCompetitionActionLink(competition);
+                            }
+                            <a href="@competitionAction.Link">@competitionAction.LinkText</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
                 }
@@ -73,3 +81,22 @@
         }
     </div>
 </div>
+
+@{
+    (string LinkText, string Link) GetCompetitionActionLink(CompetitionDashboardItem competition)
+        => competition.Progress == TaskProgress.Completed ? ("N/A", "#") : ("Edit", GetEditLink(competition));
+
+    string GetEditLink(CompetitionDashboardItem competition)
+    {
+        var routingArgs = new { Area = typeof(CompetitionSelectSolutionsController).AreaName(), internalOrgId = Model.InternalOrgId, competitionId = competition.Id };
+
+        if (competition.Solutions.All(x => !x.IsShortlisted)
+            || competition.Solutions.Any(x => !x.IsShortlisted && string.IsNullOrWhiteSpace(x.Justification))
+            || !competition.ShortlistAccepted.HasValue)
+        {
+            return Url.Action(nameof(CompetitionSelectSolutionsController.SelectSolutions), typeof(CompetitionSelectSolutionsController).ControllerName(), routingArgs);
+        }
+
+        return Url.Action(nameof(CompetitionTaskListController.Index), typeof(CompetitionTaskListController).ControllerName(), routingArgs);
+    }
+}

@@ -4,8 +4,6 @@ using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.Framework.Serialization;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
@@ -17,9 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             CatalogueItemContentStatus contentStatus)
             : base(catalogueItem, contentStatus)
         {
-            ClientApplication = string.IsNullOrWhiteSpace(catalogueItem.Solution.ClientApplication)
-                ? new ClientApplication()
-                : JsonDeserializer.Deserialize<ClientApplication>(catalogueItem.Solution.ClientApplication);
+            ClientApplication = catalogueItem.Solution.EnsureAndGetClientApplication();
 
             BrowserBasedApplication = GetBrowserBasedApplication();
             NativeDesktopApplication = GetNativeDesktopApplication();

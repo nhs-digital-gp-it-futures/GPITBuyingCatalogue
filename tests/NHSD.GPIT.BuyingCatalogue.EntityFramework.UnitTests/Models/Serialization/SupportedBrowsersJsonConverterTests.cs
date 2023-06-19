@@ -2,11 +2,11 @@
 using System.Text;
 using System.Text.Json;
 using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Serialization;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.Serialization;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions.Serialization
+namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.Serialization
 {
     public sealed class SupportedBrowsersJsonConverterTests
     {

@@ -78,6 +78,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public string TitleAdvice { get; set; }
 
+        public string DeleteButtonTitle => IsAmendment ? "Delete amendment" : "Delete order";
+
+        public string SolutionsAndServicesSectionLabel => IsAmendment ? "Solution and services" : "Add solutions and services";
+
         public string OrganisationName { get; set; }
 
         public string LastUpdatedByUserName { get; set; }

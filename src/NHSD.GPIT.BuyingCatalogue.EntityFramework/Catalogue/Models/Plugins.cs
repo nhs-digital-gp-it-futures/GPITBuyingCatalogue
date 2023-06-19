@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
+namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     [ExcludeFromCodeCoverage]
     public class Plugins

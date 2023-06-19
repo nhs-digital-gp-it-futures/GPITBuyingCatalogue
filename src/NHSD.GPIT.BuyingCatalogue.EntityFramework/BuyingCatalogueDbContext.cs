@@ -35,6 +35,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             this.identityService = identityService ?? throw new ArgumentNullException(nameof(identityService));
         }
 
+        protected BuyingCatalogueDbContext(DbContextOptions options)
+            : base(options)
+        {
+        }
+
         protected BuyingCatalogueDbContext(
             DbContextOptions options,
             IIdentityService identityService)

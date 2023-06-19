@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 
-namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
+namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     [ExcludeFromCodeCoverage]
     public class MobileOperatingSystems
@@ -11,7 +9,5 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         public HashSet<string> OperatingSystems { get; set; } = new();
 
         public string OperatingSystemsDescription { get; set; }
-
-        public TaskProgress Status() => (OperatingSystems?.Any() ?? false) ? TaskProgress.Completed : TaskProgress.NotStarted;
     }
 }

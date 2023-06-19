@@ -36,30 +36,11 @@
             </li>
             <li class="nhsuk-header__navigation-item">
                 <a class="nhsuk-header__navigation-link"
-                   asp-action="@nameof(DashboardController.Index)"
-                   asp-controller="@typeof(DashboardController).ControllerName()"
-                   asp-area="@typeof(DashboardController).AreaName()">
-                    Create or manage orders
-                </a>
-            </li>
-            <li class="nhsuk-header__navigation-item">
-                <a class="nhsuk-header__navigation-link"
                    asp-action="@nameof(BuyerDashboardController.Index)"
                    asp-controller="@typeof(BuyerDashboardController).ControllerName()">
                     Buyer dashboard
                 </a>
             </li>
-            @if (User.IsAccountManager())
-            {
-                <li class="nhsuk-header__navigation-item">
-                    <a class="nhsuk-header__navigation-link"
-                       asp-action="@nameof(ManageAccountController.Index)"
-                       asp-controller="@typeof(ManageAccountController).ControllerName()"
-                       asp-area="@typeof(ManageAccountController).AreaName()">
-                        Manage accounts
-                    </a>
-                </li>
-            }
             @if (User.Identity.IsAuthenticated)
             {
                 <li class="nhsuk-header__navigation-item">
