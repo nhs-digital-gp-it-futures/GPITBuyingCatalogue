@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     model.SelectedCapabilityIds,
                     model.SelectedEpicIds,
                     model.SelectedFrameworkId,
-                    selectedClientApplicationTypeIds = model.CombineSelectedOptions(model.ClientApplicationTypeOptions),
+                    selectedApplicationTypeIds = model.CombineSelectedOptions(model.ClientApplicationTypeOptions),
                     selectedHostingTypeIds = model.CombineSelectedOptions(model.HostingTypeOptions),
                 });
         }
@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             string selectedCapabilityIds,
             string selectedEpicIds,
             string selectedFrameworkId,
-            string selectedClientApplicationTypeIds,
+            string selectedApplicationTypeIds,
             string selectedHostingTypeIds)
         {
             var backLink =
@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     selectedCapabilityIds,
                     selectedEpicIds,
                     selectedFrameworkId,
-                    selectedClientApplicationTypeIds,
+                    selectedApplicationTypeIds,
                     selectedHostingTypeIds,
                 });
 
@@ -108,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var framework = await frameworkService.GetFramework(selectedFrameworkId);
 
-            var clientApplicationTypes = SolutionsFilterHelper.ParseClientApplicationTypeIds(selectedClientApplicationTypeIds)?.ToList();
+            var clientApplicationTypes = SolutionsFilterHelper.ParseClientApplicationTypeIds(selectedApplicationTypeIds)?.ToList();
             var hostingTypes = SolutionsFilterHelper.ParseHostingTypeIds(selectedHostingTypeIds)?.ToList();
 
             var model = new SaveFilterModel(capabilities, epics, framework, clientApplicationTypes, hostingTypes, organisationId)

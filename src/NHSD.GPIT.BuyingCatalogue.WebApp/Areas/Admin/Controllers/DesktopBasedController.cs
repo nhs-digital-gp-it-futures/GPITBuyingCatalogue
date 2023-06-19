@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
 
-        [HttpGet("manage/{solutionId}/client-application-type/desktop")]
+        [HttpGet("manage/{solutionId}/application-type/desktop")]
         public async Task<IActionResult> Desktop(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpGet("manage/{solutionId}/client-application-type/desktop/operating-systems")]
+        [HttpGet("manage/{solutionId}/application-type/desktop/operating-systems")]
         public async Task<IActionResult> OperatingSystems(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpPost("manage/{solutionId}/client-application-type/desktop/operating-systems")]
+        [HttpPost("manage/{solutionId}/application-type/desktop/operating-systems")]
         public async Task<IActionResult> OperatingSystems(CatalogueItemId solutionId, OperatingSystemsModel model)
         {
             if (!ModelState.IsValid)
@@ -84,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(nameof(Desktop), new { solutionId });
         }
 
-        [HttpGet("manage/{solutionId}/client-application-type/desktop/connectivity")]
+        [HttpGet("manage/{solutionId}/application-type/desktop/connectivity")]
         public async Task<IActionResult> Connectivity(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
@@ -100,7 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpPost("manage/{solutionId}/client-application-type/desktop/connectivity")]
+        [HttpPost("manage/{solutionId}/application-type/desktop/connectivity")]
         public async Task<IActionResult> Connectivity(CatalogueItemId solutionId, ConnectivityModel model)
         {
             if (!ModelState.IsValid)
@@ -120,7 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(nameof(Desktop), new { solutionId });
         }
 
-        [HttpGet("manage/{solutionId}/client-application-type/desktop/memory-and-storage")]
+        [HttpGet("manage/{solutionId}/application-type/desktop/memory-and-storage")]
         public async Task<IActionResult> MemoryAndStorage(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
@@ -136,7 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpPost("manage/{solutionId}/client-application-type/desktop/memory-and-storage")]
+        [HttpPost("manage/{solutionId}/application-type/desktop/memory-and-storage")]
         public async Task<IActionResult> MemoryAndStorage(CatalogueItemId solutionId, MemoryAndStorageModel model)
         {
             if (!ModelState.IsValid)
@@ -161,7 +161,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(nameof(Desktop), new { solutionId });
         }
 
-        [HttpGet("manage/{solutionId}/client-application-type/desktop/third-party-components")]
+        [HttpGet("manage/{solutionId}/application-type/desktop/third-party-components")]
         public async Task<IActionResult> ThirdPartyComponents(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
@@ -177,7 +177,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpPost("manage/{solutionId}/client-application-type/desktop/third-party-components")]
+        [HttpPost("manage/{solutionId}/application-type/desktop/third-party-components")]
         public async Task<IActionResult> ThirdPartyComponents(CatalogueItemId solutionId, ThirdPartyComponentsModel model)
         {
             if (!ModelState.IsValid)
@@ -200,7 +200,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(nameof(Desktop), new { solutionId });
         }
 
-        [HttpGet("manage/{solutionId}/client-application-type/desktop/hardware-requirements")]
+        [HttpGet("manage/{solutionId}/application-type/desktop/hardware-requirements")]
         public async Task<IActionResult> HardwareRequirements(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
@@ -216,7 +216,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpPost("manage/{solutionId}/client-application-type/desktop/hardware-requirements")]
+        [HttpPost("manage/{solutionId}/application-type/desktop/hardware-requirements")]
         public async Task<IActionResult> HardwareRequirements(CatalogueItemId solutionId, HardwareRequirementsModel model)
         {
             if (!ModelState.IsValid)
@@ -236,7 +236,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(nameof(Desktop), new { solutionId });
         }
 
-        [HttpGet("manage/{solutionId}/client-application-type/desktop/additional-information")]
+        [HttpGet("manage/{solutionId}/application-type/desktop/additional-information")]
         public async Task<IActionResult> AdditionalInformation(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
@@ -252,7 +252,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpPost("manage/{solutionId}/client-application-type/desktop/additional-information")]
+        [HttpPost("manage/{solutionId}/application-type/desktop/additional-information")]
         public async Task<IActionResult> AdditionalInformation(CatalogueItemId solutionId, AdditionalInformationModel model)
         {
             if (!ModelState.IsValid)

@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         public ApplicationTypeProgress(ApplicationTypeDetail appicationTypeDetail)
         {
-           appicationTypeDetail = appicationTypeDetail;
+            this.appicationTypeDetail = appicationTypeDetail;
         }
 
         public TaskProgress AdditionalInformationStatus() => Status(appicationTypeDetail.AdditionalInformation);

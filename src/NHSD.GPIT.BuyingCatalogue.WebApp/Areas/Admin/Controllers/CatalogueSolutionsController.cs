@@ -239,7 +239,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
         }
 
-        [HttpGet("manage/{solutionId}/client-application-type")]
+        [HttpGet("manage/{solutionId}/application-type")]
         public async Task<IActionResult> ClientApplicationType(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
@@ -255,7 +255,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpGet("manage/{solutionId}/client-application-type/add-application-type")]
+        [HttpGet("manage/{solutionId}/application-type/add-application-type")]
         public async Task<IActionResult> AddApplicationType(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
@@ -271,7 +271,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpPost("manage/{solutionId}/client-application-type/add-application-type")]
+        [HttpPost("manage/{solutionId}/application-type/add-application-type")]
         public async Task<IActionResult> AddApplicationType(CatalogueItemId solutionId, ClientApplicationTypeSelectionModel model)
         {
             if (!ModelState.IsValid)

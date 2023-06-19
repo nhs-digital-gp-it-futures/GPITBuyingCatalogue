@@ -86,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 { "selectedCapabilityIds", null },
                 { "selectedEpicIds", null },
                 { "selectedFrameworkId", null },
-                { "selectedClientApplicationTypeIds", additionalFilters.CombineSelectedOptions(additionalFilters.ClientApplicationTypeOptions) },
+                { "selectedApplicationTypeIds", additionalFilters.CombineSelectedOptions(additionalFilters.ClientApplicationTypeOptions) },
                 { "selectedHostingTypeIds", additionalFilters.CombineSelectedOptions(additionalFilters.HostingTypeOptions) },
                 { "filterId", null },
             });

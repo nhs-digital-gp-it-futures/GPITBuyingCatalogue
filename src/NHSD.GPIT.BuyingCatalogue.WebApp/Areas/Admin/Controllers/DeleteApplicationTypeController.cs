@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
 
-        [HttpGet("manage/{solutionId}/client-application-type/delete/{applicationType}")]
+        [HttpGet("manage/{solutionId}/application-type/delete/{applicationType}")]
         public async Task<IActionResult> DeleteApplicationTypeConfirmation(CatalogueItemId solutionId, ApplicationType applicationType)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpPost("manage/{solutionId}/client-application-type/delete/{applicationType}")]
+        [HttpPost("manage/{solutionId}/application-type/delete/{applicationType}")]
         public async Task<IActionResult> DeleteApplicationTypeConfirmation(
             CatalogueItemId solutionId,
             ApplicationType applicationType,

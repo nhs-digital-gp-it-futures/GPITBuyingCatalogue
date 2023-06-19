@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 {
     [Authorize(Policy = "AdminOnly")]
     [Area("Admin")]
-    [Route("admin/catalogue-solutions/manage/{solutionId}/client-application-type/browser-based")]
+    [Route("admin/catalogue-solutions/manage/{solutionId}/application-type/browser-based")]
     public class BrowserBasedController : Controller
     {
         private readonly ISolutionsService solutionsService;

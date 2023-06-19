@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
         }
 
-        [HttpGet("manage/{solutionId}/client-application-type/mobiletablet")]
+        [HttpGet("manage/{solutionId}/application-type/mobiletablet")]
         public async Task<IActionResult> MobileTablet(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpGet("manage/{solutionId}/client-application-type/mobiletablet/operating-systems")]
+        [HttpGet("manage/{solutionId}/application-type/mobiletablet/operating-systems")]
         public async Task<IActionResult> OperatingSystems(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
@@ -65,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpPost("manage/{solutionId}/client-application-type/mobiletablet/operating-systems")]
+        [HttpPost("manage/{solutionId}/application-type/mobiletablet/operating-systems")]
         public async Task<IActionResult> OperatingSystems(CatalogueItemId solutionId, OperatingSystemsModel model)
         {
             if (!ModelState.IsValid)
@@ -98,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(nameof(MobileTablet), new { solutionId });
         }
 
-        [HttpGet("manage/{solutionId}/client-application-type/mobiletablet/connectivity")]
+        [HttpGet("manage/{solutionId}/application-type/mobiletablet/connectivity")]
         public async Task<IActionResult> Connectivity(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
@@ -114,7 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpPost("manage/{solutionId}/client-application-type/mobiletablet/connectivity")]
+        [HttpPost("manage/{solutionId}/application-type/mobiletablet/connectivity")]
         public async Task<IActionResult> Connectivity(CatalogueItemId solutionId, ConnectivityModel model)
         {
             if (!ModelState.IsValid)
@@ -148,7 +148,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(nameof(MobileTablet), new { solutionId });
         }
 
-        [HttpGet("manage/{solutionId}/client-application-type/mobiletablet/memory-and-storage")]
+        [HttpGet("manage/{solutionId}/application-type/mobiletablet/memory-and-storage")]
         public async Task<IActionResult> MemoryAndStorage(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
@@ -163,7 +163,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpPost("manage/{solutionId}/client-application-type/mobiletablet/memory-and-storage")]
+        [HttpPost("manage/{solutionId}/application-type/mobiletablet/memory-and-storage")]
         public async Task<IActionResult> MemoryAndStorage(CatalogueItemId solutionId, MemoryAndStorageModel model)
         {
             if (!ModelState.IsValid)
@@ -186,7 +186,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(nameof(MobileTablet), new { solutionId });
         }
 
-        [HttpGet("manage/{solutionId}/client-application-type/mobiletablet/third-party-components")]
+        [HttpGet("manage/{solutionId}/application-type/mobiletablet/third-party-components")]
         public async Task<IActionResult> ThirdPartyComponents(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
@@ -202,7 +202,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpPost("manage/{solutionId}/client-application-type/mobiletablet/third-party-components")]
+        [HttpPost("manage/{solutionId}/application-type/mobiletablet/third-party-components")]
         public async Task<IActionResult> ThirdPartyComponents(CatalogueItemId solutionId, ThirdPartyComponentsModel model)
         {
             if (!ModelState.IsValid)
@@ -225,7 +225,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(nameof(MobileTablet), new { solutionId });
         }
 
-        [HttpGet("manage/{solutionId}/client-application-type/mobiletablet/hardware-requirements")]
+        [HttpGet("manage/{solutionId}/application-type/mobiletablet/hardware-requirements")]
         public async Task<IActionResult> HardwareRequirements(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
@@ -241,7 +241,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpPost("manage/{solutionId}/client-application-type/mobiletablet/hardware-requirements")]
+        [HttpPost("manage/{solutionId}/application-type/mobiletablet/hardware-requirements")]
         public async Task<IActionResult> HardwareRequirements(CatalogueItemId solutionId, HardwareRequirementsModel model)
         {
             if (!ModelState.IsValid)
@@ -261,7 +261,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(nameof(MobileTablet), new { solutionId });
         }
 
-        [HttpGet("manage/{solutionId}/client-application-type/mobiletablet/additional-information")]
+        [HttpGet("manage/{solutionId}/application-type/mobiletablet/additional-information")]
         public async Task<IActionResult> AdditionalInformation(CatalogueItemId solutionId)
         {
             var solution = await solutionsService.GetSolutionThin(solutionId);
@@ -277,7 +277,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpPost("manage/{solutionId}/client-application-type/mobiletablet/additional-information")]
+        [HttpPost("manage/{solutionId}/application-type/mobiletablet/additional-information")]
         public async Task<IActionResult> AdditionalInformation(CatalogueItemId solutionId, AdditionalInformationModel model)
         {
             if (!ModelState.IsValid)
