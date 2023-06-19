@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.DesktopB
         {
             var actual = new DesktopBasedModel(catalogueItem);
 
-            actual.ApplicationType.Should().Be(ClientApplicationType.Desktop);
+            actual.ApplicationType.Should().Be(ApplicationType.Desktop);
         }
 
         [Fact]

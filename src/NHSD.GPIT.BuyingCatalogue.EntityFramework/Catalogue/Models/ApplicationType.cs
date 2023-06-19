@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
-    public enum ClientApplicationType
+    public enum ApplicationType
     {
         [Display(Name = "Browser-based")]
         [EnumMember(Value = "browser-based")]

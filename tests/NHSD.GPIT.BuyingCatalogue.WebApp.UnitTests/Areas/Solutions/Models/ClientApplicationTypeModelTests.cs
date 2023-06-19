@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Fact]
         public static void Constructor_NullClient_SetsDisplayFalse()
         {
-            var model = new ClientApplicationTypeModel(ClientApplicationTypeModel.ClientApplicationType.BrowserBased, null);
+            var model = new ClientApplicationTypeModel(ClientApplicationTypeModel.ApplicationType.BrowserBased, null);
 
             Assert.False(model.DisplayClientApplication);
         }
@@ -20,12 +20,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Theory]
         [CommonAutoData]
         public static void Constructor_BrowserBasedType_LoadsBrowserBasedDetails(
-            ClientApplication client,
+            ApplicationTypeDetail client,
             SupportedBrowser browser)
         {
             client.BrowsersSupported = new HashSet<SupportedBrowser>() { browser };
 
-            var model = new ClientApplicationTypeModel(ClientApplicationTypeModel.ClientApplicationType.BrowserBased, client);
+            var model = new ClientApplicationTypeModel(ClientApplicationTypeModel.ApplicationType.BrowserBased, client);
 
             Assert.Equal("Browser-based application", model.Label);
             Assert.Equal("browser-based", model.DataTestTag);
@@ -36,13 +36,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Theory]
         [CommonAutoData]
         public static void Constructor_NativeMobileType_LoadsNativeMobileDetails(
-            ClientApplication client,
+            ApplicationTypeDetail client,
             string operatingSystem)
         {
             client.MobileOperatingSystems =
                 new MobileOperatingSystems() { OperatingSystems = new HashSet<string>() { operatingSystem } };
 
-            var model = new ClientApplicationTypeModel(ClientApplicationTypeModel.ClientApplicationType.NativeMobile, client);
+            var model = new ClientApplicationTypeModel(ClientApplicationTypeModel.ApplicationType.NativeMobile, client);
 
             Assert.Equal("Native mobile or tablet application", model.Label);
             Assert.Equal("native-mobile", model.DataTestTag);
@@ -53,12 +53,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Theory]
         [CommonAutoData]
         public static void Constructor_NativeDesktopType_LoadsNativeDesktopDetails(
-            ClientApplication client,
+            ApplicationTypeDetail client,
             string description)
         {
             client.NativeDesktopOperatingSystemsDescription = description;
 
-            var model = new ClientApplicationTypeModel(ClientApplicationTypeModel.ClientApplicationType.NativeDesktop, client);
+            var model = new ClientApplicationTypeModel(ClientApplicationTypeModel.ApplicationType.NativeDesktop, client);
 
             Assert.Equal("Native desktop application", model.Label);
             Assert.Equal("native-desktop", model.DataTestTag);

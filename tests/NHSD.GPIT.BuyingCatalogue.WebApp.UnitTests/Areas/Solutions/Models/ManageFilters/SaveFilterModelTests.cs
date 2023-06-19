@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Mana
             List<Capability> capabilities,
             List<Epic> epics,
             EntityFramework.Catalogue.Models.Framework framework,
-            List<ClientApplicationType> clientApplicationTypes,
+            List<ApplicationType> clientApplicationTypes,
             List<HostingType> hostingTypes,
             int organisationId)
         {

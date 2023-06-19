@@ -121,7 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_OperatingSystems_Saves_And_RedirectsToMobileTablet(
             CatalogueItemId catalogueItemId,
             OperatingSystemsModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail clientApplication,
             [Frozen] Mock<ISolutionsService> mockService,
             MobileTabletBasedController controller)
         {
@@ -135,7 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .Select(o => o.OperatingSystemName)
                 .ToHashSet();
 
-            clientApplication.ClientApplicationTypes.Add(ClientApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
+            clientApplication.ClientApplicationTypes.Add(ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
             clientApplication.MobileOperatingSystems.OperatingSystemsDescription = model.Description;
 
             mockService.Verify(s => s.SaveClientApplication(catalogueItemId, clientApplication));
@@ -185,7 +185,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_Connectivity_Saves_And_RedirectsToMobileTablet(
             CatalogueItemId catalogueItemId,
             ConnectivityModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail clientApplication,
             [Frozen] Mock<ISolutionsService> mockService,
             MobileTabletBasedController controller)
         {
@@ -202,7 +202,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .Select(o => o.ConnectionType)
                 .ToHashSet();
 
-            clientApplication.ClientApplicationTypes.Add(ClientApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
+            clientApplication.ClientApplicationTypes.Add(ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
 
             mockService.Verify(s => s.SaveClientApplication(catalogueItemId, clientApplication));
             actual.ActionName.Should().Be(nameof(MobileTabletBasedController.MobileTablet));
@@ -251,7 +251,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_MemoryAndStorage_Saves_And_RedirectsToMobileTablet(
             CatalogueItemId catalogueItemId,
             MemoryAndStorageModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail clientApplication,
             [Frozen] Mock<ISolutionsService> mockService,
             MobileTabletBasedController controller)
         {
@@ -262,7 +262,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             clientApplication.MobileMemoryAndStorage.MinimumMemoryRequirement = model.SelectedMemorySize;
             clientApplication.MobileMemoryAndStorage.Description = model.Description;
-            clientApplication.ClientApplicationTypes.Add(ClientApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
+            clientApplication.ClientApplicationTypes.Add(ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
 
             mockService.Verify(s => s.SaveClientApplication(catalogueItemId, clientApplication));
             actual.ActionName.Should().Be(nameof(MobileTabletBasedController.MobileTablet));
@@ -311,7 +311,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_ThirdPartyComponents_Saves_And_RedirectsToMobileTablet(
             CatalogueItemId catalogueItemId,
             ThirdPartyComponentsModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail clientApplication,
             [Frozen] Mock<ISolutionsService> mockService,
             MobileTabletBasedController controller)
         {
@@ -322,7 +322,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             clientApplication.MobileThirdParty.ThirdPartyComponents = model.ThirdPartyComponents;
             clientApplication.MobileThirdParty.DeviceCapabilities = model.DeviceCapabilities;
-            clientApplication.ClientApplicationTypes.Add(ClientApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
+            clientApplication.ClientApplicationTypes.Add(ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
 
             mockService.Verify(s => s.SaveClientApplication(catalogueItemId, clientApplication));
             actual.ActionName.Should().Be(nameof(MobileTabletBasedController.MobileTablet));
@@ -371,7 +371,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_HardwareRequirements_Saves_And_RedirectsToMobileTablet(
             CatalogueItemId catalogueItemId,
             HardwareRequirementsModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail clientApplication,
             [Frozen] Mock<ISolutionsService> mockService,
             MobileTabletBasedController controller)
         {
@@ -381,7 +381,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var actual = (await controller.HardwareRequirements(catalogueItemId, model)).As<RedirectToActionResult>();
 
             clientApplication.NativeMobileHardwareRequirements = model.Description;
-            clientApplication.ClientApplicationTypes.Add(ClientApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
+            clientApplication.ClientApplicationTypes.Add(ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
 
             mockService.Verify(s => s.SaveClientApplication(catalogueItemId, clientApplication));
             actual.ActionName.Should().Be(nameof(MobileTabletBasedController.MobileTablet));
@@ -430,7 +430,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_AdditionalInformation_Saves_And_RedirectsToMobileTablet(
             CatalogueItemId catalogueItemId,
             AdditionalInformationModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail clientApplication,
             [Frozen] Mock<ISolutionsService> mockService,
             MobileTabletBasedController controller)
         {
@@ -440,7 +440,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var actual = (await controller.AdditionalInformation(catalogueItemId, model)).As<RedirectToActionResult>();
 
             clientApplication.NativeMobileAdditionalInformation = model.AdditionalInformation;
-            clientApplication.ClientApplicationTypes.Add(ClientApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
+            clientApplication.ClientApplicationTypes.Add(ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
 
             mockService.Verify(s => s.SaveClientApplication(catalogueItemId, clientApplication));
             actual.ActionName.Should().Be(nameof(MobileTabletBasedController.MobileTablet));

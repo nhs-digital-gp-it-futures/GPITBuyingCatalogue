@@ -7,7 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.Serialization;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
-    public sealed class ClientApplication
+    public sealed class ApplicationTypeDetail
     {
         public HashSet<string> ClientApplicationTypes { get; set; } = new();
 
@@ -54,31 +54,31 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public string NativeDesktopAdditionalInformation { get; set; }
 
-        public IReadOnlyList<ClientApplicationType> ExistingClientApplicationTypes
+        public IReadOnlyList<ApplicationType> ExistingApplicationTypes
         {
             get
             {
-                var result = new List<ClientApplicationType>(3);
+                var result = new List<ApplicationType>(3);
 
-                foreach (ClientApplicationType clientApplicationType in Enum.GetValues(typeof(ClientApplicationType)))
+                foreach (ApplicationType applicationType in Enum.GetValues(typeof(ApplicationType)))
                 {
-                    if (ClientApplicationTypes?.Any(type => type.Equals(clientApplicationType.AsString(EnumFormat.EnumMemberValue), StringComparison.OrdinalIgnoreCase)) ?? false)
-                        result.Add(clientApplicationType);
+                    if (ClientApplicationTypes?.Any(type => type.Equals(applicationType.AsString(EnumFormat.EnumMemberValue), StringComparison.OrdinalIgnoreCase)) ?? false)
+                        result.Add(applicationType);
                 }
 
                 return result;
             }
         }
 
-        public void EnsureClientApplicationTypePresent(ClientApplicationType clientApplicationType)
+        public void EnsureApplicationTypePresent(ApplicationType applicationType)
         {
             ClientApplicationTypes ??= new HashSet<string>();
 
-            if (!ClientApplicationTypes.Any(type => type.Equals(clientApplicationType.AsString(EnumFormat.EnumMemberValue), StringComparison.OrdinalIgnoreCase)))
-                ClientApplicationTypes.Add(clientApplicationType.AsString(EnumFormat.EnumMemberValue));
+            if (!ClientApplicationTypes.Any(type => type.Equals(applicationType.AsString(EnumFormat.EnumMemberValue), StringComparison.OrdinalIgnoreCase)))
+                ClientApplicationTypes.Add(applicationType.AsString(EnumFormat.EnumMemberValue));
         }
 
-        public bool HasClientApplicationType(ClientApplicationType clientApplicationType)
-            => ClientApplicationTypes?.Any(type => type.Equals(clientApplicationType.AsString(EnumFormat.EnumMemberValue), StringComparison.OrdinalIgnoreCase)) ?? false;
+        public bool HasApplicationType(ApplicationType applicationType)
+            => ClientApplicationTypes?.Any(type => type.Equals(applicationType.AsString(EnumFormat.EnumMemberValue), StringComparison.OrdinalIgnoreCase)) ?? false;
     }
 }

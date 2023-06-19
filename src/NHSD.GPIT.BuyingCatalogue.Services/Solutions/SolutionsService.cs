@@ -121,7 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         : ci.CataloguePrices.Any()
                             ? TaskProgress.InProgress
                             : TaskProgress.NotStarted,
-                    ClientApplicationType = ci.Solution.ClientApplication != null
+                    ApplicationType = ci.Solution.ApplicationTypeDetail != null
                         ? TaskProgress.Completed
                         : TaskProgress.NotStarted,
                     HostingType = ci.Solution.Hosting != null && ci.Solution.Hosting.IsValid()
@@ -322,22 +322,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<ClientApplication> GetClientApplication(CatalogueItemId solutionId)
+        public async Task<ApplicationTypeDetail> GetClientApplication(CatalogueItemId solutionId)
         {
             var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
-            return solution.EnsureAndGetClientApplication();
+            return solution.EnsureAndGetApplicationType();
         }
 
-        public async Task SaveClientApplication(CatalogueItemId solutionId, ClientApplication clientApplication)
+        public async Task SaveClientApplication(CatalogueItemId solutionId, ApplicationTypeDetail clientApplication)
         {
             clientApplication.ValidateNotNull(nameof(clientApplication));
 
             var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
-            solution.ClientApplication = clientApplication;
+            solution.ApplicationTypeDetail = clientApplication;
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task DeleteClientApplication(CatalogueItemId solutionId, ClientApplicationType clientApplicationType)
+        public async Task DeleteClientApplication(CatalogueItemId solutionId, ApplicationType clientApplicationType)
         {
             var clientApplication = await GetClientApplication(solutionId);
 
@@ -542,7 +542,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(wp => wp.Standard)
                 .Where(wp => wp.SolutionId == solutionId).ToListAsync();
 
-        internal static ClientApplication RemoveClientApplicationType(ClientApplication clientApplication, ClientApplicationType clientApplicationType)
+        internal static ApplicationTypeDetail RemoveClientApplicationType(ApplicationTypeDetail clientApplication, ApplicationType clientApplicationType)
         {
             if (clientApplication is null)
                 throw new ArgumentNullException(nameof(clientApplication));
@@ -553,7 +553,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     clientApplication.ClientApplicationTypes.Remove(clientApplicationType.AsString(EnumFormat.EnumMemberValue));
             }
 
-            if (clientApplicationType == ClientApplicationType.BrowserBased)
+            if (clientApplicationType == ApplicationType.BrowserBased)
             {
                 clientApplication.AdditionalInformation = null;
                 clientApplication.BrowsersSupported = null;
@@ -564,7 +564,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 clientApplication.MobileResponsive = null;
                 clientApplication.Plugins = null;
             }
-            else if (clientApplicationType == ClientApplicationType.Desktop)
+            else if (clientApplicationType == ApplicationType.Desktop)
             {
                 clientApplication.NativeDesktopAdditionalInformation = null;
                 clientApplication.NativeDesktopHardwareRequirements = null;

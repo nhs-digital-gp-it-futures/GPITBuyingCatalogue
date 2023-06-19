@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.BrowserB
             actual.Browsers.Should().BeEquivalentTo(ExpectedSupportedBrowsers, config => config
                 .Excluding(m => m.Checked));
 
-            actual.MobileResponsive.Should().Be(solution.ClientApplication.MobileResponsive.ToYesNo());
+            actual.MobileResponsive.Should().Be(solution.ApplicationTypeDetail.MobileResponsive.ToYesNo());
         }
 
         [Fact]

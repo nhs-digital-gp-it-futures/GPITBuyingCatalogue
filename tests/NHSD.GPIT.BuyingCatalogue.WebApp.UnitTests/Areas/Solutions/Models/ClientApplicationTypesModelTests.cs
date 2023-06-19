@@ -72,10 +72,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Theory]
         [CommonAutoData]
         public static void HasApplicationType_ValueValid_ReturnsYes(
-            ClientApplicationType clientApplicationType,
+            ApplicationType clientApplicationType,
             [Frozen] CatalogueItem catalogueItem,
             [Frozen] Solution solution,
-            [Frozen] ClientApplication clientApplication,
+            [Frozen] ApplicationTypeDetail clientApplication,
             ClientApplicationTypesModel model)
         {
             // CatalogueItem and Solution must be frozen so that a catalogue item instance with solution is passed
@@ -95,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         public static void HasApplicationType_ValueNotValid_ReturnsNo(
             [Frozen] CatalogueItem catalogueItem,
             [Frozen] Solution solution,
-            [Frozen] ClientApplication clientApplication,
+            [Frozen] ApplicationTypeDetail clientApplication,
             ClientApplicationTypesModel model)
         {
             // CatalogueItem and Solution must be frozen so that a catalogue item instance with solution is passed
@@ -104,9 +104,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             _ = solution;
 
             clientApplication.ClientApplicationTypes =
-                new HashSet<string> { ClientApplicationType.Desktop.EnumMemberName() };
+                new HashSet<string> { ApplicationType.Desktop.EnumMemberName() };
 
-            var actual = model.HasApplicationType(ClientApplicationType.MobileTablet);
+            var actual = model.HasApplicationType(ApplicationType.MobileTablet);
 
             actual.Should().BeFalse();
         }
@@ -117,9 +117,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             Solution solution,
             CatalogueItemContentStatus contentStatus)
         {
-            var clientApplication = new ClientApplication
+            var clientApplication = new ApplicationTypeDetail
             {
-                ClientApplicationTypes = new() { ClientApplicationType.BrowserBased.EnumMemberName() },
+                ClientApplicationTypes = new() { ApplicationType.BrowserBased.EnumMemberName() },
                 BrowsersSupported = new() { new() { BrowserName = "Chrome" } },
                 MobileResponsive = true,
                 Plugins = new() { Required = true, AdditionalInformation = "AdditionalInformation" },
@@ -129,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 AdditionalInformation = "Test",
             };
 
-            solution.ClientApplication = clientApplication;
+            solution.ApplicationTypeDetail = clientApplication;
 
             var model = new ClientApplicationTypesModel(solution.CatalogueItem, contentStatus);
 
@@ -153,9 +153,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             Solution solution,
             CatalogueItemContentStatus contentStatus)
         {
-            var clientApplication = new ClientApplication
+            var clientApplication = new ApplicationTypeDetail
             {
-                ClientApplicationTypes = new() { ClientApplicationType.Desktop.EnumMemberName() },
+                ClientApplicationTypes = new() { ApplicationType.Desktop.EnumMemberName() },
                 NativeDesktopOperatingSystemsDescription = "Windows 95",
                 NativeDesktopMinimumConnectionSpeed = "10Gbps",
                 NativeDesktopMemoryAndStorage = new()
@@ -171,7 +171,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 NativeDesktopAdditionalInformation = "Monitor",
             };
 
-            solution.ClientApplication = clientApplication;
+            solution.ApplicationTypeDetail = clientApplication;
 
             var model = new ClientApplicationTypesModel(solution.CatalogueItem, contentStatus);
 
@@ -197,9 +197,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             Solution solution,
             CatalogueItemContentStatus contentStatus)
         {
-            var clientApplication = new ClientApplication
+            var clientApplication = new ApplicationTypeDetail
             {
-                ClientApplicationTypes = new() { ClientApplicationType.MobileTablet.EnumMemberName() },
+                ClientApplicationTypes = new() { ApplicationType.MobileTablet.EnumMemberName() },
                 MobileOperatingSystems =
                     new() { OperatingSystems = new() { "MS-DOS" }, OperatingSystemsDescription = "256MB DDR", },
                 MobileConnectionDetails =
@@ -215,7 +215,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 NativeMobileAdditionalInformation = "Information",
             };
 
-            solution.ClientApplication = clientApplication;
+            solution.ApplicationTypeDetail = clientApplication;
 
             var model = new ClientApplicationTypesModel(solution.CatalogueItem, contentStatus);
 
@@ -242,17 +242,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             Solution solution,
             CatalogueItemContentStatus contentStatus)
         {
-            var clientApplication = new ClientApplication
+            var clientApplication = new ApplicationTypeDetail
             {
                 ClientApplicationTypes = new()
                 {
-                    ClientApplicationType.Desktop.EnumMemberName(),
-                    ClientApplicationType.BrowserBased.EnumMemberName(),
-                    ClientApplicationType.MobileTablet.EnumMemberName(),
+                    ApplicationType.Desktop.EnumMemberName(),
+                    ApplicationType.BrowserBased.EnumMemberName(),
+                    ApplicationType.MobileTablet.EnumMemberName(),
                 },
             };
 
-            solution.ClientApplication = clientApplication;
+            solution.ApplicationTypeDetail = clientApplication;
 
             var model = new ClientApplicationTypesModel(solution.CatalogueItem, contentStatus);
 

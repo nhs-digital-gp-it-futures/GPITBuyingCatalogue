@@ -131,7 +131,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItemId catalogueItemId,
             CatalogueItem catalogueItem,
             SupportedBrowsersModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail clientApplication,
             [Frozen] Mock<ISolutionsService> mockService,
             BrowserBasedController controller)
         {
@@ -152,7 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItemId catalogueItemId,
             CatalogueItem catalogueItem,
             SupportedBrowsersModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail clientApplication,
             [Frozen] Mock<ISolutionsService> mockService,
             BrowserBasedController controller)
         {
@@ -242,7 +242,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItemId catalogueItemId,
             CatalogueItem catalogueItem,
             PlugInsOrExtensionsModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail clientApplication,
             [Frozen] Mock<ISolutionsService> mockService,
             BrowserBasedController controller)
         {
@@ -263,7 +263,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItemId catalogueItemId,
             CatalogueItem catalogueItem,
             PlugInsOrExtensionsModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail clientApplication,
             [Frozen] Mock<ISolutionsService> mockService,
             BrowserBasedController controller)
         {
@@ -353,7 +353,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItemId catalogueItemId,
             CatalogueItem catalogueItem,
             ConnectivityAndResolutionModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail clientApplication,
             [Frozen] Mock<ISolutionsService> mockService,
             BrowserBasedController controller)
         {
@@ -374,7 +374,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItemId catalogueItemId,
             CatalogueItem catalogueItem,
             ConnectivityAndResolutionModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail clientApplication,
             [Frozen] Mock<ISolutionsService> mockService,
             BrowserBasedController controller)
         {
@@ -464,7 +464,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItemId catalogueItemId,
             CatalogueItem catalogueItem,
             HardwareRequirementsModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail clientApplication,
             [Frozen] Mock<ISolutionsService> mockService,
             BrowserBasedController controller)
         {
@@ -485,7 +485,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItemId catalogueItemId,
             CatalogueItem catalogueItem,
             HardwareRequirementsModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail clientApplication,
             [Frozen] Mock<ISolutionsService> mockService,
             BrowserBasedController controller)
         {
@@ -575,7 +575,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItemId catalogueItemId,
             CatalogueItem catalogueItem,
             AdditionalInformationModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail clientApplication,
             [Frozen] Mock<ISolutionsService> mockService,
             BrowserBasedController controller)
         {
@@ -596,7 +596,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItemId catalogueItemId,
             CatalogueItem catalogueItem,
             AdditionalInformationModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail clientApplication,
             [Frozen] Mock<ISolutionsService> mockService,
             BrowserBasedController controller)
         {

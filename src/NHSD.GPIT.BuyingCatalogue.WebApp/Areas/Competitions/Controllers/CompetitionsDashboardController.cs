@@ -170,7 +170,7 @@ public class CompetitionsDashboardController : Controller
                 selectedCapabilityIds: filter.CapabilityIds.ToFilterString(),
                 selectedEpicIds: filter.EpicIds.ToFilterString(),
                 selectedFrameworkId: filter.FrameworkId,
-                selectedClientApplicationTypeIds: filter.ClientApplicationTypeIds.ToFilterString(),
+                selectedClientApplicationTypeIds: filter.ApplicationTypeIds.ToFilterString(),
                 selectedHostingTypeIds: filter.HostingTypeIds.ToFilterString());
 
         var competitionSolutions = solutionsAndServices.CatalogueItems.Select(

@@ -18,8 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.BrowserB
         {
             var actual = new ConnectivityAndResolutionModel(solution.CatalogueItem);
 
-            actual.SelectedConnectionSpeed.Should().Be(solution.ClientApplication.MinimumConnectionSpeed);
-            actual.SelectedScreenResolution.Should().Be(solution.ClientApplication.MinimumDesktopResolution);
+            actual.SelectedConnectionSpeed.Should().Be(solution.ApplicationTypeDetail.MinimumConnectionSpeed);
+            actual.SelectedScreenResolution.Should().Be(solution.ApplicationTypeDetail.MinimumDesktopResolution);
             actual.ConnectionSpeeds.Should().BeEquivalentTo(SelectLists.ConnectionSpeeds);
             actual.ScreenResolutions.Should().BeEquivalentTo(SelectLists.ScreenResolutions);
         }

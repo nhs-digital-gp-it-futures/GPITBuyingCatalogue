@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public string Features { get; set; }
 
-        public ClientApplication ClientApplication { get; set; }
+        public ApplicationTypeDetail ApplicationTypeDetail { get; set; }
 
         public Hosting Hosting { get; set; }
 

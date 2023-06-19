@@ -9,14 +9,14 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
     public static class ClientApplicationTests
     {
         [Theory]
-        [CommonInlineAutoData(ClientApplicationType.BrowserBased)]
-        [CommonInlineAutoData(ClientApplicationType.MobileTablet)]
-        [CommonInlineAutoData(ClientApplicationType.Desktop)]
+        [CommonInlineAutoData(ApplicationType.BrowserBased)]
+        [CommonInlineAutoData(ApplicationType.MobileTablet)]
+        [CommonInlineAutoData(ApplicationType.Desktop)]
         public static void ClientApplicationTypes_IsUpdatedCorrectly(
-            ClientApplicationType clientApplicationType,
-            ClientApplication clientApplication)
+            ApplicationType clientApplicationType,
+            ApplicationTypeDetail clientApplication)
         {
-            clientApplication.EnsureClientApplicationTypePresent(clientApplicationType);
+            clientApplication.EnsureApplicationTypePresent(clientApplicationType);
 
             clientApplication.ClientApplicationTypes.Should().Contain(clientApplicationType.AsString(EnumFormat.EnumMemberValue));
         }
@@ -24,19 +24,19 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         [Theory]
         [CommonAutoData]
         public static void HasClientApplicationType_True(
-            ClientApplication clientApplication)
+            ApplicationTypeDetail clientApplication)
         {
-            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.BrowserBased);
+            clientApplication.EnsureApplicationTypePresent(ApplicationType.BrowserBased);
 
-            clientApplication.HasClientApplicationType(ClientApplicationType.BrowserBased).Should().BeTrue();
+            clientApplication.HasApplicationType(ApplicationType.BrowserBased).Should().BeTrue();
         }
 
         [Fact]
         public static void HasClientApplicationType_False()
         {
-            var clientApplication = new ClientApplication();
+            var clientApplication = new ApplicationTypeDetail();
 
-            clientApplication.HasClientApplicationType(ClientApplicationType.BrowserBased).Should().BeFalse();
+            clientApplication.HasApplicationType(ApplicationType.BrowserBased).Should().BeFalse();
         }
     }
 }

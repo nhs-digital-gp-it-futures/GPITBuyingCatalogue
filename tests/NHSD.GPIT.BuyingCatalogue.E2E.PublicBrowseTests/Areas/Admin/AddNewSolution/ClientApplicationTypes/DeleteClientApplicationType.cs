@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
         private static readonly Dictionary<string, string> Parameters = new()
         {
             { nameof(SolutionId), SolutionId.ToString() },
-            { "applicationType", ClientApplicationType.BrowserBased.ToString() },
+            { "applicationType", ApplicationType.BrowserBased.ToString() },
         };
 
         public DeleteClientApplicationType(LocalWebApplicationFactory factory)
@@ -36,10 +36,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
         }
 
         [Theory]
-        [InlineData(ClientApplicationType.BrowserBased)]
-        [InlineData(ClientApplicationType.MobileTablet)]
-        [InlineData(ClientApplicationType.Desktop)]
-        public void DeleteClientApplicationType_CorrectlyDisplayed(ClientApplicationType clientApplicationType)
+        [InlineData(ApplicationType.BrowserBased)]
+        [InlineData(ApplicationType.MobileTablet)]
+        [InlineData(ApplicationType.Desktop)]
+        public void DeleteClientApplicationType_CorrectlyDisplayed(ApplicationType clientApplicationType)
         {
             var queryParam = new Dictionary<string, string>
             {
@@ -56,10 +56,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
         }
 
         [Theory]
-        [InlineData(ClientApplicationType.BrowserBased, typeof(BrowserBasedController), nameof(BrowserBasedController.BrowserBased))]
-        [InlineData(ClientApplicationType.MobileTablet, typeof(MobileTabletBasedController), nameof(MobileTabletBasedController.MobileTablet))]
-        [InlineData(ClientApplicationType.Desktop, typeof(DesktopBasedController), nameof(DesktopBasedController.Desktop))]
-        public void DeleteClientApplicationType_ClickGoBackLink_NavigatesToCorrectPage(ClientApplicationType clientApplicationType, Type controller, string expectedControllerMethod)
+        [InlineData(ApplicationType.BrowserBased, typeof(BrowserBasedController), nameof(BrowserBasedController.BrowserBased))]
+        [InlineData(ApplicationType.MobileTablet, typeof(MobileTabletBasedController), nameof(MobileTabletBasedController.MobileTablet))]
+        [InlineData(ApplicationType.Desktop, typeof(DesktopBasedController), nameof(DesktopBasedController.Desktop))]
+        public void DeleteClientApplicationType_ClickGoBackLink_NavigatesToCorrectPage(ApplicationType clientApplicationType, Type controller, string expectedControllerMethod)
         {
             var queryParam = new Dictionary<string, string>
             {
@@ -78,10 +78,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
         }
 
         [Theory]
-        [InlineData(ClientApplicationType.BrowserBased, typeof(BrowserBasedController), nameof(BrowserBasedController.BrowserBased))]
-        [InlineData(ClientApplicationType.MobileTablet, typeof(MobileTabletBasedController), nameof(MobileTabletBasedController.MobileTablet))]
-        [InlineData(ClientApplicationType.Desktop, typeof(DesktopBasedController), nameof(DesktopBasedController.Desktop))]
-        public void DeleteClientApplicationType_ClickCancelLink_NavigatesToCorrectPage(ClientApplicationType clientApplicationType, Type controller, string expectedControllerMethod)
+        [InlineData(ApplicationType.BrowserBased, typeof(BrowserBasedController), nameof(BrowserBasedController.BrowserBased))]
+        [InlineData(ApplicationType.MobileTablet, typeof(MobileTabletBasedController), nameof(MobileTabletBasedController.MobileTablet))]
+        [InlineData(ApplicationType.Desktop, typeof(DesktopBasedController), nameof(DesktopBasedController.Desktop))]
+        public void DeleteClientApplicationType_ClickCancelLink_NavigatesToCorrectPage(ApplicationType clientApplicationType, Type controller, string expectedControllerMethod)
         {
             var queryParam = new Dictionary<string, string>
             {
@@ -100,15 +100,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
         }
 
         [Theory]
-        [InlineData(ClientApplicationType.BrowserBased)]
-        [InlineData(ClientApplicationType.MobileTablet)]
-        [InlineData(ClientApplicationType.Desktop)]
-        public async Task DeleteClientApplicationType_DeleteButton_DeletesClientApplicationType(ClientApplicationType clientApplicationType)
+        [InlineData(ApplicationType.BrowserBased)]
+        [InlineData(ApplicationType.MobileTablet)]
+        [InlineData(ApplicationType.Desktop)]
+        public async Task DeleteClientApplicationType_DeleteButton_DeletesClientApplicationType(ApplicationType clientApplicationType)
         {
             await using var context = GetEndToEndDbContext();
             var originalSolution =
                 await context.Solutions.AsNoTracking().FirstAsync(x => x.CatalogueItemId == SolutionId);
-            var originalClientApplication = originalSolution.ClientApplication;
+            var originalClientApplication = originalSolution.ApplicationTypeDetail;
 
             var queryParam = new Dictionary<string, string>
             {
@@ -125,11 +125,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
                 nameof(CatalogueSolutionsController.ClientApplicationType))
                 .Should().BeTrue();
             var solution = await context.Solutions.AsNoTracking().FirstAsync(s => s.CatalogueItemId == SolutionId);
-            var clientApplication = solution.ClientApplication;
+            var clientApplication = solution.ApplicationTypeDetail;
 
             clientApplication.ClientApplicationTypes.Should().NotContain(clientApplicationType.AsString(EnumFormat.EnumMemberValue));
 
-            solution.ClientApplication = originalClientApplication;
+            solution.ApplicationTypeDetail = originalClientApplication;
             context.Update(solution);
             await context.SaveChangesAsync();
         }

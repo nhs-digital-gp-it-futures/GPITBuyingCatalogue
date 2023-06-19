@@ -22,22 +22,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationT
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
 
-            var applicationType = catalogueItem.Solution?.EnsureAndGetClientApplication();
+            var applicationType = catalogueItem.Solution?.EnsureAndGetApplicationType();
 
             SolutionName = catalogueItem.Name;
-            ExistingClientApplicationTypes = applicationType!.ExistingClientApplicationTypes ?? Array.Empty<ClientApplicationType>();
-            ApplicationTypesToAdd = Enum.GetValues<ClientApplicationType>().Except(ExistingClientApplicationTypes).ToList();
+            ExistingClientApplicationTypes = applicationType!.ExistingApplicationTypes ?? Array.Empty<ApplicationType>();
+            ApplicationTypesToAdd = Enum.GetValues<ApplicationType>().Except(ExistingClientApplicationTypes).ToList();
             ApplicationTypesToAddRadioItems = ApplicationTypesToAdd.Select(t => new { Text = t.AsString(EnumFormat.DisplayName), Value = t.ToString() });
             ExistingApplicationTypesCount = ExistingClientApplicationTypes.Count;
         }
 
-        public IReadOnlyList<ClientApplicationType> ExistingClientApplicationTypes { get; } = Array.Empty<ClientApplicationType>();
+        public IReadOnlyList<ApplicationType> ExistingClientApplicationTypes { get; } = Array.Empty<ApplicationType>();
 
         public int? ExistingApplicationTypesCount { get; set; }
 
         public string SolutionName { get; set; }
 
-        public List<ClientApplicationType> ApplicationTypesToAdd { get; set; }
+        public List<ApplicationType> ApplicationTypesToAdd { get; set; }
 
         public IEnumerable<object> ApplicationTypesToAddRadioItems { get; }
     }

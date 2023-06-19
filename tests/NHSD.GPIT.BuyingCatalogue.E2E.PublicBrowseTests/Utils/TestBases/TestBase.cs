@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases
         {
             using var context = GetEndToEndDbContext();
             var solution = context.Solutions.First(s => s.CatalogueItemId == solutionId);
-            solution.ClientApplication = null;
+            solution.ApplicationTypeDetail = null;
             context.SaveChanges();
         }
 

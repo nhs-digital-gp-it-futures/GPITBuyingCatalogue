@@ -63,11 +63,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 query = query.Where(ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == selectedFrameworkId));
             if (!string.IsNullOrWhiteSpace(selectedClientApplicationTypeIds))
             {
-                query = ApplyAdditionalFilterToQuery<ClientApplicationType>(
+                query = ApplyAdditionalFilterToQuery<ApplicationType>(
                     query,
                     selectedClientApplicationTypeIds,
                     GetSelectedFiltersClientApplication,
-                    x => x.ClientApplication != null);
+                    x => x.ApplicationTypeDetail != null);
             }
 
             if (!string.IsNullOrWhiteSpace(selectedHostingTypeIds))
@@ -285,10 +285,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             };
         }
 
-        private static IEnumerable<ClientApplicationType> GetSelectedFiltersClientApplication(Solution solution, IEnumerable<ClientApplicationType> selectedFilterEnums)
+        private static IEnumerable<ApplicationType> GetSelectedFiltersClientApplication(Solution solution, IEnumerable<ApplicationType> selectedFilterEnums)
         {
-            var clientApplication = solution.ClientApplication;
-            return selectedFilterEnums?.Where(t => clientApplication.HasClientApplicationType(t));
+            var clientApplication = solution.ApplicationTypeDetail;
+            return selectedFilterEnums?.Where(t => clientApplication.HasApplicationType(t));
         }
 
         private static IEnumerable<HostingType> GetSelectedFiltersHosting(Solution solution, IEnumerable<HostingType> selectedFilterEnums)

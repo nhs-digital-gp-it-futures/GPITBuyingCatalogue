@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutions
             AssociatedServicesStatus = solutionLoadingStatuses.AssociatedServices;
             InteroperabilityStatus = solutionLoadingStatuses.Interoperability;
             ImplementationStatus = solutionLoadingStatuses.Implementation;
-            ClientApplicationTypeStatus = solutionLoadingStatuses.ClientApplicationType;
+            ClientApplicationTypeStatus = solutionLoadingStatuses.ApplicationType;
             HostingTypeStatus = solutionLoadingStatuses.HostingType;
             ListPriceStatus = solutionLoadingStatuses.ListPrice;
             CapabilitiesStatus = solutionLoadingStatuses.CapabilitiesAndEpics;

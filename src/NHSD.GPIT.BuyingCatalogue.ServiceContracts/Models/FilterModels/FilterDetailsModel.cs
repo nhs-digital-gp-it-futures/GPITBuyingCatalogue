@@ -17,7 +17,7 @@ public class FilterDetailsModel
 
     public List<HostingType> HostingTypes { get; set; } = Enumerable.Empty<HostingType>().ToList();
 
-    public List<ClientApplicationType> ClientApplicationTypes { get; set; } = Enumerable.Empty<ClientApplicationType>().ToList();
+    public List<ApplicationType> ApplicationTypes { get; set; } = Enumerable.Empty<ApplicationType>().ToList();
 
     public List<KeyValuePair<string, List<string>>> Capabilities { get; set; }
 }

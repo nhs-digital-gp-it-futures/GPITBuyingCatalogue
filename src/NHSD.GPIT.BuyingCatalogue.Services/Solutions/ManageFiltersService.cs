@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             List<int> capabilityIds,
             List<string> epicIds,
             string frameworkId,
-            List<ClientApplicationType> clientApplicationTypes,
+            List<ApplicationType> clientApplicationTypes,
             List<HostingType> hostingTypes)
         {
             if (string.IsNullOrEmpty(name))
@@ -99,7 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         CapabilityIds = x.Capabilities.Select(c => c.Id),
                         EpicIds = x.Epics.Select(e => e.Id),
                         FrameworkId = x.FrameworkId,
-                        ClientApplicationTypeIds = x.FilterClientApplicationTypes.Select(fc => (int)fc.ClientApplicationType),
+                        ApplicationTypeIds = x.FilterApplicationTypes.Select(fc => (int)fc.ApplicationTypeID),
                         HostingTypeIds = x.FilterHostingTypes.Select(fc => (int)fc.HostingType),
                     })
                 .AsNoTracking()
@@ -117,8 +117,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         Description = x.Description,
                         FrameworkName = x.Framework.ShortName,
                         HostingTypes = x.FilterHostingTypes.Select(y => y.HostingType).ToList(),
-                        ClientApplicationTypes =
-                            x.FilterClientApplicationTypes.Select(y => y.ClientApplicationType).ToList(),
+                        ApplicationTypes =
+                            x.FilterApplicationTypes.Select(y => y.ApplicationTypeID).ToList(),
                         Capabilities = x.Capabilities
                             .Select(
                                 y => new KeyValuePair<string, List<string>>(
@@ -170,7 +170,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await dbContext.SaveChangesAsync();
         }
 
-        internal async Task AddFilterClientApplicationTypes(int filterId, List<ClientApplicationType> clientApplicationTypes)
+        internal async Task AddFilterClientApplicationTypes(int filterId, List<ApplicationType> clientApplicationTypes)
         {
             if (clientApplicationTypes is null || clientApplicationTypes.Count == 0) return;
 
@@ -181,12 +181,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 return;
             }
 
-            foreach (var type in clientApplicationTypes.Where(type => filter.FilterClientApplicationTypes.All(x => x.ClientApplicationType != type)))
+            foreach (var type in clientApplicationTypes.Where(type => filter.FilterApplicationTypes.All(x => x.ApplicationTypeID != type)))
             {
-                filter.FilterClientApplicationTypes.Add(new FilterClientApplicationType()
+                filter.FilterApplicationTypes.Add(new FilterApplicationType()
                 {
                     FilterId = filterId,
-                    ClientApplicationType = type,
+                    ApplicationTypeID = type,
                 });
             }
 

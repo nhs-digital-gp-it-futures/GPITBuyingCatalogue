@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             ClientApplicationTypeSelectionModel model,
             CatalogueSolutionsController controller)
         {
-            model.SelectedApplicationType = ClientApplicationType.BrowserBased;
+            model.SelectedApplicationType = ApplicationType.BrowserBased;
 
             var result = (await controller.AddApplicationType(catalogueItemId, model)).As<RedirectToActionResult>();
 
@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             ClientApplicationTypeSelectionModel model,
             CatalogueSolutionsController controller)
         {
-            model.SelectedApplicationType = ClientApplicationType.Desktop;
+            model.SelectedApplicationType = ApplicationType.Desktop;
 
             var result = (await controller.AddApplicationType(catalogueItemId, model)).As<RedirectToActionResult>();
 
@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             ClientApplicationTypeSelectionModel model,
             CatalogueSolutionsController controller)
         {
-            model.SelectedApplicationType = ClientApplicationType.MobileTablet;
+            model.SelectedApplicationType = ApplicationType.MobileTablet;
 
             var result = (await controller.AddApplicationType(catalogueItemId, model)).As<RedirectToActionResult>();
 

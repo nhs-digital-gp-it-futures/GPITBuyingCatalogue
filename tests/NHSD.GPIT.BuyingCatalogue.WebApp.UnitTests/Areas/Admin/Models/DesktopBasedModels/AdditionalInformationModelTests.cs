@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.DesktopB
             var catalogueItem = solution.CatalogueItem;
             var actual = new AdditionalInformationModel(catalogueItem);
 
-            actual.AdditionalInformation.Should().Be(solution.ClientApplication.NativeDesktopAdditionalInformation);
+            actual.AdditionalInformation.Should().Be(solution.ApplicationTypeDetail.NativeDesktopAdditionalInformation);
         }
 
         [Fact]

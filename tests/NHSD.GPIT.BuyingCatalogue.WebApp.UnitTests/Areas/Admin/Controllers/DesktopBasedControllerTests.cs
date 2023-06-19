@@ -120,7 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_OperatingSystems_Saves_And_RedirectsToDesktop(
             CatalogueItemId catalogueItemId,
             OperatingSystemsModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail clientApplication,
             [Frozen] Mock<ISolutionsService> mockService,
             DesktopBasedController controller)
         {
@@ -129,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var actual = (await controller.OperatingSystems(catalogueItemId, model)).As<RedirectToActionResult>();
 
-            clientApplication.ClientApplicationTypes.Add(ClientApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue));
+            clientApplication.ClientApplicationTypes.Add(ApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue));
             clientApplication.NativeDesktopOperatingSystemsDescription = model.Description;
 
             mockService.Verify(s => s.SaveClientApplication(catalogueItemId, clientApplication));
@@ -179,7 +179,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_Connectivity_Saves_And_RedirectsToDesktop(
             CatalogueItemId catalogueItemId,
             ConnectivityModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail clientApplication,
             [Frozen] Mock<ISolutionsService> mockService,
             DesktopBasedController controller)
         {
@@ -190,7 +190,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             clientApplication.NativeDesktopMinimumConnectionSpeed = model.SelectedConnectionSpeed;
 
-            clientApplication.ClientApplicationTypes.Add(ClientApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue));
+            clientApplication.ClientApplicationTypes.Add(ApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue));
 
             mockService.Verify(s => s.SaveClientApplication(catalogueItemId, clientApplication));
             actual.ActionName.Should().Be(nameof(DesktopBasedController.Desktop));
@@ -239,7 +239,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_MemoryAndStorage_Saves_And_RedirectsToDesktop(
             CatalogueItemId catalogueItemId,
             MemoryAndStorageModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail clientApplication,
             [Frozen] Mock<ISolutionsService> mockService,
             DesktopBasedController controller)
         {
@@ -252,7 +252,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             clientApplication.NativeDesktopMemoryAndStorage.StorageRequirementsDescription = model.StorageSpace;
             clientApplication.NativeDesktopMemoryAndStorage.MinimumCpu = model.ProcessingPower;
             clientApplication.NativeDesktopMemoryAndStorage.RecommendedResolution = model.SelectedResolution;
-            clientApplication.ClientApplicationTypes.Add(ClientApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue));
+            clientApplication.ClientApplicationTypes.Add(ApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue));
 
             mockService.Verify(s => s.SaveClientApplication(catalogueItemId, clientApplication));
             actual.ActionName.Should().Be(nameof(DesktopBasedController.Desktop));
@@ -301,7 +301,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_ThirdPartyComponents_Saves_And_RedirectsToDesktop(
             CatalogueItemId catalogueItemId,
             ThirdPartyComponentsModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail clientApplication,
             [Frozen] Mock<ISolutionsService> mockService,
             DesktopBasedController controller)
         {
@@ -312,7 +312,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             clientApplication.NativeDesktopThirdParty.ThirdPartyComponents = model.ThirdPartyComponents;
             clientApplication.NativeDesktopThirdParty.DeviceCapabilities = model.DeviceCapabilities;
-            clientApplication.ClientApplicationTypes.Add(ClientApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue));
+            clientApplication.ClientApplicationTypes.Add(ApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue));
 
             mockService.Verify(s => s.SaveClientApplication(catalogueItemId, clientApplication));
             actual.ActionName.Should().Be(nameof(DesktopBasedController.Desktop));
@@ -361,7 +361,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_HardwareRequirements_Saves_And_RedirectsToDesktop(
             CatalogueItemId catalogueItemId,
             HardwareRequirementsModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail clientApplication,
             [Frozen] Mock<ISolutionsService> mockService,
             DesktopBasedController controller)
         {
@@ -371,7 +371,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var actual = (await controller.HardwareRequirements(catalogueItemId, model)).As<RedirectToActionResult>();
 
             clientApplication.NativeDesktopHardwareRequirements = model.Description;
-            clientApplication.ClientApplicationTypes.Add(ClientApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue));
+            clientApplication.ClientApplicationTypes.Add(ApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue));
 
             mockService.Verify(s => s.SaveClientApplication(catalogueItemId, clientApplication));
             actual.ActionName.Should().Be(nameof(DesktopBasedController.Desktop));
@@ -420,7 +420,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_AdditionalInformation_Saves_And_RedirectsToDesktop(
             CatalogueItemId catalogueItemId,
             AdditionalInformationModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail clientApplication,
             [Frozen] Mock<ISolutionsService> mockService,
             DesktopBasedController controller)
         {
@@ -430,7 +430,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var actual = (await controller.AdditionalInformation(catalogueItemId, model)).As<RedirectToActionResult>();
 
             clientApplication.NativeDesktopAdditionalInformation = model.AdditionalInformation;
-            clientApplication.ClientApplicationTypes.Add(ClientApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue));
+            clientApplication.ClientApplicationTypes.Add(ApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue));
 
             mockService.Verify(s => s.SaveClientApplication(catalogueItemId, clientApplication));
             actual.ActionName.Should().Be(nameof(DesktopBasedController.Desktop));

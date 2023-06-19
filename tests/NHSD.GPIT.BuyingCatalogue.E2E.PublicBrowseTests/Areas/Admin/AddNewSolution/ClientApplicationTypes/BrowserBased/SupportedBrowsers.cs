@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
             await using var context = GetEndToEndDbContext();
             var solution = await context.Solutions.FirstAsync(s => s.CatalogueItemId == SolutionId);
 
-            var clientApplication = solution.ClientApplication;
+            var clientApplication = solution.ApplicationTypeDetail;
 
             clientApplication.Should().NotBeNull();
             clientApplication.BrowsersSupported.Should().Contain(b => b.BrowserName == expectedBrowser);
@@ -102,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
             await using var context = GetEndToEndDbContext();
             var solution = await context.Solutions.FirstAsync(s => s.CatalogueItemId == SolutionId);
 
-            var clientApplication = solution.ClientApplication;
+            var clientApplication = solution.ApplicationTypeDetail;
 
             clientApplication.Should().NotBeNull();
             clientApplication.BrowsersSupported.First(bs => bs.BrowserName == targetBrowser).MinimumBrowserVersion.Should().Be(browserVersion);

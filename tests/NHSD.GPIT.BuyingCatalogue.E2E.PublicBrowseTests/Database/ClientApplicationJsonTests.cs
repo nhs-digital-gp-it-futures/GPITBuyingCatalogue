@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
 
             using var dbContext = fixture.GetDbContext();
             var solution = dbContext.Solutions.FirstOrDefault(s => s.CatalogueItemId == catalogueItem.Id);
-            solution.ClientApplication.Should().BeNull();
+            solution.ApplicationTypeDetail.Should().BeNull();
         }
 
         [Fact]
@@ -57,8 +57,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
 
             using var dbContext = fixture.GetDbContext();
             var solution = dbContext.Solutions.FirstOrDefault(s => s.CatalogueItemId == catalogueItem.Id);
-            solution.ClientApplication.Should().NotBeNull();
-            solution.ClientApplication.Should().BeEquivalentTo(new ClientApplication());
+            solution.ApplicationTypeDetail.Should().NotBeNull();
+            solution.ApplicationTypeDetail.Should().BeEquivalentTo(new ApplicationTypeDetail());
         }
 
         [Fact]
@@ -72,8 +72,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
 
             using var dbContext = fixture.GetDbContext();
             var solution = dbContext.Solutions.FirstOrDefault(s => s.CatalogueItemId == catalogueItem.Id);
-            solution.ClientApplication.Should().NotBeNull();
-            solution.ClientApplication.Should().BeEquivalentTo(new ClientApplication() { AdditionalInformation = "value" });
+            solution.ApplicationTypeDetail.Should().NotBeNull();
+            solution.ApplicationTypeDetail.Should().BeEquivalentTo(new ApplicationTypeDetail() { AdditionalInformation = "value" });
         }
 
         [Fact]
@@ -91,8 +91,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
 
             using var dbContext = fixture.GetDbContext();
             var solution = dbContext.Solutions.FirstOrDefault(s => s.CatalogueItemId == catalogueItem.Id);
-            solution.ClientApplication.Should().NotBeNull();
-            solution.ClientApplication.Should().BeEquivalentTo(new ClientApplication() { ClientApplicationTypes = new HashSet<string>() { "browser-based" } });
+            solution.ApplicationTypeDetail.Should().NotBeNull();
+            solution.ApplicationTypeDetail.Should().BeEquivalentTo(new ApplicationTypeDetail() { ClientApplicationTypes = new HashSet<string>() { "browser-based" } });
         }
 
         [Fact]
@@ -106,8 +106,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
 
             using var dbContext = fixture.GetDbContext();
             var solution = dbContext.Solutions.FirstOrDefault(s => s.CatalogueItemId == catalogueItem.Id);
-            solution.ClientApplication.Should().NotBeNull();
-            var expected = new ClientApplication()
+            solution.ApplicationTypeDetail.Should().NotBeNull();
+            var expected = new ApplicationTypeDetail()
             {
                 BrowsersSupported = new HashSet<SupportedBrowser>
                         {
@@ -117,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
                             new SupportedBrowser() { BrowserName = "Internet Explorer 10" },
                         },
             };
-            solution.ClientApplication.Should().BeEquivalentTo(expected);
+            solution.ApplicationTypeDetail.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
@@ -131,8 +131,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
 
             using var dbContext = fixture.GetDbContext();
             var solution = dbContext.Solutions.FirstOrDefault(s => s.CatalogueItemId == catalogueItem.Id);
-            solution.ClientApplication.Should().NotBeNull();
-            var expected = new ClientApplication()
+            solution.ApplicationTypeDetail.Should().NotBeNull();
+            var expected = new ApplicationTypeDetail()
             {
                 BrowsersSupported = new HashSet<SupportedBrowser>
                         {
@@ -142,7 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
                             new SupportedBrowser() { BrowserName = "Internet Explorer 10" },
                         },
             };
-            solution.ClientApplication.Should().BeEquivalentTo(expected);
+            solution.ApplicationTypeDetail.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
@@ -158,8 +158,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
                 using (var dbContext = fixture.GetDbContext())
                 {
                     var solution = dbContext.Solutions.FirstOrDefault(s => s.CatalogueItemId == catalogueItem.Id);
-                    solution.ClientApplication.Should().NotBeNull();
-                    solution.ClientApplication.BrowsersSupported.Should().NotBeNull();
+                    solution.ApplicationTypeDetail.Should().NotBeNull();
+                    solution.ApplicationTypeDetail.BrowsersSupported.Should().NotBeNull();
                 }
             }
         }
@@ -303,7 +303,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
                     Summary = "SUMMARY - DFOCVC Solution",
                     Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interoperable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
                     Hosting = null,
-                    ClientApplication = null,
+                    ApplicationTypeDetail = null,
                     LastUpdated = DateTime.UtcNow,
                     FullDescription = "FULL DESCRIPTION – Digital First, Online Consultation and Video Consultation Solution.",
                     ImplementationDetail = "Some implementation detail",

@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
             List<Capability> capabilities,
             List<Epic> epics,
             EntityFramework.Catalogue.Models.Framework framework,
-            List<ClientApplicationType> clientApplicationTypes,
+            List<ApplicationType> clientApplicationTypes,
             List<HostingType> hostingTypes,
             int organisationId)
         {
@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
 
         public int OrganisationId { get; init; }
 
-        public List<ClientApplicationType> ClientApplicationTypes { get; init; }
+        public List<ApplicationType> ClientApplicationTypes { get; init; }
 
         public List<HostingType> HostingTypes { get; init; }
 

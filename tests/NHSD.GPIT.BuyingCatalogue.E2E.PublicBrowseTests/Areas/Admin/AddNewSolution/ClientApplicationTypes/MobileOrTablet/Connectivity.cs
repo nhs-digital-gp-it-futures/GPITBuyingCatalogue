@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
             await using var context = GetEndToEndDbContext();
             var solution = await context.Solutions.FirstAsync(s => s.CatalogueItemId == SolutionId);
 
-            var mobileConnectionDetails = solution.ClientApplication?.MobileConnectionDetails;
+            var mobileConnectionDetails = solution.ApplicationTypeDetail?.MobileConnectionDetails;
 
             mobileConnectionDetails.Should().NotBeNull();
 

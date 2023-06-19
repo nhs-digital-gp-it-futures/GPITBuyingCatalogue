@@ -2,12 +2,12 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models
 {
-    public sealed class FilterClientApplicationType
+    public sealed class FilterApplicationType
     {
         public int Id { get; set; }
 
         public int FilterId { get; set; }
 
-        public ClientApplicationType ClientApplicationType { get; set; }
+        public ApplicationType ApplicationTypeID { get; set; }
     }
 }

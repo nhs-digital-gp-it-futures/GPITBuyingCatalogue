@@ -31,10 +31,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var clientApplication = solution.Solution.EnsureAndGetClientApplication();
+            var clientApplication = solution.Solution.EnsureAndGetApplicationType();
             var model = new DesktopBasedModel(solution)
             {
-                BackLink = clientApplication?.HasClientApplicationType(ClientApplicationType.Desktop) ?? false
+                BackLink = clientApplication?.HasApplicationType(ApplicationType.Desktop) ?? false
                            ? Url.Action(
                                nameof(CatalogueSolutionsController.ClientApplicationType),
                                typeof(CatalogueSolutionsController).ControllerName(),
@@ -73,11 +73,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var clientApplication = await solutionsService.GetClientApplication(solutionId);
 
             if (clientApplication is null)
-                return BadRequest($"No Client Application found for Solution Id: {solutionId}");
+                return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
             clientApplication.NativeDesktopOperatingSystemsDescription = model.Description;
 
-            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.Desktop);
+            clientApplication.EnsureApplicationTypePresent(ApplicationType.Desktop);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -109,11 +109,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var clientApplication = await solutionsService.GetClientApplication(solutionId);
 
             if (clientApplication is null)
-                return BadRequest($"No Client Application found for Solution Id: {solutionId}");
+                return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
             clientApplication.NativeDesktopMinimumConnectionSpeed = model.SelectedConnectionSpeed;
 
-            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.Desktop);
+            clientApplication.EnsureApplicationTypePresent(ApplicationType.Desktop);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -145,7 +145,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var clientApplication = await solutionsService.GetClientApplication(solutionId);
 
             if (clientApplication is null)
-                return BadRequest($"No Client Application found for Solution Id: {solutionId}");
+                return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
             clientApplication.NativeDesktopMemoryAndStorage ??= new NativeDesktopMemoryAndStorage();
 
@@ -154,7 +154,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             clientApplication.NativeDesktopMemoryAndStorage.MinimumCpu = model.ProcessingPower;
             clientApplication.NativeDesktopMemoryAndStorage.RecommendedResolution = model.SelectedResolution;
 
-            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.Desktop);
+            clientApplication.EnsureApplicationTypePresent(ApplicationType.Desktop);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -186,14 +186,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var clientApplication = await solutionsService.GetClientApplication(solutionId);
 
             if (clientApplication is null)
-                return BadRequest($"No Client Application found for Solution Id: {solutionId}");
+                return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
             clientApplication.NativeDesktopThirdParty ??= new NativeDesktopThirdParty();
 
             clientApplication.NativeDesktopThirdParty.ThirdPartyComponents = model.ThirdPartyComponents;
             clientApplication.NativeDesktopThirdParty.DeviceCapabilities = model.DeviceCapabilities;
 
-            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.Desktop);
+            clientApplication.EnsureApplicationTypePresent(ApplicationType.Desktop);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -225,11 +225,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var clientApplication = await solutionsService.GetClientApplication(solutionId);
 
             if (clientApplication is null)
-                return BadRequest($"No Client Application found for Solution Id: {solutionId}");
+                return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
             clientApplication.NativeDesktopHardwareRequirements = model.Description;
 
-            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.Desktop);
+            clientApplication.EnsureApplicationTypePresent(ApplicationType.Desktop);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -261,11 +261,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var clientApplication = await solutionsService.GetClientApplication(solutionId);
 
             if (clientApplication is null)
-                return BadRequest($"No Client Application found for Solution Id: {solutionId}");
+                return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
             clientApplication.NativeDesktopAdditionalInformation = model.AdditionalInformation;
 
-            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.Desktop);
+            clientApplication.EnsureApplicationTypePresent(ApplicationType.Desktop);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 

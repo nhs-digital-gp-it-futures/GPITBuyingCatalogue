@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
 
             var solution = await context.Solutions.FirstOrDefaultAsync(s => s.CatalogueItemId == SolutionId);
 
-            var thirdPartyComponents = solution.ClientApplication?.NativeDesktopThirdParty;
+            var thirdPartyComponents = solution.ApplicationTypeDetail?.NativeDesktopThirdParty;
 
             thirdPartyComponents.Should().NotBeNull();
 

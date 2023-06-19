@@ -15,14 +15,14 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         public static void ClientApplication_Should_Be_Null()
         {
             var solutuion = new Solution();
-            solutuion.ClientApplication.Should().BeNull();
+            solutuion.ApplicationTypeDetail.Should().BeNull();
         }
 
         [Fact]
         public static void EnsureAndGetClientApplication_Should_Return_Instance()
         {
             var solutuion = new Solution();
-            solutuion.EnsureAndGetClientApplication().Should().NotBeNull();
+            solutuion.EnsureAndGetApplicationType().Should().NotBeNull();
         }
     }
 }

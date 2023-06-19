@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.DesktopB
 
             actual.MemorySizes.Should().BeEquivalentTo(Framework.Constants.SelectLists.MemorySizes);
 
-            var desktopMemoryAndStorage = solution.ClientApplication.NativeDesktopMemoryAndStorage;
+            var desktopMemoryAndStorage = solution.ApplicationTypeDetail.NativeDesktopMemoryAndStorage;
 
             actual.SelectedMemorySize.Should().Be(desktopMemoryAndStorage.MinimumMemoryRequirement);
             actual.StorageSpace.Should().Be(desktopMemoryAndStorage.StorageRequirementsDescription);

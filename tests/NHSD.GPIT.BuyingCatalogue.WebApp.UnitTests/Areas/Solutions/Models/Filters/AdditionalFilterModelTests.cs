@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         public static void Constructor_WithClientApplicationTypeSelected_CreatesClientApplicationTypeCheckBoxItems_AllSelected(int[] expectedSelectedValues)
         {
             var expectedCount = 3;
-            var expectedFilters = expectedSelectedValues.Select(i => ((ClientApplicationType)i).Name());
+            var expectedFilters = expectedSelectedValues.Select(i => ((ApplicationType)i).Name());
 
             var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, expectedSelectedValues.ToFilterString(), string.Empty, string.Empty, string.Empty);
 
@@ -100,7 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         public static void Constructor_WithClientApplicationTypeSelected_CreatesClientApplicationTypeCheckBoxItems_WhenOneSelectedValueIsNotAsExpected(int[] expectedSelectedValues)
         {
             var expectedCount = 3;
-            var expectedFilters = expectedSelectedValues.Select(i => ((ClientApplicationType)i).Name());
+            var expectedFilters = expectedSelectedValues.Select(i => ((ApplicationType)i).Name());
 
             var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, expectedSelectedValues.ToFilterString(), string.Empty, string.Empty, string.Empty);
 

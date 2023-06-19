@@ -32,10 +32,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var clientApplication = solution.Solution.EnsureAndGetClientApplication();
+            var clientApplication = solution.Solution.EnsureAndGetApplicationType();
             var model = new BrowserBasedModel(solution)
             {
-                BackLink = clientApplication?.HasClientApplicationType(ClientApplicationType.BrowserBased) ?? false
+                BackLink = clientApplication?.HasApplicationType(ApplicationType.BrowserBased) ?? false
                            ? Url.Action(nameof(CatalogueSolutionsController.ClientApplicationType), typeof(CatalogueSolutionsController).ControllerName(), new { solutionId })
                            : Url.Action(nameof(CatalogueSolutionsController.AddApplicationType), typeof(CatalogueSolutionsController).ControllerName(), new { solutionId }),
             };
@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var clientApplication = await solutionsService.GetClientApplication(solutionId);
             if (clientApplication is null)
-                return BadRequest($"No Client Application found for Solution Id: {solutionId}");
+                return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
             clientApplication.BrowsersSupported.Clear();
             clientApplication.BrowsersSupported = model.Browsers is null
@@ -82,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 ? null
                 : model.MobileResponsive.EqualsIgnoreCase("Yes");
 
-            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.BrowserBased);
+            clientApplication.EnsureApplicationTypePresent(ApplicationType.BrowserBased);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -111,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var clientApplication = await solutionsService.GetClientApplication(solutionId);
             if (clientApplication is null)
-                return BadRequest($"No Client Application found for Solution Id: {solutionId}");
+                return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
             clientApplication.Plugins = new Plugins
             {
@@ -121,7 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                     : model.PlugInsRequired.EqualsIgnoreCase("Yes"),
             };
 
-            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.BrowserBased);
+            clientApplication.EnsureApplicationTypePresent(ApplicationType.BrowserBased);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -149,11 +149,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var clientApplication = await solutionsService.GetClientApplication(solutionId);
             if (clientApplication is null)
-                return BadRequest($"No Client Application found for Solution Id: {solutionId}");
+                return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
             clientApplication.MinimumConnectionSpeed = model.SelectedConnectionSpeed;
             clientApplication.MinimumDesktopResolution = model.SelectedScreenResolution;
-            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.BrowserBased);
+            clientApplication.EnsureApplicationTypePresent(ApplicationType.BrowserBased);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -182,10 +182,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var clientApplication = await solutionsService.GetClientApplication(solutionId);
             if (clientApplication is null)
-                return BadRequest($"No Client Application found for Solution Id: {solutionId}");
+                return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
             clientApplication.HardwareRequirements = model.Description;
-            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.BrowserBased);
+            clientApplication.EnsureApplicationTypePresent(ApplicationType.BrowserBased);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 
@@ -210,10 +210,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var clientApplication = await solutionsService.GetClientApplication(solutionId);
             if (clientApplication is null)
-                return BadRequest($"No Client Application found for Solution Id: {solutionId}");
+                return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
             clientApplication.AdditionalInformation = model.AdditionalInformation;
-            clientApplication.EnsureClientApplicationTypePresent(ClientApplicationType.BrowserBased);
+            clientApplication.EnsureApplicationTypePresent(ApplicationType.BrowserBased);
 
             await solutionsService.SaveClientApplication(solutionId, clientApplication);
 

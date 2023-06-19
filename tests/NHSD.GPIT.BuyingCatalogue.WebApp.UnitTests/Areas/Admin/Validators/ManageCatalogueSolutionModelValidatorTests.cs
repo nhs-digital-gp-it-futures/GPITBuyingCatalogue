@@ -95,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             [Frozen] Mock<ISolutionsService> solutionsService,
             ManageCatalogueSolutionModelValidator validator)
         {
-            solution.ClientApplication = null;
+            solution.ApplicationTypeDetail = null;
             solution.ServiceLevelAgreement.ServiceHours = serviceAvailabilityTimes;
             solution.ServiceLevelAgreement.ServiceLevels = slaServiceLevels;
             solution.ServiceLevelAgreement.Contacts = slaContacts;
@@ -283,7 +283,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 AdditionalServices = ServiceContracts.Enums.TaskProgress.Completed,
                 AssociatedServices = ServiceContracts.Enums.TaskProgress.Completed,
                 CapabilitiesAndEpics = ServiceContracts.Enums.TaskProgress.Completed,
-                ClientApplicationType = ServiceContracts.Enums.TaskProgress.Completed,
+                ApplicationType = ServiceContracts.Enums.TaskProgress.Completed,
                 DevelopmentPlans = ServiceContracts.Enums.TaskProgress.Completed,
                 Features = ServiceContracts.Enums.TaskProgress.Completed,
                 HostingType = ServiceContracts.Enums.TaskProgress.Completed,

@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationT
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
 
-            ApplicationType = ClientApplicationType.MobileTablet;
+            ApplicationType = ApplicationType.MobileTablet;
         }
     }
 }

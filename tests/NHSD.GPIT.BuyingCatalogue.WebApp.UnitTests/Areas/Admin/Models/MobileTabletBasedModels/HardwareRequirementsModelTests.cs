@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
             var catalogueItem = solution.CatalogueItem;
             var actual = new HardwareRequirementsModel(catalogueItem);
 
-            actual.Description.Should().Be(solution.ClientApplication.NativeMobileHardwareRequirements);
+            actual.Description.Should().Be(solution.ApplicationTypeDetail.NativeMobileHardwareRequirements);
         }
 
         [Fact]

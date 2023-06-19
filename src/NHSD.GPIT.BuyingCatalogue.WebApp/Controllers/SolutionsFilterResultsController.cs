@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             var selectedCapabilityIds = filterIds.CapabilityIds.ToFilterString();
             var selectedEpicIds = filterIds.EpicIds.ToFilterString();
             var selectedFrameworkId = filterIds.FrameworkId;
-            var selectedClientApplicationTypeIds = filterIds.ClientApplicationTypeIds.ToFilterString();
+            var selectedClientApplicationTypeIds = filterIds.ApplicationTypeIds.ToFilterString();
             var selectedHostingTypeIds = filterIds.HostingTypeIds.ToFilterString();
 
             var (catalogueItems, _, capabilitiesAndCount) =

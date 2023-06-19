@@ -20,11 +20,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
                 new SupportedBrowser { BrowserName = "mozilla firefox" },
             };
 
-            ISpecimenBuilder ComposerTransformation(ICustomizationComposer<ClientApplication> composer) => composer
+            ISpecimenBuilder ComposerTransformation(ICustomizationComposer<ApplicationTypeDetail> composer) => composer
                 .With(c => c.BrowsersSupported, browsersSupported)
                 .With(c => c.ClientApplicationTypes, GetClientApplicationTypes);
 
-            fixture.Customize<ClientApplication>(ComposerTransformation);
+            fixture.Customize<ApplicationTypeDetail>(ComposerTransformation);
         }
 
         private static HashSet<string> GetClientApplicationTypes()

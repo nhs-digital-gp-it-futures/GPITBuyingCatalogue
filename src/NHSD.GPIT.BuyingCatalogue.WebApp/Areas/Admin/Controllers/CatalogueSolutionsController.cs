@@ -286,15 +286,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             return model.SelectedApplicationType switch
             {
-                EntityFramework.Catalogue.Models.ClientApplicationType.BrowserBased => RedirectToAction(
+                EntityFramework.Catalogue.Models.ApplicationType.BrowserBased => RedirectToAction(
                     nameof(BrowserBasedController.BrowserBased),
                     typeof(BrowserBasedController).ControllerName(),
                     new { solutionId }),
-                EntityFramework.Catalogue.Models.ClientApplicationType.MobileTablet => RedirectToAction(
+                EntityFramework.Catalogue.Models.ApplicationType.MobileTablet => RedirectToAction(
                     nameof(MobileTabletBasedController.MobileTablet),
                     typeof(MobileTabletBasedController).ControllerName(),
                     new { solutionId }),
-                EntityFramework.Catalogue.Models.ClientApplicationType.Desktop => RedirectToAction(
+                EntityFramework.Catalogue.Models.ApplicationType.Desktop => RedirectToAction(
                     nameof(DesktopBasedController.Desktop),
                     typeof(DesktopBasedController).ControllerName(),
                     new { solutionId }),

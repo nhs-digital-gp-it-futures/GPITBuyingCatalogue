@@ -6,7 +6,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     public class ClientApplicationTypeModel
     {
-        public ClientApplicationTypeModel(ClientApplicationType type, ClientApplication client)
+        public ClientApplicationTypeModel(ApplicationType type, ApplicationTypeDetail client)
         {
             if (client == null)
             {
@@ -16,21 +16,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
             switch (type)
             {
-                case ClientApplicationType.BrowserBased:
+                case ApplicationType.BrowserBased:
                     LoadBrowserBasedDetails(client);
                     break;
 
-                case ClientApplicationType.NativeMobile:
+                case ApplicationType.NativeMobile:
                     LoadNativeMobileDetails(client);
                     break;
 
-                case ClientApplicationType.NativeDesktop:
+                case ApplicationType.NativeDesktop:
                     LoadNativeDesktopDetails(client);
                     break;
             }
         }
 
-        public enum ClientApplicationType
+        public enum ApplicationType
         {
             BrowserBased,
             NativeMobile,
@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public string ProcessingPower { get; set; }
 
-        private void LoadBrowserBasedDetails(ClientApplication client)
+        private void LoadBrowserBasedDetails(ApplicationTypeDetail client)
         {
             Label = "Browser-based application";
             DataTestTag = "browser-based";
@@ -104,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 !string.IsNullOrWhiteSpace(AdditionalInformation);
         }
 
-        private void LoadNativeMobileDetails(ClientApplication client)
+        private void LoadNativeMobileDetails(ApplicationTypeDetail client)
         {
             Label = "Native mobile or tablet application";
             DataTestTag = "native-mobile";
@@ -133,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 !string.IsNullOrWhiteSpace(AdditionalInformation);
         }
 
-        private void LoadNativeDesktopDetails(ClientApplication client)
+        private void LoadNativeDesktopDetails(ApplicationTypeDetail client)
         {
             Label = "Native desktop application";
             DataTestTag = "native-desktop";

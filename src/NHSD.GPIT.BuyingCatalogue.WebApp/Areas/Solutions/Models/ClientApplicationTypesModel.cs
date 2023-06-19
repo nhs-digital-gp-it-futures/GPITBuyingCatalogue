@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             CatalogueItemContentStatus contentStatus)
             : base(catalogueItem, contentStatus)
         {
-            ClientApplication = catalogueItem.Solution.EnsureAndGetClientApplication();
+            ClientApplication = catalogueItem.Solution.EnsureAndGetApplicationType();
 
             BrowserBasedApplication = GetBrowserBasedApplication();
             NativeDesktopApplication = GetNativeDesktopApplication();
@@ -40,15 +40,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         [UIHint("DescriptionList")]
         public DescriptionListViewModel NativeMobileApplication { get; init; }
 
-        public ClientApplication ClientApplication { get; init; }
+        public ApplicationTypeDetail ClientApplication { get; init; }
 
-        public bool HasApplicationType(ClientApplicationType clientApplicationType) =>
+        public bool HasApplicationType(ApplicationType clientApplicationType) =>
             ClientApplication?.ClientApplicationTypes?.Any(
                 s => s.EqualsIgnoreCase(clientApplicationType.EnumMemberName())) ?? false;
 
         private DescriptionListViewModel GetBrowserBasedApplication()
         {
-            if (!HasApplicationType(ClientApplicationType.BrowserBased))
+            if (!HasApplicationType(ApplicationType.BrowserBased))
                 return null;
 
             var items = new Dictionary<string, ListViewModel>();
@@ -126,7 +126,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         private DescriptionListViewModel GetNativeDesktopApplication()
         {
-            if (!HasApplicationType(ClientApplicationType.Desktop))
+            if (!HasApplicationType(ApplicationType.Desktop))
                 return null;
 
             var items = new Dictionary<string, ListViewModel>();
@@ -222,7 +222,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         private DescriptionListViewModel GetNativeMobileApplication()
         {
-            if (!HasApplicationType(ClientApplicationType.MobileTablet))
+            if (!HasApplicationType(ApplicationType.MobileTablet))
                 return null;
 
             var items = new Dictionary<string, ListViewModel>();
@@ -319,21 +319,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             const string yesKey = "Yes";
             var items = new Dictionary<string, ListViewModel>();
 
-            if (HasApplicationType(ClientApplicationType.BrowserBased))
+            if (HasApplicationType(ApplicationType.BrowserBased))
             {
                 items.Add(
                     "Browser-based application",
                     new ListViewModel { Text = yesKey });
             }
 
-            if (HasApplicationType(ClientApplicationType.Desktop))
+            if (HasApplicationType(ApplicationType.Desktop))
             {
                 items.Add(
                     "Desktop application",
                     new ListViewModel { Text = yesKey });
             }
 
-            if (HasApplicationType(ClientApplicationType.MobileTablet))
+            if (HasApplicationType(ApplicationType.MobileTablet))
             {
                 items.Add(
                     "Mobile or tablet application",

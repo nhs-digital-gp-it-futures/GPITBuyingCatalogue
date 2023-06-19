@@ -4,53 +4,53 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 {
-    public class ClientApplicationProgress
+    public class ApplicationTypeProgress
     {
-        private readonly ClientApplication clientApplication;
+        private readonly ApplicationTypeDetail appicationTypeDetail;
 
-        public ClientApplicationProgress(ClientApplication clientAppication)
+        public ApplicationTypeProgress(ApplicationTypeDetail appicationTypeDetail)
         {
-            clientApplication = clientAppication;
+           appicationTypeDetail = appicationTypeDetail;
         }
 
-        public TaskProgress AdditionalInformationStatus() => Status(clientApplication.AdditionalInformation);
+        public TaskProgress AdditionalInformationStatus() => Status(appicationTypeDetail.AdditionalInformation);
 
-        public TaskProgress ConnectivityStatus() => Status(clientApplication.MinimumConnectionSpeed);
+        public TaskProgress ConnectivityStatus() => Status(appicationTypeDetail.MinimumConnectionSpeed);
 
-        public TaskProgress HardwareRequirementsStatus() => Status(clientApplication.HardwareRequirements);
+        public TaskProgress HardwareRequirementsStatus() => Status(appicationTypeDetail.HardwareRequirements);
 
-        public TaskProgress NativeDesktopAdditionalInformationStatus() => Status(clientApplication.NativeDesktopAdditionalInformation);
+        public TaskProgress NativeDesktopAdditionalInformationStatus() => Status(appicationTypeDetail.NativeDesktopAdditionalInformation);
 
-        public TaskProgress NativeDesktopConnectivityStatus() => Status(clientApplication.NativeDesktopMinimumConnectionSpeed);
+        public TaskProgress NativeDesktopConnectivityStatus() => Status(appicationTypeDetail.NativeDesktopMinimumConnectionSpeed);
 
-        public TaskProgress NativeDesktopHardwareRequirementsStatus() => Status(clientApplication.NativeDesktopHardwareRequirements);
+        public TaskProgress NativeDesktopHardwareRequirementsStatus() => Status(appicationTypeDetail.NativeDesktopHardwareRequirements);
 
-        public TaskProgress NativeDesktopMemoryAndStorageStatus() => Status(GetStatus(clientApplication.NativeDesktopMemoryAndStorage));
+        public TaskProgress NativeDesktopMemoryAndStorageStatus() => Status(GetStatus(appicationTypeDetail.NativeDesktopMemoryAndStorage));
 
-        public TaskProgress NativeMobileMemoryAndStorageStatus() => Status(GetStatus(clientApplication.MobileMemoryAndStorage));
+        public TaskProgress NativeMobileMemoryAndStorageStatus() => Status(GetStatus(appicationTypeDetail.MobileMemoryAndStorage));
 
-        public TaskProgress NativeDesktopSupportedOperatingSystemsStatus() => Status(clientApplication.NativeDesktopOperatingSystemsDescription);
+        public TaskProgress NativeDesktopSupportedOperatingSystemsStatus() => Status(appicationTypeDetail.NativeDesktopOperatingSystemsDescription);
 
-        public TaskProgress NativeDesktopThirdPartyStatus() => Status(GetStatus(clientApplication.NativeDesktopThirdParty));
+        public TaskProgress NativeDesktopThirdPartyStatus() => Status(GetStatus(appicationTypeDetail.NativeDesktopThirdParty));
 
-        public TaskProgress NativeMobileConnectivityStatus() => Status(GetStatus(clientApplication.MobileConnectionDetails));
+        public TaskProgress NativeMobileConnectivityStatus() => Status(GetStatus(appicationTypeDetail.MobileConnectionDetails));
 
-        public TaskProgress NativeMobileSupportedOperatingSystemsStatus() => Status(GetStatus(clientApplication.MobileOperatingSystems));
+        public TaskProgress NativeMobileSupportedOperatingSystemsStatus() => Status(GetStatus(appicationTypeDetail.MobileOperatingSystems));
 
-        public TaskProgress NativeMobileAdditionalInformationStatus() => Status(clientApplication.NativeMobileAdditionalInformation);
+        public TaskProgress NativeMobileAdditionalInformationStatus() => Status(appicationTypeDetail.NativeMobileAdditionalInformation);
 
-        public TaskProgress NativeMobileHardwareRequirementsStatus() => Status(clientApplication.NativeMobileHardwareRequirements);
+        public TaskProgress NativeMobileHardwareRequirementsStatus() => Status(appicationTypeDetail.NativeMobileHardwareRequirements);
 
-        public TaskProgress PluginsStatus() => (clientApplication.Plugins?.Required != null) ? TaskProgress.Completed : TaskProgress.NotStarted;
+        public TaskProgress PluginsStatus() => (appicationTypeDetail.Plugins?.Required != null) ? TaskProgress.Completed : TaskProgress.NotStarted;
 
         public TaskProgress SupportedBrowsersStatus() =>
-            (clientApplication.BrowsersSupported != null && clientApplication.BrowsersSupported.Any() && clientApplication.MobileResponsive.HasValue) ? TaskProgress.Completed : TaskProgress.NotStarted;
+            (appicationTypeDetail.BrowsersSupported != null && appicationTypeDetail.BrowsersSupported.Any() && appicationTypeDetail.MobileResponsive.HasValue) ? TaskProgress.Completed : TaskProgress.NotStarted;
 
-        public TaskProgress NativeMobileThirdPartyStatus() => Status(GetStatus(clientApplication.MobileThirdParty));
+        public TaskProgress NativeMobileThirdPartyStatus() => Status(GetStatus(appicationTypeDetail.MobileThirdParty));
 
-        public TaskProgress ApplicationTypeStatus(ClientApplicationType applicationType)
+        public TaskProgress ApplicationTypeStatus(ApplicationType applicationType)
         {
-            if (applicationType == ClientApplicationType.BrowserBased)
+            if (applicationType == ApplicationType.BrowserBased)
             {
                 if (SupportedBrowsersStatus() == TaskProgress.Completed && PluginsStatus() == TaskProgress.Completed)
                     return TaskProgress.Completed;
@@ -65,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
                 }
             }
 
-            if (applicationType == ClientApplicationType.Desktop)
+            if (applicationType == ApplicationType.Desktop)
             {
                 if (NativeDesktopSupportedOperatingSystemsStatus() == TaskProgress.Completed &&
                     NativeDesktopConnectivityStatus() == TaskProgress.Completed &&
@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
                 }
             }
 
-            if (applicationType == ClientApplicationType.MobileTablet)
+            if (applicationType == ApplicationType.MobileTablet)
             {
                 if (NativeMobileSupportedOperatingSystemsStatus() == TaskProgress.Completed &&
                     NativeMobileMemoryAndStorageStatus() == TaskProgress.Completed)
