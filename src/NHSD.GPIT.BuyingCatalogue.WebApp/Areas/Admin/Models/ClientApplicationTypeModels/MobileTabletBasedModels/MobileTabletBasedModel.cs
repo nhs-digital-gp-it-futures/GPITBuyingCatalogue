@@ -1,7 +1,5 @@
 ﻿using System;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels.MobileTabletBasedModels
 {
@@ -19,17 +17,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationT
 
             ApplicationType = ClientApplicationType.MobileTablet;
         }
-
-        public TaskProgress SupportedOperatingSystemsStatus() => ClientApplication.NativeMobileSupportedOperatingSystemsStatus();
-
-        public TaskProgress ConnectivityStatus() => ClientApplication.NativeMobileConnectivityStatus();
-
-        public TaskProgress MemoryStatus() => ClientApplication.NativeMobileMemoryAndStorageStatus();
-
-        public TaskProgress ThirdPartyStatus() => ClientApplication.NativeMobileThirdPartyStatus();
-
-        public TaskProgress HardwareStatus() => ClientApplication.NativeMobileHardwareRequirementsStatus();
-
-        public TaskProgress AdditionalInformationStatus() => ClientApplication.NativeMobileAdditionalInformationStatus();
     }
 }

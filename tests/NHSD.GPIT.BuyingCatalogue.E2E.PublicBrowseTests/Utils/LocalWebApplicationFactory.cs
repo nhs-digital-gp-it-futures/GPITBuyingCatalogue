@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using DotNet.Testcontainers.Builders;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
@@ -13,8 +11,6 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.Data.SqlClient;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
@@ -34,7 +30,6 @@ using NHSD.GPIT.BuyingCatalogue.WebApp;
 using OpenQA.Selenium;
 using Serilog;
 using Serilog.Events;
-using Testcontainers.MsSql;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -53,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
         private const string Browser = "chrome";
 
-        private MsSqlContainer sqlContainer;
+        private DatabaseSetup databaseSetup;
         private BrowserFactory browserFactory;
         private IHost host;
 
@@ -97,14 +92,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
         public async Task InitializeAsync()
         {
-            sqlContainer = new MsSqlBuilder()
-                .WithName(Guid.NewGuid().ToString())
-                .WithPassword("Abc123Abc123")
-                .WithCleanUp(true)
-                .Build();
+            databaseSetup = new DatabaseSetup();
+            await databaseSetup.StartAsync();
 
-            await sqlContainer.StartAsync();
-            SetEnvVariables();
+            SetEnvVariables(databaseSetup.GetConnectionString());
 
             host = CreateHostBuilder().Build();
             await host.StartAsync();
@@ -127,8 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
         public new async Task DisposeAsync()
         {
-            await sqlContainer.DisposeAsync();
-
+            await databaseSetup.DisposeAsync().ConfigureAwait(false);
             browserFactory?.Dispose();
         }
 
@@ -174,7 +164,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
                 services.AddDbContext<BuyingCatalogueDbContext, EndToEndDbContext>(
                     options =>
                     {
-                        options.UseSqlServer(sqlContainer.GetConnectionString());
+                        options.UseSqlServer(databaseSetup.GetConnectionString());
                         options.EnableSensitiveDataLogging();
                     });
 
@@ -186,15 +176,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
 
                 try
                 {
-                    InvokeDataSeeder<OdsOrganisationsSeedData>(bcDb);
-                    InvokeDataSeeder<RolesSeedData>(bcDb);
-                    InvokeDataSeeder<UserSeedData>(bcDb);
-                    InvokeDataSeeder<BuyingCatalogueSeedData>(bcDb);
-                    InvokeDataSeeder<OrderSeedData>(bcDb);
-                    InvokeDataSeeder<ContractSeedData>(bcDb);
-                    InvokeDataSeeder<EmailDomainSeedData>(bcDb);
-                    InvokeDataSeeder<FiltersSeedData>(bcDb);
-                    InvokeDataSeeder<CompetitionsSeedData>(bcDb);
+                    DatabaseSetup.InvokeDataSeeder<OdsOrganisationsSeedData>(bcDb);
+                    DatabaseSetup.InvokeDataSeeder<RolesSeedData>(bcDb);
+                    DatabaseSetup.InvokeDataSeeder<UserSeedData>(bcDb);
+                    DatabaseSetup.InvokeDataSeeder<BuyingCatalogueSeedData>(bcDb);
+                    DatabaseSetup.InvokeDataSeeder<OrderSeedData>(bcDb);
+                    DatabaseSetup.InvokeDataSeeder<ContractSeedData>(bcDb);
+                    DatabaseSetup.InvokeDataSeeder<EmailDomainSeedData>(bcDb);
+                    DatabaseSetup.InvokeDataSeeder<FiltersSeedData>(bcDb);
+                    DatabaseSetup.InvokeDataSeeder<CompetitionsSeedData>(bcDb);
                 }
                 catch (Exception ex)
                 {
@@ -223,9 +213,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             }
         }
 
-        private void SetEnvVariables()
+        private void SetEnvVariables(string connectionString)
         {
-            SetEnvironmentVariable(nameof(BC_DB_CONNECTION), sqlContainer.GetConnectionString());
+            SetEnvironmentVariable(nameof(BC_DB_CONNECTION), connectionString);
 
             SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "E2ETest");
 
@@ -236,10 +226,5 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils
             SetEnvironmentVariable("SESSION_IDLE_TIMEOUT", "60");
         }
 
-        private static void InvokeDataSeeder<T>(BuyingCatalogueDbContext context)
-            where T : ISeedData
-        {
-            T.Initialize(context).GetAwaiter().GetResult();
-        }
     }
 }
