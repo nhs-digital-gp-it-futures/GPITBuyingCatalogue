@@ -46,8 +46,6 @@
 :r ./DropImport.sql
 :r ./DropPublish.sql
 
-:r ./TestData/InsertFilters.sql
-:r ./TestData/Competitions/InsertCompetitions.sql
 :r ./ProdLikeData/MergeSuppliers.sql
 :r ./ProdLikeData/MergeCatalogueItems.sql
 :r ./ProdLikeData/MergeSolutions.sql
@@ -62,5 +60,8 @@
 :r ./OrderSeedData/InsertTestOrderSeedData.sql
 :r ./InsertSupplierServiceAssociations.sql
 :r ./InsertDefaultImplementationPlan.sql
+
+:r ./TestData/InsertFilters.sql
+:r ./TestData/Competitions/InsertCompetitions.sql
 
 :r ./MigrateEpics.sql

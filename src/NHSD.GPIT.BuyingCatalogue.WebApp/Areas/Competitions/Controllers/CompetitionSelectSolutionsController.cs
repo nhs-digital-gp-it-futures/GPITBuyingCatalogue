@@ -146,7 +146,7 @@ public class CompetitionSelectSolutionsController : Controller
 
         await competitionsService.AcceptShortlist(organisation.Id, competitionId);
 
-        return RedirectToAction(nameof(CompetitionsDashboardController.Index), typeof(CompetitionsDashboardController).ControllerName(), new { internalOrgId });
+        return RedirectToAction(nameof(CompetitionTaskListController.Index), typeof(CompetitionTaskListController).ControllerName(), new { internalOrgId, competitionId });
     }
 
     private async Task<IActionResult> HandleDirectAward(Organisation organisation, int competitionId)

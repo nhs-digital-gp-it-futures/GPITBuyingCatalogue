@@ -65,6 +65,17 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
             onPremise.IsValid().Should().BeTrue();
         }
 
+        [Fact]
+        public static void New_Hosting()
+        {
+            var hosting = new Hosting();
+
+            hosting.PublicCloud.Should().NotBeNull();
+            hosting.PrivateCloud.Should().NotBeNull();
+            hosting.HybridHostingType.Should().NotBeNull();
+            hosting.OnPremise.Should().NotBeNull();
+        }
+
         [Theory]
         [CommonAutoData]
         public static void Hosting_IsValid_True(

@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.DesktopB
             var catalogueItem = solution.CatalogueItem;
             var actual = new HardwareRequirementsModel(catalogueItem);
 
-            actual.Description.Should().Be(solution.GetClientApplication().NativeDesktopHardwareRequirements);
+            actual.Description.Should().Be(solution.ClientApplication.NativeDesktopHardwareRequirements);
         }
 
         [Fact]
