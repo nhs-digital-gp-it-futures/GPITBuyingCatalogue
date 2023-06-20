@@ -4,16 +4,16 @@ using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Marketing
 {
-    public class ClientApplicationTypeActions : ActionBase
+    public class ApplicationTypeActions : ActionBase
     {
-        public ClientApplicationTypeActions(IWebDriver driver)
+        public ApplicationTypeActions(IWebDriver driver)
             : base(driver)
         {
         }
 
-        public void SelectClientApplicationCheckbox(string clientApplicationType)
+        public void SelectApplicationTypeCheckbox(string applicationType)
         {
-            switch (clientApplicationType)
+            switch (applicationType)
             {
                 case "Browser-based":
                     Driver.FindElement(CommonSelectors.BrowserBasedCheckbox).Click();
@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Marketing
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(clientApplicationType));
+                    throw new ArgumentOutOfRangeException(nameof(applicationType));
             }
         }
     }

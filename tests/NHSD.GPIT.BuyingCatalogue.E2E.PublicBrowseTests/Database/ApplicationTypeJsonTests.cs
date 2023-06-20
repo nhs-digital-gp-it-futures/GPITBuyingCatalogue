@@ -12,17 +12,17 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
 {
-    public class ClientApplicationJsonTests : IClassFixture<DatabaseFixture>
+    public class ApplicationTypeJsonTests : IClassFixture<DatabaseFixture>
     {
         private readonly DatabaseFixture fixture;
 
-        public ClientApplicationJsonTests(DatabaseFixture fixture)
+        public ApplicationTypeJsonTests(DatabaseFixture fixture)
         {
             this.fixture = fixture;
         }
 
         [Fact]
-        public void ClientApplicationNull()
+        public void ApplicationTypeNull()
         {
             var catalogueItem = GetCatalogueItem();
 
@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
         }
 
         [Fact]
-        public void ClientApplication_EmptyString_Throws()
+        public void ApplicationType_EmptyString_Throws()
         {
             var catalogueItem = GetCatalogueItem();
 
@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
         }
 
         [Fact]
-        public void ClientApplicationEmptyJSONObject()
+        public void ApplicationTypeEmptyJSONObject()
         {
             var catalogueItem = GetCatalogueItem();
 
@@ -146,7 +146,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
         }
 
         [Fact]
-        public void ClientApplicationInstance()
+        public void ApplicationTypeInstance()
         {
             var catalogueItem = GetCatalogueItem();
 
@@ -354,6 +354,5 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
                 dbContext.Database.ExecuteSql($"UPDATE [Catalogue].[Solutions] SET [ClientApplication] = {json} WHERE CatalogueItemId = {catalogueItem.Id.ToString()}");
             }
         }
-
     }
 }
