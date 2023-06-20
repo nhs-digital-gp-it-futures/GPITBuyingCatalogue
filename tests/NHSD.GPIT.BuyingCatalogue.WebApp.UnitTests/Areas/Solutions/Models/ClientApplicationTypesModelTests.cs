@@ -18,22 +18,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Fact]
         public static void ClientApplicationTypesModel_NullCatalogueItem_ThrowsException()
         {
-            var actual = Assert.Throws<ArgumentNullException>(() => new ClientApplicationTypesModel(null, new CatalogueItemContentStatus()));
+            var actual = Assert.Throws<ArgumentNullException>(() => new ApplicationTypesModel(null, new CatalogueItemContentStatus()));
             actual.ParamName.Should().Be("catalogueItem");
         }
 
         [Fact]
         public static void ClientApplicationTypesModel_NullSolution_ThrowsException()
         {
-            var actual = Assert.Throws<ArgumentNullException>(() => new ClientApplicationTypesModel(new CatalogueItem() { Solution = null }, new CatalogueItemContentStatus()));
+            var actual = Assert.Throws<ArgumentNullException>(() => new ApplicationTypesModel(new CatalogueItem() { Solution = null }, new CatalogueItemContentStatus()));
             actual.ParamName.Should().Be("catalogueItem");
         }
 
         [Fact]
         public static void ApplicationTypes_UIHintAttribute_ExpectedHint()
         {
-            typeof(ClientApplicationTypesModel)
-                .GetProperty(nameof(ClientApplicationTypesModel.ApplicationTypes))
+            typeof(ApplicationTypesModel)
+                .GetProperty(nameof(ApplicationTypesModel.ApplicationTypes))
                 .GetCustomAttribute<UIHintAttribute>()
                 .UIHint.Should()
                 .Be("DescriptionList");
@@ -42,8 +42,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Fact]
         public static void BrowserBasedApplication_UIHintAttribute_ExpectedHint()
         {
-            typeof(ClientApplicationTypesModel)
-                .GetProperty(nameof(ClientApplicationTypesModel.BrowserBasedApplication))
+            typeof(ApplicationTypesModel)
+                .GetProperty(nameof(ApplicationTypesModel.BrowserBasedApplication))
                 .GetCustomAttribute<UIHintAttribute>()
                 .UIHint.Should()
                 .Be("DescriptionList");
@@ -52,8 +52,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Fact]
         public static void NativeMobileApplication_UIHintAttribute_ExpectedHint()
         {
-            typeof(ClientApplicationTypesModel)
-                .GetProperty(nameof(ClientApplicationTypesModel.NativeMobileApplication))
+            typeof(ApplicationTypesModel)
+                .GetProperty(nameof(ApplicationTypesModel.NativeMobileApplication))
                 .GetCustomAttribute<UIHintAttribute>()
                 .UIHint.Should()
                 .Be("DescriptionList");
@@ -62,8 +62,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Fact]
         public static void NativeDesktopApplication_UIHintAttribute_ExpectedHint()
         {
-            typeof(ClientApplicationTypesModel)
-                .GetProperty(nameof(ClientApplicationTypesModel.NativeDesktopApplication))
+            typeof(ApplicationTypesModel)
+                .GetProperty(nameof(ApplicationTypesModel.NativeDesktopApplication))
                 .GetCustomAttribute<UIHintAttribute>()
                 .UIHint.Should()
                 .Be("DescriptionList");
@@ -76,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             [Frozen] CatalogueItem catalogueItem,
             [Frozen] Solution solution,
             [Frozen] ApplicationTypeDetail clientApplication,
-            ClientApplicationTypesModel model)
+            ApplicationTypesModel model)
         {
             // CatalogueItem and Solution must be frozen so that a catalogue item instance with solution is passed
             // to the ClientApplicationTypesModel constructor
@@ -96,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             [Frozen] CatalogueItem catalogueItem,
             [Frozen] Solution solution,
             [Frozen] ApplicationTypeDetail clientApplication,
-            ClientApplicationTypesModel model)
+            ApplicationTypesModel model)
         {
             // CatalogueItem and Solution must be frozen so that a catalogue item instance with solution is passed
             // to the ClientApplicationTypesModel constructor
@@ -131,7 +131,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
             solution.ApplicationTypeDetail = clientApplication;
 
-            var model = new ClientApplicationTypesModel(solution.CatalogueItem, contentStatus);
+            var model = new ApplicationTypesModel(solution.CatalogueItem, contentStatus);
 
             model.BrowserBasedApplication.Should().NotBeNull();
             model.BrowserBasedApplication.Items.Should().HaveCount(8);
@@ -173,7 +173,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
             solution.ApplicationTypeDetail = clientApplication;
 
-            var model = new ClientApplicationTypesModel(solution.CatalogueItem, contentStatus);
+            var model = new ApplicationTypesModel(solution.CatalogueItem, contentStatus);
 
             model.NativeDesktopApplication.Should().NotBeNull();
             model.NativeDesktopApplication.Items.Should().HaveCount(10);
@@ -217,7 +217,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
             solution.ApplicationTypeDetail = clientApplication;
 
-            var model = new ClientApplicationTypesModel(solution.CatalogueItem, contentStatus);
+            var model = new ApplicationTypesModel(solution.CatalogueItem, contentStatus);
 
             model.NativeMobileApplication.Should().NotBeNull();
             model.NativeMobileApplication.Items.Should().HaveCount(11);
@@ -254,7 +254,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 
             solution.ApplicationTypeDetail = clientApplication;
 
-            var model = new ClientApplicationTypesModel(solution.CatalogueItem, contentStatus);
+            var model = new ApplicationTypesModel(solution.CatalogueItem, contentStatus);
 
             model.ApplicationTypes.Should().NotBeNull();
             model.ApplicationTypes.Items.Should()

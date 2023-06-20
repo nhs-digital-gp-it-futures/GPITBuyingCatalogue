@@ -2,7 +2,7 @@
 using FluentValidation.TestHelper;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
 using Xunit;
 
@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             [Frozen] CatalogueItem catalogueItem,
             [Frozen] Solution solution,
             ApplicationTypeSectionModel model,
-            ClientApplicationTypeSectionModelValidator validator)
+            ApplicationTypeSectionModelValidator validator)
         {
             // CatalogueItem and Solution must be frozen so that a catalogue item instance with solution is passed
             // to the ClientApplicationTypeSectionModel constructor
@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.ExistingApplicationTypesCount)
-                .WithErrorMessage(ClientApplicationTypeSectionModelValidator.OneApplicationTypeRequiredMessage);
+                .WithErrorMessage(ApplicationTypeSectionModelValidator.OneApplicationTypeRequiredMessage);
         }
 
         [Theory]
@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             [Frozen] CatalogueItem catalogueItem,
             [Frozen] Solution solution,
             ApplicationTypeSectionModel model,
-            ClientApplicationTypeSectionModelValidator validator)
+            ApplicationTypeSectionModelValidator validator)
         {
             // CatalogueItem and Solution must be frozen so that a catalogue item instance with solution is passed
             // to the ClientApplicationTypeSectionModel constructor

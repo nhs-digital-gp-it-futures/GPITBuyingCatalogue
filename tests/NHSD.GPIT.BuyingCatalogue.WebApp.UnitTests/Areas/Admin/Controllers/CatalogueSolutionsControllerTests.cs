@@ -21,7 +21,7 @@ using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModels;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 using Xunit;
 using PublicationStatus = NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.PublicationStatus;
@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Post_AddApplicationType_BrowserBased(
             CatalogueItemId catalogueItemId,
-            ClientApplicationTypeSelectionModel model,
+            ApplicationTypeSelectionModel model,
             CatalogueSolutionsController controller)
         {
             model.SelectedApplicationType = ApplicationType.BrowserBased;
@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Post_AddApplicationType_Desktop(
             CatalogueItemId catalogueItemId,
-            ClientApplicationTypeSelectionModel model,
+            ApplicationTypeSelectionModel model,
             CatalogueSolutionsController controller)
         {
             model.SelectedApplicationType = ApplicationType.Desktop;
@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Post_AddApplicationType_MobileTablet(
             CatalogueItemId catalogueItemId,
-            ClientApplicationTypeSelectionModel model,
+            ApplicationTypeSelectionModel model,
             CatalogueSolutionsController controller)
         {
             model.SelectedApplicationType = ApplicationType.MobileTablet;
@@ -756,7 +756,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.Verify(s => s.GetSolutionThin(catalogueItemId));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new ClientApplicationTypeSelectionModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
+            actual.Model.Should().BeEquivalentTo(new ApplicationTypeSelectionModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]

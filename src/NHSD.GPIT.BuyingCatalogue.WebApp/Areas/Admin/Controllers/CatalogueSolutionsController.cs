@@ -14,7 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModels;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 using PublicationStatus = NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.PublicationStatus;
 
@@ -263,7 +263,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var model = new ClientApplicationTypeSelectionModel(solution)
+            var model = new ApplicationTypeSelectionModel(solution)
             {
                 BackLink = Url.Action(nameof(ApplicationType), new { solutionId }),
             };
@@ -272,12 +272,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost("manage/{solutionId}/application-type/add-application-type")]
-        public async Task<IActionResult> AddApplicationType(CatalogueItemId solutionId, ClientApplicationTypeSelectionModel model)
+        public async Task<IActionResult> AddApplicationType(CatalogueItemId solutionId, ApplicationTypeSelectionModel model)
         {
             if (!ModelState.IsValid)
             {
                 var solution = await solutionsService.GetSolutionThin(solutionId);
-                var erroredModel = new ClientApplicationTypeSelectionModel(solution)
+                var erroredModel = new ApplicationTypeSelectionModel(solution)
                 {
                     BackLink = Url.Action(nameof(ApplicationType), new { solutionId }),
                 };

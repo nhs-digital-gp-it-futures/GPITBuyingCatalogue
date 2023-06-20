@@ -560,7 +560,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             var catalogueItem = solution.CatalogueItem;
 
-            var expectedModel = new ClientApplicationTypesModel(catalogueItem, contentStatus);
+            var expectedModel = new ApplicationTypesModel(catalogueItem, contentStatus);
             solutionsService.Setup(s => s.GetSolutionThin(id)).ReturnsAsync(catalogueItem);
 
             solutionsService.Setup(s => s.GetContentStatusForCatalogueItem(id))

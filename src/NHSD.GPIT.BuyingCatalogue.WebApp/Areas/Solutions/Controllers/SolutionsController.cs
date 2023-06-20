@@ -345,7 +345,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
 
-            var model = new ClientApplicationTypesModel(item, contentStatus);
+            var model = new ApplicationTypesModel(item, contentStatus);
 
             return View(model);
         }
