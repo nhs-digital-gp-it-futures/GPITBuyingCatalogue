@@ -1,26 +1,15 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-
-namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
+﻿namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
 public readonly struct ServiceRecipientCacheKey
 {
-    private readonly int userId;
-    private readonly string internalOrgId;
-    private readonly CallOffId callOffId;
-    private readonly CatalogueItemId catalogueItemId;
+    private readonly object[] keys;
 
     public ServiceRecipientCacheKey(
-        int userId,
-        string internalOrgId,
-        CallOffId callOffId,
-        CatalogueItemId catalogueItemId)
+        params object[] keys)
     {
-        this.userId = userId;
-        this.internalOrgId = internalOrgId;
-        this.callOffId = callOffId;
-        this.catalogueItemId = catalogueItemId;
+        this.keys = keys;
     }
 
     public override string ToString()
-        => $"{userId}-{internalOrgId}-{callOffId}-{catalogueItemId}";
+        => string.Join('-', keys);
 }

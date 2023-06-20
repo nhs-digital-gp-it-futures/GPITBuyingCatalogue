@@ -5,23 +5,21 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CatalogueItems;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.ServiceRecipients;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ImportServiceRecipients;
 using ServiceRecipient = NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.ServiceRecipient;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 
+[Authorize("Development")]
 [Authorize("Buyer")]
-[Area("Orders")]
-[Route("order/organisation/{internalOrgId}/order/{callOffId}/item/{catalogueItemId}/import-service-recipients")]
-public class ImportServiceRecipientsController : Controller
+[Area("Competitions")]
+[Route("organisation/{internalOrgId}/competitions/{competitionId:int}/import-recipients")]
+public class CompetitionImportServiceRecipientsController : Controller
 {
     internal const int OdsCodeLength = 8;
     internal const int OrganisationNameLength = 256;
@@ -34,40 +32,43 @@ public class ImportServiceRecipientsController : Controller
     internal static readonly string OrganisationExceedsLimit =
         $"At least one of your Service Recipient names is more than {OrganisationNameLength} characters";
 
+    private const string CompetitionCacheKey = "competitions";
     private readonly IServiceRecipientImportService importService;
-    private readonly ICatalogueItemService catalogueItemService;
+    private readonly IOrganisationsService organisationsService;
+    private readonly ICompetitionsService competitionsService;
     private readonly IOdsService odsService;
 
-    public ImportServiceRecipientsController(
+    public CompetitionImportServiceRecipientsController(
         IServiceRecipientImportService importService,
-        ICatalogueItemService catalogueItemService,
+        IOrganisationsService organisationsService,
+        ICompetitionsService competitionsService,
         IOdsService odsService)
     {
         this.importService = importService ?? throw new ArgumentNullException(nameof(importService));
-        this.catalogueItemService =
-            catalogueItemService ?? throw new ArgumentNullException(nameof(catalogueItemService));
+        this.organisationsService =
+            organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
+        this.competitionsService =
+            competitionsService ?? throw new ArgumentNullException(nameof(competitionsService));
         this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
     }
 
     [HttpGet]
     public async Task<IActionResult> Index(
         string internalOrgId,
-        CallOffId callOffId,
-        CatalogueItemId catalogueItemId,
-        ServiceRecipientImportMode? importMode = ServiceRecipientImportMode.Edit)
+        int competitionId)
     {
-        _ = importMode;
-        await importService.Clear(new(User.UserId(), internalOrgId, callOffId, catalogueItemId));
+        await importService.Clear(new(User.UserId(), internalOrgId, CompetitionCacheKey, competitionId));
 
-        var catalogueItemName = await catalogueItemService.GetCatalogueItemName(catalogueItemId);
+        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
+        var competitionName = await competitionsService.GetCompetitionName(organisation.Id, competitionId);
         var model = new ImportServiceRecipientModel
         {
             BackLink = Url.Action(
-                GetServiceRecipientRedirectAction(importMode!.Value),
-                typeof(ServiceRecipientsController).ControllerName(),
-                new { internalOrgId, callOffId, catalogueItemId }),
-            Caption = catalogueItemName,
-            DownloadTemplateLink = Url.Action(nameof(DownloadTemplate), new { internalOrgId, callOffId, catalogueItemId }),
+                nameof(CompetitionRecipientsController.Index),
+                typeof(CompetitionRecipientsController).ControllerName(),
+                new { internalOrgId, competitionId }),
+            Caption = competitionName,
+            DownloadTemplateLink = Url.Action(nameof(DownloadTemplate), new { internalOrgId, competitionId }),
         };
 
         return View("ServiceRecipients/ImportServiceRecipients/Index", model);
@@ -76,10 +77,8 @@ public class ImportServiceRecipientsController : Controller
     [HttpPost]
     public async Task<IActionResult> Index(
         string internalOrgId,
-        CallOffId callOffId,
-        CatalogueItemId catalogueItemId,
-        ImportServiceRecipientModel model,
-        ServiceRecipientImportMode? importMode = ServiceRecipientImportMode.Edit)
+        int competitionId,
+        ImportServiceRecipientModel model)
     {
         if (!ModelState.IsValid)
             return View("ServiceRecipients/ImportServiceRecipients/Index", model);
@@ -96,28 +95,23 @@ public class ImportServiceRecipientsController : Controller
 
         await importService.Store(
             new(
-                User.UserId(),
-                internalOrgId,
-                callOffId,
-                catalogueItemId),
+                User.UserId(), internalOrgId, CompetitionCacheKey, competitionId),
             importedServiceRecipients);
 
         return RedirectToAction(
             nameof(ValidateOds),
-            new { internalOrgId, callOffId, catalogueItemId, importMode });
+            new { internalOrgId, competitionId });
     }
 
     [HttpGet("validate-ods")]
     public async Task<IActionResult> ValidateOds(
         string internalOrgId,
-        CallOffId callOffId,
-        CatalogueItemId catalogueItemId,
-        ServiceRecipientImportMode? importMode = ServiceRecipientImportMode.Edit)
+        int competitionId)
     {
-        var cacheKey = new ServiceRecipientCacheKey(User.UserId(), internalOrgId, callOffId, catalogueItemId);
+        var cacheKey = new ServiceRecipientCacheKey(User.UserId(), internalOrgId, CompetitionCacheKey, competitionId);
         var cachedRecipients = await importService.GetCached(cacheKey);
         if (cachedRecipients is null)
-            return RedirectToAction(nameof(Index), new { internalOrgId, callOffId, catalogueItemId, importMode });
+            return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
 
         var organisationServiceRecipients =
             await odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId);
@@ -125,17 +119,17 @@ public class ImportServiceRecipientsController : Controller
         var mismatchedOdsCodes = GetMismatchedOdsCodes(cachedRecipients, organisationServiceRecipients).ToList();
         if (mismatchedOdsCodes.Any())
         {
-            var catalogueItemName = await catalogueItemService.GetCatalogueItemName(catalogueItemId);
+            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
+            var competitionName = await competitionsService.GetCompetitionName(organisation.Id, competitionId);
             var model = new ValidateOdsModel(
-                mismatchedOdsCodes,
-                importMode)
+                mismatchedOdsCodes)
             {
-                BackLink = Url.Action(nameof(Index), new { internalOrgId, callOffId, catalogueItemId, importMode }),
-                Caption = catalogueItemName,
-                CancelLink = Url.Action(nameof(CancelImport), new { internalOrgId, callOffId, catalogueItemId, importMode }),
+                BackLink = Url.Action(nameof(Index), new { internalOrgId, competitionId }),
+                Caption = competitionName,
+                CancelLink = Url.Action(nameof(CancelImport), new { internalOrgId, competitionId }),
                 ValidateNamesLink = Url.Action(
                     nameof(ValidateNames),
-                    new { internalOrgId, callOffId, catalogueItemId, importMode }),
+                    new { internalOrgId, competitionId }),
             };
 
             return View("ServiceRecipients/ImportServiceRecipients/ValidateOds", model);
@@ -145,21 +139,19 @@ public class ImportServiceRecipientsController : Controller
             nameof(ValidateNames),
             new
             {
-                internalOrgId, callOffId, catalogueItemId, importMode,
+                internalOrgId, competitionId,
             });
     }
 
     [HttpGet("validate-names")]
     public async Task<IActionResult> ValidateNames(
         string internalOrgId,
-        CallOffId callOffId,
-        CatalogueItemId catalogueItemId,
-        ServiceRecipientImportMode? importMode = ServiceRecipientImportMode.Edit)
+        int competitionId)
     {
-        var cacheKey = new ServiceRecipientCacheKey(User.UserId(), internalOrgId, callOffId, catalogueItemId);
+        var cacheKey = new ServiceRecipientCacheKey(User.UserId(), internalOrgId, CompetitionCacheKey, competitionId);
         var cachedRecipients = await importService.GetCached(cacheKey);
         if (cachedRecipients is null)
-            return RedirectToAction(nameof(Index), new { internalOrgId, callOffId, catalogueItemId, importMode });
+            return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
 
         var organisationServiceRecipients =
             (await odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId)).ToList();
@@ -167,41 +159,39 @@ public class ImportServiceRecipientsController : Controller
         var mismatchedRecipients = GetMismatchedNames(cachedRecipients.ToList(), organisationServiceRecipients);
         if (mismatchedRecipients.Any())
         {
-            var catalogueItemName = await catalogueItemService.GetCatalogueItemName(catalogueItemId);
-            var model = new ValidateNamesModel(
-                mismatchedRecipients,
-                importMode)
+            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
+            var competitionName = await competitionsService.GetCompetitionName(organisation.Id, competitionId);
+            var model = new ValidateNamesModel(mismatchedRecipients)
             {
                 BackLink = Url.Action(
                     GetNameValidationBacklink(cachedRecipients, organisationServiceRecipients),
-                    new { internalOrgId, callOffId, catalogueItemId, importMode }),
-                CancelLink = Url.Action(nameof(CancelImport), new { internalOrgId, callOffId, catalogueItemId, importMode }),
-                Caption = catalogueItemName,
+                    new { internalOrgId, competitionId }),
+                CancelLink = Url.Action(nameof(CancelImport), new { internalOrgId, competitionId }),
+                Caption = competitionName,
             };
-
             return View("ServiceRecipients/ImportServiceRecipients/ValidateNames", model);
         }
 
         var validOdsCodes = GetValidOdsCodes(cachedRecipients, organisationServiceRecipients);
         await importService.Clear(cacheKey);
         return RedirectToAction(
-            GetServiceRecipientRedirectAction(importMode!.Value),
-            typeof(ServiceRecipientsController).ControllerName(),
+            nameof(CompetitionRecipientsController.Index),
+            typeof(CompetitionRecipientsController).ControllerName(),
             new
             {
-                internalOrgId, callOffId, catalogueItemId, importedRecipients = string.Join(',', validOdsCodes),
+                internalOrgId,
+                competitionId,
+                importedRecipients = string.Join(',', validOdsCodes),
             });
     }
 
     [HttpPost("validate-names")]
     public async Task<IActionResult> ValidateNames(
         string internalOrgId,
-        CallOffId callOffId,
-        CatalogueItemId catalogueItemId,
-        ValidateNamesModel model,
-        ServiceRecipientImportMode? importMode = ServiceRecipientImportMode.Edit)
+        int competitionId,
+        ValidateNamesModel model)
     {
-        var cacheKey = new ServiceRecipientCacheKey(User.UserId(), internalOrgId, callOffId, catalogueItemId);
+        var cacheKey = new ServiceRecipientCacheKey(User.UserId(), internalOrgId, CompetitionCacheKey, competitionId);
         var cachedRecipients = await importService.GetCached(cacheKey);
         var organisationServiceRecipients =
             await odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId);
@@ -211,25 +201,21 @@ public class ImportServiceRecipientsController : Controller
         await importService.Clear(cacheKey);
 
         return RedirectToAction(
-            GetServiceRecipientRedirectAction(importMode!.Value),
-            typeof(ServiceRecipientsController).ControllerName(),
+            nameof(CompetitionRecipientsController.Index),
+            typeof(CompetitionRecipientsController).ControllerName(),
             new
             {
-                internalOrgId, callOffId, catalogueItemId, importedRecipients = string.Join(',', validOdsCodes),
+                internalOrgId, competitionId, importedRecipients = string.Join(',', validOdsCodes),
             });
     }
 
     [HttpGet("download-template")]
     public async Task<IActionResult> DownloadTemplate(
         string internalOrgId,
-        CallOffId callOffId,
-        CatalogueItemId catalogueItemId,
-        ServiceRecipientImportMode? importMode = ServiceRecipientImportMode.Edit)
+        int competitionId)
     {
         _ = internalOrgId;
-        _ = callOffId;
-        _ = catalogueItemId;
-        _ = importMode;
+        _ = competitionId;
 
         using var stream = new MemoryStream();
         await importService.CreateServiceRecipientTemplate(stream);
@@ -241,30 +227,22 @@ public class ImportServiceRecipientsController : Controller
     [HttpGet("cancel-import")]
     public IActionResult CancelImport(
         string internalOrgId,
-        CallOffId callOffId,
-        CatalogueItemId catalogueItemId,
-        ServiceRecipientImportMode? importMode = ServiceRecipientImportMode.Edit)
+        int competitionId)
     {
-        importService.Clear(new(User.UserId(), internalOrgId, callOffId, catalogueItemId));
+        importService.Clear(new(User.UserId(), internalOrgId, CompetitionCacheKey, competitionId));
 
         return RedirectToAction(
-            GetServiceRecipientRedirectAction(importMode!.Value),
-            typeof(ServiceRecipientsController).ControllerName(),
-            new { internalOrgId, callOffId, catalogueItemId });
+            nameof(CompetitionRecipientsController.Index),
+            typeof(CompetitionRecipientsController).ControllerName(),
+            new { internalOrgId, competitionId });
     }
-
-    private static string GetServiceRecipientRedirectAction(ServiceRecipientImportMode importMode)
-        => importMode == ServiceRecipientImportMode.Add
-            ? nameof(ServiceRecipientsController.AddServiceRecipients)
-            : nameof(ServiceRecipientsController.EditServiceRecipients);
 
     private static List<ServiceRecipientImportModel> GetMismatchedOdsCodes(
         IEnumerable<ServiceRecipientImportModel> importedServiceRecipients,
         IEnumerable<ServiceRecipient> serviceRecipients)
         => importedServiceRecipients.Where(
-                r => serviceRecipients.All(
-                    x => !string.Equals(x.OrgId, r.OdsCode, StringComparison.OrdinalIgnoreCase)))
-            .ToList();
+            r => serviceRecipients.All(
+                x => !string.Equals(x.OrgId, r.OdsCode, StringComparison.OrdinalIgnoreCase))).ToList();
 
     private static List<(string Expected, string Actual, string OdsCode)> GetMismatchedNames(
         List<ServiceRecipientImportModel> importedServiceRecipients,

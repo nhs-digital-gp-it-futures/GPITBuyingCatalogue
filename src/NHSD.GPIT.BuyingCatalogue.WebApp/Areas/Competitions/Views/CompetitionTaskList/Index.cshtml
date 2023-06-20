@@ -1,7 +1,8 @@
-@model CompetitionTaskListModel
+@model CompetitionTaskListViewModel
 
 @{
-    ViewBag.Title = Model.Name;
+    var routeValues = new { internalOrgId = Model.InternalOrgId, competitionId = Model.TaskListModel.Id };
+    ViewBag.Title = Model.TaskListModel.Name;
 }
 
 <partial name="Partials/_BackLink" model="Model"/>
@@ -13,24 +14,24 @@
                         advice="Complete the following steps to carry out a competition."/>
 
         <h2 class="nhsuk-heading-s">Description</h2>
-        <p>@Model.Description</p>
+        <p>@Model.TaskListModel.Description</p>
 
         <nhs-task-list>
             <nhs-task-list-section label-text="Prepare competition">
                 <nhs-task-list-item label-text="Shortlisted Catalogue Solutions"
                                     label-hint="View the solutions you added to your shortlist for this competition."
-                                    url="@Url.Action(nameof(CompetitionTaskListController.ShortlistedSolutions), typeof(CompetitionTaskListController).ControllerName(), new { internalOrgId = Model.InternalOrgId, competitionId = Model.CompetitionId })"
-                                    status="Completed"/>
+                                    url="@Url.Action(nameof(CompetitionTaskListController.ShortlistedSolutions), typeof(CompetitionTaskListController).ControllerName(), routeValues)"
+                                    status="@Model.TaskListModel.SolutionSelection"/>
 
                 <nhs-task-list-item label-text="Service Recipients"
                                     label-hint="Confirm who’ll be receiving the winning solution to help calculate total costs."
-                                    url="#"
-                                    status="CannotStart"/>
+                                    url="@Url.Action(nameof(CompetitionRecipientsController.Index), typeof(CompetitionRecipientsController).ControllerName(), routeValues)"
+                                    status="@Model.TaskListModel.ServiceRecipients"/>
 
                 <nhs-task-list-item label-text="Contract length"
                                     label-hint="Confirm how long your contract will be in months."
                                     url="#"
-                                    status="CannotStart"/>
+                                    status="@Model.TaskListModel.ContractLength"/>
             </nhs-task-list-section>
 
             <nhs-task-list-section label-text="Define competition criteria">

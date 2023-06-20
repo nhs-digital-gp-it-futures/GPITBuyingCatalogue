@@ -32,9 +32,9 @@ public class CompetitionTaskListController : Controller
     public async Task<IActionResult> Index(string internalOrgId, int competitionId)
     {
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-        var competition = await competitionsService.GetCompetition(organisation.Id, competitionId);
+        var competition = await competitionsService.GetCompetitionTaskList(organisation.Id, competitionId);
 
-        var model = new CompetitionTaskListModel(organisation, competition)
+        var model = new CompetitionTaskListViewModel(organisation, competition)
         {
             BackLink = Url.Action(
                 nameof(CompetitionsDashboardController.Index),

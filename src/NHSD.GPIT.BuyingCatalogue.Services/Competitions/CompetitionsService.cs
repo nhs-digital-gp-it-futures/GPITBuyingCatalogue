@@ -4,11 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.Competitions;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions;
 
@@ -52,6 +52,12 @@ public class CompetitionsService : ICompetitionsService
         => await dbContext.Competitions.AsNoTracking()
             .FirstOrDefaultAsync(x => x.OrganisationId == organisationId && x.Id == competitionId);
 
+    public async Task<Competition> GetCompetitionWithRecipients(int organisationId, int competitionId)
+        => await dbContext.Competitions.Include(x => x.Recipients)
+            .AsNoTracking()
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(x => x.OrganisationId == organisationId && x.Id == competitionId);
+
     public async Task AddCompetitionSolutions(
         int organisationId,
         int competitionId,
@@ -66,7 +72,10 @@ public class CompetitionsService : ICompetitionsService
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task SetShortlistedSolutions(int organisationId, int competitionId, IEnumerable<CatalogueItemId> shortlistedSolutions)
+    public async Task SetShortlistedSolutions(
+        int organisationId,
+        int competitionId,
+        IEnumerable<CatalogueItemId> shortlistedSolutions)
     {
         var competition = await dbContext.Competitions.Include(x => x.CompetitionSolutions)
             .FirstOrDefaultAsync(x => x.OrganisationId == organisationId && x.Id == competitionId);
@@ -85,7 +94,10 @@ public class CompetitionsService : ICompetitionsService
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task SetSolutionJustifications(int organisationId, int competitionId, Dictionary<CatalogueItemId, string> solutionsJustification)
+    public async Task SetSolutionJustifications(
+        int organisationId,
+        int competitionId,
+        Dictionary<CatalogueItemId, string> solutionsJustification)
     {
         if (solutionsJustification == null || solutionsJustification.Count == 0)
             return;
@@ -163,4 +175,36 @@ public class CompetitionsService : ICompetitionsService
     public async Task<bool> ExistsAsync(int organisationId, string competitionName) =>
         await dbContext.Competitions.AnyAsync(
             x => x.OrganisationId == organisationId && string.Equals(x.Name, competitionName));
+
+    public async Task SetCompetitionRecipients(int competitionId, IEnumerable<string> odsCodes)
+    {
+        var recipients =
+            await dbContext.CompetitionRecipients
+                .Where(
+                    x => x.CompetitionId == competitionId)
+                .ToListAsync();
+
+        var staleRecipients = recipients.Where(x => !odsCodes.Contains(x.OdsCode)).ToList();
+        var newRecipients = odsCodes.Where(x => recipients.All(y => x != y.OdsCode)).ToList();
+
+        dbContext.CompetitionRecipients.RemoveRange(staleRecipients);
+        dbContext.CompetitionRecipients.AddRange(newRecipients.Select(x => new CompetitionRecipient(competitionId, x)));
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task<CompetitionTaskListModel> GetCompetitionTaskList(int organisationId, int competitionId) =>
+        await dbContext.Competitions.Include(x => x.Recipients)
+            .AsNoTracking()
+            .AsSplitQuery()
+            .Where(x => x.OrganisationId == organisationId && x.Id == competitionId)
+            .Select(
+                x => new CompetitionTaskListModel(x))
+            .FirstOrDefaultAsync();
+
+    public async Task<string> GetCompetitionName(int organisationId, int competitionId) => await dbContext.Competitions
+        .AsNoTracking()
+        .Where(x => x.OrganisationId == organisationId && x.Id == competitionId)
+        .Select(x => x.Name)
+        .FirstOrDefaultAsync();
 }

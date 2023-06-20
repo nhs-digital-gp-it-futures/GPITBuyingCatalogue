@@ -9,7 +9,10 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.Competitions;
 using NHSD.GPIT.BuyingCatalogue.Services.Competitions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Xunit;
@@ -487,5 +490,141 @@ public static class CompetitionsServiceTests
         var result = await service.ExistsAsync(organisation.Id, competition.Name);
 
         result.Should().BeTrue();
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task GetCompetitionWithRecipients_ReturnsExpected(
+        Organisation organisation,
+        Competition competition,
+        List<OdsOrganisation> odsOrganisations,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        competition.OrganisationId = organisation.Id;
+        competition.Recipients = odsOrganisations;
+
+        context.Competitions.Add(competition);
+        context.Organisations.Add(organisation);
+        context.OdsOrganisations.AddRange(odsOrganisations);
+
+        await context.SaveChangesAsync();
+
+        context.ChangeTracker.Clear();
+
+        var competitionWithRecipients = await service.GetCompetitionWithRecipients(organisation.Id, competition.Id);
+
+        competitionWithRecipients.Should()
+            .BeEquivalentTo(competition, opt => opt.Excluding(m => m.Organisation).Excluding(m => m.Recipients));
+        competitionWithRecipients.Recipients.Should()
+            .BeEquivalentTo(odsOrganisations, opt => opt.Excluding(m => m.Roles).Excluding(m => m.Related).Excluding(m => m.Parents));
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task SetCompetitionRecipients_AddsNewRecipients(
+        Organisation organisation,
+        Competition competition,
+        List<OdsOrganisation> odsOrganisations,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        competition.OrganisationId = organisation.Id;
+
+        context.Competitions.Add(competition);
+        context.Organisations.Add(organisation);
+        context.OdsOrganisations.AddRange(odsOrganisations);
+
+        await context.SaveChangesAsync();
+
+        context.ChangeTracker.Clear();
+
+        await service.SetCompetitionRecipients(competition.Id, odsOrganisations.Select(x => x.Id));
+
+        var updatedCompetition = await context.Competitions.AsNoTracking().Include(x => x.Recipients)
+            .FirstOrDefaultAsync(x => x.OrganisationId == organisation.Id && x.Id == competition.Id);
+
+        updatedCompetition.Recipients.Should()
+            .BeEquivalentTo(
+                odsOrganisations,
+                opt => opt.Excluding(m => m.Roles).Excluding(m => m.Related).Excluding(m => m.Parents));
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task SetCompetitionRecipients_RemovesStaleRecipients(
+        Organisation organisation,
+        Competition competition,
+        List<OdsOrganisation> odsOrganisations,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        competition.OrganisationId = organisation.Id;
+        competition.Recipients = odsOrganisations;
+
+        context.Competitions.Add(competition);
+        context.Organisations.Add(organisation);
+        context.OdsOrganisations.AddRange(odsOrganisations);
+
+        await context.SaveChangesAsync();
+
+        context.ChangeTracker.Clear();
+
+        var selectedRecipients = odsOrganisations.Skip(2).ToList();
+        var staleRecipients = odsOrganisations.Except(selectedRecipients).ToList();
+
+        await service.SetCompetitionRecipients(competition.Id, selectedRecipients.Select(x => x.Id));
+
+        var updatedCompetition = await context.Competitions.AsNoTracking().Include(x => x.Recipients)
+            .FirstOrDefaultAsync(x => x.OrganisationId == organisation.Id && x.Id == competition.Id);
+
+        selectedRecipients.ForEach(x => updatedCompetition.Recipients.Should().Contain(y => y.Id == x.Id));
+        staleRecipients.ForEach(x => updatedCompetition.Recipients.Should().NotContain(y => y.Id == x.Id));
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task GetCompetitionTaskList_ReturnsExpected(
+        Organisation organisation,
+        Competition competition,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        competition.OrganisationId = organisation.Id;
+
+        context.Competitions.Add(competition);
+        context.Organisations.Add(organisation);
+
+        await context.SaveChangesAsync();
+
+        context.ChangeTracker.Clear();
+
+        var expectedModel = new CompetitionTaskListModel(competition);
+
+        var result = await service.GetCompetitionTaskList(organisation.Id, competition.Id);
+
+        result.Should().BeEquivalentTo(expectedModel);
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task GetCompetitionName(
+        Organisation organisation,
+        Competition competition,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        competition.OrganisationId = organisation.Id;
+
+        context.Competitions.Add(competition);
+        context.Organisations.Add(organisation);
+
+        await context.SaveChangesAsync();
+
+        context.ChangeTracker.Clear();
+
+        var result = await service.GetCompetitionName(organisation.Id, competition.Id);
+
+        result.Should().Be(competition.Name);
     }
 }

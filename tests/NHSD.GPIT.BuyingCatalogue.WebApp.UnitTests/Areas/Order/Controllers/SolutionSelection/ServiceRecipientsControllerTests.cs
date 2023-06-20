@@ -22,6 +22,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.ServiceRecipients;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 using Xunit;
 using ServiceRecipient = NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.ServiceRecipient;
 
@@ -510,9 +511,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var expected = new ConfirmChangesModel(order.OrderingParty)
             {
-                InternalOrgId = internalOrgId,
-                CallOffId = callOffId,
-                CatalogueItemId = solution.CatalogueItemId,
                 Caption = solution.CatalogueItem.Name,
                 Advice = string.Format(ConfirmChangesModel.AdviceText, solution.CatalogueItem.CatalogueItemType.Name()),
                 Journey = journeyType,
@@ -526,6 +524,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         [Theory]
         [CommonAutoData]
         public static async Task Post_ConfirmChanges_ReturnsExpectedResult(
+            string internalOrgId,
+            CatalogueItemId catalogueItemId,
             ConfirmChangesModel model,
             EntityFramework.Ordering.Models.Order order,
             RoutingResult routingResult,
@@ -536,19 +536,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             ServiceRecipientsController controller)
         {
             orderService
-                .Setup(x => x.GetOrderWithCatalogueItemAndPrices(model.CallOffId, model.InternalOrgId))
+                .Setup(x => x.GetOrderWithCatalogueItemAndPrices(order.CallOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));
 
             IEnumerable<CatalogueItemId> catalogueItemIds = null;
 
             orderItemService
-                .Setup(x => x.CopyOrderItems(model.InternalOrgId, model.CallOffId, It.IsAny<IEnumerable<CatalogueItemId>>()))
+                .Setup(x => x.CopyOrderItems(internalOrgId, order.CallOffId, It.IsAny<IEnumerable<CatalogueItemId>>()))
                 .Callback<string, CallOffId, IEnumerable<CatalogueItemId>>((_, _, x) => catalogueItemIds = x);
 
             List<ServiceRecipientDto> serviceRecipientDtos = null;
 
             orderItemRecipientService
-                .Setup(x => x.UpdateOrderItemRecipients(order.Id, model.CatalogueItemId, It.IsAny<List<ServiceRecipientDto>>()))
+                .Setup(x => x.UpdateOrderItemRecipients(order.Id, catalogueItemId, It.IsAny<List<ServiceRecipientDto>>()))
                 .Callback<int, CatalogueItemId, List<ServiceRecipientDto>>((_, _, x) => serviceRecipientDtos = x);
 
             RouteValues routeValues = null;
@@ -560,16 +560,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
 
-            var result = await controller.ConfirmChanges(model.InternalOrgId, model.CallOffId, model.CatalogueItemId, model);
+            var result = await controller.ConfirmChanges(internalOrgId, order.CallOffId, catalogueItemId, model);
 
             orderService.VerifyAll();
             orderItemService.VerifyAll();
             orderItemRecipientService.VerifyAll();
             routingService.VerifyAll();
 
-            catalogueItemIds.Should().BeEquivalentTo(new[] { model.CatalogueItemId });
+            catalogueItemIds.Should().BeEquivalentTo(new[] { catalogueItemId });
             serviceRecipientDtos.Should().BeEquivalentTo(model.Selected.Select(x => x.Dto).ToList());
-            routeValues.Should().BeEquivalentTo(new RouteValues(model.InternalOrgId, model.CallOffId, model.CatalogueItemId) { Source = model.Source });
+            routeValues.Should().BeEquivalentTo(new RouteValues(internalOrgId, order.CallOffId, catalogueItemId) { Source = model.Source });
 
             var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
 

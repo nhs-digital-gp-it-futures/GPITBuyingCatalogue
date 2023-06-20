@@ -2,6 +2,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Configuration;
 
@@ -51,5 +52,22 @@ internal sealed class CompetitionEntityTypeConfiguration : IEntityTypeConfigurat
             .HasForeignKey(x => x.LastUpdatedBy)
             .OnDelete(DeleteBehavior.NoAction)
             .HasConstraintName("FK_Competitions_LastUpdatedBy");
+
+        builder.HasMany(x => x.Recipients)
+            .WithMany()
+            .UsingEntity<CompetitionRecipient>(
+                r => r.HasOne<OdsOrganisation>()
+                    .WithMany()
+                    .HasForeignKey(x => x.OdsCode)
+                    .HasConstraintName("FK_CompetitionRecipients_ServiceRecipient"),
+                l => l.HasOne<Competition>()
+                    .WithMany()
+                    .HasForeignKey(x => x.CompetitionId)
+                    .HasConstraintName("FK_CompetitionRecipients_Competition"),
+                j =>
+                {
+                    j.ToTable("CompetitionRecipients", Schemas.Competitions);
+                    j.HasKey(x => new { x.CompetitionId, x.OdsCode });
+                });
     }
 }

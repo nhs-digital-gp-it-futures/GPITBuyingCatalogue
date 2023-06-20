@@ -2,7 +2,7 @@
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.ImportServiceRecipients.ValidateNamesModel
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ImportServiceRecipients.ValidateNamesModel
 @{
     ViewBag.Title = "There is a problem with your Service Recipients";
 }
@@ -11,7 +11,7 @@
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-page-title title="@ViewBag.Title"
-                        caption="@Model.CatalogueItemName"
+                        caption="@Model.Caption"
                         advice="There are discrepancies between the Service Recipient names in your CSV file and what we have on record." />
 
         <form method="post">
@@ -41,10 +41,7 @@
         </form>
 
         <div>
-            <a href="@Url.Action(
-                         nameof(ImportServiceRecipientsController.CancelImport),
-                         typeof(ImportServiceRecipientsController).ControllerName(),
-                         new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, Model.ImportMode })">
+            <a href="@Model.CancelLink">
                 Cancel
             </a>
         </div>

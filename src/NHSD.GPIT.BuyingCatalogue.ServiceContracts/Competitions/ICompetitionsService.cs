@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.Competitions;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 
@@ -12,6 +13,8 @@ public interface ICompetitionsService
     Task<Competition> GetCompetitionWithServices(int organisationId, int competitionId, bool shouldTrack = false);
 
     Task<Competition> GetCompetition(int organisationId, int competitionId);
+
+    Task<Competition> GetCompetitionWithRecipients(int organisationId, int competitionId);
 
     Task AddCompetitionSolutions(int organisationId, int competitionId, IEnumerable<CompetitionSolution> competitionSolutions);
 
@@ -34,4 +37,10 @@ public interface ICompetitionsService
     Task<int> AddCompetition(int organisationId, int filterId, string name, string description);
 
     Task<bool> ExistsAsync(int organisationId, string competitionName);
+
+    Task SetCompetitionRecipients(int competitionId, IEnumerable<string> odsCodes);
+
+    Task<CompetitionTaskListModel> GetCompetitionTaskList(int organisationId, int competitionId);
+
+    Task<string> GetCompetitionName(int organisationId, int competitionId);
 }

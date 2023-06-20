@@ -1,8 +1,5 @@
-﻿@using System.Linq
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.DetailsAndExpander
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.HiddenInputs
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.ServiceRecipients.ConfirmChangesModel;
+﻿
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ConfirmChangesModel;
 @{
     ViewBag.Title = Model.Title;
 }
@@ -19,15 +16,14 @@
             <input type="hidden" asp-for="BackLink" />
             <input type="hidden" asp-for="Journey" />
             <input type="hidden" asp-for="Source" />
-            
+
             <div id="selected-service-recipients">
-                
+
                 @foreach (var location in Model.Selected.GroupBy(x => x.Location))
                 {
                     var count = location.Count();
                     <nhs-expander
                         label-text="@location.Key"
-                        open="true"
                         bold-title="true">
                         <p>You've selected @count.ToString() Service @PluralOrSingular(count)</p>
                         <ul>
@@ -63,15 +59,14 @@
 
                         @foreach (var location in Model.PreviouslySelected.GroupBy(x => x.Location))
                         {
-                            <nhs-expander 
+                            <nhs-expander
                                 label-text="@location.Key"
-                                open="false"
                                 bold-title="true">
                                     <ul>
                                         @foreach (var item in location)
                                         {
                                             var index = Model.PreviouslySelected.FindIndex(x => x.OdsCode.Contains(item.OdsCode));
-                                            
+
                                             <input type="hidden" asp-for="@Model.PreviouslySelected[index].Name"/>
                                             <input type="hidden" asp-for="@Model.PreviouslySelected[index].OdsCode" />
                                             <li>@item.Description</li>

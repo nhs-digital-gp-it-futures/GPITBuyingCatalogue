@@ -9,6 +9,7 @@ using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
@@ -33,7 +34,7 @@ public static class CompetitionTaskListControllerTests
     [CommonAutoData]
     public static async Task Index_ReturnsViewWithModel(
         Organisation organisation,
-        Competition competition,
+        CompetitionTaskListModel competitionTaskListModel,
         [Frozen] Mock<IOrganisationsService> organisationsService,
         [Frozen] Mock<ICompetitionsService> competitionsService,
         CompetitionTaskListController controller)
@@ -41,12 +42,12 @@ public static class CompetitionTaskListControllerTests
         organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
             .ReturnsAsync(organisation);
 
-        competitionsService.Setup(x => x.GetCompetition(organisation.Id, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.Setup(x => x.GetCompetitionTaskList(organisation.Id, competitionTaskListModel.Id))
+            .ReturnsAsync(competitionTaskListModel);
 
-        var expectedModel = new CompetitionTaskListModel(organisation, competition);
+        var expectedModel = new CompetitionTaskListViewModel(organisation, competitionTaskListModel);
 
-        var result = (await controller.Index(organisation.InternalIdentifier, competition.Id)).As<ViewResult>();
+        var result = (await controller.Index(organisation.InternalIdentifier, competitionTaskListModel.Id)).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should().BeEquivalentTo(expectedModel, x => x.Excluding(m => m.BackLink));
