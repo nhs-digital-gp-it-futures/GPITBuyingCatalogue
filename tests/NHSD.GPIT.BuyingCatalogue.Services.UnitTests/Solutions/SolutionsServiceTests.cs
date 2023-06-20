@@ -338,7 +338,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static async Task SaveClientApplication_InvalidModel_ThrowsException(SolutionsService service)
         {
             var actual = await Assert.ThrowsAsync<ArgumentNullException>(
-                () => service.SaveClientApplication(new CatalogueItemId(100000, "001"), null));
+                () => service.SaveApplicationType(new CatalogueItemId(100000, "001"), null));
 
             actual.ParamName.Should().Be("clientApplication");
         }
@@ -354,7 +354,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             context.Solutions.Add(solution);
             await context.SaveChangesAsync();
 
-            await service.SaveClientApplication(solution.CatalogueItemId, clientApplication);
+            await service.SaveApplicationType(solution.CatalogueItemId, clientApplication);
             context.ChangeTracker.Clear();
 
             var actual = await context.Solutions.AsQueryable()
@@ -479,7 +479,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             context.Solutions.Add(catalogueSolution);
             await context.SaveChangesAsync();
 
-            await service.DeleteClientApplication(
+            await service.DeleteApplicationType(
                 catalogueSolution.CatalogueItemId,
                 ApplicationType.BrowserBased);
             context.ChangeTracker.Clear();
@@ -506,7 +506,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue),
             };
 
-            var updatedClientApplication = SolutionsService.RemoveClientApplicationType(
+            var updatedClientApplication = SolutionsService.RemoveApplicationType(
                 clientApplication,
                 ApplicationType.BrowserBased);
 
@@ -568,7 +568,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue),
             };
 
-            var updatedClientApplication = SolutionsService.RemoveClientApplicationType(
+            var updatedClientApplication = SolutionsService.RemoveApplicationType(
                 clientApplication,
                 ApplicationType.Desktop);
 
@@ -624,7 +624,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue),
             };
 
-            var updatedClientApplication = SolutionsService.RemoveClientApplicationType(
+            var updatedClientApplication = SolutionsService.RemoveApplicationType(
                 clientApplication,
                 ApplicationType.MobileTablet);
 

@@ -87,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_IncompleteClientApplicationType_SetsModelError(
+        public static void Validate_IncompleteApplicationType_SetsModelError(
             Solution solution,
             List<ServiceAvailabilityTimes> serviceAvailabilityTimes,
             List<SlaContact> slaContacts,

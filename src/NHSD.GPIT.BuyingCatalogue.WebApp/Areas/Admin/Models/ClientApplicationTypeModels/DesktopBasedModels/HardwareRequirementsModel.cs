@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationT
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
 
-            Description = ClientApplication?.NativeDesktopHardwareRequirements;
+            Description = ApplicationTypeDetail?.NativeDesktopHardwareRequirements;
         }
 
         [StringLength(500)]

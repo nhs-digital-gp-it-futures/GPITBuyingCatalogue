@@ -23,7 +23,7 @@
                 <nhs-table-row-container>
                     <nhs-table-cell>Supported operating systems</nhs-table-cell>
                     <nhs-table-cell>Yes</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag status-enum="@Model.ClientApplicationProgress.NativeDesktopSupportedOperatingSystemsStatus()" /></nhs-table-cell>
+                    <nhs-table-cell><nhs-tag status-enum="@Model.ApplicationTypeProgress.NativeDesktopSupportedOperatingSystemsStatus()" /></nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="@nameof(DesktopBasedController.OperatingSystems)"
                            asp-controller="@typeof(DesktopBasedController).ControllerName()"
@@ -35,7 +35,7 @@
                 <nhs-table-row-container>
                     <nhs-table-cell>Connectivity</nhs-table-cell>
                     <nhs-table-cell>Yes</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag status-enum="@Model.ClientApplicationProgress.NativeDesktopConnectivityStatus()" /></nhs-table-cell>
+                    <nhs-table-cell><nhs-tag status-enum="@Model.ApplicationTypeProgress.NativeDesktopConnectivityStatus()" /></nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="@nameof(DesktopBasedController.Connectivity)"
                            asp-controller="@typeof(DesktopBasedController).ControllerName()"
@@ -47,7 +47,7 @@
                 <nhs-table-row-container>
                     <nhs-table-cell>Memory, storage, processing and resolution</nhs-table-cell>
                     <nhs-table-cell>Yes</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag status-enum="@Model.ClientApplicationProgress.NativeDesktopMemoryAndStorageStatus()" /></nhs-table-cell>
+                    <nhs-table-cell><nhs-tag status-enum="@Model.ApplicationTypeProgress.NativeDesktopMemoryAndStorageStatus()" /></nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="@nameof(DesktopBasedController.MemoryAndStorage)"
                            asp-controller="@typeof(DesktopBasedController).ControllerName()"
@@ -59,7 +59,7 @@
                 <nhs-table-row-container>
                     <nhs-table-cell>Third-party components and device capabilities</nhs-table-cell>
                     <nhs-table-cell>No</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag status-enum="@Model.ClientApplicationProgress.NativeDesktopThirdPartyStatus()" /></nhs-table-cell>
+                    <nhs-table-cell><nhs-tag status-enum="@Model.ApplicationTypeProgress.NativeDesktopThirdPartyStatus()" /></nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="@nameof(DesktopBasedController.ThirdPartyComponents)"
                            asp-controller="@typeof(DesktopBasedController).ControllerName()"
@@ -71,7 +71,7 @@
                 <nhs-table-row-container>
                     <nhs-table-cell>Hardware requirements</nhs-table-cell>
                     <nhs-table-cell>No</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag status-enum="@Model.ClientApplicationProgress.NativeDesktopHardwareRequirementsStatus()" /></nhs-table-cell>
+                    <nhs-table-cell><nhs-tag status-enum="@Model.ApplicationTypeProgress.NativeDesktopHardwareRequirementsStatus()" /></nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="@nameof(DesktopBasedController.HardwareRequirements)"
                            asp-controller="@typeof(DesktopBasedController).ControllerName()"
@@ -83,7 +83,7 @@
                 <nhs-table-row-container>
                     <nhs-table-cell>Additional information</nhs-table-cell>
                     <nhs-table-cell>No</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag status-enum="@Model.ClientApplicationProgress.NativeDesktopAdditionalInformationStatus()" /></nhs-table-cell>
+                    <nhs-table-cell><nhs-tag status-enum="@Model.ApplicationTypeProgress.NativeDesktopAdditionalInformationStatus()" /></nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="@nameof(DesktopBasedController.AdditionalInformation)"
                            asp-controller="@typeof(DesktopBasedController).ControllerName()"
@@ -97,7 +97,7 @@
             <vc:nhs-secondary-button text="Continue"
                                      type="Primary"
                                      url="@Url.Action(
-                                     nameof(CatalogueSolutionsController.ClientApplicationType),
+                                     nameof(CatalogueSolutionsController.ApplicationType),
                                      typeof(CatalogueSolutionsController).ControllerName(),
                                      new { Model.SolutionId })" /><br />
 

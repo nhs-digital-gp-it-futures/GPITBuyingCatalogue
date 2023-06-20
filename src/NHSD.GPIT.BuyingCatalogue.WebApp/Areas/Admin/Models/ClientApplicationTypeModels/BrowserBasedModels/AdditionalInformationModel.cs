@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationT
         public AdditionalInformationModel(CatalogueItem catalogueItem)
             : base(catalogueItem)
         {
-            AdditionalInformation = ClientApplication?.AdditionalInformation;
+            AdditionalInformation = ApplicationTypeDetail?.AdditionalInformation;
         }
 
         [StringLength(500)]

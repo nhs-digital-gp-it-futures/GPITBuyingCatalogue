@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
         {
             var input = "0.1.hello.2";
 
-            var result = SolutionsFilterHelper.ParseClientApplicationTypeIds(input);
+            var result = SolutionsFilterHelper.ParseApplicationTypeIds(input);
 
             var expected = new List<ApplicationType> { ApplicationType.BrowserBased, ApplicationType.Desktop, ApplicationType.MobileTablet };
 
@@ -86,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
         {
             var input = "0.1.2.6";
 
-            var result = SolutionsFilterHelper.ParseClientApplicationTypeIds(input);
+            var result = SolutionsFilterHelper.ParseApplicationTypeIds(input);
 
             var expected = new List<ApplicationType> { ApplicationType.BrowserBased, ApplicationType.Desktop, ApplicationType.MobileTablet };
 
@@ -98,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
         {
             var input = "0.1. .2..    ";
 
-            var result = SolutionsFilterHelper.ParseClientApplicationTypeIds(input);
+            var result = SolutionsFilterHelper.ParseApplicationTypeIds(input);
 
             var expected = new List<ApplicationType> { ApplicationType.BrowserBased, ApplicationType.Desktop, ApplicationType.MobileTablet };
 
@@ -110,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
         {
             var input = "iogjhoiudfhjgouhouhagdf souihadsfgouihdsfg";
 
-            var result = SolutionsFilterHelper.ParseClientApplicationTypeIds(input);
+            var result = SolutionsFilterHelper.ParseApplicationTypeIds(input);
 
             var expected = new List<ApplicationType>();
 
@@ -122,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
         {
             var input = string.Empty;
 
-            var result = SolutionsFilterHelper.ParseClientApplicationTypeIds(input);
+            var result = SolutionsFilterHelper.ParseApplicationTypeIds(input);
 
             var expected = new List<ApplicationType>();
 
@@ -134,7 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
         {
             var input = "0.1.2";
 
-            var result = SolutionsFilterHelper.ParseClientApplicationTypeIds(input);
+            var result = SolutionsFilterHelper.ParseApplicationTypeIds(input);
 
             var expected = new List<ApplicationType> { ApplicationType.BrowserBased, ApplicationType.Desktop, ApplicationType.MobileTablet };
 

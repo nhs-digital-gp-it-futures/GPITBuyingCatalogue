@@ -85,12 +85,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISolutionsService> mockService,
             DeleteApplicationTypeController controller)
         {
-            mockService.Setup(s => s.GetClientApplication(catalogueItemId)).ReturnsAsync(clientApplication);
+            mockService.Setup(s => s.GetApplicationType(catalogueItemId)).ReturnsAsync(clientApplication);
 
             var actual = (await controller.DeleteApplicationTypeConfirmation(catalogueItemId, clientApplicationType, model)).As<RedirectToActionResult>();
 
-            mockService.Verify(s => s.DeleteClientApplication(catalogueItemId, clientApplicationType));
-            actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ClientApplicationType));
+            mockService.Verify(s => s.DeleteApplicationType(catalogueItemId, clientApplicationType));
+            actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ApplicationType));
             actual.ControllerName.Should().Be(typeof(CatalogueSolutionsController).ControllerName());
             actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
         }

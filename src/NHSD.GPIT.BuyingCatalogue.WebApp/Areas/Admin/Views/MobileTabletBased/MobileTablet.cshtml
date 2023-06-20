@@ -23,7 +23,7 @@
                 <nhs-table-row-container>
                     <nhs-table-cell>Supported operating systems</nhs-table-cell>
                     <nhs-table-cell>Yes</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag status-enum="@Model.ClientApplicationProgress.NativeMobileSupportedOperatingSystemsStatus()"/></nhs-table-cell>
+                    <nhs-table-cell><nhs-tag status-enum="@Model.ApplicationTypeProgress.NativeMobileSupportedOperatingSystemsStatus()"/></nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="@nameof(MobileTabletBasedController.OperatingSystems)"
                            asp-controller="@typeof(MobileTabletBasedController).ControllerName()"
@@ -35,7 +35,7 @@
                 <nhs-table-row-container>
                     <nhs-table-cell>Connectivity</nhs-table-cell>
                     <nhs-table-cell>No</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag status-enum="@Model.ClientApplicationProgress.NativeMobileConnectivityStatus()"/></nhs-table-cell>
+                    <nhs-table-cell><nhs-tag status-enum="@Model.ApplicationTypeProgress.NativeMobileConnectivityStatus()"/></nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="@nameof(MobileTabletBasedController.Connectivity)"
                            asp-controller="@typeof(MobileTabletBasedController).ControllerName()"
@@ -47,7 +47,7 @@
                 <nhs-table-row-container>
                     <nhs-table-cell>Memory and storage</nhs-table-cell>
                     <nhs-table-cell>Yes</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag status-enum="@Model.ClientApplicationProgress.NativeMobileMemoryAndStorageStatus()"/></nhs-table-cell>
+                    <nhs-table-cell><nhs-tag status-enum="@Model.ApplicationTypeProgress.NativeMobileMemoryAndStorageStatus()"/></nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="@nameof(MobileTabletBasedController.MemoryAndStorage)"
                            asp-controller="@typeof(MobileTabletBasedController).ControllerName()"
@@ -59,7 +59,7 @@
                 <nhs-table-row-container>
                     <nhs-table-cell>Third-party components and device capabilities</nhs-table-cell>
                     <nhs-table-cell>No</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag status-enum="@Model.ClientApplicationProgress.NativeMobileThirdPartyStatus()"/></nhs-table-cell>
+                    <nhs-table-cell><nhs-tag status-enum="@Model.ApplicationTypeProgress.NativeMobileThirdPartyStatus()"/></nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="@nameof(MobileTabletBasedController.ThirdPartyComponents)"
                            asp-controller="@typeof(MobileTabletBasedController).ControllerName()"
@@ -71,7 +71,7 @@
                 <nhs-table-row-container>
                     <nhs-table-cell>Hardware requirements</nhs-table-cell>
                     <nhs-table-cell>No</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag status-enum="@Model.ClientApplicationProgress.NativeMobileHardwareRequirementsStatus()"/></nhs-table-cell>
+                    <nhs-table-cell><nhs-tag status-enum="@Model.ApplicationTypeProgress.NativeMobileHardwareRequirementsStatus()"/></nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="@nameof(MobileTabletBasedController.HardwareRequirements)"
                            asp-controller="@typeof(MobileTabletBasedController).ControllerName()"
@@ -83,7 +83,7 @@
                 <nhs-table-row-container>
                     <nhs-table-cell>Additional information</nhs-table-cell>
                     <nhs-table-cell>No</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag status-enum="@Model.ClientApplicationProgress.NativeMobileAdditionalInformationStatus()"/></nhs-table-cell>
+                    <nhs-table-cell><nhs-tag status-enum="@Model.ApplicationTypeProgress.NativeMobileAdditionalInformationStatus()"/></nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="@nameof(MobileTabletBasedController.AdditionalInformation)"
                            asp-controller="@typeof(MobileTabletBasedController).ControllerName()"
@@ -97,7 +97,7 @@
             <vc:nhs-secondary-button text="Continue"
                                      type="Primary"
                                      url="@Url.Action(
-                                     nameof(CatalogueSolutionsController.ClientApplicationType),
+                                     nameof(CatalogueSolutionsController.ApplicationType),
                                      typeof(CatalogueSolutionsController).ControllerName(),
                                      new { Model.SolutionId })" /><br />
 

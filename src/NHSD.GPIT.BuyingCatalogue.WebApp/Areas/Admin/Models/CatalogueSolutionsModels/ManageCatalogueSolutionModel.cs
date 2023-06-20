@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutions
             AssociatedServicesStatus = solutionLoadingStatuses.AssociatedServices;
             InteroperabilityStatus = solutionLoadingStatuses.Interoperability;
             ImplementationStatus = solutionLoadingStatuses.Implementation;
-            ClientApplicationTypeStatus = solutionLoadingStatuses.ApplicationType;
+            ApplicationTypeStatus = solutionLoadingStatuses.ApplicationType;
             HostingTypeStatus = solutionLoadingStatuses.HostingType;
             ListPriceStatus = solutionLoadingStatuses.ListPrice;
             CapabilitiesStatus = solutionLoadingStatuses.CapabilitiesAndEpics;
@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutions
 
         public TaskProgress HostingTypeStatus { get; init; }
 
-        public TaskProgress ClientApplicationTypeStatus { get; init; }
+        public TaskProgress ApplicationTypeStatus { get; init; }
 
         public TaskProgress InteroperabilityStatus { get; init; }
 

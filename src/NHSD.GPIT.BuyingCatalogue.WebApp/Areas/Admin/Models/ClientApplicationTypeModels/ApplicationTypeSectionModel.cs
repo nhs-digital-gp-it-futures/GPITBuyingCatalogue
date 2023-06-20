@@ -9,14 +9,14 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BaseModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels
 {
-    public class ClientApplicationTypeSectionModel : MarketingBaseModel
+    public class ApplicationTypeSectionModel : MarketingBaseModel
     {
-        public ClientApplicationTypeSectionModel()
+        public ApplicationTypeSectionModel()
             : base(null)
         {
         }
 
-        public ClientApplicationTypeSectionModel(CatalogueItem catalogueItem)
+        public ApplicationTypeSectionModel(CatalogueItem catalogueItem)
             : base(catalogueItem)
         {
             if (catalogueItem is null)
@@ -25,13 +25,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationT
             var applicationType = catalogueItem.Solution?.EnsureAndGetApplicationType();
 
             SolutionName = catalogueItem.Name;
-            ExistingClientApplicationTypes = applicationType!.ExistingApplicationTypes ?? Array.Empty<ApplicationType>();
-            ApplicationTypesToAdd = Enum.GetValues<ApplicationType>().Except(ExistingClientApplicationTypes).ToList();
+            ExistingApplicationTypes = applicationType!.ExistingApplicationTypes ?? Array.Empty<ApplicationType>();
+            ApplicationTypesToAdd = Enum.GetValues<ApplicationType>().Except(ExistingApplicationTypes).ToList();
             ApplicationTypesToAddRadioItems = ApplicationTypesToAdd.Select(t => new { Text = t.AsString(EnumFormat.DisplayName), Value = t.ToString() });
-            ExistingApplicationTypesCount = ExistingClientApplicationTypes.Count;
+            ExistingApplicationTypesCount = ExistingApplicationTypes.Count;
         }
 
-        public IReadOnlyList<ApplicationType> ExistingClientApplicationTypes { get; } = Array.Empty<ApplicationType>();
+        public IReadOnlyList<ApplicationType> ExistingApplicationTypes { get; } = Array.Empty<ApplicationType>();
 
         public int? ExistingApplicationTypesCount { get; set; }
 

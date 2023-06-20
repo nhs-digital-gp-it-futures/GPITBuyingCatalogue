@@ -138,12 +138,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
-            mockService.Setup(s => s.GetClientApplication(catalogueItemId))
+            mockService.Setup(s => s.GetApplicationType(catalogueItemId))
                 .ReturnsAsync(clientApplication);
 
             await controller.SupportedBrowsers(catalogueItemId, model);
 
-            mockService.Verify(s => s.SaveClientApplication(catalogueItemId, clientApplication));
+            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, clientApplication));
         }
 
         [Theory]
@@ -159,7 +159,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
-            mockService.Setup(s => s.GetClientApplication(catalogueItemId))
+            mockService.Setup(s => s.GetApplicationType(catalogueItemId))
                 .ReturnsAsync(clientApplication);
 
             var actual = (await controller.SupportedBrowsers(catalogueItemId, model)).As<RedirectToActionResult>();
@@ -249,12 +249,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
-            mockService.Setup(s => s.GetClientApplication(catalogueItemId))
+            mockService.Setup(s => s.GetApplicationType(catalogueItemId))
                 .ReturnsAsync(clientApplication);
 
             await controller.PlugInsOrExtensions(catalogueItemId, model);
 
-            mockService.Verify(s => s.SaveClientApplication(catalogueItemId, clientApplication));
+            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, clientApplication));
         }
 
         [Theory]
@@ -270,7 +270,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
-            mockService.Setup(s => s.GetClientApplication(catalogueItemId))
+            mockService.Setup(s => s.GetApplicationType(catalogueItemId))
                 .ReturnsAsync(clientApplication);
 
             var actual = (await controller.PlugInsOrExtensions(catalogueItemId, model)).As<RedirectToActionResult>();
@@ -360,12 +360,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
-            mockService.Setup(s => s.GetClientApplication(catalogueItemId))
+            mockService.Setup(s => s.GetApplicationType(catalogueItemId))
                 .ReturnsAsync(clientApplication);
 
             await controller.ConnectivityAndResolution(catalogueItemId, model);
 
-            mockService.Verify(s => s.SaveClientApplication(catalogueItemId, clientApplication));
+            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, clientApplication));
         }
 
         [Theory]
@@ -381,7 +381,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
-            mockService.Setup(s => s.GetClientApplication(catalogueItemId))
+            mockService.Setup(s => s.GetApplicationType(catalogueItemId))
                 .ReturnsAsync(clientApplication);
 
             var actual = (await controller.ConnectivityAndResolution(catalogueItemId, model)).As<RedirectToActionResult>();
@@ -471,12 +471,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
-            mockService.Setup(s => s.GetClientApplication(catalogueItemId))
+            mockService.Setup(s => s.GetApplicationType(catalogueItemId))
                 .ReturnsAsync(clientApplication);
 
             await controller.HardwareRequirements(catalogueItemId, model);
 
-            mockService.Verify(s => s.SaveClientApplication(catalogueItemId, clientApplication));
+            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, clientApplication));
         }
 
         [Theory]
@@ -492,7 +492,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
-            mockService.Setup(s => s.GetClientApplication(catalogueItemId))
+            mockService.Setup(s => s.GetApplicationType(catalogueItemId))
                 .ReturnsAsync(clientApplication);
 
             var actual = (await controller.HardwareRequirements(catalogueItemId, model)).As<RedirectToActionResult>();
@@ -582,12 +582,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
-            mockService.Setup(s => s.GetClientApplication(catalogueItemId))
+            mockService.Setup(s => s.GetApplicationType(catalogueItemId))
                 .ReturnsAsync(clientApplication);
 
             await controller.AdditionalInformation(catalogueItemId, model);
 
-            mockService.Verify(s => s.SaveClientApplication(catalogueItemId, clientApplication));
+            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, clientApplication));
         }
 
         [Theory]
@@ -603,7 +603,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
-            mockService.Setup(s => s.GetClientApplication(catalogueItemId))
+            mockService.Setup(s => s.GetApplicationType(catalogueItemId))
                 .ReturnsAsync(clientApplication);
 
             var actual = (await controller.AdditionalInformation(catalogueItemId, model)).As<RedirectToActionResult>();

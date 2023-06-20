@@ -666,7 +666,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
-            await catalogueSolutionsController.ClientApplicationType(catalogueItem.Id);
+            await catalogueSolutionsController.ApplicationType(catalogueItem.Id);
 
             mockService.Verify(s => s.GetSolutionThin(catalogueItem.Id));
         }
@@ -683,11 +683,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
-            var actual = (await controller.ClientApplicationType(catalogueItemId)).As<ViewResult>();
+            var actual = (await controller.ApplicationType(catalogueItemId)).As<ViewResult>();
 
             mockService.Verify(s => s.GetSolutionThin(catalogueItemId));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new ClientApplicationTypeSectionModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
+            actual.Model.Should().BeEquivalentTo(new ApplicationTypeSectionModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -700,7 +700,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(default(CatalogueItem));
 
-            var actual = (await controller.ClientApplicationType(catalogueItemId)).As<BadRequestObjectResult>();
+            var actual = (await controller.ApplicationType(catalogueItemId)).As<BadRequestObjectResult>();
 
             actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
         }
@@ -717,11 +717,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
-            var actual = (await controller.ClientApplicationType(catalogueItemId)).As<ViewResult>();
+            var actual = (await controller.ApplicationType(catalogueItemId)).As<ViewResult>();
 
             mockService.Verify(s => s.GetSolutionThin(catalogueItemId));
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new ClientApplicationTypeSectionModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
+            actual.Model.Should().BeEquivalentTo(new ApplicationTypeSectionModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]

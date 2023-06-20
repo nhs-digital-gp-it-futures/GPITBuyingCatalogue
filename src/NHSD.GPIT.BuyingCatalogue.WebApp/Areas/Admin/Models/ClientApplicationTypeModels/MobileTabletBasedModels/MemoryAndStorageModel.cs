@@ -21,8 +21,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationT
 
             MemorySizes = Framework.Constants.SelectLists.MemorySizes;
 
-            SelectedMemorySize = ClientApplication?.MobileMemoryAndStorage?.MinimumMemoryRequirement;
-            Description = ClientApplication?.MobileMemoryAndStorage?.Description;
+            SelectedMemorySize = ApplicationTypeDetail?.MobileMemoryAndStorage?.MinimumMemoryRequirement;
+            Description = ApplicationTypeDetail?.MobileMemoryAndStorage?.Description;
         }
 
         public string SelectedMemorySize { get; set; }

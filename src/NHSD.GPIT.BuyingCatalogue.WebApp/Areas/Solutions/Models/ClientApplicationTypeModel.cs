@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         {
             if (client == null)
             {
-                DisplayClientApplication = false;
+                DisplayApplicationType = false;
                 return;
             }
 
@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             NativeDesktop,
         }
 
-        public bool DisplayClientApplication { get; set; }
+        public bool DisplayApplicationType { get; set; }
 
         public string Label { get; set; }
 
@@ -93,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             HardwareRequirements = client.HardwareRequirements;
             AdditionalInformation = client.AdditionalInformation;
 
-            DisplayClientApplication = BrowsersSupported.Any() ||
+            DisplayApplicationType = BrowsersSupported.Any() ||
                 MobileResponsive.HasValue ||
                 MobileFirstDesign.HasValue ||
                 PluginsRequired.HasValue ||
@@ -120,7 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             HardwareRequirements = client.NativeMobileHardwareRequirements;
             AdditionalInformation = client.NativeMobileAdditionalInformation;
 
-            DisplayClientApplication = MobileOperatingSystems.Any() ||
+            DisplayApplicationType = MobileOperatingSystems.Any() ||
                 !string.IsNullOrWhiteSpace(OperatingSystemDescription) ||
                 !string.IsNullOrWhiteSpace(MinimumConnectionSpeed) ||
                 MobileConnectionTypes.Any() ||
@@ -148,7 +148,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             HardwareRequirements = client.NativeDesktopHardwareRequirements;
             AdditionalInformation = client.NativeDesktopAdditionalInformation;
 
-            DisplayClientApplication =
+            DisplayApplicationType =
                 !string.IsNullOrWhiteSpace(OperatingSystemDescription) ||
                 !string.IsNullOrWhiteSpace(MinimumConnectionSpeed) ||
                 !string.IsNullOrWhiteSpace(MemoryRequirements) ||

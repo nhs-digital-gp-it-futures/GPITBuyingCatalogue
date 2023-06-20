@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 query = ApplyAdditionalFilterToQuery<ApplicationType>(
                     query,
                     selectedApplicationTypeIds,
-                    GetSelectedFiltersClientApplication,
+                    GetSelectedFilterApplication,
                     x => x.ApplicationTypeDetail != null);
             }
 
@@ -285,10 +285,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             };
         }
 
-        private static IEnumerable<ApplicationType> GetSelectedFiltersClientApplication(Solution solution, IEnumerable<ApplicationType> selectedFilterEnums)
+        private static IEnumerable<ApplicationType> GetSelectedFilterApplication(Solution solution, IEnumerable<ApplicationType> selectedFilterEnums)
         {
-            var clientApplication = solution.ApplicationTypeDetail;
-            return selectedFilterEnums?.Where(t => clientApplication.HasApplicationType(t));
+            var applicationTypeDetail = solution.ApplicationTypeDetail;
+            return selectedFilterEnums?.Where(t => applicationTypeDetail.HasApplicationType(t));
         }
 
         private static IEnumerable<HostingType> GetSelectedFiltersHosting(Solution solution, IEnumerable<HostingType> selectedFilterEnums)

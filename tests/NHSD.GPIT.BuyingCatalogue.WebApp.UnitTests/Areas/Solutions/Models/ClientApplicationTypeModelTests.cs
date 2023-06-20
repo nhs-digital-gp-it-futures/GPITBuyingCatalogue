@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         {
             var model = new ClientApplicationTypeModel(ClientApplicationTypeModel.ApplicationType.BrowserBased, null);
 
-            Assert.False(model.DisplayClientApplication);
+            Assert.False(model.DisplayApplicationType);
         }
 
         [Theory]
@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             Assert.Equal("Browser-based application", model.Label);
             Assert.Equal("browser-based", model.DataTestTag);
             model.BrowsersSupported.Should().BeEquivalentTo(client.BrowsersSupported);
-            Assert.True(model.DisplayClientApplication);
+            Assert.True(model.DisplayApplicationType);
         }
 
         [Theory]
@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             Assert.Equal("Native mobile or tablet application", model.Label);
             Assert.Equal("native-mobile", model.DataTestTag);
             model.MobileOperatingSystems.Should().BeEquivalentTo(client.MobileOperatingSystems.OperatingSystems);
-            Assert.True(model.DisplayClientApplication);
+            Assert.True(model.DisplayApplicationType);
         }
 
         [Theory]
@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             Assert.Equal("Native desktop application", model.Label);
             Assert.Equal("native-desktop", model.DataTestTag);
             Assert.Equal(description, model.OperatingSystemDescription);
-            Assert.True(model.DisplayClientApplication);
+            Assert.True(model.DisplayApplicationType);
         }
     }
 }

@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             },
             new()
             {
-                Action = nameof(SolutionsController.ClientApplicationTypes),
+                Action = nameof(SolutionsController.ApplicationTypes),
                 Controller = typeof(SolutionsController).ControllerName(),
                 Name = "Application type",
             },

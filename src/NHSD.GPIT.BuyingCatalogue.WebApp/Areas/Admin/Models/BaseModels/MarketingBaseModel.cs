@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BaseModels
         protected MarketingBaseModel(CatalogueItem catalogueItem)
         {
             CatalogueItem = catalogueItem;
-            ClientApplication = CatalogueItem?.Solution?.EnsureAndGetApplicationType();
+            ApplicationTypeDetail = CatalogueItem?.Solution?.EnsureAndGetApplicationType();
             SolutionId = CatalogueItem?.Id;
             SupplierId = CatalogueItem?.Supplier?.Id ?? 0;
         }
@@ -19,9 +19,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.BaseModels
 
         public int SupplierId { get; set; }
 
-        public ApplicationTypeDetail ClientApplication { get; set; }
+        public ApplicationTypeDetail ApplicationTypeDetail { get; set; }
 
-        public ApplicationTypeProgress ClientApplicationProgress => new ApplicationTypeProgress(ClientApplication);
+        public ApplicationTypeProgress ApplicationTypeProgress => new ApplicationTypeProgress(ApplicationTypeDetail);
 
         protected CatalogueItem CatalogueItem { get; set; }
     }

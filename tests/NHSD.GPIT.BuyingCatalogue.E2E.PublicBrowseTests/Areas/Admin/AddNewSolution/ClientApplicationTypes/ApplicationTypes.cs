@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
             : base(
                   factory,
                   typeof(CatalogueSolutionsController),
-                  nameof(CatalogueSolutionsController.ClientApplicationType),
+                  nameof(CatalogueSolutionsController.ApplicationType),
                   Parameters)
         {
         }
@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
         {
             NavigateToUrl(
                 typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.ClientApplicationType),
+                nameof(CatalogueSolutionsController.ApplicationType),
                 ExistingClientApplicationsParameters);
 
             var formattedApplicationName = FormatApplicationType(clientApplicationType);

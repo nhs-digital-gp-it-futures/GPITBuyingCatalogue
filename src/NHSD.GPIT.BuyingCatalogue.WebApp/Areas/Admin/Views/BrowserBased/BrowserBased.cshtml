@@ -23,7 +23,7 @@
                 <nhs-table-row-container>
                     <nhs-table-cell>Supported browsers</nhs-table-cell>
                     <nhs-table-cell>Yes</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag status-enum="@Model.ClientApplicationProgress.SupportedBrowsersStatus()"/></nhs-table-cell>
+                    <nhs-table-cell><nhs-tag status-enum="@Model.ApplicationTypeProgress.SupportedBrowsersStatus()"/></nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="@nameof(BrowserBasedController.SupportedBrowsers)"
                            asp-controller="@typeof(BrowserBasedController).ControllerName()"
@@ -35,7 +35,7 @@
                 <nhs-table-row-container>
                     <nhs-table-cell>Plug-ins or extensions required</nhs-table-cell>
                     <nhs-table-cell>Yes</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag status-enum="@Model.ClientApplicationProgress.PluginsStatus()"/></nhs-table-cell>
+                    <nhs-table-cell><nhs-tag status-enum="@Model.ApplicationTypeProgress.PluginsStatus()"/></nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="@nameof(BrowserBasedController.PlugInsOrExtensions)"
                            asp-controller="@typeof(BrowserBasedController).ControllerName()"
@@ -47,7 +47,7 @@
                 <nhs-table-row-container>
                     <nhs-table-cell>Connectivity and resolution</nhs-table-cell>
                     <nhs-table-cell>No</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag status-enum="@Model.ClientApplicationProgress.ConnectivityStatus()"/></nhs-table-cell>
+                    <nhs-table-cell><nhs-tag status-enum="@Model.ApplicationTypeProgress.ConnectivityStatus()"/></nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="@nameof(BrowserBasedController.ConnectivityAndResolution)"
                            asp-controller="@typeof(BrowserBasedController).ControllerName()"
@@ -59,7 +59,7 @@
                 <nhs-table-row-container>
                     <nhs-table-cell>Hardware requirements</nhs-table-cell>
                     <nhs-table-cell>No</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag status-enum="@Model.ClientApplicationProgress.HardwareRequirementsStatus()"/></nhs-table-cell>
+                    <nhs-table-cell><nhs-tag status-enum="@Model.ApplicationTypeProgress.HardwareRequirementsStatus()"/></nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="@nameof(BrowserBasedController.HardwareRequirements)"
                            asp-controller="@typeof(BrowserBasedController).ControllerName()"
@@ -71,7 +71,7 @@
                 <nhs-table-row-container>
                     <nhs-table-cell>Additional information</nhs-table-cell>
                     <nhs-table-cell>No</nhs-table-cell>
-                    <nhs-table-cell><nhs-tag status-enum="@Model.ClientApplicationProgress.AdditionalInformationStatus()"/></nhs-table-cell>
+                    <nhs-table-cell><nhs-tag status-enum="@Model.ApplicationTypeProgress.AdditionalInformationStatus()"/></nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="@nameof(BrowserBasedController.AdditionalInformation)"
                            asp-controller="@typeof(BrowserBasedController).ControllerName()"
@@ -85,7 +85,7 @@
             <vc:nhs-secondary-button text="Continue"
                                      type="Primary"
                                      url="@Url.Action(
-                                     nameof(CatalogueSolutionsController.ClientApplicationType),
+                                     nameof(CatalogueSolutionsController.ApplicationType),
                                      typeof(CatalogueSolutionsController).ControllerName(),
                                      new { Model.SolutionId })" /><br />
 

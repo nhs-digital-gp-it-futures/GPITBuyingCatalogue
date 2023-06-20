@@ -322,28 +322,28 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<ApplicationTypeDetail> GetClientApplication(CatalogueItemId solutionId)
+        public async Task<ApplicationTypeDetail> GetApplicationType(CatalogueItemId solutionId)
         {
             var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
             return solution.EnsureAndGetApplicationType();
         }
 
-        public async Task SaveClientApplication(CatalogueItemId solutionId, ApplicationTypeDetail clientApplication)
+        public async Task SaveApplicationType(CatalogueItemId solutionId, ApplicationTypeDetail applicationTypeDetail)
         {
-            clientApplication.ValidateNotNull(nameof(clientApplication));
+            applicationTypeDetail.ValidateNotNull(nameof(applicationTypeDetail));
 
             var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
-            solution.ApplicationTypeDetail = clientApplication;
+            solution.ApplicationTypeDetail = applicationTypeDetail;
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task DeleteClientApplication(CatalogueItemId solutionId, ApplicationType clientApplicationType)
+        public async Task DeleteApplicationType(CatalogueItemId solutionId, ApplicationType applicationType)
         {
-            var clientApplication = await GetClientApplication(solutionId);
+            var applicationTypeDetail = await GetApplicationType(solutionId);
 
-            RemoveClientApplicationType(clientApplication, clientApplicationType);
+            RemoveApplicationType(applicationTypeDetail, applicationType);
 
-            await SaveClientApplication(solutionId, clientApplication);
+            await SaveApplicationType(solutionId, applicationTypeDetail);
         }
 
         public async Task SaveHosting(CatalogueItemId solutionId, Hosting hosting)
@@ -542,49 +542,49 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(wp => wp.Standard)
                 .Where(wp => wp.SolutionId == solutionId).ToListAsync();
 
-        internal static ApplicationTypeDetail RemoveClientApplicationType(ApplicationTypeDetail clientApplication, ApplicationType clientApplicationType)
+        internal static ApplicationTypeDetail RemoveApplicationType(ApplicationTypeDetail applicationTypeDetail, ApplicationType applicationType)
         {
-            if (clientApplication is null)
-                throw new ArgumentNullException(nameof(clientApplication));
+            if (applicationTypeDetail is null)
+                throw new ArgumentNullException(nameof(applicationTypeDetail));
 
-            if (clientApplication.ClientApplicationTypes is not null)
+            if (applicationTypeDetail.ClientApplicationTypes is not null)
             {
-                if (clientApplication.ClientApplicationTypes.Contains(clientApplicationType.AsString(EnumFormat.EnumMemberValue)))
-                    clientApplication.ClientApplicationTypes.Remove(clientApplicationType.AsString(EnumFormat.EnumMemberValue));
+                if (applicationTypeDetail.ClientApplicationTypes.Contains(applicationType.AsString(EnumFormat.EnumMemberValue)))
+                    applicationTypeDetail.ClientApplicationTypes.Remove(applicationType.AsString(EnumFormat.EnumMemberValue));
             }
 
-            if (clientApplicationType == ApplicationType.BrowserBased)
+            if (applicationType == ApplicationType.BrowserBased)
             {
-                clientApplication.AdditionalInformation = null;
-                clientApplication.BrowsersSupported = null;
-                clientApplication.HardwareRequirements = null;
-                clientApplication.MinimumConnectionSpeed = null;
-                clientApplication.MinimumDesktopResolution = null;
-                clientApplication.MobileFirstDesign = null;
-                clientApplication.MobileResponsive = null;
-                clientApplication.Plugins = null;
+                applicationTypeDetail.AdditionalInformation = null;
+                applicationTypeDetail.BrowsersSupported = null;
+                applicationTypeDetail.HardwareRequirements = null;
+                applicationTypeDetail.MinimumConnectionSpeed = null;
+                applicationTypeDetail.MinimumDesktopResolution = null;
+                applicationTypeDetail.MobileFirstDesign = null;
+                applicationTypeDetail.MobileResponsive = null;
+                applicationTypeDetail.Plugins = null;
             }
-            else if (clientApplicationType == ApplicationType.Desktop)
+            else if (applicationType == ApplicationType.Desktop)
             {
-                clientApplication.NativeDesktopAdditionalInformation = null;
-                clientApplication.NativeDesktopHardwareRequirements = null;
-                clientApplication.NativeDesktopMemoryAndStorage = null;
-                clientApplication.NativeDesktopMinimumConnectionSpeed = null;
-                clientApplication.NativeDesktopOperatingSystemsDescription = null;
-                clientApplication.NativeDesktopThirdParty = null;
+                applicationTypeDetail.NativeDesktopAdditionalInformation = null;
+                applicationTypeDetail.NativeDesktopHardwareRequirements = null;
+                applicationTypeDetail.NativeDesktopMemoryAndStorage = null;
+                applicationTypeDetail.NativeDesktopMinimumConnectionSpeed = null;
+                applicationTypeDetail.NativeDesktopOperatingSystemsDescription = null;
+                applicationTypeDetail.NativeDesktopThirdParty = null;
             }
             else
             {
-                clientApplication.MobileConnectionDetails = null;
-                clientApplication.MobileMemoryAndStorage = null;
-                clientApplication.MobileOperatingSystems = null;
-                clientApplication.MobileThirdParty = null;
-                clientApplication.NativeMobileAdditionalInformation = null;
-                clientApplication.NativeMobileFirstDesign = null;
-                clientApplication.NativeMobileHardwareRequirements = null;
+                applicationTypeDetail.MobileConnectionDetails = null;
+                applicationTypeDetail.MobileMemoryAndStorage = null;
+                applicationTypeDetail.MobileOperatingSystems = null;
+                applicationTypeDetail.MobileThirdParty = null;
+                applicationTypeDetail.NativeMobileAdditionalInformation = null;
+                applicationTypeDetail.NativeMobileFirstDesign = null;
+                applicationTypeDetail.NativeMobileHardwareRequirements = null;
             }
 
-            return clientApplication;
+            return applicationTypeDetail;
         }
 
         private async Task<CatalogueItem> GetCatalogueItem(CatalogueItemId id) => await dbContext.CatalogueItems

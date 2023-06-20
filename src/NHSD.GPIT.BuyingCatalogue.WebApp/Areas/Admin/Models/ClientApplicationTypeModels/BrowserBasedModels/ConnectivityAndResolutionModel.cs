@@ -18,9 +18,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationT
             if (catalogueItem is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
 
-            SelectedConnectionSpeed = ClientApplication?.MinimumConnectionSpeed;
+            SelectedConnectionSpeed = ApplicationTypeDetail?.MinimumConnectionSpeed;
 
-            SelectedScreenResolution = ClientApplication?.MinimumDesktopResolution;
+            SelectedScreenResolution = ApplicationTypeDetail?.MinimumDesktopResolution;
 
             ConnectionSpeeds = SelectLists.ConnectionSpeeds;
 

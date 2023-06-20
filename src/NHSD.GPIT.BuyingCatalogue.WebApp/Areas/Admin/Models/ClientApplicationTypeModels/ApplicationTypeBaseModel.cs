@@ -13,16 +13,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationT
 
         public ApplicationTypeBaseModel(CatalogueItem catalogueItem)
         {
-            ClientApplication = catalogueItem?.Solution?.EnsureAndGetApplicationType() ?? new ApplicationTypeDetail();
+            ApplicationTypeDetail = catalogueItem?.Solution?.EnsureAndGetApplicationType() ?? new ApplicationTypeDetail();
             SolutionId = catalogueItem?.Id;
             SolutionName = catalogueItem?.Name;
         }
 
         public string SolutionName { get; set; }
 
-        public ApplicationTypeDetail ClientApplication { get; set; }
+        public ApplicationTypeDetail ApplicationTypeDetail { get; set; }
 
-        public ApplicationTypeProgress ClientApplicationProgress => new ApplicationTypeProgress(ClientApplication);
+        public ApplicationTypeProgress ApplicationTypeProgress => new ApplicationTypeProgress(ApplicationTypeDetail);
 
         public CatalogueItemId? SolutionId { get; set; }
 

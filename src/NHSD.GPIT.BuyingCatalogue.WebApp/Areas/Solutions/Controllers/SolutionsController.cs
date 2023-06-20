@@ -141,7 +141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     selectedFrameworkId,
                     selectedApplicationTypeIds =
                         additionalFiltersModel.CombineSelectedOptions(
-                            additionalFiltersModel.ClientApplicationTypeOptions),
+                            additionalFiltersModel.ApplicationTypeOptions),
                     selectedHostingTypeIds =
                         additionalFiltersModel.CombineSelectedOptions(additionalFiltersModel.HostingTypeOptions),
                     filterId,
@@ -333,7 +333,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         }
 
         [HttpGet("{solutionId}/application-types")]
-        public async Task<IActionResult> ClientApplicationTypes(CatalogueItemId solutionId)
+        public async Task<IActionResult> ApplicationTypes(CatalogueItemId solutionId)
         {
             var item = await solutionsService.GetSolutionThin(solutionId);
 

@@ -1,7 +1,7 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 @using EnumsNET
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels.ClientApplicationTypeSectionModel;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels.ApplicationTypeSectionModel;
 @{
     ViewBag.Title = "Application type";
 }
@@ -30,19 +30,19 @@
                 <input type="hidden" asp-for="@Model.BackLink" />
                 <input type="hidden" asp-for="@Model.ExistingApplicationTypesCount" />
 
-                @if (Model.ExistingClientApplicationTypes.Any())
+                @if (Model.ExistingApplicationTypes.Any())
                 {
                     <nhs-table>
                         <nhs-table-column>Application types added</nhs-table-column>
                         <nhs-table-column>Status</nhs-table-column>
                         <nhs-table-column>Action</nhs-table-column>
 
-                        @foreach (var applicationType in Model.ExistingClientApplicationTypes)
+                        @foreach (var applicationType in Model.ExistingApplicationTypes)
                         {
                             <nhs-table-row-container>
                                 <nhs-table-cell>@FormatApplicationType(applicationType)</nhs-table-cell>
                                 <nhs-table-cell>
-                                    <nhs-tag status-enum="@Model.ClientApplicationProgress.ApplicationTypeStatus(applicationType)" />
+                                    <nhs-tag status-enum="@Model.ApplicationTypeProgress.ApplicationTypeStatus(applicationType)" />
                                 </nhs-table-cell>
                                 <nhs-table-cell>
                                     @if (applicationType == ApplicationType.MobileTablet)

@@ -3,7 +3,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels
 {
-    public sealed class ClientApplicationTypeSelectionModel : ClientApplicationTypeSectionModel
+    public sealed class ClientApplicationTypeSelectionModel : ApplicationTypeSectionModel
     {
         public ClientApplicationTypeSelectionModel()
         {

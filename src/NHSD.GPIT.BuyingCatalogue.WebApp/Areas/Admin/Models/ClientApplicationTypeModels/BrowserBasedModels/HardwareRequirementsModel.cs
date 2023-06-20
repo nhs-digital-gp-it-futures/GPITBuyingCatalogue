@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationT
         public HardwareRequirementsModel(CatalogueItem catalogueItem)
             : base(catalogueItem)
         {
-            Description = ClientApplication?.HardwareRequirements;
+            Description = ApplicationTypeDetail?.HardwareRequirements;
         }
 
         [StringLength(500)]

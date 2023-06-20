@@ -28,7 +28,7 @@ public static class ReviewFilterModelTests
         new object[] { Enumerable.Empty<HostingType>().ToList(), false, },
     };
 
-    public static IEnumerable<object[]> HasClientApplicationTypesTestData => new[]
+    public static IEnumerable<object[]> HasApplicationTypesTestData => new[]
     {
         new object[] { new List<ApplicationType> { ApplicationType.Desktop }, true, },
         new object[] { Enumerable.Empty<ApplicationType>().ToList(), false, },
@@ -129,8 +129,8 @@ public static class ReviewFilterModelTests
     }
 
     [Theory]
-    [CommonMemberAutoData(nameof(HasClientApplicationTypesTestData))]
-    public static void HasClientApplicationTypes_ReturnsExpected(
+    [CommonMemberAutoData(nameof(HasApplicationTypesTestData))]
+    public static void HasApplicationTypes_ReturnsExpected(
         List<ApplicationType> clientApplicationTypes,
         bool expected,
         FilterDetailsModel filterDetailsModel)
@@ -139,7 +139,7 @@ public static class ReviewFilterModelTests
 
         var model = new ReviewFilterModel(filterDetailsModel);
 
-        model.HasClientApplicationTypes().Should().Be(expected);
+        model.HasApplicationTypes().Should().Be(expected);
     }
 
     [Theory]

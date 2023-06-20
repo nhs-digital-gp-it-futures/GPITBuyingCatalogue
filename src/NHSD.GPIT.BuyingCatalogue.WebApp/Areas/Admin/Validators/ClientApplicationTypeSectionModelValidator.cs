@@ -3,7 +3,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeM
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 {
-    public sealed class ClientApplicationTypeSectionModelValidator : AbstractValidator<ClientApplicationTypeSectionModel>
+    public sealed class ClientApplicationTypeSectionModelValidator : AbstractValidator<ApplicationTypeSectionModel>
     {
         internal const string OneApplicationTypeRequiredMessage = "Add an application type";
 

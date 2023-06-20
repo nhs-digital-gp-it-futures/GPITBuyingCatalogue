@@ -14,8 +14,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationT
         public PlugInsOrExtensionsModel(CatalogueItem catalogueItem)
             : base(catalogueItem)
         {
-            AdditionalInformation = ClientApplication?.Plugins?.AdditionalInformation;
-            PlugInsRequired = ClientApplication?.Plugins?.Required.ToYesNo();
+            AdditionalInformation = ApplicationTypeDetail?.Plugins?.AdditionalInformation;
+            PlugInsRequired = ApplicationTypeDetail?.Plugins?.Required.ToYesNo();
         }
 
         [StringLength(500)]

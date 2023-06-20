@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             List<int> capabilityIds,
             List<string> epicIds,
             string frameworkId,
-            List<ApplicationType> clientApplicationTypes,
+            List<ApplicationType> applicationTypes,
             List<HostingType> hostingTypes)
         {
             if (string.IsNullOrEmpty(name))
@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             await AddFilterCapabilities(filter.Id, capabilityIds);
             await AddFilterEpics(filter.Id, epicIds);
-            await AddFilterClientApplicationTypes(filter.Id, clientApplicationTypes);
+            await AddFilterApplicationTypes(filter.Id, applicationTypes);
             await AddFilterHostingTypes(filter.Id, hostingTypes);
 
             return filter.Id;
@@ -170,9 +170,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await dbContext.SaveChangesAsync();
         }
 
-        internal async Task AddFilterClientApplicationTypes(int filterId, List<ApplicationType> clientApplicationTypes)
+        internal async Task AddFilterApplicationTypes(int filterId, List<ApplicationType> applicationTypes)
         {
-            if (clientApplicationTypes is null || clientApplicationTypes.Count == 0) return;
+            if (applicationTypes is null || applicationTypes.Count == 0) return;
 
             var filter = await dbContext.Filters.FirstOrDefaultAsync(o => o.Id == filterId);
 
@@ -181,7 +181,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 return;
             }
 
-            foreach (var type in clientApplicationTypes.Where(type => filter.FilterApplicationTypes.All(x => x.ApplicationTypeID != type)))
+            foreach (var type in applicationTypes.Where(type => filter.FilterApplicationTypes.All(x => x.ApplicationTypeID != type)))
             {
                 filter.FilterApplicationTypes.Add(new FilterApplicationType()
                 {

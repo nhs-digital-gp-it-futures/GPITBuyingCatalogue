@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         public static void Validate_NoExistingHostingTypes_HasError(
             [Frozen] CatalogueItem catalogueItem,
             [Frozen] Solution solution,
-            ClientApplicationTypeSectionModel model,
+            ApplicationTypeSectionModel model,
             ClientApplicationTypeSectionModelValidator validator)
         {
             // CatalogueItem and Solution must be frozen so that a catalogue item instance with solution is passed
@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         public static void Validate_ExistingHostingTypes_DoesNotHaveError(
             [Frozen] CatalogueItem catalogueItem,
             [Frozen] Solution solution,
-            ClientApplicationTypeSectionModel model,
+            ApplicationTypeSectionModel model,
             ClientApplicationTypeSectionModelValidator validator)
         {
             // CatalogueItem and Solution must be frozen so that a catalogue item instance with solution is passed
