@@ -6,7 +6,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 {
-    public static class ClientApplicationTypeSelectionModelValidatorTests
+    public static class ApplicationTypeSelectionModelValidatorTests
     {
         [Theory]
         [CommonAutoData]

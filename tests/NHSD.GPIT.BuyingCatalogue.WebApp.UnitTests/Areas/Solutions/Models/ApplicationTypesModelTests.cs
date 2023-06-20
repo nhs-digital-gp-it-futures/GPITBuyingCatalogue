@@ -13,17 +13,17 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 {
-    public static class ClientApplicationTypesModelTests
+    public static class ApplicationTypesModelTests
     {
         [Fact]
-        public static void ClientApplicationTypesModel_NullCatalogueItem_ThrowsException()
+        public static void ApplicationTypesModel_NullCatalogueItem_ThrowsException()
         {
             var actual = Assert.Throws<ArgumentNullException>(() => new ApplicationTypesModel(null, new CatalogueItemContentStatus()));
             actual.ParamName.Should().Be("catalogueItem");
         }
 
         [Fact]
-        public static void ClientApplicationTypesModel_NullSolution_ThrowsException()
+        public static void ApplicationTypesModel_NullSolution_ThrowsException()
         {
             var actual = Assert.Throws<ArgumentNullException>(() => new ApplicationTypesModel(new CatalogueItem() { Solution = null }, new CatalogueItemContentStatus()));
             actual.ParamName.Should().Be("catalogueItem");
@@ -72,10 +72,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Theory]
         [CommonAutoData]
         public static void HasApplicationType_ValueValid_ReturnsYes(
-            ApplicationType clientApplicationType,
+            ApplicationType applicationType,
             [Frozen] CatalogueItem catalogueItem,
             [Frozen] Solution solution,
-            [Frozen] ApplicationTypeDetail clientApplication,
+            [Frozen] ApplicationTypeDetail applicationTypeDetail,
             ApplicationTypesModel model)
         {
             // CatalogueItem and Solution must be frozen so that a catalogue item instance with solution is passed
@@ -83,9 +83,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             _ = catalogueItem;
             _ = solution;
 
-            clientApplication.ClientApplicationTypes = new HashSet<string> { clientApplicationType.EnumMemberName() };
+            applicationTypeDetail.ClientApplicationTypes = new HashSet<string> { applicationType.EnumMemberName() };
 
-            var actual = model.HasApplicationType(clientApplicationType);
+            var actual = model.HasApplicationType(applicationType);
 
             actual.Should().BeTrue();
         }
@@ -95,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         public static void HasApplicationType_ValueNotValid_ReturnsNo(
             [Frozen] CatalogueItem catalogueItem,
             [Frozen] Solution solution,
-            [Frozen] ApplicationTypeDetail clientApplication,
+            [Frozen] ApplicationTypeDetail applicationTypeDetail,
             ApplicationTypesModel model)
         {
             // CatalogueItem and Solution must be frozen so that a catalogue item instance with solution is passed
@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             _ = catalogueItem;
             _ = solution;
 
-            clientApplication.ClientApplicationTypes =
+            applicationTypeDetail.ClientApplicationTypes =
                 new HashSet<string> { ApplicationType.Desktop.EnumMemberName() };
 
             var actual = model.HasApplicationType(ApplicationType.MobileTablet);
@@ -117,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             Solution solution,
             CatalogueItemContentStatus contentStatus)
         {
-            var clientApplication = new ApplicationTypeDetail
+            var applicationTypeDetail = new ApplicationTypeDetail
             {
                 ClientApplicationTypes = new() { ApplicationType.BrowserBased.EnumMemberName() },
                 BrowsersSupported = new() { new() { BrowserName = "Chrome" } },
@@ -129,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 AdditionalInformation = "Test",
             };
 
-            solution.ApplicationTypeDetail = clientApplication;
+            solution.ApplicationTypeDetail = applicationTypeDetail;
 
             var model = new ApplicationTypesModel(solution.CatalogueItem, contentStatus);
 
@@ -153,7 +153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             Solution solution,
             CatalogueItemContentStatus contentStatus)
         {
-            var clientApplication = new ApplicationTypeDetail
+            var applicationTypeDetail = new ApplicationTypeDetail
             {
                 ClientApplicationTypes = new() { ApplicationType.Desktop.EnumMemberName() },
                 NativeDesktopOperatingSystemsDescription = "Windows 95",
@@ -171,7 +171,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 NativeDesktopAdditionalInformation = "Monitor",
             };
 
-            solution.ApplicationTypeDetail = clientApplication;
+            solution.ApplicationTypeDetail = applicationTypeDetail;
 
             var model = new ApplicationTypesModel(solution.CatalogueItem, contentStatus);
 
@@ -197,7 +197,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             Solution solution,
             CatalogueItemContentStatus contentStatus)
         {
-            var clientApplication = new ApplicationTypeDetail
+            var applicationTypeDetail = new ApplicationTypeDetail
             {
                 ClientApplicationTypes = new() { ApplicationType.MobileTablet.EnumMemberName() },
                 MobileOperatingSystems =
@@ -215,7 +215,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 NativeMobileAdditionalInformation = "Information",
             };
 
-            solution.ApplicationTypeDetail = clientApplication;
+            solution.ApplicationTypeDetail = applicationTypeDetail;
 
             var model = new ApplicationTypesModel(solution.CatalogueItem, contentStatus);
 
@@ -242,7 +242,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             Solution solution,
             CatalogueItemContentStatus contentStatus)
         {
-            var clientApplication = new ApplicationTypeDetail
+            var applicationTypeDetail = new ApplicationTypeDetail
             {
                 ClientApplicationTypes = new()
                 {
@@ -252,7 +252,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
                 },
             };
 
-            solution.ApplicationTypeDetail = clientApplication;
+            solution.ApplicationTypeDetail = applicationTypeDetail;
 
             var model = new ApplicationTypesModel(solution.CatalogueItem, contentStatus);
 

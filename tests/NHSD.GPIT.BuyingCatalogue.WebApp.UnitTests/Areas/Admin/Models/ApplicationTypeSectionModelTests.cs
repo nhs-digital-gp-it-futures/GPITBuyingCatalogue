@@ -8,7 +8,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
 {
-    public static class ClientApplicationTypeSectionModelTests
+    public static class ApplicationTypeSectionModelTests
     {
         [Theory]
         [CommonAutoData]
@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
             ApplicationTypeSectionModel expected)
         {
             // CatalogueItem must be frozen so that the same instance is used to construct the Solution and
-            // ClientApplicationTypeSectionModel instances
+            // ApplicationTypeSectionModel instances
             _ = catalogueItem;
             var actual = new ApplicationTypeSectionModel(solution.CatalogueItem);
 

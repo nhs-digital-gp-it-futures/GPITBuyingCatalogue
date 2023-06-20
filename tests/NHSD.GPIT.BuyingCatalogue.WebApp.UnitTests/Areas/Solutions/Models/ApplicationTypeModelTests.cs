@@ -7,10 +7,10 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 {
-    public static class ClientApplicationTypeModelTests
+    public static class ApplicationTypeModelTests
     {
         [Fact]
-        public static void Constructor_NullClient_SetsDisplayFalse()
+        public static void Constructor_NullApplicationType_SetsDisplayFalse()
         {
             var model = new ClientApplicationTypeModel(ClientApplicationTypeModel.ApplicationType.BrowserBased, null);
 
@@ -20,45 +20,45 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Theory]
         [CommonAutoData]
         public static void Constructor_BrowserBasedType_LoadsBrowserBasedDetails(
-            ApplicationTypeDetail client,
+            ApplicationTypeDetail applicationTypeDetail,
             SupportedBrowser browser)
         {
-            client.BrowsersSupported = new HashSet<SupportedBrowser>() { browser };
+            applicationTypeDetail.BrowsersSupported = new HashSet<SupportedBrowser>() { browser };
 
-            var model = new ClientApplicationTypeModel(ClientApplicationTypeModel.ApplicationType.BrowserBased, client);
+            var model = new ClientApplicationTypeModel(ClientApplicationTypeModel.ApplicationType.BrowserBased, applicationTypeDetail);
 
             Assert.Equal("Browser-based application", model.Label);
             Assert.Equal("browser-based", model.DataTestTag);
-            model.BrowsersSupported.Should().BeEquivalentTo(client.BrowsersSupported);
+            model.BrowsersSupported.Should().BeEquivalentTo(applicationTypeDetail.BrowsersSupported);
             Assert.True(model.DisplayApplicationType);
         }
 
         [Theory]
         [CommonAutoData]
         public static void Constructor_NativeMobileType_LoadsNativeMobileDetails(
-            ApplicationTypeDetail client,
+            ApplicationTypeDetail applicationTypeDetail,
             string operatingSystem)
         {
-            client.MobileOperatingSystems =
+            applicationTypeDetail.MobileOperatingSystems =
                 new MobileOperatingSystems() { OperatingSystems = new HashSet<string>() { operatingSystem } };
 
-            var model = new ClientApplicationTypeModel(ClientApplicationTypeModel.ApplicationType.NativeMobile, client);
+            var model = new ClientApplicationTypeModel(ClientApplicationTypeModel.ApplicationType.NativeMobile, applicationTypeDetail);
 
             Assert.Equal("Native mobile or tablet application", model.Label);
             Assert.Equal("native-mobile", model.DataTestTag);
-            model.MobileOperatingSystems.Should().BeEquivalentTo(client.MobileOperatingSystems.OperatingSystems);
+            model.MobileOperatingSystems.Should().BeEquivalentTo(applicationTypeDetail.MobileOperatingSystems.OperatingSystems);
             Assert.True(model.DisplayApplicationType);
         }
 
         [Theory]
         [CommonAutoData]
         public static void Constructor_NativeDesktopType_LoadsNativeDesktopDetails(
-            ApplicationTypeDetail client,
+            ApplicationTypeDetail applicationTypeDetail,
             string description)
         {
-            client.NativeDesktopOperatingSystemsDescription = description;
+            applicationTypeDetail.NativeDesktopOperatingSystemsDescription = description;
 
-            var model = new ClientApplicationTypeModel(ClientApplicationTypeModel.ApplicationType.NativeDesktop, client);
+            var model = new ClientApplicationTypeModel(ClientApplicationTypeModel.ApplicationType.NativeDesktop, applicationTypeDetail);
 
             Assert.Equal("Native desktop application", model.Label);
             Assert.Equal("native-desktop", model.DataTestTag);
