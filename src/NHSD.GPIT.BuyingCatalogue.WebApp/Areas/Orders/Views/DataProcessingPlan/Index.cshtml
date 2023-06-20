@@ -1,19 +1,18 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DataProcessing.BespokeDataProcessingModel
 @{
-    ViewBag.Title = "Bespoke personal data processing information";
+    ViewBag.Title = "Data processing information";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row nhsuk-u-margin-bottom-6">
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-page-title title="@ViewBag.Title"
-                        advice="Document the variations you want to make to the default data processing information."
+                        advice="Download the data processing information template for the supplier to complete. You must include the blank template when you send your order to the supplier."
                         caption="Order @Model.CallOffId"/>
 
         <p>
-            As you’ve agreed variations to the default data processing information with the supplier, you need to document your requirements.
-            You can do this by downloading and completing <a href="https://gpitbjss.atlassian.net/wiki/spaces/BG/pages/12207980954/Order+form+template+Data+processing+information" target="_blank">Data processing information template (opens in a new tab)</a>.
+            Download the <a href="https://gpitbjss.atlassian.net/wiki/spaces/BG/pages/12207980954/Order+form+template+Data+processing+information" target="_blank">Data processing information template (opens in a new tab)</a> so that the supplier can provide information on how they process personal data.
         </p>
         <p>
             This document must be included when you send your order to the supplier. You can download it now or after you’ve completed your order.
