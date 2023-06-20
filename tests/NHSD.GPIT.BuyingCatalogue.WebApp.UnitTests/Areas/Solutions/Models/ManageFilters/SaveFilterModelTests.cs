@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Mana
             model.FrameworkId.Should().Be(framework.Id);
             model.FrameworkName.Should().Be(framework.ShortName);
 
-            model.ClientApplicationTypes.Should().BeEquivalentTo(clientApplicationTypes);
+            model.ApplicationTypes.Should().BeEquivalentTo(clientApplicationTypes);
             model.HostingTypes.Should().BeEquivalentTo(hostingTypes);
             model.OrganisationId.Should().Be(organisationId);
         }

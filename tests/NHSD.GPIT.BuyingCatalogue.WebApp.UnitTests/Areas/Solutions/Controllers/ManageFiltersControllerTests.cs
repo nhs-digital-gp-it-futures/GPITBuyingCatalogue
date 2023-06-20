@@ -458,7 +458,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                     model.CapabilityIds,
                     model.EpicIds,
                     model.FrameworkId,
-                    model.ClientApplicationTypes,
+                    model.ApplicationTypes,
                     model.HostingTypes)).ReturnsAsync(filterId);
 
             var result = await controller.ConfirmSaveFilter(model);

@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
                 FrameworkName = framework.ShortName;
             }
 
-            ClientApplicationTypes = clientApplicationTypes;
+            ApplicationTypes = clientApplicationTypes;
             HostingTypes = hostingTypes;
             OrganisationId = organisationId;
 
@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
 
         public int OrganisationId { get; init; }
 
-        public List<ApplicationType> ClientApplicationTypes { get; init; }
+        public List<ApplicationType> ApplicationTypes { get; init; }
 
         public List<HostingType> HostingTypes { get; init; }
 
