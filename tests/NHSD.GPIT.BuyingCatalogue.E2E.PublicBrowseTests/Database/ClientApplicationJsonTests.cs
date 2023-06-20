@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
             var catalogueItem = GetCatalogueItem();
 
             using var scope = new TransactionScope();
-            SaveAndUpdateClientApplicationJson(catalogueItem);
+            SaveAndUpdateApplicationTypeJson(catalogueItem);
 
             using var dbContext = fixture.GetDbContext();
             var solution = dbContext.Solutions.FirstOrDefault(s => s.CatalogueItemId == catalogueItem.Id);
@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
             var catalogueItem = GetCatalogueItem();
 
             using var scope = new TransactionScope();
-            SaveAndUpdateClientApplicationJson(catalogueItem, string.Empty);
+            SaveAndUpdateApplicationTypeJson(catalogueItem, string.Empty);
 
             using var dbContext = fixture.GetDbContext();
             dbContext.Solutions.Invoking(s => s.FirstOrDefault(s => s.CatalogueItemId == catalogueItem.Id))
@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
             var catalogueItem = GetCatalogueItem();
 
             using var scope = new TransactionScope();
-            SaveAndUpdateClientApplicationJson(catalogueItem, "{}");
+            SaveAndUpdateApplicationTypeJson(catalogueItem, "{}");
 
             using var dbContext = fixture.GetDbContext();
             var solution = dbContext.Solutions.FirstOrDefault(s => s.CatalogueItemId == catalogueItem.Id);
@@ -62,13 +62,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
         }
 
         [Fact]
-        public void ClientApplication_AdditionalInformation()
+        public void ApplicationType_AdditionalInformation()
         {
             var catalogueItem = GetCatalogueItem();
 
             using var scope = new TransactionScope();
             var json = @"{ ""AdditionalInformation"": ""value"" }";
-            SaveAndUpdateClientApplicationJson(catalogueItem, json);
+            SaveAndUpdateApplicationTypeJson(catalogueItem, json);
 
             using var dbContext = fixture.GetDbContext();
             var solution = dbContext.Solutions.FirstOrDefault(s => s.CatalogueItemId == catalogueItem.Id);
@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
         }
 
         [Fact]
-        public void ClientApplication_ClientApplicationTypes()
+        public void ApplicationType_ApplicationTypes()
         {
             var catalogueItem = GetCatalogueItem();
 
@@ -87,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
                 ""browser-based""
             ]}";
 
-            SaveAndUpdateClientApplicationJson(catalogueItem, json);
+            SaveAndUpdateApplicationTypeJson(catalogueItem, json);
 
             using var dbContext = fixture.GetDbContext();
             var solution = dbContext.Solutions.FirstOrDefault(s => s.CatalogueItemId == catalogueItem.Id);
@@ -96,13 +96,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
         }
 
         [Fact]
-        public void ClientApplicationBrowsersSupportedOldSTyle()
+        public void ApplicationTypeBrowsersSupportedOldSTyle()
         {
             var catalogueItem = GetCatalogueItem();
 
             using var scope = new TransactionScope();
             var json = GetJSONWithOldBrowsersSupportedSchema();
-            SaveAndUpdateClientApplicationJson(catalogueItem, json);
+            SaveAndUpdateApplicationTypeJson(catalogueItem, json);
 
             using var dbContext = fixture.GetDbContext();
             var solution = dbContext.Solutions.FirstOrDefault(s => s.CatalogueItemId == catalogueItem.Id);
@@ -121,13 +121,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
         }
 
         [Fact]
-        public void ClientApplicationBrowsersSupportedNewSTyle()
+        public void ApplicationTypeBrowsersSupportedNewSTyle()
         {
             var catalogueItem = GetCatalogueItem();
 
             using var scope = new TransactionScope();
             var json = GetJSONWithNewBrowsersSupportedSchema();
-            SaveAndUpdateClientApplicationJson(catalogueItem, json);
+            SaveAndUpdateApplicationTypeJson(catalogueItem, json);
 
             using var dbContext = fixture.GetDbContext();
             var solution = dbContext.Solutions.FirstOrDefault(s => s.CatalogueItemId == catalogueItem.Id);
@@ -153,7 +153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
             using (var scope = new TransactionScope())
             {
                 var json = GetJSON();
-                SaveAndUpdateClientApplicationJson(catalogueItem, json);
+                SaveAndUpdateApplicationTypeJson(catalogueItem, json);
 
                 using (var dbContext = fixture.GetDbContext())
                 {
@@ -344,7 +344,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
             };
         }
 
-        private void SaveAndUpdateClientApplicationJson(CatalogueItem catalogueItem, string json = null)
+        private void SaveAndUpdateApplicationTypeJson(CatalogueItem catalogueItem, string json = null)
         {
             using var dbContext = fixture.GetDbContext();
             dbContext.Add(catalogueItem);

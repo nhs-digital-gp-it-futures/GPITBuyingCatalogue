@@ -10,7 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientApplicationTypes.BrowserBased
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ApplicationTypes.BrowserBased
 {
     [Collection(nameof(AdminCollection))]
     public sealed class HardwareRequirements : AuthorityTestBase, IDisposable
@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
 
         public void Dispose()
         {
-            ClearClientApplication(SolutionId);
+            ClearApplicationType(SolutionId);
         }
     }
 }

@@ -11,22 +11,22 @@ using OpenQA.Selenium;
 using Xunit;
 using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientApplicationTypes
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ApplicationTypes
 {
     [Collection(nameof(AdminCollection))]
     public sealed class ApplicationTypes : AuthorityTestBase
     {
         private static readonly CatalogueItemId SolutionId = new(99999, "002");
-        private static readonly CatalogueItemId SolutionWithClientApplications = new CatalogueItemId(99999, "001");
+        private static readonly CatalogueItemId SolutionWithApplicationsType = new CatalogueItemId(99999, "001");
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
             { nameof(SolutionId), SolutionId.ToString() },
         };
 
-        private static readonly Dictionary<string, string> ExistingClientApplicationsParameters = new()
+        private static readonly Dictionary<string, string> ExistingApplicationsTypeParameters = new()
         {
-            { nameof(SolutionId), SolutionWithClientApplications.ToString() },
+            { nameof(SolutionId), SolutionWithApplicationsType.ToString() },
         };
 
         public ApplicationTypes(LocalWebApplicationFactory factory)
@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
         }
 
         [Fact]
-        public void ClientApplication_ClickAddLink()
+        public void ApplicationType_ClickAddLink()
         {
             CommonActions.ClickLinkElement(Objects.Admin.CommonObjects.ActionLink);
 
@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
         }
 
         [Fact]
-        public void ClientApplication_ClickBackLink()
+        public void ApplicationType_ClickBackLink()
         {
             CommonActions.ClickGoBackLink();
 
@@ -64,12 +64,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
         [InlineData(ApplicationType.BrowserBased)]
         [InlineData(ApplicationType.Desktop)]
         [InlineData(ApplicationType.MobileTablet)]
-        public void ExistingClientApplications_Edit_NavigatesCorrectly(ApplicationType clientApplicationType)
+        public void ExistingApplications_Edit_NavigatesCorrectly(ApplicationType clientApplicationType)
         {
             NavigateToUrl(
                 typeof(CatalogueSolutionsController),
                 nameof(CatalogueSolutionsController.ApplicationType),
-                ExistingClientApplicationsParameters);
+                ExistingApplicationsTypeParameters);
 
             var formattedApplicationName = FormatApplicationType(clientApplicationType);
 

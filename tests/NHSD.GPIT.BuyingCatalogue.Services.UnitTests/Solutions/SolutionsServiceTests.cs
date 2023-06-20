@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task GetSolutionLoadingStatuses_With_Null_ClientApplicationType_Should_be_Status_NotStarted(
+        public static async Task GetSolutionLoadingStatuses_With_Null_ApplicationType_Should_be_Status_NotStarted(
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution,
             SolutionsService service)
@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task GetSolutionLoadingStatuses_With_ClientApplicationType_Should_be_Status_Completed(
+        public static async Task GetSolutionLoadingStatuses_With_ApplicationType_Should_be_Status_Completed(
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution,
             SolutionsService service)
@@ -335,32 +335,32 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
         [Theory]
         [CommonAutoData]
-        public static async Task SaveClientApplication_InvalidModel_ThrowsException(SolutionsService service)
+        public static async Task SaveApplication_InvalidModel_ThrowsException(SolutionsService service)
         {
             var actual = await Assert.ThrowsAsync<ArgumentNullException>(
                 () => service.SaveApplicationType(new CatalogueItemId(100000, "001"), null));
 
-            actual.ParamName.Should().Be("clientApplication");
+            actual.ParamName.Should().Be("applicationTypeDetail");
         }
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task SaveClientApplication_UpdatesDatabase(
+        public static async Task SaveApplication_UpdatesDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution,
-            ApplicationTypeDetail clientApplication,
+            ApplicationTypeDetail applicationTypeDetail,
             SolutionsService service)
         {
             context.Solutions.Add(solution);
             await context.SaveChangesAsync();
 
-            await service.SaveApplicationType(solution.CatalogueItemId, clientApplication);
+            await service.SaveApplicationType(solution.CatalogueItemId, applicationTypeDetail);
             context.ChangeTracker.Clear();
 
             var actual = await context.Solutions.AsQueryable()
                 .FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
 
-            actual.ApplicationTypeDetail.Should().BeEquivalentTo(clientApplication);
+            actual.ApplicationTypeDetail.Should().BeEquivalentTo(applicationTypeDetail);
         }
 
         [Theory]
@@ -467,15 +467,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task DeleteClientApplication_UpdatesDatabase(
+        public static async Task DeleteApplicationType_UpdatesDatabase(
             Solution catalogueSolution,
-            ApplicationTypeDetail clientApplication,
+            ApplicationTypeDetail applicationTypeDetail,
             [Frozen] BuyingCatalogueDbContext context,
             SolutionsService service)
         {
-            clientApplication.ClientApplicationTypes =
+            applicationTypeDetail.ClientApplicationTypes =
                 new HashSet<string> { "browser-based", "native-mobile", "native-desktop" };
-            catalogueSolution.ApplicationTypeDetail = clientApplication;
+            catalogueSolution.ApplicationTypeDetail = applicationTypeDetail;
             context.Solutions.Add(catalogueSolution);
             await context.SaveChangesAsync();
 
@@ -487,30 +487,30 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             var actual = await context.Solutions.AsQueryable()
                 .FirstAsync(s => s.CatalogueItemId == catalogueSolution.CatalogueItemId);
 
-            var actualClientApplication = actual.ApplicationTypeDetail;
+            var actualApplicationTypeDetail = actual.ApplicationTypeDetail;
 
-            actualClientApplication.ClientApplicationTypes.Any(c => c.Equals("browser-based")).Should().BeFalse();
-            actualClientApplication.ClientApplicationTypes.Any(c => c.Equals("native-mobile")).Should().BeTrue();
-            actualClientApplication.ClientApplicationTypes.Any(c => c.Equals("native-desktop")).Should().BeTrue();
+            actualApplicationTypeDetail.ClientApplicationTypes.Any(c => c.Equals("browser-based")).Should().BeFalse();
+            actualApplicationTypeDetail.ClientApplicationTypes.Any(c => c.Equals("native-mobile")).Should().BeTrue();
+            actualApplicationTypeDetail.ClientApplicationTypes.Any(c => c.Equals("native-desktop")).Should().BeTrue();
         }
 
         [Theory]
         [CommonAutoData]
-        public static void Remove_BrowserBased_ClientApplication_RemovesBrowserBasedEntries(
-            ApplicationTypeDetail clientApplication)
+        public static void Remove_BrowserBased_ApplicationType_RemovesBrowserBasedEntries(
+            ApplicationTypeDetail applicationTypeDetail)
         {
-            clientApplication.ClientApplicationTypes = new HashSet<string>
+            applicationTypeDetail.ClientApplicationTypes = new HashSet<string>
             {
                 ApplicationType.BrowserBased.AsString(EnumFormat.EnumMemberValue),
                 ApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue),
                 ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue),
             };
 
-            var updatedClientApplication = SolutionsService.RemoveApplicationType(
-                clientApplication,
+            var updatedApplicationType = SolutionsService.RemoveApplicationType(
+                applicationTypeDetail,
                 ApplicationType.BrowserBased);
 
-            updatedClientApplication.ClientApplicationTypes.Should()
+            updatedApplicationType.ClientApplicationTypes.Should()
                 .BeEquivalentTo(
                     new HashSet<string>
                     {
@@ -519,60 +519,60 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                     });
 
             // Browser Based
-            updatedClientApplication.AdditionalInformation.Should().BeNull();
-            updatedClientApplication.BrowsersSupported.Should().BeNull();
-            updatedClientApplication.HardwareRequirements.Should().BeNull();
-            updatedClientApplication.MinimumConnectionSpeed.Should().BeNull();
-            updatedClientApplication.MinimumDesktopResolution.Should().BeNull();
-            updatedClientApplication.MobileFirstDesign.Should().BeNull();
-            updatedClientApplication.MobileResponsive.Should().BeNull();
-            updatedClientApplication.Plugins.Should().BeNull();
+            updatedApplicationType.AdditionalInformation.Should().BeNull();
+            updatedApplicationType.BrowsersSupported.Should().BeNull();
+            updatedApplicationType.HardwareRequirements.Should().BeNull();
+            updatedApplicationType.MinimumConnectionSpeed.Should().BeNull();
+            updatedApplicationType.MinimumDesktopResolution.Should().BeNull();
+            updatedApplicationType.MobileFirstDesign.Should().BeNull();
+            updatedApplicationType.MobileResponsive.Should().BeNull();
+            updatedApplicationType.Plugins.Should().BeNull();
 
             // Desktop
-            updatedClientApplication.NativeDesktopAdditionalInformation.Should()
-                .Be(clientApplication.NativeDesktopAdditionalInformation);
-            updatedClientApplication.NativeDesktopHardwareRequirements.Should()
-                .Be(clientApplication.NativeDesktopHardwareRequirements);
-            updatedClientApplication.NativeDesktopMemoryAndStorage.Should()
-                .BeEquivalentTo(clientApplication.NativeDesktopMemoryAndStorage);
-            updatedClientApplication.NativeDesktopMinimumConnectionSpeed.Should()
-                .Be(clientApplication.NativeDesktopMinimumConnectionSpeed);
-            updatedClientApplication.NativeDesktopOperatingSystemsDescription.Should()
-                .Be(clientApplication.NativeDesktopOperatingSystemsDescription);
-            updatedClientApplication.NativeDesktopThirdParty.Should()
-                .BeEquivalentTo(clientApplication.NativeDesktopThirdParty);
+            updatedApplicationType.NativeDesktopAdditionalInformation.Should()
+                .Be(applicationTypeDetail.NativeDesktopAdditionalInformation);
+            updatedApplicationType.NativeDesktopHardwareRequirements.Should()
+                .Be(applicationTypeDetail.NativeDesktopHardwareRequirements);
+            updatedApplicationType.NativeDesktopMemoryAndStorage.Should()
+                .BeEquivalentTo(applicationTypeDetail.NativeDesktopMemoryAndStorage);
+            updatedApplicationType.NativeDesktopMinimumConnectionSpeed.Should()
+                .Be(applicationTypeDetail.NativeDesktopMinimumConnectionSpeed);
+            updatedApplicationType.NativeDesktopOperatingSystemsDescription.Should()
+                .Be(applicationTypeDetail.NativeDesktopOperatingSystemsDescription);
+            updatedApplicationType.NativeDesktopThirdParty.Should()
+                .BeEquivalentTo(applicationTypeDetail.NativeDesktopThirdParty);
 
             // Mobile or Tablet
-            updatedClientApplication.MobileConnectionDetails.Should()
-                .BeEquivalentTo(clientApplication.MobileConnectionDetails);
-            updatedClientApplication.MobileMemoryAndStorage.Should()
-                .BeEquivalentTo(clientApplication.MobileMemoryAndStorage);
-            updatedClientApplication.MobileOperatingSystems.Should()
-                .BeEquivalentTo(clientApplication.MobileOperatingSystems);
-            updatedClientApplication.MobileThirdParty.Should().BeEquivalentTo(clientApplication.MobileThirdParty);
-            updatedClientApplication.NativeMobileAdditionalInformation.Should()
-                .Be(clientApplication.NativeMobileAdditionalInformation);
-            updatedClientApplication.NativeMobileFirstDesign.Should().Be(clientApplication.NativeMobileFirstDesign);
-            updatedClientApplication.NativeMobileHardwareRequirements.Should()
-                .Be(clientApplication.NativeMobileHardwareRequirements);
+            updatedApplicationType.MobileConnectionDetails.Should()
+                .BeEquivalentTo(applicationTypeDetail.MobileConnectionDetails);
+            updatedApplicationType.MobileMemoryAndStorage.Should()
+                .BeEquivalentTo(applicationTypeDetail.MobileMemoryAndStorage);
+            updatedApplicationType.MobileOperatingSystems.Should()
+                .BeEquivalentTo(applicationTypeDetail.MobileOperatingSystems);
+            updatedApplicationType.MobileThirdParty.Should().BeEquivalentTo(applicationTypeDetail.MobileThirdParty);
+            updatedApplicationType.NativeMobileAdditionalInformation.Should()
+                .Be(applicationTypeDetail.NativeMobileAdditionalInformation);
+            updatedApplicationType.NativeMobileFirstDesign.Should().Be(applicationTypeDetail.NativeMobileFirstDesign);
+            updatedApplicationType.NativeMobileHardwareRequirements.Should()
+                .Be(applicationTypeDetail.NativeMobileHardwareRequirements);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void Remove_Desktop_ClientApplication_RemovesDesktopEntries(ApplicationTypeDetail clientApplication)
+        public static void Remove_Desktop_ApplicationType_RemovesDesktopEntries(ApplicationTypeDetail applicationTypeDetail)
         {
-            clientApplication.ClientApplicationTypes = new HashSet<string>
+            applicationTypeDetail.ClientApplicationTypes = new HashSet<string>
             {
                 ApplicationType.BrowserBased.AsString(EnumFormat.EnumMemberValue),
                 ApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue),
                 ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue),
             };
 
-            var updatedClientApplication = SolutionsService.RemoveApplicationType(
-                clientApplication,
+            var updatedApplicationType = SolutionsService.RemoveApplicationType(
+                applicationTypeDetail,
                 ApplicationType.Desktop);
 
-            updatedClientApplication.ClientApplicationTypes.Should()
+            updatedApplicationType.ClientApplicationTypes.Should()
                 .BeEquivalentTo(
                     new HashSet<string>
                     {
@@ -581,54 +581,54 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                     });
 
             // Browser Based
-            updatedClientApplication.AdditionalInformation.Should().Be(clientApplication.AdditionalInformation);
-            updatedClientApplication.BrowsersSupported.Should().BeEquivalentTo(clientApplication.BrowsersSupported);
-            updatedClientApplication.HardwareRequirements.Should().Be(clientApplication.HardwareRequirements);
-            updatedClientApplication.MinimumConnectionSpeed.Should().Be(clientApplication.MinimumConnectionSpeed);
-            updatedClientApplication.MinimumDesktopResolution.Should().Be(clientApplication.MinimumDesktopResolution);
-            updatedClientApplication.MobileFirstDesign.Should().Be(clientApplication.MobileFirstDesign);
-            updatedClientApplication.MobileResponsive.Should().Be(clientApplication.MobileResponsive);
-            updatedClientApplication.Plugins.Should().BeEquivalentTo(clientApplication.Plugins);
+            updatedApplicationType.AdditionalInformation.Should().Be(applicationTypeDetail.AdditionalInformation);
+            updatedApplicationType.BrowsersSupported.Should().BeEquivalentTo(applicationTypeDetail.BrowsersSupported);
+            updatedApplicationType.HardwareRequirements.Should().Be(applicationTypeDetail.HardwareRequirements);
+            updatedApplicationType.MinimumConnectionSpeed.Should().Be(applicationTypeDetail.MinimumConnectionSpeed);
+            updatedApplicationType.MinimumDesktopResolution.Should().Be(applicationTypeDetail.MinimumDesktopResolution);
+            updatedApplicationType.MobileFirstDesign.Should().Be(applicationTypeDetail.MobileFirstDesign);
+            updatedApplicationType.MobileResponsive.Should().Be(applicationTypeDetail.MobileResponsive);
+            updatedApplicationType.Plugins.Should().BeEquivalentTo(applicationTypeDetail.Plugins);
 
             // Desktop
-            updatedClientApplication.NativeDesktopAdditionalInformation.Should().BeNull();
-            updatedClientApplication.NativeDesktopHardwareRequirements.Should().BeNull();
-            updatedClientApplication.NativeDesktopMemoryAndStorage.Should().BeNull();
-            updatedClientApplication.NativeDesktopMinimumConnectionSpeed.Should().BeNull();
-            updatedClientApplication.NativeDesktopOperatingSystemsDescription.Should().BeNull();
-            updatedClientApplication.NativeDesktopThirdParty.Should().BeNull();
+            updatedApplicationType.NativeDesktopAdditionalInformation.Should().BeNull();
+            updatedApplicationType.NativeDesktopHardwareRequirements.Should().BeNull();
+            updatedApplicationType.NativeDesktopMemoryAndStorage.Should().BeNull();
+            updatedApplicationType.NativeDesktopMinimumConnectionSpeed.Should().BeNull();
+            updatedApplicationType.NativeDesktopOperatingSystemsDescription.Should().BeNull();
+            updatedApplicationType.NativeDesktopThirdParty.Should().BeNull();
 
             // Mobile or Tablet
-            updatedClientApplication.MobileConnectionDetails.Should()
-                .BeEquivalentTo(clientApplication.MobileConnectionDetails);
-            updatedClientApplication.MobileMemoryAndStorage.Should()
-                .BeEquivalentTo(clientApplication.MobileMemoryAndStorage);
-            updatedClientApplication.MobileOperatingSystems.Should()
-                .BeEquivalentTo(clientApplication.MobileOperatingSystems);
-            updatedClientApplication.MobileThirdParty.Should().BeEquivalentTo(clientApplication.MobileThirdParty);
-            updatedClientApplication.NativeMobileAdditionalInformation.Should()
-                .Be(clientApplication.NativeMobileAdditionalInformation);
-            updatedClientApplication.NativeMobileFirstDesign.Should().Be(clientApplication.NativeMobileFirstDesign);
-            updatedClientApplication.NativeMobileHardwareRequirements.Should()
-                .Be(clientApplication.NativeMobileHardwareRequirements);
+            updatedApplicationType.MobileConnectionDetails.Should()
+                .BeEquivalentTo(applicationTypeDetail.MobileConnectionDetails);
+            updatedApplicationType.MobileMemoryAndStorage.Should()
+                .BeEquivalentTo(applicationTypeDetail.MobileMemoryAndStorage);
+            updatedApplicationType.MobileOperatingSystems.Should()
+                .BeEquivalentTo(applicationTypeDetail.MobileOperatingSystems);
+            updatedApplicationType.MobileThirdParty.Should().BeEquivalentTo(applicationTypeDetail.MobileThirdParty);
+            updatedApplicationType.NativeMobileAdditionalInformation.Should()
+                .Be(applicationTypeDetail.NativeMobileAdditionalInformation);
+            updatedApplicationType.NativeMobileFirstDesign.Should().Be(applicationTypeDetail.NativeMobileFirstDesign);
+            updatedApplicationType.NativeMobileHardwareRequirements.Should()
+                .Be(applicationTypeDetail.NativeMobileHardwareRequirements);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void Remove_Mobile_ClientApplication_RemovesMobileEntries(ApplicationTypeDetail clientApplication)
+        public static void Remove_Mobile_ApplicationType_RemovesMobileEntries(ApplicationTypeDetail applicationTypeDetail)
         {
-            clientApplication.ClientApplicationTypes = new HashSet<string>
+            applicationTypeDetail.ClientApplicationTypes = new HashSet<string>
             {
                 ApplicationType.BrowserBased.AsString(EnumFormat.EnumMemberValue),
                 ApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue),
                 ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue),
             };
 
-            var updatedClientApplication = SolutionsService.RemoveApplicationType(
-                clientApplication,
+            var updatedApplicationType = SolutionsService.RemoveApplicationType(
+                applicationTypeDetail,
                 ApplicationType.MobileTablet);
 
-            updatedClientApplication.ClientApplicationTypes.Should()
+            updatedApplicationType.ClientApplicationTypes.Should()
                 .BeEquivalentTo(
                     new HashSet<string>
                     {
@@ -637,37 +637,37 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                     });
 
             // Browser Based
-            updatedClientApplication.AdditionalInformation.Should().Be(clientApplication.AdditionalInformation);
-            updatedClientApplication.BrowsersSupported.Should().BeEquivalentTo(clientApplication.BrowsersSupported);
-            updatedClientApplication.HardwareRequirements.Should().Be(clientApplication.HardwareRequirements);
-            updatedClientApplication.MinimumConnectionSpeed.Should().Be(clientApplication.MinimumConnectionSpeed);
-            updatedClientApplication.MinimumDesktopResolution.Should().Be(clientApplication.MinimumDesktopResolution);
-            updatedClientApplication.MobileFirstDesign.Should().Be(clientApplication.MobileFirstDesign);
-            updatedClientApplication.MobileResponsive.Should().Be(clientApplication.MobileResponsive);
-            updatedClientApplication.Plugins.Should().BeEquivalentTo(clientApplication.Plugins);
+            updatedApplicationType.AdditionalInformation.Should().Be(applicationTypeDetail.AdditionalInformation);
+            updatedApplicationType.BrowsersSupported.Should().BeEquivalentTo(applicationTypeDetail.BrowsersSupported);
+            updatedApplicationType.HardwareRequirements.Should().Be(applicationTypeDetail.HardwareRequirements);
+            updatedApplicationType.MinimumConnectionSpeed.Should().Be(applicationTypeDetail.MinimumConnectionSpeed);
+            updatedApplicationType.MinimumDesktopResolution.Should().Be(applicationTypeDetail.MinimumDesktopResolution);
+            updatedApplicationType.MobileFirstDesign.Should().Be(applicationTypeDetail.MobileFirstDesign);
+            updatedApplicationType.MobileResponsive.Should().Be(applicationTypeDetail.MobileResponsive);
+            updatedApplicationType.Plugins.Should().BeEquivalentTo(applicationTypeDetail.Plugins);
 
             // Desktop
-            updatedClientApplication.NativeDesktopAdditionalInformation.Should()
-                .Be(clientApplication.NativeDesktopAdditionalInformation);
-            updatedClientApplication.NativeDesktopHardwareRequirements.Should()
-                .Be(clientApplication.NativeDesktopHardwareRequirements);
-            updatedClientApplication.NativeDesktopMemoryAndStorage.Should()
-                .BeEquivalentTo(clientApplication.NativeDesktopMemoryAndStorage);
-            updatedClientApplication.NativeDesktopMinimumConnectionSpeed.Should()
-                .Be(clientApplication.NativeDesktopMinimumConnectionSpeed);
-            updatedClientApplication.NativeDesktopOperatingSystemsDescription.Should()
-                .Be(clientApplication.NativeDesktopOperatingSystemsDescription);
-            updatedClientApplication.NativeDesktopThirdParty.Should()
-                .BeEquivalentTo(clientApplication.NativeDesktopThirdParty);
+            updatedApplicationType.NativeDesktopAdditionalInformation.Should()
+                .Be(applicationTypeDetail.NativeDesktopAdditionalInformation);
+            updatedApplicationType.NativeDesktopHardwareRequirements.Should()
+                .Be(applicationTypeDetail.NativeDesktopHardwareRequirements);
+            updatedApplicationType.NativeDesktopMemoryAndStorage.Should()
+                .BeEquivalentTo(applicationTypeDetail.NativeDesktopMemoryAndStorage);
+            updatedApplicationType.NativeDesktopMinimumConnectionSpeed.Should()
+                .Be(applicationTypeDetail.NativeDesktopMinimumConnectionSpeed);
+            updatedApplicationType.NativeDesktopOperatingSystemsDescription.Should()
+                .Be(applicationTypeDetail.NativeDesktopOperatingSystemsDescription);
+            updatedApplicationType.NativeDesktopThirdParty.Should()
+                .BeEquivalentTo(applicationTypeDetail.NativeDesktopThirdParty);
 
             // Mobile or Tablet
-            updatedClientApplication.MobileConnectionDetails.Should().BeNull();
-            updatedClientApplication.MobileMemoryAndStorage.Should().BeNull();
-            updatedClientApplication.MobileOperatingSystems.Should().BeNull();
-            updatedClientApplication.MobileThirdParty.Should().BeNull();
-            updatedClientApplication.NativeMobileAdditionalInformation.Should().BeNull();
-            updatedClientApplication.NativeMobileFirstDesign.Should().BeNull();
-            updatedClientApplication.NativeMobileHardwareRequirements.Should().BeNull();
+            updatedApplicationType.MobileConnectionDetails.Should().BeNull();
+            updatedApplicationType.MobileMemoryAndStorage.Should().BeNull();
+            updatedApplicationType.MobileOperatingSystems.Should().BeNull();
+            updatedApplicationType.MobileThirdParty.Should().BeNull();
+            updatedApplicationType.NativeMobileAdditionalInformation.Should().BeNull();
+            updatedApplicationType.NativeMobileFirstDesign.Should().BeNull();
+            updatedApplicationType.NativeMobileHardwareRequirements.Should().BeNull();
         }
 
         [Theory]

@@ -4,9 +4,9 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
-    public class ClientApplicationTypeModel
+    public class ApplicationTypeModel
     {
-        public ClientApplicationTypeModel(ApplicationType type, ApplicationTypeDetail client)
+        public ApplicationTypeModel(ApplicationType type, ApplicationTypeDetail client)
         {
             if (client == null)
             {

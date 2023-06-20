@@ -4,7 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
 {
-    public sealed class ClientApplicationTypeSectionModelCustomization : ICustomization
+    public sealed class ApplicationTypeSectionModelCustomization : ICustomization
     {
         public void Customize(IFixture fixture)
         {

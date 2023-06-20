@@ -2,7 +2,7 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.EditSolution
 {
-    public static class ClientApplicationObjects
+    public static class ApplicationTypeObjects
     {
         public static By ThirdPartyComponents => By.Id("ThirdPartyComponents");
 
@@ -16,8 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.EditSolutio
 
         public static By StorageSpace => By.Id("StorageSpace");
 
-        public static By DeleteClientApplicationLink => By.LinkText("Delete application type");
+        public static By DeleteApplicationTypeLink => By.LinkText("Delete application type");
 
-        public static By DeleteClientApplicationCancelLink => By.LinkText("Cancel");
+        public static By DeleteApplicationTypeCancelLink => By.LinkText("Cancel");
     }
 }

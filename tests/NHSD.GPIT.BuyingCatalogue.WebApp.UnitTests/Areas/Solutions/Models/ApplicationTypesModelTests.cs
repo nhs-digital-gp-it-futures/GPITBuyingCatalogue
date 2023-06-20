@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             ApplicationTypesModel model)
         {
             // CatalogueItem and Solution must be frozen so that a catalogue item instance with solution is passed
-            // to the ClientApplicationTypesModel constructor
+            // to the ApplicationTypesModel constructor
             _ = catalogueItem;
             _ = solution;
 
@@ -99,7 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             ApplicationTypesModel model)
         {
             // CatalogueItem and Solution must be frozen so that a catalogue item instance with solution is passed
-            // to the ClientApplicationTypesModel constructor
+            // to the ApplicationTypesModel constructor
             _ = catalogueItem;
             _ = solution;
 

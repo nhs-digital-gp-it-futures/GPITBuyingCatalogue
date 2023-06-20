@@ -8,7 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientApplicationTypes.MobileOrTablet
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ApplicationTypes.MobileOrTablet
 {
     [Collection(nameof(AdminCollection))]
     public sealed class MobileOrTabletDashboard : AuthorityTestBase, IDisposable
@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
         [Fact]
         public void MobileOrTabletDashboard_ClickDeleteLink_NavigatesToDeleteConfirmation()
         {
-            CommonActions.ClickLinkElement(ClientApplicationObjects.DeleteClientApplicationLink);
+            CommonActions.ClickLinkElement(ApplicationTypeObjects.DeleteApplicationTypeLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(DeleteApplicationTypeController),
@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
 
         public void Dispose()
         {
-            ClearClientApplication(SolutionId);
+            ClearApplicationType(SolutionId);
         }
     }
 }

@@ -657,7 +657,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_ClientApplicationType_GetsSolutionFromService(
+        public static async Task Get_ApplicationType_GetsSolutionFromService(
             Solution solution,
             [Frozen] Mock<ISolutionsService> mockService,
             CatalogueSolutionsController catalogueSolutionsController)
@@ -673,7 +673,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_ClientApplicationType_ValidId_ReturnsViewWithExpectedModel(
+        public static async Task Get_ApplicationType_ValidId_ReturnsViewWithExpectedModel(
             Solution solution,
             CatalogueItemId catalogueItemId,
             [Frozen] Mock<ISolutionsService> mockService,
@@ -692,7 +692,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_ClientApplicationType_InvalidId_ReturnsBadRequestResult(
+        public static async Task Get_ApplicationType_InvalidId_ReturnsBadRequestResult(
             CatalogueItemId catalogueItemId,
             [Frozen] Mock<ISolutionsService> mockService,
             CatalogueSolutionsController controller)
@@ -707,7 +707,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_ClientApplicationType_InvalidId_ReturnsBadRequestResult(
+        public static async Task Post_ApplicationType_InvalidId_ReturnsBadRequestResult(
             Solution solution,
             CatalogueItemId catalogueItemId,
             [Frozen] Mock<ISolutionsService> mockService,

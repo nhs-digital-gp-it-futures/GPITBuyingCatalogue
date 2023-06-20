@@ -13,10 +13,10 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientApplicationTypes
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ApplicationTypes
 {
     [Collection(nameof(AdminCollection))]
-    public sealed class DeleteClientApplicationType : AuthorityTestBase
+    public sealed class DeleteApplicationType : AuthorityTestBase
     {
         private static readonly CatalogueItemId SolutionId = new(99999, "001");
 
@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
             { "applicationType", ApplicationType.BrowserBased.ToString() },
         };
 
-        public DeleteClientApplicationType(LocalWebApplicationFactory factory)
+        public DeleteApplicationType(LocalWebApplicationFactory factory)
             : base(
                   factory,
                   typeof(DeleteApplicationTypeController),
@@ -39,12 +39,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
         [InlineData(ApplicationType.BrowserBased)]
         [InlineData(ApplicationType.MobileTablet)]
         [InlineData(ApplicationType.Desktop)]
-        public void DeleteClientApplicationType_CorrectlyDisplayed(ApplicationType clientApplicationType)
+        public void DeleteApplicationType_CorrectlyDisplayed(ApplicationType applicationType)
         {
             var queryParam = new Dictionary<string, string>
             {
                 { "solutionId", SolutionId.ToString() },
-                { "applicationType", clientApplicationType.ToString() },
+                { "applicationType", applicationType.ToString() },
             };
 
             NavigateToUrl(typeof(DeleteApplicationTypeController), nameof(DeleteApplicationTypeController.DeleteApplicationTypeConfirmation), parameters: queryParam);
@@ -52,19 +52,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
             CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.SaveButtonDisplayed().Should().BeTrue();
-            CommonActions.ElementIsDisplayed(ClientApplicationObjects.DeleteClientApplicationCancelLink);
+            CommonActions.ElementIsDisplayed(ApplicationTypeObjects.DeleteApplicationTypeCancelLink);
         }
 
         [Theory]
         [InlineData(ApplicationType.BrowserBased, typeof(BrowserBasedController), nameof(BrowserBasedController.BrowserBased))]
         [InlineData(ApplicationType.MobileTablet, typeof(MobileTabletBasedController), nameof(MobileTabletBasedController.MobileTablet))]
         [InlineData(ApplicationType.Desktop, typeof(DesktopBasedController), nameof(DesktopBasedController.Desktop))]
-        public void DeleteClientApplicationType_ClickGoBackLink_NavigatesToCorrectPage(ApplicationType clientApplicationType, Type controller, string expectedControllerMethod)
+        public void DeleteApplicationType_ClickGoBackLink_NavigatesToCorrectPage(ApplicationType applicationType, Type controller, string expectedControllerMethod)
         {
             var queryParam = new Dictionary<string, string>
             {
                 { "solutionId", SolutionId.ToString() },
-                { "applicationType", clientApplicationType.ToString() },
+                { "applicationType", applicationType.ToString() },
             };
 
             NavigateToUrl(typeof(DeleteApplicationTypeController), nameof(DeleteApplicationTypeController.DeleteApplicationTypeConfirmation), parameters: queryParam);
@@ -81,17 +81,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
         [InlineData(ApplicationType.BrowserBased, typeof(BrowserBasedController), nameof(BrowserBasedController.BrowserBased))]
         [InlineData(ApplicationType.MobileTablet, typeof(MobileTabletBasedController), nameof(MobileTabletBasedController.MobileTablet))]
         [InlineData(ApplicationType.Desktop, typeof(DesktopBasedController), nameof(DesktopBasedController.Desktop))]
-        public void DeleteClientApplicationType_ClickCancelLink_NavigatesToCorrectPage(ApplicationType clientApplicationType, Type controller, string expectedControllerMethod)
+        public void DeleteApplicationType_ClickCancelLink_NavigatesToCorrectPage(ApplicationType applicationType, Type controller, string expectedControllerMethod)
         {
             var queryParam = new Dictionary<string, string>
             {
                 { "solutionId", SolutionId.ToString() },
-                { "applicationType", clientApplicationType.ToString() },
+                { "applicationType", applicationType.ToString() },
             };
 
             NavigateToUrl(typeof(DeleteApplicationTypeController), nameof(DeleteApplicationTypeController.DeleteApplicationTypeConfirmation), parameters: queryParam);
 
-            CommonActions.ClickLinkElement(ClientApplicationObjects.DeleteClientApplicationCancelLink);
+            CommonActions.ClickLinkElement(ApplicationTypeObjects.DeleteApplicationTypeCancelLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 controller,
@@ -103,17 +103,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
         [InlineData(ApplicationType.BrowserBased)]
         [InlineData(ApplicationType.MobileTablet)]
         [InlineData(ApplicationType.Desktop)]
-        public async Task DeleteClientApplicationType_DeleteButton_DeletesClientApplicationType(ApplicationType clientApplicationType)
+        public async Task DeleteApplicationType_DeleteButton_DeletesApplicationType(ApplicationType applicationType)
         {
             await using var context = GetEndToEndDbContext();
             var originalSolution =
                 await context.Solutions.AsNoTracking().FirstAsync(x => x.CatalogueItemId == SolutionId);
-            var originalClientApplication = originalSolution.ApplicationTypeDetail;
+            var originalApplicationTypeDetail = originalSolution.ApplicationTypeDetail;
 
             var queryParam = new Dictionary<string, string>
             {
                 { "solutionId", SolutionId.ToString() },
-                { "applicationType", clientApplicationType.ToString() },
+                { "applicationType", applicationType.ToString() },
             };
 
             NavigateToUrl(typeof(DeleteApplicationTypeController), nameof(DeleteApplicationTypeController.DeleteApplicationTypeConfirmation), parameters: queryParam);
@@ -125,11 +125,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
                 nameof(CatalogueSolutionsController.ApplicationType))
                 .Should().BeTrue();
             var solution = await context.Solutions.AsNoTracking().FirstAsync(s => s.CatalogueItemId == SolutionId);
-            var clientApplication = solution.ApplicationTypeDetail;
+            var applicationTypeDetail = solution.ApplicationTypeDetail;
 
-            clientApplication.ClientApplicationTypes.Should().NotContain(clientApplicationType.AsString(EnumFormat.EnumMemberValue));
+            applicationTypeDetail.ClientApplicationTypes.Should().NotContain(applicationType.AsString(EnumFormat.EnumMemberValue));
 
-            solution.ApplicationTypeDetail = originalClientApplication;
+            solution.ApplicationTypeDetail = originalApplicationTypeDetail;
             context.Update(solution);
             await context.SaveChangesAsync();
         }

@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         [Fact]
         public static void Constructor_NullApplicationType_SetsDisplayFalse()
         {
-            var model = new ClientApplicationTypeModel(ClientApplicationTypeModel.ApplicationType.BrowserBased, null);
+            var model = new ApplicationTypeModel(ApplicationTypeModel.ApplicationType.BrowserBased, null);
 
             Assert.False(model.DisplayApplicationType);
         }
@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         {
             applicationTypeDetail.BrowsersSupported = new HashSet<SupportedBrowser>() { browser };
 
-            var model = new ClientApplicationTypeModel(ClientApplicationTypeModel.ApplicationType.BrowserBased, applicationTypeDetail);
+            var model = new ApplicationTypeModel(ApplicationTypeModel.ApplicationType.BrowserBased, applicationTypeDetail);
 
             Assert.Equal("Browser-based application", model.Label);
             Assert.Equal("browser-based", model.DataTestTag);
@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             applicationTypeDetail.MobileOperatingSystems =
                 new MobileOperatingSystems() { OperatingSystems = new HashSet<string>() { operatingSystem } };
 
-            var model = new ClientApplicationTypeModel(ClientApplicationTypeModel.ApplicationType.NativeMobile, applicationTypeDetail);
+            var model = new ApplicationTypeModel(ApplicationTypeModel.ApplicationType.NativeMobile, applicationTypeDetail);
 
             Assert.Equal("Native mobile or tablet application", model.Label);
             Assert.Equal("native-mobile", model.DataTestTag);
@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         {
             applicationTypeDetail.NativeDesktopOperatingSystemsDescription = description;
 
-            var model = new ClientApplicationTypeModel(ClientApplicationTypeModel.ApplicationType.NativeDesktop, applicationTypeDetail);
+            var model = new ApplicationTypeModel(ApplicationTypeModel.ApplicationType.NativeDesktop, applicationTypeDetail);
 
             Assert.Equal("Native desktop application", model.Label);
             Assert.Equal("native-desktop", model.DataTestTag);

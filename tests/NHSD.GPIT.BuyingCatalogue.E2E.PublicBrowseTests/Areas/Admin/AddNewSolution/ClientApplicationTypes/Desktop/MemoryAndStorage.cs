@@ -11,7 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 using Objects = NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects;
 
-namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientApplicationTypes.Desktop
+namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ApplicationTypes.Desktop
 {
     [Collection(nameof(AdminCollection))]
     public sealed class MemoryAndStorage : AuthorityTestBase, IDisposable
@@ -35,13 +35,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
         [Fact]
         public async Task MemoryAndStorage_SaveData()
         {
-            var memorySize = CommonActions.SelectRandomDropDownItem(Objects.Admin.EditSolution.ClientApplicationObjects.MinimumMemoryDropDown);
+            var memorySize = CommonActions.SelectRandomDropDownItem(Objects.Admin.EditSolution.ApplicationTypeObjects.MinimumMemoryDropDown);
 
-            var storageSize = TextGenerators.TextInputAddText(Objects.Admin.EditSolution.ClientApplicationObjects.StorageSpace, 300);
+            var storageSize = TextGenerators.TextInputAddText(Objects.Admin.EditSolution.ApplicationTypeObjects.StorageSpace, 300);
 
-            var minimumCpu = TextGenerators.TextInputAddText(Objects.Admin.EditSolution.ClientApplicationObjects.ProcessingPower, 300);
+            var minimumCpu = TextGenerators.TextInputAddText(Objects.Admin.EditSolution.ApplicationTypeObjects.ProcessingPower, 300);
 
-            var resolution = CommonActions.SelectRandomDropDownItem(Objects.Admin.EditSolution.ClientApplicationObjects.ResolutionDropdown);
+            var resolution = CommonActions.SelectRandomDropDownItem(Objects.Admin.EditSolution.ApplicationTypeObjects.ResolutionDropdown);
 
             CommonActions.ClickSave();
 
@@ -98,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.ClientAp
 
         public void Dispose()
         {
-            ClearClientApplication(SolutionId);
+            ClearApplicationType(SolutionId);
         }
     }
 }
