@@ -9,7 +9,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     public sealed class ApplicationTypeDetail
     {
-        public HashSet<string> ClientApplicationTypes { get; set; } = new();
+        [JsonPropertyName("ClientApplicationTypes")]
+        public HashSet<string> ApplicaitonTypes { get; set; } = new();
 
         [JsonConverter(typeof(SupportedBrowsersJsonConverter))]
         public HashSet<SupportedBrowser> BrowsersSupported { get; set; } = new();
@@ -62,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
                 foreach (ApplicationType applicationType in Enum.GetValues(typeof(ApplicationType)))
                 {
-                    if (ClientApplicationTypes?.Any(type => type.Equals(applicationType.AsString(EnumFormat.EnumMemberValue), StringComparison.OrdinalIgnoreCase)) ?? false)
+                    if (ApplicaitonTypes?.Any(type => type.Equals(applicationType.AsString(EnumFormat.EnumMemberValue), StringComparison.OrdinalIgnoreCase)) ?? false)
                         result.Add(applicationType);
                 }
 
@@ -72,13 +73,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public void EnsureApplicationTypePresent(ApplicationType applicationType)
         {
-            ClientApplicationTypes ??= new HashSet<string>();
+            ApplicaitonTypes ??= new HashSet<string>();
 
-            if (!ClientApplicationTypes.Any(type => type.Equals(applicationType.AsString(EnumFormat.EnumMemberValue), StringComparison.OrdinalIgnoreCase)))
-                ClientApplicationTypes.Add(applicationType.AsString(EnumFormat.EnumMemberValue));
+            if (!ApplicaitonTypes.Any(type => type.Equals(applicationType.AsString(EnumFormat.EnumMemberValue), StringComparison.OrdinalIgnoreCase)))
+                ApplicaitonTypes.Add(applicationType.AsString(EnumFormat.EnumMemberValue));
         }
 
         public bool HasApplicationType(ApplicationType applicationType)
-            => ClientApplicationTypes?.Any(type => type.Equals(applicationType.AsString(EnumFormat.EnumMemberValue), StringComparison.OrdinalIgnoreCase)) ?? false;
+            => ApplicaitonTypes?.Any(type => type.Equals(applicationType.AsString(EnumFormat.EnumMemberValue), StringComparison.OrdinalIgnoreCase)) ?? false;
     }
 }

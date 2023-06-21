@@ -473,7 +473,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             [Frozen] BuyingCatalogueDbContext context,
             SolutionsService service)
         {
-            applicationTypeDetail.ClientApplicationTypes =
+            applicationTypeDetail.ApplicaitonTypes =
                 new HashSet<string> { "browser-based", "native-mobile", "native-desktop" };
             catalogueSolution.ApplicationTypeDetail = applicationTypeDetail;
             context.Solutions.Add(catalogueSolution);
@@ -489,9 +489,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             var actualApplicationTypeDetail = actual.ApplicationTypeDetail;
 
-            actualApplicationTypeDetail.ClientApplicationTypes.Any(c => c.Equals("browser-based")).Should().BeFalse();
-            actualApplicationTypeDetail.ClientApplicationTypes.Any(c => c.Equals("native-mobile")).Should().BeTrue();
-            actualApplicationTypeDetail.ClientApplicationTypes.Any(c => c.Equals("native-desktop")).Should().BeTrue();
+            actualApplicationTypeDetail.ApplicaitonTypes.Any(c => c.Equals("browser-based")).Should().BeFalse();
+            actualApplicationTypeDetail.ApplicaitonTypes.Any(c => c.Equals("native-mobile")).Should().BeTrue();
+            actualApplicationTypeDetail.ApplicaitonTypes.Any(c => c.Equals("native-desktop")).Should().BeTrue();
         }
 
         [Theory]
@@ -499,7 +499,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static void Remove_BrowserBased_ApplicationType_RemovesBrowserBasedEntries(
             ApplicationTypeDetail applicationTypeDetail)
         {
-            applicationTypeDetail.ClientApplicationTypes = new HashSet<string>
+            applicationTypeDetail.ApplicaitonTypes = new HashSet<string>
             {
                 ApplicationType.BrowserBased.AsString(EnumFormat.EnumMemberValue),
                 ApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue),
@@ -510,7 +510,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 applicationTypeDetail,
                 ApplicationType.BrowserBased);
 
-            updatedApplicationType.ClientApplicationTypes.Should()
+            updatedApplicationType.ApplicaitonTypes.Should()
                 .BeEquivalentTo(
                     new HashSet<string>
                     {
@@ -561,7 +561,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [CommonAutoData]
         public static void Remove_Desktop_ApplicationType_RemovesDesktopEntries(ApplicationTypeDetail applicationTypeDetail)
         {
-            applicationTypeDetail.ClientApplicationTypes = new HashSet<string>
+            applicationTypeDetail.ApplicaitonTypes = new HashSet<string>
             {
                 ApplicationType.BrowserBased.AsString(EnumFormat.EnumMemberValue),
                 ApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue),
@@ -572,7 +572,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 applicationTypeDetail,
                 ApplicationType.Desktop);
 
-            updatedApplicationType.ClientApplicationTypes.Should()
+            updatedApplicationType.ApplicaitonTypes.Should()
                 .BeEquivalentTo(
                     new HashSet<string>
                     {
@@ -617,7 +617,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [CommonAutoData]
         public static void Remove_Mobile_ApplicationType_RemovesMobileEntries(ApplicationTypeDetail applicationTypeDetail)
         {
-            applicationTypeDetail.ClientApplicationTypes = new HashSet<string>
+            applicationTypeDetail.ApplicaitonTypes = new HashSet<string>
             {
                 ApplicationType.BrowserBased.AsString(EnumFormat.EnumMemberValue),
                 ApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue),
@@ -628,7 +628,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 applicationTypeDetail,
                 ApplicationType.MobileTablet);
 
-            updatedApplicationType.ClientApplicationTypes.Should()
+            updatedApplicationType.ApplicaitonTypes.Should()
                 .BeEquivalentTo(
                     new HashSet<string>
                     {

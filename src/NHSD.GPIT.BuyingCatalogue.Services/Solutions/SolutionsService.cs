@@ -547,10 +547,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             if (applicationTypeDetail is null)
                 throw new ArgumentNullException(nameof(applicationTypeDetail));
 
-            if (applicationTypeDetail.ClientApplicationTypes is not null)
+            if (applicationTypeDetail.ApplicaitonTypes is not null)
             {
-                if (applicationTypeDetail.ClientApplicationTypes.Contains(applicationType.AsString(EnumFormat.EnumMemberValue)))
-                    applicationTypeDetail.ClientApplicationTypes.Remove(applicationType.AsString(EnumFormat.EnumMemberValue));
+                if (applicationTypeDetail.ApplicaitonTypes.Contains(applicationType.AsString(EnumFormat.EnumMemberValue)))
+                    applicationTypeDetail.ApplicaitonTypes.Remove(applicationType.AsString(EnumFormat.EnumMemberValue));
             }
 
             if (applicationType == ApplicationType.BrowserBased)

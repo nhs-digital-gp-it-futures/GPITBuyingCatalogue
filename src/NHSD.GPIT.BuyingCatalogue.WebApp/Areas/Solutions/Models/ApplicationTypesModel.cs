@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public ApplicationTypeDetail ApplicationTypeDetail { get; init; }
 
         public bool HasApplicationType(ApplicationType applicationType) =>
-            ApplicationTypeDetail?.ClientApplicationTypes?.Any(
+            ApplicationTypeDetail?.ApplicaitonTypes?.Any(
                 s => s.EqualsIgnoreCase(applicationType.EnumMemberName())) ?? false;
 
         private DescriptionListViewModel GetBrowserBasedApplication()

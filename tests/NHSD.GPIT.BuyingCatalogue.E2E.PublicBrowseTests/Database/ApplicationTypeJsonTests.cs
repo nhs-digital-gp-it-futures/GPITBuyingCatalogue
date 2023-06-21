@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Database
             using var dbContext = fixture.GetDbContext();
             var solution = dbContext.Solutions.FirstOrDefault(s => s.CatalogueItemId == catalogueItem.Id);
             solution.ApplicationTypeDetail.Should().NotBeNull();
-            solution.ApplicationTypeDetail.Should().BeEquivalentTo(new ApplicationTypeDetail() { ClientApplicationTypes = new HashSet<string>() { "browser-based" } });
+            solution.ApplicationTypeDetail.Should().BeEquivalentTo(new ApplicationTypeDetail() { ApplicaitonTypes = new HashSet<string>() { "browser-based" } });
         }
 
         [Fact]
