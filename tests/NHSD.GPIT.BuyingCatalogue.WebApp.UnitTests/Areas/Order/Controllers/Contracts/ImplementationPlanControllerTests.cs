@@ -202,7 +202,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             mockImplementationPlanService
                 .Setup(x => x.AddBespokeMilestone(order.Id, contract.Id, model.Name, model.PaymentTrigger))
-                .ReturnsAsync(1);
+                .Returns(Task.CompletedTask);
 
             var result = await controller.AddMilestone(internalOrgId, order.CallOffId, model);
 
@@ -216,17 +216,128 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
         [Theory]
         [CommonAutoData]
-        public static void Get_EditMilestone_ReturnsExpectedResult(
+        public static async Task Get_EditMilestone_ReturnsExpectedResult(
             string internalOrgId,
-            CallOffId callOffId,
-            int milestoneId,
+            EntityFramework.Ordering.Models.Order order,
+            ImplementationPlanMilestone milestone,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] Mock<IImplementationPlanService> mockImplementationPlanService,
             ImplementationPlanController controller)
         {
-            var result = controller.EditMilestone(internalOrgId, callOffId, milestoneId);
+            mockOrderService
+                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            mockImplementationPlanService
+                .Setup(x => x.GetMilestone(order.Id, milestone.Id))
+                .ReturnsAsync(milestone);
+
+            var expected = new MilestoneModel(milestone, order.CallOffId, internalOrgId);
+
+            var result = await controller.EditMilestone(internalOrgId, order.CallOffId, milestone.Id);
+
+            mockOrderService.VerifyAll();
+            mockImplementationPlanService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             actualResult.ViewName.Should().Be("Milestone");
-            actualResult.Model.Should().BeEquivalentTo(new MilestoneModel(), x => x.Excluding(m => m.BackLink));
+            actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditMilestone_ModelError_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            MilestoneModel model,
+            ImplementationPlanController controller)
+        {
+            controller.ModelState.AddModelError("some-property", "some-error");
+
+            var result = await controller.EditMilestone(internalOrgId, callOffId, model);
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+            actualResult.ViewName.Should().Be("Milestone");
+            actualResult.Model.Should().BeEquivalentTo(model);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_EditMilestone_ReturnsExpectedResult(
+            string internalOrgId,
+            MilestoneModel model,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] Mock<IImplementationPlanService> mockImplementationPlanService,
+            ImplementationPlanController controller)
+        {
+            mockOrderService
+                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            mockImplementationPlanService
+                .Setup(x => x.EditMilestone(order.Id, model.MilestoneId, model.Name, model.PaymentTrigger))
+                .Returns(Task.CompletedTask);
+
+            var result = await controller.EditMilestone(internalOrgId, order.CallOffId, model);
+
+            mockOrderService.VerifyAll();
+            mockImplementationPlanService.VerifyAll();
+
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+            actualResult.ActionName.Should().Be(nameof(ImplementationPlanController.Index));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_DeleteMilestone_ReturnsExpectedResult(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            ImplementationPlanMilestone milestone,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] Mock<IImplementationPlanService> mockImplementationPlanService,
+            ImplementationPlanController controller)
+        {
+            mockOrderService
+                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            mockImplementationPlanService
+                .Setup(x => x.GetMilestone(order.Id, milestone.Id))
+                .ReturnsAsync(milestone);
+
+            var result = await controller.DeleteMilestone(internalOrgId, order.CallOffId, milestone.Id);
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+            actualResult.ViewName.Should().BeNull();
+            actualResult.Model.Should().BeEquivalentTo(new DeleteMilestoneModel(order.CallOffId, internalOrgId, milestone), x => x.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_DeleteMilestone_ReturnsExpectedResult(
+            string internalOrgId,
+            DeleteMilestoneModel model,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] Mock<IImplementationPlanService> mockImplementationPlanService,
+            ImplementationPlanController controller)
+        {
+            mockOrderService
+                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            mockImplementationPlanService
+                .Setup(x => x.DeleteMilestone(order.Id, model.MilestoneId))
+                .Returns(Task.CompletedTask);
+
+            var result = await controller.DeleteMilestone(internalOrgId, order.CallOffId, model);
+
+            mockOrderService.VerifyAll();
+            mockImplementationPlanService.VerifyAll();
+
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+            actualResult.ActionName.Should().Be(nameof(ImplementationPlanController.Index));
         }
     }
 }

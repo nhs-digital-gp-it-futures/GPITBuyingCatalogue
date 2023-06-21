@@ -1,37 +1,42 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
 @using ValidationSummaryTagHelper = Microsoft.AspNetCore.Mvc.TagHelpers.ValidationSummaryTagHelper
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.ImplementationPlans.MilestoneModel
-
-@{
-    ViewBag.Title = "Add a bespoke implementation milestone";
-}
 
 <partial name="Partials/_BackLink" model="Model" />
 
 <div class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-full">
+    <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary/>
 
-        <nhs-page-title title="@ViewBag.Title"
+        <nhs-page-title title="Bespoke implementation milestone"
                         caption="Order @Model.CallOffId"
-                        advice="Add any implementation plan milestones you’ve agreed with the supplier." />
+                        advice="@Model.Advice"/>
 
         <form method="post">
             <div class="nhsuk-u-margin-top-9">
-                
-                <input type="hidden" asp-for="BackLink" />
-                <input type="hidden" asp-for="CallOffId" />
-                <input type="hidden" asp-for="InternalOrgId" />
-                
+
+                <input type="hidden" asp-for="BackLink"/>
+                <input type="hidden" asp-for="CallOffId"/>
+                <input type="hidden" asp-for="InternalOrgId"/>
+
                 <nhs-input asp-for="Name"
                            label-text="Milestone name"
                            label-hint="Provide a name for the milestone you want to add to this order"/>
 
-                <nhs-textarea asp-for="PaymentTrigger" 
+                <nhs-textarea asp-for="PaymentTrigger"
                               label-text="Milestone payment trigger"
                               label-hint="Provide a description of how this milestone will trigger payments as part of this order"/>
-                <nhs-submit-button text="Save and continue"/>
+                <nhs-button-group>
+                    <nhs-submit-button text="Save and continue"/>
+                </nhs-button-group>
+
+                @if (Model.IsEdit)
+                {
+                    <vc:nhs-delete-button url="@Url.Action(nameof(ImplementationPlanController.DeleteMilestone), typeof(ImplementationPlanController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId, Model.MilestoneId })"
+                                          text="Delete milestone"/>
+                }
             </div>
         </form>
     </div>

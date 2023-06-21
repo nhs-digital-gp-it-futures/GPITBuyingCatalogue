@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -71,14 +72,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         [HttpGet("add-milestone")]
         public IActionResult AddMilestone(string internalOrgId, CallOffId callOffId)
         {
-            var model = new MilestoneModel()
+            var model = new MilestoneModel(callOffId, internalOrgId)
             {
                 BackLink = Url.Action(
                     nameof(Index),
                     typeof(ImplementationPlanController).ControllerName(),
                     new { internalOrgId, callOffId }),
-                CallOffId = callOffId,
-                InternalOrgId = internalOrgId,
             };
 
             return View("Milestone", model);
@@ -101,9 +100,60 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         }
 
         [HttpGet("edit-milestone")]
-        public IActionResult EditMilestone(string internalOrgId, CallOffId callOffId, int milestoneId)
+        public async Task<IActionResult> EditMilestone(string internalOrgId, CallOffId callOffId, int milestoneId)
         {
-            return View("Milestone", new MilestoneModel());
+            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
+            var milestone = await implementationPlanService.GetMilestone(order.Id, milestoneId);
+
+            var model = new MilestoneModel(milestone, callOffId, internalOrgId)
+            {
+                BackLink = Url.Action(
+                    nameof(Index),
+                    typeof(ImplementationPlanController).ControllerName(),
+                    new { internalOrgId, callOffId }),
+            };
+            return View("Milestone", model);
+        }
+
+        [HttpPost("edit-milestone")]
+        public async Task<IActionResult> EditMilestone(string internalOrgId, CallOffId callOffId, MilestoneModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("Milestone", model);
+            }
+
+            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
+
+            await implementationPlanService.EditMilestone(order.Id, model.MilestoneId, model.Name, model.PaymentTrigger);
+
+            return RedirectToAction(nameof(Index), new { internalOrgId, callOffId });
+        }
+
+        [HttpGet("delete-milestone")]
+        public async Task<IActionResult> DeleteMilestone(string internalOrgId, CallOffId callOffId, int milestoneId)
+        {
+            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
+            var milestone = await implementationPlanService.GetMilestone(order.Id, milestoneId);
+
+            var model = new DeleteMilestoneModel(callOffId, internalOrgId, milestone)
+            {
+                BackLink = Url.Action(
+                    nameof(EditMilestone),
+                    typeof(ImplementationPlanController).ControllerName(),
+                    new { internalOrgId, callOffId, milestoneId }),
+            };
+            return View(model);
+        }
+
+        [HttpPost("delete-milestone")]
+        public async Task<IActionResult> DeleteMilestone(string internalOrgId, CallOffId callOffId, DeleteMilestoneModel model)
+        {
+            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
+
+            await implementationPlanService.DeleteMilestone(order.Id, model.MilestoneId);
+
+            return RedirectToAction(nameof(Index), new { internalOrgId, callOffId });
         }
     }
 }
