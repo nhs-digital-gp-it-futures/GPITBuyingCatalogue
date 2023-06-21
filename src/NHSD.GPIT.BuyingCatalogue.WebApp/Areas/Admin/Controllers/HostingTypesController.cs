@@ -121,7 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var hosting = await solutionsService.GetHosting(solutionId);
+            var hosting = catalogueItem.Solution.Hosting ?? new Hosting();
             hosting.PublicCloud = new PublicCloud { Summary = model.Summary, Link = model.Link, RequiresHscn = model.RequiresHscn };
 
             await solutionsService.SaveHosting(solutionId, hosting);
@@ -155,7 +155,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var hosting = await solutionsService.GetHosting(solutionId);
+            var hosting = catalogueItem.Solution.Hosting ?? new Hosting();
             hosting.PrivateCloud = new PrivateCloud { Summary = model.Summary, HostingModel = model.HostingModel, Link = model.Link, RequiresHscn = model.RequiresHscn };
 
             await solutionsService.SaveHosting(solutionId, hosting);
@@ -189,7 +189,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var hosting = await solutionsService.GetHosting(solutionId);
+            var hosting = catalogueItem.Solution.Hosting ?? new Hosting();
             hosting.HybridHostingType = new HybridHostingType { Summary = model.Summary, HostingModel = model.HostingModel, Link = model.Link, RequiresHscn = model.RequiresHscn };
 
             await solutionsService.SaveHosting(solutionId, hosting);
@@ -223,7 +223,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (catalogueItem is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var hosting = await solutionsService.GetHosting(solutionId);
+            var hosting = catalogueItem.Solution.Hosting ?? new Hosting();
             hosting.OnPremise = new OnPremise { Summary = model.Summary, HostingModel = model.HostingModel, Link = model.Link, RequiresHscn = model.RequiresHscn };
 
             await solutionsService.SaveHosting(solutionId, hosting);
