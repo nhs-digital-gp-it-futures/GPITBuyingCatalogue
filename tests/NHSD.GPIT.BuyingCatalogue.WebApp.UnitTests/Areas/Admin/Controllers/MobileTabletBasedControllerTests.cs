@@ -121,24 +121,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_OperatingSystems_Saves_And_RedirectsToMobileTablet(
             CatalogueItemId catalogueItemId,
             OperatingSystemsModel model,
-            ApplicationTypeDetail clientApplication,
+            ApplicationTypeDetail applicationTypeDetail,
             [Frozen] Mock<ISolutionsService> mockService,
             MobileTabletBasedController controller)
         {
-            mockService.Setup(s => s.GetApplicationType(catalogueItemId)).ReturnsAsync(clientApplication);
-            clientApplication.ClientApplicationTypes.Clear();
+            mockService.Setup(s => s.GetApplicationType(catalogueItemId)).ReturnsAsync(applicationTypeDetail);
+            applicationTypeDetail.ClientApplicationTypes.Clear();
 
             var actual = (await controller.OperatingSystems(catalogueItemId, model)).As<RedirectToActionResult>();
 
-            clientApplication.MobileOperatingSystems.OperatingSystems = model.OperatingSystems
+            applicationTypeDetail.MobileOperatingSystems.OperatingSystems = model.OperatingSystems
                 .Where(o => o.Checked)
                 .Select(o => o.OperatingSystemName)
                 .ToHashSet();
 
-            clientApplication.ClientApplicationTypes.Add(ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
-            clientApplication.MobileOperatingSystems.OperatingSystemsDescription = model.Description;
+            applicationTypeDetail.ClientApplicationTypes.Add(ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
+            applicationTypeDetail.MobileOperatingSystems.OperatingSystemsDescription = model.Description;
 
-            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, clientApplication));
+            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, applicationTypeDetail));
             actual.ActionName.Should().Be(nameof(MobileTabletBasedController.MobileTablet));
             actual.ControllerName.Should().BeNull();
             actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
@@ -185,26 +185,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_Connectivity_Saves_And_RedirectsToMobileTablet(
             CatalogueItemId catalogueItemId,
             ConnectivityModel model,
-            ApplicationTypeDetail clientApplication,
+            ApplicationTypeDetail applicationTypeDetail,
             [Frozen] Mock<ISolutionsService> mockService,
             MobileTabletBasedController controller)
         {
-            mockService.Setup(s => s.GetApplicationType(catalogueItemId)).ReturnsAsync(clientApplication);
-            clientApplication.ClientApplicationTypes.Clear();
+            mockService.Setup(s => s.GetApplicationType(catalogueItemId)).ReturnsAsync(applicationTypeDetail);
+            applicationTypeDetail.ClientApplicationTypes.Clear();
 
             var actual = (await controller.Connectivity(catalogueItemId, model)).As<RedirectToActionResult>();
 
-            clientApplication.MobileConnectionDetails.MinimumConnectionSpeed = model.SelectedConnectionSpeed;
-            clientApplication.MobileConnectionDetails.Description = model.Description;
+            applicationTypeDetail.MobileConnectionDetails.MinimumConnectionSpeed = model.SelectedConnectionSpeed;
+            applicationTypeDetail.MobileConnectionDetails.Description = model.Description;
 
-            clientApplication.MobileConnectionDetails.ConnectionType = model.ConnectionTypes
+            applicationTypeDetail.MobileConnectionDetails.ConnectionType = model.ConnectionTypes
                 .Where(o => o.Checked)
                 .Select(o => o.ConnectionType)
                 .ToHashSet();
 
-            clientApplication.ClientApplicationTypes.Add(ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
+            applicationTypeDetail.ClientApplicationTypes.Add(ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
 
-            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, clientApplication));
+            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, applicationTypeDetail));
             actual.ActionName.Should().Be(nameof(MobileTabletBasedController.MobileTablet));
             actual.ControllerName.Should().BeNull();
             actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
@@ -251,20 +251,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_MemoryAndStorage_Saves_And_RedirectsToMobileTablet(
             CatalogueItemId catalogueItemId,
             MemoryAndStorageModel model,
-            ApplicationTypeDetail clientApplication,
+            ApplicationTypeDetail applicationTypeDetail,
             [Frozen] Mock<ISolutionsService> mockService,
             MobileTabletBasedController controller)
         {
-            mockService.Setup(s => s.GetApplicationType(catalogueItemId)).ReturnsAsync(clientApplication);
-            clientApplication.ClientApplicationTypes.Clear();
+            mockService.Setup(s => s.GetApplicationType(catalogueItemId)).ReturnsAsync(applicationTypeDetail);
+            applicationTypeDetail.ClientApplicationTypes.Clear();
 
             var actual = (await controller.MemoryAndStorage(catalogueItemId, model)).As<RedirectToActionResult>();
 
-            clientApplication.MobileMemoryAndStorage.MinimumMemoryRequirement = model.SelectedMemorySize;
-            clientApplication.MobileMemoryAndStorage.Description = model.Description;
-            clientApplication.ClientApplicationTypes.Add(ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
+            applicationTypeDetail.MobileMemoryAndStorage.MinimumMemoryRequirement = model.SelectedMemorySize;
+            applicationTypeDetail.MobileMemoryAndStorage.Description = model.Description;
+            applicationTypeDetail.ClientApplicationTypes.Add(ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
 
-            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, clientApplication));
+            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, applicationTypeDetail));
             actual.ActionName.Should().Be(nameof(MobileTabletBasedController.MobileTablet));
             actual.ControllerName.Should().BeNull();
             actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
@@ -311,20 +311,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_ThirdPartyComponents_Saves_And_RedirectsToMobileTablet(
             CatalogueItemId catalogueItemId,
             ThirdPartyComponentsModel model,
-            ApplicationTypeDetail clientApplication,
+            ApplicationTypeDetail applicationTypeDetail,
             [Frozen] Mock<ISolutionsService> mockService,
             MobileTabletBasedController controller)
         {
-            mockService.Setup(s => s.GetApplicationType(catalogueItemId)).ReturnsAsync(clientApplication);
-            clientApplication.ClientApplicationTypes.Clear();
+            mockService.Setup(s => s.GetApplicationType(catalogueItemId)).ReturnsAsync(applicationTypeDetail);
+            applicationTypeDetail.ClientApplicationTypes.Clear();
 
             var actual = (await controller.ThirdPartyComponents(catalogueItemId, model)).As<RedirectToActionResult>();
 
-            clientApplication.MobileThirdParty.ThirdPartyComponents = model.ThirdPartyComponents;
-            clientApplication.MobileThirdParty.DeviceCapabilities = model.DeviceCapabilities;
-            clientApplication.ClientApplicationTypes.Add(ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
+            applicationTypeDetail.MobileThirdParty.ThirdPartyComponents = model.ThirdPartyComponents;
+            applicationTypeDetail.MobileThirdParty.DeviceCapabilities = model.DeviceCapabilities;
+            applicationTypeDetail.ClientApplicationTypes.Add(ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
 
-            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, clientApplication));
+            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, applicationTypeDetail));
             actual.ActionName.Should().Be(nameof(MobileTabletBasedController.MobileTablet));
             actual.ControllerName.Should().BeNull();
             actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
@@ -371,19 +371,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_HardwareRequirements_Saves_And_RedirectsToMobileTablet(
             CatalogueItemId catalogueItemId,
             HardwareRequirementsModel model,
-            ApplicationTypeDetail clientApplication,
+            ApplicationTypeDetail applicationTypeDetail,
             [Frozen] Mock<ISolutionsService> mockService,
             MobileTabletBasedController controller)
         {
-            mockService.Setup(s => s.GetApplicationType(catalogueItemId)).ReturnsAsync(clientApplication);
-            clientApplication.ClientApplicationTypes.Clear();
+            mockService.Setup(s => s.GetApplicationType(catalogueItemId)).ReturnsAsync(applicationTypeDetail);
+            applicationTypeDetail.ClientApplicationTypes.Clear();
 
             var actual = (await controller.HardwareRequirements(catalogueItemId, model)).As<RedirectToActionResult>();
 
-            clientApplication.NativeMobileHardwareRequirements = model.Description;
-            clientApplication.ClientApplicationTypes.Add(ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
+            applicationTypeDetail.NativeMobileHardwareRequirements = model.Description;
+            applicationTypeDetail.ClientApplicationTypes.Add(ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
 
-            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, clientApplication));
+            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, applicationTypeDetail));
             actual.ActionName.Should().Be(nameof(MobileTabletBasedController.MobileTablet));
             actual.ControllerName.Should().BeNull();
             actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
@@ -430,19 +430,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_AdditionalInformation_Saves_And_RedirectsToMobileTablet(
             CatalogueItemId catalogueItemId,
             AdditionalInformationModel model,
-            ApplicationTypeDetail clientApplication,
+            ApplicationTypeDetail applicationTypeDetail,
             [Frozen] Mock<ISolutionsService> mockService,
             MobileTabletBasedController controller)
         {
-            mockService.Setup(s => s.GetApplicationType(catalogueItemId)).ReturnsAsync(clientApplication);
-            clientApplication.ClientApplicationTypes.Clear();
+            mockService.Setup(s => s.GetApplicationType(catalogueItemId)).ReturnsAsync(applicationTypeDetail);
+            applicationTypeDetail.ClientApplicationTypes.Clear();
 
             var actual = (await controller.AdditionalInformation(catalogueItemId, model)).As<RedirectToActionResult>();
 
-            clientApplication.NativeMobileAdditionalInformation = model.AdditionalInformation;
-            clientApplication.ClientApplicationTypes.Add(ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
+            applicationTypeDetail.NativeMobileAdditionalInformation = model.AdditionalInformation;
+            applicationTypeDetail.ClientApplicationTypes.Add(ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
 
-            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, clientApplication));
+            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, applicationTypeDetail));
             actual.ActionName.Should().Be(nameof(MobileTabletBasedController.MobileTablet));
             actual.ControllerName.Should().BeNull();
             actual.RouteValues["solutionId"].Should().Be(catalogueItemId);

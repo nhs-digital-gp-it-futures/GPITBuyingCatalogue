@@ -131,11 +131,11 @@ public static class ReviewFilterModelTests
     [Theory]
     [CommonMemberAutoData(nameof(HasApplicationTypesTestData))]
     public static void HasApplicationTypes_ReturnsExpected(
-        List<ApplicationType> clientApplicationTypes,
+        List<ApplicationType> applicationTypes,
         bool expected,
         FilterDetailsModel filterDetailsModel)
     {
-        filterDetailsModel.ApplicationTypes = clientApplicationTypes;
+        filterDetailsModel.ApplicationTypes = applicationTypes;
 
         var model = new ReviewFilterModel(filterDetailsModel);
 

@@ -32,10 +32,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var clientApplication = solution.Solution.EnsureAndGetApplicationType();
+            var applicationType = solution.Solution.EnsureAndGetApplicationType();
             var model = new MobileTabletBasedModel(solution)
             {
-                BackLink = clientApplication?.HasApplicationType(ApplicationType.MobileTablet) ?? false
+                BackLink = applicationType?.HasApplicationType(ApplicationType.MobileTablet) ?? false
                            ? Url.Action(
                                nameof(CatalogueSolutionsController.ApplicationType),
                                typeof(CatalogueSolutionsController).ControllerName(),
@@ -71,29 +71,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var clientApplication = await solutionsService.GetApplicationType(solutionId);
+            var applicationType = await solutionsService.GetApplicationType(solutionId);
 
-            if (clientApplication is null)
+            if (applicationType is null)
                 return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
-            if (clientApplication.MobileOperatingSystems is null)
-                clientApplication.MobileOperatingSystems = new MobileOperatingSystems();
+            if (applicationType.MobileOperatingSystems is null)
+                applicationType.MobileOperatingSystems = new MobileOperatingSystems();
 
-            if (clientApplication.MobileOperatingSystems.OperatingSystems is null)
-                clientApplication.MobileOperatingSystems.OperatingSystems = new System.Collections.Generic.HashSet<string>();
+            if (applicationType.MobileOperatingSystems.OperatingSystems is null)
+                applicationType.MobileOperatingSystems.OperatingSystems = new System.Collections.Generic.HashSet<string>();
 
-            clientApplication.MobileOperatingSystems.OperatingSystems.Clear();
+            applicationType.MobileOperatingSystems.OperatingSystems.Clear();
 
-            clientApplication.MobileOperatingSystems.OperatingSystems = model.OperatingSystems
+            applicationType.MobileOperatingSystems.OperatingSystems = model.OperatingSystems
                 .Where(o => o.Checked)
                 .Select(o => o.OperatingSystemName)
                 .ToHashSet();
 
-            clientApplication.MobileOperatingSystems.OperatingSystemsDescription = model.Description;
+            applicationType.MobileOperatingSystems.OperatingSystemsDescription = model.Description;
 
-            clientApplication.EnsureApplicationTypePresent(ApplicationType.MobileTablet);
+            applicationType.EnsureApplicationTypePresent(ApplicationType.MobileTablet);
 
-            await solutionsService.SaveApplicationType(solutionId, clientApplication);
+            await solutionsService.SaveApplicationType(solutionId, applicationType);
 
             return RedirectToAction(nameof(MobileTablet), new { solutionId });
         }
@@ -120,30 +120,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var clientApplication = await solutionsService.GetApplicationType(solutionId);
+            var applicationType = await solutionsService.GetApplicationType(solutionId);
 
-            if (clientApplication is null)
+            if (applicationType is null)
                 return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
-            if (clientApplication.MobileConnectionDetails is null)
-                clientApplication.MobileConnectionDetails = new MobileConnectionDetails();
+            if (applicationType.MobileConnectionDetails is null)
+                applicationType.MobileConnectionDetails = new MobileConnectionDetails();
 
-            clientApplication.MobileConnectionDetails.MinimumConnectionSpeed = model.SelectedConnectionSpeed;
-            clientApplication.MobileConnectionDetails.Description = model.Description;
+            applicationType.MobileConnectionDetails.MinimumConnectionSpeed = model.SelectedConnectionSpeed;
+            applicationType.MobileConnectionDetails.Description = model.Description;
 
-            if (clientApplication.MobileConnectionDetails.ConnectionType is null)
-                clientApplication.MobileConnectionDetails.ConnectionType = new System.Collections.Generic.HashSet<string>();
+            if (applicationType.MobileConnectionDetails.ConnectionType is null)
+                applicationType.MobileConnectionDetails.ConnectionType = new System.Collections.Generic.HashSet<string>();
 
-            clientApplication.MobileConnectionDetails.ConnectionType.Clear();
+            applicationType.MobileConnectionDetails.ConnectionType.Clear();
 
-            clientApplication.MobileConnectionDetails.ConnectionType = model.ConnectionTypes
+            applicationType.MobileConnectionDetails.ConnectionType = model.ConnectionTypes
                 .Where(o => o.Checked)
                 .Select(o => o.ConnectionType)
                 .ToHashSet();
 
-            clientApplication.EnsureApplicationTypePresent(ApplicationType.MobileTablet);
+            applicationType.EnsureApplicationTypePresent(ApplicationType.MobileTablet);
 
-            await solutionsService.SaveApplicationType(solutionId, clientApplication);
+            await solutionsService.SaveApplicationType(solutionId, applicationType);
 
             return RedirectToAction(nameof(MobileTablet), new { solutionId });
         }
@@ -169,19 +169,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var clientApplication = await solutionsService.GetApplicationType(solutionId);
+            var applicationType = await solutionsService.GetApplicationType(solutionId);
 
-            if (clientApplication is null)
+            if (applicationType is null)
                 return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
-            clientApplication.MobileMemoryAndStorage ??= new MobileMemoryAndStorage();
+            applicationType.MobileMemoryAndStorage ??= new MobileMemoryAndStorage();
 
-            clientApplication.MobileMemoryAndStorage.MinimumMemoryRequirement = model.SelectedMemorySize;
-            clientApplication.MobileMemoryAndStorage.Description = model.Description;
+            applicationType.MobileMemoryAndStorage.MinimumMemoryRequirement = model.SelectedMemorySize;
+            applicationType.MobileMemoryAndStorage.Description = model.Description;
 
-            clientApplication.EnsureApplicationTypePresent(ApplicationType.MobileTablet);
+            applicationType.EnsureApplicationTypePresent(ApplicationType.MobileTablet);
 
-            await solutionsService.SaveApplicationType(solutionId, clientApplication);
+            await solutionsService.SaveApplicationType(solutionId, applicationType);
 
             return RedirectToAction(nameof(MobileTablet), new { solutionId });
         }
@@ -208,19 +208,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var clientApplication = await solutionsService.GetApplicationType(solutionId);
+            var applicationType = await solutionsService.GetApplicationType(solutionId);
 
-            if (clientApplication is null)
+            if (applicationType is null)
                 return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
-            clientApplication.MobileThirdParty ??= new MobileThirdParty();
+            applicationType.MobileThirdParty ??= new MobileThirdParty();
 
-            clientApplication.MobileThirdParty.ThirdPartyComponents = model.ThirdPartyComponents;
-            clientApplication.MobileThirdParty.DeviceCapabilities = model.DeviceCapabilities;
+            applicationType.MobileThirdParty.ThirdPartyComponents = model.ThirdPartyComponents;
+            applicationType.MobileThirdParty.DeviceCapabilities = model.DeviceCapabilities;
 
-            clientApplication.EnsureApplicationTypePresent(ApplicationType.MobileTablet);
+            applicationType.EnsureApplicationTypePresent(ApplicationType.MobileTablet);
 
-            await solutionsService.SaveApplicationType(solutionId, clientApplication);
+            await solutionsService.SaveApplicationType(solutionId, applicationType);
 
             return RedirectToAction(nameof(MobileTablet), new { solutionId });
         }
@@ -247,16 +247,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var clientApplication = await solutionsService.GetApplicationType(solutionId);
+            var applicationType = await solutionsService.GetApplicationType(solutionId);
 
-            if (clientApplication is null)
+            if (applicationType is null)
                 return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
-            clientApplication.NativeMobileHardwareRequirements = model.Description;
+            applicationType.NativeMobileHardwareRequirements = model.Description;
 
-            clientApplication.EnsureApplicationTypePresent(ApplicationType.MobileTablet);
+            applicationType.EnsureApplicationTypePresent(ApplicationType.MobileTablet);
 
-            await solutionsService.SaveApplicationType(solutionId, clientApplication);
+            await solutionsService.SaveApplicationType(solutionId, applicationType);
 
             return RedirectToAction(nameof(MobileTablet), new { solutionId });
         }
@@ -283,16 +283,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var clientApplication = await solutionsService.GetApplicationType(solutionId);
+            var applicationType = await solutionsService.GetApplicationType(solutionId);
 
-            if (clientApplication is null)
+            if (applicationType is null)
                 return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
-            clientApplication.NativeMobileAdditionalInformation = model.AdditionalInformation;
+            applicationType.NativeMobileAdditionalInformation = model.AdditionalInformation;
 
-            clientApplication.EnsureApplicationTypePresent(ApplicationType.MobileTablet);
+            applicationType.EnsureApplicationTypePresent(ApplicationType.MobileTablet);
 
-            await solutionsService.SaveApplicationType(solutionId, clientApplication);
+            await solutionsService.SaveApplicationType(solutionId, applicationType);
 
             return RedirectToAction(nameof(MobileTablet), new { solutionId });
         }

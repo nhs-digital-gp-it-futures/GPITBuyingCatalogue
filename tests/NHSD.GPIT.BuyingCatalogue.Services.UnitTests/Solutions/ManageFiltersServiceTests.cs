@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             List<int> capabilityIds,
             List<string> epicIds,
             string frameworkId,
-            List<ApplicationType> clientApplicationTypes,
+            List<ApplicationType> applicationTypes,
             List<HostingType> hostingTypes,
             ManageFiltersService service)
         {
@@ -101,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                         capabilityIds,
                         epicIds,
                         frameworkId,
-                        clientApplicationTypes,
+                        applicationTypes,
                         hostingTypes))
                 .Should()
                 .ThrowAsync<ArgumentNullException>(nameof(name));
@@ -118,7 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             List<int> capabilityIds,
             List<string> epicIds,
             string frameworkId,
-            List<ApplicationType> clientApplicationTypes,
+            List<ApplicationType> applicationTypes,
             List<HostingType> hostingTypes,
             ManageFiltersService service)
         {
@@ -131,7 +131,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                         capabilityIds,
                         epicIds,
                         frameworkId,
-                        clientApplicationTypes,
+                        applicationTypes,
                         hostingTypes))
                 .Should()
                 .ThrowAsync<ArgumentNullException>(nameof(description));
@@ -146,7 +146,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             List<int> capabilityIds,
             List<string> epicIds,
             string frameworkId,
-            List<ApplicationType> clientApplicationTypes,
+            List<ApplicationType> applicationTypes,
             List<HostingType> hostingTypes,
             ManageFiltersService service)
         {
@@ -159,7 +159,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                         capabilityIds,
                         epicIds,
                         frameworkId,
-                        clientApplicationTypes,
+                        applicationTypes,
                         hostingTypes))
                 .Should()
                 .ThrowAsync<ArgumentException>("organisationId");

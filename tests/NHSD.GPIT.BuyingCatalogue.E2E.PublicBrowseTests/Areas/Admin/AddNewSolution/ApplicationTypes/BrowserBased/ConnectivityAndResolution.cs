@@ -47,17 +47,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
             await using var context = GetEndToEndDbContext();
             var solution = await context.Solutions.FirstAsync(s => s.CatalogueItemId == SolutionId);
 
-            var clientApplication = solution.ApplicationTypeDetail;
+            var applicationType = solution.ApplicationTypeDetail;
 
-            clientApplication.Should().NotBeNull();
+            applicationType.Should().NotBeNull();
 
-            clientApplication.MinimumConnectionSpeed.Should().Be(connectionSpeed);
-            clientApplication.MinimumDesktopResolution.Should().Be(resolution);
+            applicationType.MinimumConnectionSpeed.Should().Be(connectionSpeed);
+            applicationType.MinimumDesktopResolution.Should().Be(resolution);
         }
 
         public void Dispose()
         {
-            ClearApplicationType(SolutionId);
+           ClearApplicationType(SolutionId);
         }
     }
 }

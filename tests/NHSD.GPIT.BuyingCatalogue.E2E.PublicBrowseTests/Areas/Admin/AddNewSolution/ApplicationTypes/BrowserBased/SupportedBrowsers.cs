@@ -53,11 +53,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
             await using var context = GetEndToEndDbContext();
             var solution = await context.Solutions.FirstAsync(s => s.CatalogueItemId == SolutionId);
 
-            var clientApplication = solution.ApplicationTypeDetail;
+            var applicationType = solution.ApplicationTypeDetail;
 
-            clientApplication.Should().NotBeNull();
-            clientApplication.BrowsersSupported.Should().Contain(b => b.BrowserName == expectedBrowser);
-            clientApplication.MobileResponsive.Should().BeTrue();
+            applicationType.Should().NotBeNull();
+            applicationType.BrowsersSupported.Should().Contain(b => b.BrowserName == expectedBrowser);
+            applicationType.MobileResponsive.Should().BeTrue();
         }
 
         [Theory]
@@ -102,10 +102,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
             await using var context = GetEndToEndDbContext();
             var solution = await context.Solutions.FirstAsync(s => s.CatalogueItemId == SolutionId);
 
-            var clientApplication = solution.ApplicationTypeDetail;
+            var applicationType = solution.ApplicationTypeDetail;
 
-            clientApplication.Should().NotBeNull();
-            clientApplication.BrowsersSupported.First(bs => bs.BrowserName == targetBrowser).MinimumBrowserVersion.Should().Be(browserVersion);
+            applicationType.Should().NotBeNull();
+            applicationType.BrowsersSupported.First(bs => bs.BrowserName == targetBrowser).MinimumBrowserVersion.Should().Be(browserVersion);
         }
 
         public void Dispose()

@@ -31,10 +31,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var clientApplication = solution.Solution.EnsureAndGetApplicationType();
+            var applicationType = solution.Solution.EnsureAndGetApplicationType();
             var model = new DesktopBasedModel(solution)
             {
-                BackLink = clientApplication?.HasApplicationType(ApplicationType.Desktop) ?? false
+                BackLink = applicationType?.HasApplicationType(ApplicationType.Desktop) ?? false
                            ? Url.Action(
                                nameof(CatalogueSolutionsController.ApplicationType),
                                typeof(CatalogueSolutionsController).ControllerName(),
@@ -70,16 +70,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var clientApplication = await solutionsService.GetApplicationType(solutionId);
+            var applicationType = await solutionsService.GetApplicationType(solutionId);
 
-            if (clientApplication is null)
+            if (applicationType is null)
                 return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
-            clientApplication.NativeDesktopOperatingSystemsDescription = model.Description;
+            applicationType.NativeDesktopOperatingSystemsDescription = model.Description;
 
-            clientApplication.EnsureApplicationTypePresent(ApplicationType.Desktop);
+            applicationType.EnsureApplicationTypePresent(ApplicationType.Desktop);
 
-            await solutionsService.SaveApplicationType(solutionId, clientApplication);
+            await solutionsService.SaveApplicationType(solutionId, applicationType);
 
             return RedirectToAction(nameof(Desktop), new { solutionId });
         }
@@ -106,16 +106,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var clientApplication = await solutionsService.GetApplicationType(solutionId);
+            var applicationType = await solutionsService.GetApplicationType(solutionId);
 
-            if (clientApplication is null)
+            if (applicationType is null)
                 return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
-            clientApplication.NativeDesktopMinimumConnectionSpeed = model.SelectedConnectionSpeed;
+            applicationType.NativeDesktopMinimumConnectionSpeed = model.SelectedConnectionSpeed;
 
-            clientApplication.EnsureApplicationTypePresent(ApplicationType.Desktop);
+            applicationType.EnsureApplicationTypePresent(ApplicationType.Desktop);
 
-            await solutionsService.SaveApplicationType(solutionId, clientApplication);
+            await solutionsService.SaveApplicationType(solutionId, applicationType);
 
             return RedirectToAction(nameof(Desktop), new { solutionId });
         }
@@ -142,21 +142,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var clientApplication = await solutionsService.GetApplicationType(solutionId);
+            var applicationType = await solutionsService.GetApplicationType(solutionId);
 
-            if (clientApplication is null)
+            if (applicationType is null)
                 return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
-            clientApplication.NativeDesktopMemoryAndStorage ??= new NativeDesktopMemoryAndStorage();
+            applicationType.NativeDesktopMemoryAndStorage ??= new NativeDesktopMemoryAndStorage();
 
-            clientApplication.NativeDesktopMemoryAndStorage.MinimumMemoryRequirement = model.SelectedMemorySize;
-            clientApplication.NativeDesktopMemoryAndStorage.StorageRequirementsDescription = model.StorageSpace;
-            clientApplication.NativeDesktopMemoryAndStorage.MinimumCpu = model.ProcessingPower;
-            clientApplication.NativeDesktopMemoryAndStorage.RecommendedResolution = model.SelectedResolution;
+            applicationType.NativeDesktopMemoryAndStorage.MinimumMemoryRequirement = model.SelectedMemorySize;
+            applicationType.NativeDesktopMemoryAndStorage.StorageRequirementsDescription = model.StorageSpace;
+            applicationType.NativeDesktopMemoryAndStorage.MinimumCpu = model.ProcessingPower;
+            applicationType.NativeDesktopMemoryAndStorage.RecommendedResolution = model.SelectedResolution;
 
-            clientApplication.EnsureApplicationTypePresent(ApplicationType.Desktop);
+            applicationType.EnsureApplicationTypePresent(ApplicationType.Desktop);
 
-            await solutionsService.SaveApplicationType(solutionId, clientApplication);
+            await solutionsService.SaveApplicationType(solutionId, applicationType);
 
             return RedirectToAction(nameof(Desktop), new { solutionId });
         }
@@ -183,19 +183,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var clientApplication = await solutionsService.GetApplicationType(solutionId);
+            var applicationType = await solutionsService.GetApplicationType(solutionId);
 
-            if (clientApplication is null)
+            if (applicationType is null)
                 return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
-            clientApplication.NativeDesktopThirdParty ??= new NativeDesktopThirdParty();
+            applicationType.NativeDesktopThirdParty ??= new NativeDesktopThirdParty();
 
-            clientApplication.NativeDesktopThirdParty.ThirdPartyComponents = model.ThirdPartyComponents;
-            clientApplication.NativeDesktopThirdParty.DeviceCapabilities = model.DeviceCapabilities;
+            applicationType.NativeDesktopThirdParty.ThirdPartyComponents = model.ThirdPartyComponents;
+            applicationType.NativeDesktopThirdParty.DeviceCapabilities = model.DeviceCapabilities;
 
-            clientApplication.EnsureApplicationTypePresent(ApplicationType.Desktop);
+            applicationType.EnsureApplicationTypePresent(ApplicationType.Desktop);
 
-            await solutionsService.SaveApplicationType(solutionId, clientApplication);
+            await solutionsService.SaveApplicationType(solutionId, applicationType);
 
             return RedirectToAction(nameof(Desktop), new { solutionId });
         }
@@ -222,16 +222,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var clientApplication = await solutionsService.GetApplicationType(solutionId);
+            var applicationType = await solutionsService.GetApplicationType(solutionId);
 
-            if (clientApplication is null)
+            if (applicationType is null)
                 return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
-            clientApplication.NativeDesktopHardwareRequirements = model.Description;
+            applicationType.NativeDesktopHardwareRequirements = model.Description;
 
-            clientApplication.EnsureApplicationTypePresent(ApplicationType.Desktop);
+            applicationType.EnsureApplicationTypePresent(ApplicationType.Desktop);
 
-            await solutionsService.SaveApplicationType(solutionId, clientApplication);
+            await solutionsService.SaveApplicationType(solutionId, applicationType);
 
             return RedirectToAction(nameof(Desktop), new { solutionId });
         }
@@ -258,16 +258,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var clientApplication = await solutionsService.GetApplicationType(solutionId);
+            var applicationType = await solutionsService.GetApplicationType(solutionId);
 
-            if (clientApplication is null)
+            if (applicationType is null)
                 return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
-            clientApplication.NativeDesktopAdditionalInformation = model.AdditionalInformation;
+            applicationType.NativeDesktopAdditionalInformation = model.AdditionalInformation;
 
-            clientApplication.EnsureApplicationTypePresent(ApplicationType.Desktop);
+            applicationType.EnsureApplicationTypePresent(ApplicationType.Desktop);
 
-            await solutionsService.SaveApplicationType(solutionId, clientApplication);
+            await solutionsService.SaveApplicationType(solutionId, applicationType);
 
             return RedirectToAction(nameof(Desktop), new { solutionId });
         }

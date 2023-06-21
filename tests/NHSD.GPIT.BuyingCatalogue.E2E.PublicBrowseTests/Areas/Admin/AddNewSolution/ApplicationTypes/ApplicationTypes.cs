@@ -64,18 +64,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
         [InlineData(ApplicationType.BrowserBased)]
         [InlineData(ApplicationType.Desktop)]
         [InlineData(ApplicationType.MobileTablet)]
-        public void ExistingApplications_Edit_NavigatesCorrectly(ApplicationType clientApplicationType)
+        public void ExistingApplications_Edit_NavigatesCorrectly(ApplicationType applicationType)
         {
             NavigateToUrl(
                 typeof(CatalogueSolutionsController),
                 nameof(CatalogueSolutionsController.ApplicationType),
                 ExistingApplicationsTypeParameters);
 
-            var formattedApplicationName = FormatApplicationType(clientApplicationType);
+            var formattedApplicationName = FormatApplicationType(applicationType);
 
             CommonActions.ClickLinkElement(By.XPath($"//tr/td[contains(., '{formattedApplicationName}')]/..//a"));
 
-            (var controllerType, var actionName) = GetExpectedLinkForApplicationType(clientApplicationType);
+            (var controllerType, var actionName) = GetExpectedLinkForApplicationType(applicationType);
 
             CommonActions.PageLoadedCorrectGetIndex(controllerType, actionName)
                 .Should()
@@ -88,13 +88,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
             _ => $"{applicationType.AsString(EnumFormat.DisplayName)} application",
         };
 
-        private static (Type ControllerType, string ActionName) GetExpectedLinkForApplicationType(ApplicationType clientApplicationType)
-            => clientApplicationType switch
+        private static (Type ControllerType, string ActionName) GetExpectedLinkForApplicationType(ApplicationType applicationType)
+            => applicationType switch
             {
                 ApplicationType.MobileTablet => (typeof(MobileTabletBasedController), nameof(MobileTabletBasedController.MobileTablet)),
                 ApplicationType.Desktop => (typeof(DesktopBasedController), nameof(DesktopBasedController.Desktop)),
                 ApplicationType.BrowserBased => (typeof(BrowserBasedController), nameof(BrowserBasedController.BrowserBased)),
-                _ => throw new ArgumentOutOfRangeException(nameof(clientApplicationType)),
+                _ => throw new ArgumentOutOfRangeException(nameof(applicationType)),
             };
     }
 }
