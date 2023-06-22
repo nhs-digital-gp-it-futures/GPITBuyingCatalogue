@@ -10,6 +10,7 @@ CREATE TABLE [competitions].[Competitions]
     [ShortlistAccepted] DATETIME2(7) NULL,
     [Completed] DATETIME2(7) NULL,
     [IsDeleted] BIT DEFAULT 0 NOT NULL,
+    [ContractLength] INT NULL,
     [SysStartTime] DATETIME2(0) GENERATED ALWAYS AS ROW START NOT NULL,
     [SysEndTime] DATETIME2(0) GENERATED ALWAYS AS ROW END NOT NULL,
     PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),

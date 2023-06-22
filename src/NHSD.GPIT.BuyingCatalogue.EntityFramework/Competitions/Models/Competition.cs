@@ -35,6 +35,8 @@ public class Competition
 
     public bool IsDeleted { get; set; }
 
+    public int? ContractLength { get; set; }
+
     public bool IsShortlistAccepted => ShortlistAccepted.HasValue;
 
     public AspNetUser LastUpdatedByUser { get; set; }

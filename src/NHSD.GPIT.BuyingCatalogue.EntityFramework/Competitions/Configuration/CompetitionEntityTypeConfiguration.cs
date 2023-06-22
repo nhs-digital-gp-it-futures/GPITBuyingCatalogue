@@ -35,6 +35,8 @@ internal sealed class CompetitionEntityTypeConfiguration : IEntityTypeConfigurat
 
         builder.Property(x => x.IsDeleted).HasDefaultValue(false);
 
+        builder.Property(x => x.ContractLength).HasMaxLength(36);
+
         builder.HasOne(x => x.Filter)
             .WithMany()
             .HasForeignKey(x => x.FilterId)

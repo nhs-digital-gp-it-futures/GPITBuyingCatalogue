@@ -72,6 +72,17 @@ public class CompetitionsService : ICompetitionsService
         await dbContext.SaveChangesAsync();
     }
 
+    public async Task SetContractLength(int organisationId, int competitionId, int contractLength)
+    {
+        var competition =
+            await dbContext.Competitions.FirstOrDefaultAsync(
+                x => x.OrganisationId == organisationId && x.Id == competitionId);
+
+        competition.ContractLength = contractLength;
+
+        await dbContext.SaveChangesAsync();
+    }
+
     public async Task SetShortlistedSolutions(
         int organisationId,
         int competitionId,

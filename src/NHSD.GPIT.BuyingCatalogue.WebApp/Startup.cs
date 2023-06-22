@@ -60,15 +60,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 options.Filters.Add(typeof(TermsOfUseActionFilter));
                 options.Filters.Add(typeof(UpdatePasswordActionFilter));
                 options.Filters.Add<SerilogMvcLoggingAttribute>();
-            }).AddControllersAsServices();
+                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+                options.Filters.Add(new BadRequestActionFilter());
 
-            services.AddMvc(
-                    options =>
-                    {
-                        options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-                        options.Filters.Add(new BadRequestActionFilter());
-                        options.ModelBinderProviders.Insert(0, new NewlinesNormalizingModelBinderProvider());
-                    });
+                options.ModelBinderProviders.Insert(0, new NewlinesNormalizingModelBinderProvider());
+            }).AddControllersAsServices();
 
             services.AddFluentValidation();
 

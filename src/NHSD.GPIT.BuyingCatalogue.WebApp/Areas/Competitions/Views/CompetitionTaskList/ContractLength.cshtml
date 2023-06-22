@@ -1,0 +1,29 @@
+@model CompetitionContractModel
+
+@{
+    ViewBag.Title = "Contract length";
+}
+
+<partial name="Partials/_BackLink" model="Model"/>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.CompetitionName"
+                        advice="Confirm how long your contract will be in months."/>
+
+        <form method="post">
+            <input type="hidden" asp-for="BackLink"/>
+            <input type="hidden" asp-for="CompetitionName"/>
+
+            <nhs-bookended-input asp-for="ContractLength"
+                                 label-text="How long will your contract be, in months?"
+                                 label-hint="This is the maximum length the contract can run for each Service Recipient. It cannot exceed 36 months."
+                                 Suffix="months"/>
+
+            <br/>
+            <nhs-submit-button/>
+        </form>
+
+    </div>
+</div>

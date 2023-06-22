@@ -75,4 +75,66 @@ public static class CompetitionTaskListControllerTests
         result.Should().NotBeNull();
         result.Model.Should().BeEquivalentTo(expectedModel, x => x.Excluding(m => m.BackLink));
     }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task ContractLength_ReturnsViewWithModel(
+        Organisation organisation,
+        Competition competition,
+        [Frozen] Mock<IOrganisationsService> organisationsService,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionTaskListController controller)
+    {
+        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
+            .ReturnsAsync(organisation);
+
+        competitionsService.Setup(x => x.GetCompetitionWithServices(organisation.Id, competition.Id, false))
+            .ReturnsAsync(competition);
+
+        var expectedModel = new CompetitionContractModel(competition);
+
+        var result = (await controller.ContractLength(organisation.InternalIdentifier, competition.Id))
+            .As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task ContractLength_InvalidModelState_ReturnsViewWithModel(
+        string internalOrgId,
+        int competitionId,
+        CompetitionContractModel model,
+        CompetitionTaskListController controller)
+    {
+        controller.ModelState.AddModelError("some-key", "some-error");
+
+        var result = (await controller.ContractLength(internalOrgId, competitionId)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().BeEquivalentTo(model);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task ContractLength_Valid_Redirects(
+        Organisation organisation,
+        int competitionId,
+        CompetitionContractModel model,
+        [Frozen] Mock<IOrganisationsService> organisationsService,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionTaskListController controller)
+    {
+        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
+            .ReturnsAsync(organisation);
+
+        var result = (await controller.ContractLength(organisation.InternalIdentifier, competitionId, model))
+            .As<RedirectToActionResult>();
+
+        competitionsService.Verify(x => x.SetContractLength(organisation.Id, competitionId, model.ContractLength.GetValueOrDefault()), Times.Once());
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.Index));
+    }
 }

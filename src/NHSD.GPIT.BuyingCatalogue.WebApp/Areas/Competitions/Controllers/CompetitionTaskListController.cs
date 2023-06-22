@@ -60,4 +60,34 @@ public class CompetitionTaskListController : Controller
 
         return View(model);
     }
+
+    [HttpGet("contract-length")]
+    public async Task<IActionResult> ContractLength(string internalOrgId, int competitionId)
+    {
+        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
+        var competition = await competitionsService.GetCompetition(organisation.Id, competitionId);
+
+        var model = new CompetitionContractModel(competition)
+        {
+            BackLink = Url.Action(nameof(Index), new { internalOrgId, competitionId }),
+        };
+
+        return View(model);
+    }
+
+    [HttpPost("contract-length")]
+    public async Task<IActionResult> ContractLength(
+        string internalOrgId,
+        int competitionId,
+        CompetitionContractModel model)
+    {
+        if (!ModelState.IsValid)
+            return View(model);
+
+        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
+
+        await competitionsService.SetContractLength(organisation.Id, competitionId, model.ContractLength.GetValueOrDefault());
+
+        return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
+    }
 }

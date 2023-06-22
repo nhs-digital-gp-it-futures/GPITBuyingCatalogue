@@ -11,7 +11,6 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.Competitions;
 using NHSD.GPIT.BuyingCatalogue.Services.Competitions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -626,5 +625,30 @@ public static class CompetitionsServiceTests
         var result = await service.GetCompetitionName(organisation.Id, competition.Id);
 
         result.Should().Be(competition.Name);
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task SetContractLength_SetsLength(
+        int contractLength,
+        Organisation organisation,
+        Competition competition,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        competition.OrganisationId = organisation.Id;
+        competition.ContractLength = null;
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        await service.SetContractLength(organisation.Id, competition.Id, contractLength);
+
+        var updatedCompetition = await context.Competitions.FirstOrDefaultAsync(x => x.Id == competition.Id);
+
+        updatedCompetition.ContractLength.Should().Be(contractLength);
     }
 }

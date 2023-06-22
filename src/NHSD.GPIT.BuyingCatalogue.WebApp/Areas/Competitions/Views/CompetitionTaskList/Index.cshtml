@@ -30,7 +30,7 @@
 
                 <nhs-task-list-item label-text="Contract length"
                                     label-hint="Confirm how long your contract will be in months."
-                                    url="#"
+                                    url="@Url.Action(nameof(CompetitionTaskListController.ContractLength), typeof(CompetitionTaskListController).ControllerName(), routeValues)"
                                     status="@Model.TaskListModel.ContractLength"/>
             </nhs-task-list-section>
 

@@ -8,15 +8,33 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 
 public interface ICompetitionsService
 {
-    Task<IEnumerable<Competition>> GetCompetitionsDashboard(int organisationId);
+    Task<int> AddCompetition(int organisationId, int filterId, string name, string description);
 
-    Task<Competition> GetCompetitionWithServices(int organisationId, int competitionId, bool shouldTrack = false);
+    Task<bool> ExistsAsync(int organisationId, string competitionName);
 
     Task<Competition> GetCompetition(int organisationId, int competitionId);
 
+    Task<string> GetCompetitionName(int organisationId, int competitionId);
+
+    Task<IEnumerable<Competition>> GetCompetitionsDashboard(int organisationId);
+
     Task<Competition> GetCompetitionWithRecipients(int organisationId, int competitionId);
 
+    Task<Competition> GetCompetitionWithServices(int organisationId, int competitionId, bool shouldTrack = false);
+
+    Task<CompetitionTaskListModel> GetCompetitionTaskList(int organisationId, int competitionId);
+
     Task AddCompetitionSolutions(int organisationId, int competitionId, IEnumerable<CompetitionSolution> competitionSolutions);
+
+    Task AcceptShortlist(int organisationId, int competitionId);
+
+    Task CompleteCompetition(int organisationId, int competitionId);
+
+    Task DeleteCompetition(int organisationId, int competitionId);
+
+    Task SetCompetitionRecipients(int competitionId, IEnumerable<string> odsCodes);
+
+    Task SetContractLength(int organisationId, int competitionId, int contractLength);
 
     Task SetShortlistedSolutions(
         int organisationId,
@@ -27,20 +45,4 @@ public interface ICompetitionsService
         int organisationId,
         int competitionId,
         Dictionary<CatalogueItemId, string> solutionsJustification);
-
-    Task AcceptShortlist(int organisationId, int competitionId);
-
-    Task CompleteCompetition(int organisationId, int competitionId);
-
-    Task DeleteCompetition(int organisationId, int competitionId);
-
-    Task<int> AddCompetition(int organisationId, int filterId, string name, string description);
-
-    Task<bool> ExistsAsync(int organisationId, string competitionName);
-
-    Task SetCompetitionRecipients(int competitionId, IEnumerable<string> odsCodes);
-
-    Task<CompetitionTaskListModel> GetCompetitionTaskList(int organisationId, int competitionId);
-
-    Task<string> GetCompetitionName(int organisationId, int competitionId);
 }
