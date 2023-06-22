@@ -7,13 +7,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
     {
         public int Id { get; set; }
 
-        public int ContractId { get; set; }
+        public int ContractBillingId { get; set; }
 
         public int OrderId { get; set; }
 
         public CatalogueItemId CatalogueItemId { get; set; }
 
-        public int? MilestoneId { get; set; }
+        public int MilestoneId { get; set; }
 
         public int Quantity { get; set; }
 
@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public AspNetUser LastUpdatedByUser { get; set; }
 
-        public Contract Contract { get; set; }
+        public ContractBilling ContractBilling { get; set; }
 
         public OrderItem OrderItem { get; set; }
 

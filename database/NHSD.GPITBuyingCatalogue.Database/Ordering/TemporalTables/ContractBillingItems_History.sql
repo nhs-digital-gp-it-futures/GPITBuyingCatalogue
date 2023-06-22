@@ -1,10 +1,10 @@
 ﻿CREATE TABLE ordering.ContractBillingItems_History
 (
     Id int NOT NULL,
-    ContractId int NOT NULL, 
+    ContractBillingId int NOT NULL, 
     OrderId int NOT NULL,
     CatalogueItemId nvarchar(14) NOT NULL,
-    ImplementationPlanMilestoneId int NULL,
+    ImplementationPlanMilestoneId int NOT NULL,
     Quantity int NOT NULL,
     LastUpdated datetime2(7) NOT NULL,
     LastUpdatedBy int NULL,
