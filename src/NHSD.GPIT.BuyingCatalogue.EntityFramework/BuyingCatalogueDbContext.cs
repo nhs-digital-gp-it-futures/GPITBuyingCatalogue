@@ -128,6 +128,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<Contract> Contracts { get; set; }
 
+        public DbSet<ContractBillingItem> ContractBillingItems { get; set; }
+
         public DbSet<ImplementationPlan> ImplementationPlans { get; set; }
 
         public DbSet<ImplementationPlanMilestone> ImplementationPlanMilestones { get; set; }
