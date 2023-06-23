@@ -162,5 +162,55 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
             actual.UseDefaultImplementationPlan.Should().Be(value);
         }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetContract_RemoveContract(
+            int orderId,
+            [Frozen] BuyingCatalogueDbContext dbContext)
+        {
+            var flags = new ContractFlags
+            {
+                OrderId = orderId,
+                UseDefaultImplementationPlan = true,
+                UseDefaultBilling = true,
+                HasSpecificRequirements = true,
+                UseDefaultDataProcessing = true,
+            };
+            dbContext.ContractFlags.Add(flags);
+
+            await dbContext.SaveChangesAsync();
+            ContractsService service = new ContractsService(dbContext);
+            await service.RemoveContract(orderId);
+            var output = await service.GetContract(orderId);
+
+            output.UseDefaultImplementationPlan.Should().BeNull();
+            output.UseDefaultBilling.Should().BeNull();
+            output.HasSpecificRequirements.Should().BeNull();
+            output.UseDefaultDataProcessing.Should().BeFalse();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetContract_RemoveBillingAndRequirements(
+            int orderId,
+            [Frozen] BuyingCatalogueDbContext dbContext)
+        {
+            var flags = new ContractFlags
+            {
+                OrderId = orderId,
+                UseDefaultBilling = true,
+                HasSpecificRequirements = true,
+            };
+            dbContext.ContractFlags.Add(flags);
+
+            await dbContext.SaveChangesAsync();
+            ContractsService service = new ContractsService(dbContext);
+            await service.RemoveBillingAndRequirements(orderId);
+            var output = await service.GetContract(orderId);
+
+            output.UseDefaultBilling.Should().BeNull();
+            output.HasSpecificRequirements.Should().BeNull();
+        }
     }
 }

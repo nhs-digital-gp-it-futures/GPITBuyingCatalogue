@@ -1,0 +1,10 @@
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionSortModel
+
+@{
+    Layout = "";
+}
+
+<nhs-select asp-for="SelectedSortOption"
+            asp-items="@Model.SortOptions"
+            label-text="Sort by:"
+            use-default-value="false"/>

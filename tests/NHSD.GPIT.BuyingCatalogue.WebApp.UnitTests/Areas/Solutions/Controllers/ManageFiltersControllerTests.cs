@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -19,6 +20,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
@@ -27,7 +29,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 using Xunit;
-using ClientApplicationType = NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.ClientApplicationType;
+using ClientApplicationType = NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.ClientApplicationType;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 {
@@ -59,6 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             [Frozen] Mock<IFrameworkService> frameworkService,
             [Frozen] Mock<IManageFiltersService> manageFiltersService,
             [Frozen] Mock<IUrlHelper> mockUrlHelper,
+            [Frozen] Mock<IPdfService> mockPdfService,
             string primaryOrganisationInternalId,
             Organisation organisation,
             List<Filter> existingFilters)
@@ -77,6 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 epicsService,
                 frameworkService,
                 manageFiltersService,
+                mockPdfService,
                 primaryOrganisationInternalId);
 
             controller.Url = mockUrlHelper.Object;
@@ -113,14 +117,65 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_FilterDetails_NullFilter_ReturnsNotFound(
-            Filter filter,
+        public static async Task Get_DownloadResults_ValidFilter_ReturnsExpectedResult(
+            FilterDetailsModel filter,
             [Frozen] Mock<IOrganisationsService> organisationsService,
             [Frozen] Mock<ICapabilitiesService> capabilitiesService,
             [Frozen] Mock<IEpicsService> epicsService,
             [Frozen] Mock<IFrameworkService> frameworkService,
             [Frozen] Mock<IManageFiltersService> manageFiltersService,
             [Frozen] Mock<IUrlHelper> mockUrlHelper,
+            [Frozen] Mock<IPdfService> mockPdfService,
+            byte[] fileContents,
+            string primaryOrganisationInternalId,
+            Organisation organisation)
+        {
+            organisationsService
+                .Setup(x => x.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId))
+                .ReturnsAsync(organisation);
+
+            manageFiltersService
+                .Setup(x => x.GetFilterDetails(organisation.Id, filter.Id))
+                .ReturnsAsync(filter);
+
+            mockPdfService
+                .Setup(s => s.Convert(It.IsAny<Uri>()))
+                .ReturnsAsync(fileContents);
+
+            mockPdfService
+                .Setup(s => s.BaseUri())
+                .Returns(new Uri("http://localhost"));
+
+            var controller = CreateController(
+                organisationsService,
+                capabilitiesService,
+                epicsService,
+                frameworkService,
+                manageFiltersService,
+                mockPdfService,
+                primaryOrganisationInternalId);
+
+            controller.Url = mockUrlHelper.Object;
+
+            var result = (await controller.DownloadResults(filter.Id)).As<FileContentResult>();
+
+            result.Should().NotBeNull();
+            result.ContentType.Should().Be("application/pdf");
+            result.FileDownloadName.Should().Be($"{filter.Name} Catalogue Solutions.pdf");
+            result.FileContents.Should().BeEquivalentTo(fileContents);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_DownloadResults_NullFilter_ReturnsExpectedResult(
+            FilterDetailsModel filter,
+            [Frozen] Mock<IOrganisationsService> organisationsService,
+            [Frozen] Mock<ICapabilitiesService> capabilitiesService,
+            [Frozen] Mock<IEpicsService> epicsService,
+            [Frozen] Mock<IFrameworkService> frameworkService,
+            [Frozen] Mock<IManageFiltersService> manageFiltersService,
+            [Frozen] Mock<IUrlHelper> mockUrlHelper,
+            [Frozen] Mock<IPdfService> mockPdfService,
             string primaryOrganisationInternalId,
             Organisation organisation)
         {
@@ -138,6 +193,45 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 epicsService,
                 frameworkService,
                 manageFiltersService,
+                mockPdfService,
+                primaryOrganisationInternalId);
+
+            controller.Url = mockUrlHelper.Object;
+
+            var result = await controller.DownloadResults(filter.Id);
+
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_FilterDetails_NullFilter_ReturnsNotFound(
+            Filter filter,
+            [Frozen] Mock<IOrganisationsService> organisationsService,
+            [Frozen] Mock<ICapabilitiesService> capabilitiesService,
+            [Frozen] Mock<IEpicsService> epicsService,
+            [Frozen] Mock<IFrameworkService> frameworkService,
+            [Frozen] Mock<IManageFiltersService> manageFiltersService,
+            [Frozen] Mock<IUrlHelper> mockUrlHelper,
+            [Frozen] Mock<IPdfService> mockPdfService,
+            string primaryOrganisationInternalId,
+            Organisation organisation)
+        {
+            organisationsService
+                .Setup(x => x.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId))
+                .ReturnsAsync(organisation);
+
+            manageFiltersService
+                .Setup(x => x.GetFilterDetails(organisation.Id, filter.Id))
+                .ReturnsAsync((FilterDetailsModel)null);
+
+            var controller = CreateController(
+                organisationsService,
+                capabilitiesService,
+                epicsService,
+                frameworkService,
+                manageFiltersService,
+                mockPdfService,
                 primaryOrganisationInternalId);
 
             controller.Url = mockUrlHelper.Object;
@@ -160,7 +254,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             [Frozen] Mock<IEpicsService> epicsService,
             [Frozen] Mock<IFrameworkService> frameworkService,
             [Frozen] Mock<IManageFiltersService> manageFiltersService,
-            [Frozen] Mock<IUrlHelper> mockUrlHelper)
+            [Frozen] Mock<IUrlHelper> mockUrlHelper,
+            [Frozen] Mock<IPdfService> mockPdfService)
         {
             organisationsService
                 .Setup(x => x.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId))
@@ -180,6 +275,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 epicsService,
                 frameworkService,
                 manageFiltersService,
+                mockPdfService,
                 primaryOrganisationInternalId);
 
             controller.Url = mockUrlHelper.Object;
@@ -214,6 +310,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             [Frozen] Mock<IFrameworkService> frameworkService,
             [Frozen] Mock<IManageFiltersService> manageFiltersService,
             [Frozen] Mock<IUrlHelper> mockUrlHelper,
+            [Frozen] Mock<IPdfService> mockPdfService,
             string primaryOrganisationInternalId,
             Organisation organisation)
         {
@@ -233,6 +330,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 epicsService,
                 frameworkService,
                 manageFiltersService,
+                mockPdfService,
                 primaryOrganisationInternalId);
 
             controller.Url = mockUrlHelper.Object;
@@ -258,6 +356,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             [Frozen] Mock<IFrameworkService> frameworkService,
             [Frozen] Mock<IManageFiltersService> manageFiltersService,
             [Frozen] Mock<IUrlHelper> mockUrlHelper,
+            [Frozen] Mock<IPdfService> mockPdfService,
             string primaryOrganisationInternalId,
             Organisation organisation,
             string selectedCapabilityIds,
@@ -292,6 +391,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 epicsService,
                 frameworkService,
                 manageFiltersService,
+                mockPdfService,
                 primaryOrganisationInternalId);
 
             controller.Url = mockUrlHelper.Object;
@@ -383,7 +483,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             [Frozen] Mock<IEpicsService> epicsService,
             [Frozen] Mock<IFrameworkService> frameworkService,
             [Frozen] Mock<IManageFiltersService> manageFiltersService,
-            [Frozen] Mock<IUrlHelper> mockUrlHelper)
+            [Frozen] Mock<IUrlHelper> mockUrlHelper,
+            [Frozen] Mock<IPdfService> mockPdfService)
         {
             organisationsService
                 .Setup(x => x.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId))
@@ -397,6 +498,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 epicsService,
                 frameworkService,
                 manageFiltersService,
+                mockPdfService,
                 primaryOrganisationInternalId);
             controller.Url = mockUrlHelper.Object;
 
@@ -419,7 +521,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             [Frozen] Mock<IEpicsService> epicsService,
             [Frozen] Mock<IFrameworkService> frameworkService,
             [Frozen] Mock<IManageFiltersService> manageFiltersService,
-            [Frozen] Mock<IUrlHelper> mockUrlHelper)
+            [Frozen] Mock<IUrlHelper> mockUrlHelper,
+            [Frozen] Mock<IPdfService> mockPdfService)
         {
             organisationsService
                 .Setup(x => x.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId))
@@ -434,6 +537,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 epicsService,
                 frameworkService,
                 manageFiltersService,
+                mockPdfService,
                 primaryOrganisationInternalId);
             controller.Url = mockUrlHelper.Object;
 
@@ -450,9 +554,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             Mock<IEpicsService> epicsService,
             Mock<IFrameworkService> frameworkService,
             Mock<IManageFiltersService> manageFiltersService,
+            Mock<IPdfService> pdfService,
             string primaryOrganisationInternalId)
         {
-            return new ManageFiltersController(organisationsService.Object, capabilitiesService.Object, epicsService.Object, frameworkService.Object, manageFiltersService.Object)
+            return new ManageFiltersController(organisationsService.Object, capabilitiesService.Object, epicsService.Object, frameworkService.Object, manageFiltersService.Object, pdfService.Object)
             {
                 ControllerContext = new ControllerContext
                 {

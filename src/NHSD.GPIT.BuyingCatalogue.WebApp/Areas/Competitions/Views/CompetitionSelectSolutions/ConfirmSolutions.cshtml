@@ -1,0 +1,92 @@
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.WarningCallout
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
+@model ConfirmSolutionsModel
+
+@{
+    ViewBag.TItle = "Confirm shortlisted solutions";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="@ViewBag.Title" caption="@Model.CompetitionName" advice="Confirm the solutions you want to include as part of this competition."/>
+
+        <nhs-warning-callout label-text="Confirming your shortlist">
+            Once you’ve confirmed that these are the solutions you want to shortlist for this competition, you’ll no longer be able to make changes.
+        </nhs-warning-callout>
+    </div>
+    <div class="nhsuk-grid-column-full">
+        <form method="post">
+            <nhs-table label-text="Your shortlisted solutions">
+                <nhs-table-column>Solution</nhs-table-column>
+                <nhs-table-column>Additional Services required</nhs-table-column>
+
+                @foreach (var solution in Model.ShortlistedSolutions.OrderBy(x => x.Solution.CatalogueItem.Name))
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>
+                            @solution.Solution.CatalogueItem.Name
+                            <br/>
+                            <span class="nhsuk-caption-m nhsuk-caption--bottom">@solution.Solution.CatalogueItem.Supplier.LegalName</span>
+                        </nhs-table-cell>
+                        @if (solution.RequiredServices.Any())
+                        {
+                            <nhs-table-cell>
+                                <ul>
+                                    @foreach (var item in solution.RequiredServices)
+                                    {
+                                        <li>@item.Service.CatalogueItem.Name</li>
+                                    }
+                                </ul>
+                            </nhs-table-cell>
+                        }
+                        else
+                        {
+                            <nhs-table-cell>None</nhs-table-cell>
+                        }
+                    </nhs-table-row-container>
+                }
+            </nhs-table>
+
+            <br/>
+            @if (Model.NonShortlistedSolutions.Any())
+            {
+                <nhs-table label-text="Solutions not included">
+                    <nhs-table-column>Solution</nhs-table-column>
+                    <nhs-table-column>Additional Services required</nhs-table-column>
+                    <nhs-table-column>Justification</nhs-table-column>
+
+                    @foreach (var solution in Model.NonShortlistedSolutions.OrderBy(x => x.Solution.CatalogueItem.Name))
+                    {
+                        <nhs-table-row-container>
+                            <nhs-table-cell>
+                                @solution.Solution.CatalogueItem.Name
+                                <br/>
+                                <span class="nhsuk-caption-m nhsuk-caption--bottom">@solution.Solution.CatalogueItem.Supplier.LegalName</span>
+                            </nhs-table-cell>
+                            @if (solution.RequiredServices.Any())
+                            {
+                                <nhs-table-cell>
+                                    <ul>
+                                        @foreach (var item in solution.RequiredServices)
+                                        {
+                                            <li>@item.Service.CatalogueItem.Name</li>
+                                        }
+                                    </ul>
+                                </nhs-table-cell>
+                            }
+                            else
+                            {
+                                <nhs-table-cell>None</nhs-table-cell>
+                            }
+                            <nhs-table-cell>@solution.Justification</nhs-table-cell>
+                        </nhs-table-row-container>
+                    }
+                </nhs-table>
+            }
+
+            <nhs-submit-button text="Continue" />
+        </form>
+    </div>
+</div>

@@ -214,6 +214,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
                 typeof(DataProcessingPlanController),
                 nameof(DataProcessingPlanController.Index))
                     .Should().BeTrue();
+
+            CommonActions.ClickSave();
         }
 
         public void ReviewAndCompleteOrderTask()

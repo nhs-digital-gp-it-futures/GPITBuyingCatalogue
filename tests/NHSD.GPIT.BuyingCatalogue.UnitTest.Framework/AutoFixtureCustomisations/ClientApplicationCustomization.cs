@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using AutoFixture;
 using AutoFixture.Dsl;
 using AutoFixture.Kernel;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
 {

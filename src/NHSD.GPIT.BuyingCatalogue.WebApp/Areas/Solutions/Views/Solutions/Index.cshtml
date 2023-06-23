@@ -1,5 +1,6 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionsModel;
@@ -9,81 +10,81 @@
 
 @if (!Model.FilterResultView)
 {
-    @section Breadcrumbs {
+@section Breadcrumbs {
     <nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
         <div class="nhsuk-width-container">
             <ol class="nhsuk-breadcrumb__list">
                 <li class="nhsuk-breadcrumb__item">
                     <a class="nhsuk-breadcrumb__link"
                        data-test-id="home-crumb"
-                   asp-action="@nameof(HomeController.Index)"
-                   asp-controller="@typeof(HomeController).ControllerName()"
-                   asp-area="@typeof(HomeController).AreaName()">
+                       asp-action="@nameof(HomeController.Index)"
+                       asp-controller="@typeof(HomeController).ControllerName()"
+                       asp-area="@typeof(HomeController).AreaName()">
                         Home
                     </a>
                 </li>
                 @if (Model.SearchCriteriaApplied)
+                {
+                    <li class="nhsuk-breadcrumb__item">
+                        <a class="nhsuk-breadcrumb__link"
+                           data-test-id="home-crumb"
+                           asp-action="@nameof(SolutionsController.Index)"
+                           asp-controller="@typeof(SolutionsController).ControllerName()"
+                           asp-area="@typeof(SolutionsController).AreaName()">
+                            Catalogue Solutions
+                        </a>
+                    </li>
+                    @if (!string.IsNullOrWhiteSpace(Model.SearchSummary.SelectedCapabilityIds))
                     {
                         <li class="nhsuk-breadcrumb__item">
                             <a class="nhsuk-breadcrumb__link"
                                data-test-id="home-crumb"
-                   asp-action="@nameof(SolutionsController.Index)"
-                   asp-controller="@typeof(SolutionsController).ControllerName()"
-                   asp-area="@typeof(SolutionsController).AreaName()">
-                                Catalogue Solutions
+                               asp-action="@nameof(FilterController.FilterCapabilities)"
+                               asp-controller="@typeof(FilterController).ControllerName()"
+                               asp-area="@typeof(FilterController).AreaName()"
+                               asp-route-selectedCapabilityIds="@Model.SearchSummary.SelectedCapabilityIds"
+                               asp-route-selectedEpicIds="@Model.SearchSummary.SelectedEpicIds"
+                               asp-route-search="@Model.SearchSummary.SearchTerm">
+                                Filter Capabilities
                             </a>
                         </li>
-                        @if (!string.IsNullOrWhiteSpace(Model.SearchSummary.SelectedCapabilityIds))
-                        {
-                            <li class="nhsuk-breadcrumb__item">
-                                <a class="nhsuk-breadcrumb__link"
-                                   data-test-id="home-crumb"
-                   asp-action="@nameof(FilterController.FilterCapabilities)"
-                   asp-controller="@typeof(FilterController).ControllerName()"
-                   asp-area="@typeof(FilterController).AreaName()"
-                   asp-route-selectedCapabilityIds="@Model.SearchSummary.SelectedCapabilityIds"
-                   asp-route-selectedEpicIds="@Model.SearchSummary.SelectedEpicIds"
-                   asp-route-search="@Model.SearchSummary.SearchTerm">
-                                    Filter Capabilities
-                                </a>
-                            </li>
-                        }
-
-                        @if (!string.IsNullOrWhiteSpace(Model.SearchSummary.SelectedEpicIds))
-                        {
-                            <li class="nhsuk-breadcrumb__item">
-                                <a class="nhsuk-breadcrumb__link"
-                                   data-test-id="home-crumb"
-                   asp-action="@nameof(FilterController.FilterEpics)"
-                   asp-controller="@typeof(FilterController).ControllerName()"
-                   asp-area="@typeof(FilterController).AreaName()"
-                   asp-route-selectedCapabilityIds="@Model.SearchSummary.SelectedCapabilityIds"
-                   asp-route-selectedEpicIds="@Model.SearchSummary.SelectedEpicIds"
-                   asp-route-search="@Model.SearchSummary.SearchTerm">
-                                    Filter Epics
-                                </a>
-                            </li>
-                        }
                     }
-                </ol>
-            </div>
-        </nav>
-  }
+
+                    @if (!string.IsNullOrWhiteSpace(Model.SearchSummary.SelectedEpicIds))
+                    {
+                        <li class="nhsuk-breadcrumb__item">
+                            <a class="nhsuk-breadcrumb__link"
+                               data-test-id="home-crumb"
+                               asp-action="@nameof(FilterController.FilterEpics)"
+                               asp-controller="@typeof(FilterController).ControllerName()"
+                               asp-area="@typeof(FilterController).AreaName()"
+                               asp-route-selectedCapabilityIds="@Model.SearchSummary.SelectedCapabilityIds"
+                               asp-route-selectedEpicIds="@Model.SearchSummary.SelectedEpicIds"
+                               asp-route-search="@Model.SearchSummary.SearchTerm">
+                                Filter Epics
+                            </a>
+                        </li>
+                    }
+                }
+            </ol>
+        </div>
+    </nav>
+}
 }
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
         @{
             var PageTitle = Model.GetPageTitle();
         }
-        <nhs-page-title model="@PageTitle" />
+        <nhs-page-title model="@PageTitle"/>
         @if (!Model.FilterResultView)
         {
             if (!Model.SearchCriteriaApplied)
             {
                 <vc:nhs-suggestion-search id="marketing-suggestion-search"
-                                  ajax-url="@Url.Action(nameof(SolutionsController.FilterSearchSuggestions), typeof(SolutionsController).ControllerName())"
-                                  title-text="Search for solution by solution name or supplier name"
-                                  query-parameter-name="search" />
+                                          ajax-url="@Url.Action(nameof(SolutionsController.FilterSearchSuggestions), typeof(SolutionsController).ControllerName())"
+                                          title-text="Search for solution by solution name or supplier name"
+                                          query-parameter-name="search"/>
             }
             else
             {
@@ -93,18 +94,18 @@
             }
         }
 
-        <partial name="Partials/_FrameworkExpiredAlert" />
+        <partial name="Partials/_FrameworkExpiredAlert"/>
         @if (!Model.FilterResultView && !Model.SearchCriteriaApplied)
         {
             <vc:nhs-action-link text="Filter Catalogue Solutions"
-                            url="@Url.Action(nameof(FilterController.FilterCapabilities), typeof(FilterController).ControllerName(), new { SelectedCapabilityIds = Model.SearchSummary.SelectedCapabilityIds, SelectedEpicIds = Model.SearchSummary.SelectedEpicIds, search = Model.SearchSummary.SearchTerm })" />
+                                url="@Url.Action(nameof(FilterController.FilterCapabilities), typeof(FilterController).ControllerName(), new { SelectedCapabilityIds = Model.SearchSummary.SelectedCapabilityIds, SelectedEpicIds = Model.SearchSummary.SelectedEpicIds, search = Model.SearchSummary.SearchTerm })"/>
         }
 
         @if (Model.SearchCriteriaApplied)
         {
-            <hr />
-            <h2 data-test-id="search-criteria-summary">@(SearchSummaryTitle(Model.PageOptions.TotalNumberOfItems))</h2>
-            <br />
+            <hr/>
+            <partial name="_SearchResultsHeader" model="@(Model.PageOptions.TotalNumberOfItems)"/>
+            <br/>
 
             @if (!string.IsNullOrWhiteSpace(Model.SearchSummary.SearchTerm))
             {
@@ -128,28 +129,28 @@
             {
                 <p>
                     <a style="margin-right:20px;"
-               asp-area="@typeof(FilterController).AreaName()"
-               asp-controller="@typeof(FilterController).ControllerName()"
-               asp-action="@nameof(FilterController.FilterCapabilities)"
-               asp-route-selectedCapabilityIds="@Model.SearchSummary.SelectedCapabilityIds"
-               asp-route-selectedEpicIds="@Model.SearchSummary.SelectedEpicIds"
-               asp-route-search="@Model.SearchSummary.SearchTerm">
+                       asp-area="@typeof(FilterController).AreaName()"
+                       asp-controller="@typeof(FilterController).ControllerName()"
+                       asp-action="@nameof(FilterController.FilterCapabilities)"
+                       asp-route-selectedCapabilityIds="@Model.SearchSummary.SelectedCapabilityIds"
+                       asp-route-selectedEpicIds="@Model.SearchSummary.SelectedEpicIds"
+                       asp-route-search="@Model.SearchSummary.SearchTerm">
                         Edit Capabilities
                     </a>
 
                     <a style="margin-right:20px;"
-               asp-area="@typeof(FilterController).AreaName()"
-               asp-controller="@typeof(FilterController).ControllerName()"
-               asp-action="@nameof(FilterController.FilterEpics)"
-               asp-route-selectedCapabilityIds="@Model.SearchSummary.SelectedCapabilityIds"
-               asp-route-selectedEpicIds="@Model.SearchSummary.SelectedEpicIds"
-               asp-route-search="@Model.SearchSummary.SearchTerm">
+                       asp-area="@typeof(FilterController).AreaName()"
+                       asp-controller="@typeof(FilterController).ControllerName()"
+                       asp-action="@nameof(FilterController.FilterEpics)"
+                       asp-route-selectedCapabilityIds="@Model.SearchSummary.SelectedCapabilityIds"
+                       asp-route-selectedEpicIds="@Model.SearchSummary.SelectedEpicIds"
+                       asp-route-search="@Model.SearchSummary.SearchTerm">
                         Edit Epics
                     </a>
 
                     <a asp-area="@typeof(SolutionsController).AreaName()"
-               asp-controller="@typeof(SolutionsController).ControllerName()"
-               asp-action="@nameof(SolutionsController.Index)">
+                       asp-controller="@typeof(SolutionsController).ControllerName()"
+                       asp-action="@nameof(SolutionsController.Index)">
                         Start a new search
                     </a>
                 </p>
@@ -165,19 +166,11 @@
 
         @if (Model.CatalogueItems is not null && Model.CatalogueItems.Count > 0)
         {
-            <form id="sort-form" method="post">
-
-                <nhs-select asp-for="SelectedSortOption"
-                        asp-items="@Model.SortOptions"
-                        label-text="Sort by:"
-                        use-default-value="false" />
-
-                <nhs-submit-button text="Sort results" class="nhsuk-button--secondary" style="display:inline" />
-            </form>
+            <div id="solution-sort-container"></div>
 
             <script type="text/javascript" src="@Url.Content("~/js/SolutionSort.min.js")" asp-append-version="true"></script>
 
-            <hr />
+            <hr/>
         }
 
         @if (Model.HasCapabilities)
@@ -187,25 +180,25 @@
                     <h2 class="nhsuk-heading-s">Additional filters</h2>
                     @if (Model.FilterResultView)
                     {
-                        <partial name="_AdditionalFiltersView" model="@(Model.AdditionalFilters)" />
+                        <partial name="_AdditionalFiltersView" model="@(Model.AdditionalFilters)"/>
                     }
                     else
                     {
-                        <partial name="_AdditionalFilters" model="@(Model.AdditionalFilters)" />
+                        <partial name="_AdditionalFilters" model="@(Model.AdditionalFilters)"/>
 
                         <a asp-area="@typeof(SolutionsController).AreaName()"
-                   asp-controller="@typeof(SolutionsController).ControllerName()"
-                   asp-action="@nameof(SolutionsController.Index)"
-                   asp-route-selectedCapabilityIds="@Model.SearchSummary.SelectedCapabilityIds"
-                   asp-route-selectedEpicIds="@Model.SearchSummary.SelectedEpicIds"
-                   asp-route-search="@Model.SearchSummary.SearchTerm">
+                           asp-controller="@typeof(SolutionsController).ControllerName()"
+                           asp-action="@nameof(SolutionsController.Index)"
+                           asp-route-selectedCapabilityIds="@Model.SearchSummary.SelectedCapabilityIds"
+                           asp-route-selectedEpicIds="@Model.SearchSummary.SelectedEpicIds"
+                           asp-route-search="@Model.SearchSummary.SearchTerm">
                             Clear additional filters
                         </a>
-                        <br />
-                        <br />
+                        <br/>
+                        <br/>
                         <a asp-area="@typeof(SolutionsController).AreaName()"
-                   asp-controller="@typeof(SolutionsController).ControllerName()"
-                   asp-action="@nameof(SolutionsController.Index)">
+                           asp-controller="@typeof(SolutionsController).ControllerName()"
+                           asp-action="@nameof(SolutionsController.Index)">
                             Start a new search
                         </a>
                     }
@@ -215,7 +208,7 @@
                     <h2 class="nhsuk-heading-s">Results</h2>
                     @foreach (var item in Model.CatalogueItems)
                     {
-                        <partial name="_SolutionSearchDisplay" model="@(item, Model.SearchSummary.CapabilitiesAndEpics)" />
+                        <partial name="_SolutionSearchDisplay" model="@(new SolutionSearchResultModel(item, Model.SearchSummary.CapabilitiesAndEpics))"/>
                     }
 
                     @if (Model.CatalogueItems.Count == 0)
@@ -245,13 +238,13 @@
                 <h2>Results</h2>
                 @foreach (var item in Model.CatalogueItems)
                 {
-                    <partial name="_SolutionSearchDisplay" model="@(item, Model.SearchSummary.CapabilitiesAndEpics)" />
+                    <partial name="_SolutionSearchDisplay" model="@(new SolutionSearchResultModel(item, Model.SearchSummary.CapabilitiesAndEpics))"/>
                 }
             </div>
         }
         <div id="pagination">
             <nhs-page-number-pagination current-page-number="@Model.PageOptions.PageNumber"
-                                        total-number-of-pages="@Model.PageOptions.NumberOfPages" />
+                                        total-number-of-pages="@Model.PageOptions.NumberOfPages"/>
 
         </div>
     </div>
@@ -280,13 +273,9 @@
 
     static string GetEpicDescriptor(int numberOfEpics) => numberOfEpics == 1 ? "Epic" : "Epics";
 
-    static string GetSolutionsDescriptor(int numberOfSolutions) => numberOfSolutions == 1 ? "Solution" : "Solutions";
-
     static string FilterSummaryTitle(string selectedEpicIds) =>
         string.IsNullOrEmpty(selectedEpicIds)
             ? "Selected Capabilities:"
             : "Selected Capabilities and Epics:";
 
-    static string SearchSummaryTitle(int totalNumberOfItems) =>
-        $"{totalNumberOfItems} Catalogue {GetSolutionsDescriptor(totalNumberOfItems)} found with this search criteria";
 }

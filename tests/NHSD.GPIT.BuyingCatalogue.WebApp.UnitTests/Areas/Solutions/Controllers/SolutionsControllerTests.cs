@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "page", null },
-                { "sortBy", solutionModel.SelectedSortOption.ToString() },
+                { "sortBy", null },
                 { "search", null },
                 { "selectedCapabilityIds", null },
                 { "selectedEpicIds", null },
@@ -197,13 +197,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [CommonAutoData]
         public static async Task Get_AssociatedServices_ValidSolutionForId_ReturnsExpectedViewResult(
             [Frozen] Mock<ISolutionsService> solutionsServiceMock,
-            ClientApplication clientApplication,
             Solution solution,
             SolutionsController controller,
             CatalogueItemContentStatus contentStatus)
         {
             var catalogueItem = solution.CatalogueItem;
-            solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
             var associatedServices = solution.CatalogueItem.SupplierServiceAssociations.Select(ssa => ssa.CatalogueItem).ToList();
             var associatedServicesModel = new AssociatedServicesModel(catalogueItem, associatedServices, contentStatus);
 
@@ -555,14 +553,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [CommonAutoData]
         public static async Task Get_ClientApplicationTypes_ValidSolutionForId_ReturnsExpectedViewResult(
             CatalogueItemId id,
-            [Frozen] ClientApplication clientApplication,
             Solution solution,
             [Frozen] Mock<ISolutionsService> solutionsService,
             SolutionsController controller,
             CatalogueItemContentStatus contentStatus)
         {
             var catalogueItem = solution.CatalogueItem;
-            solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
 
             var expectedModel = new ClientApplicationTypesModel(catalogueItem, contentStatus);
             solutionsService.Setup(s => s.GetSolutionThin(id)).ReturnsAsync(catalogueItem);
@@ -1331,6 +1327,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             result.Should().NotBeNull();
             result.Model.Should().BeOfType<NavBaseModel>();
             result.Model.As<NavBaseModel>().BackLink.Should().Be(controller.Request.Headers.Referer);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void SolutionSort_ReturnsViewWithModel(
+            SolutionsController controller)
+        {
+            var result = controller.SolutionSort().As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeOfType<SolutionSortModel>();
         }
 
         private static string GetIntegrationsJson()

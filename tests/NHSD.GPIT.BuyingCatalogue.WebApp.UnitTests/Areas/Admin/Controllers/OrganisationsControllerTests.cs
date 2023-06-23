@@ -620,14 +620,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             model.EmailAddress = "a@b.com";
             model.SelectedAccountType = "AccountManager";
             model.IsDefaultAccountType = isDefaultAccountType;
-
-            mockCreateBuyerService
-                .Setup(x => x.Create(organisationId, model.FirstName, model.LastName, model.EmailAddress, accountType, !model.IsActive.Value))
-                .ReturnsAsync((AspNetUser)null);
+            model.IsActive = true;
 
             var result = (await controller.AddUser(organisationId, model)).As<RedirectToActionResult>();
 
-            mockCreateBuyerService.VerifyAll();
+            mockCreateBuyerService.Verify(
+                x => x.Create(
+                    organisationId,
+                    model.FirstName,
+                    model.LastName,
+                    model.EmailAddress,
+                    accountType,
+                    model.IsActive!.Value));
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(OrganisationsController.Users));

@@ -1,0 +1,9 @@
+﻿@model int
+@{
+    static string GetSolutionsDescriptor(int numberOfSolutions) => numberOfSolutions == 1 ? "Solution" : "Solutions";
+
+    static string SearchSummaryTitle(int totalNumberOfItems) =>
+        $"{totalNumberOfItems} Catalogue {GetSolutionsDescriptor(totalNumberOfItems)} found with this search criteria";
+}
+<h2 data-test-id="search-criteria-summary">@(SearchSummaryTitle(Model))</h2>
+

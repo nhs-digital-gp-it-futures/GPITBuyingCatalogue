@@ -121,7 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         : ci.CataloguePrices.Any()
                             ? TaskProgress.InProgress
                             : TaskProgress.NotStarted,
-                    ClientApplicationType = !string.IsNullOrEmpty(ci.Solution.ClientApplication)
+                    ClientApplicationType = ci.Solution.ClientApplication != null
                         ? TaskProgress.Completed
                         : TaskProgress.NotStarted,
                     HostingType = ci.Solution.Hosting != null && ci.Solution.Hosting.IsValid()
@@ -325,7 +325,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public async Task<ClientApplication> GetClientApplication(CatalogueItemId solutionId)
         {
             var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
-            return solution.GetClientApplication();
+            return solution.EnsureAndGetClientApplication();
         }
 
         public async Task SaveClientApplication(CatalogueItemId solutionId, ClientApplication clientApplication)
@@ -333,7 +333,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             clientApplication.ValidateNotNull(nameof(clientApplication));
 
             var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
-            solution.ClientApplication = JsonSerializer.Serialize(clientApplication);
+            solution.ClientApplication = clientApplication;
             await dbContext.SaveChangesAsync();
         }
 
@@ -346,15 +346,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await SaveClientApplication(solutionId, clientApplication);
         }
 
-        public async Task<Hosting> GetHosting(CatalogueItemId solutionId)
-        {
-            var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
-            return solution.Hosting ?? new Hosting();
-        }
-
         public async Task SaveHosting(CatalogueItemId solutionId, Hosting hosting)
         {
-            hosting.ValidateNotNull(nameof(hosting));
+            ArgumentNullException.ThrowIfNull(hosting);
 
             var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
             solution.Hosting = hosting;

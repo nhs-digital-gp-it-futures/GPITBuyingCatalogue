@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SolutionsFilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
@@ -38,11 +40,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             IManageFiltersService manageFiltersService)
         {
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
-            this.additionalServicesService = additionalServicesService ?? throw new ArgumentNullException(nameof(additionalServicesService));
-            this.solutionsFilterService = solutionsFilterService ?? throw new ArgumentNullException(nameof(solutionsFilterService));
+            this.additionalServicesService = additionalServicesService
+                ?? throw new ArgumentNullException(nameof(additionalServicesService));
+            this.solutionsFilterService = solutionsFilterService
+                ?? throw new ArgumentNullException(nameof(solutionsFilterService));
             this.frameworkService = frameworkService ?? throw new ArgumentNullException(nameof(frameworkService));
-            this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
-            this.manageFiltersService = manageFiltersService ?? throw new ArgumentNullException(nameof(manageFiltersService));
+            this.organisationsService =
+                organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
+            this.manageFiltersService =
+                manageFiltersService ?? throw new ArgumentNullException(nameof(manageFiltersService));
         }
 
         [HttpGet]
@@ -58,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             [FromQuery] int? filterId)
         {
             string filterName = null;
-            if (filterId.HasValue && User.Identity.IsAuthenticated)
+            if (filterId.HasValue && (User.Identity?.IsAuthenticated ?? false))
             {
                 var organisation = await GetUserOrganisation();
                 var filter = await manageFiltersService.GetFilterDetails(organisation.Id, filterId.Value);
@@ -71,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var inputOptions = new PageOptions(page, sortBy);
 
-            var (catalogueItems, options, capabilitiesAndCount) =
+            (IList<CatalogueItem> catalogueItems, PageOptions options, List<CapabilitiesAndCountModel> capabilitiesAndCount) =
                 await solutionsFilterService.GetAllSolutionsFiltered(
                     inputOptions,
                     selectedCapabilityIds,
@@ -80,23 +86,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     selectedFrameworkId,
                     selectedClientApplicationTypeIds,
                     selectedHostingTypeIds);
-            var (catalogueItemsWithoutFrameworkFilter, capabilitiesAndCountWithoutFrameworkFilter) = await solutionsFilterService.GetFilteredAndNonFilteredQueryResults(selectedCapabilityIds, selectedEpicIds);
-            var frameworks = await frameworkService.GetFrameworksByCatalogueItems(catalogueItemsWithoutFrameworkFilter.Select(x => x.Id).ToList());
-            var additionalFilters = new Models.Filters.AdditionalFiltersModel(frameworks, selectedFrameworkId, selectedClientApplicationTypeIds, selectedHostingTypeIds, selectedCapabilityIds, selectedEpicIds);
-
-            return View(new SolutionsModel()
-            {
-                FilterName = filterName,
-                CatalogueItems = catalogueItems,
-                SelectedSortOption = options.Sort,
-                PageOptions = options,
-                SearchSummary = new CatalogueFilterSearchSummary(
-                    capabilitiesAndCount,
-                    search,
+            (IQueryable<CatalogueItem> catalogueItemsWithoutFrameworkFilter, _) =
+                await solutionsFilterService.GetFilteredAndNonFilteredQueryResults(
                     selectedCapabilityIds,
-                    selectedEpicIds),
-                AdditionalFilters = additionalFilters,
-            });
+                    selectedEpicIds);
+            var frameworks = await frameworkService.GetFrameworksByCatalogueItems(
+                catalogueItemsWithoutFrameworkFilter.Select(x => x.Id).ToList());
+            var additionalFilters = new AdditionalFiltersModel(
+                frameworks,
+                selectedFrameworkId,
+                selectedClientApplicationTypeIds,
+                selectedHostingTypeIds,
+                selectedCapabilityIds,
+                selectedEpicIds) { FilterId = filterId, SortBy = sortBy };
+
+            return View(
+                new SolutionsModel
+                {
+                    FilterName = filterName,
+                    CatalogueItems = catalogueItems,
+                    PageOptions = options,
+                    SearchSummary = new CatalogueFilterSearchSummary(
+                        capabilitiesAndCount,
+                        search,
+                        selectedCapabilityIds,
+                        selectedEpicIds),
+                    AdditionalFilters = additionalFilters,
+                });
         }
 
         [HttpPost]
@@ -111,21 +127,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             AdditionalFiltersModel additionalFiltersModel,
             [FromQuery] int? filterId)
         {
+            _ = model;
+
             return RedirectToAction(
-                   nameof(Index),
-                   typeof(SolutionsController).ControllerName(),
-                   new
-                   {
-                       page,
-                       selectedCapabilityIds,
-                       selectedEpicIds,
-                       search,
-                       sortBy = model.SelectedSortOption.ToString(),
-                       selectedFrameworkId,
-                       selectedClientApplicationTypeIds = additionalFiltersModel.CombineSelectedOptions(additionalFiltersModel.ClientApplicationTypeOptions),
-                       selectedHostingTypeIds = additionalFiltersModel.CombineSelectedOptions(additionalFiltersModel.HostingTypeOptions),
-                       filterId,
-                   });
+                nameof(Index),
+                typeof(SolutionsController).ControllerName(),
+                new
+                {
+                    page,
+                    selectedCapabilityIds,
+                    selectedEpicIds,
+                    search,
+                    selectedFrameworkId,
+                    selectedClientApplicationTypeIds =
+                        additionalFiltersModel.CombineSelectedOptions(
+                            additionalFiltersModel.ClientApplicationTypeOptions),
+                    selectedHostingTypeIds =
+                        additionalFiltersModel.CombineSelectedOptions(additionalFiltersModel.HostingTypeOptions),
+                    filterId,
+                    sortBy,
+                });
         }
 
         [HttpGet("search-suggestions")]
@@ -135,13 +156,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var results = await solutionsFilterService.GetSolutionsBySearchTerm(search);
 
-            return Json(results.Select(r =>
-                new SuggestionSearchResult
-                {
-                    Title = r.Title,
-                    Category = r.Category,
-                    Url = currentPageUrl.AppendQueryParameterToUrl(nameof(search), r.Title).ToString(),
-                }));
+            return Json(
+                results.Select(
+                    r =>
+                        new SuggestionSearchResult
+                        {
+                            Title = r.Title,
+                            Category = r.Category,
+                            Url = currentPageUrl.AppendQueryParameterToUrl(nameof(search), r.Title).ToString(),
+                        }));
+        }
+
+        [HttpGet("solution-sort")]
+        public IActionResult SolutionSort()
+        {
+            var model = new SolutionSortModel();
+
+            return View(model);
         }
 
         [HttpGet("{solutionId}/associated-services")]
@@ -223,16 +254,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
 
-            return View(new CapabilitiesViewModel(solution, item, contentStatus)
-            {
-                BackLink = Url.Action(
-                    nameof(AdditionalServices),
-                    typeof(SolutionsController).ControllerName(),
-                    new { solutionId }),
-                BackLinkText = NavBaseModel.BackLinkTextDefault,
-                Name = item.Name,
-                Description = item.AdditionalService.FullDescription,
-            });
+            return View(
+                new CapabilitiesViewModel(solution, item, contentStatus)
+                {
+                    BackLink = Url.Action(
+                        nameof(AdditionalServices),
+                        typeof(SolutionsController).ControllerName(),
+                        new { solutionId }),
+                    BackLinkText = NavBaseModel.BackLinkTextDefault,
+                    Name = item.Name,
+                    Description = item.AdditionalService.FullDescription,
+                });
         }
 
         [HttpGet("{solutionId}/capability/{capabilityId}")]
@@ -278,7 +310,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 capabilityId);
 
             if (item is null)
-                return BadRequest($"No Catalogue Item found for Id: {additionalServiceId} with Capability Id: {capabilityId}");
+            {
+                return BadRequest(
+                    $"No Catalogue Item found for Id: {additionalServiceId} with Capability Id: {capabilityId}");
+            }
 
             if (item.PublishedStatus == PublicationStatus.Suspended)
                 return RedirectToAction(nameof(Description), new { solutionId });
@@ -446,7 +481,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var standards = await solutionsService.GetSolutionStandardsForMarketing(solutionId);
 
-            var standardsWithWorkOffPlans = (await solutionsService.GetWorkOffPlans(solutionId)).Select(wp => wp.StandardId);
+            var standardsWithWorkOffPlans =
+                (await solutionsService.GetWorkOffPlans(solutionId)).Select(wp => wp.StandardId);
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
 
@@ -485,7 +521,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         private async Task<Organisation> GetUserOrganisation()
         {
             var organisationInternalIdentifier = User.GetPrimaryOrganisationInternalIdentifier();
-            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(organisationInternalIdentifier);
+            var organisation =
+                await organisationsService.GetOrganisationByInternalIdentifier(organisationInternalIdentifier);
             return organisation;
         }
     }

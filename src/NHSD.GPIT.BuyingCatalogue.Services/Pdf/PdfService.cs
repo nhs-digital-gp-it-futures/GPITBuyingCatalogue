@@ -4,6 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Pdf
@@ -15,6 +17,30 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Pdf
         private const string ChromeWindows32BitPath = @"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe";
         private const string ChromeWindows64BitPath = @"C:\Program Files\Google\Chrome\Application\chrome.exe";
         private const string ChromeLinuxPath = "/usr/bin/chromium-browser";
+        private readonly IActionContextAccessor actionContextAccessor;
+        private readonly PdfSettings pdfSettings;
+
+        public PdfService(IActionContextAccessor actionContextAccessor, PdfSettings pdfSettings)
+        {
+            this.actionContextAccessor =
+                actionContextAccessor ?? throw new ArgumentNullException(nameof(actionContextAccessor));
+            this.pdfSettings = pdfSettings ?? throw new ArgumentNullException(nameof(pdfSettings));
+        }
+
+        public Uri BaseUri()
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                var httpContext = actionContextAccessor.ActionContext!.HttpContext!;
+                return new Uri($"{httpContext.Request.Scheme}://{httpContext.Request.Host}");
+            }
+            else
+            {
+                return pdfSettings.UseSslForPdf
+                    ? new Uri($"https://localhost")
+                    : new Uri($"http://localhost");
+            }
+        }
 
         [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Process is disposed of via the Exited event handler")]
         public Task<byte[]> Convert(Uri url)

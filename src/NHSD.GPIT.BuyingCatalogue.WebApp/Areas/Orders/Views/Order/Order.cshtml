@@ -9,10 +9,6 @@
 
 @{
     ViewBag.Title = Model.Title;
-
-    var isAmendment = Model.IsAmendment;
-    var deleteButtonTitle = isAmendment ? "Delete amendment" : "Delete order";
-    var solutionsAndServicesSectionLabel = isAmendment ? "Solution and services" : "Add solutions and services";
 }
 
 <div data-test-id="@Model.CallOffId-page">
@@ -35,13 +31,13 @@
             <nhs-task-list>
                 <nhs-task-list-section label-text="Prepare order">
                     <nhs-task-list-item label-text="Order description"
-                                        label-hint="@Model.StatusDescription(OrderSummaryField.OrderDescription, isAmendment)"
+                                        label-hint="@Model.StatusDescription(OrderSummaryField.OrderDescription, Model.IsAmendment)"
                                         data-test-id="test-order-description"
                                         url="@Model.DescriptionUrl"
                                         status="@Model.Progress.DescriptionStatus" />
 
                     <nhs-task-list-item label-text="Call-off Ordering Party contact details"
-                                        label-hint="@Model.StatusDescription(OrderSummaryField.OrderingParty, isAmendment)"
+                                        label-hint="@Model.StatusDescription(OrderSummaryField.OrderingParty, Model.IsAmendment)"
                                         data-test-id="test-calloff-party"
                                         url="@Url.Action(
                                                  nameof(OrderingPartyController.OrderingParty),
@@ -50,7 +46,7 @@
                                         status="@Model.Progress.OrderingPartyStatus" />
 
                     <nhs-task-list-item label-text="Supplier information and contact details"
-                                        label-hint="@Model.StatusDescription(OrderSummaryField.Supplier, isAmendment)"
+                                        label-hint="@Model.StatusDescription(OrderSummaryField.Supplier, Model.IsAmendment)"
                                         data-test-id="test-supplier-contact"
                                         url="@Url.Action(
                                                  nameof(SupplierController.Supplier),
@@ -59,7 +55,7 @@
                                         status="@Model.Progress.SupplierStatus" />
 
                     <nhs-task-list-item label-text="Timescales for Call-off Agreement"
-                                        label-hint="@Model.StatusDescription(OrderSummaryField.CommencementDate, isAmendment)"
+                                        label-hint="@Model.StatusDescription(OrderSummaryField.CommencementDate, Model.IsAmendment)"
                                         data-test-id="test-timescales"
                                         url="@Url.Action(
                                                  nameof(CommencementDateController.CommencementDate),
@@ -68,24 +64,24 @@
                                         status="@Model.Progress.CommencementDateStatus" />
                 </nhs-task-list-section>
 
-                <nhs-task-list-section label-text="@solutionsAndServicesSectionLabel">
+                <nhs-task-list-section label-text="@Model.SolutionsAndServicesSectionLabel">
                     <nhs-task-list-item label-text="Select solutions and services"
-                                        label-hint="@Model.StatusDescription(OrderSummaryField.SolutionsAndServices, isAmendment)"
+                                        label-hint="@Model.StatusDescription(OrderSummaryField.SolutionsAndServices, Model.IsAmendment)"
                                         data-test-id="test-solutions-and-services"
                                         url="@SolutionSelectionUrlTarget(Model.Progress.SolutionOrService)"
                                         status="@Model.Progress.SolutionOrService" />
 
-                    @if (!isAmendment)
+                    @if (!Model.IsAmendment)
                     {
                         <nhs-task-list-item label-text="Planned delivery dates"
-                                            label-hint="@Model.StatusDescription(OrderSummaryField.PlannedDeliveryDates, isAmendment: false)"
+                                            label-hint="@Model.StatusDescription(OrderSummaryField.PlannedDeliveryDates, !Model.IsAmendment)"
                                             data-test-id="test-planned-delivery-dates"
                                             url="@DeliveryDatesUrlTarget(Model.Progress.DeliveryDates)"
                                             status="@Model.Progress.DeliveryDates" />
                     }
 
                     <nhs-task-list-item label-text="Select funding sources"
-                                        label-hint="@Model.StatusDescription(OrderSummaryField.FundingSources, isAmendment)"
+                                        label-hint="@Model.StatusDescription(OrderSummaryField.FundingSources, Model.IsAmendment)"
                                         data-test-id="test-funding-sources"
                                         url="@FundingSourceUrlTarget()"
                                         status="@Model.Progress.FundingSource" />
@@ -93,7 +89,7 @@
 
                 <nhs-task-list-section label-text="Complete contract">
                     <nhs-task-list-item label-text="Implementation milestones and payment triggers"
-                                        label-hint="@Model.StatusDescription(OrderSummaryField.ImplementationPlan, isAmendment)"
+                                        label-hint="@Model.StatusDescription(OrderSummaryField.ImplementationPlan, Model.IsAmendment)"
                                         data-test-id="test-implementation-milestones"
                                         url="@Url.Action(
                                                  nameof(ImplementationPlanController.DefaultImplementationPlan),
@@ -101,10 +97,10 @@
                                                  new { Model.InternalOrgId, Model.CallOffId })"
                                         status="@Model.Progress.ImplementationPlan" />
 
-                    @if (!isAmendment)
+                    @if (!Model.IsAmendment)
                     {
                         <nhs-task-list-item label-text="Associated Service billing and requirements"
-                                            label-hint="@Model.StatusDescription(OrderSummaryField.AssociatedServicesBilling, isAmendment: false)"
+                                            label-hint="@Model.StatusDescription(OrderSummaryField.AssociatedServicesBilling, Model.IsAmendment)"
                                             data-test-id="test-associated-service-billing"
                                             url="@Url.Action(
                                                      nameof(AssociatedServicesBillingController.ReviewBilling),
@@ -114,7 +110,7 @@
                     }
 
                     <nhs-task-list-item label-text="Data processing information"
-                                        label-hint="@Model.StatusDescription(OrderSummaryField.DataProcessing, isAmendment)"
+                                        label-hint="@Model.StatusDescription(OrderSummaryField.DataProcessing, Model.IsAmendment)"
                                         data-test-id="test-data-processing-info"
                                         url="@Url.Action(
                                                 nameof(DataProcessingPlanController.Index),
@@ -125,7 +121,7 @@
 
                 <nhs-task-list-section label-text="Complete order">
                     <nhs-task-list-item label-text="Review and complete order"
-                                        label-hint="@Model.StatusDescription(OrderSummaryField.ReviewAndComplete, isAmendment)"
+                                        label-hint="@Model.StatusDescription(OrderSummaryField.ReviewAndComplete, Model.IsAmendment)"
                                         data-test-id="test-review-and-complete-order"
                                         url="@Url.Action(
                                                  nameof(OrderController.Summary),
@@ -138,24 +134,16 @@
             @if (Model.CallOffId != default)
             {
                 <nhs-button-group>
-                    <vc:nhs-secondary-button text="Preview order"
-                                             url="@Url.Action(
-                                                      nameof(OrderController.Summary),
-                                                      typeof(OrderController).ControllerName(),
-                                                      new { Model.InternalOrgId, Model.CallOffId })"
-                                             type="Secondary"/>
 
                     <vc:nhs-secondary-button text="Save for later"
                                      url="@Model.BackLink"
                                      type="Secondary" />
                 </nhs-button-group>
 
-                <vc:nhs-secondary-button text="@deleteButtonTitle"
-                                         url="@Url.Action(
-                                                  nameof(DeleteOrderController.DeleteOrder),
-                                                  typeof(DeleteOrderController).ControllerName(),
-                                                  new { Model.InternalOrgId, Model.CallOffId })"
-                                         type="Delete"/>
+                <vc:nhs-delete-button url="@Url.Action(nameof(DeleteOrderController.DeleteOrder),
+                                     typeof(DeleteOrderController).ControllerName(),
+                                     new { Model.InternalOrgId, Model.CallOffId })"
+                                  text="@Model.DeleteButtonTitle" />
             }
 
             @if (Model.LastUpdated is not null
@@ -196,7 +184,7 @@
 
     string SolutionSelectionUrlTarget(TaskProgress progress)
     {
-        if (isAmendment)
+        if (Model.IsAmendment)
         {
             return Url.Action(
                 nameof(TaskListController.TaskList),
