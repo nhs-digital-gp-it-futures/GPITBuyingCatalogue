@@ -19,17 +19,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
 
         public async Task<Contract> GetContract(int orderId)
         {
-            return await dbContext.Contracts
+            var output = await dbContext.Contracts
                 .AsNoTracking()
                 .Include(x => x.ImplementationPlan)
                 .ThenInclude(x => x.Milestones.OrderBy(m => m.Order))
-                .FirstOrDefaultAsync(x => x.OrderId == orderId);
-        }
-
-        public async Task<Contract> AddContract(int orderId)
-        {
-            var output = await dbContext.Contracts
-                .AsNoTracking()
+                .Include(x => x.ContractBilling)
+                    .ThenInclude(x => x.ContractBillingItems)
+                        .ThenInclude(x => x.Milestone)
                 .FirstOrDefaultAsync(x => x.OrderId == orderId);
 
             if (output != null)
@@ -90,30 +86,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             contract.HasSpecificRequirements = null;
 
             await dbContext.SaveChangesAsync();
-        }
-
-        public async Task HasSpecificRequirements(int orderId, bool value)
-        {
-            var flags = await dbContext.ContractFlags.FirstOrDefaultAsync(x => x.OrderId == orderId);
-
-            if (flags != null)
-            {
-                flags.HasSpecificRequirements = value;
-
-                await dbContext.SaveChangesAsync();
-            }
-        }
-
-        public async Task UseDefaultBilling(int orderId, bool value)
-        {
-            var flags = await dbContext.ContractFlags.FirstOrDefaultAsync(x => x.OrderId == orderId);
-
-            if (flags != null)
-            {
-                flags.UseDefaultBilling = value;
-
-                await dbContext.SaveChangesAsync();
-            }
         }
 
         public async Task UseDefaultDataProcessing(int orderId, bool value)

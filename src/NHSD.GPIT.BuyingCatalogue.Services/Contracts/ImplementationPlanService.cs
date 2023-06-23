@@ -30,6 +30,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
                 .FirstOrDefaultAsync(x => x.IsDefault == true);
         }
 
+        public async Task AddImplementationPlan(int orderId, int contractId)
+        {
+            var contract = await dbContext.Contracts.Include(x => x.ImplementationPlan)
+                .FirstOrDefaultAsync(o => o.Id == contractId && o.OrderId == orderId) ?? throw new ArgumentException("Invalid contract", nameof(contractId));
+
+            if (contract.ImplementationPlan != null)
+            {
+                return;
+            }
+
+            var implementationPlan = new ImplementationPlan() { IsDefault = false, };
+            contract.ImplementationPlan = implementationPlan;
+            await dbContext.SaveChangesAsync();
+        }
+
         public async Task AddBespokeMilestone(int orderId, int contractId, string name, string paymentTrigger)
         {
             if (string.IsNullOrEmpty(name))

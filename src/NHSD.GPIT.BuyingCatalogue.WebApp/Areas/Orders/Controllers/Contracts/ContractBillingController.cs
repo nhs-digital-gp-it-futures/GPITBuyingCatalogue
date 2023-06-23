@@ -21,19 +21,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
     public class ContractBillingController : Controller
     {
         private readonly IContractsService contractsService;
-        private readonly IAssociatedServicesBillingService associatedServicesBillingService;
-        private readonly IImplementationPlanService implementationPlanService;
+        private readonly IContractBillingService contractBillingService;
         private readonly IOrderService orderService;
 
         public ContractBillingController(
             IContractsService contractsService,
-            IAssociatedServicesBillingService associatedServicesBillingService,
-            IImplementationPlanService implementationPlanService,
+            IContractBillingService contractBillingService,
             IOrderService orderService)
         {
             this.contractsService = contractsService ?? throw new ArgumentNullException(nameof(contractsService));
-            this.associatedServicesBillingService = associatedServicesBillingService ?? throw new ArgumentNullException(nameof(associatedServicesBillingService));
-            this.implementationPlanService = implementationPlanService ?? throw new ArgumentNullException(nameof(implementationPlanService));
+            this.contractBillingService = contractBillingService ?? throw new ArgumentNullException(nameof(contractBillingService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
         }
 
@@ -42,23 +39,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         {
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
             var contract = await contractsService.GetContract(order.Id);
-            //TODO Remove
-            contract.ContractBilling = new ContractBilling()
-            {
-                ContractBillingItems = new List<ContractBillingItem>()
-                {
-                    new ContractBillingItem()
-                    {
-                        Milestone =
-                            new ImplementationPlanMilestone()
-                            {
-                                Title = "Test", PaymentTrigger = "Trigger",
-                            },
-                        Quantity = 10,
-                        OrderItem = new OrderItem() { CatalogueItem = new CatalogueItem() { Id = new CatalogueItemId(4, "CO"), Name = "Test Associated Service", },},
-                    },
-                },
-            };
+            ////TODO Remove
+            //contract.ContractBilling = new ContractBilling()
+            //{
+            //    ContractBillingItems = new List<ContractBillingItem>()
+            //    {
+            //        new ContractBillingItem()
+            //        {
+            //            Milestone =
+            //                new ImplementationPlanMilestone()
+            //                {
+            //                    Title = "Test", PaymentTrigger = "Trigger",
+            //                },
+            //            Quantity = 10,
+            //            OrderItem = new OrderItem() { CatalogueItem = new CatalogueItem() { Id = new CatalogueItemId(4, "CO"), Name = "Test Associated Service", },},
+            //        },
+            //    },
+            //};
 
             var model = new ContractBillingModel(contract?.ContractBilling)
             {
@@ -82,7 +79,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             }
 
             var order = (await orderService.GetOrderThin(model.CallOffId, model.InternalOrgId)).Order;
-            //TODO await contractsService.AddContract(order.Id);
+            var contract = await contractsService.GetContract(order.Id);
+            await contractBillingService.AddContractBilling(order.Id, contract.Id);
 
             return RedirectToAction(nameof(Order), typeof(OrderController).ControllerName(), new { internalOrgId, callOffId });
         }
@@ -159,8 +157,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         public async Task<IActionResult> DeleteContractBillingItem(string internalOrgId, CallOffId callOffId, int milestoneId)
         {
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
-            var contractBillingItem = new ContractBillingItem() { Milestone = new ImplementationPlanMilestone() { Title = "Test", PaymentTrigger = "Trigger", }, Quantity = 10, CatalogueItemId = new CatalogueItemId(4, "CO") };
-            //TODO await contractBillingService.GetContractBillingItem(order.Id, milestoneId);
+            //var contractBillingItem = new ContractBillingItem() { Milestone = new ImplementationPlanMilestone() { Title = "Test", PaymentTrigger = "Trigger", }, Quantity = 10, CatalogueItemId = new CatalogueItemId(4, "CO") };
+            var contractBillingItem = await contractBillingService.GetContractBillingItem(order.Id, milestoneId);
 
             var model = new DeleteContractBillingItemModel(callOffId, internalOrgId, contractBillingItem)
             {
@@ -173,11 +171,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         }
 
         [HttpPost("delete-milestone")]
-        public async Task<IActionResult> DeleteMilestone(string internalOrgId, CallOffId callOffId, DeleteMilestoneModel model)
+        public async Task<IActionResult> DeleteMilestone(string internalOrgId, CallOffId callOffId, DeleteContractBillingItemModel model)
         {
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
-            await implementationPlanService.DeleteMilestone(order.Id, model.MilestoneId);
+            await contractBillingService.DeleteContractBillingItem(order.Id, model.MilestoneId);
 
             return RedirectToAction(nameof(Index), new { internalOrgId, callOffId });
         }

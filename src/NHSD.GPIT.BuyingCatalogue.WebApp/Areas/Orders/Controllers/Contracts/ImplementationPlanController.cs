@@ -63,7 +63,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             }
 
             var order = (await orderService.GetOrderThin(model.CallOffId, model.InternalOrgId)).Order;
-            await contractsService.AddContract(order.Id);
+            var contract = await contractsService.GetContract(order.Id);
+            await implementationPlanService.AddImplementationPlan(order.Id, contract.Id);
 
             return RedirectToAction(nameof(Order), typeof(OrderController).ControllerName(), new { internalOrgId, callOffId });
         }
@@ -91,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             }
 
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
-            var contract = await contractsService.AddContract(order.Id);
+            var contract = await contractsService.GetContract(order.Id);
 
             await implementationPlanService.AddBespokeMilestone(order.Id, contract.Id, model.Name, model.PaymentTrigger);
 
