@@ -485,6 +485,28 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        public void CatalogueSolutionOnlyOver250K_AllserviceRecipients()
+        {
+            string orderDescription = "CatalogueSolutionOnlyOver250K_AllserviceRecipients";
+
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Over250K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Over250K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(SolutionName, allServiceRecipients: true);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
         public void CatalogueSolutionOnlyOver250K()
         {
             string orderDescription = "CatalogueSolutionOnlyOver250K";

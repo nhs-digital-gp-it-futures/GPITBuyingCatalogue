@@ -25,8 +25,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Assoc
 
             if (multipleServiceRecipients)
             {
-                if (!CommonActions.AllCheckBoxesSelected())
-                    CommonActions.ClickAllCheckboxes();
+                if (!CommonActions.MultipleCheckboxeSelected())
+                    CommonActions.ClickMultipleCheckboxes();
 
                 CommonActions.ClickSave();
                 return;

@@ -18,13 +18,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
         public LocalWebApplicationFactory Factory { get; }
 
-        public void AddCatalogueSolutionServiceRecipient(bool multipleServiceRecipients)
+        public void AddCatalogueSolutionServiceRecipient(bool multipleServiceRecipients, bool allServiceRecipients)
         {
             CommonActions.PageLoadedCorrectGetIndex(
               typeof(ServiceRecipientsController),
               nameof(ServiceRecipientsController.AddServiceRecipients)).Should().BeTrue();
 
-            if (multipleServiceRecipients)
+            if (multipleServiceRecipients && !allServiceRecipients)
+                CommonActions.ClickMultipleCheckboxes();
+            else if (!multipleServiceRecipients && allServiceRecipients)
                 CommonActions.ClickAllCheckboxes();
             else
                 CommonActions.ClickFirstCheckbox();
@@ -61,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             }
             else
             {
-                CommonActions.ClickAllCheckboxes();
+                CommonActions.ClickMultipleCheckboxes();
             }
 
             CommonActions.ClickSave();
