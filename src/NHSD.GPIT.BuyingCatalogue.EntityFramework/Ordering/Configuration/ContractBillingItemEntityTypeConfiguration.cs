@@ -37,6 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .WithMany()
                 .HasForeignKey(x => x.MilestoneId)
                 .HasConstraintName("FK_ContractBillingItems_Milestone");
+
         }
     }
 }

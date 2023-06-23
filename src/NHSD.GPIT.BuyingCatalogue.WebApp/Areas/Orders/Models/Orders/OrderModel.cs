@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             { OrderSummaryField.PlannedDeliveryDates, "Enter the planned delivery dates for the items you're ordering." },
             { OrderSummaryField.FundingSources, "Review how you’ll be paying for your order." },
             { OrderSummaryField.ImplementationPlan, "Review the default implementation milestones that will act as payment triggers and add bespoke ones." },
-            { OrderSummaryField.AssociatedServicesBilling, "Select how you’d like to be billed for any Associated Services in your order." },
+            { OrderSummaryField.AssociatedServicesBilling, "Review the default Associated Service milestones that will act as payment triggers and add bespoke ones." },
             { OrderSummaryField.DataProcessing, "Select if you want to make any changes to the default data processing information." },
             { OrderSummaryField.ReviewAndComplete, "Check the information you’ve provided is correct and complete your order." },
         };

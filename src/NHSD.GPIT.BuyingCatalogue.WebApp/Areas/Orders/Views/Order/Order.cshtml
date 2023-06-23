@@ -99,12 +99,12 @@
 
                     @if (!Model.IsAmendment)
                     {
-                        <nhs-task-list-item label-text="Associated Service billing and requirements"
+                        <nhs-task-list-item label-text="Associated Service milestones and payment triggers"
                                             label-hint="@Model.StatusDescription(OrderSummaryField.AssociatedServicesBilling, !Model.IsAmendment)"
                                             data-test-id="test-associated-service-billing"
                                             url="@Url.Action(
-                                                     nameof(AssociatedServicesBillingController.ReviewBilling),
-                                                     typeof(AssociatedServicesBillingController).ControllerName(),
+                                                     nameof(ContractBillingController.Index),
+                                                     typeof(ContractBillingController).ControllerName(),
                                                      new { Model.InternalOrgId, Model.CallOffId })"
                                             status="@Model.Progress.AssociatedServiceBilling" />
                     }
