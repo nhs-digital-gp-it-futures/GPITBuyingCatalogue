@@ -13,6 +13,10 @@ public class BespokeDataProcessingModel : NavBaseModel
         CallOffId = callOffId;
     }
 
+    public BespokeDataProcessingModel()
+    {
+    }
+
     public string InternalOrgId { get; set; }
 
     public CallOffId CallOffId { get; set; }
