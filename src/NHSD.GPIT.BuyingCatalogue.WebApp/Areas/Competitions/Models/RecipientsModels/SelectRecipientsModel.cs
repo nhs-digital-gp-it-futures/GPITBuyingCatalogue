@@ -42,8 +42,6 @@ public class SelectRecipientsModel : NavBaseModel
         SelectServiceRecipients(preSelectedRecipients);
     }
 
-    public string SelectionModeLink { get; set; }
-
     public string ImportRecipientsLink { get; set; }
 
     public string OrganisationName { get; set; }
@@ -108,7 +106,6 @@ public class SelectRecipientsModel : NavBaseModel
                     return;
 
                 matchingRecipients.ForEach(x => x.Selected = true);
-                HasImportedRecipients = true;
 
                 var allSelected = GetServiceRecipients().All(x => x.Selected);
 

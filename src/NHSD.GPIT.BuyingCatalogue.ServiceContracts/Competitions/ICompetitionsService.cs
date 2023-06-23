@@ -36,6 +36,8 @@ public interface ICompetitionsService
 
     Task SetContractLength(int organisationId, int competitionId, int contractLength);
 
+    Task SetCompetitionCriteria(int organisationId, int competitionId, bool includesNonPrice);
+
     Task SetShortlistedSolutions(
         int organisationId,
         int competitionId,

@@ -37,6 +37,8 @@ public class Competition
 
     public int? ContractLength { get; set; }
 
+    public bool? IncludesNonPrice { get; set; }
+
     public bool IsShortlistAccepted => ShortlistAccepted.HasValue;
 
     public AspNetUser LastUpdatedByUser { get; set; }

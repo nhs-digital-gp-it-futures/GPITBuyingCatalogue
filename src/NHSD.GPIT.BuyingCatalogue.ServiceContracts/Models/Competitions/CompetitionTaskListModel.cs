@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
@@ -28,6 +29,8 @@ public class CompetitionTaskListModel
 
     public TaskProgress ContractLength { get; set; } = TaskProgress.CannotStart;
 
+    public TaskProgress AwardCriteria { get; set; } = TaskProgress.CannotStart;
+
     private void SetSectionOneStatuses(Competition competition)
     {
         ServiceRecipients = competition.Recipients.Any()
@@ -37,6 +40,12 @@ public class CompetitionTaskListModel
         if (ServiceRecipients is TaskProgress.NotStarted) return;
 
         ContractLength = competition.ContractLength.HasValue
+            ? TaskProgress.Completed
+            : TaskProgress.NotStarted;
+
+        if (ContractLength is TaskProgress.NotStarted) return;
+
+        AwardCriteria = competition.IncludesNonPrice.HasValue
             ? TaskProgress.Completed
             : TaskProgress.NotStarted;
     }

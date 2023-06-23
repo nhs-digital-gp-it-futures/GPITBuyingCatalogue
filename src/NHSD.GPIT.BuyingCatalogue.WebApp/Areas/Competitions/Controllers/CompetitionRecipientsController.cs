@@ -67,18 +67,11 @@ public class CompetitionRecipientsController : Controller
                 nameof(CompetitionImportServiceRecipientsController.Index),
                 typeof(CompetitionImportServiceRecipientsController).ControllerName(),
                 new { internalOrgId, competitionId }),
-            SelectionModeLink = Url.Action(nameof(ApplyRecipientsSelection), new { internalOrgId, competitionId }),
+            HasImportedRecipients = !string.IsNullOrWhiteSpace(recipientIds),
         };
 
         return View(model);
     }
-
-    [HttpPost("apply-recipients-selection")]
-    public IActionResult ApplyRecipientsSelection(
-        string internalOrgId,
-        int competitionId,
-        SelectRecipientsModel model) =>
-        RedirectToAction(nameof(Index), new { internalOrgId, competitionId, selectionMode = model.RecipientSelectionMode });
 
     [HttpPost("select-recipients")]
     public IActionResult Index(string internalOrgId, int competitionId, SelectRecipientsModel model)

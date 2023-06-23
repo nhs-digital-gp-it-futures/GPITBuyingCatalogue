@@ -27,11 +27,9 @@
                                 url="@Model.ImportRecipientsLink"/>
 
             <h2>Select Service Recipients</h2>
-
-            <form method="post">
-                <input type="hidden" asp-for="RecipientSelectionMode" />
-                <nhs-submit-button text="@Model.SelectionCaption" class="nhsuk-button--secondary" formaction="@Model.SelectionModeLink"></nhs-submit-button>
-            </form>
+            <vc:nhs-secondary-button url="@Url.PageLink(values: new { selectionMode = Model.RecipientSelectionMode })"
+                                             text="@Model.SelectionCaption"
+                                             type="Secondary" />
         }
 
         <form method="post">

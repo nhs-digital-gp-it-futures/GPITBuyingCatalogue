@@ -10,6 +10,20 @@ public sealed class CompetitionContractModelValidatorTests
 {
     [Theory]
     [CommonAutoData]
+    public static void Validate_ContractLengthMissing_SetsModelError(
+        CompetitionContractModel model,
+        CompetitionContractModelValidator validator)
+    {
+        model.ContractLength = null;
+
+        var result = validator.TestValidate(model);
+
+        result.ShouldHaveValidationErrorFor(x => x.ContractLength)
+            .WithErrorMessage(CompetitionContractModelValidator.ContractLengthMissing);
+    }
+
+    [Theory]
+    [CommonAutoData]
     public static void Validate_ExceedsMaxLimit_SetsModelError(
         CompetitionContractModel model,
         CompetitionContractModelValidator validator)

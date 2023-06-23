@@ -83,6 +83,17 @@ public class CompetitionsService : ICompetitionsService
         await dbContext.SaveChangesAsync();
     }
 
+    public async Task SetCompetitionCriteria(int organisationId, int competitionId, bool includesNonPrice)
+    {
+        var competition =
+            await dbContext.Competitions.FirstOrDefaultAsync(
+                x => x.OrganisationId == organisationId && x.Id == competitionId);
+
+        competition.IncludesNonPrice = includesNonPrice;
+
+        await dbContext.SaveChangesAsync();
+    }
+
     public async Task SetShortlistedSolutions(
         int organisationId,
         int competitionId,

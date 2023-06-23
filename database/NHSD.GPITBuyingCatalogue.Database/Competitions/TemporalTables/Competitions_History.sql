@@ -11,6 +11,7 @@ CREATE TABLE [competitions].[Competitions_History]
     [Completed] DATETIME2(7) NULL,
     [IsDeleted] BIT NOT NULL,
     [ContractLength] INT NULL,
+    [IncludesNonPrice] BIT NULL,
     [SysStartTime] DATETIME2(0) NOT NULL,
     [SysEndTime] DATETIME2(0) NOT NULL
 )

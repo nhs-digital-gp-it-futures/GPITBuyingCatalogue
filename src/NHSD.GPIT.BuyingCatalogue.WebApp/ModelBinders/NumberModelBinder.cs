@@ -14,6 +14,8 @@ public class NumberModelBinder : IModelBinder
         if (value == ValueProviderResult.None || string.IsNullOrWhiteSpace(value.FirstValue))
             return Task.CompletedTask;
 
+        bindingContext.ModelState.SetModelValue(bindingContext.ModelName, value);
+
         if (!int.TryParse(value.FirstValue, out var parsedValue))
         {
             var description = ((DefaultModelMetadata)bindingContext.ModelMetadata).Attributes.Attributes
@@ -21,6 +23,8 @@ public class NumberModelBinder : IModelBinder
                 .FirstOrDefault();
 
             bindingContext.ModelState.AddModelError(bindingContext.ModelName, $"{description?.Description} must be a whole number");
+            bindingContext.Result = ModelBindingResult.Failed();
+
             return Task.CompletedTask;
         }
 

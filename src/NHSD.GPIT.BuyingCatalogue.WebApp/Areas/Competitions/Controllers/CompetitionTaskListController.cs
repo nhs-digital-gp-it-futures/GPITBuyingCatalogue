@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -64,8 +65,7 @@ public class CompetitionTaskListController : Controller
     [HttpGet("contract-length")]
     public async Task<IActionResult> ContractLength(string internalOrgId, int competitionId)
     {
-        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-        var competition = await competitionsService.GetCompetition(organisation.Id, competitionId);
+        var competition = await GetCompetition(internalOrgId, competitionId);
 
         var model = new CompetitionContractModel(competition)
         {
@@ -89,5 +89,42 @@ public class CompetitionTaskListController : Controller
         await competitionsService.SetContractLength(organisation.Id, competitionId, model.ContractLength.GetValueOrDefault());
 
         return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
+    }
+
+    [HttpGet("award-criteria")]
+    public async Task<IActionResult> AwardCriteria(string internalOrgId, int competitionId)
+    {
+        var competition = await GetCompetition(internalOrgId, competitionId);
+
+        var model = new CompetitionAwardCriteriaModel(competition)
+        {
+            BackLink = Url.Action(nameof(Index), new { internalOrgId, competitionId }),
+        };
+
+        return View(model);
+    }
+
+    [HttpPost("award-criteria")]
+    public async Task<IActionResult> AwardCriteria(string internalOrgId, int competitionId, CompetitionAwardCriteriaModel model)
+    {
+        if (!ModelState.IsValid)
+            return View(model);
+
+        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
+
+        await competitionsService.SetCompetitionCriteria(
+            organisation.Id,
+            competitionId,
+            model.IncludesNonPrice.GetValueOrDefault());
+
+        return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
+    }
+
+    private async Task<Competition> GetCompetition(string internalOrgId, int competitionId)
+    {
+        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
+        var competition = await competitionsService.GetCompetition(organisation.Id, competitionId);
+
+        return competition;
     }
 }
