@@ -1412,7 +1412,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 ContractFlags = new ContractFlags
                 {
                     UseDefaultImplementationPlan = false,
-                    UseDefaultDataProcessing = false,
+                    UseDefaultDataProcessing = true,
                 },
             };
 

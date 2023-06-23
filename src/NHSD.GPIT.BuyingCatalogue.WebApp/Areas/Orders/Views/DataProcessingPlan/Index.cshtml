@@ -1,29 +1,24 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DataProcessing.DataProcessingPlanModel
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DataProcessing.BespokeDataProcessingModel
 @{
-    ViewBag.Title = "Personal data processing information";
+    ViewBag.Title = "Data processing information";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row nhsuk-u-margin-bottom-6">
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-validation-summary RadioId="@nameof(Model.UseDefaultDataProcessing)"/>
         <nhs-page-title title="@ViewBag.Title"
-                        advice="Make sure you've contacted the supplier and reviewed how they process personal data."
-                        caption="Order @Model.CallOffId" />
-        <form method="post">
-            <input type="hidden" asp-for="BackLink" />
-            <nhs-fieldset-form-label
-                label-text="Do you want to proceed using the supplier's default data processing information?"
-                size="Medium"
-                asp-for="UseDefaultDataProcessing">
-                <nhs-radio-buttons asp-for="UseDefaultDataProcessing"
-                                   values="Model.AvailableDataProcessingOptions.Cast<object>()"
-                                   display-name="Text"
-                                   value-name="Value">
-                </nhs-radio-buttons>
-            </nhs-fieldset-form-label>
+                        advice="Download the data processing information template for the supplier to complete. You must include the blank template when you send your order to the supplier."
+                        caption="Order @Model.CallOffId"/>
 
-            <nhs-submit-button/>
+        <p>
+            Download the <a href="https://gpitbjss.atlassian.net/wiki/spaces/BG/pages/12207980954/Order+form+template+Data+processing+information" target="_blank">Data processing information template (opens in a new tab)</a> so that the supplier can provide information on how they process personal data.
+        </p>
+        <p>
+            This document must be included when you send your order to the supplier. You can download it now or after you’ve completed your order.
+        </p>
+        <form method="post">
+            <nhs-submit-button text="Continue" />
         </form>
     </div>
 </div>
