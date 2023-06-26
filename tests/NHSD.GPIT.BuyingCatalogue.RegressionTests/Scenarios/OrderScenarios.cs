@@ -262,7 +262,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepFiveAmendOrder();
 
-            OrderingPages.AmendSolutionsAndServices(NewSolutionName, multipleServiceRecipients: true);
+            OrderingPages.AmendSolutionsAndServices(NewSolutionName, multipleServiceRecipients: 3);
         }
 
         [Fact]
@@ -1492,7 +1492,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
-                multipleServiceRecipients: true);
+                multipleServiceRecipients: 3);
 
             OrderingPages.StepThreeCompleteContract();
 
@@ -1542,7 +1542,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
                 additionalService: AdditionalServiceName,
-                multipleServiceRecipients: true);
+                multipleServiceRecipients: 3);
 
             OrderingPages.StepThreeCompleteContract();
 
@@ -1617,7 +1617,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
                 associatedService: AssociatedServiceNameForWebGP,
-                multipleServiceRecipients: true);
+                multipleServiceRecipients: 3);
 
             OrderingPages.StepThreeCompleteContract();
 
@@ -1642,7 +1642,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
                 associatedService: AssociatedServiceNameForWebGP,
-                multipleServiceRecipients: true,
+                multipleServiceRecipients: 3,
                 fileName: FileName);
 
             OrderingPages.StepThreeCompleteContract();
@@ -1669,7 +1669,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
                 solutionName: NewSolutionName,
                 additionalService: AdditionalServiceName,
                 associatedService: AssociatedServiceNameForWebGP,
-                multipleServiceRecipients: true);
+                multipleServiceRecipients: 3);
 
             OrderingPages.StepThreeCompleteContract();
 
@@ -1692,7 +1692,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
                 associatedService: AssociatedServiceNameForWebGP,
-                multipleServiceRecipients: true);
+                multipleServiceRecipients: 3);
 
             OrderingPages.StepThreeCompleteContract();
 
@@ -1810,7 +1810,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
-            OrderingPages.EditCatalogueSolution(NewSolutionName, multipleServiceRecipients: true);
+            OrderingPages.EditCatalogueSolution(NewSolutionName, multipleServiceRecipients: 3);
 
             OrderingPages.StepThreeCompleteContract();
 
@@ -1834,7 +1834,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
-            OrderingPages.EditCatalogueSolution(NewSolutionName, newAdditionalServiceNames: new List<string> { NewAdditionalServiceName, AdditionalServiceName }, newAssociatedService: string.Empty, multipleServiceRecipients: true);
+            OrderingPages.EditCatalogueSolution(NewSolutionName, newAdditionalServiceNames: new List<string> { NewAdditionalServiceName, AdditionalServiceName }, newAssociatedService: string.Empty, multipleServiceRecipients: 3);
 
             OrderingPages.StepThreeCompleteContract();
 
@@ -1858,7 +1858,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
-            OrderingPages.EditCatalogueSolution(NewSolutionName, newAdditionalServiceNames: null, newAssociatedServices: new List<string> { AssociatedServiceNameForWebGP, NewAssociatedServiceName }, multipleServiceRecipients: true);
+            OrderingPages.EditCatalogueSolution(NewSolutionName, newAdditionalServiceNames: null, newAssociatedServices: new List<string> { AssociatedServiceNameForWebGP, NewAssociatedServiceName }, multipleServiceRecipients: 3);
 
             OrderingPages.StepThreeCompleteContract();
 
@@ -1882,7 +1882,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
-            OrderingPages.EditCatalogueSolution(NewSolutionName, newAdditionalServiceNames: new List<string> { NewAdditionalServiceName }, newAssociatedServices: new List<string> { AssociatedServiceNameForWebGP, NewAssociatedServiceName }, multipleServiceRecipients: true);
+            OrderingPages.EditCatalogueSolution(NewSolutionName, newAdditionalServiceNames: new List<string> { NewAdditionalServiceName }, newAssociatedServices: new List<string> { AssociatedServiceNameForWebGP, NewAssociatedServiceName }, multipleServiceRecipients: 3);
 
             OrderingPages.StepThreeCompleteContract();
 
@@ -1905,9 +1905,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: SolutionName,
                 associatedService: AssociatedServiceName,
-                multipleServiceRecipients: true);
+                multipleServiceRecipients: 3);
 
-            OrderingPages.EditCatalogueSolution(NewSolutionName, newAdditionalServiceName: string.Empty, new List<string> { AssociatedServiceNameForWebGP, NewAssociatedServiceName }, true);
+            OrderingPages.EditCatalogueSolution(NewSolutionName, newAdditionalServiceName: string.Empty, new List<string> { AssociatedServiceNameForWebGP, NewAssociatedServiceName }, 3);
 
             OrderingPages.StepThreeCompleteContract();
 
@@ -1931,7 +1931,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
-            OrderingPages.EditCatalogueSolution(NewSolutionName, newAdditionalServiceNames: new List<string> { NewAdditionalServiceName, AdditionalServiceName }, AssociatedServiceNameForWebGP, multipleServiceRecipients: true);
+            OrderingPages.EditCatalogueSolution(NewSolutionName, newAdditionalServiceNames: new List<string> { NewAdditionalServiceName, AdditionalServiceName }, AssociatedServiceNameForWebGP, multipleServiceRecipients: 3);
 
             OrderingPages.StepThreeCompleteContract();
 
@@ -1977,7 +1977,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, "Document Management", multipleServiceRecipients: false);
+            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, "Document Management", multipleServiceRecipients: 0);
 
             OrderingPages.EditAdditionalService(NewSolutionName, new List<string> { NewAdditionalServiceName, AdditionalServiceName }, oldAdditionalService: "Document Management");
 

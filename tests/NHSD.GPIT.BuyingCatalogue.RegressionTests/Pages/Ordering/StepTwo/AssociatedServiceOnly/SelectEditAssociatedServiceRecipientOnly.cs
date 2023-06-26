@@ -17,16 +17,16 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Assoc
 
         public LocalWebApplicationFactory Factory { get; }
 
-        public void AddServiceRecipient(bool multipleServiceRecipients = false)
+        public void AddServiceRecipient(int multipleServiceRecipients)
         {
             CommonActions.PageLoadedCorrectGetIndex(
               typeof(ServiceRecipientsController),
               nameof(ServiceRecipientsController.AddServiceRecipients)).Should().BeTrue();
 
-            if (multipleServiceRecipients)
+            if (multipleServiceRecipients > 0)
             {
-                if (!CommonActions.MultipleCheckboxeSelected())
-                    CommonActions.ClickMultipleCheckboxes();
+                if (!CommonActions.AnyCheckboxeSelected())
+                    CommonActions.ClickMultipleCheckboxes(multipleServiceRecipients);
 
                 CommonActions.ClickSave();
                 return;

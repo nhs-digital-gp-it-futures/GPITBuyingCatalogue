@@ -54,8 +54,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
         public void ClickAllCheckboxes() =>
             Driver.FindElements(By.CssSelector("input[type=checkbox]")).ToList().ForEach(element => element.Click());
 
-        public void ClickMultipleCheckboxes() =>
-            Driver.FindElements(By.CssSelector("input[type=checkbox]")).ToList().Take(3).ForEach(element => element.Click());
+        public void ClickMultipleCheckboxes(int multipleServiceRecipients) =>
+            Driver.FindElements(By.CssSelector("input[type=checkbox]")).ToList().Take(multipleServiceRecipients).ForEach(element => element.Click());
 
         public void UncheckAllCheckboxes() =>
             Driver.FindElements(By.CssSelector("input[type=checkbox]"))
@@ -266,7 +266,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
             .FindElements(By.ClassName("nhsuk-checkboxes__input"))
             .All(cb => cb.Selected);
 
-        public bool MultipleCheckboxeSelected() =>
+        public bool AnyCheckboxeSelected() =>
             Driver
                 .FindElements(By.CssSelector("input[type=checkbox]"))
                     .Any(cb => cb.Selected);    
