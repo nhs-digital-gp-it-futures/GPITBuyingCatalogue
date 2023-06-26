@@ -97,8 +97,8 @@
             <h2>Additional filters</h2>
             
             <nhs-summary-list>
-                <nhs-summary-list-row label-text="Client application type">
-                    @if (Model.ClientApplicationTypes is null || !Model.ClientApplicationTypes.Any())
+                <nhs-summary-list-row label-text="Application type">
+                    @if (Model.ApplicationTypes is null || !Model.ApplicationTypes.Any())
                     {
                         <p>
                             None selected
@@ -106,19 +106,19 @@
                     }
                     else
                     {
-                        @for (var i = 0; i < Model.ClientApplicationTypes.Count; i++)
+                        @for (var i = 0; i < Model.ApplicationTypes.Count; i++)
                         {
-                            <input type="hidden" asp-for="ClientApplicationTypes[i]" />
-                            @if (Model.ClientApplicationTypes.Count == 1)
+                            <input type="hidden" asp-for="ApplicationTypes[i]" />
+                            @if (Model.ApplicationTypes.Count == 1)
                             {
                                 <p>
-                                    @Model.ClientApplicationTypes[i].Name()
+                                    @Model.ApplicationTypes[i].Name()
                                 </p>
                             }
                             else
                             {
                                 <li>
-                                    @Model.ClientApplicationTypes[i].Name()
+                                    @Model.ApplicationTypes[i].Name()
                                 </li>
                             }
                         }

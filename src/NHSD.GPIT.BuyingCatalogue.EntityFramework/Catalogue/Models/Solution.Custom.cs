@@ -8,9 +8,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     public sealed partial class Solution : IAudited
     {
-        public ClientApplication EnsureAndGetClientApplication()
+        public ApplicationTypeDetail EnsureAndGetApplicationType()
         {
-            return ClientApplication ?? new ClientApplication();
+            return ApplicationTypeDetail ?? new ApplicationTypeDetail();
         }
     }
 }

@@ -19,11 +19,11 @@
         @("None selected")
     }
 </nhs-expander>
-<nhs-expander label-text="Client application type" open="true">
-    @if (Model.ClientApplicationTypeFilters.Any())
+<nhs-expander label-text="Application type" open="true">
+    @if (Model.ApplicationTypeFilters.Any())
     {
         <ul>
-            @foreach (var filter in Model.ClientApplicationTypeFilters)
+            @foreach (var filter in Model.ApplicationTypeFilters)
             {
                 <li>
                     @(filter)

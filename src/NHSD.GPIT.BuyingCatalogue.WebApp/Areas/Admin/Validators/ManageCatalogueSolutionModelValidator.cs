@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
             var mandatoryTasksStatuses = new[]
             {
                 model.DescriptionStatus,
-                model.ClientApplicationTypeStatus,
+                model.ApplicationTypeStatus,
                 model.ListPriceStatus,
                 model.SupplierDetailsStatus,
                 model.CapabilitiesStatus,

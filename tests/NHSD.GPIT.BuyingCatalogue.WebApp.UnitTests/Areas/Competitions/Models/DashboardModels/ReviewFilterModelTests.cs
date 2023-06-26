@@ -28,10 +28,10 @@ public static class ReviewFilterModelTests
         new object[] { Enumerable.Empty<HostingType>().ToList(), false, },
     };
 
-    public static IEnumerable<object[]> HasClientApplicationTypesTestData => new[]
+    public static IEnumerable<object[]> HasApplicationTypesTestData => new[]
     {
-        new object[] { new List<ClientApplicationType> { ClientApplicationType.Desktop }, true, },
-        new object[] { Enumerable.Empty<ClientApplicationType>().ToList(), false, },
+        new object[] { new List<ApplicationType> { ApplicationType.Desktop }, true, },
+        new object[] { Enumerable.Empty<ApplicationType>().ToList(), false, },
     };
 
     public static IEnumerable<object[]> HasAdditionalFiltersTestData => new[]
@@ -42,7 +42,7 @@ public static class ReviewFilterModelTests
         {
             new FilterDetailsModel
             {
-                ClientApplicationTypes = new List<ClientApplicationType> { ClientApplicationType.Desktop },
+                ApplicationTypes = new List<ApplicationType> { ApplicationType.Desktop },
             },
             true,
         },
@@ -55,7 +55,7 @@ public static class ReviewFilterModelTests
             new FilterDetailsModel
             {
                 FrameworkName = "Framework",
-                ClientApplicationTypes = new List<ClientApplicationType> { ClientApplicationType.Desktop },
+                ApplicationTypes = new List<ApplicationType> { ApplicationType.Desktop },
                 HostingTypes = new List<HostingType> { HostingType.Hybrid },
             },
             true,
@@ -129,17 +129,17 @@ public static class ReviewFilterModelTests
     }
 
     [Theory]
-    [CommonMemberAutoData(nameof(HasClientApplicationTypesTestData))]
-    public static void HasClientApplicationTypes_ReturnsExpected(
-        List<ClientApplicationType> clientApplicationTypes,
+    [CommonMemberAutoData(nameof(HasApplicationTypesTestData))]
+    public static void HasApplicationTypes_ReturnsExpected(
+        List<ApplicationType> applicationTypes,
         bool expected,
         FilterDetailsModel filterDetailsModel)
     {
-        filterDetailsModel.ClientApplicationTypes = clientApplicationTypes;
+        filterDetailsModel.ApplicationTypes = applicationTypes;
 
         var model = new ReviewFilterModel(filterDetailsModel);
 
-        model.HasClientApplicationTypes().Should().Be(expected);
+        model.HasApplicationTypes().Should().Be(expected);
     }
 
     [Theory]

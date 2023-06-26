@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.DeleteAp
         public static void BrowserBased_PropertiesSetCorrectly(
             CatalogueItem catalogueItem)
         {
-            var actual = new DeleteApplicationTypeConfirmationModel(catalogueItem, ClientApplicationType.BrowserBased);
+            var actual = new DeleteApplicationTypeConfirmationModel(catalogueItem, ApplicationType.BrowserBased);
             actual.ApplicationType.Should().Be("browser-based");
         }
 
@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.DeleteAp
         public static void Desktop_PropertiesSetCorrectly(
             CatalogueItem catalogueItem)
         {
-            var actual = new DeleteApplicationTypeConfirmationModel(catalogueItem, ClientApplicationType.Desktop);
+            var actual = new DeleteApplicationTypeConfirmationModel(catalogueItem, ApplicationType.Desktop);
             actual.ApplicationType.Should().Be("desktop");
         }
 
@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.DeleteAp
         public static void Mobile_PropertiesSetCorrectly(
             CatalogueItem catalogueItem)
         {
-            var actual = new DeleteApplicationTypeConfirmationModel(catalogueItem, ClientApplicationType.MobileTablet);
+            var actual = new DeleteApplicationTypeConfirmationModel(catalogueItem, ApplicationType.MobileTablet);
             actual.ApplicationType.Should().Be("mobile or tablet");
         }
     }
