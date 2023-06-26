@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
 
             ISpecimenBuilder ComposerTransformation(ICustomizationComposer<ApplicationTypeDetail> composer) => composer
                 .With(c => c.BrowsersSupported, browsersSupported)
-                .With(c => c.ApplicaitonTypes, GetApplicationTypes);
+                .With(c => c.ApplicationTypes, GetApplicationTypes);
 
             fixture.Customize<ApplicationTypeDetail>(ComposerTransformation);
         }

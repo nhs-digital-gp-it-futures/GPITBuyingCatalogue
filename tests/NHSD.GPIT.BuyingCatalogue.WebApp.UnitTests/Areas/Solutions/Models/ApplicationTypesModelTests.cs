@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             _ = catalogueItem;
             _ = solution;
 
-            applicationTypeDetail.ApplicaitonTypes = new HashSet<string> { applicationType.EnumMemberName() };
+            applicationTypeDetail.ApplicationTypes = new HashSet<string> { applicationType.EnumMemberName() };
 
             var actual = model.HasApplicationType(applicationType);
 
@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             _ = catalogueItem;
             _ = solution;
 
-            applicationTypeDetail.ApplicaitonTypes =
+            applicationTypeDetail.ApplicationTypes =
                 new HashSet<string> { ApplicationType.Desktop.EnumMemberName() };
 
             var actual = model.HasApplicationType(ApplicationType.MobileTablet);
@@ -119,7 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         {
             var applicationTypeDetail = new ApplicationTypeDetail
             {
-                ApplicaitonTypes = new() { ApplicationType.BrowserBased.EnumMemberName() },
+                ApplicationTypes = new() { ApplicationType.BrowserBased.EnumMemberName() },
                 BrowsersSupported = new() { new() { BrowserName = "Chrome" } },
                 MobileResponsive = true,
                 Plugins = new() { Required = true, AdditionalInformation = "AdditionalInformation" },
@@ -155,7 +155,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         {
             var applicationTypeDetail = new ApplicationTypeDetail
             {
-                ApplicaitonTypes = new() { ApplicationType.Desktop.EnumMemberName() },
+                ApplicationTypes = new() { ApplicationType.Desktop.EnumMemberName() },
                 NativeDesktopOperatingSystemsDescription = "Windows 95",
                 NativeDesktopMinimumConnectionSpeed = "10Gbps",
                 NativeDesktopMemoryAndStorage = new()
@@ -199,7 +199,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         {
             var applicationTypeDetail = new ApplicationTypeDetail
             {
-                ApplicaitonTypes = new() { ApplicationType.MobileTablet.EnumMemberName() },
+                ApplicationTypes = new() { ApplicationType.MobileTablet.EnumMemberName() },
                 MobileOperatingSystems =
                     new() { OperatingSystems = new() { "MS-DOS" }, OperatingSystemsDescription = "256MB DDR", },
                 MobileConnectionDetails =
@@ -244,7 +244,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         {
             var applicationTypeDetail = new ApplicationTypeDetail
             {
-                ApplicaitonTypes = new()
+                ApplicationTypes = new()
                 {
                     ApplicationType.Desktop.EnumMemberName(),
                     ApplicationType.BrowserBased.EnumMemberName(),

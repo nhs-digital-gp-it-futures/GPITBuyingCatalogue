@@ -127,7 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution.Applicat
             var solution = await context.Solutions.AsNoTracking().FirstAsync(s => s.CatalogueItemId == SolutionId);
             var applicationTypeDetail = solution.ApplicationTypeDetail;
 
-            applicationTypeDetail.ApplicaitonTypes.Should().NotContain(applicationType.AsString(EnumFormat.EnumMemberValue));
+            applicationTypeDetail.ApplicationTypes.Should().NotContain(applicationType.AsString(EnumFormat.EnumMemberValue));
 
             solution.ApplicationTypeDetail = originalApplicationTypeDetail;
             context.Update(solution);

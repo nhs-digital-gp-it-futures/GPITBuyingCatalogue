@@ -126,7 +126,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             MobileTabletBasedController controller)
         {
             mockService.Setup(s => s.GetApplicationType(catalogueItemId)).ReturnsAsync(applicationTypeDetail);
-            applicationTypeDetail.ApplicaitonTypes.Clear();
+            applicationTypeDetail.ApplicationTypes.Clear();
 
             var actual = (await controller.OperatingSystems(catalogueItemId, model)).As<RedirectToActionResult>();
 
@@ -135,7 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .Select(o => o.OperatingSystemName)
                 .ToHashSet();
 
-            applicationTypeDetail.ApplicaitonTypes.Add(ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
+            applicationTypeDetail.ApplicationTypes.Add(ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
             applicationTypeDetail.MobileOperatingSystems.OperatingSystemsDescription = model.Description;
 
             mockService.Verify(s => s.SaveApplicationType(catalogueItemId, applicationTypeDetail));
@@ -190,7 +190,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             MobileTabletBasedController controller)
         {
             mockService.Setup(s => s.GetApplicationType(catalogueItemId)).ReturnsAsync(applicationTypeDetail);
-            applicationTypeDetail.ApplicaitonTypes.Clear();
+            applicationTypeDetail.ApplicationTypes.Clear();
 
             var actual = (await controller.Connectivity(catalogueItemId, model)).As<RedirectToActionResult>();
 
@@ -202,7 +202,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .Select(o => o.ConnectionType)
                 .ToHashSet();
 
-            applicationTypeDetail.ApplicaitonTypes.Add(ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
+            applicationTypeDetail.ApplicationTypes.Add(ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
 
             mockService.Verify(s => s.SaveApplicationType(catalogueItemId, applicationTypeDetail));
             actual.ActionName.Should().Be(nameof(MobileTabletBasedController.MobileTablet));
@@ -256,13 +256,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             MobileTabletBasedController controller)
         {
             mockService.Setup(s => s.GetApplicationType(catalogueItemId)).ReturnsAsync(applicationTypeDetail);
-            applicationTypeDetail.ApplicaitonTypes.Clear();
+            applicationTypeDetail.ApplicationTypes.Clear();
 
             var actual = (await controller.MemoryAndStorage(catalogueItemId, model)).As<RedirectToActionResult>();
 
             applicationTypeDetail.MobileMemoryAndStorage.MinimumMemoryRequirement = model.SelectedMemorySize;
             applicationTypeDetail.MobileMemoryAndStorage.Description = model.Description;
-            applicationTypeDetail.ApplicaitonTypes.Add(ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
+            applicationTypeDetail.ApplicationTypes.Add(ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
 
             mockService.Verify(s => s.SaveApplicationType(catalogueItemId, applicationTypeDetail));
             actual.ActionName.Should().Be(nameof(MobileTabletBasedController.MobileTablet));
@@ -316,13 +316,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             MobileTabletBasedController controller)
         {
             mockService.Setup(s => s.GetApplicationType(catalogueItemId)).ReturnsAsync(applicationTypeDetail);
-            applicationTypeDetail.ApplicaitonTypes.Clear();
+            applicationTypeDetail.ApplicationTypes.Clear();
 
             var actual = (await controller.ThirdPartyComponents(catalogueItemId, model)).As<RedirectToActionResult>();
 
             applicationTypeDetail.MobileThirdParty.ThirdPartyComponents = model.ThirdPartyComponents;
             applicationTypeDetail.MobileThirdParty.DeviceCapabilities = model.DeviceCapabilities;
-            applicationTypeDetail.ApplicaitonTypes.Add(ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
+            applicationTypeDetail.ApplicationTypes.Add(ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
 
             mockService.Verify(s => s.SaveApplicationType(catalogueItemId, applicationTypeDetail));
             actual.ActionName.Should().Be(nameof(MobileTabletBasedController.MobileTablet));
@@ -376,12 +376,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             MobileTabletBasedController controller)
         {
             mockService.Setup(s => s.GetApplicationType(catalogueItemId)).ReturnsAsync(applicationTypeDetail);
-            applicationTypeDetail.ApplicaitonTypes.Clear();
+            applicationTypeDetail.ApplicationTypes.Clear();
 
             var actual = (await controller.HardwareRequirements(catalogueItemId, model)).As<RedirectToActionResult>();
 
             applicationTypeDetail.NativeMobileHardwareRequirements = model.Description;
-            applicationTypeDetail.ApplicaitonTypes.Add(ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
+            applicationTypeDetail.ApplicationTypes.Add(ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
 
             mockService.Verify(s => s.SaveApplicationType(catalogueItemId, applicationTypeDetail));
             actual.ActionName.Should().Be(nameof(MobileTabletBasedController.MobileTablet));
@@ -435,12 +435,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             MobileTabletBasedController controller)
         {
             mockService.Setup(s => s.GetApplicationType(catalogueItemId)).ReturnsAsync(applicationTypeDetail);
-            applicationTypeDetail.ApplicaitonTypes.Clear();
+            applicationTypeDetail.ApplicationTypes.Clear();
 
             var actual = (await controller.AdditionalInformation(catalogueItemId, model)).As<RedirectToActionResult>();
 
             applicationTypeDetail.NativeMobileAdditionalInformation = model.AdditionalInformation;
-            applicationTypeDetail.ApplicaitonTypes.Add(ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
+            applicationTypeDetail.ApplicationTypes.Add(ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
 
             mockService.Verify(s => s.SaveApplicationType(catalogueItemId, applicationTypeDetail));
             actual.ActionName.Should().Be(nameof(MobileTabletBasedController.MobileTablet));

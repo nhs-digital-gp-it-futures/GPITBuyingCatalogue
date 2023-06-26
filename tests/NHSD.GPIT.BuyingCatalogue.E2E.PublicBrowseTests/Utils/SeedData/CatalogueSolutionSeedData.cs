@@ -401,7 +401,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
         {
             return new ApplicationTypeDetail()
             {
-                ApplicaitonTypes = new HashSet<string>
+                ApplicationTypes = new HashSet<string>
                 {
                     "browser-based",
                     "native-mobile",

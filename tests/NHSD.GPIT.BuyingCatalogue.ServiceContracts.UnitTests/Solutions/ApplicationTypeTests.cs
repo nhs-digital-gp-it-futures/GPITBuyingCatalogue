@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         {
             applicationTypeDetail.EnsureApplicationTypePresent(applicationType);
 
-            applicationTypeDetail.ApplicaitonTypes.Should().Contain(applicationType.AsString(EnumFormat.EnumMemberValue));
+            applicationTypeDetail.ApplicationTypes.Should().Contain(applicationType.AsString(EnumFormat.EnumMemberValue));
         }
 
         [Theory]
