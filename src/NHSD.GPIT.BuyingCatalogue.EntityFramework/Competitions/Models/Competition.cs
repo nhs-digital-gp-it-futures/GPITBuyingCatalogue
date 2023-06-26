@@ -47,6 +47,8 @@ public class Competition
 
     public Organisation Organisation { get; set; }
 
+    public Weightings Weightings { get; set; }
+
     public ICollection<CompetitionSolution> CompetitionSolutions { get; set; }
 
     public ICollection<OdsOrganisation> Recipients { get; set; }

@@ -120,6 +120,40 @@ public class CompetitionTaskListController : Controller
         return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
     }
 
+    [HttpGet("weightings")]
+    public async Task<IActionResult> Weightings(string internalOrgId, int competitionId)
+    {
+        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
+        var competition = await competitionsService.GetCompetitionWithWeightings(organisation.Id, competitionId);
+
+        var model = new CompetitionWeightingsModel(competition)
+        {
+            BackLink = Url.Action(nameof(Index), new { internalOrgId, competitionId }),
+        };
+
+        return View(model);
+    }
+
+    [HttpPost("weightings")]
+    public async Task<IActionResult> Weightings(
+        string internalOrgId,
+        int competitionId,
+        CompetitionWeightingsModel model)
+    {
+        if (!ModelState.IsValid)
+            return View(model);
+
+        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
+
+        await competitionsService.SetCompetitionWeightings(
+            organisation.Id,
+            competitionId,
+            model.Price.GetValueOrDefault(),
+            model.NonPrice.GetValueOrDefault());
+
+        return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
+    }
+
     private async Task<Competition> GetCompetition(string internalOrgId, int competitionId)
     {
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);

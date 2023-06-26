@@ -42,42 +42,42 @@
 
                 <nhs-task-list-item label-text="Award criteria weightings"
                                     label-hint="Give your chosen award criteria weightings based on how important they are to you."
-                                    url="#"
-                                    status="CannotStart"/>
+                                    url="@Url.Action(nameof(CompetitionTaskListController.Weightings), typeof(CompetitionTaskListController).ControllerName(), routeValues)"
+                                    status="@Model.TaskListModel.AwardCriteriaWeightings"/>
 
                 <nhs-task-list-item label-text="Non-price elements"
                                     label-hint="Select any non-price elements you want to add to help you score your shortlisted solutions."
                                     url="#"
-                                    status="CannotStart"/>
+                                    status="@Model.TaskListModel.NonPriceElements"/>
 
                 <nhs-task-list-item label-text="Non-price weightings"
                                     label-hint="Give your chosen non-price elements weightings based on how important they are to you."
                                     url="#"
-                                    status="CannotStart"/>
+                                    status="@Model.TaskListModel.NonPriceWeightings"/>
 
                 <nhs-task-list-item label-text="Review competition criteria"
                                     label-hint="Review your weightings and any non-price elements you’ve added to your competition."
                                     url="#"
-                                    status="CannotStart"/>
+                                    status="@Model.TaskListModel.ReviewCompetitionCriteria"/>
             </nhs-task-list-section>
 
             <nhs-task-list-section label-text="Compare and score solutions">
                 <nhs-task-list-item label-text="Compare and score non-price elements"
                                     label-hint="Compare and score your shortlisted solutions based on non-price elements."
                                     url="#"
-                                    status="CannotStart"/>
+                                    status="@Model.TaskListModel.CompareAndScoreSolutions"/>
 
                 <nhs-task-list-item label-text="Calculate price"
                                     label-hint="Provide information to calculate the price for each of your shortlisted solutions."
                                     url="#"
-                                    status="CannotStart"/>
+                                    status="@Model.TaskListModel.CalculatePrice"/>
             </nhs-task-list-section>
 
             <nhs-task-list-section label-text="Finish and view results">
                 <nhs-task-list-item label-text="View results"
                                     label-hint="Confirm you’re ready to view the final results for this competition."
                                     url="#"
-                                    status="CannotStart"/>
+                                    status="@Model.TaskListModel.ViewResults"/>
             </nhs-task-list-section>
         </nhs-task-list>
     </div>

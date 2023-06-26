@@ -10,6 +10,7 @@ public sealed class CompetitionCustomization : ICustomization
     public void Customize(IFixture fixture)
     {
         static ISpecimenBuilder ComposerTransformation(ICustomizationComposer<Competition> composer) => composer
+            .Without(x => x.Weightings)
             .Without(x => x.Organisation)
             .Without(x => x.LastUpdatedByUser)
             .Without(x => x.Filter)

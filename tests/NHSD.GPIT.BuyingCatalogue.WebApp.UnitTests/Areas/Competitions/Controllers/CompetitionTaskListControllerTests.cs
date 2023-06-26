@@ -47,7 +47,8 @@ public static class CompetitionTaskListControllerTests
 
         var expectedModel = new CompetitionTaskListViewModel(organisation, competitionTaskListModel);
 
-        var result = (await controller.Index(organisation.InternalIdentifier, competitionTaskListModel.Id)).As<ViewResult>();
+        var result = (await controller.Index(organisation.InternalIdentifier, competitionTaskListModel.Id))
+            .As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should().BeEquivalentTo(expectedModel, x => x.Excluding(m => m.BackLink));
@@ -70,7 +71,8 @@ public static class CompetitionTaskListControllerTests
 
         var expectedModel = new CompetitionShortlistedSolutionsModel(competition);
 
-        var result = (await controller.ShortlistedSolutions(organisation.InternalIdentifier, competition.Id)).As<ViewResult>();
+        var result = (await controller.ShortlistedSolutions(organisation.InternalIdentifier, competition.Id))
+            .As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should().BeEquivalentTo(expectedModel, x => x.Excluding(m => m.BackLink));
@@ -132,7 +134,9 @@ public static class CompetitionTaskListControllerTests
         var result = (await controller.ContractLength(organisation.InternalIdentifier, competitionId, model))
             .As<RedirectToActionResult>();
 
-        competitionsService.Verify(x => x.SetContractLength(organisation.Id, competitionId, model.ContractLength.GetValueOrDefault()), Times.Once());
+        competitionsService.Verify(
+            x => x.SetContractLength(organisation.Id, competitionId, model.ContractLength.GetValueOrDefault()),
+            Times.Once());
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Index));
@@ -190,9 +194,79 @@ public static class CompetitionTaskListControllerTests
         organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
             .ReturnsAsync(organisation);
 
-        var result = (await controller.AwardCriteria(organisation.InternalIdentifier, competitionId, model)).As<RedirectToActionResult>();
+        var result = (await controller.AwardCriteria(organisation.InternalIdentifier, competitionId, model))
+            .As<RedirectToActionResult>();
 
-        competitionsService.Verify(x => x.SetCompetitionCriteria(organisation.Id, competitionId, model.IncludesNonPrice.GetValueOrDefault()), Times.Once());
+        competitionsService.Verify(
+            x => x.SetCompetitionCriteria(organisation.Id, competitionId, model.IncludesNonPrice.GetValueOrDefault()),
+            Times.Once());
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.Index));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task Weightings_ReturnsViewWithModel(
+        Organisation organisation,
+        Competition competition,
+        [Frozen] Mock<IOrganisationsService> organisationsService,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionTaskListController controller)
+    {
+        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
+            .ReturnsAsync(organisation);
+
+        competitionsService.Setup(x => x.GetCompetitionWithWeightings(organisation.Id, competition.Id))
+            .ReturnsAsync(competition);
+
+        var expectedModel = new CompetitionWeightingsModel(competition);
+
+        var result = (await controller.Weightings(organisation.InternalIdentifier, competition.Id)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task Weightings_InvalidModel_ReturnsViewWithModel(
+        string internalOrgId,
+        int competitionId,
+        CompetitionWeightingsModel model,
+        CompetitionTaskListController controller)
+    {
+        controller.ModelState.AddModelError("some-key", "some-error");
+
+        var result = (await controller.Weightings(internalOrgId, competitionId, model)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().BeEquivalentTo(model);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task Weightings_ValidModel_Redirects(
+        Organisation organisation,
+        int competitionId,
+        CompetitionWeightingsModel model,
+        [Frozen] Mock<IOrganisationsService> organisationsService,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionTaskListController controller)
+    {
+        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
+            .ReturnsAsync(organisation);
+
+        var result = (await controller.Weightings(organisation.InternalIdentifier, competitionId, model))
+            .As<RedirectToActionResult>();
+
+        competitionsService.Verify(
+            x => x.SetCompetitionWeightings(
+                organisation.Id,
+                competitionId,
+                model.Price.GetValueOrDefault(),
+                model.NonPrice.GetValueOrDefault()),
+            Times.Once());
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Index));

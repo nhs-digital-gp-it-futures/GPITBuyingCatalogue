@@ -15,6 +15,7 @@ public class CompetitionTaskListModel
         Description = competition.Description;
 
         SetSectionOneStatuses(competition);
+        SetSectionTwoStatuses(competition);
     }
 
     public int Id { get; }
@@ -25,28 +26,56 @@ public class CompetitionTaskListModel
 
     public TaskProgress SolutionSelection => TaskProgress.Completed;
 
-    public TaskProgress ServiceRecipients { get; set; } = TaskProgress.CannotStart;
+    public TaskProgress ServiceRecipients { get; private set; } = TaskProgress.CannotStart;
 
-    public TaskProgress ContractLength { get; set; } = TaskProgress.CannotStart;
+    public TaskProgress ContractLength { get; private set; } = TaskProgress.CannotStart;
 
-    public TaskProgress AwardCriteria { get; set; } = TaskProgress.CannotStart;
+    public TaskProgress AwardCriteria { get; private set; } = TaskProgress.CannotStart;
+
+    public TaskProgress AwardCriteriaWeightings { get; private set; } = TaskProgress.CannotStart;
+
+    public TaskProgress NonPriceElements { get; private set; } = TaskProgress.CannotStart;
+
+    public TaskProgress NonPriceWeightings { get; private set; } = TaskProgress.CannotStart;
+
+    public TaskProgress ReviewCompetitionCriteria { get; private set; } = TaskProgress.CannotStart;
+
+    public TaskProgress CompareAndScoreSolutions { get; private set; } = TaskProgress.CannotStart;
+
+    public TaskProgress CalculatePrice { get; private set; } = TaskProgress.CannotStart;
+
+    public TaskProgress ViewResults { get; private set; } = TaskProgress.CannotStart;
+
+    private static TaskProgress CompletedOrNotStarted(Competition competition, Predicate<Competition> predicate) =>
+        predicate.Invoke(competition) ? TaskProgress.Completed : TaskProgress.NotStarted;
 
     private void SetSectionOneStatuses(Competition competition)
     {
-        ServiceRecipients = competition.Recipients.Any()
-            ? TaskProgress.Completed
-            : TaskProgress.NotStarted;
+        ServiceRecipients = CompletedOrNotStarted(competition, c => c.Recipients.Any());
 
         if (ServiceRecipients is TaskProgress.NotStarted) return;
 
-        ContractLength = competition.ContractLength.HasValue
-            ? TaskProgress.Completed
-            : TaskProgress.NotStarted;
+        ContractLength = CompletedOrNotStarted(competition, c => c.ContractLength.HasValue);
+    }
 
+    private void SetSectionTwoStatuses(Competition competition)
+    {
         if (ContractLength is TaskProgress.NotStarted) return;
 
-        AwardCriteria = competition.IncludesNonPrice.HasValue
-            ? TaskProgress.Completed
-            : TaskProgress.NotStarted;
+        AwardCriteria = CompletedOrNotStarted(competition, c => c.IncludesNonPrice.HasValue);
+
+        if (AwardCriteria is TaskProgress.NotStarted) return;
+
+        if (!competition.IncludesNonPrice.GetValueOrDefault())
+        {
+            AwardCriteriaWeightings = NonPriceElements =
+                NonPriceWeightings = ReviewCompetitionCriteria = TaskProgress.NotApplicable;
+
+            return;
+        }
+
+        AwardCriteriaWeightings = CompletedOrNotStarted(
+            competition,
+            c => c.Weightings is { Price: not null, NonPrice: not null });
     }
 }

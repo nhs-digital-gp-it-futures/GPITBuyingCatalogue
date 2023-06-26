@@ -18,6 +18,8 @@ public interface ICompetitionsService
 
     Task<IEnumerable<Competition>> GetCompetitionsDashboard(int organisationId);
 
+    Task<Competition> GetCompetitionWithWeightings(int organisationId, int competitionId);
+
     Task<Competition> GetCompetitionWithRecipients(int organisationId, int competitionId);
 
     Task<Competition> GetCompetitionWithServices(int organisationId, int competitionId, bool shouldTrack = false);
@@ -37,6 +39,8 @@ public interface ICompetitionsService
     Task SetContractLength(int organisationId, int competitionId, int contractLength);
 
     Task SetCompetitionCriteria(int organisationId, int competitionId, bool includesNonPrice);
+
+    Task SetCompetitionWeightings(int organisationId, int competitionId, int priceWeighting, int nonPriceWeighting);
 
     Task SetShortlistedSolutions(
         int organisationId,

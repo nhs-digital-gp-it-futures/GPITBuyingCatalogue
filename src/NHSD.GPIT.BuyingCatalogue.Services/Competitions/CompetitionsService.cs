@@ -27,6 +27,10 @@ public class CompetitionsService : ICompetitionsService
             .Where(x => x.OrganisationId == organisationId)
             .ToListAsync();
 
+    public async Task<Competition> GetCompetitionWithWeightings(int organisationId, int competitionId) =>
+        await dbContext.Competitions.Include(x => x.Weightings)
+            .FirstOrDefaultAsync(x => x.OrganisationId == organisationId && x.Id == competitionId);
+
     public async Task<Competition> GetCompetitionWithServices(
         int organisationId,
         int competitionId,
@@ -90,6 +94,19 @@ public class CompetitionsService : ICompetitionsService
                 x => x.OrganisationId == organisationId && x.Id == competitionId);
 
         competition.IncludesNonPrice = includesNonPrice;
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task SetCompetitionWeightings(int organisationId, int competitionId, int priceWeighting, int nonPriceWeighting)
+    {
+        var competition = await dbContext.Competitions.Include(x => x.Weightings)
+            .FirstOrDefaultAsync(x => x.OrganisationId == organisationId && x.Id == competitionId);
+
+        competition.Weightings ??= new Weightings();
+
+        competition.Weightings.Price = priceWeighting;
+        competition.Weightings.NonPrice = nonPriceWeighting;
 
         await dbContext.SaveChangesAsync();
     }
@@ -216,7 +233,10 @@ public class CompetitionsService : ICompetitionsService
     }
 
     public async Task<CompetitionTaskListModel> GetCompetitionTaskList(int organisationId, int competitionId) =>
-        await dbContext.Competitions.Include(x => x.Recipients)
+        await dbContext
+            .Competitions
+            .Include(x => x.Weightings)
+            .Include(x => x.Recipients)
             .AsNoTracking()
             .AsSplitQuery()
             .Where(x => x.OrganisationId == organisationId && x.Id == competitionId)

@@ -607,7 +607,7 @@ public static class CompetitionsServiceTests
 
     [Theory]
     [InMemoryDbAutoData]
-    public static async Task GetCompetitionName(
+    public static async Task GetCompetitionName_ReturnsExpected(
         Organisation organisation,
         Competition competition,
         [Frozen] BuyingCatalogueDbContext context,
@@ -650,5 +650,56 @@ public static class CompetitionsServiceTests
         var updatedCompetition = await context.Competitions.FirstOrDefaultAsync(x => x.Id == competition.Id);
 
         updatedCompetition.ContractLength.Should().Be(contractLength);
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task SetCompetitionWeightings_SetsWeightings(
+        int priceWeighting,
+        int nonPriceWeighting,
+        Organisation organisation,
+        Competition competition,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        competition.OrganisationId = organisation.Id;
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        await service.SetCompetitionWeightings(organisation.Id, competition.Id, priceWeighting, nonPriceWeighting);
+
+        var updatedCompetition = await context.Competitions.Include(x => x.Weightings)
+            .FirstOrDefaultAsync(x => x.Id == competition.Id);
+
+        updatedCompetition.Weightings.Should().NotBeNull();
+        updatedCompetition.Weightings.Price.Should().Be(priceWeighting);
+        updatedCompetition.Weightings.NonPrice.Should().Be(nonPriceWeighting);
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task GetCompetitionWithWeightings_ReturnsExpected(
+        Weightings weightings,
+        Organisation organisation,
+        Competition competition,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        competition.OrganisationId = organisation.Id;
+        competition.Weightings = weightings;
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        var updatedCompetition = await service.GetCompetitionWithWeightings(organisation.Id, competition.Id);
+
+        updatedCompetition.Weightings.Should().BeEquivalentTo(weightings, opt => opt.Excluding(m => m.CompetitionId));
     }
 }

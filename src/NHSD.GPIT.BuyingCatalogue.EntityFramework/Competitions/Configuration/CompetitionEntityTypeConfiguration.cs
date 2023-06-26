@@ -37,6 +37,10 @@ internal sealed class CompetitionEntityTypeConfiguration : IEntityTypeConfigurat
 
         builder.Property(x => x.ContractLength).HasMaxLength(36);
 
+        builder.HasOne(x => x.Weightings)
+            .WithOne()
+            .HasConstraintName("FK_Weightings_Competition");
+
         builder.HasOne(x => x.Filter)
             .WithMany()
             .HasForeignKey(x => x.FilterId)
