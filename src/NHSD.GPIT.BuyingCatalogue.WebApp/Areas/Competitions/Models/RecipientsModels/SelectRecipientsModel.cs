@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.ServiceRecipients;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
@@ -23,6 +24,7 @@ public class SelectRecipientsModel : NavBaseModel
     public SelectRecipientsModel(
         Organisation organisation,
         IEnumerable<ServiceRecipientModel> serviceRecipients,
+        IEnumerable<string> existingRecipients,
         IEnumerable<string> preSelectedRecipients,
         SelectionMode? selectionMode = null)
     {
@@ -39,7 +41,7 @@ public class SelectRecipientsModel : NavBaseModel
             .OrderBy(x => x.Name)
             .ToArray();
 
-        SelectServiceRecipients(preSelectedRecipients);
+        SelectServiceRecipients(existingRecipients, preSelectedRecipients);
     }
 
     public string ImportRecipientsLink { get; set; }
@@ -84,7 +86,9 @@ public class SelectRecipientsModel : NavBaseModel
         return GetSelectedServiceRecipients().Any();
     }
 
-    private void SelectServiceRecipients(IEnumerable<string> recipients)
+    private void SelectServiceRecipients(
+        IEnumerable<string> existingRecipients,
+        IEnumerable<string> recipients)
     {
         switch (selectionMode)
         {
@@ -101,7 +105,10 @@ public class SelectRecipientsModel : NavBaseModel
             default:
                 if (recipients == null) return;
 
-                var matchingRecipients = GetServiceRecipients().Where(x => recipients.Contains(x.OdsCode)).ToList();
+                var enumeratedRecipients = recipients.ToArray();
+                var recipientsToSelect = enumeratedRecipients.Any() ? enumeratedRecipients.ToArray() : existingRecipients.ToArray();
+
+                var matchingRecipients = GetServiceRecipients().Where(x => recipientsToSelect.Contains(x.OdsCode)).ToList();
                 if (!matchingRecipients.Any())
                     return;
 

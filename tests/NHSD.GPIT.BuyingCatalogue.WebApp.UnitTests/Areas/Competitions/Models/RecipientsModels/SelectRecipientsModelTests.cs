@@ -16,9 +16,14 @@ public static class SelectRecipientsModelTests
     public static void Construct_SetsPropertiesAsExpected(
         Organisation organisation,
         List<ServiceRecipientModel> serviceRecipients,
+        List<string> existingRecipients,
         List<string> preSelectedRecipients)
     {
-        var model = new SelectRecipientsModel(organisation, serviceRecipients, preSelectedRecipients);
+        var model = new SelectRecipientsModel(
+            organisation,
+            serviceRecipients,
+            existingRecipients,
+            preSelectedRecipients);
 
         var groupedSubLocations = serviceRecipients.GroupBy(x => x.Location)
             .Select(
@@ -42,11 +47,17 @@ public static class SelectRecipientsModelTests
         bool expectedSelection,
         Organisation organisation,
         List<ServiceRecipientModel> serviceRecipients,
+        List<string> existingRecipients,
         List<string> preSelectedRecipients)
     {
         serviceRecipients.ForEach(x => x.Selected = false);
 
-        var model = new SelectRecipientsModel(organisation, serviceRecipients, preSelectedRecipients, selectionMode);
+        var model = new SelectRecipientsModel(
+            organisation,
+            serviceRecipients,
+            existingRecipients,
+            preSelectedRecipients,
+            selectionMode);
 
         model.GetServiceRecipients().Should().AllSatisfy(x => { x.Selected.Should().Be(expectedSelection); });
     }
@@ -55,13 +66,18 @@ public static class SelectRecipientsModelTests
     [CommonAutoData]
     public static void Construct_ImportedRecipients_SelectsImportedRecipients(
         Organisation organisation,
-        List<ServiceRecipientModel> serviceRecipients)
+        List<ServiceRecipientModel> serviceRecipients,
+        List<string> existingRecipients)
     {
         serviceRecipients.ForEach(x => x.Selected = false);
 
         var preSelectedRecipients = serviceRecipients.Take(2).Select(x => x.OdsCode).ToList();
 
-        var model = new SelectRecipientsModel(organisation, serviceRecipients, preSelectedRecipients);
+        var model = new SelectRecipientsModel(
+            organisation,
+            serviceRecipients,
+            existingRecipients,
+            preSelectedRecipients);
 
         model.GetSelectedServiceRecipients().Select(x => x.OdsCode).Should().BeEquivalentTo(preSelectedRecipients);
     }
@@ -71,12 +87,37 @@ public static class SelectRecipientsModelTests
     public static void Construct_InvalidImportedRecipients_DoesNotSelectImportedRecipients(
         Organisation organisation,
         List<ServiceRecipientModel> serviceRecipients,
-        List<string> preSelectedRecipients)
+        List<string> preSelectedRecipients,
+        List<string> existingRecipients)
     {
         serviceRecipients.ForEach(x => x.Selected = false);
 
-        var model = new SelectRecipientsModel(organisation, serviceRecipients, preSelectedRecipients);
+        var model = new SelectRecipientsModel(
+            organisation,
+            serviceRecipients,
+            existingRecipients,
+            preSelectedRecipients);
 
         model.HasSelectedRecipients().Should().BeFalse();
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void Construct_ImportedRecipients_OverridesExistingRecipients(
+        Organisation organisation,
+        List<ServiceRecipientModel> serviceRecipients)
+    {
+        serviceRecipients.ForEach(x => x.Selected = false);
+
+        var preSelectedRecipients = serviceRecipients.Take(2).Select(x => x.OdsCode).ToList();
+        var existingRecipients = serviceRecipients.Skip(2).Select(x => x.OdsCode).ToList();
+
+        var model = new SelectRecipientsModel(
+            organisation,
+            serviceRecipients,
+            existingRecipients,
+            preSelectedRecipients);
+
+        model.GetSelectedServiceRecipients().Select(x => x.OdsCode).Should().BeEquivalentTo(preSelectedRecipients);
     }
 }

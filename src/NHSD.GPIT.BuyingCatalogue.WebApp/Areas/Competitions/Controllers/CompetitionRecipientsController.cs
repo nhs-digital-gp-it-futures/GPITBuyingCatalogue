@@ -41,21 +41,20 @@ public class CompetitionRecipientsController : Controller
         string internalOrgId,
         int competitionId,
         string recipientIds = "",
+        string importedRecipients = "",
         SelectionMode? selectionMode = null)
     {
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
         var competition = await competitionsService.GetCompetitionWithRecipients(organisation.Id, competitionId);
         var recipients = await GetServiceRecipients(internalOrgId);
-        var splitRecipientIds = recipientIds.Split(
+        var splitRecipientIds = string.Join(',', recipientIds, importedRecipients).Split(
             ',',
             StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-
-        splitRecipientIds = splitRecipientIds.Concat(competition.Recipients.Select(x => x.Id)).ToArray();
 
         const string pageAdvice =
             "Select the organisations that will receive the winning solution for this competition or upload them using a CSV file.";
 
-        var model = new SelectRecipientsModel(organisation, recipients, splitRecipientIds, selectionMode)
+        var model = new SelectRecipientsModel(organisation, recipients, competition.Recipients.Select(x => x.Id), splitRecipientIds, selectionMode)
         {
             BackLink = Url.Action(
                 nameof(CompetitionTaskListController.Index),
@@ -67,7 +66,7 @@ public class CompetitionRecipientsController : Controller
                 nameof(CompetitionImportServiceRecipientsController.Index),
                 typeof(CompetitionImportServiceRecipientsController).ControllerName(),
                 new { internalOrgId, competitionId }),
-            HasImportedRecipients = !string.IsNullOrWhiteSpace(recipientIds),
+            HasImportedRecipients = !string.IsNullOrWhiteSpace(importedRecipients),
         };
 
         return View(model);

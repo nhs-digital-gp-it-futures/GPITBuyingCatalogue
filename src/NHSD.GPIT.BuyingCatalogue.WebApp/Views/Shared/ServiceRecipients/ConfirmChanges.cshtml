@@ -23,9 +23,8 @@
                 {
                     var count = location.Count();
                     <nhs-expander
-                        label-text="@location.Key"
+                        label-text="@($"{location.Key} ({count.ToString()} selected)")"
                         bold-title="true">
-                        <p>You've selected @count.ToString() Service @PluralOrSingular(count)</p>
                         <ul>
                             @foreach (var item in location)
                             {

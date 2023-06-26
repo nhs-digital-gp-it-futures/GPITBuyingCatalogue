@@ -42,7 +42,7 @@ public sealed class CompetitionContractModelValidatorTests
         CompetitionContractModel model,
         CompetitionContractModelValidator validator)
     {
-        model.ContractLength = 0;
+        model.ContractLength = 5;
 
         var result = validator.TestValidate(model);
 

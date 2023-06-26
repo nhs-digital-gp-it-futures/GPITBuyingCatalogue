@@ -14,8 +14,7 @@ public class CompetitionTaskListModel
         Name = competition.Name;
         Description = competition.Description;
 
-        SetSectionOneStatuses(competition);
-        SetSectionTwoStatuses(competition);
+        SetStatuses(competition);
     }
 
     public int Id { get; }
@@ -49,6 +48,13 @@ public class CompetitionTaskListModel
     private static TaskProgress CompletedOrNotStarted(Competition competition, Predicate<Competition> predicate) =>
         predicate.Invoke(competition) ? TaskProgress.Completed : TaskProgress.NotStarted;
 
+    private void SetStatuses(Competition competition)
+    {
+        SetSectionOneStatuses(competition);
+        SetSectionTwoStatuses(competition);
+        SetSectionThreeStatuses(competition);
+    }
+
     private void SetSectionOneStatuses(Competition competition)
     {
         ServiceRecipients = CompletedOrNotStarted(competition, c => c.Recipients.Any());
@@ -77,5 +83,13 @@ public class CompetitionTaskListModel
         AwardCriteriaWeightings = CompletedOrNotStarted(
             competition,
             c => c.Weightings is { Price: not null, NonPrice: not null });
+    }
+
+    private void SetSectionThreeStatuses(Competition competition)
+    {
+        if (!competition.IncludesNonPrice.GetValueOrDefault())
+        {
+            CompareAndScoreSolutions = TaskProgress.NotApplicable;
+        }
     }
 }
