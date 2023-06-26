@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
@@ -6,6 +8,7 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Build.Framework;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -55,8 +58,9 @@ public class DataProcessingControllerTests
         orderService.VerifyAll();
         contractsService.VerifyAll();
 
-        var expected = new DataProcessingPlanModel(contract)
+        var expected = new BespokeDataProcessingModel(internalOrgId, callOffId)
         {
+            InternalOrgId = internalOrgId,
             CallOffId = callOffId,
         };
 
@@ -90,8 +94,9 @@ public class DataProcessingControllerTests
         orderService.VerifyAll();
         contractsService.VerifyAll();
 
-        var expected = new DataProcessingPlanModel(contract)
+        var expected = new BespokeDataProcessingModel(internalOrgId, callOffId)
         {
+            InternalOrgId = internalOrgId,
             CallOffId = callOffId,
         };
 
@@ -101,33 +106,31 @@ public class DataProcessingControllerTests
 
     [Theory]
     [CommonAutoData]
-    public static async Task Post_InvalidModel_ReturnsView(
+    public static async Task Post_InvalidModel_ReturnsRedirect(
         string internalOrgId,
         CallOffId callOffId,
-        DataProcessingPlanModel model,
+        BespokeDataProcessingModel model,
         DataProcessingPlanController controller)
     {
         controller.ModelState.AddModelError("some-key", "some-error");
 
-        var result = (await controller.Index(internalOrgId, callOffId, model)).As<ViewResult>();
+        var result = (await controller.Index(internalOrgId, callOffId, model)).As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
-        result.Model.Should().BeEquivalentTo(model);
+        result.RouteValues.Values.Should().Equal(internalOrgId, callOffId);
     }
 
     [Theory]
     [CommonAutoData]
-    public static async Task Post_UseDefaultPlan_SetsDefaultPlan(
+    public static async Task Post_DataProcessingSetAsSeen_SetsSeen(
         string internalOrgId,
         CallOffId callOffId,
         int orderId,
-        DataProcessingPlanModel model,
+        BespokeDataProcessingModel model,
         [Frozen] Mock<IOrderService> orderService,
         [Frozen] Mock<IContractsService> contractsService,
         DataProcessingPlanController controller)
     {
-        model.UseDefaultDataProcessing = true;
-
         orderService
             .Setup(x => x.GetOrderId(internalOrgId, callOffId))
             .ReturnsAsync(orderId);
@@ -149,77 +152,5 @@ public class DataProcessingControllerTests
             [nameof(internalOrgId)] = internalOrgId,
             [nameof(callOffId)] = callOffId,
         });
-    }
-
-    [Theory]
-    [CommonAutoData]
-    public static async Task Post_UseCustomPlan_SetsPlan(
-        string internalOrgId,
-        CallOffId callOffId,
-        int orderId,
-        DataProcessingPlanModel model,
-        [Frozen] Mock<IOrderService> orderService,
-        [Frozen] Mock<IContractsService> contractsService,
-        DataProcessingPlanController controller)
-    {
-        model.UseDefaultDataProcessing = false;
-
-        orderService
-            .Setup(x => x.GetOrderId(internalOrgId, callOffId))
-            .ReturnsAsync(orderId);
-
-        contractsService
-            .Setup(x => x.UseDefaultDataProcessing(orderId, false))
-            .Verifiable();
-
-        var result = (await controller.Index(internalOrgId, callOffId, model)).As<RedirectToActionResult>();
-
-        orderService.VerifyAll();
-        contractsService.VerifyAll();
-
-        result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(DataProcessingPlanController.BespokeDataProcessingPlan));
-        result.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
-        {
-            [nameof(internalOrgId)] = internalOrgId,
-            [nameof(callOffId)] = callOffId,
-        });
-    }
-
-    [Theory]
-    [CommonAutoData]
-    public static async Task Post_BespokeDataProcessingPlan_Redirects(
-        string internalOrgId,
-        CallOffId callOffId,
-        DataProcessingPlanModel model,
-        DataProcessingPlanController controller)
-    {
-        model.UseDefaultDataProcessing = false;
-
-        var result = (await controller.Index(internalOrgId, callOffId, model)).As<RedirectToActionResult>();
-
-        result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(DataProcessingPlanController.BespokeDataProcessingPlan));
-        result.ControllerName.Should().BeNull();
-        result.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
-        {
-            [nameof(internalOrgId)] = internalOrgId,
-            [nameof(callOffId)] = callOffId,
-        });
-    }
-
-    [Theory]
-    [CommonAutoData]
-    public static void Get_BespokeDataProcessingPlan_ReturnsViewWithModel(
-        string internalOrgId,
-        CallOffId callOffId,
-        DataProcessingPlanController controller)
-    {
-        var expectedModel = new BespokeDataProcessingModel(internalOrgId, callOffId);
-
-        var result = controller.BespokeDataProcessingPlan(internalOrgId, callOffId).As<ViewResult>();
-
-        result.Should().NotBeNull();
-        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
     }
 }

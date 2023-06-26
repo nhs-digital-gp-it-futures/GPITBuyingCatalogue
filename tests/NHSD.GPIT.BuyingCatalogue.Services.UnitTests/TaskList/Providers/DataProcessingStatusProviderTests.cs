@@ -68,6 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             };
 
             order.ContractFlags.UseDefaultImplementationPlan = true;
+            order.ContractFlags.UseDefaultDataProcessing = true;
 
             var actual = service.Get(new OrderWrapper(order), state);
 
@@ -91,6 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             };
 
             order.ContractFlags.UseDefaultImplementationPlan = true;
+            order.ContractFlags.UseDefaultDataProcessing = true;
 
             var actual = service.Get(new OrderWrapper(order), state);
 
@@ -118,7 +120,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
 
         [Theory]
         [CommonInlineAutoData(true)]
-        [CommonInlineAutoData(false)]
         public static void Get_ContractInfoEntered_ReturnsCompleted(
             bool useDefaultDataProcessing,
             Order order,

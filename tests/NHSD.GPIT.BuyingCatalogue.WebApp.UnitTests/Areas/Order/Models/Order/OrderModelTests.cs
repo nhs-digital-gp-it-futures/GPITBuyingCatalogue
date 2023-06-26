@@ -43,5 +43,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             model.CallOffId.Should().BeEquivalentTo(default(CallOffId));
             model.Description.Should().Be(default);
         }
+
+        [Theory]
+        [CommonInlineAutoData(false, true, false, true, false)]
+        [CommonInlineAutoData(true, true, false, true, true)]
+        [CommonInlineAutoData(false, false, false, true, true)]
+        [CommonInlineAutoData(false, true, true, true, true)]
+        [CommonInlineAutoData(false, true, false, false, true)]
+        [CommonInlineAutoData(true, false, true, false, true)]
+        public static void CompletedOrder_SupportingDocumentsRequired(
+            bool hasSpecificRequirements,
+            bool useDefaultBilling,
+            bool useDefaultDataProcessing,
+            bool useDefaultImplementationPlan,
+            bool expectedOutput,
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order)
+        {
+            order.ContractFlags.HasSpecificRequirements = hasSpecificRequirements;
+            order.ContractFlags.UseDefaultBilling = useDefaultBilling;
+            order.ContractFlags.UseDefaultDataProcessing = useDefaultDataProcessing;
+            order.ContractFlags.UseDefaultImplementationPlan = useDefaultImplementationPlan;
+            var model = new CompletedModel(internalOrgId, order);
+
+            Assert.Equal(model.SupportingDocumentsRequired, expectedOutput);
+        }
     }
 }

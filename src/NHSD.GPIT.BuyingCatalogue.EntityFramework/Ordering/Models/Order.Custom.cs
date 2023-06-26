@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 && OrderItems.All(oi => oi.OrderItemFunding is not null)
                 && ContractFlags is not null
                 && ContractFlags?.UseDefaultImplementationPlan is not null
-                && ContractFlags?.UseDefaultDataProcessing is not null
+                && ContractFlags?.UseDefaultDataProcessing == true
                 && OrderStatus != OrderStatus.Completed;
         }
 
