@@ -57,7 +57,7 @@
                 <nhs-table-column>Status</nhs-table-column>
                 <nhs-table-column>Action</nhs-table-column>
 
-                @foreach (var competition in Model.Competitions)
+                @foreach (var competition in Model.Competitions.OrderByDescending(x => x.LastUpdated))
                 {
                     <nhs-table-row-container>
                         <nhs-table-cell>@competition.Name</nhs-table-cell>

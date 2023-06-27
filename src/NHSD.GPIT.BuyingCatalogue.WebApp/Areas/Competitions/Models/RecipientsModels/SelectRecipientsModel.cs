@@ -15,8 +15,6 @@ public class SelectRecipientsModel : NavBaseModel
     public const string SelectNone = "Deselect all";
     private readonly SelectionMode? selectionMode;
 
-    private bool shouldExpand;
-
     public SelectRecipientsModel()
     {
     }
@@ -54,18 +52,7 @@ public class SelectRecipientsModel : NavBaseModel
 
     public bool HasImportedRecipients { get; set; }
 
-    public bool ShouldExpand
-    {
-        get
-        {
-            return HasSelectedRecipients() || shouldExpand;
-        }
-
-        set
-        {
-            shouldExpand = value;
-        }
-    }
+    public bool ShouldExpand { get; set; }
 
     public string SelectionCaption { get; set; } = SelectAll;
 

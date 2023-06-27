@@ -109,9 +109,19 @@ public class TrudOdsService : IOdsService
         var organisation = await context.Organisations.FirstOrDefaultAsync(x => x.InternalIdentifier == internalIdentifier);
         if (organisation is null) return Enumerable.Empty<ServiceRecipient>();
 
+        var subLocations = await context.OrganisationRelationships
+            .AsNoTracking()
+            .Where(x => x.OwnerOrganisationId == organisation.ExternalIdentifier
+                && x.RelationshipTypeId == settings.InGeographyOfRelType
+                && x.TargetOrganisation.IsActive
+                && x.TargetOrganisation.Roles.Any(y => y.RoleId == settings.SubLocationRoleId))
+            .Select(x => x.TargetOrganisation.Id)
+            .ToListAsync();
+
         var serviceRecipients = await context.OrganisationRelationships.AsNoTracking()
             .Where(
-                x => odsCodes.Contains(x.TargetOrganisationId)
+                x => subLocations.Contains(x.OwnerOrganisationId)
+                    && odsCodes.Contains(x.TargetOrganisationId)
                     && x.TargetOrganisation.IsActive
                     && x.RelationshipTypeId == settings.IsCommissionedByRelType
                     && x.TargetOrganisation.Roles.Any(y => y.RoleId == settings.GetPrimaryRoleId(OrganisationType.GP)))

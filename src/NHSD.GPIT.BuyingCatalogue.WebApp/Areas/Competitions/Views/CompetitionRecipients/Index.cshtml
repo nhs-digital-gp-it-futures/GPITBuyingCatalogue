@@ -44,7 +44,7 @@
                 @foreach (var (location, lIndex) in Model.SubLocations.Select((x, i) => (x, i)))
                 {
                     <input type="hidden" asp-for="@Model.SubLocations[lIndex].Name"/>
-                    <nhs-expander label-text="@location.Name" bold-title="true" open="@location.ServiceRecipients.Any(x => x.Selected)">
+                    <nhs-expander label-text="@location.Name" bold-title="true" open="@(Model.ShouldExpand || location.ServiceRecipients.Any(x => x.Selected))">
 
                         <nhs-table>
                             <nhs-table-column>Organisation</nhs-table-column>
