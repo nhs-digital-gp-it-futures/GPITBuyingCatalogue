@@ -55,6 +55,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                             })));
         }
 
+        [HttpGet("select-capabilities")]
+        public async Task<IActionResult> SelectCapabilities()
+        {
+            var capabilities = await capabilitiesService.GetCapabilities();
+            var model = new SelectCapabilitiesModel(capabilities)
+            {
+                BackLink = Url.Action(nameof(Dashboard)),
+            };
+
+            return View(model.WithSelectListCapabilities(capabilities));
+        }
+
         [HttpGet("add-epic")]
         public async Task<IActionResult> AddEpic()
         {
