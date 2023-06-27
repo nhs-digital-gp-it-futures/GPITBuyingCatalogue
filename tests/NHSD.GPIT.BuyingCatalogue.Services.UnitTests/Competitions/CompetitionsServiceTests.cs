@@ -486,7 +486,7 @@ public static class CompetitionsServiceTests
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
-        var result = await service.ExistsAsync(organisation.Id, competition.Name);
+        var result = await service.Exists(organisation.Id, competition.Name);
 
         result.Should().BeTrue();
     }

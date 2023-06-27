@@ -10,7 +10,7 @@ public interface ICompetitionsService
 {
     Task<int> AddCompetition(int organisationId, int filterId, string name, string description);
 
-    Task<bool> ExistsAsync(int organisationId, string competitionName);
+    Task<bool> Exists(int organisationId, string competitionName);
 
     Task<Competition> GetCompetition(int organisationId, int competitionId);
 

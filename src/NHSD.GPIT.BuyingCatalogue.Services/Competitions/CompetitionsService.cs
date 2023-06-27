@@ -211,7 +211,7 @@ public class CompetitionsService : ICompetitionsService
         return competition.Id;
     }
 
-    public async Task<bool> ExistsAsync(int organisationId, string competitionName) =>
+    public async Task<bool> Exists(int organisationId, string competitionName) =>
         await dbContext.Competitions.AnyAsync(
             x => x.OrganisationId == organisationId && string.Equals(x.Name, competitionName));
 
