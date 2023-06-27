@@ -659,12 +659,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             StepFourReviewAndCompleteOrder();
         }
 
-        public void AmendAddSolutionsAndServices(string solutionName, IEnumerable<string>? additionalServices,  bool importServiceRecipients = false, int multipleServiceRecipients = 0)
+        public void AmendAddSolutionsAndServices(string solutionName, string additionalService = "", int multipleServiceRecipients = 0, bool importServiceRecipients = false, string fileName = "")
         {
-            AmendAddSolutionsAndServices(solutionName, additionalServices,  importServiceRecipients, multipleServiceRecipients);
+            AmendAddSolutionsAndServices(solutionName, new List<string> { additionalService }, multipleServiceRecipients, importServiceRecipients, fileName);
         }
 
-        public void AmendAddSolutionsAndServices(string solutionName, IEnumerable<string>? additionalServices, IEnumerable<string>? associatedServices, bool importServiceRecipients = false, string fileName = "", int multipleServiceRecipients = 0)
+        public void AmendAddSolutionsAndServices(string solutionName, IEnumerable<string>? additionalServices, int multipleServiceRecipients = 0, bool importServiceRecipients = false, string fileName = "")
         {
             var orderId = OrderID();
 

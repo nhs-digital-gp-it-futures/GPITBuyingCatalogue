@@ -266,7 +266,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
             .FindElements(By.ClassName("nhsuk-checkboxes__input"))
             .All(cb => cb.Selected);
 
-        public bool AnyCheckboxeSelected() =>
+        public bool AnyCheckboxSelected() =>
             Driver
                 .FindElements(By.CssSelector("input[type=checkbox]"))
                     .Any(cb => cb.Selected);    
