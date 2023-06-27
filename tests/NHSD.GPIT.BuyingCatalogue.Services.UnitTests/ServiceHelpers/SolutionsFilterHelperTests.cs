@@ -70,73 +70,73 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
         }
 
         [Fact]
-        public static void ParseClientApplicationTypeIds_OneItemNotParseable_GeneratesResults()
+        public static void ParseApplicationTypeIds_OneItemNotParseable_GeneratesResults()
         {
             var input = "0.1.hello.2";
 
-            var result = SolutionsFilterHelper.ParseClientApplicationTypeIds(input);
+            var result = SolutionsFilterHelper.ParseApplicationTypeIds(input);
 
-            var expected = new List<ClientApplicationType> { ClientApplicationType.BrowserBased, ClientApplicationType.Desktop, ClientApplicationType.MobileTablet };
+            var expected = new List<ApplicationType> { ApplicationType.BrowserBased, ApplicationType.Desktop, ApplicationType.MobileTablet };
 
             result.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
-        public static void ParseClientApplicationTypeIds_OneItemNotInEnum_GeneratesResults()
+        public static void ParseApplicationTypeIds_OneItemNotInEnum_GeneratesResults()
         {
             var input = "0.1.2.6";
 
-            var result = SolutionsFilterHelper.ParseClientApplicationTypeIds(input);
+            var result = SolutionsFilterHelper.ParseApplicationTypeIds(input);
 
-            var expected = new List<ClientApplicationType> { ClientApplicationType.BrowserBased, ClientApplicationType.Desktop, ClientApplicationType.MobileTablet };
+            var expected = new List<ApplicationType> { ApplicationType.BrowserBased, ApplicationType.Desktop, ApplicationType.MobileTablet };
 
             result.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
-        public static void ParseClientApplicationTypeIds_EmptyAndWhiteSpace_GeneratesResults()
+        public static void ParseApplicationTypeIds_EmptyAndWhiteSpace_GeneratesResults()
         {
             var input = "0.1. .2..    ";
 
-            var result = SolutionsFilterHelper.ParseClientApplicationTypeIds(input);
+            var result = SolutionsFilterHelper.ParseApplicationTypeIds(input);
 
-            var expected = new List<ClientApplicationType> { ClientApplicationType.BrowserBased, ClientApplicationType.Desktop, ClientApplicationType.MobileTablet };
+            var expected = new List<ApplicationType> { ApplicationType.BrowserBased, ApplicationType.Desktop, ApplicationType.MobileTablet };
 
             result.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
-        public static void ParseClientApplicationTypeIds_RandomInput_GeneratesResults()
+        public static void ParseApplicationTypeIds_RandomInput_GeneratesResults()
         {
             var input = "iogjhoiudfhjgouhouhagdf souihadsfgouihdsfg";
 
-            var result = SolutionsFilterHelper.ParseClientApplicationTypeIds(input);
+            var result = SolutionsFilterHelper.ParseApplicationTypeIds(input);
 
-            var expected = new List<ClientApplicationType>();
+            var expected = new List<ApplicationType>();
 
             result.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
-        public static void ParseClientApplicationTypeIds_NullString_GeneratesResults()
+        public static void ParseApplicationTypeIds_NullString_GeneratesResults()
         {
             var input = string.Empty;
 
-            var result = SolutionsFilterHelper.ParseClientApplicationTypeIds(input);
+            var result = SolutionsFilterHelper.ParseApplicationTypeIds(input);
 
-            var expected = new List<ClientApplicationType>();
+            var expected = new List<ApplicationType>();
 
             result.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
-        public static void ParseClientApplicationTypeIds_CorrectInput_GeneratesResults()
+        public static void ParseApplicationTypeIds_CorrectInput_GeneratesResults()
         {
             var input = "0.1.2";
 
-            var result = SolutionsFilterHelper.ParseClientApplicationTypeIds(input);
+            var result = SolutionsFilterHelper.ParseApplicationTypeIds(input);
 
-            var expected = new List<ClientApplicationType> { ClientApplicationType.BrowserBased, ClientApplicationType.Desktop, ClientApplicationType.MobileTablet };
+            var expected = new List<ApplicationType> { ApplicationType.BrowserBased, ApplicationType.Desktop, ApplicationType.MobileTablet };
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -184,7 +184,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseHostingTypeIds(input);
 
-            var expected = new List<ClientApplicationType>();
+            var expected = new List<ApplicationType>();
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -196,7 +196,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseHostingTypeIds(input);
 
-            var expected = new List<ClientApplicationType>();
+            var expected = new List<ApplicationType>();
 
             result.Should().BeEquivalentTo(expected);
         }

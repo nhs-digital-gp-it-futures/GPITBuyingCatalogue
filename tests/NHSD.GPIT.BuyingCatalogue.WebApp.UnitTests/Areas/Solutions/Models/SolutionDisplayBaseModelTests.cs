@@ -63,9 +63,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             },
             new()
             {
-                Action = nameof(SolutionsController.ClientApplicationTypes),
+                Action = nameof(SolutionsController.ApplicationTypes),
                 Controller = typeof(SolutionsController).ControllerName(),
-                Name = "Client application type",
+                Name = "Application type",
             },
             new()
             {
@@ -94,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         };
 
         [Theory]
-        [InlineData(typeof(ClientApplicationTypesModel))]
+        [InlineData(typeof(ApplicationTypesModel))]
         [InlineData(typeof(ImplementationTimescalesModel))]
         [InlineData(typeof(SolutionDescriptionModel))]
         [InlineData(typeof(SolutionFeaturesModel))]

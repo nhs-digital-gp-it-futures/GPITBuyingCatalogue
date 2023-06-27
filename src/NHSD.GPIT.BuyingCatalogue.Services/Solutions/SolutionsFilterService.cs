@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             string selectedEpicIds = null,
             string search = null,
             string selectedFrameworkId = null,
-            string selectedClientApplicationTypeIds = null,
+            string selectedApplicationTypeIds = null,
             string selectedHostingTypeIds = null)
         {
             var (query, count) = await GetFilteredAndNonFilteredQueryResults(selectedCapabilityIds, selectedEpicIds);
@@ -61,13 +61,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             if (!string.IsNullOrWhiteSpace(selectedFrameworkId))
                 query = query.Where(ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == selectedFrameworkId));
-            if (!string.IsNullOrWhiteSpace(selectedClientApplicationTypeIds))
+            if (!string.IsNullOrWhiteSpace(selectedApplicationTypeIds))
             {
-                query = ApplyAdditionalFilterToQuery<ClientApplicationType>(
+                query = ApplyAdditionalFilterToQuery<ApplicationType>(
                     query,
-                    selectedClientApplicationTypeIds,
-                    GetSelectedFiltersClientApplication,
-                    x => x.ClientApplication != null);
+                    selectedApplicationTypeIds,
+                    GetSelectedFilterApplication,
+                    x => x.ApplicationTypeDetail != null);
             }
 
             if (!string.IsNullOrWhiteSpace(selectedHostingTypeIds))
@@ -285,10 +285,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             };
         }
 
-        private static IEnumerable<ClientApplicationType> GetSelectedFiltersClientApplication(Solution solution, IEnumerable<ClientApplicationType> selectedFilterEnums)
+        private static IEnumerable<ApplicationType> GetSelectedFilterApplication(Solution solution, IEnumerable<ApplicationType> selectedFilterEnums)
         {
-            var clientApplication = solution.ClientApplication;
-            return selectedFilterEnums?.Where(t => clientApplication.HasClientApplicationType(t));
+            var applicationTypeDetail = solution.ApplicationTypeDetail;
+            return selectedFilterEnums?.Where(t => applicationTypeDetail.HasApplicationType(t));
         }
 
         private static IEnumerable<HostingType> GetSelectedFiltersHosting(Solution solution, IEnumerable<HostingType> selectedFilterEnums)

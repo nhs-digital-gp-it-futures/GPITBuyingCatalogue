@@ -29,16 +29,17 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.Property(s => s.LastUpdated).HasDefaultValue(DateTime.UtcNow);
 
             var jsonSerializerOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            var converter = new ValueConverter<ClientApplication, string>(
+            var converter = new ValueConverter<ApplicationTypeDetail, string>(
                 value => JsonSerializer.Serialize(value, (JsonSerializerOptions)null),
-                serializedValue => JsonSerializer.Deserialize<ClientApplication>(serializedValue, jsonSerializerOptions));
+                serializedValue => JsonSerializer.Deserialize<ApplicationTypeDetail>(serializedValue, jsonSerializerOptions));
 
-            var comparer = new ValueComparer<ClientApplication>(
+            var comparer = new ValueComparer<ApplicationTypeDetail>(
                 (left, right) => JsonSerializer.Serialize(left, (JsonSerializerOptions)null) == JsonSerializer.Serialize(right, (JsonSerializerOptions)null),
                 value => value == null ? 0 : JsonSerializer.Serialize(value, (JsonSerializerOptions)null).GetHashCode(),
-                value => JsonSerializer.Deserialize<ClientApplication>(JsonSerializer.Serialize(value, (JsonSerializerOptions)null), jsonSerializerOptions));
+                value => JsonSerializer.Deserialize<ApplicationTypeDetail>(JsonSerializer.Serialize(value, (JsonSerializerOptions)null), jsonSerializerOptions));
 
-            builder.Property(s => s.ClientApplication)
+            builder.Property(s => s.ApplicationTypeDetail)
+                .HasColumnName("ClientApplication")
                 .HasConversion(converter, comparer);
 
             builder.OwnsOne(s => s.Hosting, h =>

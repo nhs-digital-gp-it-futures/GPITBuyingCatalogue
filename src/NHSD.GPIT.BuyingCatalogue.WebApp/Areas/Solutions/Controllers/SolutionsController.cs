@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             [FromQuery] string selectedEpicIds,
             [FromQuery] string search,
             [FromQuery] string selectedFrameworkId,
-            [FromQuery] string selectedClientApplicationTypeIds,
+            [FromQuery] string selectedApplicationTypeIds,
             [FromQuery] string selectedHostingTypeIds,
             [FromQuery] int? filterId)
         {
@@ -84,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     selectedEpicIds,
                     search,
                     selectedFrameworkId,
-                    selectedClientApplicationTypeIds,
+                    selectedApplicationTypeIds,
                     selectedHostingTypeIds);
             (IQueryable<CatalogueItem> catalogueItemsWithoutFrameworkFilter, _) =
                 await solutionsFilterService.GetFilteredAndNonFilteredQueryResults(
@@ -95,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var additionalFilters = new AdditionalFiltersModel(
                 frameworks,
                 selectedFrameworkId,
-                selectedClientApplicationTypeIds,
+                selectedApplicationTypeIds,
                 selectedHostingTypeIds,
                 selectedCapabilityIds,
                 selectedEpicIds) { FilterId = filterId, SortBy = sortBy };
@@ -139,9 +139,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     selectedEpicIds,
                     search,
                     selectedFrameworkId,
-                    selectedClientApplicationTypeIds =
+                    selectedApplicationTypeIds =
                         additionalFiltersModel.CombineSelectedOptions(
-                            additionalFiltersModel.ClientApplicationTypeOptions),
+                            additionalFiltersModel.ApplicationTypeOptions),
                     selectedHostingTypeIds =
                         additionalFiltersModel.CombineSelectedOptions(additionalFiltersModel.HostingTypeOptions),
                     filterId,
@@ -332,8 +332,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View("CheckEpics", model);
         }
 
-        [HttpGet("{solutionId}/client-application-types")]
-        public async Task<IActionResult> ClientApplicationTypes(CatalogueItemId solutionId)
+        [HttpGet("{solutionId}/application-types")]
+        public async Task<IActionResult> ApplicationTypes(CatalogueItemId solutionId)
         {
             var item = await solutionsService.GetSolutionThin(solutionId);
 
@@ -345,7 +345,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
 
-            var model = new ClientApplicationTypesModel(item, contentStatus);
+            var model = new ApplicationTypesModel(item, contentStatus);
 
             return View(model);
         }

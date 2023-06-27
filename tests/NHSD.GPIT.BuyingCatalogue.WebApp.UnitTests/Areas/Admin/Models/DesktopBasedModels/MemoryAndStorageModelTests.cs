@@ -3,7 +3,7 @@ using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels.DesktopBasedModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeModels.DesktopBasedModels;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.DesktopBasedModels
@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.DesktopB
 
             actual.MemorySizes.Should().BeEquivalentTo(Framework.Constants.SelectLists.MemorySizes);
 
-            var desktopMemoryAndStorage = solution.ClientApplication.NativeDesktopMemoryAndStorage;
+            var desktopMemoryAndStorage = solution.ApplicationTypeDetail.NativeDesktopMemoryAndStorage;
 
             actual.SelectedMemorySize.Should().Be(desktopMemoryAndStorage.MinimumMemoryRequirement);
             actual.StorageSpace.Should().Be(desktopMemoryAndStorage.StorageRequirementsDescription);

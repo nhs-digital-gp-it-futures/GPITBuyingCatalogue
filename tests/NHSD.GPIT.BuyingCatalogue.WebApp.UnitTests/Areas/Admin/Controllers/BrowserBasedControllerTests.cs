@@ -11,7 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels.BrowserBasedModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeModels.BrowserBasedModels;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
@@ -127,23 +127,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_SupportedBrowsers_CallsSaveClientApplication(
+        public static async Task Post_SupportedBrowsers_CallsSaveApplication(
             CatalogueItemId catalogueItemId,
             CatalogueItem catalogueItem,
             SupportedBrowsersModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail applicationTypeDetail,
             [Frozen] Mock<ISolutionsService> mockService,
             BrowserBasedController controller)
         {
             mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
-            mockService.Setup(s => s.GetClientApplication(catalogueItemId))
-                .ReturnsAsync(clientApplication);
+            mockService.Setup(s => s.GetApplicationType(catalogueItemId))
+                .ReturnsAsync(applicationTypeDetail);
 
             await controller.SupportedBrowsers(catalogueItemId, model);
 
-            mockService.Verify(s => s.SaveClientApplication(catalogueItemId, clientApplication));
+            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, applicationTypeDetail));
         }
 
         [Theory]
@@ -152,15 +152,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItemId catalogueItemId,
             CatalogueItem catalogueItem,
             SupportedBrowsersModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail applicationTypeDetail,
             [Frozen] Mock<ISolutionsService> mockService,
             BrowserBasedController controller)
         {
             mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
-            mockService.Setup(s => s.GetClientApplication(catalogueItemId))
-                .ReturnsAsync(clientApplication);
+            mockService.Setup(s => s.GetApplicationType(catalogueItemId))
+                .ReturnsAsync(applicationTypeDetail);
 
             var actual = (await controller.SupportedBrowsers(catalogueItemId, model)).As<RedirectToActionResult>();
 
@@ -238,23 +238,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_PlugInsOrExtensions_CallsSaveClientApplication(
+        public static async Task Post_PlugInsOrExtensions_CallsSaveApplication(
             CatalogueItemId catalogueItemId,
             CatalogueItem catalogueItem,
             PlugInsOrExtensionsModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail applicationTypeDetail,
             [Frozen] Mock<ISolutionsService> mockService,
             BrowserBasedController controller)
         {
             mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
-            mockService.Setup(s => s.GetClientApplication(catalogueItemId))
-                .ReturnsAsync(clientApplication);
+            mockService.Setup(s => s.GetApplicationType(catalogueItemId))
+                .ReturnsAsync(applicationTypeDetail);
 
             await controller.PlugInsOrExtensions(catalogueItemId, model);
 
-            mockService.Verify(s => s.SaveClientApplication(catalogueItemId, clientApplication));
+            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, applicationTypeDetail));
         }
 
         [Theory]
@@ -263,15 +263,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItemId catalogueItemId,
             CatalogueItem catalogueItem,
             PlugInsOrExtensionsModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail applicationTypeDetail,
             [Frozen] Mock<ISolutionsService> mockService,
             BrowserBasedController controller)
         {
             mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
-            mockService.Setup(s => s.GetClientApplication(catalogueItemId))
-                .ReturnsAsync(clientApplication);
+            mockService.Setup(s => s.GetApplicationType(catalogueItemId))
+                .ReturnsAsync(applicationTypeDetail);
 
             var actual = (await controller.PlugInsOrExtensions(catalogueItemId, model)).As<RedirectToActionResult>();
 
@@ -349,23 +349,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_ConnectivityAndResolution_CallsSaveClientApplication(
+        public static async Task Post_ConnectivityAndResolution_CallsSaveApplication(
             CatalogueItemId catalogueItemId,
             CatalogueItem catalogueItem,
             ConnectivityAndResolutionModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail applicationTypeDetail,
             [Frozen] Mock<ISolutionsService> mockService,
             BrowserBasedController controller)
         {
             mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
-            mockService.Setup(s => s.GetClientApplication(catalogueItemId))
-                .ReturnsAsync(clientApplication);
+            mockService.Setup(s => s.GetApplicationType(catalogueItemId))
+                .ReturnsAsync(applicationTypeDetail);
 
             await controller.ConnectivityAndResolution(catalogueItemId, model);
 
-            mockService.Verify(s => s.SaveClientApplication(catalogueItemId, clientApplication));
+            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, applicationTypeDetail));
         }
 
         [Theory]
@@ -374,15 +374,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItemId catalogueItemId,
             CatalogueItem catalogueItem,
             ConnectivityAndResolutionModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail applicationTypeDetail,
             [Frozen] Mock<ISolutionsService> mockService,
             BrowserBasedController controller)
         {
             mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
-            mockService.Setup(s => s.GetClientApplication(catalogueItemId))
-                .ReturnsAsync(clientApplication);
+            mockService.Setup(s => s.GetApplicationType(catalogueItemId))
+                .ReturnsAsync(applicationTypeDetail);
 
             var actual = (await controller.ConnectivityAndResolution(catalogueItemId, model)).As<RedirectToActionResult>();
 
@@ -460,23 +460,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_HardwareRequirements_CallsSaveClientApplication(
+        public static async Task Post_HardwareRequirements_CallsSaveApplication(
             CatalogueItemId catalogueItemId,
             CatalogueItem catalogueItem,
             HardwareRequirementsModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail applicationTypeDetail,
             [Frozen] Mock<ISolutionsService> mockService,
             BrowserBasedController controller)
         {
             mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
-            mockService.Setup(s => s.GetClientApplication(catalogueItemId))
-                .ReturnsAsync(clientApplication);
+            mockService.Setup(s => s.GetApplicationType(catalogueItemId))
+                .ReturnsAsync(applicationTypeDetail);
 
             await controller.HardwareRequirements(catalogueItemId, model);
 
-            mockService.Verify(s => s.SaveClientApplication(catalogueItemId, clientApplication));
+            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, applicationTypeDetail));
         }
 
         [Theory]
@@ -485,15 +485,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItemId catalogueItemId,
             CatalogueItem catalogueItem,
             HardwareRequirementsModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail applicationTypeDetail,
             [Frozen] Mock<ISolutionsService> mockService,
             BrowserBasedController controller)
         {
             mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
-            mockService.Setup(s => s.GetClientApplication(catalogueItemId))
-                .ReturnsAsync(clientApplication);
+            mockService.Setup(s => s.GetApplicationType(catalogueItemId))
+                .ReturnsAsync(applicationTypeDetail);
 
             var actual = (await controller.HardwareRequirements(catalogueItemId, model)).As<RedirectToActionResult>();
 
@@ -571,23 +571,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_AdditionalInformation_CallsSaveClientApplication(
+        public static async Task Post_AdditionalInformation_CallsSaveApplication(
             CatalogueItemId catalogueItemId,
             CatalogueItem catalogueItem,
             AdditionalInformationModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail applicationTypeDetail,
             [Frozen] Mock<ISolutionsService> mockService,
             BrowserBasedController controller)
         {
             mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
-            mockService.Setup(s => s.GetClientApplication(catalogueItemId))
-                .ReturnsAsync(clientApplication);
+            mockService.Setup(s => s.GetApplicationType(catalogueItemId))
+                .ReturnsAsync(applicationTypeDetail);
 
             await controller.AdditionalInformation(catalogueItemId, model);
 
-            mockService.Verify(s => s.SaveClientApplication(catalogueItemId, clientApplication));
+            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, applicationTypeDetail));
         }
 
         [Theory]
@@ -596,15 +596,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItemId catalogueItemId,
             CatalogueItem catalogueItem,
             AdditionalInformationModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail applicationTypeDetail,
             [Frozen] Mock<ISolutionsService> mockService,
             BrowserBasedController controller)
         {
             mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
 
-            mockService.Setup(s => s.GetClientApplication(catalogueItemId))
-                .ReturnsAsync(clientApplication);
+            mockService.Setup(s => s.GetApplicationType(catalogueItemId))
+                .ReturnsAsync(applicationTypeDetail);
 
             var actual = (await controller.AdditionalInformation(catalogueItemId, model)).As<RedirectToActionResult>();
 
