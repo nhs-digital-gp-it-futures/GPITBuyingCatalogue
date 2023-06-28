@@ -35,6 +35,14 @@
     <EmbeddedResource Include="Files\Redcentric.pdf" />
     <EmbeddedResource Include="Files\Surgery Connect.pdf" />
     <EmbeddedResource Include="Files\Babblevoice.pdf" />
+    <None Remove="Files\RPM Patient Contact.pdf" />
+    <EmbeddedResource Include="Files\RPM Patient Contact.pdf" />
+    <None Remove="Files\Louiscomm.pdf" />
+    <EmbeddedResource Include="Files\Louiscomm.pdf" />
+    <None Remove="Files\Check Cloud.pdf" />
+    <EmbeddedResource Include="Files\Check Cloud.pdf" />
+    <None Remove="Files\BPF Supplier solution details v1.0 Wavenet v1.2 BW[24].pdf" />
+    <EmbeddedResource Include="Files\Wavenet.pdf" />
   </ItemGroup>
 
   <ItemGroup>
