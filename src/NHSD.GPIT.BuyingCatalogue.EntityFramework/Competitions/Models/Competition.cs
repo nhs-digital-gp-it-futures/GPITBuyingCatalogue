@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
@@ -11,6 +12,7 @@ public class Competition
     public Competition()
     {
         CompetitionSolutions = new HashSet<CompetitionSolution>();
+        Recipients = new HashSet<OdsOrganisation>();
     }
 
     public int Id { get; set; }
@@ -33,13 +35,21 @@ public class Competition
 
     public bool IsDeleted { get; set; }
 
+    public int? ContractLength { get; set; }
+
+    public bool? IncludesNonPrice { get; set; }
+
     public bool IsShortlistAccepted => ShortlistAccepted.HasValue;
 
-    public virtual AspNetUser LastUpdatedByUser { get; set; }
+    public AspNetUser LastUpdatedByUser { get; set; }
 
-    public virtual Filter Filter { get; set; }
+    public Filter Filter { get; set; }
 
-    public virtual Organisation Organisation { get; set; }
+    public Organisation Organisation { get; set; }
+
+    public Weightings Weightings { get; set; }
 
     public ICollection<CompetitionSolution> CompetitionSolutions { get; set; }
+
+    public ICollection<OdsOrganisation> Recipients { get; set; }
 }

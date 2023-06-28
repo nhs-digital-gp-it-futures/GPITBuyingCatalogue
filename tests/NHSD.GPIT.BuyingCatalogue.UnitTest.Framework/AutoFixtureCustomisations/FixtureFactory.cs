@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using AutoFixture;
 using AutoFixture.AutoMoq;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations.OdsOrganisations;
 
 namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
 {
@@ -59,6 +60,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
             new CompetitionCustomization(),
             new CompetitionSolutionCustomization(),
             new RequiredServiceCustomization(),
+            new OdsOrganisationCustomization(),
+            new OrganisationRoleCustomization(),
+            new OrganisationRelationshipCustomization(),
         };
 
         internal static IFixture Create() => Create(Customizations);

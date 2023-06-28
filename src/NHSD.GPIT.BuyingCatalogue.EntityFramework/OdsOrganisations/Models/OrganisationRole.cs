@@ -2,6 +2,18 @@
 
 public class OrganisationRole
 {
+    public OrganisationRole()
+    {
+    }
+
+    public OrganisationRole(
+        string organisationId,
+        string roleId)
+    {
+        OrganisationId = organisationId;
+        RoleId = roleId;
+    }
+
     public int Id { get; set; }
 
     public string OrganisationId { get; set; }

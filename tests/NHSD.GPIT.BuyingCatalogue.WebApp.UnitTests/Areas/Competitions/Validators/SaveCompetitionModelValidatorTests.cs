@@ -33,7 +33,7 @@ public static class SaveCompetitionModelValidatorTests
         SaveCompetitionModelValidator validator)
     {
         competitionsService
-            .Setup(x => x.ExistsAsync(It.IsAny<int>(), model.Name))
+            .Setup(x => x.Exists(It.IsAny<int>(), model.Name))
             .ReturnsAsync(true);
 
         var result = validator.TestValidate(model);
@@ -64,7 +64,7 @@ public static class SaveCompetitionModelValidatorTests
         SaveCompetitionModelValidator validator)
     {
         competitionsService
-            .Setup(x => x.ExistsAsync(It.IsAny<int>(), model.Name))
+            .Setup(x => x.Exists(It.IsAny<int>(), model.Name))
             .ReturnsAsync(false);
 
         var result = validator.TestValidate(model);

@@ -18,8 +18,8 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.ImportServiceRecipients;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.ServiceRecipients;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ImportServiceRecipients;
 using Xunit;
 using ServiceRecipient = NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.ServiceRecipient;
 
@@ -52,23 +52,21 @@ public static class ImportServiceRecipientsControllerTests
         catalogueItemService.Setup(s => s.GetCatalogueItemName(catalogueItemId))
             .ReturnsAsync(catalogueItemName);
 
-        var expectedModel = new ImportServiceRecipientModel(
-            internalOrgId,
-            callOffId,
-            catalogueItemId,
-            catalogueItemName);
+        var expectedModel = new ImportServiceRecipientModel { Caption = catalogueItemName };
 
         var result = (await controller.Index(internalOrgId, callOffId, catalogueItemId, importMode)).As<ViewResult>();
 
         importService.VerifyAll();
         catalogueItemService.VerifyAll();
 
+        result.Should().NotBeNull();
         result.Model.Should()
             .BeEquivalentTo(
                 expectedModel,
                 opt => opt
                     .Excluding(m => m.BackLink)
-                    .Excluding(m => m.File));
+                    .Excluding(m => m.File)
+                    .Excluding(m => m.DownloadTemplateLink));
     }
 
     [Theory]
@@ -76,6 +74,9 @@ public static class ImportServiceRecipientsControllerTests
     public static async Task Index_InvalidRecipients_SetsModelError(
         string expectedErrorMessage,
         IList<ServiceRecipientImportModel> importedServiceRecipients,
+        string internalOrgId,
+        CallOffId callOffId,
+        CatalogueItemId catalogueItemId,
         ImportServiceRecipientModel model,
         [Frozen] Mock<IServiceRecipientImportService> importService,
         ImportServiceRecipientsController controller)
@@ -83,7 +84,7 @@ public static class ImportServiceRecipientsControllerTests
         importService.Setup(s => s.ReadFromStream(It.IsAny<Stream>()))
             .ReturnsAsync(importedServiceRecipients);
 
-        _ = await controller.Index(model.InternalOrgId, model.CallOffId, model.CatalogueItemId, model);
+        _ = await controller.Index(internalOrgId, callOffId, catalogueItemId, model);
 
         importService.VerifyAll();
 
@@ -98,6 +99,9 @@ public static class ImportServiceRecipientsControllerTests
     [Theory]
     [CommonAutoData]
     public static async Task Index_ValidRecipients_Redirects(
+        string internalOrgId,
+        CallOffId callOffId,
+        CatalogueItemId catalogueItemId,
         ImportServiceRecipientModel model,
         ServiceRecipientImportMode importMode,
         [Frozen] Mock<IServiceRecipientImportService> importService,
@@ -108,9 +112,9 @@ public static class ImportServiceRecipientsControllerTests
                 new List<ServiceRecipientImportModel> { new() { Organisation = "Fake Org", OdsCode = "ABC123" } });
 
         var result = (await controller.Index(
-                model.InternalOrgId,
-                model.CallOffId,
-                model.CatalogueItemId,
+                internalOrgId,
+                callOffId,
+                catalogueItemId,
                 model,
                 importMode))
             .As<RedirectToActionResult>();
@@ -123,9 +127,9 @@ public static class ImportServiceRecipientsControllerTests
             .BeEquivalentTo(
                 new RouteValueDictionary
                 {
-                    { nameof(model.InternalOrgId), model.InternalOrgId },
-                    { nameof(model.CallOffId), model.CallOffId },
-                    { nameof(model.CatalogueItemId), model.CatalogueItemId },
+                    { nameof(internalOrgId), internalOrgId },
+                    { nameof(callOffId), callOffId },
+                    { nameof(catalogueItemId), catalogueItemId },
                     { nameof(importMode), importMode },
                 });
     }
@@ -181,12 +185,7 @@ public static class ImportServiceRecipientsControllerTests
         importedServiceRecipients.First().OdsCode = "MISMATCH";
 
         var expectedModel = new ValidateOdsModel(
-            internalOrgId,
-            callOffId,
-            catalogueItemId,
-            catalogueItemName,
-            importMode,
-            importedServiceRecipients.Take(1).ToList());
+            importedServiceRecipients.Take(1).ToList(), importMode) { Caption = catalogueItemName };
 
         importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
             .ReturnsAsync(importedServiceRecipients);
@@ -205,7 +204,13 @@ public static class ImportServiceRecipientsControllerTests
         odsService.VerifyAll();
 
         result.Should().NotBeNull();
-        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        result.Model.Should()
+            .BeEquivalentTo(
+                expectedModel,
+                opt => opt
+                    .Excluding(m => m.BackLink)
+                    .Excluding(m => m.CancelLink)
+                    .Excluding(m => m.ValidateNamesLink));
     }
 
     [Theory]
@@ -307,12 +312,8 @@ public static class ImportServiceRecipientsControllerTests
         };
 
         var expectedModel = new ValidateNamesModel(
-            internalOrgId,
-            callOffId,
-            catalogueItemId,
-            catalogueItemName,
-            importMode,
-            mismatchedNames);
+            mismatchedNames,
+            importMode) { Caption = catalogueItemName };
 
         importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
             .ReturnsAsync(importedServiceRecipients);
@@ -331,7 +332,12 @@ public static class ImportServiceRecipientsControllerTests
         odsService.VerifyAll();
 
         result.Should().NotBeNull();
-        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        result.Model.Should()
+            .BeEquivalentTo(
+                expectedModel,
+                opt => opt
+                    .Excluding(m => m.BackLink)
+                    .Excluding(m => m.CancelLink));
     }
 
     [Theory]
@@ -407,12 +413,8 @@ public static class ImportServiceRecipientsControllerTests
         };
 
         var model = new ValidateNamesModel(
-            internalOrgId,
-            callOffId,
-            catalogueItemId,
-            catalogueItemName,
-            importMode,
-            mismatchedNames);
+            mismatchedNames,
+            importMode);
 
         importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
             .ReturnsAsync(importedRecipients);
