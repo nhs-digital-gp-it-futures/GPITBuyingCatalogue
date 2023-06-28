@@ -14,12 +14,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 
             if (!AdvancedTelephonyConstants.TryGetFileMapping(file, out var fileName)) return BadRequest();
 
-            return GetFileStream(fileName);
+            return GetFileStream($"{fileName}.pdf");
         }
 
         private static Stream GetResourceStream(string fileName) =>
             typeof(HomeController).Assembly.GetManifestResourceStream(
-                $"NHSD.GPIT.BuyingCatalogue.WebApp.Files.{fileName}.pdf");
+                $"NHSD.GPIT.BuyingCatalogue.WebApp.Files.{fileName}");
 
         private FileStreamResult GetFileStream(string fileName) => File(
             GetResourceStream(fileName),
