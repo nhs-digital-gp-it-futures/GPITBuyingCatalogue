@@ -5,15 +5,16 @@
 }
 <partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-two-thirds">
+    <div class="nhsuk-grid-column-full">
         <nhs-validation-summary RadioId="IsActive" />
         <nhs-page-title title="@ViewBag.Title"
                         advice="Select the Capabilities relating to this supplier defined Epic." />
 
-        <h2>Select Capabilities</h2>
-        <p>Select all Capabilities that apply to this supplier defined Epic.
-
-        </p>
+        <hr/>
+        <div class="nhsuk-u-margin-bottom-9">
+            <h2>Select Capabilities</h2>
+            <p>Select all Capabilities that apply to this supplier defined Epic.</p>
+        </div>
 
         <form method="post">
             @foreach (var category in Model.Groups)
