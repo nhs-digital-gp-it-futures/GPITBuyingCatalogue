@@ -1,10 +1,9 @@
-﻿
-@model NavBaseModel
+﻿@model NavBaseModel
 @{
     ViewBag.Title = "Advanced Telephony Better Purchasing framework";
 
     var returnUrl = Url.Action(
-        nameof(HomeController.AdvancedTelephonyBetterPurchaseFramework),
+        nameof(HomeController.AdvancedTelephony),
         typeof(HomeController).ControllerName());
 
     var procurementSupportUrl = Url.Action(
@@ -13,12 +12,12 @@
         new { returnUrl });
 }
 
-<partial name="Partials/_BackLink" model="Model" />
+<partial name="Partials/_BackLink" model="Model"/>
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-page-title title="@ViewBag.Title"
-                        advice="A new way of supporting the commissioning of advanced, cloud-hosted GP telephony systems." />
+                        advice="A new way of supporting the commissioning of advanced, cloud-hosted GP telephony systems."/>
 
         <p>
             The Advanced Telephony Better Purchasing framework allows commissioners to procure cloud-based telephone systems from a number of assured telephony suppliers within the Better Purchasing Framework List.
@@ -45,11 +44,33 @@
         <p>These are the suppliers that are available from the list. You can find information about their solutions using the links:</p>
 
         <ul>
-            <li><a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.SurgeryConnectPdf)">Surgery Connect (PDF)</a></li>
-            <li><a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.DaisyPatientLinePdf)">Daisy Communications Ltd (PDF)</a></li>
-            <li><a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.ThinkHealthcarePdf)">Think Healthcare (PDF)</a></li>
-            <li><a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.RedcentricPdf)">Redcentric Solutions Ltd (PDF)</a></li>
-            <li><a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.BabbleVoicePdf)">Babblevoice (PDF)</a></li>
+            <li>
+                <a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.GetAdvancedTelephonyPdf)" asp-route-file="@AdvancedTelephonyConstants.BabbleVoice">Babblevoice (PDF)</a>
+            </li>
+            <li>
+                <a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.GetAdvancedTelephonyPdf)" asp-route-file="@AdvancedTelephonyConstants.CheckCloud">Check Communications Ltd (PDF)</a>
+            </li>
+            <li>
+                <a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.GetAdvancedTelephonyPdf)" asp-route-file="@AdvancedTelephonyConstants.DaisyPatientLine">Daisy Communications Ltd (PDF)</a>
+            </li>
+            <li>
+                <a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.GetAdvancedTelephonyPdf)" asp-route-file="@AdvancedTelephonyConstants.LouisComm">Louiscomm (PDF)</a>
+            </li>
+            <li>
+                <a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.GetAdvancedTelephonyPdf)" asp-route-file="@AdvancedTelephonyConstants.Redcentric">Redcentric Solutions Ltd (PDF)</a>
+            </li>
+            <li>
+                <a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.GetAdvancedTelephonyPdf)" asp-route-file="@AdvancedTelephonyConstants.RpmPatientContact">RPM Business Communications (PDF)</a>
+            </li>
+            <li>
+                <a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.GetAdvancedTelephonyPdf)" asp-route-file="@AdvancedTelephonyConstants.SurgeryConnect">Surgery Connect (PDF)</a>
+            </li>
+            <li>
+                <a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.GetAdvancedTelephonyPdf)" asp-route-file="@AdvancedTelephonyConstants.ThinkHealthcare">Think Healthcare (PDF)</a>
+            </li>
+            <li>
+                <a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.GetAdvancedTelephonyPdf)" asp-route-file="@AdvancedTelephonyConstants.WaveNet">Wavenet (PDF)</a>
+            </li>
         </ul>
 
         <p>The list will grow over time as more suppliers meet the qualification criteria.</p>
@@ -60,9 +81,7 @@
 
         <vc:nhs-secondary-button type="Secondary"
                                  text="Download buyer’s guide (PDF)"
-                                 url="@Url.Action(
-                                               nameof(AdvancedTelephonyController.BuyersGuidePdf),
-                                               typeof(AdvancedTelephonyController).ControllerName())" />
+                                 url="@Url.Action(nameof(AdvancedTelephonyController.GetAdvancedTelephonyPdf), typeof(AdvancedTelephonyController).ControllerName(), new { file = AdvancedTelephonyConstants.BuyersGuide })"/>
 
         <p>
             For more information on the Better Purchasing framework and the suppliers and solutions currently involved, contact National Commercial and Procurement Hub.
@@ -70,7 +89,7 @@
 
         <div class="nhsuk-u-margin-top-6">
             <vc:nhs-action-link text="Contact Procurement Hub"
-                                url="@procurementSupportUrl" />
+                                url="@procurementSupportUrl"/>
         </div>
 
         <h2>
@@ -103,8 +122,6 @@
 
         <vc:nhs-secondary-button text="Back to homepage"
                                  type="Primary"
-                                 url="@Url.Action(
-                                          nameof(HomeController.Index),
-                                          typeof(HomeController).ControllerName())" />
+                                 url="@Url.Action(nameof(HomeController.Index), typeof(HomeController).ControllerName())"/>
     </div>
 </div>

@@ -45,10 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         [HttpGet("contact-us/confirmation")]
         public IActionResult ContactUsConfirmation()
         {
-            var model = new ContactUsConfirmationModel()
-            {
-                BackLink = Url.Action(nameof(Index)),
-            };
+            var model = new ContactUsConfirmationModel() { BackLink = Url.Action(nameof(Index)), };
 
             return View(model);
         }
@@ -60,12 +57,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         public IActionResult NotAuthorized() => View();
 
         [HttpGet("advanced-telephony-better-purchase")]
-        public IActionResult AdvancedTelephonyBetterPurchaseFramework() => View(new NavBaseModel
-        {
-            BackLink = Url.Action(
-                nameof(Index),
-                typeof(HomeController).ControllerName()),
-        });
+        public IActionResult AdvancedTelephony() => View(
+            new NavBaseModel
+            {
+                BackLink = Url.Action(
+                    nameof(Index),
+                    typeof(HomeController).ControllerName()),
+            });
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error(int? statusCode = null, string error = null)
