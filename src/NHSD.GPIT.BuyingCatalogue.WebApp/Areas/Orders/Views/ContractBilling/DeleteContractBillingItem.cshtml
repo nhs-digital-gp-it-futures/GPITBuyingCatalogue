@@ -12,7 +12,7 @@
     <div class="nhsuk-grid-column-full">
         
         <nhs-page-title title="@ViewBag.Title"
-                        caption="@Model.MilestoneName"
+                        caption="@Model.ItemName"
                         advice="The bespoke milestone will be deleted from this order." />
 
         <form method="post">
@@ -20,7 +20,7 @@
 
                 <input type="hidden" asp-for="CallOffId" />
                 <input type="hidden" asp-for="InternalOrgId" />
-                <input type="hidden" asp-for="MilestoneId" />
+                <input type="hidden" asp-for="ItemId" />
 
                 <div>
                     <nhs-submit-button text="Delete milestone"/>

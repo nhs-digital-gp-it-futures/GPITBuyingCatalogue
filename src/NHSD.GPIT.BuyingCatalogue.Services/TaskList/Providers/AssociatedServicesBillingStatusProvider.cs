@@ -22,11 +22,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
                 return TaskProgress.NotApplicable;
             }
 
-            var hasSpecificRequirementsEntered = order.ContractFlags?.HasSpecificRequirements.HasValue ?? false;
-            var useDefaultBillingEntered = order.ContractFlags?.UseDefaultBilling.HasValue ?? false;
+            var contractBillingEntered = order.Contract?.ContractBilling is not null;
 
             if ((state.FundingSource == TaskProgress.InProgress || state.ImplementationPlan == TaskProgress.InProgress)
-                && (hasSpecificRequirementsEntered || useDefaultBillingEntered))
+                && contractBillingEntered)
             {
                 return TaskProgress.InProgress;
             }
@@ -37,14 +36,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
                 return TaskProgress.CannotStart;
             }
 
-            if (hasSpecificRequirementsEntered || useDefaultBillingEntered)
-            {
-                return hasSpecificRequirementsEntered && useDefaultBillingEntered
+            return contractBillingEntered
                     ? TaskProgress.Completed
-                    : TaskProgress.InProgress;
-            }
-
-            return TaskProgress.NotStarted;
+                    : TaskProgress.NotStarted;
         }
 
         private static bool HasAssociatedServices(Order order) =>

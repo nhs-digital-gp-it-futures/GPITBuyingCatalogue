@@ -6,7 +6,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts
 {
     public interface IContractBillingService
     {
-        Task AddContractBilling(int orderId, int contractId);
+        Task<Contract> AddContractBilling(int orderId, int contractId);
 
         Task AddBespokeContractBillingItem(
             int orderId,

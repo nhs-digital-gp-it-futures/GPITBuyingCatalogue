@@ -21,26 +21,41 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
         {
             var output = await dbContext.Contracts
                 .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.OrderId == orderId);
+
+            await AddContract(output, orderId);
+
+            return output;
+        }
+
+        public async Task<Contract> GetContractWithImplementationPlan(int orderId)
+        {
+            var output = await dbContext.Contracts
+                .AsNoTracking()
                 .Include(x => x.ImplementationPlan)
-                .ThenInclude(x => x.Milestones.OrderBy(m => m.Order))
+                    .ThenInclude(x => x.Milestones.OrderBy(m => m.Order))
+                .FirstOrDefaultAsync(x => x.OrderId == orderId);
+
+            await AddContract(output, orderId);
+
+            return output;
+        }
+
+        public async Task<Contract> GetContractWithContractBilling(int orderId)
+        {
+            var output = await dbContext.Contracts
+                .AsNoTracking()
+                .AsSplitQuery()
                 .Include(x => x.ContractBilling)
                     .ThenInclude(x => x.ContractBillingItems)
                         .ThenInclude(x => x.Milestone)
+                .Include(x => x.ContractBilling)
+                    .ThenInclude(x => x.ContractBillingItems)
+                        .ThenInclude(x => x.OrderItem)
+                            .ThenInclude(x => x.CatalogueItem)
                 .FirstOrDefaultAsync(x => x.OrderId == orderId);
 
-            if (output != null)
-            {
-                return output;
-            }
-
-            output = new Contract
-            {
-                OrderId = orderId,
-            };
-
-            dbContext.Contracts.Add(output);
-
-            await dbContext.SaveChangesAsync();
+            await AddContract(output, orderId);
 
             return output;
         }
@@ -95,6 +110,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             if (flags != null)
             {
                 flags.UseDefaultDataProcessing = value;
+
+                await dbContext.SaveChangesAsync();
+            }
+        }
+
+        private async Task AddContract(Contract contract, int orderId)
+        {
+            if (contract is null)
+            {
+                contract = new Contract
+                {
+                    OrderId = orderId,
+                };
+
+                dbContext.Contracts.Add(contract);
 
                 await dbContext.SaveChangesAsync();
             }

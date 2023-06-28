@@ -19,18 +19,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task AddContractBilling(int orderId, int contractId)
+        public async Task<Contract> AddContractBilling(int orderId, int contractId)
         {
-            var contract = await dbContext.Contracts.Include(x => x.ImplementationPlan)
+            var contract = await dbContext.Contracts
+                .Include(x => x.Order)
+                    .ThenInclude(x => x.OrderItems)
+                        .ThenInclude(x => x.CatalogueItem)
+                .Include(x => x.ContractBilling)
                 .FirstOrDefaultAsync(o => o.Id == contractId && o.OrderId == orderId) ?? throw new ArgumentException("Invalid contract", nameof(contractId));
 
-            if (contract.ContractBilling != null)
+            if (contract.ContractBilling is null)
             {
-                return;
+                contract.ContractBilling = new ContractBilling();
+                await dbContext.SaveChangesAsync();
             }
 
-            contract.ContractBilling = new ContractBilling();
-            await dbContext.SaveChangesAsync();
+            return contract;
         }
 
         public async Task AddBespokeContractBillingItem(int orderId, int contractId, CatalogueItemId catalogueItemId, string name, string paymentTrigger, int quantity)
@@ -40,16 +44,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             if (string.IsNullOrEmpty(paymentTrigger))
                 throw new ArgumentNullException(nameof(paymentTrigger));
 
-            var contract = await dbContext.Contracts.Include(x => x.ContractBilling)
-                    .FirstOrDefaultAsync(o => o.Id == contractId && o.OrderId == orderId) ?? throw new ArgumentException("Invalid contract", nameof(contractId));
+            var contract = await AddContractBilling(orderId, contractId);
 
             var associatedService = contract.Order.GetAssociatedService(catalogueItemId) ?? throw new ArgumentException("Invalid associated service", nameof(catalogueItemId));
-
-            if (contract.ContractBilling == null)
-            {
-                contract.ContractBilling = new ContractBilling();
-                await dbContext.SaveChangesAsync();
-            }
 
             contract.ContractBilling.ContractBillingItems.Add(new ContractBillingItem()
             {
@@ -63,6 +60,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
         public async Task<ContractBillingItem> GetContractBillingItem(int orderId, int itemId)
         {
             return await dbContext.ContractBillingItems
+                .Include(x => x.Milestone)
+                .Include(x => x.OrderItem)
+                    .ThenInclude(x => x.CatalogueItem)
                 .FirstOrDefaultAsync(x => x.Id == itemId && x.ContractBilling.Contract.OrderId == orderId);
         }
 
@@ -73,16 +73,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             if (string.IsNullOrEmpty(paymentTrigger))
                 throw new ArgumentNullException(nameof(paymentTrigger));
 
-            var order = await dbContext.Orders.FirstOrDefaultAsync(x => x.Id == orderId) ?? throw new ArgumentException("Invalid order", nameof(orderId));
-
-            var associatedService = order.GetAssociatedService(catalogueItemId) ?? throw new ArgumentException("Invalid associated service", nameof(catalogueItemId));
-
             var item = await GetContractBillingItem(orderId, itemId);
 
             if (item == null)
             {
                 return;
             }
+
+            var order = await dbContext.Orders
+                    .Include(x => x.OrderItems)
+                    .ThenInclude(x => x.CatalogueItem)
+                .FirstOrDefaultAsync(x => x.Id == orderId) ?? throw new ArgumentException("Invalid order", nameof(orderId));
+
+            var associatedService = order.GetAssociatedService(catalogueItemId) ?? throw new ArgumentException("Invalid associated service", nameof(catalogueItemId));
 
             item.OrderItem = associatedService;
             item.Milestone.Title = name;

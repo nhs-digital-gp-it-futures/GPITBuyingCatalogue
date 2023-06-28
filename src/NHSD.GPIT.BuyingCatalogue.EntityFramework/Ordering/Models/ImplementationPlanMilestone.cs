@@ -27,6 +27,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public virtual ImplementationPlan Plan { get; set; }
 
+        public virtual ContractBillingItem ContractBillingItem { get; set; }
+
         public AspNetUser LastUpdatedByUser { get; set; }
 
         public ICollection<ImplementationPlanAcceptanceCriteria> AcceptanceCriteria { get; set; }

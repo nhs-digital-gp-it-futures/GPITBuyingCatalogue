@@ -100,7 +100,7 @@
                     @if (!Model.IsAmendment)
                     {
                         <nhs-task-list-item label-text="Associated Service milestones and payment triggers"
-                                            label-hint="@Model.StatusDescription(OrderSummaryField.AssociatedServicesBilling, !Model.IsAmendment)"
+                                            label-hint="@Model.StatusDescription(OrderSummaryField.AssociatedServicesBilling, Model.IsAmendment)"
                                             data-test-id="test-associated-service-billing"
                                             url="@Url.Action(
                                                      nameof(ContractBillingController.Index),

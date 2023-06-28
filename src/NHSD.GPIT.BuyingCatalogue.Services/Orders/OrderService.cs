@@ -232,6 +232,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             var orders = await dbContext.Orders
                 .Include(x => x.ContractFlags)
                 .Include(x => x.Contract)
+                    .ThenInclude(x => x.ImplementationPlan)
+                .Include(x => x.Contract)
+                    .ThenInclude(x => x.ContractBilling)
                 .Include(x => x.LastUpdatedByUser)
                 .Include(x => x.OrderItems)
                     .ThenInclude(x => x.CatalogueItem)

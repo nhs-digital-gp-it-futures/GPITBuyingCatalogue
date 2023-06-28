@@ -13,13 +13,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Contrac
         {
             CallOffId = callOffId;
             InternalOrgId = internalOrgId;
-            MilestoneId = item.Id;
-            MilestoneName = item.Milestone.Title;
+            ItemId = item.Id;
+            ItemName = item.Milestone.Title;
         }
 
-        public int MilestoneId { get; set; }
+        public int ItemId { get; set; }
 
-        public string MilestoneName { get; set; }
+        public string ItemName { get; set; }
 
         public CallOffId CallOffId { get; set; }
 

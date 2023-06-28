@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.Property(x => x.ContractBillingId).IsRequired();
             builder.Property(x => x.OrderId).IsRequired();
             builder.Property(x => x.CatalogueItemId).IsRequired();
-            builder.Property(x => x.MilestoneId).IsRequired();
+            builder.Property(x => x.ImplementationPlanMilestoneId).IsRequired();
             builder.Property(x => x.Quantity).IsRequired();
 
             builder.HasOne(x => x.LastUpdatedByUser)
@@ -24,20 +24,23 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .HasConstraintName("FK_ContractBillingItems_LastUpdatedBy");
 
             builder.HasOne(x => x.ContractBilling)
-                .WithMany()
-                .HasForeignKey(x => x.ContractBillingId)
-                .HasConstraintName("FK_ContractBillingItems_ContractBilling");
+                .WithMany(x => x.ContractBillingItems)
+                .HasForeignKey(x => x.ContractBillingId);
 
             builder.HasOne(x => x.OrderItem)
                 .WithMany()
                 .HasForeignKey(x => new { x.OrderId, x.CatalogueItemId })
                 .HasConstraintName("FK_ContractBillingItems_OrderItem");
 
-            builder.HasOne(x => x.Milestone)
-                .WithMany()
-                .HasForeignKey(x => x.MilestoneId)
-                .HasConstraintName("FK_ContractBillingItems_Milestone");
+            //builder.HasOne(x => x.Milestone)
+            //    .WithMany()
+            //    .HasForeignKey(x => x.MilestoneId)
+            //    .HasConstraintName("FK_ContractBillingItems_Milestone");
 
+            builder.HasOne(x => x.Milestone)
+                .WithOne(y => y.ContractBillingItem)
+                .HasForeignKey<ContractBillingItem>(x => x.ImplementationPlanMilestoneId)
+                .HasConstraintName("FK_ContractBillingItems_Milestone");
         }
     }
 }

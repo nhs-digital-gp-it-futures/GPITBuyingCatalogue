@@ -21,12 +21,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
 
             if (!okToProgress.Contains(state.FundingSource))
             {
-                return order.Contract != null
+                return order.Contract?.ImplementationPlan != null
                     ? TaskProgress.InProgress
                     : TaskProgress.CannotStart;
             }
 
-            return order.Contract != null
+            return order.Contract?.ImplementationPlan != null
                 ? TaskProgress.Completed
                 : TaskProgress.NotStarted;
         }

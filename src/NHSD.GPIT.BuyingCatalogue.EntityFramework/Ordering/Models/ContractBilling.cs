@@ -6,6 +6,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
     public class ContractBilling : IAudited
     {
+        public ContractBilling()
+        {
+            ContractBillingItems = new List<ContractBillingItem>();
+        }
+
         public int Id { get; set; }
 
         public int ContractId { get; set; }

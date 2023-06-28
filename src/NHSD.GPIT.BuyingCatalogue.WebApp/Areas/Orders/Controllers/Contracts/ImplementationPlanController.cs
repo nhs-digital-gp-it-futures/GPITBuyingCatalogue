@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         public async Task<IActionResult> Index(string internalOrgId, CallOffId callOffId)
         {
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
-            var contract = await contractsService.GetContract(order.Id);
+            var contract = await contractsService.GetContractWithImplementationPlan(order.Id);
             var catalogueItem = await solutionsService.GetSolutionThin(order.GetSolutionId().GetValueOrDefault());
             var defaultPlan = await implementationPlanService.GetDefaultImplementationPlan();
 

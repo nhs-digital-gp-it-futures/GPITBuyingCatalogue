@@ -1,7 +1,7 @@
 ﻿CREATE TABLE ordering.ImplementationPlanMilestones_History
 (
     Id int NOT NULL,
-    ImplementationPlanId int NOT NULL,
+    ImplementationPlanId int NULL,
     [Order] int NOT NULL,
     Title nvarchar(1000) NOT NULL,
     [PaymentTrigger] nvarchar(1000) NOT NULL,

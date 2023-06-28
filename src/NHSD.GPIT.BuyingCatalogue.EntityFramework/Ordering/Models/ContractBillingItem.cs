@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public CatalogueItemId CatalogueItemId { get; set; }
 
-        public int MilestoneId { get; set; }
+        public int ImplementationPlanMilestoneId { get; set; }
 
         public int Quantity { get; set; }
 

@@ -209,7 +209,6 @@
     <Build Include="Ordering\Tables\Contracts.sql" />
     <Build Include="Ordering\Tables\DefaultDeliveryDates.sql" />
     <Build Include="Ordering\Tables\ImplementationPlanAcceptanceCriteria.sql" />
-    <Build Include="Ordering\Tables\Milestones.sql" />
     <Build Include="Ordering\Tables\ImplementationPlans.sql" />
     <Build Include="Ordering\Tables\OrderDeletionApprovals.sql" />
     <Build Include="Ordering\Tables\OrderItemFunding.sql" />
@@ -226,7 +225,6 @@
     <Build Include="Ordering\TemporalTables\ContractFlags_History.sql" />
     <Build Include="Ordering\TemporalTables\DefaultDevlieryDates_History.sql" />
     <Build Include="Ordering\TemporalTables\ImplementationPlanAcceptanceCriteria_History.sql" />
-    <Build Include="Ordering\TemporalTables\Milestones_History.sql" />
     <Build Include="Ordering\TemporalTables\ImplementationPlans_HIstory.sql" />
     <Build Include="Ordering\TemporalTables\OrderItemFunding_History.sql" />
     <Build Include="Ordering\TemporalTables\OrderItemPrices_History.sql" />
@@ -278,6 +276,8 @@
     <Build Include="Ordering\TemporalTables\ContractBillingItems_History.sql" />
     <Build Include="Ordering\Tables\ContractBilling.sql" />
     <Build Include="Ordering\TemporalTables\ContractBilling_History.sql" />
+    <Build Include="Ordering\Tables\ImplementationPlanMilestones.sql" />
+    <Build Include="Ordering\TemporalTables\ImplementationPlanMilestones_History.sql" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="PostDeployment\" />
