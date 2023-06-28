@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
                 .Without(s => s.AdditionalServices)
                 .Without(s => s.CatalogueItem)
                 .Without(s => s.CatalogueItemId)
-                .Without(s => s.ClientApplication)
+                .Without(s => s.ApplicationTypeDetail)
                 .Without(s => s.Features)
                 .Without(s => s.FrameworkSolutions)
                 .Without(s => s.Integrations)
@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
 
                 solution.CatalogueItem = catalogueItem;
                 solution.CatalogueItemId = catalogueItem.Id;
-                solution.ClientApplication = context.Create<ClientApplication>();
+                solution.ApplicationTypeDetail = context.Create<ApplicationTypeDetail>();
                 solution.Features = JsonSerializer.Serialize(context.Create<string[]>());
                 solution.Integrations = JsonSerializer.Serialize(context.CreateMany<Integration>());
 

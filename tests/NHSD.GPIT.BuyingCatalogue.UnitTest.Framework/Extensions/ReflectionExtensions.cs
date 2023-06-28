@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Extensions
             {
                 input.GetType().GetProperty(propertyInfo.Name).GetValue(toCheck)
                     .Should()
-                    .BeEquivalentTo(typeof(ClientApplication).GetProperty(propertyInfo.Name).GetValue(input));
+                    .BeEquivalentTo(typeof(ApplicationTypeDetail).GetProperty(propertyInfo.Name).GetValue(input));
             }
         }
     }

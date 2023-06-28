@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         Summary = "SUMMARY - DFOCVC Solution",
                         Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interoperable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
                         Hosting = BuildHosting(),
-                        ClientApplication = BuildClientApplication(),
+                        ApplicationTypeDetail = BuildApplicationType(),
                         LastUpdated = DateTime.UtcNow,
                         FullDescription = "FULL DESCRIPTION – Digital First, Online Consultation and Video Consultation Solution.",
                         ImplementationDetail = "Some implementation detail",
@@ -152,7 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         Summary = "SUMMARY - GPIT Solution",
                         Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interoperable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
                         Hosting = BuildHosting(),
-                        ClientApplication = BuildClientApplication(),
+                        ApplicationTypeDetail = BuildApplicationType(),
                         LastUpdated = DateTime.UtcNow,
                         FullDescription = "FULL DESCRIPTION – GP IT Futures Solution.",
                         ImplementationDetail = "Some implementation detail",
@@ -193,7 +193,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         Summary = "SUMMARY - GPIT Solution 2",
                         Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interoperable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
                         Hosting = BuildHosting(),
-                        ClientApplication = BuildClientApplication(),
+                        ApplicationTypeDetail = BuildApplicationType(),
                         LastUpdated = DateTime.UtcNow,
                         FullDescription = "FULL DESCRIPTION – GP IT Futures Solution 2.",
                         ImplementationDetail = "Some implementation detail",
@@ -247,7 +247,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         Summary = "SUMMARY - DFOCVC Solution",
                         Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interoperable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
                         Hosting = BuildHosting(),
-                        ClientApplication = BuildClientApplication(),
+                        ApplicationTypeDetail = BuildApplicationType(),
                         LastUpdated = DateTime.UtcNow,
                         FullDescription = "FULL DESCRIPTION – Digital First, Online Consultation and Video Consultation Solution.",
                         ImplementationDetail = "Some implementation detail",
@@ -287,7 +287,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         Summary = "SUMMARY - E2E With Contact Multiple Prices",
                         Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interoperable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
                         Hosting = BuildHosting(),
-                        ClientApplication = BuildClientApplication(),
+                        ApplicationTypeDetail = BuildApplicationType(),
                         LastUpdated = DateTime.UtcNow,
                         FullDescription = "FULL DESCRIPTION – Digital First, Online Consultation and Video Consultation Solution.",
                         ImplementationDetail = "Some implementation detail",
@@ -351,7 +351,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                         Summary = "SUMMARY - E2E With Contact With Single Price",
                         Features = @"[""Digital Online Consultation"",""Video Consultation"", ""Fully interoperable with all major GP IT solutions"", ""Compliant with all relevant ISO standards""]",
                         Hosting = BuildHosting(),
-                        ClientApplication = BuildClientApplication(),
+                        ApplicationTypeDetail = BuildApplicationType(),
                         LastUpdated = DateTime.UtcNow,
                         FullDescription = "FULL DESCRIPTION – Digital First, Online Consultation and Video Consultation Solution.",
                         ImplementationDetail = "Some implementation detail",
@@ -397,11 +397,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             return catalogueItems;
         }
 
-        private static ClientApplication BuildClientApplication()
+        private static ApplicationTypeDetail BuildApplicationType()
         {
-            return new ClientApplication()
+            return new ApplicationTypeDetail()
             {
-                ClientApplicationTypes = new HashSet<string>
+                ApplicationTypes = new HashSet<string>
                 {
                     "browser-based",
                     "native-mobile",

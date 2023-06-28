@@ -43,26 +43,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DataProces
         }
 
         [Fact]
-        public void DefaultDataProcessingPlan_ClickSave_ExpectedResult()
+        public void DefaultDataProcessingPlan_ClickContinue_ExpectedResult()
         {
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(DataProcessingPlanController),
-                nameof(DataProcessingPlanController.Index)).Should().BeTrue();
-
-            CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
-            CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
-                DataProcessingPlanObjects.UseDefaultDataProcessingError,
-                $"Error:{DataProcessingPlanModelValidator.DefaultDataProcessingNullErrorMessage}").Should().BeTrue();
-        }
-
-        [Fact]
-        public void DefaultDataProcessingPlan_SelectYes_ClickSave_ExpectedResult()
-        {
-            CommonActions.ClickRadioButtonWithText("Yes");
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -72,21 +54,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DataProces
             var flags = GetEndToEndDbContext().ContractFlags.First(x => x.OrderId == OrderId);
 
             flags.UseDefaultDataProcessing.Should().BeTrue();
-        }
-
-        [Fact]
-        public void DefaultDataProcessingPlan_SelectNo_ClickSave_ExpectedResult()
-        {
-            CommonActions.ClickRadioButtonWithText(DataProcessingPlanModel.NoOptionText);
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(DataProcessingPlanController),
-                nameof(DataProcessingPlanController.BespokeDataProcessingPlan)).Should().BeTrue();
-
-            var flags = GetEndToEndDbContext().ContractFlags.First(x => x.OrderId == OrderId);
-
-            flags.UseDefaultDataProcessing.Should().BeFalse();
         }
 
         public void Dispose()

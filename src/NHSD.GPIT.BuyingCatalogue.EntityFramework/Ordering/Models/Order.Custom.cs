@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -40,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 && OrderItems.All(oi => oi.OrderItemFunding is not null)
                 && ContractFlags is not null
                 && Contract is not null
-                && ContractFlags?.UseDefaultDataProcessing is not null
+                && ContractFlags?.UseDefaultDataProcessing == true
                 && OrderStatus != OrderStatus.Completed;
         }
 

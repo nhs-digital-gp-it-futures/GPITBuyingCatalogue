@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             contract.UseDefaultImplementationPlan = null;
             contract.UseDefaultBilling = null;
             contract.HasSpecificRequirements = null;
-            contract.UseDefaultDataProcessing = null;
+            contract.UseDefaultDataProcessing = false;
 
             await dbContext.SaveChangesAsync();
         }
