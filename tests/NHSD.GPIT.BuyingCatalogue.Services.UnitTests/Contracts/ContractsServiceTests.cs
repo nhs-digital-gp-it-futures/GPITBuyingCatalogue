@@ -62,45 +62,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task AddContract_ContractExists_ReturnsContract(
-            int orderId,
-            [Frozen] BuyingCatalogueDbContext dbContext,
-            ContractsService service)
-        {
-            var contract = new Contract { OrderId = orderId };
-
-            dbContext.Contracts.Add(contract);
-
-            await dbContext.SaveChangesAsync();
-            dbContext.ChangeTracker.Clear();
-
-            var output = await service.AddContract(orderId);
-
-            output.Should().BeEquivalentTo(contract);
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
-        public static async Task AddContract_ContractDoesNotExist_CreatesNewContract(
-            int orderId,
-            [Frozen] BuyingCatalogueDbContext dbContext,
-            ContractsService service)
-        {
-            var existing = await dbContext.Contracts.FirstOrDefaultAsync(x => x.OrderId == orderId);
-
-            existing.Should().BeNull();
-
-            var output = await service.AddContract(orderId);
-
-            output.OrderId.Should().Be(orderId);
-
-            var actual = await dbContext.Contracts.FirstOrDefaultAsync(x => x.OrderId == orderId);
-
-            actual.Should().Be(output);
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
         public static async Task GetContractFlags_ContractFlagExists_ReturnsContractFlag(
             int orderId,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -136,56 +97,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             var actual = await dbContext.ContractFlags.FirstOrDefaultAsync(x => x.OrderId == orderId);
 
             actual.Should().Be(output);
-        }
-
-        [Theory]
-        [InMemoryDbInlineAutoData(true)]
-        [InMemoryDbInlineAutoData(false)]
-        public static async Task HasSpecificRequirements_UpdatesValue(
-            bool value,
-            int orderId,
-            ContractFlags contractFlags,
-            [Frozen] BuyingCatalogueDbContext dbContext,
-            ContractsService service)
-        {
-            contractFlags.Order = null;
-            contractFlags.OrderId = orderId;
-            contractFlags.HasSpecificRequirements = null;
-
-            dbContext.ContractFlags.Add(contractFlags);
-
-            await dbContext.SaveChangesAsync();
-
-            await service.HasSpecificRequirements(orderId, value);
-
-            var actual = await dbContext.ContractFlags.FirstAsync(x => x.Id == contractFlags.Id);
-
-            actual.HasSpecificRequirements.Should().Be(value);
-        }
-
-        [Theory]
-        [InMemoryDbInlineAutoData(true)]
-        [InMemoryDbInlineAutoData(false)]
-        public static async Task UseDefaultBilling_UpdatesValue(
-            bool value,
-            int orderId,
-            ContractFlags contractFlags,
-            [Frozen] BuyingCatalogueDbContext dbContext,
-            ContractsService service)
-        {
-            contractFlags.Order = null;
-            contractFlags.OrderId = orderId;
-            contractFlags.UseDefaultBilling = null;
-
-            dbContext.ContractFlags.Add(contractFlags);
-
-            await dbContext.SaveChangesAsync();
-
-            await service.UseDefaultBilling(orderId, value);
-
-            var actual = await dbContext.ContractFlags.FirstAsync(x => x.Id == contractFlags.Id);
-
-            actual.UseDefaultBilling.Should().Be(value);
         }
 
         [Theory]
