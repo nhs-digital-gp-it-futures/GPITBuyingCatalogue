@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("select-capabilities")]
         public async Task<IActionResult> SelectCapabilities()
         {
-            var capabilities = await capabilitiesService.GetCapabilities();
+            var capabilities = await capabilitiesService.GetReferencedCapabilities();
             var model = new SelectCapabilitiesModel(capabilities)
             {
                 BackLink = Url.Action(nameof(Dashboard)),

@@ -12,10 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpi
 {
     public class SelectCapabilitiesModel : NavBaseModel
     {
-        public SelectCapabilitiesModel() { 
-
-        }
-
         public SelectCapabilitiesModel(List<Capability> capabilities, string selectedIds = null)
         {
             Groups = capabilities
