@@ -4,7 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels.BrowserBasedModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeModels.BrowserBasedModels;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.BrowserBasedModels
@@ -18,8 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.BrowserB
         {
             var actual = new ConnectivityAndResolutionModel(solution.CatalogueItem);
 
-            actual.SelectedConnectionSpeed.Should().Be(solution.ClientApplication.MinimumConnectionSpeed);
-            actual.SelectedScreenResolution.Should().Be(solution.ClientApplication.MinimumDesktopResolution);
+            actual.SelectedConnectionSpeed.Should().Be(solution.ApplicationTypeDetail.MinimumConnectionSpeed);
+            actual.SelectedScreenResolution.Should().Be(solution.ApplicationTypeDetail.MinimumDesktopResolution);
             actual.ConnectionSpeeds.Should().BeEquivalentTo(SelectLists.ConnectionSpeeds);
             actual.ScreenResolutions.Should().BeEquivalentTo(SelectLists.ScreenResolutions);
         }

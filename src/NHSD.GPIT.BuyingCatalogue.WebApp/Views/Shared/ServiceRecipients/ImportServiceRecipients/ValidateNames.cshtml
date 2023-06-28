@@ -1,0 +1,49 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ImportServiceRecipients.ValidateNamesModel
+@{
+    ViewBag.Title = "There is a problem with your Service Recipients";
+}
+
+<partial name="Partials/_BackLink" model="@Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.Caption"
+                        advice="There are discrepancies between the Service Recipient names in your CSV file and what we have on record." />
+
+        <form method="post">
+            <div data-test-id="validate-names-table">
+                <nhs-table label-text="Name discrepancies">
+                    <nhs-table-column>Name in CSV</nhs-table-column>
+                    <nhs-table-column>Name on record</nhs-table-column>
+                    <nhs-table-column>ODS code</nhs-table-column>
+
+                    @for (var i = 0; i < Model.NameDiscrepancies.Count; i++)
+                    {
+                        <nhs-table-row-container>
+                            <input type="hidden" asp-for="NameDiscrepancies[i].ExpectedName"/>
+                            <input type="hidden" asp-for="NameDiscrepancies[i].ActualName"/>
+                            <input type="hidden" asp-for="NameDiscrepancies[i].OdsCode"/>
+
+                            <nhs-table-cell>@Model.NameDiscrepancies[i].ExpectedName</nhs-table-cell>
+                            <nhs-table-cell>@Model.NameDiscrepancies[i].ActualName</nhs-table-cell>
+                            <nhs-table-cell>@Model.NameDiscrepancies[i].OdsCode</nhs-table-cell>
+                        </nhs-table-row-container>
+                    }
+                </nhs-table>
+            </div>
+            <p>If you continue with your import, we’ll use the Service Recipient names we have on record.</p>
+
+            <nhs-submit-button text="Continue"/>
+        </form>
+
+        <div>
+            <a href="@Model.CancelLink">
+                Cancel
+            </a>
+        </div>
+    </div>
+</div>

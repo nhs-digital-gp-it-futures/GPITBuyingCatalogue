@@ -11,6 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.ServiceRecipients;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
 {
@@ -252,16 +253,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 Advice = callOffId.IsAmendment
                     ? string.Format(ConfirmChangesModel.AdditionalAdviceText, catalogueItem.CatalogueItemType.Name())
                     : string.Format(ConfirmChangesModel.AdviceText, catalogueItem.CatalogueItemType.Name()),
-                InternalOrgId = internalOrgId,
-                CallOffId = callOffId,
-                CatalogueItemId = catalogueItemId,
                 Journey = journey,
                 Source = source,
                 Selected = selected,
                 PreviouslySelected = previouslySelected,
             };
 
-            return View(model);
+            return View("ServiceRecipients/ConfirmChanges", model);
         }
 
         [HttpPost("confirm-changes")]

@@ -1,0 +1,89 @@
+﻿
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ConfirmChangesModel;
+@{
+    ViewBag.Title = Model.Title;
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+        <nhs-page-title model="Model" />
+
+        <form method="post">
+            <hidden-inputs title="Title" caption="Caption" advice="Advice"/>
+            <input type="hidden" asp-for="BackLink" />
+            <input type="hidden" asp-for="Journey" />
+            <input type="hidden" asp-for="Source" />
+
+            <div id="selected-service-recipients">
+
+                @foreach (var location in Model.Selected.GroupBy(x => x.Location))
+                {
+                    var count = location.Count();
+                    <nhs-expander
+                        label-text="@($"{location.Key} ({count.ToString()} selected)")"
+                        bold-title="true">
+                        <ul>
+                            @foreach (var item in location)
+                            {
+                                var index = Model.Selected.FindIndex(x => x.OdsCode.Contains(item.OdsCode));
+
+                                <input type="hidden" asp-for="@Model.Selected[index].Name"/>
+                                <input type="hidden" asp-for="@Model.Selected[index].OdsCode"/>
+                                <li>@item.Description</li>
+                            }
+                        </ul>
+
+                    </nhs-expander>
+                }
+            </div>
+
+            <div class="nhsuk-u-margin-top-6">
+                <p>
+                    You can
+                    <a href="@Model.BackLink">add or remove Service Recipients</a>
+                    if needed, or edit them later if you continue with your order.
+                </p>
+            </div>
+
+            @if (Model.PreviouslySelected?.Any() ?? false)
+            {
+                <div id="previously-selected-service-recipients">
+                    <nhs-details label-text="View Service Recipients from the original order">
+                        <p>
+                            The original order had @Model.PreviouslySelected.Count Service @PluralOrSingular(Model.PreviouslySelected.Count)
+                        </p>
+
+                        @foreach (var location in Model.PreviouslySelected.GroupBy(x => x.Location))
+                        {
+                            <nhs-expander
+                                label-text="@location.Key"
+                                bold-title="true">
+                                    <ul>
+                                        @foreach (var item in location)
+                                        {
+                                            var index = Model.PreviouslySelected.FindIndex(x => x.OdsCode.Contains(item.OdsCode));
+
+                                            <input type="hidden" asp-for="@Model.PreviouslySelected[index].Name"/>
+                                            <input type="hidden" asp-for="@Model.PreviouslySelected[index].OdsCode" />
+                                            <li>@item.Description</li>
+                                        }
+                                    </ul>
+                            </nhs-expander>
+                        }
+                    </nhs-details>
+                </div>
+            }
+
+            <div class="nhsuk-u-margin-top-6">
+                <nhs-submit-button text="Continue" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@{
+    string PluralOrSingular(int total) => total == 1 ? "Recipient:" : "Recipients:";
+}

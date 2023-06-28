@@ -1,0 +1,39 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ImportServiceRecipients.ImportServiceRecipientModel
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InputBoxes
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
+@{
+    ViewBag.Title = "Upload Service Recipients";
+}
+
+<partial name="Partials/_BackLink" model="@Model"/>
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary/>
+
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.Caption"
+                        advice="Create a CSV with your Service Recipients in the first column and their ODS codes in the second column."/>
+
+        <vc:nhs-secondary-button text="Download template (CSV)"
+                                 type="Secondary"
+                                 url="@Model.DownloadTemplateLink"/>
+
+        <p>
+            Add your Service Recipients to a template and import them for @Model.Caption.
+            You’ll be able to edit them later.
+            If you import Service Recipients more than once, they’ll be overwritten each time.
+        </p>
+
+        <form method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="BackLink"/>
+            <input type="hidden" asp-for="DownloadTemplateLink"/>
+            <input type="hidden" asp-for="Caption"/>
+
+            <nhs-fieldset-form-container asp-for="@Model" label-text="Upload a file" size="Medium">
+                <nhs-file-upload file-type="Csv" asp-for="File"></nhs-file-upload>
+            </nhs-fieldset-form-container>
+
+            <nhs-submit-button text="Continue"></nhs-submit-button>
+        </form>
+    </div>
+</div>

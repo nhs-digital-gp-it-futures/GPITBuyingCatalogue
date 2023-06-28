@@ -6,7 +6,7 @@
 
         public PreviewActions PreviewActions { get; set; }
 
-        public ClientApplicationTypeActions ClientApplicationTypeActions { get; set; }
+        public ApplicationTypeActions ApplicationTypeActions { get; set; }
 
         public ContactDetailsActions ContactDetailsActions { get; set; }
 

@@ -75,8 +75,8 @@ else
     <h2 data-test-id="additional-filters">Additional filters</h2>
 
     <nhs-summary-list>
-        <nhs-summary-list-row label-text="Client application type">
-            @if (!Model.HasClientApplicationTypes())
+        <nhs-summary-list-row label-text="Application type">
+            @if (!Model.HasApplicationTypes())
             {
                 <p>
                     None selected
@@ -84,16 +84,16 @@ else
             }
             else
             {
-                @if (Model.FilterDetails.ClientApplicationTypes.Count == 1)
+                @if (Model.FilterDetails.ApplicationTypes.Count == 1)
                 {
                     <p>
-                        @Model.FilterDetails.ClientApplicationTypes.First().Name()
+                        @Model.FilterDetails.ApplicationTypes.First().Name()
                     </p>
                 }
                 else
                 {
                     <ul>
-                        @foreach (var item in Model.FilterDetails.ClientApplicationTypes)
+                        @foreach (var item in Model.FilterDetails.ApplicationTypes)
                         {
                             <li>
                                 @item.Name()

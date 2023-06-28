@@ -7,9 +7,6 @@ using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 {
     [HtmlTargetElement(TagHelperName)]
-    [RestrictChildren(
-        TableRowContainerTagHelper.TagHelperName,
-        TableColumnTagHelper.TagHelperName)]
     public sealed class TableContainerTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-table";

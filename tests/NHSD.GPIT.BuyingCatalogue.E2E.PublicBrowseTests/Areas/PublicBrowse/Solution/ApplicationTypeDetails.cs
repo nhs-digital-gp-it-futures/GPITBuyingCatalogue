@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Solution
             : base(
                   factory,
                   typeof(SolutionsController),
-                  nameof(SolutionsController.ClientApplicationTypes),
+                  nameof(SolutionsController.ApplicationTypes),
                   Parameters,
                   testOutputHelper)
         {

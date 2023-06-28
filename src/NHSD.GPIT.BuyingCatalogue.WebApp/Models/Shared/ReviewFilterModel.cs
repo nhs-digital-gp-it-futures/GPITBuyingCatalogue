@@ -26,8 +26,8 @@ public class ReviewFilterModel : NavBaseModel
 
     public bool HasHostingTypes() => FilterDetails.HostingTypes.Any();
 
-    public bool HasClientApplicationTypes() => FilterDetails.ClientApplicationTypes.Any();
+    public bool HasApplicationTypes() => FilterDetails.ApplicationTypes.Any();
 
     public bool HasAdditionalFilters() => HasFramework()
-        || HasHostingTypes() || HasClientApplicationTypes();
+        || HasHostingTypes() || HasApplicationTypes();
 }

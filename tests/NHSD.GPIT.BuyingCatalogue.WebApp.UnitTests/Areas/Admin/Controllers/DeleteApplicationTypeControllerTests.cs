@@ -46,29 +46,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Get_DeleteApplicationTypeConfirmation_ValidId_ReturnsViewWithExpectedModel(
             CatalogueItem catalogueItem,
-            ClientApplicationType clientApplicationType,
+            ApplicationType applicationType,
             [Frozen] Mock<ISolutionsService> mockService,
             DeleteApplicationTypeController controller)
         {
             mockService.Setup(s => s.GetSolutionThin(It.IsAny<CatalogueItemId>())).ReturnsAsync(catalogueItem);
 
-            var actual = (await controller.DeleteApplicationTypeConfirmation(catalogueItem.Id, clientApplicationType)).As<ViewResult>();
+            var actual = (await controller.DeleteApplicationTypeConfirmation(catalogueItem.Id, applicationType)).As<ViewResult>();
 
             actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new DeleteApplicationTypeConfirmationModel(catalogueItem, clientApplicationType), opt => opt.Excluding(m => m.BackLink));
+            actual.Model.Should().BeEquivalentTo(new DeleteApplicationTypeConfirmationModel(catalogueItem, applicationType), opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Get_DeleteApplicationTypeConfirmation_InvalidId_ReturnsBadRequest(
             CatalogueItem catalogueItem,
-            ClientApplicationType clientApplicationType,
+            ApplicationType applicationType,
             [Frozen] Mock<ISolutionsService> mockService,
             DeleteApplicationTypeController controller)
         {
             mockService.Setup(s => s.GetSolutionThin(It.IsAny<CatalogueItemId>())).ReturnsAsync((CatalogueItem)null);
 
-            var actual = (await controller.DeleteApplicationTypeConfirmation(catalogueItem.Id, clientApplicationType)).As<BadRequestObjectResult>();
+            var actual = (await controller.DeleteApplicationTypeConfirmation(catalogueItem.Id, applicationType)).As<BadRequestObjectResult>();
 
             actual.Should().NotBeNull();
             actual.Value.Should().BeOfType<string>();
@@ -79,18 +79,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [CommonAutoData]
         public static async Task Post_DeleteApplicationTypeConfirmation_Saves_And_RedirectsToDesktop(
             CatalogueItemId catalogueItemId,
-            ClientApplicationType clientApplicationType,
+            ApplicationType applicationType,
             DeleteApplicationTypeConfirmationModel model,
-            ClientApplication clientApplication,
+            ApplicationTypeDetail applicationTypeDetail,
             [Frozen] Mock<ISolutionsService> mockService,
             DeleteApplicationTypeController controller)
         {
-            mockService.Setup(s => s.GetClientApplication(catalogueItemId)).ReturnsAsync(clientApplication);
+            mockService.Setup(s => s.GetApplicationType(catalogueItemId)).ReturnsAsync(applicationTypeDetail);
 
-            var actual = (await controller.DeleteApplicationTypeConfirmation(catalogueItemId, clientApplicationType, model)).As<RedirectToActionResult>();
+            var actual = (await controller.DeleteApplicationTypeConfirmation(catalogueItemId, applicationType, model)).As<RedirectToActionResult>();
 
-            mockService.Verify(s => s.DeleteClientApplication(catalogueItemId, clientApplicationType));
-            actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ClientApplicationType));
+            mockService.Verify(s => s.DeleteApplicationType(catalogueItemId, applicationType));
+            actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ApplicationType));
             actual.ControllerName.Should().Be(typeof(CatalogueSolutionsController).ControllerName());
             actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
         }
@@ -101,13 +101,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             string errorKey,
             string errorMessage,
             CatalogueItemId catalogueItemId,
-            ClientApplicationType clientApplicationType,
+            ApplicationType applicationType,
             DeleteApplicationTypeConfirmationModel model,
             DeleteApplicationTypeController controller)
         {
             controller.ModelState.AddModelError(errorKey, errorMessage);
 
-            var actual = (await controller.DeleteApplicationTypeConfirmation(catalogueItemId, clientApplicationType, model)).As<ViewResult>();
+            var actual = (await controller.DeleteApplicationTypeConfirmation(catalogueItemId, applicationType, model)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
