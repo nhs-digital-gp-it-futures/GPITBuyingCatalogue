@@ -4,15 +4,14 @@
         overflow: hidden;
     }
 
-.theiaStickySidebar:after {
-content: "";
-display: table;
-clear: both;
+.sidebar {
+    top: 70px;
+    position:sticky;
+
 }
 
 .side-nav__component {
     padding: 0;
-   // margin-top: 0;
     list-style-type: none;
     transform: translate3d(0px, 0px, 0px) translateZ(0);
     border: none;
@@ -63,13 +62,16 @@ clear: both;
 
 @media (min-width: 769px) {
     .side-nav {
-        /* border-right: 1px solid #bfc1c3; */
-        /* border-right-width: 1px; */
-        /* border-right-style: solid; */
-        /* border-right-color: rgb(191, 193, 195); */
         position: -webkit-sticky;
         position: sticky;
         top: 40px;
+    }
+}
+
+@media(max-width: 750px){
+    .sidebar {
+        position: relative;
+        top: 1px;
     }
 }
 

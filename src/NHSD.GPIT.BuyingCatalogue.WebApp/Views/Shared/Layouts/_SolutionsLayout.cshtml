@@ -47,13 +47,13 @@
         </div>
     </nav>
 
-    <div class="nhsuk-width-container govuk-header__container--full-width nhsuk-main-wrapper">
+    <div class="nhsuk-width-container nhsuk-main-wrapper">
         <main role="main" id="maincontent">
             <div class="nhsuk-grid-row">
-            <div class="nhsuk-grid-column-one-third sidebar" id="sidebar"style="position: relative; overflow: visible; box-sizing: border-box; min-height: 1px;">
+            <div class="nhsuk-grid-column-one-third sidebar" id="sidebar" >
                 @if (!Model.IsSuspended())
                 {
-                        <div class="theiaStickySidebar" style="padding-top: 0px; padding-bottom: 1px; position: static; transform: none; left: 124.333px; top: 0px;">
+                        <div>
                             <nav class="side-nav ">
                             <h2 class="nhsuk-u-visually-hidden">Contents</h2>
                             <ul class="side-nav__component">
@@ -83,7 +83,7 @@
                 }
             </div>
             
-                <div class="nhsuk-grid-column-two-thirds" id="content" style="position: relative; overflow: visible; box-sizing: border-box; min-height: 1px;">
+                <div class="nhsuk-grid-column-two-thirds" id="content" >
                     <nhs-page-title title="@ViewBag.Title"
                                     caption="@Model.SolutionName" />
                     @if (Model.HasExpiredFrameworks)
