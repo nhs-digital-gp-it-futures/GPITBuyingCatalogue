@@ -150,13 +150,13 @@
 
     <partial name="Partials/_JsAssetIncludes" />
 
-
-    <div onclick="scrollToTop()"  class="scroll-to-top-container">
+    <a href="#">
+    <div class="scroll-to-top-container">
             <div class="goup-arrow"></div>
         
-        <div class="scroll-to-top-text" onclick="scrollToTop()" >Back to top</div>
+        <div class="scroll-to-top-text" >Back to top</div>
     </div>
-
+    </a>
 
 
     <script>
@@ -169,14 +169,6 @@
             }
         };
 
-        function scrollToTop() {
-            if ('scrollBehavior' in document.documentElement.style) {
-                document.documentElement.style.scrollBehavior = 'smooth';
-            }
-            document.body.scrollTop = 0; // For Safari
-            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE, and Opera
-
-        }
     </script>
 
 
