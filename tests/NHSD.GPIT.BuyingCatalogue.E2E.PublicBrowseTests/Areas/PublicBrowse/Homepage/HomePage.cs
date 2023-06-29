@@ -157,7 +157,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
 
                 CommonActions.PageLoadedCorrectGetIndex(
                         typeof(HomeController),
-                        nameof(HomeController.AdvancedTelephonyBetterPurchaseFramework)).Should().BeTrue();
+                        nameof(HomeController.AdvancedTelephony)).Should().BeTrue();
         }
 
         [Fact]
