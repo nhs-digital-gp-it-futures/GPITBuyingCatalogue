@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.ImportServiceRecipients;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ImportServiceRecipients;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.SolutionSelection.ServiceRecipients;
 

@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
 
             if ((!okToProgress.Contains(state.FundingSource)
                 || (state.AssociatedServiceBilling != TaskProgress.Completed && state.AssociatedServiceBilling != TaskProgress.NotApplicable))
-                && order.ContractFlags?.UseDefaultDataProcessing != null)
+                && order.ContractFlags?.UseDefaultDataProcessing == true)
             {
                 return TaskProgress.InProgress;
             }
@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
             if ((state.AssociatedServiceBilling == TaskProgress.Completed)
                 || (state.AssociatedServiceBilling == TaskProgress.NotApplicable && state.ImplementationPlan == TaskProgress.Completed))
             {
-                return order.ContractFlags?.UseDefaultDataProcessing != null
+                return order.ContractFlags?.UseDefaultDataProcessing == true
                     ? TaskProgress.Completed
                     : TaskProgress.NotStarted;
             }

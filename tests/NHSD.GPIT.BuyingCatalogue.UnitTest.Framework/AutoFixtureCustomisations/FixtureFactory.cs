@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using AutoFixture;
 using AutoFixture.AutoMoq;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations.OdsOrganisations;
 
 namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
 {
@@ -26,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
             new FrameworkSolutionCustomization(),
             new MobileConnectionDetailsCustomization(),
             new MobileOperatingSystemsCustomization(),
-            new ClientApplicationCustomization(),
+            new ApplicationTypeCustomization(),
             new AdditionalServiceCustomization(),
             new AssociatedServiceCustomization(),
             new SolutionCustomization(),
@@ -42,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
             new ControllerCustomization(),
             new ControllerBaseCustomization(),
             new HostingTypeSectionModelCustomization(),
-            new ClientApplicationTypeSectionModelCustomization(),
+            new ApplicationTypeSectionModelCustomization(),
             new ServiceLevelAgreementCustomization(),
             new ActionContextCustomization(),
             new ActionExecutedContextCustomization(),
@@ -59,6 +60,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
             new CompetitionCustomization(),
             new CompetitionSolutionCustomization(),
             new RequiredServiceCustomization(),
+            new OdsOrganisationCustomization(),
+            new OrganisationRoleCustomization(),
+            new OrganisationRelationshipCustomization(),
         };
 
         internal static IFixture Create() => Create(Customizations);

@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Admin
 
         public TaskProgress CapabilitiesAndEpics { get; init; }
 
-        public TaskProgress ClientApplicationType { get; init; }
+        public TaskProgress ApplicationType { get; init; }
 
         public TaskProgress Description { get; init; }
 

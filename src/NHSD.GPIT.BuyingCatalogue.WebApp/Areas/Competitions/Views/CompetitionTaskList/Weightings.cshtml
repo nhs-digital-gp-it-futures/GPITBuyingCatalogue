@@ -1,0 +1,36 @@
+@model CompetitionWeightingsModel
+
+@{
+    ViewBag.Title = "How would you like to weight your award criteria for this competition?";
+}
+
+<partial name="Partials/_BackLink" model="Model"/>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.CompetitionName"
+                        advice="Give your chosen award criteria weightings based on how important they are to you."/>
+
+        <form method="post">
+            <input type="hidden" asp-for="BackLink"/>
+            <input type="hidden" asp-for="CompetitionName"/>
+
+            <nhs-bookended-input asp-for="Price"
+                       label-text="Price weighting as a percentage"
+                       label-hint="Enter a percentage between 30% and 90% in multiples of 5. The total weightings must add up to 100%."
+                       Suffix="%" />
+
+            <nhs-bookended-input asp-for="NonPrice"
+                                 label-text="Non-price weighting as a percentage"
+                                 label-hint="Enter a percentage between 10% and 70% in multiples of 5. The total weightings must add up to 100%."
+                                 Suffix="%"/>
+
+            <br/>
+            <nhs-submit-button/>
+        </form>
+
+    </div>
+</div>

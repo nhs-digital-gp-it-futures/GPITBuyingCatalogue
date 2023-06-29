@@ -104,6 +104,40 @@ public class TrudOdsService : IOdsService
         return serviceRecipients;
     }
 
+    public async Task<IEnumerable<ServiceRecipient>> GetServiceRecipientsById(string internalIdentifier, IEnumerable<string> odsCodes)
+    {
+        var organisation = await context.Organisations.FirstOrDefaultAsync(x => x.InternalIdentifier == internalIdentifier);
+        if (organisation is null) return Enumerable.Empty<ServiceRecipient>();
+
+        var subLocations = await context.OrganisationRelationships
+            .AsNoTracking()
+            .Where(x => x.OwnerOrganisationId == organisation.ExternalIdentifier
+                && x.RelationshipTypeId == settings.InGeographyOfRelType
+                && x.TargetOrganisation.IsActive
+                && x.TargetOrganisation.Roles.Any(y => y.RoleId == settings.SubLocationRoleId))
+            .Select(x => x.TargetOrganisation.Id)
+            .ToListAsync();
+
+        var serviceRecipients = await context.OrganisationRelationships.AsNoTracking()
+            .Where(
+                x => subLocations.Contains(x.OwnerOrganisationId)
+                    && odsCodes.Contains(x.TargetOrganisationId)
+                    && x.TargetOrganisation.IsActive
+                    && x.RelationshipTypeId == settings.IsCommissionedByRelType
+                    && x.TargetOrganisation.Roles.Any(y => y.RoleId == settings.GetPrimaryRoleId(OrganisationType.GP)))
+            .Select(
+                x => new ServiceRecipient
+                {
+                    Name = x.TargetOrganisation.Name,
+                    OrgId = x.TargetOrganisationId,
+                    PrimaryRoleId = x.TargetOrganisation.Roles.FirstOrDefault(y => y.IsPrimaryRole).RoleId,
+                    Location = x.OwnerOrganisation.Name,
+                })
+            .ToListAsync();
+
+        return serviceRecipients;
+    }
+
     public async Task UpdateOrganisationDetails(string odsCode)
     {
         var organisation = await context.Organisations.FirstOrDefaultAsync(x => x.ExternalIdentifier == odsCode);

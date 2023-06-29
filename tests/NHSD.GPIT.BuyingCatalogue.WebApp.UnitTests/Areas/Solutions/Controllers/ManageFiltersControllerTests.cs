@@ -29,7 +29,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 using Xunit;
-using ClientApplicationType = NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.ClientApplicationType;
+using ApplicationType = NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.ApplicationType;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 {
@@ -110,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 { "selectedCapabilityIds", model.SelectedCapabilityIds },
                 { "selectedEpicIds", model.SelectedEpicIds },
                 { "selectedFrameworkId", model.SelectedFrameworkId },
-                { "selectedClientApplicationTypeIds", model.CombineSelectedOptions(model.ClientApplicationTypeOptions) },
+                { "selectedApplicationTypeIds", model.CombineSelectedOptions(model.ApplicationTypeOptions) },
                 { "selectedHostingTypeIds", model.CombineSelectedOptions(model.HostingTypeOptions) },
             });
         }
@@ -407,7 +407,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var actualResultModel = actualResult.Model.Should().BeOfType<SaveFilterModel>().Subject;
 
-            var expected = new SaveFilterModel(capabilities, new List<Epic>(), null, new List<ClientApplicationType>(), new List<HostingType>(), organisation.Id);
+            var expected = new SaveFilterModel(capabilities, new List<Epic>(), null, new List<ApplicationType>(), new List<HostingType>(), organisation.Id);
             actualResultModel.Should()
                 .BeEquivalentTo(expected, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.BackLinkText));
         }
@@ -458,7 +458,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                     model.CapabilityIds,
                     model.EpicIds,
                     model.FrameworkId,
-                    model.ClientApplicationTypes,
+                    model.ApplicationTypes,
                     model.HostingTypes)).ReturnsAsync(filterId);
 
             var result = await controller.ConfirmSaveFilter(model);

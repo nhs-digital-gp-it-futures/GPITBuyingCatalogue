@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Numerics;
 using System.Text.RegularExpressions;
 using FluentValidation;
 using FluentValidation.Internal;
@@ -76,6 +77,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation
                 .WithMessage(PriceNegativeError)
                 .Must(p => Regex.IsMatch(p.ToString(), @"^\d+.?\d{0,4}$"))
                 .WithMessage(PriceGreaterThanDecimalPlacesError);
+
+        public static IRuleBuilderOptions<T, int?> MustBeDivisibleBy<T>(this IRuleBuilderOptions<T, int?> ruleBuilder, int divisibleFactor)
+            => ruleBuilder.Must(x => x % divisibleFactor == 0);
 
         private static bool BePrefixedCorrectly(string url) => url.StartsWith("http") || url.StartsWith("https");
     }

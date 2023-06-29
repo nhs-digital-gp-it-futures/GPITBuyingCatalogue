@@ -11,8 +11,9 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CatalogueItems;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.ImportServiceRecipients;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.ServiceRecipients;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ImportServiceRecipients;
 using ServiceRecipient = NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.ServiceRecipient;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
@@ -59,15 +60,17 @@ public class ImportServiceRecipientsController : Controller
         await importService.Clear(new(User.UserId(), internalOrgId, callOffId, catalogueItemId));
 
         var catalogueItemName = await catalogueItemService.GetCatalogueItemName(catalogueItemId);
-        var model = new ImportServiceRecipientModel(internalOrgId, callOffId, catalogueItemId, catalogueItemName)
+        var model = new ImportServiceRecipientModel
         {
             BackLink = Url.Action(
                 GetServiceRecipientRedirectAction(importMode!.Value),
                 typeof(ServiceRecipientsController).ControllerName(),
                 new { internalOrgId, callOffId, catalogueItemId }),
+            Caption = catalogueItemName,
+            DownloadTemplateLink = Url.Action(nameof(DownloadTemplate), new { internalOrgId, callOffId, catalogueItemId }),
         };
 
-        return View(model);
+        return View("ServiceRecipients/ImportServiceRecipients/Index", model);
     }
 
     [HttpPost]
@@ -79,7 +82,7 @@ public class ImportServiceRecipientsController : Controller
         ServiceRecipientImportMode? importMode = ServiceRecipientImportMode.Edit)
     {
         if (!ModelState.IsValid)
-            return View(model);
+            return View("ServiceRecipients/ImportServiceRecipients/Index", model);
 
         IList<ServiceRecipientImportModel> importedServiceRecipients =
             await importService.ReadFromStream(model.File.OpenReadStream());
@@ -88,7 +91,7 @@ public class ImportServiceRecipientsController : Controller
         if (!validatedSuccessfully)
         {
             ModelState.AddModelError(nameof(model.File), error);
-            return View(model);
+            return View("ServiceRecipients/ImportServiceRecipients/Index", model);
         }
 
         await importService.Store(
@@ -124,17 +127,18 @@ public class ImportServiceRecipientsController : Controller
         {
             var catalogueItemName = await catalogueItemService.GetCatalogueItemName(catalogueItemId);
             var model = new ValidateOdsModel(
-                internalOrgId,
-                callOffId,
-                catalogueItemId,
-                catalogueItemName,
-                importMode!.Value,
-                mismatchedOdsCodes)
+                mismatchedOdsCodes,
+                importMode)
             {
                 BackLink = Url.Action(nameof(Index), new { internalOrgId, callOffId, catalogueItemId, importMode }),
+                Caption = catalogueItemName,
+                CancelLink = Url.Action(nameof(CancelImport), new { internalOrgId, callOffId, catalogueItemId, importMode }),
+                ValidateNamesLink = Url.Action(
+                    nameof(ValidateNames),
+                    new { internalOrgId, callOffId, catalogueItemId, importMode }),
             };
 
-            return View(model);
+            return View("ServiceRecipients/ImportServiceRecipients/ValidateOds", model);
         }
 
         return RedirectToAction(
@@ -165,18 +169,17 @@ public class ImportServiceRecipientsController : Controller
         {
             var catalogueItemName = await catalogueItemService.GetCatalogueItemName(catalogueItemId);
             var model = new ValidateNamesModel(
-                internalOrgId,
-                callOffId,
-                catalogueItemId,
-                catalogueItemName,
-                importMode!.Value,
-                mismatchedRecipients)
+                mismatchedRecipients,
+                importMode)
             {
                 BackLink = Url.Action(
                     GetNameValidationBacklink(cachedRecipients, organisationServiceRecipients),
                     new { internalOrgId, callOffId, catalogueItemId, importMode }),
+                CancelLink = Url.Action(nameof(CancelImport), new { internalOrgId, callOffId, catalogueItemId, importMode }),
+                Caption = catalogueItemName,
             };
-            return View(model);
+
+            return View("ServiceRecipients/ImportServiceRecipients/ValidateNames", model);
         }
 
         var validOdsCodes = GetValidOdsCodes(cachedRecipients, organisationServiceRecipients);
@@ -186,10 +189,7 @@ public class ImportServiceRecipientsController : Controller
             typeof(ServiceRecipientsController).ControllerName(),
             new
             {
-                internalOrgId,
-                callOffId,
-                catalogueItemId,
-                importedRecipients = string.Join(',', validOdsCodes),
+                internalOrgId, callOffId, catalogueItemId, importedRecipients = string.Join(',', validOdsCodes),
             });
     }
 
@@ -262,8 +262,9 @@ public class ImportServiceRecipientsController : Controller
         IEnumerable<ServiceRecipientImportModel> importedServiceRecipients,
         IEnumerable<ServiceRecipient> serviceRecipients)
         => importedServiceRecipients.Where(
-            r => serviceRecipients.All(
-                x => !string.Equals(x.OrgId, r.OdsCode, StringComparison.OrdinalIgnoreCase))).ToList();
+                r => serviceRecipients.All(
+                    x => !string.Equals(x.OrgId, r.OdsCode, StringComparison.OrdinalIgnoreCase)))
+            .ToList();
 
     private static List<(string Expected, string Actual, string OdsCode)> GetMismatchedNames(
         List<ServiceRecipientImportModel> importedServiceRecipients,

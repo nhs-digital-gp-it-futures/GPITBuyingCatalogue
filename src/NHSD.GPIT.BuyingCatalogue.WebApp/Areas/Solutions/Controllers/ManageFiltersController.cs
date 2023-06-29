@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     model.SelectedCapabilityIds,
                     model.SelectedEpicIds,
                     model.SelectedFrameworkId,
-                    selectedClientApplicationTypeIds = model.CombineSelectedOptions(model.ClientApplicationTypeOptions),
+                    selectedApplicationTypeIds = model.CombineSelectedOptions(model.ApplicationTypeOptions),
                     selectedHostingTypeIds = model.CombineSelectedOptions(model.HostingTypeOptions),
                 });
         }
@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             string selectedCapabilityIds,
             string selectedEpicIds,
             string selectedFrameworkId,
-            string selectedClientApplicationTypeIds,
+            string selectedApplicationTypeIds,
             string selectedHostingTypeIds)
         {
             var backLink =
@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     selectedCapabilityIds,
                     selectedEpicIds,
                     selectedFrameworkId,
-                    selectedClientApplicationTypeIds,
+                    selectedApplicationTypeIds,
                     selectedHostingTypeIds,
                 });
 
@@ -108,10 +108,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var framework = await frameworkService.GetFramework(selectedFrameworkId);
 
-            var clientApplicationTypes = SolutionsFilterHelper.ParseClientApplicationTypeIds(selectedClientApplicationTypeIds)?.ToList();
+            var applicationTypes = SolutionsFilterHelper.ParseApplicationTypeIds(selectedApplicationTypeIds)?.ToList();
             var hostingTypes = SolutionsFilterHelper.ParseHostingTypeIds(selectedHostingTypeIds)?.ToList();
 
-            var model = new SaveFilterModel(capabilities, epics, framework, clientApplicationTypes, hostingTypes, organisationId)
+            var model = new SaveFilterModel(capabilities, epics, framework, applicationTypes, hostingTypes, organisationId)
             {
                 BackLink = backLink,
             };
@@ -137,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 model.CapabilityIds,
                 model.EpicIds,
                 model.FrameworkId,
-                model.ClientApplicationTypes,
+                model.ApplicationTypes,
                 model.HostingTypes);
 
             return RedirectToAction(

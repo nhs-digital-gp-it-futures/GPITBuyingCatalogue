@@ -32,9 +32,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             var orderId = await orderService.GetOrderId(internalOrgId, callOffId);
             var contract = await contractsService.GetContractFlags(orderId);
 
-            var model = new DataProcessingPlanModel(contract)
+            var model = new BespokeDataProcessingModel(internalOrgId, callOffId)
             {
-                CallOffId = callOffId,
                 BackLink = Url.Action(
                     nameof(OrderController.Order),
                     typeof(OrderController).ControllerName(),
@@ -48,43 +47,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         public async Task<IActionResult> Index(
             string internalOrgId,
             CallOffId callOffId,
-            DataProcessingPlanModel model)
+            BespokeDataProcessingModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
             var orderId = await orderService.GetOrderId(internalOrgId, callOffId);
 
-            if (model.UseDefaultDataProcessing!.Value)
-            {
-                await contractsService.UseDefaultDataProcessing(orderId, true);
-
-                return RedirectToAction(
-                    nameof(OrderController.Order),
-                    typeof(OrderController).ControllerName(),
-                    new { internalOrgId, callOffId });
-            }
-
-            await contractsService.UseDefaultDataProcessing(orderId, false);
+            await contractsService.UseDefaultDataProcessing(orderId, true);
 
             return RedirectToAction(
-                nameof(BespokeDataProcessingPlan),
+                nameof(OrderController.Order),
+                typeof(OrderController).ControllerName(),
                 new { internalOrgId, callOffId });
-        }
-
-        [HttpGet("bespoke")]
-        public IActionResult BespokeDataProcessingPlan(
-            string internalOrgId,
-            CallOffId callOffId)
-        {
-            var model = new BespokeDataProcessingModel(internalOrgId, callOffId)
-            {
-                BackLink = Url.Action(nameof(Index), new { internalOrgId, callOffId }),
-            };
-
-            return View(model);
         }
     }
 }

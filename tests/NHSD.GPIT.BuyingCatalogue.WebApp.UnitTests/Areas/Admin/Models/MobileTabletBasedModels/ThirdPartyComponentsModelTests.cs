@@ -3,7 +3,7 @@ using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ClientApplicationTypeModels.MobileTabletBasedModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeModels.MobileTabletBasedModels;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTabletBasedModels
@@ -18,8 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
             var catalogueItem = solution.CatalogueItem;
             var actual = new ThirdPartyComponentsModel(catalogueItem);
 
-            actual.ThirdPartyComponents.Should().Be(solution.ClientApplication.MobileThirdParty.ThirdPartyComponents);
-            actual.DeviceCapabilities.Should().Be(solution.ClientApplication.MobileThirdParty.DeviceCapabilities);
+            actual.ThirdPartyComponents.Should().Be(solution.ApplicationTypeDetail.MobileThirdParty.ThirdPartyComponents);
+            actual.DeviceCapabilities.Should().Be(solution.ApplicationTypeDetail.MobileThirdParty.DeviceCapabilities);
         }
 
         [Fact]

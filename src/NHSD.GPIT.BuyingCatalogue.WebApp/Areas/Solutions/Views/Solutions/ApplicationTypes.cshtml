@@ -1,0 +1,16 @@
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ApplicationTypesModel;
+@{
+}
+<article>
+    <p>
+        <strong>This Catalogue Solution is supported by the following application types:</strong>
+    </p>
+
+    @Html.DisplayFor(m => m.ApplicationTypes)
+
+    @Html.DisplayFor(m => m.BrowserBasedApplication)
+
+    @Html.DisplayFor(m => m.NativeDesktopApplication)
+
+    @Html.DisplayFor(m => m.NativeMobileApplication)
+</article>

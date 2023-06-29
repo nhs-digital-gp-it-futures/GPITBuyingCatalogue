@@ -71,19 +71,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
 
         [Theory]
         [InlineData(new[] { 0, 1, 2 })]
-        public static void Constructor_WithClientApplicationTypeSelected_CreatesClientApplicationTypeCheckBoxItems_AllSelected(int[] expectedSelectedValues)
+        public static void Constructor_WithApplicationTypeSelected_CreatesApplicationTypeCheckBoxItems_AllSelected(int[] expectedSelectedValues)
         {
             var expectedCount = 3;
-            var expectedFilters = expectedSelectedValues.Select(i => ((ClientApplicationType)i).Name());
+            var expectedFilters = expectedSelectedValues.Select(i => ((ApplicationType)i).Name());
 
             var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, expectedSelectedValues.ToFilterString(), string.Empty, string.Empty, string.Empty);
 
-            model.ClientApplicationTypeOptions.Should().NotBeNull();
-            model.ClientApplicationTypeOptions.Should().HaveCount(expectedCount);
-            model.ClientApplicationTypeFilters.Should().HaveCount(expectedCount);
-            model.ClientApplicationTypeFilters.Should().BeEquivalentTo(expectedFilters);
+            model.ApplicationTypeOptions.Should().NotBeNull();
+            model.ApplicationTypeOptions.Should().HaveCount(expectedCount);
+            model.ApplicationTypeFilters.Should().HaveCount(expectedCount);
+            model.ApplicationTypeFilters.Should().BeEquivalentTo(expectedFilters);
 
-            foreach (var item in model.ClientApplicationTypeOptions)
+            foreach (var item in model.ApplicationTypeOptions)
             {
                 var isSelected = expectedSelectedValues.Contains(item.Value);
                 item.Selected.Should().Be(isSelected);
@@ -97,18 +97,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         [InlineData(new[] { 0, 1 })]
         [InlineData(new[] { 0, 2 })]
         [InlineData(new[] { 1, 2 })]
-        public static void Constructor_WithClientApplicationTypeSelected_CreatesClientApplicationTypeCheckBoxItems_WhenOneSelectedValueIsNotAsExpected(int[] expectedSelectedValues)
+        public static void Constructor_WithApplicationTypeSelected_CreatesApplicationTypeCheckBoxItems_WhenOneSelectedValueIsNotAsExpected(int[] expectedSelectedValues)
         {
             var expectedCount = 3;
-            var expectedFilters = expectedSelectedValues.Select(i => ((ClientApplicationType)i).Name());
+            var expectedFilters = expectedSelectedValues.Select(i => ((ApplicationType)i).Name());
 
             var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, expectedSelectedValues.ToFilterString(), string.Empty, string.Empty, string.Empty);
 
-            model.ClientApplicationTypeOptions.Should().NotBeNull();
-            model.ClientApplicationTypeOptions.Should().HaveCount(expectedCount);
-            model.ClientApplicationTypeFilters.Should().BeEquivalentTo(expectedFilters);
+            model.ApplicationTypeOptions.Should().NotBeNull();
+            model.ApplicationTypeOptions.Should().HaveCount(expectedCount);
+            model.ApplicationTypeFilters.Should().BeEquivalentTo(expectedFilters);
 
-            foreach (var item in model.ClientApplicationTypeOptions)
+            foreach (var item in model.ApplicationTypeOptions)
             {
                 var isSelected = expectedSelectedValues.Contains(item.Value);
                 item.Selected.Should().Be(isSelected);
@@ -117,16 +117,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
 
         [Theory]
         [InlineData(null)]
-        public static void Constructor_WithNullClientApplicationTypeSelected_CreatesClientApplicationTypeCheckBoxItems_NoneSelected(string selectedClientApplicationTypeIds)
+        public static void Constructor_WithNullApplicationTypeSelected_CreatesApplicationTypeCheckBoxItems_NoneSelected(string selectedApplicationTypeIds)
         {
             var expectedCount = 3;
 
-            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), string.Empty, selectedClientApplicationTypeIds, string.Empty, string.Empty, string.Empty);
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), string.Empty, selectedApplicationTypeIds, string.Empty, string.Empty, string.Empty);
 
-            model.ClientApplicationTypeOptions.Should().NotBeNull();
-            model.ClientApplicationTypeOptions.Should().HaveCount(expectedCount);
+            model.ApplicationTypeOptions.Should().NotBeNull();
+            model.ApplicationTypeOptions.Should().HaveCount(expectedCount);
 
-            foreach (var item in model.ClientApplicationTypeOptions)
+            foreach (var item in model.ApplicationTypeOptions)
             {
                 item.Selected.Should().BeFalse();
             }
@@ -134,7 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
 
         [Theory]
         [InlineData(new[] { 0, 1, 2, 3 })]
-        public static void Constructor_With_SelectedHostingTypeIds_Creates_ClientApplicationTypeCheckBoxItems_AllSelected(int[] expectedSelectedValues)
+        public static void Constructor_With_SelectedHostingTypeIds_Creates_ApplicationTypeCheckBoxItems_AllSelected(int[] expectedSelectedValues)
         {
             var expectedCount = 4;
             var expectedFilters = expectedSelectedValues.Select(i => ((HostingType)i).Name());

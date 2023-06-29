@@ -1,52 +1,20 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 {
     [ExcludeFromCodeCoverage]
     public class AdvancedTelephonyController : Controller
     {
-        public IActionResult BuyersGuidePdf()
+        public IActionResult GetAdvancedTelephonyPdf(string file)
         {
-            const string fileName = "Buyer's Guide for Advanced Cloud-based Telephony-Jan 2023.pdf";
+            if (string.IsNullOrWhiteSpace(file)) return BadRequest();
 
-            return GetFileStream(fileName);
-        }
+            if (!AdvancedTelephonyConstants.TryGetFileMapping(file, out var fileName)) return BadRequest();
 
-        public IActionResult ThinkHealthcarePdf()
-        {
-            const string fileName = "Think Healthcare.pdf";
-
-            return GetFileStream(fileName);
-        }
-
-        public IActionResult DaisyPatientLinePdf()
-        {
-            const string fileName = "Daisy Patient Line.pdf";
-
-            return GetFileStream(fileName);
-        }
-
-        public IActionResult RedcentricPdf()
-        {
-            const string fileName = "Redcentric.pdf";
-
-            return GetFileStream(fileName);
-        }
-
-        public IActionResult SurgeryConnectPdf()
-        {
-            const string fileName = "Surgery Connect.pdf";
-
-            return GetFileStream(fileName);
-        }
-
-        public IActionResult BabbleVoicePdf()
-        {
-            const string fileName = "Babblevoice.pdf";
-
-            return GetFileStream(fileName);
+            return GetFileStream($"{fileName}.pdf");
         }
 
         private static Stream GetResourceStream(string fileName) =>

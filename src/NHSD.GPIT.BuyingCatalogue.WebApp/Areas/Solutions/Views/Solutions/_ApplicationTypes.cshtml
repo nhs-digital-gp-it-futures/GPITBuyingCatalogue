@@ -1,0 +1,194 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ApplicationTypeModel;
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+
+
+@if (Model.DisplayApplicationType)
+{
+
+    <div data-test-id="view-section-dl-@Model.DataTestTag">
+        <nhs-details label-text="@Model.Label"> 
+            @if (Model.BrowsersSupported.Any())
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Supported browser types">
+                        <div data-test-id="view-question-data-bulletlist">
+                            <ul class="nhsuk-u-margin-bottom-0">
+                                @foreach (var browser in Model.BrowsersSupported)
+                                {
+                                    <li>@browser</li>
+                                }
+                            </ul>
+                        </div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
+
+            @if (Model.MobileOperatingSystems.Any())
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Supported operating systems">
+                        <div data-test-id="view-question-data-bulletlist">
+                            <ul class="nhsuk-u-margin-bottom-0">
+                                @foreach (var os in Model.MobileOperatingSystems)
+                                {
+                                    <li>@os</li>
+                                }
+                            </ul>
+                        </div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.OperatingSystemDescription))
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Description of supported operating systems">
+                        <div data-test-id="view-question-data-text-operating-systems-description">@Model.OperatingSystemDescription</div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
+
+            @if (Model.MobileResponsive.HasValue)
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Mobile responsive">
+                        <div data-test-id="view-question-data-text-mobile-responsive">@Model.MobileResponsive.ToYesNo()</div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
+
+            @if (Model.MobileFirstDesign.HasValue)
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Mobile first approach">
+                        <div data-test-id="view-question-data-text-mobile-first-design">@Model.MobileFirstDesign.ToYesNo()</div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
+
+            @if (Model.PluginsRequired.HasValue)
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Plug-ins or extensions required">
+                        <div data-test-id="view-question-data-text-plugins-required">@Model.PluginsRequired.ToYesNo()</div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.PluginDetails))
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Additional information about plug-ins or extensions">
+                        <div data-test-id="view-question-data-text-plugins-detail">@Model.PluginDetails</div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.MinimumConnectionSpeed))
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Minimum connection speed">
+                        <div data-test-id="view-question-data-text-minimum-connection-speed">@Model.MinimumConnectionSpeed</div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
+
+            @if (Model.MobileConnectionTypes.Any())
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Connection types supported">
+                        <div data-test-id="view-question-data-bulletlist">
+                            <ul class="nhsuk-u-margin-bottom-0">
+                                @foreach (var connectionType in Model.MobileConnectionTypes)
+                                {
+                                    <li>@connectionType</li>
+                                }
+                            </ul>
+                        </div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.ScreenResolution))
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Screen resolution and aspect ratio">
+                        <div data-test-id="view-question-data-text-minimum-desktop-resolution">@Model.ScreenResolution</div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.ConnectionRequirements))
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Connection requirements">
+                        <div data-test-id="view-question-data-text-connection-requirements-description">@Model.ConnectionRequirements</div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.MemoryRequirements))
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Memory size">
+                        <div data-test-id="view-question-data-text-minimum-memory-requirement">@Model.MemoryRequirements</div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.StorageSpace))
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Storage space">
+                        <div data-test-id="view-question-data-text-storage-requirements-description">@Model.StorageSpace</div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.ProcessingPower))
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Processing power">
+                        <div data-test-id="view-question-data-text-minimum-cpu">@Model.ProcessingPower</div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.ThirdPartyComponents))
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Third-party components">
+                        <div data-test-id="view-question-data-text-third-party-components">@Model.ThirdPartyComponents</div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.DeviceCapabilities))
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Device capabilities">
+                        <div data-test-id="view-question-data-text-device-capabilities">@Model.DeviceCapabilities</div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.HardwareRequirements))
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Hardware requirements">
+                        <div data-test-id="view-question-data-text-hardware-requirements-description">@Model.HardwareRequirements</div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.AdditionalInformation))
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Additional information">
+                        <div data-test-id="view-question-data-text-additional-information">@Model.AdditionalInformation</div>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
+        </nhs-details>
+    </div>
+}

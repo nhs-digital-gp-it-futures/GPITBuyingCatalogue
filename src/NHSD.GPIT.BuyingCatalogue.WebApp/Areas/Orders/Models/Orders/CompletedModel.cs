@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
         public bool SupportingDocumentsRequired =>
             Order?.ContractFlags?.HasSpecificRequirements == true
             || Order?.ContractFlags?.UseDefaultBilling == false
-            || Order?.ContractFlags?.UseDefaultDataProcessing == false
+            || Order?.ContractFlags?.UseDefaultDataProcessing == true
             || Order?.ContractFlags?.UseDefaultImplementationPlan == false;
 
         public bool HasBespokeBilling =>

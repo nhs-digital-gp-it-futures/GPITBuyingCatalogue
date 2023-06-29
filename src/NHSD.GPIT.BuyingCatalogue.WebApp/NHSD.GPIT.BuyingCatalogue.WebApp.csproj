@@ -35,6 +35,10 @@
     <EmbeddedResource Include="Files\Redcentric.pdf" />
     <EmbeddedResource Include="Files\Surgery Connect.pdf" />
     <EmbeddedResource Include="Files\Babblevoice.pdf" />
+    <EmbeddedResource Include="Files\RPM Patient Contact.pdf" />
+    <EmbeddedResource Include="Files\Louiscomm.pdf" />
+    <EmbeddedResource Include="Files\Check Cloud.pdf" />
+    <EmbeddedResource Include="Files\Wavenet.pdf" />
   </ItemGroup>
 
   <ItemGroup>

@@ -18,13 +18,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
         public LocalWebApplicationFactory Factory { get; }
 
-        public void AddCatalogueSolutionServiceRecipient(bool multipleServiceRecipients)
+        public void AddCatalogueSolutionServiceRecipient(int multipleServiceRecipients, bool allServiceRecipients)
         {
             CommonActions.PageLoadedCorrectGetIndex(
               typeof(ServiceRecipientsController),
               nameof(ServiceRecipientsController.AddServiceRecipients)).Should().BeTrue();
 
-            if (multipleServiceRecipients)
+            if (multipleServiceRecipients > 0 && !allServiceRecipients)
+                CommonActions.ClickMultipleCheckboxes(multipleServiceRecipients);
+            else if (multipleServiceRecipients == 0 && allServiceRecipients)
                 CommonActions.ClickAllCheckboxes();
             else
                 CommonActions.ClickFirstCheckbox();
@@ -47,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             CommonActions.ClickSave();
         }
 
-        public void AmendEditCatalogueSolutionServiceRecipient(string solutionName, bool multipleServiceRecipients = false)
+        public void AmendEditCatalogueSolutionServiceRecipient(string solutionName, int multipleServiceRecipients)
         {
             CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemServiceRecipientLink(GetCatalogueSolutionID(solutionName)));
 
@@ -55,13 +57,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             typeof(ServiceRecipientsController),
             nameof(ServiceRecipientsController.EditServiceRecipients)).Should().BeTrue();
 
-            if (!multipleServiceRecipients)
+            if (multipleServiceRecipients == 0)
             {
                 CommonActions.ClickFirstCheckbox();
             }
             else
             {
-                CommonActions.ClickAllCheckboxes();
+                CommonActions.ClickMultipleCheckboxes(multipleServiceRecipients);
             }
 
             CommonActions.ClickSave();

@@ -189,11 +189,17 @@ namespace BuyingCatalogueFunctionTests.Services
             Org organisation,
             List<OrganisationRelationship> existing,
             List<OrganisationRelationship> expected,
+            OdsOrganisation ownerOrganisation,
+            OdsOrganisation targetOrganisation,
             [Frozen] BuyingCatalogueDbContext dbContext,
             [Frozen] Mock<IAdapter<Org, IEnumerable<OrganisationRelationship>>> adapter,
             OdsOrganisationService service)
         {
             dbContext.OrganisationRelationships.Should().BeEmpty();
+            var firstOrg = existing.First();
+
+            firstOrg.OwnerOrganisation = ownerOrganisation;
+            firstOrg.TargetOrganisation = targetOrganisation;
 
             existing.Skip(1).ForEach(x =>
             {
@@ -255,6 +261,7 @@ namespace BuyingCatalogueFunctionTests.Services
         [InMemoryDbAutoData]
         public static async Task AddOrganisationRoles_WithExistingRoles_ExpectedResult(
             Org organisation,
+            OdsOrganisation odsOrganisation,
             List<OrganisationRole> existing,
             List<OrganisationRole> expected,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -263,7 +270,10 @@ namespace BuyingCatalogueFunctionTests.Services
         {
             dbContext.OrganisationRoles.Should().BeEmpty();
 
-            existing.Skip(1).ForEach(x => x.Organisation = existing.First().Organisation);
+            var firstOrg = existing.First();
+            firstOrg.Organisation = odsOrganisation;
+
+            existing.Skip(1).ForEach(x => x.Organisation = firstOrg.Organisation);
             existing.ForEach(x => x.Organisation.Id = organisation.OrgId.extension);
 
             await dbContext.OrganisationRoles.AddRangeAsync(existing);

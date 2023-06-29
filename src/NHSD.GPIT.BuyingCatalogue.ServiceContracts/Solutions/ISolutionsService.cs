@@ -52,11 +52,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task SaveImplementationDetail(CatalogueItemId solutionId, string detail);
 
-        Task<ClientApplication> GetClientApplication(CatalogueItemId solutionId);
+        Task<ApplicationTypeDetail> GetApplicationType(CatalogueItemId solutionId);
 
-        Task SaveClientApplication(CatalogueItemId solutionId, ClientApplication clientApplication);
+        Task SaveApplicationType(CatalogueItemId solutionId, ApplicationTypeDetail applicationTypeDetail);
 
-        Task DeleteClientApplication(CatalogueItemId solutionId, ClientApplicationType clientApplicationType);
+        Task DeleteApplicationType(CatalogueItemId solutionId, ApplicationType applicationType);
 
         Task SaveHosting(CatalogueItemId solutionId, Hosting hosting);
 

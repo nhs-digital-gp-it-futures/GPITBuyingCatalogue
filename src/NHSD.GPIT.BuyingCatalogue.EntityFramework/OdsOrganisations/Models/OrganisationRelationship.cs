@@ -2,6 +2,20 @@
 
 public class OrganisationRelationship
 {
+    public OrganisationRelationship()
+    {
+    }
+
+    public OrganisationRelationship(
+        string relationshipTypeId,
+        string ownerOrganisationId,
+        string targetOrganisationId)
+    {
+        RelationshipTypeId = relationshipTypeId;
+        OwnerOrganisationId = ownerOrganisationId;
+        TargetOrganisationId = targetOrganisationId;
+    }
+
     public int Id { get; set; }
 
     public string RelationshipTypeId { get; set; }
