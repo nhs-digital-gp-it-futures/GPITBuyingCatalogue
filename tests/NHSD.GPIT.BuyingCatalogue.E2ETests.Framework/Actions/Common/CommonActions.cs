@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
+using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using OpenQA.Selenium;
@@ -52,6 +53,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
 
         public void ClickAllCheckboxes() =>
             Driver.FindElements(By.CssSelector("input[type=checkbox]")).ToList().ForEach(element => element.Click());
+
+        public void ClickMultipleCheckboxes(int multipleServiceRecipients) =>
+            Driver.FindElements(By.CssSelector("input[type=checkbox]")).ToList().Take(multipleServiceRecipients).ForEach(element => element.Click());
 
         public void UncheckAllCheckboxes() =>
             Driver.FindElements(By.CssSelector("input[type=checkbox]"))
@@ -261,6 +265,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
             Driver
             .FindElements(By.ClassName("nhsuk-checkboxes__input"))
             .All(cb => cb.Selected);
+
+        public bool AnyCheckboxSelected() =>
+            Driver
+                .FindElements(By.CssSelector("input[type=checkbox]"))
+                    .Any(cb => cb.Selected);    
 
         // Element Comparisons
 

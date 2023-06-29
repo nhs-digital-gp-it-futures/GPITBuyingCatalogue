@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.ServiceRecipients;
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 
 public class SublocationModel
 {

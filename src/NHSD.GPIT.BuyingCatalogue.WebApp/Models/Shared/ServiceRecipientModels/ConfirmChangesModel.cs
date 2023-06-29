@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.ServiceRecipients
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 {
     public class ConfirmChangesModel : NavBaseModel
     {
@@ -21,18 +20,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             Title = $"{TitleText} for {organisation.Name} ({organisation.ExternalIdentifier})";
         }
 
-        public string InternalOrgId { get; set; }
-
-        public CallOffId CallOffId { get; set; }
-
-        public CatalogueItemId CatalogueItemId { get; set; }
-
         public JourneyType Journey { get; set; }
 
         public RoutingSource? Source { get; set; }
 
-        public List<ServiceRecipientModel> Selected { get; set; }
+        public List<ServiceRecipientModel> Selected { get; set; } =
+            Enumerable.Empty<ServiceRecipientModel>().ToList();
 
-        public List<ServiceRecipientModel> PreviouslySelected { get; set; }
+        public List<ServiceRecipientModel> PreviouslySelected { get; set; } =
+            Enumerable.Empty<ServiceRecipientModel>().ToList();
     }
 }

@@ -1,16 +1,15 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.ImportServiceRecipients.ValidateOdsModel
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ImportServiceRecipients.ValidateOdsModel
 
 @{
     ViewBag.Title = "There is a problem with your ODS codes";
 }
 
-<partial name="Partials/_BackLink" model="@Model" />
+<partial name="Partials/_BackLink" model="@Model"/>
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-page-title title="@ViewBag.Title"
-                        caption="@Model.CatalogueItemName"
-                        advice="We cannot import all the Service Recipients in your CSV file." />
+                        caption="@Model.Caption"
+                        advice="We cannot import all the Service Recipients in your CSV file."/>
 
         <div data-test-id="validate-ods-table">
             <nhs-table label-text="Failed imports">
@@ -21,8 +20,8 @@
                 {
                     var local = i;
                     <nhs-table-row-container>
-                        <input type="hidden" asp-for="InvalidServiceRecipients[local].Organisation" />
-                        <input type="hidden" asp-for="InvalidServiceRecipients[local].OdsCode" />
+                        <input type="hidden" asp-for="InvalidServiceRecipients[local].Organisation"/>
+                        <input type="hidden" asp-for="InvalidServiceRecipients[local].OdsCode"/>
 
                         <nhs-table-cell>@Model.InvalidServiceRecipients[local].Organisation</nhs-table-cell>
                         <nhs-table-cell>@Model.InvalidServiceRecipients[local].OdsCode</nhs-table-cell>
@@ -45,17 +44,11 @@
         <p>If you continue with your import, any Service Recipients that have failed to import will not be included.</p>
 
         <vc:nhs-secondary-button type="Primary"
-                                 text="Continue"
-                                 url="@Url.Action(
-                                          nameof(ImportServiceRecipientsController.ValidateNames),
-                                          typeof(ImportServiceRecipientsController).ControllerName(),
-                                          new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, Model.ImportMode })" />
+                                         text="Continue"
+                                         url="@Model.ValidateNamesLink" />
 
         <div>
-            <a href="@Url.Action(
-                         nameof(ImportServiceRecipientsController.CancelImport),
-                         typeof(ImportServiceRecipientsController).ControllerName(),
-                         new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, Model.ImportMode })">
+            <a href="@Model.CancelLink">
                 Cancel
             </a>
         </div>

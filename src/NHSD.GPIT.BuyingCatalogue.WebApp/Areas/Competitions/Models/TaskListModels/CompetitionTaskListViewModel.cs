@@ -1,30 +1,25 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.Competitions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.TaskListModels;
 
-public class CompetitionTaskListModel : NavBaseModel
+public class CompetitionTaskListViewModel : NavBaseModel
 {
-    public CompetitionTaskListModel(
+    public CompetitionTaskListViewModel(
         Organisation organisation,
-        Competition competition)
+        CompetitionTaskListModel model)
     {
         OrganisationName = organisation.Name;
         InternalOrgId = organisation.InternalIdentifier;
 
-        CompetitionId = competition.Id;
-        Name = competition.Name;
-        Description = competition.Description;
+        TaskListModel = model;
     }
 
     public string OrganisationName { get; set; }
 
     public string InternalOrgId { get; set; }
 
-    public int CompetitionId { get; set; }
-
-    public string Name { get; set; }
-
-    public string Description { get; set; }
+    public CompetitionTaskListModel TaskListModel { get; set; }
 }
