@@ -4,7 +4,6 @@
     ContractBillingId int NOT NULL, 
     OrderId int NOT NULL,
     CatalogueItemId nvarchar(14) NOT NULL,
-    ImplementationPlanMilestoneId int NOT NULL,
     Quantity int NOT NULL,
     LastUpdated datetime2(7) NOT NULL,
     LastUpdatedBy int NULL,

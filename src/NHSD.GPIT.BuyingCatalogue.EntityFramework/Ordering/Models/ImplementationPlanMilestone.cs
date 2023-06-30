@@ -15,6 +15,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public int PlanId { get; set; }
 
+        public int ContractBillingItemId { get; set; }
+
         public int Order { get; set; }
 
         public string Title { get; set; }
@@ -27,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public virtual ImplementationPlan Plan { get; set; }
 
-        public virtual ContractBillingItem ContractBillingItem { get; set; }
+        public ContractBillingItem ContractBillingItem { get; set; }
 
         public AspNetUser LastUpdatedByUser { get; set; }
 

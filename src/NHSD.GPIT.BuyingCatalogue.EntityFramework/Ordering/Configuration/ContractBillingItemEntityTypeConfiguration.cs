@@ -15,7 +15,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.Property(x => x.ContractBillingId).IsRequired();
             builder.Property(x => x.OrderId).IsRequired();
             builder.Property(x => x.CatalogueItemId).IsRequired();
-            builder.Property(x => x.ImplementationPlanMilestoneId).IsRequired();
             builder.Property(x => x.Quantity).IsRequired();
 
             builder.HasOne(x => x.LastUpdatedByUser)
@@ -32,12 +31,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .WithMany()
                 .HasForeignKey(x => new { x.OrderId, x.CatalogueItemId })
                 .HasConstraintName("FK_ContractBillingItems_OrderItem");
-
-            builder.HasOne(x => x.Milestone)
-                .WithOne(y => y.ContractBillingItem)
-                .HasForeignKey<ContractBillingItem>(x => x.ImplementationPlanMilestoneId)
-                .HasConstraintName("FK_ContractBillingItems_Milestone")
-                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

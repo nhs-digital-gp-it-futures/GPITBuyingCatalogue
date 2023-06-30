@@ -2,6 +2,7 @@
 (
     Id int IDENTITY(1, 1) NOT NULL,
     ImplementationPlanId int NULL,
+    ContractBillingItemId int NULL,
     [Order] int NOT NULL,
     Title nvarchar(1000) NOT NULL,
     [PaymentTrigger] nvarchar(1000) NOT NULL,

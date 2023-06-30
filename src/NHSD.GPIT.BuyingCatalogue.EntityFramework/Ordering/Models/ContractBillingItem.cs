@@ -13,8 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public CatalogueItemId CatalogueItemId { get; set; }
 
-        public int ImplementationPlanMilestoneId { get; set; }
-
         public int Quantity { get; set; }
 
         public DateTime LastUpdated { get; set; }
@@ -27,6 +25,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public OrderItem OrderItem { get; set; }
 
-        public ImplementationPlanMilestone Milestone { get; set; }
+        public virtual ImplementationPlanMilestone Milestone { get; set; }
     }
 }
