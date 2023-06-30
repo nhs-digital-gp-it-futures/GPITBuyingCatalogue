@@ -106,9 +106,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [InlineData("Description", false)]
-        [InlineData("description", false)]
-        [InlineData("DESCRIPTION", false)]
+        [InlineData("Summary", false)]
+        [InlineData("summary", false)]
+        [InlineData("SUMMARY", false)]
         [InlineData("Implementation", true)]
         [InlineData("Hosting", true)]
         public static void NotFirstSection_Returns_ExpectedResponse(string section, bool expected)
