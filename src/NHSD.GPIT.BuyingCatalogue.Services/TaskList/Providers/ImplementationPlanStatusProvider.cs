@@ -17,6 +17,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
 
             var order = wrapper.Order;
 
+            if (order.AssociatedServicesOnly)
+            {
+                return TaskProgress.NotApplicable;
+            }
+
             var okToProgress = new[] { TaskProgress.Completed, TaskProgress.Amended };
 
             if (!okToProgress.Contains(state.FundingSource))

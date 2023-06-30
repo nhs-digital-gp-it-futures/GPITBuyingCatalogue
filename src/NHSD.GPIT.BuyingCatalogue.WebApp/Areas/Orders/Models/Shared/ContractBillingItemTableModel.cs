@@ -10,12 +10,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Shared
         {
         }
 
-        public ContractBillingItemTableModel(string title, IEnumerable<ContractBillingItem> contractBillingItems, CallOffId callOffId, string internalOrgId)
+        public ContractBillingItemTableModel(string title, IEnumerable<ContractBillingItem> contractBillingItems, bool isAction, CallOffId callOffId, string internalOrgId)
         {
             Title = title;
             ContractBillingItems = contractBillingItems ?? Enumerable.Empty<ContractBillingItem>();
             CallOffId = callOffId;
             InternalOrgId = internalOrgId;
+            IsAction = isAction;
         }
 
         public IEnumerable<ContractBillingItem> ContractBillingItems { get; set; }

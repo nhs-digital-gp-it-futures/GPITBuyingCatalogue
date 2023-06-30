@@ -29,20 +29,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         private readonly IOrderItemService orderItemService;
         private readonly IOrderService orderService;
         private readonly IRoutingService routingService;
-        private readonly IContractsService contractsService;
+        private readonly IContractBillingService contractBillingService;
 
         public AssociatedServicesController(
             IAssociatedServicesService associatedServicesService,
             IOrderItemService orderItemService,
             IOrderService orderService,
             IRoutingService routingService,
-            IContractsService contractsService)
+            IContractBillingService contractBillingService)
         {
             this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
             this.orderItemService = orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.routingService = routingService ?? throw new ArgumentNullException(nameof(routingService));
-            this.contractsService = contractsService ?? throw new ArgumentNullException(nameof(contractsService));
+            this.contractBillingService = contractBillingService ?? throw new ArgumentNullException(nameof(contractBillingService));
         }
 
         [HttpGet("add")]
@@ -243,17 +243,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             if (removingServices)
             {
+                var orderId = await orderService.GetOrderId(internalOrgId, callOffId);
+                await contractBillingService.DeleteContractBillingItems(orderId, model.ToRemove.Select(x => x.CatalogueItemId));
                 await orderItemService.DeleteOrderItems(internalOrgId, callOffId, model.ToRemove.Select(x => x.CatalogueItemId));
-            }
-
-            if (removingServices && !addingServices)
-            {
-                var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
-
-                if (!order.HasAssociatedService())
-                {
-                    await contractsService.RemoveBillingAndRequirements(order.Id);
-                }
             }
 
             if (!addingServices)

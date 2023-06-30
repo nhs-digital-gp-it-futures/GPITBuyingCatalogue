@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -60,6 +61,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             return output;
         }
 
+        public async Task RemoveContract(int orderId)
+        {
+            var contract = await GetContract(orderId);
+            if (contract is not null)
+            {
+                dbContext.Contracts.Remove(contract);
+                await dbContext.SaveChangesAsync();
+            }
+
+            var flags = await GetContractFlags(orderId);
+            flags.UseDefaultDataProcessing = false;
+
+            await dbContext.SaveChangesAsync();
+        }
+
         public async Task<ContractFlags> GetContractFlags(int orderId)
         {
             var output = await dbContext.ContractFlags.FirstOrDefaultAsync(x => x.OrderId == orderId);
@@ -79,28 +95,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             await dbContext.SaveChangesAsync();
 
             return output;
-        }
-
-        public async Task RemoveContractFlags(int orderId)
-        {
-            var contract = await GetContractFlags(orderId);
-
-            contract.UseDefaultImplementationPlan = null;
-            contract.UseDefaultBilling = null;
-            contract.HasSpecificRequirements = null;
-            contract.UseDefaultDataProcessing = false;
-
-            await dbContext.SaveChangesAsync();
-        }
-
-        public async Task RemoveBillingAndRequirements(int orderId)
-        {
-            var contract = await GetContractFlags(orderId);
-
-            contract.UseDefaultBilling = null;
-            contract.HasSpecificRequirements = null;
-
-            await dbContext.SaveChangesAsync();
         }
 
         public async Task UseDefaultDataProcessing(int orderId, bool value)

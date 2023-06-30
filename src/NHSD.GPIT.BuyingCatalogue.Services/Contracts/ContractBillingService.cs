@@ -7,6 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
+using NHSD.GPIT.BuyingCatalogue.Services.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
 {
@@ -97,15 +98,33 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
 
         public async Task DeleteContractBillingItem(int orderId, int itemId)
         {
-            var item = await GetContractBillingItem(orderId, itemId);
+            var item = await dbContext.ImplementationPlanMilestones
+                .Include(x => x.ContractBillingItem)
+                .FirstOrDefaultAsync(x => x.ContractBillingItem.Id == itemId && x.ContractBillingItem.ContractBilling.Contract.OrderId == orderId);
 
             if (item == null)
             {
                 return;
             }
 
-            dbContext.ContractBillingItems.Remove(item);
+            dbContext.ImplementationPlanMilestones.Remove(item);
             await dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteContractBillingItems(int orderId, IEnumerable<CatalogueItemId> catalogueItemIds)
+        {
+            var items = dbContext.ContractBillingItems
+                .Where(x => x.ContractBilling.Contract.OrderId == orderId && catalogueItemIds.Contains(x.CatalogueItemId));
+
+            if (items.Any())
+            {
+                foreach (var item in items)
+                {
+                    dbContext.ContractBillingItems.Remove(item);
+                }
+
+                await dbContext.SaveChangesAsync();
+            }
         }
     }
 }

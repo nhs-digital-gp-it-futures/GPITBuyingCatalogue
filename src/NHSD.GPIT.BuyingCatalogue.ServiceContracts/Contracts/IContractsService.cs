@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts
@@ -11,11 +12,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts
 
         Task<Contract> GetContractWithContractBilling(int orderId);
 
+        Task RemoveContract(int orderId);
+
         Task<ContractFlags> GetContractFlags(int orderId);
-
-        Task RemoveContractFlags(int orderId);
-
-        Task RemoveBillingAndRequirements(int orderId);
 
         Task UseDefaultDataProcessing(int orderId, bool value);
     }

@@ -22,7 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.HasOne(x => x.Contract)
                 .WithOne(y => y.ContractBilling)
                 .HasForeignKey<ContractBilling>(x => x.ContractId)
-                .HasConstraintName("FK_ContractBilling_Contract");
+                .HasConstraintName("FK_ContractBilling_Contract")
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasMany(x => x.ContractBillingItems)
                 .WithOne(x => x.ContractBilling)

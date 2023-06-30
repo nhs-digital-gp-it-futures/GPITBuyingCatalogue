@@ -21,8 +21,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Contrac
 
         public EntityFramework.Ordering.Models.ContractBilling BespokeBilling { get; set; }
 
-        public bool HasBespokeMilestones => BespokeBilling != null && BespokeBilling.ContractBillingItems.Any();
+        public bool HasBespokeBilling => BespokeBilling != null && BespokeBilling.ContractBillingItems.Any();
 
-        public string BespokeMilestoneLabelText => "Bespoke milestones and payment triggers";
+        public string BespokeBillingLabelText => "Bespoke milestones and payment triggers";
     }
 }

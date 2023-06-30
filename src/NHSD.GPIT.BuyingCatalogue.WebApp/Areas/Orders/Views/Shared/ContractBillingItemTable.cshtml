@@ -9,8 +9,10 @@
         <nhs-table-column>Milestone name</nhs-table-column>
         <nhs-table-column>Milestone payment trigger</nhs-table-column>
         <nhs-table-column>Number of units to be billed</nhs-table-column>
-        <nhs-table-column>Action</nhs-table-column>
-
+        @if (Model.IsAction)
+        {
+            <nhs-table-column>Action</nhs-table-column>
+        }
         @foreach (var item in Model.ContractBillingItems)
         {
             <nhs-table-row-container>
@@ -18,16 +20,18 @@
                 <nhs-table-cell>@item.Milestone.Title</nhs-table-cell>
                 <nhs-table-cell>@item.Milestone.PaymentTrigger</nhs-table-cell>
                 <nhs-table-cell>@item.Quantity</nhs-table-cell>
-                <nhs-table-cell>
-                    <span data-test-id="milestone-edit-link">
-                        <a asp-action="@nameof(ContractBillingController.EditMilestone)"
-                   asp-controller="@typeof(ContractBillingController).ControllerName()"
-                           asp-route-internalOrgId="@Model.InternalOrgId"
-                           asp-route-callOffId="@Model.CallOffId"
-                           asp-route-itemId="@item.Id">Edit</a>
-                    </span>
-                </nhs-table-cell>
-
+                @if (Model.IsAction)
+                {
+                    <nhs-table-cell>
+                        <span data-test-id="milestone-edit-link">
+                            <a asp-action="@nameof(ContractBillingController.EditMilestone)"
+                               asp-controller="@typeof(ContractBillingController).ControllerName()"
+                               asp-route-internalOrgId="@Model.InternalOrgId"
+                               asp-route-callOffId="@Model.CallOffId"
+                               asp-route-itemId="@item.Id">Edit</a>
+                        </span>
+                    </nhs-table-cell>
+                }
             </nhs-table-row-container>
         }
     </nhs-table>

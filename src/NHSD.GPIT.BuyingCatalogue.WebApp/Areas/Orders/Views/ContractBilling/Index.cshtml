@@ -26,9 +26,9 @@
                                      typeof(ContractBillingController).ControllerName(),
                                      new { Model.InternalOrgId, Model.CallOffId })" />
 
-        @if (Model.HasBespokeMilestones)
+        @if (Model.HasBespokeBilling)
         {
-            <partial name="ContractBillingItemTable" model="new ContractBillingItemTableModel(Model.BespokeMilestoneLabelText, Model.BespokeBilling?.ContractBillingItems, Model.CallOffId, Model.InternalOrgId)" />
+            <partial name="ContractBillingItemTable" model="new ContractBillingItemTableModel(Model.BespokeBillingLabelText, Model.BespokeBilling?.ContractBillingItems, true, Model.CallOffId, Model.InternalOrgId)" />
         }
         else
         {

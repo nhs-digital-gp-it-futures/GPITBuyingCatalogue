@@ -32,15 +32,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
 
         public ImplementationPlan BespokePlan => Order.Contract?.ImplementationPlan;
 
-        public string DefaultBillingPaymentTrigger => DefaultImplementationPlan?.Milestones?.LastOrDefault()?.Title ?? "Bill on invoice";
-
-        public bool HasSpecificRequirements => Order?.ContractFlags?.HasSpecificRequirements == true;
-
-        public bool UseDefaultBilling => Order?.ContractFlags?.UseDefaultBilling == true;
+        public ContractBilling BespokeBilling => Order.Contract?.ContractBilling;
 
         public bool UseDefaultDataProcessing => Order?.ContractFlags?.UseDefaultDataProcessing == true;
 
         public bool HasBespokeMilestones => BespokePlan != null && BespokePlan.Milestones.Any();
+
+        public bool HasBespokeBilling => BespokeBilling != null && BespokeBilling.ContractBillingItems.Any();
 
         public FundingTypeDescriptionModel FundingTypeDescription(CatalogueItemId catalogueItemId)
         {

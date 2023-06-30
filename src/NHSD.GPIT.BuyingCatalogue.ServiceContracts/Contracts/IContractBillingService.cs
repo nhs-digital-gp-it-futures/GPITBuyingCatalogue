@@ -27,5 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts
             int quantity);
 
         Task DeleteContractBillingItem(int orderId, int itemId);
+
+        Task DeleteContractBillingItems(int orderId, IEnumerable<CatalogueItemId> catalogueItemIds);
     }
 }

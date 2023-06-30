@@ -25,22 +25,19 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
 
             builder.HasOne(x => x.ContractBilling)
                 .WithMany(x => x.ContractBillingItems)
-                .HasForeignKey(x => x.ContractBillingId);
+                .HasForeignKey(x => x.ContractBillingId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(x => x.OrderItem)
                 .WithMany()
                 .HasForeignKey(x => new { x.OrderId, x.CatalogueItemId })
                 .HasConstraintName("FK_ContractBillingItems_OrderItem");
 
-            //builder.HasOne(x => x.Milestone)
-            //    .WithMany()
-            //    .HasForeignKey(x => x.MilestoneId)
-            //    .HasConstraintName("FK_ContractBillingItems_Milestone");
-
             builder.HasOne(x => x.Milestone)
                 .WithOne(y => y.ContractBillingItem)
                 .HasForeignKey<ContractBillingItem>(x => x.ImplementationPlanMilestoneId)
-                .HasConstraintName("FK_ContractBillingItems_Milestone");
+                .HasConstraintName("FK_ContractBillingItems_Milestone")
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
