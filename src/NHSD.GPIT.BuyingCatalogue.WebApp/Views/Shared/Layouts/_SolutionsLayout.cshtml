@@ -61,25 +61,25 @@
                             {
                                 @if (sectionModel.Selected)
                                 {
-                                        <li class="side-nav__list--selected" aria-current="page">
-                                        <span class="side-nav__link nhsuk-link--no-visited-state">@sectionModel.Name</span>
+                                    <li class="side-nav__list--selected" aria-current="page">
+                                    <span class="side-nav__link nhsuk-link--no-visited-state">@sectionModel.Name</span>
                                     </li>
                                 }
                                 else
                                 {
-                                        <li class="side-nav-list">
-                                        <a asp-action="@sectionModel.Action"
-                               asp-controller="@sectionModel.Controller"
-                               asp-route-solutionId="@sectionModel.SolutionId"
-                                   class="side-nav__link nhsuk-link--no-visited-state">
-                                            @sectionModel.Name
-                                        </a>
+                                    <li class="side-nav__list">
+                                    <a asp-action="@sectionModel.Action" 
+                                    asp-controller="@sectionModel.Controller"
+                                    asp-route-solutionId="@sectionModel.SolutionId"
+                                    class="side-nav__link nhsuk-link--no-visited-state">
+                                    @sectionModel.Name
+                                    </a>
                                     </li>
                                 }
                             }
-                        </ul>
+                            </ul>
                             </nav>
-                    </div>
+                        </div>
                 }
             </div>
             
@@ -157,8 +157,6 @@
         <div class="scroll-to-top-text" >Back to top</div>
     </div>
     </a>
-
-
     <script>
         window.onscroll = function () {
             var scrollToTopContainer = document.querySelector('.scroll-to-top-container');

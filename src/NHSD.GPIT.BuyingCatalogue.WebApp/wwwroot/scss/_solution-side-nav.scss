@@ -19,12 +19,13 @@
    
 }
 
-@media (min-width: 40.0625em) {.side-nav__component {
-    margin-top: 16px
-    ;
-}}
+@media (min-width: 40.0625em) {
+    .side-nav__component {
+        margin-top: 16px;
+    }
+}
 
-.side-nav-list {
+.side-nav__list {
     position: relative;
     list-style: none;
     font-size: 19px;
@@ -42,7 +43,6 @@
     border-radius: 0;
     margin-bottom: 5px;
     text-decoration: none;
-
     padding: 12px 30px 8px 15px;
     font-weight: 400;
     text-transform: none;
@@ -51,14 +51,10 @@
     cursor: pointer;
 }
 
-
-
 .side-nav__list--selected > .side-nav__link, .side-nav__list--selected:hover > .side-nav__link {
     color: white !important;
     background-color: #005ea5 !important;
 }
-
-
 
 @media (min-width: 769px) {
     .side-nav {
@@ -75,22 +71,17 @@
     }
 }
 
-@media (min-width: 1000px) {.side-nav {
-    border-right: 1px solid #bfc1c3;
-    border-right-width: 1px ;
-    border-right-style: solid    ;
-    border-right-color: rgb(191, 193, 195)
-    ;
-}
-
+@media (min-width: 1000px) {
+    .side-nav {
+        border-right: 1px solid #bfc1c3;
+        border-right-width: 1px ;
+        border-right-style: solid    ;
+        border-right-color: rgb(191, 193, 195);
+    }
 }
 
 .side-nav__link:hover {
     background-color: #fff;
     text-decoration: underline;
     color: #005eb8 !important;
-}
-
-.nhs-scroll-to-top-button {
-    background-color: #005eb8 !important;
 }

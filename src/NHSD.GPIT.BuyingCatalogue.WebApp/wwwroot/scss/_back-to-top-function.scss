@@ -1,6 +1,7 @@
 ﻿html {
     scroll-behavior: smooth;
 }
+
 .top {
     --offset: 50px;
     position: sticky;
@@ -8,9 +9,9 @@
     margin-right: 10px;
     place-self: end;
     margin-top: calc(100vh + var(--offset));
-    }
+ }
 
-    .scroll-to-top-container {
+.scroll-to-top-container {
         display: none;
         position: fixed;
         width: 40px;
@@ -21,13 +22,13 @@
         bottom: 200px;
         right: 60px;
         border-radius: 23px;
-    }
+ }
 
-    .scroll-to-top-container.show {
+.scroll-to-top-container.show {
         display: block;
-    }
+ }
 
-    .goup-arrow {
+.goup-arrow {
         width: 0px;
         height: 0px;
         margin: 0px auto;
@@ -35,9 +36,9 @@
         border-style: solid;
         border-width: 0px 10px 10px;
         border-color: transparent transparent rgb(255, 255, 255);
-    }
+}
 
-    .scroll-to-top-text {
+.scroll-to-top-text {
         position: fixed;
         width: 80px;
         height: auto;
@@ -49,4 +50,4 @@
         border-radius: 23px;
         text-align: center;
         color:black;
-    }
+ }
