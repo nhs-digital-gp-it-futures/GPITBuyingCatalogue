@@ -5,9 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SupplierDefinedEpics;
+using NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
@@ -58,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("select-capabilities")]
         public async Task<IActionResult> SelectCapabilities()
         {
-            var capabilities = await capabilitiesService.GetReferencedCapabilities();
+            var capabilities = await capabilitiesService.GetCapabilities();
             var model = new SelectCapabilitiesModel(capabilities)
             {
                 BackLink = Url.Action(nameof(Dashboard)),
@@ -67,16 +70,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model.WithSelectListCapabilities(capabilities));
         }
 
-        [HttpGet("add-epic")]
-        public async Task<IActionResult> AddEpic()
+        [HttpPost("select-capabilities")]
+        public async Task<IActionResult> SelectCapabilities(
+            SelectCapabilitiesModel model)
         {
-            var capabilities = await capabilitiesService.GetCapabilities();
+            var selectedCapabilityIds = EncodeIdString(model.SelectedItems);
+
+            return RedirectToAction(
+                nameof(AddEpic),
+                typeof(SupplierDefinedEpicsController).ControllerName(),
+                new { selectedCapabilityIds });
+        }
+
+        [HttpGet("add-epic")]
+        public async Task<IActionResult> AddEpic(string selectedCapabilityIds = null)
+        {
             var model = new SupplierDefinedEpicBaseModel()
             {
                 BackLink = Url.Action(nameof(Dashboard)),
+                SelectedCapabilityIds = selectedCapabilityIds,
             };
-
-            return View(model.WithSelectListCapabilities(capabilities));
+            return View(model);
         }
 
         [HttpPost("add-epic")]
@@ -84,12 +98,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var capabilities = await capabilitiesService.GetCapabilities();
-                return View(model.WithSelectListCapabilities(capabilities));
+                return View(model.WithSelectListCapabilities());
             }
 
             var createEpicModel = new AddEditSupplierDefinedEpic(
-                model.SelectedCapabilityId!.Value,
+                (List<int>)SolutionsFilterHelper.ParseCapabilityIds(model.SelectedCapabilityIds),
                 model.Name,
                 model.Description,
                 model.IsActive!.Value);
@@ -114,7 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 BackLink = Url.Action(nameof(Dashboard)),
             };
 
-            return View(model.WithSelectListCapabilities(capabilities) as EditSupplierDefinedEpicModel);
+            return View(model.WithSelectListCapabilities() as EditSupplierDefinedEpicModel);
         }
 
         [HttpPost("edit/{epicId}")]
@@ -126,12 +139,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 var relatedSolutions = await supplierDefinedEpicsService.GetItemsReferencingEpic(epicId);
                 model.RelatedItems = relatedSolutions;
 
-                return View(model.WithSelectListCapabilities(capabilities) as EditSupplierDefinedEpicModel);
+                return View(model.WithSelectListCapabilities() as EditSupplierDefinedEpicModel);
             }
 
             var editEpicModel = new AddEditSupplierDefinedEpic(
                 epicId,
-                model.SelectedCapabilityId!.Value,
+                (List<int>)SolutionsFilterHelper.ParseCapabilityIds(model.SelectedCapabilityIds),
                 model.Name,
                 model.Description,
                 model.IsActive!.Value);
@@ -173,5 +186,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 ? await supplierDefinedEpicsService.GetSupplierDefinedEpics()
                 : await supplierDefinedEpicsService.GetSupplierDefinedEpicsBySearchTerm(search);
         }
+
+        private static string EncodeIdString(SelectionModel[] selectedItems) =>
+                selectedItems.Where(x => x.Selected).Select(x => x.Id).ToFilterString();
     }
 }

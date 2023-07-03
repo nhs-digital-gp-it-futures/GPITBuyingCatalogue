@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
@@ -14,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.SupplierDefine
         {
             this.supplierDefinedEpicsService = supplierDefinedEpicsService;
 
-            RuleFor(m => m.SelectedCapabilityId)
+            RuleFor(m => m.SelectedCapabilityIds)
                 .NotNull()
                 .WithMessage("Select a Capability");
 
@@ -33,9 +34,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.SupplierDefine
             RuleFor(m => m)
                 .Must(NotBeADuplicateEpic)
                 .WithMessage("A supplier defined Epic with these details already exists")
-                .When(m => m.SelectedCapabilityId.HasValue && m.IsActive.HasValue)
+                .When(m => m.SelectedCapabilityIds.Length > 0 && m.IsActive.HasValue)
                 .OverridePropertyName(
-                    m => m.SelectedCapabilityId,
+                    m => m.SelectedCapabilityIds,
                     m => m.Name,
                     m => m.Description,
                     m => m.IsActive);

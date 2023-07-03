@@ -16,7 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpi
             Name = epic.Name;
             Description = epic.Description;
             IsActive = epic.IsActive;
-            SelectedCapabilityId = epic.Capabilities.First().Id;
 
             RelatedItems = relatedItems;
 

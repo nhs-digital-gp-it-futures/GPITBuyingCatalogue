@@ -16,7 +16,7 @@
             <input type="hidden" asp-for="CanDelete" />
             <input type="hidden" asp-for="Id"/>
 
-            <nhs-select asp-for="SelectedCapabilityId"
+            <nhs-select asp-for="SelectedCapabilityIds"
                         asp-items="@Model.Capabilities"
                         label-text="Capability"
                         label-hint="Select the Capability that this supplier defined Epic relates to." />

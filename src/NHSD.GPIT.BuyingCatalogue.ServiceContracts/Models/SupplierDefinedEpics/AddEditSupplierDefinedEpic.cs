@@ -1,9 +1,11 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SupplierDefinedEpics
+﻿using System.Collections.Generic;
+
+namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SupplierDefinedEpics
 {
     public sealed class AddEditSupplierDefinedEpic
     {
         public AddEditSupplierDefinedEpic(
-            int capabilityId,
+            List<int> capabilityId,
             string name,
             string description,
             bool isActive)
@@ -16,7 +18,7 @@
 
         public AddEditSupplierDefinedEpic(
             string id,
-            int capabilityId,
+            List<int> capabilityId,
             string name,
             string description,
             bool isActive)
@@ -31,7 +33,7 @@
 
         public string Id { get; set; }
 
-        public int CapabilityId { get; set; }
+        public List<int> CapabilityId { get; set; }
 
         public string Name { get; set; }
 

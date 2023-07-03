@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpi
     {
         public string Id { get; set; }
 
-        public int? SelectedCapabilityId { get; set; }
+        public string SelectedCapabilityIds { get; set; }
 
         [StringLength(500)]
         public string Name { get; set; }
@@ -29,13 +29,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpi
             new("Inactive", false.ToString()),
         };
 
-        public SupplierDefinedEpicBaseModel WithSelectListCapabilities(List<Capability> capabilities)
+        public SupplierDefinedEpicBaseModel WithSelectListCapabilities()
         {
-            Capabilities = capabilities
-                .OrderBy(c => c.Name)
-                .Select(c => new SelectOption<string>(c.Name, c.Id.ToString()))
-                .ToList();
-
             return this;
         }
     }
