@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public string CapabilitiesHeading { get; set; } = "Capabilities met";
 
-        public override int Index => 2;
+        public override int Index => 3;
 
         public string Name { get; set; }
 

@@ -110,24 +110,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 },
                 new()
                 {
-                    Action = nameof(SolutionsController.Capabilities),
-                    Controller = ControllerName,
-                    Name = "Capabilities and Epics",
-                    Show = CatalogueItemContentStatus.ShowCapabilities,
-                },
-                new()
-                {
-                    Action = nameof(SolutionsController.Standards),
-                    Controller = ControllerName,
-                    Name = "Standards",
-                    Show = CatalogueItemContentStatus.ShowStandards,
-                },
-                new()
-                {
                     Action = nameof(SolutionsController.ListPrice),
                     Controller = ControllerName,
                     Name = "List price",
                     Show = CatalogueItemContentStatus.ShowListPrice,
+                },
+                new()
+                {
+                    Action = nameof(SolutionsController.Capabilities),
+                    Controller = ControllerName,
+                    Name = "Capabilities and Epics",
+                    Show = CatalogueItemContentStatus.ShowCapabilities,
                 },
                 new()
                 {
@@ -145,17 +138,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 },
                 new()
                 {
-                    Action = nameof(SolutionsController.Interoperability),
-                    Controller = ControllerName,
-                    Name = nameof(SolutionsController.Interoperability),
-                    Show = contentStatus.ShowInteroperability,
-                },
-                new()
-                {
                     Action = nameof(SolutionsController.Implementation),
                     Controller = ControllerName,
                     Name = "Implementation",
                     Show = contentStatus.ShowImplementation,
+                },
+                new()
+                {
+                    Action = nameof(SolutionsController.SupplierDetails),
+                    Controller = ControllerName,
+                    Name = "Supplier details",
+                    Show = CatalogueItemContentStatus.ShowSupplierDetails,
+                },
+                new()
+                {
+                    Action = nameof(SolutionsController.Interoperability),
+                    Controller = ControllerName,
+                    Name = nameof(SolutionsController.Interoperability),
+                    Show = contentStatus.ShowInteroperability,
                 },
                 new()
                 {
@@ -173,6 +173,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 },
                 new()
                 {
+                    Action = nameof(SolutionsController.Standards),
+                    Controller = ControllerName,
+                    Name = "Standards",
+                    Show = CatalogueItemContentStatus.ShowStandards,
+                },
+                new()
+                {
                     Action = nameof(SolutionsController.ServiceLevelAgreement),
                     Controller = ControllerName,
                     Name = "Service Level Agreement",
@@ -184,13 +191,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                     Controller = ControllerName,
                     Name = "Development plans",
                     Show = CatalogueItemContentStatus.ShowDevelopmentPlans,
-                },
-                new()
-                {
-                    Action = nameof(SolutionsController.SupplierDetails),
-                    Controller = ControllerName,
-                    Name = "Supplier details",
-                    Show = CatalogueItemContentStatus.ShowSupplierDetails,
                 },
             };
         }

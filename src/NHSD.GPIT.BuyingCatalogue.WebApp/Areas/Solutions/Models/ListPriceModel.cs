@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 .Select(cp => new PriceViewModel(cp)).ToList();
         }
 
-        public override int Index => 4;
+        public override int Index => 2;
 
         public IList<PriceViewModel> FlatListPrices { get; set; }
 

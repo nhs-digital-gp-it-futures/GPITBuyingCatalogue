@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             PaginationFooter.FullWidth = true;
         }
 
-        public override int Index => 6;
+        public override int Index => 5;
 
         public IReadOnlyList<CatalogueItem> Services { get; }
 

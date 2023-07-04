@@ -13,6 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public string Description { get; }
 
-        public override int Index => 8;
+        public override int Index => 6;
     }
 }

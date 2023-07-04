@@ -28,6 +28,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public ICollection<SlaServiceLevel> ServiceLevels { get; init; }
 
-        public override int Index => 11;
+        public override int Index => 12;
     }
 }
