@@ -85,3 +85,11 @@
     text-decoration: underline;
     color: #005eb8 !important;
 }
+
+.side-nav__link:focus {
+    background-color: #ffbf47;
+    box-shadow: 0 -2px #ffeb3b, 0 4px #212b32;
+    color: #212b32;
+    outline: 4px solid transparent;
+    text-decoration: none;
+}
