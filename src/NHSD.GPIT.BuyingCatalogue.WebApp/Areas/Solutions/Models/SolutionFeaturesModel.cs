@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 
@@ -17,6 +19,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public string[] Features { get; }
 
+        public override int Index => 1;
+
         public string SupplierName { get; }
 
         public string IsFoundation { get; }
@@ -24,7 +28,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public string FrameworkTitle() => Frameworks is not null && Frameworks.Any() && Frameworks.Count > 1
             ? "Frameworks"
             : "Framework";
-
-        public override int Index => 1;
     }
 }
