@@ -17,11 +17,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
             SupplierDefinedEpicBaseModel model,
             SupplierDefinedEpicBaseModelValidator validator)
         {
-            model.SelectedCapabilityId = null;
+            model.SelectedCapabilityIds = null;
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.SelectedCapabilityId)
+            result.ShouldHaveValidationErrorFor(m => m.SelectedCapabilityIds)
                 .WithErrorMessage("Select a Capability");
         }
 
@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
 
             var expectedErrorProperty = string.Format(
                 "{0}|{1}|{2}|{3}",
-                nameof(model.SelectedCapabilityId),
+                nameof(model.SelectedCapabilityIds),
                 nameof(model.Name),
                 nameof(model.Description),
                 nameof(model.IsActive));

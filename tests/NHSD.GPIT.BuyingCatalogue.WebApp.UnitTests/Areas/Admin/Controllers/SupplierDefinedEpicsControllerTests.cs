@@ -12,6 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SupplierDefinedEpics;
+using NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics;
@@ -227,12 +228,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISupplierDefinedEpicsService> supplierDefinedEpicsService,
             SupplierDefinedEpicsController controller)
         {
+            model.SelectedCapabilityIds = "1.2";
             _ = await controller.AddEpic(model);
+
+            var temp = (List<int>)SolutionsFilterHelper.ParseCapabilityIds(model.SelectedCapabilityIds);
 
             supplierDefinedEpicsService.Verify(
                 s => s.AddSupplierDefinedEpic(
                 It.Is<AddEditSupplierDefinedEpic>(
-                    m => m.CapabilityId == model.SelectedCapabilityId!.Value
+                    m => m.CapabilityId == temp
                          && m.Name == model.Name
                          && m.Description == model.Description
                          && m.IsActive == model.IsActive!.Value)),
@@ -288,8 +292,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             supplierDefinedEpicsService.Setup(s => s.GetItemsReferencingEpic(epic.Id))
                 .ReturnsAsync(relatedItems);
 
-            var expectedModel = new EditSupplierDefinedEpicModel(epic, relatedItems)
-                .WithSelectListCapabilities(capabilities);
+            var expectedModel = new EditSupplierDefinedEpicModel(epic, relatedItems);
 
             var result = (await controller.EditEpic(epic.Id)).As<ViewResult>();
 
@@ -371,7 +374,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 s => s.EditSupplierDefinedEpic(
                 It.Is<AddEditSupplierDefinedEpic>(
                     m => m.Id == model.Id
-                         && m.CapabilityId == model.SelectedCapabilityId!.Value
+                         && m.CapabilityId == (List<int>)SolutionsFilterHelper.ParseCapabilityIds(model.SelectedCapabilityIds)
                          && m.Name == model.Name
                          && m.Description == model.Description
                          && m.IsActive == model.IsActive!.Value)),

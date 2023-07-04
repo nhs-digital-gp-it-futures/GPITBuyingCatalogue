@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.SupplierDefine
             RuleFor(m => m)
                 .Must(NotBeADuplicateEpic)
                 .WithMessage("A supplier defined Epic with these details already exists")
-                .When(m => m.SelectedCapabilityIds.Length > 0 && m.IsActive.HasValue)
+                .When(m => m.SelectedCapabilityIds?.Length > 0 && m.IsActive.HasValue)
                 .OverridePropertyName(
                     m => m.SelectedCapabilityIds,
                     m => m.Name,
