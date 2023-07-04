@@ -1,21 +1,39 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionFeaturesModel;
-
+@{
+   string featuresText = string.Join("", Model.Features.Where(s => !string.IsNullOrWhiteSpace(s)).Select(f => $"<li>{f}</li>"));
+   string fullDescription = $"<ul>{featuresText}</ul>";
+}
 <div class="nhsuk-width-container">
     <main id="maincontent" role="main">
         <article>
             <div class="nhsuk-grid-row">
                 <div class="nhsuk-grid-column-full">
+                    <nhs-summary-list>
+                        <nhs-summary-list-row label-text="Supplier name">
+                        <a href="@Url.Action("SupplierDetails", new { solutionId = Model.SolutionId })" data-test-id="view-solution-page-solution-name">
+                            @Model.SupplierName
+                        </a>
+                        </p>
+                        </nhs-summary-list-row>
+                        <nhs-summary-list-row label-text="Solution ID">
+                        <p>
+                            @Model.SolutionId
+                        </p>
+                        </nhs-summary-list-row>
+                        <nhs-summary-list-row label-text="@Model.FrameworkTitle()">
+                        <p>
+                            <partial name="DisplayTemplates/TableListCell" model="@Model.Frameworks.Select(x => x.ShortName).ToArray()" />
+                        </p>
+                        </nhs-summary-list-row>
+                        <nhs-summary-list-row label-text="Foundation Solution">
+                        <p>
+                            @Model.IsFoundation
+                        </p>
+                        </nhs-summary-list-row>
+                     </nhs-summary-list>
+                   
+                    <nhs-card title="@Model.SupplierName features" text="@Html.Raw(fullDescription)" />
 
-                    <p>
-                        <b>This Catalogue Solution has the following features:</b>
-                    </p>
-
-                    <ul>
-                        @foreach (string feature in Model.Features.Where(s => !string.IsNullOrWhiteSpace(s)))
-                        {
-                            <li>@feature</li>
-                        }
-                    </ul>
                 </div>
             </div>
         </article>
