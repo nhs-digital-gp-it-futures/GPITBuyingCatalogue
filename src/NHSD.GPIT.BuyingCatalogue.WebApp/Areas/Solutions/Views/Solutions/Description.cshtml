@@ -1,3 +1,4 @@
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionDescriptionModel;
 @{
 }
@@ -5,7 +6,7 @@
     <div class="nhsuk-grid-column-full">
         <nhs-summary-list>
             <nhs-summary-list-row label-text="Supplier name">
-                <a href="@Url.Action("SupplierDetails", new { solutionId = Model.SolutionId })" data-test-id="view-solution-page-solution-name">
+                <a href="@Url.Action(nameof(SolutionsController.SupplierDetails),new { solutionId = Model.SolutionId })">
                     @Model.SupplierName
                 </a>
             </nhs-summary-list-row>
