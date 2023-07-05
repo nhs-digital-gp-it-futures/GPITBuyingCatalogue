@@ -1,4 +1,5 @@
 ﻿using System.Text.Encodings.Web;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -31,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
         [HtmlAttributeName(UrlName)]
         public string Url { get; set; }
 
-        public override void Process(TagHelperContext context, TagHelperOutput output)
+        public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = TagHelperConstants.Div;
             output.TagMode = TagMode.StartTagAndEndTag;
@@ -43,10 +44,14 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
                 output.AddClass(CardClickableClass, HtmlEncoder.Default);
             }
 
-            output.Content.AppendHtml(BuildContent());
+            var childContent = await output.GetChildContentAsync();
+
+            var content = BuildContent(childContent);
+
+            output.Content.AppendHtml(content);
         }
 
-        private TagBuilder BuildContent()
+        private TagBuilder BuildContent(TagHelperContent childContent)
         {
             var content = new TagBuilder(TagHelperConstants.Div);
 
@@ -54,7 +59,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
 
             content.InnerHtml
                 .AppendHtml(BuildHeading())
-                .AppendHtml(BuildCardText());
+                .AppendHtml(BuildCardText())
+                .AppendHtml(BuildCardTextAsync(childContent));
 
             return content;
         }
@@ -95,6 +101,16 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
 
             cardText.AddCssClass(CardDescriptionClass);
             cardText.InnerHtml.AppendHtml(Text);
+
+            return cardText;
+        }
+
+        private TagBuilder BuildCardTextAsync(TagHelperContent childContent)
+        {
+            var cardText = new TagBuilder(TagHelperConstants.Paragraph);
+            cardText.AddCssClass(CardDescriptionClass);
+
+            cardText.InnerHtml.AppendHtml(childContent);
 
             return cardText;
         }

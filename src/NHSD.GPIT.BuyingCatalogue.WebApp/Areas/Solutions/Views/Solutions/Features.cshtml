@@ -1,9 +1,5 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionFeaturesModel;
-@{
-   string featuresText = string.Join("", Model.Features.Where(s => !string.IsNullOrWhiteSpace(s)).Select(f => $"<li>{f}</li>"));
-   string fullDescription = $"<ul>{featuresText}</ul>";
-}
 <div class="nhsuk-width-container">
     <main id="maincontent" role="main">
         <article>
@@ -33,8 +29,15 @@
                         </p>
                         </nhs-summary-list-row>
                      </nhs-summary-list>
-                   
-                    <nhs-card title="@Model.SupplierName features" text="@Html.Raw(fullDescription)" />
+
+                    <nhs-card title="@Model.SupplierName features">
+                            <ul>
+                                @foreach (string feature in Model.Features.Where(s => !string.IsNullOrWhiteSpace(s)))
+                                {
+                                    <li>@feature</li>
+                                }
+                            </ul>
+                    </nhs-card>
 
                 </div>
             </div>
