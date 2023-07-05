@@ -44,11 +44,17 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
                 output.AddClass(CardClickableClass, HtmlEncoder.Default);
             }
 
-            var childContent = await output.GetChildContentAsync();
+            if (string.IsNullOrWhiteSpace(Text))
+            {
+                var childContent = await output.GetChildContentAsync();
 
-            var content = BuildContent(childContent);
-
-            output.Content.AppendHtml(content);
+                var content = BuildContent(childContent);
+                output.Content.AppendHtml(content);
+            }
+            else
+            {
+                output.Content.AppendHtml(BuildContent(null));
+            }
         }
 
         private TagBuilder BuildContent(TagHelperContent childContent)
@@ -59,8 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
 
             content.InnerHtml
                 .AppendHtml(BuildHeading())
-                .AppendHtml(BuildCardText())
-                .AppendHtml(BuildCardTextAsync(childContent));
+                .AppendHtml(BuildCardText(childContent));
 
             return content;
         }
@@ -95,22 +100,19 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
             return link;
         }
 
-        private TagBuilder BuildCardText()
-        {
-            var cardText = new TagBuilder(TagHelperConstants.Paragraph);
-
-            cardText.AddCssClass(CardDescriptionClass);
-            cardText.InnerHtml.Append(Text);
-
-            return cardText;
-        }
-
-        private TagBuilder BuildCardTextAsync(TagHelperContent childContent)
+        private TagBuilder BuildCardText(TagHelperContent childContent)
         {
             var cardText = new TagBuilder(TagHelperConstants.Paragraph);
             cardText.AddCssClass(CardDescriptionClass);
 
-            cardText.InnerHtml.AppendHtml(childContent);
+            if (!string.IsNullOrWhiteSpace(Text))
+            {
+                cardText.InnerHtml.Append(Text);
+            }
+            else
+            {
+                cardText.InnerHtml.AppendHtml(childContent);
+            }
 
             return cardText;
         }
