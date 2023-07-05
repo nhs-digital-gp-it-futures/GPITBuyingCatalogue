@@ -100,7 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
             var cardText = new TagBuilder(TagHelperConstants.Paragraph);
 
             cardText.AddCssClass(CardDescriptionClass);
-            cardText.InnerHtml.AppendHtml(Text);
+            cardText.InnerHtml.Append(Text);
 
             return cardText;
         }
