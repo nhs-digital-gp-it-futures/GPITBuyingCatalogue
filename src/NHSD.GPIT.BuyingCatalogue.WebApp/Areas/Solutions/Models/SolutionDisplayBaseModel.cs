@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     public abstract class SolutionDisplayBaseModel
     {
-        private const string KeyDescription = "Description";
+        private const string KeyDescription = "Summary";
 
         private static readonly string ControllerName = typeof(SolutionsController).ControllerName();
 

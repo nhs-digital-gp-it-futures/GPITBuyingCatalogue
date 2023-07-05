@@ -1,18 +1,14 @@
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionDescriptionModel;
 @{
 }
 <article class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
         <nhs-summary-list>
-            <nhs-summary-list-row label-text="Solution name">
-                <p>
-                    @Model.SolutionName
-                </p>
-            </nhs-summary-list-row>
             <nhs-summary-list-row label-text="Supplier name">
-                <p data-test-id="view-solution-page-solution-name">
+                <a href="@Url.Action(nameof(SolutionsController.SupplierDetails), new { solutionId = Model.SolutionId })">
                     @Model.SupplierName
-                </p>
+                </a>
             </nhs-summary-list-row>
             <nhs-summary-list-row label-text="Solution ID">
                 <p>
@@ -40,22 +36,21 @@
         {
             @if (Model.HasSummary())
             {
-                <h2>Summary</h2>
+                <h2>Overview</h2>
 
                 <p style="white-space: pre-line">@Model.Summary</p>
             }
 
             @if (Model.HasDescription())
             {
-                <h2>Full description</h2>
-
-                <p style="white-space: pre-line">@Model.Description</p>
+                <nhs-card style="white-space: pre-line" title="Full description"
+                  text=@Model.Description />
             }
 
             @if (Model.HasAboutUrl())
             {
                 <p>
-                    <a href="@Model.AboutUrl" target="_blank">More about this solution</a> (opens in a new tab)
+                    <a href="@Model.AboutUrl" target="_blank">More about this solution (opens in a new tab)</a>
                 </p>
             }
         }
