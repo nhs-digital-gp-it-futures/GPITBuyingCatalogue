@@ -6,15 +6,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.SupplierDef
 {
     public class AddSupplierDefinedEpicObjects
     {
-        public static By CapabilityInput => By.Id(nameof(SupplierDefinedEpicBaseModel.SelectedCapabilityId));
-
         public static By NameInput => By.Id(nameof(SupplierDefinedEpicBaseModel.Name));
 
         public static By DescriptionInput => By.Id(nameof(SupplierDefinedEpicBaseModel.Description));
 
         public static By StatusInput => ByExtensions.DataTestId("active-status-buttons");
-
-        public static By CapabilityInputError => By.Id($"{nameof(SupplierDefinedEpicBaseModel.SelectedCapabilityId)}-error");
 
         public static By NameInputError => By.Id($"{nameof(SupplierDefinedEpicBaseModel.Name)}-error");
 

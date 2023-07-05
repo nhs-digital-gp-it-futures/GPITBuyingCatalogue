@@ -21,17 +21,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpi
 
         public bool? IsActive { get; set; }
 
-        public IList<SelectOption<string>> Capabilities { get; set; }
-
         public IList<SelectOption<string>> ActiveOptions => new List<SelectOption<string>>
         {
             new("Active", true.ToString()),
             new("Inactive", false.ToString()),
         };
-
-        public SupplierDefinedEpicBaseModel WithSelectListCapabilities()
-        {
-            return this;
-        }
     }
 }

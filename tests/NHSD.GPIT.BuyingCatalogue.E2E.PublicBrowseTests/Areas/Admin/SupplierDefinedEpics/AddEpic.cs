@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using CsvHelper;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.SupplierDefinedEpics;
@@ -7,6 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
@@ -31,7 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
 
-            CommonActions.ElementIsDisplayed(AddSupplierDefinedEpicObjects.CapabilityInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddSupplierDefinedEpicObjects.NameInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddSupplierDefinedEpicObjects.DescriptionInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddSupplierDefinedEpicObjects.StatusInput).Should().BeTrue();
@@ -59,12 +61,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
-                AddSupplierDefinedEpicObjects.CapabilityInputError,
-                "Select a Capability")
-                .Should()
-                .BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
                 AddSupplierDefinedEpicObjects.NameInputError,
                 "Enter an Epic name")
                 .Should()
@@ -86,12 +82,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
         [Fact]
         public void AddEpic_DuplicatesExistingEpic_ThrowsError()
         {
+            NavigateToUrl(
+                typeof(SupplierDefinedEpicsController),
+                nameof(SupplierDefinedEpicsController.AddEpic),
+                null,
+                new Dictionary<string, string>
+                {
+                    { "selectedCapabilityIds", "1.2" },
+                });
             using var context = GetEndToEndDbContext();
             var epic = context.Epics.Include(x => x.Capabilities).First(e => e.Id == "S00001");
 
             CommonActions.ElementAddValue(AddSupplierDefinedEpicObjects.NameInput, epic.Name);
             CommonActions.ElementAddValue(AddSupplierDefinedEpicObjects.DescriptionInput, epic.Description);
-            CommonActions.SelectDropDownItemByValue(AddSupplierDefinedEpicObjects.CapabilityInput, epic.Capabilities.First().Id.ToString());
             CommonActions.ClickRadioButtonWithValue(epic.IsActive.ToString());
 
             CommonActions.ClickSave();
@@ -103,9 +106,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
         [Fact]
         public void AddEpic_Valid_SavesEpic()
         {
+            NavigateToUrl(
+                typeof(SupplierDefinedEpicsController),
+                nameof(SupplierDefinedEpicsController.AddEpic),
+                null,
+                new Dictionary<string, string>
+                {
+                    { "selectedCapabilityIds", "1.2" },
+                });
             var nameText = TextGenerators.TextInputAddText(AddSupplierDefinedEpicObjects.NameInput, 500);
             var descriptionText = TextGenerators.TextInputAddText(AddSupplierDefinedEpicObjects.DescriptionInput, 1000);
-            CommonActions.SelectRandomDropDownItem(AddSupplierDefinedEpicObjects.CapabilityInput);
+
             CommonActions.ClickRadioButtonWithText("Active");
 
             CommonActions.ClickSave();

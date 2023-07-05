@@ -25,13 +25,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
                 throw new ArgumentNullException(nameof(epicModel));
 
             List<Capability> capabilities = new List<Capability>();
-            foreach (int id in epicModel.CapabilityId)
+            foreach (int id in epicModel.CapabilityIds)
             {
                 capabilities.Add(await dbContext.Capabilities.FirstOrDefaultAsync(x => x.Id == id));
             }
-
-            /*var capability = await epicModel.CapabilityId.ForEach(async y =>
-                dbContext.Capabilities.FirstOrDefaultAsync(x => x.Id == y));*/
 
             var epic = new Epic
             {
@@ -66,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             epic.IsActive = epicModel.IsActive;
 
             List<Capability> capabilities = new List<Capability>();
-            foreach (int id in epicModel.CapabilityId)
+            foreach (int id in epicModel.CapabilityIds)
             {
                 capabilities.Add(await dbContext.Capabilities.FirstOrDefaultAsync(x => x.Id == id));
             }

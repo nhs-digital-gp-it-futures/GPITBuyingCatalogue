@@ -189,7 +189,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            addEpicModel.CapabilityId = capability.Id;
+            addEpicModel.CapabilityIds = new List<int>(capability.Id);
 
             await service.AddSupplierDefinedEpic(addEpicModel);
 
@@ -218,8 +218,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            addFirstEpicModel.CapabilityId = capability.Id;
-            addSecondEpicModel.CapabilityId = capability.Id;
+            addFirstEpicModel.CapabilityIds = new List<int>(capability.Id);
+            addSecondEpicModel.CapabilityIds = new List<int>(capability.Id);
 
             await service.AddSupplierDefinedEpic(addFirstEpicModel);
             await service.AddSupplierDefinedEpic(addSecondEpicModel);
@@ -241,7 +241,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             SupplierDefinedEpicsService service)
         {
             capability.Epics = new List<Epic>();
-            addEpicModel.CapabilityId = capability.Id;
+            addEpicModel.CapabilityIds = new List<int>(capability.Id);
             epic.Id = "S00012";
             epic.SupplierDefined = true;
 
@@ -267,7 +267,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             SupplierDefinedEpicsService service)
         {
             capability.Epics = new List<Epic>();
-            addEpicModel.CapabilityId = capability.Id;
+            addEpicModel.CapabilityIds = new List<int>(capability.Id);
             epic.Id = "S020X01E01";
             epic.SupplierDefined = true;
 
@@ -294,7 +294,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             SupplierDefinedEpicsService service)
         {
             capability.Epics = new List<Epic>();
-            addEpicModel.CapabilityId = capability.Id;
+            addEpicModel.CapabilityIds = new List<int>(capability.Id);
 
             legacyEpic.Id = "S020X01E01";
             legacyEpic.SupplierDefined = true;
@@ -461,7 +461,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             };
 
             capability.Epics = new List<Epic>();
-            editEpicModel.CapabilityId = capability.Id;
+            editEpicModel.CapabilityIds = new List<int>(capability.Id);
             editEpicModel.Id = epic.Id;
             epic.SupplierDefined = true;
 

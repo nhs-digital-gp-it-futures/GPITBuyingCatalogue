@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.AddEpic)).Should().BeTrue();
+                nameof(SupplierDefinedEpicsController.SelectCapabilities)).Should().BeTrue();
         }
 
         [Fact]

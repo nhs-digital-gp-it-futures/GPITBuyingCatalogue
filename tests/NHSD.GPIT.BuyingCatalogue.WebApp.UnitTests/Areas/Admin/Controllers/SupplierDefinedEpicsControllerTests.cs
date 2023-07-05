@@ -156,18 +156,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_AddEpic_ReturnsModelWithCapabilities(
-            List<Capability> capabilities,
-            [Frozen] Mock<ICapabilitiesService> capabilitiesService,
+        public static async Task Get_AddEpic_ReturnsModel(
             SupplierDefinedEpicsController controller)
         {
-            var expectedCapabilitiesSelectList = capabilities
-                .OrderBy(c => c.Name)
-                .Select(c => new SelectOption<string>(c.Name, c.Id.ToString()));
-
-            capabilitiesService.Setup(s => s.GetCapabilities())
-                .ReturnsAsync(capabilities);
-
             var result = (await controller.AddEpic()).As<ViewResult>();
 
             result.Should().NotBeNull();
@@ -175,8 +166,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var model = result.Model.As<SupplierDefinedEpicBaseModel>();
 
             model.Should().NotBeNull();
-
-            model.Capabilities.Should().BeEquivalentTo(expectedCapabilitiesSelectList);
         }
 
         [Theory]
@@ -190,35 +179,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var result = (await controller.AddEpic(model)).As<ViewResult>();
 
             result.Should().NotBeNull();
-            result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.Capabilities));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_AddEpic_InvalidModel_RepopulatesCapabilities(
-            List<Capability> capabilities,
-            SupplierDefinedEpicBaseModel model,
-            [Frozen] Mock<ICapabilitiesService> capabilitiesService,
-            SupplierDefinedEpicsController controller)
-        {
-            controller.ModelState.AddModelError("some-key", "some-error");
-
-            var expectedCapabilitiesSelectList = capabilities
-                .OrderBy(c => c.Name)
-                .Select(c => new SelectOption<string>(c.Name, c.Id.ToString()));
-
-            capabilitiesService.Setup(s => s.GetCapabilities())
-                .ReturnsAsync(capabilities);
-
-            var result = (await controller.AddEpic(model)).As<ViewResult>();
-
-            result.Should().NotBeNull();
-
-            var viewModel = result.Model.As<SupplierDefinedEpicBaseModel>();
-
-            viewModel.Should().NotBeNull();
-
-            viewModel.Capabilities.Should().BeEquivalentTo(expectedCapabilitiesSelectList);
+            result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.SelectedCapabilityIds));
         }
 
         [Theory]
@@ -231,12 +192,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             model.SelectedCapabilityIds = "1.2";
             _ = await controller.AddEpic(model);
 
-            var temp = (List<int>)SolutionsFilterHelper.ParseCapabilityIds(model.SelectedCapabilityIds);
+            var capabilityIds = (List<int>)SolutionsFilterHelper.ParseCapabilityIds(model.SelectedCapabilityIds);
 
             supplierDefinedEpicsService.Verify(
                 s => s.AddSupplierDefinedEpic(
                 It.Is<AddEditSupplierDefinedEpic>(
-                    m => m.CapabilityId == temp
+                m => m.CapabilityIds.SequenceEqual(capabilityIds)
                          && m.Name == model.Name
                          && m.Description == model.Description
                          && m.IsActive == model.IsActive!.Value)),
@@ -336,7 +297,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var viewModel = result.Model.As<EditSupplierDefinedEpicModel>();
 
-            viewModel.Capabilities.Should().BeEquivalentTo(expectedCapabilitiesSelectList);
+           //viewModel.Capabilities.Should().BeEquivalentTo(expectedCapabilitiesSelectList);
         }
 
         [Theory]
@@ -374,7 +335,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 s => s.EditSupplierDefinedEpic(
                 It.Is<AddEditSupplierDefinedEpic>(
                     m => m.Id == model.Id
-                         && m.CapabilityId == (List<int>)SolutionsFilterHelper.ParseCapabilityIds(model.SelectedCapabilityIds)
+                         && m.CapabilityIds == (List<int>)SolutionsFilterHelper.ParseCapabilityIds(model.SelectedCapabilityIds)
                          && m.Name == model.Name
                          && m.Description == model.Description
                          && m.IsActive == model.IsActive!.Value)),

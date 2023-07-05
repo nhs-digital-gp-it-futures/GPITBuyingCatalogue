@@ -40,7 +40,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
 
-            CommonActions.ElementIsDisplayed(AddSupplierDefinedEpicObjects.CapabilityInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddSupplierDefinedEpicObjects.NameInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddSupplierDefinedEpicObjects.DescriptionInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddSupplierDefinedEpicObjects.StatusInput).Should().BeTrue();
@@ -62,7 +61,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
         [Fact]
         public void EditEpic_NoInput_ThrowsError()
         {
-            CommonActions.SelectDropDownItem(AddSupplierDefinedEpicObjects.CapabilityInput, 0);
             CommonActions.ClearInputElement(AddSupplierDefinedEpicObjects.NameInput);
             CommonActions.ClearInputElement(AddSupplierDefinedEpicObjects.DescriptionInput);
 
@@ -70,12 +68,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
-                AddSupplierDefinedEpicObjects.CapabilityInputError,
-                "Select a Capability")
-                .Should()
-                .BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 AddSupplierDefinedEpicObjects.NameInputError,
@@ -98,7 +90,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             CommonActions.ElementAddValue(AddSupplierDefinedEpicObjects.NameInput, epic.Name);
             CommonActions.ElementAddValue(AddSupplierDefinedEpicObjects.DescriptionInput, epic.Description);
-            CommonActions.SelectDropDownItemByValue(AddSupplierDefinedEpicObjects.CapabilityInput, epic.Capabilities.First().Id.ToString());
             CommonActions.ClickRadioButtonWithValue(epic.IsActive.ToString());
 
             CommonActions.ClickSave();
@@ -112,7 +103,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
         {
             var nameText = TextGenerators.TextInputAddText(AddSupplierDefinedEpicObjects.NameInput, 500);
             var descriptionText = TextGenerators.TextInputAddText(AddSupplierDefinedEpicObjects.DescriptionInput, 1000);
-            var selectedCapabilityId = CommonActions.SelectRandomDropDownItem(AddSupplierDefinedEpicObjects.CapabilityInput);
             CommonActions.ClickRadioButtonWithText("Active");
 
             var expectedEpic = new Epic
