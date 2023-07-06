@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ModelBinders
 
             if (!correctFormat)
             {
-                modelState.AddModelError(modelName, $"Enter time in the correct format");
+                modelState.AddModelError(modelName, "Enter time in the correct format");
                 return Task.CompletedTask;
             }
 
