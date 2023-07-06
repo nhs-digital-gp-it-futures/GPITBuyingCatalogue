@@ -28,13 +28,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
 
             var epic = new Epic
             {
-                Capabilities = new List<Capability> { capability },
                 Name = epicModel.Name,
                 Description = epicModel.Description,
                 IsActive = epicModel.IsActive,
                 SupplierDefined = true,
-                CompliancyLevel = CompliancyLevel.May,
             };
+
+            epic.CapabilityEpics.Add(new CapabilityEpic()
+            {
+                CapabilityId = capability.Id,
+                Epic = epic,
+                CompliancyLevel = CompliancyLevel.May,
+            });
 
             dbContext.Epics.Add(epic);
             await dbContext.SaveChangesAsync();

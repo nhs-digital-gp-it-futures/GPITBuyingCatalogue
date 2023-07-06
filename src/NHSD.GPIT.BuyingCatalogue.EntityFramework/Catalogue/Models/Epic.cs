@@ -9,6 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public Epic()
         {
             Capabilities = new HashSet<Capability>();
+            CapabilityEpics = new HashSet<CapabilityEpic>();
         }
 
         public string Id { get; set; }
@@ -29,8 +30,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public AspNetUser LastUpdatedByUser { get; set; }
 
-        public CompliancyLevel CompliancyLevel { get; set; }
-
         public ICollection<Capability> Capabilities { get; set; }
+
+        public ICollection<CapabilityEpic> CapabilityEpics { get; set; }
     }
 }

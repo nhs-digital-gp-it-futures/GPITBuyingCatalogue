@@ -183,7 +183,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             [Frozen] BuyingCatalogueDbContext context,
             SupplierDefinedEpicsService service)
         {
-            capability.Epics = new List<Epic>();
+            capability.Epics.Clear();
+            capability.CapabilityEpics.Clear();
 
             context.Capabilities.Add(capability);
             await context.SaveChangesAsync();
@@ -192,15 +193,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             addEpicModel.CapabilityId = capability.Id;
 
             await service.AddSupplierDefinedEpic(addEpicModel);
+            context.ChangeTracker.Clear();
 
-            var epic = await context.Epics.FirstAsync();
+            var epic = await context.Epics
+                .Include(e => e.Capabilities)
+                .FirstAsync();
 
             epic.Id.Should().Be("S00001");
             epic.Name.Should().Be(addEpicModel.Name);
             epic.Description.Should().Be(addEpicModel.Description);
             epic.IsActive.Should().Be(addEpicModel.IsActive);
             epic.SupplierDefined.Should().BeTrue();
-            epic.CompliancyLevel.Should().Be(CompliancyLevel.May);
+            epic.Capabilities.Count.Should().Be(1);
+            epic.CapabilityEpics.Count.Should().Be(1);
+            epic.CapabilityEpics.First().CompliancyLevel.Should().Be(CompliancyLevel.May);
         }
 
         [Theory]
@@ -212,7 +218,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             [Frozen] BuyingCatalogueDbContext context,
             SupplierDefinedEpicsService service)
         {
-            capability.Epics = new List<Epic>();
+            capability.Epics.Clear();
+            capability.CapabilityEpics.Clear();
 
             context.Capabilities.Add(capability);
             await context.SaveChangesAsync();
@@ -460,7 +467,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
                 IsActive = editEpicModel.IsActive,
             };
 
-            capability.Epics = new List<Epic>();
+            capability.Epics.Clear();
+            capability.CapabilityEpics.Clear();
+
             editEpicModel.CapabilityId = capability.Id;
             editEpicModel.Id = epic.Id;
             epic.SupplierDefined = true;
@@ -483,8 +492,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
                         .Excluding(m => m.LastUpdated)
                         .Excluding(m => m.LastUpdatedBy)
                         .Excluding(m => m.SupplierDefined)
-                        .Excluding(m => m.CompliancyLevel)
                         .Excluding(m => m.LastUpdatedByUser)
+                        .Excluding(m => m.CapabilityEpics)
                         .Excluding(m => m.Capabilities));
         }
 

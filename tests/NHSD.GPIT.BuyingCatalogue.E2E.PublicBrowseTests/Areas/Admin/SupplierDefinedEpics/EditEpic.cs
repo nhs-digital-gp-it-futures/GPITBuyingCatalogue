@@ -120,7 +120,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
                 Name = nameText,
                 Description = descriptionText,
                 IsActive = true,
-                CompliancyLevel = CompliancyLevel.May,
                 SupplierDefined = true,
             };
 

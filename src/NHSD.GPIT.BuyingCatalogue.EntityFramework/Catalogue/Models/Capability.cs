@@ -5,12 +5,13 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     [Serializable]
-    public sealed class Capability : IAudited
+    public sealed partial class Capability : IAudited
     {
         public Capability()
         {
             CatalogueItemCapabilities = new HashSet<CatalogueItemCapability>();
             Epics = new HashSet<Epic>();
+            CapabilityEpics = new HashSet<CapabilityEpic>();
             StandardCapabilities = new HashSet<StandardCapability>();
             FrameworkCapabilities = new HashSet<FrameworkCapability>();
         }
@@ -42,6 +43,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public ICollection<FrameworkCapability> FrameworkCapabilities { get; set; }
 
         public ICollection<Epic> Epics { get; set; }
+
+        public ICollection<CapabilityEpic> CapabilityEpics { get; set; }
 
         public ICollection<CatalogueItemCapability> CatalogueItemCapabilities { get; set; }
 
