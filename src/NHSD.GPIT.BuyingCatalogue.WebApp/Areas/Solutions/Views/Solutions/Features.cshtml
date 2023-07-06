@@ -31,12 +31,12 @@
                      </nhs-summary-list>
 
                     <nhs-card title="@Model.SolutionName features">
-                            <ul>
-                                @foreach (string feature in Model.Features.Where(s => !string.IsNullOrWhiteSpace(s)))
-                                {
-                                    <li>@feature</li>
-                                }
-                            </ul>
+                        <ul>
+                            @foreach (string feature in Model.Features.Where(s => !string.IsNullOrWhiteSpace(s)))
+                            {
+                                <li>@feature</li>
+                            }
+                        </ul>
                     </nhs-card>
 
                 </div>

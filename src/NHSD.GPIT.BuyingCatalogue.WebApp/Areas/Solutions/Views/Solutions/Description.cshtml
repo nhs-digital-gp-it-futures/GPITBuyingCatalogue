@@ -42,10 +42,10 @@
             }
 
 
-            <nhs-card style="white-space: pre-line" title="Full description">
+            <nhs-card title="Full description">
                 @if (Model.HasDescription())
                 {
-                    @Model.Description
+                    <p style="white-space: pre-line">@Model.Description</p>
                 }
                 @if (Model.HasAboutUrl())
                 {
