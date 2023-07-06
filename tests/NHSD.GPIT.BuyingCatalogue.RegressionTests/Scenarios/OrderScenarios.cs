@@ -1,7 +1,10 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -29,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             };
 
         public OrderScenarios(LocalWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
-           : base(factory, typeof(DashboardController), nameof(DashboardController.Organisation), Parameters, testOutputHelper)
+           : base(factory, typeof(BuyerDashboardController), nameof(BuyerDashboardController.Index), Parameters, testOutputHelper)
         {
         }
 
@@ -2054,6 +2057,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.StepThreeCompleteContract();
 
             OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void NewCompetition()
+        {
+            CompetitionPages.CompetitionDashboard.CreateNewCompetition();
         }
     }
 }

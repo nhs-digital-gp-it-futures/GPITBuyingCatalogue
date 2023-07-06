@@ -1,6 +1,7 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Authorization;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.UrlGenerators;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
@@ -52,6 +53,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
         internal WebDriverWait Wait { get; }
 
         internal OrderingPages OrderingPages { get; }
+
+        internal CompetitionPages CompetitionPages { get; }
 
         internal void AuthorityLogin()
         {
