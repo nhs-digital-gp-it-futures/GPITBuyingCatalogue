@@ -63,6 +63,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
             new OdsOrganisationCustomization(),
             new OrganisationRoleCustomization(),
             new OrganisationRelationshipCustomization(),
+            new ContractCustomization(),
+            new ImplementationPlanCustomization(),
+            new ImplementationPlanMilestoneCustomization(),
         };
 
         internal static IFixture Create() => Create(Customizations);
