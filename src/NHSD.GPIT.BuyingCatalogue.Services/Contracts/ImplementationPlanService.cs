@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using Contract = NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models.Contract;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts

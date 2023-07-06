@@ -20,31 +20,31 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
 
         public async Task<Contract> GetContract(int orderId)
         {
-            var output = await dbContext.Contracts
+            var contract = await dbContext.Contracts
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.OrderId == orderId);
 
-            await AddContract(output, orderId);
+            var output = await AddContract(contract, orderId);
 
             return output;
         }
 
         public async Task<Contract> GetContractWithImplementationPlan(int orderId)
         {
-            var output = await dbContext.Contracts
+            var contract = await dbContext.Contracts
                 .AsNoTracking()
                 .Include(x => x.ImplementationPlan)
                     .ThenInclude(x => x.Milestones.OrderBy(m => m.Order))
                 .FirstOrDefaultAsync(x => x.OrderId == orderId);
 
-            await AddContract(output, orderId);
+            var output = await AddContract(contract, orderId);
 
             return output;
         }
 
         public async Task<Contract> GetContractWithContractBilling(int orderId)
         {
-            var output = await dbContext.Contracts
+            var contract = await dbContext.Contracts
                 .AsNoTracking()
                 .AsSplitQuery()
                 .Include(x => x.ContractBilling)
@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
                             .ThenInclude(x => x.CatalogueItem)
                 .FirstOrDefaultAsync(x => x.OrderId == orderId);
 
-            await AddContract(output, orderId);
+            var output = await AddContract(contract, orderId);
 
             return output;
         }
@@ -109,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             }
         }
 
-        private async Task AddContract(Contract contract, int orderId)
+        private async Task<Contract> AddContract(Contract contract, int orderId)
         {
             if (contract is null)
             {
@@ -122,6 +122,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
 
                 await dbContext.SaveChangesAsync();
             }
+
+            return contract;
         }
     }
 }
