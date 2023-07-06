@@ -1,21 +1,44 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionFeaturesModel;
-
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionFeaturesModel;
 <div class="nhsuk-width-container">
     <main id="maincontent" role="main">
         <article>
             <div class="nhsuk-grid-row">
                 <div class="nhsuk-grid-column-full">
+                    <nhs-summary-list>
+                        <nhs-summary-list-row label-text="Supplier name">
+                        <p>
+                            <a href="@Url.Action(nameof(SolutionsController.SupplierDetails), new { solutionId = Model.SolutionId })">
+                                @Model.SupplierName
+                            </a>
+                        </p>
+                        </nhs-summary-list-row>
+                        <nhs-summary-list-row label-text="Solution ID">
+                        <p>
+                            @Model.SolutionId
+                        </p>
+                        </nhs-summary-list-row>
+                        <nhs-summary-list-row label-text="@Model.FrameworkTitle()">
+                        <p>
+                            <partial name="DisplayTemplates/TableListCell" model="@Model.Frameworks.Select(x => x.ShortName).ToArray()" />
+                        </p>
+                        </nhs-summary-list-row>
+                        <nhs-summary-list-row label-text="Foundation Solution">
+                        <p>
+                            @Model.IsFoundation
+                        </p>
+                        </nhs-summary-list-row>
+                     </nhs-summary-list>
 
-                    <p>
-                        <b>This Catalogue Solution has the following features:</b>
-                    </p>
+                    <nhs-card title="@Model.SolutionName features">
+                        <ul>
+                            @foreach (string feature in Model.Features.Where(s => !string.IsNullOrWhiteSpace(s)))
+                            {
+                                <li>@feature</li>
+                            }
+                        </ul>
+                    </nhs-card>
 
-                    <ul>
-                        @foreach (string feature in Model.Features.Where(s => !string.IsNullOrWhiteSpace(s)))
-                        {
-                            <li>@feature</li>
-                        }
-                    </ul>
                 </div>
             </div>
         </article>

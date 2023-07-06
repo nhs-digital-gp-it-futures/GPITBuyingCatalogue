@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         {
         }
 
-        public override int Index => 3;
+        public override int Index => 11;
 
         public IList<Standard> Standards { get; init; }
 
