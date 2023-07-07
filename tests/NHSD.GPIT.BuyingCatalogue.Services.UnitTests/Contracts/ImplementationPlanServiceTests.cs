@@ -86,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             [Frozen] BuyingCatalogueDbContext dbContext,
             ImplementationPlanService service)
         {
-            var contract = new Contract { OrderId = orderId, ImplementationPlan = null};
+            var contract = new Contract { OrderId = orderId, ImplementationPlan = null };
 
             dbContext.Contracts.Add(contract);
 

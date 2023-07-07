@@ -23,8 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             model.HasBespokeBilling.Should().BeTrue();
         }
 
-        [Theory]
-        [CommonAutoData]
+        [Fact]
         public static void NullBespokePlan_PropertiesCorrectlySet()
         {
             var model = new ContractBillingModel(null);
