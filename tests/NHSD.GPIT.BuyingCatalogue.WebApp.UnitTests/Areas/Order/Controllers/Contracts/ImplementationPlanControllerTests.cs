@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 .ReturnsAsync(new OrderWrapper(order));
 
             mockContractsService
-                .Setup(x => x.GetContract(order.Id))
+                .Setup(x => x.GetContractWithImplementationPlan(order.Id))
                 .ReturnsAsync(contract);
 
             mockSolutionsService

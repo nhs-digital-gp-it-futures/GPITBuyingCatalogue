@@ -528,8 +528,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             CallOffId callOffId,
             ConfirmServiceChangesModel model,
             List<CatalogueItemId> toRemove,
-            EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> orderService,
             [Frozen] Mock<IOrderItemService> mockOrderItemService,
             AssociatedServicesController controller)
         {
@@ -539,17 +537,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             IEnumerable<CatalogueItemId> itemIds = null;
 
-            orderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
-
             mockOrderItemService
                 .Setup(x => x.DeleteOrderItems(internalOrgId, callOffId, It.IsAny<IEnumerable<CatalogueItemId>>()))
                 .Callback<string, CallOffId, IEnumerable<CatalogueItemId>>((_, _, x) => itemIds = x);
 
             var result = await controller.ConfirmAssociatedServiceChanges(internalOrgId, callOffId, model);
 
-            orderService.VerifyAll();
             mockOrderItemService.VerifyAll();
 
             itemIds.Should().BeEquivalentTo(toRemove);
@@ -605,7 +598,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_ConfirmAssociatedServiceChanges_RemovingLastService_ClearsContractSection(
+        public static async Task Post_ConfirmAssociatedServiceChanges_RemovingService_ClearsContractBillingItems(
             string internalOrgId,
             CallOffId callOffId,
             ConfirmServiceChangesModel model,
@@ -621,43 +614,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             model.ToAdd = new List<ServiceModel>();
 
             mockOrderService
-                .Setup(s => s.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+                .Setup(s => s.GetOrderId(internalOrgId, callOffId))
+                .ReturnsAsync(order.Id);
 
             _ = await controller.ConfirmAssociatedServiceChanges(internalOrgId, callOffId, model);
 
             mockOrderService.VerifyAll();
-            mockContractBillingService.Verify(s => s.DeleteContractBillingItems(order.Id, model.ToRemove.Select(x => x.CatalogueItemId)), Times.Once());
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_ConfirmAssociatedServiceChanges_RemovingAService_PreservesContract(
-            string internalOrgId,
-            CallOffId callOffId,
-            ConfirmServiceChangesModel model,
-            EntityFramework.Ordering.Models.Order order,
-            OrderItem orderItem,
-            AssociatedService associatedService,
-            List<CatalogueItemId> toRemove,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IContractsService> mockContractsService,
-            AssociatedServicesController controller)
-        {
-            orderItem.CatalogueItem = associatedService.CatalogueItem;
-            order.OrderItems = new List<OrderItem> { orderItem };
-            model.ConfirmChanges = true;
-            model.ToRemove = toRemove.Select(x => new ServiceModel { CatalogueItemId = x, IsSelected = true }).ToList();
-            model.ToAdd = new List<ServiceModel>();
-
-            mockOrderService
-                .Setup(s => s.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
-
-            _ = await controller.ConfirmAssociatedServiceChanges(internalOrgId, callOffId, model);
-
-            mockOrderService.VerifyAll();
-            mockContractsService.VerifyNoOtherCalls();
+            mockContractBillingService.Verify(s => s.DeleteContractBillingItems(order.Id, It.IsAny<IEnumerable<CatalogueItemId>>()), Times.Once());
         }
 
         [Theory]

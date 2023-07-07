@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Contrac
             : this(callOffId, internalOrgId, associatedServices)
         {
             ItemId = item.Id;
-            SelectedOrderItemId = item.OrderItem.CatalogueItem.Id;
+            SelectedOrderItemId = item.OrderItem.CatalogueItemId;
             Name = item.Milestone?.Title;
             PaymentTrigger = item.Milestone?.PaymentTrigger;
             Quantity = item.Quantity;

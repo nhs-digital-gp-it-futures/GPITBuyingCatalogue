@@ -44,7 +44,7 @@
 
                 @if (Model.IsEdit)
                 {
-                    <vc:nhs-delete-button url="@Url.Action(nameof(ContractBillingController.DeleteMilestone), typeof(ContractBillingController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId, Model.ItemId })"
+                    <vc:nhs-delete-button url="@Url.Action(nameof(ContractBillingController.DeleteContractBillingItem), typeof(ContractBillingController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId, Model.ItemId })"
                                           text="Delete milestone"/>
                 }
             </div>

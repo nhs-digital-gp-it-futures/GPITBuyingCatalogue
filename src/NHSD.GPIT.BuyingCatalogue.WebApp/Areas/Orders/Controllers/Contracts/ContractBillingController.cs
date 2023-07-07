@@ -152,7 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         }
 
         [HttpPost("delete-milestone")]
-        public async Task<IActionResult> DeleteMilestone(string internalOrgId, CallOffId callOffId, DeleteContractBillingItemModel model)
+        public async Task<IActionResult> DeleteContractBillingItem(string internalOrgId, CallOffId callOffId, DeleteContractBillingItemModel model)
         {
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
