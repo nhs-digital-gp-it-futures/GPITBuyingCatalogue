@@ -32,9 +32,10 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
 
             var results = await service.Read(stream);
             results.Count.Should().Be(1);
-            var result = results.First();
+            var result = results.FirstOrDefault();
 
-            result.FromId.Value.Should().Be(1);
+            result.Should().NotBeNull();
+            result!.FromId.Value.Should().Be(1);
             result.ToId.Should().Be("S25");
         }
 
@@ -64,7 +65,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
             dbContext.ChangeTracker.Clear();
 
             var result = dbContext.StandardCapabilities
-                .First(c => c.StandardId == standardCapability.StandardId && c.CapabilityId == standardCapability.CapabilityId);
+                .FirstOrDefault(c => c.StandardId == standardCapability.StandardId && c.CapabilityId == standardCapability.CapabilityId);
 
             result.Should().NotBeNull();
         }
@@ -93,7 +94,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
             var existingResult = dbContext.StandardCapabilities
                 .FirstOrDefault(c => c.StandardId == existingStandardCapability.StandardId && c.CapabilityId == existingStandardCapability.CapabilityId);
             var addResult = dbContext.StandardCapabilities
-                .First(c => c.StandardId == standardCapability.StandardId && c.CapabilityId == standardCapability.CapabilityId);
+                .FirstOrDefault(c => c.StandardId == standardCapability.StandardId && c.CapabilityId == standardCapability.CapabilityId);
 
             existingResult.Should().BeNull();
             addResult.Should().NotBeNull();

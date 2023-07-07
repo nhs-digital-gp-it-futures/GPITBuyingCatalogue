@@ -41,6 +41,15 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
             {
                 await Process(dbContext, capability, log);
             }
+
+            var desiredCapabilties = capabilties.Select(s => s.Id.Value).ToList();
+            var toExpire = await dbContext
+                .Capabilities
+                .Where(s => !desiredCapabilties.Any(d => d == s.Id))
+                .ToListAsync();
+
+            ProcessExpired(toExpire, log);
+
             await dbContext.SaveChangesAsync();
             return log;
         }
@@ -65,6 +74,19 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
             }
 
             return capabilities;
+        }
+
+        private void ProcessExpired(List<Capability> toExpire, List<string> log)
+        {
+            foreach (var capability in toExpire)
+            {
+                capability.Status = CapabilityStatus.Expired;
+                var status = dbContext.Entry(capability);
+                if (status.State == EntityState.Modified)
+                {
+                    log.Add($"Expired Capability {capability.Id} {capability.Name} ({Modified(status.Properties)})");
+                }
+            }
         }
 
         private static CapabilityCsv Map(CsvReader csv)
@@ -110,6 +132,7 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
                 Version = capability.Version,
                 SourceUrl = capability.Url,
                 CategoryId = capabilityCategory.Id,
+                Status = CapabilityStatus.Effective,
             };
 
             foreach (var shortName in capability.Framework)
@@ -136,6 +159,7 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
             existing.Version = capability.Version;
             existing.SourceUrl = capability.Url;
             existing.CategoryId = capabilityCategory.Id;
+            existing.Status = CapabilityStatus.Effective;
 
             var desiredFrameworkIds = dbContext.Frameworks
                 .Where(f => capability.Framework.Contains(f.ShortName))
@@ -162,7 +186,7 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
             var status = dbContext.Entry(existing);
             if (status.State == EntityState.Modified)
             {
-                log.Add($"Modified Capability {existing.Id} {existing.Name} {Modified(status.Properties)}");
+                log.Add($"Modified Capability {existing.Id} {existing.Name} ({Modified(status.Properties)})");
             }
         }
 

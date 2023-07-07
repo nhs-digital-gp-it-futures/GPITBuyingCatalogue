@@ -40,6 +40,15 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
             {
                 await Process(dbContext, capability, log);
             }
+
+            var desiredStandardIds = standards.Select(s => s.Id).ToList();
+            var toDelete = await dbContext
+                .Standards
+                .Where(s => !desiredStandardIds.Any(d => d == s.Id))
+                .ToListAsync();
+
+            ProcessDeletions(toDelete, log);
+
             await dbContext.SaveChangesAsync();
             return log;
         }
@@ -66,6 +75,19 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
             return standards;
         }
 
+        private void ProcessDeletions(List<Standard> toDelete, List<string> log)
+        {
+            foreach (var standard in toDelete)
+            {
+                standard.IsDeleted = true;
+                var status = dbContext.Entry(standard);
+                if (status.State == EntityState.Modified)
+                {
+                    log.Add($"Soft Deleted Standard {standard.Id} {standard.Name} ({Modified(status.Properties)})");
+                }
+            }
+        }
+
         private static StandardCsv Map(CsvReader csv)
         {
             return new StandardCsv()
@@ -82,6 +104,7 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
         private static async Task Process(BuyingCatalogueDbContext dbContext, StandardCsv standard, List<string> log)
         {
             var existing = await dbContext.Standards
+                .IgnoreQueryFilters()
                 .FirstOrDefaultAsync(c => c.Id == standard.Id);
 
             if (existing == null)
@@ -103,7 +126,8 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
                 Description = standard.Description,
                 Version = standard.Version,
                 Url = standard.Url,
-                StandardType = standard.StandardType
+                StandardType = standard.StandardType,
+                IsDeleted = false,
             };
 
             await dbContext.Standards.AddAsync(newStandard);
@@ -117,6 +141,7 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
             existing.Version = standard.Version;
             existing.Url = standard.Url;
             existing.StandardType = standard.StandardType;
+            existing.IsDeleted = false;
 
             var status = dbContext.Entry(existing);
             if (status.State == EntityState.Modified)

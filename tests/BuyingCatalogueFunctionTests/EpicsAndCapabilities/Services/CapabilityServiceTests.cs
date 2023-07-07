@@ -33,9 +33,10 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
 
             var results = await service.Read(stream);
             results.Count.Should().Be(1);
-            var result = results.First();
+            var result = results.FirstOrDefault();
 
-            result.Id.Value.Should().Be(1);
+            result.Should().NotBeNull();
+            result!.Id.Value.Should().Be(1);
             result.Name.Should().Be("NameValue");
             result.Version.Should().Be("1.0.2");
             result.Category.Should().Be("Citizen services");
@@ -85,15 +86,16 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
                 .Include(c => c.Category)
                 .Include(c => c.FrameworkCapabilities)
                     .ThenInclude(fc => fc.Framework)
-                .First(c => c.Id == capability.Id);
+                .FirstOrDefault(c => c.Id == capability.Id);
 
             result.Should().NotBeNull();
-            result.Id.Should().Be(capability.Id);
+            result!.Id.Should().Be(capability.Id);
             result.Name.Should().Be(capability.Name);
             result.Version.Should().Be(capability.Version);
             result.Description.Should().Be(capability.Description);
             result.SourceUrl.Should().Be(capability.SourceUrl);
             result.Category.Name.Should().Be(capability.Category.Name);
+            result.Status.Should().Be(CapabilityStatus.Effective);
             result.FrameworkCapabilities.Select(f => f.Framework.ShortName).Should().BeEquivalentTo(new[] { framework.ShortName });
         }
 
@@ -135,16 +137,43 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
                 .Include(c => c.Category)
                 .Include(c => c.FrameworkCapabilities)
                     .ThenInclude(fc => fc.Framework)
-                .First(c => c.Id == capability.Id);
+                .FirstOrDefault(c => c.Id == capability.Id);
 
             result.Should().NotBeNull();
-            result.Id.Should().Be(capability.Id);
+            result!.Id.Should().Be(capability.Id);
             result.Name.Should().Be("modified name");
             result.Version.Should().Be("modified version");
             result.Description.Should().Be("modified description");
             result.SourceUrl.Should().Be("modified url");
             result.Category.Name.Should().Be(categoryToChangeTo.Name);
+            result.Status.Should().Be(CapabilityStatus.Effective);
             result.FrameworkCapabilities.Select(f => f.Framework.ShortName).Should().BeEquivalentTo(new[] { frameworkToChangeTo.ShortName });
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task Process_Exising_Capability_Expire(
+            Framework framework,
+            Capability capability,
+            CapabilityCategory category,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            CapabilityService service)
+        {
+            capability.Category = category;
+            capability.FrameworkCapabilities.Add(new FrameworkCapability(framework.Id, capability.Id));
+            dbContext.CapabilityCategories.Add(category);
+            dbContext.Frameworks.Add(framework);
+            dbContext.Capabilities.Add(capability);
+            dbContext.SaveChanges();
+
+            await service.Process(new List<CapabilityCsv>() { });
+            dbContext.ChangeTracker.Clear();
+
+            var result = dbContext.Capabilities
+                .FirstOrDefault(c => c.Id == capability.Id);
+
+            result.Should().NotBeNull();
+            result!.Status.Should().Be(CapabilityStatus.Expired);
         }
     }
 }

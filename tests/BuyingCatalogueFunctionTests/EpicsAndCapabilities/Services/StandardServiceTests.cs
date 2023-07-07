@@ -8,6 +8,7 @@ using AutoFixture.Xunit2;
 using BuyingCatalogueFunction.EpicsAndCapabilities.Models;
 using BuyingCatalogueFunction.EpicsAndCapabilities.Services;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -31,9 +32,10 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
 
             var results = await service.Read(stream);
             results.Count.Should().Be(1);
-            var result = results.First();
+            var result = results.FirstOrDefault();
 
-            result.Id.Should().Be("S49");
+            result.Should().NotBeNull();
+            result!.Id.Should().Be("S49");
             result.Name.Should().Be("StandardName");
             result.Version.Should().Be("1.0.0");
             result.StandardType.Should().Be(StandardType.ContextSpecific);
@@ -71,10 +73,11 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
             dbContext.ChangeTracker.Clear();
 
             var result = dbContext.Standards
-                .First(c => c.Id == standard.Id);
+                .FirstOrDefault(c => c.Id == standard.Id);
 
             result.Should().NotBeNull();
-            result.Id.Should().Be(standard.Id);
+
+            result!.Id.Should().Be(standard.Id);
             result.Name.Should().Be(standard.Name);
             result.Version.Should().Be(standard.Version);
             result.Description.Should().Be(standard.Description);
@@ -107,15 +110,43 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
             dbContext.ChangeTracker.Clear();
 
             var result = dbContext.Standards
-                .First(c => c.Id == standard.Id);
+                .FirstOrDefault(c => c.Id == standard.Id);
 
             result.Should().NotBeNull();
-            result.Id.Should().Be(standard.Id);
+
+            result!.Id.Should().Be(standard.Id);
             result.Name.Should().Be("modified name");
             result.Description.Should().Be("modified description");
             result.Version.Should().Be("modified version");
             result.Url.Should().Be("http://test2.com");
             result.StandardType.Should().Be(StandardType.Overarching);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task Process_Exising_Standard_Delete(
+            Standard standard,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            StandardService service)
+        {
+            dbContext.Standards.Add(standard);
+            dbContext.SaveChanges();
+            dbContext.ChangeTracker.Clear();
+
+            await service.Process(new List<StandardCsv>() { });
+            dbContext.ChangeTracker.Clear();
+
+            var result = dbContext.Standards
+                .FirstOrDefault(c => c.Id == standard.Id);
+
+            result.Should().BeNull();
+
+            var resultDeleted = dbContext.Standards
+                .IgnoreQueryFilters()
+                .FirstOrDefault(c => c.Id == standard.Id);
+
+            resultDeleted.Should().NotBeNull();
+            resultDeleted!.IsDeleted.Should().BeTrue();
         }
     }
 }

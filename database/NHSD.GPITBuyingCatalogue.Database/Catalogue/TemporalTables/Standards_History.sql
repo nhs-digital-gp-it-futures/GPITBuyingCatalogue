@@ -6,6 +6,7 @@
     [Url] NVARCHAR(1000) NOT NULL,
     [Version] NVARCHAR(10) NULL,
     StandardTypeId INT NOT NULL,
+    IsDeleted BIT NOT NULL,
     LastUpdated datetime2(7) NOT NULL,
     LastUpdatedBy int NULL,
     SysStartTime datetime2(0) NOT NULL,

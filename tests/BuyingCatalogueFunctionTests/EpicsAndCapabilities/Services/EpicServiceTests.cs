@@ -33,9 +33,10 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
 
             var results = await service.Read(stream);
             results.Count.Should().Be(1);
-            var result = results.First();
+            var result = results.FirstOrDefault();
 
-            result.Id.Should().Be("E00109");
+            result.Should().NotBeNull();
+            result!.Id.Should().Be("E00109");
             result.Name.Should().Be("EpicName");
             result.IsActive.Should().BeTrue();
             result.Capabilities.Should().BeEquivalentTo(new[]
@@ -92,10 +93,10 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
 
             var result = dbContext.Epics
                 .Include(c => c.Capabilities)
-                .First(c => c.Id == epic.Id);
+                .FirstOrDefault(c => c.Id == epic.Id);
 
             result.Should().NotBeNull();
-            result.Id.Should().Be(epic.Id);
+            result!.Id.Should().Be(epic.Id);
             result.Name.Should().Be(epic.Name);
             result.IsActive.Should().Be(epic.IsActive);
             result.Capabilities.Select(f => f.Id).Should().BeEquivalentTo(new[] { capability.Id });
@@ -151,10 +152,10 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
 
             var result = dbContext.Epics
                 .Include(c => c.Capabilities)
-                .First(c => c.Id == epic.Id);
+                .FirstOrDefault(c => c.Id == epic.Id);
 
             result.Should().NotBeNull();
-            result.Id.Should().Be(epic.Id);
+            result!.Id.Should().Be(epic.Id);
             result.IsActive.Should().Be(!epic.IsActive);
             result.Name.Should().Be("modified name");
             result.Capabilities.Select(f => f.Id).Should().BeEquivalentTo(new[] { capabilityToChangeTo.Id });
@@ -208,10 +209,10 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
 
             var result = dbContext.Epics
                 .Include(c => c.Capabilities)
-                .First(c => c.Id == epic.Id);
+                .FirstOrDefault(c => c.Id == epic.Id);
 
             result.Should().NotBeNull();
-            result.Id.Should().Be(epic.Id);
+            result!.Id.Should().Be(epic.Id);
             result.IsActive.Should().Be(!epic.IsActive);
             result.Name.Should().Be("modified name");
             result.Capabilities.Select(f => f.Id).Should().BeEquivalentTo(new[] { capability.Id });

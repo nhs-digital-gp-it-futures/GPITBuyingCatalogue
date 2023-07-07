@@ -154,7 +154,7 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
             var status = dbContext.Entry(existingEpic);
             if (status.State == EntityState.Modified)
             {
-                log.Add($"Modified Epic {existingEpic.Id} {existingEpic.Name} {Modified(status.Properties)}");
+                log.Add($"Modified Epic {existingEpic.Id} {existingEpic.Name} ({Modified(status.Properties)})");
             }
         }
 
