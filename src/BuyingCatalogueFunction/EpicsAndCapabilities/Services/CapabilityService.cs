@@ -10,7 +10,6 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.Extensions.Logging;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -19,15 +18,10 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
 {
     public class CapabilityService : ICapabilityService
     {
-        private readonly ILogger<CapabilityService> logger;
         private readonly BuyingCatalogueDbContext dbContext;
 
-        public CapabilityService(
-            ILogger<CapabilityService> logger,
-            BuyingCatalogueDbContext dbContext
-            )
+        public CapabilityService(BuyingCatalogueDbContext dbContext)
         {
-            this.logger = logger;
             this.dbContext = dbContext;
         }
 

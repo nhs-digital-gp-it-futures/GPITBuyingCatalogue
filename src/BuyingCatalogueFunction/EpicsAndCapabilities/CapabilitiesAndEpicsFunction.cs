@@ -48,11 +48,18 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities
             try
             {
                 var instanceId = await starter.ScheduleNewOrchestrationInstanceAsync(nameof(CapabilitiesDataImporter), data);
-                logger.LogInformation($"Started orchestration with ID = '{instanceId}'.");
+                logger.LogInformation("{FunctionName} started orchestration {OrchestrationName} {ID} ",
+                    nameof(StartCapabilitiesUpdateBlobTrigger),
+                    nameof(CapabilitiesDataImporter),
+                    instanceId);
             }
             catch (Exception e)
             {
-                logger.LogError("Error occurred while processing request. {Exception}", e);
+                logger.LogError(
+                    e,
+                    "Error in {FunctionName} trying to start orchestration {OrchestrationName}",
+                    nameof(StartCapabilitiesUpdateBlobTrigger),
+                    nameof(CapabilitiesDataImporter));
                 throw;
             }
         }
@@ -71,47 +78,102 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities
         [Function(nameof(Update))]
         public async Task<List<string>> Update([ActivityTrigger] ImportModel import)
         {
-            using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
-            var logs = new List<string>();
-            logs.AddRange(await standardService.Process(import.Standards));
-            logs.AddRange(await capabilityService.Process(import.Capabilities));
-            logs.AddRange(await standardCapabilityService.Process(import.StandardCapabilities));
-            logs.AddRange(await epicService.Process(import.Epics));
+            try
+            {
+                using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+                var logs = new List<string>();
+                logs.AddRange(await standardService.Process(import.Standards));
+                logs.AddRange(await capabilityService.Process(import.Capabilities));
+                logs.AddRange(await standardCapabilityService.Process(import.StandardCapabilities));
+                logs.AddRange(await epicService.Process(import.Epics));
 
-            scope.Complete();
-            return logs;
+                scope.Complete();
+                return logs;
+            }
+            catch (Exception e)
+            {
+                logger.LogError(
+                    e,
+                    "Error in {FunctionName} trying to process and save changes",
+                    nameof(Update));
+                throw;
+            }
         }
 
         [Function(nameof(Capabilities))]
         public async Task<List<CapabilityCsv>> Capabilities([ActivityTrigger] byte[] input)
         {
-            using var zipFile = new ZipFile(new MemoryStream(input));
-            await using var capabilitiesStream = GetStream(zipFile, CapabilitiesCSV);
-            return await capabilityService.Read(capabilitiesStream);
+            try
+            {
+                using var zipFile = new ZipFile(new MemoryStream(input));
+                await using var capabilitiesStream = GetStream(zipFile, CapabilitiesCSV);
+                return await capabilityService.Read(capabilitiesStream);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(
+                    e,
+                    "Error in {FunctionName} trying to read capabilities",
+                    nameof(Capabilities));
+                throw;
+            }
         }
 
         [Function(nameof(Standards))]
         public async Task<List<StandardCsv>> Standards([ActivityTrigger] byte[] input)
         {
-            using var zipFile = new ZipFile(new MemoryStream(input));
-            await using var standardsStream = GetStream(zipFile, StandardsCSV);
-            return await standardService.Read(standardsStream);
+            try
+            {
+                using var zipFile = new ZipFile(new MemoryStream(input));
+                await using var standardsStream = GetStream(zipFile, StandardsCSV);
+                return await standardService.Read(standardsStream);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(
+                    e,
+                    "Error in {FunctionName} trying to read standards",
+                    nameof(Standards));
+                throw;
+            }
         }
 
         [Function(nameof(Epics))]
         public async Task<List<EpicCsv>> Epics([ActivityTrigger] byte[] input)
         {
-            using var zipFile = new ZipFile(new MemoryStream(input));
-            await using var epicsStream = GetStream(zipFile, EpicsCSV);
-            return await epicService.Read(epicsStream);
+            try
+            {
+                using var zipFile = new ZipFile(new MemoryStream(input));
+                await using var epicsStream = GetStream(zipFile, EpicsCSV);
+                return await epicService.Read(epicsStream);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(
+                    e,
+                    "Error in {FunctionName} trying to read epics",
+                    nameof(Epics));
+                throw;
+            }
         }
 
         [Function(nameof(StandardCapabilities))]
         public async Task<List<StandardCapabilityCsv>> StandardCapabilities([ActivityTrigger] byte[] input)
         {
-            using var zipFile = new ZipFile(new MemoryStream(input));
-            await using var RelationshipsStream = GetStream(zipFile, RelationshipsCSV);
-            return await standardCapabilityService.Read(RelationshipsStream);
+            try
+            {
+                using var zipFile = new ZipFile(new MemoryStream(input));
+                await using var RelationshipsStream = GetStream(zipFile, RelationshipsCSV);
+                return await standardCapabilityService.Read(RelationshipsStream);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(
+                    e,
+                    "Error in {FunctionName} trying to read standard capabilities",
+                    nameof(StandardCapabilities));
+                throw;
+            }
         }
 
         private static Stream GetStream(ZipFile zipFile, string dataset)

@@ -9,7 +9,6 @@ using BuyingCatalogueFunction.EpicsAndCapabilities.Models;
 using CsvHelper;
 using CsvHelper.Configuration;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
@@ -17,15 +16,10 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
 {
     public class StandardCapabilityService : IStandardCapabilityService
     {
-        private readonly ILogger<StandardCapabilityService> logger;
         private readonly BuyingCatalogueDbContext dbContext;
 
-        public StandardCapabilityService(
-            ILogger<StandardCapabilityService> logger,
-            BuyingCatalogueDbContext dbContext
-            )
+        public StandardCapabilityService(BuyingCatalogueDbContext dbContext)
         {
-            this.logger = logger;
             this.dbContext = dbContext;
         }
 
