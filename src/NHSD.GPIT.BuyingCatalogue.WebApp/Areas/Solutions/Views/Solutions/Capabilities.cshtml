@@ -1,27 +1,27 @@
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.CapabilitiesViewModel;
 <nhs-summary-list>
-            <nhs-summary-list-row label-text="Supplier name">
-                <a href="@Url.Action(nameof(SolutionsController.SupplierDetails), new { solutionId = Model.SolutionId })">
-                    @Model.SupplierName
-                </a>
-            </nhs-summary-list-row>
-            <nhs-summary-list-row label-text="Solution ID">
-                <p>
-                    @Model.SolutionId
-                </p>
-            </nhs-summary-list-row>
-            <nhs-summary-list-row label-text="@Model.FrameworkTitle()">
-                <p>
-                    <partial name="DisplayTemplates/TableListCell" model="@Model.Frameworks.Select(x => x.ShortName).ToArray()" />
-                </p>
-            </nhs-summary-list-row>
-            <nhs-summary-list-row label-text="Foundation Solution">
-                <p>
-                    @Model.IsFoundation
-                </p>
-            </nhs-summary-list-row>
-        </nhs-summary-list>
+    <nhs-summary-list-row label-text="Supplier name">
+        <a href="@Url.Action(nameof(SolutionsController.SupplierDetails), new { solutionId = Model.SolutionId })">
+            @Model.SupplierName
+        </a>
+    </nhs-summary-list-row>
+    <nhs-summary-list-row label-text="Solution ID">
+        <p>
+            @Model.SolutionId
+        </p>
+    </nhs-summary-list-row>
+    <nhs-summary-list-row label-text="@Model.FrameworkTitle()">
+        <p>
+            <partial name="DisplayTemplates/TableListCell" model="@Model.Frameworks.Select(x => x.ShortName).ToArray()" />
+        </p>
+    </nhs-summary-list-row>
+    <nhs-summary-list-row label-text="Foundation Solution">
+        <p>
+            @Model.IsFoundation
+        </p>
+    </nhs-summary-list-row>
+</nhs-summary-list>
 <nhs-details label-text="What are Capabilities?">
     <p>
         Capabilities are how you can match a Catalogue Solution to a business need. For example,

@@ -1,8 +1,5 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ListPriceModel;
-@{
-    const string ContextualContent = "This is how much this Catalogue Solution costs:";
-}
 
 <article class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
@@ -30,7 +27,7 @@
         </nhs-summary-list>
 
         <nhs-card title="Price of Catalogue Solution">
-            <p>@ContextualContent</p>
+            <p>This is how much this Catalogue Solution costs:</p>
 
         @if (Model.HasFlatListPrices())
         {
