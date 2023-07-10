@@ -1,14 +1,36 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ListPriceModel;
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ListPriceModel;
 @{
-    const string ContextualContent = "This Catalogue Solution is available at the following";
-
-    string Contextual() => Model.FlatListPrices.Count > 1 ? $"{ContextualContent} prices excluding VAT:" : $"{ContextualContent} price excluding VAT:";
+    const string ContextualContent = "This is how much this Catalogue Solution costs:";
 }
 
 <article class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-two-thirds">
+    <div class="nhsuk-grid-column-full">
+        <nhs-summary-list>
+            <nhs-summary-list-row label-text="Supplier name">
+                <a href="@Url.Action(nameof(SolutionsController.SupplierDetails), new { solutionId = Model.SolutionId })">
+                    @Model.SupplierName
+                </a>
+            </nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Solution ID">
+                <p>
+                    @Model.SolutionId
+                </p>
+            </nhs-summary-list-row>
+            <nhs-summary-list-row label-text="@Model.FrameworkTitle()">
+                <p>
+                    <partial name="DisplayTemplates/TableListCell" model="@Model.Frameworks.Select(x => x.ShortName).ToArray()" />
+                </p>
+            </nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Foundation Solution">
+                <p>
+                    @Model.IsFoundation
+                </p>
+            </nhs-summary-list-row>
+        </nhs-summary-list>
 
-        <p><strong>@Contextual()</strong></p>
+        <nhs-card title="Price of Catalogue Solution">
+            <p>@ContextualContent</p>
 
         @if (Model.HasFlatListPrices())
         {
@@ -29,5 +51,6 @@
                 }
             </nhs-table>
         }
+        </nhs-card>
     </div>
 </article>

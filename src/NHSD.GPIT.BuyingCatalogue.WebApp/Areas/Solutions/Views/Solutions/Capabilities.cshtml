@@ -1,11 +1,45 @@
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.CapabilitiesViewModel;
-
+<nhs-summary-list>
+            <nhs-summary-list-row label-text="Supplier name">
+                <a href="@Url.Action(nameof(SolutionsController.SupplierDetails), new { solutionId = Model.SolutionId })">
+                    @Model.SupplierName
+                </a>
+            </nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Solution ID">
+                <p>
+                    @Model.SolutionId
+                </p>
+            </nhs-summary-list-row>
+            <nhs-summary-list-row label-text="@Model.FrameworkTitle()">
+                <p>
+                    <partial name="DisplayTemplates/TableListCell" model="@Model.Frameworks.Select(x => x.ShortName).ToArray()" />
+                </p>
+            </nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Foundation Solution">
+                <p>
+                    @Model.IsFoundation
+                </p>
+            </nhs-summary-list-row>
+        </nhs-summary-list>
+<nhs-details label-text="What are Capabilities?">
+    <p>
+        Capabilities are how you can match a Catalogue Solution to a business need. For example,
+        you may want to enable GP staff to make a digital record of any consultation with a
+        patient. You can therefore identify Catalogue Solutions which offer the 'Recording
+        Consultations' Capability.
+    </p>
+    <p>
+        Each Capability is a set of requirements that are defined using short descriptions called
+        Epics. The more functionality a Catalogue Solution has, the more Epics it will be able
+        to meet for a particular Capability.
+    </p>
+</nhs-details>
+<nhs-card title="@Model.CapabilitiesHeading">
 <article>
     <p>
-        <strong>
-            This Catalogue Solution has demonstrated that it can help meet the following business needs:
-        </strong>
+        This Catalogue Solution has demonstrated that it can help meet the following business needs:
     </p>
-
     <partial name="_CapabilitiesList" model="Model"/>
 </article>
+</nhs-card>
