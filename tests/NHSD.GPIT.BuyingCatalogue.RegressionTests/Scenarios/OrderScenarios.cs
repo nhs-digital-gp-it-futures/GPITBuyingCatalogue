@@ -2060,9 +2060,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        public void NewCompetition()
+        public void CompetitionForSingleResultFilter()
         {
+            string filter = "Single result filter";
             CompetitionPages.CompetitionDashboard.CreateNewCompetition();
+            CompetitionPages.BeforeYouStart.ReadyToStart();
+            CompetitionPages.SelectFilter.SelectFilterForNewCompetition(filter);
+
         }
     }
 }

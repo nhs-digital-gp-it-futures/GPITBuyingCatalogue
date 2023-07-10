@@ -74,6 +74,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
                 .FindElement(By.TagName("input"))
                 .Click();
 
+        public void ClickDropDownListWIthValue(string value) =>
+            new SelectElement(
+            Driver.FindElement(CommonSelectors.DropDownList)).SelectByText(value);
+           
+
         public IEnumerable<string> GetRadioButtonsOptions() =>
             Driver
                 .FindElements(CommonSelectors.RadioButtonItems)

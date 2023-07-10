@@ -38,6 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
             uri = new Uri(factory.RootUri);
 
             OrderingPages = new OrderingPages(Driver, CommonActions, factory);
+            CompetitionPages = new CompetitionPages(Driver, CommonActions, factory);
 
             NavigateToUrl(urlArea);
         }
