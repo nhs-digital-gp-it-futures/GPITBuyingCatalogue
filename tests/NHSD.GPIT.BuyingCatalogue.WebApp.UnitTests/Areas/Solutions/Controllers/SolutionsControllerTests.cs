@@ -402,10 +402,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             CatalogueItemId catalogueItemId,
             CatalogueItemId additionalServiceId,
             Solution solution,
+            Supplier supplier,
             AdditionalService additionalService,
             CatalogueItemContentStatus contentStatus)
         {
-            var catalogueItem = new CatalogueItem { Solution = solution, PublishedStatus = PublicationStatus.Published };
+            var catalogueItem = new CatalogueItem { Solution = solution, PublishedStatus = PublicationStatus.Published, Supplier = supplier };
 
             mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
                 .ReturnsAsync(catalogueItem);
