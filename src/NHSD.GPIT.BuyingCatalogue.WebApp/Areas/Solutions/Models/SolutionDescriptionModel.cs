@@ -18,9 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
             Description = solution.FullDescription;
             Summary = solution.Summary;
-
-            IsFoundation = catalogueItem.Solution.FrameworkSolutions.Any(fs => fs.IsFoundation).ToYesNo();
-            SupplierName = catalogueItem.Supplier.Name;
             AboutUrl = catalogueItem.Solution.AboutUrl;
         }
 
@@ -28,17 +25,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public string AboutUrl { get; init; }
 
-        public string IsFoundation { get; }
-
         public override int Index => 0;
 
         public string Summary { get; init; }
-
-        public string SupplierName { get; }
-
-        public string FrameworkTitle() => Frameworks is not null && Frameworks.Any() && Frameworks.Count > 1
-            ? "Frameworks"
-            : "Framework";
 
         public bool HasDescription() => !string.IsNullOrWhiteSpace(Description);
 

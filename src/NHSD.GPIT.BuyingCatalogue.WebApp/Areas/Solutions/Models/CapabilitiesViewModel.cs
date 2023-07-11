@@ -9,11 +9,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     public class CapabilitiesViewModel : SolutionDisplayBaseModel, INoNavModel
     {
-        public CapabilitiesViewModel(CatalogueItem solution, CatalogueItemContentStatus contentStatus, SolutionDescriptionModel solutionDescription)
+        public CapabilitiesViewModel(CatalogueItem solution, CatalogueItemContentStatus contentStatus)
             : base(solution, contentStatus)
         {
             RowViewModels = solution.CatalogueItemCapabilities.Select(cic => new RowViewModel(cic)).ToList();
-            SolutionDescription = solutionDescription;
         }
 
         public CapabilitiesViewModel(CatalogueItem solution, CatalogueItem additionalService, CatalogueItemContentStatus contentStatus)
@@ -39,7 +38,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public string BackLink { get; set; }
 
         public IList<RowViewModel> RowViewModels { get; } = new List<RowViewModel>();
-
-        public SolutionDescriptionModel SolutionDescription { get; set; }
     }
 }

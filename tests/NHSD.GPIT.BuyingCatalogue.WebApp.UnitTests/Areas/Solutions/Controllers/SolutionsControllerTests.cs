@@ -269,8 +269,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             var catalogueItem = solution.CatalogueItem;
             catalogueItem.PublishedStatus = PublicationStatus.Published;
-            var solutionDescription = new SolutionDescriptionModel(catalogueItem, contentStatus);
-            var capabilitiesViewModel = new CapabilitiesViewModel(catalogueItem, contentStatus, solutionDescription);
+            var capabilitiesViewModel = new CapabilitiesViewModel(catalogueItem, contentStatus);
 
             mockService.Setup(s => s.GetSolutionWithCapabilities(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
@@ -829,11 +828,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(contentStatus);
 
             var actual = (await controller.Features(catalogueItem.Id)).As<ViewResult>();
-            var solutionDescription = new SolutionDescriptionModel(catalogueItem, contentStatus);
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
-            actual.Model.Should().BeEquivalentTo(new SolutionFeaturesModel(catalogueItem, contentStatus, solutionDescription));
+            actual.Model.Should().BeEquivalentTo(new SolutionFeaturesModel(catalogueItem, contentStatus));
         }
 
         [Theory]
@@ -1003,8 +1001,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             var catalogueItem = solution.CatalogueItem;
             catalogueItem.PublishedStatus = PublicationStatus.Published;
-            var solutionDescription = new SolutionDescriptionModel(catalogueItem, contentStatus);
-            var mockSolutionListPriceModel = new ListPriceModel(catalogueItem, contentStatus, solutionDescription);
+            var mockSolutionListPriceModel = new ListPriceModel(catalogueItem, contentStatus);
 
             mockService.Setup(s => s.GetSolutionWithCataloguePrice(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);

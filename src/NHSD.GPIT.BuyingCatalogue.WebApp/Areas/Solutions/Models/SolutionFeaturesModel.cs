@@ -9,17 +9,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     public class SolutionFeaturesModel : SolutionDisplayBaseModel
     {
-        public SolutionFeaturesModel(CatalogueItem item, CatalogueItemContentStatus contentStatus, SolutionDescriptionModel solutionDescription)
+        public SolutionFeaturesModel(CatalogueItem item, CatalogueItemContentStatus contentStatus)
             : base(item, contentStatus)
         {
             Features = item.Features();
-            SolutionDescription = solutionDescription;
         }
 
         public string[] Features { get; }
 
         public override int Index => 1;
-
-        public SolutionDescriptionModel SolutionDescription { get; set; }
     }
 }
