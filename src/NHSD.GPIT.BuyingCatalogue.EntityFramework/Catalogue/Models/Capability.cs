@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     [Serializable]
-    public sealed partial class Capability : IAudited
+    public sealed class Capability : IAudited
     {
         public Capability()
         {
@@ -51,5 +52,15 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public ICollection<StandardCapability> StandardCapabilities { get; set; }
 
         public CapabilityStatus Status { get; set; }
+
+        public IReadOnlyCollection<Epic> GetActiveMustEpics() => CapabilityEpics
+            .Where(c => c.Epic.IsActive && c.CompliancyLevel == CompliancyLevel.Must)
+            .Select(c => c.Epic)
+            .ToList();
+
+        public IReadOnlyCollection<Epic> GetActiveMayEpics() => CapabilityEpics
+            .Where(c => c.Epic.IsActive && c.CompliancyLevel == CompliancyLevel.May)
+            .Select(c => c.Epic)
+            .ToList();
     }
 }
