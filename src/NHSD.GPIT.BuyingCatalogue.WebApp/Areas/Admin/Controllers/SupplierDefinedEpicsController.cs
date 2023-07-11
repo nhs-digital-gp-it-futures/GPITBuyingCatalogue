@@ -154,6 +154,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return RedirectToAction(nameof(Dashboard));
         }
 
+        [HttpGet("edit/{epicId}/select-capabilities")]
+        public async Task<IActionResult> EditCapabilities(string epicId)
+        {
+            var epic = await supplierDefinedEpicsService.GetEpic(epicId);
+            if (epic is null)
+                return BadRequest($"No Supplier defined Epic found for Id: {epicId}");
+
+            var capabilities = await capabilitiesService.GetCapabilities();
+            var relatedItems = await supplierDefinedEpicsService.GetItemsReferencingEpic(epicId);
+
+            var model = new SelectCapabilitiesModel(capabilities, "1.2")
+            {
+                BackLink = Url.Action(nameof(Dashboard)),
+            };
+
+            return View("Views/Shared/SelectCapabilities.cshtml", model.WithSelectListCapabilities(capabilities));
+        }
+
         [HttpGet("delete/{epicId}")]
         public async Task<IActionResult> DeleteEpic(string epicId)
         {

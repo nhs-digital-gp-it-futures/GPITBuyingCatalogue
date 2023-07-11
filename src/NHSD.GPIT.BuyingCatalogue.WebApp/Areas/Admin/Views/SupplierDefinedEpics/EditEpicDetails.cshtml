@@ -1,0 +1,96 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics.EditSupplierDefinedEpicModel
+@{
+    ViewBag.Title = "Supplier defined Epic details";
+}
+<partial name="Partials/_BackLink" model="Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary RadioId="IsActive" />
+        <nhs-page-title title="@ViewBag.Title"
+                        advice="Provide the following details about the supplier defined Epic." />
+
+        <form method="post">
+            <input type="hidden" asp-for="BackLink" />
+            <input type="hidden" asp-for="BackLinkText"/>
+            <input type="hidden" asp-for="CanDelete" />
+            <input type="hidden" asp-for="Id"/>
+
+            @*<nhs-select asp-for="SelectedCapabilityIds"
+                        asp-items="@Model.Capabilities"
+                        label-text="Capability"
+            label-hint="Select the Capability that this supplier defined Epic relates to." />*@
+
+            <nhs-input asp-for="Name"
+                       label-text="Epic name"
+                       label-hint="Provide a name for this supplier defined Epic." />
+
+            <nhs-textarea asp-for="Description"
+                       label-text="Description"
+                       label-hint="Outline the functionality provided by this supplier defined Epic."/>
+
+            @if(Model.RelatedItems.Count > 0)
+            {
+                <nhs-table data-test-id="epic-related-items-table" label-text="Catalogue Solutions or Additional Services referencing this Epic">
+                    <nhs-table-column>ID</nhs-table-column>
+                    <nhs-table-column>Name</nhs-table-column>
+                    <nhs-table-column>Action</nhs-table-column>
+                        @foreach(var relatedItem in Model.RelatedItems)
+                        {
+                            <nhs-table-row-container>
+                                <nhs-table-cell>@relatedItem.Id</nhs-table-cell>
+                                <nhs-table-cell>@relatedItem.Name</nhs-table-cell>
+                                <nhs-table-cell>
+                                    <a href="@GetEditUrl(relatedItem)" style="white-space: nowrap;">
+                                    Edit
+                                    </a>
+                                </nhs-table-cell>
+                            </nhs-table-row-container>
+                        }
+                </nhs-table>
+            } 
+            else
+            {
+                <nhs-inset-text data-test-id="epic-related-items-inset">
+                    <p>
+                        <b>Catalogue Solutions or Additional Services referencing this Epic</b>
+                    </p>
+                    <p>
+                        This Epic is currently not being referenced by any Catalogue Solutions or Additional Services.
+                    </p>
+                </nhs-inset-text>
+            }
+
+            <nhs-fieldset-form-label asp-for="@Model"
+                                     label-text="Epic status"
+                                     size="Medium"
+                                     data-test-id="active-status-buttons">
+                <nhs-radio-buttons asp-for="IsActive"
+                                   values="Model.ActiveOptions.Cast<object>()"
+                                   value-name="Value"
+                                   display-name="Text" />
+            </nhs-fieldset-form-label>
+
+            <nhs-submit-button />
+        </form>
+
+        @if (Model.CanDelete)
+        {
+                <vc:nhs-delete-button url="@Url.Action(
+                                               nameof(SupplierDefinedEpicsController.DeleteEpic),
+                                               typeof(SupplierDefinedEpicsController).ControllerName(),
+                                               new { epicId = Model.Id })"
+                              text="Delete Supplier defined Epic" />
+        }
+    </div>
+</div>
+@{
+    string GetEditUrl(CatalogueItem catalogueItem){
+        return catalogueItem.CatalogueItemType switch
+        {
+            CatalogueItemType.AdditionalService => Url.Action(nameof(AdditionalServicesController.EditCapabilities), typeof(AdditionalServicesController).ControllerName(), new { solutionId = catalogueItem.AdditionalService.SolutionId, additionalServiceId = catalogueItem.Id }),
+            CatalogueItemType.Solution => Url.Action(nameof(CatalogueSolutionsController.EditCapabilities), typeof(CatalogueSolutionsController).ControllerName(), new { solutionId = catalogueItem.Id }),
+            _ => string.Empty,
+        };
+    }
+}

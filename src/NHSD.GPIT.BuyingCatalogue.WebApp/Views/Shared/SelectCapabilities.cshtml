@@ -1,0 +1,57 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics.SelectCapabilitiesModel
+@{
+    ViewBag.Title = Model.Title;
+    var index = 0;
+}
+<partial name="Partials/_BackLink" model="Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-validation-summary RadioId="IsActive" />
+        <nhs-page-title title="@ViewBag.Title"
+                        advice="@Model.Advice" />
+
+        <hr/>
+        <div class="nhsuk-u-margin-bottom-9">
+            <h2>Select Capabilities</h2>
+            <p>@Model.Advice</p>
+        </div>
+
+        <form method="post">
+            @foreach (var category in Model.Groups)
+            {
+                var capabilities = Model.Items(category.Id);
+                <nhs-expander heading-text="@category.Name"
+                          label-text="@capabilities.Count @(capabilities.Count == 1 ? "result" : "results")"
+                          open="true">
+                    <p>
+                        @category.Description
+                    </p>
+                    <nhs-table label-text="Capability name">
+                        @foreach (var capability in capabilities)
+                        {
+                            <nhs-table-row-container>
+                                <nhs-table-cell>
+                                    <nhs-checkbox-container>
+                                        <nhs-checkbox asp-for="SelectedItems[index].Selected"
+                                              hidden-input="SelectedItems[index].Id"
+                                              label-text="@capability.Name"
+                                              sub-group="@category.Name" />
+                                    </nhs-checkbox-container>
+                                </nhs-table-cell>
+                            </nhs-table-row-container>
+                            index++;
+                        }
+                    </nhs-table>
+                </nhs-expander>
+                
+                <br />
+            }
+
+            <p class="selection-counter" style="display: none">
+                0 out of @Model.Total selected
+            </p>
+
+            <nhs-submit-button />
+        </form>
+    </div>
+</div>

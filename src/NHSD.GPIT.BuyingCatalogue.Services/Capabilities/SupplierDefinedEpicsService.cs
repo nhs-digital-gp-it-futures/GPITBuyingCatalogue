@@ -24,11 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             if (epicModel is null)
                 throw new ArgumentNullException(nameof(epicModel));
 
-            List<Capability> capabilities = new List<Capability>();
-            foreach (int id in epicModel.CapabilityIds)
-            {
-                capabilities.Add(await dbContext.Capabilities.FirstOrDefaultAsync(x => x.Id == id));
-            }
+            List<Capability> capabilities = await GetCapabilities(epicModel);
 
             var epic = new Epic
             {
@@ -61,12 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             epic.Name = epicModel.Name;
             epic.Description = epicModel.Description;
             epic.IsActive = epicModel.IsActive;
-
-            List<Capability> capabilities = new List<Capability>();
-            foreach (int id in epicModel.CapabilityIds)
-            {
-                capabilities.Add(await dbContext.Capabilities.FirstOrDefaultAsync(x => x.Id == id));
-            }
+            List<Capability> capabilities = await GetCapabilities(epicModel);
 
             epic.Capabilities.Clear();
             epic.Capabilities = capabilities;
@@ -149,6 +140,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
                       && e.Epic.SupplierDefined == true)
                   .Select(e => e.CatalogueItem)
                   .ToListAsync();
+        }
+
+        private async Task<List<Capability>> GetCapabilities(AddEditSupplierDefinedEpic epicModel)
+        {
+            List<Capability> capabilities = new List<Capability>();
+            foreach (int id in epicModel.CapabilityIds)
+            {
+                capabilities.Add(await dbContext.Capabilities.FirstOrDefaultAsync(x => x.Id == id));
+            }
+
+            return capabilities;
         }
     }
 }

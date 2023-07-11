@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
+using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers;
@@ -35,13 +37,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpi
                 Id = $"{x.Id}",
                 Selected = selected.Contains(x.Id),
             }).ToArray();
+
+            Title = "Capabilities for this supplier defined Epic";
+            Advice = "Select the Capabilities relating to this supplier defined Epic.";
         }
 
         public string Id { get; set; }
 
         public IEnumerable<CapabilityCategory> Groups { get; set; }
-
-        protected Dictionary<int, IOrderedEnumerable<Capability>> GroupedItems { get; set; } = new();
 
         public int Total { get; set; }
 
@@ -58,6 +61,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpi
         public bool? IsActive { get; set; }
 
         public IList<SelectOption<string>> Capabilities { get; set; }
+
+        protected Dictionary<int, IOrderedEnumerable<Capability>> GroupedItems { get; set; } = new();
 
         public IList<SelectOption<string>> ActiveOptions => new List<SelectOption<string>>
         {
