@@ -223,8 +223,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return RedirectToAction(nameof(Description), new { solutionId });
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+            var solutionDescription = new SolutionDescriptionModel(item, contentStatus);
 
-            var model = new CapabilitiesViewModel(item, contentStatus)
+            var model = new CapabilitiesViewModel(item, contentStatus, solutionDescription)
             {
                 BackLinkText = NavBaseModel.BackLinkTextDefault,
                 BackLink = Url.Action(
@@ -373,8 +374,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return RedirectToAction(nameof(Description), new { solutionId });
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+            var solutionDescription = new SolutionDescriptionModel(item, contentStatus);
 
-            return View(new SolutionFeaturesModel(item, contentStatus));
+            return View(new SolutionFeaturesModel(item, contentStatus, solutionDescription));
         }
 
         [HttpGet("{solutionId}/hosting-type")]
@@ -433,8 +435,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return RedirectToAction(nameof(Description), new { solutionId });
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+            var solutionDescription = new SolutionDescriptionModel(item, contentStatus);
 
-            return View(new ListPriceModel(item, contentStatus));
+            return View(new ListPriceModel(item, contentStatus, solutionDescription));
         }
 
         [HttpGet("{solutionId}/service-level-agreements")]

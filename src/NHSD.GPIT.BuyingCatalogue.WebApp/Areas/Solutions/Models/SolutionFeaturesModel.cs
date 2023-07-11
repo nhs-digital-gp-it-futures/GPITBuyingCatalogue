@@ -9,24 +9,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     public class SolutionFeaturesModel : SolutionDisplayBaseModel
     {
-        public SolutionFeaturesModel(CatalogueItem item, CatalogueItemContentStatus contentStatus)
+        public SolutionFeaturesModel(CatalogueItem item, CatalogueItemContentStatus contentStatus, SolutionDescriptionModel solutionDescription)
             : base(item, contentStatus)
         {
             Features = item.Features();
-            SupplierName = item.Supplier.Name;
-            IsFoundation = item.Solution.FrameworkSolutions.Any(fs => fs.IsFoundation).ToYesNo();
+            SolutionDescription = solutionDescription;
         }
 
         public string[] Features { get; }
 
         public override int Index => 1;
 
-        public string SupplierName { get; }
-
-        public string IsFoundation { get; }
-
-        public string FrameworkTitle() => Frameworks is not null && Frameworks.Any() && Frameworks.Count > 1
-            ? "Frameworks"
-            : "Framework";
+        public SolutionDescriptionModel SolutionDescription { get; set; }
     }
 }

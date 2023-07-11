@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         {
         }
 
-        public ListPriceModel(CatalogueItem item, CatalogueItemContentStatus contentStatus)
+        public ListPriceModel(CatalogueItem item, CatalogueItemContentStatus contentStatus, SolutionDescriptionModel solutionDescription)
             : base(item, contentStatus)
         {
             FlatListPrices = item.CataloguePrices
@@ -22,22 +22,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                     cp.CataloguePriceType == CataloguePriceType.Flat
                     && cp.PublishedStatus == PublicationStatus.Published)
                 .Select(cp => new PriceViewModel(cp)).ToList();
-
-            IsFoundation = item.Solution.FrameworkSolutions.Any(fs => fs.IsFoundation).ToYesNo();
-            SupplierName = item.Supplier.Name;
+            SolutionDescription = solutionDescription;
         }
-
-        public string SupplierName { get; }
-
-        public string IsFoundation { get; }
 
         public override int Index => 2;
 
         public IList<PriceViewModel> FlatListPrices { get; set; }
 
-        public string FrameworkTitle() => Frameworks is not null && Frameworks.Any() && Frameworks.Count > 1
-            ? "Frameworks"
-            : "Framework";
+        public SolutionDescriptionModel SolutionDescription { get; set; }
 
         public bool HasFlatListPrices() => FlatListPrices?.Any() == true;
     }

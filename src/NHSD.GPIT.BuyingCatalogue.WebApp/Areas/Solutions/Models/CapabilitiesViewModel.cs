@@ -9,12 +9,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     public class CapabilitiesViewModel : SolutionDisplayBaseModel, INoNavModel
     {
-        public CapabilitiesViewModel(CatalogueItem solution, CatalogueItemContentStatus contentStatus)
+        public CapabilitiesViewModel(CatalogueItem solution, CatalogueItemContentStatus contentStatus, SolutionDescriptionModel solutionDescription)
             : base(solution, contentStatus)
         {
             RowViewModels = solution.CatalogueItemCapabilities.Select(cic => new RowViewModel(cic)).ToList();
-            SupplierName = solution.Supplier.Name;
-            IsFoundation = solution.Solution.FrameworkSolutions.Any(fs => fs.IsFoundation).ToYesNo();
+            SolutionDescription = solutionDescription;
         }
 
         public CapabilitiesViewModel(CatalogueItem solution, CatalogueItem additionalService, CatalogueItemContentStatus contentStatus)
@@ -26,10 +25,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public CapabilitiesViewModel()
         {
         }
-
-        public string SupplierName { get; }
-
-        public string IsFoundation { get; }
 
         public string CapabilitiesHeading { get; set; } = "Capabilities met";
 
@@ -45,8 +40,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public IList<RowViewModel> RowViewModels { get; } = new List<RowViewModel>();
 
-        public string FrameworkTitle() => Frameworks is not null && Frameworks.Any() && Frameworks.Count > 1
-            ? "Frameworks"
-            : "Framework";
+        public SolutionDescriptionModel SolutionDescription { get; set; }
     }
 }
