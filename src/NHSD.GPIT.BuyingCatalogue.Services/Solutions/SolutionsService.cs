@@ -43,6 +43,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public async Task<CatalogueItem> GetSolutionWithCapabilities(CatalogueItemId solutionId) =>
             await dbContext.CatalogueItems.AsNoTracking()
                 .Include(ci => ci.Solution)
+                    .ThenInclude(s => s.FrameworkSolutions)
+                    .ThenInclude(s => s.Framework)
+                .Include(ci => ci.Supplier)
                 .Include(ci => ci.CatalogueItemCapabilities)
                     .ThenInclude(cic => cic.Capability)
                 .Include(ci => ci.CatalogueItemEpics)
@@ -64,6 +67,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(ci => ci.CataloguePrices)
                 .ThenInclude(p => p.PricingUnit)
                 .Include(ci => ci.Solution)
+                    .ThenInclude(s => s.FrameworkSolutions)
+                    .ThenInclude(s => s.Framework)
+                .Include(ci => ci.Supplier)
                 .FirstOrDefaultAsync(ci => ci.Id == solutionId);
 
         public async Task<CatalogueItem> GetSolutionWithSupplierDetails(CatalogueItemId solutionId) =>

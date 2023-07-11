@@ -5,32 +5,9 @@
         <article>
             <div class="nhsuk-grid-row">
                 <div class="nhsuk-grid-column-full">
-                    <nhs-summary-list>
-                        <nhs-summary-list-row label-text="Supplier name">
-                        <p>
-                            <a href="@Url.Action(nameof(SolutionsController.SupplierDetails), new { solutionId = Model.SolutionId })">
-                                @Model.SupplierName
-                            </a>
-                        </p>
-                        </nhs-summary-list-row>
-                        <nhs-summary-list-row label-text="Solution ID">
-                        <p>
-                            @Model.SolutionId
-                        </p>
-                        </nhs-summary-list-row>
-                        <nhs-summary-list-row label-text="@Model.FrameworkTitle()">
-                        <p>
-                            <partial name="DisplayTemplates/TableListCell" model="@Model.Frameworks.Select(x => x.ShortName).ToArray()" />
-                        </p>
-                        </nhs-summary-list-row>
-                        <nhs-summary-list-row label-text="Foundation Solution">
-                        <p>
-                            @Model.IsFoundation
-                        </p>
-                        </nhs-summary-list-row>
-                     </nhs-summary-list>
+                    <partial name="_solutionSummary" model="Model"/>
 
-                    <nhs-card title="@Model.SolutionName features">
+                    <nhs-card title="@Model.SolutionName features" >
                         <ul>
                             @foreach (string feature in Model.Features.Where(s => !string.IsNullOrWhiteSpace(s)))
                             {

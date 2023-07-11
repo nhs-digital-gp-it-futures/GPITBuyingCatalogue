@@ -13,20 +13,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             : base(item, contentStatus)
         {
             Features = item.Features();
-            SupplierName = item.Supplier.Name;
-            IsFoundation = item.Solution.FrameworkSolutions.Any(fs => fs.IsFoundation).ToYesNo();
         }
 
         public string[] Features { get; }
 
         public override int Index => 1;
-
-        public string SupplierName { get; }
-
-        public string IsFoundation { get; }
-
-        public string FrameworkTitle() => Frameworks is not null && Frameworks.Any() && Frameworks.Count > 1
-            ? "Frameworks"
-            : "Framework";
     }
 }

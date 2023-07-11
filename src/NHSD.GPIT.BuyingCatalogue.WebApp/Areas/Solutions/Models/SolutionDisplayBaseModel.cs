@@ -35,6 +35,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             IsPilotSolution = catalogueItem.Solution.IsPilotSolution;
             LastReviewed = catalogueItem.Solution.LastUpdated;
             Frameworks = catalogueItem.Solution.FrameworkSolutions.Select(x => x.Framework).Distinct().ToList();
+            SupplierName = catalogueItem.Supplier.Name;
+            IsFoundation = catalogueItem.Solution.FrameworkSolutions.Any(fs => fs.IsFoundation).ToYesNo();
 
             SetSections(contentStatus);
             SetPaginationFooter();
@@ -58,7 +60,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public List<BuyingCatalogue.EntityFramework.Catalogue.Models.Framework> Frameworks { get; set; }
 
+        public string SupplierName { get; }
+
+        public string IsFoundation { get; }
+
         public bool HasExpiredFrameworks => Frameworks.Any(x => x.IsExpired);
+
+        public string FrameworkTitle() => Frameworks is not null && Frameworks.Any() && Frameworks.Count > 1
+            ? "Frameworks"
+            : "Framework";
 
         public virtual IList<SectionModel> GetSections()
         {
