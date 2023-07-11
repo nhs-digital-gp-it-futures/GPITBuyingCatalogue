@@ -268,8 +268,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             CatalogueItemContentStatus contentStatus)
         {
             var catalogueItem = solution.CatalogueItem;
-            catalogueItem.PublishedStatus = PublicationStatus.Published;var solutionDescription = new SolutionDescriptionModel(catalogueItem, contentStatus);
+            catalogueItem.PublishedStatus = PublicationStatus.Published;
+            var solutionDescription = new SolutionDescriptionModel(catalogueItem, contentStatus);
             var capabilitiesViewModel = new CapabilitiesViewModel(catalogueItem, contentStatus, solutionDescription);
+
             mockService.Setup(s => s.GetSolutionWithCapabilities(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
