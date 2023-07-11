@@ -1,0 +1,24 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
+<nhs-summary-list>
+    <nhs-summary-list-row label-text="Supplier name">
+        <a href="@Url.Action(nameof(SolutionsController.SupplierDetails), new { solutionId = Model.SolutionId })">
+            @Model.SupplierName
+        </a>
+    </nhs-summary-list-row>
+    <nhs-summary-list-row label-text="Solution ID">
+        <p>
+            @Model.SolutionId
+        </p>
+    </nhs-summary-list-row>
+    <nhs-summary-list-row label-text="@Model.FrameworkTitle()">
+        <p>
+            <partial name="DisplayTemplates/TableListCell" model="((IEnumerable<Framework>)Model.Frameworks).Select(x => x.ShortName).ToArray()" />
+        </p>
+    </nhs-summary-list-row>
+    <nhs-summary-list-row label-text="Foundation Solution">
+        <p>
+            @Model.IsFoundation
+        </p>
+    </nhs-summary-list-row>
+</nhs-summary-list>

@@ -3,28 +3,7 @@
 
 <article class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
-        <nhs-summary-list>
-            <nhs-summary-list-row label-text="Supplier name">
-                <a href="@Url.Action(nameof(SolutionsController.SupplierDetails), new { solutionId = Model.SolutionId })">
-                    @Model.SupplierName
-                </a>
-            </nhs-summary-list-row>
-            <nhs-summary-list-row label-text="Solution ID">
-                <p>
-                    @Model.SolutionId
-                </p>
-            </nhs-summary-list-row>
-            <nhs-summary-list-row label-text="@Model.FrameworkTitle()">
-                <p>
-                    <partial name="DisplayTemplates/TableListCell" model="@Model.Frameworks.Select(x => x.ShortName).ToArray()" />
-                </p>
-            </nhs-summary-list-row>
-            <nhs-summary-list-row label-text="Foundation Solution">
-                <p>
-                    @Model.IsFoundation
-                </p>
-            </nhs-summary-list-row>
-        </nhs-summary-list>
+        <partial name="_solutionSummary" model="Model"/>
 
         <nhs-card title="Price of Catalogue Solution">
             <p>This is how much this Catalogue Solution costs:</p>
