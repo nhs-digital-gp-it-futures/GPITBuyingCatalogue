@@ -174,8 +174,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 .Setup(s => s.GetOrderThin(callOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));
 
-            controller.ModelState.AddModelError("some-property", "some-error");
-
             var result = await controller.AddMilestone(internalOrgId, callOffId, model);
 
             mockOrderService.VerifyAll();
@@ -301,8 +299,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             mockOrderService
                 .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));
-
-            controller.ModelState.AddModelError("some-property", "some-error");
 
             var result = await controller.EditMilestone(internalOrgId, order.CallOffId, model);
 
