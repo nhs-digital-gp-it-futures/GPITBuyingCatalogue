@@ -40,11 +40,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
 
         [Theory]
         [CommonAutoData]
-        public static void Validate_Milestone_Quantity0_SetsModelError(
+        public static void Validate_Milestone_QuantityNull_SetsModelError(
             ContractBillingItemModel model,
             ContractBillingItemModelValidator validator)
         {
-            model.Quantity = 0;
+            model.Quantity = null;
 
             var result = validator.TestValidate(model);
 
