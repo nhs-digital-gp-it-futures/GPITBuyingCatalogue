@@ -4,10 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
-using NHSD.GPIT.BuyingCatalogue.Services.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
 {
@@ -23,17 +21,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
         public async Task<Contract> AddContractBilling(int orderId, int contractId)
         {
             var contract = await dbContext.Contracts
-                .Include(x => x.Order)
-                    .ThenInclude(x => x.OrderItems)
-                        .ThenInclude(x => x.CatalogueItem)
                 .Include(x => x.ContractBilling)
-                .FirstOrDefaultAsync(o => o.Id == contractId && o.OrderId == orderId) ?? throw new ArgumentException("Invalid contract", nameof(contractId));
+                .FirstOrDefaultAsync(o => o.Id == contractId && o.OrderId == orderId);
 
-            if (contract.ContractBilling is null)
-            {
-                contract.ContractBilling = new ContractBilling();
-                await dbContext.SaveChangesAsync();
-            }
+            contract.ContractBilling ??= new ContractBilling();
+            await dbContext.SaveChangesAsync();
 
             return contract;
         }
@@ -45,10 +37,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             if (string.IsNullOrEmpty(paymentTrigger))
                 throw new ArgumentNullException(nameof(paymentTrigger));
 
-            var contract = await AddContractBilling(orderId, contractId);
+            var contract = await dbContext.Contracts
+                .Include(x => x.Order)
+                .ThenInclude(x => x.OrderItems)
+                .ThenInclude(x => x.CatalogueItem)
+                .Include(x => x.ContractBilling)
+                .FirstOrDefaultAsync(o => o.Id == contractId && o.OrderId == orderId);
 
-            var associatedService = contract.Order.GetAssociatedService(catalogueItemId) ?? throw new ArgumentException("Invalid associated service", nameof(catalogueItemId));
+            var associatedService = contract.Order.GetAssociatedService(catalogueItemId);
 
+            contract.ContractBilling ??= new ContractBilling();
             contract.ContractBilling.ContractBillingItems.Add(new ContractBillingItem()
             {
                 OrderItem = associatedService,
@@ -81,12 +79,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
                 return;
             }
 
-            var order = await dbContext.Orders
-                    .Include(x => x.OrderItems)
-                    .ThenInclude(x => x.CatalogueItem)
-                .FirstOrDefaultAsync(x => x.Id == orderId) ?? throw new ArgumentException("Invalid order", nameof(orderId));
-
-            var associatedService = order.GetAssociatedService(catalogueItemId) ?? throw new ArgumentException("Invalid associated service", nameof(catalogueItemId));
+            var associatedService = await dbContext.OrderItems
+                .FirstOrDefaultAsync(x => x.OrderId == orderId && x.CatalogueItemId == catalogueItemId);
 
             item.OrderItem = associatedService;
             item.Milestone.Title = name;
@@ -114,15 +108,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             var items = dbContext.ContractBillingItems
                 .Where(x => x.OrderId == orderId && catalogueItemIds.Contains(x.CatalogueItemId));
 
-            if (items.Any())
+            if (!items.Any())
             {
-                foreach (var item in items)
-                {
-                    dbContext.ContractBillingItems.Remove(item);
-                }
-
-                await dbContext.SaveChangesAsync();
+                return;
             }
+
+            foreach (var item in items)
+            {
+                dbContext.ContractBillingItems.Remove(item);
+            }
+
+            await dbContext.SaveChangesAsync();
         }
     }
 }

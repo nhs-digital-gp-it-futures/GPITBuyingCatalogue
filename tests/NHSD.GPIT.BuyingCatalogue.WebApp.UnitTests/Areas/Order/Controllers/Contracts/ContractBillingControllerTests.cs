@@ -160,6 +160,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
         [Theory]
         [CommonAutoData]
+        public static async Task Post_AddMilestone_InvalidOrder_ReturnsNotFound(
+            string internalOrgId,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            ContractBillingItemModel model,
+            ContractBillingController controller)
+        {
+            order.OrderItems.Clear();
+
+            mockOrderService
+                .Setup(s => s.GetOrderThin(callOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            controller.ModelState.AddModelError("some-property", "some-error");
+
+            var result = await controller.AddMilestone(internalOrgId, callOffId, model);
+
+            mockOrderService.VerifyAll();
+
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static async Task Post_AddMilestone_ModelError_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -168,6 +193,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             ContractBillingItemModel model,
             ContractBillingController controller)
         {
+            order.OrderItems.Add(new OrderItem()
+            {
+                CatalogueItemId = model.SelectedOrderItemId,
+                CatalogueItem = new CatalogueItem() { Name = "Test", Id = model.SelectedOrderItemId, CatalogueItemType = CatalogueItemType.AssociatedService, },
+            });
+
             mockOrderService
                 .Setup(s => s.GetOrderThin(callOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));
@@ -196,6 +227,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             [Frozen] Mock<IContractBillingService> mockContractBillingService,
             ContractBillingController controller)
         {
+            order.OrderItems.Add(new OrderItem()
+            {
+                CatalogueItemId = model.SelectedOrderItemId,
+                CatalogueItem = new CatalogueItem() { Name = "Test", Id = model.SelectedOrderItemId, CatalogueItemType = CatalogueItemType.AssociatedService, },
+            });
             contract.Order = order;
             mockOrderService
                 .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
@@ -253,6 +289,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
         [Theory]
         [CommonAutoData]
+        public static async Task Post_EditMilestone_InvalidOrder_ReturnsNotFoundResult(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            ContractBillingItemModel model,
+            ContractBillingController controller)
+        {
+            order.OrderItems.Clear();
+
+            mockOrderService
+                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            controller.ModelState.AddModelError("some-property", "some-error");
+
+            var result = await controller.EditMilestone(internalOrgId, order.CallOffId, model);
+
+            mockOrderService.VerifyAll();
+
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static async Task Post_EditMilestone_ModelError_ReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
@@ -260,6 +320,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             ContractBillingItemModel model,
             ContractBillingController controller)
         {
+            order.OrderItems.Add(new OrderItem()
+            {
+                CatalogueItemId = model.SelectedOrderItemId,
+                CatalogueItem = new CatalogueItem() { Name = "Test", Id = model.SelectedOrderItemId, CatalogueItemType = CatalogueItemType.AssociatedService, },
+            });
+
             mockOrderService
                 .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));
@@ -286,6 +352,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             [Frozen] Mock<IContractBillingService> mockContractBillingService,
             ContractBillingController controller)
         {
+            order.OrderItems.Add(new OrderItem()
+            {
+                CatalogueItemId = model.SelectedOrderItemId,
+                CatalogueItem = new CatalogueItem() { Name = "Test", Id = model.SelectedOrderItemId, CatalogueItemType = CatalogueItemType.AssociatedService, },
+            });
+
             mockOrderService
                 .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));

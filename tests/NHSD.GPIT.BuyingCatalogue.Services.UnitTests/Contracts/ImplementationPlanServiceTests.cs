@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task AddImplementationPlan_ImplementationPlanExists_ReturnsExistingContract(
+        public static async Task AddImplementationPlan_ImplementationPlanExists_ReturnsExistingImplementationPlan(
             int orderId,
             [Frozen] BuyingCatalogueDbContext dbContext,
             ImplementationPlanService service,
@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task AddImplementationPlan_ImplementationPlanDoesNotExist_ReturnsContract(
+        public static async Task AddImplementationPlan_ImplementationPlanDoesNotExist_ReturnsNewImplementationPlan(
             int orderId,
             [Frozen] BuyingCatalogueDbContext dbContext,
             ImplementationPlanService service)

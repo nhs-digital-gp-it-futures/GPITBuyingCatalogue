@@ -30,14 +30,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
         public async Task<Contract> AddImplementationPlan(int orderId, int contractId)
         {
             var contract = await dbContext.Contracts.Include(x => x.ImplementationPlan)
-                .FirstOrDefaultAsync(o => o.Id == contractId && o.OrderId == orderId) ?? throw new ArgumentException("Invalid contract", nameof(contractId));
+                .FirstOrDefaultAsync(o => o.Id == contractId && o.OrderId == orderId);
 
-            if (contract.ImplementationPlan is null)
-            {
-                var implementationPlan = new ImplementationPlan() { IsDefault = false, };
-                contract.ImplementationPlan = implementationPlan;
-                await dbContext.SaveChangesAsync();
-            }
+            contract.ImplementationPlan ??= new ImplementationPlan() { IsDefault = false, };
+            await dbContext.SaveChangesAsync();
 
             return contract;
         }

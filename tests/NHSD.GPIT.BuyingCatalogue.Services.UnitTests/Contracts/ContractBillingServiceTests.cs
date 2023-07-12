@@ -140,66 +140,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
         [Theory]
         [InMemoryDbAutoData]
-        public static void AddBespokeContractBillingItem_NullContract_ThrowsException(
-            string paymentTrigger,
-            int orderId,
-            int contractId,
-            CatalogueItemId catalogueItemId,
-            string name,
-            int quantity,
-            ContractBillingService service)
-        {
-            FluentActions
-                .Awaiting(
-                    () => service.AddBespokeContractBillingItem(
-                        orderId,
-                        contractId,
-                        catalogueItemId,
-                        name,
-                        paymentTrigger,
-                        quantity))
-                .Should()
-                .ThrowAsync<ArgumentException>(nameof(contractId));
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
-        public static async Task AddBespokeContractBillingItem_NullAssociatedService_ThrowsException(
-            [Frozen] BuyingCatalogueDbContext context,
-            string paymentTrigger,
-            int orderId,
-            int contractId,
-            CatalogueItemId catalogueItemId,
-            string name,
-            int quantity,
-            Contract contract,
-            Order order,
-            ContractBillingService service)
-        {
-            context.Orders.Add(order);
-            await context.SaveChangesAsync();
-
-            contract.Order = order;
-            contract.ContractBilling = null;
-            context.Contracts.Add(contract);
-            await context.SaveChangesAsync();
-            context.ChangeTracker.Clear();
-
-            await FluentActions
-                .Awaiting(
-                    () => service.AddBespokeContractBillingItem(
-                        orderId,
-                        contractId,
-                        catalogueItemId,
-                        name,
-                        paymentTrigger,
-                        quantity))
-                .Should()
-                .ThrowAsync<ArgumentException>(nameof(catalogueItemId));
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
         public static async Task AddBespokeContractBillingItem_NullContractBilling_ContractBillingAndItemCreated(
             [Frozen] BuyingCatalogueDbContext context,
             CatalogueItemId catalogueItemId,
