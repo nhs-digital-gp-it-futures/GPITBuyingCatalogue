@@ -8,14 +8,14 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-validation-summary />
+        <nhs-validation-summary/>
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.CompetitionName"
                         advice="Explain your requirements for when the winning solution is implemented."/>
 
         <form method="post">
-            <input type="hidden" asp-for="CompetitionName" />
-            <input type="hidden" asp-for="BackLink" />
+            <input type="hidden" asp-for="CompetitionName"/>
+            <input type="hidden" asp-for="BackLink"/>
 
             <nhs-textarea asp-for="Requirements"
                           label-text="Implementation requirements"
@@ -23,7 +23,12 @@
                           character-count="false"/>
 
             <br/>
-            <nhs-submit-button/>
+            <div>
+                <nhs-submit-button/>
+            </div>
+            <div>
+                <a href="@Model.BackLink">Cancel</a>
+            </div>
         </form>
 
     </div>
