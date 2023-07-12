@@ -16,6 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
 
         public void CreateNewOrder()
         {
+            CommonActions.ClickLinkElement(OrganisationDashboard.CreateManageOrders);
+
             CommonActions.ClickLinkElement(OrganisationDashboard.CreateOrderLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
