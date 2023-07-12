@@ -241,6 +241,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         [HttpPost("amend")]
         public async Task<IActionResult> AmendOrder(string internalOrgId, CallOffId callOffId, AmendOrderModel model)
         {
+            var hasSubsequentRevisions = await orderService.HasSubsequentRevisions(callOffId);
+            if (hasSubsequentRevisions)
+            {
+                return RedirectToAction(
+                    nameof(DashboardController.Organisation),
+                    typeof(DashboardController).ControllerName(),
+                    new { internalOrgId });
+            }
+
             var amendment = await orderService.AmendOrder(internalOrgId, callOffId);
 
             return RedirectToAction(
