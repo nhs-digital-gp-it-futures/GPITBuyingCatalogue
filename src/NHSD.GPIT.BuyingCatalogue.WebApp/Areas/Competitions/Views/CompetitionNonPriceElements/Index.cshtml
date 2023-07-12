@@ -1,9 +1,11 @@
-@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 @model NonPriceElementsModel
 
 @{
     ViewBag.Title = "Non-price elements";
 
+    var advice = Model.HasAllNonPriceElements()
+        ? "All available non-price elements have been added for this competition."
+        : "Add at least 1 optional non-price element to help you score your shortlisted solutions, for example implementation, interoperability or service levels.";
     var routeValues = new { internalOrgId = Model.InternalOrgId, competitionId = Model.CompetitionId };
     var editRouteValues = new { internalOrgId = Model.InternalOrgId, competitionId = Model.CompetitionId, isEdit = true };
 }
@@ -14,7 +16,7 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.CompetitionName"
-                        advice="Add at least 1 optional non-price element to help you score your shortlisted solutions, for example implementation, interoperability or service levels."/>
+                        advice="@advice"/>
 
         @if (!Model.HasAllNonPriceElements())
         {
