@@ -242,7 +242,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 .ReturnsAsync(contract);
 
             mockContractBillingService
-                .Setup(x => x.AddBespokeContractBillingItem(order.Id, contract.Id, model.SelectedOrderItemId, model.Name, model.PaymentTrigger, model.Quantity))
+                .Setup(x => x.AddBespokeContractBillingItem(order.Id, contract.Id, model.SelectedOrderItemId, model.Name, model.PaymentTrigger, model.Quantity.GetValueOrDefault()))
                 .Returns(Task.CompletedTask);
 
             var result = await controller.AddMilestone(internalOrgId, order.CallOffId, model);
@@ -363,7 +363,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 .ReturnsAsync(new OrderWrapper(order));
 
             mockContractBillingService
-                .Setup(x => x.EditContractBillingItem(order.Id, model.ItemId, model.SelectedOrderItemId, model.Name, model.PaymentTrigger, model.Quantity))
+                .Setup(x => x.EditContractBillingItem(order.Id, model.ItemId, model.SelectedOrderItemId, model.Name, model.PaymentTrigger, model.Quantity.GetValueOrDefault()))
                 .Returns(Task.CompletedTask);
 
             var result = await controller.EditMilestone(internalOrgId, order.CallOffId, model);

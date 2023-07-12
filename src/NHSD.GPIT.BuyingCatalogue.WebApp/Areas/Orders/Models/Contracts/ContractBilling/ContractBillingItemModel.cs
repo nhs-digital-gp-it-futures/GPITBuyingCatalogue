@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Contrac
         [StringLength(500)]
         public string PaymentTrigger { get; set; }
 
-        public int Quantity { get; set; }
+        public int? Quantity { get; set; }
 
         public override string Advice => IsEdit ? "Edit this Associated Service milestone." : "Add an Associated Service milestone.";
 
