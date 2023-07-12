@@ -88,14 +88,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         public async Task<IActionResult> AddMilestone(string internalOrgId, CallOffId callOffId, ContractBillingItemModel model)
         {
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
-            if (order?.GetAssociatedService(model.SelectedOrderItemId) is null)
-                return NotFound();
 
             if (!ModelState.IsValid)
             {
                 model.AssociatedServices = order.GetAssociatedServices();
                 return View("ContractBillingItem", model);
             }
+
+            if (order?.GetAssociatedService(model.SelectedOrderItemId) is null)
+                return NotFound();
 
             var contract = await contractsService.GetContract(order.Id);
             await contractBillingService.AddBespokeContractBillingItem(order.Id, contract.Id, model.SelectedOrderItemId, model.Name, model.PaymentTrigger, model.Quantity.GetValueOrDefault());
@@ -125,14 +126,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         public async Task<IActionResult> EditMilestone(string internalOrgId, CallOffId callOffId, ContractBillingItemModel model)
         {
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
-            if (order?.GetAssociatedService(model.SelectedOrderItemId) is null)
-                return NotFound();
 
             if (!ModelState.IsValid)
             {
                 model.AssociatedServices = order.GetAssociatedServices();
                 return View("ContractBillingItem", model);
             }
+
+            if (order?.GetAssociatedService(model.SelectedOrderItemId) is null)
+                return NotFound();
 
             await contractBillingService.EditContractBillingItem(order.Id, model.ItemId, model.SelectedOrderItemId, model.Name, model.PaymentTrigger, model.Quantity.GetValueOrDefault());
 
