@@ -399,6 +399,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
 
         [Theory]
         [CommonAutoData]
+        public static async Task Post_AmendOrder_HasSubsequentRevisions_Redirects(
+            string internalOrgId,
+            CallOffId callOffId,
+            AmendOrderModel model,
+            [Frozen] Mock<IOrderService> orderService,
+            OrderController controller)
+        {
+            orderService.Setup(x => x.HasSubsequentRevisions(callOffId)).ReturnsAsync(true);
+
+            var result = (await controller.AmendOrder(internalOrgId, callOffId, model)).As<RedirectToActionResult>();
+
+            orderService.VerifyAll();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(DashboardController.Organisation));
+            result.ControllerName.Should().Be(typeof(DashboardController).ControllerName());
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static async Task Post_AmendOrder_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
