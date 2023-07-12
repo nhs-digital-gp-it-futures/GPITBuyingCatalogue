@@ -21,30 +21,25 @@
         <nhs-page-title title="@ViewBag.Title"
                         caption="Order @Model.CallOffId"
                         advice="Before amending an order, familiarise yourself with what you can and cannot change."/>
-    
+
         <vc:nhs-do-list title="You can"
                         items="@Model.DoItems"/>
 
         <vc:nhs-dont-list title="You cannot"
                           items="@Model.DontItems"/>
-        
+
         <form method="post">
             <nhs-submit-button text="Amend order"/>
-            
+
             <p>
                 <a href="@Url.Action(
                              nameof(DashboardController.Index),
                              typeof(DashboardController).ControllerName())">Cancel</a>
             </p>
         </form>
-        
+
         <div class="nhsuk-u-margin-top-6">
             <h2>Need help?</h2>
-            <p>
-                We've developed a
-                <a href="https://gpitbjss.atlassian.net/wiki/spaces/BG/pages/1931116641/Executing+a+procurement+a+step+by+step+guide"
-                   target="_blank">step-by-step guide to the procurement process (opens in a new tab)</a>.
-            </p>
             <p>
                 For help using the Buying Catalogue, contact the National and Commercial Procurement Hub:
             </p>
