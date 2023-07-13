@@ -10,78 +10,16 @@
     var flatPriceServices = Model.Services.Where(ci => ci.CataloguePrices.Any(p => p.CataloguePriceType == CataloguePriceType.Flat)).ToList();
 }
 <div>
+    <partial name="_solutionSummary" model="Model"/>
+    <p>Additional Services are add-ons that provide additional functionality to a Catalogue Solution for an extra cost. For example, enabling a Catalogue Solution to be used on a mobile device.</p>
     <p><strong>These are the Additional Services offered with this Catalogue Solution:</strong></p>
-
-    <nhs-details label-text="What are Additional Services?">
-        <p> Additional Services are add-ons that provide additional functionality to a Catalogue Solution for an extra cost. For example, enabling a Catalogue Solution to be used on a mobile device. </p>
-    </nhs-details>
-
-    @if (tieredPriceServices.Any())
-    {
-        <nhs-table label-text="Additional Services available at a tiered price" data-test-id="additional-services-tiered-table">
-            <nhs-table-column>Additional Service</nhs-table-column>
-            <nhs-table-column>Tier</nhs-table-column>
-            <nhs-table-column>Price per unit</nhs-table-column>
-            <nhs-table-column>Range</nhs-table-column>
-            @foreach (var service in tieredPriceServices)
-            {
-                var price = service.CataloguePrices.First(p => p.CataloguePriceType == CataloguePriceType.Tiered);
-                @for (var i = 0; i < price.CataloguePriceTiers.Count; i++)
-                {
-                    var tier = price.CataloguePriceTiers.ElementAt(i);
-                    <nhs-table-row-container>
-                        @if (i == 0)
-                        {
-                            <nhs-table-cell><a href="#@service.Id">@service.Name</a></nhs-table-cell>
-                        }
-                        else
-                        {
-                            <nhs-table-cell></nhs-table-cell>
-                        }
-
-                        <nhs-table-cell>Tier @(i + 1)</nhs-table-cell>
-                        <nhs-table-cell>£@tier.Price.ToString("N4") @price.ToPriceUnitString()</nhs-table-cell>
-                        <nhs-table-cell>@tier.GetRangeDescription()</nhs-table-cell>
-                    </nhs-table-row-container>
-                }
-            }
-        </nhs-table>
-    }
-
-    @if (flatPriceServices.Any())
-    {
-        <nhs-table label-text="Additional Services available at a flat price" data-test-id="additional-services-flat-table">
-            <nhs-table-column>Additional Service</nhs-table-column>
-            <nhs-table-column>Price per unit</nhs-table-column>
-            @foreach (var service in flatPriceServices)
-            {
-                var prices = service.CataloguePrices
-                    .Where(p => p.CataloguePriceType == CataloguePriceType.Flat)
-                    .Select(x => $"£{x.CataloguePriceTiers.First().Price:N4} {x.ToPriceUnitString()}");
-
-                <nhs-table-row-container>
-                    <nhs-table-cell><a href="#@service.Id">@service.Name</a></nhs-table-cell>
-                    <nhs-table-cell>
-                        @foreach (var (price, index) in prices.Select((x, i) => (x, i)))
-                        {
-                            @if (index > 0) { <br/> }
-                            @price
-                        }
-                    </nhs-table-cell>
-                </nhs-table-row-container>
-            }
-        </nhs-table>
-    }
 
     <div data-test-id="additional-services-details">
         @foreach (var service in Model.Services)
         {
-            <hr style="border-width: 4px;">
-            <h3 id="@service.Id">
-                @service.Name
-            </h3>
+            <nhs-expander label-text="@service.Name" open="false">
 
-            var priceSummaryModel = new MarketingPriceSummaryModel
+            @{var priceSummaryModel = new MarketingPriceSummaryModel
             {
                 SolutionId = Model.SolutionId,
                 CapabilitiesAndEpicsUrl = Url.Action(
@@ -90,10 +28,9 @@
                     new { Model.SolutionId, additionalServiceId = service.Id }),
                 Prices = service.CataloguePrices,
                 ItemDescription = service.AdditionalService.FullDescription,
-            };
+            };}
             <partial name="_MarketingPriceSummary" model="priceSummaryModel" />
-
-            <partial name="_BackToTop" />
+            </nhs-expander>
         }
     </div>
 </div>

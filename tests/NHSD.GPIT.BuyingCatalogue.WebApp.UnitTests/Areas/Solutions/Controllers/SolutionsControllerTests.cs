@@ -1169,7 +1169,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var additionalServices = solution.AdditionalServices.Select(add => add.CatalogueItem).ToList();
 
-            mockService.Setup(s => s.GetSolutionThin(id))
+            mockService.Setup(s => s.GetSolutionWithBasicInformation(id))
                 .ReturnsAsync(solution.CatalogueItem);
 
             mockService.Setup(s => s.GetContentStatusForCatalogueItem(id))
@@ -1180,7 +1180,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             await controller.AdditionalServices(id);
 
-            mockService.Verify(s => s.GetSolutionThin(id));
+            mockService.Verify(s => s.GetSolutionWithBasicInformation(id));
             mockService.Verify(s => s.GetContentStatusForCatalogueItem(id));
             mockService.Verify(s => s.GetPublishedAdditionalServicesForSolution(id));
         }
@@ -1192,7 +1192,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             SolutionsController controller,
             CatalogueItemId id)
         {
-            mockService.Setup(s => s.GetSolutionThin(id))
+            mockService.Setup(s => s.GetSolutionWithBasicInformation(id))
                 .ReturnsAsync(default(CatalogueItem));
 
             var actual = (await controller.AdditionalServices(id)).As<BadRequestObjectResult>();
@@ -1215,7 +1215,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var expectedAdditionalServicesModel =
                 new AdditionalServicesModel(solution.CatalogueItem, additionalServices, contentStatus);
 
-            mockService.Setup(s => s.GetSolutionThin(id))
+            mockService.Setup(s => s.GetSolutionWithBasicInformation(id))
                 .ReturnsAsync(solution.CatalogueItem);
 
             mockService.Setup(s => s.GetContentStatusForCatalogueItem(id))
