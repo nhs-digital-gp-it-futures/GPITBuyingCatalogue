@@ -57,6 +57,51 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddImplementationPlan_ImplementationPlanExists_ReturnsExistingImplementationPlan(
+            int orderId,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            ImplementationPlanService service,
+            ImplementationPlan implementationPlan)
+        {
+            var contract = new Contract { OrderId = orderId, ImplementationPlan = implementationPlan, };
+
+            dbContext.Contracts.Add(contract);
+
+            await dbContext.SaveChangesAsync();
+            dbContext.ChangeTracker.Clear();
+
+            var output = await service.AddImplementationPlan(orderId, contract.Id);
+
+            output.Should().NotBeNull();
+            output.OrderId.Should().Be(orderId);
+            output.ImplementationPlan.Should().NotBeNull();
+            output.ImplementationPlan.Id.Should().Be(implementationPlan.Id);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddImplementationPlan_ImplementationPlanDoesNotExist_ReturnsNewImplementationPlan(
+            int orderId,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            ImplementationPlanService service)
+        {
+            var contract = new Contract { OrderId = orderId, ImplementationPlan = null };
+
+            dbContext.Contracts.Add(contract);
+
+            await dbContext.SaveChangesAsync();
+            dbContext.ChangeTracker.Clear();
+
+            var output = await service.AddImplementationPlan(orderId, contract.Id);
+
+            output.Should().NotBeNull();
+            output.OrderId.Should().Be(orderId);
+            output.ImplementationPlan.Should().NotBeNull();
+            output.ImplementationPlan.IsDefault.Should().BeFalse();
+        }
+
+        [Theory]
         [CommonInlineAutoData(null)]
         [CommonInlineAutoData("")]
         [CommonInlineAutoData(" ")]

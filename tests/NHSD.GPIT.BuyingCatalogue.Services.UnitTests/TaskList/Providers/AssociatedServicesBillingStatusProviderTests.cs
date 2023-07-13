@@ -49,18 +49,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
-        public static void Get_FundingSourceInProgress_ContractInfoEntered_ReturnsInProgress(
+        [CommonInlineAutoData(TaskProgress.CannotStart)]
+        [CommonInlineAutoData(TaskProgress.InProgress)]
+        [CommonInlineAutoData(TaskProgress.NotApplicable)]
+        [CommonInlineAutoData(TaskProgress.NotStarted)]
+        [CommonInlineAutoData(TaskProgress.Optional)]
+        public static void Get_FundingSourceIncomplete_ContractBillingEntered_ReturnsInProgress(
+            TaskProgress status,
             Order order,
             AssociatedServicesBillingStatusProvider service)
         {
             var state = new OrderProgress
             {
-                FundingSource = TaskProgress.InProgress,
+                FundingSource = status,
             };
 
             order.AssociatedServicesOnly = true;
-            order.ContractFlags.HasSpecificRequirements = true;
+            order.Contract = new Contract() { ContractBilling = new ContractBilling(), };
 
             var actual = service.Get(new OrderWrapper(order), state);
 
@@ -68,18 +73,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
-        public static void Get_ImplementationPlanInProgress_ContractInfoEntered_ReturnsInProgress(
+        [CommonInlineAutoData(TaskProgress.CannotStart)]
+        [CommonInlineAutoData(TaskProgress.InProgress)]
+        [CommonInlineAutoData(TaskProgress.NotStarted)]
+        [CommonInlineAutoData(TaskProgress.Optional)]
+        public static void Get_ImplementationPlanIncomplete_ContractBillingEntered_ReturnsInProgress(
+            TaskProgress status,
             Order order,
             AssociatedServicesBillingStatusProvider service)
         {
             var state = new OrderProgress
             {
-                ImplementationPlan = TaskProgress.InProgress,
+                ImplementationPlan = status,
             };
 
             order.AssociatedServicesOnly = true;
-            order.ContractFlags.HasSpecificRequirements = true;
+            order.Contract = new Contract() { ContractBilling = new ContractBilling(), };
 
             var actual = service.Get(new OrderWrapper(order), state);
 
@@ -92,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [CommonInlineAutoData(TaskProgress.NotApplicable)]
         [CommonInlineAutoData(TaskProgress.NotStarted)]
         [CommonInlineAutoData(TaskProgress.Optional)]
-        public static void Get_FundingSourceIncomplete_ReturnsCannotStart(
+        public static void Get_FundingSourceIncomplete_ImplementationPlanNotApplicable_ReturnsCannotStart(
             TaskProgress status,
             Order order,
             AssociatedServicesBillingStatusProvider service)
@@ -100,11 +109,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             var state = new OrderProgress
             {
                 FundingSource = status,
-                ImplementationPlan = TaskProgress.Completed,
+                ImplementationPlan = TaskProgress.NotApplicable,
             };
 
             order.AssociatedServicesOnly = true;
-            order.ContractFlags = null;
+            order.Contract = null;
 
             var actual = service.Get(new OrderWrapper(order), state);
 
@@ -114,7 +123,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [Theory]
         [CommonInlineAutoData(TaskProgress.CannotStart)]
         [CommonInlineAutoData(TaskProgress.InProgress)]
-        [CommonInlineAutoData(TaskProgress.NotApplicable)]
         [CommonInlineAutoData(TaskProgress.NotStarted)]
         [CommonInlineAutoData(TaskProgress.Optional)]
         public static void Get_ImplementationPlanIncomplete_ReturnsCannotStart(
@@ -129,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             };
 
             order.AssociatedServicesOnly = true;
-            order.ContractFlags = null;
+            order.Contract = null;
 
             var actual = service.Get(new OrderWrapper(order), state);
 
@@ -144,12 +152,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         {
             var state = new OrderProgress
             {
-                FundingSource = TaskProgress.Completed,
                 ImplementationPlan = TaskProgress.Completed,
             };
 
             order.AssociatedServicesOnly = true;
-            order.ContractFlags = null;
+            order.Contract = null;
 
             var actual = service.Get(new OrderWrapper(order), state);
 
@@ -157,27 +164,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonInlineAutoData(true, null)]
-        [CommonInlineAutoData(null, true)]
+        [CommonAutoData]
         public static void Get_PartialContractInfoEntered_ReturnsNotStarted(
-            bool? hasSpecificRequirements,
-            bool? useDefaultBilling,
             Order order,
             AssociatedServicesBillingStatusProvider service)
         {
             var state = new OrderProgress
             {
-                FundingSource = TaskProgress.Completed,
                 ImplementationPlan = TaskProgress.Completed,
             };
 
             order.AssociatedServicesOnly = true;
-            order.ContractFlags.HasSpecificRequirements = hasSpecificRequirements;
-            order.ContractFlags.UseDefaultBilling = useDefaultBilling;
+            order.Contract = new Contract();
 
             var actual = service.Get(new OrderWrapper(order), state);
 
-            actual.Should().Be(TaskProgress.InProgress);
+            actual.Should().Be(TaskProgress.NotStarted);
         }
 
         [Theory]
@@ -193,6 +195,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             };
 
             order.AssociatedServicesOnly = true;
+            order.Contract = new Contract() { ContractBilling = new ContractBilling(), };
 
             var actual = service.Get(new OrderWrapper(order), state);
 

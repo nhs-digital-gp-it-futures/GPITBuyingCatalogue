@@ -201,8 +201,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
             CommonActions.ClickLinkElement(AssociatedServicesBillingObjects.AssociatedServiceBillingAndRequirementsLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(AssociatedServicesBillingController),
-                nameof(AssociatedServicesBillingController.ReviewBilling))
+                typeof(ContractBillingController),
+                nameof(ContractBillingController.Index))
                     .Should().BeTrue();
         }
 

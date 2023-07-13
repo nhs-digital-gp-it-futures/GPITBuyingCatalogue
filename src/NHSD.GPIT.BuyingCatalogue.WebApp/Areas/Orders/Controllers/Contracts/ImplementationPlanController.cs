@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -38,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         public async Task<IActionResult> Index(string internalOrgId, CallOffId callOffId)
         {
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
-            var contract = await contractsService.GetContract(order.Id);
+            var contract = await contractsService.GetContractWithImplementationPlan(order.Id);
             var catalogueItem = await solutionsService.GetSolutionThin(order.GetSolutionId().GetValueOrDefault());
             var defaultPlan = await implementationPlanService.GetDefaultImplementationPlan();
 
@@ -64,7 +63,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             }
 
             var order = (await orderService.GetOrderThin(model.CallOffId, model.InternalOrgId)).Order;
-            await contractsService.AddContract(order.Id);
+            var contract = await contractsService.GetContract(order.Id);
+            await implementationPlanService.AddImplementationPlan(order.Id, contract.Id);
 
             return RedirectToAction(nameof(Order), typeof(OrderController).ControllerName(), new { internalOrgId, callOffId });
         }
@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             }
 
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
-            var contract = await contractsService.AddContract(order.Id);
+            var contract = await contractsService.GetContract(order.Id);
 
             await implementationPlanService.AddBespokeMilestone(order.Id, contract.Id, model.Name, model.PaymentTrigger);
 

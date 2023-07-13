@@ -57,31 +57,36 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
             var output = await service.GetContract(orderId);
 
-            output.Should().BeNull();
+            output.Should().NotBeNull();
+            output.OrderId.Should().Be(orderId);
         }
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task AddContract_ContractExists_ReturnsContract(
+        public static async Task GetContractWithImplementationPlan_ContractExists_ReturnsContract(
             int orderId,
             [Frozen] BuyingCatalogueDbContext dbContext,
-            ContractsService service)
+            ContractsService service,
+            ImplementationPlan implementationPlan)
         {
-            var contract = new Contract { OrderId = orderId };
+            var contract = new Contract { OrderId = orderId, ImplementationPlan = implementationPlan, };
 
             dbContext.Contracts.Add(contract);
 
             await dbContext.SaveChangesAsync();
             dbContext.ChangeTracker.Clear();
 
-            var output = await service.AddContract(orderId);
+            var output = await service.GetContractWithImplementationPlan(orderId);
 
-            output.Should().BeEquivalentTo(contract);
+            output.Should().NotBeNull();
+            output.OrderId.Should().Be(orderId);
+            output.ImplementationPlan.Should().NotBeNull();
+            output.ImplementationPlan.Id.Should().Be(implementationPlan.Id);
         }
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task AddContract_ContractDoesNotExist_CreatesNewContract(
+        public static async Task GetContractWithImplementationPlan_ContractDoesNotExist_ReturnsNull(
             int orderId,
             [Frozen] BuyingCatalogueDbContext dbContext,
             ContractsService service)
@@ -90,13 +95,99 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
             existing.Should().BeNull();
 
-            var output = await service.AddContract(orderId);
+            var output = await service.GetContractWithImplementationPlan(orderId);
 
+            output.Should().NotBeNull();
             output.OrderId.Should().Be(orderId);
+        }
 
-            var actual = await dbContext.Contracts.FirstOrDefaultAsync(x => x.OrderId == orderId);
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetContractWithContractBilling_ContractExists_ReturnsContract(
+            int orderId,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            ContractsService service,
+            ContractBilling contractBilling)
+        {
+            var contract = new Contract { OrderId = orderId, ContractBilling = contractBilling, };
 
-            actual.Should().Be(output);
+            dbContext.Contracts.Add(contract);
+
+            await dbContext.SaveChangesAsync();
+            dbContext.ChangeTracker.Clear();
+
+            var output = await service.GetContractWithContractBilling(orderId);
+
+            output.Should().NotBeNull();
+            output.OrderId.Should().Be(orderId);
+            output.ContractBilling.Should().NotBeNull();
+            output.ContractBilling.Id.Should().Be(contractBilling.Id);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetContractWithContractBilling_ContractDoesNotExist_ReturnsNull(
+            int orderId,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            ContractsService service)
+        {
+            var existing = await dbContext.Contracts.FirstOrDefaultAsync(x => x.OrderId == orderId);
+
+            existing.Should().BeNull();
+
+            var output = await service.GetContractWithContractBilling(orderId);
+
+            output.Should().NotBeNull();
+            output.OrderId.Should().Be(orderId);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task RemoveContract_ContractExists_RemovesContractAndDataProcessing(
+            int orderId,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            ContractsService service)
+        {
+            var contract = new Contract { OrderId = orderId };
+
+            dbContext.Contracts.Add(contract);
+
+            var contractFlag = new ContractFlags() { OrderId = orderId, UseDefaultDataProcessing = true };
+
+            dbContext.ContractFlags.Add(contractFlag);
+
+            await dbContext.SaveChangesAsync();
+            dbContext.ChangeTracker.Clear();
+
+            await service.RemoveContract(orderId);
+
+            var actualContract = await dbContext.Contracts.FirstOrDefaultAsync(x => x.OrderId == orderId);
+            actualContract.Should().BeNull();
+
+            var actualFlags = await dbContext.ContractFlags.FirstAsync(x => x.OrderId == orderId);
+            actualFlags.Should().NotBeNull();
+            actualFlags.UseDefaultDataProcessing.Should().Be(false);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task RemoveContract_ContractDoesNotExist_Returns(
+            int orderId,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            ContractsService service)
+        {
+            var existing = await dbContext.Contracts.FirstOrDefaultAsync(x => x.OrderId == orderId);
+
+            existing.Should().BeNull();
+
+            await service.RemoveContract(orderId);
+
+            var actualContract = await dbContext.Contracts.FirstOrDefaultAsync(x => x.OrderId == orderId);
+            actualContract.Should().BeNull();
+
+            var actualFlags = await dbContext.ContractFlags.FirstAsync(x => x.OrderId == orderId);
+            actualFlags.Should().NotBeNull();
+            actualFlags.UseDefaultDataProcessing.Should().Be(false);
         }
 
         [Theory]
@@ -141,56 +232,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         [Theory]
         [InMemoryDbInlineAutoData(true)]
         [InMemoryDbInlineAutoData(false)]
-        public static async Task HasSpecificRequirements_UpdatesValue(
-            bool value,
-            int orderId,
-            ContractFlags contractFlags,
-            [Frozen] BuyingCatalogueDbContext dbContext,
-            ContractsService service)
-        {
-            contractFlags.Order = null;
-            contractFlags.OrderId = orderId;
-            contractFlags.HasSpecificRequirements = null;
-
-            dbContext.ContractFlags.Add(contractFlags);
-
-            await dbContext.SaveChangesAsync();
-
-            await service.HasSpecificRequirements(orderId, value);
-
-            var actual = await dbContext.ContractFlags.FirstAsync(x => x.Id == contractFlags.Id);
-
-            actual.HasSpecificRequirements.Should().Be(value);
-        }
-
-        [Theory]
-        [InMemoryDbInlineAutoData(true)]
-        [InMemoryDbInlineAutoData(false)]
-        public static async Task UseDefaultBilling_UpdatesValue(
-            bool value,
-            int orderId,
-            ContractFlags contractFlags,
-            [Frozen] BuyingCatalogueDbContext dbContext,
-            ContractsService service)
-        {
-            contractFlags.Order = null;
-            contractFlags.OrderId = orderId;
-            contractFlags.UseDefaultBilling = null;
-
-            dbContext.ContractFlags.Add(contractFlags);
-
-            await dbContext.SaveChangesAsync();
-
-            await service.UseDefaultBilling(orderId, value);
-
-            var actual = await dbContext.ContractFlags.FirstAsync(x => x.Id == contractFlags.Id);
-
-            actual.UseDefaultBilling.Should().Be(value);
-        }
-
-        [Theory]
-        [InMemoryDbInlineAutoData(true)]
-        [InMemoryDbInlineAutoData(false)]
         public static async Task UseDefaultDataProcessing_UpdatesValue(
             bool value,
             int orderId,
@@ -211,28 +252,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             var actual = await dbContext.ContractFlags.FirstAsync(x => x.Id == contractFlags.Id);
 
             actual.UseDefaultDataProcessing.Should().Be(value);
-        }
-        [Theory]
-        [InMemoryDbAutoData]
-        public static async Task GetContract_RemoveBillingAndRequirements(
-            int orderId,
-            [Frozen] BuyingCatalogueDbContext dbContext)
-        {
-            var flags = new ContractFlags
-            {
-                OrderId = orderId,
-                UseDefaultBilling = true,
-                HasSpecificRequirements = true,
-            };
-            dbContext.ContractFlags.Add(flags);
-
-            await dbContext.SaveChangesAsync();
-            ContractsService service = new ContractsService(dbContext);
-            await service.RemoveBillingAndRequirements(orderId);
-            var output = await service.GetContract(orderId);
-
-            output.UseDefaultBilling.Should().BeNull();
-            output.HasSpecificRequirements.Should().BeNull();
         }
     }
 }

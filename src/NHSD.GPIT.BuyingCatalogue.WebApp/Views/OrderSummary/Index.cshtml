@@ -283,104 +283,93 @@
                         }
                     }
 
-                    <h2>Contract summary</h2>
-
-                    <div class="pdf-container">
-                        <h3>Default milestones and payment triggers</h3>
-                        <table>
-                            <thead>
-                            <tr>
-                                <th>Milestone</th>
-                                <th>Payment trigger</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach (var milestone in Model.DefaultImplementationPlan.Milestones)
-                            {
-                                <tr>
-                                    <td>@milestone.Title</td>
-                                    <td>@milestone.PaymentTrigger</td>
-                                </tr>
-                            }
-                            </tbody>
-                        </table>
-                     </div>
-
-                @if (Model.HasBespokeMilestones)
-                {
-                    <div class="pdf-container">
-                            <h3>Bespoke milestones and payment triggers</h3>
-                        <table>
-                            <thead>
-                            <tr>
-                                <th>Milestone</th>
-                                <th>Payment trigger</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach (var milestone in Model.BespokePlan.Milestones)
-                            {
-                                <tr>
-                                    <td>@milestone.Title</td>
-                                    <td>@milestone.PaymentTrigger</td>
-                                </tr>
-                            }
-                            </tbody>
-                        </table>
-                    </div>
-                }
-
-                    @if (Model.Order.HasAssociatedService())
+                    @if (!Model.Order.AssociatedServicesOnly)
                     {
-                        <div class="pdf-container">
-                            <h3>Associated Services billing</h3>
+                        <h2>Contract summary</h2>
 
-                            @if (Model.UseDefaultBilling)
-                            {
+                        <div class="pdf-container">
+                            <h3>Default milestones and payment triggers</h3>
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th>Milestone</th>
+                                    <th>Payment trigger</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach (var milestone in Model.DefaultImplementationPlan.Milestones)
+                                {
+                                    <tr>
+                                        <td>@milestone.Title</td>
+                                        <td>@milestone.PaymentTrigger</td>
+                                    </tr>
+                                }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        @if (Model.HasBespokeMilestones)
+                        {
+                            <div class="pdf-container">
+                                <h3>Bespoke milestones and payment triggers</h3>
                                 <table>
                                     <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Quantity</th>
-                                            <th>Payment trigger</th>
-                                        </tr>
+                                    <tr>
+                                        <th>Milestone name</th>
+                                        <th>Payment trigger</th>
+                                    </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach (var service in Model.Order.GetAssociatedServices())
-                                        {
-                                            <tr>
-                                                <td>@service.CatalogueItem.Name</td>
-                                                <td>@($"{service.TotalQuantity:N0} {service.OrderItemPrice.RangeDescription}")</td>
-                                                <td>@Model.DefaultBillingPaymentTrigger</td>
-                                            </tr>
-                                        }
+                                    @foreach (var milestone in Model.BespokePlan.Milestones)
+                                    {
+                                        <tr>
+                                            <td>@milestone.Title</td>
+                                            <td>@milestone.PaymentTrigger</td>
+                                        </tr>
+                                    }
                                     </tbody>
                                 </table>
-                            }
-                            else
+                            </div>
+                        }
+                    }
+                    @if (Model.Order.HasAssociatedService())
+                    {
+                        <h2>Milestones and payment triggers for Associated Services</h2>
+                        <div class="pdf-container">
+                            <h3>Default milestones and payment triggers</h3>
+                            <p>
+                                The delivery date is the default milestone for an Associated Service and triggers the requirement that payment is made 30 days later.
+                                However, you can add bespoke milestones that you've agreed with the supplier to act as payment triggers for this order.
+                            </p>
+                            <p>
+                                The default milestone will apply to any Associated Services not assigned a bespoke milestone.
+                            </p>
+
+                            @if (Model.HasBespokeBilling)
                             {
-                                <pdf-summary-list>
-                                    <pdf-summary-list-row label-text="Using default billing?">
-                                        @Model.UseDefaultBilling.ToYesNo()
-                                    </pdf-summary-list-row>
-                                </pdf-summary-list>
-
-                                <div class="nhsuk-u-margin-bottom-6">
-                                    <p>Requirements are documented in section 1 Associated Service billing and requirements template.</p>
-                                </div>
-                            }
-
-                            <h3>Associated Services requirements</h3>
-                            <pdf-summary-list>
-                                <pdf-summary-list-row label-text="Any specific requirements?">
-                                    @Model.HasSpecificRequirements.ToYesNo()
-                                </pdf-summary-list-row>
-                            </pdf-summary-list>
-
-                            @if (Model.HasSpecificRequirements)
-                            {
-                                <div class="nhsuk-u-margin-bottom-6">
-                                    <p>Requirements are documented in section 2 Associated Service billing and requirements template.</p>
+                                <div class="pdf-container">
+                                    <h3>Bespoke milestones and payment triggers</h3>
+                                    <table>
+                                        <thead>
+                                        <tr>
+                                            <th>Associated Service name</th>
+                                            <th>Milestone name</th>
+                                            <th>Payment trigger</th>
+                                            <th>Number of units to be billed</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        @foreach (var item in Model.BespokeBilling.ContractBillingItems)
+                                        {
+                                            <tr>
+                                                <td>@item.OrderItem.CatalogueItem.Name</td>
+                                                <td>@item.Milestone.Title</td>
+                                                <td>@item.Milestone.PaymentTrigger</td>
+                                                <td>@item.Quantity</td>
+                                            </tr>
+                                        }
+                                        </tbody>
+                                    </table>
                                 </div>
                             }
                         </div>

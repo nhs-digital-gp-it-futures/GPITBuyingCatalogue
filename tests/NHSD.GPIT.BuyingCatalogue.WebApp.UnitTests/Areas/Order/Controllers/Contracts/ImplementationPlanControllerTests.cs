@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 .ReturnsAsync(new OrderWrapper(order));
 
             mockContractsService
-                .Setup(x => x.GetContract(order.Id))
+                .Setup(x => x.GetContractWithImplementationPlan(order.Id))
                 .ReturnsAsync(contract);
 
             mockSolutionsService
@@ -93,26 +93,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             actualResult.ViewName.Should().BeNull();
-            actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Get_AddMilestone_ReturnsExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            ImplementationPlanController controller)
-        {
-            var result = controller.AddMilestone(internalOrgId, callOffId);
-
-            var expected = new MilestoneModel()
-            {
-                CallOffId = callOffId,
-                InternalOrgId = internalOrgId,
-            };
-
-            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
-            actualResult.ViewName.Should().Be("Milestone");
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
         }
 
@@ -150,7 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 .ReturnsAsync(new OrderWrapper(order));
 
             mockContractsService
-                .Setup(x => x.AddContract(order.Id))
+                .Setup(x => x.GetContract(order.Id))
                 .ReturnsAsync(contract);
 
             var result = await controller.Index(internalOrgId, order.CallOffId, model);
@@ -160,6 +140,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
             actualResult.ActionName.Should().Be(nameof(OrderController.Order));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Get_AddMilestone_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            ImplementationPlanController controller)
+        {
+            var result = controller.AddMilestone(internalOrgId, callOffId);
+
+            var expected = new MilestoneModel()
+            {
+                CallOffId = callOffId,
+                InternalOrgId = internalOrgId,
+            };
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+            actualResult.ViewName.Should().Be("Milestone");
+            actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -197,7 +197,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 .ReturnsAsync(new OrderWrapper(order));
 
             mockContractsService
-                .Setup(x => x.AddContract(order.Id))
+                .Setup(x => x.GetContract(order.Id))
                 .ReturnsAsync(contract);
 
             mockImplementationPlanService
