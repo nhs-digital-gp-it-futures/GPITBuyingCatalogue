@@ -56,7 +56,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Capabili
                 Id = "Epic1",
                 Name = "Epic 1",
                 IsActive = true,
-                CompliancyLevel = CompliancyLevel.Must,
             };
 
             var mayEpic = new Epic
@@ -64,14 +63,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Capabili
                 Id = "Epic2",
                 Name = "Epic 2",
                 IsActive = true,
-                CompliancyLevel = CompliancyLevel.May,
             };
 
             var capability = new Capability
             {
                 Id = 1,
                 Name = "Capability 1",
-                Epics = new[] { mustEpic, mayEpic },
+                CapabilityEpics = new[]
+                {
+                    new CapabilityEpic()
+                    {
+                        Epic = mustEpic,
+                        CompliancyLevel = CompliancyLevel.Must,
+                    },
+                    new CapabilityEpic()
+                    {
+                        Epic = mayEpic,
+                        CompliancyLevel = CompliancyLevel.May,
+                    },
+                },
             };
 
             var capabilityCategory = new CapabilityCategory
