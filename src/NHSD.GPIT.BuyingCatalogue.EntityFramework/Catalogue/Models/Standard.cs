@@ -29,6 +29,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public StandardType StandardType { get; set; }
 
+        public bool IsDeleted { get; set; }
+
         public ICollection<StandardCapability> StandardCapabilities { get; set; }
     }
 }

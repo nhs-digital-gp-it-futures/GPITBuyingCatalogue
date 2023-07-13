@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             => dbContext
                 .CapabilityCategories
                 .Include(c => c.Capabilities)
-                .ThenInclude(c => c.Epics.Where(e => e.IsActive && (e.CompliancyLevel == CompliancyLevel.May || e.CompliancyLevel == CompliancyLevel.Must)))
+                    .ThenInclude(c => c.Epics)
                 .ToListAsync();
 
         public async Task AddCapabilitiesToCatalogueItem(CatalogueItemId catalogueItemId, SaveCatalogueItemCapabilitiesModel model)

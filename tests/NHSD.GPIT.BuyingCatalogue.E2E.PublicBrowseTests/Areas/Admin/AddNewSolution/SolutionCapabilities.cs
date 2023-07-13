@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
         {
             await using var context = GetEndToEndDbContext();
             var capability = await context.Capabilities.Include(c => c.Epics).FirstAsync();
-            var mustEpic = capability.Epics.First(e => e.CompliancyLevel == CompliancyLevel.Must);
+            var mustEpic = capability.CapabilityEpics.First(e => e.CompliancyLevel == CompliancyLevel.Must).Epic;
 
             CommonActions.ClickCheckboxByLabel($"({capability.CapabilityRef}) {capability.Name}");
             CommonActions.ClickCheckboxByLabel($"({mustEpic.Id}) {mustEpic.Name}");

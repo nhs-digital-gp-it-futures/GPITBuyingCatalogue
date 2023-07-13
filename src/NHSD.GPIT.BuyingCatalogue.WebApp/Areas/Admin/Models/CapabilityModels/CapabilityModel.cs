@@ -20,8 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
             CapabilityRef = capability.CapabilityRef;
             Selected = catalogueItem.CatalogueItemCapabilities.Any(
                 itemCapability => itemCapability.CapabilityId == capability.Id);
-            MayEpics = GetEpics(catalogueItem, capability, CompliancyLevel.May);
-            MustEpics = GetEpics(catalogueItem, capability, CompliancyLevel.Must);
+            MayEpics = GetCapabilityEpicModels(catalogueItem, capability, capability.GetActiveMayEpics());
+            MustEpics = GetCapabilityEpicModels(catalogueItem, capability, capability.GetActiveMustEpics());
 
             if (!Selected)
                 MustEpics.ForEach(e => e.Selected = true);
@@ -41,9 +41,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
 
         public IEnumerable<CapabilityEpicModel> Epics => MustEpics.Concat(MayEpics).ToList();
 
-        private static IList<CapabilityEpicModel> GetEpics(CatalogueItem catalogueItem, Capability capability, CompliancyLevel level)
+        private static IList<CapabilityEpicModel> GetCapabilityEpicModels(CatalogueItem catalogueItem, Capability capability, IReadOnlyCollection<Epic> epics) // Capability capability)
         {
-            return capability.Epics.Where(e => e.CompliancyLevel == level)
+            return epics
                 .Select(
                     epic => new CapabilityEpicModel(catalogueItem, capability, epic))
                 .OrderBy(e => e.Id)

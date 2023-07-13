@@ -18,8 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 
             builder.Property(c => c.Id).ValueGeneratedNever();
             builder.Property(c => c.CapabilityRef)
-                .IsRequired()
-                .HasMaxLength(10);
+                .HasMaxLength(10)
+                .HasComputedColumnSql("'C'+CONVERT([nvarchar](3),[Id])");
 
             builder.Property(c => c.Description)
                 .IsRequired()
@@ -64,19 +64,22 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 
             builder.HasMany(x => x.Epics)
                 .WithMany(x => x.Capabilities)
-                .UsingEntity<Dictionary<string, object>>(
-                    right => right.HasOne<Epic>()
-                        .WithMany()
-                        .HasForeignKey("EpicId")
+                .UsingEntity<CapabilityEpic>(
+                    right => right.HasOne<Epic>(c => c.Epic)
+                        .WithMany(x => x.CapabilityEpics)
+                        .HasForeignKey(nameof(CapabilityEpic.EpicId))
                         .HasConstraintName("FK_CapabilityEpics_Epic"),
                     left => left.HasOne<Capability>()
-                        .WithMany()
-                        .HasForeignKey("CapabilityId")
+                        .WithMany(x => x.CapabilityEpics)
+                        .HasForeignKey(nameof(CapabilityEpic.CapabilityId))
                         .HasConstraintName("FK_CapabilityEpics_Capability"),
                     j =>
                     {
                         j.ToTable("CapabilityEpics", Schemas.Catalogue);
                         j.HasKey("CapabilityId", "EpicId");
+                        j.Property(e => e.CompliancyLevel)
+                            .HasConversion<int>()
+                            .HasColumnName("CompliancyLevelId");
                     });
         }
     }

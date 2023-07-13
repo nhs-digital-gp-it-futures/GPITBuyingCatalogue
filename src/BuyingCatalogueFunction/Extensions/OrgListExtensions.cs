@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BuyingCatalogueFunction.Models.Ods;
+using BuyingCatalogueFunction.IncrementalUpdate.Models.Ods;
 
 namespace BuyingCatalogueFunction.Extensions
 {
