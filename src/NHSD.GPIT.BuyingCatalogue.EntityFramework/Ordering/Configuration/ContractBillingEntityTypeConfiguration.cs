@@ -24,6 +24,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .WithOne(x => x.ContractBilling)
                 .HasForeignKey(x => x.ContractBillingId)
                 .HasConstraintName("FK_ContractBillingItems_ContractBilling");
+
+            builder.HasMany(x => x.Requirements)
+                .WithOne(x => x.ContractBilling)
+                .HasForeignKey(x => x.ContractBillingId)
+                .HasConstraintName("FK_Requirements_ContractBilling");
         }
     }
 }
