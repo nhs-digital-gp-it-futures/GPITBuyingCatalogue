@@ -18,18 +18,16 @@
         @foreach (var service in Model.Services)
         {
             <nhs-expander label-text="@service.Name" open="false">
-
-            @{var priceSummaryModel = new MarketingPriceSummaryModel
-            {
-                SolutionId = Model.SolutionId,
-                CapabilitiesAndEpicsUrl = Url.Action(
-                    nameof(SolutionsController.CapabilitiesAdditionalServices),
-                    typeof(SolutionsController).ControllerName(),
-                    new { Model.SolutionId, additionalServiceId = service.Id }),
-                Prices = service.CataloguePrices,
-                ItemDescription = service.AdditionalService.FullDescription,
-            };}
-            <partial name="_MarketingPriceSummary" model="priceSummaryModel" />
+                @{
+                    var priceSummaryModel = new MarketingPriceSummaryModel
+                    {
+                        SolutionId = Model.SolutionId,
+                        CapabilitiesAndEpicsUrl = Url.Action(nameof(SolutionsController.CapabilitiesAdditionalServices), typeof(SolutionsController).ControllerName(), new { Model.SolutionId, additionalServiceId = service.Id }),
+                        Prices = service.CataloguePrices,
+                        ItemDescription = service.AdditionalService.FullDescription,
+                    };
+                 }
+                <partial name="_MarketingPriceSummary" model="priceSummaryModel" />
             </nhs-expander>
         }
     </div>
