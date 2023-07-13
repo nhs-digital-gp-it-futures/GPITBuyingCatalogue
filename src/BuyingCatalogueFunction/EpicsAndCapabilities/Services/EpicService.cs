@@ -34,6 +34,15 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
             {
                 await Process(dbContext, epic, log);
             }
+
+            var desiredEpics = epics.Select(s => s.Id).ToList();
+            var toExpire = await dbContext
+                .Epics
+                .Where(s => !s.SupplierDefined && !desiredEpics.Any(d => d == s.Id))
+                .ToListAsync();
+
+            ProcessExpired(toExpire, log);
+
             await dbContext.SaveChangesAsync();
             return log;
         }
@@ -53,7 +62,7 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
             csv.ReadHeader();
             while (await csv.ReadAsync())
             {
-                // Epic ID,Epic Name,Epic Status ,Epic Level ,Capability ,Capability ID
+                // Epic ID,Epic Name,Epic Level ,Capability ,Capability ID
                 ReadLine(csv, epics);
             }
 
@@ -80,13 +89,25 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
             }
         }
 
+        private void ProcessExpired(List<Epic> toExpire, List<string> log)
+        {
+            foreach (var epic in toExpire)
+            {
+                epic.IsActive = false;
+                var status = dbContext.Entry(epic);
+                if (status.State == EntityState.Modified)
+                {
+                    log.Add($"Expired Epic {epic.Id} {epic.Name} ({Modified(status.Properties)})");
+                }
+            }
+        }
+
         private static EpicCsv Map(CsvReader csv, string Id)
         {
             var newEpic = new EpicCsv()
             {
                 Id = Id,
                 Name = csv.GetField<string>("Epic Name"),
-                IsActive = ParseStatus(csv.GetField<string>("Epic Status")),
             };
             newEpic.Capabilities.Add(new CapabilityEpicCsv()
             {
@@ -115,7 +136,7 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
         private static void Update(BuyingCatalogueDbContext dbContext, EpicCsv desiredEpic, Epic existingEpic, List<string> log)
         {
             existingEpic.Name = desiredEpic.Name;
-            existingEpic.IsActive = desiredEpic.IsActive;
+            existingEpic.IsActive = true;
 
             var desiredCapabilityEpics = desiredEpic.Capabilities.ToList();
 
@@ -164,7 +185,7 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
             {
                 Id = epic.Id,
                 Name = epic.Name,
-                IsActive = epic.IsActive,
+                IsActive = true,
             };
 
             epic.Capabilities
@@ -179,12 +200,6 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
 
             await dbContext.Epics.AddAsync(newEpic);
             log.Add($"New Epic {newEpic.Id} {newEpic.Name}");
-        }
-
-        private static bool ParseStatus(string? status)
-        {
-            ArgumentNullException.ThrowIfNull(status);
-            return string.Equals("Active", status.Trim(), StringComparison.OrdinalIgnoreCase);
         }
 
         private static CompliancyLevel ParseLevel(string? level)

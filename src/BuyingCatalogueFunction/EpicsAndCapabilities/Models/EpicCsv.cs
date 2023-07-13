@@ -8,8 +8,6 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Models
 
         public string Name { get; set; }
 
-        public bool IsActive { get; set; }
-
         public List<CapabilityEpicCsv> Capabilities { get; set; } = new List<CapabilityEpicCsv>();
     }
 }

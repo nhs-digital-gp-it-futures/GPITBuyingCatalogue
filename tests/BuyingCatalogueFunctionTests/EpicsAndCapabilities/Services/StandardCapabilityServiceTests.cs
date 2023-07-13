@@ -72,7 +72,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task Process_Exising_StandardCapability(
+        public static async Task Process_Existing_StandardCapability(
             StandardCapability standardCapability,
             StandardCapability existingStandardCapability,
             [Frozen] BuyingCatalogueDbContext dbContext,

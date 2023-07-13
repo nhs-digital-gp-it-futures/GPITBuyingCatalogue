@@ -87,7 +87,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task Process_Exising_Standard(
+        public static async Task Process_Existing_Standard(
             Standard standard,
             [Frozen] BuyingCatalogueDbContext dbContext,
             StandardService service)
@@ -124,7 +124,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task Process_Exising_Standard_Delete(
+        public static async Task Process_Existing_Standard_Delete(
             Standard standard,
             [Frozen] BuyingCatalogueDbContext dbContext,
             StandardService service)

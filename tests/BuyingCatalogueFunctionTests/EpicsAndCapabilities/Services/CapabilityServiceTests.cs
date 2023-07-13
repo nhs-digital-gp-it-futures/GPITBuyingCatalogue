@@ -101,7 +101,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task Process_Exising_Capability_Category_Must_Exist(
+        public static async Task Process_Existing_Capability_Category_Must_Exist(
             Framework framework,
             Framework frameworkToChangeTo,
             Capability capability,
@@ -152,7 +152,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task Process_Exising_Capability_Expire(
+        public static async Task Process_Existing_Capability_Expire(
             Framework framework,
             Capability capability,
             CapabilityCategory category,

@@ -25,9 +25,9 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
             var stream = new MemoryStream(
                 Encoding.UTF8.GetBytes(
                     new StringBuilder()
-                        .AppendLine("Epic ID,Epic Name,Epic Status ,Epic Level ,Capability ,Capability ID")
-                        .AppendLine("E00109,EpicName,Active,MUST,Appointments Management - Citizen,C1")
-                        .AppendLine("E00109,EpicName,Active,MAY,Communicate With Practice - Citizen,C2")
+                        .AppendLine("Epic ID,Epic Name,Epic Level ,Capability ,Capability ID")
+                        .AppendLine("E00109,EpicName,MUST,Appointments Management - Citizen,C1")
+                        .AppendLine("E00109,EpicName,MAY,Communicate With Practice - Citizen,C2")
                         .ToString())
             );
 
@@ -38,7 +38,6 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
             result.Should().NotBeNull();
             result!.Id.Should().Be("E00109");
             result.Name.Should().Be("EpicName");
-            result.IsActive.Should().BeTrue();
             result.Capabilities.Should().BeEquivalentTo(new[]
             {
                 new CapabilityEpicCsv()
@@ -78,7 +77,6 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
             {
                 Id = epic.Id,
                 Name = epic.Name,
-                IsActive = epic.IsActive,
                 Capabilities = new List<CapabilityEpicCsv>() {
                     new CapabilityEpicCsv()
                     {
@@ -98,7 +96,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
             result.Should().NotBeNull();
             result!.Id.Should().Be(epic.Id);
             result.Name.Should().Be(epic.Name);
-            result.IsActive.Should().Be(epic.IsActive);
+            result.IsActive.Should().BeTrue();
             result.Capabilities.Select(f => f.Id).Should().BeEquivalentTo(new[] { capability.Id });
             result.CapabilityEpics.Should().BeEquivalentTo(new[]
                 {
@@ -114,7 +112,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task Process_Exising_Epic(
+        public static async Task Process_Existing_Epic(
             Capability capability,
             Capability capabilityToChangeTo,
             Epic epic,
@@ -137,7 +135,6 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
             {
                 Id = epic.Id,
                 Name = "modified name",
-                IsActive = !epic.IsActive,
                 Capabilities = new List<CapabilityEpicCsv>() {
                     new CapabilityEpicCsv()
                     {
@@ -156,7 +153,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
 
             result.Should().NotBeNull();
             result!.Id.Should().Be(epic.Id);
-            result.IsActive.Should().Be(!epic.IsActive);
+            result.IsActive.Should().BeTrue();
             result.Name.Should().Be("modified name");
             result.Capabilities.Select(f => f.Id).Should().BeEquivalentTo(new[] { capabilityToChangeTo.Id });
             result.CapabilityEpics.Should().BeEquivalentTo(new[]
@@ -173,7 +170,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task Process_Exising_Epic_Change_Level(
+        public static async Task Process_Existing_Epic_Change_Level(
             Capability capability,
             Epic epic,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -194,7 +191,6 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
             {
                 Id = epic.Id,
                 Name = "modified name",
-                IsActive = !epic.IsActive,
                 Capabilities = new List<CapabilityEpicCsv>() {
                     new CapabilityEpicCsv()
                     {
@@ -213,7 +209,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
 
             result.Should().NotBeNull();
             result!.Id.Should().Be(epic.Id);
-            result.IsActive.Should().Be(!epic.IsActive);
+            result.IsActive.Should().BeTrue();
             result.Name.Should().Be("modified name");
             result.Capabilities.Select(f => f.Id).Should().BeEquivalentTo(new[] { capability.Id });
             result.CapabilityEpics.Should().BeEquivalentTo(new[]
@@ -226,6 +222,29 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
                     }
                 },
                 opt => opt.Excluding(c => c.Epic));
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task Process_Existing_Not_Active(
+            Epic epic,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            EpicService service)
+        {
+            epic.IsActive = true;
+            dbContext.Epics.Add(epic);
+            dbContext.SaveChanges();
+            dbContext.ChangeTracker.Clear();
+
+            await service.Process(new List<EpicCsv>() { });
+            dbContext.ChangeTracker.Clear();
+
+            var result = dbContext.Epics
+                .Include(c => c.Capabilities)
+                .FirstOrDefault(c => c.Id == epic.Id);
+
+            result.Should().NotBeNull();
+            result!.IsActive.Should().BeFalse();
         }
     }
 }
