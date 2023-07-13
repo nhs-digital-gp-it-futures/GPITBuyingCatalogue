@@ -14,11 +14,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
 
             builder.Property(x => x.ContractId).IsRequired();
 
-            builder.HasOne(x => x.LastUpdatedByUser)
-                .WithMany()
-                .HasForeignKey(x => x.LastUpdatedBy)
-                .HasConstraintName("FK_ContractBilling_LastUpdatedBy");
-
             builder.HasOne(x => x.Contract)
                 .WithOne(y => y.ContractBilling)
                 .HasForeignKey<ContractBilling>(x => x.ContractId)

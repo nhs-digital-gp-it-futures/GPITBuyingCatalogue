@@ -105,18 +105,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
 
         public async Task DeleteContractBillingItems(int orderId, IEnumerable<CatalogueItemId> catalogueItemIds)
         {
-            var items = dbContext.ContractBillingItems
-                .Where(x => x.OrderId == orderId && catalogueItemIds.Contains(x.CatalogueItemId));
+            var items = await dbContext.ContractBillingItems
+                .Where(x => x.OrderId == orderId && catalogueItemIds.Contains(x.CatalogueItemId))
+                .ToListAsync();
 
             if (!items.Any())
             {
                 return;
             }
 
-            foreach (var item in items)
-            {
-                dbContext.ContractBillingItems.Remove(item);
-            }
+            dbContext.ContractBillingItems.RemoveRange(items);
 
             await dbContext.SaveChangesAsync();
         }
