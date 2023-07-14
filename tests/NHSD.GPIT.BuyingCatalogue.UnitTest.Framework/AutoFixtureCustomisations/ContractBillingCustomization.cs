@@ -11,7 +11,8 @@ public class ContractBillingCustomization : ICustomization
     {
         static ISpecimenBuilder ComposerTransformation(ICustomizationComposer<ContractBilling> composer) => composer
             .Without(x => x.ContractBillingItems)
-            .Without(x => x.Contract);
+            .Without(x => x.Contract)
+            .Without(x => x.Requirements);
 
         fixture.Customize<ContractBilling>(ComposerTransformation);
     }
