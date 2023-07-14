@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 BackLink = Url.Action(nameof(Dashboard)),
                 SelectedCapabilityIds = selectedCapabilityIds,
             };
-            return View(model);
+            return View("Areas/Admin/Views/SupplierDefinedEpics/SetEpicDetails.cshtml", model);
         }
 
         [HttpPost("add-epic")]
@@ -163,13 +163,82 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var capabilities = await capabilitiesService.GetCapabilities();
             var relatedItems = await supplierDefinedEpicsService.GetItemsReferencingEpic(epicId);
+            var selectedCapabilityIds = epic.Capabilities.Select(x => x.Id).ToFilterString();
 
-            var model = new SelectCapabilitiesModel(capabilities, "1.2")
+            var model = new SelectCapabilitiesModel(capabilities, selectedCapabilityIds)
             {
                 BackLink = Url.Action(nameof(Dashboard)),
             };
 
             return View("Views/Shared/SelectCapabilities.cshtml", model.WithSelectListCapabilities(capabilities));
+        }
+
+        [HttpPost("edit/{epicId}/select-capabilities")]
+        public async Task<IActionResult> EditCapabilities(string epicId, SelectCapabilitiesModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var capabilities = await capabilitiesService.GetCapabilities();
+
+                return View(model);
+            }
+
+            var epic = await supplierDefinedEpicsService.GetEpic(epicId);
+            if (epic is null)
+                return BadRequest($"No Supplier defined Epic found for Id: {epicId}");
+
+            List<int> selectedIds = model.SelectedItems.Where(x => x.Selected).Select(x => int.Parse(x.Id)).ToList();
+
+            var editEpicModel = new AddEditSupplierDefinedEpic(
+                epicId,
+                selectedIds,
+                epic.Name,
+                epic.Description,
+                epic.IsActive);
+
+            await supplierDefinedEpicsService.EditSupplierDefinedEpic(editEpicModel);
+
+            return RedirectToAction(
+                nameof(EditEpic),
+                new { epicId });
+        }
+
+        [HttpGet("edit/{epicId}/epic-details")]
+        public async Task<IActionResult> EditEpicDetails(string epicId)
+        {
+            var epic = await supplierDefinedEpicsService.GetEpic(epicId);
+            if (epic is null)
+                return BadRequest($"No Supplier defined Epic found for Id: {epicId}");
+            var model = new SupplierDefinedEpicBaseModel()
+            {
+                BackLink = Url.Action(nameof(Dashboard)),
+                Id = epic.Id,
+                Name = epic.Name,
+                Description = epic.Description,
+                IsActive = epic.IsActive,
+            };
+            return View("Areas/Admin/Views/SupplierDefinedEpics/SetEpicDetails.cshtml", model);
+        }
+
+        [HttpPost("edit/{epicId}/epic-details")]
+        public async Task<IActionResult> EditEpicDetails(string epicId, SupplierDefinedEpicBaseModel model)
+        {
+            var epic = await supplierDefinedEpicsService.GetEpic(epicId);
+            if (epic is null)
+                return BadRequest($"No Supplier defined Epic found for Id: {epicId}");
+
+            var editEpicModel = new AddEditSupplierDefinedEpic(
+                epicId,
+                epic.Capabilities.Select(x => x.Id).ToList(),
+                model.Name,
+                model.Description,
+                model.IsActive!.Value);
+
+            await supplierDefinedEpicsService.EditSupplierDefinedEpic(editEpicModel);
+
+            return RedirectToAction(
+                nameof(EditEpic),
+                new { epicId });
         }
 
         [HttpGet("delete/{epicId}")]

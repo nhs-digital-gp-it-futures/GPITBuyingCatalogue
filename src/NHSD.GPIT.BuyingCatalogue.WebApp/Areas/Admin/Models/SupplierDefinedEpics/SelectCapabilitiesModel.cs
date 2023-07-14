@@ -40,9 +40,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpi
 
             Title = "Capabilities for this supplier defined Epic";
             Advice = "Select the Capabilities relating to this supplier defined Epic.";
+            IsFilter = false;
         }
 
-        public string Id { get; set; }
+        public string SearchTerm { get; set; }
+
+        public bool IsFilter { get; set;  }
 
         public IEnumerable<CapabilityCategory> Groups { get; set; }
 
@@ -50,25 +53,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpi
 
         public SelectionModel[] SelectedItems { get; set; }
 
-        public int? SelectedCapabilityId { get; set; }
-
-        [StringLength(500)]
-        public string Name { get; set; }
-
-        [StringLength(1500)]
-        public string Description { get; set; }
-
-        public bool? IsActive { get; set; }
-
         public IList<SelectOption<string>> Capabilities { get; set; }
 
         protected Dictionary<int, IOrderedEnumerable<Capability>> GroupedItems { get; set; } = new();
-
-        public IList<SelectOption<string>> ActiveOptions => new List<SelectOption<string>>
-        {
-            new("Active", true.ToString()),
-            new("Inactive", false.ToString()),
-        };
 
         public List<Capability> Items(int groupId) => GroupedItems.ContainsKey(groupId)
             ? GroupedItems[groupId].ToList()

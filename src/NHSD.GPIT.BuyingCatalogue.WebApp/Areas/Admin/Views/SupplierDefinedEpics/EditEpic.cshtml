@@ -17,17 +17,29 @@
             <nhs-table-row-container>
                 <nhs-table-cell><b>Capabilities</b></nhs-table-cell>
                 <nhs-table-cell>@Model.CapabilityList</nhs-table-cell>
-                <nhs-table-cell>Edit</nhs-table-cell>
+                <nhs-table-cell>
+                    <a asp-controller="@(typeof(SupplierDefinedEpicsController).ControllerName())"
+                       asp-action="@nameof(SupplierDefinedEpicsController.EditCapabilities)"
+                       asp-route-epicId="@Model.Id">Edit</a>
+                </nhs-table-cell>
             </nhs-table-row-container>
             <nhs-table-row-container>
                 <nhs-table-cell><b>Name</b></nhs-table-cell>
                 <nhs-table-cell>@Model.Name</nhs-table-cell>
-                <nhs-table-cell>Edit</nhs-table-cell>
+                <nhs-table-cell>
+                    <a asp-controller="@(typeof(SupplierDefinedEpicsController).ControllerName())"
+                       asp-action="@nameof(SupplierDefinedEpicsController.EditEpicDetails)"
+                       asp-route-epicId="@Model.Id">Edit</a>
+                </nhs-table-cell>
             </nhs-table-row-container>
             <nhs-table-row-container>
                 <nhs-table-cell><b>Description</b></nhs-table-cell>
                 <nhs-table-cell>@Model.Description</nhs-table-cell>
-                <nhs-table-cell>Edit</nhs-table-cell>   
+                <nhs-table-cell>
+                    <a asp-controller="@(typeof(SupplierDefinedEpicsController).ControllerName())"
+                       asp-action="@nameof(SupplierDefinedEpicsController.EditEpicDetails)"
+                       asp-route-epicId="@Model.Id">Edit</a>
+                </nhs-table-cell>
             </nhs-table-row-container>
             <nhs-table-row-container>
                 <nhs-table-cell><b>Status</b></nhs-table-cell>
@@ -35,7 +47,11 @@
                     <nhs-tag colour="@GetTagColour(Model.IsActive.Value)"
                              text="@GetTagText(Model.IsActive.Value)" />
                 </nhs-table-cell>
-                <nhs-table-cell>Edit</nhs-table-cell>
+                <nhs-table-cell>
+                    <a asp-controller="@(typeof(SupplierDefinedEpicsController).ControllerName())"
+                       asp-action="@nameof(SupplierDefinedEpicsController.EditEpicDetails)"
+                       asp-route-epicId="@Model.Id">Edit</a>
+                </nhs-table-cell>
             </nhs-table-row-container>
         </nhs-table>
 
@@ -44,16 +60,7 @@
                                  url="@Model.BackLink"/>
     </div>
 </div>
-@{
-    string GetEditUrl(CatalogueItem catalogueItem){
-        return catalogueItem.CatalogueItemType switch
-        {
-            CatalogueItemType.AdditionalService => Url.Action(nameof(AdditionalServicesController.EditCapabilities), typeof(AdditionalServicesController).ControllerName(), new { solutionId = catalogueItem.AdditionalService.SolutionId, additionalServiceId = catalogueItem.Id }),
-            CatalogueItemType.Solution => Url.Action(nameof(CatalogueSolutionsController.EditCapabilities), typeof(CatalogueSolutionsController).ControllerName(), new { solutionId = catalogueItem.Id }),
-            _ => string.Empty,
-        };
-    }
-    
+@{  
     NhsTagsTagHelper.TagColour GetTagColour(bool status) =>
         status ? NhsTagsTagHelper.TagColour.Green : NhsTagsTagHelper.TagColour.Grey;
 

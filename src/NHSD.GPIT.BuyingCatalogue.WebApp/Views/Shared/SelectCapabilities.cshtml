@@ -1,8 +1,14 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics.SelectCapabilitiesModel
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics.SelectCapabilitiesModel
 @{
     ViewBag.Title = Model.Title;
     var index = 0;
 }
+
+<script type="text/javascript" src="@Url.Content("~/js/GroupCounters.min.js")" asp-append-version="true"></script>
+
 <partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
@@ -10,11 +16,24 @@
         <nhs-page-title title="@ViewBag.Title"
                         advice="@Model.Advice" />
 
-        <hr/>
-        <div class="nhsuk-u-margin-bottom-9">
-            <h2>Select Capabilities</h2>
-            <p>@Model.Advice</p>
-        </div>
+        @if (Model.IsFilter)
+        {
+            <h2>@Model.Total Capabilities available</h2>
+            <hr />
+
+            <div class="nhsuk-u-margin-bottom-9">
+                <h3>Select Capabilities</h3>
+            <p class="selection-counter" style="display: none">
+                0 out of @Model.Total selected
+            </p>
+            <vc:nhs-secondary-button type="Secondary"
+                                     text="Clear selection"
+                                     url="@Url.Action(
+                nameof(FilterController.FilterCapabilities),
+                typeof(FilterController).ControllerName(),
+                new { search = Model.SearchTerm })" />
+            </div>
+        }
 
         <form method="post">
             @foreach (var category in Model.Groups)
