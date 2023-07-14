@@ -136,6 +136,7 @@
         internal const string HeadingTextName = "heading-text";
         internal const string SubGroupName = "sub-group";
         internal const string IndexName = "index";
+        internal const string SummaryListAction = "action";
 
         internal const string FileType = "file-type";
     }

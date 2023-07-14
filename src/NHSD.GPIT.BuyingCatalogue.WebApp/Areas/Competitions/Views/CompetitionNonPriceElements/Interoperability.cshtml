@@ -1,0 +1,58 @@
+@model SelectInteroperabilityCriteriaModel
+
+@{
+    ViewBag.Title = "Interoperability requirements";
+}
+
+<partial name="Partials/_BackLink" model="Model"/>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.CompetitionName"
+                        advice="Select which integrations your winning solution needs to work with."/>
+
+        <form method="post">
+            <input type="hidden" asp-for="CompetitionName"/>
+            <input type="hidden" asp-for="BackLink"/>
+
+            <nhs-fieldset-form-label asp-for="@Model.Im1Integrations"
+                                     label-text="IM1 integrations"
+                                     label-hint="Select all options that are relevant to you.">
+                <nhs-checkbox-container>
+                    @for (var i = 0; i < Model.Im1Integrations.Count; i++)
+                    {
+                        <input type="hidden" asp-for="@Model.Im1Integrations[i].Text"/>
+                        <nhs-checkbox asp-for="@Model.Im1Integrations[i].Selected"
+                                      label-text="@Model.Im1Integrations[i].Text"
+                                      hidden-input="@Model.Im1Integrations[i].Value"/>
+                    }
+                </nhs-checkbox-container>
+            </nhs-fieldset-form-label>
+
+            <nhs-fieldset-form-label asp-for="@Model.GpConnectIntegrations"
+                                     label-text="GP Connect integrations"
+                                     label-hint="Select all options that are relevant to you.">
+                <nhs-checkbox-container>
+                    @for (var i = 0; i < Model.GpConnectIntegrations.Count; i++)
+                    {
+                        <input type="hidden" asp-for="@Model.GpConnectIntegrations[i].Text"/>
+                        <nhs-checkbox asp-for="@Model.GpConnectIntegrations[i].Selected"
+                                      label-text="@Model.GpConnectIntegrations[i].Text"
+                                      hidden-input="@Model.GpConnectIntegrations[i].Value"/>
+                    }
+                </nhs-checkbox-container>
+            </nhs-fieldset-form-label>
+
+            <br/>
+            <div>
+                <nhs-submit-button/>
+            </div>
+            <div>
+                <a href="@Model.BackLink">Cancel</a>
+            </div>
+        </form>
+
+    </div>
+</div>

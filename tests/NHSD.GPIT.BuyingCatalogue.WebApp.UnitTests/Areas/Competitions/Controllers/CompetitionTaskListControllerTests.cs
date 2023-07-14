@@ -90,7 +90,7 @@ public static class CompetitionTaskListControllerTests
         organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
             .ReturnsAsync(organisation);
 
-        competitionsService.Setup(x => x.GetCompetition(organisation.Id, competition.Id))
+        competitionsService.Setup(x => x.GetCompetition(organisation.InternalIdentifier, competition.Id))
             .ReturnsAsync(competition);
 
         var expectedModel = new CompetitionContractModel(competition);
@@ -154,7 +154,7 @@ public static class CompetitionTaskListControllerTests
         organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
             .ReturnsAsync(organisation);
 
-        competitionsService.Setup(x => x.GetCompetition(organisation.Id, competition.Id))
+        competitionsService.Setup(x => x.GetCompetition(organisation.InternalIdentifier, competition.Id))
             .ReturnsAsync(competition);
 
         var expectedModel = new CompetitionAwardCriteriaModel(competition);
