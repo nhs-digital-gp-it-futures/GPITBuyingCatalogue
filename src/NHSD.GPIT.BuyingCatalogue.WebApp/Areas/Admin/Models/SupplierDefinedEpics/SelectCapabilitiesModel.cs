@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
@@ -18,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpi
         {
         }
 
-        public SelectCapabilitiesModel(List<Capability> capabilities, string selectedIds = null)
+        public SelectCapabilitiesModel(List<Capability> capabilities, string selectedIds = null, bool isFilter = false)
         {
             Groups = capabilities
                 .Select(x => x.Category.Id)
@@ -38,9 +39,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpi
                 Selected = selected.Contains(x.Id),
             }).ToArray();
 
-            Title = "Capabilities for this supplier defined Epic";
-            Advice = "Select the Capabilities relating to this supplier defined Epic.";
-            IsFilter = false;
+            if (isFilter)
+            {
+                Title = "Filter by Capabilities for Catalogue Solutions";
+                Advice = "Capabilities describe business needs. Select the ones you want a Catalogue Solution to address.";
+            }
+            else
+            {
+                Title = "Capabilities for this supplier defined Epic";
+                Advice = "Select the Capabilities relating to this supplier defined Epic.";
+            }
+
+            Total = capabilities.Count;
         }
 
         public string SearchTerm { get; set; }

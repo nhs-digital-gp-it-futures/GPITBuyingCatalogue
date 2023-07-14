@@ -133,24 +133,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("edit/{epicId}")]
         public async Task<IActionResult> EditEpic(string epicId, EditSupplierDefinedEpicModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                var capabilities = await capabilitiesService.GetCapabilities();
-                var relatedSolutions = await supplierDefinedEpicsService.GetItemsReferencingEpic(epicId);
-                model.RelatedItems = relatedSolutions;
-
-                return View(model as EditSupplierDefinedEpicModel);
-            }
-
-            var editEpicModel = new AddEditSupplierDefinedEpic(
-                epicId,
-                (List<int>)SolutionsFilterHelper.ParseCapabilityIds(model.SelectedCapabilityIds),
-                model.Name,
-                model.Description,
-                model.IsActive!.Value);
-
-            await supplierDefinedEpicsService.EditSupplierDefinedEpic(editEpicModel);
-
             return RedirectToAction(nameof(Dashboard));
         }
 
@@ -168,6 +150,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var model = new SelectCapabilitiesModel(capabilities, selectedCapabilityIds)
             {
                 BackLink = Url.Action(nameof(Dashboard)),
+                IsFilter = false,
             };
 
             return View("Views/Shared/SelectCapabilities.cshtml", model.WithSelectListCapabilities(capabilities));
