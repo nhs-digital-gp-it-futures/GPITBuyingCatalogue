@@ -161,7 +161,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var associatedServices = solution.CatalogueItem.SupplierServiceAssociations.Select(ssa => ssa.CatalogueItem).ToList();
 
-            mockService.Setup(s => s.GetSolutionThin(id))
+            mockService.Setup(s => s.GetSolutionWithBasicInformation(id))
                 .ReturnsAsync(solution.CatalogueItem);
 
             mockService.Setup(s => s.GetContentStatusForCatalogueItem(id))
@@ -172,7 +172,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             await controller.AssociatedServices(id);
 
-            mockService.Verify(s => s.GetSolutionThin(id));
+            mockService.Verify(s => s.GetSolutionWithBasicInformation(id));
             mockService.Verify(s => s.GetContentStatusForCatalogueItem(id));
             mockService.Verify(s => s.GetPublishedAssociatedServicesForSolution(id));
         }
@@ -184,7 +184,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             [Frozen] Mock<ISolutionsService> mockService,
             SolutionsController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(id))
+            mockService.Setup(s => s.GetSolutionWithBasicInformation(id))
                 .ReturnsAsync(default(CatalogueItem));
 
             var actual = (await controller.AssociatedServices(id)).As<BadRequestObjectResult>();
@@ -205,7 +205,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var associatedServices = solution.CatalogueItem.SupplierServiceAssociations.Select(ssa => ssa.CatalogueItem).ToList();
             var associatedServicesModel = new AssociatedServicesModel(catalogueItem, associatedServices, contentStatus);
 
-            solutionsServiceMock.Setup(s => s.GetSolutionThin(catalogueItem.Id))
+            solutionsServiceMock.Setup(s => s.GetSolutionWithBasicInformation(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
             solutionsServiceMock.Setup(s => s.GetContentStatusForCatalogueItem(catalogueItem.Id))
