@@ -16,6 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public int ContractId { get; set; }
 
+        public bool HasConfirmedRequirements { get; set; }
+
         public ICollection<ContractBillingItem> ContractBillingItems { get; set; }
 
         public ICollection<Requirement> Requirements { get; set; }

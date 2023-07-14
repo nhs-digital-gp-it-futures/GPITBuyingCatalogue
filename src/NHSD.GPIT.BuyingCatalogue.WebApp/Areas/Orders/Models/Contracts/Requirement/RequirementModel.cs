@@ -22,5 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Require
         public EntityFramework.Ordering.Models.ContractBilling ContractBilling { get; set; }
 
         public bool HasRequirements => ContractBilling != null && ContractBilling.Requirements.Any();
+
+        public string RequirementLabelText => "Specific requirements";
     }
 }

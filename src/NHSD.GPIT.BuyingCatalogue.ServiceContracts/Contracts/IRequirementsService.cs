@@ -6,6 +6,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts
 {
     public interface IRequirementsService
     {
+        Task<Contract> SetRequirementComplete(int orderId, int contractId);
+
         Task AddRequirement(
             int orderId,
             int contractId,

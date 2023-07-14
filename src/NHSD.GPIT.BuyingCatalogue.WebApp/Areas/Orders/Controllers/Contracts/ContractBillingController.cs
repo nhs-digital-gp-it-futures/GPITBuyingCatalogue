@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             var contract = await contractsService.GetContract(order.Id);
             await contractBillingService.AddContractBilling(order.Id, contract.Id);
 
-            return RedirectToAction(nameof(Order), typeof(OrderController).ControllerName(), new { internalOrgId, callOffId });
+            return RedirectToAction(nameof(Index), typeof(RequirementController).ControllerName(), new { internalOrgId, callOffId });
         }
 
         [HttpGet("add-milestone")]

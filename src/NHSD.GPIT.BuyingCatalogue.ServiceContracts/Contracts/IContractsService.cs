@@ -12,6 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts
 
         Task<Contract> GetContractWithContractBilling(int orderId);
 
+        Task<Contract> GetContractWithContractBillingRequirements(int orderId);
+
         Task RemoveContract(int orderId);
 
         Task<ContractFlags> GetContractFlags(int orderId);

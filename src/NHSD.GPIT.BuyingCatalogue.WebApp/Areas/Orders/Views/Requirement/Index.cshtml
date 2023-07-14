@@ -15,9 +15,16 @@
 
         <nhs-page-title title="@ViewBag.Title"
                         caption="Order @Model.CallOffId"
-                        advice="Provide details of any specific requirements for associated services" />
-
+                        advice="Provide details of any specific requirements for your Associated Services." />
         
+        <div class="nhsuk-u-margin-bottom-9">
+            <nhs-details label-text="What are specific requirements?">
+                <p style="white-space: pre-line">
+                    For example, you may require all your practice managers to attend training sessions on a given day or for engineering to take place only at weekends.
+                </p>
+            </nhs-details>
+        </div>
+
         <vc:nhs-action-link text="Add a requirement"
                             url="@Url.Action(nameof(RequirementController.AddRequirement),
                                      typeof(RequirementController).ControllerName(),
@@ -25,7 +32,7 @@
 
         @if (Model.HasRequirements)
         {
-            <partial name="RequirementTable" model="new RequirementTableModel(string.Empty, Model.ContractBilling?.Requirements, true, Model.CallOffId, Model.InternalOrgId)" />
+                <partial name="RequirementTable" model="new RequirementTableModel(Model.RequirementLabelText, Model.ContractBilling?.Requirements, true, Model.CallOffId, Model.InternalOrgId)" />
         }
         else
         {

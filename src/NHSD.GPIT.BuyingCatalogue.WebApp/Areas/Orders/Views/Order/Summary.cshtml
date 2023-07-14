@@ -160,7 +160,7 @@
                     <partial name="_OrderItemSummary" model="new AmendOrderItemModel(Model.CallOffId, associatedService, Model.Previous?.OrderItem(associatedService.CatalogueItemId), Model.Order.IsAmendment, Model.FundingTypeDescription(associatedService.CatalogueItemId))" />
                 }
 
-                <h2 id="milestones-title">Milestones and payment triggers for Associated Services</h2>
+                <h2 id="as-milestones-title">Milestones and payment triggers for Associated Services</h2>
 
                 <h3>Default milestones and payment triggers</h3>
 
@@ -175,6 +175,18 @@
                 @if (Model.HasBespokeBilling)
                 {
                     <partial name="ContractBillingItemTable" model="new ContractBillingItemTableModel(Model.BespokeBillingLabelText, Model.BespokeBilling.ContractBillingItems, false, Model.CallOffId, Model.InternalOrgId)" />
+                }
+
+                <h2 id="requirements-title">Associated Service specific requirements</h2>
+                @if (Model.HasSpecificRequirements)
+                {
+                    <partial name="RequirementTable" model="new RequirementTableModel(Model.RequirementLabelText, Model.BespokeBilling.Requirements, false, Model.CallOffId, Model.InternalOrgId)" />
+                }
+                else
+                {
+                    <p>
+                        N/A
+                    </p>
                 }
             }
 

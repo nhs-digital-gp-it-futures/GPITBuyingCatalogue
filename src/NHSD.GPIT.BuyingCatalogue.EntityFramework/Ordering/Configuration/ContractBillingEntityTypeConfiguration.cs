@@ -14,6 +14,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
 
             builder.Property(x => x.ContractId).IsRequired();
 
+            builder.Property(x => x.HasConfirmedRequirements);
+
             builder.HasOne(x => x.Contract)
                 .WithOne(y => y.ContractBilling)
                 .HasForeignKey<ContractBilling>(x => x.ContractId)

@@ -18,6 +18,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
+        public async Task<Contract> SetRequirementComplete(int orderId, int contractId)
+        {
+            var contract = await dbContext.Contracts
+                .Include(x => x.ContractBilling)
+                .FirstOrDefaultAsync(o => o.Id == contractId && o.OrderId == orderId);
+
+            contract.ContractBilling ??= new ContractBilling();
+            contract.ContractBilling.HasConfirmedRequirements = true;
+            await dbContext.SaveChangesAsync();
+
+            return contract;
+        }
+
         public async Task AddRequirement(int orderId, int contractId, CatalogueItemId catalogueItemId, string details)
         {
             if (string.IsNullOrEmpty(details))
@@ -28,9 +41,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
                 .ThenInclude(x => x.OrderItems)
                 .ThenInclude(x => x.CatalogueItem)
                 .Include(x => x.ContractBilling)
-                .FirstOrDefaultAsync(o => o.Id == contractId && o.OrderId == orderId) ?? throw new ArgumentException("Invalid contract", nameof(contractId));
+                .FirstOrDefaultAsync(o => o.Id == contractId && o.OrderId == orderId);
 
-            var associatedService = contract.Order.GetAssociatedService(catalogueItemId) ?? throw new ArgumentException("Invalid associated service", nameof(catalogueItemId));
+            var associatedService = contract.Order.GetAssociatedService(catalogueItemId);
 
             contract.ContractBilling.Requirements.Add(new Requirement()
             {
@@ -60,12 +73,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
                 return;
             }
 
-            var order = await dbContext.Orders
-                    .Include(x => x.OrderItems)
-                    .ThenInclude(x => x.CatalogueItem)
-                .FirstOrDefaultAsync(x => x.Id == orderId) ?? throw new ArgumentException("Invalid order", nameof(orderId));
-
-            var associatedService = order.GetAssociatedService(catalogueItemId) ?? throw new ArgumentException("Invalid associated service", nameof(catalogueItemId));
+            var associatedService = await dbContext.OrderItems
+                .FirstOrDefaultAsync(x => x.OrderId == orderId && x.CatalogueItemId == catalogueItemId);
 
             requirement.OrderItem = associatedService;
             requirement.Details = details;
@@ -88,18 +97,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
 
         public async Task DeleteRequirements(int orderId, IEnumerable<CatalogueItemId> catalogueItemIds)
         {
-            var requirements = dbContext.Requirements
-                .Where(x => x.OrderId == orderId && catalogueItemIds.Contains(x.CatalogueItemId));
+            var requirements = await dbContext.Requirements
+                .Where(x => x.OrderId == orderId && catalogueItemIds.Contains(x.CatalogueItemId))
+                .ToListAsync();
 
-            if (requirements.Any())
+            if (!requirements.Any())
             {
-                foreach (var requirement in requirements)
-                {
-                    dbContext.Requirements.Remove(requirement);
-                }
-
-                await dbContext.SaveChangesAsync();
+                return;
             }
+
+            dbContext.Requirements.RemoveRange(requirements);
+
+            await dbContext.SaveChangesAsync();
         }
     }
 }

@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         public async Task<IActionResult> Index(string internalOrgId, CallOffId callOffId)
         {
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
-            var contract = await contractsService.GetContractWithContractBilling(order.Id);
+            var contract = await contractsService.GetContractWithContractBillingRequirements(order.Id);
             var model = new RequirementModel(contract?.ContractBilling)
             {
                 BackLink = Url.Action(
@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
 
             var order = (await orderService.GetOrderThin(model.CallOffId, model.InternalOrgId)).Order;
             var contract = await contractsService.GetContract(order.Id);
-           // await requirementsService.AddContractBilling(order.Id, contract.Id);
+            await requirementsService.SetRequirementComplete(order.Id, contract.Id);
 
             return RedirectToAction(nameof(Order), typeof(OrderController).ControllerName(), new { internalOrgId, callOffId });
         }

@@ -26,6 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
             var fundingSourceStatus = new[] { TaskProgress.Completed, TaskProgress.Amended };
             var planStatus = new[] { TaskProgress.Completed, TaskProgress.NotApplicable };
             var contractBillingEntered = order.Contract?.ContractBilling is not null;
+            var requirementsEntered = order.Contract?.ContractBilling?.HasConfirmedRequirements ?? false;
 
             if ((!fundingSourceStatus.Contains(state.FundingSource)
                 || !planStatus.Contains(state.ImplementationPlan))
@@ -34,15 +35,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
                 return TaskProgress.InProgress;
             }
 
-            if ((state.ImplementationPlan == TaskProgress.Completed)
-                || (state.ImplementationPlan == TaskProgress.NotApplicable && state.FundingSource == TaskProgress.Completed))
+            if ((state.ImplementationPlan != TaskProgress.Completed)
+                && (state.ImplementationPlan != TaskProgress.NotApplicable
+                    || state.FundingSource != TaskProgress.Completed))
+                return TaskProgress.CannotStart;
+
+            if (contractBillingEntered || requirementsEntered)
             {
-                return contractBillingEntered
+                return contractBillingEntered && requirementsEntered
                     ? TaskProgress.Completed
-                    : TaskProgress.NotStarted;
+                    : TaskProgress.InProgress;
             }
 
-            return TaskProgress.CannotStart;
+            return TaskProgress.NotStarted;
         }
 
         private static bool HasAssociatedServices(Order order) =>
