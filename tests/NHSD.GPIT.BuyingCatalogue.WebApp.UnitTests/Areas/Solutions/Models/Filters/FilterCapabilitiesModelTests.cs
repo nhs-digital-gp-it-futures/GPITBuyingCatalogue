@@ -4,6 +4,7 @@ using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 using Xunit;
 
@@ -16,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         public static void Constructor_PropertiesAreSetCorrectly(
             List<Capability> capabilities)
         {
-            var model = new FilterCapabilitiesModel(capabilities);
+            var model = new SelectCapabilitiesModel(capabilities);
 
             model.Groups.Should().BeEquivalentTo(capabilities.Select(x => x.Category));
             model.Total.Should().Be(capabilities.Count);
@@ -34,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         {
             var selectedIds = new[] { capabilities.First().Id, capabilities.Last().Id }.ToFilterString();
 
-            var model = new FilterCapabilitiesModel(capabilities, selectedIds);
+            var model = new SelectCapabilitiesModel(capabilities, selectedIds);
 
             model.Groups.Should().BeEquivalentTo(capabilities.Select(x => x.Category));
             model.Total.Should().Be(capabilities.Count);
@@ -50,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         public static void Capabilities_ReturnsExpectedResult(
             List<Capability> capabilities)
         {
-            var model = new FilterCapabilitiesModel(capabilities);
+            var model = new SelectCapabilitiesModel(capabilities);
 
             foreach (var category in capabilities.Select(x => x.Category))
             {

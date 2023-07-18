@@ -133,6 +133,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("edit/{epicId}")]
         public async Task<IActionResult> EditEpic(string epicId, EditSupplierDefinedEpicModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
             return RedirectToAction(nameof(Dashboard));
         }
 
@@ -206,6 +211,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("edit/{epicId}/epic-details")]
         public async Task<IActionResult> EditEpicDetails(string epicId, SupplierDefinedEpicBaseModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
             var epic = await supplierDefinedEpicsService.GetEpic(epicId);
             if (epic is null)
                 return BadRequest($"No Supplier defined Epic found for Id: {epicId}");

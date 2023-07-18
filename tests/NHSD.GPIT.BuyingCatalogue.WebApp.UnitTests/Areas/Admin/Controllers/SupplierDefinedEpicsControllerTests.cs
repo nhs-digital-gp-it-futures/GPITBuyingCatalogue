@@ -276,33 +276,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_EditEpic_InvalidModel_RepopulatesCapabilities(
-            List<Capability> capabilities,
-            [Frozen] Mock<ICapabilitiesService> capabilitiesService,
-            EditSupplierDefinedEpicModel model,
+        public static async Task Post_EditEpicDetails_InvalidModel_ReturnsView(
+            SupplierDefinedEpicBaseModel model,
             SupplierDefinedEpicsController controller)
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var expectedCapabilitiesSelectList = capabilities
-                .OrderBy(c => c.Name)
-                .Select(c => new SelectOption<string>(c.Name, c.Id.ToString()));
-
-            capabilitiesService.Setup(s => s.GetCapabilities())
-                .ReturnsAsync(capabilities);
-
-            var result = (await controller.EditEpic(model.Id, model)).As<ViewResult>();
+            var result = (await controller.EditEpicDetails(model.Id, model)).As<ViewResult>();
 
             result.Should().NotBeNull();
-
-            var viewModel = result.Model.As<EditSupplierDefinedEpicModel>();
-
-           //viewModel.Capabilities.Should().BeEquivalentTo(expectedCapabilitiesSelectList);
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_EditEpic_InvalidModel_RepopulatesRelatedItems(
+        public static async Task Post_EditEpicDetails_InvalidModel_RepopulatesRelatedItems(
             List<CatalogueItem> relatedItems,
             [Frozen] Mock<ISupplierDefinedEpicsService> supplierDefinedEpicsService,
             EditSupplierDefinedEpicModel model,
@@ -324,12 +311,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_EditEpic_ValidModel_EditsSupplierDefinedEpic(
-            EditSupplierDefinedEpicModel model,
+        public static async Task Post_EditEpicDetails_ValidModel_EditsSupplierDefinedEpic(
+            SupplierDefinedEpicBaseModel model,
             [Frozen] Mock<ISupplierDefinedEpicsService> supplierDefinedEpicsService,
             SupplierDefinedEpicsController controller)
         {
-            _ = await controller.EditEpic(model.Id, model);
+            _ = await controller.EditEpicDetails(model.Id);
 
             supplierDefinedEpicsService.Verify(
                 s => s.EditSupplierDefinedEpic(

@@ -18,6 +18,7 @@ using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 using Xunit;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 {
@@ -55,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             capabilitiesService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
-            var expected = new FilterCapabilitiesModel(capabilities);
+            var expected = new SelectCapabilitiesModel(capabilities);
 
             actualResult.Model.Should().BeEquivalentTo(expected);
         }
@@ -77,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             capabilitiesService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
-            var expected = new FilterCapabilitiesModel(capabilities, selected);
+            var expected = new SelectCapabilitiesModel(capabilities, selected);
 
             actualResult.Model.Should().BeEquivalentTo(expected);
         }
@@ -85,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_FilterCapabilities_WithModelErrors_ReturnsExpectedResult(
-            FilterCapabilitiesModel model,
+            SelectCapabilitiesModel model,
             List<Capability> capabilities,
             [Frozen] Mock<ICapabilitiesService> capabilitiesService,
             FilterController controller)
@@ -101,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             capabilitiesService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
-            var expected = new FilterCapabilitiesModel(capabilities);
+            var expected = new SelectCapabilitiesModel(capabilities);
 
             actualResult.Model.Should().BeEquivalentTo(expected);
         }
@@ -109,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_FilterCapabilities_ReturnsExpectedResult(
-            FilterCapabilitiesModel model,
+            SelectCapabilitiesModel model,
             FilterController controller)
         {
             model.SelectedItems.ForEach(x => x.Selected = true);
@@ -134,7 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [CommonAutoData]
         public static async Task Post_FilterCapabilities_HasSelectedEpics_PassesEpicsThrough(
             [Frozen] Mock<IEpicsService> epicsService,
-            FilterCapabilitiesModel model,
+            SelectCapabilitiesModel model,
             FilterController controller)
         {
             model.SelectedItems.ForEach(x => x.Selected = true);
