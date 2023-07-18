@@ -7,6 +7,7 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -124,9 +125,109 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             };
 
             await capabilitiesService.AddCapabilitiesToCatalogueItem(catalogueItem.Id, model);
+            context.ChangeTracker.Clear();
 
-            catalogueItem.CatalogueItemCapabilities.FirstOrDefault(c => c.CapabilityId == capability.Id).Should().NotBeNull();
-            catalogueItem.CatalogueItemEpics.FirstOrDefault(e => e.CapabilityId == capability.Id && e.EpicId == epic.Id).Should().NotBeNull();
+            var item = context.CatalogueItems
+                .Include(i => i.CatalogueItemCapabilities)
+                .Include(i => i.CatalogueItemEpics)
+                .FirstOrDefault(e => e.Id == catalogueItem.Id);
+
+            item.CatalogueItemCapabilities.FirstOrDefault(c => c.CapabilityId == capability.Id).Should().NotBeNull();
+            item.CatalogueItemEpics.FirstOrDefault(e => e.CapabilityId == capability.Id && e.EpicId == epic.Id).Should().NotBeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddCapabilitiesToCatalogueItem_AddsCapabilitiesAndSharedEpic(
+            int userId,
+            CatalogueItem catalogueItem,
+            Epic epic,
+            Capability capability,
+            Capability capability2,
+            [Frozen] BuyingCatalogueDbContext context,
+            CapabilitiesService capabilitiesService)
+        {
+            epic.Capabilities.Add(capability);
+            epic.Capabilities.Add(capability2);
+            context.CatalogueItems.Add(catalogueItem);
+            context.SaveChanges();
+
+            var model = new SaveCatalogueItemCapabilitiesModel
+            {
+                UserId = userId,
+                Capabilities = new Dictionary<int, string[]>
+                {
+                    [capability.Id] = new string[1] { epic.Id },
+                    [capability2.Id] = new string[1] { epic.Id },
+                },
+            };
+
+            await capabilitiesService.AddCapabilitiesToCatalogueItem(catalogueItem.Id, model);
+            context.ChangeTracker.Clear();
+
+            var item = context.CatalogueItems
+                .Include(i => i.CatalogueItemCapabilities)
+                .Include(i => i.CatalogueItemEpics)
+                .FirstOrDefault(e => e.Id == catalogueItem.Id);
+
+            item.CatalogueItemCapabilities.FirstOrDefault(c => c.CapabilityId == capability.Id).Should().NotBeNull();
+            item.CatalogueItemEpics.FirstOrDefault(e => e.CapabilityId == capability.Id && e.EpicId == epic.Id).Should().NotBeNull();
+            item.CatalogueItemEpics.FirstOrDefault(e => e.CapabilityId == capability2.Id && e.EpicId == epic.Id).Should().NotBeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddCapabilitiesToCatalogueItem_AddsCapabilitiesAndSharedEpic_When_Epic_Exists(
+            int userId,
+            CatalogueItem catalogueItem,
+            Epic epic,
+            Capability existingCapability,
+            Capability capabilityToAdd,
+            Capability staleCapability,
+            [Frozen] BuyingCatalogueDbContext context,
+            CapabilitiesService capabilitiesService)
+        {
+            epic.Capabilities.Add(existingCapability);
+            epic.Capabilities.Add(capabilityToAdd);
+            epic.Capabilities.Add(staleCapability);
+            context.CatalogueItems.Add(catalogueItem);
+            context.SaveChanges();
+
+            var model = new SaveCatalogueItemCapabilitiesModel
+            {
+                UserId = userId,
+                Capabilities = new Dictionary<int, string[]>
+                {
+                    [existingCapability.Id] = new string[1] { epic.Id },
+                    [staleCapability.Id] = new string[1] { epic.Id },
+                },
+            };
+
+            await capabilitiesService.AddCapabilitiesToCatalogueItem(catalogueItem.Id, model);
+            context.ChangeTracker.Clear();
+
+            var model2 = new SaveCatalogueItemCapabilitiesModel
+            {
+                UserId = userId,
+                Capabilities = new Dictionary<int, string[]>
+                {
+                    [existingCapability.Id] = new string[1] { epic.Id },
+                    [capabilityToAdd.Id] = new string[1] { epic.Id },
+                },
+            };
+
+            await capabilitiesService.AddCapabilitiesToCatalogueItem(catalogueItem.Id, model2);
+            context.ChangeTracker.Clear();
+
+            var item = context.CatalogueItems
+                .Include(i => i.CatalogueItemCapabilities)
+                .Include(i => i.CatalogueItemEpics)
+                .FirstOrDefault(e => e.Id == catalogueItem.Id);
+
+            item.CatalogueItemCapabilities.FirstOrDefault(c => c.CapabilityId == existingCapability.Id).Should().NotBeNull();
+            item.CatalogueItemEpics.FirstOrDefault(e => e.CapabilityId == existingCapability.Id && e.EpicId == epic.Id).Should().NotBeNull();
+            item.CatalogueItemEpics.FirstOrDefault(e => e.CapabilityId == capabilityToAdd.Id && e.EpicId == epic.Id).Should().NotBeNull();
+            item.CatalogueItemEpics.FirstOrDefault(e => e.CapabilityId == staleCapability.Id && e.EpicId == epic.Id).Should().BeNull();
         }
 
         [Theory]

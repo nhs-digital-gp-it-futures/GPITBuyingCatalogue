@@ -110,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             {
                 foreach (var epicId in epicIds)
                 {
-                    if (existingEpics.Any(c => c.EpicId == epicId))
+                    if (existingEpics.Any(c => c.EpicId == epicId && c.CapabilityId == id))
                         continue;
 
                     var catalogueItemEpic = new CatalogueItemEpic
@@ -135,7 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
         private void RemoveStaleEpics(List<CatalogueItemEpic> existingEpics, Dictionary<int, string[]> selectedCapabilitiesAndEpics)
         {
             var staleEpics = existingEpics
-                .Where(epic => !selectedCapabilitiesAndEpics.SelectMany(c => c.Value).Contains(epic.EpicId)).ToList();
+                .Where(epic => !selectedCapabilitiesAndEpics.GetValueOrDefault(epic.CapabilityId, Array.Empty<string>()).Contains(epic.EpicId)).ToList();
 
             if (staleEpics.Any())
                 dbContext.CatalogueItemEpics.RemoveRange(staleEpics);
