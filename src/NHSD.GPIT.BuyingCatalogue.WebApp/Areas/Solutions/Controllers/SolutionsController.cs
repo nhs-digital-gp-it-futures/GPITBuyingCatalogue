@@ -395,7 +395,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("{solutionId}/implementation")]
         public async Task<IActionResult> Implementation(CatalogueItemId solutionId)
         {
-            var item = await solutionsService.GetSolutionThin(solutionId);
+            var item = await solutionsService.GetSolutionWithBasicInformation(solutionId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 

@@ -2,52 +2,55 @@
 
 <div class="nhsuk-grid-row">
     <article class="nhsuk-grid-column-full">
+        <partial name="_solutionSummary" model="Model" />
         @if (!string.IsNullOrWhiteSpace(Model.Summary) || !String.IsNullOrWhiteSpace(Model.Url))
         {
-            <h2>About @Model.Name</h2>
-            @if (!string.IsNullOrWhiteSpace(Model.Summary))
-            {
-                <p style="white-space: pre-line">@Model.Summary</p>
-            }
-            @if (!string.IsNullOrWhiteSpace(Model.Url))
-            {
-                <p>
-                    <a href="@Model.Url">@Model.Url</a>
-                </p>
-            }
+            <nhs-card title="@Model.Name">
+                @if (!string.IsNullOrWhiteSpace(Model.Summary))
+                {
+                    <p style="white-space: pre-line">@Model.Summary</p>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.Url))
+                {
+                    <p>
+                        <a href="@Model.Url">@Model.Url</a>
+                    </p>
+                }
+           </nhs-card>
         }
         @if (Model.HasContacts())
         {
-            <h2>Contact details</h2>
-            @foreach (var contact in Model.Contacts)
-            {
-                <nhs-summary-list>
-                    @if (!string.IsNullOrWhiteSpace(contact.FullName))
-                    {
-                        <nhs-summary-list-row label-text="Contact name">
-                            <p>
-                                @contact.FullName
-                            </p>
-                        </nhs-summary-list-row>
-                    }
-
-                    @if (!string.IsNullOrWhiteSpace(contact.Department))
-                    {
-                        <nhs-summary-list-row label-text="Department">
-                            <p>
-                                @contact.Department
-                            </p>
-                        </nhs-summary-list-row>
-                    }
-                    <nhs-summary-list-row label-text="Contact details">
-                        @if (!string.IsNullOrWhiteSpace(contact.PhoneNumber))
+            <nhs-expander label-text="Contact details" open="false">
+                @foreach (var contact in Model.Contacts)
+                {
+                    <nhs-summary-list>
+                        @if (!string.IsNullOrWhiteSpace(contact.FullName))
                         {
-                            <p>@contact.PhoneNumber</p>
+                            <nhs-summary-list-row label-text="Contact name">
+                                <p>
+                                    @contact.FullName
+                                </p>
+                            </nhs-summary-list-row>
                         }
-                        <p>@contact.Email</p>
-                    </nhs-summary-list-row>
-                </nhs-summary-list>
-            }
+
+                        @if (!string.IsNullOrWhiteSpace(contact.Department))
+                        {
+                            <nhs-summary-list-row label-text="Department">
+                                <p>
+                                    @contact.Department
+                                </p>
+                            </nhs-summary-list-row>
+                        }
+                        <nhs-summary-list-row label-text="Contact details">
+                            @if (!string.IsNullOrWhiteSpace(contact.PhoneNumber))
+                            {
+                                <p>@contact.PhoneNumber</p>
+                            }
+                            <p>@contact.Email</p>
+                        </nhs-summary-list-row>
+                    </nhs-summary-list>
+                }
+            </nhs-expander>
         }
     </article>
 </div>
