@@ -42,6 +42,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             .ThenBy(x => x.Name)
             .ToListAsync();
 
+        public Task<Dictionary<string, IOrderedEnumerable<Epic>>> GetGroupedCapabilitiesAndEpics(Dictionary<int, string[]> ids) =>
+            dbContext.Capabilities
+                .AsNoTracking()
+                .Include(x => x.Category)
+                .Include(x => x.Epics)
+                .Where(x => ids.Keys.Contains(x.Id))
+                .OrderBy(x => x.Category.Name)
+                .ThenBy(x => x.Name)
+                .ToDictionaryAsync(
+                    x => x.Name,
+                    x => x.Epics.Where(e => ids[x.Id].Contains(e.Id)).OrderBy(e => e.Name));
+
         public Task<List<CapabilityCategory>> GetCapabilitiesByCategory()
             => dbContext
                 .CapabilityCategories

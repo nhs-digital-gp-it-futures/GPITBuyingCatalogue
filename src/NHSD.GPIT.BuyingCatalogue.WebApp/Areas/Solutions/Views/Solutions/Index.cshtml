@@ -34,7 +34,7 @@
                             Catalogue Solutions
                         </a>
                     </li>
-                    @if (!string.IsNullOrWhiteSpace(Model.SearchSummary.SelectedCapabilityIds))
+                    @if (!string.IsNullOrWhiteSpace(Model.SearchSummary.Selected))
                     {
                         <li class="nhsuk-breadcrumb__item">
                             <a class="nhsuk-breadcrumb__link"
@@ -42,15 +42,14 @@
                                asp-action="@nameof(FilterController.FilterCapabilities)"
                                asp-controller="@typeof(FilterController).ControllerName()"
                                asp-area="@typeof(FilterController).AreaName()"
-                               asp-route-selectedCapabilityIds="@Model.SearchSummary.SelectedCapabilityIds"
-                               asp-route-selectedEpicIds="@Model.SearchSummary.SelectedEpicIds"
+                               asp-route-selected="@Model.SearchSummary.Selected"
                                asp-route-search="@Model.SearchSummary.SearchTerm">
                                 Filter Capabilities
                             </a>
                         </li>
                     }
 
-                    @if (!string.IsNullOrWhiteSpace(Model.SearchSummary.SelectedEpicIds))
+                    @if (Model.SearchSummary.IncludesEpics)
                     {
                         <li class="nhsuk-breadcrumb__item">
                             <a class="nhsuk-breadcrumb__link"
@@ -58,8 +57,7 @@
                                asp-action="@nameof(FilterController.FilterEpics)"
                                asp-controller="@typeof(FilterController).ControllerName()"
                                asp-area="@typeof(FilterController).AreaName()"
-                               asp-route-selectedCapabilityIds="@Model.SearchSummary.SelectedCapabilityIds"
-                               asp-route-selectedEpicIds="@Model.SearchSummary.SelectedEpicIds"
+                               asp-route-selected="@Model.SearchSummary.Selected"
                                asp-route-search="@Model.SearchSummary.SearchTerm">
                                 Filter Epics
                             </a>
@@ -98,7 +96,7 @@
         @if (!Model.FilterResultView && !Model.SearchCriteriaApplied)
         {
             <vc:nhs-action-link text="Filter Catalogue Solutions"
-                                url="@Url.Action(nameof(FilterController.FilterCapabilities), typeof(FilterController).ControllerName(), new { SelectedCapabilityIds = Model.SearchSummary.SelectedCapabilityIds, SelectedEpicIds = Model.SearchSummary.SelectedEpicIds, search = Model.SearchSummary.SearchTerm })"/>
+                                url="@Url.Action(nameof(FilterController.FilterCapabilities), typeof(FilterController).ControllerName(), new { Selected = Model.SearchSummary.Selected, search = Model.SearchSummary.SearchTerm })"/>
         }
 
         @if (Model.SearchCriteriaApplied)
@@ -115,7 +113,7 @@
 
             @if (Model.SearchSummary.CapabilitiesAndEpics.Count > 0)
             {
-                <h3 data-test-id="filter-summary-title">@(FilterSummaryTitle(Model.SearchSummary.SelectedEpicIds))</h3>
+                <h3 data-test-id="filter-summary-title">@(FilterSummaryTitle(Model.SearchSummary.IncludesEpics))</h3>
                 var filterContext = GetSearchSummary();
                 <ul data-test-id="filter-summary-content">
                     @foreach (var item in filterContext)
@@ -132,8 +130,7 @@
                        asp-area="@typeof(FilterController).AreaName()"
                        asp-controller="@typeof(FilterController).ControllerName()"
                        asp-action="@nameof(FilterController.FilterCapabilities)"
-                       asp-route-selectedCapabilityIds="@Model.SearchSummary.SelectedCapabilityIds"
-                       asp-route-selectedEpicIds="@Model.SearchSummary.SelectedEpicIds"
+                       asp-route-selected="@Model.SearchSummary.Selected"
                        asp-route-search="@Model.SearchSummary.SearchTerm">
                         Edit Capabilities
                     </a>
@@ -142,8 +139,7 @@
                        asp-area="@typeof(FilterController).AreaName()"
                        asp-controller="@typeof(FilterController).ControllerName()"
                        asp-action="@nameof(FilterController.FilterEpics)"
-                       asp-route-selectedCapabilityIds="@Model.SearchSummary.SelectedCapabilityIds"
-                       asp-route-selectedEpicIds="@Model.SearchSummary.SelectedEpicIds"
+                       asp-route-selected="@Model.SearchSummary.Selected"
                        asp-route-search="@Model.SearchSummary.SearchTerm">
                         Edit Epics
                     </a>
@@ -189,8 +185,7 @@
                         <a asp-area="@typeof(SolutionsController).AreaName()"
                            asp-controller="@typeof(SolutionsController).ControllerName()"
                            asp-action="@nameof(SolutionsController.Index)"
-                           asp-route-selectedCapabilityIds="@Model.SearchSummary.SelectedCapabilityIds"
-                           asp-route-selectedEpicIds="@Model.SearchSummary.SelectedEpicIds"
+                           asp-route-selected="@Model.SearchSummary.Selected"
                            asp-route-search="@Model.SearchSummary.SearchTerm">
                             Clear additional filters
                         </a>
@@ -273,8 +268,8 @@
 
     static string GetEpicDescriptor(int numberOfEpics) => numberOfEpics == 1 ? "Epic" : "Epics";
 
-    static string FilterSummaryTitle(string selectedEpicIds) =>
-        string.IsNullOrEmpty(selectedEpicIds)
+    static string FilterSummaryTitle(bool includesEpics) =>
+        !includesEpics
             ? "Selected Capabilities:"
             : "Selected Capabilities and Epics:";
 

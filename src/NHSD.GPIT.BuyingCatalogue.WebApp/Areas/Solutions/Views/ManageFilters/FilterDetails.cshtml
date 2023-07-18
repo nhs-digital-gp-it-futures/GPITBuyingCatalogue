@@ -29,8 +29,7 @@
         <p>
             <a href="@Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new
                             {
-                                selectedCapabilityIds = Model.FilterIds.CapabilityIds.ToFilterString(),
-                                selectedEpicIds = Model.FilterIds.EpicIds.ToFilterString(),
+                                selected = Model.FilterIds.CapabilityAndEpicIds.ToFilterString(),
                                 selectedFrameworkId = Model.FilterIds.FrameworkId,
                                 selectedApplicationTypeIds = Model.FilterIds.ApplicationTypeIds.ToFilterString(),
                                 selectedHostingTypeIds = Model.FilterIds.HostingTypeIds.ToFilterString(),

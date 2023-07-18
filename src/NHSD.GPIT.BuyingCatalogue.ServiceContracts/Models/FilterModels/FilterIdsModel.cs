@@ -4,9 +4,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels
 {
     public class FilterIdsModel
     {
-        public IEnumerable<int> CapabilityIds { get; set; }
-
-        public IEnumerable<string> EpicIds { get; set; }
+        public Dictionary<int, string[]> CapabilityAndEpicIds { get; set; }
 
         public string FrameworkId { get; set; }
 

@@ -25,8 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             string name,
             string description,
             int organisationId,
-            List<int> capabilityIds,
-            List<string> epicIds,
+            Dictionary<int, string[]> capabilityAndEpicIds,
             string frameworkId,
             List<ApplicationType> applicationTypes,
             List<HostingType> hostingTypes)
@@ -58,8 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             await dbContext.SaveChangesAsync();
 
-            await AddFilterCapabilities(filter.Id, capabilityIds);
-            await AddFilterEpics(filter.Id, epicIds);
+            await AddFilterCapabilityEpics(filter.Id, capabilityAndEpicIds);
             await AddFilterApplicationTypes(filter.Id, applicationTypes);
             await AddFilterHostingTypes(filter.Id, hostingTypes);
 
@@ -92,80 +90,96 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task<FilterIdsModel> GetFilterIds(int organisationId, int filterId)
         {
-            return await dbContext.Filters.Where(x => x.OrganisationId == organisationId && x.Id == filterId)
-                .Select(
-                    x => new FilterIdsModel()
-                    {
-                        CapabilityIds = x.Capabilities.Select(c => c.Id),
-                        EpicIds = x.Epics.Select(e => e.Id),
-                        FrameworkId = x.FrameworkId,
-                        ApplicationTypeIds = x.FilterApplicationTypes.Select(fc => (int)fc.ApplicationTypeID),
-                        HostingTypeIds = x.FilterHostingTypes.Select(fc => (int)fc.HostingType),
-                    })
+            var filter = await dbContext.Filters.Where(x => x.OrganisationId == organisationId && x.Id == filterId)
+                .Include(f => f.FilterCapabilityEpics)
+                .Include(f => f.FilterApplicationTypes)
+                .Include(f => f.FilterHostingTypes)
                 .AsNoTracking()
+                .AsSplitQuery()
                 .FirstOrDefaultAsync();
+
+            return filter != null
+                ? new FilterIdsModel()
+                {
+                    CapabilityAndEpicIds = filter.FilterCapabilityEpics
+                            .GroupBy(c => c.CapabilityId)
+                            .ToDictionary(i => i.Key, i => i.Where(c => c.EpicId != null).Select(c => c.EpicId).ToArray()),
+                    FrameworkId = filter.FrameworkId,
+                    ApplicationTypeIds = filter.FilterApplicationTypes.Select(fc => (int)fc.ApplicationTypeID),
+                    HostingTypeIds = filter.FilterHostingTypes.Select(fc => (int)fc.HostingType),
+                }
+                : null;
         }
 
         public async Task<FilterDetailsModel> GetFilterDetails(int organisationId, int filterId)
         {
-            return await dbContext.Filters.Where(x => x.OrganisationId == organisationId && x.Id == filterId)
-                .Select(
-                    x => new FilterDetailsModel
-                    {
-                        Id = x.Id,
-                        Name = x.Name,
-                        Description = x.Description,
-                        FrameworkName = x.Framework.ShortName,
-                        HostingTypes = x.FilterHostingTypes.Select(y => y.HostingType).ToList(),
-                        ApplicationTypes =
-                            x.FilterApplicationTypes.Select(y => y.ApplicationTypeID).ToList(),
-                        Capabilities = x.Capabilities
-                            .Select(
-                                y => new KeyValuePair<string, List<string>>(
-                                    y.Name,
-                                    x.Epics.Where(z => z.Capabilities.Any(c => c.Id == y.Id))
-                                        .Select(z => z.Name)
-                                        .ToList()))
-                            .ToList(),
-                    })
+            var filter = await dbContext.Filters.Where(x => x.OrganisationId == organisationId && x.Id == filterId)
+                .Include(f => f.FilterCapabilityEpics)
+                    .ThenInclude(f => f.Epic)
+                .Include(f => f.FilterCapabilityEpics)
+                    .ThenInclude(f => f.Capability)
+                .Include(f => f.Framework)
+                .Include(f => f.FilterApplicationTypes)
+                .Include(f => f.FilterHostingTypes)
                 .AsNoTracking()
+                .AsSplitQuery()
                 .FirstOrDefaultAsync();
+
+            return filter != null
+                ? new FilterDetailsModel()
+                {
+                    Id = filter.Id,
+                    Name = filter.Name,
+                    Description = filter.Description,
+                    FrameworkName = filter.Framework?.ShortName,
+                    HostingTypes = filter.FilterHostingTypes.Select(y => y.HostingType).ToList(),
+                    ApplicationTypes =
+                            filter.FilterApplicationTypes.Select(y => y.ApplicationTypeID).ToList(),
+                    Capabilities = filter.FilterCapabilityEpics
+                            .GroupBy(c => c.Capability.Name)
+                            .ToDictionary(i => i.Key, i => i.Where(c => c.Epic != null).Select(c => c.Epic.Name).ToList())
+                            .ToList(),
+                }
+                : null;
         }
 
-        internal async Task AddFilterCapabilities(int filterId, List<int> capabilityIds)
-        {
-            if (capabilityIds is null || capabilityIds.Count == 0) return;
-
-            var filter = await dbContext.Filters.Include(x => x.Capabilities).FirstOrDefaultAsync(o => o.Id == filterId);
-
-            if (filter is null)
-            {
-                return;
-            }
-
-            var capabilities = await dbContext.Capabilities.Where(x => capabilityIds.Contains(x.Id)).ToListAsync();
-            var distinctCapabilities = capabilities.Where(x => filter.Capabilities.All(y => x.Id != y.Id));
-
-            filter.Capabilities.AddRange(distinctCapabilities);
-
-            await dbContext.SaveChangesAsync();
-        }
-
-        internal async Task AddFilterEpics(int filterId, List<string> epicIds)
+        internal async Task AddFilterCapabilityEpics(int filterId, Dictionary<int, string[]> epicIds)
         {
             if (epicIds is null || epicIds.Count == 0) return;
 
-            var filter = await dbContext.Filters.Include(x => x.Epics).FirstOrDefaultAsync(o => o.Id == filterId);
+            var filter = await dbContext.Filters
+                .Include(x => x.FilterCapabilityEpics)
+                .FirstOrDefaultAsync(o => o.Id == filterId);
 
             if (filter is null)
             {
                 return;
             }
 
-            var epics = await dbContext.Epics.Where(x => epicIds.Contains(x.Id)).ToListAsync();
-            var distinctEpics = epics.Where(x => filter.Epics.All(y => x.Id != y.Id));
+            var filterCapabilities = epicIds
+                .Where(kv => kv.Value == null || kv.Value.Length == 0)
+                .Select(kv => new FilterCapabilityEpic()
+                {
+                    CapabilityId = kv.Key,
+                })
+                .ToList();
 
-            filter.Epics.AddRange(distinctEpics);
+            var filterCapabilityEpics = epicIds
+                .Where(kv => kv.Value != null && kv.Value.Length > 0)
+                .SelectMany(kv => kv.Value.Select(e => new
+                {
+                    CapabilityId = kv.Key,
+                    Epic = dbContext.Epics.FirstOrDefault(x => x.Id == e),
+                }))
+                .Select(x => new FilterCapabilityEpic()
+                {
+                    CapabilityId = x.CapabilityId,
+                    EpicId = x.Epic.Id,
+                })
+                .ToList();
+
+            filter.FilterCapabilityEpics.AddRange(filterCapabilities);
+            filter.FilterCapabilityEpics.AddRange(filterCapabilityEpics);
 
             await dbContext.SaveChangesAsync();
         }

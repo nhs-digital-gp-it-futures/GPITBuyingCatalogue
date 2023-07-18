@@ -70,39 +70,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Configuration
 
             builder.HasQueryFilter(o => !o.IsDeleted);
 
-            builder.HasMany(x => x.Capabilities)
-                .WithMany()
-                .UsingEntity<Dictionary<string, object>>(
-                    r => r.HasOne<Capability>()
-                        .WithMany()
-                        .HasForeignKey("CapabilityId")
-                        .HasConstraintName("FK_FilterCapabilities_Capability"),
-                    l => l.HasOne<Filter>()
-                        .WithMany()
-                        .HasForeignKey("FilterId")
-                        .HasConstraintName("FK_FilterCapabilities_Filter"),
-                    j =>
-                    {
-                        j.ToTable("FilterCapabilities", Schemas.Filtering);
-                        j.HasKey("CapabilityId", "FilterId");
-                    });
-
-            builder.HasMany(x => x.Epics)
-                .WithMany()
-                .UsingEntity<Dictionary<string, object>>(
-                    r => r.HasOne<Epic>()
-                        .WithMany()
-                        .HasForeignKey("EpicId")
-                        .HasConstraintName("FK_FilterEpics_Epic"),
-                    l => l.HasOne<Filter>()
-                        .WithMany()
-                        .HasForeignKey("FilterId")
-                        .HasConstraintName("FK_FilterEpics_Filter"),
-                    j =>
-                    {
-                        j.ToTable("FilterEpics", Schemas.Filtering);
-                        j.HasKey("EpicId", "FilterId");
-                    });
+            builder.HasMany(x => x.FilterCapabilityEpics)
+                .WithOne()
+                .HasForeignKey(x => x.FilterId);
         }
     }
 }
