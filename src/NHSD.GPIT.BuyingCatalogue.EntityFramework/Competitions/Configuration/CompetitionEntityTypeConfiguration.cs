@@ -39,6 +39,7 @@ internal sealed class CompetitionEntityTypeConfiguration : IEntityTypeConfigurat
 
         builder.HasOne(x => x.Weightings)
             .WithOne()
+            .HasForeignKey<Weightings>(x => x.CompetitionId)
             .HasConstraintName("FK_Weightings_Competition");
 
         builder.HasOne(x => x.Filter)

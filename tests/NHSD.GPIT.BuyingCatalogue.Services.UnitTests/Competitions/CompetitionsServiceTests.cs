@@ -992,4 +992,109 @@ public static class CompetitionsServiceTests
         integrations.ForEach(
             x => updatedCompetition.NonPriceElements.Interoperability.Should().Contain(y => x == y.Qualifier));
     }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task SetCriteriaReviewed_SetsCriteriaReviewed(
+        Organisation organisation,
+        Competition competition,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        competition.HasReviewedCriteria = false;
+        competition.OrganisationId = organisation.Id;
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        await service.SetCriteriaReviewed(organisation.InternalIdentifier, competition.Id);
+
+        var updatedCompetition = await service.GetCompetition(organisation.InternalIdentifier, competition.Id);
+
+        updatedCompetition.HasReviewedCriteria.Should().BeTrue();
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task SetNonPriceWeights_NullNonPriceWeights_CreatesAndSetsWeights(
+        int implementationWeight,
+        int interoperabilityWeight,
+        int serviceLevelWeight,
+        Organisation organisation,
+        Competition competition,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        competition.NonPriceElements = new();
+        competition.HasReviewedCriteria = false;
+        competition.OrganisationId = organisation.Id;
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        await service.SetNonPriceWeights(
+            organisation.InternalIdentifier,
+            competition.Id,
+            implementationWeight,
+            interoperabilityWeight,
+            serviceLevelWeight);
+
+        var updatedCompetition = await service.GetCompetitionWithNonPriceElements(
+            organisation.InternalIdentifier,
+            competition.Id);
+
+        var nonPriceElementWeightings = updatedCompetition.NonPriceElements.NonPriceWeights;
+
+        nonPriceElementWeightings.Should().NotBeNull();
+        nonPriceElementWeightings.Implementation.Should().Be(implementationWeight);
+        nonPriceElementWeightings.Interoperability.Should().Be(interoperabilityWeight);
+        nonPriceElementWeightings.ServiceLevel.Should().Be(serviceLevelWeight);
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task SetNonPriceWeights_ExistingNonPriceWeights_SetsWeights(
+        int implementationWeight,
+        int interoperabilityWeight,
+        int serviceLevelWeight,
+        NonPriceWeights nonPriceWeights,
+        Organisation organisation,
+        Competition competition,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        competition.NonPriceElements = new() { NonPriceWeights = nonPriceWeights };
+        competition.HasReviewedCriteria = false;
+        competition.OrganisationId = organisation.Id;
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        await service.SetNonPriceWeights(
+            organisation.InternalIdentifier,
+            competition.Id,
+            implementationWeight,
+            interoperabilityWeight,
+            serviceLevelWeight);
+
+        var updatedCompetition = await service.GetCompetitionWithNonPriceElements(
+            organisation.InternalIdentifier,
+            competition.Id);
+
+        var nonPriceElementWeightings = updatedCompetition.NonPriceElements.NonPriceWeights;
+
+        nonPriceElementWeightings.Should().NotBeNull();
+        nonPriceElementWeightings.Implementation.Should().Be(implementationWeight);
+        nonPriceElementWeightings.Interoperability.Should().Be(interoperabilityWeight);
+        nonPriceElementWeightings.ServiceLevel.Should().Be(serviceLevelWeight);
+    }
 }

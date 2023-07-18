@@ -81,13 +81,16 @@ public class CompetitionNonPriceElementsController : Controller
     public async Task<IActionResult> Interoperability(
         string internalOrgId,
         int competitionId,
-        bool? isEdit = false)
+        bool? isEdit = false,
+        string returnUrl = null)
     {
+        _ = returnUrl;
+
         var competition = await competitionsService.GetCompetitionWithNonPriceElements(internalOrgId, competitionId);
 
         var model = new SelectInteroperabilityCriteriaModel(competition)
         {
-            BackLink = Url.Action(isEdit.GetValueOrDefault() ? nameof(Index) : nameof(AddNonPriceElement), new { internalOrgId, competitionId }),
+            BackLink = returnUrl ?? Url.Action(isEdit.GetValueOrDefault() ? nameof(Index) : nameof(AddNonPriceElement), new { internalOrgId, competitionId }),
         };
 
         return View(model);
@@ -97,7 +100,8 @@ public class CompetitionNonPriceElementsController : Controller
     public async Task<IActionResult> Interoperability(
         string internalOrgId,
         int competitionId,
-        SelectInteroperabilityCriteriaModel model)
+        SelectInteroperabilityCriteriaModel model,
+        string returnUrl = null)
     {
         if (!ModelState.IsValid)
             return View(model);
@@ -111,20 +115,23 @@ public class CompetitionNonPriceElementsController : Controller
             im1Integrations,
             gpConnectIntegrations);
 
-        return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
+        return GetRedirect(internalOrgId, competitionId, returnUrl);
     }
 
     [HttpGet("add/implementation")]
     public async Task<IActionResult> Implementation(
         string internalOrgId,
         int competitionId,
-        bool? isEdit = false)
+        bool? isEdit = false,
+        string returnUrl = null)
     {
+        _ = returnUrl;
+
         var competition = await competitionsService.GetCompetitionWithNonPriceElements(internalOrgId, competitionId);
 
         var model = new AddImplementationCriteriaModel(competition)
         {
-            BackLink = Url.Action(isEdit.GetValueOrDefault() ? nameof(Index) : nameof(AddNonPriceElement), new { internalOrgId, competitionId }),
+            BackLink = returnUrl ?? Url.Action(isEdit.GetValueOrDefault() ? nameof(Index) : nameof(AddNonPriceElement), new { internalOrgId, competitionId }),
         };
 
         return View(model);
@@ -134,27 +141,31 @@ public class CompetitionNonPriceElementsController : Controller
     public async Task<IActionResult> Implementation(
         string internalOrgId,
         int competitionId,
-        AddImplementationCriteriaModel model)
+        AddImplementationCriteriaModel model,
+        string returnUrl = null)
     {
         if (!ModelState.IsValid)
             return View(model);
 
         await competitionsService.SetImplementationCriteria(internalOrgId, competitionId, model.Requirements);
 
-        return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
+        return GetRedirect(internalOrgId, competitionId, returnUrl);
     }
 
     [HttpGet("add/service-level")]
     public async Task<IActionResult> ServiceLevel(
         string internalOrgId,
         int competitionId,
-        bool? isEdit = false)
+        bool? isEdit = false,
+        string returnUrl = null)
     {
+        _ = returnUrl;
+
         var competition = await competitionsService.GetCompetitionWithNonPriceElements(internalOrgId, competitionId);
 
         var model = new AddServiceLevelCriteriaModel(competition)
         {
-            BackLink = Url.Action(isEdit.GetValueOrDefault() ? nameof(Index) : nameof(AddNonPriceElement), new { internalOrgId, competitionId }),
+            BackLink = returnUrl ?? Url.Action(isEdit.GetValueOrDefault() ? nameof(Index) : nameof(AddNonPriceElement), new { internalOrgId, competitionId }),
         };
 
         return View(model);
@@ -164,7 +175,8 @@ public class CompetitionNonPriceElementsController : Controller
     public async Task<IActionResult> ServiceLevel(
         string internalOrgId,
         int competitionId,
-        AddServiceLevelCriteriaModel model)
+        AddServiceLevelCriteriaModel model,
+        string returnUrl = null)
     {
         if (!ModelState.IsValid)
             return View(model);
@@ -176,6 +188,51 @@ public class CompetitionNonPriceElementsController : Controller
             model.TimeUntil.GetValueOrDefault(),
             model.ApplicableDays);
 
-        return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
+        return GetRedirect(internalOrgId, competitionId, returnUrl);
     }
+
+    [HttpGet("weights")]
+    public async Task<IActionResult> Weights(
+        string internalOrgId,
+        int competitionId)
+    {
+        var competition = await competitionsService.GetCompetitionWithNonPriceElements(internalOrgId, competitionId);
+
+        var model = new NonPriceElementWeightsModel(competition)
+        {
+            BackLink = Url.Action(
+                nameof(CompetitionTaskListController.Index),
+                typeof(CompetitionTaskListController).ControllerName(),
+                new { internalOrgId, competitionId }),
+        };
+
+        return View(model);
+    }
+
+    [HttpPost("weights")]
+    public async Task<IActionResult> Weights(
+        string internalOrgId,
+        int competitionId,
+        NonPriceElementWeightsModel model)
+    {
+        if (!ModelState.IsValid)
+            return View(model);
+
+        await competitionsService.SetNonPriceWeights(
+            internalOrgId,
+            competitionId,
+            model.Implementation,
+            model.Interoperability,
+            model.ServiceLevel);
+
+        return RedirectToAction(
+            nameof(CompetitionTaskListController.Index),
+            typeof(CompetitionTaskListController).ControllerName(),
+            new { internalOrgId, competitionId });
+    }
+
+    private IActionResult GetRedirect(string internalOrgId, int competitionId, string returnUrl) =>
+        string.IsNullOrWhiteSpace(returnUrl)
+            ? RedirectToAction(nameof(Index), new { internalOrgId, competitionId })
+            : Redirect(returnUrl);
 }

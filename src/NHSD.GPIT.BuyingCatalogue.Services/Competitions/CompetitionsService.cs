@@ -23,6 +23,17 @@ public class CompetitionsService : ICompetitionsService
         this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
+    public async Task<Competition> GetCompetitionCriteriaReview(string internalOrgId, int competitionId) =>
+        await dbContext.Competitions
+            .Include(x => x.Organisation)
+            .Include(x => x.Weightings)
+            .Include(x => x.NonPriceElements)
+            .Include(x => x.NonPriceElements.NonPriceWeights)
+            .Include(x => x.NonPriceElements.Implementation)
+            .Include(x => x.NonPriceElements.Interoperability)
+            .Include(x => x.NonPriceElements.ServiceLevel)
+            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+
     public async Task<IEnumerable<Competition>> GetCompetitionsDashboard(int organisationId)
         => await dbContext.Competitions.Include(x => x.CompetitionSolutions)
             .Where(x => x.OrganisationId == organisationId)
@@ -34,6 +45,7 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.NonPriceElements.Implementation)
             .Include(x => x.NonPriceElements.Interoperability)
             .Include(x => x.NonPriceElements.ServiceLevel)
+            .Include(x => x.NonPriceElements.NonPriceWeights)
             .AsSplitQuery()
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
@@ -118,6 +130,17 @@ public class CompetitionsService : ICompetitionsService
 
         competition.Weightings.Price = priceWeighting;
         competition.Weightings.NonPrice = nonPriceWeighting;
+        competition.HasReviewedCriteria = false;
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task SetCriteriaReviewed(string internalOrgId, int competitionId)
+    {
+        var competition = await dbContext.Competitions.FirstOrDefaultAsync(
+            x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+
+        competition.HasReviewedCriteria = true;
 
         await dbContext.SaveChangesAsync();
     }
@@ -131,6 +154,7 @@ public class CompetitionsService : ICompetitionsService
         var implementation = nonPriceElements.Implementation ??= new ImplementationCriteria();
 
         implementation.Requirements = requirements;
+        competition.HasReviewedCriteria = false;
 
         await dbContext.SaveChangesAsync();
     }
@@ -159,6 +183,27 @@ public class CompetitionsService : ICompetitionsService
             .Where(x => interopEntities.All(y => x.Qualifier != y.Qualifier));
 
         interopEntities.AddRange(newInteropEntities);
+        competition.HasReviewedCriteria = false;
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task SetNonPriceWeights(
+        string internalOrgId,
+        int competitionId,
+        int? implementationWeight,
+        int? interoperabilityWeight,
+        int? serviceLevelWeight)
+    {
+        var competition = await dbContext.Competitions.Include(x => x.NonPriceElements.NonPriceWeights)
+            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+
+        var nonPriceWeights = competition.NonPriceElements.NonPriceWeights ??= new NonPriceWeights();
+
+        nonPriceWeights.Implementation = implementationWeight;
+        nonPriceWeights.Interoperability = interoperabilityWeight;
+        nonPriceWeights.ServiceLevel = serviceLevelWeight;
+        competition.HasReviewedCriteria = false;
 
         await dbContext.SaveChangesAsync();
     }
@@ -179,6 +224,7 @@ public class CompetitionsService : ICompetitionsService
         serviceLevelCriteria.TimeFrom = timeFrom;
         serviceLevelCriteria.TimeUntil = timeUntil;
         serviceLevelCriteria.ApplicableDays = applicableDays;
+        competition.HasReviewedCriteria = false;
 
         await dbContext.SaveChangesAsync();
     }
@@ -310,6 +356,10 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.Weightings)
             .Include(x => x.Recipients)
             .Include(x => x.NonPriceElements)
+            .Include(x => x.NonPriceElements.NonPriceWeights)
+            .Include(x => x.NonPriceElements.Implementation)
+            .Include(x => x.NonPriceElements.Interoperability)
+            .Include(x => x.NonPriceElements.ServiceLevel)
             .AsNoTracking()
             .AsSplitQuery()
             .Where(x => x.OrganisationId == organisationId && x.Id == competitionId)

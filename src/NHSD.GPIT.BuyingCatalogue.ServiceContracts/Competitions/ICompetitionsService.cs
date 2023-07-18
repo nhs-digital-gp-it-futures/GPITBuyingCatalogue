@@ -17,6 +17,8 @@ public interface ICompetitionsService
 
     Task<string> GetCompetitionName(int organisationId, int competitionId);
 
+    Task<Competition> GetCompetitionCriteriaReview(string internalOrgId, int competitionId);
+
     Task<IEnumerable<Competition>> GetCompetitionsDashboard(int organisationId);
 
     Task<Competition> GetCompetitionWithNonPriceElements(string internalOrgId, int competitionId);
@@ -45,6 +47,8 @@ public interface ICompetitionsService
 
     Task SetCompetitionWeightings(int organisationId, int competitionId, int priceWeighting, int nonPriceWeighting);
 
+    Task SetCriteriaReviewed(string internalOrgId, int competitionId);
+
     Task SetImplementationCriteria(string internalOrgId, int competitionId, string requirements);
 
     Task SetInteroperabilityCriteria(
@@ -52,6 +56,13 @@ public interface ICompetitionsService
         int competitionId,
         IEnumerable<string> im1Integrations,
         IEnumerable<string> gpConnectIntegrations);
+
+    Task SetNonPriceWeights(
+        string internalOrgId,
+        int competitionId,
+        int? implementationWeight,
+        int? interoperabilityWeight,
+        int? serviceLevelWeight);
 
     Task SetServiceLevelCriteria(
         string internalOrgId,

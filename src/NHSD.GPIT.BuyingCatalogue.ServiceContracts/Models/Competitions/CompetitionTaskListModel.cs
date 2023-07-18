@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.Competitions;
@@ -89,6 +90,17 @@ public class CompetitionTaskListModel
         NonPriceElements = CompletedOrNotStarted(
             competition,
             c => c.NonPriceElements is not null);
+
+        if (NonPriceElements is TaskProgress.NotStarted) return;
+
+        NonPriceWeightings = competition.NonPriceElements.NonPriceWeights is null ? TaskProgress.NotStarted :
+            competition.NonPriceElements.HasIncompleteWeighting() ? TaskProgress.InProgress : TaskProgress.Completed;
+
+        if (NonPriceWeightings is TaskProgress.NotStarted or TaskProgress.InProgress) return;
+
+        ReviewCompetitionCriteria = CompletedOrNotStarted(
+            competition,
+            c => c.HasReviewedCriteria);
     }
 
     private void SetSectionThreeStatuses(Competition competition)
@@ -96,6 +108,12 @@ public class CompetitionTaskListModel
         if (!competition.IncludesNonPrice.GetValueOrDefault())
         {
             CompareAndScoreSolutions = TaskProgress.NotApplicable;
+        }
+        else
+        {
+            CompareAndScoreSolutions = CompletedOrNotStarted(
+                competition,
+                c => false);
         }
     }
 }

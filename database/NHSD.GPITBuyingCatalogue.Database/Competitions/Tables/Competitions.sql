@@ -9,6 +9,7 @@ CREATE TABLE [competitions].[Competitions]
     [LastUpdatedBy] INT NULL,
     [ShortlistAccepted] DATETIME2(7) NULL,
     [Completed] DATETIME2(7) NULL,
+    [HasReviewedCriteria] BIT DEFAULT 0 NOT NULL,
     [IsDeleted] BIT DEFAULT 0 NOT NULL,
     [ContractLength] INT NULL,
     [IncludesNonPrice] BIT NULL,
