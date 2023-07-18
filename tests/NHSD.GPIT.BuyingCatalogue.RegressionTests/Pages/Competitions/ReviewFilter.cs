@@ -5,25 +5,25 @@ using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using OpenQA.Selenium;
 
-namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.SelectFilterType
+namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
 {
-    public class SelectFilter : PageBase
+    public class ReviewFilter : PageBase
     {
-        public SelectFilter(IWebDriver driver, CommonActions commonActions)
+        public ReviewFilter(IWebDriver driver, CommonActions commonActions)
             : base(driver, commonActions)
         {
         }
 
-        public void SelectFilterForNewCompetition(string value)
+        public void ReviewYourFilter()
         {
-            CommonActions.LedeText().Should().Be("The results produced by your selected filter can be taken into your competition.".FormatForComparison());
+            CommonActions.LedeText().Should().Be("These are the details for this filter.".FormatForComparison());
+
             CommonActions.PageLoadedCorrectGetIndex(
                typeof(CompetitionsDashboardController),
-               nameof(CompetitionsDashboardController.SelectFilter))
+               nameof(CompetitionsDashboardController.ReviewFilter))
            .Should()
            .BeTrue();
 
-            CommonActions.ClickDropDownListWIthValue(value);
             CommonActions.ClickSave();
         }
     }
