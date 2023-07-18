@@ -10,6 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models
     {
         public Filter()
         {
+            Capabilities = new HashSet<Capability>();
             FilterHostingTypes = new HashSet<FilterHostingType>();
             FilterApplicationTypes = new HashSet<FilterApplicationType>();
             FilterCapabilityEpics = new HashSet<FilterCapabilityEpic>();
@@ -38,6 +39,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models
         public Organisation Organisation { get; set; }
 
         public Framework Framework { get; set; }
+
+        public ICollection<Capability> Capabilities { get; set; }
 
         public ICollection<FilterCapabilityEpic> FilterCapabilityEpics { get; set; }
 

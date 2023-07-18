@@ -332,9 +332,6 @@
       <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
     </ArtifactReference>
   </ItemGroup>
-  <ItemGroup>
-    <Build Include="Filtering\Tables\FilterCapabilityEpics.sql" />
-  </ItemGroup>
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>

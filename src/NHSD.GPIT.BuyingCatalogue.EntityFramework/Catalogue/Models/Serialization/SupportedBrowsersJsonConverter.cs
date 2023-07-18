@@ -7,7 +7,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.Serializati
 {
     public sealed class SupportedBrowsersJsonConverter : JsonConverter<HashSet<SupportedBrowser>>
     {
-        // TODO: MJK review
         // Used for backward compatability
         // can read both HashSet<SupportedBrowser> and new HashSet<string>()
         // https://github.com/nhs-digital-gp-it-futures/GPITBuyingCatalogue/commit/9d9235e06bd2a7aed2bfce11eba7c5147581b70a

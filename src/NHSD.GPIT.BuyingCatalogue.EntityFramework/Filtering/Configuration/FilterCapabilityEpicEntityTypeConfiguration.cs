@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Configuration
         public void Configure(EntityTypeBuilder<FilterCapabilityEpic> builder)
         {
             builder.ToTable(
-                "FilterCapabilityEpics",
+                "FilterEpics",
                 Schemas.Filtering);
 
             builder.HasKey(f => f.Id);

@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models
 
         public int FilterId { get; set; }
 
-        public int CapabilityId { get; set; }
+        public int? CapabilityId { get; set; }
 
         public string EpicId { get; set; }
 
