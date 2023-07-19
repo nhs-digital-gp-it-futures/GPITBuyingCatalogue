@@ -5,7 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.ContractBil
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Requirement;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contracts.Requirements
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contracts.Requirement
 {
     public static class RequirementModelTests
     {
@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         public static void WithValidArguments_PropertiesCorrectlySet(
             EntityFramework.Ordering.Models.ContractBilling contractBilling)
         {
-            contractBilling.Requirements.Add(new Requirement());
+            contractBilling.Requirements.Add(new EntityFramework.Ordering.Models.Requirement());
 
             var model = new RequirementModel(contractBilling);
 
@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         }
 
         [Fact]
-        public static void NullCotnractBilling_PropertiesCorrectlySet()
+        public static void NullContractBilling_PropertiesCorrectlySet()
         {
             var model = new RequirementModel(null);
 

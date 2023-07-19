@@ -5,7 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Requirement
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.Contracts.Requirements;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Contracts.Requirements
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Contracts.Requirement
 {
     public static class RequirementDetailsModelValidatorTests
     {

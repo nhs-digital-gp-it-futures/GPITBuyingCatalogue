@@ -3,11 +3,10 @@ using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.ContractBilling;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Requirement;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contracts.Requirements
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contracts.Requirement
 {
     public static class RequirementDetailsModelTests
     {
@@ -32,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             model.InternalOrgId.Should().Be(internalOrgId);
             model.AssociatedServices.Should().BeEquivalentTo(associatedServices);
             model.IsEdit.Should().BeFalse();
-            model.Advice.Should().Be("Add a specific requirement.");
+            model.Advice.Should().Be("Add Associated Service requirement.");
         }
 
         [Theory]
@@ -41,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             IEnumerable<OrderItem> associatedServices,
             CallOffId callOffId,
             string internalOrgId,
-            Requirement item)
+            EntityFramework.Ordering.Models.Requirement item)
         {
             item.OrderItem = new OrderItem();
             var model = new RequirementDetailsModel(item, callOffId, internalOrgId, associatedServices);
@@ -49,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             model.Details.Should().Be(item.Details);
             model.SelectedOrderItemId.Should().Be(item.OrderItem.CatalogueItemId);
             model.IsEdit.Should().BeTrue();
-            model.Advice.Should().Be("Edit this requirement.");
+            model.Advice.Should().Be("Edit Associated Service requirement.");
         }
     }
 }
