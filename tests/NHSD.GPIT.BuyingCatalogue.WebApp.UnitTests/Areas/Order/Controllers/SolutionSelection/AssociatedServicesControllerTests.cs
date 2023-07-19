@@ -606,6 +606,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             List<CatalogueItemId> toRemove,
             [Frozen] Mock<IOrderService> mockOrderService,
             [Frozen] Mock<IContractBillingService> mockContractBillingService,
+            [Frozen] Mock<IRequirementsService> mockRequirementsService,
             AssociatedServicesController controller)
         {
             order.OrderItems = new List<OrderItem>();
@@ -621,6 +622,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService.VerifyAll();
             mockContractBillingService.Verify(s => s.DeleteContractBillingItems(order.Id, It.IsAny<IEnumerable<CatalogueItemId>>()), Times.Once());
+            mockRequirementsService.Verify(s => s.DeleteRequirements(order.Id, It.IsAny<IEnumerable<CatalogueItemId>>()), Times.Once());
         }
 
         [Theory]

@@ -90,6 +90,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                 return View("RequirementDetails", model);
             }
 
+            if (order?.GetAssociatedService(model.SelectedOrderItemId) is null)
+                return NotFound();
+
             var contract = await contractsService.GetContract(order.Id);
             await requirementsService.AddRequirement(order.Id, contract.Id, model.SelectedOrderItemId, model.Details);
 
@@ -124,6 +127,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                 model.AssociatedServices = order.GetAssociatedServices();
                 return View("RequirementDetails", model);
             }
+
+            if (order?.GetAssociatedService(model.SelectedOrderItemId) is null)
+                return NotFound();
 
             await requirementsService.EditRequirement(order.Id, model.ItemId, model.SelectedOrderItemId, model.Details);
 
