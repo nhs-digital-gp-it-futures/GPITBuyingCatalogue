@@ -66,7 +66,7 @@ public class CompetitionTaskListModel
 
     private void SetSectionTwoStatuses(Competition competition)
     {
-        if (ContractLength is TaskProgress.NotStarted) return;
+        if (ContractLength is TaskProgress.NotStarted or TaskProgress.CannotStart) return;
 
         AwardCriteria = CompletedOrNotStarted(competition, c => c.IncludesNonPrice.HasValue);
 
@@ -83,6 +83,12 @@ public class CompetitionTaskListModel
         AwardCriteriaWeightings = CompletedOrNotStarted(
             competition,
             c => c.Weightings is { Price: not null, NonPrice: not null });
+
+        if (AwardCriteriaWeightings is TaskProgress.NotStarted) return;
+
+        NonPriceElements = CompletedOrNotStarted(
+            competition,
+            c => c.NonPriceElements is not null);
     }
 
     private void SetSectionThreeStatuses(Competition competition)

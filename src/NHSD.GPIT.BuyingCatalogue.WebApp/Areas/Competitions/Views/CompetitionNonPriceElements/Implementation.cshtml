@@ -1,0 +1,34 @@
+@model AddImplementationCriteriaModel
+
+@{
+    ViewBag.Title = "Implementation requirements";
+}
+
+<partial name="Partials/_BackLink" model="Model"/>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary/>
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.CompetitionName"
+                        advice="Explain your requirements for when the winning solution is implemented."/>
+
+        <form method="post">
+            <input type="hidden" asp-for="CompetitionName"/>
+            <input type="hidden" asp-for="BackLink"/>
+
+            <nhs-textarea asp-for="Requirements"
+                          label-text="Implementation requirements"
+                          label-hint="For example, how quickly you’ll need the solution to be up and running, or anything else you need from the supplier during implementation."/>
+
+            <br/>
+            <div>
+                <nhs-submit-button/>
+            </div>
+            <div>
+                <a href="@Model.BackLink">Cancel</a>
+            </div>
+        </form>
+
+    </div>
+</div>
