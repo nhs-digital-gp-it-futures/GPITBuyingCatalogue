@@ -156,8 +156,7 @@ public class CompetitionTaskListController : Controller
 
     private async Task<Competition> GetCompetition(string internalOrgId, int competitionId)
     {
-        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-        var competition = await competitionsService.GetCompetition(organisation.Id, competitionId);
+        var competition = await competitionsService.GetCompetition(internalOrgId, competitionId);
 
         return competition;
     }
