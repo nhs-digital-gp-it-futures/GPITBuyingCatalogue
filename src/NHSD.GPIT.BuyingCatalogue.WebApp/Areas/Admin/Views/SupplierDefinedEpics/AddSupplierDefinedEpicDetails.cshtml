@@ -1,4 +1,4 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics.SupplierDefinedEpicBaseModel
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics.AddSupplierDefinedEpicDetailsModel
 @{
     ViewBag.Title = "Supplier defined Epic details";
 }
@@ -13,6 +13,7 @@
             <input type="hidden" asp-for="BackLink" />
             <input type="hidden" asp-for="BackLinkText"/>
             <input type="hidden" asp-for="SelectedCapabilityIds"/>
+            <input type="hidden" asp-for="Id"/>
 
             <nhs-input asp-for="Name"
                        label-text="Epic name"

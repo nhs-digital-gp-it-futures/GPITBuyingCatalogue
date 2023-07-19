@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
             : base(
                   factory,
                   typeof(SupplierDefinedEpicsController),
-                  nameof(SupplierDefinedEpicsController.EditEpic),
+                  nameof(SupplierDefinedEpicsController.EditSupplierDefinedEpic),
                   Parameters)
         {
         }
@@ -144,7 +144,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             NavigateToUrl(
                 typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.EditEpic),
+                nameof(SupplierDefinedEpicsController.EditSupplierDefinedEpic),
                 parameters);
 
             CommonActions.ElementIsDisplayed(EditSupplierDefinedEpicObjects.RelatedItemsTable).Should().BeTrue();
@@ -186,7 +186,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             NavigateToUrl(
                 typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.EditEpic),
+                nameof(SupplierDefinedEpicsController.EditSupplierDefinedEpic),
                 parameters);
 
             CommonActions.ClickRadioButtonWithText("Inactive");
@@ -195,7 +195,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.EditEpic))
+                nameof(SupplierDefinedEpicsController.EditSupplierDefinedEpic))
                 .Should()
                 .BeTrue();
 
@@ -216,7 +216,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             NavigateToUrl(
                 typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.EditEpic),
+                nameof(SupplierDefinedEpicsController.EditSupplierDefinedEpic),
                 parameters);
 
             CommonActions.ClickRadioButtonWithText("Active");
@@ -243,7 +243,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             NavigateToUrl(
                 typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.EditEpic),
+                nameof(SupplierDefinedEpicsController.EditSupplierDefinedEpic),
                 parameters);
 
             CommonActions.ClickLinkElement(By.XPath($"//tr[td//text()[contains(., '{epic.CatalogueItem.Name}')]]/td[3]/a"));
@@ -270,7 +270,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             NavigateToUrl(
                 typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.EditEpic),
+                nameof(SupplierDefinedEpicsController.EditSupplierDefinedEpic),
                 parameters);
 
             CommonActions.ClickLinkElement(By.XPath($"//tr[td//text()[contains(., '{epic.CatalogueItem.Name}')]]/td[3]/a"));
@@ -295,7 +295,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             NavigateToUrl(
                 typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.EditEpic),
+                nameof(SupplierDefinedEpicsController.EditSupplierDefinedEpic),
                 parameters);
 
             CommonActions.ElementIsDisplayed(EditSupplierDefinedEpicObjects.DeleteLink)
@@ -322,7 +322,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             NavigateToUrl(
                 typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.EditEpic),
+                nameof(SupplierDefinedEpicsController.EditSupplierDefinedEpic),
                 parameters);
 
             CommonActions
@@ -341,7 +341,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             NavigateToUrl(
                 typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.EditEpic),
+                nameof(SupplierDefinedEpicsController.EditSupplierDefinedEpic),
                 parameters);
 
             CommonActions.ClickLinkElement(EditSupplierDefinedEpicObjects.DeleteLink);

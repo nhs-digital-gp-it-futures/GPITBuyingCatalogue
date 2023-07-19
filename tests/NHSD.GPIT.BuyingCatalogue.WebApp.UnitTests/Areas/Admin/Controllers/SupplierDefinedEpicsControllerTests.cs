@@ -159,11 +159,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Get_AddEpic_ReturnsModel(
             SupplierDefinedEpicsController controller)
         {
-            var result = (await controller.AddEpic()).As<ViewResult>();
+            var result = (await controller.AddEpicDetails()).As<ViewResult>();
 
             result.Should().NotBeNull();
 
-            var model = result.Model.As<SupplierDefinedEpicBaseModel>();
+            var model = result.Model.As<AddSupplierDefinedEpicDetailsModel>();
 
             model.Should().NotBeNull();
         }
@@ -171,12 +171,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_AddEpic_InvalidModel_ReturnsView(
-            SupplierDefinedEpicBaseModel model,
+            AddSupplierDefinedEpicDetailsModel model,
             SupplierDefinedEpicsController controller)
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var result = (await controller.AddEpic(model)).As<ViewResult>();
+            var result = (await controller.AddEpicDetails(model)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.SelectedCapabilityIds));
@@ -185,12 +185,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_AddEpic_ValidModel_AddsSupplierDefinedEpic(
-            SupplierDefinedEpicBaseModel model,
+            AddSupplierDefinedEpicDetailsModel model,
             [Frozen] Mock<ISupplierDefinedEpicsService> supplierDefinedEpicsService,
             SupplierDefinedEpicsController controller)
         {
             model.SelectedCapabilityIds = "1.2";
-            _ = await controller.AddEpic(model);
+            _ = await controller.AddEpicDetails(model);
 
             var capabilityIds = (List<int>)SolutionsFilterHelper.ParseCapabilityIds(model.SelectedCapabilityIds);
 
@@ -207,10 +207,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_AddEpic_ValidModel_RedirectsToDashboard(
-            SupplierDefinedEpicBaseModel model,
+            AddSupplierDefinedEpicDetailsModel model,
             SupplierDefinedEpicsController controller)
         {
-            var result = (await controller.AddEpic(model)).As<RedirectToActionResult>();
+            var result = (await controller.AddEpicDetails(model)).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.Dashboard));
@@ -226,7 +226,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             supplierDefinedEpicsService.Setup(s => s.GetEpic(epicId))
                 .ReturnsAsync((Epic)null);
 
-            var result = (await controller.EditEpic(epicId)).As<BadRequestObjectResult>();
+            var result = (await controller.EditSupplierDefinedEpic(epicId)).As<BadRequestObjectResult>();
 
             result.Should().NotBeNull();
             result.Value.Should().Be($"No Supplier defined Epic found for Id: {epicId}");
@@ -255,7 +255,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var expectedModel = new EditSupplierDefinedEpicModel(epic, relatedItems);
 
-            var result = (await controller.EditEpic(epic.Id)).As<ViewResult>();
+            var result = (await controller.EditSupplierDefinedEpic(epic.Id)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -269,7 +269,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var result = (await controller.EditEpic(model.Id, model)).As<ViewResult>();
+            var result = (await controller.EditSupplierDefinedEpic(model.Id, model)).As<ViewResult>();
 
             result.Should().NotBeNull();
         }
@@ -277,12 +277,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_EditEpicDetails_InvalidModel_ReturnsView(
-            SupplierDefinedEpicBaseModel model,
+            EditSupplierDefinedEpicDetailsModel model,
             SupplierDefinedEpicsController controller)
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var result = (await controller.EditEpicDetails(model.Id, model)).As<ViewResult>();
+            var result = (await controller.EditSupplierDefinedEpicDetails(model.Id, model)).As<ViewResult>();
 
             result.Should().NotBeNull();
         }
@@ -292,37 +292,44 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_EditEpicDetails_InvalidModel_RepopulatesRelatedItems(
             List<CatalogueItem> relatedItems,
             [Frozen] Mock<ISupplierDefinedEpicsService> supplierDefinedEpicsService,
-            EditSupplierDefinedEpicModel model,
+            EditSupplierDefinedEpicDetailsModel model,
+            Epic epic,
             SupplierDefinedEpicsController controller)
         {
+            supplierDefinedEpicsService.Setup(s => s.GetEpic(model.Id))
+                .ReturnsAsync(epic);
+            supplierDefinedEpicsService.Setup(s => s.GetItemsReferencingEpic(epic.Id))
+                .ReturnsAsync(relatedItems);
+            model.RelatedItems = relatedItems;
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            supplierDefinedEpicsService.Setup(s => s.GetItemsReferencingEpic(model.Id))
-                .ReturnsAsync(relatedItems);
-
-            var result = (await controller.EditEpic(model.Id, model)).As<ViewResult>();
+            var result = (await controller.EditSupplierDefinedEpicDetails(epic.Id, model)).As<ViewResult>();
 
             result.Should().NotBeNull();
 
-            var viewModel = result.Model.As<EditSupplierDefinedEpicModel>();
+            var viewModel = (EditSupplierDefinedEpicDetailsModel)result.Model;
 
-            viewModel.RelatedItems.Should().BeEquivalentTo(relatedItems);
+            result.Model.As<EditSupplierDefinedEpicDetailsModel>().RelatedItems.Should().BeEquivalentTo(relatedItems);
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_EditEpicDetails_ValidModel_EditsSupplierDefinedEpic(
-            SupplierDefinedEpicBaseModel model,
+            EditSupplierDefinedEpicDetailsModel model,
             [Frozen] Mock<ISupplierDefinedEpicsService> supplierDefinedEpicsService,
+            Epic epic,
             SupplierDefinedEpicsController controller)
         {
-            _ = await controller.EditEpicDetails(model.Id);
+            supplierDefinedEpicsService.Setup(s => s.GetEpic(model.Id))
+                .ReturnsAsync(epic);
+
+            _ = await controller.EditSupplierDefinedEpicDetails(model.Id, model);
 
             supplierDefinedEpicsService.Verify(
                 s => s.EditSupplierDefinedEpic(
                 It.Is<AddEditSupplierDefinedEpic>(
                     m => m.Id == model.Id
-                         && m.CapabilityIds == (List<int>)SolutionsFilterHelper.ParseCapabilityIds(model.SelectedCapabilityIds)
+                         && m.CapabilityIds.SequenceEqual((List<int>)SolutionsFilterHelper.ParseCapabilityIds(model.SelectedCapabilityIds))
                          && m.Name == model.Name
                          && m.Description == model.Description
                          && m.IsActive == model.IsActive!.Value)),
@@ -335,7 +342,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             EditSupplierDefinedEpicModel model,
             SupplierDefinedEpicsController controller)
         {
-            var result = (await controller.EditEpic(model.Id, model)).As<RedirectToActionResult>();
+            var result = (await controller.EditSupplierDefinedEpic(model.Id, model)).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.Dashboard));
@@ -390,7 +397,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var result = (await controller.DeleteEpic(model.Id, model)).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(controller.EditEpic));
+            result.ActionName.Should().Be(nameof(controller.EditSupplierDefinedEpic));
         }
 
         [Theory]

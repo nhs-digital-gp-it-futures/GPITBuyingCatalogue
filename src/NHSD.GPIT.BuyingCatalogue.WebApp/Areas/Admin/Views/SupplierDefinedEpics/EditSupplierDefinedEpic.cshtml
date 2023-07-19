@@ -28,7 +28,7 @@
                 <nhs-table-cell>@Model.Name</nhs-table-cell>
                 <nhs-table-cell>
                     <a asp-controller="@(typeof(SupplierDefinedEpicsController).ControllerName())"
-                       asp-action="@nameof(SupplierDefinedEpicsController.EditEpicDetails)"
+                       asp-action="@nameof(SupplierDefinedEpicsController.EditSupplierDefinedEpicDetails)"
                        asp-route-epicId="@Model.Id">Edit</a>
                 </nhs-table-cell>
             </nhs-table-row-container>
@@ -37,7 +37,7 @@
                 <nhs-table-cell>@Model.Description</nhs-table-cell>
                 <nhs-table-cell>
                     <a asp-controller="@(typeof(SupplierDefinedEpicsController).ControllerName())"
-                       asp-action="@nameof(SupplierDefinedEpicsController.EditEpicDetails)"
+                       asp-action="@nameof(SupplierDefinedEpicsController.EditSupplierDefinedEpicDetails)"
                        asp-route-epicId="@Model.Id">Edit</a>
                 </nhs-table-cell>
             </nhs-table-row-container>
@@ -49,7 +49,7 @@
                 </nhs-table-cell>
                 <nhs-table-cell>
                     <a asp-controller="@(typeof(SupplierDefinedEpicsController).ControllerName())"
-                       asp-action="@nameof(SupplierDefinedEpicsController.EditEpicDetails)"
+                       asp-action="@nameof(SupplierDefinedEpicsController.EditSupplierDefinedEpicDetails)"
                        asp-route-epicId="@Model.Id">Edit</a>
                 </nhs-table-cell>
             </nhs-table-row-container>
@@ -58,6 +58,15 @@
         <vc:nhs-secondary-button text="Continue"
                                  type="Primary"
                                  url="@Model.BackLink"/>
+
+        @if (Model.CanDelete)
+        {
+            <vc:nhs-delete-button url="@Url.Action(
+                nameof(SupplierDefinedEpicsController.DeleteEpic),
+                typeof(SupplierDefinedEpicsController).ControllerName(),
+                new { epicId = Model.Id })"
+            text="Delete Supplier defined Epic" />
+        }
     </div>
 </div>
 @{  

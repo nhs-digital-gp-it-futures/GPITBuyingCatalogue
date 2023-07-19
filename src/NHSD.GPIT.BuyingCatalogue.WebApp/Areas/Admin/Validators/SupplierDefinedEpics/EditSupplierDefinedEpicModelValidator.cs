@@ -4,7 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.SupplierDefinedEpics
 {
-    public sealed class EditSupplierDefinedEpicModelValidator : AbstractValidator<EditSupplierDefinedEpicModel>
+    public sealed class EditSupplierDefinedEpicModelValidator : AbstractValidator<EditSupplierDefinedEpicDetailsModel>
     {
         private readonly ISupplierDefinedEpicsService supplierDefinedEpicsService;
 
@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.SupplierDefine
         {
             this.supplierDefinedEpicsService = supplierDefinedEpicsService;
 
-            Include(new SupplierDefinedEpicBaseModelValidator(supplierDefinedEpicsService));
+            Include(new EpicDetailsValidator(supplierDefinedEpicsService));
 
             RuleFor(m => m.IsActive)
                 .Must(NotBeReferencedByAnySolutions)
@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.SupplierDefine
                 .When(m => m.IsActive == false);
         }
 
-        public bool NotBeReferencedByAnySolutions(EditSupplierDefinedEpicModel model, bool? isActive)
+        public bool NotBeReferencedByAnySolutions(EditSupplierDefinedEpicDetailsModel model, bool? isActive)
         {
             var epic = supplierDefinedEpicsService.GetEpic(model.Id).GetAwaiter().GetResult();
             if (epic.IsActive == isActive)

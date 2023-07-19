@@ -34,7 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var model = new SelectCapabilitiesModel(capabilities, selectedCapabilityIds, true)
             {
                 SearchTerm = search,
-                IsFilter = true,
             };
             return View("Views/Shared/SelectCapabilities.cshtml", model);
         }

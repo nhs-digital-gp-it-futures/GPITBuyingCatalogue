@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             capabilitiesService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
-            var expected = new SelectCapabilitiesModel(capabilities);
+            var expected = new SelectCapabilitiesModel(capabilities, string.Empty, true);
 
             actualResult.Model.Should().BeEquivalentTo(expected);
         }
@@ -102,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             capabilitiesService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
-            var expected = new SelectCapabilitiesModel(capabilities);
+            var expected = new SelectCapabilitiesModel(capabilities, string.Empty, true);
 
             actualResult.Model.Should().BeEquivalentTo(expected);
         }

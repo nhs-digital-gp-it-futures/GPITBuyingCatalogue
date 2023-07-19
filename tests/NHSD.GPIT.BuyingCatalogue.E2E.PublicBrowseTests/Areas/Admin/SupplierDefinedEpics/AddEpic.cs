@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
             : base(
                   factory,
                   typeof(SupplierDefinedEpicsController),
-                  nameof(SupplierDefinedEpicsController.AddEpic),
+                  nameof(SupplierDefinedEpicsController.AddEpicDetails),
                   null)
         {
         }
@@ -84,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
         {
             NavigateToUrl(
                 typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.AddEpic),
+                nameof(SupplierDefinedEpicsController.AddEpicDetails),
                 null,
                 new Dictionary<string, string>
                 {
@@ -108,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
         {
             NavigateToUrl(
                 typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.AddEpic),
+                nameof(SupplierDefinedEpicsController.AddEpicDetails),
                 null,
                 new Dictionary<string, string>
                 {

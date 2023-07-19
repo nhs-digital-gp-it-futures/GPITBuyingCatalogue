@@ -6,7 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics
 {
-    public sealed class EditSupplierDefinedEpicModel : SupplierDefinedEpicBaseModel
+    public sealed class EditSupplierDefinedEpicModel : AddSupplierDefinedEpicDetailsModel
     {
         public EditSupplierDefinedEpicModel()
         {
@@ -24,14 +24,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpi
                 CapabilityList += ", " + capability.Name;
             }
 
-            RelatedItems = relatedItems;
-
             CanDelete = !epic.IsActive && relatedItems.Count == 0;
         }
 
         public string CapabilityList { get; set; }
-
-        public IList<CatalogueItem> RelatedItems { get; set; }
 
         public bool CanDelete { get; set; }
     }

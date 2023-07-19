@@ -14,8 +14,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
         [Theory]
         [CommonAutoData]
         public static void Validate_NoSelectedCapability_SetsModelError(
-            SupplierDefinedEpicBaseModel model,
-            SupplierDefinedEpicBaseModelValidator validator)
+            AddSupplierDefinedEpicDetailsModel model,
+            EpicDetailsValidator validator)
         {
             model.SelectedCapabilityIds = null;
 
@@ -30,8 +30,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
         [CommonInlineAutoData("")]
         public static void Validate_NameNullOrEmpty_SetsModelError(
             string name,
-            SupplierDefinedEpicBaseModel model,
-            SupplierDefinedEpicBaseModelValidator validator)
+            AddSupplierDefinedEpicDetailsModel model,
+            EpicDetailsValidator validator)
         {
             model.Name = name;
 
@@ -46,8 +46,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
         [CommonInlineAutoData("")]
         public static void Validate_DescriptionNullOrEmpty_SetsModelError(
             string description,
-            SupplierDefinedEpicBaseModel model,
-            SupplierDefinedEpicBaseModelValidator validator)
+            AddSupplierDefinedEpicDetailsModel model,
+            EpicDetailsValidator validator)
         {
             model.Description = description;
 
@@ -60,8 +60,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
         [Theory]
         [CommonAutoData]
         public static void Validate_IsActiveNull_SetsModelError(
-            SupplierDefinedEpicBaseModel model,
-            SupplierDefinedEpicBaseModelValidator validator)
+            AddSupplierDefinedEpicDetailsModel model,
+            EpicDetailsValidator validator)
         {
             model.IsActive = null;
 
@@ -74,9 +74,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
         [Theory]
         [CommonAutoData]
         public static void Validate_AddingDuplicate_SetsModelError(
-            SupplierDefinedEpicBaseModel model,
+            AddSupplierDefinedEpicDetailsModel model,
             [Frozen] Mock<ISupplierDefinedEpicsService> service,
-            SupplierDefinedEpicBaseModelValidator validator)
+            EpicDetailsValidator validator)
         {
             service.Setup(s =>
                 s.EpicExists(
@@ -102,9 +102,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
         [Theory]
         [CommonAutoData]
         public static void Validate_AddingNew_NoModelError(
-            SupplierDefinedEpicBaseModel model,
+            AddSupplierDefinedEpicDetailsModel model,
             [Frozen] Mock<ISupplierDefinedEpicsService> service,
-            SupplierDefinedEpicBaseModelValidator validator)
+            EpicDetailsValidator validator)
         {
             service.Setup(s =>
                 s.EpicExists(

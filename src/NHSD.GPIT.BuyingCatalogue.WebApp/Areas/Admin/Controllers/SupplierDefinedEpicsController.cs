@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                             {
                                 Title = x.Name,
                                 Category = y.Name,
-                                Url = Url.Action(nameof(EditEpic), new { epicId = $"{x.Id}" }),
+                                Url = Url.Action(nameof(EditSupplierDefinedEpic), new { epicId = $"{x.Id}" }),
                             })));
         }
 
@@ -77,24 +77,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var selectedCapabilityIds = EncodeIdString(model.SelectedItems);
 
             return RedirectToAction(
-                nameof(AddEpic),
+                nameof(AddEpicDetails),
                 typeof(SupplierDefinedEpicsController).ControllerName(),
                 new { selectedCapabilityIds });
         }
 
         [HttpGet("add-epic")]
-        public async Task<IActionResult> AddEpic(string selectedCapabilityIds = null)
+        public async Task<IActionResult> AddEpicDetails(string selectedCapabilityIds = null)
         {
-            var model = new SupplierDefinedEpicBaseModel()
+            var model = new AddSupplierDefinedEpicDetailsModel()
             {
                 BackLink = Url.Action(nameof(Dashboard)),
                 SelectedCapabilityIds = selectedCapabilityIds,
             };
-            return View("Areas/Admin/Views/SupplierDefinedEpics/SetEpicDetails.cshtml", model);
+            return View(model);
         }
 
         [HttpPost("add-epic")]
-        public async Task<IActionResult> AddEpic(SupplierDefinedEpicBaseModel model)
+        public async Task<IActionResult> AddEpicDetails(AddSupplierDefinedEpicDetailsModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -113,7 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("edit/{epicId}")]
-        public async Task<IActionResult> EditEpic(string epicId)
+        public async Task<IActionResult> EditSupplierDefinedEpic(string epicId)
         {
             var epic = await supplierDefinedEpicsService.GetEpic(epicId);
             if (epic is null)
@@ -127,11 +127,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 BackLink = Url.Action(nameof(Dashboard)),
             };
 
-            return View(model as EditSupplierDefinedEpicModel);
+            return View(model);
         }
 
         [HttpPost("edit/{epicId}")]
-        public async Task<IActionResult> EditEpic(string epicId, EditSupplierDefinedEpicModel model)
+        public async Task<IActionResult> EditSupplierDefinedEpic(string epicId, EditSupplierDefinedEpicModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -154,7 +154,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new SelectCapabilitiesModel(capabilities, selectedCapabilityIds)
             {
-                BackLink = Url.Action(nameof(Dashboard)),
+                BackLink = Url.Action(nameof(EditSupplierDefinedEpic), new { epicId }),
                 IsFilter = false,
             };
 
@@ -187,29 +187,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             await supplierDefinedEpicsService.EditSupplierDefinedEpic(editEpicModel);
 
             return RedirectToAction(
-                nameof(EditEpic),
+                nameof(EditSupplierDefinedEpic),
                 new { epicId });
         }
 
         [HttpGet("edit/{epicId}/epic-details")]
-        public async Task<IActionResult> EditEpicDetails(string epicId)
+        public async Task<IActionResult> EditSupplierDefinedEpicDetails(string epicId)
         {
             var epic = await supplierDefinedEpicsService.GetEpic(epicId);
             if (epic is null)
                 return BadRequest($"No Supplier defined Epic found for Id: {epicId}");
-            var model = new SupplierDefinedEpicBaseModel()
+            var relatedItems = await supplierDefinedEpicsService.GetItemsReferencingEpic(epicId);
+
+            var model = new EditSupplierDefinedEpicDetailsModel(epic, relatedItems)
             {
-                BackLink = Url.Action(nameof(Dashboard)),
-                Id = epic.Id,
-                Name = epic.Name,
-                Description = epic.Description,
-                IsActive = epic.IsActive,
             };
-            return View("Areas/Admin/Views/SupplierDefinedEpics/SetEpicDetails.cshtml", model);
+
+            return View(model);
         }
 
         [HttpPost("edit/{epicId}/epic-details")]
-        public async Task<IActionResult> EditEpicDetails(string epicId, SupplierDefinedEpicBaseModel model)
+        public async Task<IActionResult> EditSupplierDefinedEpicDetails(string epicId, EditSupplierDefinedEpicDetailsModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -230,7 +228,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             await supplierDefinedEpicsService.EditSupplierDefinedEpic(editEpicModel);
 
             return RedirectToAction(
-                nameof(EditEpic),
+                nameof(EditSupplierDefinedEpic),
                 new { epicId });
         }
 
@@ -243,7 +241,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new DeleteSupplierDefinedEpicConfirmationModel(epicId, epic.Name)
             {
-                BackLink = Url.Action(nameof(EditEpic), new { epicId }),
+                BackLink = Url.Action(nameof(EditSupplierDefinedEpic), new { epicId }),
             };
 
             return View(model);
@@ -253,7 +251,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> DeleteEpic(string epicId, DeleteSupplierDefinedEpicConfirmationModel model)
         {
             if (!ModelState.IsValid)
-                return RedirectToAction(nameof(EditEpic), new { epicId });
+                return RedirectToAction(nameof(EditSupplierDefinedEpic), new { epicId });
 
             await supplierDefinedEpicsService.DeleteSupplierDefinedEpic(epicId);
 
