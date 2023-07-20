@@ -18,7 +18,7 @@
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.Caption"
                         advice="These are the details for this filter." />
-        @if (Model.FilterDetails.EpicsMissingCapabilities)
+        @if (Model.FilterDetails.Invalid)
         {
             <nhs-warning-callout label-text="Filter cannot be used">
                 <p>This filter cannot be used to run a competition as it contains some Epics or Capabilities that are no longer valid.</p>
@@ -27,12 +27,12 @@
         }
         <partial name="Partials/_FilterDetailsPartial" model="Model" />
 
-        <h2 data-test-id="view-solutions">View solutions</h2>
-        <p>
-            The results will be based on solutions currently available that match to this filter.
-        </p>
-        @if (!Model.FilterDetails.EpicsMissingCapabilities)
+        @if (!Model.FilterDetails.Invalid)
         {
+            <h2 data-test-id="view-solutions">View solutions</h2>
+            <p>
+                The results will be based on solutions currently available that match to this filter.
+            </p>
             <p>
                 <a href="@Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new
                             {

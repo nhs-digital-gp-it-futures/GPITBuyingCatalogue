@@ -15,7 +15,7 @@ public class FilterDetailsModel
 
     public string FrameworkName { get; set; }
 
-    public bool EpicsMissingCapabilities { get; set; }
+    public bool Invalid { get; set; }
 
     public List<HostingType> HostingTypes { get; set; } = Enumerable.Empty<HostingType>().ToList();
 

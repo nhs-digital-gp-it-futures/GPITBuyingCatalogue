@@ -124,7 +124,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         HostingTypes = x.FilterHostingTypes.Select(y => y.HostingType).ToList(),
                         ApplicationTypes =
                             x.FilterApplicationTypes.Select(y => y.ApplicationTypeID).ToList(),
-                        EpicsMissingCapabilities = x.FilterCapabilityEpics.Any(e => e.CapabilityId == null),
+                        Invalid = x.FilterCapabilityEpics.Any(e => e.CapabilityId == null)
+                            || x.Capabilities.Any(c => c.Status == CapabilityStatus.Expired)
+                            || x.FilterCapabilityEpics.Any(e => e.Epic.IsActive == false),
                         Capabilities = x.Capabilities
                             .Select(
                                 y => new KeyValuePair<string, List<string>>(

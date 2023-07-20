@@ -745,6 +745,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         {
             filter.Framework = null;
             filter.FrameworkId = framework.Id;
+            filter.Capabilities.ForEach(c => c.Status = CapabilityStatus.Effective);
+            filter.FilterCapabilityEpics.ForEach(c => c.Epic.IsActive = true);
 
             context.Frameworks.Add(framework);
             context.Filters.Add(filter);
@@ -758,6 +760,84 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             filterDetails.Description.Should().Be(filter.Description);
             filterDetails.FrameworkName.Should().Be(framework.ShortName);
             filterDetails.Id.Should().Be(filter.Id);
+            filterDetails.Invalid.Should().BeFalse();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetFilterDetails_With_Epics_With_No_Capability_Context_Is_Invalid(
+            EntityFramework.Catalogue.Models.Framework framework,
+            Filter filter,
+            [Frozen] BuyingCatalogueDbContext context,
+            ManageFiltersService service)
+        {
+            filter.Framework = null;
+            filter.FrameworkId = framework.Id;
+            filter.Capabilities.ForEach(c => c.Status = CapabilityStatus.Effective);
+            filter.FilterCapabilityEpics.ForEach(c => c.Epic.IsActive = true);
+            filter.FilterCapabilityEpics.ForEach(c =>
+            {
+                c.Capability = null;
+                c.CapabilityId = null;
+            });
+
+            context.Frameworks.Add(framework);
+            context.Filters.Add(filter);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var filterDetails = await service.GetFilterDetails(filter.OrganisationId, filter.Id);
+
+            filterDetails.Invalid.Should().BeTrue();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetFilterDetails_With_Expired_Capabilties_Is_Invalid(
+            EntityFramework.Catalogue.Models.Framework framework,
+            Filter filter,
+            [Frozen] BuyingCatalogueDbContext context,
+            ManageFiltersService service)
+        {
+            filter.Framework = null;
+            filter.FrameworkId = framework.Id;
+            filter.Capabilities.ForEach(c => c.Status = CapabilityStatus.Expired);
+            filter.FilterCapabilityEpics.ForEach(c => c.Epic.IsActive = true);
+
+            context.Frameworks.Add(framework);
+            context.Filters.Add(filter);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var filterDetails = await service.GetFilterDetails(filter.OrganisationId, filter.Id);
+
+            filterDetails.Invalid.Should().BeTrue();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetFilterDetails_With_IsActive_False_Epics_Is_Invalid(
+            EntityFramework.Catalogue.Models.Framework framework,
+            Filter filter,
+            [Frozen] BuyingCatalogueDbContext context,
+            ManageFiltersService service)
+        {
+            filter.Framework = null;
+            filter.FrameworkId = framework.Id;
+            filter.Capabilities.ForEach(c => c.Status = CapabilityStatus.Effective);
+            filter.FilterCapabilityEpics.ForEach(c => c.Epic.IsActive = false);
+
+            context.Frameworks.Add(framework);
+            context.Filters.Add(filter);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var filterDetails = await service.GetFilterDetails(filter.OrganisationId, filter.Id);
+
+            filterDetails.Invalid.Should().BeTrue();
         }
 
         [Theory]
