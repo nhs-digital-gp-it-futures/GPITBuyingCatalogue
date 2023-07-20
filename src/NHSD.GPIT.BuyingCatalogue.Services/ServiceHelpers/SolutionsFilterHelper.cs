@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
@@ -18,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers
             return new Dictionary<int, string[]>(capabilityAndEpics
                 .Select(x => x.Split(FilterConstants.Delimiter, StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries))
                 .Where(x => int.TryParse(x[0], out _))
-                .Select(x => new KeyValuePair<int, string[]>(int.Parse(x[0]), x.Skip(1).ToArray())));
+                .Select(x => new KeyValuePair<int, string[]>(int.Parse(x[0], CultureInfo.InvariantCulture), x.Skip(1).ToArray())));
         }
 
         public static ICollection<ApplicationType> ParseApplicationTypeIds(string applicationTypeIds) =>

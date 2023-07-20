@@ -21,8 +21,8 @@
         @if (Model.FilterDetails.Invalid)
         {
             <nhs-warning-callout label-text="Filter cannot be used">
-                <p>This filter cannot be used to run a competition as it contains some Epics or Capabilities that are no longer valid.</p>
-                <p>It should be deleted and a new filter created using valid Epics or Capabilities.</p>
+                <p>This filter cannot be used to run a competition as it contains some Capabilities or Epics that are no longer valid.</p>
+                <p>It should be deleted and a new filter created using valid Capabilities or Epics.</p>
             </nhs-warning-callout>
         }
         <partial name="Partials/_FilterDetailsPartial" model="Model" />
