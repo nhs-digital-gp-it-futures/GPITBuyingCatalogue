@@ -16,6 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             ReviewFilter = new ReviewFilter(driver, commonActions);
             StartCompetition = new StartCompetition(driver, commonActions);
             SelectSolutions = new SelectSolutions(driver, commonActions);
+            SolutionNotShortlisted = new SolutionNotShortlisted(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -33,6 +34,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
         internal StartCompetition StartCompetition { get; }
 
         internal SelectSolutions SelectSolutions { get; }
+
+        internal SolutionNotShortlisted SolutionNotShortlisted { get; }
 
         internal IWebDriver Driver { get; }
     }

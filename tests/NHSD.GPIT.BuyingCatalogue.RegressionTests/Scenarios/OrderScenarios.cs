@@ -2078,6 +2078,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             CompetitionPages.StartCompetition.CreateCompetition(competitionName);
 
             CompetitionPages.SelectSolutions.AddSolutions(5);
+
+            CompetitionPages.SolutionNotShortlisted.SolutionNotIncludedInShortlisting();
         }
     }
 }
