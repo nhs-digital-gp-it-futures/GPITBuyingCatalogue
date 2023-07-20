@@ -11,8 +11,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public int OrderId { get; set; }
 
-        public int? ImplementationPlanId { get; set; }
-
         public ImplementationPlan ImplementationPlan { get; set; }
 
         public virtual ContractBilling ContractBilling { get; set; }

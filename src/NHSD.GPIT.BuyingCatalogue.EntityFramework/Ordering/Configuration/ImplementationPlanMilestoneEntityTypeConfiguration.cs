@@ -20,7 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
 
             builder.HasOne(x => x.Plan)
                 .WithMany(x => x.Milestones)
-                .HasForeignKey(x => x.PlanId);
+                .HasForeignKey(x => x.PlanId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(x => x.ContractBillingItem)
                 .WithOne(y => y.Milestone)

@@ -87,7 +87,7 @@
                                         status="@Model.Progress.FundingSource" />
                 </nhs-task-list-section>
 
-                <nhs-task-list-section label-text="Complete contract">
+                <nhs-task-list-section label-text="Implementation and payment">
                     <nhs-task-list-item label-text="Implementation milestones and payment triggers"
                                         label-hint="@Model.StatusDescription(OrderSummaryField.ImplementationPlan, Model.IsAmendment)"
                                         data-test-id="test-implementation-milestones"
@@ -99,7 +99,7 @@
 
                     @if (!Model.IsAmendment)
                     {
-                        <nhs-task-list-item label-text="Associated Service billing and requirements"
+                        <nhs-task-list-item label-text="Associated Service milestones and requirements"
                                             label-hint="@Model.StatusDescription(OrderSummaryField.AssociatedServicesBilling, Model.IsAmendment)"
                                             data-test-id="test-associated-service-billing"
                                             url="@Url.Action(
