@@ -1,8 +1,8 @@
 ﻿CREATE TABLE ordering.ImplementationPlanMilestones
 (
     Id int IDENTITY(1, 1) NOT NULL,
-    ImplementationPlanId int NULL,
-    ContractBillingItemId int NULL,
+    ImplementationPlanId int NULL DEFAULT NULL,
+    ContractBillingItemId int NULL DEFAULT NULL,
     [Order] int NOT NULL,
     Title nvarchar(1000) NOT NULL,
     [PaymentTrigger] nvarchar(1000) NOT NULL,
