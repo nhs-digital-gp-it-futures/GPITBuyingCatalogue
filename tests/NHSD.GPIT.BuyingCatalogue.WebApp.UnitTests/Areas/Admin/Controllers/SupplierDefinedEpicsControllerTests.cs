@@ -159,7 +159,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Get_AddEpic_ReturnsModel(
             SupplierDefinedEpicsController controller)
         {
-            var result = (await controller.AddEpicDetails()).As<ViewResult>();
+            var result = (await controller.AddSupplierDefinedEpicDetails()).As<ViewResult>();
 
             result.Should().NotBeNull();
 
@@ -176,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var result = (await controller.AddEpicDetails(model)).As<ViewResult>();
+            var result = (await controller.AddSupplierDefinedEpicDetails(model)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.SelectedCapabilityIds));
@@ -190,7 +190,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             SupplierDefinedEpicsController controller)
         {
             model.SelectedCapabilityIds = "1.2";
-            _ = await controller.AddEpicDetails(model);
+            _ = await controller.AddSupplierDefinedEpicDetails(model);
 
             var capabilityIds = (List<int>)SolutionsFilterHelper.ParseCapabilityIds(model.SelectedCapabilityIds);
 
@@ -210,7 +210,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             AddSupplierDefinedEpicDetailsModel model,
             SupplierDefinedEpicsController controller)
         {
-            var result = (await controller.AddEpicDetails(model)).As<RedirectToActionResult>();
+            var result = (await controller.AddSupplierDefinedEpicDetails(model)).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.Dashboard));

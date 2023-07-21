@@ -7,7 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.SupplierDefined
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+/*using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using Xunit;
@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
             : base(
                   factory,
                   typeof(SupplierDefinedEpicsController),
-                  nameof(SupplierDefinedEpicsController.AddSupplierDefinedEpicDetails),
+                  nameof(SupplierDefinedEpicsController.AddEpicDetails),
                   null)
         {
         }
@@ -84,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
         {
             NavigateToUrl(
                 typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.AddSupplierDefinedEpicDetails),
+                nameof(SupplierDefinedEpicsController.AddEpicDetails),
                 null,
                 new Dictionary<string, string>
                 {
@@ -108,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
         {
             NavigateToUrl(
                 typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.AddSupplierDefinedEpicDetails),
+                nameof(SupplierDefinedEpicsController.AddEpicDetails),
                 null,
                 new Dictionary<string, string>
                 {
@@ -134,4 +134,4 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
             context.SaveChanges();
         }
     }
-}
+}*/

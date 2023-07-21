@@ -77,13 +77,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var selectedCapabilityIds = EncodeIdString(model.SelectedItems);
 
             return RedirectToAction(
-                nameof(AddEpicDetails),
+                nameof(AddSupplierDefinedEpicDetails),
                 typeof(SupplierDefinedEpicsController).ControllerName(),
                 new { selectedCapabilityIds });
         }
 
         [HttpGet("add-epic")]
-        public async Task<IActionResult> AddEpicDetails(string selectedCapabilityIds = null)
+        public async Task<IActionResult> AddSupplierDefinedEpicDetails(string selectedCapabilityIds = null)
         {
             var model = new AddSupplierDefinedEpicDetailsModel()
             {
@@ -94,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost("add-epic")]
-        public async Task<IActionResult> AddEpicDetails(AddSupplierDefinedEpicDetailsModel model)
+        public async Task<IActionResult> AddSupplierDefinedEpicDetails(AddSupplierDefinedEpicDetailsModel model)
         {
             if (!ModelState.IsValid)
             {
