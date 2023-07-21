@@ -78,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             capabilitiesService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
-            var expected = new SelectCapabilitiesModel(capabilities, selected);
+            var expected = new SelectCapabilitiesModel(capabilities, selected, true);
 
             actualResult.Model.Should().BeEquivalentTo(expected);
         }

@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             [FromQuery] string search = null)
         {
             if (!ModelState.IsValid)
-                return View("Views/Shared/SelectCapabilities.cshtml", model);
+                return View(await GetCapabilitiesModel(search: search));
 
             var selectedCapabilityIds = EncodeIdString(model.SelectedItems);
 
@@ -135,6 +135,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
         private static string EncodeIdString(SelectionModel[] selectedItems) =>
                 selectedItems.Where(x => x.Selected).Select(x => x.Id).ToFilterString();
+
+        private async Task<SelectCapabilitiesModel> GetCapabilitiesModel(string selectedIds = null, string search = null)
+        {
+            var capabilities = await capabilitiesService.GetReferencedCapabilities();
+
+            return new(capabilities, selectedIds, true) { SearchTerm = search };
+        }
 
         private async Task<FilterEpicsModel> GetEpicsModel(string selectedCapabilityIds, string selectedEpicIds = null, string search = null)
         {
