@@ -126,7 +126,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                             x.FilterApplicationTypes.Select(y => y.ApplicationTypeID).ToList(),
                         Invalid = x.FilterCapabilityEpics.Any(e => e.CapabilityId == null)
                             || x.Capabilities.Any(c => c.Status == CapabilityStatus.Expired)
-                            || x.FilterCapabilityEpics.Any(e => e.Epic.IsActive == false),
+                            || x.FilterCapabilityEpics.Any(e => e.Epic.IsActive == false)
+                            || !x.FilterCapabilityEpics.All(ce => ce.Capability.CapabilityEpics.Any(c => c.CapabilityId == ce.CapabilityId && c.EpicId == ce.EpicId)),
                         Capabilities = x.Capabilities
                             .Select(
                                 y => new KeyValuePair<string, List<string>>(

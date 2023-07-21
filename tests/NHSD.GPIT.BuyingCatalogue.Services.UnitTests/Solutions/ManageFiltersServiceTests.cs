@@ -747,6 +747,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             filter.FrameworkId = framework.Id;
             filter.Capabilities.ForEach(c => c.Status = CapabilityStatus.Effective);
             filter.FilterCapabilityEpics.ForEach(c => c.Epic.IsActive = true);
+            filter.FilterCapabilityEpics.ForEach(c =>
+            {
+                c.CapabilityId = c.Capability.Id;
+                c.EpicId = c.Epic.Id;
+                c.Capability.Epics.Clear();
+                c.Capability.CapabilityEpics.Clear();
+                c.Capability.CapabilityEpics.Add(new CapabilityEpic()
+                {
+                    CapabilityId = c.CapabilityId.Value,
+                    EpicId = c.EpicId,
+                    CompliancyLevel = CompliancyLevel.Must,
+                });
+            });
 
             context.Frameworks.Add(framework);
             context.Filters.Add(filter);
@@ -837,6 +850,41 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             var filterDetails = await service.GetFilterDetails(filter.OrganisationId, filter.Id);
 
+            filterDetails.Invalid.Should().BeTrue();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetFilterDetails_With_Epics_No_Longer_Linked_To_Capability_Is_Invalid(
+            EntityFramework.Catalogue.Models.Framework framework,
+            Filter filter,
+            [Frozen] BuyingCatalogueDbContext context,
+            ManageFiltersService service)
+        {
+            filter.Framework = null;
+            filter.FrameworkId = framework.Id;
+            filter.Capabilities.ForEach(c => c.Status = CapabilityStatus.Effective);
+            filter.FilterCapabilityEpics.ForEach(c => c.Epic.IsActive = true);
+            filter.FilterCapabilityEpics.ForEach(c =>
+            {
+                c.CapabilityId = c.Capability.Id;
+                c.EpicId = c.Epic.Id;
+                c.Capability.Epics.Clear();
+                c.Capability.CapabilityEpics.Clear();
+            });
+
+            context.Frameworks.Add(framework);
+            context.Filters.Add(filter);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var filterDetails = await service.GetFilterDetails(filter.OrganisationId, filter.Id);
+
+            filterDetails.Name.Should().Be(filter.Name);
+            filterDetails.Description.Should().Be(filter.Description);
+            filterDetails.FrameworkName.Should().Be(framework.ShortName);
+            filterDetails.Id.Should().Be(filter.Id);
             filterDetails.Invalid.Should().BeTrue();
         }
 
