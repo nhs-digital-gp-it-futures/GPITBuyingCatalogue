@@ -65,3 +65,4 @@
 :r ./TestData/Competitions/InsertCompetitions.sql
 
 :r ./MigrateEpics.sql
+:r ./MigrateContracts.sql
