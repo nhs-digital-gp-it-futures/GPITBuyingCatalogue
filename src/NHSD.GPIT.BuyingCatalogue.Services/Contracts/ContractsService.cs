@@ -78,9 +78,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
 
         public async Task RemoveContract(int orderId)
         {
-            var contract = await GetContract(orderId);
+            var contract = await GetContractWithImplementationPlan(orderId);
             if (contract is not null)
             {
+                if (contract.ImplementationPlan?.Milestones.Any() ?? false)
+                    dbContext.ImplementationPlanMilestones.RemoveRange(contract.ImplementationPlan.Milestones);
+
                 dbContext.Contracts.Remove(contract);
                 await dbContext.SaveChangesAsync();
             }
