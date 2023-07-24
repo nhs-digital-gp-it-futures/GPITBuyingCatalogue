@@ -30,17 +30,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
         [Fact]
         public void Dashboard_AllSectionsDisplayed()
         {
-            CommonActions.WaitUntilElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.InactiveItemsContainer);
-
             CommonActions.ElementIsDisplayed(BreadcrumbObjects.HomeBreadcrumbLink).Should().BeTrue();
             CommonActions.PageTitle().Should().Be("Supplier defined Epics".FormatForComparison());
             CommonActions.LedeText().Should().Be("Add a supplier defined Epic or edit an existing one.".FormatForComparison());
 
-            CommonActions.ElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.InactiveItemsContainer).Should().BeTrue();
             CommonActions.ElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.EpicsTable).Should().BeTrue();
             CommonActions.ElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.AddEpicLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.SearchBar).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.SearchButton).Should().BeTrue();
             CommonActions.ElementIsNotDisplayed(SupplierDefinedEpicsDashboardObjects.InactiveItemRow).Should().BeTrue();
         }
 

@@ -6,18 +6,14 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.SupplierDefinedEpics
 {
-    public sealed class EpicDetailsValidator : AbstractValidator<AddSupplierDefinedEpicDetailsModel>
+    public sealed class AddSupplierDefinedEpicDetailsValidator : AbstractValidator<AddSupplierDefinedEpicDetailsModel>
     {
         private readonly ISupplierDefinedEpicsService supplierDefinedEpicsService;
 
-        public EpicDetailsValidator(
+        public AddSupplierDefinedEpicDetailsValidator(
             ISupplierDefinedEpicsService supplierDefinedEpicsService)
         {
             this.supplierDefinedEpicsService = supplierDefinedEpicsService;
-
-            RuleFor(m => m.SelectedCapabilityIds)
-                .NotNull()
-                .WithMessage("Select a Capability");
 
             RuleFor(m => m.Name)
                 .NotEmpty()
@@ -40,6 +36,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.SupplierDefine
                     m => m.Name,
                     m => m.Description,
                     m => m.IsActive);
+
+            RuleFor(m => m.SelectedCapabilityIds)
+                .NotNull()
+                .WithMessage("Select a Capability");
         }
 
         private bool NotBeADuplicateEpic(AddSupplierDefinedEpicDetailsModel model)

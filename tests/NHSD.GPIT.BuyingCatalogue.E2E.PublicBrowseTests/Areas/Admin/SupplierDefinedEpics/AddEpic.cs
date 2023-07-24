@@ -67,16 +67,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
                 .BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
+                AddSupplierDefinedEpicObjects.StatusInputError,
+                "Error: Select a status")
+                .Should()
+                .BeTrue();
+
+            CommonActions.ElementShowingCorrectErrorMessage(
                 AddSupplierDefinedEpicObjects.DescriptionInputError,
                 "Enter a description")
                 .Should()
                 .BeTrue();
 
-            CommonActions.ElementShowingCorrectErrorMessage(
-                AddSupplierDefinedEpicObjects.StatusInputError,
-                "Error: Select a status")
-                .Should()
-                .BeTrue();
+            
         }
 
         [Fact]

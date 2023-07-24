@@ -10,8 +10,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.SupplierDef
 
         public static By AddEpicLink => By.LinkText("Add a supplier defined Epic");
 
-        public static By InactiveItemsContainer => By.Id("inactive-items-checkbox");
-
         public static By InactiveItemRow => By.ClassName("inactive");
 
         public static By CapabilityNames => ByExtensions.DataTestId("capability-name");

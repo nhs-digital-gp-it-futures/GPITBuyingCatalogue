@@ -16,6 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.SupplierDef
 
         public static By DescriptionInputError => By.Id($"{nameof(AddSupplierDefinedEpicDetailsModel.Description)}-error");
 
-        public static By StatusInputError => By.Id($"supplier-defined-epic-base-error");
+        public static By StatusInputError => By.Id($"add-supplier-defined-epic-details-error");
     }
 }
