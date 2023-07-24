@@ -11,7 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared
 {
     public class SelectCapabilitiesModel : NavBaseModel
     {
@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpi
 
         public string SearchTerm { get; set; }
 
-        public bool IsFilter { get; set;  }
+        public bool IsFilter { get; set; }
 
         public IEnumerable<CapabilityCategory> Groups { get; set; }
 
