@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SupplierDefinedEpics;
 
@@ -28,13 +29,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
 
             var epic = new Epic
             {
-                Capabilities = capabilities,
                 Name = epicModel.Name,
                 Description = epicModel.Description,
                 IsActive = epicModel.IsActive,
                 SupplierDefined = true,
-                CompliancyLevel = CompliancyLevel.May,
             };
+
+            var capabilityEpics = capabilities.Select(c => new CapabilityEpic()
+            {
+                CapabilityId = c.Id,
+                Epic = epic,
+                CompliancyLevel = CompliancyLevel.May,
+            });
+
+            epic.CapabilityEpics.AddRange(capabilityEpics);
 
             dbContext.Epics.Add(epic);
             await dbContext.SaveChangesAsync();

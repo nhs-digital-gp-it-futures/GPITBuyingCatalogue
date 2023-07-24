@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using BuyingCatalogueFunction.Adapters;
-using BuyingCatalogueFunction.Models.Ods;
+using BuyingCatalogueFunction.IncrementalUpdate.Adapters;
+using BuyingCatalogueFunction.IncrementalUpdate.Models.Ods;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Xunit;

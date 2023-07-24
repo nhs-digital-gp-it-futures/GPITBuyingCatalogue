@@ -21,10 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.Property(e => e.Description)
                 .HasMaxLength(1500);
 
-            builder.Property(e => e.CompliancyLevel)
-                .HasConversion<int>()
-                .HasColumnName("CompliancyLevelId");
-
             builder.Property(e => e.Name)
                 .IsRequired()
                 .HasMaxLength(500);

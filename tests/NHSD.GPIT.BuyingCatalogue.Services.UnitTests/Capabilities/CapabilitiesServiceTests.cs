@@ -53,20 +53,47 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         [InMemoryDbAutoData]
         public static async Task GetCapabilitiesByCategory_ReturnsCapabilityCategories(
             [Frozen] BuyingCatalogueDbContext context,
+            CapabilityCategory capabilityCategory,
+            Capability capability,
+            Epic mustEpic,
+            Epic mayEpic,
+            Epic shouldEpic,
             CapabilitiesService capabilitiesService)
         {
-            var supplierId = 10020;
-            var supplierIdString = supplierId.ToString(CultureInfo.InvariantCulture);
+            capability.Epics.Clear();
+            capability.CapabilityEpics.Clear();
+            capabilityCategory.Capabilities.Add(capability);
+            capability.CapabilityEpics.Add(new CapabilityEpic()
+            {
+                EpicId = mustEpic.Id,
+                CompliancyLevel = CompliancyLevel.Must,
+            });
+            capability.CapabilityEpics.Add(new CapabilityEpic()
+            {
+                EpicId = shouldEpic.Id,
+                CompliancyLevel = CompliancyLevel.Should,
+            });
+            capability.CapabilityEpics.Add(new CapabilityEpic()
+            {
+                EpicId = mayEpic.Id,
+                CompliancyLevel = CompliancyLevel.May,
+            });
+            mustEpic.IsActive = true;
+            mayEpic.IsActive = true;
+            shouldEpic.IsActive = true;
 
-            var expectedCapabilities = await context
-                .CapabilityCategories
-                .Include(c => c.Capabilities)
-                .ThenInclude(c => c.Epics.Where(e => e.IsActive && e.CompliancyLevel == CompliancyLevel.May))
-                .ToListAsync();
+            context.Epics.AddRange(new[] { mustEpic, mayEpic, shouldEpic });
+            context.CapabilityCategories.Add(capabilityCategory);
+            context.SaveChanges();
+            context.ChangeTracker.Clear();
 
             var capabilityCategories = await capabilitiesService.GetCapabilitiesByCategory();
 
-            capabilityCategories.Should().BeEquivalentTo(expectedCapabilities);
+            capabilityCategories.Count.Should().Be(1);
+
+            var capabilityResult = capabilityCategories.First().Capabilities.First();
+            capabilityResult.GetActiveMustEpics().Select(e => e.Id).Should().BeEquivalentTo(new[] { mustEpic.Id });
+            capabilityResult.GetActiveMayEpics().Select(e => e.Id).Should().BeEquivalentTo(new[] { mayEpic.Id });
         }
 
         [Theory]
