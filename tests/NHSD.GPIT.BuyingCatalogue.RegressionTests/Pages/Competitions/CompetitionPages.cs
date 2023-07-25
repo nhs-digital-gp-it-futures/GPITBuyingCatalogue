@@ -53,20 +53,34 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
 
             StartCompetition.CreateCompetition(competitionName);
 
-            int competitionid = CompetitionId();
+            int competitionId = CompetitionId();
+            int filterId = GetFilterId(competitionId);
 
-            SelectSolutions.AddSolutions(5);
-
-            SolutionNotShortlisted.SolutionNotIncludedInShortlisting();
+            if (filterId == 2)
+            {
+                SelectSolutions.AddSolutions(5);
+                SolutionNotShortlisted.SolutionNotIncludedInShortlisting();
+            }
         }
 
         private int CompetitionId()
         {
             string url = Driver.Url;
             int charPos = url.LastIndexOf("competitions/") + "competitions".Length + 1;
-            int length = url.IndexOf("/select-solutions") - charPos;
-            int competitionId = int.Parse( url.Substring(charPos, length));
+            int charLength = url.IndexOf("/select-solutions") - charPos;
+            int competitionId = int.Parse(url.Substring(charPos, charLength));
             return competitionId;
+        }
+
+        private int GetFilterId(int competitionId)
+        {
+            using var dbContext = Factory.DbContext;
+
+            var result = dbContext.Competitions
+                .Where(x => x.Id == competitionId)
+                .Select(y => y.FilterId).First();
+
+            return result;
         }
     }
 }
