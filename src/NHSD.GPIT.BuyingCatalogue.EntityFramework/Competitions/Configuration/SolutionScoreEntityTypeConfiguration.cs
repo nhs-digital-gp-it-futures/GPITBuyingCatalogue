@@ -9,6 +9,8 @@ public sealed class SolutionScoreEntityTypeConfiguration : IEntityTypeConfigurat
 {
     public void Configure(EntityTypeBuilder<SolutionScore> builder)
     {
+        builder.ToTable("SolutionScores", Schemas.Competitions);
+
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.SolutionId)

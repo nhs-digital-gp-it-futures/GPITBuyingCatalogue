@@ -4,6 +4,18 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 
 public class SolutionScore
 {
+    public SolutionScore()
+    {
+    }
+
+    public SolutionScore(
+        ScoreType scoreType,
+        int score)
+    {
+        ScoreType = scoreType;
+        Score = score;
+    }
+
     public int Id { get; set; }
 
     public int CompetitionId { get; set; }

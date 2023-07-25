@@ -46,6 +46,8 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.NonPriceElements.Interoperability)
             .Include(x => x.NonPriceElements.ServiceLevel)
             .Include(x => x.NonPriceElements.NonPriceWeights)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Scores)
             .AsSplitQuery()
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
@@ -74,6 +76,18 @@ public class CompetitionsService : ICompetitionsService
 
         return await query.FirstOrDefaultAsync(x => x.OrganisationId == organisationId && x.Id == competitionId);
     }
+
+    public async Task<Competition> GetCompetitionWithSolutionsInterop(string internalOrgId, int competitionId)
+        => await dbContext.Competitions
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Solution)
+            .ThenInclude(x => x.CatalogueItem)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Scores)
+            .Include(x => x.NonPriceElements.Interoperability)
+            .AsNoTracking()
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
     public async Task<Competition> GetCompetition(string internalOrgId, int competitionId)
         => await dbContext.Competitions.AsNoTracking()
@@ -268,6 +282,34 @@ public class CompetitionsService : ICompetitionsService
         foreach (var solution in solutions.Where(x => solutionsJustification.ContainsKey(x.SolutionId)))
         {
             solution.Justification = solutionsJustification[solution.SolutionId];
+        }
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task SetSolutionsInteroperabilityScores(string internalOrgId, int competitionId, Dictionary<CatalogueItemId, int> solutionsScores)
+    {
+        var competition = await dbContext.Competitions.Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Scores)
+            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+
+        var solutions = competition.CompetitionSolutions;
+
+        foreach (var solutionAndScore in solutionsScores)
+        {
+            var solution = solutions.First(x => x.SolutionId == solutionAndScore.Key);
+            SolutionScore solutionScore;
+
+            if (solution.HasScoreType(ScoreType.Interoperability))
+            {
+                solutionScore = solution.GetScoreByType(ScoreType.Interoperability);
+                solutionScore.Score = solutionAndScore.Value;
+
+                continue;
+            }
+
+            solutionScore = new SolutionScore(ScoreType.Interoperability, solutionAndScore.Value);
+            solution.Scores.Add(solutionScore);
         }
 
         await dbContext.SaveChangesAsync();

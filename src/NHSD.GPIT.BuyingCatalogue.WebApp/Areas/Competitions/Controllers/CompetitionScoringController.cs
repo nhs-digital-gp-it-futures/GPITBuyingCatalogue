@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -38,5 +39,44 @@ public class CompetitionScoringController : Controller
         };
 
         return View(model);
+    }
+
+    [HttpGet("interoperability")]
+    public async Task<IActionResult> Interoperability(
+        string internalOrgId,
+        int competitionId)
+    {
+        var competition = await competitionsService.GetCompetitionWithSolutionsInterop(internalOrgId, competitionId);
+
+        var model = new InteroperabilityScoringModel(competition)
+        {
+            BackLink = Url.Action(nameof(Index), new { internalOrgId, competitionId }),
+        };
+
+        return View(model);
+    }
+
+    [HttpPost("interoperability")]
+    public async Task<IActionResult> Interoperability(
+        string internalOrgId,
+        int competitionId,
+        InteroperabilityScoringModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            var competition =
+                await competitionsService.GetCompetitionWithSolutionsInterop(internalOrgId, competitionId);
+
+            model.WithInteroperability(competition.NonPriceElements.Interoperability)
+                .WithSolutions(competition.CompetitionSolutions);
+
+            return View(model);
+        }
+
+        var solutionsAndScores = model.SolutionScores.ToDictionary(x => x.SolutionId, x => x.Score.GetValueOrDefault());
+
+        await competitionsService.SetSolutionsInteroperabilityScores(internalOrgId, competitionId, solutionsAndScores);
+
+        return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
     }
 }

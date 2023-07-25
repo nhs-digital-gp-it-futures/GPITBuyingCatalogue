@@ -5,3 +5,17 @@
 .nhsuk-checkboxes__subhint {
   font-size: 1rem;
 }
+
+.nhsuk-section:nth-of-type(2n) {
+  background: #fff;
+}
+
+.app-width-container--full {
+  margin: 0;
+  max-width: none;
+}
+
+.section-content {
+  margin-top: 32px;
+  margin-bottom: 32px;
+}

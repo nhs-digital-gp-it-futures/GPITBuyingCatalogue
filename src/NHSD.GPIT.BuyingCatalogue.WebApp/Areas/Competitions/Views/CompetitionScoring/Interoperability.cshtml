@@ -1,0 +1,155 @@
+@model InteroperabilityScoringModel
+
+@{
+    ViewBag.Title = "Compare interoperability";
+    Layout = "Layouts/_SolutionScoringLayout";
+    var im1Integrations = Model.GetIm1Integrations();
+    var gpConnectIntegrations = Model.GetGpConnectIntegrations();
+}
+
+<form method="post">
+    <section class="nhsuk-section">
+        <div class="nhsuk-width-container">
+            <div class="nhsuk-grid-row">
+                <div class="nhsuk-grid-column-two-thirds">
+                    <partial name="Partials/_BackLink" model="Model"/>
+
+                    <nhs-validation-summary/>
+
+                    <nhs-page-title title="@ViewBag.Title"
+                                    advice="Compare and score shortlisted solutions based on your interoperability criteria."
+                                    caption="@Model.CompetitionName"/>
+
+                    <nhs-details label-text="How do I score solutions?">
+                        <b>How to score solutions:</b>
+                        <p>1 = Bad, no requirements met</p>
+                        <p>2 = Poor, few requirements met</p>
+                        <p>3 = Adequate, just meets requirements</p>
+                        <p>4 = Good, requirements covered well</p>
+                        <p>5 = Excellent, all requirements covered well</p>
+                        <p>You should keep a record of the rationale you used to score each solution.</p>
+                    </nhs-details>
+
+                    <h2>Your interoperability criteria</h2>
+
+                    <h3>IM1 integrations</h3>
+                    <nhs-summary-list>
+                        <nhs-summary-list-row label-text="Integration type">
+                            @if (!im1Integrations.Any())
+                            {
+                                <span>None selected</span>
+                            }
+                            else
+                            {
+                                <ul>
+                                    @foreach (var integration in im1Integrations.Order())
+                                    {
+                                        <li>@integration</li>
+                                    }
+                                </ul>
+                            }
+                        </nhs-summary-list-row>
+                    </nhs-summary-list>
+
+                    <h3>GP Connect integrations</h3>
+                    <nhs-summary-list>
+                        <nhs-summary-list-row label-text="Integration type">
+                            @if (!gpConnectIntegrations.Any())
+                            {
+                                <span>None selected</span>
+                            }
+                            else
+                            {
+                                <ul>
+                                    @foreach (var integration in gpConnectIntegrations.Order())
+                                    {
+                                        <li>@integration</li>
+                                    }
+                                </ul>
+                            }
+                        </nhs-summary-list-row>
+                    </nhs-summary-list>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    @for (var i = 0; i < Model.SolutionScores.Count; i++)
+    {
+        var solutionScoreModel = Model.SolutionScores[i];
+        <section class="nhsuk-section">
+            <div class="nhsuk-width-container">
+                <div class="nhsuk-grid-row">
+                    <div class="nhsuk-grid-column-full section-content">
+                        <h2>@solutionScoreModel.Solution.CatalogueItem.Name</h2>
+
+                        <h3>IM1 integrations</h3>
+
+                        @if (solutionScoreModel.Im1Integrations.Count == 0)
+                        {
+                            <p>This solution has no IM1 integrations listed</p>
+                        }
+                        else
+                        {
+                            foreach (var integration in solutionScoreModel.Im1Integrations)
+                            {
+                                <nhs-table label-text="@integration.Qualifier">
+                                    <nhs-table-column>Provider or consumer</nhs-table-column>
+                                    <nhs-table-column>System integrating with</nhs-table-column>
+                                    <nhs-table-column>Description</nhs-table-column>
+
+                                    @foreach (var specificIntegration in integration.Integrations.OrderBy(x => x.IsConsumer).ThenBy(x => x.IntegratesWith))
+                                    {
+                                        <nhs-table-row-container>
+                                            <nhs-table-cell>@(specificIntegration.IsConsumer ? "Consumer" : "Provider")</nhs-table-cell>
+                                            <nhs-table-cell>@specificIntegration.IntegratesWith</nhs-table-cell>
+                                            <nhs-table-cell>@specificIntegration.Description</nhs-table-cell>
+                                        </nhs-table-row-container>
+                                    }
+                                </nhs-table>
+                            }
+                        }
+
+                        <h3>GP Connect integrations</h3>
+
+                        @if (solutionScoreModel.GpConnectIntegrations.Count == 0)
+                        {
+                            <p>This solution has no GP Connect integrations listed</p>
+                        }
+                        else
+                        {
+                            foreach (var integration in solutionScoreModel.GpConnectIntegrations)
+                            {
+                                <nhs-table label-text="@integration.Qualifier">
+                                    <nhs-table-column>Provider or consumer</nhs-table-column>
+                                    <nhs-table-column>Additional information</nhs-table-column>
+
+                                    @foreach (var specificIntegration in integration.Integrations.OrderBy(x => x.IsConsumer).ThenBy(x => x.IntegratesWith))
+                                    {
+                                        <nhs-table-row-container>
+                                            <nhs-table-cell>@(specificIntegration.IsConsumer ? "Consumer" : "Provider")</nhs-table-cell>
+                                            <nhs-table-cell>@specificIntegration.Description</nhs-table-cell>
+                                        </nhs-table-row-container>
+                                    }
+                                </nhs-table>
+                            }
+                        }
+
+                        <nhs-fieldset-form-label asp-for="@Model.SolutionScores[i]"
+                                                 label-text="What score would you give this solution?"
+                                                 label-hint="Score each solution between 1 and 5. The higher the score, the better you think a solution meets your needs." size="Medium">
+                            <input type="hidden" asp-for="@Model.SolutionScores[i].SolutionId"/>
+                            <nhs-input asp-for="@Model.SolutionScores[i].Score" input-width="Three"/>
+                        </nhs-fieldset-form-label>
+
+                        @if (i == Model.SolutionScores.Count - 1)
+                        {
+                            <br/>
+                            <nhs-submit-button/>
+                        }
+                    </div>
+                </div>
+            </div>
+        </section>
+    }
+</form>

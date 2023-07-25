@@ -24,7 +24,7 @@
                 <nhs-table-column>Status</nhs-table-column>
                 <nhs-table-column>Action</nhs-table-column>
 
-                @foreach (var nonPriceElement in Model.NonPriceElements.OrderByDescending(x => x.Key.EnumMemberName()))
+                @foreach (var nonPriceElement in Model.NonPriceElements.OrderBy(x => x.Key.EnumMemberName()))
                 {
                     <nhs-table-row-container>
                         <nhs-table-cell>@nonPriceElement.Key.EnumMemberName()</nhs-table-cell>
@@ -32,7 +32,7 @@
                             <nhs-tag status-enum="@nonPriceElement.Value"/>
                         </nhs-table-cell>
                         <nhs-table-cell>
-                            <a href="#">Edit</a>
+                            <a href="@Url.Action(nonPriceElement.Key.ToString(), typeof(CompetitionScoringController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId })">Edit</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
                 }

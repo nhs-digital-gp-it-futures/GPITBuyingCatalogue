@@ -13,12 +13,15 @@ public sealed class CompetitionSolutionEntityTypeConfiguration : IEntityTypeConf
 
         builder.HasKey(x => new { x.CompetitionId, x.SolutionId });
 
+
         builder.Property(x => x.SolutionId)
             .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
 
         builder.Property(x => x.IsShortlisted)
             .IsRequired()
             .HasDefaultValue(false);
+
+        builder.HasQueryFilter(x => x.IsShortlisted);
 
         builder.Property(x => x.Justification)
             .HasMaxLength(1000);
