@@ -1,7 +1,10 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Dashboard;
-using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.SelectFilterType;
-using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.SolutionSelection;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOne;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCreateCompetition;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCreateCompetition.SelectFilterType;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCreateCompetition.SolutionSelection;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
@@ -17,6 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             StartCompetition = new StartCompetition(driver, commonActions);
             SelectSolutions = new SelectSolutions(driver, commonActions);
             SolutionNotShortlisted = new SolutionNotShortlisted(driver, commonActions);
+            CompetitionStepOne = new CompetitionStepOne(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -37,6 +41,32 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
 
         internal SolutionNotShortlisted SolutionNotShortlisted { get; }
 
+        internal CompetitionStepOne CompetitionStepOne { get; }
+
         internal IWebDriver Driver { get; }
+
+        public void StepOnePrepareCompetition(string filterType, string competitionName, int addNumberOfSolutions)
+        {
+            SelectFilter.SelectFilterForNewCompetition(filterType);
+
+            ReviewFilter.ReviewYourFilter();
+
+            StartCompetition.CreateCompetition(competitionName);
+
+            int competitionid = CompetitionId();
+
+            SelectSolutions.AddSolutions(5);
+
+            SolutionNotShortlisted.SolutionNotIncludedInShortlisting();
+        }
+
+        private int CompetitionId()
+        {
+            string url = Driver.Url;
+            int charPos = url.LastIndexOf("competitions/") + "competitions".Length + 1;
+            int length = url.IndexOf("/select-solutions") - charPos;
+            int competitionId = int.Parse( url.Substring(charPos, length));
+            return competitionId;
+        }
     }
 }

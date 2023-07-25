@@ -6,7 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using OpenQA.Selenium;
 
-namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
+namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCreateCompetition
 {
     public class StartCompetition : PageBase
     {
@@ -34,9 +34,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
 
         public string GetDescription(string competition)
         {
-            Random rnd = new Random();
+            var rnd = new Random();
 
-            string newDescription = competition + rnd.Next(100).ToString();
+            var newDescription = competition + rnd.Next(100).ToString();
             return newDescription;
         }
     }

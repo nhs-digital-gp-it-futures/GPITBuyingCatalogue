@@ -2071,15 +2071,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             CompetitionPages.BeforeYouStart.ReadyToStart();
 
-            CompetitionPages.SelectFilter.SelectFilterForNewCompetition(MultipleResultFilter);
+            CompetitionPages.StepOnePrepareCompetition(MultipleResultFilter, competitionName, 5);
 
-            CompetitionPages.ReviewFilter.ReviewYourFilter();
-
-            CompetitionPages.StartCompetition.CreateCompetition(competitionName);
-
-            CompetitionPages.SelectSolutions.AddSolutions(5);
-
-            CompetitionPages.SolutionNotShortlisted.SolutionNotIncludedInShortlisting();
         }
     }
 }

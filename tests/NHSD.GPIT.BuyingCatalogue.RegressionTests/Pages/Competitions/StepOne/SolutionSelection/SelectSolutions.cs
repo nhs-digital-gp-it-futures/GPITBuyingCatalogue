@@ -4,7 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using OpenQA.Selenium;
 
-namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.SolutionSelection
+namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCreateCompetition.SolutionSelection
 {
     public class SelectSolutions : PageBase
     {
