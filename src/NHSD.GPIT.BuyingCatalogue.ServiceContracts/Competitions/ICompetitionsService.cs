@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.Competitions;
@@ -89,6 +90,11 @@ public interface ICompetitionsService
         Dictionary<CatalogueItemId, int> solutionsScores);
 
     Task SetSolutionsInteroperabilityScores(
+        string internalOrgId,
+        int competitionId,
+        Dictionary<CatalogueItemId, int> solutionsScores);
+
+    Task SetSolutionsServiceLevelScores(
         string internalOrgId,
         int competitionId,
         Dictionary<CatalogueItemId, int> solutionsScores);

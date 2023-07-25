@@ -1,7 +1,6 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 
-namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 
 public static class ScoreTypeExtensions
 {

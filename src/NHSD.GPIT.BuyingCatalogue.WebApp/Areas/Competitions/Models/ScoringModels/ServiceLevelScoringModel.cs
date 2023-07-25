@@ -1,30 +1,38 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.ScoringModels;
 
-public class ImplementationScoringModel : NavBaseModel
+public class ServiceLevelScoringModel : NavBaseModel
 {
-    public ImplementationScoringModel()
+    public ServiceLevelScoringModel()
     {
     }
 
-    public ImplementationScoringModel(
+    public ServiceLevelScoringModel(
         Competition competition)
     {
         CompetitionName = competition.Name;
-        Implementation = competition.NonPriceElements.Implementation.Requirements;
+
+        From = competition.NonPriceElements.ServiceLevel.TimeFrom;
+        Until = competition.NonPriceElements.ServiceLevel.TimeUntil;
+        ApplicableDays = competition.NonPriceElements.ServiceLevel.ApplicableDays;
 
         WithSolutions(competition.CompetitionSolutions);
     }
 
     public string CompetitionName { get; set; }
 
-    public string Implementation { get; set; }
-
     public List<SolutionScoreModel> SolutionScores { get; set; }
+
+    public DateTime From { get; set; }
+
+    public DateTime Until { get; set; }
+
+    public string ApplicableDays { get; set; }
 
     public void WithSolutions(IEnumerable<CompetitionSolution> solutions)
     {
@@ -32,7 +40,7 @@ public class ImplementationScoringModel : NavBaseModel
             .Select(
                 x => new SolutionScoreModel(
                     x.Solution,
-                    x.GetScoreByType(ScoreType.Implementation)?.Score))
+                    x.GetScoreByType(ScoreType.ServiceLevel)?.Score))
             .ToList();
     }
 }

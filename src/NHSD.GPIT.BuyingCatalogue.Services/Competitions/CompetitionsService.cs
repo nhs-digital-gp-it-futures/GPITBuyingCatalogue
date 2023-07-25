@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -83,9 +84,12 @@ public class CompetitionsService : ICompetitionsService
             .ThenInclude(x => x.Solution)
             .ThenInclude(x => x.CatalogueItem)
             .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Solution.ServiceLevelAgreement.ServiceHours)
+            .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.Scores)
             .Include(x => x.NonPriceElements.Interoperability)
             .Include(x => x.NonPriceElements.Implementation)
+            .Include(x => x.NonPriceElements.ServiceLevel)
             .AsNoTracking()
             .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
@@ -292,10 +296,31 @@ public class CompetitionsService : ICompetitionsService
         string internalOrgId,
         int competitionId,
         Dictionary<CatalogueItemId, int> solutionsScores)
-        => await SetSolutionScores(internalOrgId, competitionId, solutionsScores ?? throw new ArgumentNullException(nameof(solutionsScores)), ScoreType.Implementation);
+        => await SetSolutionScores(
+            internalOrgId,
+            competitionId,
+            solutionsScores ?? throw new ArgumentNullException(nameof(solutionsScores)),
+            ScoreType.Implementation);
 
-    public async Task SetSolutionsInteroperabilityScores(string internalOrgId, int competitionId, Dictionary<CatalogueItemId, int> solutionsScores)
-        => await SetSolutionScores(internalOrgId, competitionId, solutionsScores ?? throw new ArgumentNullException(nameof(solutionsScores)), ScoreType.Interoperability);
+    public async Task SetSolutionsInteroperabilityScores(
+        string internalOrgId,
+        int competitionId,
+        Dictionary<CatalogueItemId, int> solutionsScores)
+        => await SetSolutionScores(
+            internalOrgId,
+            competitionId,
+            solutionsScores ?? throw new ArgumentNullException(nameof(solutionsScores)),
+            ScoreType.Interoperability);
+
+    public async Task SetSolutionsServiceLevelScores(
+        string internalOrgId,
+        int competitionId,
+        Dictionary<CatalogueItemId, int> solutionsScores)
+        => await SetSolutionScores(
+            internalOrgId,
+            competitionId,
+            solutionsScores ?? throw new ArgumentNullException(nameof(solutionsScores)),
+            ScoreType.ServiceLevel);
 
     public async Task AcceptShortlist(int organisationId, int competitionId)
     {
@@ -384,6 +409,8 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.NonPriceElements.Implementation)
             .Include(x => x.NonPriceElements.Interoperability)
             .Include(x => x.NonPriceElements.ServiceLevel)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Scores)
             .AsNoTracking()
             .AsSplitQuery()
             .Where(x => x.OrganisationId == organisationId && x.Id == competitionId)

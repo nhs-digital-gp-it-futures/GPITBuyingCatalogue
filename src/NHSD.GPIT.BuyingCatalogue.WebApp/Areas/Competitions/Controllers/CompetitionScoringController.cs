@@ -118,4 +118,41 @@ public class CompetitionScoringController : Controller
 
         return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
     }
+
+    [HttpGet("service-level")]
+    public async Task<IActionResult> ServiceLevel(
+        string internalOrgId,
+        int competitionId)
+    {
+        var competition = await competitionsService.GetCompetitionWithSolutions(internalOrgId, competitionId);
+
+        var model = new ServiceLevelScoringModel(competition)
+        {
+            BackLink = Url.Action(nameof(Index), new { internalOrgId, competitionId }),
+        };
+
+        return View(model);
+    }
+
+    [HttpPost("service-level")]
+    public async Task<IActionResult> ServiceLevel(
+        string internalOrgId,
+        int competitionId,
+        ServiceLevelScoringModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            var competition = await competitionsService.GetCompetitionWithSolutions(internalOrgId, competitionId);
+
+            model.WithSolutions(competition.CompetitionSolutions);
+
+            return View(model);
+        }
+
+        var solutionsAndScores = model.SolutionScores.ToDictionary(x => x.SolutionId, x => x.Score.GetValueOrDefault());
+
+        await competitionsService.SetSolutionsServiceLevelScores(internalOrgId, competitionId, solutionsAndScores);
+
+        return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
+    }
 }
