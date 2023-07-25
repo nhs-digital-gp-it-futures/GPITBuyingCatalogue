@@ -61,6 +61,7 @@
 
         @if (Model.CanDelete)
         {
+            <br />
             <vc:nhs-delete-button url="@Url.Action(
                 nameof(SupplierDefinedEpicsController.DeleteEpic),
                 typeof(SupplierDefinedEpicsController).ControllerName(),

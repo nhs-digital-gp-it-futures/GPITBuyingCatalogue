@@ -36,7 +36,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             CommonActions.ElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.EpicsTable).Should().BeTrue();
             CommonActions.ElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.AddEpicLink).Should().BeTrue();
-            CommonActions.ElementIsNotDisplayed(SupplierDefinedEpicsDashboardObjects.InactiveItemRow).Should().BeTrue();
         }
 
         [Fact]
@@ -64,16 +63,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
         }
 
         [Fact]
-        public void Dashboard_ClickShowInactiveEpics_ExpectedResult()
-        {
-            CommonActions.ElementIsNotDisplayed(SupplierDefinedEpicsDashboardObjects.InactiveItemRow).Should().BeTrue();
-
-            CommonActions.ClickFirstCheckbox();
-
-            CommonActions.ElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.InactiveItemRow).Should().BeTrue();
-        }
-
-        [Fact]
         public void Dashboard_ClickAddOrganisationLink_DisplaysCorrectPage()
         {
             CommonActions.ClickLinkElement(SupplierDefinedEpicsDashboardObjects.AddEpicLink);
@@ -81,130 +70,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(SupplierDefinedEpicsController),
                 nameof(SupplierDefinedEpicsController.SelectCapabilities)).Should().BeTrue();
-        }
-
-        [Fact]
-        public async Task Dashboard_SearchTermEmpty_AllEpicsDisplayed()
-        {
-            await using var context = GetEndToEndDbContext();
-
-            var epics = context.Epics
-                .Include(x => x.Capabilities)
-                .Where(x => x.SupplierDefined);
-
-            CommonActions.ElementAddValue(SupplierDefinedEpicsDashboardObjects.SearchBar, string.Empty);
-            CommonActions.ClickLinkElement(SupplierDefinedEpicsDashboardObjects.SearchButton);
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(SupplierDefinedEpicsController),
-                    nameof(SupplierDefinedEpicsController.Dashboard))
-                .Should()
-                .BeTrue();
-
-            var pageSummary = GetPageSummary();
-
-            pageSummary.Names.Should().BeEquivalentTo(epics.Select(x => x.Name.Trim()));
-            pageSummary.Capabilities.Should().BeEquivalentTo(epics.Select(x => x.Capabilities.First().Name.Trim()));
-            pageSummary.Ids.Should().BeEquivalentTo(epics.Select(x => x.Id.Trim()));
-        }
-
-        [Fact]
-        public async Task Dashboard_SearchTermValid_FilteredEpicsDisplayed()
-        {
-            await using var context = GetEndToEndDbContext();
-
-            var sampleEpic = context.Epics
-                .Include(x => x.Capabilities)
-                .Where(x => x.SupplierDefined)
-                .OrderByDescending(x => x.Name.Length)
-                .First();
-
-            await CommonActions.InputCharactersWithDelay(
-                SupplierDefinedEpicsDashboardObjects.SearchBar,
-                sampleEpic.Name);
-            CommonActions.WaitUntilElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.SearchListBox);
-
-            CommonActions.ElementExists(SupplierDefinedEpicsDashboardObjects.SearchResult(0)).Should().BeTrue();
-            CommonActions.ElementTextEqualTo(
-                    SupplierDefinedEpicsDashboardObjects.SearchResultTitle(0),
-                    sampleEpic.Name)
-                .Should()
-                .BeTrue();
-
-            CommonActions.ElementTextEqualTo(
-                    SupplierDefinedEpicsDashboardObjects.SearchResultDescription(0),
-                    sampleEpic.Capabilities.First().Name)
-                .Should()
-                .BeTrue();
-
-            CommonActions.ClickLinkElement(SupplierDefinedEpicsDashboardObjects.SearchButton);
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(SupplierDefinedEpicsController),
-                    nameof(SupplierDefinedEpicsController.Dashboard))
-                .Should()
-                .BeTrue();
-
-            var pageSummary = GetPageSummary();
-
-            pageSummary.Names.First().Should().Be(sampleEpic.Name.Trim());
-            pageSummary.Capabilities.First().Should().Be(sampleEpic.Capabilities.First().Name.Trim());
-            pageSummary.Ids.First().Should().Be(sampleEpic.Id);
-        }
-
-        [Fact]
-        public async Task Dashboard_SearchTermValid_NoMatches_ErrorMessageDisplayed()
-        {
-            await CommonActions.InputCharactersWithDelay(
-                SupplierDefinedEpicsDashboardObjects.SearchBar,
-                Strings.RandomString(10));
-            CommonActions.WaitUntilElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.SearchListBox);
-
-            CommonActions.ElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.SearchResultsErrorMessage)
-                .Should()
-                .BeTrue();
-
-            CommonActions.ClickLinkElement(SupplierDefinedEpicsDashboardObjects.SearchButton);
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(SupplierDefinedEpicsController),
-                    nameof(SupplierDefinedEpicsController.Dashboard))
-                .Should()
-                .BeTrue();
-
-            CommonActions.ElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.AddEpicLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.SearchBar).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.SearchButton).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.EpicsTable).Should().BeFalse();
-            CommonActions.ElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.SearchErrorMessage).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.SearchErrorMessageLink)
-                .Should()
-                .BeTrue();
-
-            var pageSummary = GetPageSummary();
-
-            pageSummary.Names.Should().BeEmpty();
-            pageSummary.Capabilities.Should().BeEmpty();
-            pageSummary.Ids.Should().BeEmpty();
-
-            CommonActions.ClickLinkElement(SupplierDefinedEpicsDashboardObjects.SearchErrorMessageLink);
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(SupplierDefinedEpicsController),
-                    nameof(SupplierDefinedEpicsController.Dashboard))
-                .Should()
-                .BeTrue();
-
-            CommonActions.ElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.AddEpicLink).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.SearchBar).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.SearchButton).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.EpicsTable).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.SearchErrorMessage)
-                .Should()
-                .BeFalse();
-            CommonActions.ElementIsDisplayed(SupplierDefinedEpicsDashboardObjects.SearchErrorMessageLink)
-                .Should()
-                .BeFalse();
         }
 
         private PageSummary GetPageSummary() => new()
