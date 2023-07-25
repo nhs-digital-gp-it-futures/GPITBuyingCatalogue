@@ -77,7 +77,7 @@ public class CompetitionsService : ICompetitionsService
         return await query.FirstOrDefaultAsync(x => x.OrganisationId == organisationId && x.Id == competitionId);
     }
 
-    public async Task<Competition> GetCompetitionWithSolutionsInterop(string internalOrgId, int competitionId)
+    public async Task<Competition> GetCompetitionWithSolutions(string internalOrgId, int competitionId)
         => await dbContext.Competitions
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.Solution)
@@ -85,6 +85,7 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.Scores)
             .Include(x => x.NonPriceElements.Interoperability)
+            .Include(x => x.NonPriceElements.Implementation)
             .AsNoTracking()
             .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
@@ -287,33 +288,14 @@ public class CompetitionsService : ICompetitionsService
         await dbContext.SaveChangesAsync();
     }
 
+    public async Task SetSolutionsImplementationScores(
+        string internalOrgId,
+        int competitionId,
+        Dictionary<CatalogueItemId, int> solutionsScores)
+        => await SetSolutionScores(internalOrgId, competitionId, solutionsScores ?? throw new ArgumentNullException(nameof(solutionsScores)), ScoreType.Implementation);
+
     public async Task SetSolutionsInteroperabilityScores(string internalOrgId, int competitionId, Dictionary<CatalogueItemId, int> solutionsScores)
-    {
-        var competition = await dbContext.Competitions.Include(x => x.CompetitionSolutions)
-            .ThenInclude(x => x.Scores)
-            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
-
-        var solutions = competition.CompetitionSolutions;
-
-        foreach (var solutionAndScore in solutionsScores)
-        {
-            var solution = solutions.First(x => x.SolutionId == solutionAndScore.Key);
-            SolutionScore solutionScore;
-
-            if (solution.HasScoreType(ScoreType.Interoperability))
-            {
-                solutionScore = solution.GetScoreByType(ScoreType.Interoperability);
-                solutionScore.Score = solutionAndScore.Value;
-
-                continue;
-            }
-
-            solutionScore = new SolutionScore(ScoreType.Interoperability, solutionAndScore.Value);
-            solution.Scores.Add(solutionScore);
-        }
-
-        await dbContext.SaveChangesAsync();
-    }
+        => await SetSolutionScores(internalOrgId, competitionId, solutionsScores ?? throw new ArgumentNullException(nameof(solutionsScores)), ScoreType.Interoperability);
 
     public async Task AcceptShortlist(int organisationId, int competitionId)
     {
@@ -414,4 +396,36 @@ public class CompetitionsService : ICompetitionsService
         .Where(x => x.OrganisationId == organisationId && x.Id == competitionId)
         .Select(x => x.Name)
         .FirstOrDefaultAsync();
+
+    private async Task SetSolutionScores(
+        string internalOrgId,
+        int competitionId,
+        Dictionary<CatalogueItemId, int> solutionsScores,
+        ScoreType scoreType)
+    {
+        var competition = await dbContext.Competitions.Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Scores)
+            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+
+        var solutions = competition.CompetitionSolutions;
+
+        foreach (var solutionAndScore in solutionsScores)
+        {
+            var solution = solutions.First(x => x.SolutionId == solutionAndScore.Key);
+            SolutionScore solutionScore;
+
+            if (solution.HasScoreType(scoreType))
+            {
+                solutionScore = solution.GetScoreByType(scoreType);
+                solutionScore.Score = solutionAndScore.Value;
+
+                continue;
+            }
+
+            solutionScore = new SolutionScore(scoreType, solutionAndScore.Value);
+            solution.Scores.Add(solutionScore);
+        }
+
+        await dbContext.SaveChangesAsync();
+    }
 }

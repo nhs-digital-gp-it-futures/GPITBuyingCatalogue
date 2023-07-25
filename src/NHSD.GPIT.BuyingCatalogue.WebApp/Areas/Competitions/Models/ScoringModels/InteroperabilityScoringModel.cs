@@ -24,7 +24,7 @@ public class InteroperabilityScoringModel : NavBaseModel
 
     public string CompetitionName { get; set; }
 
-    public List<SolutionScoreModel> SolutionScores { get; set; }
+    public List<InteroperabilitySolutionScoreModel> SolutionScores { get; set; }
 
     public List<InteroperabilityCriteria> InteroperabilityCriteria { get; set; }
 
@@ -46,7 +46,7 @@ public class InteroperabilityScoringModel : NavBaseModel
     {
         SolutionScores = solutions.OrderBy(x => x.Solution.CatalogueItem.Name)
             .Select(
-                x => new SolutionScoreModel(
+                x => new InteroperabilitySolutionScoreModel(
                     x.Solution,
                     x.GetScoreByType(ScoreType.Interoperability)?.Score))
             .ToList();

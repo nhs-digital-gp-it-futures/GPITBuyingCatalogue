@@ -29,7 +29,7 @@ public interface ICompetitionsService
 
     Task<Competition> GetCompetitionWithServices(int organisationId, int competitionId, bool shouldTrack = false);
 
-    Task<Competition> GetCompetitionWithSolutionsInterop(string internalOrgId, int competitionId);
+    Task<Competition> GetCompetitionWithSolutions(string internalOrgId, int competitionId);
 
     Task<CompetitionTaskListModel> GetCompetitionTaskList(int organisationId, int competitionId);
 
@@ -82,6 +82,11 @@ public interface ICompetitionsService
         int organisationId,
         int competitionId,
         Dictionary<CatalogueItemId, string> solutionsJustification);
+
+    Task SetSolutionsImplementationScores(
+        string internalOrgId,
+        int competitionId,
+        Dictionary<CatalogueItemId, int> solutionsScores);
 
     Task SetSolutionsInteroperabilityScores(
         string internalOrgId,

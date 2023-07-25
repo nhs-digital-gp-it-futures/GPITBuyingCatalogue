@@ -46,7 +46,7 @@ public class CompetitionScoringController : Controller
         string internalOrgId,
         int competitionId)
     {
-        var competition = await competitionsService.GetCompetitionWithSolutionsInterop(internalOrgId, competitionId);
+        var competition = await competitionsService.GetCompetitionWithSolutions(internalOrgId, competitionId);
 
         var model = new InteroperabilityScoringModel(competition)
         {
@@ -65,7 +65,7 @@ public class CompetitionScoringController : Controller
         if (!ModelState.IsValid)
         {
             var competition =
-                await competitionsService.GetCompetitionWithSolutionsInterop(internalOrgId, competitionId);
+                await competitionsService.GetCompetitionWithSolutions(internalOrgId, competitionId);
 
             model.WithInteroperability(competition.NonPriceElements.Interoperability)
                 .WithSolutions(competition.CompetitionSolutions);
@@ -76,6 +76,45 @@ public class CompetitionScoringController : Controller
         var solutionsAndScores = model.SolutionScores.ToDictionary(x => x.SolutionId, x => x.Score.GetValueOrDefault());
 
         await competitionsService.SetSolutionsInteroperabilityScores(internalOrgId, competitionId, solutionsAndScores);
+
+        return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
+    }
+
+    [HttpGet("implementation")]
+    public async Task<IActionResult> Implementation(
+        string internalOrgId,
+        int competitionId)
+    {
+        var competition =
+            await competitionsService.GetCompetitionWithSolutions(internalOrgId, competitionId);
+
+        var model = new ImplementationScoringModel(competition)
+        {
+            BackLink = Url.Action(nameof(Index), new { internalOrgId, competitionId }),
+        };
+
+        return View(model);
+    }
+
+    [HttpPost("implementation")]
+    public async Task<IActionResult> Implementation(
+        string internalOrgId,
+        int competitionId,
+        ImplementationScoringModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            var competition =
+                await competitionsService.GetCompetitionWithSolutions(internalOrgId, competitionId);
+
+            model.WithSolutions(competition.CompetitionSolutions);
+
+            return View(model);
+        }
+
+        var solutionsAndScores = model.SolutionScores.ToDictionary(x => x.SolutionId, x => x.Score.GetValueOrDefault());
+
+        await competitionsService.SetSolutionsImplementationScores(internalOrgId, competitionId, solutionsAndScores);
 
         return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
     }
