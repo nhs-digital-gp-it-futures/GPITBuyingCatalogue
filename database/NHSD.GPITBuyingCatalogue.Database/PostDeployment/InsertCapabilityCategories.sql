@@ -20,6 +20,8 @@ VALUES
 (10, 'Reporting and data analytics', 'Find solutions that allow local data analysis across all aspects of a GP practice.'),
 (11, 'Supplier defined Capabilities', 'Find solutions that have met Capabilities defined by a supplier.');
 
+SET IDENTITY_INSERT catalogue.CapabilityCategories ON;
+
 MERGE INTO catalogue.CapabilityCategories AS TARGET
      USING @capabilityCategories AS SOURCE
         ON TARGET.Id = SOURCE.Id
@@ -30,4 +32,7 @@ UPDATE SET
       WHEN NOT MATCHED BY TARGET THEN
       INSERT (Id, [Name], [Description])
       VALUES (SOURCE.Id, SOURCE.[Name], SOURCE.[Description]);
+
+SET IDENTITY_INSERT catalogue.CapabilityCategories OFF;
+
 GO

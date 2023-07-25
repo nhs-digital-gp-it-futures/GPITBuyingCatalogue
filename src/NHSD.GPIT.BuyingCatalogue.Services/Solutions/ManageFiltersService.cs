@@ -131,9 +131,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         Capabilities = x.Capabilities
                             .Select(
                                 y => new KeyValuePair<string, List<string>>(
-                                    y.Name,
+                                    y.Status == CapabilityStatus.Expired
+                                        ? $"{y.Name} (Expired)"
+                                        : y.Name,
                                     x.FilterCapabilityEpics.Where(z => z.CapabilityId == y.Id)
-                                        .Select(z => z.Epic.Name)
+                                        .Select(z => z.Epic.IsActive ? z.Epic.Name : $"{z.Epic.Name} (Inactive)")
                                         .ToList()))
                             .ToList(),
                     })

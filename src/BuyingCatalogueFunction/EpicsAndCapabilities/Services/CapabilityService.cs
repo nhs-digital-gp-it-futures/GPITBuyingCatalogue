@@ -10,6 +10,7 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.Extensions.Logging;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -19,10 +20,14 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
     public class CapabilityService : ICapabilityService
     {
         private readonly BuyingCatalogueDbContext dbContext;
+        private readonly ILogger<CapabilityService> logger;
 
-        public CapabilityService(BuyingCatalogueDbContext dbContext)
+        public CapabilityService(
+            BuyingCatalogueDbContext dbContext,
+            ILogger<CapabilityService> logger)
         {
             this.dbContext = dbContext;
+            this.logger = logger;
         }
 
         public async Task<List<string>> Process(List<CapabilityCsv> capabilties)
@@ -103,20 +108,60 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
                 .Include(c => c.FrameworkCapabilities)
                 .FirstOrDefaultAsync(c => c.Id == capability.Id.Value);
 
-            var capabilityCategory = await dbContext.CapabilityCategories.FirstOrDefaultAsync(x => x.Name == capability.Category)
-                ?? throw new InvalidOperationException($"No category found for {capability.Id.Value} using {capability.Category}");
+            CapabilityCategory capabilityCategory = await EnsureCategroy(dbContext, capability.Category, log);
+            List<Framework> desiredFrameworks = ValidateFrameworks(dbContext, capability);
 
             if (existing == null)
             {
-                await Add(dbContext, capability, capabilityCategory, log);
+                await Add(dbContext, capability, capabilityCategory, desiredFrameworks, log);
             }
             else
             {
-                Update(dbContext, capability, existing, capabilityCategory, log);
+                Update(dbContext, capability, existing, capabilityCategory, desiredFrameworks, log);
             }
         }
 
-        private async Task Add(BuyingCatalogueDbContext dbContext, CapabilityCsv capability, CapabilityCategory capabilityCategory, List<string> log)
+        private List<Framework> ValidateFrameworks(BuyingCatalogueDbContext dbContext, CapabilityCsv capability)
+        {
+            var desiredFrameworks = dbContext.Frameworks
+                .Where(f => capability.Framework.Contains(f.ShortName))
+                .ToList();
+
+            var missing = capability.Framework.Except(desiredFrameworks.Select(f => f.ShortName));
+
+            if (missing.Any())
+            {
+                logger.LogWarning(
+                    "Missing framework(s) {frameworks} for capability {capability}",
+                    missing.Aggregate((a, b) => $"{a},{b}"),
+                    capability.Id.Value);
+            }
+
+            return desiredFrameworks;
+        }
+
+        private static async Task<CapabilityCategory> EnsureCategroy(BuyingCatalogueDbContext dbContext, string categoryName, List<string> log)
+        {
+            var category = await dbContext.CapabilityCategories.FirstOrDefaultAsync(x => x.Name == categoryName);
+            if (category == null)
+            {
+                category = new CapabilityCategory()
+                {
+                    Name = categoryName,
+                };
+                await dbContext.CapabilityCategories.AddAsync(category);
+                await dbContext.SaveChangesAsync();
+                log.Add($"New Capability Category {category.Id} {categoryName}");
+            }
+            return category;
+        }
+
+        private async Task Add(
+            BuyingCatalogueDbContext dbContext,
+            CapabilityCsv capability,
+            CapabilityCategory capabilityCategory,
+            List<Framework> desiredFrameworks,
+            List<string> log)
         {
             var newCapability = new Capability()
             {
@@ -129,16 +174,8 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
                 Status = CapabilityStatus.Effective,
             };
 
-            foreach (var shortName in capability.Framework)
+            foreach (var frameworkToAdd in desiredFrameworks)
             {
-                var frameworkToAdd = dbContext.Frameworks
-                    .FirstOrDefault(f => f.ShortName == shortName);
-
-                if (frameworkToAdd == null)
-                {
-                    throw new InvalidOperationException($"Framework not found {shortName}");
-                }
-
                 newCapability.FrameworkCapabilities.Add(new FrameworkCapability(frameworkToAdd.Id, capability.Id.Value));
             }
 
@@ -146,7 +183,13 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
             log.Add($"New Capability {newCapability.Id} {newCapability.Name}");
         }
 
-        private void Update(BuyingCatalogueDbContext dbContext, CapabilityCsv capability, Capability existing, CapabilityCategory capabilityCategory, List<string> log)
+        private void Update(
+            BuyingCatalogueDbContext dbContext,
+            CapabilityCsv capability,
+            Capability existing,
+            CapabilityCategory capabilityCategory,
+            List<Framework> desiredFrameworks,
+            List<string> log)
         {
             existing.Name = capability.Name;
             existing.Description = capability.Description;
@@ -155,10 +198,7 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
             existing.CategoryId = capabilityCategory.Id;
             existing.Status = CapabilityStatus.Effective;
 
-            var desiredFrameworkIds = dbContext.Frameworks
-                .Where(f => capability.Framework.Contains(f.ShortName))
-                .Select(f => f.Id)
-                .ToList();
+            var desiredFrameworkIds = desiredFrameworks.Select(f => f.Id);
 
             var existingFrameworkIds = existing.FrameworkCapabilities.Select(f => f.FrameworkId);
 
