@@ -29,6 +29,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
                     .Should().BeTrue();
         }
 
+        public void AmendOrderDescriptionTask()
+        {
+            CommonActions.ClickLinkElement(OrderDashboard.OrderDescriptionLink);
+            CommonActions.ClearInputElement(OrderDescription);
+            CommonActions.PageTitle.Should().Be();
+
+           
+        }
+
         public void CallOffOrderingPartyContactDetailsTask()
         {
             CommonActions.ClickLinkElement(CalloffPartyInformation.CallOffOrderingPartyContactDetailsLink);

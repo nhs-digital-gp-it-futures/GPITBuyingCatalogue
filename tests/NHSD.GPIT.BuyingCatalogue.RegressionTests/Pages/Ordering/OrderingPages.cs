@@ -538,6 +538,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             TaskList.EditCatalogueAdditionalAndAssociatedServiceTask();
         }
 
+        public void AmendOrderDescription(string amendOrderDescription)
+        {
+            TaskList.AmendOrderDescriptionTask(amendOrderDescription);
+            OrderingStepOne.AddOrderDescription(amendOrderDescription);
+        }
+
         public void EditCatalogueSolutionPrice(string solutionName)
         {
             var orderId = OrderID();
