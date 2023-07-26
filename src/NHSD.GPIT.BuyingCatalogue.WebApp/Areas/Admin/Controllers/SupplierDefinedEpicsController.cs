@@ -245,32 +245,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 new { epicId });
         }
 
-        [HttpGet("delete/{epicId}")]
-        public async Task<IActionResult> DeleteEpic(string epicId)
-        {
-            var epic = await supplierDefinedEpicsService.GetEpic(epicId);
-            if (epic is null)
-                return RedirectToAction(nameof(Dashboard));
-
-            var model = new DeleteSupplierDefinedEpicConfirmationModel(epicId, epic.Name)
-            {
-                BackLink = Url.Action(nameof(EditSupplierDefinedEpic), new { epicId }),
-            };
-
-            return View(model);
-        }
-
-        [HttpPost("delete/{epicId}")]
-        public async Task<IActionResult> DeleteEpic(string epicId, DeleteSupplierDefinedEpicConfirmationModel model)
-        {
-            if (!ModelState.IsValid)
-                return RedirectToAction(nameof(EditSupplierDefinedEpic), new { epicId });
-
-            await supplierDefinedEpicsService.DeleteSupplierDefinedEpic(epicId);
-
-            return RedirectToAction(nameof(Dashboard));
-        }
-
         private async Task<IEnumerable<Epic>> GetFilteredEpics(string search)
         {
             return string.IsNullOrWhiteSpace(search)

@@ -58,16 +58,6 @@
         <vc:nhs-secondary-button text="Continue"
                                  type="Primary"
                                  url="@Model.BackLink"/>
-
-        @if (Model.CanDelete)
-        {
-            <br />
-            <vc:nhs-delete-button url="@Url.Action(
-                nameof(SupplierDefinedEpicsController.DeleteEpic),
-                typeof(SupplierDefinedEpicsController).ControllerName(),
-                new { epicId = Model.Id })"
-            text="Delete Supplier defined Epic" />
-        }
     </div>
 </div>
 @{  
