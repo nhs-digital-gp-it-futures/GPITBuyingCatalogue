@@ -24,6 +24,27 @@ public static class CompetitionsServiceTests
 {
     [Theory]
     [InMemoryDbAutoData]
+    public static async Task GetCompetitionCriteriaReview_ReturnsCompetition(
+        Organisation organisation,
+        Competition competition,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        competition.OrganisationId = organisation.Id;
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        var result = await service.GetCompetitionCriteriaReview(organisation.InternalIdentifier, competition.Id);
+
+        result.Should().BeEquivalentTo(competition, opt => opt.Excluding(x => x.Organisation));
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
     public static async Task GetCompetitions_ReturnsCompetitions(
         Organisation organisation,
         List<Competition> competitions,
