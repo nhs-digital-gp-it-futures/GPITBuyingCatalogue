@@ -6,6 +6,7 @@
     var standardsInOrder = Model.WorkOffPlans.Select(wp => wp.Standard).Distinct().OrderBy(s => s.Name);
 }
 
+<partial name="_solutionSummary" model="Model" />
 <b>These are the development plans for this Catalogue Solution:</b>
 <br/>
 <br/>

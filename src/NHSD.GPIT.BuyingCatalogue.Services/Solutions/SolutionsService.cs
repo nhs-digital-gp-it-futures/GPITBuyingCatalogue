@@ -54,10 +54,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task<CatalogueItem> GetSolutionWithServiceLevelAgreements(CatalogueItemId solutionId) =>
             await dbContext.CatalogueItems.AsNoTracking()
-                .Include(ci => ci.Solution)
+                .Include(ci => ci.Supplier)
                 .Include(ci => ci.Solution).ThenInclude(s => s.ServiceLevelAgreement).ThenInclude(sla => sla.Contacts)
                 .Include(ci => ci.Solution).ThenInclude(s => s.ServiceLevelAgreement).ThenInclude(sla => sla.ServiceHours)
                 .Include(ci => ci.Solution).ThenInclude(s => s.ServiceLevelAgreement).ThenInclude(sla => sla.ServiceLevels)
+                .Include(ci => ci.Solution)
+                    .ThenInclude(s => s.FrameworkSolutions)
+                    .ThenInclude(s => s.Framework)
             .FirstOrDefaultAsync(ci => ci.Id == solutionId);
 
         public async Task<CatalogueItem> GetSolutionWithCataloguePrice(CatalogueItemId solutionId) =>

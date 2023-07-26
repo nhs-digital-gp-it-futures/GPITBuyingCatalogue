@@ -12,11 +12,10 @@
     var shouldShowInteroperabilityAction = interoperabilityStandards.Any(s => Model.StandardsWithWorkOffPlans.Any(swp => swp == s.Id));
     var shouldShowCapabilityAction = capabilityStandards.Any(s => Model.StandardsWithWorkOffPlans.Any(swp => swp == s.Id));
 }
-
-<p><b>Standards describe the technical specifications or operating conditions required for a Catalogue Solution to be published on the Buying Catalogue. This is how @Model.SolutionName has performed against the relevant Standards:</b></p>
-
-<h2>Overarching Standards</h2>
-<p>These Standards must be fully met by all Catalogue Solutions within an agreed timeframe.</p>
+<partial name="_solutionSummary" model="Model" />
+<p>
+    Standards describe the technical specifications or operating conditions required for a Catalogue Solution to be published on the Buying Catalogue. This is how Caltech Web GP has performed against the relevant Standards:
+</p>
 
 <nhs-details label-text="Standards not fully met">
     <p>Any Standard that has not been fully met will have a status of ‘in progress’ and the Catalogue Solution will be subject to a Compliance Work-off Plan.</p>
@@ -24,6 +23,8 @@
     <p>Use the ‘view details’ link to find more information about any outstanding Work-off Plans.</p>
 </nhs-details>
 
+<nhs-expander label-text="Overarching Standards" open="false">
+    <p>These Standards must be fully met by all Catalogue Solutions within an agreed timeframe.</p>
 <nhs-table data-test-id="overarching-table">
     <nhs-table-column>Standard</nhs-table-column>
     <nhs-table-column>Description</nhs-table-column>
@@ -59,10 +60,11 @@
         </nhs-table-row-container>
     }
 </nhs-table>
+</nhs-expander>
 
 @if (Model.Standards.Any(s => s.StandardType == StandardType.Interoperability))
 {
-    <h2>Interoperability Standards</h2>
+    <nhs-expander label-text="Interoperability Standards" open="false">
     <p>These Standards are relevant to solutions that meet particular Capabilities.</p>
 
     <nhs-details label-text="Standards not fully met">
@@ -106,11 +108,12 @@
             </nhs-table-row-container>
         }
     </nhs-table>
+    </nhs-expander>
 }
 
 @if (Model.Standards.Any(s => s.StandardType == StandardType.Capability))
 {
-    <h2>Capability Specific Standards</h2>
+    <nhs-expander label-text="Capability Specific Standards" open="false">
     <p>These Standards must be fully met due to the Capabilities this Catalogue Solution has mapped to.</p>
 
     <nhs-details label-text="Standards not fully met">
@@ -152,4 +155,5 @@
             </nhs-table-row-container>
         }
     </nhs-table>
+    </nhs-expander>
 }

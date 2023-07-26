@@ -4,6 +4,7 @@
     var showContactsApplicableDays = Model.SlaContacts.Any(c => !string.IsNullOrWhiteSpace(c.ApplicableDays));
 }
 
+<partial name="_solutionSummary" model="Model" />
 <p><b>These are the levels of service the supplier has committed to for this Catalogue Solution:</b></p>
 
 <h2>Service availability</h2>
