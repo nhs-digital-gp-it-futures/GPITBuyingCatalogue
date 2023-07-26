@@ -42,13 +42,13 @@ public class InteroperabilityScoringModel : NavBaseModel
             .Select(x => Interoperability.GpConnectIntegrations[x.Qualifier])
             .ToList();
 
-    public InteroperabilityScoringModel WithSolutions(IEnumerable<CompetitionSolution> solutions)
+    public InteroperabilityScoringModel WithSolutions(IEnumerable<CompetitionSolution> solutions, bool setScores = true)
     {
         SolutionScores = solutions.OrderBy(x => x.Solution.CatalogueItem.Name)
             .Select(
                 x => new InteroperabilitySolutionScoreModel(
                     x.Solution,
-                    x.GetScoreByType(ScoreType.Interoperability)?.Score))
+                    setScores ? x.GetScoreByType(ScoreType.Interoperability)?.Score : null))
             .ToList();
 
         return this;

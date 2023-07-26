@@ -34,13 +34,13 @@ public class ServiceLevelScoringModel : NavBaseModel
 
     public string ApplicableDays { get; set; }
 
-    public void WithSolutions(IEnumerable<CompetitionSolution> solutions)
+    public void WithSolutions(IEnumerable<CompetitionSolution> solutions, bool setScores = true)
     {
         SolutionScores = solutions.OrderBy(x => x.Solution.CatalogueItem.Name)
             .Select(
                 x => new SolutionScoreModel(
                     x.Solution,
-                    x.GetScoreByType(ScoreType.ServiceLevel)?.Score))
+                    setScores ? x.GetScoreByType(ScoreType.ServiceLevel)?.Score : null))
             .ToList();
     }
 }

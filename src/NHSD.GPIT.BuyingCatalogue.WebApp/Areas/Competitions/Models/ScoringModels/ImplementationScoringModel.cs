@@ -26,13 +26,13 @@ public class ImplementationScoringModel : NavBaseModel
 
     public List<SolutionScoreModel> SolutionScores { get; set; }
 
-    public void WithSolutions(IEnumerable<CompetitionSolution> solutions)
+    public void WithSolutions(IEnumerable<CompetitionSolution> solutions, bool setScores = true)
     {
         SolutionScores = solutions.OrderBy(x => x.Solution.CatalogueItem.Name)
             .Select(
                 x => new SolutionScoreModel(
                     x.Solution,
-                    x.GetScoreByType(ScoreType.Implementation)?.Score))
+                    setScores ? x.GetScoreByType(ScoreType.Implementation)?.Score : null))
             .ToList();
     }
 }

@@ -68,7 +68,7 @@ public class CompetitionScoringController : Controller
                 await competitionsService.GetCompetitionWithSolutions(internalOrgId, competitionId);
 
             model.WithInteroperability(competition.NonPriceElements.Interoperability)
-                .WithSolutions(competition.CompetitionSolutions);
+                .WithSolutions(competition.CompetitionSolutions, false);
 
             return View(model);
         }
@@ -107,7 +107,7 @@ public class CompetitionScoringController : Controller
             var competition =
                 await competitionsService.GetCompetitionWithSolutions(internalOrgId, competitionId);
 
-            model.WithSolutions(competition.CompetitionSolutions);
+            model.WithSolutions(competition.CompetitionSolutions, false);
 
             return View(model);
         }
@@ -144,7 +144,7 @@ public class CompetitionScoringController : Controller
         {
             var competition = await competitionsService.GetCompetitionWithSolutions(internalOrgId, competitionId);
 
-            model.WithSolutions(competition.CompetitionSolutions);
+            model.WithSolutions(competition.CompetitionSolutions, false);
 
             return View(model);
         }
