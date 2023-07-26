@@ -43,7 +43,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public bool HasBespokeBilling => BespokeBilling != null && BespokeBilling.ContractBillingItems.Any();
 
+        public bool HasSpecificRequirements => BespokeBilling != null && BespokeBilling.Requirements.Any();
+
         public string BespokeBillingLabelText => "Bespoke milestones and payment triggers";
+
+        public string RequirementLabelText => "Specific requirements";
 
         public FundingTypeDescriptionModel FundingTypeDescription(CatalogueItemId catalogueItemId)
         {

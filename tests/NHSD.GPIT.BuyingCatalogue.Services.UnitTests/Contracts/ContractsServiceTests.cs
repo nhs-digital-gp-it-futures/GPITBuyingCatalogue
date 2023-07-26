@@ -6,6 +6,7 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Contracts;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -46,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task GetContract_ContractDoesNotExist_ReturnsNull(
+        public static async Task GetContract_ContractDoesNotExist_ReturnsNewContract(
             int orderId,
             [Frozen] BuyingCatalogueDbContext dbContext,
             ContractsService service)
@@ -86,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task GetContractWithImplementationPlan_ContractDoesNotExist_ReturnsNull(
+        public static async Task GetContractWithImplementationPlan_ContractDoesNotExist_ReturnsNewContract(
             int orderId,
             [Frozen] BuyingCatalogueDbContext dbContext,
             ContractsService service)
@@ -126,7 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task GetContractWithContractBilling_ContractDoesNotExist_ReturnsNull(
+        public static async Task GetContractWithContractBilling_ContractDoesNotExist_ReturnsNewContract(
             int orderId,
             [Frozen] BuyingCatalogueDbContext dbContext,
             ContractsService service)
@@ -136,6 +137,46 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             existing.Should().BeNull();
 
             var output = await service.GetContractWithContractBilling(orderId);
+
+            output.Should().NotBeNull();
+            output.OrderId.Should().Be(orderId);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetContractWithRequirements_ContractExists_ReturnsContract(
+            int orderId,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            ContractsService service,
+            ContractBilling contractBilling)
+        {
+            var contract = new Contract { OrderId = orderId, ContractBilling = contractBilling, };
+
+            dbContext.Contracts.Add(contract);
+
+            await dbContext.SaveChangesAsync();
+            dbContext.ChangeTracker.Clear();
+
+            var output = await service.GetContractWithContractBillingRequirements(orderId);
+
+            output.Should().NotBeNull();
+            output.OrderId.Should().Be(orderId);
+            output.ContractBilling.Should().NotBeNull();
+            output.ContractBilling.Id.Should().Be(contractBilling.Id);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetContractWithRequirements_ContractDoesNotExist_ReturnsNewContract(
+            int orderId,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            ContractsService service)
+        {
+            var existing = await dbContext.Contracts.FirstOrDefaultAsync(x => x.OrderId == orderId);
+
+            existing.Should().BeNull();
+
+            var output = await service.GetContractWithContractBillingRequirements(orderId);
 
             output.Should().NotBeNull();
             output.OrderId.Should().Be(orderId);

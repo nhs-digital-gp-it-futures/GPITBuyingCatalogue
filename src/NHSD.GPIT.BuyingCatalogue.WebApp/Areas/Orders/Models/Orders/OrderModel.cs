@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             { OrderSummaryField.SolutionsAndServices, "Add Service Recipients to items already included in this order or add Additional Services." },
             { OrderSummaryField.PlannedDeliveryDates, "Enter the planned delivery dates for the items you're ordering." },
             { OrderSummaryField.FundingSources, "Allocate funding sources for items in this order." },
-            { OrderSummaryField.ImplementationPlan, "Review the default implementation milestones that will act as payment triggers and add bespoke ones." },
+            { OrderSummaryField.ImplementationPlan, "Review the default milestones that will act as payment triggers and create bespoke ones." },
             { OrderSummaryField.DataProcessing, "Download the data processing information template for the supplier to complete." },
             { OrderSummaryField.ReviewAndComplete, "Check the information you’ve provided is correct and complete this amended order." },
         };
@@ -30,8 +30,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             { OrderSummaryField.SolutionsAndServices, "Add Service Recipients, prices and quantities for what you’re ordering." },
             { OrderSummaryField.PlannedDeliveryDates, "Enter the planned delivery dates for the items you're ordering." },
             { OrderSummaryField.FundingSources, "Review how you’ll be paying for your order." },
-            { OrderSummaryField.ImplementationPlan, "Review the default implementation milestones that will act as payment triggers and add bespoke ones." },
-            { OrderSummaryField.AssociatedServicesBilling, "Review the default Associated Service milestones that will act as payment triggers and add bespoke ones." },
+            { OrderSummaryField.ImplementationPlan, "Review the default milestones that will act as payment triggers and create bespoke ones." },
+            { OrderSummaryField.AssociatedServicesBilling, "Review the default milestones, create bespoke ones and add specific requirements." },
             { OrderSummaryField.DataProcessing, "Download the data processing information template for the supplier to complete." },
             { OrderSummaryField.ReviewAndComplete, "Check the information you’ve provided is correct and complete your order." },
         };

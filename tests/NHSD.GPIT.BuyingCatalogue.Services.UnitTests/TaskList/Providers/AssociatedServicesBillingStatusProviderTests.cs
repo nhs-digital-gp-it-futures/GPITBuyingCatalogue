@@ -184,7 +184,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
 
         [Theory]
         [CommonAutoData]
-        public static void Get_ContractInfoEntered_ReturnsCompleted(
+        public static void Get_ContractInfoEntered_RequirementsNotCompleted_ReturnsInProgress(
             Order order,
             AssociatedServicesBillingStatusProvider service)
         {
@@ -196,6 +196,26 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
 
             order.AssociatedServicesOnly = true;
             order.Contract = new Contract() { ContractBilling = new ContractBilling(), };
+
+            var actual = service.Get(new OrderWrapper(order), state);
+
+            actual.Should().Be(TaskProgress.InProgress);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Get_ContractInfoEntered_RequirementsCompleted_ReturnsInCompleted(
+            Order order,
+            AssociatedServicesBillingStatusProvider service)
+        {
+            var state = new OrderProgress
+            {
+                FundingSource = TaskProgress.Completed,
+                ImplementationPlan = TaskProgress.Completed,
+            };
+
+            order.AssociatedServicesOnly = true;
+            order.Contract = new Contract() { ContractBilling = new ContractBilling() { HasConfirmedRequirements = true, }, };
 
             var actual = service.Get(new OrderWrapper(order), state);
 

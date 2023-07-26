@@ -14,6 +14,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
 
             builder.Property(x => x.ContractId).IsRequired();
 
+            builder.Property(x => x.HasConfirmedRequirements);
+
             builder.HasOne(x => x.Contract)
                 .WithOne(y => y.ContractBilling)
                 .HasForeignKey<ContractBilling>(x => x.ContractId)
@@ -24,6 +26,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .WithOne(x => x.ContractBilling)
                 .HasForeignKey(x => x.ContractBillingId)
                 .HasConstraintName("FK_ContractBillingItems_ContractBilling");
+
+            builder.HasMany(x => x.Requirements)
+                .WithOne(x => x.ContractBilling)
+                .HasForeignKey(x => x.ContractBillingId)
+                .HasConstraintName("FK_Requirements_ContractBilling");
         }
     }
 }
