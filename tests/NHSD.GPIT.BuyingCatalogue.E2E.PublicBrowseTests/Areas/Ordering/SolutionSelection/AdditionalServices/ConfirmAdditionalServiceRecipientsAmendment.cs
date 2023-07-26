@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
         {
             using var context = GetEndToEndDbContext();
             var organisation = context.Organisations.First(x => x.InternalIdentifier == InternalOrgId);
-            
+
             CommonActions.PageTitle().Should().BeEquivalentTo($"Confirm Service Recipients for {organisation.Name} ({organisation.ExternalIdentifier}) - E2E Multiple Prices Additional Service".FormatForComparison());
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
             CommonActions.ElementIsDisplayed(ServiceRecipientObjects.AddOrRemoveLink).Should().BeTrue();
