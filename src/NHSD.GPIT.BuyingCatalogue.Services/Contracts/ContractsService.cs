@@ -65,6 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
         {
             var contract = await dbContext.Contracts
                 .AsNoTracking()
+                .AsSplitQuery()
                 .Include(x => x.ContractBilling)
                     .ThenInclude(x => x.Requirements)
                         .ThenInclude(x => x.OrderItem)

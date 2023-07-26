@@ -1,4 +1,4 @@
-﻿using System;
+﻿   using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -72,7 +72,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             {
                 BackLink = Url.Action(
                     nameof(Index),
-                    typeof(RequirementController).ControllerName(),
                     new { internalOrgId, callOffId }),
             };
 
@@ -111,7 +110,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             {
                 BackLink = Url.Action(
                     nameof(Index),
-                    typeof(RequirementController).ControllerName(),
                     new { internalOrgId, callOffId }),
             };
             return View("RequirementDetails", model);
@@ -146,7 +144,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             {
                 BackLink = Url.Action(
                     nameof(EditRequirement),
-                    typeof(RequirementController).ControllerName(),
                     new { internalOrgId, callOffId, itemId }),
             };
             return View(model);
