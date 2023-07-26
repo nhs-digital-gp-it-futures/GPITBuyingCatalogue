@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
-using static NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.PageOptions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
@@ -58,11 +53,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public PageOptions PageOptions { get; set; }
 
         public bool SearchCriteriaApplied =>
-            !string.IsNullOrWhiteSpace(SearchSummary?.SelectedCapabilityIds)
+            !string.IsNullOrWhiteSpace(SearchSummary?.Selected)
             || !string.IsNullOrWhiteSpace(SearchSummary?.SearchTerm);
 
         public bool HasCapabilities =>
-            !string.IsNullOrWhiteSpace(SearchSummary?.SelectedCapabilityIds);
+            !string.IsNullOrWhiteSpace(SearchSummary?.Selected);
 
         public PageTitleModel GetPageTitle()
         {

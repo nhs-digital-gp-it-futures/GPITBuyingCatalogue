@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         public static void Constructor_PropertiesAreSetCorrectly(
             List<Capability> capabilities)
         {
-            var model = new FilterCapabilitiesModel(capabilities);
+            var model = new FilterCapabilitiesModel(capabilities, null);
 
             model.Groups.Should().BeEquivalentTo(capabilities.Select(x => x.Category));
             model.Total.Should().Be(capabilities.Count);
@@ -32,9 +32,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         public static void Constructor_WithSelectedIds_PropertiesAreSetCorrectly(
             List<Capability> capabilities)
         {
-            var selectedIds = new[] { capabilities.First().Id, capabilities.Last().Id }.ToFilterString();
+            var selected = new Dictionary<int, string[]>(new[]
+            {
+                new KeyValuePair<int, string[]>(capabilities.First().Id, System.Array.Empty<string>()),
+                new KeyValuePair<int, string[]>(capabilities.Last().Id, System.Array.Empty<string>()),
+            });
 
-            var model = new FilterCapabilitiesModel(capabilities, selectedIds);
+            var model = new FilterCapabilitiesModel(capabilities, selected);
 
             model.Groups.Should().BeEquivalentTo(capabilities.Select(x => x.Category));
             model.Total.Should().Be(capabilities.Count);
@@ -50,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         public static void Capabilities_ReturnsExpectedResult(
             List<Capability> capabilities)
         {
-            var model = new FilterCapabilitiesModel(capabilities);
+            var model = new FilterCapabilitiesModel(capabilities, null);
 
             foreach (var category in capabilities.Select(x => x.Category))
             {

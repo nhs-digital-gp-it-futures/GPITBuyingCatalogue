@@ -20,8 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
             CapabilityRef = capability.CapabilityRef;
             Selected = catalogueItem.CatalogueItemCapabilities.Any(
                 itemCapability => itemCapability.CapabilityId == capability.Id);
-            MayEpics = GetCapabilityEpicModels(catalogueItem, capability, capability.GetActiveMayEpics());
-            MustEpics = GetCapabilityEpicModels(catalogueItem, capability, capability.GetActiveMustEpics());
+            MayEpics = GetCapabilityEpicModels(catalogueItem, capability, capability.GetAllMayEpics());
+            MustEpics = GetCapabilityEpicModels(catalogueItem, capability, capability.GetAllMustEpics());
 
             if (!Selected)
                 MustEpics.ForEach(e => e.Selected = true);
@@ -41,11 +41,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
 
         public IEnumerable<CapabilityEpicModel> Epics => MustEpics.Concat(MayEpics).ToList();
 
-        private static IList<CapabilityEpicModel> GetCapabilityEpicModels(CatalogueItem catalogueItem, Capability capability, IReadOnlyCollection<Epic> epics) // Capability capability)
+        private static IList<CapabilityEpicModel> GetCapabilityEpicModels(CatalogueItem catalogueItem, Capability capability, IReadOnlyCollection<Epic> epics)
         {
             return epics
                 .Select(
                     epic => new CapabilityEpicModel(catalogueItem, capability, epic))
+                .Where(e => e.IsActive || (!e.IsActive && e.Selected))
                 .OrderBy(e => e.Id)
                 .ToList();
         }

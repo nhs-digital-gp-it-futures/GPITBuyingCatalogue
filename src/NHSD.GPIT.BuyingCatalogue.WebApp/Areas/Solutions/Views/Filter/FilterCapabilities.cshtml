@@ -64,9 +64,6 @@
                 <nhs-expander heading-text="@category.Name"
                               label-text="@capabilities.Count @(capabilities.Count == 1 ? "result" : "results")"
                               open="true">
-                    <p>
-                        @category.Description
-                    </p>
                     <nhs-table label-text="Capability name">
                         @foreach (var capability in capabilities)
                         {

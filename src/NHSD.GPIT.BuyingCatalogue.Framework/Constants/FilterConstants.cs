@@ -2,6 +2,7 @@
 {
     public static class FilterConstants
     {
-        public const string Delimiter = ".";
+        public const char Delimiter = '.';
+        public const char GroupDelimiter = '|';
     }
 }

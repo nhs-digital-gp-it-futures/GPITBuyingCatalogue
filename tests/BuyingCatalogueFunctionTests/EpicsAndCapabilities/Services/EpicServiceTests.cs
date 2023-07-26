@@ -226,7 +226,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task Process_Existing_Not_Active(
+        public static async Task Process_Update_Existing_To_Not_Active(
             Epic epic,
             [Frozen] BuyingCatalogueDbContext dbContext,
             EpicService service)
@@ -245,6 +245,48 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
 
             result.Should().NotBeNull();
             result!.IsActive.Should().BeFalse();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task Process_Existing_SupplierDefined_Epic_Is_Left_Active_With_Links_To_Capabilities(
+            Capability capability,
+            Epic epic,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            EpicService service)
+        {
+            epic.CapabilityEpics.Add(new CapabilityEpic()
+            {
+                CapabilityId = capability.Id,
+                EpicId = epic.Id,
+                CompliancyLevel = CompliancyLevel.Must,
+            });
+            dbContext.Capabilities.Add(capability);
+            epic.IsActive = true;
+            epic.SupplierDefined = true;
+            dbContext.Epics.Add(epic);
+            dbContext.SaveChanges();
+            dbContext.ChangeTracker.Clear();
+
+            await service.Process(new List<EpicCsv>() { });
+            dbContext.ChangeTracker.Clear();
+
+            var result = dbContext.Epics
+                .Include(c => c.Capabilities)
+                .FirstOrDefault(c => c.Id == epic.Id);
+
+            result.Should().NotBeNull();
+            result!.IsActive.Should().BeTrue();
+            result.CapabilityEpics.Should().BeEquivalentTo(new[]
+                {
+                    new CapabilityEpic()
+                    {
+                        CapabilityId = capability.Id,
+                        CompliancyLevel = CompliancyLevel.Must,
+                        EpicId = epic.Id,
+                    }
+                },
+                opt => opt.Excluding(c => c.Epic));
         }
     }
 }

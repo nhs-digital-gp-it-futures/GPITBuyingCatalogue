@@ -70,8 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 typeof(ManageFiltersController).ControllerName(),
                 new
                 {
-                    model.SelectedCapabilityIds,
-                    model.SelectedEpicIds,
+                    model.Selected,
                     model.SelectedFrameworkId,
                     selectedApplicationTypeIds = model.CombineSelectedOptions(model.ApplicationTypeOptions),
                     selectedHostingTypeIds = model.CombineSelectedOptions(model.HostingTypeOptions),
@@ -80,8 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
         [HttpGet("save-filter-confirm")]
         public async Task<IActionResult> ConfirmSaveFilter(
-            string selectedCapabilityIds,
-            string selectedEpicIds,
+            string selected,
             string selectedFrameworkId,
             string selectedApplicationTypeIds,
             string selectedHostingTypeIds)
@@ -89,8 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var backLink =
                 Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new
                 {
-                    selectedCapabilityIds,
-                    selectedEpicIds,
+                    selected,
                     selectedFrameworkId,
                     selectedApplicationTypeIds,
                     selectedHostingTypeIds,
@@ -101,17 +98,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (existingFilters.Count >= MaxNumberOfFilters)
                 return RedirectToAction(nameof(CannotSaveFilter), typeof(ManageFiltersController).ControllerName(), new { backLink });
 
-            var capabilities = await capabilitiesService.GetCapabilitiesByIds(SolutionsFilterHelper.ParseCapabilityIds(selectedCapabilityIds));
-
-            var epics = await epicsService.GetEpicsByIds(
-                    SolutionsFilterHelper.ParseEpicIds(selectedEpicIds));
+            var capabilityAndEpicIds = SolutionsFilterHelper.ParseCapabilityAndEpicIds(selected);
+            var capabilitiesAndEpics = await capabilitiesService.GetGroupedCapabilitiesAndEpics(capabilityAndEpicIds);
 
             var framework = await frameworkService.GetFramework(selectedFrameworkId);
 
             var applicationTypes = SolutionsFilterHelper.ParseApplicationTypeIds(selectedApplicationTypeIds)?.ToList();
             var hostingTypes = SolutionsFilterHelper.ParseHostingTypeIds(selectedHostingTypeIds)?.ToList();
 
-            var model = new SaveFilterModel(capabilities, epics, framework, applicationTypes, hostingTypes, organisationId)
+            var model = new SaveFilterModel(capabilitiesAndEpics, framework, applicationTypes, hostingTypes, organisationId)
             {
                 BackLink = backLink,
             };
@@ -120,13 +115,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
         [HttpPost("save-filter-confirm")]
         public async Task<IActionResult> ConfirmSaveFilter(
-            SaveFilterModel model)
+            SaveFilterModel model,
+            string selected)
         {
+            var capabilityAndEpicIds = SolutionsFilterHelper.ParseCapabilityAndEpicIds(selected);
+            var capabilitiesAndEpics = await capabilitiesService.GetGroupedCapabilitiesAndEpics(capabilityAndEpicIds);
+            model.GroupedCapabilities = capabilitiesAndEpics;
+
             if (!ModelState.IsValid)
             {
-                var capabilities = await capabilitiesService.GetCapabilitiesByIds(model.CapabilityIds ?? new List<int>());
-                var epics = await epicsService.GetEpicsByIds(model.EpicIds ?? new List<string>());
-                model.SetGroupedCapabilities(capabilities, epics);
                 return View(model);
             }
 
@@ -134,8 +131,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 model.Name,
                 model.Description,
                 model.OrganisationId,
-                model.CapabilityIds,
-                model.EpicIds,
+                capabilityAndEpicIds,
                 model.FrameworkId,
                 model.ApplicationTypes,
                 model.HostingTypes);

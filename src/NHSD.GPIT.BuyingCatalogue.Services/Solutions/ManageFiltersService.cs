@@ -25,8 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             string name,
             string description,
             int organisationId,
-            List<int> capabilityIds,
-            List<string> epicIds,
+            Dictionary<int, string[]> capabilityAndEpicIds,
             string frameworkId,
             List<ApplicationType> applicationTypes,
             List<HostingType> hostingTypes)
@@ -58,8 +57,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             await dbContext.SaveChangesAsync();
 
-            await AddFilterCapabilities(filter.Id, capabilityIds);
-            await AddFilterEpics(filter.Id, epicIds);
+            await AddFilterCapabilities(filter.Id, capabilityAndEpicIds);
+            await AddFilterCapabilityEpics(filter.Id, capabilityAndEpicIds);
             await AddFilterApplicationTypes(filter.Id, applicationTypes);
             await AddFilterHostingTypes(filter.Id, hostingTypes);
 
@@ -96,8 +95,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Select(
                     x => new FilterIdsModel()
                     {
-                        CapabilityIds = x.Capabilities.Select(c => c.Id),
-                        EpicIds = x.Epics.Select(e => e.Id),
+                        CapabilityAndEpicIds = new Dictionary<int, string[]>(x.Capabilities
+                            .Select(
+                                y => new KeyValuePair<int, string[]>(
+                                    y.Id,
+                                    x.FilterCapabilityEpics.Where(z => z.CapabilityId == y.Id)
+                                        .Select(z => z.Epic.Id)
+                                        .ToArray()))
+                            .ToList()),
                         FrameworkId = x.FrameworkId,
                         ApplicationTypeIds = x.FilterApplicationTypes.Select(fc => (int)fc.ApplicationTypeID),
                         HostingTypeIds = x.FilterHostingTypes.Select(fc => (int)fc.HostingType),
@@ -119,12 +124,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         HostingTypes = x.FilterHostingTypes.Select(y => y.HostingType).ToList(),
                         ApplicationTypes =
                             x.FilterApplicationTypes.Select(y => y.ApplicationTypeID).ToList(),
+                        Invalid = x.FilterCapabilityEpics.Any(e => e.CapabilityId == null)
+                            || x.Capabilities.Any(c => c.Status == CapabilityStatus.Expired)
+                            || x.FilterCapabilityEpics.Any(e => e.Epic.IsActive == false)
+                            || !x.FilterCapabilityEpics.All(ce => ce.Capability.CapabilityEpics.Any(c => c.CapabilityId == ce.CapabilityId && c.EpicId == ce.EpicId)),
                         Capabilities = x.Capabilities
                             .Select(
                                 y => new KeyValuePair<string, List<string>>(
-                                    y.Name,
-                                    x.Epics.Where(z => z.Capabilities.Any(c => c.Id == y.Id))
-                                        .Select(z => z.Name)
+                                    y.Status == CapabilityStatus.Expired
+                                        ? $"{y.Name} (Expired)"
+                                        : y.Name,
+                                    x.FilterCapabilityEpics.Where(z => z.CapabilityId == y.Id)
+                                        .Select(z => z.Epic.IsActive ? z.Epic.Name : $"{z.Epic.Name} (Inactive)")
                                         .ToList()))
                             .ToList(),
                     })
@@ -132,40 +143,54 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .FirstOrDefaultAsync();
         }
 
-        internal async Task AddFilterCapabilities(int filterId, List<int> capabilityIds)
+        internal async Task AddFilterCapabilities(int filterId, Dictionary<int, string[]> capabilitiesAndEpics)
         {
-            if (capabilityIds is null || capabilityIds.Count == 0) return;
+            if (capabilitiesAndEpics is null || capabilitiesAndEpics.Count == 0) return;
 
-            var filter = await dbContext.Filters.Include(x => x.Capabilities).FirstOrDefaultAsync(o => o.Id == filterId);
+            var filter = await dbContext.Filters
+                .Include(x => x.Capabilities)
+                .FirstOrDefaultAsync(o => o.Id == filterId);
 
             if (filter is null)
             {
                 return;
             }
 
-            var capabilities = await dbContext.Capabilities.Where(x => capabilityIds.Contains(x.Id)).ToListAsync();
-            var distinctCapabilities = capabilities.Where(x => filter.Capabilities.All(y => x.Id != y.Id));
+            var capabilities = await dbContext.Capabilities.Where(x => capabilitiesAndEpics.Keys.Contains(x.Id)).ToListAsync();
 
-            filter.Capabilities.AddRange(distinctCapabilities);
+            filter.Capabilities.AddRange(capabilities);
 
             await dbContext.SaveChangesAsync();
         }
 
-        internal async Task AddFilterEpics(int filterId, List<string> epicIds)
+        internal async Task AddFilterCapabilityEpics(int filterId, Dictionary<int, string[]> capabilitiesAndEpics)
         {
-            if (epicIds is null || epicIds.Count == 0) return;
+            if (capabilitiesAndEpics is null || capabilitiesAndEpics.Count == 0) return;
 
-            var filter = await dbContext.Filters.Include(x => x.Epics).FirstOrDefaultAsync(o => o.Id == filterId);
+            var filter = await dbContext.Filters
+                .Include(x => x.FilterCapabilityEpics)
+                .FirstOrDefaultAsync(o => o.Id == filterId);
 
             if (filter is null)
             {
                 return;
             }
 
-            var epics = await dbContext.Epics.Where(x => epicIds.Contains(x.Id)).ToListAsync();
-            var distinctEpics = epics.Where(x => filter.Epics.All(y => x.Id != y.Id));
+            var filterCapabilityEpics = capabilitiesAndEpics
+                .Where(kv => kv.Value != null && kv.Value.Length > 0)
+                .SelectMany(kv => kv.Value.Select(e => new
+                {
+                    CapabilityId = kv.Key,
+                    Epic = dbContext.Epics.FirstOrDefault(x => x.Id == e),
+                }))
+                .Select(x => new FilterCapabilityEpic()
+                {
+                    CapabilityId = x.CapabilityId,
+                    EpicId = x.Epic.Id,
+                })
+                .ToList();
 
-            filter.Epics.AddRange(distinctEpics);
+            filter.FilterCapabilityEpics.AddRange(filterCapabilityEpics);
 
             await dbContext.SaveChangesAsync();
         }

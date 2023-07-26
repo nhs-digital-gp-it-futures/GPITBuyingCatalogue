@@ -32,7 +32,7 @@
                        asp-action="@nameof(FilterController.FilterCapabilities)"
                        asp-controller="@typeof(FilterController).ControllerName()"
                        asp-area="@typeof(FilterController).AreaName()"
-                       asp-route-selectedIds="@Model.SelectedCapabilityIds">Capabilities</a>
+                       asp-route-selected="@Model.Selected">Capabilities</a>
                 </li>
             </ol>
         </div>
@@ -60,7 +60,7 @@
         </nhs-inset-text>
         
         <form method="post">
-            <input type="hidden" asp-for="@Model.SelectedCapabilityIds"/>
+            <input type="hidden" asp-for="@Model.Selected"/>
 
             <nhs-fieldset-form-label asp-for="@Model"
                                      label-text="Do you want to filter by Epics?">

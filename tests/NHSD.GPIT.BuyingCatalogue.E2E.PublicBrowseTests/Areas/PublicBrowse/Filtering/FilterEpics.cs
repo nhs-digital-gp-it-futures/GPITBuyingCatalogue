@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.PublicBrowse;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
-using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
@@ -17,9 +17,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Filtering
     public class FilterEpics : BuyerTestBase
     {
         private static readonly IEnumerable<int> CapabilityIds = new[] { 1, 2, 3, 4, 5 };
+        private static readonly Dictionary<int, string[]> CapabilitiesAndEpics = new()
+        {
+            { 1, Array.Empty<string>() },
+            { 2, Array.Empty<string>() },
+            { 3, Array.Empty<string>() },
+            { 4, Array.Empty<string>() },
+            { 5, Array.Empty<string>() },
+        };
+
         private static readonly Dictionary<string, string> Parameters = new()
         {
-            { "selectedCapabilityIds", CapabilityIds.ToFilterString() },
+            { "selected", CapabilitiesAndEpics.ToFilterString() },
         };
 
         public FilterEpics(LocalWebApplicationFactory factory)
@@ -39,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Filtering
 
             using var context = GetEndToEndDbContext();
             var expected = context.Epics.Count(
-                x => x.Capabilities.Any(y => CapabilityIds.Contains(y.Id)) && x.IsActive
+                x => x.Capabilities.Any(y => CapabilitiesAndEpics.Keys.Contains(y.Id)) && x.IsActive
                     && context.CatalogueItemEpics.Any(y => x.Id == y.EpicId));
 
             CommonActions.GetNumberOfCheckBoxesDisplayed().Should().Be(expected);
@@ -50,12 +59,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Filtering
         public void FilterEpics_WithSelectedIds_AllSectionsDisplayed()
         {
             using var context = GetEndToEndDbContext();
-            var selectedIds = context.Epics
-                .Where(
-                    x => x.Capabilities.Any(y => CapabilityIds.Contains(y.Id)) && x.IsActive
-                        && context.CatalogueItemEpics.Any(y => x.Id == y.EpicId))
-                .Select(x => x.Id)
-                .ToList();
+            var selected = new Dictionary<int, string[]>(CapabilitiesAndEpics.Select(c => new KeyValuePair<int, string[]>(
+                c.Key,
+                context.Epics
+                    .Where(x => x.Capabilities.Any(y => y.Id == c.Key
+                        && x.IsActive
+                        && context.CatalogueItemEpics.Any(y => x.Id == y.EpicId)))
+                    .Select(x => x.Id)
+                    .ToArray())));
 
             NavigateToUrl(
                 typeof(FilterController),
@@ -63,8 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Filtering
                 null,
                 new Dictionary<string, string>
                 {
-                    { "selectedCapabilityIds", CapabilityIds.ToFilterString() },
-                    { "selectedEpicIds", selectedIds.ToFilterString() },
+                    { "selected", selected.ToFilterString() },
                 });
 
             CommonActions.ElementIsDisplayed(FilterObjects.HomeBreadcrumbLink).Should().BeTrue();
@@ -74,8 +84,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Filtering
             CommonActions.ElementIsDisplayed(FilterObjects.EditCapabilitiesLink).Should().BeTrue();
             CommonActions.ElementIsDisplayed(CommonSelectors.SubmitButton).Should().BeTrue();
 
-            CommonActions.GetNumberOfCheckBoxesDisplayed().Should().Be(selectedIds.Count);
-            CommonActions.GetNumberOfSelectedCheckBoxes().Should().Be(selectedIds.Count);
+            CommonActions.GetNumberOfCheckBoxesDisplayed().Should().Be(selected.Sum(kv => kv.Value.Length));
+            CommonActions.GetNumberOfSelectedCheckBoxes().Should().Be(selected.Sum(kv => kv.Value.Length));
         }
 
         [Fact]
