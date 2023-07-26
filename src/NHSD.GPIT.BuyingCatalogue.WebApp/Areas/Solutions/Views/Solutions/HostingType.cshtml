@@ -1,110 +1,108 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.HostingTypesModel;
 <div>
-    <p><strong>These are the ways this Catalogue Solution can be hosted:</strong></p>
+    <partial name="_solutionSummary" model="Model" />
+    <p>These are the ways this Catalogue Solution can be hosted:</p>
 
     @if (Model.PublicCloud.Status() == NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums.TaskProgress.Completed)
     {
-        <h2>Public cloud</h2>
+        <nhs-card title="Public cloud">
+            @if (!string.IsNullOrWhiteSpace(Model.PublicCloud.Summary))
+            {
+                <h3>Summary</h3>
+                <p>@Model.PublicCloud.Summary</p>
+                <p>
+                    <a href="@Model.PublicCloud.Link">@Model.PublicCloud.Link</a>
+                </p>
+            }
 
-        @if (!string.IsNullOrWhiteSpace(Model.PublicCloud.Summary))
-        {
-            <h3>Summary</h3>
-            <p>@Model.PublicCloud.Summary</p>
-            <p>
-                <a href="@Model.PublicCloud.Link">@Model.PublicCloud.Link</a>
-            </p>
-
-        }
-
-        @if (!string.IsNullOrWhiteSpace(Model.PublicCloud.RequiresHscn))
-        {
-            <p>
-                <b>@Model.PublicCloud.RequiresHscn</b>
-            </p>
-        }
+            @if (!string.IsNullOrWhiteSpace(Model.PublicCloud.RequiresHscn))
+            {
+                <p>
+                    <b>@Model.PublicCloud.RequiresHscn</b>
+                </p>
+            }
+        </nhs-card>
     }
 
     @if (Model.PrivateCloud.Status() == NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums.TaskProgress.Completed)
     {
-        <h2>Private cloud</h2>
+        <nhs-card title="Private cloud">
+            @if (!string.IsNullOrWhiteSpace(Model.PrivateCloud.Summary))
+            {
+                <h3>Summary</h3>
+                <p>@Model.PrivateCloud.Summary</p>
+                <p>
+                    <a href="@Model.PrivateCloud.Link">@Model.PrivateCloud.Link</a>
+                </p>
+            }
 
-        @if (!string.IsNullOrWhiteSpace(Model.PrivateCloud.Summary))
-        {
-            <h3>Summary</h3>
-            <p>@Model.PrivateCloud.Summary</p>
-            <p>
-                <a href="@Model.PrivateCloud.Link">@Model.PrivateCloud.Link</a>
-            </p>
-        }
+            @if (!string.IsNullOrWhiteSpace(Model.PrivateCloud.HostingModel))
+            {
+                <h3>Data centre hosting model</h3>
+                <p>@Model.PrivateCloud.HostingModel</p>
+            }
 
-        @if (!string.IsNullOrWhiteSpace(Model.PrivateCloud.HostingModel))
-        {
-            <h3>Data centre hosting model</h3>
-            <p>@Model.PrivateCloud.HostingModel</p>
-        }
-
-        @if (!string.IsNullOrWhiteSpace(Model.PrivateCloud.RequiresHscn))
-        {
-            <p>
-                <b>@Model.PrivateCloud.RequiresHscn</b>
-            </p>
-        }
+            @if (!string.IsNullOrWhiteSpace(Model.PrivateCloud.RequiresHscn))
+            {
+                <p>
+                    <b>@Model.PrivateCloud.RequiresHscn</b>
+                </p>
+            }
+        </nhs-card>
     }
 
     @if (Model.HybridHostingType.Status() == NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums.TaskProgress.Completed)
     {
-        <h2>Hybrid</h2>
+        <nhs-card title="Hybrid">
+            @if (!string.IsNullOrWhiteSpace(Model.HybridHostingType.Summary))
+            {
+                <h3>Summary</h3>
+                <p>@Model.HybridHostingType.Summary</p>
+                <p>
+                    <a href="@Model.HybridHostingType.Link">@Model.HybridHostingType.Link</a>
+                </p>
+            }
 
-        @if (!string.IsNullOrWhiteSpace(Model.HybridHostingType.Summary))
-        {
-            <h3>Summary</h3>
-            <p>@Model.HybridHostingType.Summary</p>
-            <p>
-                <a href="@Model.HybridHostingType.Link">@Model.HybridHostingType.Link</a>
-            </p>
+            @if (!string.IsNullOrWhiteSpace(Model.HybridHostingType.HostingModel))
+            {
+                <h3>Data centre hosting model</h3>
+                <p>@Model.HybridHostingType.HostingModel</p>
+            }
 
-        }
-
-        @if (!string.IsNullOrWhiteSpace(Model.HybridHostingType.HostingModel))
-        {
-            <h3>Data centre hosting model</h3>
-            <p>@Model.HybridHostingType.HostingModel</p>
-        }
-
-        @if (!string.IsNullOrWhiteSpace(Model.HybridHostingType.RequiresHscn))
-        {
-            <p>
-                <b>@Model.HybridHostingType.RequiresHscn</b>
-            </p>
-        }
+            @if (!string.IsNullOrWhiteSpace(Model.HybridHostingType.RequiresHscn))
+            {
+                <p>
+                    <b>@Model.HybridHostingType.RequiresHscn</b>
+                </p>
+            }
+        </nhs-card>
     }
 
     @if (Model.OnPremise.Status() == NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums.TaskProgress.Completed)
     {
-        <h2>On Premise</h2>
+        <nhs-card title="Premise">
+            @if (!string.IsNullOrWhiteSpace(Model.OnPremise.Summary))
+            {
+                <h3>Summary</h3>
+                <p>@Model.OnPremise.Summary</p>
+                <p>
+                    <a href="@Model.OnPremise.Link">@Model.OnPremise.Link</a>
+                </p>
+            }
 
-        @if (!string.IsNullOrWhiteSpace(Model.OnPremise.Summary))
-        {
-            <h3>Summary</h3>
-            <p>@Model.OnPremise.Summary</p>
-            <p>
-                <a href="@Model.OnPremise.Link">@Model.OnPremise.Link</a>
-            </p>
+            @if (!string.IsNullOrWhiteSpace(Model.OnPremise.HostingModel))
+            {
+                <h3>Data centre hosting model</h3>
+                <p>@Model.OnPremise.HostingModel</p>
+            }
 
-        }
-
-        @if (!string.IsNullOrWhiteSpace(Model.OnPremise.HostingModel))
-        {
-            <h3>Data centre hosting model</h3>
-            <p>@Model.OnPremise.HostingModel</p>
-        }
-
-        @if (!string.IsNullOrWhiteSpace(Model.OnPremise.RequiresHscn))
-        {
-            <p>
-                <b>@Model.OnPremise.RequiresHscn</b>
-            </p>
-        }
+            @if (!string.IsNullOrWhiteSpace(Model.OnPremise.RequiresHscn))
+            {
+                <p>
+                    <b>@Model.OnPremise.RequiresHscn</b>
+                </p>
+            }
+        </nhs-card>
     }
 </div>

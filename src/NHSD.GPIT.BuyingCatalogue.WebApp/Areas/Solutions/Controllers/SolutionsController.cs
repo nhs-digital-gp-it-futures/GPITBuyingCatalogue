@@ -335,7 +335,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("{solutionId}/application-types")]
         public async Task<IActionResult> ApplicationTypes(CatalogueItemId solutionId)
         {
-            var item = await solutionsService.GetSolutionThin(solutionId);
+            var item = await solutionsService.GetSolutionWithBasicInformation(solutionId);
 
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
@@ -380,7 +380,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("{solutionId}/hosting-type")]
         public async Task<IActionResult> HostingType(CatalogueItemId solutionId)
         {
-            var item = await solutionsService.GetSolutionThin(solutionId);
+            var item = await solutionsService.GetSolutionWithBasicInformation(solutionId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
@@ -410,7 +410,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("{solutionId}/interoperability")]
         public async Task<IActionResult> Interoperability(CatalogueItemId solutionId)
         {
-            var item = await solutionsService.GetSolutionThin(solutionId);
+            var item = await solutionsService.GetSolutionWithBasicInformation(solutionId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
