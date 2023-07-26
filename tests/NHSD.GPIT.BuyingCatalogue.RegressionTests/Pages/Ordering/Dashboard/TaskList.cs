@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
             CommonActions.ClickLinkElement(OrderDashboard.OrderDescriptionLink);
             CommonActions.ClearInputElement(OrderDescription.DescriptionInput);
             CommonActions.LedeText().Should().Be("You can update the description of this order to help distinguish it from the previous version if required.".FormatForComparison());
-   }
+        }
 
         public void CallOffOrderingPartyContactDetailsTask()
         {
