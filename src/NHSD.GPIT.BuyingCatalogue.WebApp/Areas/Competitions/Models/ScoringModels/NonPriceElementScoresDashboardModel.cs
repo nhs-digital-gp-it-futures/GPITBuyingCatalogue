@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
@@ -24,7 +22,7 @@ public class NonPriceElementScoresDashboardModel : NavBaseModel
         NonPriceElements = competition.NonPriceElements.GetNonPriceElements()
             .ToDictionary(
                 x => x,
-                x => competition.CompetitionSolutions.All(
+                x => competition.CompetitionSolutions.Any() && competition.CompetitionSolutions.All(
                     y => y.Scores.Any(z => z.ScoreType.AsNonPriceElement() == x))
                     ? TaskProgress.Completed
                     : TaskProgress.NotStarted);

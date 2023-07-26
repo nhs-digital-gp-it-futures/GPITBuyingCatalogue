@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -70,6 +69,7 @@ public class CompetitionsService : ICompetitionsService
             .ThenInclude(x => x.RequiredServices)
             .ThenInclude(x => x.Service)
             .ThenInclude(x => x.CatalogueItem)
+            .IgnoreQueryFilters()
             .AsSplitQuery();
 
         if (!shouldTrack)
@@ -253,7 +253,8 @@ public class CompetitionsService : ICompetitionsService
         int competitionId,
         IEnumerable<CatalogueItemId> shortlistedSolutions)
     {
-        var competition = await dbContext.Competitions.Include(x => x.CompetitionSolutions)
+        var competition = await dbContext.Competitions.IgnoreQueryFilters()
+            .Include(x => x.CompetitionSolutions)
             .FirstOrDefaultAsync(x => x.OrganisationId == organisationId && x.Id == competitionId);
 
         if (competition == null) return;
@@ -278,7 +279,8 @@ public class CompetitionsService : ICompetitionsService
         if (solutionsJustification == null || solutionsJustification.Count == 0)
             return;
 
-        var competition = await dbContext.Competitions.Include(x => x.CompetitionSolutions)
+        var competition = await dbContext.Competitions.IgnoreQueryFilters()
+            .Include(x => x.CompetitionSolutions)
             .FirstOrDefaultAsync(x => x.OrganisationId == organisationId && x.Id == competitionId);
 
         var solutions = competition.CompetitionSolutions.ToList();

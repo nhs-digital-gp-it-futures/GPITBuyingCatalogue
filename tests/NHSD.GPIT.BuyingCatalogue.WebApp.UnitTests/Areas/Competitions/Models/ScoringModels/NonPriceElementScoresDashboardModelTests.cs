@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -14,8 +15,10 @@ public static class NonPriceElementScoresDashboardModelTests
     [Theory]
     [CommonAutoData]
     public static void Construct_SetsPropertiesAsExpected(
+        Organisation organisation,
         Competition competition)
     {
+        competition.Organisation = organisation;
         competition.NonPriceElements = new() { Implementation = new(), ServiceLevel = new(), };
 
         var expectedNonPriceElements = new Dictionary<NonPriceElement, TaskProgress>
