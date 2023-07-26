@@ -117,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.Dashboard))
+                nameof(SupplierDefinedEpicsController.EditSupplierDefinedEpic))
                 .Should().BeTrue();
 
             using var context = GetEndToEndDbContext();
@@ -143,7 +143,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             NavigateToUrl(
                 typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.EditSupplierDefinedEpic),
+                nameof(SupplierDefinedEpicsController.EditSupplierDefinedEpicDetails),
                 parameters);
 
             CommonActions.ElementIsDisplayed(EditSupplierDefinedEpicDetailsObjects.RelatedItemsTable).Should().BeTrue();

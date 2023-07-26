@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             epics.ForEach(epic =>
                 Driver
-                    .FindElement(By.XPath($"//tr[td//text()[contains(., '{epic.Name}')]]/td[4]/a"))
+                    .FindElement(By.XPath($"//tr[td//text()[contains(., '{epic.Name}')]]/td[3]/a"))
                     .GetAttribute("href")
                     .Should()
                     .Contain(epic.Id));
