@@ -373,6 +373,40 @@
                                 </div>
                             }
                         </div>
+
+                        <h2>Associated Service specific requirements</h2>
+                        <div class="pdf-container">
+
+                            @if (Model.HasSpecificRequirements)
+                            {
+                                <div class="pdf-container">
+                                    <h3>Specific requirements</h3>
+                                    <table>
+                                        <thead>
+                                        <tr>
+                                            <th>Associated Service name</th>
+                                            <th>Requirement</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        @foreach (var item in Model.BespokeBilling.Requirements)
+                                        {
+                                            <tr>
+                                                <td>@item.OrderItem.CatalogueItem.Name</td>
+                                                <td>@item.Details</td>
+                                            </tr>
+                                        }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                            else
+                            {
+                                <p>
+                                    N/A
+                                </p>
+                            }
+                        </div>
                     }
 
                     <div class="pdf-container">

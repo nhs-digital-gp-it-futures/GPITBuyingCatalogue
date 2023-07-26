@@ -61,11 +61,30 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             return output;
         }
 
+        public async Task<Contract> GetContractWithContractBillingRequirements(int orderId)
+        {
+            var contract = await dbContext.Contracts
+                .AsNoTracking()
+                .AsSplitQuery()
+                .Include(x => x.ContractBilling)
+                    .ThenInclude(x => x.Requirements)
+                        .ThenInclude(x => x.OrderItem)
+                            .ThenInclude(x => x.CatalogueItem)
+                .FirstOrDefaultAsync(x => x.OrderId == orderId);
+
+            var output = await AddContract(contract, orderId);
+
+            return output;
+        }
+
         public async Task RemoveContract(int orderId)
         {
-            var contract = await GetContract(orderId);
+            var contract = await GetContractWithImplementationPlan(orderId);
             if (contract is not null)
             {
+                if (contract.ImplementationPlan?.Milestones.Any() ?? false)
+                    dbContext.ImplementationPlanMilestones.RemoveRange(contract.ImplementationPlan.Milestones);
+
                 dbContext.Contracts.Remove(contract);
                 await dbContext.SaveChangesAsync();
             }
