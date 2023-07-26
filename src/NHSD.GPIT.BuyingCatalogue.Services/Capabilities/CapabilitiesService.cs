@@ -42,6 +42,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             .ThenBy(x => x.Name)
             .ToListAsync();
 
+        public Task<Dictionary<string, IOrderedEnumerable<Epic>>> GetGroupedCapabilitiesAndEpics(Dictionary<int, string[]> ids) =>
+            dbContext.Capabilities
+                .AsNoTracking()
+                .Include(x => x.Category)
+                .Include(x => x.Epics)
+                .Where(x => ids.Keys.Contains(x.Id))
+                .OrderBy(x => x.Category.Name)
+                .ThenBy(x => x.Name)
+                .ToDictionaryAsync(
+                    x => x.Name,
+                    x => x.Epics.Where(e => ids[x.Id].Contains(e.Id)).OrderBy(e => e.Name));
+
         public Task<List<CapabilityCategory>> GetCapabilitiesByCategory()
             => dbContext
                 .CapabilityCategories
@@ -98,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             {
                 foreach (var epicId in epicIds)
                 {
-                    if (existingEpics.Any(c => c.EpicId == epicId))
+                    if (existingEpics.Any(c => c.EpicId == epicId && c.CapabilityId == id))
                         continue;
 
                     var catalogueItemEpic = new CatalogueItemEpic
@@ -123,7 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
         private void RemoveStaleEpics(List<CatalogueItemEpic> existingEpics, Dictionary<int, string[]> selectedCapabilitiesAndEpics)
         {
             var staleEpics = existingEpics
-                .Where(epic => !selectedCapabilitiesAndEpics.SelectMany(c => c.Value).Contains(epic.EpicId)).ToList();
+                .Where(epic => !selectedCapabilitiesAndEpics.GetValueOrDefault(epic.CapabilityId, Array.Empty<string>()).Contains(epic.EpicId)).ToList();
 
             if (staleEpics.Any())
                 dbContext.CatalogueItemEpics.RemoveRange(staleEpics);

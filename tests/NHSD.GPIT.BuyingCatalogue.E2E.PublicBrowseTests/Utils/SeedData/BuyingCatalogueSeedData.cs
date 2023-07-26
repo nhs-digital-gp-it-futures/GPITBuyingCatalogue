@@ -280,9 +280,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 new CapabilityCategory { Id = 1, Name = "GP IT Futures" },
                 new CapabilityCategory { Id = 2, Name = "Covid-19 Vaccination" },
                 new CapabilityCategory { Id = 3, Name = "DFOCVC" },
-                new CapabilityCategory { Id = 0, Name = "Undefined" },
             };
-            context.AddRange(categories);
+            context.InsertRangeWithIdentity(categories);
 
             // Capabilities
             string gpitFuturesBaseUrl = "https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/";
@@ -985,7 +984,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 .Where(x => subLocations.Contains(x.OwnerOrganisationId))
                 .Select(x => x.TargetOrganisation)
                 .Take(3)
-                .Select(x => new ServiceRecipient { Name = x.Name, OdsCode = x.Id});
+                .Select(x => new ServiceRecipient { Name = x.Name, OdsCode = x.Id });
 
             context.AddRange(serviceRecipients);
         }

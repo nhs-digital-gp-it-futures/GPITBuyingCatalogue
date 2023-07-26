@@ -11,8 +11,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
         {
         }
 
-        public FilterCapabilitiesModel(List<Capability> capabilities, string selectedIds = null, string search = null)
+        public FilterCapabilitiesModel(
+            List<Capability> capabilities,
+            Dictionary<int, string[]> selected,
+            string search = null)
         {
+            if (selected == null)
+            {
+                selected = new Dictionary<int, string[]>();
+            }
+
             Groups = capabilities
                 .Select(x => x.Category.Id)
                 .Distinct()
@@ -23,12 +31,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                 x => x.Id,
                 x => capabilities.Where(c => c.Category.Id == x.Id).OrderBy(c => c.Name));
 
-            var selected = SolutionsFilterHelper.ParseCapabilityIds(selectedIds);
-
             SelectedItems = capabilities.Select(x => new SelectionModel
             {
                 Id = $"{x.Id}",
-                Selected = selected.Contains(x.Id),
+                Selected = selected.Keys.Contains(x.Id),
             }).ToArray();
 
             Total = capabilities.Count;

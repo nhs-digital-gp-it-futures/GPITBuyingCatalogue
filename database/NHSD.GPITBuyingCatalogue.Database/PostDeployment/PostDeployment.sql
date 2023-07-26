@@ -66,4 +66,5 @@
 :r ./TestData/Solutions/InsertServiceLevels.sql
 
 :r ./MigrateEpics.sql
+:r ./MigrateEpicCompliancyLevel.sql
 :r ./MigrateContracts.sql

@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.PublicBrowse;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
-using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
@@ -38,7 +38,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Filtering
         [Fact]
         public void FilterCapabilities_WithSelectedIds_AllSectionsDisplayed()
         {
-            var selectedIds = GetEndToEndDbContext().Capabilities.Where(x => x.CatalogueItemCapabilities.Any()).Select(x => x.Id).ToList();
+            var capabilityIds = GetEndToEndDbContext().Capabilities.Where(x => x.CatalogueItemCapabilities.Any()).Select(x => x.Id).ToList();
+            var selectedIds = new Dictionary<int, string[]>(capabilityIds.Select(c => new KeyValuePair<int, string[]>(c, Array.Empty<string>())));
 
             NavigateToUrl(
                 typeof(FilterController),
@@ -46,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Filtering
                 null,
                 new Dictionary<string, string>
                 {
-                    { "selectedCapabilityIds", selectedIds.ToFilterString() },
+                    { "selected", selectedIds.ToFilterString() },
                 });
 
             CommonActions.ElementIsDisplayed(FilterObjects.HomeBreadcrumbLink).Should().BeTrue();
