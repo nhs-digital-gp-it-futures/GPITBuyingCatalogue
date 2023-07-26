@@ -91,8 +91,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             capabilityCategories.Count.Should().Be(1);
 
             var capabilityResult = capabilityCategories.First().Capabilities.First();
-            capabilityResult.GetActiveMustEpics().Select(e => e.Id).Should().BeEquivalentTo(new[] { mustEpic.Id });
-            capabilityResult.GetActiveMayEpics().Select(e => e.Id).Should().BeEquivalentTo(new[] { mayEpic.Id });
+            capabilityResult.GetAllMustEpics().Select(e => e.Id).Should().BeEquivalentTo(new[] { mustEpic.Id });
+            capabilityResult.GetAllMayEpics().Select(e => e.Id).Should().BeEquivalentTo(new[] { mayEpic.Id });
         }
 
         [Theory]
