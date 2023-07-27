@@ -242,9 +242,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 parameters);
 
             var context = GetEndToEndDbContext();
-            var flags = context.GetContractFlags(OrderId);
+            var contract = context.GetContract(OrderId);
 
-            flags.UseDefaultImplementationPlan = true;
+            contract.ImplementationPlan = new ImplementationPlan();
 
             context.SaveChanges();
 
@@ -253,7 +253,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.ImplementationPlanExpander).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.BespokeImplementationPlan).Should().BeFalse();
 
-            flags.UseDefaultImplementationPlan = false;
+            contract.ImplementationPlan = null;
 
             context.SaveChanges();
         }
@@ -480,7 +480,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 MaximumTerm = 36,
                 ContractFlags = new ContractFlags
                 {
-                    UseDefaultImplementationPlan = false, UseDefaultDataProcessing = true,
+                    UseDefaultDataProcessing = true,
+                },
+                Contract = new Contract()
+                {
+                    ImplementationPlan = new ImplementationPlan() { Milestones = new List<ImplementationPlanMilestone>(), },
                 },
             };
 

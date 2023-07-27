@@ -138,8 +138,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<ImplementationPlanMilestone> ImplementationPlanMilestones { get; set; }
 
-        public DbSet<ImplementationPlanAcceptanceCriteria> ImplementationPlanAcceptanceCriteria { get; set; }
-
         public DbSet<EmailDomain> EmailDomains { get; set; }
 
         public DbSet<OdsOrganisation> OdsOrganisations { get; set; }
