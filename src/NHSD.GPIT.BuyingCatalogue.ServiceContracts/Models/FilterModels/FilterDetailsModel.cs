@@ -15,6 +15,8 @@ public class FilterDetailsModel
 
     public string FrameworkName { get; set; }
 
+    public bool Invalid { get; set; }
+
     public List<HostingType> HostingTypes { get; set; } = Enumerable.Empty<HostingType>().ToList();
 
     public List<ApplicationType> ApplicationTypes { get; set; } = Enumerable.Empty<ApplicationType>().ToList();

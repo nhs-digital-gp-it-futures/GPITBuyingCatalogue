@@ -12,8 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
             string name,
             string description,
             int organisationId,
-            List<int> capabilityIds,
-            List<string> epicIds,
+            Dictionary<int, string[]> capabilityAndEpicIds,
             string frameworkId,
             List<ApplicationType> applicationTypes,
             List<HostingType> hostingTypes);

@@ -17,25 +17,6 @@
         <nhs-page-title title="@ViewBag.Title"
                         advice="@Model.Advice" />
 
-        @if (Model.IsFilter)
-        {
-            <h2>@Model.Total Capabilities available</h2>
-            <hr />
-
-            <div class="nhsuk-u-margin-bottom-9">
-                <h3>Select Capabilities</h3>
-            <p class="selection-counter" style="display: none">
-                0 out of @Model.Total selected
-            </p>
-            <vc:nhs-secondary-button type="Secondary"
-                                     text="Clear selection"
-                                     url="@Url.Action(
-                nameof(FilterController.FilterCapabilities),
-                typeof(FilterController).ControllerName(),
-                new { search = Model.SearchTerm })" />
-            </div>
-        }
-
         <form method="post">
             @foreach (var category in Model.Groups)
             {
@@ -43,9 +24,6 @@
                 <nhs-expander heading-text="@category.Name"
                           label-text="@capabilities.Count @(capabilities.Count == 1 ? "result" : "results")"
                           open="true">
-                    <p>
-                        @category.Description
-                    </p>
                     <nhs-table label-text="Capability name">
                         @foreach (var capability in capabilities)
                         {
@@ -63,7 +41,6 @@
                         }
                     </nhs-table>
                 </nhs-expander>
-                
                 <br />
             }
 

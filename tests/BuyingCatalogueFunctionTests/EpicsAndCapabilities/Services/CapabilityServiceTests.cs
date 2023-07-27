@@ -8,7 +8,10 @@ using AutoFixture.Xunit2;
 using BuyingCatalogueFunction.EpicsAndCapabilities.Models;
 using BuyingCatalogueFunction.EpicsAndCapabilities.Services;
 using FluentAssertions;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -56,7 +59,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task Process_New_Capability_Category_Must_Exist(
+        public static async Task Process_New_Capability_With_Existing_Category_Creates_Capability(
             Framework framework,
             CapabilityCategory category,
             Capability capability,
@@ -68,25 +71,12 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
             dbContext.SaveChanges();
 
             capability.Category = category;
-            var toProcess = new CapabilityCsv()
-            {
-                Id = new CapabilityIdCsv($"C{capability.Id}"),
-                Category = category.Name,
-                Name = capability.Name,
-                Version = capability.Version,
-                Description = capability.Description,
-                Url = capability.SourceUrl,
-                Framework = new List<string>() { framework.ShortName },
-            };
+            CapabilityCsv toProcess = GetCapabilityDetailsToCreate(capability, framework);
 
             await service.Process(new List<CapabilityCsv>() { toProcess });
             dbContext.ChangeTracker.Clear();
 
-            var result = dbContext.Capabilities
-                .Include(c => c.Category)
-                .Include(c => c.FrameworkCapabilities)
-                    .ThenInclude(fc => fc.Framework)
-                .FirstOrDefault(c => c.Id == capability.Id);
+            Capability? result = GetCapability(capability, dbContext);
 
             result.Should().NotBeNull();
             result!.Id.Should().Be(capability.Id);
@@ -101,7 +91,38 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task Process_Existing_Capability_Category_Must_Exist(
+        public static async Task Process_New_Capability_With_New_Category_Creates_Capability(
+            Framework framework,
+            CapabilityCategory category,
+            Capability capability,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            CapabilityService service)
+        {
+            dbContext.Frameworks.Add(framework);
+            dbContext.SaveChanges();
+
+            capability.Category = category;
+            CapabilityCsv toProcess = GetCapabilityDetailsToCreate(capability, framework);
+
+            await service.Process(new List<CapabilityCsv>() { toProcess });
+            dbContext.ChangeTracker.Clear();
+
+            Capability? result = GetCapability(capability, dbContext);
+
+            result.Should().NotBeNull();
+            result!.Id.Should().Be(capability.Id);
+            result.Name.Should().Be(capability.Name);
+            result.Version.Should().Be(capability.Version);
+            result.Description.Should().Be(capability.Description);
+            result.SourceUrl.Should().Be(capability.SourceUrl);
+            result.Category.Name.Should().Be(capability.Category.Name);
+            result.Status.Should().Be(CapabilityStatus.Effective);
+            result.FrameworkCapabilities.Select(f => f.Framework.ShortName).Should().BeEquivalentTo(new[] { framework.ShortName });
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task Process_Existing_Capability_With_Existing_Categories_Updates_Capability(
             Framework framework,
             Framework frameworkToChangeTo,
             Capability capability,
@@ -119,25 +140,49 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
             dbContext.Capabilities.Add(capability);
             dbContext.SaveChanges();
 
-            var toProcess = new CapabilityCsv()
-            {
-                Id = new CapabilityIdCsv($"C{capability.Id}"),
-                Category = categoryToChangeTo.Name,
-                Name = "modified name",
-                Version = "modified version",
-                Description = "modified description",
-                Url = "modified url",
-                Framework = new List<string>() { frameworkToChangeTo.ShortName },
-            };
+            CapabilityCsv toProcess = GetCapabilityDetailsToUpdate(capability, frameworkToChangeTo, categoryToChangeTo);
 
             await service.Process(new List<CapabilityCsv>() { toProcess });
             dbContext.ChangeTracker.Clear();
 
-            var result = dbContext.Capabilities
-                .Include(c => c.Category)
-                .Include(c => c.FrameworkCapabilities)
-                    .ThenInclude(fc => fc.Framework)
-                .FirstOrDefault(c => c.Id == capability.Id);
+            Capability? result = GetCapability(capability, dbContext);
+
+            result.Should().NotBeNull();
+            result!.Id.Should().Be(capability.Id);
+            result.Name.Should().Be("modified name");
+            result.Version.Should().Be("modified version");
+            result.Description.Should().Be("modified description");
+            result.SourceUrl.Should().Be("modified url");
+            result.Category.Name.Should().Be(categoryToChangeTo.Name);
+            result.Status.Should().Be(CapabilityStatus.Effective);
+            result.FrameworkCapabilities.Select(f => f.Framework.ShortName).Should().BeEquivalentTo(new[] { frameworkToChangeTo.ShortName });
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task Process_Existing_Capability_To_New_Category_Updates_Capability(
+            Framework framework,
+            Framework frameworkToChangeTo,
+            Capability capability,
+            CapabilityCategory category,
+            CapabilityCategory categoryToChangeTo,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            CapabilityService service)
+        {
+            capability.Category = category;
+            capability.FrameworkCapabilities.Add(new FrameworkCapability(framework.Id, capability.Id));
+            dbContext.CapabilityCategories.Add(category);
+            dbContext.Frameworks.Add(framework);
+            dbContext.Frameworks.Add(frameworkToChangeTo);
+            dbContext.Capabilities.Add(capability);
+            dbContext.SaveChanges();
+
+            CapabilityCsv toProcess = GetCapabilityDetailsToUpdate(capability, frameworkToChangeTo, categoryToChangeTo);
+
+            await service.Process(new List<CapabilityCsv>() { toProcess });
+            dbContext.ChangeTracker.Clear();
+
+            Capability? result = GetCapability(capability, dbContext);
 
             result.Should().NotBeNull();
             result!.Id.Should().Be(capability.Id);
@@ -169,11 +214,47 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
             await service.Process(new List<CapabilityCsv>() { });
             dbContext.ChangeTracker.Clear();
 
-            var result = dbContext.Capabilities
-                .FirstOrDefault(c => c.Id == capability.Id);
+            Capability? result = GetCapability(capability, dbContext);
 
             result.Should().NotBeNull();
             result!.Status.Should().Be(CapabilityStatus.Expired);
+        }
+
+        private static CapabilityCsv GetCapabilityDetailsToUpdate(Capability capability, Framework frameworkToChangeTo, CapabilityCategory categoryToChangeTo)
+        {
+            return new CapabilityCsv()
+            {
+                Id = new CapabilityIdCsv($"C{capability.Id}"),
+                Category = categoryToChangeTo.Name,
+                Name = "modified name",
+                Version = "modified version",
+                Description = "modified description",
+                Url = "modified url",
+                Framework = new List<string>() { frameworkToChangeTo.ShortName },
+            };
+        }
+
+        private static CapabilityCsv GetCapabilityDetailsToCreate(Capability capability, Framework framework)
+        {
+            return new CapabilityCsv()
+            {
+                Id = new CapabilityIdCsv($"C{capability.Id}"),
+                Category = capability.Category.Name,
+                Name = capability.Name,
+                Version = capability.Version,
+                Description = capability.Description,
+                Url = capability.SourceUrl,
+                Framework = new List<string>() { framework.ShortName },
+            };
+        }
+
+        private static Capability? GetCapability(Capability capability, BuyingCatalogueDbContext dbContext)
+        {
+            return dbContext.Capabilities
+                .Include(c => c.Category)
+                .Include(c => c.FrameworkCapabilities)
+                    .ThenInclude(fc => fc.Framework)
+                .FirstOrDefault(c => c.Id == capability.Id);
         }
     }
 }

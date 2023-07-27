@@ -80,7 +80,12 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities
         {
             try
             {
-                using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+                var txOptions = new TransactionOptions()
+                {
+                    IsolationLevel = IsolationLevel.ReadCommitted,
+                };
+
+                using var scope = new TransactionScope(TransactionScopeOption.Required, txOptions, TransactionScopeAsyncFlowOption.Enabled);
                 var logs = new List<string>();
                 logs.AddRange(await standardService.Process(import.Standards));
                 logs.AddRange(await capabilityService.Process(import.Capabilities));

@@ -156,10 +156,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_AddEpic_ReturnsModel(
+        public static void Get_AddEpic_ReturnsModel(
             SupplierDefinedEpicsController controller)
         {
-            var result = (await controller.AddSupplierDefinedEpicDetails()).As<ViewResult>();
+            var result = controller.AddSupplierDefinedEpicDetails().As<ViewResult>();
 
             result.Should().NotBeNull();
 
@@ -263,13 +263,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_EditEpic_InvalidModel_ReturnsView(
+        public static void Post_EditEpic_InvalidModel_ReturnsView(
             EditSupplierDefinedEpicModel model,
             SupplierDefinedEpicsController controller)
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var result = (await controller.EditSupplierDefinedEpic(model.Id, model)).As<ViewResult>();
+            var result = controller.EditSupplierDefinedEpic(model.Id, model).As<ViewResult>();
 
             result.Should().NotBeNull();
         }
@@ -338,11 +338,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_EditEpic_ValidModel_RedirectsToDashboard(
+        public static void Post_EditEpic_ValidModel_RedirectsToDashboard(
             EditSupplierDefinedEpicModel model,
             SupplierDefinedEpicsController controller)
         {
-            var result = (await controller.EditSupplierDefinedEpic(model.Id, model)).As<RedirectToActionResult>();
+            var result = controller.EditSupplierDefinedEpic(model.Id, model).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.Dashboard));

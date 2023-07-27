@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -107,8 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actualResult.ControllerName.Should().Be(typeof(ManageFiltersController).ControllerName());
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
-                { "selectedCapabilityIds", model.SelectedCapabilityIds },
-                { "selectedEpicIds", model.SelectedEpicIds },
+                { "selected", model.Selected },
                 { "selectedFrameworkId", model.SelectedFrameworkId },
                 { "selectedApplicationTypeIds", model.CombineSelectedOptions(model.ApplicationTypeOptions) },
                 { "selectedHostingTypeIds", model.CombineSelectedOptions(model.HostingTypeOptions) },
@@ -335,7 +335,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             controller.Url = mockUrlHelper.Object;
 
-            var result = await controller.ConfirmSaveFilter(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
+            var result = await controller.ConfirmSaveFilter(string.Empty, string.Empty, string.Empty, string.Empty);
 
             organisationsService.VerifyAll();
             manageFiltersService.VerifyAll();
@@ -349,7 +349,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_ConfirmSaveFilter_ReturnsExpectedResult(
-            List<Capability> capabilities,
             [Frozen] Mock<IOrganisationsService> organisationsService,
             [Frozen] Mock<ICapabilitiesService> capabilitiesService,
             [Frozen] Mock<IEpicsService> epicsService,
@@ -359,8 +358,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             [Frozen] Mock<IPdfService> mockPdfService,
             string primaryOrganisationInternalId,
             Organisation organisation,
-            string selectedCapabilityIds,
-            string selectedEpicIds,
+            Dictionary<int, string[]> capabilityAndEpics,
+            Dictionary<string, IOrderedEnumerable<Epic>> groupedEpics,
             string selectedFrameworkId)
         {
             var existingFilters = new List<Filter>();
@@ -374,12 +373,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(existingFilters);
 
             capabilitiesService
-                .Setup(x => x.GetCapabilitiesByIds(It.IsAny<List<int>>()))
-                .ReturnsAsync(capabilities);
-
-            epicsService
-                .Setup(x => x.GetEpicsByIds(It.IsAny<List<string>>()))
-                .ReturnsAsync(new List<Epic>());
+                 .Setup(x => x.GetGroupedCapabilitiesAndEpics(It.IsAny<Dictionary<int, string[]>>()))
+                 .ReturnsAsync(groupedEpics);
 
             frameworkService
                 .Setup(x => x.GetFramework(selectedFrameworkId))
@@ -396,7 +391,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             controller.Url = mockUrlHelper.Object;
 
-            var result = await controller.ConfirmSaveFilter(selectedCapabilityIds, selectedEpicIds, selectedFrameworkId, string.Empty, string.Empty);
+            var result = await controller.ConfirmSaveFilter(capabilityAndEpics.ToFilterString(), selectedFrameworkId, string.Empty, string.Empty);
 
             organisationsService.VerifyAll();
             manageFiltersService.VerifyAll();
@@ -407,7 +402,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var actualResultModel = actualResult.Model.Should().BeOfType<SaveFilterModel>().Subject;
 
-            var expected = new SaveFilterModel(capabilities, new List<Epic>(), null, new List<ApplicationType>(), new List<HostingType>(), organisation.Id);
+            var expected = new SaveFilterModel(groupedEpics, null, new List<ApplicationType>(), new List<HostingType>(), organisation.Id);
             actualResultModel.Should()
                 .BeEquivalentTo(expected, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.BackLinkText));
         }
@@ -416,8 +411,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [CommonAutoData]
         public static async Task Post_ConfirmSaveFilter_WithModelErrors_ReturnsExpectedResult(
             SaveFilterModel model,
-            List<Capability> capabilities,
-            List<Epic> epics,
+            Dictionary<string, IOrderedEnumerable<Epic>> groupedEpics,
+            Dictionary<int, string[]> capabilityAndEpics,
             [Frozen] Mock<ICapabilitiesService> capabilitiesService,
             [Frozen] Mock<IEpicsService> epicsService,
             ManageFiltersController controller)
@@ -425,27 +420,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             controller.ModelState.AddModelError("key", "errorMessage");
 
             capabilitiesService
-                .Setup(x => x.GetCapabilitiesByIds(model.CapabilityIds))
-                .ReturnsAsync(capabilities);
+                 .Setup(x => x.GetGroupedCapabilitiesAndEpics(It.IsAny<Dictionary<int, string[]>>()))
+                 .ReturnsAsync(groupedEpics);
 
-            epicsService
-                .Setup(x => x.GetEpicsByIds(model.EpicIds))
-                .ReturnsAsync(epics);
-
-            var result = await controller.ConfirmSaveFilter(model);
+            var result = await controller.ConfirmSaveFilter(model, capabilityAndEpics.ToFilterString());
 
             capabilitiesService.VerifyAll();
             epicsService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var resultModel = actualResult.Model.Should().BeOfType<SaveFilterModel>().Subject;
-            resultModel.GroupedCapabilities.Count.Should().Be(capabilities.Count);
+            resultModel.GroupedCapabilities.Count.Should().Be(groupedEpics.Count);
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_ConfirmSaveFilter_ReturnsExpectedResult(
             SaveFilterModel model,
+            Dictionary<int, string[]> capabilityAndEpics,
             int filterId,
             [Frozen] Mock<IManageFiltersService> manageFiltersService,
             ManageFiltersController controller)
@@ -455,13 +447,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                     model.Name,
                     model.Description,
                     model.OrganisationId,
-                    model.CapabilityIds,
-                    model.EpicIds,
+                    It.Is<Dictionary<int, string[]>>(x => x.ToFilterString() == capabilityAndEpics.ToFilterString()),
                     model.FrameworkId,
                     model.ApplicationTypes,
                     model.HostingTypes)).ReturnsAsync(filterId);
 
-            var result = await controller.ConfirmSaveFilter(model);
+            var result = await controller.ConfirmSaveFilter(model, capabilityAndEpics.ToFilterString());
 
             manageFiltersService.VerifyAll();
 

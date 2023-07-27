@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers;
 using Xunit;
@@ -10,61 +12,57 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
     public static class SolutionsFilterHelperTests
     {
         [Fact]
-        public static void ParseCapabilityIds_OneItemNotParseable_GeneratesResults()
+        public static void ParseCapabilityAndEpics_Empty()
         {
-            var input = "5.6.hello.0";
+            var input = new Dictionary<int, string[]>() { };
 
-            var result = SolutionsFilterHelper.ParseCapabilityIds(input);
+            var result = SolutionsFilterHelper.ParseCapabilityAndEpicIds(input.ToFilterString());
 
-            var expected = new List<int> { 5, 6, 0 };
+            var expected = new Dictionary<int, string[]>() { };
 
             result.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
-        public static void ParseCapabilityIds_EmptyAndWhiteSpace_GeneratesResults()
+        public static void ParseCapabilityAndEpics_CapabilityId_Epics_Null()
         {
-            var input = "5.6. .0..    ";
+            var input = new Dictionary<int, string[]>() { { 1, null } };
 
-            var result = SolutionsFilterHelper.ParseCapabilityIds(input);
+            var result = SolutionsFilterHelper.ParseCapabilityAndEpicIds(input.ToFilterString());
 
-            var expected = new List<int> { 5, 6, 0 };
+            var expected = new Dictionary<int, string[]>() { { 1, Array.Empty<string>() } };
 
             result.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
-        public static void ParseCapabilityIds_RandomInput_GeneratesResults()
+        public static void ParseCapabilityAndEpics_CapabilityId_Epics_Empty()
         {
-            var input = "iogjhoiudfhjgouhouhagdf souihadsfgouihdsfg";
+            var input = new Dictionary<int, string[]>() { { 1, Array.Empty<string>() } };
 
-            var result = SolutionsFilterHelper.ParseCapabilityIds(input);
+            var result = SolutionsFilterHelper.ParseCapabilityAndEpicIds(input.ToFilterString());
 
-            var expected = new List<int>();
+            var expected = new Dictionary<int, string[]>() { { 1, Array.Empty<string>() } };
 
             result.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
-        public static void ParseCapabilityIds_NullString_GeneratesResults()
+        public static void ParseCapabilityAndEpics_Capability_With_Epics()
         {
-            var input = string.Empty;
+            var input = new Dictionary<int, string[]>()
+            {
+                { 1, new string[] { "Epic1", "Epic2" } },
+                { 2, new string[] { "Epic1", "Epic3" } },
+            };
 
-            var result = SolutionsFilterHelper.ParseCapabilityIds(input);
+            var result = SolutionsFilterHelper.ParseCapabilityAndEpicIds(input.ToFilterString());
 
-            var expected = new List<int>();
-
-            result.Should().BeEquivalentTo(expected);
-        }
-
-        [Fact]
-        public static void ParseCapabilityIds_CorrectInput_GeneratesResults()
-        {
-            var input = "5.6.0";
-
-            var result = SolutionsFilterHelper.ParseCapabilityIds(input);
-
-            var expected = new List<int> { 5, 6, 0 };
+            var expected = new Dictionary<int, string[]>()
+            {
+                { 1, new string[] { "Epic1", "Epic2" } },
+                { 2, new string[] { "Epic1", "Epic3" } },
+            };
 
             result.Should().BeEquivalentTo(expected);
         }

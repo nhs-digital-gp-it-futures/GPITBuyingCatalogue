@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         {
             frameworks.ForEach(f => f.Expired = false);
 
-            var model = new AdditionalFiltersModel(frameworks, null, null, string.Empty, string.Empty, string.Empty);
+            var model = new AdditionalFiltersModel(frameworks, null, null, string.Empty, string.Empty);
 
             model.FrameworkOptions.Should().NotBeNull();
             model.FrameworkOptions.Should().HaveCount(frameworks.Count);
@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
 
             var framework = frameworks.Last();
 
-            var model = new AdditionalFiltersModel(frameworks, framework.Id, null, string.Empty, string.Empty, string.Empty);
+            var model = new AdditionalFiltersModel(frameworks, framework.Id, null, string.Empty, string.Empty);
 
             model.FrameworkOptions.Should().NotBeNull();
             model.FrameworkOptions.Should().HaveCount(frameworks.Count);
@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
 
             var framework = frameworks.Last();
 
-            var model = new AdditionalFiltersModel(frameworks, framework.Id, null, string.Empty, string.Empty, string.Empty);
+            var model = new AdditionalFiltersModel(frameworks, framework.Id, null, string.Empty, string.Empty);
 
             model.FrameworkOptions.Should().NotBeNull();
             model.FrameworkOptions.Should().BeEmpty();
@@ -76,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
             var expectedCount = 3;
             var expectedFilters = expectedSelectedValues.Select(i => ((ApplicationType)i).Name());
 
-            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, expectedSelectedValues.ToFilterString(), string.Empty, string.Empty, string.Empty);
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, expectedSelectedValues.ToFilterString(), string.Empty, string.Empty);
 
             model.ApplicationTypeOptions.Should().NotBeNull();
             model.ApplicationTypeOptions.Should().HaveCount(expectedCount);
@@ -102,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
             var expectedCount = 3;
             var expectedFilters = expectedSelectedValues.Select(i => ((ApplicationType)i).Name());
 
-            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, expectedSelectedValues.ToFilterString(), string.Empty, string.Empty, string.Empty);
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, expectedSelectedValues.ToFilterString(), string.Empty, string.Empty);
 
             model.ApplicationTypeOptions.Should().NotBeNull();
             model.ApplicationTypeOptions.Should().HaveCount(expectedCount);
@@ -121,7 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         {
             var expectedCount = 3;
 
-            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), string.Empty, selectedApplicationTypeIds, string.Empty, string.Empty, string.Empty);
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), string.Empty, selectedApplicationTypeIds, string.Empty, string.Empty);
 
             model.ApplicationTypeOptions.Should().NotBeNull();
             model.ApplicationTypeOptions.Should().HaveCount(expectedCount);
@@ -139,7 +139,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
             var expectedCount = 4;
             var expectedFilters = expectedSelectedValues.Select(i => ((HostingType)i).Name());
 
-            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, string.Empty, expectedSelectedValues.ToFilterString(), string.Empty, string.Empty);
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, string.Empty, expectedSelectedValues.ToFilterString(), string.Empty);
 
             model.HostingTypeOptions.Should().NotBeNull();
             model.HostingTypeOptions.Should().HaveCount(expectedCount);
@@ -158,7 +158,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         {
             var expectedCount = 4;
 
-            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, string.Empty, selectedHostingTypeIds, string.Empty, string.Empty);
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, string.Empty, selectedHostingTypeIds, string.Empty);
 
             model.HostingTypeOptions.Should().NotBeNull();
             model.HostingTypeOptions.Should().HaveCount(expectedCount);
@@ -172,12 +172,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
 
         [Theory]
         [CommonAutoData]
-        public static void Constructor_WithSelectedCapabilityAndEpics_PropertiesSetCorrectly(string selectedCapabilityIds, string selectedEpicIds)
+        public static void Constructor_WithSelectedCapabilityAndEpics_Property_SetCorrectly(string selected)
         {
-            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, null, null, selectedCapabilityIds, selectedEpicIds);
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, null, null, selected);
 
-            model.SelectedCapabilityIds.Should().Be(selectedCapabilityIds);
-            model.SelectedEpicIds.Should().Be(selectedEpicIds);
+            model.Selected.Should().Be(selected);
         }
     }
 }

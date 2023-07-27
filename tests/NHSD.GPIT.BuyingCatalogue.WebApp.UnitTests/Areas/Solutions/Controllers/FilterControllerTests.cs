@@ -11,14 +11,12 @@ using Microsoft.AspNetCore.Routing;
 using Moq;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 using Xunit;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 {
@@ -56,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             capabilitiesService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
-            var expected = new SelectCapabilitiesModel(capabilities, string.Empty, true);
+            var expected = new FilterCapabilitiesModel(capabilities, null);
 
             actualResult.Model.Should().BeEquivalentTo(expected);
         }
@@ -72,13 +70,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .Setup(x => x.GetReferencedCapabilities())
                 .ReturnsAsync(capabilities);
 
-            var selected = new[] { capabilities.First().Id, capabilities.Last().Id }.ToFilterString();
-            var result = await controller.FilterCapabilities(selected);
+            var selected = new Dictionary<int, string[]>(new[]
+            {
+                new KeyValuePair<int, string[]>(capabilities.First().Id, System.Array.Empty<string>()),
+                new KeyValuePair<int, string[]>(capabilities.Last().Id, System.Array.Empty<string>()),
+            });
+
+            var result = await controller.FilterCapabilities(selected.ToFilterString());
 
             capabilitiesService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
-            var expected = new SelectCapabilitiesModel(capabilities, selected, true);
+            var expected = new FilterCapabilitiesModel(capabilities, selected);
 
             actualResult.Model.Should().BeEquivalentTo(expected);
         }
@@ -86,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_FilterCapabilities_WithModelErrors_ReturnsExpectedResult(
-            SelectCapabilitiesModel model,
+            FilterCapabilitiesModel model,
             List<Capability> capabilities,
             [Frozen] Mock<ICapabilitiesService> capabilitiesService,
             FilterController controller)
@@ -102,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             capabilitiesService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
-            var expected = new SelectCapabilitiesModel(capabilities, string.Empty, true);
+            var expected = new FilterCapabilitiesModel(capabilities, null);
 
             actualResult.Model.Should().BeEquivalentTo(expected);
         }
@@ -110,44 +113,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Post_FilterCapabilities_ReturnsExpectedResult(
-            SelectCapabilitiesModel model,
+            FilterCapabilitiesModel model,
             FilterController controller)
         {
-            model.SelectedItems.ForEach(x => x.Selected = true);
-
-            var expected = model.SelectedItems.Select(x => x.Id).ToFilterString();
-
-            var result = await controller.FilterCapabilities(model);
-
-            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
-
-            actualResult.ActionName.Should().Be(nameof(FilterController.IncludeEpics));
-            actualResult.ControllerName.Should().Be(typeof(FilterController).ControllerName());
-            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            model.SelectedItems.ForEach((x, i) =>
             {
-                { "selectedCapabilityIds", expected },
-                { "selectedEpicIds", null },
-                { "search", null },
+                x.Selected = true;
+                x.Id = i.ToString();
             });
-        }
 
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_FilterCapabilities_HasSelectedEpics_PassesEpicsThrough(
-            [Frozen] Mock<IEpicsService> epicsService,
-            SelectCapabilitiesModel model,
-            FilterController controller)
-        {
-            model.SelectedItems.ForEach(x => x.Selected = true);
-
-            var expectedEpics = "C5E1.C5E2";
-
-            epicsService.Setup(e => e.GetEpicsForSelectedCapabilities(
-                    It.IsAny<IEnumerable<int>>(),
-                    It.IsAny<IEnumerable<string>>()))
-                .ReturnsAsync(expectedEpics);
-
-            var expected = model.SelectedItems.Select(x => x.Id).ToFilterString();
+            var expected = new Dictionary<int, string[]>(model.SelectedItems
+                  .Where(x => x.Selected)
+                  .Select(x => int.Parse(x.Id))
+                  .Select(x => new KeyValuePair<int, string[]>(x, null))).ToFilterString();
 
             var result = await controller.FilterCapabilities(model);
 
@@ -157,8 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actualResult.ControllerName.Should().Be(typeof(FilterController).ControllerName());
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
-                { "selectedCapabilityIds", expected },
-                { "selectedEpicIds", expectedEpics },
+                { "selected", expected },
                 { "search", null },
             });
         }
@@ -170,13 +147,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             FilterController controller)
         {
             const int capabilityId = 1;
-            var selectedIds = $"{capabilityId}";
+            var selected = new Dictionary<int, string[]>(new[] { new KeyValuePair<int, string[]>(capabilityId, null) })
+                .ToFilterString();
 
             epicsService
                 .Setup(x => x.GetReferencedEpicsByCapabilityIds(new[] { capabilityId }))
                 .ReturnsAsync(new List<Epic>());
 
-            var result = await controller.IncludeEpics(selectedIds);
+            var result = await controller.IncludeEpics(selected);
 
             epicsService.VerifyAll();
 
@@ -186,7 +164,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actualResult.ControllerName.Should().Be(typeof(SolutionsController).ControllerName());
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
-                { "SelectedCapabilityIds", selectedIds },
+                { "selected", selected },
                 { "search", null },
             });
         }
@@ -199,13 +177,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             FilterController controller)
         {
             const int capabilityId = 1;
-            var selectedIds = $"{capabilityId}";
+            var selected = new Dictionary<int, string[]>(new[] { new KeyValuePair<int, string[]>(capabilityId, null) })
+                .ToFilterString();
 
             epicsService
                 .Setup(x => x.GetReferencedEpicsByCapabilityIds(new[] { capabilityId }))
                 .ReturnsAsync(epics);
 
-            var result = await controller.IncludeEpics(selectedIds);
+            var result = await controller.IncludeEpics(selected);
 
             epicsService.VerifyAll();
 
@@ -213,7 +192,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var expected = new IncludeEpicsModel
             {
-                SelectedCapabilityIds = selectedIds,
+                Selected = selected,
             };
 
             actualResult.Model.Should().BeEquivalentTo(expected);
@@ -233,7 +212,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var expected = new IncludeEpicsModel
             {
-                SelectedCapabilityIds = model.SelectedCapabilityIds,
+                Selected = model.Selected,
             };
 
             actualResult.Model.Should().BeEquivalentTo(expected);
@@ -254,8 +233,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actualResult.ControllerName.Should().Be(typeof(FilterController).ControllerName());
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
-                { "selectedCapabilityIds", model.SelectedCapabilityIds },
-                { "selectedEpicIds", null },
+                { "selected", model.Selected },
                 { "search", null },
             });
         }
@@ -275,8 +253,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actualResult.ControllerName.Should().Be(typeof(SolutionsController).ControllerName());
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
-                { "selectedCapabilityIds", model.SelectedCapabilityIds },
-                { "selectedEpicIds", null },
+                { "selected", model.Selected },
                 { "search", null },
             });
         }
@@ -290,24 +267,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             [Frozen] Mock<IEpicsService> epicsService,
             FilterController controller)
         {
-            var capabilityIds = capabilities.Select(x => x.Id).ToList();
-            var selectedCapabilityIds = capabilityIds.ToFilterString();
+            var selected = new Dictionary<int, string[]>(capabilities.Select(x => new KeyValuePair<int, string[]>(x.Id, null)));
+            var selectedIdsFilterString = selected.ToFilterString();
 
             capabilitiesService
-                .Setup(x => x.GetCapabilitiesByIds(capabilityIds))
+                .Setup(x => x.GetCapabilitiesByIds(selected.Keys))
                 .ReturnsAsync(capabilities);
 
             epicsService
-                .Setup(x => x.GetReferencedEpicsByCapabilityIds(capabilityIds))
+                .Setup(x => x.GetReferencedEpicsByCapabilityIds(selected.Keys))
                 .ReturnsAsync(epics);
 
-            var result = await controller.FilterEpics(selectedCapabilityIds);
+            var result = await controller.FilterEpics(selectedIdsFilterString);
 
             capabilitiesService.VerifyAll();
             epicsService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
-            var expected = new FilterEpicsModel(capabilities, epics);
+            var expected = new FilterEpicsModel(capabilities, epics, selected);
 
             actualResult.Model.Should().BeEquivalentTo(expected);
         }
@@ -316,30 +293,35 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [CommonAutoData]
         public static async Task Get_FilterEpics_WithSelectedItems_ReturnsExpectedResult(
             List<Capability> capabilities,
-            List<Epic> epics,
+            Epic epic,
             [Frozen] Mock<ICapabilitiesService> capabilitiesService,
             [Frozen] Mock<IEpicsService> epicsService,
             FilterController controller)
         {
-            var capabilityIds = capabilities.Select(x => x.Id).ToList();
-            var selectedCapabilityIds = capabilityIds.ToFilterString();
-            var selectedEpicIds = new[] { epics.First().Id, epics.Last().Id }.ToFilterString();
+            capabilities.ForEach(c =>
+            {
+                c.Epics.Clear();
+                c.Epics.Add(epic);
+            });
+
+            var selected = new Dictionary<int, string[]>(capabilities.Select(x => new KeyValuePair<int, string[]>(x.Id, new string[] { epic.Id })));
+            var selectedIdsFilterString = selected.ToFilterString();
 
             capabilitiesService
-                .Setup(x => x.GetCapabilitiesByIds(capabilityIds))
+                .Setup(x => x.GetCapabilitiesByIds(selected.Keys))
                 .ReturnsAsync(capabilities);
 
             epicsService
-                .Setup(x => x.GetReferencedEpicsByCapabilityIds(capabilityIds))
-                .ReturnsAsync(epics);
+                .Setup(x => x.GetReferencedEpicsByCapabilityIds(selected.Keys))
+                .ReturnsAsync(new List<Epic> { epic });
 
-            var result = await controller.FilterEpics(selectedCapabilityIds, selectedEpicIds);
+            var result = await controller.FilterEpics(selectedIdsFilterString);
 
             capabilitiesService.VerifyAll();
             epicsService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
-            var expected = new FilterEpicsModel(capabilities, epics, selectedEpicIds);
+            var expected = new FilterEpicsModel(capabilities, new List<Epic> { epic }, selected);
 
             actualResult.Model.Should().BeEquivalentTo(expected);
         }
@@ -354,16 +336,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             FilterEpicsModel model,
             FilterController controller)
         {
-            var capabilityIds = capabilities.Select(x => x.Id).ToList();
+            var selected = new Dictionary<int, string[]>(capabilities.Select(x => new KeyValuePair<int, string[]>(x.Id, null)));
 
-            model.CapabilityIds = capabilityIds.ToFilterString();
+            model.Selected = selected.ToFilterString();
 
             capabilitiesService
-                .Setup(x => x.GetCapabilitiesByIds(capabilityIds))
+                .Setup(x => x.GetCapabilitiesByIds(selected.Keys))
                 .ReturnsAsync(capabilities);
 
             epicsService
-                .Setup(x => x.GetReferencedEpicsByCapabilityIds(capabilityIds))
+                .Setup(x => x.GetReferencedEpicsByCapabilityIds(selected.Keys))
                 .ReturnsAsync(epics);
 
             controller.ModelState.AddModelError("key", "errorMessage");
@@ -374,7 +356,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             epicsService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
-            var expected = new FilterEpicsModel(capabilities, epics);
+            var expected = new FilterEpicsModel(capabilities, epics, selected);
 
             actualResult.Model.Should().BeEquivalentTo(expected);
         }
@@ -385,9 +367,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             FilterEpicsModel model,
             FilterController controller)
         {
-            model.SelectedItems.ForEach(x => x.Selected = true);
+            model.SelectedItems.ForEach((x, i) =>
+            {
+                x.Id = $"{i},{i}";
+                x.Selected = true;
+            });
 
-            var expected = model.SelectedItems.Select(x => x.Id).ToFilterString();
+            model.Selected = new Dictionary<int, string[]>(model.SelectedItems
+                .Select(x => new KeyValuePair<int, string[]>(int.Parse(x.Id.Split(",")[0]), null)))
+                .ToFilterString();
+
+            var expected = new Dictionary<int, string[]>(model.SelectedItems
+                .Select(x => new KeyValuePair<int, string[]>(int.Parse(x.Id.Split(",")[0]), new string[] { x.Id.Split(",")[1] })))
+                .ToFilterString();
 
             var result = await controller.FilterEpics(model);
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
@@ -396,8 +388,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actualResult.ControllerName.Should().Be(typeof(SolutionsController).ControllerName());
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
-                { "selectedCapabilityIds", model.CapabilityIds },
-                { "selectedEpicIds", expected },
+                { "selected", expected },
                 { "search", null },
             });
         }

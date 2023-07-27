@@ -176,7 +176,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         public static void NativeDesktopThirdPartyStatus_Valid_ReturnsCompleted(
             ApplicationTypeDetail applicationTypeDetail)
         {
-            // TODO: MJK
             var progress = new ApplicationTypeProgress(applicationTypeDetail);
             progress.NativeDesktopThirdPartyStatus().Should().Be(TaskProgress.Completed);
         }
@@ -186,7 +185,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         public static void NativeDesktopThirdPartyStatus_Null_ReturnsNotStarted(
             ApplicationTypeDetail applicationTypeDetail)
         {
-            // TODO: MJK
             applicationTypeDetail.NativeDesktopThirdParty = null;
             var progress = new ApplicationTypeProgress(applicationTypeDetail);
             progress.NativeDesktopThirdPartyStatus().Should().Be(TaskProgress.NotStarted);
@@ -243,7 +241,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         public static void NativeMobileConnectivityStatus_Valid_ReturnsCompleted(
             ApplicationTypeDetail applicationTypeDetail)
         {
-            // TODO: MJK
             var progress = new ApplicationTypeProgress(applicationTypeDetail);
             progress.NativeMobileConnectivityStatus().Should().Be(TaskProgress.Completed);
         }
@@ -253,7 +250,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         public static void NativeMobileConnectivityStatus_Null_ReturnsNotStarted(
             ApplicationTypeDetail applicationTypeDetail)
         {
-            // TODO: MJK
             applicationTypeDetail.MobileConnectionDetails = null;
             var progress = new ApplicationTypeProgress(applicationTypeDetail);
             progress.NativeMobileConnectivityStatus().Should().Be(TaskProgress.NotStarted);

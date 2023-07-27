@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -14,16 +15,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
         }
 
         public SaveFilterModel(
-            List<Capability> capabilities,
-            List<Epic> epics,
+            Dictionary<string, IOrderedEnumerable<Epic>> groupedCapabilities,
             EntityFramework.Catalogue.Models.Framework framework,
             List<ApplicationType> applicationTypes,
             List<HostingType> hostingTypes,
             int organisationId)
         {
-            CapabilityIds = capabilities.Select(x => x.Id).ToList();
-            EpicIds = epics.Select(x => x.Id).ToList();
-
             if (framework != null)
             {
                 FrameworkId = framework.Id;
@@ -33,8 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
             ApplicationTypes = applicationTypes;
             HostingTypes = hostingTypes;
             OrganisationId = organisationId;
-
-            SetGroupedCapabilities(capabilities, epics);
+            GroupedCapabilities = groupedCapabilities;
         }
 
         [StringLength(100)]
@@ -42,10 +38,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
 
         [StringLength(250)]
         public string Description { get; set; }
-
-        public List<int> CapabilityIds { get; init; }
-
-        public List<string> EpicIds { get; init; }
 
         public string FrameworkId { get; init; }
 
@@ -58,12 +50,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
         public List<HostingType> HostingTypes { get; init; }
 
         public Dictionary<string, IOrderedEnumerable<Epic>> GroupedCapabilities { get; set; } = new();
-
-        public void SetGroupedCapabilities(List<Capability> capabilities, List<Epic> epics)
-        {
-            GroupedCapabilities = capabilities.ToDictionary(
-                x => x.Name,
-                x => epics.Where(c => c.Capabilities.Any(y => y.Id == x.Id)).OrderBy(c => c.Name));
-        }
     }
 }

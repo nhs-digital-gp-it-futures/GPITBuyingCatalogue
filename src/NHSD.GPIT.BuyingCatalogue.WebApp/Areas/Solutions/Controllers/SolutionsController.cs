@@ -13,6 +13,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SolutionsFilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
@@ -55,8 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         public async Task<IActionResult> Index(
             [FromQuery] string page,
             [FromQuery] string sortBy,
-            [FromQuery] string selectedCapabilityIds,
-            [FromQuery] string selectedEpicIds,
+            [FromQuery] string selected,
             [FromQuery] string search,
             [FromQuery] string selectedFrameworkId,
             [FromQuery] string selectedApplicationTypeIds,
@@ -75,21 +75,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 filterName = filter.Name;
             }
 
+            var capabilityAndEpicIds = SolutionsFilterHelper.ParseCapabilityAndEpicIds(selected);
+            var includesEpics = capabilityAndEpicIds.Where(kv => kv.Value != null).SelectMany(x => x.Value).Count() > 0;
+
             var inputOptions = new PageOptions(page, sortBy);
 
             (IList<CatalogueItem> catalogueItems, PageOptions options, List<CapabilitiesAndCountModel> capabilitiesAndCount) =
                 await solutionsFilterService.GetAllSolutionsFiltered(
                     inputOptions,
-                    selectedCapabilityIds,
-                    selectedEpicIds,
+                    capabilityAndEpicIds,
                     search,
                     selectedFrameworkId,
                     selectedApplicationTypeIds,
                     selectedHostingTypeIds);
+
             (IQueryable<CatalogueItem> catalogueItemsWithoutFrameworkFilter, _) =
-                await solutionsFilterService.GetFilteredAndNonFilteredQueryResults(
-                    selectedCapabilityIds,
-                    selectedEpicIds);
+                await solutionsFilterService.GetFilteredAndNonFilteredQueryResults(capabilityAndEpicIds);
+
             var frameworks = await frameworkService.GetFrameworksByCatalogueItems(
                 catalogueItemsWithoutFrameworkFilter.Select(x => x.Id).ToList());
             var additionalFilters = new AdditionalFiltersModel(
@@ -97,8 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 selectedFrameworkId,
                 selectedApplicationTypeIds,
                 selectedHostingTypeIds,
-                selectedCapabilityIds,
-                selectedEpicIds) { FilterId = filterId, SortBy = sortBy };
+                selected) { FilterId = filterId, SortBy = sortBy };
 
             return View(
                 new SolutionsModel
@@ -109,8 +110,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     SearchSummary = new CatalogueFilterSearchSummary(
                         capabilitiesAndCount,
                         search,
-                        selectedCapabilityIds,
-                        selectedEpicIds),
+                        selected,
+                        includesEpics),
                     AdditionalFilters = additionalFilters,
                 });
         }
@@ -120,8 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             SolutionsModel model,
             [FromQuery] string page,
             [FromQuery] string sortBy,
-            [FromQuery] string selectedCapabilityIds,
-            [FromQuery] string selectedEpicIds,
+            [FromQuery] string selected,
             [FromQuery] string search,
             string selectedFrameworkId,
             AdditionalFiltersModel additionalFiltersModel,
@@ -135,8 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 new
                 {
                     page,
-                    selectedCapabilityIds,
-                    selectedEpicIds,
+                    selected,
                     search,
                     selectedFrameworkId,
                     selectedApplicationTypeIds =
