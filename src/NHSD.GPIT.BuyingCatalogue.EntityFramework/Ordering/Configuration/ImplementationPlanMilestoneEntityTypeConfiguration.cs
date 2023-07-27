@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.ToTable("ImplementationPlanMilestones", Schemas.Ordering);
 
             builder.HasKey(x => x.Id).HasName("PK_ImplementationPlanMilestones");
-            builder.Property(x => x.PlanId).HasColumnName("NullableImplementationPlanId");
+            builder.Property(x => x.PlanId).HasColumnName("ImplementationPlanId");
             builder.Property(x => x.ContractBillingItemId);
 
             builder.Property(x => x.Order).IsRequired();

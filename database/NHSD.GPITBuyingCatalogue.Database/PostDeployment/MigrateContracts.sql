@@ -1,8 +1,4 @@
-﻿IF NOT EXISTS (SELECT 1 FROM ordering.[ImplementationPlanMilestones] where NullableImplementationPlanId is not NULL)
-    UPDATE ordering.[ImplementationPlanMilestones] SET NullableImplementationPlanId = ImplementationPlanId;
-GO
-
-IF NOT EXISTS (SELECT 1 FROM ordering.[Contracts])
+﻿IF NOT EXISTS (SELECT 1 FROM ordering.[Contracts])
     INSERT INTO ordering.[Contracts] (OrderId)
     SELECT cf.OrderId 
     FROM ordering.ContractFlags cf
