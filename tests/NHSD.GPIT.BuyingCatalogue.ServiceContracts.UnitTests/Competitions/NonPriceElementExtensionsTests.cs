@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
@@ -109,6 +110,25 @@ public static class NonPriceElementExtensionsTests
             new List<NonPriceElement> { NonPriceElement.ServiceLevel },
         },
     };
+
+    [Theory]
+    [CommonAutoData]
+    public static void HasNonPriceElement_InvalidValue_ThrowsException(NonPriceElements nonPriceElements) => FluentActions
+        .Invoking(() => nonPriceElements.HasNonPriceElement((NonPriceElement)100))
+        .Should()
+        .Throw<ArgumentOutOfRangeException>();
+
+    [Theory]
+    [CommonAutoData]
+    public static void GetNonPriceWeight_InvalidValue_ThrowsException(NonPriceElements nonPriceElements)
+    {
+        nonPriceElements.NonPriceWeights = new();
+
+        FluentActions
+            .Invoking(() => nonPriceElements.GetNonPriceWeight((NonPriceElement)100))
+            .Should()
+            .Throw<ArgumentOutOfRangeException>();
+    }
 
     [Theory]
     [CommonMemberAutoData(nameof(HasNonPriceElementTestData))]
