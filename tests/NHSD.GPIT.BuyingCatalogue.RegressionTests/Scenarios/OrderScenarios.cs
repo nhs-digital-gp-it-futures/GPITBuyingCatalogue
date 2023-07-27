@@ -2074,5 +2074,61 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             CompetitionPages.StepOnePrepareCompetition(MultipleResultFilter, competitionName, 5);
 
         }
+
+        [Fact]
+        public void OrderAmendCatalogueSolutionGreaterThan250K()
+        {
+            string orderDescription = "CatalogueSolutionOver250K";
+
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Over250K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Over250K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+
+            OrderingPages.StepFiveAmendOrder();
+
+            OrderingPages.AmendSolutionsAndServices(NewSolutionName);
+        }
+
+        [Fact]
+        public void OrderAmendCatalogueSolutionAmendDescription()
+        {
+            string orderDescription = "Amend_CatalogueSolution";
+
+            string amendOrderDescription = "AmendedOrder_CatalogueSolution";
+
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+
+            OrderingPages.StepFiveAmendOrder();
+
+            OrderingPages.AmendOrderDescription(amendOrderDescription);
+
+            OrderingPages.AmendSolutionsAndServices(NewSolutionName);
+        }
     }
 }
