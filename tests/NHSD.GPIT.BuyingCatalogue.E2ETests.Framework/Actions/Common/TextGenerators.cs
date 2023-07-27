@@ -25,6 +25,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
             return text;
         }
 
+        public string TextInput(int  numChars) 
+        {
+            var text = Strings.RandomString(numChars);            
+            return text;
+        }
+
         /// <summary>
         /// Generates a Random Price for Price inputs between 0.0001 and maxValue.
         /// </summary>
