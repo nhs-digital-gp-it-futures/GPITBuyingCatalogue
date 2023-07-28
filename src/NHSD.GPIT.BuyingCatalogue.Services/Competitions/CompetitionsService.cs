@@ -445,6 +445,16 @@ public class CompetitionsService : ICompetitionsService
         .Select(x => x.Name)
         .FirstOrDefaultAsync();
 
+    private static void RemoveScoreType(ScoreType scoreType, Competition competition)
+    {
+        foreach (var solution in competition.CompetitionSolutions.Where(x => x.HasScoreType(scoreType)))
+        {
+            var score = solution.GetScoreByType(scoreType);
+
+            solution.Scores.Remove(score);
+        }
+    }
+
     private async Task SetSolutionScores(
         string internalOrgId,
         int competitionId,
@@ -475,15 +485,5 @@ public class CompetitionsService : ICompetitionsService
         }
 
         await dbContext.SaveChangesAsync();
-    }
-
-    private void RemoveScoreType(ScoreType scoreType, Competition competition)
-    {
-        foreach (var solution in competition.CompetitionSolutions.Where(x => x.HasScoreType(scoreType)))
-        {
-            var score = solution.GetScoreByType(scoreType);
-
-            solution.Scores.Remove(score);
-        }
     }
 }
