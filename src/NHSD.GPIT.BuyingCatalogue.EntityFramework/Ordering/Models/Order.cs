@@ -99,6 +99,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public ICollection<OrderItem> OrderItems { get; set; }
 
+        public ICollection<OrderRecipient> OrderRecipients { get; set; }
+
         public CatalogueItem Solution { get; set; }
 
         public Framework SelectedFramework { get; set; }

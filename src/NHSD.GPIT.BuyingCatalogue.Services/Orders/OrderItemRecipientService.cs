@@ -11,12 +11,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
     public class OrderItemRecipientService : IOrderItemRecipientService
     {
         private readonly BuyingCatalogueDbContext context;
-        private readonly IServiceRecipientService serviceRecipientService;
 
-        public OrderItemRecipientService(BuyingCatalogueDbContext context, IServiceRecipientService serviceRecipientService)
+        public OrderItemRecipientService(BuyingCatalogueDbContext context)
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));
-            this.serviceRecipientService = serviceRecipientService ?? throw new ArgumentNullException(nameof(serviceRecipientService));
         }
 
         public async Task AddOrderItemRecipients(int orderId, CatalogueItemId catalogueItemId, List<ServiceRecipientDto> recipients)
@@ -30,8 +28,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             foreach (var recipient in recipients)
             {
-                await serviceRecipientService.AddServiceRecipient(recipient);
-
                 var orderItemRecipient = context.OrderItemRecipients
                     .FirstOrDefault(x => x.OrderId == orderId
                         && x.CatalogueItemId == catalogueItemId
@@ -68,8 +64,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             foreach (var recipient in recipients)
             {
-                await serviceRecipientService.AddServiceRecipient(recipient);
-
                 var orderItemRecipient = existingRecipients.FirstOrDefault(x => x.OdsCode == recipient.OdsCode);
 
                 if (orderItemRecipient == null)

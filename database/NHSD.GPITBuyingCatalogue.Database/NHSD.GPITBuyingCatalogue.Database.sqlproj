@@ -153,6 +153,7 @@
     <Folder Include="PostDeployment\ProdLikeData\" />
     <Folder Include="PostDeployment\TestData\" />
     <Folder Include="PostDeployment\TestData\Competitions\" />
+    <Folder Include="PostDeployment\Migrations" />
     <Folder Include="PostDeployment\TestData\Solutions\" />
   </ItemGroup>
   <ItemGroup>
