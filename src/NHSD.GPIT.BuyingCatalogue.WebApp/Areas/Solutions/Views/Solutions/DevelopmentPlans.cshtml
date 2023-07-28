@@ -7,43 +7,43 @@
 }
 
 <partial name="_solutionSummary" model="Model" />
-<b>These are the development plans for this Catalogue Solution:</b>
-<br/>
-<br/>
-<h2 data-test-id="roadmap-title">@roadmapTitle</h2>
-@if (!string.IsNullOrWhiteSpace(Model.RoadmapLink))
-{
-    <p data-test-id="supplier-roadmap-section">The supplier has provided a roadmap detailing the development plans for this Catalogue Solution.</p>
-    <p><a href="@Model.RoadmapLink" target="_blank">View supplier’s roadmap for this Catalogue Solution</a> (opens in a new tab)</p>
-}
-<p data-test-id="program-roadmap-section">The GP IT Futures Capabilities and Standards roadmap outlines future changes to the Capabilities and Standards model.</p>
-<p><a href="https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391133519/Roadmap" target="_blank">View GP IT Futures Capabilities and Standards roadmap</a> (opens in a new tab)</p>
-
+<p>These are the development plans for this Catalogue Solution:</p>
+<nhs-expander label-text="@roadmapTitle" open="false">
+    @if (!string.IsNullOrWhiteSpace(Model.RoadmapLink))
+    {
+        <p data-test-id="supplier-roadmap-section">The supplier has provided a roadmap detailing the development plans for this Catalogue Solution.</p>
+        <p><a href="@Model.RoadmapLink" target="_blank">View supplier’s roadmap for this Catalogue Solution</a> (opens in a new tab)</p>
+    }
+    <p data-test-id="program-roadmap-section">The GP IT Futures Capabilities and Standards roadmap outlines future changes to the Capabilities and Standards model.</p>
+    <p><a href="https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391133519/Roadmap" target="_blank">View GP IT Futures Capabilities and Standards roadmap</a> (opens in a new tab)</p>
+</nhs-expander>
+<hr/>
 @if (Model.WorkOffPlans.Any()) 
 { 
     <h2 data-test-id="work-off-plans-section">Work-off Plans</h2>
     <p>This Catalogue Solution is subject to a Compliance Work-off Plan. It means the supplier has agreed to complete any outstanding work to meet a Standard within an agreed timeframe.</p>
-    <p><a href="https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391134310/Introduction+to+Capabilities+and+Standards" target="_blank">More information about these requirements</a></p>
-    <hr/>
+    <p><a href="https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391134310/Introduction+to+Capabilities+and+Standards" target="_blank">More information about these requirements (opens in a new tab)</a></p>
 
     @foreach(var standard in standardsInOrder)
     {
-        <h3 id="@standard.Id">@standard.Name</h3>
-        <p><b>Description: </b>@standard.Description</p>
-        <p><a href="@standard.Url" target="_blank">More information about this Standard</a> (opens in a new tab)</p>
-        <p>The supplier is working towards full compliance with this Standard and has the following Work-off Plan items:</p>
+        <nhs-expander label-text="@standard.Name" open="false">
+            <h3 id="@standard.Id">@standard.Name</h3>
+            <p><b>Description: </b>@standard.Description</p>
+            <p><a href="@standard.Url" target="_blank">More information about this Standard</a> (opens in a new tab)</p>
+            <p>The supplier is working towards full compliance with this Standard and has the following Work-off Plan items:</p>
 
-        <nhs-table>
-            <nhs-table-column>Details</nhs-table-column>
-            <nhs-table-column>Agreed&nbsp;completion&nbsp;date</nhs-table-column>
-            @foreach(var workOffPlan in Model.WorkOffPlans.Where(wp => wp.StandardId == standard.Id).OrderBy(wp => wp.CompletionDate).ThenBy(wp => wp.Details))
-            {
-                <nhs-table-row-container>
-                    <nhs-table-cell>@workOffPlan.Details</nhs-table-cell>
-                    <nhs-table-cell>@workOffPlan.CompletionDate.ToString("d MMM yyyy", System.Globalization.CultureInfo.InvariantCulture)</nhs-table-cell>
-                </nhs-table-row-container>
-            }
-        </nhs-table>
+            <nhs-table>
+                <nhs-table-column>Details</nhs-table-column>
+                <nhs-table-column>Agreed&nbsp;completion&nbsp;date</nhs-table-column>
+                @foreach(var workOffPlan in Model.WorkOffPlans.Where(wp => wp.StandardId == standard.Id).OrderBy(wp => wp.CompletionDate).ThenBy(wp => wp.Details))
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>@workOffPlan.Details</nhs-table-cell>
+                        <nhs-table-cell>@workOffPlan.CompletionDate.ToString("d MMM yyyy", System.Globalization.CultureInfo.InvariantCulture)</nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+            </nhs-table>
+        </nhs-expander>
         <br/>
     }
 }
