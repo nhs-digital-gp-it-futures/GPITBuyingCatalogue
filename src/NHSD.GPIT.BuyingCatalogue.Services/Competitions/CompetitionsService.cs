@@ -222,7 +222,9 @@ public class CompetitionsService : ICompetitionsService
         nonPriceWeights.Implementation = implementationWeight;
         nonPriceWeights.Interoperability = interoperabilityWeight;
         nonPriceWeights.ServiceLevel = serviceLevelWeight;
-        competition.HasReviewedCriteria = false;
+
+        if (dbContext.Entry(nonPriceWeights).State is EntityState.Modified)
+            competition.HasReviewedCriteria = false;
 
         await dbContext.SaveChangesAsync();
     }
