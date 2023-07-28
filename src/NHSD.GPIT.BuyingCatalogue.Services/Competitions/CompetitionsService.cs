@@ -167,13 +167,19 @@ public class CompetitionsService : ICompetitionsService
     public async Task SetImplementationCriteria(string internalOrgId, int competitionId, string requirements)
     {
         var competition = await dbContext.Competitions.Include(x => x.NonPriceElements.Implementation)
+            .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Scores)
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
         var nonPriceElements = competition.NonPriceElements ??= new NonPriceElements();
         var implementation = nonPriceElements.Implementation ??= new ImplementationCriteria();
 
         implementation.Requirements = requirements;
-        competition.HasReviewedCriteria = false;
+
+        if (dbContext.Entry(implementation).State is EntityState.Modified)
+        {
+            competition.HasReviewedCriteria = false;
+            RemoveScoreType(ScoreType.Implementation, competition);
+        }
 
         await dbContext.SaveChangesAsync();
     }
@@ -185,6 +191,7 @@ public class CompetitionsService : ICompetitionsService
         IEnumerable<string> gpConnectIntegrations)
     {
         var competition = await dbContext.Competitions.Include(x => x.NonPriceElements.Interoperability)
+            .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Scores)
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
         var interopEntities = (competition.NonPriceElements ??= new NonPriceElements()).Interoperability;
@@ -199,10 +206,15 @@ public class CompetitionsService : ICompetitionsService
             .Select(x => new InteroperabilityCriteria(x, InteropIntegrationType.Im1))
             .Union(
                 gpConnectIntegrations.Select(x => new InteroperabilityCriteria(x, InteropIntegrationType.GpConnect)))
-            .Where(x => interopEntities.All(y => x.Qualifier != y.Qualifier));
+            .Where(x => interopEntities.All(y => x.Qualifier != y.Qualifier))
+            .ToList();
 
         interopEntities.AddRange(newInteropEntities);
-        competition.HasReviewedCriteria = false;
+        if (staleEntities.Any() || newInteropEntities.Any())
+        {
+            competition.HasReviewedCriteria = false;
+            RemoveScoreType(ScoreType.Interoperability, competition);
+        }
 
         await dbContext.SaveChangesAsync();
     }
@@ -237,6 +249,7 @@ public class CompetitionsService : ICompetitionsService
         string applicableDays)
     {
         var competition = await dbContext.Competitions.Include(x => x.NonPriceElements.ServiceLevel)
+            .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Scores)
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
         var nonPriceElements = competition.NonPriceElements ??= new NonPriceElements();
@@ -245,7 +258,11 @@ public class CompetitionsService : ICompetitionsService
         serviceLevelCriteria.TimeFrom = timeFrom;
         serviceLevelCriteria.TimeUntil = timeUntil;
         serviceLevelCriteria.ApplicableDays = applicableDays;
-        competition.HasReviewedCriteria = false;
+        if (dbContext.Entry(serviceLevelCriteria).State is EntityState.Modified)
+        {
+            competition.HasReviewedCriteria = false;
+            RemoveScoreType(ScoreType.ServiceLevel, competition);
+        }
 
         await dbContext.SaveChangesAsync();
     }
@@ -458,5 +475,15 @@ public class CompetitionsService : ICompetitionsService
         }
 
         await dbContext.SaveChangesAsync();
+    }
+
+    private void RemoveScoreType(ScoreType scoreType, Competition competition)
+    {
+        foreach (var solution in competition.CompetitionSolutions.Where(x => x.HasScoreType(scoreType)))
+        {
+            var score = solution.GetScoreByType(scoreType);
+
+            solution.Scores.Remove(score);
+        }
     }
 }

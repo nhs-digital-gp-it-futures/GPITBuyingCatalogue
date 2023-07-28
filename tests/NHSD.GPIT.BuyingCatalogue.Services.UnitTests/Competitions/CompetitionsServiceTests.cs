@@ -832,6 +832,53 @@ public static class CompetitionsServiceTests
 
     [Theory]
     [InMemoryDbAutoData]
+    public static async Task SetImplementationCriteria_WithImplementationScore_RemovesScore(
+        string oldRequirements,
+        Organisation organisation,
+        Competition competition,
+        Solution solution,
+        string requirements,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        competition.NonPriceElements = new()
+        {
+            Implementation = new() { Requirements = oldRequirements },
+        };
+
+        competition.CompetitionSolutions = new List<CompetitionSolution>
+        {
+            new(competition.Id, solution.CatalogueItemId)
+            {
+                Scores = new List<SolutionScore> { new(ScoreType.Implementation, 3), },
+            },
+        };
+
+        competition.OrganisationId = organisation.Id;
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        competition.NonPriceElements.Should().NotBeNull();
+        competition.NonPriceElements.Implementation.Should().NotBeNull();
+
+        await service.SetImplementationCriteria(organisation.InternalIdentifier, competition.Id, requirements);
+
+        var updatedCompetition = await service.GetCompetitionWithNonPriceElements(
+            organisation.InternalIdentifier,
+            competition.Id);
+
+        updatedCompetition.CompetitionSolutions.Should().NotContain(x => x.HasScoreType(ScoreType.Implementation));
+        updatedCompetition.NonPriceElements.Should().NotBeNull();
+        updatedCompetition.NonPriceElements.Implementation.Should().NotBeNull();
+        updatedCompetition.NonPriceElements.Implementation.Requirements.Should().Be(requirements);
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
     public static async Task SetServiceLevelCriteria_NullNonPriceElements_CreatesNonPriceElements(
         string applicableDays,
         DateTime timeFrom,
@@ -951,6 +998,55 @@ public static class CompetitionsServiceTests
 
     [Theory]
     [InMemoryDbAutoData]
+    public static async Task SetServiceLevelCriteria_WithServiceLevelScore_RemovesScore(
+        ServiceLevelCriteria oldServiceLevelCriteria,
+        ServiceLevelCriteria newServiceLevelCriteria,
+        Organisation organisation,
+        Solution solution,
+        Competition competition,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        competition.NonPriceElements = new() { ServiceLevel = oldServiceLevelCriteria };
+        competition.OrganisationId = organisation.Id;
+
+        competition.CompetitionSolutions = new List<CompetitionSolution>
+        {
+            new(competition.Id, solution.CatalogueItemId)
+            {
+                Scores = new List<SolutionScore> { new(ScoreType.ServiceLevel, 3), },
+            },
+        };
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        competition.NonPriceElements.Should().NotBeNull();
+        competition.NonPriceElements.ServiceLevel.Should().NotBeNull();
+
+        await service.SetServiceLevelCriteria(
+            organisation.InternalIdentifier,
+            competition.Id,
+            newServiceLevelCriteria.TimeFrom,
+            newServiceLevelCriteria.TimeUntil,
+            newServiceLevelCriteria.ApplicableDays);
+
+        var updatedCompetition = await service.GetCompetitionWithNonPriceElements(
+            organisation.InternalIdentifier,
+            competition.Id);
+
+        updatedCompetition.CompetitionSolutions.Should().NotContain(x => x.HasScoreType(ScoreType.ServiceLevel));
+        updatedCompetition.NonPriceElements.Should().NotBeNull();
+        updatedCompetition.NonPriceElements.ServiceLevel.Should().NotBeNull();
+        updatedCompetition.NonPriceElements.ServiceLevel.Should()
+            .BeEquivalentTo(newServiceLevelCriteria, opt => opt.Excluding(m => m.Id));
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
     public static async Task SetInteroperabilityCriteria_AddsIntegrations(
         Organisation organisation,
         Competition competition,
@@ -1015,6 +1111,61 @@ public static class CompetitionsServiceTests
 
         var integrations = im1Integrations.Skip(1).Concat(gpConnectIntegrations).ToList();
 
+        updatedCompetition.NonPriceElements.Interoperability.Should().NotContain(x => x.Qualifier == staleIntegration);
+        integrations.ForEach(
+            x => updatedCompetition.NonPriceElements.Interoperability.Should().Contain(y => x == y.Qualifier));
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task SetInteroperabilityCriteria_WithInteroperabilityScore_RemovesScores(
+        Organisation organisation,
+        Competition competition,
+        Solution solution,
+        List<string> im1Integrations,
+        List<string> gpConnectIntegrations,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        var staleIntegration = im1Integrations.First();
+
+        competition.CompetitionSolutions = new List<CompetitionSolution>
+        {
+            new(competition.Id, solution.CatalogueItemId)
+            {
+                Scores = new List<SolutionScore> { new(ScoreType.Interoperability, 3), },
+            },
+        };
+
+        competition.NonPriceElements = new()
+        {
+            Interoperability = new List<InteroperabilityCriteria>()
+            {
+                new() { IntegrationType = InteropIntegrationType.Im1, Qualifier = staleIntegration },
+            },
+        };
+
+        competition.OrganisationId = organisation.Id;
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        await service.SetInteroperabilityCriteria(
+            organisation.InternalIdentifier,
+            competition.Id,
+            im1Integrations.Skip(1),
+            gpConnectIntegrations);
+
+        var updatedCompetition = await service.GetCompetitionWithNonPriceElements(
+            organisation.InternalIdentifier,
+            competition.Id);
+
+        var integrations = im1Integrations.Skip(1).Concat(gpConnectIntegrations).ToList();
+
+        updatedCompetition.CompetitionSolutions.Should().NotContain(x => x.HasScoreType(ScoreType.Interoperability));
         updatedCompetition.NonPriceElements.Interoperability.Should().NotContain(x => x.Qualifier == staleIntegration);
         integrations.ForEach(
             x => updatedCompetition.NonPriceElements.Interoperability.Should().Contain(y => x == y.Qualifier));
