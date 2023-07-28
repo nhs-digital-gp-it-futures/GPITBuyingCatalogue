@@ -49,8 +49,6 @@ public class Competition
 
     public Weightings Weightings { get; set; }
 
-    public NonPriceElements NonPriceElements { get; set; }
-
     public ICollection<CompetitionSolution> CompetitionSolutions { get; set; }
 
     public ICollection<OdsOrganisation> Recipients { get; set; }

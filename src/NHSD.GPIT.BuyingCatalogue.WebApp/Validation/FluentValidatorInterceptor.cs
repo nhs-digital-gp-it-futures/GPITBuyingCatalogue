@@ -25,18 +25,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation
             }
 
             var validationErrors = errors.Except(delimitedErrors).ToList();
-
-            validationErrors.AddRange(
-                from delimitedError in delimitedErrors
-                from propertyName in delimitedError.PropertyName.Split('|')
-                select new ValidationFailure(propertyName, delimitedError.ErrorMessage)
+            foreach (var delimitedError in delimitedErrors)
+            {
+                foreach (var propertyName in delimitedError.PropertyName.Split('|'))
                 {
-                    AttemptedValue = delimitedError.AttemptedValue,
-                    CustomState = delimitedError.CustomState,
-                    ErrorCode = delimitedError.ErrorCode,
-                    FormattedMessagePlaceholderValues = delimitedError.FormattedMessagePlaceholderValues?.ToDictionary(k => k.Key, v => v.Value),
-                    Severity = delimitedError.Severity,
-                });
+                    var validationError = new ValidationFailure(propertyName, delimitedError.ErrorMessage)
+                    {
+                        AttemptedValue = delimitedError.AttemptedValue,
+                        CustomState = delimitedError.CustomState,
+                        ErrorCode = delimitedError.ErrorCode,
+                        FormattedMessagePlaceholderValues = delimitedError.FormattedMessagePlaceholderValues?.ToDictionary(k => k.Key, v => v.Value),
+                        Severity = delimitedError.Severity,
+                    };
+
+                    validationErrors.Add(validationError);
+                }
+            }
 
             result.Errors.Clear();
             result.Errors.AddRange(validationErrors);

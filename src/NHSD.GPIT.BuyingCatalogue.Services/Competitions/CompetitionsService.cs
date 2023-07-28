@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -27,16 +26,6 @@ public class CompetitionsService : ICompetitionsService
         => await dbContext.Competitions.Include(x => x.CompetitionSolutions)
             .Where(x => x.OrganisationId == organisationId)
             .ToListAsync();
-
-    public async Task<Competition> GetCompetitionWithNonPriceElements(string internalOrgId, int competitionId)
-        => await dbContext.Competitions
-            .Include(x => x.Organisation)
-            .Include(x => x.NonPriceElements.Implementation)
-            .Include(x => x.NonPriceElements.Interoperability)
-            .Include(x => x.NonPriceElements.ServiceLevel)
-            .AsSplitQuery()
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
     public async Task<Competition> GetCompetitionWithWeightings(int organisationId, int competitionId) =>
         await dbContext.Competitions.Include(x => x.Weightings)
@@ -63,9 +52,9 @@ public class CompetitionsService : ICompetitionsService
         return await query.FirstOrDefaultAsync(x => x.OrganisationId == organisationId && x.Id == competitionId);
     }
 
-    public async Task<Competition> GetCompetition(string internalOrgId, int competitionId)
+    public async Task<Competition> GetCompetition(int organisationId, int competitionId)
         => await dbContext.Competitions.AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+            .FirstOrDefaultAsync(x => x.OrganisationId == organisationId && x.Id == competitionId);
 
     public async Task<Competition> GetCompetitionWithRecipients(int organisationId, int competitionId)
         => await dbContext.Competitions.Include(x => x.Recipients)
@@ -118,67 +107,6 @@ public class CompetitionsService : ICompetitionsService
 
         competition.Weightings.Price = priceWeighting;
         competition.Weightings.NonPrice = nonPriceWeighting;
-
-        await dbContext.SaveChangesAsync();
-    }
-
-    public async Task SetImplementationCriteria(string internalOrgId, int competitionId, string requirements)
-    {
-        var competition = await dbContext.Competitions.Include(x => x.NonPriceElements.Implementation)
-            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
-
-        var nonPriceElements = competition.NonPriceElements ??= new NonPriceElements();
-        var implementation = nonPriceElements.Implementation ??= new ImplementationCriteria();
-
-        implementation.Requirements = requirements;
-
-        await dbContext.SaveChangesAsync();
-    }
-
-    public async Task SetInteroperabilityCriteria(
-        string internalOrgId,
-        int competitionId,
-        IEnumerable<string> im1Integrations,
-        IEnumerable<string> gpConnectIntegrations)
-    {
-        var competition = await dbContext.Competitions.Include(x => x.NonPriceElements.Interoperability)
-            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
-
-        var interopEntities = (competition.NonPriceElements ??= new NonPriceElements()).Interoperability;
-
-        var staleEntities = interopEntities.Where(
-            x => !im1Integrations.Contains(x.Qualifier) && !gpConnectIntegrations.Contains(x.Qualifier))
-            .ToList();
-
-        if (staleEntities.Any()) staleEntities.ForEach(x => interopEntities.Remove(x));
-
-        var newInteropEntities = im1Integrations
-            .Select(x => new InteroperabilityCriteria(x, InteropIntegrationType.Im1))
-            .Union(
-                gpConnectIntegrations.Select(x => new InteroperabilityCriteria(x, InteropIntegrationType.GpConnect)))
-            .Where(x => interopEntities.All(y => x.Qualifier != y.Qualifier));
-
-        interopEntities.AddRange(newInteropEntities);
-
-        await dbContext.SaveChangesAsync();
-    }
-
-    public async Task SetServiceLevelCriteria(
-        string internalOrgId,
-        int competitionId,
-        DateTime timeFrom,
-        DateTime timeUntil,
-        string applicableDays)
-    {
-        var competition = await dbContext.Competitions.Include(x => x.NonPriceElements.ServiceLevel)
-            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
-
-        var nonPriceElements = competition.NonPriceElements ??= new NonPriceElements();
-        var serviceLevelCriteria = nonPriceElements.ServiceLevel ??= new ServiceLevelCriteria();
-
-        serviceLevelCriteria.TimeFrom = timeFrom;
-        serviceLevelCriteria.TimeUntil = timeUntil;
-        serviceLevelCriteria.ApplicableDays = applicableDays;
 
         await dbContext.SaveChangesAsync();
     }
@@ -309,7 +237,6 @@ public class CompetitionsService : ICompetitionsService
             .Competitions
             .Include(x => x.Weightings)
             .Include(x => x.Recipients)
-            .Include(x => x.NonPriceElements)
             .AsNoTracking()
             .AsSplitQuery()
             .Where(x => x.OrganisationId == organisationId && x.Id == competitionId)
