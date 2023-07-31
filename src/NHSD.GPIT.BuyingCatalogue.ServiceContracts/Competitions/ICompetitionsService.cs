@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
@@ -13,13 +12,11 @@ public interface ICompetitionsService
 
     Task<bool> Exists(int organisationId, string competitionName);
 
-    Task<Competition> GetCompetition(string internalOrgId, int competitionId);
+    Task<Competition> GetCompetition(int organisationId, int competitionId);
 
     Task<string> GetCompetitionName(int organisationId, int competitionId);
 
     Task<IEnumerable<Competition>> GetCompetitionsDashboard(int organisationId);
-
-    Task<Competition> GetCompetitionWithNonPriceElements(string internalOrgId, int competitionId);
 
     Task<Competition> GetCompetitionWithWeightings(int organisationId, int competitionId);
 
@@ -44,21 +41,6 @@ public interface ICompetitionsService
     Task SetCompetitionCriteria(int organisationId, int competitionId, bool includesNonPrice);
 
     Task SetCompetitionWeightings(int organisationId, int competitionId, int priceWeighting, int nonPriceWeighting);
-
-    Task SetImplementationCriteria(string internalOrgId, int competitionId, string requirements);
-
-    Task SetInteroperabilityCriteria(
-        string internalOrgId,
-        int competitionId,
-        IEnumerable<string> im1Integrations,
-        IEnumerable<string> gpConnectIntegrations);
-
-    Task SetServiceLevelCriteria(
-        string internalOrgId,
-        int competitionId,
-        DateTime timeFrom,
-        DateTime timeUntil,
-        string applicableDays);
 
     Task SetShortlistedSolutions(
         int organisationId,

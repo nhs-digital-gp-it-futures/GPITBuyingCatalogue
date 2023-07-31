@@ -85,7 +85,7 @@ public static class CompetitionSolutionSelectionFilterAttributeTests
         organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
             .ReturnsAsync(organisation);
 
-        competitionsService.Setup(x => x.GetCompetition(organisation.InternalIdentifier, competition.Id))
+        competitionsService.Setup(x => x.GetCompetition(organisation.Id, competition.Id))
             .ReturnsAsync(competition);
 
         context.ActionArguments.Add(CompetitionSolutionSelectionFilterAttribute.InternalOrgIdKey, organisation.InternalIdentifier);
@@ -118,7 +118,7 @@ public static class CompetitionSolutionSelectionFilterAttributeTests
         organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
             .ReturnsAsync(organisation);
 
-        competitionsService.Setup(x => x.GetCompetition(organisation.InternalIdentifier, competition.Id))
+        competitionsService.Setup(x => x.GetCompetition(organisation.Id, competition.Id))
             .ReturnsAsync(competition);
 
         context.ActionArguments.Add(CompetitionSolutionSelectionFilterAttribute.InternalOrgIdKey, organisation.InternalIdentifier);
@@ -151,7 +151,7 @@ public static class CompetitionSolutionSelectionFilterAttributeTests
         organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
             .ReturnsAsync(organisation);
 
-        competitionsService.Setup(x => x.GetCompetition(organisation.InternalIdentifier, competition.Id))
+        competitionsService.Setup(x => x.GetCompetition(organisation.Id, competition.Id))
             .ReturnsAsync(competition);
 
         context.ActionArguments.Add(CompetitionSolutionSelectionFilterAttribute.InternalOrgIdKey, organisation.InternalIdentifier);

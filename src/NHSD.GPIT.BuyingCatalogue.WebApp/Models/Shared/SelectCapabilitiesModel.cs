@@ -19,7 +19,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared
         {
         }
 
-        public SelectCapabilitiesModel(List<Capability> capabilities, string selectedIds = null, bool isFilter = false)
+        public SelectCapabilitiesModel(
+            List<Capability> capabilities,
+            string selectedIds = null)
         {
             Groups = capabilities
                 .Select(x => x.Category.Id)
@@ -39,16 +41,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared
                 Selected = selected.Contains(x.Id),
             }).ToArray();
 
-            if (isFilter)
-            {
-                Title = "Filter by Capabilities for Catalogue Solutions";
-                Advice = "Capabilities describe business needs. Select the ones you want a Catalogue Solution to address.";
-            }
-            else
-            {
-                Title = "Capabilities for this supplier defined Epic";
-                Advice = "Select the Capabilities relating to this supplier defined Epic.";
-            }
+            Title = "Capabilities for this supplier defined Epic";
+            Advice = "Select the Capabilities relating to this supplier defined Epic.";
 
             Total = capabilities.Count;
         }

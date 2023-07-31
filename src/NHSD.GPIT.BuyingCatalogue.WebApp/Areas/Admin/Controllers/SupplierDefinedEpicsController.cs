@@ -125,7 +125,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (epic is null)
                 return BadRequest($"No Supplier defined Epic found for Id: {epicId}");
 
-            var capabilities = await capabilitiesService.GetCapabilities();
             var relatedItems = await supplierDefinedEpicsService.GetItemsReferencingEpic(epicId);
 
             var model = new EditSupplierDefinedEpicModel(epic, relatedItems)
@@ -161,7 +160,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var model = new SelectCapabilitiesModel(capabilities, selectedCapabilityIds)
             {
                 BackLink = Url.Action(nameof(EditSupplierDefinedEpic), new { epicId }),
-                IsFilter = false,
             };
 
             return View("Views/Shared/SelectCapabilities.cshtml", model.WithSelectListCapabilities(capabilities));
@@ -183,7 +181,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 var newModel = new SelectCapabilitiesModel(capabilities, selectedCapabilityIds)
                 {
                     BackLink = Url.Action(nameof(EditSupplierDefinedEpic), new { epicId }),
-                    IsFilter = false,
                 };
 
                 return View("Views/Shared/SelectCapabilities.cshtml", newModel.WithSelectListCapabilities(capabilities));

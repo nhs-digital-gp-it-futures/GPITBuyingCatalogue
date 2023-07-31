@@ -49,17 +49,5 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
                         && dbContext.CatalogueItemEpics.Any(y => y.EpicId == x.Id))
                 .ToListAsync();
         }
-
-        public async Task<string> GetEpicsForSelectedCapabilities(
-            IEnumerable<int> capabilityIds,
-            IEnumerable<string> epicIds)
-        {
-            var epics = await dbContext.Epics
-                .AsNoTracking()
-                .Where(x => epicIds.Contains(x.Id) && x.Capabilities.Any(y => capabilityIds.Contains(y.Id)))
-                .ToListAsync();
-
-            return epics.Select(e => e.Id).ToFilterString();
-        }
     }
 }

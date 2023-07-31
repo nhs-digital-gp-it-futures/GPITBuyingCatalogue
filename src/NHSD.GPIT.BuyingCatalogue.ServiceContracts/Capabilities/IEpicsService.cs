@@ -9,7 +9,5 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities
         Task<List<Epic>> GetEpicsByIds(IEnumerable<string> epicIds);
 
         Task<List<Epic>> GetReferencedEpicsByCapabilityIds(IEnumerable<int> capabilityIds);
-
-        Task<string> GetEpicsForSelectedCapabilities(IEnumerable<int> capabilityIds, IEnumerable<string> epicIds);
     }
 }

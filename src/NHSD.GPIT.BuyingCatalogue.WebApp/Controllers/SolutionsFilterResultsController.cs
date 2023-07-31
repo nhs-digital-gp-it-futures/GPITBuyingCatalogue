@@ -44,8 +44,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             if (filter == null || filterIds == null)
                 return NotFound();
 
-            var selectedCapabilityIds = filterIds.CapabilityIds.ToFilterString();
-            var selectedEpicIds = filterIds.EpicIds.ToFilterString();
             var selectedFrameworkId = filterIds.FrameworkId;
             var selectedApplicationTypeIds = filterIds.ApplicationTypeIds.ToFilterString();
             var selectedHostingTypeIds = filterIds.HostingTypeIds.ToFilterString();
@@ -53,8 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             var (catalogueItems, _, capabilitiesAndCount) =
                 await solutionsFilterService.GetAllSolutionsFiltered(
                     null,
-                    selectedCapabilityIds,
-                    selectedEpicIds,
+                    filterIds.CapabilityAndEpicIds,
                     null,
                     selectedFrameworkId,
                     selectedApplicationTypeIds,

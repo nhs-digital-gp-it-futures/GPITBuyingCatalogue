@@ -53,13 +53,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public CapabilityStatus Status { get; set; }
 
-        public IReadOnlyCollection<Epic> GetActiveMustEpics() => CapabilityEpics
-            .Where(c => c.Epic.IsActive && c.CompliancyLevel == CompliancyLevel.Must)
+        public IReadOnlyCollection<Epic> GetAllMustEpics() => CapabilityEpics
+            .Where(c => c.CompliancyLevel == CompliancyLevel.Must)
             .Select(c => c.Epic)
             .ToList();
 
-        public IReadOnlyCollection<Epic> GetActiveMayEpics() => CapabilityEpics
-            .Where(c => c.Epic.IsActive && c.CompliancyLevel == CompliancyLevel.May)
+        public IReadOnlyCollection<Epic> GetAllMayEpics() => CapabilityEpics
+            .Where(c => c.CompliancyLevel == CompliancyLevel.May)
             .Select(c => c.Epic)
             .ToList();
     }

@@ -95,7 +95,7 @@ public class CompetitionRecipientsController : Controller
     public async Task<IActionResult> ConfirmRecipients(string internalOrgId, int competitionId, string recipientIds)
     {
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-        var competition = await competitionsService.GetCompetition(internalOrgId, competitionId);
+        var competition = await competitionsService.GetCompetition(organisation.Id, competitionId);
 
         var recipientOdsCodes = recipientIds.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 

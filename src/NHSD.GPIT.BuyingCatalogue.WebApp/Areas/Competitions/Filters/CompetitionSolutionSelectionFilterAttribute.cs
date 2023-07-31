@@ -25,9 +25,11 @@ public class CompetitionSolutionSelectionFilterAttribute : ActionFilterAttribute
             return;
         }
 
+        var organisationService = context.HttpContext.RequestServices.GetRequiredService<IOrganisationsService>();
         var competitionsService = context.HttpContext.RequestServices.GetRequiredService<ICompetitionsService>();
 
-        var competition = await competitionsService.GetCompetition(internalOrgId.ToString(), competitionId);
+        var organisation = await organisationService.GetOrganisationByInternalIdentifier(internalOrgId.ToString());
+        var competition = await competitionsService.GetCompetition(organisation.Id, competitionId);
 
         if (competition.IsShortlistAccepted || competition.Completed.HasValue)
         {

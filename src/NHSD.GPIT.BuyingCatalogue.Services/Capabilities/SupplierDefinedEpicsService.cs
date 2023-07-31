@@ -67,8 +67,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             epic.IsActive = epicModel.IsActive;
             List<Capability> capabilities = await GetCapabilities(epicModel);
 
-            epic.Capabilities.Clear();
-            epic.Capabilities = capabilities;
+            var capabilityEpics = capabilities.Select(c => new CapabilityEpic()
+            {
+                CapabilityId = c.Id,
+                Epic = epic,
+                CompliancyLevel = CompliancyLevel.May,
+            });
+
+            epic.CapabilityEpics.Clear();
+            epic.CapabilityEpics.AddRange(capabilityEpics);
 
             await dbContext.SaveChangesAsync();
         }

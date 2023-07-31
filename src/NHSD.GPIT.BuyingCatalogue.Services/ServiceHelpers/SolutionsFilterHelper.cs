@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
@@ -15,9 +16,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers
                 .Select(int.Parse)
                 .ToList() ?? new List<int>();
 
-        public static ICollection<string> ParseEpicIds(string epicIds) =>
-            epicIds?.Split(FilterConstants.Delimiter, StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries)
-        .ToList() ?? new List<string>();
+        public static Dictionary<int, string[]> ParseCapabilityAndEpicIds(string capabilityAndEpicsFilterString)
+        {
+            var capabilityAndEpics = capabilityAndEpicsFilterString?
+                .Split(FilterConstants.GroupDelimiter, StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries)
+                ?? Array.Empty<string>();
+
+            return new Dictionary<int, string[]>(capabilityAndEpics
+                .Select(x => x.Split(FilterConstants.Delimiter, StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries))
+                .Where(x => int.TryParse(x[0], out _))
+                .Select(x => new KeyValuePair<int, string[]>(int.Parse(x[0], CultureInfo.InvariantCulture), x.Skip(1).ToArray())));
+        }
 
         public static ICollection<ApplicationType> ParseApplicationTypeIds(string applicationTypeIds) =>
             applicationTypeIds?.Split(FilterConstants.Delimiter, StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries)

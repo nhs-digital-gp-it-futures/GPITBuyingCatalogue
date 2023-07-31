@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -56,11 +55,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             SolutionsController controller)
         {
             var itemsToReturn = new List<CatalogueItem>() { solution.CatalogueItem };
+            var capcabilitiesAndEpics = new Dictionary<int, string[]> { };
 
-            mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), null, null, null, null, null, null))
+            mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), capcabilitiesAndEpics, null, null, null, null))
                 .ReturnsAsync((itemsToReturn, options, new List<CapabilitiesAndCountModel>()));
 
-            await controller.Index(options.PageNumber.ToString(), options.Sort.ToString(), null, null, null, null, null, null, null);
+            await controller.Index(options.PageNumber.ToString(), options.Sort.ToString(), null, null, null, null, null, null);
 
             mockService.VerifyAll();
         }
@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             AdditionalFiltersModel additionalFilters,
             SolutionsController controller)
         {
-            var result = controller.Index(solutionModel, null, null, null, null, null, null, additionalFilters, null);
+            var result = controller.Index(solutionModel, null, null, null, null, null, additionalFilters, null);
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
@@ -83,8 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 { "page", null },
                 { "sortBy", null },
                 { "search", null },
-                { "selectedCapabilityIds", null },
-                { "selectedEpicIds", null },
+                { "selected", null },
                 { "selectedFrameworkId", null },
                 { "selectedApplicationTypeIds", additionalFilters.CombineSelectedOptions(additionalFilters.ApplicationTypeOptions) },
                 { "selectedHostingTypeIds", additionalFilters.CombineSelectedOptions(additionalFilters.HostingTypeOptions) },
@@ -109,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .Setup(x => x.GetFilterDetails(It.IsAny<int>(), It.IsAny<int>()))
                 .ReturnsAsync((FilterDetailsModel)null);
 
-            var result = await controller.Index(options.PageNumber.ToString(), options.Sort.ToString(), null, null, null, null, null, null, int.MaxValue);
+            var result = await controller.Index(options.PageNumber.ToString(), options.Sort.ToString(), null, null, null, null, null, int.MaxValue);
             result.Should().BeOfType<NotFoundResult>();
         }
 

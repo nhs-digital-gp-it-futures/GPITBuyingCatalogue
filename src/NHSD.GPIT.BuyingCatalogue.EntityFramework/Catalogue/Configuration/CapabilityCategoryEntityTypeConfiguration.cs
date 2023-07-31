@@ -11,7 +11,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
         {
             builder.ToTable("CapabilityCategories", Schemas.Catalogue);
 
-            builder.Property(c => c.Id).ValueGeneratedNever();
+            builder.HasKey(c => c.Id);
+            builder.Property(c => c.Id).ValueGeneratedOnAdd();
 
             builder.Property(c => c.Name)
                 .IsRequired()

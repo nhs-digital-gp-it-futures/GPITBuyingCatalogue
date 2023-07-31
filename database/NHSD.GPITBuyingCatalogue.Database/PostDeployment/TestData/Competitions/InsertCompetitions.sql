@@ -12,10 +12,6 @@ BEGIN
     INSERT [competitions].[Competitions] ([Id], [Name], [Description], [FilterId], [OrganisationId], [LastUpdated], [ShortlistAccepted], [Completed], [IsDeleted], [ContractLength], [IncludesNonPrice]) VALUES (6, N'Competition at Task List - Contract Length Completed', N'This competition will take you directly to the task list at the award criteria stage', 2, @organisationId, GETUTCDATE(), GETUTCDATE(), NULL, 0, 24, NULL)
     INSERT [competitions].[Competitions] ([Id], [Name], [Description], [FilterId], [OrganisationId], [LastUpdated], [ShortlistAccepted], [Completed], [IsDeleted], [ContractLength], [IncludesNonPrice]) VALUES (7, N'Competition at Task List - Price Only', N'This competition will take you directly to the task list for a price only award criteria', 2, @organisationId, GETUTCDATE(), GETUTCDATE(), NULL, 0, 22, 0)
     INSERT [competitions].[Competitions] ([Id], [Name], [Description], [FilterId], [OrganisationId], [LastUpdated], [ShortlistAccepted], [Completed], [IsDeleted], [ContractLength], [IncludesNonPrice]) VALUES (8, N'Competition at Task List - Price and Non-price', N'This competition will take you directly to the task list for a price and non-price award criteria', 2, @organisationId, GETUTCDATE(), GETUTCDATE(), NULL, 0, 15, 1)
-    INSERT [competitions].[Competitions] ([Id], [Name], [Description], [FilterId], [OrganisationId], [LastUpdated], [ShortlistAccepted], [Completed], [IsDeleted], [ContractLength], [IncludesNonPrice]) VALUES (9, N'Competition - Interop non-price elements', N'This competition will take you directly to the task list with Interoperability non-price elements', 2, @organisationId, GETUTCDATE(), GETUTCDATE(), NULL, 0, 15, 1)
-    INSERT [competitions].[Competitions] ([Id], [Name], [Description], [FilterId], [OrganisationId], [LastUpdated], [ShortlistAccepted], [Completed], [IsDeleted], [ContractLength], [IncludesNonPrice]) VALUES (10, N'Competition - Implementation non-price element', N'This competition will take you directly to the task list with an Implementation non-price element', 2, @organisationId, GETUTCDATE(), GETUTCDATE(), NULL, 0, 15, 1)
-    INSERT [competitions].[Competitions] ([Id], [Name], [Description], [FilterId], [OrganisationId], [LastUpdated], [ShortlistAccepted], [Completed], [IsDeleted], [ContractLength], [IncludesNonPrice]) VALUES (11, N'Competition - Service Level non-price element', N'This competition will take you directly to the task list with a Service Level non-price element', 2, @organisationId, GETUTCDATE(), GETUTCDATE(), NULL, 0, 15, 1)
-    INSERT [competitions].[Competitions] ([Id], [Name], [Description], [FilterId], [OrganisationId], [LastUpdated], [ShortlistAccepted], [Completed], [IsDeleted], [ContractLength], [IncludesNonPrice]) VALUES (12, N'Competition - All non-price elements', N'This competition will take you directly to the task list with all non-price elements selected', 2, @organisationId, GETUTCDATE(), GETUTCDATE(), NULL, 0, 15, 1)
     SET IDENTITY_INSERT [competitions].[Competitions] OFF
 
     INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (1, N'10000-001', 0, NULL)
@@ -74,34 +70,6 @@ BEGIN
     INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (8, N'10030-001', 1, NULL)
     INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (8, N'10052-002', 1, NULL)
     INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (8, N'99999-89', 1, NULL)
-    INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (9, N'10000-001', 1, NULL)
-    INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (9, N'10000-002', 1, NULL)
-    INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (9, N'10000-062', 0, N'Test data')
-    INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (9, N'10029-003', 1, NULL)
-    INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (9, N'10030-001', 1, NULL)
-    INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (9, N'10052-002', 0, N'Test data')
-    INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (9, N'99999-89', 1, NULL)
-    INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (10, N'10000-001', 1, NULL)
-    INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (10, N'10000-002', 1, NULL)
-    INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (10, N'10000-062', 0, N'Test data')
-    INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (10, N'10029-003', 1, NULL)
-    INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (10, N'10030-001', 1, NULL)
-    INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (10, N'10052-002', 0, N'Test data')
-    INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (10, N'99999-89', 1, NULL)
-    INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (11, N'10000-001', 1, NULL)
-    INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (11, N'10000-002', 1, NULL)
-    INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (11, N'10000-062', 0, N'Test data')
-    INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (11, N'10029-003', 1, NULL)
-    INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (11, N'10030-001', 1, NULL)
-    INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (11, N'10052-002', 0, N'Test data')
-    INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (11, N'99999-89', 1, NULL)
-    INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (12, N'10000-001', 1, NULL)
-    INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (12, N'10000-002', 1, NULL)
-    INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (12, N'10000-062', 0, N'Test data')
-    INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (12, N'10029-003', 1, NULL)
-    INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (12, N'10030-001', 1, NULL)
-    INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (12, N'10052-002', 0, N'Test data')
-    INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (12, N'99999-89', 1, NULL)
 
     BEGIN -- Service Recipients
         INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'A99905')
@@ -651,30 +619,6 @@ BEGIN
         INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (8, N'Y05799')
         INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (8, N'Y06862')
         INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (8, N'Y07199')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (9, N'B87003')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (9, N'B87020')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (9, N'B87021')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (9, N'B87025')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (9, N'B87044')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (9, N'Y01953')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (10, N'B87003')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (10, N'B87020')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (10, N'B87021')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (10, N'B87025')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (10, N'B87044')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (10, N'Y01953')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (11, N'B87003')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (11, N'B87020')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (11, N'B87021')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (11, N'B87025')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (11, N'B87044')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (11, N'Y01953')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (12, N'B87003')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (12, N'B87020')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (12, N'B87021')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (12, N'B87025')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (12, N'B87044')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (12, N'Y01953')
     END
 
     INSERT [competitions].[RequiredServices] ([CompetitionId], [SolutionId], [ServiceId]) VALUES (1, N'10000-001', N'10000-001A003')
@@ -693,43 +637,6 @@ BEGIN
     INSERT [competitions].[RequiredServices] ([CompetitionId], [SolutionId], [ServiceId]) VALUES (7, N'10000-001', N'10000-001A005')
     INSERT [competitions].[RequiredServices] ([CompetitionId], [SolutionId], [ServiceId]) VALUES (8, N'10000-001', N'10000-001A003')
     INSERT [competitions].[RequiredServices] ([CompetitionId], [SolutionId], [ServiceId]) VALUES (8, N'10000-001', N'10000-001A005')
-    INSERT [competitions].[RequiredServices] ([CompetitionId], [SolutionId], [ServiceId]) VALUES (9, N'10000-001', N'10000-001A003')
-    INSERT [competitions].[RequiredServices] ([CompetitionId], [SolutionId], [ServiceId]) VALUES (9, N'10000-001', N'10000-001A005')
-    INSERT [competitions].[RequiredServices] ([CompetitionId], [SolutionId], [ServiceId]) VALUES (10, N'10000-001', N'10000-001A003')
-    INSERT [competitions].[RequiredServices] ([CompetitionId], [SolutionId], [ServiceId]) VALUES (10, N'10000-001', N'10000-001A005')
-    INSERT [competitions].[RequiredServices] ([CompetitionId], [SolutionId], [ServiceId]) VALUES (11, N'10000-001', N'10000-001A003')
-    INSERT [competitions].[RequiredServices] ([CompetitionId], [SolutionId], [ServiceId]) VALUES (11, N'10000-001', N'10000-001A005')
-    INSERT [competitions].[RequiredServices] ([CompetitionId], [SolutionId], [ServiceId]) VALUES (12, N'10000-001', N'10000-001A003')
-    INSERT [competitions].[RequiredServices] ([CompetitionId], [SolutionId], [ServiceId]) VALUES (12, N'10000-001', N'10000-001A005')
-
-    INSERT [competitions].[Weightings] ([CompetitionId], [NonPrice], [Price]) VALUES (9, 50, 50), (10, 45, 55), (11, 50, 50), (12, 50, 50);
-
-    SET IDENTITY_INSERT [competitions].[ImplementationCriteria] ON
-    INSERT [competitions].[ImplementationCriteria] ([Id], [Requirements]) VALUES (1, N'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua')
-    INSERT [competitions].[ImplementationCriteria] ([Id], [Requirements]) VALUES (2, N'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua')
-    SET IDENTITY_INSERT [competitions].[ImplementationCriteria] OFF
-
-    SET IDENTITY_INSERT [competitions].[ServiceLevelCriteria] ON
-    INSERT [competitions].[ServiceLevelCriteria] ([Id], [TimeFrom], [TimeUntil], [ApplicableDays]) VALUES (1, GETUTCDATE(), GETUTCDATE(), N'Monday - Friday')
-    INSERT [competitions].[ServiceLevelCriteria] ([Id], [TimeFrom], [TimeUntil], [ApplicableDays]) VALUES (2, GETUTCDATE(), GETUTCDATE(), N'Monday - Friday')
-    SET IDENTITY_INSERT [competitions].[ServiceLevelCriteria] OFF
-    
-    SET IDENTITY_INSERT [competitions].[NonPriceElements] ON
-    INSERT [competitions].[NonPriceElements] ([Id], [CompetitionId], [ImplementationId], [ServiceLevelId], [LastUpdated]) VALUES (0, 9, NULL, NULL, GETUTCDATE())
-    INSERT [competitions].[NonPriceElements] ([Id], [CompetitionId], [ImplementationId], [ServiceLevelId], [LastUpdated]) VALUES (1, 10, 1, NULL, GETUTCDATE())
-    INSERT [competitions].[NonPriceElements] ([Id], [CompetitionId], [ImplementationId], [ServiceLevelId], [LastUpdated]) VALUES (2, 11, NULL, 1, GETUTCDATE())
-    INSERT [competitions].[NonPriceElements] ([Id], [CompetitionId], [ImplementationId], [ServiceLevelId], [LastUpdated]) VALUES (3, 12, 2, 2, GETUTCDATE())
-    SET IDENTITY_INSERT [competitions].[NonPriceElements] OFF
-
-    SET IDENTITY_INSERT [competitions].[InteroperabilityCriteria] ON
-    INSERT [competitions].[InteroperabilityCriteria] ([Id], [NonPriceElementsId], [Qualifier], [IntegrationType]) VALUES (0, 0, N'Appointment Booking', 1)
-    INSERT [competitions].[InteroperabilityCriteria] ([Id], [NonPriceElementsId], [Qualifier], [IntegrationType]) VALUES (1, 0, N'Structured Record', 1)
-    INSERT [competitions].[InteroperabilityCriteria] ([Id], [NonPriceElementsId], [Qualifier], [IntegrationType]) VALUES (2, 0, N'Patient Facing', 0)
-    INSERT [competitions].[InteroperabilityCriteria] ([Id], [NonPriceElementsId], [Qualifier], [IntegrationType]) VALUES (3, 3, N'Patient Facing', 0)
-    INSERT [competitions].[InteroperabilityCriteria] ([Id], [NonPriceElementsId], [Qualifier], [IntegrationType]) VALUES (4, 3, N'Appointment Booking', 1)
-    INSERT [competitions].[InteroperabilityCriteria] ([Id], [NonPriceElementsId], [Qualifier], [IntegrationType]) VALUES (5, 3, N'Structured Record', 1)
-    INSERT [competitions].[InteroperabilityCriteria] ([Id], [NonPriceElementsId], [Qualifier], [IntegrationType]) VALUES (6, 3, N'Patient Facing', 0)
-    SET IDENTITY_INSERT [competitions].[InteroperabilityCriteria] OFF
 
 END
 GO
