@@ -34,5 +34,11 @@ public sealed class NonPriceElementsEntityTypeConfiguration : IEntityTypeConfigu
             .HasForeignKey(x => x.NonPriceElementsId)
             .HasConstraintName("FK_InteroperabilityCriteria_NonPriceElements")
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(x => x.NonPriceWeights)
+            .WithOne()
+            .HasForeignKey<NonPriceWeights>(x => x.NonPriceElementsId)
+            .HasConstraintName("FK_Weightings_NonPriceElements")
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

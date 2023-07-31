@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
@@ -348,5 +349,65 @@ public static class CompetitionNonPriceElementsControllerTests
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Index));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task Weights_ReturnsViewWithModel(
+        string internalOrgId,
+        Competition competition,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionNonPriceElementsController controller)
+    {
+        competitionsService.Setup(x => x.GetCompetitionWithNonPriceElements(internalOrgId, competition.Id))
+            .ReturnsAsync(competition);
+
+        var expectedModel = new NonPriceElementWeightsModel(competition);
+
+        var result = (await controller.Weights(internalOrgId, competition.Id)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task Weights_InvalidModel_ReturnsViewWithModel(
+        string internalOrgId,
+        int competitionId,
+        NonPriceElementWeightsModel model,
+        CompetitionNonPriceElementsController controller)
+    {
+        controller.ModelState.AddModelError("some-key", "some-error");
+
+        var result = (await controller.Weights(internalOrgId, competitionId, model)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().Be(model);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task Weights_Valid_SetsNonPriceWeights(
+        string internalOrgId,
+        int competitionId,
+        NonPriceElementWeightsModel model,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionNonPriceElementsController controller)
+    {
+        var result = (await controller.Weights(internalOrgId, competitionId, model)).As<RedirectToActionResult>();
+
+        competitionsService.Verify(
+            x => x.SetNonPriceWeights(
+                internalOrgId,
+                competitionId,
+                model.Implementation.GetValueOrDefault(),
+                model.Interoperability.GetValueOrDefault(),
+                model.ServiceLevel.GetValueOrDefault()),
+            Times.Once());
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(CompetitionTaskListController.Index));
+        result.ControllerName.Should().Be(typeof(CompetitionTaskListController).ControllerName());
     }
 }

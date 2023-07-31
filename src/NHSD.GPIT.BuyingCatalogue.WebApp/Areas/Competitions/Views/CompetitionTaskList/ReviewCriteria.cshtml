@@ -1,0 +1,32 @@
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.Shared
+@model CompetitionReviewCriteriaModel
+
+@{
+    ViewBag.Title = "Review competition criteria";
+    var editRouteValues = new { internalOrgId = Model.InternalOrgId, competitionId = Model.CompetitionId, returnUrl = Url.ActionLink() };
+
+    var editPriceWeightings = Url.Action(nameof(CompetitionTaskListController.Weightings), typeof(CompetitionTaskListController).ControllerName(), editRouteValues);
+}
+
+<partial name="Partials/_BackLink" model="Model"/>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.CompetitionName"
+                        advice="Review the weightings you’ve applied to your competition and the details of any non-price elements you’ve added."/>
+
+        <h2 class="nhsuk-heading-m">Weightings</h2>
+        <nhs-summary-list>
+            <nhs-summary-list-row label-text="Price" action="@("Edit", editPriceWeightings)">@Model.CompetitionWeights.Price%</nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Non-price" action="@("Edit", editPriceWeightings)">@Model.CompetitionWeights.NonPrice%</nhs-summary-list-row>
+        </nhs-summary-list>
+
+        <partial name="Partials/_NonPriceElements" model="@(new NonPriceElementsPartialModel(Model.NonPriceElements, editRouteValues))"/>
+        <br/>
+
+        <form method="post">
+            <nhs-submit-button text="Continue"/>
+        </form>
+    </div>
+</div>

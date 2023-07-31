@@ -1,0 +1,45 @@
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
+@model NonPriceElementScoresDashboardModel
+
+@{
+    ViewBag.Title = "Compare and score shortlisted solutions";
+}
+
+<partial name="Partials/_BackLink" model="Model"/>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="@ViewBag.Title"
+                        advice="Compare and score shortlisted solutions based on the non-price elements you’ve added."
+                        caption="@Model.CompetitionName"/>
+
+        @if (!Model.NonPriceElements.Any())
+        {
+            <p>No non-price elements have been added to this competition yet.</p>
+        }
+        else
+        {
+            <nhs-table>
+                <nhs-table-column>Non-price element</nhs-table-column>
+                <nhs-table-column>Status</nhs-table-column>
+                <nhs-table-column>Action</nhs-table-column>
+
+                @foreach (var nonPriceElement in Model.NonPriceElements.OrderBy(x => x.Key.EnumMemberName()))
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>@nonPriceElement.Key.EnumMemberName()</nhs-table-cell>
+                        <nhs-table-cell>
+                            <nhs-tag status-enum="@nonPriceElement.Value"/>
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <a href="@Url.Action(nonPriceElement.Key.ToString(), typeof(CompetitionScoringController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId })">Edit</a>
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+            </nhs-table>
+        }
+
+        <br />
+        <vc:nhs-secondary-button type="Primary" text="Continue" url="@Model.BackLink"/>
+    </div>
+</div>

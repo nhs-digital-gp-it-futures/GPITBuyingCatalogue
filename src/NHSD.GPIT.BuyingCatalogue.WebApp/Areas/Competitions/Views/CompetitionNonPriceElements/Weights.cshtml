@@ -1,0 +1,55 @@
+@model NonPriceElementWeightsModel
+
+@{
+    ViewBag.Title = "How would you like to weight your non-price elements for this competition?";
+}
+
+
+<partial name="Partials/_BackLink" model="Model"/>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.CompetitionName"
+                        advice="Give your chosen non-price elements weightings based on how important they are to you."/>
+
+        <form method="post">
+            <input type="hidden" asp-for="BackLink"/>
+            <input type="hidden" asp-for="CompetitionName"/>
+            <input type="hidden" asp-for="HasImplementation"/>
+            <input type="hidden" asp-for="HasInteroperability"/>
+            <input type="hidden" asp-for="HasServiceLevel"/>
+
+            @if (Model.HasImplementation)
+            {
+                <nhs-bookended-input asp-for="Implementation"
+                                     label-text="Implementation weighting as a percentage"
+                                     label-hint="Enter a percentage in multiples of 5. The total weightings must add up to 100%."
+                                     Suffix="%" />
+            }
+
+            @if (Model.HasInteroperability)
+            {
+                <nhs-bookended-input asp-for="Interoperability"
+                                     label-text="Interoperability weighting as a percentage"
+                                     label-hint="Enter a percentage in multiples of 5. The total weightings must add up to 100%."
+                                     Suffix="%" />
+            }
+
+            @if (Model.HasServiceLevel)
+            {
+                <nhs-bookended-input asp-for="ServiceLevel"
+                                     label-text="Service level weighting as a percentage"
+                                     label-hint="Enter a percentage in multiples of 5. The total weightings must add up to 100%."
+                                     Suffix="%" />
+            }
+
+            <br/>
+            <div>
+                <nhs-submit-button/>
+            </div>
+        </form>
+
+    </div>
+</div>
