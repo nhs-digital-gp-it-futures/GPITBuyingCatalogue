@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.SupplierDefine
 
             RuleFor(m => m.Name)
                 .NotEmpty()
-                .WithMessage("Enter an Epic name");
+                .WithMessage("Enter a name");
 
             RuleFor(m => m.Description)
                 .NotEmpty()

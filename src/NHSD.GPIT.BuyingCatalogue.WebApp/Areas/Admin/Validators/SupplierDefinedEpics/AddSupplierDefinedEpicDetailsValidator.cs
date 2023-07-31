@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.SupplierDefine
 
             RuleFor(m => m.Name)
                 .NotEmpty()
-                .WithMessage("Enter an Epic name");
+                .WithMessage("Enter a name");
 
             RuleFor(m => m.Description)
                 .NotEmpty()
@@ -31,7 +31,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.SupplierDefine
                 .Must(NotBeADuplicateEpic)
                 .WithMessage("An Epic with this name already exists. Try another name")
                 .OverridePropertyName(
-                    m => m.Id,
                     m => m.Name);
 
             RuleFor(m => m.SelectedCapabilityIds)
