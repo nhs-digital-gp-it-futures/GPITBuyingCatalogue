@@ -60,10 +60,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("select-capabilities")]
-        public async Task<IActionResult> SelectCapabilities()
+        public async Task<IActionResult> SelectCapabilities(string selectedCapabilityIds = null)
         {
             var capabilities = await capabilitiesService.GetCapabilities();
-            var model = new SelectCapabilitiesModel(capabilities)
+            var model = new SelectCapabilitiesModel(capabilities, selectedCapabilityIds)
             {
                 BackLink = Url.Action(nameof(Dashboard)),
             };
@@ -98,8 +98,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var model = new AddSupplierDefinedEpicDetailsModel()
             {
-                BackLink = Url.Action(nameof(Dashboard)),
-                SelectedCapabilityIds = selectedCapabilityIds,
+                BackLink = Url.Action(
+                    nameof(SelectCapabilities),
+                    typeof(SupplierDefinedEpicsController).ControllerName(),
+                    new { selectedCapabilityIds }),
             };
             return View(model);
         }

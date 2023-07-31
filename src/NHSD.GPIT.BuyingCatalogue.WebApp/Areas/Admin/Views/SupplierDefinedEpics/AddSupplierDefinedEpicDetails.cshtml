@@ -7,7 +7,7 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary RadioId="IsActive" />
         <nhs-page-title title="@ViewBag.Title"
-                        advice="Provide the following details about the supplier defined Epic." />
+                        advice="Provide the following details for this supplier defined Epic." />
 
         <form method="post">
             <input type="hidden" asp-for="BackLink" />
@@ -16,8 +16,8 @@
             <input type="hidden" asp-for="Id"/>
 
             <nhs-input asp-for="Name"
-                       label-text="Epic name"
-                       label-hint="Provide a name for this supplier defined Epic." />
+                       label-text="Name"
+                       label-hint="Provide a unique name for this supplier defined Epic." />
 
             <nhs-textarea asp-for="Description"
                        label-text="Description"
