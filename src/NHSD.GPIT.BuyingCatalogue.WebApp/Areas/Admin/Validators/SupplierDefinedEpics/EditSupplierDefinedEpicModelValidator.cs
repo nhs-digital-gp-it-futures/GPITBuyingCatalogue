@@ -28,13 +28,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.SupplierDefine
 
             RuleFor(m => m)
                 .Must(NotBeADuplicateEpic)
-                .WithMessage("A supplier defined Epic with these details already exists")
+                .WithMessage("An Epic with this name already exists. Try another name")
                 .When(m => m.IsActive.HasValue)
                 .OverridePropertyName(
-                    m => m.Id,
-                    m => m.Name,
-                    m => m.Description,
-                    m => m.IsActive);
+                    m => m.Name);
 
             RuleFor(m => m.IsActive)
                 .Must(NotBeReferencedByAnySolutions)
@@ -54,11 +51,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.SupplierDefine
 
         private bool NotBeADuplicateEpic(AddSupplierDefinedEpicDetailsModel model)
         {
-            return !supplierDefinedEpicsService.EpicExists(
+            return !supplierDefinedEpicsService.EpicWithNameExists(
                 model.Id,
-                model.Name,
-                model.Description,
-                model.IsActive!.Value).GetAwaiter().GetResult();
+                model.Name).GetAwaiter().GetResult();
         }
     }
 }

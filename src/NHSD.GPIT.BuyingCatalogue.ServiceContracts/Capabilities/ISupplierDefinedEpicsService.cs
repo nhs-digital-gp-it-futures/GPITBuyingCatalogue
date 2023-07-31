@@ -19,6 +19,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities
 
         Task<bool> EpicExists(string epicId, string name, string description, bool isActive);
 
+        Task<bool> EpicWithNameExists(string epicId, string name);
+
         Task<Epic> GetEpic(string epicId);
 
         Task<List<CatalogueItem>> GetItemsReferencingEpic(string epicId);

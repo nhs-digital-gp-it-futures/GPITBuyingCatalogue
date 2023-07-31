@@ -104,6 +104,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
                    && e.IsActive == isActive
                    && e.SupplierDefined == true);
 
+        public Task<bool> EpicWithNameExists(
+            string epicId,
+            string name) =>
+            dbContext
+               .Epics
+               .AnyAsync(e =>
+                   e.Id != epicId
+                   && e.Name == name
+                   && e.SupplierDefined == true);
+
         public Task<List<Epic>> GetSupplierDefinedEpics()
             => dbContext
                 .Epics
