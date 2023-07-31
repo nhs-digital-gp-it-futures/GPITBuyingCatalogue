@@ -72,12 +72,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost("select-capabilities")]
-        public IActionResult SelectCapabilities(
+        public async Task<IActionResult> SelectCapabilities(
             SelectCapabilitiesModel model)
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                var capabilities = await capabilitiesService.GetCapabilities();
+                var newModel = new SelectCapabilitiesModel(capabilities)
+                {
+                    BackLink = Url.Action(nameof(Dashboard)),
+                };
+                return View(newModel.WithSelectListCapabilities(capabilities));
             }
 
             var selectedCapabilityIds = EncodeIdString(model.SelectedItems);
