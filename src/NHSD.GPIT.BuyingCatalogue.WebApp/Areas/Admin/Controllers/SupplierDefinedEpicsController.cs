@@ -75,6 +75,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public IActionResult SelectCapabilities(
             SelectCapabilitiesModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
             var selectedCapabilityIds = EncodeIdString(model.SelectedItems);
 
             return RedirectToAction(

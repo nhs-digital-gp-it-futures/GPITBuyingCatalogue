@@ -7,15 +7,20 @@ using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SupplierDefinedEpics;
+using NHSD.GPIT.BuyingCatalogue.Services.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 using Xunit;
 
@@ -156,10 +161,50 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_AddEpic_ReturnsModel(
+        public static async Task Get_SelectCapabilities_ReturnsModel(
             SupplierDefinedEpicsController controller)
         {
-            var result = (await controller.AddSupplierDefinedEpicDetails()).As<ViewResult>();
+            var result = (await controller.SelectCapabilities()).As<ViewResult>();
+
+            result.Should().NotBeNull();
+
+            var model = result.Model.As<SelectCapabilitiesModel>();
+
+            model.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Post_SelectCapabilities_InvalidModel_ReturnsView(
+            SelectCapabilitiesModel model,
+            SupplierDefinedEpicsController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            var result = controller.SelectCapabilities(model).As<ViewResult>();
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(model);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Post_SelectCapabilities_ValidModel_ReturnsView(
+            SelectCapabilitiesModel model,
+            SupplierDefinedEpicsController controller)
+        {
+            model.SelectedItems = new SelectionModel[] { new SelectionModel { Id = "1", Selected = true } };
+            var result = controller.SelectCapabilities(model).As<RedirectToActionResult>();
+            result.Should().NotBeNull();
+            var expectedIds = model.SelectedItems.Where(x => x.Selected).Select(x => x.Id).ToFilterString();
+            result.RouteValues.Values.ToString().Should().BeEquivalentTo(expectedIds);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Get_AddEpic_ReturnsModel(
+            SupplierDefinedEpicsController controller)
+        {
+            var result = controller.AddSupplierDefinedEpicDetails().As<ViewResult>();
 
             result.Should().NotBeNull();
 
@@ -263,13 +308,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_EditEpic_InvalidModel_ReturnsView(
+        public static void Post_EditEpic_InvalidModel_ReturnsView(
             EditSupplierDefinedEpicModel model,
             SupplierDefinedEpicsController controller)
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var result = (await controller.EditSupplierDefinedEpic(model.Id, model)).As<ViewResult>();
+            var result = controller.EditSupplierDefinedEpic(model.Id, model).As<ViewResult>();
 
             result.Should().NotBeNull();
         }
@@ -338,11 +383,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_EditEpic_ValidModel_RedirectsToDashboard(
+        public static void Post_EditEpic_ValidModel_RedirectsToDashboard(
             EditSupplierDefinedEpicModel model,
             SupplierDefinedEpicsController controller)
         {
-            var result = (await controller.EditSupplierDefinedEpic(model.Id, model)).As<RedirectToActionResult>();
+            var result = controller.EditSupplierDefinedEpic(model.Id, model).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.Dashboard));
