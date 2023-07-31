@@ -31,6 +31,8 @@ public class Competition
 
     public DateTime? ShortlistAccepted { get; set; }
 
+    public bool HasReviewedCriteria { get; set; }
+
     public int? LastUpdatedBy { get; set; }
 
     public bool IsDeleted { get; set; }
@@ -48,6 +50,8 @@ public class Competition
     public Organisation Organisation { get; set; }
 
     public Weightings Weightings { get; set; }
+
+    public NonPriceElements NonPriceElements { get; set; }
 
     public ICollection<CompetitionSolution> CompetitionSolutions { get; set; }
 

@@ -3,6 +3,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.Contracts;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.SolutionSelection;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts;
@@ -27,6 +28,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
                 typeof(OrderDescriptionController),
                 nameof(OrderDescriptionController.NewOrderDescription))
                     .Should().BeTrue();
+        }
+
+        public void AmendOrderDescriptionTask(string amendOrderDescription)
+        {
+            CommonActions.ClickLinkElement(OrderDashboard.OrderDescriptionLink);
+            CommonActions.ClearInputElement(OrderDescription.DescriptionInput);
+            CommonActions.LedeText().Should().Be("You can update the description of this order to help distinguish it from the previous version if required.".FormatForComparison());
         }
 
         public void CallOffOrderingPartyContactDetailsTask()

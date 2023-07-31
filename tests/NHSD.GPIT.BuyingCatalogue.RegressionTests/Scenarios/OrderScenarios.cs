@@ -1,7 +1,10 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -21,6 +24,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         private const string NewAdditionalServiceName = "EMIS Mobile";
         private const string NewAssociatedServiceName = "Automated Arrivals – Specialist Cabling";
         private const string AssociatedServiceNameForWebGP = "Engineering";
+        private const string SingleResultFilter = "Single result filter";
+        private const string MultipleResultFilter = "Multiple result filter";
+        private const string NoResultsFilter = "No results filter";
 
         private static readonly Dictionary<string, string> Parameters =
             new()
@@ -29,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             };
 
         public OrderScenarios(LocalWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
-           : base(factory, typeof(DashboardController), nameof(DashboardController.Organisation), Parameters, testOutputHelper)
+           : base(factory, typeof(BuyerDashboardController), nameof(BuyerDashboardController.Index), Parameters, testOutputHelper)
         {
         }
 
@@ -2054,6 +2060,75 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.StepThreeCompleteContract();
 
             OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void CompetitionForMultipleResultFilter()
+        {
+            string competitionName = "CompetitionForMultipleResultFilter";
+
+            CompetitionPages.CompetitionDashboard.CompetitionTriage();
+
+            CompetitionPages.BeforeYouStart.ReadyToStart();
+
+            CompetitionPages.StepOnePrepareCompetition(MultipleResultFilter, competitionName, 5);
+
+        }
+
+        [Fact]
+        public void OrderAmendCatalogueSolutionGreaterThan250K()
+        {
+            string orderDescription = "CatalogueSolutionOver250K";
+
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Over250K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Over250K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+
+            OrderingPages.StepFiveAmendOrder();
+
+            OrderingPages.AmendSolutionsAndServices(NewSolutionName);
+        }
+
+        [Fact]
+        public void OrderAmendCatalogueSolutionAmendDescription()
+        {
+            string orderDescription = "Amend_CatalogueSolution";
+
+            string amendOrderDescription = "AmendedOrder_CatalogueSolution";
+
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+
+            OrderingPages.StepFiveAmendOrder();
+
+            OrderingPages.AmendOrderDescription(amendOrderDescription);
+
+            OrderingPages.AmendSolutionsAndServices(NewSolutionName);
         }
     }
 }

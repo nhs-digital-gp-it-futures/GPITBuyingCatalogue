@@ -1,3 +1,4 @@
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models
 @model CompetitionTaskListViewModel
 
 @{
@@ -47,24 +48,24 @@
 
                 <nhs-task-list-item label-text="Non-price elements"
                                     label-hint="Select any non-price elements you want to add to help you score your shortlisted solutions."
-                                    url="#"
+                                    url="@Url.Action(nameof(CompetitionNonPriceElementsController.Index), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues)"
                                     status="@Model.TaskListModel.NonPriceElements"/>
 
                 <nhs-task-list-item label-text="Non-price weightings"
                                     label-hint="Give your chosen non-price elements weightings based on how important they are to you."
-                                    url="#"
+                                    url="@Url.Action(nameof(CompetitionNonPriceElementsController.Weights), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues)"
                                     status="@Model.TaskListModel.NonPriceWeightings"/>
 
                 <nhs-task-list-item label-text="Review competition criteria"
                                     label-hint="Review your weightings and any non-price elements you’ve added to your competition."
-                                    url="#"
+                                    url="@Url.Action(nameof(CompetitionTaskListController.ReviewCriteria), typeof(CompetitionTaskListController).ControllerName(), routeValues)"
                                     status="@Model.TaskListModel.ReviewCompetitionCriteria"/>
             </nhs-task-list-section>
 
             <nhs-task-list-section label-text="Compare and score solutions">
                 <nhs-task-list-item label-text="Compare and score non-price elements"
                                     label-hint="Compare and score your shortlisted solutions based on non-price elements."
-                                    url="#"
+                                    url="@Url.Action(nameof(CompetitionScoringController.Index), typeof(CompetitionScoringController).ControllerName(), routeValues)"
                                     status="@Model.TaskListModel.CompareAndScoreSolutions"/>
 
                 <nhs-task-list-item label-text="Calculate price"

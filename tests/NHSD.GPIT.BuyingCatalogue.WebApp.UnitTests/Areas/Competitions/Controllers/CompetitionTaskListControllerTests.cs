@@ -90,7 +90,7 @@ public static class CompetitionTaskListControllerTests
         organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
             .ReturnsAsync(organisation);
 
-        competitionsService.Setup(x => x.GetCompetition(organisation.Id, competition.Id))
+        competitionsService.Setup(x => x.GetCompetition(organisation.InternalIdentifier, competition.Id))
             .ReturnsAsync(competition);
 
         var expectedModel = new CompetitionContractModel(competition);
@@ -154,7 +154,7 @@ public static class CompetitionTaskListControllerTests
         organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
             .ReturnsAsync(organisation);
 
-        competitionsService.Setup(x => x.GetCompetition(organisation.Id, competition.Id))
+        competitionsService.Setup(x => x.GetCompetition(organisation.InternalIdentifier, competition.Id))
             .ReturnsAsync(competition);
 
         var expectedModel = new CompetitionAwardCriteriaModel(competition);
@@ -267,6 +267,44 @@ public static class CompetitionTaskListControllerTests
                 model.Price.GetValueOrDefault(),
                 model.NonPrice.GetValueOrDefault()),
             Times.Once());
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.Index));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task ReviewCriteria_ReturnsViewWithModel(
+        Organisation organisation,
+        Competition competition,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionTaskListController controller)
+    {
+        competition.Organisation = organisation;
+
+        competitionsService.Setup(x => x.GetCompetitionCriteriaReview(organisation.InternalIdentifier, competition.Id))
+            .ReturnsAsync(competition);
+
+        var expectedModel = new CompetitionReviewCriteriaModel(competition);
+
+        var result = (await controller.ReviewCriteria(organisation.InternalIdentifier, competition.Id)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task ReviewCriteria_SetsCriteriaAsReviewed(
+        string internalOrgId,
+        Competition competition,
+        CompetitionReviewCriteriaModel model,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionTaskListController controller)
+    {
+        var result = (await controller.ReviewCriteria(internalOrgId, competition.Id, model)).As<RedirectToActionResult>();
+
+        competitionsService.Verify(x => x.SetCriteriaReviewed(internalOrgId, competition.Id), Times.Once());
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Index));

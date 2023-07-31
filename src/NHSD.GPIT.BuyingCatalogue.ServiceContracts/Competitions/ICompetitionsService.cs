@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.Competitions;
@@ -12,17 +14,23 @@ public interface ICompetitionsService
 
     Task<bool> Exists(int organisationId, string competitionName);
 
-    Task<Competition> GetCompetition(int organisationId, int competitionId);
+    Task<Competition> GetCompetition(string internalOrgId, int competitionId);
 
     Task<string> GetCompetitionName(int organisationId, int competitionId);
 
+    Task<Competition> GetCompetitionCriteriaReview(string internalOrgId, int competitionId);
+
     Task<IEnumerable<Competition>> GetCompetitionsDashboard(int organisationId);
+
+    Task<Competition> GetCompetitionWithNonPriceElements(string internalOrgId, int competitionId);
 
     Task<Competition> GetCompetitionWithWeightings(int organisationId, int competitionId);
 
     Task<Competition> GetCompetitionWithRecipients(int organisationId, int competitionId);
 
     Task<Competition> GetCompetitionWithServices(int organisationId, int competitionId, bool shouldTrack = false);
+
+    Task<Competition> GetCompetitionWithSolutions(string internalOrgId, int competitionId);
 
     Task<CompetitionTaskListModel> GetCompetitionTaskList(int organisationId, int competitionId);
 
@@ -42,6 +50,30 @@ public interface ICompetitionsService
 
     Task SetCompetitionWeightings(int organisationId, int competitionId, int priceWeighting, int nonPriceWeighting);
 
+    Task SetCriteriaReviewed(string internalOrgId, int competitionId);
+
+    Task SetImplementationCriteria(string internalOrgId, int competitionId, string requirements);
+
+    Task SetInteroperabilityCriteria(
+        string internalOrgId,
+        int competitionId,
+        IEnumerable<string> im1Integrations,
+        IEnumerable<string> gpConnectIntegrations);
+
+    Task SetNonPriceWeights(
+        string internalOrgId,
+        int competitionId,
+        int? implementationWeight,
+        int? interoperabilityWeight,
+        int? serviceLevelWeight);
+
+    Task SetServiceLevelCriteria(
+        string internalOrgId,
+        int competitionId,
+        DateTime timeFrom,
+        DateTime timeUntil,
+        string applicableDays);
+
     Task SetShortlistedSolutions(
         int organisationId,
         int competitionId,
@@ -51,4 +83,19 @@ public interface ICompetitionsService
         int organisationId,
         int competitionId,
         Dictionary<CatalogueItemId, string> solutionsJustification);
+
+    Task SetSolutionsImplementationScores(
+        string internalOrgId,
+        int competitionId,
+        Dictionary<CatalogueItemId, int> solutionsScores);
+
+    Task SetSolutionsInteroperabilityScores(
+        string internalOrgId,
+        int competitionId,
+        Dictionary<CatalogueItemId, int> solutionsScores);
+
+    Task SetSolutionsServiceLevelScores(
+        string internalOrgId,
+        int competitionId,
+        Dictionary<CatalogueItemId, int> solutionsScores);
 }

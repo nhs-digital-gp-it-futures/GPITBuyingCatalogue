@@ -74,6 +74,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
                 .FindElement(By.TagName("input"))
                 .Click();
 
+        public void ClickDropDownListWIthValue(string value) =>
+            new SelectElement(
+            Driver.FindElement(CommonSelectors.DropDownList)).SelectByText(value);
+
+        public void EnterTextInTextBoxes(string x) =>
+            Driver.FindElements(By.XPath("//*[@class=\"nhsuk-textarea\"]")).ToList().ForEach(element => element.SendKeys(x));
+
+
         public IEnumerable<string> GetRadioButtonsOptions() =>
             Driver
                 .FindElements(CommonSelectors.RadioButtonItems)
