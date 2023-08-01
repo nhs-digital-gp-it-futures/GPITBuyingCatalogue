@@ -22,17 +22,17 @@
 :r ./InsertSolutionEpicStatuses.sql
 :r ./InsertCatalogueItemTypes.sql
 :r ./InsertFrameworks.sql
-:r ./InsertCapabilities.sql
+:r ./TestData/InsertCapabilities.sql
 :r ./InsertCataloguePriceTypes.sql
 :r ./InsertCataloguePriceCalculationTypes.sql
 :r ./InsertCataloguePriceQuantityCalculationTypes.sql
-:r ./InsertEpics.sql
+:r ./TestData/InsertEpics.sql
 :r ./InsertPricingUnits.sql
 :r ./InsertProvisioningTypes.sql
 :r ./InsertSuppliers.sql
 :r ./InsertStandardTypes.sql
-:r ./InsertStandards.sql
-:r ./InsertStandardsCapabilities.sql
+:r ./TestData/InsertStandards.sql
+:r ./TestData/InsertStandardsCapabilities.sql
 
 :r ./InsertOrderStatuses.sql
 :r ./InsertOrderTriageValues.sql
