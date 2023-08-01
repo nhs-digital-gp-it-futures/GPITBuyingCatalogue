@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task AddSupplierDefinedEpic(AddEditSupplierDefinedEpic epicModel)
+        public async Task<string> AddSupplierDefinedEpic(AddEditSupplierDefinedEpic epicModel)
         {
             if (epicModel is null)
                 throw new ArgumentNullException(nameof(epicModel));
@@ -46,6 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
 
             dbContext.Epics.Add(epic);
             await dbContext.SaveChangesAsync();
+            return epic.Id;
         }
 
         public async Task EditSupplierDefinedEpic(AddEditSupplierDefinedEpic epicModel)

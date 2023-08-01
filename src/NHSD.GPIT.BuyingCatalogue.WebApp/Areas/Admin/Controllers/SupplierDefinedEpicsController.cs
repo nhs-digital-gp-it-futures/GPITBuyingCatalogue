@@ -121,9 +121,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 model.Description,
                 model.IsActive!.Value);
 
-            await supplierDefinedEpicsService.AddSupplierDefinedEpic(createEpicModel);
+            var epicId = await supplierDefinedEpicsService.AddSupplierDefinedEpic(createEpicModel);
 
-            return RedirectToAction(nameof(Dashboard));
+            return RedirectToAction(
+                nameof(EditSupplierDefinedEpic),
+                new { epicId });
         }
 
         [HttpGet("edit/{epicId}")]

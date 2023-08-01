@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities
 
         Task<List<Epic>> GetSupplierDefinedEpicsBySearchTerm(string searchTerm);
 
-        Task AddSupplierDefinedEpic(AddEditSupplierDefinedEpic epicModel);
+        Task<string> AddSupplierDefinedEpic(AddEditSupplierDefinedEpic epicModel);
 
         Task EditSupplierDefinedEpic(AddEditSupplierDefinedEpic epicModel);
 
