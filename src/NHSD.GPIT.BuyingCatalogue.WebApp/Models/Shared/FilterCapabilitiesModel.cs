@@ -65,14 +65,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared
 
         public bool IsFilter { get; set; }
 
-        public PageTitleModel GetPageTitle() => IsFilter
-            ? Filter
-            : SupplierDefinedEpic;
-
         public static FilterCapabilitiesModel Build(List<Capability> capabilities, string selected = null, string search = null)
         {
             var capabilityAndEpicsIds = SolutionsFilterHelper.ParseCapabilityAndEpicIds(selected);
             return new(capabilities, true, capabilityAndEpicsIds.Keys, search);
         }
+
+        public PageTitleModel GetPageTitle() => IsFilter
+            ? Filter
+            : SupplierDefinedEpic;
     }
 }
