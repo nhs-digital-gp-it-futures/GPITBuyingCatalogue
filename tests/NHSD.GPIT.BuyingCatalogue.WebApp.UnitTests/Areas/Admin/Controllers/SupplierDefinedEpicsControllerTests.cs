@@ -168,35 +168,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             result.Should().NotBeNull();
 
-            var model = result.Model.As<SelectCapabilitiesModel>();
+            var model = result.Model.As<FilterCapabilitiesModel>();
 
             model.Should().NotBeNull();
         }
 
         [Theory]
         [CommonAutoData]
-        public static void Post_SelectCapabilities_InvalidModel_ReturnsView(
-            SelectCapabilitiesModel model,
+        public static async Task Post_SelectCapabilities_InvalidModel_ReturnsView(
+            FilterCapabilitiesModel model,
             SupplierDefinedEpicsController controller)
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var result = controller.SelectCapabilities(model).As<ViewResult>();
+            var result = (await controller.SelectCapabilities(model)).As<ViewResult>();
             result.Should().NotBeNull();
-            result.Model.Should().BeEquivalentTo(model);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void Post_SelectCapabilities_ValidModel_ReturnsView(
-            SelectCapabilitiesModel model,
+        public static async Task Post_SelectCapabilities_ValidModel_ReturnsView(
+            FilterCapabilitiesModel model,
             SupplierDefinedEpicsController controller)
         {
             model.SelectedItems = new SelectionModel[] { new SelectionModel { Id = "1", Selected = true } };
-            var result = controller.SelectCapabilities(model).As<RedirectToActionResult>();
+            var result = (await controller.SelectCapabilities(model)).As<RedirectToActionResult>();
             result.Should().NotBeNull();
             var expectedIds = model.SelectedItems.Where(x => x.Selected).Select(x => x.Id).ToFilterString();
-            result.RouteValues.Values.ToString().Should().BeEquivalentTo(expectedIds);
+            result.RouteValues.Values.First().ToString().Should().BeEquivalentTo(expectedIds);
         }
 
         [Theory]

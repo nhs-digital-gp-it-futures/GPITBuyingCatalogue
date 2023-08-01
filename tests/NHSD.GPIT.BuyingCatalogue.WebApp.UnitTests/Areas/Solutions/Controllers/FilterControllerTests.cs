@@ -16,6 +16,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
@@ -54,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             capabilitiesService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
-            var expected = new FilterCapabilitiesModel(capabilities, null);
+            var expected = new FilterCapabilitiesModel(capabilities, true, null);
 
             actualResult.Model.Should().BeEquivalentTo(expected);
         }
@@ -81,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             capabilitiesService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
-            var expected = new FilterCapabilitiesModel(capabilities, selected);
+            var expected = new FilterCapabilitiesModel(capabilities, true, selected.Keys);
 
             actualResult.Model.Should().BeEquivalentTo(expected);
         }
@@ -105,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             capabilitiesService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
-            var expected = new FilterCapabilitiesModel(capabilities, null);
+            var expected = new FilterCapabilitiesModel(capabilities, true, null);
 
             actualResult.Model.Should().BeEquivalentTo(expected);
         }
