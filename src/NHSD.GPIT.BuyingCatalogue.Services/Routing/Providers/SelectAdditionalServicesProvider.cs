@@ -19,30 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 throw new ArgumentNullException(nameof(routeValues));
             }
 
-            var solution = order.GetSolution();
-
-            if (!solution.OrderItemRecipients.Any())
-            {
-                return new RoutingResult
-                {
-                    ControllerName = Constants.Controllers.ServiceRecipients,
-                    ActionName = Constants.Actions.AddServiceRecipients,
-                    RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId, solution.CatalogueItemId },
-                };
-            }
-
-            var additionalService = order.GetAdditionalServices().FirstOrDefault(x => x.OrderItemRecipients.Count == 0);
-
-            if (additionalService != null)
-            {
-                return new RoutingResult
-                {
-                    ControllerName = Constants.Controllers.ServiceRecipients,
-                    ActionName = Constants.Actions.AddServiceRecipients,
-                    RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId, additionalService.CatalogueItemId },
-                };
-            }
-
             return new RoutingResult
             {
                 ControllerName = Constants.Controllers.TaskList,

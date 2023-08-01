@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(ServiceRecipientsController),
-                nameof(ServiceRecipientsController.AddServiceRecipients)).Should().BeTrue();
+                nameof(ServiceRecipientsController.SelectServiceRecipients)).Should().BeTrue();
 
             CommonActions.GetNumberOfSelectedCheckBoxes().Should().Be(2);
         }
@@ -78,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(ServiceRecipientsController),
-                nameof(ServiceRecipientsController.AddServiceRecipients)).Should().BeTrue();
+                nameof(ServiceRecipientsController.SelectServiceRecipients)).Should().BeTrue();
 
             CommonActions.GetNumberOfSelectedCheckBoxes().Should().Be(2);
         }

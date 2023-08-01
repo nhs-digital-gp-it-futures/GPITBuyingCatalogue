@@ -57,44 +57,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 };
             }
 
-            var additionalService = order.GetAdditionalServices()
-                .FirstOrDefault(x => (x.OrderItemRecipients?.Count ?? 0) == 0);
-
-            if (additionalService != null)
-            {
-                return new RoutingResult
-                {
-                    ControllerName = Constants.Controllers.ServiceRecipients,
-                    ActionName = Constants.Actions.AddServiceRecipients,
-                    RouteValues = new
-                    {
-                        routeValues.InternalOrgId,
-                        routeValues.CallOffId,
-                        additionalService.CatalogueItemId,
-                        routeValues.Source,
-                    },
-                };
-            }
-
-            var associatedService = order.GetAssociatedServices()
-                .FirstOrDefault(x => (x.OrderItemRecipients?.Count ?? 0) == 0);
-
-            if (associatedService != null)
-            {
-                return new RoutingResult
-                {
-                    ControllerName = Constants.Controllers.ServiceRecipients,
-                    ActionName = Constants.Actions.AddServiceRecipients,
-                    RouteValues = new
-                    {
-                        routeValues.InternalOrgId,
-                        routeValues.CallOffId,
-                        associatedService.CatalogueItemId,
-                        routeValues.Source,
-                    },
-                };
-            }
-
             if (order.GetAssociatedServices().Any())
             {
                 return new RoutingResult

@@ -232,9 +232,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             CatalogueItemId catalogueItemId)
         {
             var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Previous;
+            var recipients = order.OrderRecipients;
             var orderItem = order.OrderItem(catalogueItemId);
 
-            var model = new ViewServiceRecipientQuantityModel(orderItem)
+            var model = new ViewServiceRecipientQuantityModel(orderItem, recipients)
             {
                 BackLink = Url.Action(
                     nameof(TaskListController.TaskList),

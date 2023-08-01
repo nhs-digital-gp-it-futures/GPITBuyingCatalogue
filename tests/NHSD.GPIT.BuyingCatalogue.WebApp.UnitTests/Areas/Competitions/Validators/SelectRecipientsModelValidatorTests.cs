@@ -2,8 +2,9 @@
 using FluentValidation.TestHelper;
 using MoreLinq.Extensions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.RecipientsModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Validators;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Validators;

@@ -12,6 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList
 
         public TaskProgress CommencementDateStatus { get; set; } = TaskProgress.CannotStart;
 
+        public TaskProgress ServiceRecipients { get; set; } = TaskProgress.CannotStart;
+
         public TaskProgress SolutionOrService { get; set; } = TaskProgress.CannotStart;
 
         public TaskProgress DeliveryDates { get; set; } = TaskProgress.CannotStart;

@@ -38,21 +38,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 };
             }
 
-            if (routeValues.Source == RoutingSource.TaskList)
-            {
-                return new RoutingResult
-                {
-                    ActionName = Constants.Actions.TaskList,
-                    ControllerName = Constants.Controllers.TaskList,
-                    RouteValues = new { routeValues.CallOffId, routeValues.InternalOrgId },
-                };
-            }
-
             return new RoutingResult
             {
-                ActionName = Constants.Actions.EditServiceRecipients,
-                ControllerName = Constants.Controllers.ServiceRecipients,
-                RouteValues = new { routeValues.CallOffId, routeValues.InternalOrgId, routeValues.CatalogueItemId },
+                ActionName = Constants.Actions.TaskList,
+                ControllerName = Constants.Controllers.TaskList,
+                RouteValues = new { routeValues.CallOffId, routeValues.InternalOrgId },
             };
         }
     }

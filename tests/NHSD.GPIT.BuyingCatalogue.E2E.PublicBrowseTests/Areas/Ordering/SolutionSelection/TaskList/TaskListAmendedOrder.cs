@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ta
             {
                 Name = "E2E Multiple Prices Additional Service",
                 CatalogueItemId = new CatalogueItemId(99998, "001A99"),
-                ServiceRecipientsAction = nameof(ServiceRecipientsController.AddServiceRecipients),
+                ServiceRecipientsAction = nameof(ServiceRecipientsController.SelectServiceRecipients),
                 PriceLinkActive = false,
                 QuantityLinkActive = false,
             },

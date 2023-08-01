@@ -82,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Setup(x => x.GetOrganisationByInternalIdentifier(internalOrgId))
                 .ReturnsAsync(organisation);
 
-            var result = await controller.AddServiceRecipients(internalOrgId, callOffId, solution.CatalogueItemId, selectionMode);
+            var result = await controller.SelectServiceRecipients(internalOrgId, callOffId, solution.CatalogueItemId, selectionMode);
 
             mockOrderService.VerifyAll();
             mockOdsService.VerifyAll();
@@ -200,7 +200,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Setup(x => x.GetOrganisationByInternalIdentifier(internalOrgId))
                 .ReturnsAsync(organisation);
 
-            var result = await controller.AddServiceRecipients(internalOrgId, callOffId, additionalService.CatalogueItemId, importedRecipients: importedRecipients);
+            var result = await controller.SelectServiceRecipients(internalOrgId, callOffId, additionalService.CatalogueItemId, importedRecipients: importedRecipients);
 
             mockOrderService.VerifyAll();
             mockOdsService.VerifyAll();
@@ -222,7 +222,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         {
             controller.ModelState.AddModelError("key", "errorMessage");
 
-            var result = controller.AddServiceRecipients(model.InternalOrgId, model.CallOffId, model.CatalogueItemId, model);
+            var result = controller.SelectServiceRecipients(model.InternalOrgId, model.CallOffId, model.CatalogueItemId, model);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
@@ -245,7 +245,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var selectedOdsCodes = model.GetServiceRecipients().Where(x => x.Selected).Select(x => x.OdsCode);
             var recipientIds = string.Join(ServiceRecipientsController.Separator, selectedOdsCodes);
 
-            var result = controller.AddServiceRecipients(model.InternalOrgId, model.CallOffId, orderItem.Id, model);
+            var result = controller.SelectServiceRecipients(model.InternalOrgId, model.CallOffId, orderItem.Id, model);
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 

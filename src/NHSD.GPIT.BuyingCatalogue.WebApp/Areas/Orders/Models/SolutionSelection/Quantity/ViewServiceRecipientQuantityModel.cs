@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
@@ -17,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         private readonly ProvisioningType? provisioningType;
 
-        public ViewServiceRecipientQuantityModel(OrderItem orderItem)
+        public ViewServiceRecipientQuantityModel(OrderItem orderItem, IEnumerable<OrderRecipient> recipients)
         {
             if (orderItem == null)
             {
@@ -28,12 +29,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             ItemType = orderItem.CatalogueItem.CatalogueItemType.Name();
             provisioningType = orderItem.OrderItemPrice?.ProvisioningType;
 
-            ServiceRecipients = orderItem.OrderItemRecipients
+            ServiceRecipients = recipients
                 .Select(x => new ServiceRecipientQuantityModel
                 {
                     OdsCode = x.OdsCode,
-                    Name = x.Recipient?.Name,
-                    Quantity = x.Quantity ?? 0,
+                    Name = x.OdsOrganisation.Name,
+                    Quantity = x.GetQuantityForItem(orderItem.CatalogueItemId).GetValueOrDefault(),
                 })
                 .ToArray();
         }

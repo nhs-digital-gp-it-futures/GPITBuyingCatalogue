@@ -7,6 +7,7 @@
         Supplier,
         CommencementDate,
 
+        ServiceRecipients,
         SolutionsOrServices,
         DeliveryDates,
         FundingSources,

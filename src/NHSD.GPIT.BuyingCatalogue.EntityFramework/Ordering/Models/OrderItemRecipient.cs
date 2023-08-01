@@ -7,6 +7,20 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
     [Serializable]
     public sealed class OrderItemRecipient : IAudited
     {
+        public OrderItemRecipient()
+        {
+        }
+
+        public OrderItemRecipient(
+            int orderId,
+            string odsCode,
+            CatalogueItemId catalogueItemId)
+        {
+            OrderId = orderId;
+            OdsCode = odsCode;
+            CatalogueItemId = catalogueItemId;
+        }
+
         public int OrderId { get; set; }
 
         public CatalogueItemId CatalogueItemId { get; set; }

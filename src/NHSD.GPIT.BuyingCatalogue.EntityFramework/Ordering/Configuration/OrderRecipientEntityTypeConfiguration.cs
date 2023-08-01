@@ -20,10 +20,5 @@ public sealed class OrderRecipientEntityTypeConfiguration : IEntityTypeConfigura
             .WithMany()
             .HasForeignKey(x => x.OdsCode)
             .HasConstraintName("FK_OrderRecipients_ServiceRecipient");
-
-        builder.HasOne(x => x.Order)
-            .WithMany()
-            .HasForeignKey(x => x.OrderId)
-            .HasConstraintName("FK_OrderRecipients_Orders");
     }
 }

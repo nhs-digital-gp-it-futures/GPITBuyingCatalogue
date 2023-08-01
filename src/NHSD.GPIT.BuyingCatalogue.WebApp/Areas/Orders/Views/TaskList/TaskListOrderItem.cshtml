@@ -15,31 +15,6 @@
     <nhs-table-column>Action</nhs-table-column>
 
     <nhs-table-row-container>
-        <nhs-table-cell>Service Recipients</nhs-table-cell>
-        <nhs-table-cell>
-            <nhs-tag status-enum="@Model.ServiceRecipientsStatus"/>
-        </nhs-table-cell>
-        <nhs-table-cell>
-            @if (Model.ServiceRecipientsStatus == TaskProgress.NotStarted)
-            {
-                <a id="ServiceRecipients_@Model.CatalogueItemId"
-                   href="@Url.Action(
-                             nameof(ServiceRecipientsController.AddServiceRecipients),
-                             typeof(ServiceRecipientsController).ControllerName(),
-                             new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, source })">Edit</a>
-            }
-            else
-            {
-                <a id="ServiceRecipients_@Model.CatalogueItemId"
-                   href="@Url.Action(
-                             nameof(ServiceRecipientsController.EditServiceRecipients),
-                             typeof(ServiceRecipientsController).ControllerName(),
-                             new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, source })">Edit</a>
-            }
-        </nhs-table-cell>
-    </nhs-table-row-container>
-
-    <nhs-table-row-container>
         <nhs-table-cell>Price</nhs-table-cell>
         <nhs-table-cell>
             <nhs-tag status-enum="@Model.PriceStatus"/>
@@ -98,7 +73,7 @@
             {
                 if (Model.IsAmendment && !Model.HasCurrentAmendments)
                 {
-                    <a id="Quantity_@Model.CatalogueItemId" 
+                    <a id="Quantity_@Model.CatalogueItemId"
                        href="@Url.Action(
                                  nameof(QuantityController.ViewOrderItemQuantity),
                                  typeof(QuantityController).ControllerName(),
@@ -106,7 +81,7 @@
                 }
                 else
                 {
-                    <a id="Quantity_@Model.CatalogueItemId" 
+                    <a id="Quantity_@Model.CatalogueItemId"
                        href="@Url.Action(
                                  nameof(QuantityController.SelectQuantity),
                                  typeof(QuantityController).ControllerName(),
@@ -128,7 +103,7 @@
                     && Model.DeliveryDatesStatus != TaskProgress.CannotStart)
                 {
                     <a id="Quantity_@Model.CatalogueItemId"
-                       href="@Url.Action( 
+                       href="@Url.Action(
                                  nameof(DeliveryDatesController.AmendDate),
                                  typeof(DeliveryDatesController).ControllerName(),
                                  new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, source })">Edit</a>

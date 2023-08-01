@@ -15,6 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public Order()
         {
             OrderItems = new HashSet<OrderItem>();
+            OrderRecipients = new HashSet<OrderRecipient>();
         }
 
         public int Id { get; set; }

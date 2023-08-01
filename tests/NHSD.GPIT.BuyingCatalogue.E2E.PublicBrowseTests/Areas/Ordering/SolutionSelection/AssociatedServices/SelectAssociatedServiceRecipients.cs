@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
         };
 
         public SelectAssociatedServiceRecipients(LocalWebApplicationFactory factory)
-            : base(factory, typeof(ServiceRecipientsController), nameof(ServiceRecipientsController.AddServiceRecipients), Parameters)
+            : base(factory, typeof(ServiceRecipientsController), nameof(ServiceRecipientsController.SelectServiceRecipients), Parameters)
         {
         }
 
@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(ServiceRecipientsController),
-                nameof(ServiceRecipientsController.AddServiceRecipients)).Should().BeTrue();
+                nameof(ServiceRecipientsController.SelectServiceRecipients)).Should().BeTrue();
 
             CommonActions.ElementIsDisplayed(ServiceRecipientObjects.PreSelectedInset).Should().BeFalse();
             CommonActions.GetNumberOfSelectedCheckBoxes().Should().Be(CommonActions.GetNumberOfCheckBoxesDisplayed());
@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(ServiceRecipientsController),
-                nameof(ServiceRecipientsController.AddServiceRecipients)).Should().BeTrue();
+                nameof(ServiceRecipientsController.SelectServiceRecipients)).Should().BeTrue();
 
             CommonActions.ElementIsDisplayed(ServiceRecipientObjects.PreSelectedInset).Should().BeFalse();
             CommonActions.GetNumberOfSelectedCheckBoxes().Should().Be(0);
@@ -84,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(ServiceRecipientsController),
-                nameof(ServiceRecipientsController.AddServiceRecipients)).Should().BeTrue();
+                nameof(ServiceRecipientsController.SelectServiceRecipients)).Should().BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();

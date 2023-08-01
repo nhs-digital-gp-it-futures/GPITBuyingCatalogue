@@ -27,6 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
             output.SupplierStatus = providerService.ProviderFor(OrderTaskListStatus.Supplier).Get(wrapper, output);
             output.CommencementDateStatus = providerService.ProviderFor(OrderTaskListStatus.CommencementDate).Get(wrapper, output);
 
+            output.ServiceRecipients = providerService.ProviderFor(OrderTaskListStatus.ServiceRecipients).Get(wrapper, output);
             output.SolutionOrService = providerService.ProviderFor(OrderTaskListStatus.SolutionsOrServices).Get(wrapper, output);
             output.DeliveryDates = providerService.ProviderFor(OrderTaskListStatus.DeliveryDates).Get(wrapper, output);
             output.FundingSource = providerService.ProviderFor(OrderTaskListStatus.FundingSources).Get(wrapper, output);

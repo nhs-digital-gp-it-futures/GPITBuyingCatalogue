@@ -13,21 +13,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 throw new ArgumentNullException(nameof(routeValues));
             }
 
-            if (routeValues.Source == RoutingSource.TaskList)
-            {
-                return new RoutingResult
-                {
-                    ActionName = Constants.Actions.TaskList,
-                    ControllerName = Constants.Controllers.TaskList,
-                    RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId },
-                };
-            }
-
             return new RoutingResult
             {
-                ActionName = Constants.Actions.EditServiceRecipients,
-                ControllerName = Constants.Controllers.ServiceRecipients,
-                RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId, routeValues.CatalogueItemId },
+                ActionName = Constants.Actions.TaskList,
+                ControllerName = Constants.Controllers.TaskList,
+                RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId },
             };
         }
     }

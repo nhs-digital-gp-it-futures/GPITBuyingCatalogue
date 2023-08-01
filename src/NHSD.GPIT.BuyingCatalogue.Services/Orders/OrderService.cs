@@ -124,10 +124,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.OrderItemPrice)
                     .ThenInclude(ip => ip.OrderItemPriceTiers.OrderBy(t => t.LowerRange))
-                .Include(o => o.OrderItems)
-                    .ThenInclude(i => i.OrderItemRecipients.OrderBy(oir => oir.Recipient.OdsOrganisation.Name))
-                    .ThenInclude(r => r.Recipient)
                 .Include(o => o.SelectedFramework)
+                .Include(x => x.OrderRecipients).ThenInclude(x => x.OdsOrganisation)
+                .Include(x => x.OrderRecipients).ThenInclude(x => x.OrderItemRecipients)
                 .AsSplitQuery()
                 .Where(o => o.OrderNumber == callOffId.OrderNumber
                     && o.Revision <= callOffId.Revision
@@ -264,6 +263,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(x => x.Supplier)
                 .Include(x => x.SupplierContact)
                 .Include(x => x.SelectedFramework)
+                .Include(x => x.OrderRecipients)
                 .AsSplitQuery()
                 .AsNoTracking()
                 .Where(x => x.OrderNumber == callOffId.OrderNumber

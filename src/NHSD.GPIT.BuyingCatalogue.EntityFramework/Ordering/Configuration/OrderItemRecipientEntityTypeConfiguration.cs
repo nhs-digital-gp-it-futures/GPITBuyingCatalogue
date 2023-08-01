@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
 
             builder.HasOne(r => r.Recipient)
                 .WithMany(r => r.OrderItemRecipients)
-                .HasForeignKey(r => r.OdsCode)
+                .HasForeignKey(r => new { r.OrderId, r.OdsCode })
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_OrderItemRecipients_OdsCode");
 

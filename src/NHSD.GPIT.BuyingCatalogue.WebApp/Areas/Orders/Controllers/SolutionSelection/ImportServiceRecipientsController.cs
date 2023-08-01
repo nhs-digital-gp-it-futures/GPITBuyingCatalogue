@@ -52,22 +52,18 @@ public class ImportServiceRecipientsController : Controller
     [HttpGet]
     public async Task<IActionResult> Index(
         string internalOrgId,
-        CallOffId callOffId,
-        CatalogueItemId catalogueItemId,
-        ServiceRecipientImportMode? importMode = ServiceRecipientImportMode.Edit)
+        CallOffId callOffId)
     {
-        _ = importMode;
-        await importService.Clear(new(User.UserId(), internalOrgId, callOffId, catalogueItemId));
+        await importService.Clear(new(User.UserId(), internalOrgId, callOffId));
 
-        var catalogueItemName = await catalogueItemService.GetCatalogueItemName(catalogueItemId);
         var model = new ImportServiceRecipientModel
         {
             BackLink = Url.Action(
-                GetServiceRecipientRedirectAction(importMode!.Value),
+                nameof(ServiceRecipientsController.SelectServiceRecipients),
                 typeof(ServiceRecipientsController).ControllerName(),
-                new { internalOrgId, callOffId, catalogueItemId }),
-            Caption = catalogueItemName,
-            DownloadTemplateLink = Url.Action(nameof(DownloadTemplate), new { internalOrgId, callOffId, catalogueItemId }),
+                new { internalOrgId, callOffId }),
+            Caption = callOffId.ToString(),
+            DownloadTemplateLink = Url.Action(nameof(DownloadTemplate), new { internalOrgId, callOffId }),
         };
 
         return View("ServiceRecipients/ImportServiceRecipients/Index", model);
@@ -77,9 +73,7 @@ public class ImportServiceRecipientsController : Controller
     public async Task<IActionResult> Index(
         string internalOrgId,
         CallOffId callOffId,
-        CatalogueItemId catalogueItemId,
-        ImportServiceRecipientModel model,
-        ServiceRecipientImportMode? importMode = ServiceRecipientImportMode.Edit)
+        ImportServiceRecipientModel model)
     {
         if (!ModelState.IsValid)
             return View("ServiceRecipients/ImportServiceRecipients/Index", model);
@@ -98,26 +92,23 @@ public class ImportServiceRecipientsController : Controller
             new(
                 User.UserId(),
                 internalOrgId,
-                callOffId,
-                catalogueItemId),
+                callOffId),
             importedServiceRecipients);
 
         return RedirectToAction(
             nameof(ValidateOds),
-            new { internalOrgId, callOffId, catalogueItemId, importMode });
+            new { internalOrgId, callOffId });
     }
 
     [HttpGet("validate-ods")]
     public async Task<IActionResult> ValidateOds(
         string internalOrgId,
-        CallOffId callOffId,
-        CatalogueItemId catalogueItemId,
-        ServiceRecipientImportMode? importMode = ServiceRecipientImportMode.Edit)
+        CallOffId callOffId)
     {
-        var cacheKey = new ServiceRecipientCacheKey(User.UserId(), internalOrgId, callOffId, catalogueItemId);
+        var cacheKey = new ServiceRecipientCacheKey(User.UserId(), internalOrgId, callOffId);
         var cachedRecipients = await importService.GetCached(cacheKey);
         if (cachedRecipients is null)
-            return RedirectToAction(nameof(Index), new { internalOrgId, callOffId, catalogueItemId, importMode });
+            return RedirectToAction(nameof(Index), new { internalOrgId, callOffId });
 
         var organisationServiceRecipients =
             await odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId);
@@ -125,17 +116,14 @@ public class ImportServiceRecipientsController : Controller
         var mismatchedOdsCodes = GetMismatchedOdsCodes(cachedRecipients, organisationServiceRecipients).ToList();
         if (mismatchedOdsCodes.Any())
         {
-            var catalogueItemName = await catalogueItemService.GetCatalogueItemName(catalogueItemId);
-            var model = new ValidateOdsModel(
-                mismatchedOdsCodes,
-                importMode)
+            var model = new ValidateOdsModel(mismatchedOdsCodes)
             {
-                BackLink = Url.Action(nameof(Index), new { internalOrgId, callOffId, catalogueItemId, importMode }),
-                Caption = catalogueItemName,
-                CancelLink = Url.Action(nameof(CancelImport), new { internalOrgId, callOffId, catalogueItemId, importMode }),
+                BackLink = Url.Action(nameof(Index), new { internalOrgId, callOffId }),
+                Caption = callOffId.ToString(),
+                CancelLink = Url.Action(nameof(CancelImport), new { internalOrgId, callOffId }),
                 ValidateNamesLink = Url.Action(
                     nameof(ValidateNames),
-                    new { internalOrgId, callOffId, catalogueItemId, importMode }),
+                    new { internalOrgId, callOffId }),
             };
 
             return View("ServiceRecipients/ImportServiceRecipients/ValidateOds", model);
@@ -143,23 +131,18 @@ public class ImportServiceRecipientsController : Controller
 
         return RedirectToAction(
             nameof(ValidateNames),
-            new
-            {
-                internalOrgId, callOffId, catalogueItemId, importMode,
-            });
+            new { internalOrgId, callOffId });
     }
 
     [HttpGet("validate-names")]
     public async Task<IActionResult> ValidateNames(
         string internalOrgId,
-        CallOffId callOffId,
-        CatalogueItemId catalogueItemId,
-        ServiceRecipientImportMode? importMode = ServiceRecipientImportMode.Edit)
+        CallOffId callOffId)
     {
-        var cacheKey = new ServiceRecipientCacheKey(User.UserId(), internalOrgId, callOffId, catalogueItemId);
+        var cacheKey = new ServiceRecipientCacheKey(User.UserId(), internalOrgId, callOffId);
         var cachedRecipients = await importService.GetCached(cacheKey);
         if (cachedRecipients is null)
-            return RedirectToAction(nameof(Index), new { internalOrgId, callOffId, catalogueItemId, importMode });
+            return RedirectToAction(nameof(Index), new { internalOrgId, callOffId });
 
         var organisationServiceRecipients =
             (await odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId)).ToList();
@@ -167,16 +150,13 @@ public class ImportServiceRecipientsController : Controller
         var mismatchedRecipients = GetMismatchedNames(cachedRecipients.ToList(), organisationServiceRecipients);
         if (mismatchedRecipients.Any())
         {
-            var catalogueItemName = await catalogueItemService.GetCatalogueItemName(catalogueItemId);
-            var model = new ValidateNamesModel(
-                mismatchedRecipients,
-                importMode)
+            var model = new ValidateNamesModel(mismatchedRecipients)
             {
                 BackLink = Url.Action(
                     GetNameValidationBacklink(cachedRecipients, organisationServiceRecipients),
-                    new { internalOrgId, callOffId, catalogueItemId, importMode }),
-                CancelLink = Url.Action(nameof(CancelImport), new { internalOrgId, callOffId, catalogueItemId, importMode }),
-                Caption = catalogueItemName,
+                    new { internalOrgId, callOffId }),
+                CancelLink = Url.Action(nameof(CancelImport), new { internalOrgId, callOffId }),
+                Caption = callOffId.ToString(),
             };
 
             return View("ServiceRecipients/ImportServiceRecipients/ValidateNames", model);
@@ -185,11 +165,11 @@ public class ImportServiceRecipientsController : Controller
         var validOdsCodes = GetValidOdsCodes(cachedRecipients, organisationServiceRecipients);
         await importService.Clear(cacheKey);
         return RedirectToAction(
-            GetServiceRecipientRedirectAction(importMode!.Value),
+            nameof(ServiceRecipientsController.SelectServiceRecipients),
             typeof(ServiceRecipientsController).ControllerName(),
             new
             {
-                internalOrgId, callOffId, catalogueItemId, importedRecipients = string.Join(',', validOdsCodes),
+                internalOrgId, callOffId, importedRecipients = string.Join(',', validOdsCodes),
             });
     }
 
@@ -211,7 +191,7 @@ public class ImportServiceRecipientsController : Controller
         await importService.Clear(cacheKey);
 
         return RedirectToAction(
-            GetServiceRecipientRedirectAction(importMode!.Value),
+            nameof(ServiceRecipientsController.SelectServiceRecipients),
             typeof(ServiceRecipientsController).ControllerName(),
             new
             {
@@ -248,15 +228,10 @@ public class ImportServiceRecipientsController : Controller
         importService.Clear(new(User.UserId(), internalOrgId, callOffId, catalogueItemId));
 
         return RedirectToAction(
-            GetServiceRecipientRedirectAction(importMode!.Value),
+            nameof(ServiceRecipientsController.SelectServiceRecipients),
             typeof(ServiceRecipientsController).ControllerName(),
             new { internalOrgId, callOffId, catalogueItemId });
     }
-
-    private static string GetServiceRecipientRedirectAction(ServiceRecipientImportMode importMode)
-        => importMode == ServiceRecipientImportMode.Add
-            ? nameof(ServiceRecipientsController.AddServiceRecipients)
-            : nameof(ServiceRecipientsController.EditServiceRecipients);
 
     private static List<ServiceRecipientImportModel> GetMismatchedOdsCodes(
         IEnumerable<ServiceRecipientImportModel> importedServiceRecipients,

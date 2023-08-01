@@ -28,6 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList
                 OrderTaskListStatus.Supplier => new SupplierStatusProvider(),
                 OrderTaskListStatus.CommencementDate => new CommencementDateStatusProvider(),
 
+                OrderTaskListStatus.ServiceRecipients => new ServiceRecipientsStatusProvider(),
                 OrderTaskListStatus.SolutionsOrServices => new SolutionOrServiceStatusProvider(),
                 OrderTaskListStatus.DeliveryDates => new DeliveryDatesStatusProvider(),
                 OrderTaskListStatus.FundingSources => new FundingSourceStatusProvider(),

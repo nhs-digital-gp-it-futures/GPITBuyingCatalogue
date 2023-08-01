@@ -447,7 +447,7 @@ public static class ImportServiceRecipientsControllerTests
 
     [Theory]
     [CommonInlineAutoData(ServiceRecipientImportMode.Edit, nameof(ServiceRecipientsController.EditServiceRecipients))]
-    [CommonInlineAutoData(ServiceRecipientImportMode.Add, nameof(ServiceRecipientsController.AddServiceRecipients))]
+    [CommonInlineAutoData(ServiceRecipientImportMode.Add, nameof(ServiceRecipientsController.SelectServiceRecipients))]
     public static void CancelImport_Redirects(
         ServiceRecipientImportMode importMode,
         string expectedRedirectAction,

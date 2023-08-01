@@ -242,14 +242,6 @@ BEGIN
     DECLARE @OrderId INT;
     SELECT @OrderId = Id FROM @OrderIdCatSolAdditional
 
-	--insert service recipients
-	INSERT INTO ordering.ServiceRecipients (OdsCode, Name)
-	VALUES
-	('B84007','BRIG ROYD SURGERY'),
-	('B84016','BANKFIELD SURGERY'),
-	('B84613','BEECHWOOD MEDICAL CENTRE'),
-	('Y02572', 'CALDER COMMUNITY PRACTICE');
-
     --insert cat sol
 
     INSERT INTO ordering.OrderItems (OrderId, CatalogueItemId, Created, LastUpdated)
