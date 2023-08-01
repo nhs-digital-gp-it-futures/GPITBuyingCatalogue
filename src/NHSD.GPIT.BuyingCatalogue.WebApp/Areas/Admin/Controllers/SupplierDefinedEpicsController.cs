@@ -164,7 +164,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return BadRequest($"No Supplier defined Epic found for Id: {epicId}");
 
             var capabilities = await capabilitiesService.GetCapabilities();
-            var relatedItems = await supplierDefinedEpicsService.GetItemsReferencingEpic(epicId);
             var selectedCapabilityIds = epic.Capabilities.Select(x => x.Id).ToList();
 
             var model = new FilterCapabilitiesModel(capabilities, false, selectedCapabilityIds)
