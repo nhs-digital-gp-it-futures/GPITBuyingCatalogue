@@ -178,29 +178,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("edit/{epicId}/select-capabilities")]
         public async Task<IActionResult> EditCapabilities(string epicId, FilterCapabilitiesModel model)
         {
+            var epic = await supplierDefinedEpicsService.GetEpic(epicId);
+            if (epic is null)
+                return BadRequest($"No Supplier defined Epic found for Id: {epicId}");
+
+            List<int> selectedIds = model.SelectedItems.Where(x => x.Selected).Select(x => int.Parse(x.Id)).ToList();
             if (!ModelState.IsValid)
             {
-                var newEpic = await supplierDefinedEpicsService.GetEpic(epicId);
-                if (newEpic is null)
-                    return BadRequest($"No Supplier defined Epic found for Id: {epicId}");
-
                 var capabilities = await capabilitiesService.GetCapabilities();
-                var relatedItems = await supplierDefinedEpicsService.GetItemsReferencingEpic(epicId);
-                var selectedCapabilityIds = newEpic.Capabilities.Select(x => x.Id).ToList();
 
-                var newModel = new FilterCapabilitiesModel(capabilities, false, selectedCapabilityIds)
+                var newModel = new FilterCapabilitiesModel(capabilities, false, selectedIds)
                 {
                     BackLink = Url.Action(nameof(EditSupplierDefinedEpic), new { epicId }),
                 };
 
                 return View("FilterCapabilities", newModel);
             }
-
-            var epic = await supplierDefinedEpicsService.GetEpic(epicId);
-            if (epic is null)
-                return BadRequest($"No Supplier defined Epic found for Id: {epicId}");
-
-            List<int> selectedIds = model.SelectedItems.Where(x => x.Selected).Select(x => int.Parse(x.Id)).ToList();
 
             var editEpicModel = new AddEditSupplierDefinedEpic(
                 epicId,

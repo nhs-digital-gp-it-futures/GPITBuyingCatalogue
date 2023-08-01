@@ -257,7 +257,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var result = (await controller.AddSupplierDefinedEpicDetails(model)).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(controller.Dashboard));
+            result.ActionName.Should().Be(nameof(controller.EditSupplierDefinedEpic));
         }
 
         [Theory]
