@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Name)
-                .WithErrorMessage("Enter an Epic name");
+                .WithErrorMessage("Enter a name");
         }
 
         [Theory]
@@ -79,24 +79,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
             AddSupplierDefinedEpicDetailsValidator validator)
         {
             service.Setup(s =>
-                s.EpicExists(
+                s.EpicWithNameExists(
                     model.Id,
-                    model.Name,
-                    model.Description,
-                    model.IsActive!.Value))
+                    model.Name))
                 .ReturnsAsync(true);
 
             var result = validator.TestValidate(model);
 
-            var expectedErrorProperty = string.Format(
-                "{0}|{1}|{2}|{3}",
-                nameof(model.SelectedCapabilityIds),
-                nameof(model.Name),
-                nameof(model.Description),
-                nameof(model.IsActive));
-
-            result.ShouldHaveValidationErrorFor(expectedErrorProperty)
-                .WithErrorMessage("A supplier defined Epic with these details already exists");
+            result.ShouldHaveValidationErrorFor(m => m.Name)
+                .WithErrorMessage("An Epic with this name already exists. Try another name");
         }
 
         [Theory]
