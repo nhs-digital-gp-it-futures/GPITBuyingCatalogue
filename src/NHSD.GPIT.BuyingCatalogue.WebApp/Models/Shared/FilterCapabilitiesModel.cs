@@ -9,13 +9,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared
 {
     public class FilterCapabilitiesModel : FilterModel<Capability, CapabilityCategory>
     {
-        public static readonly PageTitleModel SupplierDefinedEpic = new()
+        public static readonly PageTitleModel SupplierDefinedEpicPageTitle = new()
         {
             Title = "Capabilities for this supplier defined Epic",
             Advice = "Select the Capabilities relating to this supplier defined Epic.",
         };
 
-        public static readonly PageTitleModel Filter = new()
+        public static readonly PageTitleModel FilterPageTitle = new()
         {
             Title = "Filter by Capabilities for Catalogue Solutions",
             Advice = "Capabilities describe business needs. Select the ones you want a Catalogue Solution to address.",
@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared
         }
 
         public PageTitleModel GetPageTitle() => IsFilter
-            ? Filter
-            : SupplierDefinedEpic;
+            ? FilterPageTitle
+            : SupplierDefinedEpicPageTitle;
     }
 }
