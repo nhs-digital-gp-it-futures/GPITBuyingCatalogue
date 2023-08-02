@@ -107,6 +107,36 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
 
         [Theory]
         [InMemoryDbAutoData]
+        public static async Task EpicExistsWithName_ReturnsTrue(
+            string epicId,
+            Epic epic,
+            [Frozen] BuyingCatalogueDbContext context,
+            SupplierDefinedEpicsService service)
+        {
+            epic.SupplierDefined = true;
+
+            context.Epics.Add(epic);
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var epicExists = await service.EpicWithNameExists(epicId, epic.Name);
+
+            epicExists.Should().BeTrue();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task EpicExistsWithName_ReturnsFalse(
+            Epic epic,
+            SupplierDefinedEpicsService service)
+        {
+            var epicExists = await service.EpicWithNameExists(epic.Id, epic.Name);
+
+            epicExists.Should().BeFalse();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
         public static async Task EpicExists_NullId_DuplicateContent_ReturnsTrue(
             Epic epic,
             [Frozen] BuyingCatalogueDbContext context,
@@ -495,41 +525,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
                         .Excluding(m => m.LastUpdatedByUser)
                         .Excluding(m => m.CapabilityEpics)
                         .Excluding(m => m.Capabilities));
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
-        public static async Task DeleteSupplierDefinedEpic_ValidId_DeletesEpic(
-            Epic epic,
-            [Frozen] BuyingCatalogueDbContext context,
-            SupplierDefinedEpicsService service)
-        {
-            epic.SupplierDefined = true;
-
-            context.Epics.Add(epic);
-
-            await service.DeleteSupplierDefinedEpic(epic.Id);
-
-            context.Epics.Any(e => e.Id == epic.Id).Should().BeFalse();
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
-        public static async Task DeleteSupplierDefinedEpic_InvalidId_Returns(
-            string invalidEpicId,
-            Epic epic,
-            [Frozen] BuyingCatalogueDbContext context,
-            SupplierDefinedEpicsService service)
-        {
-            epic.SupplierDefined = true;
-
-            context.Epics.Add(epic);
-
-            var expectedCount = context.Epics.AsNoTracking().Count();
-
-            await service.DeleteSupplierDefinedEpic(invalidEpicId);
-
-            context.Epics.AsNoTracking().Count().Should().Be(expectedCount);
         }
 
         private static List<Epic> GetEpicsForSearchTerm(string searchTerm)
