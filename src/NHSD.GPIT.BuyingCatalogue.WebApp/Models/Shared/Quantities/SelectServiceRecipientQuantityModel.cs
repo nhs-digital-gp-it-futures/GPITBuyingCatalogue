@@ -90,7 +90,8 @@ public class SelectServiceRecipientQuantityModel : NavBaseModel
     {
         var recipientQuantityModel = new ServiceRecipientQuantityModel
         {
-            OdsCode = recipient.OdsCode, Name = recipient.Name,
+            OdsCode = recipient.OdsCode,
+            Name = recipient.Name,
         };
 
         if (ProvisioningType is ProvisioningType.PerServiceRecipient)

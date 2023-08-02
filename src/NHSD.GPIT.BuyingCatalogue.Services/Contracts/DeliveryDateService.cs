@@ -25,11 +25,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
 
             order.DeliveryDate = deliveryDate;
 
-            var recipients = await dbContext.OrderItemRecipients
+            var recipients = await dbContext.OrderRecipients
+                .Include(x => x.OrderItemRecipients)
                 .Where(x => x.OrderId == order.Id)
                 .ToListAsync();
 
-            recipients.ForEach(x => x.DeliveryDate = deliveryDate);
+            var orderItems = await dbContext.OrderItems.Where(x => x.OrderId == order.Id)
+                .Select(x => x.CatalogueItemId)
+                .ToListAsync();
+
+            recipients.ForEach(x => orderItems.ForEach(y => x.SetDeliveryDateForItem(y, deliveryDate)));
 
             await dbContext.SaveChangesAsync();
         }
@@ -38,19 +43,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
         {
             var order = await dbContext.Order(internalOrgId, callOffId);
 
-            var recipients = await dbContext.OrderItemRecipients
-                .Where(x => x.OrderId == order.Id && x.CatalogueItemId == catalogueItemId)
+            var recipients = await dbContext.OrderRecipients.Include(x => x.OrderItemRecipients)
+                .Where(x => x.OrderId == order.Id)
                 .ToListAsync();
 
-            recipients.ForEach(x => x.DeliveryDate = deliveryDate);
+            recipients.ForEach(x => x.SetDeliveryDateForItem(catalogueItemId, deliveryDate));
 
             await dbContext.SaveChangesAsync();
         }
 
         public async Task SetDeliveryDates(int orderId, CatalogueItemId catalogueItemId, List<RecipientDeliveryDateDto> deliveryDates)
         {
-            var recipients = await dbContext.OrderItemRecipients
-                .Where(x => x.OrderId == orderId && x.CatalogueItemId == catalogueItemId)
+            var recipients = await dbContext.OrderRecipients.Include(x => x.OrderItemRecipients)
+                .Where(x => x.OrderId == orderId)
                 .ToListAsync();
 
             foreach (var recipient in recipients)
@@ -59,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
 
                 if (dto != null)
                 {
-                    recipient.DeliveryDate = dto.DeliveryDate;
+                    recipient.SetDeliveryDateForItem(catalogueItemId, dto.DeliveryDate);
                 }
             }
 

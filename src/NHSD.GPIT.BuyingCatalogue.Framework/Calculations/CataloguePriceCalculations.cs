@@ -29,41 +29,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
             };
         }
 
-        public static decimal CalculateOneOffCost(this IPrice price, int quantity)
-        {
-            return price?.BillingPeriod is null
-                ? CostForBillingPeriod(price, quantity)
-                : decimal.Zero;
-        }
-
-        public static decimal CalculateCostPerMonth(this IPrice price, int quantity)
-        {
-            if (price?.BillingPeriod is null)
-            {
-                return decimal.Zero;
-            }
-
-            var cost = CostForBillingPeriod(price, quantity);
-
-            return price.BillingPeriod == TimeUnit.PerMonth
-                ? cost
-                : cost / 12;
-        }
-
-        public static decimal CalculateCostPerYear(this IPrice price, int quantity)
-        {
-            if (price?.BillingPeriod is null)
-            {
-                return decimal.Zero;
-            }
-
-            var cost = CostForBillingPeriod(price, quantity);
-
-            return price.BillingPeriod == TimeUnit.PerYear
-                ? cost
-                : cost * 12;
-        }
-
         public static decimal TotalOneOffCost(this Order order, bool roundResult = false)
         {
             var total = order?.OrderItems.Sum(x => x.OrderItemPrice.CalculateOneOffCost(x.TotalQuantity)) ?? decimal.Zero;
@@ -145,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
 
             if (order.IsAmendment)
             {
-                return CalculateForTerm(orderItem, GetTerm(order.EndDate, orderItem));
+                return CalculateForTerm(orderItem, GetTerm(order.EndDate, order.OrderRecipients, orderItem));
             }
             else
             {
@@ -171,6 +136,41 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
             };
         }
 
+        private static decimal CalculateOneOffCost(this IPrice price, int quantity)
+        {
+            return price?.BillingPeriod is null
+                ? CostForBillingPeriod(price, quantity)
+                : decimal.Zero;
+        }
+
+        private static decimal CalculateCostPerMonth(this IPrice price, int quantity)
+        {
+            if (price?.BillingPeriod is null)
+            {
+                return decimal.Zero;
+            }
+
+            var cost = CostForBillingPeriod(price, quantity);
+
+            return price.BillingPeriod == TimeUnit.PerMonth
+                ? cost
+                : cost / 12;
+        }
+
+        private static decimal CalculateCostPerYear(this IPrice price, int quantity)
+        {
+            if (price?.BillingPeriod is null)
+            {
+                return decimal.Zero;
+            }
+
+            var cost = CostForBillingPeriod(price, quantity);
+
+            return price.BillingPeriod == TimeUnit.PerYear
+                ? cost
+                : cost * 12;
+        }
+
         private static decimal CalculateForTerm(OrderItem orderItem, int term)
         {
             if (orderItem == null)
@@ -192,7 +192,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
         {
             return order.TotalOneOffCost() + order?.OrderItems.Sum(i =>
             {
-                var term = GetTerm(order.EndDate, i);
+                var term = GetTerm(order.EndDate, order.OrderRecipients, i);
                 return i.OrderItemPrice.CalculateCostPerMonth(i.TotalQuantity) * term;
             }) ?? decimal.Zero;
         }
@@ -204,21 +204,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
             return order.TotalOneOffCost() + (order.TotalMonthlyCost() * maximumTerm);
         }
 
-        private static int GetTerm(EndDate endDate, OrderItem orderItem)
+        private static int GetTerm(EndDate endDate, IEnumerable<OrderRecipient> orderRecipients, OrderItem orderItem)
         {
             if (orderItem == null || endDate == null)
             {
                 return 0;
             }
 
-            var deliveryDate = orderItem.OrderItemRecipients.FirstOrDefault()?.DeliveryDate;
-            if (deliveryDate.HasValue)
-            {
-                var term = endDate.RemainingTerm(deliveryDate.Value);
-                return term;
-            }
+            var deliveryDate = orderRecipients.Select(x => x.GetDeliveryDateForItem(orderItem.CatalogueItemId))
+                .FirstOrDefault(x => x != null);
 
-            return 0;
+            if (!deliveryDate.HasValue) return 0;
+
+            var term = endDate.RemainingTerm(deliveryDate.Value);
+            return term;
+
         }
 
         private static List<PriceCalculationModel> CalculateCostCumulative(IPrice price, int quantity)

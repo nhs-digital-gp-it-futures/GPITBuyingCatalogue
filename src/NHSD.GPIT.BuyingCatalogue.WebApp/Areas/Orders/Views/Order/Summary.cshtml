@@ -155,7 +155,7 @@
                 <h2 id="catalogue-solutions-title">@solutionsTitle</h2>
                 @foreach (var solution in solutions)
                 {
-                    <partial name="_OrderItemSummary" model="new AmendOrderItemModel(Model.CallOffId, solution, Model.Previous?.OrderItem(solution.CatalogueItemId), Model.Order.IsAmendment, Model.FundingTypeDescription(solution.CatalogueItemId))" />
+                    <partial name="_OrderItemSummary" model="@(new AmendOrderItemModel(Model.CallOffId, Model.Order.OrderRecipients, Model.Previous?.OrderRecipients, solution, Model.Previous?.OrderItem(solution.CatalogueItemId), Model.Order.IsAmendment, Model.FundingTypeDescription(solution.CatalogueItemId)))" />
                 }
             }
 
@@ -164,7 +164,7 @@
                 <h2 id="additional-services-title">Additional Services</h2>
                 @foreach (var additionalService in additionalServices)
                 {
-                    <partial name="_OrderItemSummary" model="new AmendOrderItemModel(Model.CallOffId, additionalService, Model.Previous?.OrderItem(additionalService.CatalogueItemId), Model.Order.IsAmendment, Model.FundingTypeDescription(additionalService.CatalogueItemId))" />
+                    <partial name="_OrderItemSummary" model="@(new AmendOrderItemModel(Model.CallOffId, Model.Order.OrderRecipients, Model.Previous?.OrderRecipients, additionalService, Model.Previous?.OrderItem(additionalService.CatalogueItemId), Model.Order.IsAmendment, Model.FundingTypeDescription(additionalService.CatalogueItemId)))" />
                 }
             }
 
@@ -185,7 +185,7 @@
                 <h2 id="associated-services-title">Associated Services</h2>
                 @foreach (var associatedService in associatedServices)
                 {
-                    <partial name="_OrderItemSummary" model="new AmendOrderItemModel(Model.CallOffId, associatedService, Model.Previous?.OrderItem(associatedService.CatalogueItemId), Model.Order.IsAmendment, Model.FundingTypeDescription(associatedService.CatalogueItemId))" />
+                    <partial name="_OrderItemSummary" model="@(new AmendOrderItemModel(Model.CallOffId, Model.Order.OrderRecipients, Model.Previous?.OrderRecipients, associatedService, Model.Previous?.OrderItem(associatedService.CatalogueItemId), Model.Order.IsAmendment, Model.FundingTypeDescription(associatedService.CatalogueItemId)))" />
                 }
 
                 <h2 id="as-milestones-title">Milestones and payment triggers for Associated Services</h2>

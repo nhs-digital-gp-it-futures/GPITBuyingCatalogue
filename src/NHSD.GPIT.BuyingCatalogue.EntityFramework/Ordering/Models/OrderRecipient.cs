@@ -27,7 +27,7 @@ public class OrderRecipient
 
     public OdsOrganisation OdsOrganisation { get; set; }
 
-    public ICollection<OrderItemRecipient> OrderItemRecipients { get; set; }
+    public ICollection<OrderItemRecipient> OrderItemRecipients { get; set; } = new HashSet<OrderItemRecipient>();
 
     public void SetQuantityForItem(CatalogueItemId catalogueItemId, int quantity)
     {
@@ -41,6 +41,20 @@ public class OrderRecipient
         }
 
         itemRecipient.Quantity = quantity;
+    }
+
+    public void SetDeliveryDateForItem(CatalogueItemId catalogueItemId, DateTime deliveryDate)
+    {
+        var itemRecipient = OrderItemRecipients.FirstOrDefault(
+            x => x.OrderId == OrderId && x.OdsCode == OdsCode && x.CatalogueItemId == catalogueItemId);
+
+        if (itemRecipient == null)
+        {
+            itemRecipient = new OrderItemRecipient(OrderId, OdsCode, catalogueItemId);
+            OrderItemRecipients.Add(itemRecipient);
+        }
+
+        itemRecipient.DeliveryDate = deliveryDate;
     }
 
     public int? GetQuantityForItem(CatalogueItemId catalogueItemId) => OrderItemRecipients.FirstOrDefault(

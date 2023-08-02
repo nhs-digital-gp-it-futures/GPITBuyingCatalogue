@@ -79,8 +79,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             await orderItemService.AddOrderItems(internalOrgId, callOffId, ids);
 
             return RedirectToAction(
-                nameof(ServiceRecipientsController.SelectServiceRecipients),
-                typeof(ServiceRecipientsController).ControllerName(),
+                nameof(PricesController.SelectPrice),
+                typeof(PricesController).ControllerName(),
                 new { internalOrgId, callOffId, catalogueItemId });
         }
 
@@ -318,8 +318,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             }
 
             return RedirectToAction(
-                nameof(ServiceRecipientsController.SelectServiceRecipients),
-                typeof(ServiceRecipientsController).ControllerName(),
+                nameof(PricesController.SelectPrice),
+                typeof(PricesController).ControllerName(),
                 new { internalOrgId, callOffId, catalogueItemId });
         }
 

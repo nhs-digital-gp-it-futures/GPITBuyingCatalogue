@@ -131,12 +131,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             CallOffId callOffId,
             ConfirmChangesModel model)
         {
-            // Update Order Recipients
             await orderRecipientService.SetOrderRecipients(internalOrgId, callOffId, model.Selected.Select(x => x.OdsCode));
 
             return RedirectToAction(
-                nameof(TaskListController.TaskList),
-                typeof(TaskListController).ControllerName(),
+                nameof(OrderController.Order),
+                typeof(OrderController).ControllerName(),
                 new { internalOrgId, callOffId });
         }
 

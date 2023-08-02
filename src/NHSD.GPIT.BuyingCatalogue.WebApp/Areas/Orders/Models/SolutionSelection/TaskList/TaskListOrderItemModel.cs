@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
@@ -9,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
     {
         private readonly OrderItem orderItem;
 
-        public TaskListOrderItemModel(string internalOrgId, CallOffId callOffId, OrderItem orderItem)
+        public TaskListOrderItemModel(string internalOrgId, CallOffId callOffId, IEnumerable<OrderRecipient> orderRecipients, OrderItem orderItem)
         {
             this.orderItem = orderItem;
 
@@ -18,6 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
             CatalogueItemId = orderItem?.CatalogueItemId ?? default;
             Name = orderItem?.CatalogueItem?.Name ?? string.Empty;
+            OrderRecipients = (orderRecipients ?? Enumerable.Empty<OrderRecipient>()).ToList();
         }
 
         public string InternalOrgId { get; set; }
@@ -29,6 +31,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         public bool FromPreviousRevision { get; set; }
 
         public bool HasCurrentAmendments { get; set; }
+
+        public List<OrderRecipient> OrderRecipients { get; set; }
 
         public CatalogueItemId CatalogueItemId { get; set; }
 
@@ -69,27 +73,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                     return TaskProgress.CannotStart;
                 }
 
-                if (((IPrice)orderItem.OrderItemPrice).IsPerServiceRecipient())
-                {
-                    if (orderItem.OrderItemRecipients?.All(x => x.Quantity != null) ?? false)
-                    {
-                        return (FromPreviousRevision && HasCurrentAmendments) ? TaskProgress.Amended : TaskProgress.Completed;
-                    }
+                // TODO: MJK REVIEW MERGE
+                if (!orderItem.OrderItemRecipients.Any()) return TaskProgress.NotStarted;
 
-                    if (orderItem.OrderItemRecipients?.Any(x => x.Quantity != null) ?? false)
-                    {
-                        return TaskProgress.InProgress;
-                    }
-                }
-                else
+                if (((IPrice)orderItem.OrderItemPrice).IsPerServiceRecipient() && OrderRecipients.Any(x => !x.GetQuantityForItem(CatalogueItemId).HasValue))
                 {
-                    if (orderItem.Quantity != null)
-                    {
-                        return (FromPreviousRevision && HasCurrentAmendments) ? TaskProgress.Amended : TaskProgress.Completed;
-                    }
+                    return TaskProgress.InProgress;
                 }
 
-                return TaskProgress.NotStarted;
+                return (FromPreviousRevision && HasCurrentAmendments) ? TaskProgress.Amended : TaskProgress.Completed;
             }
         }
 

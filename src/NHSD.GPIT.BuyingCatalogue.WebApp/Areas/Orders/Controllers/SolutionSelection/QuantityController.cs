@@ -118,18 +118,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
             var order = wrapper.Order;
             var orderItem = order.OrderItem(catalogueItemId);
-            var previousItem = wrapper.Previous?.OrderItem(catalogueItemId);
 
             var route = routingService.GetRoute(
                 RoutingPoint.SelectQuantityBackLink,
                 order,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
 
-            var recipients = orderItem.OrderItemRecipients.Select(
-                x => new ServiceRecipientDto(x.OdsCode, x.Recipient?.Name, x.Quantity));
+            // TODO: MJK REVIEW MERGE
+            var recipients = order.OrderRecipients.Select(
+                x => new ServiceRecipientDto(x.OdsCode, x.OdsOrganisation?.Name, x.GetQuantityForItem(orderItem.CatalogueItemId)));
 
-            var previousRecipients = previousItem?.OrderItemRecipients?.Select(
-                x => new ServiceRecipientDto(x.OdsCode, x.Recipient?.Name, x.Quantity));
+            var previousRecipients = wrapper.Previous?.OrderRecipients?.Select(
+                x => new ServiceRecipientDto(x.OdsCode, x.OdsOrganisation?.Name, x.GetQuantityForItem(orderItem.CatalogueItemId)));
 
             var model = new SelectServiceRecipientQuantityModel(
                 orderItem.CatalogueItem,

@@ -4,12 +4,20 @@ using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Services.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 {
     public class AmendOrderItemModel
     {
-        public AmendOrderItemModel(CallOffId callOffId, OrderItem orderItem, OrderItem previous, bool isAmendment, FundingTypeDescriptionModel fundingTypeDescription)
+        public AmendOrderItemModel(
+            CallOffId callOffId,
+            IEnumerable<OrderRecipient> recipients,
+            IEnumerable<OrderRecipient> previousRecipients,
+            OrderItem orderItem,
+            OrderItem previous,
+            bool isAmendment,
+            FundingTypeDescriptionModel fundingTypeDescription)
         {
             CallOffId = callOffId;
             IsAmendment = isAmendment;
@@ -17,6 +25,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             OrderItem = orderItem;
             Previous = previous;
             FundingTypeDescriptionModel = fundingTypeDescription;
+            Recipients = recipients.ToList();
+            PreviousRecipients = (previousRecipients ?? Enumerable.Empty<OrderRecipient>()).ToList();
         }
 
         public CallOffId CallOffId { get; }
@@ -29,7 +39,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public CatalogueItem CatalogueItem => OrderItem.CatalogueItem;
 
-        public ICollection<OrderItemRecipient> OrderItemRecipients => OrderItem.OrderItemRecipients;
+        public List<OrderRecipient> Recipients { get; }
+
+        public List<OrderRecipient> PreviousRecipients { get; }
 
         public int RolledUpTotalQuantity => OrderItem.TotalQuantity;
 
@@ -51,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
         private FundingTypeDescriptionModel FundingTypeDescriptionModel { get; }
 
         public bool IsServiceRecipientAdded(string odsCode) =>
-            OrderItem?.OrderItemRecipients?.FirstOrDefault(x => x.OdsCode == odsCode) != null
-            && Previous?.OrderItemRecipients?.FirstOrDefault(x => x.OdsCode == odsCode) == null;
+            Recipients?.FirstOrDefault(x => x.OdsCode == odsCode) != null
+            && PreviousRecipients?.FirstOrDefault(x => x.OdsCode == odsCode) == null;
     }
 }

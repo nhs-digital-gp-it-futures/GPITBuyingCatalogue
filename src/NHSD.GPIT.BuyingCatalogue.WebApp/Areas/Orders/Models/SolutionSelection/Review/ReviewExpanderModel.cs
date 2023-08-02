@@ -7,12 +7,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 {
     public class ReviewExpanderModel
     {
-        public ReviewExpanderModel(OrderItem orderItem, OrderItem previous, bool isAmendment)
+        public ReviewExpanderModel(
+            IEnumerable<OrderRecipient> recipients,
+            IEnumerable<OrderRecipient> previousRecipients,
+            OrderItem orderItem,
+            OrderItem previous,
+            bool isAmendment)
         {
             IsAmendment = isAmendment;
             IsOrderItemAdded = orderItem != null && previous == null;
             OrderItem = orderItem;
             Previous = previous;
+            Recipients = recipients.ToList();
+            PreviousRecipients = (previousRecipients ?? Enumerable.Empty<OrderRecipient>()).ToList();
         }
 
         public bool IsAmendment { get; }
@@ -23,7 +30,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public CatalogueItem CatalogueItem => OrderItem.CatalogueItem;
 
-        public ICollection<OrderItemRecipient> OrderItemRecipients => OrderItem.OrderItemRecipients;
+        public List<OrderRecipient> Recipients { get; }
+
+        public List<OrderRecipient> PreviousRecipients { get; }
 
         public int RolledUpTotalQuantity => OrderItem.TotalQuantity;
 
@@ -34,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         private OrderItem Previous { get; }
 
         public bool IsServiceRecipientAdded(string odsCode) =>
-            OrderItem?.OrderItemRecipients?.FirstOrDefault(x => x.OdsCode == odsCode) != null
-            && Previous?.OrderItemRecipients?.FirstOrDefault(x => x.OdsCode == odsCode) == null;
+            Recipients?.FirstOrDefault(x => x.OdsCode == odsCode) != null
+            && PreviousRecipients?.FirstOrDefault(x => x.OdsCode == odsCode) == null;
     }
 }

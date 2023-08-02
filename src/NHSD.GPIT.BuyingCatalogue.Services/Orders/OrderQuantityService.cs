@@ -66,27 +66,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 throw new ArgumentNullException(nameof(quantities));
             }
 
-            var orderItem = await dbContext.OrderItems
-                .Include(x => x.OrderItemRecipients)
-                .FirstOrDefaultAsync(x => x.OrderId == orderId
-                    && x.CatalogueItemId == catalogueItemId);
-
-            if (orderItem == null)
+            var recipients = await dbContext.OrderRecipients.Include(x => x.OrderItemRecipients).Where(x => x.OrderId == orderId).ToListAsync();
+            if (recipients.Count == 0)
             {
                 return;
             }
 
-            foreach (var recipient in orderItem.OrderItemRecipients)
+            foreach (var recipient in recipients)
             {
                 var quantity = quantities.FirstOrDefault(x => x.OdsCode == recipient.OdsCode);
 
                 if (quantity != null)
                 {
-                    recipient.Quantity = quantity.Quantity;
+                    recipient.SetQuantityForItem(catalogueItemId, quantity.Quantity);
                 }
             }
-
-            dbContext.OrderItems.Update(orderItem);
 
             await dbContext.SaveChangesAsync();
         }

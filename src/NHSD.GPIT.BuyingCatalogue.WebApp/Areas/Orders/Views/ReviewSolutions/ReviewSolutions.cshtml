@@ -46,7 +46,7 @@
             <h2 id="catalogue-solutions-title">@solutionsTitle</h2>
             @foreach (var solution in Model.CatalogueSolutions)
             {
-                <partial name="_ReviewExpander" model="new ReviewExpanderModel(solution, Model.Previous?.OrderItem(solution.CatalogueItemId), Model.Order.IsAmendment)" />
+                <partial name="_ReviewExpander" model="@(new ReviewExpanderModel(Model.Order.OrderRecipients, Model.Previous?.OrderRecipients, solution, Model.Previous?.OrderItem(solution.CatalogueItemId), Model.Order.IsAmendment))" />
             }
         }
 
@@ -55,7 +55,7 @@
             <h2 id="additional-services-title">Additional Services</h2>
             @foreach (var service in Model.AdditionalServices)
             {
-                <partial name="_ReviewExpander" model="new ReviewExpanderModel(service, Model.Previous?.OrderItem(service.CatalogueItemId), Model.Order.IsAmendment)" />
+                <partial name="_ReviewExpander" model="@(new ReviewExpanderModel(Model.Order.OrderRecipients, Model.Previous?.OrderRecipients, service, Model.Previous?.OrderItem(service.CatalogueItemId), Model.Order.IsAmendment))" />
             }
         }
 
@@ -64,7 +64,7 @@
             <h2 id="associated-services-title">Associated Services</h2>
             @foreach (var service in Model.AssociatedServices)
             {
-                 <partial name="_ReviewExpander" model="new ReviewExpanderModel(service, Model.Previous?.OrderItem(service.CatalogueItemId), Model.Order.IsAmendment)" />
+                 <partial name="_ReviewExpander" model="@(new ReviewExpanderModel(Model.Order.OrderRecipients, Model.Previous?.OrderRecipients, service, Model.Previous?.OrderItem(service.CatalogueItemId), Model.Order.IsAmendment))" />
             }
         }
 

@@ -26,7 +26,7 @@
         }
         <nhs-table-column>Recipient</nhs-table-column>
         <nhs-table-column>Quantity</nhs-table-column>
-        @foreach (var recipient in Model.OrderItemRecipients)
+        @foreach (var recipient in Model.Recipients)
         {
             <nhs-table-row-container>
                 @if (Model.IsAmendment)
@@ -45,12 +45,13 @@
                     </nhs-table-cell>
                 }
                 <nhs-table-cell>
-                    @recipient.Recipient.Name
+                    @recipient.OdsOrganisation.Name
                 </nhs-table-cell>
                 <nhs-table-cell>
                     @if (hasServiceRecipientQuantities)
                     {
-                        @(recipient.Quantity.HasValue ? $"{recipient.Quantity:N0}" : "-")
+                        var quantity = recipient.GetQuantityForItem(Model.CatalogueItem.Id);
+                        @(quantity.HasValue ? $"{quantity:N0}" : "-")
                     }
                     else
                     {

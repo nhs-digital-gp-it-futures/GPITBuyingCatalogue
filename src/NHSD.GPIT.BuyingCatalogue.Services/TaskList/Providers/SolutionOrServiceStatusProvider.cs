@@ -40,20 +40,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
 
         private static bool ValidCatalogueItems(EntityFramework.Ordering.Models.Order order)
         {
-            if (!order.IsAmendment)
+            if (order.IsAmendment)
             {
-              if (order.AssociatedServicesOnly)
-              {
-                  return order.SolutionId != null;
-              }
+                return order.OrderItems.Any(
+                    x => x.CatalogueItem.CatalogueItemType is CatalogueItemType.Solution
+                        or CatalogueItemType.AdditionalService);
+            }
 
-              return order.OrderItems.Any(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution);
-            }
-            else
+            if (order.AssociatedServicesOnly)
             {
-                return order.OrderItems.Any(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution
-                || x.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService);
+                return order.SolutionId != null;
             }
+
+            return order.OrderItems.Any(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution);
         }
 
         private static bool SolutionsCompleted(EntityFramework.Ordering.Models.Order order)
@@ -66,7 +65,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
             return order.OrderItems.All(x =>
                 x.CatalogueItem != null
                 && x.OrderItemPrice != null
-                && (x.OrderItemRecipients?.Any() ?? false)
                 && x.AllQuantitiesEntered)
                 && AllDeliveryDatesEnteredIfRequired(order);
         }

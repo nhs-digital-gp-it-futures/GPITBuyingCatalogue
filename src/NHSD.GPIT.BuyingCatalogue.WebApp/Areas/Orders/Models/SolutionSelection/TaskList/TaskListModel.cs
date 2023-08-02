@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
             if (CatalogueSolution != null)
             {
-                taskModels.Add(CatalogueSolution.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, CatalogueSolution)
+                taskModels.Add(CatalogueSolution.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, order.OrderRecipients, CatalogueSolution)
                 {
                     FromPreviousRevision = previous?.OrderItems.Any(x => x.CatalogueItemId == CatalogueSolution.CatalogueItemId) ?? false,
                     HasCurrentAmendments = wrapper.HasCurrentAmendments(CatalogueSolution),
@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                 });
             }
 
-            AdditionalServices.ForEach(x => taskModels.Add(x.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, x)
+            AdditionalServices.ForEach(x => taskModels.Add(x.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, order.OrderRecipients, x)
             {
                 FromPreviousRevision = previous?.OrderItems.Any(oi => oi.CatalogueItemId == x.CatalogueItemId) ?? false,
                 HasCurrentAmendments = wrapper.HasCurrentAmendments(x),
@@ -76,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                     : 0,
             }));
 
-            AssociatedServices.ForEach(x => taskModels.Add(x.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, x)
+            AssociatedServices.ForEach(x => taskModels.Add(x.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, order.OrderRecipients, x)
             {
                 FromPreviousRevision = previous?.OrderItems.Any(oi => oi.CatalogueItemId == x.CatalogueItemId) ?? false,
                 HasCurrentAmendments = wrapper.HasCurrentAmendments(x),

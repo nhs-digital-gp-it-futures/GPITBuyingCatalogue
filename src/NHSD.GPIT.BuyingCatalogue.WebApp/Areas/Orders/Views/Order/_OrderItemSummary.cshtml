@@ -19,7 +19,7 @@
               added-sticker="@Model.IsAmendment && @Model.IsOrderItemAdded"
 			  open="true"
 			  bold-title="true">
-    @if (Model.OrderItemRecipients.Any())
+    @if (Model.Recipients.Any())
     {
         <br/>
         <nhs-table label-text="Service Recipients" catches-errors="false">
@@ -32,10 +32,12 @@
             <nhs-table-column>Planned delivery date</nhs-table-column>
             <nhs-table-column>Quantity</nhs-table-column>
 
-			@foreach(var serviceRecipient in Model.OrderItemRecipients)
+			@foreach(var serviceRecipient in Model.Recipients)
 			{
-			    var deliveryDate = serviceRecipient.DeliveryDate.HasValue
-			        ? $"{serviceRecipient.DeliveryDate.Value:d MMM yyyy}"
+			    var quantity = serviceRecipient.GetQuantityForItem(Model.CatalogueItem.Id);
+			    var deliveryDate = serviceRecipient.GetDeliveryDateForItem(Model.CatalogueItem.Id);
+			    var deliveryDateText = deliveryDate.HasValue
+			        ? $"{deliveryDate.Value:d MMM yyyy}"
 			        : "No date entered";
 
                 <nhs-table-row-container>
@@ -54,13 +56,13 @@
                             }
                         </nhs-table-cell>
                     }
-                    <nhs-table-cell>@serviceRecipient.Recipient.Name (@serviceRecipient.Recipient.OdsCode)</nhs-table-cell>
-                    <nhs-table-cell>@($"{Model.CallOffId}-{serviceRecipient.Recipient.OdsCode}-{ViewContext.HttpContext.NextLineId()}")</nhs-table-cell>
-                    <nhs-table-cell>@deliveryDate</nhs-table-cell>
+                    <nhs-table-cell>@serviceRecipient.OdsOrganisation.Name (@serviceRecipient.OdsCode)</nhs-table-cell>
+                    <nhs-table-cell>@($"{Model.CallOffId}-{serviceRecipient.OdsCode}-{ViewContext.HttpContext.NextLineId()}")</nhs-table-cell>
+                    <nhs-table-cell>@deliveryDateText</nhs-table-cell>
                     <nhs-table-cell>
                         @if (hasServiceRecipientQuantities)
                         {
-                            @(serviceRecipient.Quantity.HasValue ? $"{serviceRecipient.Quantity:N0}" : "-")
+                            @(quantity.HasValue ? $"{quantity:N0}" : "-")
                         }
                         else
                         {
@@ -93,25 +95,25 @@
                 <nhs-table-column>Total cost (@billingPeriod)</nhs-table-column>
             }
             @{
-                var rolleUpCosts = Model.OrderItemPrice.CostPerTierForBillingPeriod(Model.RolledUpTotalQuantity);
+                var rolledUpCosts = Model.OrderItemPrice.CostPerTierForBillingPeriod(Model.RolledUpTotalQuantity);
                 var previousCosts = Model.OrderItemPrice.CostPerTierForBillingPeriod(Model.PreviousTotalQuantity);
-                @for (var i = 0; i < rolleUpCosts.Count; i++)
+                @for (var i = 0; i < rolledUpCosts.Count; i++)
                 {
                     <nhs-table-row-container>
                         @if (hasTieredPricing)
                         {
-                            <nhs-table-cell>Tier @rolleUpCosts[i].Id</nhs-table-cell>
+                            <nhs-table-cell>Tier @rolledUpCosts[i].Id</nhs-table-cell>
                         }
-                        <nhs-table-cell>£@rolleUpCosts[i].Price.ToString("N4") @Model.OrderItemPrice.ToPriceUnitString()</nhs-table-cell>
+                        <nhs-table-cell>£@rolledUpCosts[i].Price.ToString("N4") @Model.OrderItemPrice.ToPriceUnitString()</nhs-table-cell>
 
                         @if (Model.IsAmendment) {
                             <nhs-table-cell>@($"{previousCosts[i].Quantity:N0}")</nhs-table-cell>
-                            <nhs-table-cell>@($"{rolleUpCosts[i].Quantity:N0}")</nhs-table-cell>
+                            <nhs-table-cell>@($"{rolledUpCosts[i].Quantity:N0}")</nhs-table-cell>
                             <nhs-table-cell>£@previousCosts[i].Cost.ToString("N2")</nhs-table-cell>
-                            <nhs-table-cell>£@rolleUpCosts[i].Cost.ToString("N2")</nhs-table-cell>
+                            <nhs-table-cell>£@rolledUpCosts[i].Cost.ToString("N2")</nhs-table-cell>
                         } else {
-                            <nhs-table-cell>@($"{rolleUpCosts[i].Quantity:N0}")</nhs-table-cell>
-                            <nhs-table-cell>£@rolleUpCosts[i].Cost.ToString("N2")</nhs-table-cell>
+                            <nhs-table-cell>@($"{rolledUpCosts[i].Quantity:N0}")</nhs-table-cell>
+                            <nhs-table-cell>£@rolledUpCosts[i].Cost.ToString("N2")</nhs-table-cell>
                         }
                     </nhs-table-row-container>
                 }
