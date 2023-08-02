@@ -24,15 +24,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
         private readonly IOdsService odsService;
         private readonly IOrderService orderService;
+        private readonly IOrderRecipientService orderRecipientService;
         private readonly IOrganisationsService organisationsService;
 
         public ServiceRecipientsController(
             IOdsService odsService,
             IOrderService orderService,
+            IOrderRecipientService orderRecipientService,
             IOrganisationsService organisationsService)
         {
             this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
+            this.orderRecipientService =
+                orderRecipientService ?? throw new ArgumentNullException(nameof(orderRecipientService));
             this.organisationsService =
                 organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
         }
@@ -128,7 +132,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             ConfirmChangesModel model)
         {
             // Update Order Recipients
-            await Task.Yield();
+            await orderRecipientService.SetOrderRecipients(internalOrgId, callOffId, model.Selected.Select(x => x.OdsCode));
 
             return RedirectToAction(
                 nameof(TaskListController.TaskList),

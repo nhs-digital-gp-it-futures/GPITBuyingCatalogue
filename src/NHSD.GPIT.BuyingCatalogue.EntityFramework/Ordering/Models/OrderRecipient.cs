@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 
@@ -6,6 +7,18 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 public class OrderRecipient
 {
+    public OrderRecipient()
+    {
+    }
+
+    public OrderRecipient(
+        int orderId,
+        string odsCode)
+    {
+        OrderId = orderId;
+        OdsCode = odsCode;
+    }
+
     public int OrderId { get; set; }
 
     public string OdsCode { get; set; }
@@ -33,4 +46,8 @@ public class OrderRecipient
     public int? GetQuantityForItem(CatalogueItemId catalogueItemId) => OrderItemRecipients.FirstOrDefault(
             x => x.OrderId == OrderId && x.OdsCode == OdsCode && x.CatalogueItemId == catalogueItemId)
         ?.Quantity;
+
+    public DateTime? GetDeliveryDateForItem(CatalogueItemId catalogueItemId) => OrderItemRecipients.FirstOrDefault(
+            x => x.OrderId == OrderId && x.OdsCode == OdsCode && x.CatalogueItemId == catalogueItemId)
+        ?.DeliveryDate;
 }
