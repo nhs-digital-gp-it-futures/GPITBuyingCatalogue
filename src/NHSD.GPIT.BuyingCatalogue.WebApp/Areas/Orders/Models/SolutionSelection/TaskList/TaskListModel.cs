@@ -135,8 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         {
             get
             {
-                if (taskModels.All(x => x.Value.ServiceRecipientsStatus is TaskProgress.Completed or TaskProgress.Amended)
-                    && taskModels.All(x => x.Value.PriceStatus == TaskProgress.Completed)
+                if (taskModels.All(x => x.Value.PriceStatus == TaskProgress.Completed)
                     && taskModels.All(x => x.Value.QuantityStatus is TaskProgress.Completed or TaskProgress.Amended))
                 {
                     return TaskProgress.Completed;

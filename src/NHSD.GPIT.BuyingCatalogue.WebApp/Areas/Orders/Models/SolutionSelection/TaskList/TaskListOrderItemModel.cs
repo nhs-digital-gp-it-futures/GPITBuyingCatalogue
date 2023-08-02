@@ -50,25 +50,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             }
         }
 
-        public TaskProgress ServiceRecipientsStatus
-        {
-            get
-            {
-                return (orderItem?.OrderItemRecipients?.Count ?? 0) == 0
-                    ? TaskProgress.NotStarted
-                    : (FromPreviousRevision && HasCurrentAmendments) ? TaskProgress.Amended : TaskProgress.Completed;
-            }
-        }
-
         public TaskProgress PriceStatus
         {
             get
             {
-                if (ServiceRecipientsStatus == TaskProgress.NotStarted)
-                {
-                    return TaskProgress.CannotStart;
-                }
-
                 return (orderItem?.OrderItemPrice?.OrderItemPriceTiers?.Count ?? 0) == 0
                     ? TaskProgress.NotStarted
                     : TaskProgress.Completed;
@@ -79,8 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         {
             get
             {
-                if (ServiceRecipientsStatus == TaskProgress.NotStarted
-                    || PriceStatus == TaskProgress.NotStarted)
+                if (PriceStatus == TaskProgress.NotStarted)
                 {
                     return TaskProgress.CannotStart;
                 }
