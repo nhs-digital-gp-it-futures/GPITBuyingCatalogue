@@ -27,10 +27,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
         }
 
         [Fact]
-        public void AddEpic_AllSectionsDisplayed()
+        public void AddEpicDetails_AllSectionsDisplayed()
         {
             CommonActions.PageTitle().Should().Be("Supplier defined Epic details".FormatForComparison());
-            CommonActions.LedeText().Should().Be("Provide the following details about the supplier defined Epic.".FormatForComparison());
+            CommonActions.LedeText().Should().Be("Provide the following details for this supplier defined Epic.".FormatForComparison());
 
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
 
@@ -42,18 +42,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
         }
 
         [Fact]
-        public void AddEpic_ClickGoBack_Redirects()
+        public void AddEpicDetails_ClickGoBack_Redirects()
         {
             CommonActions.ClickGoBackLink();
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.Dashboard))
+                nameof(SupplierDefinedEpicsController.SelectCapabilities))
                 .Should().BeTrue();
         }
 
         [Fact]
-        public void AddEpic_NoInput_ThrowsError()
+        public void AddEpicDetails_NoInput_ThrowsError()
         {
             CommonActions.ClickSave();
 
@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 AddSupplierDefinedEpicObjects.NameInputError,
-                "Enter an Epic name")
+                "Enter a name")
                 .Should()
                 .BeTrue();
 
@@ -77,12 +77,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
                 "Enter a description")
                 .Should()
                 .BeTrue();
-
-            
         }
 
         [Fact]
-        public void AddEpic_DuplicatesExistingEpic_ThrowsError()
+        public void AddEpicDetails_DuplicatesExistingEpic_ThrowsError()
         {
             NavigateToUrl(
                 typeof(SupplierDefinedEpicsController),
@@ -106,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
         }
 
         [Fact]
-        public void AddEpic_Valid_SavesEpic()
+        public void AddEpicDetails_Valid_SavesEpic()
         {
             NavigateToUrl(
                 typeof(SupplierDefinedEpicsController),
@@ -125,7 +123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.Dashboard))
+                nameof(SupplierDefinedEpicsController.EditSupplierDefinedEpic))
                 .Should().BeTrue();
 
             using var context = GetEndToEndDbContext();

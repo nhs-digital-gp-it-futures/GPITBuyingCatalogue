@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 AddSupplierDefinedEpicObjects.NameInputError,
-                "Enter an Epic name")
+                "Enter a name")
                 .Should()
                 .BeTrue();
 

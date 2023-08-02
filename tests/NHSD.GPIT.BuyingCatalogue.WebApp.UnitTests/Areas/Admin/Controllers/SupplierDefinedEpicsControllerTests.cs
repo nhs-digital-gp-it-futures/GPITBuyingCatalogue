@@ -247,7 +247,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_AddEpic_ValidModel_RedirectsToDashboard(
+        public static async Task Post_AddEpic_ValidModel_RedirectsToReview(
             AddSupplierDefinedEpicDetailsModel model,
             SupplierDefinedEpicsController controller)
         {
