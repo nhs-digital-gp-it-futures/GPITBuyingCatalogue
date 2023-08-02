@@ -1,14 +1,12 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ListPriceModel;
-@{
-    const string ContextualContent = "This Catalogue Solution is available at the following";
-
-    string Contextual() => Model.FlatListPrices.Count > 1 ? $"{ContextualContent} prices excluding VAT:" : $"{ContextualContent} price excluding VAT:";
-}
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ListPriceModel;
 
 <article class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-two-thirds">
+    <div class="nhsuk-grid-column-full">
+        <partial name="_solutionSummary" model="Model"/>
 
-        <p><strong>@Contextual()</strong></p>
+        <nhs-card title="Price of Catalogue Solution">
+            <p>This is how much this Catalogue Solution costs:</p>
 
         @if (Model.HasFlatListPrices())
         {
@@ -29,5 +27,6 @@
                 }
             </nhs-table>
         }
+        </nhs-card>
     </div>
 </article>

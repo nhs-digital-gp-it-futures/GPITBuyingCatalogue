@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     public abstract class SolutionDisplayBaseModel
     {
-        private const string KeyDescription = "Description";
+        private const string KeyDescription = "Summary";
 
         private static readonly string ControllerName = typeof(SolutionsController).ControllerName();
 
@@ -35,6 +35,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             IsPilotSolution = catalogueItem.Solution.IsPilotSolution;
             LastReviewed = catalogueItem.Solution.LastUpdated;
             Frameworks = catalogueItem.Solution.FrameworkSolutions.Select(x => x.Framework).Distinct().ToList();
+            SupplierName = catalogueItem.Supplier.Name;
+            IsFoundation = catalogueItem.Solution.FrameworkSolutions.Any(fs => fs.IsFoundation).ToYesNo();
 
             SetSections(contentStatus);
             SetPaginationFooter();
@@ -58,7 +60,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public List<BuyingCatalogue.EntityFramework.Catalogue.Models.Framework> Frameworks { get; set; }
 
+        public string SupplierName { get; }
+
+        public string IsFoundation { get; }
+
         public bool HasExpiredFrameworks => Frameworks.Any(x => x.IsExpired);
+
+        public string FrameworkTitle() => Frameworks is not null && Frameworks.Any() && Frameworks.Count > 1
+            ? "Frameworks"
+            : "Framework";
 
         public virtual IList<SectionModel> GetSections()
         {
@@ -110,24 +120,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 },
                 new()
                 {
-                    Action = nameof(SolutionsController.Capabilities),
-                    Controller = ControllerName,
-                    Name = "Capabilities and Epics",
-                    Show = CatalogueItemContentStatus.ShowCapabilities,
-                },
-                new()
-                {
-                    Action = nameof(SolutionsController.Standards),
-                    Controller = ControllerName,
-                    Name = "Standards",
-                    Show = CatalogueItemContentStatus.ShowStandards,
-                },
-                new()
-                {
                     Action = nameof(SolutionsController.ListPrice),
                     Controller = ControllerName,
                     Name = "List price",
                     Show = CatalogueItemContentStatus.ShowListPrice,
+                },
+                new()
+                {
+                    Action = nameof(SolutionsController.Capabilities),
+                    Controller = ControllerName,
+                    Name = "Capabilities and Epics",
+                    Show = CatalogueItemContentStatus.ShowCapabilities,
                 },
                 new()
                 {
@@ -145,17 +148,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 },
                 new()
                 {
-                    Action = nameof(SolutionsController.Interoperability),
-                    Controller = ControllerName,
-                    Name = nameof(SolutionsController.Interoperability),
-                    Show = contentStatus.ShowInteroperability,
-                },
-                new()
-                {
                     Action = nameof(SolutionsController.Implementation),
                     Controller = ControllerName,
                     Name = "Implementation",
                     Show = contentStatus.ShowImplementation,
+                },
+                new()
+                {
+                    Action = nameof(SolutionsController.SupplierDetails),
+                    Controller = ControllerName,
+                    Name = "Supplier details",
+                    Show = CatalogueItemContentStatus.ShowSupplierDetails,
+                },
+                new()
+                {
+                    Action = nameof(SolutionsController.Interoperability),
+                    Controller = ControllerName,
+                    Name = nameof(SolutionsController.Interoperability),
+                    Show = contentStatus.ShowInteroperability,
                 },
                 new()
                 {
@@ -173,6 +183,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 },
                 new()
                 {
+                    Action = nameof(SolutionsController.Standards),
+                    Controller = ControllerName,
+                    Name = "Standards",
+                    Show = CatalogueItemContentStatus.ShowStandards,
+                },
+                new()
+                {
                     Action = nameof(SolutionsController.ServiceLevelAgreement),
                     Controller = ControllerName,
                     Name = "Service Level Agreement",
@@ -184,13 +201,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                     Controller = ControllerName,
                     Name = "Development plans",
                     Show = CatalogueItemContentStatus.ShowDevelopmentPlans,
-                },
-                new()
-                {
-                    Action = nameof(SolutionsController.SupplierDetails),
-                    Controller = ControllerName,
-                    Name = "Supplier details",
-                    Show = CatalogueItemContentStatus.ShowSupplierDetails,
                 },
             };
         }

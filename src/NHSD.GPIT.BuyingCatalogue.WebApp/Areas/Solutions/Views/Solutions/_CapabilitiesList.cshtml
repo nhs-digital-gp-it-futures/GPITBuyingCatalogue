@@ -1,20 +1,6 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.CapabilitiesViewModel
 
-<nhs-details label-text="What are Capabilities?">
-    <p>
-        Capabilities are how you can match a Catalogue Solution to a business need. For example,
-        you may want to enable GP staff to make a digital record of any consultation with a
-        patient. You can therefore identify Catalogue Solutions which offer the 'Recording
-        Consultations' Capability.
-    </p>
-    <p>
-        Each Capability is a set of requirements that are defined using short descriptions called
-        Epics. The more functionality a Catalogue Solution has, the more Epics it will be able
-        to meet for a particular Capability.
-    </p>
-</nhs-details>
-
-<nhs-table label-text="@Model.CapabilitiesHeading">
+<nhs-table>
     <nhs-table-column>Capability</nhs-table-column>
     @if (!string.IsNullOrWhiteSpace(Model.CapabilitiesHeading))
     {

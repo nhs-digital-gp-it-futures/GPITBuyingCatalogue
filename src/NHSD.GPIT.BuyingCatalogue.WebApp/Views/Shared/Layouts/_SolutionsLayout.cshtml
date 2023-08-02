@@ -50,98 +50,125 @@
     <div class="nhsuk-width-container nhsuk-main-wrapper">
         <main role="main" id="maincontent">
             <div class="nhsuk-grid-row">
-                <div class="nhsuk-grid-column-two-thirds">
+            <div class="nhsuk-grid-column-one-third sidebar" id="sidebar" >
+                @if (!Model.IsSuspended())
+                {
+                        <div>
+                            <nav class="side-nav ">
+                            <h2 class="nhsuk-u-visually-hidden">Contents</h2>
+                            <ul class="side-nav__component">
+                            @foreach (var sectionModel in Model.GetSections())
+                            {
+                                @if (sectionModel.Selected)
+                                {
+                                    <li class="side-nav__list--selected" aria-current="page">
+                                    <span class="side-nav__link nhsuk-link--no-visited-state">@sectionModel.Name</span>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="side-nav__list">
+                                    <a asp-action="@sectionModel.Action" 
+                                    asp-controller="@sectionModel.Controller"
+                                    asp-route-solutionId="@sectionModel.SolutionId"
+                                    class="side-nav__link nhsuk-link--no-visited-state">
+                                    @sectionModel.Name
+                                    </a>
+                                    </li>
+                                }
+                            }
+                            </ul>
+                            </nav>
+                        </div>
+                }
+            </div>
+            
+                <div class="nhsuk-grid-column-two-thirds" id="content" >
                     <nhs-page-title title="@ViewBag.Title"
                                     caption="@Model.SolutionName" />
-                </div>
-            </div>
+                    @if (Model.HasExpiredFrameworks)
+                    {
+                        <partial name="Partials/_ExpiredFrameworks" model="new ExpiredFrameworksModel(Model.Frameworks)" />
+                    }
 
-            @if (Model.HasExpiredFrameworks)
-            {
-                <partial name="Partials/_ExpiredFrameworks" model="new ExpiredFrameworksModel(Model.Frameworks)" />
-            }
+                    @if (Model.IsPilotSolution)
+                    {
+                        <div class="nhsuk-grid-row">
+                            <div class="nhsuk-grid-column-full">
+                                <nhs-warning-callout label-text="Available as a pilot procurement only" data-test-id="pilot-warning-callout">
+                                    <p>This solution is yet to be deployed in a live, patient facing environment. Therefore, the supplier can only allow organisations to use it free of charge. This will be considered a pilot deployment.</p>
+                                    <p>You should check that the supplier is still accepting pilot deployments before you place an order for the solution.</p>
+                                    <p>
+                                        <a asp-action="@nameof(SolutionsController.AboutPilotSolutions)"
+                                       asp-controller="@typeof(SolutionsController).ControllerName()">
+                                            Find out more about pilot procurements
+                                        </a>
+                                    </p>
+                                </nhs-warning-callout>
+                            </div>
+                        </div>
+                    }
 
-            @if (Model.IsPilotSolution)
-            {
-                <div class="nhsuk-grid-row">
-                    <div class="nhsuk-grid-column-two-thirds">
-                        <nhs-warning-callout label-text="Available as a pilot procurement only" data-test-id="pilot-warning-callout">
-                            <p>This solution is yet to be deployed in a live, patient facing environment. Therefore, the supplier can only allow organisations to use it free of charge. This will be considered a pilot deployment.</p>
-                            <p>You should check that the supplier is still accepting pilot deployments before you place an order for the solution.</p>
-                            <p>
-                                <a asp-action="@nameof(SolutionsController.AboutPilotSolutions)"
-                                    asp-controller="@typeof(SolutionsController).ControllerName()">
-                                    Find out more about pilot procurements
-                                </a>
-                            </p>
-                        </nhs-warning-callout>
-                    </div>
-                </div>
-            }
+                    @if (Model.IsInRemediation())
+                    {
+                        <div class="nhsuk-grid-row">
+                            <div class="nhsuk-grid-column-full">
+                                <nhs-warning-callout label-text="Solution in remediation" style="margin-top:0px" data-test-id="in-remediation-warning-callout">
+                                    <p>This Catalogue Solution is in remediation while the supplier works to meet compliance with the required standards.</p>
+                                    <p>It can still be ordered while the work is carried out, however if this situation is not remedied within an agreed timeframe the Solution will be suspended from the Buying Catalogue.</p>
+                                </nhs-warning-callout>
+                            </div>
+                        </div>
+                    }
 
-            @if (Model.IsInRemediation())
-            {
-                <div class="nhsuk-grid-row">
-                    <div class="nhsuk-grid-column-two-thirds">
-                        <nhs-warning-callout label-text="Solution in remediation" style="margin-top:0px" data-test-id="in-remediation-warning-callout">
-                            <p>This Catalogue Solution is in remediation while the supplier works to meet compliance with the required standards.</p>
-                            <p>It can still be ordered while the work is carried out, however if this situation is not remedied within an agreed timeframe the Solution will be suspended from the Buying Catalogue.</p>
-                        </nhs-warning-callout>
-                    </div>
-                </div>
-            }
-            @if (!Model.IsSuspended())
-            {
-                <nav class="nhsuk-contents-list" role="navigation" aria-label="Pages in this guide">
-                    <h2 class="nhsuk-u-visually-hidden">Contents</h2>
-                    <ol class="nhsuk-contents-list__list">
-                        @foreach (var sectionModel in Model.GetSections())
-                        {
-                            @if (sectionModel.Selected)
-                            {
-                                <li class="nhsuk-contents-list__item" aria-current="page">
-                                    <span class="nhsuk-contents-list__current">@sectionModel.Name</span>
-                                </li>
-                            }
-                            else
-                            {
-                                <li class="nhsuk-contents-list__item">
-                                    <a asp-action="@sectionModel.Action"
-                                        asp-controller="@sectionModel.Controller"
-                                        asp-route-solutionId="@sectionModel.SolutionId"
-                                        class="nhsuk-contents-list__link">
-                                        @sectionModel.Name
-                                    </a>
-                                </li>
-                            }
-                        }
-                    </ol>
-                </nav>
-            }
 
-            @RenderBody()
+                    @RenderBody()
 
-            <nhs-endnote>
-                Solution information last reviewed: @Model.LastReviewed.ToString("d MMMM yyyy")
-            </nhs-endnote>
-            @if (!Model.IsSuspended())
-            {
-                <nhs-page-link-pagination next-url="@Url.Action(
+                    <nhs-endnote>
+                        Solution information last reviewed: @Model.LastReviewed.ToString("d MMMM yyyy")
+                    </nhs-endnote>
+                    @if (!Model.IsSuspended())
+                    {
+                        <nhs-page-link-pagination next-url="@Url.Action(
                     Model.PaginationFooter?.Next?.Action,
                     Model.PaginationFooter?.Next?.Controller,
                     new { solutionId = Model.PaginationFooter?.Next?.SolutionId })"
-                next-subtext="@Model.PaginationFooter?.Next?.Name"
-                previous-url="@Url.Action(
+                                              next-subtext="@Model.PaginationFooter?.Next?.Name"
+                                              previous-url="@Url.Action(
                     Model.PaginationFooter?.Previous?.Action,
                     Model.PaginationFooter?.Previous?.Controller,
                     new { solutionId = Model.PaginationFooter?.Previous?.SolutionId })"
-                previous-subtext="@Model.PaginationFooter?.Previous?.Name" />
-            }
+                                              previous-subtext="@Model.PaginationFooter?.Previous?.Name" />
+                    }
+                </div>
+            
+            </div>
         </main>
     </div>
 
     <partial name="Footers/_Footer" />
 
     <partial name="Partials/_JsAssetIncludes" />
+
+    <a href="#">
+    <div class="scroll-to-top-container">
+            <div class="goup-arrow"></div>
+        
+        <div class="scroll-to-top-text" >Back to top</div>
+    </div>
+    </a>
+    <script>
+        window.onscroll = function () {
+            var scrollToTopContainer = document.querySelector('.scroll-to-top-container');
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                scrollToTopContainer.classList.add('show');
+            } else {
+                scrollToTopContainer.classList.remove('show');
+            }
+        };
+
+    </script>
+
+
 </body>
 </html>

@@ -2,8 +2,6 @@
 
 @if (Model != null && Model.HasValues())
 {
-    <h2>@Model.Heading</h2>
-
     <dl class="nhsuk-summary-list">
         @foreach (var (title, value) in Model.Items)
         {

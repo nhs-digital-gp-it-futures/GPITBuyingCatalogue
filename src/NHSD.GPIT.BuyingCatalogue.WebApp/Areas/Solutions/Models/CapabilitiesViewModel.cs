@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
@@ -26,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public string CapabilitiesHeading { get; set; } = "Capabilities met";
 
-        public override int Index => 2;
+        public override int Index => 3;
 
         public string Name { get; set; }
 

@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             : base(catalogueItem, contentStatus) =>
             Services = additionalServices;
 
-        public override int Index => 5;
+        public override int Index => 4;
 
         public IList<CatalogueItem> Services { get; set; }
     }
