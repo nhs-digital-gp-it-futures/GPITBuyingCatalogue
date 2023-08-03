@@ -703,23 +703,23 @@ BEGIN
     INSERT [competitions].[RequiredServices] ([CompetitionId], [SolutionId], [ServiceId]) VALUES (12, N'10000-001', N'10000-001A005')
 
     INSERT [competitions].[Weightings] ([CompetitionId], [NonPrice], [Price]) VALUES (9, 50, 50), (10, 45, 55), (11, 50, 50), (12, 50, 50);
+    
+    SET IDENTITY_INSERT [competitions].[NonPriceElements] ON
+    INSERT [competitions].[NonPriceElements] ([Id], [CompetitionId]) VALUES (0, 9)
+    INSERT [competitions].[NonPriceElements] ([Id], [CompetitionId]) VALUES (1, 10)
+    INSERT [competitions].[NonPriceElements] ([Id], [CompetitionId]) VALUES (2, 11)
+    INSERT [competitions].[NonPriceElements] ([Id], [CompetitionId]) VALUES (3, 12)
+    SET IDENTITY_INSERT [competitions].[NonPriceElements] OFF
 
     SET IDENTITY_INSERT [competitions].[ImplementationCriteria] ON
-    INSERT [competitions].[ImplementationCriteria] ([Id], [Requirements]) VALUES (1, N'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua')
-    INSERT [competitions].[ImplementationCriteria] ([Id], [Requirements]) VALUES (2, N'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua')
+    INSERT [competitions].[ImplementationCriteria] ([Id], [Requirements], [NonPriceElementsId]) VALUES (1, N'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua', 1)
+    INSERT [competitions].[ImplementationCriteria] ([Id], [Requirements], [NonPriceElementsId]) VALUES (2, N'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua', 3)
     SET IDENTITY_INSERT [competitions].[ImplementationCriteria] OFF
 
     SET IDENTITY_INSERT [competitions].[ServiceLevelCriteria] ON
-    INSERT [competitions].[ServiceLevelCriteria] ([Id], [TimeFrom], [TimeUntil], [ApplicableDays]) VALUES (1, GETUTCDATE(), GETUTCDATE(), N'Monday - Friday')
-    INSERT [competitions].[ServiceLevelCriteria] ([Id], [TimeFrom], [TimeUntil], [ApplicableDays]) VALUES (2, GETUTCDATE(), GETUTCDATE(), N'Monday - Friday')
+    INSERT [competitions].[ServiceLevelCriteria] ([Id], [TimeFrom], [TimeUntil], [ApplicableDays], [NonPriceElementsId]) VALUES (1, GETUTCDATE(), GETUTCDATE(), N'Monday - Friday', 2)
+    INSERT [competitions].[ServiceLevelCriteria] ([Id], [TimeFrom], [TimeUntil], [ApplicableDays], [NonPriceElementsId]) VALUES (2, GETUTCDATE(), GETUTCDATE(), N'Monday - Friday', 3)
     SET IDENTITY_INSERT [competitions].[ServiceLevelCriteria] OFF
-    
-    SET IDENTITY_INSERT [competitions].[NonPriceElements] ON
-    INSERT [competitions].[NonPriceElements] ([Id], [CompetitionId], [ImplementationId], [ServiceLevelId], [LastUpdated]) VALUES (0, 9, NULL, NULL, GETUTCDATE())
-    INSERT [competitions].[NonPriceElements] ([Id], [CompetitionId], [ImplementationId], [ServiceLevelId], [LastUpdated]) VALUES (1, 10, 1, NULL, GETUTCDATE())
-    INSERT [competitions].[NonPriceElements] ([Id], [CompetitionId], [ImplementationId], [ServiceLevelId], [LastUpdated]) VALUES (2, 11, NULL, 1, GETUTCDATE())
-    INSERT [competitions].[NonPriceElements] ([Id], [CompetitionId], [ImplementationId], [ServiceLevelId], [LastUpdated]) VALUES (3, 12, 2, 2, GETUTCDATE())
-    SET IDENTITY_INSERT [competitions].[NonPriceElements] OFF
 
     SET IDENTITY_INSERT [competitions].[InteroperabilityCriteria] ON
     INSERT [competitions].[InteroperabilityCriteria] ([Id], [NonPriceElementsId], [Qualifier], [IntegrationType]) VALUES (0, 0, N'Appointment Booking', 1)

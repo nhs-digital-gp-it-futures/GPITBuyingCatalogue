@@ -42,11 +42,13 @@ public interface ICompetitionsService
 
     Task DeleteCompetition(int organisationId, int competitionId);
 
+    Task RemoveNonPriceElements(string internalOrgId, int competitionId);
+
     Task SetCompetitionRecipients(int competitionId, IEnumerable<string> odsCodes);
 
     Task SetContractLength(int organisationId, int competitionId, int contractLength);
 
-    Task SetCompetitionCriteria(int organisationId, int competitionId, bool includesNonPrice);
+    Task SetCompetitionCriteria(string internalOrgId, int competitionId, bool includesNonPrice);
 
     Task SetCompetitionWeightings(int organisationId, int competitionId, int priceWeighting, int nonPriceWeighting);
 

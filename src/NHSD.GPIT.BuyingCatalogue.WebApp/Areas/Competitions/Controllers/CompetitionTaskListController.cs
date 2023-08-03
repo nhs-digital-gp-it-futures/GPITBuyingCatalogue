@@ -110,12 +110,44 @@ public class CompetitionTaskListController : Controller
         if (!ModelState.IsValid)
             return View(model);
 
-        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
+        var includesNonPrice = model.IncludesNonPrice.GetValueOrDefault();
+
+        var competition = await GetCompetition(internalOrgId, competitionId);
+
+        if (competition.IncludesNonPrice.GetValueOrDefault() && !includesNonPrice)
+            return RedirectToAction(nameof(ConfirmAwardCriteria), new { internalOrgId, competitionId });
 
         await competitionsService.SetCompetitionCriteria(
-            organisation.Id,
+            internalOrgId,
             competitionId,
             model.IncludesNonPrice.GetValueOrDefault());
+
+        return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
+    }
+
+    [HttpGet("award-criteria/confirm")]
+    public async Task<IActionResult> ConfirmAwardCriteria(string internalOrgId, int competitionId)
+    {
+        var competition = await GetCompetition(internalOrgId, competitionId);
+
+        var model = new CompetitionAwardCriteriaModel(competition)
+        {
+            BackLink = Url.Action(nameof(AwardCriteria), new { internalOrgId, competitionId }),
+        };
+
+        return View(model);
+    }
+
+    [HttpPost("award-criteria/confirm")]
+    public async Task<IActionResult> ConfirmAwardCriteria(
+        string internalOrgId,
+        int competitionId,
+        CompetitionAwardCriteriaModel model)
+    {
+        _ = model;
+
+        await competitionsService.SetCompetitionCriteria(internalOrgId, competitionId, false);
+        await competitionsService.RemoveNonPriceElements(internalOrgId, competitionId);
 
         return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
     }

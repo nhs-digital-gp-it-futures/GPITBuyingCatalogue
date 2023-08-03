@@ -1005,6 +1005,8 @@ public static class CompetitionsServiceTests
         competition.NonPriceElements.Should().NotBeNull();
         competition.NonPriceElements.ServiceLevel.Should().NotBeNull();
 
+        newServiceLevelCriteria.NonPriceElementsId = competition.NonPriceElements.Id;
+
         await service.SetServiceLevelCriteria(
             organisation.InternalIdentifier,
             competition.Id,
@@ -1052,6 +1054,8 @@ public static class CompetitionsServiceTests
 
         competition.NonPriceElements.Should().NotBeNull();
         competition.NonPriceElements.ServiceLevel.Should().NotBeNull();
+
+        newServiceLevelCriteria.NonPriceElementsId = competition.NonPriceElements.Id;
 
         await service.SetServiceLevelCriteria(
             organisation.InternalIdentifier,
@@ -1588,5 +1592,87 @@ public static class CompetitionsServiceTests
 
         updatedSolution.HasScoreType(scoreType).Should().BeTrue();
         updatedSolution.GetScoreByType(scoreType).Score.Should().Be(score);
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task RemoveNonPriceElements_RemovesNonPriceElements(
+        Organisation organisation,
+        Competition competition,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        competition.OrganisationId = organisation.Id;
+        competition.NonPriceElements = new()
+        {
+            ServiceLevel =
+                new() { ApplicableDays = "Test", TimeFrom = DateTime.UtcNow, TimeUntil = DateTime.UtcNow },
+            Implementation = new() { Requirements = "Test" },
+            Interoperability = new List<InteroperabilityCriteria>
+            {
+                new() { IntegrationType = InteropIntegrationType.Im1, Qualifier = "Test" },
+            },
+        };
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        competition.NonPriceElements.Should().NotBeNull();
+
+        await service.RemoveNonPriceElements(organisation.InternalIdentifier, competition.Id);
+
+        var updatedCompetition = await context.Competitions.Include(x => x.NonPriceElements)
+            .FirstOrDefaultAsync(x => x.Id == competition.Id);
+
+        updatedCompetition.NonPriceElements.Should().BeNull();
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task RemoveNonPriceElements_RemovesNonPriceElementScores(
+        Organisation organisation,
+        Competition competition,
+        Solution solution,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        competition.CompetitionSolutions = new List<CompetitionSolution>
+        {
+            new(competition.Id, solution.CatalogueItemId)
+            {
+                Scores = new List<SolutionScore>
+                {
+                    new(ScoreType.Implementation, 5),
+                    new(ScoreType.Interoperability, 5),
+                    new(ScoreType.ServiceLevel, 5),
+                    new(ScoreType.Price, 5),
+                },
+                IsShortlisted = true,
+            },
+        };
+        competition.OrganisationId = organisation.Id;
+
+        context.Solutions.Add(solution);
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        competition.CompetitionSolutions.Should().ContainSingle();
+        competition.CompetitionSolutions.First().Scores.Should().HaveCount(4);
+
+        await service.RemoveNonPriceElements(organisation.InternalIdentifier, competition.Id);
+
+        var updatedCompetition = await context.Competitions.Include(x => x.CompetitionSolutions).ThenInclude(x => x.Scores)
+            .FirstOrDefaultAsync(x => x.Id == competition.Id);
+
+        updatedCompetition.CompetitionSolutions.Should().ContainSingle();
+        updatedCompetition.CompetitionSolutions.First()
+            .Scores.Should()
+            .OnlyContain(x => x.ScoreType == ScoreType.Price);
     }
 }

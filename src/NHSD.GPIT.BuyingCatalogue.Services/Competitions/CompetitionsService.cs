@@ -129,11 +129,11 @@ public class CompetitionsService : ICompetitionsService
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task SetCompetitionCriteria(int organisationId, int competitionId, bool includesNonPrice)
+    public async Task SetCompetitionCriteria(string internalOrgId, int competitionId, bool includesNonPrice)
     {
         var competition =
             await dbContext.Competitions.FirstOrDefaultAsync(
-                x => x.OrganisationId == organisationId && x.Id == competitionId);
+                x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
         competition.IncludesNonPrice = includesNonPrice;
 
@@ -383,6 +383,33 @@ public class CompetitionsService : ICompetitionsService
         competition.IsDeleted = true;
 
         await dbContext.SaveChangesAsync();
+    }
+
+    public async Task RemoveNonPriceElements(string internalOrgId, int competitionId)
+    {
+        var competition = await dbContext.Competitions
+            .Include(x => x.NonPriceElements)
+            .Include(x => x.Weightings)
+            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+
+        var nonPriceElementScores = ScoreTypeExtensions.GetNonPriceElementScores();
+        var competitionSolutionScores = await dbContext.CompetitionSolutionScores
+            .Where(x => x.CompetitionId == competitionId && nonPriceElementScores.Contains(x.ScoreType))
+            .ToListAsync();
+
+        competition.HasReviewedCriteria = false;
+
+        if (competition.Weightings != null)
+            dbContext.Remove(competition.Weightings);
+
+        if (competition.NonPriceElements != null)
+            dbContext.Remove(competition.NonPriceElements);
+
+        if (competitionSolutionScores.Count > 0)
+            dbContext.RemoveRange(competitionSolutionScores);
+
+        if (dbContext.ChangeTracker.HasChanges())
+            await dbContext.SaveChangesAsync();
     }
 
     public async Task<int> AddCompetition(int organisationId, int filterId, string name, string description)
