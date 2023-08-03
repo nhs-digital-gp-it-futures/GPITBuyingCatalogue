@@ -258,6 +258,38 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                 new { internalOrgId, amendment.CallOffId });
         }
 
+        [HttpGet("terminate")]
+        public IActionResult TerminateOrder(string internalOrgId, CallOffId callOffId)
+        {
+            return View(new TerminateOrderModel(internalOrgId, callOffId)
+            {
+                BackLink = Url.Action(
+                    nameof(AmendOrder),
+                    typeof(OrderController).ControllerName(),
+                    new { internalOrgId, callOffId }),
+            });
+        }
+
+        [HttpPost("terminate")]
+        public async Task<IActionResult> TerminateOrder(string internalOrgId, CallOffId callOffId, TerminateOrderModel model)
+        {
+            var hasSubsequentRevisions = await orderService.HasSubsequentRevisions(callOffId);
+            if (hasSubsequentRevisions)
+            {
+                return RedirectToAction(
+                    nameof(DashboardController.Organisation),
+                    typeof(DashboardController).ControllerName(),
+                    new { internalOrgId });
+            }
+
+            var amendment = await orderService.AmendOrder(internalOrgId, callOffId);
+
+            return RedirectToAction(
+                nameof(Order),
+                typeof(OrderController).ControllerName(),
+                new { internalOrgId, amendment.CallOffId });
+        }
+
         internal static string GetAdvice(Order order, bool latestOrder)
         {
             return order.OrderStatus switch
