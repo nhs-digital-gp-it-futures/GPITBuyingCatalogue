@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public CatalogueItemType ItemType { get; set; }
 
-        public override int Index => 4;
+        public override int Index => 2;
 
         public IList<PriceViewModel> FlatListPrices { get; set; }
 
