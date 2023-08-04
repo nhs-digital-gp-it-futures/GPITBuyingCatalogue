@@ -264,7 +264,7 @@ public static class CompetitionsDashboardControllerTests
         organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
             .ReturnsAsync(organisation);
 
-        competitionsService.Setup(x => x.GetCompetitionWithServices(organisation.Id, It.IsAny<int>(), true))
+        competitionsService.Setup(x => x.GetCompetitionWithServices(organisation.InternalIdentifier, It.IsAny<int>(), true))
             .ReturnsAsync(competition);
 
         filtersService.Setup(x => x.GetFilterIds(organisation.Id, filterId))

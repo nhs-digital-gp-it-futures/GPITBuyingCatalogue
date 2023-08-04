@@ -150,7 +150,7 @@ public class CompetitionsDashboardController : Controller
             model.Name,
             model.Description);
 
-        await AssignCompetitionSolutions(organisation.Id, competitionId, filterId);
+        await AssignCompetitionSolutions(organisation.Id, internalOrgId, competitionId, filterId);
 
         return RedirectToAction(
             nameof(CompetitionSelectSolutionsController.SelectSolutions),
@@ -158,9 +158,9 @@ public class CompetitionsDashboardController : Controller
             new { internalOrgId, competitionId });
     }
 
-    private async Task AssignCompetitionSolutions(int organisationId, int competitionId, int filterId)
+    private async Task AssignCompetitionSolutions(int organisationId, string internalOrgId, int competitionId, int filterId)
     {
-        var competition = await competitionsService.GetCompetitionWithServices(organisationId, competitionId, true);
+        var competition = await competitionsService.GetCompetitionWithServices(internalOrgId, competitionId, true);
         var filter = await filterService.GetFilterIds(organisationId, filterId);
 
         var pageOptions = new PageOptions { PageSize = 100 };

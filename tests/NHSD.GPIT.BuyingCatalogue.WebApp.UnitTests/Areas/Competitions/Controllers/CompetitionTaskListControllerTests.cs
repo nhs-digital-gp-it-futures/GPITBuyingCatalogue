@@ -66,7 +66,7 @@ public static class CompetitionTaskListControllerTests
         organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
             .ReturnsAsync(organisation);
 
-        competitionsService.Setup(x => x.GetCompetitionWithServices(organisation.Id, competition.Id, false))
+        competitionsService.Setup(x => x.GetCompetitionWithServices(organisation.InternalIdentifier, competition.Id, false))
             .ReturnsAsync(competition);
 
         var expectedModel = new CompetitionShortlistedSolutionsModel(competition);

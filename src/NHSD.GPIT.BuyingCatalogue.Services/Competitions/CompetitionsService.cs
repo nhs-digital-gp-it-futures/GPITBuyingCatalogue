@@ -57,7 +57,7 @@ public class CompetitionsService : ICompetitionsService
             .FirstOrDefaultAsync(x => x.OrganisationId == organisationId && x.Id == competitionId);
 
     public async Task<Competition> GetCompetitionWithServices(
-        int organisationId,
+        string internalOrgId,
         int competitionId,
         bool shouldTrack = false)
     {
@@ -74,7 +74,7 @@ public class CompetitionsService : ICompetitionsService
         if (!shouldTrack)
             query = query.AsNoTracking();
 
-        return await query.FirstOrDefaultAsync(x => x.OrganisationId == organisationId && x.Id == competitionId);
+        return await query.FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
     }
 
     public async Task<Competition> GetCompetitionWithSolutions(string internalOrgId, int competitionId)

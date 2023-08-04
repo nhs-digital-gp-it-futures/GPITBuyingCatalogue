@@ -70,7 +70,7 @@
 
                 <nhs-task-list-item label-text="Calculate price"
                                     label-hint="Provide information to calculate the price for each of your shortlisted solutions."
-                                    url="#"
+                                    url="@Url.Action(nameof(CompetitionPricingController.Index), typeof(CompetitionPricingController).ControllerName(), routeValues)"
                                     status="@Model.TaskListModel.CalculatePrice"/>
             </nhs-task-list-section>
 

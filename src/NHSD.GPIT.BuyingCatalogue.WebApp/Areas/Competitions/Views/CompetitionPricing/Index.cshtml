@@ -1,0 +1,39 @@
+@model PricingDashboardModel
+
+@{
+    ViewBag.Title = "Calculate price";
+}
+
+<partial name="Partials/_BackLink" model="Model"/>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="@ViewBag.Title"
+                        advice="Provide information to calculate the price for each of your shortlisted solutions."
+                        caption="@Model.CompetitionName"/>
+
+        <nhs-table>
+            <nhs-table-column>Catalogue Solution</nhs-table-column>
+            <nhs-table-column>Price</nhs-table-column>
+            <nhs-table-column>Status</nhs-table-column>
+            <nhs-table-column>Action</nhs-table-column>
+
+            @foreach (var solution in Model.SolutionPrices.OrderBy(x => x.Name))
+            {
+                <nhs-table-row-container>
+                    <nhs-table-cell>@solution.Name</nhs-table-cell>
+                    <nhs-table-cell>@(!solution.Price.HasValue ? "Not calculated" : $"£{solution.Price.GetValueOrDefault():#,###,##0.00##}")</nhs-table-cell>
+                    <nhs-table-cell>
+                        <nhs-tag status-enum="@solution.Progress"/>
+                    </nhs-table-cell>
+                    <nhs-table-cell>
+                        <a href="#">Edit</a>
+                    </nhs-table-cell>
+                </nhs-table-row-container>
+            }
+        </nhs-table>
+
+        <br/>
+        <vc:nhs-secondary-button type="Primary" text="Continue" url="@Model.BackLink"/>
+    </div>
+</div>

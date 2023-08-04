@@ -28,7 +28,7 @@ public interface ICompetitionsService
 
     Task<Competition> GetCompetitionWithRecipients(int organisationId, int competitionId);
 
-    Task<Competition> GetCompetitionWithServices(int organisationId, int competitionId, bool shouldTrack = false);
+    Task<Competition> GetCompetitionWithServices(string internalOrgId, int competitionId, bool shouldTrack = false);
 
     Task<Competition> GetCompetitionWithSolutions(string internalOrgId, int competitionId);
 

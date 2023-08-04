@@ -145,5 +145,12 @@ public class CompetitionTaskListModel
                         || HasIncompleteScore(competition, x, ScoreType.Interoperability)
                         || HasIncompleteScore(competition, x, ScoreType.ServiceLevel))));
         }
+
+        if (CompareAndScoreSolutions is not (TaskProgress.NotApplicable or TaskProgress.Completed)) return;
+
+        CalculatePrice = CompletedInProgressOrNotStarted(
+            competition,
+            _ => false,
+            _ => false);
     }
 }

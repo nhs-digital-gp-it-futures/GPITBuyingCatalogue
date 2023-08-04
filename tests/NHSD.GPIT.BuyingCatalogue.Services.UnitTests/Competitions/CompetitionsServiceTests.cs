@@ -118,7 +118,7 @@ public static class CompetitionsServiceTests
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
-        var result = await service.GetCompetitionWithServices(organisation.Id, competition.Id);
+        var result = await service.GetCompetitionWithServices(organisation.InternalIdentifier, competition.Id);
 
         result.Should().BeEquivalentTo(competition, opt => opt.Excluding(x => x.Organisation));
     }

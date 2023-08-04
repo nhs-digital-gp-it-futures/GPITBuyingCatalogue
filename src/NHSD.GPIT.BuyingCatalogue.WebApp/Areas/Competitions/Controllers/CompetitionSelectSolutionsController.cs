@@ -38,7 +38,7 @@ public class CompetitionSelectSolutionsController : Controller
     public async Task<IActionResult> SelectSolutions(string internalOrgId, int competitionId)
     {
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-        var competition = await competitionsService.GetCompetitionWithServices(organisation.Id, competitionId);
+        var competition = await competitionsService.GetCompetitionWithServices(internalOrgId, competitionId);
 
         if (competition == null)
         {
@@ -89,8 +89,7 @@ public class CompetitionSelectSolutionsController : Controller
     [HttpGet("justify-solutions")]
     public async Task<IActionResult> JustifySolutions(string internalOrgId, int competitionId)
     {
-        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-        var competition = await competitionsService.GetCompetitionWithServices(organisation.Id, competitionId);
+        var competition = await competitionsService.GetCompetitionWithServices(internalOrgId, competitionId);
 
         if (competition.CompetitionSolutions.All(x => x.IsShortlisted))
             return RedirectToAction(nameof(ConfirmSolutions), new { internalOrgId, competitionId });
@@ -122,8 +121,7 @@ public class CompetitionSelectSolutionsController : Controller
     [HttpGet("confirm-solutions")]
     public async Task<IActionResult> ConfirmSolutions(string internalOrgId, int competitionId)
     {
-        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-        var competition = await competitionsService.GetCompetitionWithServices(organisation.Id, competitionId);
+        var competition = await competitionsService.GetCompetitionWithServices(internalOrgId, competitionId);
 
         var backlink = competition.CompetitionSolutions.All(x => x.IsShortlisted)
             ? nameof(SelectSolutions)
