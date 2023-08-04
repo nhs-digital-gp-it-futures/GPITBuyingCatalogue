@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.Competitions;
@@ -12,45 +11,45 @@ public interface ICompetitionsService
 {
     Task<int> AddCompetition(int organisationId, int filterId, string name, string description);
 
-    Task<bool> Exists(int organisationId, string competitionName);
+    Task<bool> Exists(string internalOrgId, string competitionName);
 
     Task<Competition> GetCompetition(string internalOrgId, int competitionId);
 
-    Task<string> GetCompetitionName(int organisationId, int competitionId);
+    Task<string> GetCompetitionName(string internalOrgId, int competitionId);
 
     Task<Competition> GetCompetitionCriteriaReview(string internalOrgId, int competitionId);
 
-    Task<IEnumerable<Competition>> GetCompetitionsDashboard(int organisationId);
+    Task<IEnumerable<Competition>> GetCompetitionsDashboard(string internalOrgId);
 
     Task<Competition> GetCompetitionWithNonPriceElements(string internalOrgId, int competitionId);
 
-    Task<Competition> GetCompetitionWithWeightings(int organisationId, int competitionId);
+    Task<Competition> GetCompetitionWithWeightings(string internalOrgId, int competitionId);
 
-    Task<Competition> GetCompetitionWithRecipients(int organisationId, int competitionId);
+    Task<Competition> GetCompetitionWithRecipients(string internalOrgId, int competitionId);
 
     Task<Competition> GetCompetitionWithServices(string internalOrgId, int competitionId, bool shouldTrack = false);
 
     Task<Competition> GetCompetitionWithSolutions(string internalOrgId, int competitionId);
 
-    Task<CompetitionTaskListModel> GetCompetitionTaskList(int organisationId, int competitionId);
+    Task<CompetitionTaskListModel> GetCompetitionTaskList(string internalOrgId, int competitionId);
 
-    Task AddCompetitionSolutions(int organisationId, int competitionId, IEnumerable<CompetitionSolution> competitionSolutions);
+    Task AddCompetitionSolutions(string internalOrgId, int competitionId, IEnumerable<CompetitionSolution> competitionSolutions);
 
-    Task AcceptShortlist(int organisationId, int competitionId);
+    Task AcceptShortlist(string internalOrgId, int competitionId);
 
-    Task CompleteCompetition(int organisationId, int competitionId);
+    Task CompleteCompetition(string internalOrgId, int competitionId);
 
-    Task DeleteCompetition(int organisationId, int competitionId);
+    Task DeleteCompetition(string internalOrgId, int competitionId);
 
     Task RemoveNonPriceElements(string internalOrgId, int competitionId);
 
     Task SetCompetitionRecipients(int competitionId, IEnumerable<string> odsCodes);
 
-    Task SetContractLength(int organisationId, int competitionId, int contractLength);
+    Task SetContractLength(string internalOrgId, int competitionId, int contractLength);
 
     Task SetCompetitionCriteria(string internalOrgId, int competitionId, bool includesNonPrice);
 
-    Task SetCompetitionWeightings(int organisationId, int competitionId, int priceWeighting, int nonPriceWeighting);
+    Task SetCompetitionWeightings(string internalOrgId, int competitionId, int priceWeighting, int nonPriceWeighting);
 
     Task SetCriteriaReviewed(string internalOrgId, int competitionId);
 
@@ -77,12 +76,12 @@ public interface ICompetitionsService
         string applicableDays);
 
     Task SetShortlistedSolutions(
-        int organisationId,
+        string internalOrgId,
         int competitionId,
         IEnumerable<CatalogueItemId> shortlistedSolutions);
 
     Task SetSolutionJustifications(
-        int organisationId,
+        string internalOrgId,
         int competitionId,
         Dictionary<CatalogueItemId, string> solutionsJustification);
 

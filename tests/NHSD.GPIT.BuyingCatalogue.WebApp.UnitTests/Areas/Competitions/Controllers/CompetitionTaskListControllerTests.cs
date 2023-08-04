@@ -42,7 +42,7 @@ public static class CompetitionTaskListControllerTests
         organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
             .ReturnsAsync(organisation);
 
-        competitionsService.Setup(x => x.GetCompetitionTaskList(organisation.Id, competitionTaskListModel.Id))
+        competitionsService.Setup(x => x.GetCompetitionTaskList(organisation.InternalIdentifier, competitionTaskListModel.Id))
             .ReturnsAsync(competitionTaskListModel);
 
         var expectedModel = new CompetitionTaskListViewModel(organisation, competitionTaskListModel);
@@ -59,13 +59,9 @@ public static class CompetitionTaskListControllerTests
     public static async Task ShortlistedSolutions_ReturnsViewWithModel(
         Organisation organisation,
         Competition competition,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
         [Frozen] Mock<ICompetitionsService> competitionsService,
         CompetitionTaskListController controller)
     {
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(organisation);
-
         competitionsService.Setup(x => x.GetCompetitionWithServices(organisation.InternalIdentifier, competition.Id, false))
             .ReturnsAsync(competition);
 
@@ -83,13 +79,9 @@ public static class CompetitionTaskListControllerTests
     public static async Task ContractLength_ReturnsViewWithModel(
         Organisation organisation,
         Competition competition,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
         [Frozen] Mock<ICompetitionsService> competitionsService,
         CompetitionTaskListController controller)
     {
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(organisation);
-
         competitionsService.Setup(x => x.GetCompetition(organisation.InternalIdentifier, competition.Id))
             .ReturnsAsync(competition);
 
@@ -124,18 +116,14 @@ public static class CompetitionTaskListControllerTests
         Organisation organisation,
         int competitionId,
         CompetitionContractModel model,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
         [Frozen] Mock<ICompetitionsService> competitionsService,
         CompetitionTaskListController controller)
     {
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(organisation);
-
         var result = (await controller.ContractLength(organisation.InternalIdentifier, competitionId, model))
             .As<RedirectToActionResult>();
 
         competitionsService.Verify(
-            x => x.SetContractLength(organisation.Id, competitionId, model.ContractLength.GetValueOrDefault()),
+            x => x.SetContractLength(organisation.InternalIdentifier, competitionId, model.ContractLength.GetValueOrDefault()),
             Times.Once());
 
         result.Should().NotBeNull();
@@ -147,13 +135,9 @@ public static class CompetitionTaskListControllerTests
     public static async Task AwardCriteria_ReturnsViewWithModel(
         Organisation organisation,
         Competition competition,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
         [Frozen] Mock<ICompetitionsService> competitionsService,
         CompetitionTaskListController controller)
     {
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(organisation);
-
         competitionsService.Setup(x => x.GetCompetition(organisation.InternalIdentifier, competition.Id))
             .ReturnsAsync(competition);
 
@@ -239,14 +223,10 @@ public static class CompetitionTaskListControllerTests
     public static async Task Weightings_ReturnsViewWithModel(
         Organisation organisation,
         Competition competition,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
         [Frozen] Mock<ICompetitionsService> competitionsService,
         CompetitionTaskListController controller)
     {
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(organisation);
-
-        competitionsService.Setup(x => x.GetCompetitionWithWeightings(organisation.Id, competition.Id))
+        competitionsService.Setup(x => x.GetCompetitionWithWeightings(organisation.InternalIdentifier, competition.Id))
             .ReturnsAsync(competition);
 
         var expectedModel = new CompetitionWeightingsModel(competition);
@@ -279,19 +259,15 @@ public static class CompetitionTaskListControllerTests
         Organisation organisation,
         int competitionId,
         CompetitionWeightingsModel model,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
         [Frozen] Mock<ICompetitionsService> competitionsService,
         CompetitionTaskListController controller)
     {
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(organisation);
-
         var result = (await controller.Weightings(organisation.InternalIdentifier, competitionId, model))
             .As<RedirectToActionResult>();
 
         competitionsService.Verify(
             x => x.SetCompetitionWeightings(
-                organisation.Id,
+                organisation.InternalIdentifier,
                 competitionId,
                 model.Price.GetValueOrDefault(),
                 model.NonPrice.GetValueOrDefault()),

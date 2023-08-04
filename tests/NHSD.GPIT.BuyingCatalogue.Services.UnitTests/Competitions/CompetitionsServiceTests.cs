@@ -67,7 +67,7 @@ public static class CompetitionsServiceTests
 
         context.ChangeTracker.Clear();
 
-        var result = await service.GetCompetitionsDashboard(organisation.Id);
+        var result = await service.GetCompetitionsDashboard(organisation.InternalIdentifier);
 
         result.Should()
             .BeEquivalentTo(
@@ -164,7 +164,7 @@ public static class CompetitionsServiceTests
 
         var competitionSolutions = solutions.Select(x => new CompetitionSolution(competition.Id, x.CatalogueItemId)).ToList();
 
-        await service.AddCompetitionSolutions(organisation.Id, competition.Id, competitionSolutions);
+        await service.AddCompetitionSolutions(organisation.InternalIdentifier, competition.Id, competitionSolutions);
 
         var updatedCompetition = await context.Competitions.AsNoTracking()
             .IgnoreQueryFilters()
@@ -199,7 +199,7 @@ public static class CompetitionsServiceTests
         var shortlisted = solutions.Take(1).Select(x => x.CatalogueItemId).ToList();
         var nonShortlisted = solutions.Skip(1).Select(x => x.CatalogueItemId).ToList();
 
-        await service.SetShortlistedSolutions(organisation.Id, competition.Id, shortlisted);
+        await service.SetShortlistedSolutions(organisation.InternalIdentifier, competition.Id, shortlisted);
 
         var updatedCompetition = await context.Competitions.AsNoTracking()
             .IgnoreQueryFilters()
@@ -241,7 +241,7 @@ public static class CompetitionsServiceTests
 
         var shortlisted = solutions.Skip(1).Select(x => x.CatalogueItemId).ToList();
 
-        await service.SetShortlistedSolutions(organisation.Id, competition.Id, shortlisted);
+        await service.SetShortlistedSolutions(organisation.InternalIdentifier, competition.Id, shortlisted);
 
         var updatedCompetition = await context.Competitions.AsNoTracking()
             .IgnoreQueryFilters()
@@ -281,7 +281,7 @@ public static class CompetitionsServiceTests
         context.ChangeTracker.Clear();
 
         await service.SetSolutionJustifications(
-            organisation.Id,
+            organisation.InternalIdentifier,
             competition.Id,
             solutionIdsJustifications);
 
@@ -325,7 +325,7 @@ public static class CompetitionsServiceTests
         context.ChangeTracker.Clear();
 
         await service.SetSolutionJustifications(
-            organisation.Id,
+            organisation.InternalIdentifier,
             competition.Id,
             solutionIdsJustifications);
 
@@ -355,7 +355,7 @@ public static class CompetitionsServiceTests
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
-        await service.AcceptShortlist(organisation.Id, competition.Id);
+        await service.AcceptShortlist(organisation.InternalIdentifier, competition.Id);
 
         var updatedCompetition =
             await context.Competitions.AsNoTracking().FirstOrDefaultAsync(x => x.Id == competition.Id);
@@ -382,7 +382,7 @@ public static class CompetitionsServiceTests
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
-        await service.AcceptShortlist(organisation.Id, competition.Id);
+        await service.AcceptShortlist(organisation.InternalIdentifier, competition.Id);
 
         var refreshedCompetition =
             await context.Competitions.AsNoTracking().FirstOrDefaultAsync(x => x.Id == competition.Id);
@@ -407,7 +407,7 @@ public static class CompetitionsServiceTests
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
-        await service.CompleteCompetition(organisation.Id, competition.Id);
+        await service.CompleteCompetition(organisation.InternalIdentifier, competition.Id);
 
         var updatedCompetition =
             await context.Competitions.AsNoTracking().FirstOrDefaultAsync(x => x.Id == competition.Id);
@@ -434,7 +434,7 @@ public static class CompetitionsServiceTests
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
-        await service.CompleteCompetition(organisation.Id, competition.Id);
+        await service.CompleteCompetition(organisation.InternalIdentifier, competition.Id);
 
         var refreshedCompetition =
             await context.Competitions.AsNoTracking().FirstOrDefaultAsync(x => x.Id == competition.Id);
@@ -459,7 +459,7 @@ public static class CompetitionsServiceTests
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
-        await service.DeleteCompetition(organisation.Id, competition.Id);
+        await service.DeleteCompetition(organisation.InternalIdentifier, competition.Id);
 
         var updatedCompetition =
             await context.Competitions.IgnoreQueryFilters().AsNoTracking().FirstOrDefaultAsync(x => x.Id == competition.Id);
@@ -484,7 +484,7 @@ public static class CompetitionsServiceTests
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
-        await service.DeleteCompetition(organisation.Id, competition.Id);
+        await service.DeleteCompetition(organisation.InternalIdentifier, competition.Id);
 
         var refreshedCompetition =
             await context.Competitions.IgnoreQueryFilters().AsNoTracking().FirstOrDefaultAsync(x => x.Id == competition.Id);
@@ -515,7 +515,7 @@ public static class CompetitionsServiceTests
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
-        var result = await service.Exists(organisation.Id, competition.Name);
+        var result = await service.Exists(organisation.InternalIdentifier, competition.Name);
 
         result.Should().BeTrue();
     }
@@ -540,7 +540,7 @@ public static class CompetitionsServiceTests
 
         context.ChangeTracker.Clear();
 
-        var competitionWithRecipients = await service.GetCompetitionWithRecipients(organisation.Id, competition.Id);
+        var competitionWithRecipients = await service.GetCompetitionWithRecipients(organisation.InternalIdentifier, competition.Id);
 
         competitionWithRecipients.Should()
             .BeEquivalentTo(competition, opt => opt.Excluding(m => m.Organisation).Excluding(m => m.Recipients));
@@ -629,7 +629,7 @@ public static class CompetitionsServiceTests
 
         var expectedModel = new CompetitionTaskListModel(competition);
 
-        var result = await service.GetCompetitionTaskList(organisation.Id, competition.Id);
+        var result = await service.GetCompetitionTaskList(organisation.InternalIdentifier, competition.Id);
 
         result.Should().BeEquivalentTo(expectedModel);
     }
@@ -651,7 +651,7 @@ public static class CompetitionsServiceTests
 
         context.ChangeTracker.Clear();
 
-        var result = await service.GetCompetitionName(organisation.Id, competition.Id);
+        var result = await service.GetCompetitionName(organisation.InternalIdentifier, competition.Id);
 
         result.Should().Be(competition.Name);
     }
@@ -674,7 +674,7 @@ public static class CompetitionsServiceTests
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
-        await service.SetContractLength(organisation.Id, competition.Id, contractLength);
+        await service.SetContractLength(organisation.InternalIdentifier, competition.Id, contractLength);
 
         var updatedCompetition = await context.Competitions.FirstOrDefaultAsync(x => x.Id == competition.Id);
 
@@ -724,7 +724,7 @@ public static class CompetitionsServiceTests
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
-        await service.SetCompetitionWeightings(organisation.Id, competition.Id, priceWeighting, nonPriceWeighting);
+        await service.SetCompetitionWeightings(organisation.InternalIdentifier, competition.Id, priceWeighting, nonPriceWeighting);
 
         var updatedCompetition = await context.Competitions.Include(x => x.Weightings)
             .FirstOrDefaultAsync(x => x.Id == competition.Id);
@@ -752,7 +752,7 @@ public static class CompetitionsServiceTests
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
-        var updatedCompetition = await service.GetCompetitionWithWeightings(organisation.Id, competition.Id);
+        var updatedCompetition = await service.GetCompetitionWithWeightings(organisation.InternalIdentifier, competition.Id);
 
         updatedCompetition.Weightings.Should().BeEquivalentTo(weightings, opt => opt.Excluding(m => m.CompetitionId));
     }

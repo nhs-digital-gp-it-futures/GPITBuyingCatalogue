@@ -33,7 +33,7 @@ public class CompetitionTaskListController : Controller
     public async Task<IActionResult> Index(string internalOrgId, int competitionId)
     {
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-        var competition = await competitionsService.GetCompetitionTaskList(organisation.Id, competitionId);
+        var competition = await competitionsService.GetCompetitionTaskList(internalOrgId, competitionId);
 
         var model = new CompetitionTaskListViewModel(organisation, competition)
         {
@@ -83,9 +83,7 @@ public class CompetitionTaskListController : Controller
         if (!ModelState.IsValid)
             return View(model);
 
-        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-
-        await competitionsService.SetContractLength(organisation.Id, competitionId, model.ContractLength.GetValueOrDefault());
+        await competitionsService.SetContractLength(internalOrgId, competitionId, model.ContractLength.GetValueOrDefault());
 
         return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
     }
@@ -157,8 +155,7 @@ public class CompetitionTaskListController : Controller
         int competitionId,
         string returnUrl = null)
     {
-        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-        var competition = await competitionsService.GetCompetitionWithWeightings(organisation.Id, competitionId);
+        var competition = await competitionsService.GetCompetitionWithWeightings(internalOrgId, competitionId);
 
         var model = new CompetitionWeightingsModel(competition)
         {
@@ -178,10 +175,8 @@ public class CompetitionTaskListController : Controller
         if (!ModelState.IsValid)
             return View(model);
 
-        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-
         await competitionsService.SetCompetitionWeightings(
-            organisation.Id,
+            internalOrgId,
             competitionId,
             model.Price.GetValueOrDefault(),
             model.NonPrice.GetValueOrDefault());

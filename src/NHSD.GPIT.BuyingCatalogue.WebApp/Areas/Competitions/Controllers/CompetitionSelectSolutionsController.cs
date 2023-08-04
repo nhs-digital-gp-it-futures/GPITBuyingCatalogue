@@ -5,10 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.SelectSolutionsModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
@@ -22,22 +20,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 [CompetitionSolutionSelectionFilter]
 public class CompetitionSelectSolutionsController : Controller
 {
-    private readonly IOrganisationsService organisationsService;
     private readonly ICompetitionsService competitionsService;
 
     public CompetitionSelectSolutionsController(
-        IOrganisationsService organisationsService,
         ICompetitionsService competitionsService)
     {
-        this.organisationsService =
-            organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
         this.competitionsService = competitionsService ?? throw new ArgumentNullException(nameof(competitionsService));
     }
 
     [HttpGet("select-solutions")]
     public async Task<IActionResult> SelectSolutions(string internalOrgId, int competitionId)
     {
-        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
         var competition = await competitionsService.GetCompetitionWithServices(internalOrgId, competitionId);
 
         if (competition == null)
@@ -55,7 +48,7 @@ public class CompetitionSelectSolutionsController : Controller
         };
 
         if (model.HasNoSolutions())
-            await competitionsService.DeleteCompetition(organisation.Id, competition.Id);
+            await competitionsService.DeleteCompetition(internalOrgId, competition.Id);
 
         return View(model);
     }
@@ -69,17 +62,15 @@ public class CompetitionSelectSolutionsController : Controller
         if (!ModelState.IsValid)
             return View(model);
 
-        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-
         if (model.HasSingleSolution())
         {
             return model.IsDirectAward.GetValueOrDefault()
-                ? await HandleDirectAward(organisation, competitionId)
-                : await HandleDeleteOrder(organisation, competitionId);
+                ? await HandleDirectAward(internalOrgId, competitionId)
+                : await HandleDeleteOrder(internalOrgId, competitionId);
         }
 
         await competitionsService.SetShortlistedSolutions(
-            organisation.Id,
+            internalOrgId,
             competitionId,
             model.Solutions.Where(x => x.Selected).Select(x => x.SolutionId));
 
@@ -110,10 +101,9 @@ public class CompetitionSelectSolutionsController : Controller
         if (!ModelState.IsValid)
             return View(model);
 
-        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
         var solutionsJustification = model.Solutions.ToDictionary(x => x.SolutionId, x => x.Justification);
 
-        await competitionsService.SetSolutionJustifications(organisation.Id, competitionId, solutionsJustification);
+        await competitionsService.SetSolutionJustifications(internalOrgId, competitionId, solutionsJustification);
 
         return RedirectToAction(nameof(ConfirmSolutions), new { internalOrgId, competitionId });
     }
@@ -140,16 +130,14 @@ public class CompetitionSelectSolutionsController : Controller
     {
         _ = model;
 
-        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-
-        await competitionsService.AcceptShortlist(organisation.Id, competitionId);
+        await competitionsService.AcceptShortlist(internalOrgId, competitionId);
 
         return RedirectToAction(nameof(CompetitionTaskListController.Index), typeof(CompetitionTaskListController).ControllerName(), new { internalOrgId, competitionId });
     }
 
-    private async Task<IActionResult> HandleDirectAward(Organisation organisation, int competitionId)
+    private async Task<IActionResult> HandleDirectAward(string internalOrgId, int competitionId)
     {
-        await competitionsService.CompleteCompetition(organisation.Id, competitionId);
+        await competitionsService.CompleteCompetition(internalOrgId, competitionId);
 
         return RedirectToAction(
             nameof(OrderDescriptionController.NewOrderDescription),
@@ -157,16 +145,16 @@ public class CompetitionSelectSolutionsController : Controller
             new
             {
                 Area = typeof(OrderDescriptionController).AreaName(),
-                internalOrgId = organisation.InternalIdentifier,
+                internalOrgId = internalOrgId,
                 option = OrderTriageValue.Under40K,
                 orderType = CatalogueItemType.Solution,
             });
     }
 
-    private async Task<IActionResult> HandleDeleteOrder(Organisation organisation, int competitionId)
+    private async Task<IActionResult> HandleDeleteOrder(string internalOrgId, int competitionId)
     {
-        await competitionsService.DeleteCompetition(organisation.Id, competitionId);
+        await competitionsService.DeleteCompetition(internalOrgId, competitionId);
 
-        return RedirectToAction(nameof(CompetitionsDashboardController.Index), typeof(CompetitionsDashboardController).ControllerName(), new { internalOrgId = organisation.InternalIdentifier });
+        return RedirectToAction(nameof(CompetitionsDashboardController.Index), typeof(CompetitionsDashboardController).ControllerName(), new { internalOrgId = internalOrgId });
     }
 }

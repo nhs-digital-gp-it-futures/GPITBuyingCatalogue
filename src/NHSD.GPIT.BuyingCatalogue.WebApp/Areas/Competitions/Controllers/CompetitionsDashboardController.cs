@@ -46,7 +46,7 @@ public class CompetitionsDashboardController : Controller
     {
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
-        var competitions = await competitionsService.GetCompetitionsDashboard(organisation.Id);
+        var competitions = await competitionsService.GetCompetitionsDashboard(internalOrgId);
 
         var model = new CompetitionDashboardModel(internalOrgId, organisation.Name, competitions);
 
@@ -128,7 +128,7 @@ public class CompetitionsDashboardController : Controller
         _ = filterId;
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
-        var model = new SaveCompetitionModel(organisation.Id, organisation.Name)
+        var model = new SaveCompetitionModel(internalOrgId, organisation.Name)
         {
             BackLink = Url.Action(nameof(ReviewFilter), new { internalOrgId, filterId }),
         };
@@ -180,6 +180,6 @@ public class CompetitionsDashboardController : Controller
                     .ToList(),
             });
 
-        await competitionsService.AddCompetitionSolutions(organisationId, competition.Id, competitionSolutions);
+        await competitionsService.AddCompetitionSolutions(internalOrgId, competition.Id, competitionSolutions);
     }
 }
