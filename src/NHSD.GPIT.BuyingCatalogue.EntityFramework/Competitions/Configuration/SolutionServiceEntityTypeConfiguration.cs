@@ -5,11 +5,11 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Configuration;
 
-public sealed class RequiredServiceEntityTypeConfiguration : IEntityTypeConfiguration<RequiredService>
+public sealed class SolutionServiceEntityTypeConfiguration : IEntityTypeConfiguration<SolutionService>
 {
-    public void Configure(EntityTypeBuilder<RequiredService> builder)
+    public void Configure(EntityTypeBuilder<SolutionService> builder)
     {
-        builder.ToTable("RequiredServices", Schemas.Competitions);
+        builder.ToTable("SolutionServices", Schemas.Competitions);
 
         builder.HasKey(x => new { x.CompetitionId, x.SolutionId, x.ServiceId });
 
@@ -22,20 +22,20 @@ public sealed class RequiredServiceEntityTypeConfiguration : IEntityTypeConfigur
         builder.HasOne<Competition>()
             .WithMany()
             .HasForeignKey(x => x.CompetitionId)
-            .HasConstraintName("FK_RequiredServices_Competition")
+            .HasConstraintName("FK_SolutionServices_Competition")
             .OnDelete(DeleteBehavior.ClientCascade);
 
         builder.HasOne<CompetitionSolution>()
             .WithMany()
             .HasForeignKey(x => x.SolutionId)
             .HasPrincipalKey(x => x.SolutionId)
-            .HasConstraintName("FK_RequiredServices_Solution")
+            .HasConstraintName("FK_SolutionServices_Solution")
             .OnDelete(DeleteBehavior.ClientCascade);
 
         builder.HasOne(x => x.Service)
             .WithMany()
             .HasForeignKey(x => x.ServiceId)
-            .HasConstraintName("FK_RequiredServices_Service")
+            .HasConstraintName("FK_SolutionServices_Service")
             .OnDelete(DeleteBehavior.NoAction);
     }
 }

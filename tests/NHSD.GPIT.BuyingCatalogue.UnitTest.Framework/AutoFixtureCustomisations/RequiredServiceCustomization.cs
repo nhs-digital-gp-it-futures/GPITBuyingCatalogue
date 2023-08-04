@@ -9,9 +9,9 @@ public sealed class RequiredServiceCustomization : ICustomization
 {
     public void Customize(IFixture fixture)
     {
-        static ISpecimenBuilder ComposerTransformation(ICustomizationComposer<RequiredService> composer) => composer
+        static ISpecimenBuilder ComposerTransformation(ICustomizationComposer<SolutionService> composer) => composer
             .Without(x => x.Service);
 
-        fixture.Customize<RequiredService>(ComposerTransformation);
+        fixture.Customize<SolutionService>(ComposerTransformation);
     }
 }

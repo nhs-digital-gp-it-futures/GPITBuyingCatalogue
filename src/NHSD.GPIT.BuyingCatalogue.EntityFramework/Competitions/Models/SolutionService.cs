@@ -3,20 +3,22 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 
-public class RequiredService
+public class SolutionService
 {
-    public RequiredService()
+    public SolutionService()
     {
     }
 
-    public RequiredService(
+    public SolutionService(
         int competitionId,
         CatalogueItemId solutionId,
-        CatalogueItemId serviceId)
+        CatalogueItemId serviceId,
+        bool isRequired)
     {
         CompetitionId = competitionId;
         SolutionId = solutionId;
         ServiceId = serviceId;
+        IsRequired = isRequired;
     }
 
     public int CompetitionId { get; set; }
@@ -25,5 +27,7 @@ public class RequiredService
 
     public CatalogueItemId ServiceId { get; set; }
 
-    public AdditionalService Service { get; set; }
+    public CatalogueItem Service { get; set; }
+
+    public bool IsRequired { get; set; }
 }

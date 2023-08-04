@@ -55,7 +55,7 @@ public static class CompetitionSelectSolutionsControllerTests
             x =>
             {
                 x.Solution = solution;
-                x.RequiredServices = new List<RequiredService>();
+                x.SolutionServices = new List<SolutionService>();
             });
 
         competition.CompetitionSolutions = competitionSolutions;

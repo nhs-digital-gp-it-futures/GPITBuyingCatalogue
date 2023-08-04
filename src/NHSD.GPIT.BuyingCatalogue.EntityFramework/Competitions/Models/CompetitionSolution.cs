@@ -9,7 +9,7 @@ public class CompetitionSolution
 {
     public CompetitionSolution()
     {
-        RequiredServices = new HashSet<RequiredService>();
+        SolutionServices = new HashSet<SolutionService>();
     }
 
     public CompetitionSolution(int competitionId, CatalogueItemId solutionId)
@@ -29,7 +29,7 @@ public class CompetitionSolution
 
     public Solution Solution { get; set; }
 
-    public ICollection<RequiredService> RequiredServices { get; set; } = new HashSet<RequiredService>();
+    public ICollection<SolutionService> SolutionServices { get; set; } = new HashSet<SolutionService>();
 
     public ICollection<SolutionScore> Scores { get; set; } = new HashSet<SolutionScore>();
 

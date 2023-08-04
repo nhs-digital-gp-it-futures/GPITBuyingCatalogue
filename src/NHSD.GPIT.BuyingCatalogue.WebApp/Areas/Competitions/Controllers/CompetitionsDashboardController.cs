@@ -175,8 +175,8 @@ public class CompetitionsDashboardController : Controller
         var competitionSolutions = solutionsAndServices.CatalogueItems.Select(
             x => new CompetitionSolution(competition.Id, x.Solution.CatalogueItemId)
             {
-                RequiredServices = x.Solution.AdditionalServices.Select(
-                        y => new RequiredService(competition.Id, x.Solution.CatalogueItemId, y.CatalogueItemId))
+                SolutionServices = x.Solution.AdditionalServices.Select(
+                        y => new SolutionService(competition.Id, x.Solution.CatalogueItemId, y.CatalogueItemId, true))
                     .ToList(),
             });
 

@@ -66,9 +66,8 @@ public class CompetitionsService : ICompetitionsService
             .ThenInclude(x => x.CatalogueItem)
             .ThenInclude(x => x.Supplier)
             .Include(x => x.CompetitionSolutions)
-            .ThenInclude(x => x.RequiredServices)
+            .ThenInclude(x => x.SolutionServices)
             .ThenInclude(x => x.Service)
-            .ThenInclude(x => x.CatalogueItem)
             .IgnoreQueryFilters()
             .AsSplitQuery();
 
@@ -110,7 +109,7 @@ public class CompetitionsService : ICompetitionsService
         IEnumerable<CompetitionSolution> competitionSolutions)
     {
         var competition = await dbContext.Competitions.Include(x => x.CompetitionSolutions)
-            .ThenInclude(x => x.RequiredServices)
+            .ThenInclude(x => x.SolutionServices)
             .FirstOrDefaultAsync(x => x.OrganisationId == organisationId && x.Id == competitionId);
 
         competition.CompetitionSolutions.AddRange(competitionSolutions);
