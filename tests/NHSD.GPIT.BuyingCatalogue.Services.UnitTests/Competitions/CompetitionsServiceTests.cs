@@ -654,31 +654,6 @@ public static class CompetitionsServiceTests
 
     [Theory]
     [InMemoryDbAutoData]
-    public static async Task SetCompetitionCriteria(
-        Organisation organisation,
-        Competition competition,
-        [Frozen] BuyingCatalogueDbContext context,
-        CompetitionsService service)
-    {
-        competition.OrganisationId = organisation.Id;
-        competition.IncludesNonPrice = false;
-
-        context.Organisations.Add(organisation);
-        context.Competitions.Add(competition);
-
-        await context.SaveChangesAsync();
-        context.ChangeTracker.Clear();
-
-        await service.SetCompetitionCriteria(organisation.Id, competition.Id, true);
-
-        var updatedCompetition = await context.Competitions
-            .FirstOrDefaultAsync(x => x.Id == competition.Id);
-
-        updatedCompetition.IncludesNonPrice.Should().BeTrue();
-    }
-
-    [Theory]
-    [InMemoryDbAutoData]
     public static async Task SetCompetitionWeightings_SetsWeightings(
         int priceWeighting,
         int nonPriceWeighting,

@@ -15,9 +15,9 @@ using Xunit;
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 {
     [Collection(nameof(AdminCollection))]
-    public sealed class AddEpic : AuthorityTestBase
+    public sealed class AddEpicDetails : AuthorityTestBase
     {
-        public AddEpic(LocalWebApplicationFactory factory)
+        public AddEpicDetails(LocalWebApplicationFactory factory)
             : base(
                   factory,
                   typeof(SupplierDefinedEpicsController),

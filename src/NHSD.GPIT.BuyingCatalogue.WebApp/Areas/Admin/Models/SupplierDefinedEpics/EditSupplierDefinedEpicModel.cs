@@ -18,11 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpi
             Name = epic.Name;
             Description = epic.Description;
             IsActive = epic.IsActive;
-            CapabilityList = epic.Capabilities.First().Name;
-            foreach (var capability in epic.Capabilities.Skip(1))
-            {
-                CapabilityList += ", " + capability.Name;
-            }
+            CapabilityList = string.Join(", ", epic.Capabilities.Select(x => x.Name));
 
             CanDelete = !epic.IsActive && relatedItems.Count == 0;
         }

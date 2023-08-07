@@ -31,24 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared
             ICollection<int> selected,
             string search = null)
         {
-            if (selected == null)
-                selected = new List<int>();
-
-            Groups = capabilities
-                .Select(x => x.Category.Id)
-                .Distinct()
-                .Select(x => capabilities.First(c => c.Category.Id == x).Category)
-                .OrderBy(x => x.Name);
-
-            GroupedItems = Groups.ToDictionary(
-                x => x.Id,
-                x => capabilities.Where(c => c.Category.Id == x.Id).OrderBy(c => c.Name));
-
-            SelectedItems = capabilities.Select(x => new SelectionModel
-            {
-                Id = $"{x.Id}",
-                Selected = selected.Contains(x.Id),
-            }).ToArray();
+            PopulateCapabilities(capabilities, selected);
 
             Total = capabilities.Count;
 
@@ -69,6 +52,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared
         {
             var capabilityAndEpicsIds = SolutionsFilterHelper.ParseCapabilityAndEpicIds(selected);
             return new(capabilities, true, capabilityAndEpicsIds.Keys, search);
+        }
+
+        public void PopulateCapabilities(List<Capability> capabilities, ICollection<int> selected = null)
+        {
+            if (selected == null)
+                selected = new List<int>();
+            Groups = capabilities
+                .Select(x => x.Category.Id)
+                .Distinct()
+                .Select(x => capabilities.First(c => c.Category.Id == x).Category)
+                .OrderBy(x => x.Name);
+
+            GroupedItems = Groups.ToDictionary(
+                x => x.Id,
+                x => capabilities.Where(c => c.Category.Id == x.Id).OrderBy(c => c.Name));
+            SelectedItems = capabilities.Select(x => new SelectionModel
+            {
+                Id = $"{x.Id}",
+                Selected = selected.Contains(x.Id),
+            }).ToArray();
         }
 
         public PageTitleModel GetPageTitle() => IsFilter
