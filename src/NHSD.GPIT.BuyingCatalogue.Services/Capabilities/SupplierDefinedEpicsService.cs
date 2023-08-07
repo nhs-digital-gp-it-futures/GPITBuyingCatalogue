@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             epic.Name = epicModel.Name;
             epic.Description = epicModel.Description;
             epic.IsActive = epicModel.IsActive;
-            List<Capability> capabilities = await dbContext.Capabilities.Where(x => epicModel.CapabilityIds.Contains(x.Id)).ToListAsync(); ;
+            List<Capability> capabilities = await dbContext.Capabilities.Where(x => epicModel.CapabilityIds.Contains(x.Id)).ToListAsync();
 
             var capabilityEpics = capabilities.Select(c => new CapabilityEpic()
             {
