@@ -1,7 +1,21 @@
 .nhsuk-expander-index .nhsuk-details__summary .nhsuk-details__summary-text {
-  white-space: nowrap;
+   white-space: pre-line;
 }
 
 .nhsuk-checkboxes__subhint {
   font-size: 1rem;
+}
+
+.nhsuk-section:nth-of-type(2n) {
+  background: #fff;
+}
+
+.app-width-container--full {
+  margin: 0;
+  max-width: none;
+}
+
+.section-content {
+  margin-top: 32px;
+  margin-bottom: 32px;
 }

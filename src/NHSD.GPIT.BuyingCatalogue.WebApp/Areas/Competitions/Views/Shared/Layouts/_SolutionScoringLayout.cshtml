@@ -1,0 +1,30 @@
+@using NHSD.GPIT.BuyingCatalogue.Framework.Constants
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <partial name="Partials/_HeadIncludes" />
+    @(await RenderSectionAsync("Scripts", false))
+</head>
+<body>
+    <a class="nhsuk-skip-link" href="#maincontent">Skip to main content</a>
+    @if ((bool?)Context.Items[CatalogueCookies.ShowCookieBanner] == true)
+    {
+        <partial name="Partials/_CookieConsentPartial" />
+    }
+    <partial name="Partials/_BetaBanner" />
+    <partial name="Headers/_Header" model="@("_Navigation")" />
+
+    @await RenderSectionAsync("Breadcrumbs", false)
+
+    <div class="nhsuk-width-container-fluid app-width-container--full nhsuk-main-wrapper">
+        <main role="main" id="maincontent">
+            @RenderBody()
+        </main>
+    </div>
+
+    <partial name="Footers/_Footer" />
+
+    <partial name="Partials/_JsAssetIncludes" />
+</body>
+</html>

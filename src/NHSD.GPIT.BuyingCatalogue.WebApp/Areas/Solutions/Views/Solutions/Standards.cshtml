@@ -12,11 +12,10 @@
     var shouldShowInteroperabilityAction = interoperabilityStandards.Any(s => Model.StandardsWithWorkOffPlans.Any(swp => swp == s.Id));
     var shouldShowCapabilityAction = capabilityStandards.Any(s => Model.StandardsWithWorkOffPlans.Any(swp => swp == s.Id));
 }
-
-<p><b>Standards describe the technical specifications or operating conditions required for a Catalogue Solution to be published on the Buying Catalogue. This is how @Model.SolutionName has performed against the relevant Standards:</b></p>
-
-<h2>Overarching Standards</h2>
-<p>These Standards must be fully met by all Catalogue Solutions within an agreed timeframe.</p>
+<partial name="_solutionSummary" model="Model" />
+<p>
+    Standards describe the technical specifications or operating conditions required for a Catalogue Solution to be published on the Buying Catalogue. This is how Caltech Web GP has performed against the relevant Standards:
+</p>
 
 <nhs-details label-text="Standards not fully met">
     <p>Any Standard that has not been fully met will have a status of ‘in progress’ and the Catalogue Solution will be subject to a Compliance Work-off Plan.</p>
@@ -24,58 +23,13 @@
     <p>Use the ‘view details’ link to find more information about any outstanding Work-off Plans.</p>
 </nhs-details>
 
-<nhs-table data-test-id="overarching-table">
-    <nhs-table-column>Standard</nhs-table-column>
-    <nhs-table-column>Description</nhs-table-column>
-    <nhs-table-column>Status</nhs-table-column>
-    @if (shouldShowOverarchingAction)
-    {
-        <nhs-table-column>Action</nhs-table-column>
-    }
-    else
-    {
-        <nhs-table-column></nhs-table-column>
-    }
-    @foreach (var standard in overarchingStandards)
-    {
-        <nhs-table-row-container>
-            <nhs-table-cell>@standard.Name</nhs-table-cell>
-            <nhs-table-cell>@standard.Description <a href="@standard.Url">More information about this Standard</a></nhs-table-cell>
-            @if (Model.StandardsWithWorkOffPlans.Any(swp => swp == standard.Id))
-            {
-                <nhs-table-cell><nhs-tag colour="Yellow" text="In&nbsp;Progress" /></nhs-table-cell>
-                <nhs-table-cell>
-                    <a asp-action="@nameof(SolutionsController.DevelopmentPlans)"
-                       asp-controller="@typeof(SolutionsController).ControllerName()"
-                       asp-route-solutionId="@Model.SolutionId"
-                       asp-fragment="@standard.Id">View&nbsp;details</a>
-                </nhs-table-cell>
-            }
-            else
-            {
-                <nhs-table-cell><nhs-tag colour="Green" text="Fully&nbsp;met" /></nhs-table-cell>
-                <nhs-table-cell></nhs-table-cell>
-            }
-        </nhs-table-row-container>
-    }
-</nhs-table>
-
-@if (Model.Standards.Any(s => s.StandardType == StandardType.Interoperability))
-{
-    <h2>Interoperability Standards</h2>
-    <p>These Standards are relevant to solutions that meet particular Capabilities.</p>
-
-    <nhs-details label-text="Standards not fully met">
-        <p>Any Standard that has not been fully met will have a status of ‘in progress’ and the Catalogue Solution will be subject to a Compliance Work-off Plan.</p>
-        <p>This means the supplier has agreed to complete any outstanding work to meet the Standard within an agreed timeframe.</p>
-        <p>Use the ‘view details’ link to find more information about any outstanding Work-off Plans.</p>
-    </nhs-details>
-
-    <nhs-table data-test-id="interoperability-table">
+<nhs-expander label-text="Overarching Standards" open="false">
+    <p>These Standards must be fully met by all Catalogue Solutions within an agreed timeframe.</p>
+    <nhs-table data-test-id="overarching-table">
         <nhs-table-column>Standard</nhs-table-column>
         <nhs-table-column>Description</nhs-table-column>
         <nhs-table-column>Status</nhs-table-column>
-        @if (shouldShowInteroperabilityAction)
+        @if (shouldShowOverarchingAction)
         {
             <nhs-table-column>Action</nhs-table-column>
         }
@@ -83,7 +37,7 @@
         {
             <nhs-table-column></nhs-table-column>
         }
-        @foreach (var standard in interoperabilityStandards)
+        @foreach (var standard in overarchingStandards)
         {
             <nhs-table-row-container>
                 <nhs-table-cell>@standard.Name</nhs-table-cell>
@@ -93,9 +47,9 @@
                     <nhs-table-cell><nhs-tag colour="Yellow" text="In&nbsp;Progress" /></nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="@nameof(SolutionsController.DevelopmentPlans)"
-                           asp-controller="@typeof(SolutionsController).ControllerName()"
-                           asp-route-solutionId="@Model.SolutionId"
-                           asp-fragment="@standard.Id">View&nbsp;details</a>
+                            asp-controller="@typeof(SolutionsController).ControllerName()"
+                            asp-route-solutionId="@Model.SolutionId"
+                            asp-fragment="@standard.Id">View&nbsp;details</a>
                     </nhs-table-cell>
                 }
                 else
@@ -106,50 +60,100 @@
             </nhs-table-row-container>
         }
     </nhs-table>
+</nhs-expander>
+
+@if (Model.Standards.Any(s => s.StandardType == StandardType.Interoperability))
+{
+    <nhs-expander label-text="Interoperability Standards" open="false">
+        <p>These Standards are relevant to solutions that meet particular Capabilities.</p>
+
+        <nhs-details label-text="Standards not fully met">
+            <p>Any Standard that has not been fully met will have a status of ‘in progress’ and the Catalogue Solution will be subject to a Compliance Work-off Plan.</p>
+            <p>This means the supplier has agreed to complete any outstanding work to meet the Standard within an agreed timeframe.</p>
+            <p>Use the ‘view details’ link to find more information about any outstanding Work-off Plans.</p>
+        </nhs-details>
+
+        <nhs-table data-test-id="interoperability-table">
+            <nhs-table-column>Standard</nhs-table-column>
+            <nhs-table-column>Description</nhs-table-column>
+            <nhs-table-column>Status</nhs-table-column>
+            @if (shouldShowInteroperabilityAction)
+            {
+                <nhs-table-column>Action</nhs-table-column>
+            }
+            else
+            {
+                <nhs-table-column></nhs-table-column>
+            }
+            @foreach (var standard in interoperabilityStandards)
+            {
+                <nhs-table-row-container>
+                    <nhs-table-cell>@standard.Name</nhs-table-cell>
+                    <nhs-table-cell>@standard.Description <a href="@standard.Url">More information about this Standard</a></nhs-table-cell>
+                    @if (Model.StandardsWithWorkOffPlans.Any(swp => swp == standard.Id))
+                    {
+                        <nhs-table-cell><nhs-tag colour="Yellow" text="In&nbsp;Progress" /></nhs-table-cell>
+                        <nhs-table-cell>
+                            <a asp-action="@nameof(SolutionsController.DevelopmentPlans)"
+                                asp-controller="@typeof(SolutionsController).ControllerName()"
+                                asp-route-solutionId="@Model.SolutionId"
+                                asp-fragment="@standard.Id">View&nbsp;details</a>
+                        </nhs-table-cell>
+                    }
+                    else
+                    {
+                        <nhs-table-cell><nhs-tag colour="Green" text="Fully&nbsp;met" /></nhs-table-cell>
+                        <nhs-table-cell></nhs-table-cell>
+                    }
+                </nhs-table-row-container>
+            }
+        </nhs-table>
+    </nhs-expander>
 }
 
 @if (Model.Standards.Any(s => s.StandardType == StandardType.Capability))
 {
-    <h2>Capability Specific Standards</h2>
-    <p>These Standards must be fully met due to the Capabilities this Catalogue Solution has mapped to.</p>
+    <nhs-expander label-text="Capability Specific Standards" open="false">
+        <p>These Standards must be fully met due to the Capabilities this Catalogue Solution has mapped to.</p>
 
-    <nhs-details label-text="Standards not fully met">
-        <p>Any Standard that has not been fully met will have a status of ‘in progress’ and the Catalogue Solution will be subject to a Compliance Work-off Plan.</p>
-        <p>This means the supplier has agreed to complete any outstanding work to meet the Standard within an agreed timeframe.</p>
-        <p>Use the ‘view details’ link to find more information about any outstanding Work-off Plans.</p>
-    </nhs-details>
+        <nhs-details label-text="Standards not fully met">
+            <p>Any Standard that has not been fully met will have a status of ‘in progress’ and the Catalogue Solution will be subject to a Compliance Work-off Plan.</p>
+            <p>This means the supplier has agreed to complete any outstanding work to meet the Standard within an agreed timeframe.</p>
+            <p>Use the ‘view details’ link to find more information about any outstanding Work-off Plans.</p>
+        </nhs-details>
 
-    <nhs-table data-test-id="capability-table">
-        <nhs-table-column>Standard</nhs-table-column>
-        <nhs-table-column>Description</nhs-table-column>
-        <nhs-table-column>Status</nhs-table-column>
-        @if (shouldShowCapabilityAction)
-        {
-            <nhs-table-column>Action</nhs-table-column>
-        }
-        else
-        {
-            <nhs-table-column></nhs-table-column>
-        }
-        @foreach (var standard in capabilityStandards)
-        {
-            <nhs-table-row-container>
-                <nhs-table-cell>@standard.Name</nhs-table-cell>
-                <nhs-table-cell>@standard.Description <a href="@standard.Url">More information about this Standard</a></nhs-table-cell>
-                @if (Model.StandardsWithWorkOffPlans.Any(swp => swp == standard.Id))
-                {
-                    <nhs-table-cell><nhs-tag colour="Yellow" text="In&nbsp;Progress" /></nhs-table-cell>
-                    <nhs-table-cell><a asp-action="@nameof(SolutionsController.DevelopmentPlans)"
-                                       asp-controller="@typeof(SolutionsController).ControllerName()"
-                                       asp-route-solutionId="@Model.SolutionId"
-                                       asp-fragment="@standard.Id">View&nbsp;details</a></nhs-table-cell>
-                }
-                else
-                {
-                    <nhs-table-cell><nhs-tag colour="Green" text="Fully&nbsp;met" /></nhs-table-cell>
-                    <nhs-table-cell></nhs-table-cell>
-                }
-            </nhs-table-row-container>
-        }
-    </nhs-table>
+        <nhs-table data-test-id="capability-table">
+            <nhs-table-column>Standard</nhs-table-column>
+            <nhs-table-column>Description</nhs-table-column>
+            <nhs-table-column>Status</nhs-table-column>
+            @if (shouldShowCapabilityAction)
+            {
+                <nhs-table-column>Action</nhs-table-column>
+            }
+            else
+            {
+                <nhs-table-column></nhs-table-column>
+            }
+            @foreach (var standard in capabilityStandards)
+            {
+                <nhs-table-row-container>
+                    <nhs-table-cell>@standard.Name</nhs-table-cell>
+                    <nhs-table-cell>@standard.Description <a href="@standard.Url">More information about this Standard</a></nhs-table-cell>
+                    @if (Model.StandardsWithWorkOffPlans.Any(swp => swp == standard.Id))
+                    {
+                        <nhs-table-cell><nhs-tag colour="Yellow" text="In&nbsp;Progress" /></nhs-table-cell>
+                        <nhs-table-cell><a asp-action="@nameof(SolutionsController.DevelopmentPlans)"
+                                            asp-controller="@typeof(SolutionsController).ControllerName()"
+                                            asp-route-solutionId="@Model.SolutionId"
+                                            asp-fragment="@standard.Id">View&nbsp;details</a></nhs-table-cell>
+                    }
+                    else
+                    {
+                        <nhs-table-cell><nhs-tag colour="Green" text="Fully&nbsp;met" /></nhs-table-cell>
+                        <nhs-table-cell></nhs-table-cell>
+                    }
+                </nhs-table-row-container>
+            }
+        </nhs-table>
+    </nhs-expander>
 }

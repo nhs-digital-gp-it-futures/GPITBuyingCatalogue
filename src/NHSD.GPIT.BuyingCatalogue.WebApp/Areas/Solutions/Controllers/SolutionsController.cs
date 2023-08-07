@@ -178,7 +178,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("{solutionId}/associated-services")]
         public async Task<IActionResult> AssociatedServices(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolutionThin(solutionId);
+            var solution = await solutionsService.GetSolutionWithBasicInformation(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
@@ -196,7 +196,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("{solutionId}/additional-services")]
         public async Task<IActionResult> AdditionalServices(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolutionThin(solutionId);
+            var solution = await solutionsService.GetSolutionWithBasicInformation(solutionId);
 
             if (solution is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
@@ -335,7 +335,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("{solutionId}/application-types")]
         public async Task<IActionResult> ApplicationTypes(CatalogueItemId solutionId)
         {
-            var item = await solutionsService.GetSolutionThin(solutionId);
+            var item = await solutionsService.GetSolutionWithBasicInformation(solutionId);
 
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
@@ -365,7 +365,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("{solutionId}/features")]
         public async Task<IActionResult> Features(CatalogueItemId solutionId)
         {
-            var item = await solutionsService.GetSolutionThin(solutionId);
+            var item = await solutionsService.GetSolutionWithBasicInformation(solutionId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
@@ -380,7 +380,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("{solutionId}/hosting-type")]
         public async Task<IActionResult> HostingType(CatalogueItemId solutionId)
         {
-            var item = await solutionsService.GetSolutionThin(solutionId);
+            var item = await solutionsService.GetSolutionWithBasicInformation(solutionId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
@@ -395,7 +395,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("{solutionId}/implementation")]
         public async Task<IActionResult> Implementation(CatalogueItemId solutionId)
         {
-            var item = await solutionsService.GetSolutionThin(solutionId);
+            var item = await solutionsService.GetSolutionWithBasicInformation(solutionId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
@@ -410,7 +410,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("{solutionId}/interoperability")]
         public async Task<IActionResult> Interoperability(CatalogueItemId solutionId)
         {
-            var item = await solutionsService.GetSolutionThin(solutionId);
+            var item = await solutionsService.GetSolutionWithBasicInformation(solutionId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
@@ -472,7 +472,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("{solutionId}/standards")]
         public async Task<IActionResult> Standards(CatalogueItemId solutionId)
         {
-            var item = await solutionsService.GetSolutionThin(solutionId);
+            var item = await solutionsService.GetSolutionWithBasicInformation(solutionId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
@@ -492,7 +492,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("{solutionId}/development-plans")]
         public async Task<IActionResult> DevelopmentPlans(CatalogueItemId solutionId)
         {
-            var item = await solutionsService.GetSolutionThin(solutionId);
+            var item = await solutionsService.GetSolutionWithBasicInformation(solutionId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 

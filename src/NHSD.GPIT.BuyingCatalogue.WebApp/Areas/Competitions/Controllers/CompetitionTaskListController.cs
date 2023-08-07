@@ -121,14 +121,17 @@ public class CompetitionTaskListController : Controller
     }
 
     [HttpGet("weightings")]
-    public async Task<IActionResult> Weightings(string internalOrgId, int competitionId)
+    public async Task<IActionResult> Weightings(
+        string internalOrgId,
+        int competitionId,
+        string returnUrl = null)
     {
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
         var competition = await competitionsService.GetCompetitionWithWeightings(organisation.Id, competitionId);
 
         var model = new CompetitionWeightingsModel(competition)
         {
-            BackLink = Url.Action(nameof(Index), new { internalOrgId, competitionId }),
+            BackLink = returnUrl ?? Url.Action(nameof(Index), new { internalOrgId, competitionId }),
         };
 
         return View(model);
@@ -138,7 +141,8 @@ public class CompetitionTaskListController : Controller
     public async Task<IActionResult> Weightings(
         string internalOrgId,
         int competitionId,
-        CompetitionWeightingsModel model)
+        CompetitionWeightingsModel model,
+        string returnUrl = null)
     {
         if (!ModelState.IsValid)
             return View(model);
@@ -150,6 +154,34 @@ public class CompetitionTaskListController : Controller
             competitionId,
             model.Price.GetValueOrDefault(),
             model.NonPrice.GetValueOrDefault());
+
+        return string.IsNullOrWhiteSpace(returnUrl)
+            ? RedirectToAction(nameof(Index), new { internalOrgId, competitionId })
+            : Redirect(returnUrl);
+    }
+
+    [HttpGet("review-criteria")]
+    public async Task<IActionResult> ReviewCriteria(string internalOrgId, int competitionId)
+    {
+        var competition = await competitionsService.GetCompetitionCriteriaReview(internalOrgId, competitionId);
+
+        var model = new CompetitionReviewCriteriaModel(competition)
+        {
+            BackLink = Url.Action(nameof(Index), new { internalOrgId, competitionId }),
+        };
+
+        return View(model);
+    }
+
+    [HttpPost("review-criteria")]
+    public async Task<IActionResult> ReviewCriteria(
+        string internalOrgId,
+        int competitionId,
+        CompetitionReviewCriteriaModel model)
+    {
+        _ = model;
+
+        await competitionsService.SetCriteriaReviewed(internalOrgId, competitionId);
 
         return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
     }

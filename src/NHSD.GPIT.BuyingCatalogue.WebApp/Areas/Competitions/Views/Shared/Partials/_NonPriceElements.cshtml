@@ -1,0 +1,77 @@
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.Shared.NonPriceElementsPartialModel
+
+@if (Model.NonPriceElements.Implementation != null)
+{
+    var implementationUrl = Url.Action(nameof(CompetitionNonPriceElementsController.Implementation), typeof(CompetitionNonPriceElementsController).ControllerName(), Model.RouteValues);
+    <br/>
+    <h2 class="nhsuk-heading-m">Implementation</h2>
+
+    <nhs-summary-list>
+        <nhs-summary-list-row label-text="Implementation" action="@("Edit", implementationUrl)">
+            @Model.NonPriceElements.Implementation.Requirements
+        </nhs-summary-list-row>
+    </nhs-summary-list>
+}
+
+@if (Model.NonPriceElements.Interoperability.Any())
+{
+    var interopUrl = Url.Action(nameof(CompetitionNonPriceElementsController.Interoperability), typeof(CompetitionNonPriceElementsController).ControllerName(), Model.RouteValues);
+
+    <br/>
+    <h2 class="nhsuk-heading-m">Interoperability</h2>
+
+    var im1Integrations = @Model.GetIm1Integrations();
+    <nhs-summary-list>
+        <nhs-summary-list-row label-text="IM1 integrations" action="@("Edit", interopUrl)">
+            @if (!im1Integrations.Any())
+            {
+                <span>None selected</span>
+            }
+            else
+            {
+                <ul>
+                    @foreach (var integration in im1Integrations.Order())
+                    {
+                        <li>@integration</li>
+                    }
+                </ul>
+            }
+        </nhs-summary-list-row>
+    </nhs-summary-list>
+
+    var gpConnectIntegrations = Model.GetGpConnectIntegrations();
+    <nhs-summary-list>
+        <nhs-summary-list-row label-text="GP Connect integrations" action="@("Edit", interopUrl)">
+            @if (!gpConnectIntegrations.Any())
+            {
+                <span>None selected</span>
+            }
+            else
+            {
+                <ul>
+                    @foreach (var integration in gpConnectIntegrations.Order())
+                    {
+                        <li>@integration</li>
+                    }
+                </ul>
+            }
+        </nhs-summary-list-row>
+    </nhs-summary-list>
+}
+
+@if (Model.NonPriceElements.ServiceLevel != null)
+{
+    var serviceLevelUrl = Url.Action(nameof(CompetitionNonPriceElementsController.ServiceLevel), typeof(CompetitionNonPriceElementsController).ControllerName(), Model.RouteValues);
+
+    <br/>
+    <h2 class="nhsuk-heading-m">Service levels</h2>
+
+    <nhs-summary-list>
+        <nhs-summary-list-row label-text="Core support hours" action="@("Edit", serviceLevelUrl)">
+            @($"{Model.NonPriceElements.ServiceLevel.TimeFrom:HH:mm} to {Model.NonPriceElements.ServiceLevel.TimeUntil:HH:mm}")
+        </nhs-summary-list-row>
+        <nhs-summary-list-row label-text="Applicable days" action="@("Edit", serviceLevelUrl)">
+            @Model.NonPriceElements.ServiceLevel.ApplicableDays
+        </nhs-summary-list-row>
+    </nhs-summary-list>
+}

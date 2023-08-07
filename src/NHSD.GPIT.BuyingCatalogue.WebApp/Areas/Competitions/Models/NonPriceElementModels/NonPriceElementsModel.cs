@@ -30,22 +30,8 @@ public class NonPriceElementsModel : NavBaseModel
     public NonPriceElements NonPriceElements { get; set; }
 
     public bool HasAllNonPriceElements() =>
-        NonPriceElements.GetAllNonPriceElements().All(NonPriceElements.HasNonPriceElement);
+        NonPriceElementExtensions.GetAllNonPriceElements().All(NonPriceElements.HasNonPriceElement);
 
     public bool HasAnyNonPriceElements() =>
-        NonPriceElements.GetAllNonPriceElements().Any(NonPriceElements.HasNonPriceElement);
-
-    public List<string> GetIm1Integrations() =>
-        NonPriceElements.Interoperability.Where(
-                x => x.IntegrationType == InteropIntegrationType.Im1
-                    && Interoperability.Im1Integrations.ContainsKey(x.Qualifier))
-            .Select(x => Interoperability.Im1Integrations[x.Qualifier])
-            .ToList();
-
-    public List<string> GetGpConnectIntegrations() =>
-        NonPriceElements.Interoperability.Where(
-                x => x.IntegrationType == InteropIntegrationType.GpConnect
-                    && Interoperability.GpConnectIntegrations.ContainsKey(x.Qualifier))
-            .Select(x => Interoperability.GpConnectIntegrations[x.Qualifier])
-            .ToList();
+        NonPriceElementExtensions.GetAllNonPriceElements().Any(NonPriceElements.HasNonPriceElement);
 }
