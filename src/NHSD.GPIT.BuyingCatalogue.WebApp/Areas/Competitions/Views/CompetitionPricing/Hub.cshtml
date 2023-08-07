@@ -1,0 +1,67 @@
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@model CompetitionSolutionHubModel
+
+@{
+    ViewBag.Title = "Price and quantity";
+
+    var additionalServices = Model.GetCatalogueItemsByType(CatalogueItemType.AdditionalService).ToList();
+    var associatedServices = Model.GetCatalogueItemsByType(CatalogueItemType.AssociatedService).ToList();
+}
+
+<partial name="Partials/_BackLink" model="Model"/>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="@ViewBag.Title"
+                        advice="Provide information to calculate the price for this shortlisted solution and any Additional or Associated Services you’ll need."
+                        caption="@Model.SolutionName"/>
+
+        <div id="SolutionDetails" class="nhsuk-u-margin-bottom-9">
+            <h2>Catalogue Solution</h2>
+
+            <div class="nhsuk-u-margin-bottom-9">
+                <partial name="HubCatalogueItem" model="@Model.GetCatalogueItem(Model.SolutionId)" />
+            </div>
+        </div>
+
+        <div id="AdditionalServiceDetails" class="nhsuk-u-margin-bottom-9">
+            <h2>Additional Services</h2>
+
+            @if (!additionalServices.Any())
+            {
+                <p>No Additional Services have been added for this Catalogue Solution.</p>
+            }
+            else
+            {
+                @foreach (var item in additionalServices)
+                {
+                    <div class="nhsuk-u-margin-bottom-9">
+                        <partial name="HubCatalogueItem" model="@Model.GetCatalogueItem(item.CatalogueItemId)"/>
+                    </div>
+                }
+            }
+        </div>
+
+        <div id="AssociatedServiceDetails" class="nhsuk-u-margin-bottom-9">
+            <h2>Associated Services</h2>
+
+            @if (!associatedServices.Any())
+            {
+                <p>No Associated Services have been added for this Catalogue Solution.</p>
+            }
+            else
+            {
+                @foreach (var item in associatedServices)
+                {
+                    <div class="nhsuk-u-margin-bottom-9">
+                        <partial name="HubCatalogueItem" model="@Model.GetCatalogueItem(item.CatalogueItemId)"/>
+                    </div>
+                }
+            }
+        </div>
+
+        <vc:nhs-secondary-button text="Continue"
+                                 url="@Model.BackLink"
+                                 type="Primary"/>
+    </div>
+</div>

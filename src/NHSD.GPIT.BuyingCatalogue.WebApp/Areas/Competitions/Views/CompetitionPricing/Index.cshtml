@@ -27,7 +27,7 @@
                         <nhs-tag status-enum="@solution.Progress"/>
                     </nhs-table-cell>
                     <nhs-table-cell>
-                        <a href="#">Edit</a>
+                        <a href="@Url.Action(nameof(CompetitionPricingController.Hub), typeof(CompetitionPricingController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, catalogueItemId = solution.CatalogueItemId })">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
             }

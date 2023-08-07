@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.PricingModels;
@@ -27,7 +29,7 @@ public class CompetitionPricingController : Controller
         string internalOrgId,
         int competitionId)
     {
-        var competition = await competitionsService.GetCompetitionWithServices(internalOrgId, competitionId);
+        var competition = await competitionsService.GetCompetitionWithSolutions(internalOrgId, competitionId);
 
         var model = new PricingDashboardModel(competition)
         {
@@ -35,6 +37,24 @@ public class CompetitionPricingController : Controller
                 nameof(CompetitionTaskListController.Index),
                 typeof(CompetitionTaskListController).ControllerName(),
                 new { internalOrgId, competitionId }),
+            InternalOrgId = internalOrgId,
+        };
+
+        return View(model);
+    }
+
+    [HttpGet("{catalogueItemId}")]
+    public async Task<IActionResult> Hub(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId catalogueItemId)
+    {
+        var competition = await competitionsService.GetCompetitionWithSolutions(internalOrgId, competitionId);
+        var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == catalogueItemId);
+
+        var model = new CompetitionSolutionHubModel(solution, competition.CompetitionRecipients)
+        {
+            BackLink = Url.Action(nameof(Index), new { internalOrgId, competitionId }),
         };
 
         return View(model);

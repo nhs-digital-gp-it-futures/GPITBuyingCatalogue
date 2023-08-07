@@ -1,0 +1,29 @@
+@model CatalogueItemHubModel
+
+<h3>@Model.CatalogueItemName</h3>
+
+<nhs-table>
+    <nhs-table-column>Item</nhs-table-column>
+    <nhs-table-column>Status</nhs-table-column>
+    <nhs-table-column>Action</nhs-table-column>
+
+    <nhs-table-row-container>
+        <nhs-table-cell>Price</nhs-table-cell>
+        <nhs-table-cell>
+            <nhs-tag status-enum="@Model.PriceProgress"></nhs-tag>
+        </nhs-table-cell>
+        <nhs-table-cell>
+            <a href="#">Edit</a>
+        </nhs-table-cell>
+    </nhs-table-row-container>
+
+    <nhs-table-row-container>
+        <nhs-table-cell>Quantity</nhs-table-cell>
+        <nhs-table-cell>
+            <nhs-tag status-enum="@Model.QuantityProgress"></nhs-tag>
+        </nhs-table-cell>
+        <nhs-table-cell>
+            <a href="#">Edit</a>
+        </nhs-table-cell>
+    </nhs-table-row-container>
+</nhs-table>

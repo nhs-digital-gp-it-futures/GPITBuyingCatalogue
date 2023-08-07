@@ -10,9 +10,14 @@ public class PricingDashboardModel : NavBaseModel
     public PricingDashboardModel(
         Competition competition)
     {
+        CompetitionId = competition.Id;
         CompetitionName = competition.Name;
         SolutionPrices = competition.CompetitionSolutions.Select(x => new SolutionPriceModel(x)).ToList();
     }
+
+    public string InternalOrgId { get; set; }
+
+    public int CompetitionId { get; set; }
 
     public string CompetitionName { get; set; }
 

@@ -89,7 +89,10 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.NonPriceElements.Interoperability)
             .Include(x => x.NonPriceElements.Implementation)
             .Include(x => x.NonPriceElements.ServiceLevel)
-            .AsNoTracking()
+            .Include(x => x.Recipients)
+            .Include(x => x.CompetitionRecipients).ThenInclude(x => x.OdsOrganisation)
+            .Include(x => x.CompetitionRecipients).ThenInclude(x => x.Quantities)
+                .AsNoTracking()
             .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
