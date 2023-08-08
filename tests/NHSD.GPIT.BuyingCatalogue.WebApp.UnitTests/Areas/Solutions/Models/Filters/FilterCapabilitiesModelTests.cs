@@ -2,9 +2,9 @@
 using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filters
@@ -13,10 +13,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
     {
         [Theory]
         [CommonAutoData]
-        public static void Constructor_PropertiesAreSetCorrectly(
+        public static void Constructor_IsFilter_PropertiesAreSetCorrectly(
             List<Capability> capabilities)
         {
-            var model = new FilterCapabilitiesModel(capabilities, null);
+            var model = new FilterCapabilitiesModel(capabilities, true, null);
 
             model.Groups.Should().BeEquivalentTo(capabilities.Select(x => x.Category));
             model.Total.Should().Be(capabilities.Count);
@@ -25,6 +25,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
                 Id = $"{x.Id}",
                 Selected = false,
             }));
+            model.IsFilter.Should().BeTrue();
+            model.GetPageTitle().Should().BeEquivalentTo(FilterCapabilitiesModel.FilterPageTitle);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Constructor_NotFilter_PropertiesAreSetCorrectly(
+            List<Capability> capabilities)
+        {
+            var model = new FilterCapabilitiesModel(capabilities, false, null);
+
+            model.Groups.Should().BeEquivalentTo(capabilities.Select(x => x.Category));
+            model.Total.Should().Be(capabilities.Count);
+            model.SelectedItems.Should().BeEquivalentTo(capabilities.Select(x => new SelectionModel
+            {
+                Id = $"{x.Id}",
+                Selected = false,
+            }));
+            model.IsFilter.Should().BeFalse();
+            model.GetPageTitle().Should().BeEquivalentTo(FilterCapabilitiesModel.SupplierDefinedEpicPageTitle);
         }
 
         [Theory]
@@ -38,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
                 new KeyValuePair<int, string[]>(capabilities.Last().Id, System.Array.Empty<string>()),
             });
 
-            var model = new FilterCapabilitiesModel(capabilities, selected);
+            var model = new FilterCapabilitiesModel(capabilities, true, selected.Keys);
 
             model.Groups.Should().BeEquivalentTo(capabilities.Select(x => x.Category));
             model.Total.Should().Be(capabilities.Count);
@@ -54,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         public static void Capabilities_ReturnsExpectedResult(
             List<Capability> capabilities)
         {
-            var model = new FilterCapabilitiesModel(capabilities, null);
+            var model = new FilterCapabilitiesModel(capabilities, true, null);
 
             foreach (var category in capabilities.Select(x => x.Category))
             {

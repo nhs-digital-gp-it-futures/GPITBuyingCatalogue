@@ -1,26 +1,23 @@
 ﻿using FluentValidation;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.SupplierDefinedEpics
 {
-    public sealed class SupplierDefinedEpicBaseModelValidator : AbstractValidator<SupplierDefinedEpicBaseModel>
+    public sealed class AddSupplierDefinedEpicDetailsValidator : AbstractValidator<AddSupplierDefinedEpicDetailsModel>
     {
         private readonly ISupplierDefinedEpicsService supplierDefinedEpicsService;
 
-        public SupplierDefinedEpicBaseModelValidator(
+        public AddSupplierDefinedEpicDetailsValidator(
             ISupplierDefinedEpicsService supplierDefinedEpicsService)
         {
             this.supplierDefinedEpicsService = supplierDefinedEpicsService;
 
-            RuleFor(m => m.SelectedCapabilityId)
-                .NotNull()
-                .WithMessage("Select a Capability");
-
             RuleFor(m => m.Name)
                 .NotEmpty()
-                .WithMessage("Enter an Epic name");
+                .WithMessage("Enter a name");
 
             RuleFor(m => m.Description)
                 .NotEmpty()
@@ -32,22 +29,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.SupplierDefine
 
             RuleFor(m => m)
                 .Must(NotBeADuplicateEpic)
-                .WithMessage("A supplier defined Epic with these details already exists")
-                .When(m => m.SelectedCapabilityId.HasValue && m.IsActive.HasValue)
+                .WithMessage("An Epic with this name already exists. Try another name")
                 .OverridePropertyName(
-                    m => m.SelectedCapabilityId,
-                    m => m.Name,
-                    m => m.Description,
-                    m => m.IsActive);
+                    m => m.Name);
+
+            RuleFor(m => m.SelectedCapabilityIds)
+                .NotNull()
+                .WithMessage("Select a Capability");
         }
 
-        private bool NotBeADuplicateEpic(SupplierDefinedEpicBaseModel model)
+        private bool NotBeADuplicateEpic(AddSupplierDefinedEpicDetailsModel model)
         {
-            return !supplierDefinedEpicsService.EpicExists(
+            return !supplierDefinedEpicsService.EpicWithNameExists(
                 model.Id,
-                model.Name,
-                model.Description,
-                model.IsActive!.Value).GetAwaiter().GetResult();
+                model.Name).GetAwaiter().GetResult();
         }
     }
 }

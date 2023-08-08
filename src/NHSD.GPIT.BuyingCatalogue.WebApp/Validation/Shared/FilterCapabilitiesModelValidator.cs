@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using FluentValidation;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Validators.Filters
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared
 {
     public class FilterCapabilitiesModelValidator : AbstractValidator<FilterCapabilitiesModel>
     {

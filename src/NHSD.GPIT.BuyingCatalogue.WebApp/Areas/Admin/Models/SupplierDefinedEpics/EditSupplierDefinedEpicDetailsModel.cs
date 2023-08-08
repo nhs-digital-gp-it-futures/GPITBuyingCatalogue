@@ -6,25 +6,22 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics
 {
-    public sealed class EditSupplierDefinedEpicModel : AddSupplierDefinedEpicDetailsModel
+    public sealed class EditSupplierDefinedEpicDetailsModel : AddSupplierDefinedEpicDetailsModel
     {
-        public EditSupplierDefinedEpicModel()
+        public EditSupplierDefinedEpicDetailsModel()
         {
         }
 
-        public EditSupplierDefinedEpicModel(Epic epic, IList<CatalogueItem> relatedItems)
+        public EditSupplierDefinedEpicDetailsModel(Epic epic, IList<CatalogueItem> relatedItems)
         {
             Id = epic.Id;
             Name = epic.Name;
             Description = epic.Description;
             IsActive = epic.IsActive;
-            CapabilityList = string.Join(", ", epic.Capabilities.Select(x => x.Name));
 
-            CanDelete = !epic.IsActive && relatedItems.Count == 0;
+            RelatedItems = relatedItems;
         }
 
-        public string CapabilityList { get; set; }
-
-        public bool CanDelete { get; set; }
+        public IList<CatalogueItem> RelatedItems { get; set; }
     }
 }

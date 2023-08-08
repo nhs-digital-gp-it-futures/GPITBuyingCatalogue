@@ -7,6 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 {
@@ -30,7 +31,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             [FromQuery] string selected = null,
             [FromQuery] string search = null)
         {
-            return View(await GetCapabilitiesModel(selected, search));
+            return View(FilterCapabilitiesModel.Build(
+                await capabilitiesService.GetReferencedCapabilities(),
+                selected,
+                search));
         }
 
         [HttpPost("filter-capabilities")]
@@ -40,7 +44,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             [FromQuery] string search = null)
         {
             if (!ModelState.IsValid)
-                return View(await GetCapabilitiesModel(search: search));
+            {
+                return View(FilterCapabilitiesModel.Build(
+                    await capabilitiesService.GetReferencedCapabilities(),
+                    search: search));
+            }
 
             var currentCapabilitiesAndEpics = SolutionsFilterHelper.ParseCapabilityAndEpicIds(selected);
 
@@ -151,14 +159,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 nameof(SolutionsController.Index),
                 typeof(SolutionsController).ControllerName(),
                 new { selected = newCapabilitiesAndEpics.ToFilterString(), search });
-        }
-
-        private async Task<FilterCapabilitiesModel> GetCapabilitiesModel(string selected = null, string search = null)
-        {
-            var capabilityAndEpicsIds = SolutionsFilterHelper.ParseCapabilityAndEpicIds(selected);
-            var capabilities = await capabilitiesService.GetReferencedCapabilities();
-
-            return new(capabilities, capabilityAndEpicsIds, search);
         }
 
         private async Task<FilterEpicsModel> GetEpicsModel(string selected, string search = null)

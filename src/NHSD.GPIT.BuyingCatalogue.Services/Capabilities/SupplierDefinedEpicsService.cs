@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SupplierDefinedEpics;
 
@@ -19,12 +20,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task AddSupplierDefinedEpic(AddEditSupplierDefinedEpic epicModel)
+        public async Task<string> AddSupplierDefinedEpic(AddEditSupplierDefinedEpic epicModel)
         {
             if (epicModel is null)
                 throw new ArgumentNullException(nameof(epicModel));
 
-            var capability = await dbContext.Capabilities.FirstOrDefaultAsync(x => x.Id == epicModel.CapabilityId);
+            List<Capability> capabilities = await dbContext.Capabilities.Where(x => epicModel.CapabilityIds.Contains(x.Id)).ToListAsync();
 
             var epic = new Epic
             {
@@ -34,15 +35,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
                 SupplierDefined = true,
             };
 
-            epic.CapabilityEpics.Add(new CapabilityEpic()
+            var capabilityEpics = capabilities.Select(c => new CapabilityEpic()
             {
-                CapabilityId = capability.Id,
+                CapabilityId = c.Id,
                 Epic = epic,
                 CompliancyLevel = CompliancyLevel.May,
             });
 
+            epic.CapabilityEpics.AddRange(capabilityEpics);
+
             dbContext.Epics.Add(epic);
             await dbContext.SaveChangesAsync();
+            return epic.Id;
         }
 
         public async Task EditSupplierDefinedEpic(AddEditSupplierDefinedEpic epicModel)
@@ -62,21 +66,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
             epic.Name = epicModel.Name;
             epic.Description = epicModel.Description;
             epic.IsActive = epicModel.IsActive;
+            List<Capability> capabilities = await dbContext.Capabilities.Where(x => epicModel.CapabilityIds.Contains(x.Id)).ToListAsync();
 
-            var capability = await dbContext.Capabilities.FirstOrDefaultAsync(x => x.Id == epicModel.CapabilityId);
-            epic.Capabilities.Clear();
-            epic.Capabilities = new List<Capability> { capability };
+            var capabilityEpics = capabilities.Select(c => new CapabilityEpic()
+            {
+                CapabilityId = c.Id,
+                Epic = epic,
+                CompliancyLevel = CompliancyLevel.May,
+            });
 
-            await dbContext.SaveChangesAsync();
-        }
+            epic.CapabilityEpics.Clear();
+            epic.CapabilityEpics.AddRange(capabilityEpics);
 
-        public async Task DeleteSupplierDefinedEpic(string epicId)
-        {
-            var epic = await dbContext.Epics.FirstOrDefaultAsync(e => e.Id == epicId);
-            if (epic is null)
-                return;
-
-            dbContext.Epics.Remove(epic);
             await dbContext.SaveChangesAsync();
         }
 
@@ -92,6 +93,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities
                    && e.Name == name
                    && e.Description == description
                    && e.IsActive == isActive
+                   && e.SupplierDefined == true);
+
+        public Task<bool> EpicWithNameExists(
+            string epicId,
+            string name) =>
+            dbContext
+               .Epics
+               .AnyAsync(e =>
+                   e.Id != epicId
+                   && e.Name == name
                    && e.SupplierDefined == true);
 
         public Task<List<Epic>> GetSupplierDefinedEpics()

@@ -7,11 +7,11 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics
 {
-    public class SupplierDefinedEpicBaseModel : NavBaseModel
+    public class AddSupplierDefinedEpicDetailsModel : NavBaseModel
     {
         public string Id { get; set; }
 
-        public int? SelectedCapabilityId { get; set; }
+        public string SelectedCapabilityIds { get; set; }
 
         [StringLength(500)]
         public string Name { get; set; }
@@ -21,22 +21,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpi
 
         public bool? IsActive { get; set; }
 
-        public IList<SelectOption<string>> Capabilities { get; set; }
-
         public IList<SelectOption<string>> ActiveOptions => new List<SelectOption<string>>
         {
             new("Active", true.ToString()),
             new("Inactive", false.ToString()),
         };
-
-        public SupplierDefinedEpicBaseModel WithSelectListCapabilities(List<Capability> capabilities)
-        {
-            Capabilities = capabilities
-                .OrderBy(c => c.Name)
-                .Select(c => new SelectOption<string>(c.Name, c.Id.ToString()))
-                .ToList();
-
-            return this;
-        }
     }
 }

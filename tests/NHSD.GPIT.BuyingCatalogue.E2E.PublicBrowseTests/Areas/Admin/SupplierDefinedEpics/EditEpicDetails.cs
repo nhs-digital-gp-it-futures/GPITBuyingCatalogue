@@ -14,7 +14,7 @@ using Xunit;
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 {
     [Collection(nameof(AdminCollection))]
-    public sealed class EditEpic : AuthorityTestBase
+    public sealed class EditEpicDetails : AuthorityTestBase
     {
         private const string EpicId = "S00001";
 
@@ -23,11 +23,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
             { nameof(EpicId), EpicId },
         };
 
-        public EditEpic(LocalWebApplicationFactory factory)
+        public EditEpicDetails(LocalWebApplicationFactory factory)
             : base(
                   factory,
                   typeof(SupplierDefinedEpicsController),
-                  nameof(SupplierDefinedEpicsController.EditEpic),
+                  nameof(SupplierDefinedEpicsController.EditSupplierDefinedEpicDetails),
                   Parameters)
         {
         }
@@ -40,7 +40,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             CommonActions.GoBackLinkDisplayed().Should().BeTrue();
 
-            CommonActions.ElementIsDisplayed(AddSupplierDefinedEpicObjects.CapabilityInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddSupplierDefinedEpicObjects.NameInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddSupplierDefinedEpicObjects.DescriptionInput).Should().BeTrue();
             CommonActions.ElementIsDisplayed(AddSupplierDefinedEpicObjects.StatusInput).Should().BeTrue();
@@ -55,14 +54,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.Dashboard))
+                nameof(SupplierDefinedEpicsController.EditSupplierDefinedEpic))
                 .Should().BeTrue();
         }
 
         [Fact]
         public void EditEpic_NoInput_ThrowsError()
         {
-            CommonActions.SelectDropDownItem(AddSupplierDefinedEpicObjects.CapabilityInput, 0);
             CommonActions.ClearInputElement(AddSupplierDefinedEpicObjects.NameInput);
             CommonActions.ClearInputElement(AddSupplierDefinedEpicObjects.DescriptionInput);
 
@@ -72,14 +70,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
 
             CommonActions.ElementShowingCorrectErrorMessage(
-                AddSupplierDefinedEpicObjects.CapabilityInputError,
-                "Select a Capability")
-                .Should()
-                .BeTrue();
-
-            CommonActions.ElementShowingCorrectErrorMessage(
                 AddSupplierDefinedEpicObjects.NameInputError,
-                "Enter an Epic name")
+                "Enter a name")
                 .Should()
                 .BeTrue();
 
@@ -98,7 +90,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             CommonActions.ElementAddValue(AddSupplierDefinedEpicObjects.NameInput, epic.Name);
             CommonActions.ElementAddValue(AddSupplierDefinedEpicObjects.DescriptionInput, epic.Description);
-            CommonActions.SelectDropDownItemByValue(AddSupplierDefinedEpicObjects.CapabilityInput, epic.Capabilities.First().Id.ToString());
             CommonActions.ClickRadioButtonWithValue(epic.IsActive.ToString());
 
             CommonActions.ClickSave();
@@ -112,7 +103,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
         {
             var nameText = TextGenerators.TextInputAddText(AddSupplierDefinedEpicObjects.NameInput, 500);
             var descriptionText = TextGenerators.TextInputAddText(AddSupplierDefinedEpicObjects.DescriptionInput, 1000);
-            var selectedCapabilityId = CommonActions.SelectRandomDropDownItem(AddSupplierDefinedEpicObjects.CapabilityInput);
             CommonActions.ClickRadioButtonWithText("Active");
 
             var expectedEpic = new Epic
@@ -127,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.Dashboard))
+                nameof(SupplierDefinedEpicsController.EditSupplierDefinedEpic))
                 .Should().BeTrue();
 
             using var context = GetEndToEndDbContext();
@@ -153,18 +143,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             NavigateToUrl(
                 typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.EditEpic),
+                nameof(SupplierDefinedEpicsController.EditSupplierDefinedEpicDetails),
                 parameters);
 
-            CommonActions.ElementIsDisplayed(EditSupplierDefinedEpicObjects.RelatedItemsTable).Should().BeTrue();
-            CommonActions.ElementExists(EditSupplierDefinedEpicObjects.RelatedItemsInset).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(EditSupplierDefinedEpicDetailsObjects.RelatedItemsTable).Should().BeTrue();
+            CommonActions.ElementExists(EditSupplierDefinedEpicDetailsObjects.RelatedItemsInset).Should().BeFalse();
         }
 
         [Fact]
         public void EditEpic_WithNoReferencedItems_DisplaysInsetText_HiddenTable()
         {
-            CommonActions.ElementExists(EditSupplierDefinedEpicObjects.RelatedItemsTable).Should().BeFalse();
-            CommonActions.ElementIsDisplayed(EditSupplierDefinedEpicObjects.RelatedItemsInset).Should().BeTrue();
+            CommonActions.ElementExists(EditSupplierDefinedEpicDetailsObjects.RelatedItemsTable).Should().BeFalse();
+            CommonActions.ElementIsDisplayed(EditSupplierDefinedEpicDetailsObjects.RelatedItemsInset).Should().BeTrue();
         }
 
         [Fact]
@@ -178,7 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.Dashboard))
+                nameof(SupplierDefinedEpicsController.EditSupplierDefinedEpic))
                 .Should().BeTrue();
 
             var epic = context.Epics.Find(EpicId);
@@ -195,7 +185,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             NavigateToUrl(
                 typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.EditEpic),
+                nameof(SupplierDefinedEpicsController.EditSupplierDefinedEpicDetails),
                 parameters);
 
             CommonActions.ClickRadioButtonWithText("Inactive");
@@ -204,14 +194,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.EditEpic))
+                nameof(SupplierDefinedEpicsController.EditSupplierDefinedEpicDetails))
                 .Should()
                 .BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
             CommonActions.ElementShowingCorrectErrorMessage(
-                EditSupplierDefinedEpicObjects.StatusInputError,
+                EditSupplierDefinedEpicDetailsObjects.StatusInputError,
                 "This supplier defined Epic cannot be set to inactive as it is referenced by another solution or service");
         }
 
@@ -225,7 +215,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             NavigateToUrl(
                 typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.EditEpic),
+                nameof(SupplierDefinedEpicsController.EditSupplierDefinedEpicDetails),
                 parameters);
 
             CommonActions.ClickRadioButtonWithText("Active");
@@ -252,7 +242,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             NavigateToUrl(
                 typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.EditEpic),
+                nameof(SupplierDefinedEpicsController.EditSupplierDefinedEpicDetails),
                 parameters);
 
             CommonActions.ClickLinkElement(By.XPath($"//tr[td//text()[contains(., '{epic.CatalogueItem.Name}')]]/td[3]/a"));
@@ -279,7 +269,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
 
             NavigateToUrl(
                 typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.EditEpic),
+                nameof(SupplierDefinedEpicsController.EditSupplierDefinedEpicDetails),
                 parameters);
 
             CommonActions.ClickLinkElement(By.XPath($"//tr[td//text()[contains(., '{epic.CatalogueItem.Name}')]]/td[3]/a"));
@@ -288,78 +278,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.SupplierDefinedEpics
                 typeof(AdditionalServicesController),
                 nameof(AdditionalServicesController.EditCapabilities))
                 .Should().BeTrue();
-        }
-
-        [Fact]
-        public void EditEpic_Inactive_DeleteLinkVisible()
-        {
-            using var context = GetEndToEndDbContext();
-            context.Epics.First(p => p.Id == "S00003").IsActive = false;
-            context.SaveChanges();
-
-            var parameters = new Dictionary<string, string>
-            {
-                { nameof(EpicId), "S00003" },
-            };
-
-            NavigateToUrl(
-                typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.EditEpic),
-                parameters);
-
-            CommonActions.ElementIsDisplayed(EditSupplierDefinedEpicObjects.DeleteLink)
-                .Should()
-                .BeTrue();
-        }
-
-        [Fact]
-        public void EditEpic_Active_DeleteLinkNotVisible()
-        {
-            CommonActions
-                .ElementIsDisplayed(EditSupplierDefinedEpicObjects.DeleteLink)
-                .Should()
-                .BeFalse();
-        }
-
-        [Fact]
-        public void EditEpic_ActiveWithReferences_DeleteLinkNotVisible()
-        {
-            var parameters = new Dictionary<string, string>
-            {
-                { nameof(EpicId), "S00002" },
-            };
-
-            NavigateToUrl(
-                typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.EditEpic),
-                parameters);
-
-            CommonActions
-                .ElementIsDisplayed(EditSupplierDefinedEpicObjects.DeleteLink)
-                .Should()
-                .BeFalse();
-        }
-
-        [Fact]
-        public void EditEpic_DeleteLink_Navigates()
-        {
-            var parameters = new Dictionary<string, string>
-            {
-                { nameof(EpicId), "S00003" },
-            };
-
-            NavigateToUrl(
-                typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.EditEpic),
-                parameters);
-
-            CommonActions.ClickLinkElement(EditSupplierDefinedEpicObjects.DeleteLink);
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(SupplierDefinedEpicsController),
-                nameof(SupplierDefinedEpicsController.DeleteEpic))
-                .Should()
-                .BeTrue();
         }
     }
 }

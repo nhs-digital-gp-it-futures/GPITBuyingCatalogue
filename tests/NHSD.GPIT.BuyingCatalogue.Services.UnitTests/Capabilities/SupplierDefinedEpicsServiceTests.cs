@@ -107,6 +107,36 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
 
         [Theory]
         [InMemoryDbAutoData]
+        public static async Task EpicExistsWithName_ReturnsTrue(
+            string epicId,
+            Epic epic,
+            [Frozen] BuyingCatalogueDbContext context,
+            SupplierDefinedEpicsService service)
+        {
+            epic.SupplierDefined = true;
+
+            context.Epics.Add(epic);
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var epicExists = await service.EpicWithNameExists(epicId, epic.Name);
+
+            epicExists.Should().BeTrue();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task EpicExistsWithName_ReturnsFalse(
+            Epic epic,
+            SupplierDefinedEpicsService service)
+        {
+            var epicExists = await service.EpicWithNameExists(epic.Id, epic.Name);
+
+            epicExists.Should().BeFalse();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
         public static async Task EpicExists_NullId_DuplicateContent_ReturnsTrue(
             Epic epic,
             [Frozen] BuyingCatalogueDbContext context,
@@ -190,7 +220,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            addEpicModel.CapabilityId = capability.Id;
+            addEpicModel.CapabilityIds = new List<int>() { capability.Id };
 
             await service.AddSupplierDefinedEpic(addEpicModel);
             context.ChangeTracker.Clear();
@@ -225,8 +255,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            addFirstEpicModel.CapabilityId = capability.Id;
-            addSecondEpicModel.CapabilityId = capability.Id;
+            addFirstEpicModel.CapabilityIds = new List<int>(capability.Id);
+            addSecondEpicModel.CapabilityIds = new List<int>(capability.Id);
 
             await service.AddSupplierDefinedEpic(addFirstEpicModel);
             await service.AddSupplierDefinedEpic(addSecondEpicModel);
@@ -248,7 +278,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             SupplierDefinedEpicsService service)
         {
             capability.Epics = new List<Epic>();
-            addEpicModel.CapabilityId = capability.Id;
+            addEpicModel.CapabilityIds = new List<int>(capability.Id);
             epic.Id = "S00012";
             epic.SupplierDefined = true;
 
@@ -274,7 +304,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             SupplierDefinedEpicsService service)
         {
             capability.Epics = new List<Epic>();
-            addEpicModel.CapabilityId = capability.Id;
+            addEpicModel.CapabilityIds = new List<int>(capability.Id);
             epic.Id = "S020X01E01";
             epic.SupplierDefined = true;
 
@@ -301,7 +331,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             SupplierDefinedEpicsService service)
         {
             capability.Epics = new List<Epic>();
-            addEpicModel.CapabilityId = capability.Id;
+            addEpicModel.CapabilityIds = new List<int>(capability.Id);
 
             legacyEpic.Id = "S020X01E01";
             legacyEpic.SupplierDefined = true;
@@ -470,7 +500,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
             capability.Epics.Clear();
             capability.CapabilityEpics.Clear();
 
-            editEpicModel.CapabilityId = capability.Id;
+            editEpicModel.CapabilityIds = new List<int>(capability.Id);
             editEpicModel.Id = epic.Id;
             epic.SupplierDefined = true;
 
@@ -495,41 +525,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
                         .Excluding(m => m.LastUpdatedByUser)
                         .Excluding(m => m.CapabilityEpics)
                         .Excluding(m => m.Capabilities));
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
-        public static async Task DeleteSupplierDefinedEpic_ValidId_DeletesEpic(
-            Epic epic,
-            [Frozen] BuyingCatalogueDbContext context,
-            SupplierDefinedEpicsService service)
-        {
-            epic.SupplierDefined = true;
-
-            context.Epics.Add(epic);
-
-            await service.DeleteSupplierDefinedEpic(epic.Id);
-
-            context.Epics.Any(e => e.Id == epic.Id).Should().BeFalse();
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
-        public static async Task DeleteSupplierDefinedEpic_InvalidId_Returns(
-            string invalidEpicId,
-            Epic epic,
-            [Frozen] BuyingCatalogueDbContext context,
-            SupplierDefinedEpicsService service)
-        {
-            epic.SupplierDefined = true;
-
-            context.Epics.Add(epic);
-
-            var expectedCount = context.Epics.AsNoTracking().Count();
-
-            await service.DeleteSupplierDefinedEpic(invalidEpicId);
-
-            context.Epics.AsNoTracking().Count().Should().Be(expectedCount);
         }
 
         private static List<Epic> GetEpicsForSearchTerm(string searchTerm)
