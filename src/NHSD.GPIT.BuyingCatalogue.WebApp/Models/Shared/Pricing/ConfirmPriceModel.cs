@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Prices.Base;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Pricing.Base;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Prices
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Pricing
 {
     public class ConfirmPriceModel : PricingModel
     {
@@ -18,13 +20,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         {
         }
 
-        public ConfirmPriceModel(CatalogueItem catalogueItem, int priceId, OrderItem orderItem)
-            : base(catalogueItem, priceId, orderItem)
+        public ConfirmPriceModel(CatalogueItem catalogueItem, IPrice price, IPrice existingPrice)
+            : base(catalogueItem, price, existingPrice)
         {
         }
 
-        public ConfirmPriceModel(OrderItem orderItem)
-            : base(orderItem)
+        public ConfirmPriceModel(IPrice price, CatalogueItem catalogueItem)
+            : base(price, catalogueItem)
         {
         }
 
@@ -36,8 +38,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public RoutingSource? Source { get; set; }
 
-        public List<OrderPricingTierDto> AgreedPrices => Tiers?
+        public List<PricingTierDto> AgreedPrices => Tiers?
             .Select(x => x.AgreedPriceDto)
-            .ToList() ?? new List<OrderPricingTierDto>();
+            .ToList() ?? new List<PricingTierDto>();
     }
 }

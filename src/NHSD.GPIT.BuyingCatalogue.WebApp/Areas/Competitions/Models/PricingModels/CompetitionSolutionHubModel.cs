@@ -14,21 +14,32 @@ public class CompetitionSolutionHubModel : NavBaseModel
     }
 
     public CompetitionSolutionHubModel(
+        string internalOrgId,
         CompetitionSolution competitionSolution,
         ICollection<CompetitionRecipient> competitionRecipients)
     {
         SolutionId = competitionSolution.SolutionId;
         SolutionName = competitionSolution.Solution.CatalogueItem.Name;
 
-        var catalogueItems = competitionSolution.SolutionServices.Select(x => x.Service);
-
-        CatalogueItems = catalogueItems.Concat(new[] { competitionSolution.Solution.CatalogueItem })
-            .Select(
-                x => new CatalogueItemHubModel(
-                    x,
+        CatalogueItems = new[]
+            {
+                new CatalogueItemHubModel(
+                    competitionSolution.SolutionId,
+                    competitionSolution.Solution.CatalogueItem,
                     competitionRecipients.ToDictionary(
                         y => y.OdsOrganisation,
-                        y => y.GetRecipientQuantityForItem(x.Id)?.Quantity)))
+                        y => y.GetRecipientQuantityForItem(competitionSolution.SolutionId)?.Quantity),
+                    competitionSolution.Price)
+                { InternalOrgId = internalOrgId, CompetitionId = competitionSolution.CompetitionId, },
+            }.Union(
+                competitionSolution.SolutionServices.Select(
+                    x => new CatalogueItemHubModel(
+                        competitionSolution.SolutionId,
+                        x.Service,
+                        competitionRecipients.ToDictionary(
+                            y => y.OdsOrganisation,
+                            y => y.GetRecipientQuantityForItem(x.ServiceId)?.Quantity),
+                        x.Price) { InternalOrgId = internalOrgId, CompetitionId = competitionSolution.CompetitionId, }))
             .ToList();
     }
 

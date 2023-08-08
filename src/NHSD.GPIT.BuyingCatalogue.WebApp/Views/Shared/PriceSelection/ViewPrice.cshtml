@@ -1,5 +1,9 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Models
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Prices.ViewPriceModel
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSecondaryButton
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.SummaryList
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Pricing.ViewPriceModel
 @{
     ViewBag.Title = Model.Title;
 }
@@ -28,7 +32,7 @@
             <partial name="PriceDetails/_PriceDetailsComponent"
                      model="new PriceCalculationDetailsModel(Model.ItemType, Model.PriceType, Model.CalculationType)" />
         </div>
-        
+
         <vc:nhs-secondary-button type="Primary"
                                  text="Continue"
                                  url="@Model.OnwardLink"/>

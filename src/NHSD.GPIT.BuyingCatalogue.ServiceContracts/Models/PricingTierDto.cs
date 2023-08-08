@@ -1,6 +1,6 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
+﻿namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 {
-    public class OrderPricingTierDto
+    public class PricingTierDto
     {
         public int LowerRange { get; set; }
 

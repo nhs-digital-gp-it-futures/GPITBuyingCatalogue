@@ -1,8 +1,8 @@
 ﻿using System;
 using FluentValidation;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Prices;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Pricing;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.SolutionSelection.Prices
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Pricing
 {
     public class PricingTierModelValidator : AbstractValidator<PricingTierModel>
     {

@@ -15,6 +15,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -235,11 +236,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Setup(x => x.GetRoute(RoutingPoint.ConfirmPrice, order, It.IsAny<RouteValues>()))
                 .Returns(new RoutingResult { ActionName = Constants.Actions.SelectQuantity, ControllerName = Constants.Controllers.Quantity });
 
-            List<OrderPricingTierDto> actual = null;
+            List<PricingTierDto> actual = null;
 
             mockOrderPriceService
-                .Setup(x => x.UpsertPrice(order.Id, price, It.IsAny<List<OrderPricingTierDto>>()))
-                .Callback<int, CataloguePrice, List<OrderPricingTierDto>>((_, _, x) => actual = x)
+                .Setup(x => x.UpsertPrice(order.Id, price, It.IsAny<List<PricingTierDto>>()))
+                .Callback<int, CataloguePrice, List<PricingTierDto>>((_, _, x) => actual = x)
                 .Returns(Task.CompletedTask);
 
             var model = new ConfirmPriceModel(catalogueItem, price.CataloguePriceId, null);
@@ -406,11 +407,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));
 
-            List<OrderPricingTierDto> actual = null;
+            List<PricingTierDto> actual = null;
 
             mockOrderPriceService
-                .Setup(x => x.UpdatePrice(order.Id, orderItem.CatalogueItemId, It.IsAny<List<OrderPricingTierDto>>()))
-                .Callback<int, CatalogueItemId, List<OrderPricingTierDto>>((_, _, x) => actual = x)
+                .Setup(x => x.UpdatePrice(order.Id, orderItem.CatalogueItemId, It.IsAny<List<PricingTierDto>>()))
+                .Callback<int, CatalogueItemId, List<PricingTierDto>>((_, _, x) => actual = x)
                 .Returns(Task.CompletedTask);
 
             var model = new ConfirmPriceModel(orderItem);

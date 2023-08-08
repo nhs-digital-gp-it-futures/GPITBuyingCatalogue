@@ -27,7 +27,11 @@ public class SolutionService
 
     public CatalogueItemId ServiceId { get; set; }
 
+    public int? CompetitionItemPriceId { get; set; }
+
     public CatalogueItem Service { get; set; }
+
+    public CompetitionCatalogueItemPrice Price { get; set; }
 
     public bool IsRequired { get; set; }
 }

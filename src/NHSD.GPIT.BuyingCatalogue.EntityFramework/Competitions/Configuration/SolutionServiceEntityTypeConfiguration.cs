@@ -37,5 +37,10 @@ public sealed class SolutionServiceEntityTypeConfiguration : IEntityTypeConfigur
             .HasForeignKey(x => x.ServiceId)
             .HasConstraintName("FK_SolutionServices_Service")
             .OnDelete(DeleteBehavior.NoAction);
+
+        builder.HasOne(x => x.Price)
+            .WithOne()
+            .HasForeignKey<SolutionService>(x => x.CompetitionItemPriceId)
+            .HasConstraintName("FK_SolutionServices_CompetitionItemPrice");
     }
 }

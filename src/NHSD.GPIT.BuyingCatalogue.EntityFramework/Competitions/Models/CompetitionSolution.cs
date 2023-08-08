@@ -23,11 +23,15 @@ public class CompetitionSolution
 
     public CatalogueItemId SolutionId { get; set; }
 
+    public int? CompetitionItemPriceId { get; set; }
+
     public bool IsShortlisted { get; set; }
 
     public string Justification { get; set; }
 
     public Solution Solution { get; set; }
+
+    public CompetitionCatalogueItemPrice Price { get; set; }
 
     public ICollection<SolutionService> SolutionServices { get; set; } = new HashSet<SolutionService>();
 

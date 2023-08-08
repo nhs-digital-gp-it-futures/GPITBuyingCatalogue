@@ -40,5 +40,10 @@ public sealed class CompetitionSolutionEntityTypeConfiguration : IEntityTypeConf
             .WithOne()
             .HasForeignKey(x => new { x.CompetitionId, x.SolutionId })
             .HasConstraintName("FK_SolutionScores_Solution");
+
+        builder.HasOne(x => x.Price)
+            .WithOne()
+            .HasForeignKey<CompetitionSolution>(x => x.CompetitionItemPriceId)
+            .HasConstraintName("FK_CompetitionSolutions_CompetitionItemPrice");
     }
 }

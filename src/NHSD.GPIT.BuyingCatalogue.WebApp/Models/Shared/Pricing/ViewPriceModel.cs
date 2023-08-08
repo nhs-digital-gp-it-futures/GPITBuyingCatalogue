@@ -1,20 +1,16 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Prices.Base;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Pricing.Base;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Prices
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Pricing
 {
     public class ViewPriceModel : PricingModel
     {
         public const string AdviceText = "This is the price you originally agreed with the supplier and it cannot be changed.";
 
-        public ViewPriceModel(CatalogueItem catalogueItem, int priceId, OrderItem orderItem)
-            : base(catalogueItem, priceId, orderItem)
-        {
-        }
-
-        public ViewPriceModel(OrderItem orderItem)
-            : base(orderItem)
+        public ViewPriceModel(IPrice price, CatalogueItem catalogueItem)
+            : base(price, catalogueItem)
         {
         }
 

@@ -31,6 +31,8 @@ public interface ICompetitionsService
 
     Task<Competition> GetCompetitionWithSolutions(string internalOrgId, int competitionId);
 
+    Task<Competition> GetCompetitionWithSolutionsHub(string internalOrgId, int competitionId);
+
     Task<CompetitionTaskListModel> GetCompetitionTaskList(string internalOrgId, int competitionId);
 
     Task AddCompetitionSolutions(string internalOrgId, int competitionId, IEnumerable<CompetitionSolution> competitionSolutions);

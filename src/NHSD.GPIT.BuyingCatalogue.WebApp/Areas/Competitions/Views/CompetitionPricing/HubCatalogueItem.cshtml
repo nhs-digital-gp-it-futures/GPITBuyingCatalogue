@@ -1,4 +1,22 @@
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing
 @model CatalogueItemHubModel
+
+@{
+    const RoutingSource source = RoutingSource.TaskList;
+
+    var priceEditUrl = Model.CatalogueItemType is CatalogueItemType.Solution
+        ? Url.Action(nameof(CompetitionPricingController.SelectPrice), typeof(CompetitionPricingController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, solutionId = Model.SolutionId })
+        : Url.Action(nameof(CompetitionPricingController.SelectPrice), typeof(CompetitionPricingController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, solutionId = Model.SolutionId, serviceId = Model.CatalogueItemId });
+
+    var priceConfirmUrl = Model.CatalogueItemType is CatalogueItemType.Solution
+        ? Url.Action(nameof(CompetitionPricingController.ConfirmPrice), typeof(CompetitionPricingController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, Model.PriceId, solutionId = Model.SolutionId, source })
+        : Url.Action(nameof(CompetitionPricingController.ConfirmPrice), typeof(CompetitionPricingController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, Model.PriceId, solutionId = Model.SolutionId, serviceId = Model.CatalogueItemId, source });
+
+    var priceUrl = Model.NumberOfCataloguePrices > 1
+            ? priceEditUrl
+            : priceConfirmUrl;
+}
 
 <h3>@Model.CatalogueItemName</h3>
 
@@ -13,7 +31,7 @@
             <nhs-tag status-enum="@Model.PriceProgress"></nhs-tag>
         </nhs-table-cell>
         <nhs-table-cell>
-            <a href="#">Edit</a>
+            <a href="@priceUrl">Edit</a>
         </nhs-table-cell>
     </nhs-table-row-container>
 

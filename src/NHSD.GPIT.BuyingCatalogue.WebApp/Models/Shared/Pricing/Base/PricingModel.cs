@@ -3,10 +3,9 @@ using System.Globalization;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Prices.Base
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Pricing.Base
 {
     public abstract class PricingModel : NavBaseModel
     {
@@ -17,44 +16,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         {
         }
 
-        protected PricingModel(CatalogueItem item, int priceId, OrderItem orderItem)
+        protected PricingModel(CatalogueItem item, IPrice price, IPrice existingPrice)
         {
             if (item == null)
             {
                 throw new ArgumentNullException(nameof(item));
             }
-
-            var price = item.CataloguePrices.First(x => x.CataloguePriceId == priceId);
-
-            var existingPrice = orderItem?.OrderItemPrice?.CataloguePriceId == priceId
-                ? orderItem.OrderItemPrice
-                : null;
 
             Tiers = GetTiers(price, existingPrice);
             PriceType = price.CataloguePriceType;
             CalculationType = price.CataloguePriceCalculationType;
             Basis = price.ToPriceUnitString();
-            NumberOfTiers = price.CataloguePriceTiers.Count;
+            NumberOfTiers = price.PriceTiers.Count;
             ItemName = item.Name;
             ItemType = item.CatalogueItemType;
         }
 
-        protected PricingModel(OrderItem item)
+        protected PricingModel(IPrice price, CatalogueItem catalogueItem)
         {
-            if (item == null)
-            {
-                throw new ArgumentNullException(nameof(item));
-            }
-
-            var price = item.OrderItemPrice;
-
             Tiers = GetTiers(price);
             PriceType = price.CataloguePriceType;
             CalculationType = price.CataloguePriceCalculationType;
             Basis = price.ToPriceUnitString();
-            NumberOfTiers = price.OrderItemPriceTiers.Count;
-            ItemName = item.CatalogueItem.Name;
-            ItemType = item.CatalogueItem.CatalogueItemType;
+            NumberOfTiers = price.PriceTiers.Count;
+            ItemName = catalogueItem.Name;
+            ItemType = catalogueItem.CatalogueItemType;
         }
 
         public override string Title => string.Format(TitleText, ItemType.Name());
@@ -75,41 +61,41 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public string Basis { get; set; }
 
-        private static PricingTierModel[] GetTiers(CataloguePrice price, OrderItemPrice existingPrice)
+        private static PricingTierModel[] GetTiers(IPrice price, IPrice existingPrice)
         {
-            return price.CataloguePriceTiers
+            return price.PriceTiers
                 .OrderBy(x => x.LowerRange)
                 .Select(x => new PricingTierModel
                 {
                     Id = x.Id,
                     ListPrice = x.Price,
                     AgreedPrice = AgreedPrice(x, existingPrice),
-                    Description = x.GetRangeDescription(),
+                    Description = price.GetRangeDescription(x),
                     LowerRange = x.LowerRange,
                     UpperRange = x.UpperRange,
                 })
                 .ToArray();
         }
 
-        private static PricingTierModel[] GetTiers(OrderItemPrice price)
+        private static PricingTierModel[] GetTiers(IPrice price)
         {
-            return price.OrderItemPriceTiers
+            return price.PriceTiers
                 .OrderBy(x => x.LowerRange)
                 .Select(x => new PricingTierModel
                 {
                     Id = x.Id,
-                    ListPrice = x.ListPrice,
+                    ListPrice = x.Price,
                     AgreedPrice = x.Price.ToString(FourDecimalPlaces, CultureInfo.InvariantCulture),
-                    Description = x.GetRangeDescription(),
+                    Description = price.GetRangeDescription(x),
                     LowerRange = x.LowerRange,
                     UpperRange = x.UpperRange,
                 })
                 .ToArray();
         }
 
-        private static string AgreedPrice(CataloguePriceTier tier, OrderItemPrice existingPrice)
+        private static string AgreedPrice(IPriceTier tier, IPrice existingPrice)
         {
-            var existingTier = existingPrice?.OrderItemPriceTiers?
+            var existingTier = existingPrice?.PriceTiers?
                 .FirstOrDefault(x => x.LowerRange == tier.LowerRange && x.UpperRange == tier.UpperRange);
 
             return existingTier == null

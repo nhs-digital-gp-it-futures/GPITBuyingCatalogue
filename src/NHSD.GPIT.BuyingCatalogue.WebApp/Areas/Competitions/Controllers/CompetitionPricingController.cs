@@ -6,7 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.PricingModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Pricing;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 
@@ -17,11 +20,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 public class CompetitionPricingController : Controller
 {
     private readonly ICompetitionsService competitionsService;
+    private readonly ICompetitionsPriceService competitionsPriceService;
+    private readonly IListPriceService listPriceService;
 
     public CompetitionPricingController(
-        ICompetitionsService competitionsService)
+        ICompetitionsService competitionsService,
+        ICompetitionsPriceService competitionsPriceService,
+        IListPriceService listPriceService)
     {
         this.competitionsService = competitionsService ?? throw new ArgumentNullException(nameof(competitionsService));
+        this.competitionsPriceService = competitionsPriceService ?? throw new ArgumentNullException(nameof(competitionsPriceService));
+        this.listPriceService = listPriceService ?? throw new ArgumentNullException(nameof(listPriceService));
     }
 
     [HttpGet]
@@ -29,7 +38,7 @@ public class CompetitionPricingController : Controller
         string internalOrgId,
         int competitionId)
     {
-        var competition = await competitionsService.GetCompetitionWithSolutions(internalOrgId, competitionId);
+        var competition = await competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competitionId);
 
         var model = new PricingDashboardModel(competition)
         {
@@ -43,20 +52,149 @@ public class CompetitionPricingController : Controller
         return View(model);
     }
 
-    [HttpGet("{catalogueItemId}")]
+    [HttpGet("{solutionId}")]
     public async Task<IActionResult> Hub(
         string internalOrgId,
         int competitionId,
-        CatalogueItemId catalogueItemId)
+        CatalogueItemId solutionId)
     {
-        var competition = await competitionsService.GetCompetitionWithSolutions(internalOrgId, competitionId);
-        var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == catalogueItemId);
+        var competition = await competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competitionId);
+        var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
 
-        var model = new CompetitionSolutionHubModel(solution, competition.CompetitionRecipients)
+        var model = new CompetitionSolutionHubModel(internalOrgId, solution, competition.CompetitionRecipients)
         {
             BackLink = Url.Action(nameof(Index), new { internalOrgId, competitionId }),
         };
 
         return View(model);
+    }
+
+    [HttpGet("{solutionId}/select-price")]
+    public async Task<IActionResult> SelectPrice(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId,
+        CatalogueItemId? serviceId = null,
+        int? selectedPriceId = null)
+    {
+        var competition = await competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competitionId);
+        var solution = competition.CompetitionSolutions.First(x => x.SolutionId == solutionId);
+
+        var existingPrice = serviceId is not null
+            ? solution.SolutionServices.FirstOrDefault(x => x.ServiceId == serviceId)?.Price
+            : solution.Price;
+
+        var catalogueItem = await listPriceService.GetCatalogueItemWithPublishedListPrices(serviceId ?? solutionId);
+
+        var model = new SelectPriceModel(catalogueItem)
+        {
+            BackLink = Url.Action(nameof(Hub), new { internalOrgId, competitionId, solutionId }),
+            SelectedPriceId = selectedPriceId ?? existingPrice?.CataloguePriceId,
+        };
+
+        return View("PriceSelection/SelectPrice", model);
+    }
+
+    [HttpPost("{solutionId}/select-price")]
+    public async Task<IActionResult> SelectPrice(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId,
+        SelectPriceModel model,
+        CatalogueItemId? serviceId = null)
+    {
+        if (!ModelState.IsValid)
+        {
+            var solutionWithPrices = await listPriceService.GetCatalogueItemWithPublishedListPrices(serviceId ?? solutionId);
+            model.Prices = solutionWithPrices.CataloguePrices.OrderBy(cp => cp.CataloguePriceType).ToList();
+            return View("PriceSelection/SelectPrice", model);
+        }
+
+        var priceId = model.SelectedPriceId!.Value;
+
+        return RedirectToAction(
+            nameof(ConfirmPrice),
+            new
+            {
+                internalOrgId, competitionId, solutionId, priceId, serviceId,
+            });
+    }
+
+    [HttpGet("{solutionId}/select-price/{priceId}/confirm")]
+    public async Task<IActionResult> ConfirmPrice(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId,
+        int priceId,
+        CatalogueItemId? serviceId = null,
+        RoutingSource? source = null)
+    {
+        var competition = await competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competitionId);
+        var solution = competition.CompetitionSolutions.First(x => x.SolutionId == solutionId);
+
+        var existingPrice = serviceId is not null
+            ? solution.SolutionServices.FirstOrDefault(x => x.ServiceId == serviceId)?.Price
+            : solution.Price;
+
+        var catalogueItem = await listPriceService.GetCatalogueItemWithPublishedListPrices(serviceId ?? solutionId);
+        var price = catalogueItem.CataloguePrices.First(x => x.CataloguePriceId == priceId);
+
+        var model = new ConfirmPriceModel(catalogueItem, price, existingPrice)
+        {
+            BackLink = source is RoutingSource.TaskList
+                ? Url.Action(nameof(Hub), new { internalOrgId, competitionId, solutionId })
+                : Url.Action(
+                    nameof(SelectPrice),
+                    new
+                    {
+                        internalOrgId,
+                        competitionId,
+                        solutionId,
+                        serviceId,
+                        selectedPriceId = priceId,
+                    }),
+        };
+
+        return View("PriceSelection/ConfirmPrice", model);
+    }
+
+    [HttpPost("{solutionId}/select-price/{priceId}/confirm")]
+    public async Task<IActionResult> ConfirmPrice(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId,
+        int priceId,
+        ConfirmPriceModel model,
+        CatalogueItemId? serviceId = null)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View("PriceSelection/ConfirmPrice", model);
+        }
+
+        var prices = await listPriceService.GetCatalogueItemWithPublishedListPrices(serviceId ?? solutionId);
+        var price = prices.CataloguePrices.First(x => x.CataloguePriceId == priceId);
+
+        if (serviceId is not null)
+        {
+            await competitionsPriceService.SetServicePrice(
+                internalOrgId,
+                competitionId,
+                solutionId,
+                serviceId.GetValueOrDefault(),
+                price,
+                model.AgreedPrices);
+        }
+        else
+        {
+            await competitionsPriceService.SetSolutionPrice(
+                internalOrgId,
+                competitionId,
+                solutionId,
+                price,
+                model.AgreedPrices);
+        }
+
+        return RedirectToAction(nameof(Hub), new { internalOrgId, competitionId, solutionId });
     }
 }
