@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
@@ -650,6 +651,31 @@ public static class CompetitionsServiceTests
         var updatedCompetition = await context.Competitions.FirstOrDefaultAsync(x => x.Id == competition.Id);
 
         updatedCompetition.ContractLength.Should().Be(contractLength);
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task SetCompetitionCriteria(
+        Organisation organisation,
+        Competition competition,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        competition.OrganisationId = organisation.Id;
+        competition.IncludesNonPrice = false;
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        await service.SetCompetitionCriteria(organisation.Id, competition.Id, true);
+
+        var updatedCompetition = await context.Competitions
+            .FirstOrDefaultAsync(x => x.Id == competition.Id);
+
+        updatedCompetition.IncludesNonPrice.Should().BeTrue();
     }
 
     [Theory]
