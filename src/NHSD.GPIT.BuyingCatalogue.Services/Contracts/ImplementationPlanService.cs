@@ -23,7 +23,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             return await dbContext.ImplementationPlans
                 .AsNoTracking()
                 .Include(x => x.Milestones.OrderBy(m => m.Order))
-                .ThenInclude(x => x.AcceptanceCriteria)
                 .FirstOrDefaultAsync(x => x.IsDefault == true);
         }
 

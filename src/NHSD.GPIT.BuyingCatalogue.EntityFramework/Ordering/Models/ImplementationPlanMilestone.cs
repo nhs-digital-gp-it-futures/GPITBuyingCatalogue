@@ -6,11 +6,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
     public class ImplementationPlanMilestone : IAudited
     {
-        public ImplementationPlanMilestone()
-        {
-            AcceptanceCriteria = new List<ImplementationPlanAcceptanceCriteria>();
-        }
-
         public int Id { get; set; }
 
         public int? PlanId { get; set; }
@@ -32,7 +27,5 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public ContractBillingItem ContractBillingItem { get; set; }
 
         public AspNetUser LastUpdatedByUser { get; set; }
-
-        public ICollection<ImplementationPlanAcceptanceCriteria> AcceptanceCriteria { get; set; }
     }
 }

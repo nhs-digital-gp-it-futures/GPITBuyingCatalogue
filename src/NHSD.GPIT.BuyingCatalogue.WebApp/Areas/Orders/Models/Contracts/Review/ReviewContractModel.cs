@@ -37,15 +37,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Review
                 ? "Review your order before completing it. Once the order is completed, you'll be unable to make changes."
                 : "This is what's been added to your order so far. You must complete all mandatory steps before you can confirm your order.",
         };
-
-        public string BillingPaymentTrigger => DefaultPlan?.Milestones?.LastOrDefault()?.Title ?? "Bill on invoice";
-
-        public bool HasBespokeBilling => Order?.ContractFlags?.UseDefaultBilling == false;
-
-        public bool HasSpecificRequirements => Order?.ContractFlags?.HasSpecificRequirements == true;
-
-        public bool UseDefaultDataProcessing => Order?.ContractFlags?.UseDefaultDataProcessing == true;
-
-        public bool UseDefaultImplementationPlan => Order?.ContractFlags?.UseDefaultImplementationPlan == true;
     }
 }
