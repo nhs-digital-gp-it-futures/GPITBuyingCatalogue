@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
@@ -229,7 +230,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         }
 
         [Fact]
-        public void DefaultImplementationPlan_AllSectionsDisplayed()
+        public async Task DefaultImplementationPlan_AllSectionsDisplayed()
         {
             var parameters = new Dictionary<string, string>
             {
@@ -242,7 +243,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 parameters);
 
             var context = GetEndToEndDbContext();
-            var contract = context.GetContract(OrderId);
+            var contract = await context.GetContract(OrderId);
 
             contract.ImplementationPlan = new ImplementationPlan();
 
