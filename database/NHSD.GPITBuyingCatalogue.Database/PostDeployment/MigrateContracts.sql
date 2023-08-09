@@ -22,8 +22,10 @@ IF NOT EXISTS (SELECT 1 FROM ordering.[ContractBilling])
     OR (cf.UseDefaultBilling = 0 AND o.Completed is not NULL)
 
     UPDATE ordering.[ContractBilling] SET [HasConfirmedRequirements] = 1
-    FROM ordering.ContractFlags cf
-    inner join ordering.[Orders] o on cf.OrderId = o.Id
+    FROM ordering.ContractBilling cb
+	inner join ordering.[Contracts] c on cb.ContractId = c.Id
+	inner join ordering.[ContractFlags] cf on c.OrderId = cf.OrderId
+    inner join ordering.[Orders] o on cf.OrderId = o.Id	
     WHERE cf.HasSpecificRequirements = 0
-    OR (cf.HasSpecificRequirements = 1 AND o.Completed is not NULL) 
+    OR (cf.HasSpecificRequirements = 1 AND o.Completed is not NULL)
 GO
