@@ -153,6 +153,7 @@
     <Folder Include="PostDeployment\ProdLikeData\" />
     <Folder Include="PostDeployment\TestData\" />
     <Folder Include="PostDeployment\TestData\Competitions\" />
+    <Folder Include="PostDeployment\TestData\Solutions\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.SqlServer.Dacpacs.Azure.Master" Version="160.0.0">

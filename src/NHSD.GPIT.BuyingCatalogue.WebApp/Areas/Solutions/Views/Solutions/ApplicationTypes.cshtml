@@ -2,15 +2,20 @@
 @{
 }
 <article>
-    <p>
-        <strong>This Catalogue Solution is supported by the following application types:</strong>
-    </p>
+    <partial name="_solutionSummary" model="Model" />
+    <p>This Catalogue Solution is supported by the following client application types:</p>
 
     @Html.DisplayFor(m => m.ApplicationTypes)
 
-    @Html.DisplayFor(m => m.BrowserBasedApplication)
+    <nhs-expander label-text="Browser-based application" open="false">
+        @Html.DisplayFor(m => m.BrowserBasedApplication)
+    </nhs-expander>
 
-    @Html.DisplayFor(m => m.NativeDesktopApplication)
+    <nhs-expander label-text="Native desktop application" open="false">
+        @Html.DisplayFor(m => m.NativeDesktopApplication)
+    </nhs-expander>
 
-    @Html.DisplayFor(m => m.NativeMobileApplication)
+    <nhs-expander label-text="Native mobile or tablet application" open="false">
+        @Html.DisplayFor(m => m.NativeMobileApplication)
+    </nhs-expander>
 </article>

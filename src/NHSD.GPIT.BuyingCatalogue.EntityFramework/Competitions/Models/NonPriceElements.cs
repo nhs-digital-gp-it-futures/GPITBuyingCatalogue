@@ -23,6 +23,8 @@ public class NonPriceElements : IAudited
 
     public ServiceLevelCriteria ServiceLevel { get; set; }
 
+    public NonPriceWeights NonPriceWeights { get; set; }
+
     public ICollection<InteroperabilityCriteria> Interoperability { get; set; } =
         new HashSet<InteroperabilityCriteria>();
 }

@@ -37,6 +37,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public string IntegrationsUrl { get; set; }
 
-        public override int Index => 7;
+        public override int Index => 8;
     }
 }

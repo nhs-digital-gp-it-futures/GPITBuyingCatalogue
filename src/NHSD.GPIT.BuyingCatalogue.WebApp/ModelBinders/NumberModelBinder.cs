@@ -18,11 +18,15 @@ public class NumberModelBinder : IModelBinder
 
         if (!int.TryParse(value.FirstValue, out var parsedValue))
         {
-            var description = ((DefaultModelMetadata)bindingContext.ModelMetadata).Attributes.Attributes
+            var descriptionAttribute = ((DefaultModelMetadata)bindingContext.ModelMetadata).Attributes.Attributes
                 .OfType<DescriptionAttribute>()
                 .FirstOrDefault();
 
-            bindingContext.ModelState.AddModelError(bindingContext.ModelName, $"{description?.Description} must be a whole number");
+            var errorDescription = descriptionAttribute != null
+                ? descriptionAttribute.Description
+                : bindingContext.ModelMetadata.PropertyName;
+
+            bindingContext.ModelState.AddModelError(bindingContext.ModelName, $"{errorDescription} must be a whole number");
             bindingContext.Result = ModelBindingResult.Failed();
 
             return Task.CompletedTask;

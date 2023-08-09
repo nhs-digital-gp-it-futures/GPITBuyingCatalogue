@@ -20,6 +20,8 @@ public sealed class CompetitionSolutionEntityTypeConfiguration : IEntityTypeConf
             .IsRequired()
             .HasDefaultValue(false);
 
+        builder.HasQueryFilter(x => x.IsShortlisted);
+
         builder.Property(x => x.Justification)
             .HasMaxLength(1000);
 
@@ -33,5 +35,10 @@ public sealed class CompetitionSolutionEntityTypeConfiguration : IEntityTypeConf
             .WithMany()
             .HasForeignKey(x => x.SolutionId)
             .HasConstraintName("FK_CompetitionSolutions_Solution");
+
+        builder.HasMany(x => x.Scores)
+            .WithOne()
+            .HasForeignKey(x => new { x.CompetitionId, x.SolutionId })
+            .HasConstraintName("FK_SolutionScores_Solution");
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
@@ -28,5 +29,11 @@ public class CompetitionSolution
 
     public Solution Solution { get; set; }
 
-    public ICollection<RequiredService> RequiredServices { get; set; }
+    public ICollection<RequiredService> RequiredServices { get; set; } = new HashSet<RequiredService>();
+
+    public ICollection<SolutionScore> Scores { get; set; } = new HashSet<SolutionScore>();
+
+    public bool HasScoreType(ScoreType type) => Scores.Any(x => x.ScoreType == type);
+
+    public SolutionScore GetScoreByType(ScoreType type) => Scores?.FirstOrDefault(x => x.ScoreType == type);
 }

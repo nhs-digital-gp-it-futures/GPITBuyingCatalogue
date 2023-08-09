@@ -119,7 +119,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
             return new DescriptionListViewModel
             {
-                Heading = "Browser-based application",
                 Items = items,
             };
         }
@@ -215,7 +214,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
             return new DescriptionListViewModel
             {
-                Heading = "Desktop application",
                 Items = items,
             };
         }
@@ -309,7 +307,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
             return new DescriptionListViewModel
             {
-                Heading = "Mobile or tablet application",
                 Items = items,
             };
         }
@@ -342,7 +339,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
             return new DescriptionListViewModel
             {
-                Heading = "Application type",
                 Items = items,
             };
         }

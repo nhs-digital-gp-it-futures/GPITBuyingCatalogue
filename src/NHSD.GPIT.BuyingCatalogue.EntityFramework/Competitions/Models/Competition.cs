@@ -31,6 +31,8 @@ public class Competition
 
     public DateTime? ShortlistAccepted { get; set; }
 
+    public bool HasReviewedCriteria { get; set; }
+
     public int? LastUpdatedBy { get; set; }
 
     public bool IsDeleted { get; set; }

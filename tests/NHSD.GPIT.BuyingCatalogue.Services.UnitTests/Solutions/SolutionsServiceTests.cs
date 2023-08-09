@@ -41,6 +41,110 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
         [Theory]
         [InMemoryDbAutoData]
+        public static async Task GetSolutionWithCapabilities_Valid_Returns(
+            Solution solution,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            SolutionsService service)
+        {
+            dbContext.CatalogueItems.Add(solution.CatalogueItem);
+            dbContext.SaveChanges();
+
+            var result = await service.GetSolutionWithCapabilities(solution.CatalogueItemId);
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetSolutionWithCapabilities_Invalid_ReturnsNull(
+            Solution solution,
+            SolutionsService service)
+        {
+            var result = await service.GetSolutionWithCapabilities(solution.CatalogueItemId);
+
+            result.Should().BeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetSolutionWithServiceLevelAgreements_Valid_Returns(
+            Solution solution,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            SolutionsService service)
+        {
+            dbContext.CatalogueItems.Add(solution.CatalogueItem);
+            dbContext.SaveChanges();
+
+            var result = await service.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId);
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetSolutionWithServiceLevelAgreements_Invalid_ReturnsNull(
+            Solution solution,
+            SolutionsService service)
+        {
+            var result = await service.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId);
+
+            result.Should().BeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetSolutionWithCataloguePrice_Valid_Returns(
+            Solution solution,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            SolutionsService service)
+        {
+            dbContext.CatalogueItems.Add(solution.CatalogueItem);
+            dbContext.SaveChanges();
+
+            var result = await service.GetSolutionWithCataloguePrice(solution.CatalogueItemId);
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetSolutionWithCataloguePrice_Invalid_ReturnsNull(
+            Solution solution,
+            SolutionsService service)
+        {
+            var result = await service.GetSolutionWithCataloguePrice(solution.CatalogueItemId);
+
+            result.Should().BeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetSolutionWithSupplierDetails_Valid_Returns(
+            Solution solution,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            SolutionsService service)
+        {
+            dbContext.CatalogueItems.Add(solution.CatalogueItem);
+            dbContext.SaveChanges();
+
+            var result = await service.GetSolutionWithSupplierDetails(solution.CatalogueItemId);
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task GetSolutionWithSupplierDetails_Invalid_ReturnsNull(
+            Solution solution,
+            SolutionsService service)
+        {
+            var result = await service.GetSolutionWithSupplierDetails(solution.CatalogueItemId);
+
+            result.Should().BeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
         public static async Task GetSolutionLoadingStatuses_With_Null_ApplicationType_Should_be_Status_NotStarted(
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution,

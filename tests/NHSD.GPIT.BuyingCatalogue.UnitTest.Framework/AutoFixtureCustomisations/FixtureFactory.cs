@@ -60,6 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
             new CompetitionCustomization(),
             new CompetitionSolutionCustomization(),
             new RequiredServiceCustomization(),
+            new NonPriceElementsCustomization(),
             new OdsOrganisationCustomization(),
             new OrganisationRoleCustomization(),
             new OrganisationRelationshipCustomization(),

@@ -1,4 +1,5 @@
 ﻿using System.Text.Encodings.Web;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -31,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
         [HtmlAttributeName(UrlName)]
         public string Url { get; set; }
 
-        public override void Process(TagHelperContext context, TagHelperOutput output)
+        public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = TagHelperConstants.Div;
             output.TagMode = TagMode.StartTagAndEndTag;
@@ -43,10 +44,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
                 output.AddClass(CardClickableClass, HtmlEncoder.Default);
             }
 
-            output.Content.AppendHtml(BuildContent());
+            var content = await BuildContentAsync(output);
+            output.Content.AppendHtml(content);
         }
 
-        private TagBuilder BuildContent()
+        private async Task<TagBuilder> BuildContentAsync(TagHelperOutput output)
         {
             var content = new TagBuilder(TagHelperConstants.Div);
 
@@ -54,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
 
             content.InnerHtml
                 .AppendHtml(BuildHeading())
-                .AppendHtml(BuildCardText());
+                .AppendHtml(await BuildCardTextAsync(output));
 
             return content;
         }
@@ -89,12 +91,19 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
             return link;
         }
 
-        private TagBuilder BuildCardText()
+        private async Task<TagBuilder> BuildCardTextAsync(TagHelperOutput output)
         {
             var cardText = new TagBuilder(TagHelperConstants.Paragraph);
-
             cardText.AddCssClass(CardDescriptionClass);
-            cardText.InnerHtml.Append(Text);
+
+            if (!string.IsNullOrWhiteSpace(Text))
+            {
+                cardText.InnerHtml.Append(Text);
+                return cardText;
+            }
+
+            var childContent = await output.GetChildContentAsync();
+            cardText.InnerHtml.AppendHtml(childContent);
 
             return cardText;
         }
