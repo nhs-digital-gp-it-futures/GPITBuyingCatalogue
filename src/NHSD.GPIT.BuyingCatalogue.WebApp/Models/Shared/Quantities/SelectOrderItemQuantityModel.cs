@@ -1,11 +1,9 @@
-﻿using System;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Quantity
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities
 {
     public class SelectOrderItemQuantityModel : NavBaseModel
     {
@@ -17,19 +15,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         {
         }
 
-        public SelectOrderItemQuantityModel(OrderItem orderItem)
+        public SelectOrderItemQuantityModel(
+            CatalogueItem catalogueItem,
+            IPrice price,
+            int? quantity)
         {
-            if (orderItem == null)
-            {
-                throw new ArgumentNullException(nameof(orderItem));
-            }
-
-            ItemName = orderItem.CatalogueItem.Name;
-            ItemType = orderItem.CatalogueItem.CatalogueItemType.Name();
-            Quantity = orderItem.Quantity.HasValue ? $"{orderItem.Quantity}" : string.Empty;
-            QuantityDescription = orderItem.OrderItemPrice.RangeDescription;
-            ProvisioningType = orderItem.OrderItemPrice.ProvisioningType;
-            BillingPeriod = orderItem.OrderItemPrice.BillingPeriod;
+            ItemName = catalogueItem.Name;
+            ItemType = catalogueItem.CatalogueItemType.Name();
+            Quantity = quantity.HasValue ? $"{quantity.Value}" : string.Empty;
+            QuantityDescription = price.RangeDescription;
+            ProvisioningType = price.ProvisioningType;
+            BillingPeriod = price.BillingPeriod;
         }
 
         public override string Title => string.Format(TitleText, ItemType);

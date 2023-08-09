@@ -17,6 +17,7 @@ public class CatalogueItemHubModel
     public CatalogueItemHubModel(
         CatalogueItemId solutionId,
         CatalogueItem catalogueItem,
+        int? globalQuantity,
         Dictionary<OdsOrganisation, int?> recipientQuantities,
         CompetitionCatalogueItemPrice selectedPrice)
     {
@@ -30,6 +31,7 @@ public class CatalogueItemHubModel
         PriceId = PriceProgress is TaskProgress.Completed
             ? Price.CataloguePriceId
             : catalogueItem.CataloguePrices.First().CataloguePriceId;
+        GlobalQuantity = globalQuantity;
     }
 
     public string InternalOrgId { get; set; }
@@ -48,6 +50,10 @@ public class CatalogueItemHubModel
 
     public int PriceId { get; set; }
 
+    public int? GlobalQuantity { get; set; }
+
+    public int? ContractLength { get; set; }
+
     public Dictionary<OdsOrganisation, int?> OdsOrganisations { get; set; }
 
     public CompetitionCatalogueItemPrice Price { get; set; }
@@ -63,11 +69,11 @@ public class CatalogueItemHubModel
             if (PriceProgress is TaskProgress.NotStarted)
                 return TaskProgress.CannotStart;
 
-            return !OdsOrganisations.All(x => x.Value.HasValue)
-                ? TaskProgress.NotStarted
-                : OdsOrganisations.Any(x => !x.Value.HasValue)
-                    ? TaskProgress.InProgress
-                    : TaskProgress.Completed;
+            return GlobalQuantity.HasValue || OdsOrganisations.All(x => x.Value.HasValue)
+                ? TaskProgress.Completed
+                : OdsOrganisations.All(x => !x.Value.HasValue)
+                    ? TaskProgress.NotStarted
+                    : TaskProgress.InProgress;
         }
     }
 }

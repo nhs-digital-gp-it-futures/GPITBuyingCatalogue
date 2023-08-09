@@ -1,4 +1,4 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Quantity
+﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities
 {
     public class ServiceRecipientQuantityModel
     {

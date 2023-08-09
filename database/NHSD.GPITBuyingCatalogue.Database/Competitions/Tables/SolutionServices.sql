@@ -5,6 +5,7 @@
     [ServiceId] NVARCHAR(14) NOT NULL,
     [IsRequired] BIT DEFAULT 0 NOT NULL,
     [CompetitionItemPriceId] INT NULL,
+    [Quantity] INT NULL,
     CONSTRAINT PK_CompetitionServices PRIMARY KEY ([CompetitionId], [SolutionId], [ServiceId]),
     CONSTRAINT FK_SolutionServices_Competition FOREIGN KEY ([CompetitionId]) REFERENCES competitions.Competitions ([Id]),
     CONSTRAINT FK_SolutionServices_Solution FOREIGN KEY ([CompetitionId], [SolutionId]) REFERENCES competitions.CompetitionSolutions ([CompetitionId], [SolutionId]),

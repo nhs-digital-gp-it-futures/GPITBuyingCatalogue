@@ -9,22 +9,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.PricingMode
 public class SolutionPriceModel
 {
     public SolutionPriceModel(
-        CompetitionSolution solution)
+        CompetitionSolution solution,
+        Competition competition)
     {
         CatalogueItemId = solution.SolutionId;
         Name = solution.Solution.CatalogueItem.Name;
 
-        var solutionMonthlyCost = solution?.Price?.CalculateCostPerMonth(0);
-        var servicesMonthlyCost = solution.SolutionServices?.Sum(x => x.Price?.CalculateCostPerMonth(0));
+        Progress = solution.AllQuantitiesDefined(competition.Recipients) && solution.AllPricesDefined()
+            ? TaskProgress.Completed
+            : (solution.Price is not null || (solution.Quantity.HasValue || solution.Quantities.Any())) && (!solution.AllQuantitiesDefined(competition.Recipients) || solution.AllPricesDefined())
+                ? TaskProgress.InProgress
+                : TaskProgress.NotStarted;
 
-        Price = solutionMonthlyCost + servicesMonthlyCost;
+        if (Progress is not TaskProgress.Completed) return;
+
+        var solutionMonthlyCost =
+            solution.Price?.CalculateCostPerMonth(solution.Quantity ?? solution.Quantities.Sum(x => x.Quantity));
+        var servicesMonthlyCost = solution.SolutionServices?.Sum(
+            x => x.Price?.CalculateCostPerMonth(x.Quantity ?? x.Quantities.Sum(y => y.Quantity)));
+
+        Price = (solutionMonthlyCost + servicesMonthlyCost) * competition.ContractLength;
     }
 
-    public CatalogueItemId CatalogueItemId { get; set; }
+    public CatalogueItemId CatalogueItemId { get; }
 
-    public string Name { get; set; }
+    public string Name { get; }
 
-    public decimal? Price { get; set; }
+    public decimal? Price { get; }
 
-    public TaskProgress Progress { get; set; } = TaskProgress.NotStarted;
+    public TaskProgress Progress { get; }
 }

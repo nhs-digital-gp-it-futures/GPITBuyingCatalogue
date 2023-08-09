@@ -22,12 +22,12 @@
             {
                 <nhs-table-row-container>
                     <nhs-table-cell>@solution.Name</nhs-table-cell>
-                    <nhs-table-cell>@(!solution.Price.HasValue ? "Not calculated" : $"£{solution.Price.GetValueOrDefault():#,###,##0.00##}")</nhs-table-cell>
+                    <nhs-table-cell>@(!solution.Price.HasValue ? "Not calculated" : $"£{solution.Price.GetValueOrDefault():N2}")</nhs-table-cell>
                     <nhs-table-cell>
                         <nhs-tag status-enum="@solution.Progress"/>
                     </nhs-table-cell>
                     <nhs-table-cell>
-                        <a href="@Url.Action(nameof(CompetitionPricingController.Hub), typeof(CompetitionPricingController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, solutionId = solution.CatalogueItemId })">Edit</a>
+                        <a href="@Url.Action(nameof(CompetitionHubController.Hub), typeof(CompetitionHubController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, solutionId = solution.CatalogueItemId })">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
             }

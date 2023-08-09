@@ -1,9 +1,10 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+﻿using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 
-public class SolutionService
+public class SolutionService : ICompetitionPriceEntity
 {
     public SolutionService()
     {
@@ -34,4 +35,14 @@ public class SolutionService
     public CompetitionCatalogueItemPrice Price { get; set; }
 
     public bool IsRequired { get; set; }
+
+    /// <summary>
+    /// Gets or sets the global quantity when the <see cref="Price"/> is a global pricing model.
+    /// </summary>
+    public int? Quantity { get; set; }
+
+    /// <summary>
+    /// Gets or sets the quantities for each service recipient, when the <see cref="Price"/> is based on the practice list size.
+    /// </summary>
+    public ICollection<ServiceQuantity> Quantities { get; set; } = new HashSet<ServiceQuantity>();
 }

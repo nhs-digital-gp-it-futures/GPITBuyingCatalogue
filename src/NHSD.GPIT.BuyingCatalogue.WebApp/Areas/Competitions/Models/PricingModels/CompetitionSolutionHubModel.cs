@@ -2,6 +2,7 @@
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
@@ -16,7 +17,7 @@ public class CompetitionSolutionHubModel : NavBaseModel
     public CompetitionSolutionHubModel(
         string internalOrgId,
         CompetitionSolution competitionSolution,
-        ICollection<CompetitionRecipient> competitionRecipients)
+        Competition competition)
     {
         SolutionId = competitionSolution.SolutionId;
         SolutionName = competitionSolution.Solution.CatalogueItem.Name;
@@ -26,20 +27,31 @@ public class CompetitionSolutionHubModel : NavBaseModel
                 new CatalogueItemHubModel(
                     competitionSolution.SolutionId,
                     competitionSolution.Solution.CatalogueItem,
-                    competitionRecipients.ToDictionary(
-                        y => y.OdsOrganisation,
-                        y => y.GetRecipientQuantityForItem(competitionSolution.SolutionId)?.Quantity),
+                    competitionSolution.Quantity,
+                    competition.Recipients.ToDictionary(
+                        x => x,
+                        x => competitionSolution.Quantities.FirstOrDefault(y => y.OdsCode == x.Id)?.Quantity),
                     competitionSolution.Price)
-                { InternalOrgId = internalOrgId, CompetitionId = competitionSolution.CompetitionId, },
+                {
+                    InternalOrgId = internalOrgId,
+                    CompetitionId = competitionSolution.CompetitionId,
+                    ContractLength = competition.ContractLength,
+                },
             }.Union(
                 competitionSolution.SolutionServices.Select(
                     x => new CatalogueItemHubModel(
                         competitionSolution.SolutionId,
                         x.Service,
-                        competitionRecipients.ToDictionary(
-                            y => y.OdsOrganisation,
-                            y => y.GetRecipientQuantityForItem(x.ServiceId)?.Quantity),
-                        x.Price) { InternalOrgId = internalOrgId, CompetitionId = competitionSolution.CompetitionId, }))
+                        x.Quantity,
+                        competition.Recipients.ToDictionary(
+                            y => y,
+                            y => x.Quantities.FirstOrDefault(z => z.OdsCode == y.Id)?.Quantity),
+                        x.Price)
+                    {
+                        InternalOrgId = internalOrgId,
+                        CompetitionId = competitionSolution.CompetitionId,
+                        ContractLength = competition.ContractLength,
+                    }))
             .ToList();
     }
 

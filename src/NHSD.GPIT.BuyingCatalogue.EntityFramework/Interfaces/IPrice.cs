@@ -24,6 +24,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces
 
         public string RangeDescription { get; set; }
 
+        public bool IsPerServiceRecipient() => ProvisioningType.IsPerServiceRecipient()
+            || CataloguePriceQuantityCalculationType is Catalogue.Models.CataloguePriceQuantityCalculationType.PerServiceRecipient;
+
         public string ToPriceUnitString()
         {
             return $"{Description} {BillingPeriod?.Description() ?? string.Empty}".Trim();

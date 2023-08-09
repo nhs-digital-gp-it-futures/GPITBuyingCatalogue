@@ -34,7 +34,7 @@ public static class CompetitionPricingControllerTests
         string internalOrgId,
         Competition competition,
         [Frozen] Mock<ICompetitionsService> competitionsService,
-        CompetitionPricingController controller)
+        CompetitionHubController controller)
     {
         competition.CompetitionSolutions = new List<CompetitionSolution>();
 

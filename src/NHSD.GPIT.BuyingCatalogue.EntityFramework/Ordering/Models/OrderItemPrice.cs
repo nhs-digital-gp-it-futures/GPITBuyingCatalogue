@@ -99,9 +99,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public OrderItemPrice Copy() => new(this);
 
-        public bool IsPerServiceRecipient() => ProvisioningType.IsPerServiceRecipient()
-            || CataloguePriceQuantityCalculationType is Catalogue.Models.CataloguePriceQuantityCalculationType.PerServiceRecipient;
-
         public string ToPriceUnitString()
         {
             return $"{Description} {BillingPeriod?.Description() ?? string.Empty}".Trim();

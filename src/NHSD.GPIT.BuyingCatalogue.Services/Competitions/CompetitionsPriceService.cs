@@ -15,11 +15,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions;
 public class CompetitionsPriceService : ICompetitionsPriceService
 {
     private readonly BuyingCatalogueDbContext dbContext;
+    private readonly ICompetitionsQuantityService quantityService;
 
     public CompetitionsPriceService(
-        BuyingCatalogueDbContext dbContext)
+        BuyingCatalogueDbContext dbContext,
+        ICompetitionsQuantityService quantityService)
     {
         this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        this.quantityService = quantityService ?? throw new ArgumentNullException(nameof(quantityService));
     }
 
     public async Task SetSolutionPrice(
@@ -29,42 +32,19 @@ public class CompetitionsPriceService : ICompetitionsPriceService
         CataloguePrice cataloguePrice,
         IEnumerable<PricingTierDto> agreedPrices)
     {
-        var competition = await dbContext.Competitions
-            .Include(x => x.CompetitionSolutions)
-            .ThenInclude(x => x.Price)
-            .ThenInclude(x => x.Tiers)
-            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+        ArgumentNullException.ThrowIfNull(agreedPrices);
 
-        var competitionSolution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
+        var competitionSolution = await GetSolution(internalOrgId, competitionId, solutionId);
         if (competitionSolution == null)
             return;
 
-        if (competitionSolution.Price != null)
-        {
-            var existingPrice = await dbContext.CataloguePrices
-                .FirstAsync(x => x.CataloguePriceId == competitionSolution.Price.CataloguePriceId);
-
-            if (existingPrice.HasDifferentQuantityBasisThan(cataloguePrice))
-            {
-                // TODO: Implement
-            }
-
-            dbContext.Remove(competitionSolution.Price);
-        }
-
-        competitionSolution.Price = new(cataloguePrice, competitionId);
-
-        foreach (var agreedPrice in agreedPrices)
-        {
-            var tier = competitionSolution.Price
-                .Tiers
-                .First(x => x.LowerRange == agreedPrice.LowerRange
-                    && x.UpperRange == agreedPrice.UpperRange);
-
-            tier.Price = agreedPrice.Price;
-        }
-
-        await dbContext.SaveChangesAsync();
+        await SetPrice(
+            competitionId,
+            competitionSolution,
+            competitionSolution.Price?.CataloguePriceId,
+            cataloguePrice,
+            () => quantityService.ResetSolutionQuantities(internalOrgId, competitionId, solutionId),
+            agreedPrices);
     }
 
     public async Task SetServicePrice(
@@ -75,36 +55,46 @@ public class CompetitionsPriceService : ICompetitionsPriceService
         CataloguePrice cataloguePrice,
         IEnumerable<PricingTierDto> agreedPrices)
     {
-        var competition = await dbContext.Competitions
-            .Include(x => x.CompetitionSolutions)
-            .ThenInclude(x => x.SolutionServices)
-            .ThenInclude(x => x.Price)
-            .ThenInclude(x => x.Tiers)
-            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+        ArgumentNullException.ThrowIfNull(agreedPrices);
 
-        var competitionSolution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
-
-        var service = competitionSolution?.SolutionServices.FirstOrDefault(x => x.ServiceId == serviceId);
+        var service = await GetSolutionService(internalOrgId, competitionId, solutionId, serviceId);
         if (service == null) return;
 
-        if (service.Price != null)
+        await SetPrice(
+            competitionId,
+            service,
+            service.Price?.CataloguePriceId,
+            cataloguePrice,
+            () => quantityService.ResetServiceQuantities(internalOrgId, competitionId, solutionId, serviceId),
+            agreedPrices);
+    }
+
+    private async Task SetPrice(
+        int competitionId,
+        ICompetitionPriceEntity entity,
+        int? cataloguePriceId,
+        CataloguePrice cataloguePrice,
+        Func<Task> resetDelegate,
+        IEnumerable<PricingTierDto> agreedPrices)
+    {
+        if (entity.Price != null)
         {
             var existingPrice = await dbContext.CataloguePrices
-                .FirstAsync(x => x.CataloguePriceId == service.Price.CataloguePriceId);
+                .FirstAsync(x => x.CataloguePriceId == cataloguePriceId);
 
             if (existingPrice.HasDifferentQuantityBasisThan(cataloguePrice))
             {
-                // TODO: Implement
+                await resetDelegate();
             }
 
-            dbContext.Remove(service.Price);
+            dbContext.Remove(entity.Price);
         }
 
-        service.Price = new(cataloguePrice, competitionId);
+        entity.Price = new(cataloguePrice, competitionId);
 
         foreach (var agreedPrice in agreedPrices)
         {
-            var tier = service.Price
+            var tier = entity.Price
                 .Tiers
                 .First(x => x.LowerRange == agreedPrice.LowerRange
                     && x.UpperRange == agreedPrice.UpperRange);
@@ -113,5 +103,39 @@ public class CompetitionsPriceService : ICompetitionsPriceService
         }
 
         await dbContext.SaveChangesAsync();
+    }
+
+    private async Task<CompetitionSolution> GetSolution(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId)
+    {
+        var competition = await dbContext.Competitions.Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Price)
+            .ThenInclude(x => x.Tiers)
+            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+
+        var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
+
+        return solution;
+    }
+
+    private async Task<SolutionService> GetSolutionService(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId,
+        CatalogueItemId serviceId)
+    {
+        var competition = await dbContext.Competitions.Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.SolutionServices)
+            .ThenInclude(x => x.Price)
+            .ThenInclude(x => x.Tiers)
+            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+
+        var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
+
+        var service = solution?.SolutionServices.FirstOrDefault(x => x.ServiceId == serviceId);
+
+        return service;
     }
 }

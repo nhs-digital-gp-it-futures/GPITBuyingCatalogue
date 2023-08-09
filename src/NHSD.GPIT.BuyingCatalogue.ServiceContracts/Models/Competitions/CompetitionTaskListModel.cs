@@ -150,7 +150,10 @@ public class CompetitionTaskListModel
 
         CalculatePrice = CompletedInProgressOrNotStarted(
             competition,
-            _ => false,
-            _ => false);
+            _ => competition.CompetitionSolutions.All(
+                x => x.AllQuantitiesDefined(competition.Recipients) && x.AllPricesDefined()),
+            _ => competition.CompetitionSolutions.Any(
+                x => (x.Price is not null || (x.Quantities.Any() || x.Quantity.HasValue))
+                    && (!x.AllPricesDefined() || !x.AllQuantitiesDefined(competition.Recipients))));
     }
 }

@@ -12,7 +12,7 @@ public class PricingDashboardModel : NavBaseModel
     {
         CompetitionId = competition.Id;
         CompetitionName = competition.Name;
-        SolutionPrices = competition.CompetitionSolutions.Select(x => new SolutionPriceModel(x)).ToList();
+        SolutionPrices = competition.CompetitionSolutions.Select(x => new SolutionPriceModel(x, competition)).ToList();
     }
 
     public string InternalOrgId { get; set; }

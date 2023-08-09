@@ -9,7 +9,7 @@
     var totalCostsRolledUp = Model.OrderItemPrice.CostPerTierForBillingPeriod(Model.RolledUpTotalQuantity);
     var totalCostsPrevious = Model.OrderItemPrice.CostPerTierForBillingPeriod(Model.PreviousTotalQuantity);
     var hasTieredPricing = Model.OrderItemPrice.CataloguePriceType is CataloguePriceType.Tiered;
-    var hasServiceRecipientQuantities = Model.OrderItemPrice.IsPerServiceRecipient();
+    var hasServiceRecipientQuantities = ((IPrice)Model.OrderItemPrice).IsPerServiceRecipient();
     var tableText = Model.IsAmendment ? "Pricing and total quantities" : "Pricing";
 }
 

@@ -184,7 +184,6 @@
     <Build Include="Competitions\Tables\InteroperabilityCriteria.sql" />
     <Build Include="Competitions\Tables\NonPriceElements.sql" />
     <Build Include="Competitions\Tables\NonPriceWeights.sql" />
-    <Build Include="Competitions\Tables\RecipientQuantities.sql" />
     <Build Include="Competitions\Tables\ServiceLevelCriteria.sql" />
     <Build Include="Competitions\Tables\SolutionScores.sql" />
     <Build Include="Competitions\Tables\SolutionServices.sql" />
@@ -284,6 +283,9 @@
     <Build Remove="obj/**/*.sql" />
     <Build Remove="bin/**/*.sql" />
     <Build Include="Competitions\Tables\CompetitionCatalogueItemPriceTiers.sql" />
+    <Build Include="Competitions\Tables\RecipientQuantities.sql" />
+    <Build Include="Competitions\Tables\SolutionQuantities.sql" />
+    <Build Include="Competitions\Tables\ServiceQuantities.sql" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="PostDeployment\" />
