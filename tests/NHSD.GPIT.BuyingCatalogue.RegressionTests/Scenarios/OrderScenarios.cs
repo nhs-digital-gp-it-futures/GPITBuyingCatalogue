@@ -2072,7 +2072,30 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             CompetitionPages.BeforeYouStart.ReadyToStart();
 
             CompetitionPages.StepOnePrepareCompetition(MultipleResultFilter, competitionName, 5);
+        }
 
+        [Fact]
+        public void CompetitionForNoResultFilter()
+        {
+            string competitionName = "CompetitionForNoResultFilter";
+
+            CompetitionPages.CompetitionDashboard.CompetitionTriage();
+
+            CompetitionPages.BeforeYouStart.ReadyToStart();
+
+            CompetitionPages.StepOnePrepareCompetition(NoResultsFilter, competitionName);
+        }
+
+        [Fact]
+        public void CompetitionForSingleResultFilter()
+        {
+            string competitionName = "CompetitionForSingleResultFilter";
+
+            CompetitionPages.CompetitionDashboard.CompetitionTriage();
+
+            CompetitionPages.BeforeYouStart.ReadyToStart();
+
+            CompetitionPages.StepOnePrepareCompetition(SingleResultFilter, competitionName);
         }
 
         [Fact]
