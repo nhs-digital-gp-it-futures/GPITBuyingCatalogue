@@ -271,4 +271,42 @@ public static class CompetitionTaskListControllerTests
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Index));
     }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task ReviewCriteria_ReturnsViewWithModel(
+        Organisation organisation,
+        Competition competition,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionTaskListController controller)
+    {
+        competition.Organisation = organisation;
+
+        competitionsService.Setup(x => x.GetCompetitionCriteriaReview(organisation.InternalIdentifier, competition.Id))
+            .ReturnsAsync(competition);
+
+        var expectedModel = new CompetitionReviewCriteriaModel(competition);
+
+        var result = (await controller.ReviewCriteria(organisation.InternalIdentifier, competition.Id)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task ReviewCriteria_SetsCriteriaAsReviewed(
+        string internalOrgId,
+        Competition competition,
+        CompetitionReviewCriteriaModel model,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionTaskListController controller)
+    {
+        var result = (await controller.ReviewCriteria(internalOrgId, competition.Id, model)).As<RedirectToActionResult>();
+
+        competitionsService.Verify(x => x.SetCriteriaReviewed(internalOrgId, competition.Id), Times.Once());
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.Index));
+    }
 }

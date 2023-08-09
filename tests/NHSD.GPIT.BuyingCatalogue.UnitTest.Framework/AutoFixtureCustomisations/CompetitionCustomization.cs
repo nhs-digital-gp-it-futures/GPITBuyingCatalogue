@@ -16,7 +16,8 @@ public sealed class CompetitionCustomization : ICustomization
             .Without(x => x.Filter)
             .Without(x => x.CompetitionSolutions)
             .Without(x => x.Recipients)
-            .Without(x => x.NonPriceElements);
+            .Without(x => x.NonPriceElements)
+            .With(x => x.IsDeleted, false);
 
         fixture.Customize<Competition>(ComposerTransformation);
     }

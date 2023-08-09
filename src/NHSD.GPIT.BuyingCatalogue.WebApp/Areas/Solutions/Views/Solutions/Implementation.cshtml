@@ -1,10 +1,12 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ImplementationTimescalesModel;
-
 <article class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-two-thirds">
-        <p>
-            <strong>These are the typical processes and timescales to implement this Catalogue Solution:</strong>
-        </p>
-        <p style="white-space: pre-line">@Model.Description</p>
+    <div class="nhsuk-grid-column-full">
+        <partial name="_solutionSummary" model="Model"/>
+        <nhs-card title="Implementation details">
+            <p>
+                <strong>These are the typical processes and timescales to implement this Catalogue Solution:</strong>
+            </p>
+            <p style="white-space: pre-line">@Model.Description</p>
+        </nhs-card>
     </div>
 </article>

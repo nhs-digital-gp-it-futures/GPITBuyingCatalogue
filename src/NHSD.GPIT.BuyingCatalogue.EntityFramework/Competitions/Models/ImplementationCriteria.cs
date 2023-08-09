@@ -1,4 +1,6 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+﻿using System.Collections.Generic;
+
+namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 
 public class ImplementationCriteria
 {

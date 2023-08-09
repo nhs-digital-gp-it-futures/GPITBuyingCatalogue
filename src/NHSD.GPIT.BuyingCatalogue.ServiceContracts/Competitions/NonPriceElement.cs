@@ -8,6 +8,6 @@ public enum NonPriceElement
     Implementation,
     [EnumMember(Value = "Interoperability")]
     Interoperability,
-    [EnumMember(Value = "Service level")]
+    [EnumMember(Value = "Service levels")]
     ServiceLevel,
 }

@@ -1,21 +1,21 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionFeaturesModel;
-
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionFeaturesModel;
 <div class="nhsuk-width-container">
     <main id="maincontent" role="main">
         <article>
             <div class="nhsuk-grid-row">
                 <div class="nhsuk-grid-column-full">
+                    <partial name="_solutionSummary" model="Model"/>
 
-                    <p>
-                        <b>This Catalogue Solution has the following features:</b>
-                    </p>
+                    <nhs-card title="@Model.SolutionName features" >
+                        <ul>
+                            @foreach (string feature in Model.Features.Where(s => !string.IsNullOrWhiteSpace(s)))
+                            {
+                                <li>@feature</li>
+                            }
+                        </ul>
+                    </nhs-card>
 
-                    <ul>
-                        @foreach (string feature in Model.Features.Where(s => !string.IsNullOrWhiteSpace(s)))
-                        {
-                            <li>@feature</li>
-                        }
-                    </ul>
                 </div>
             </div>
         </article>
