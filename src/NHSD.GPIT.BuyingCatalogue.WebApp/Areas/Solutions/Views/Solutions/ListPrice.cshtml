@@ -18,8 +18,7 @@
             <h2>Tiered prices for this Catalogue Solution</h2>
             @foreach (var price in Model.TieredListPrices)
             {
-                <nhs-card>
-                    <h3>Tiered price @price.PricingUnit.Description</h3>
+                <nhs-card title="Tiered price @price.PricingUnit.Description">
                     <nhs-table label-text="Information about this price" data-test-id="tiered-list-price-table">
                     <nhs-table-column>Tier</nhs-table-column>
                     <nhs-table-column>Price per unit</nhs-table-column>
@@ -68,8 +67,7 @@
               
             @foreach (var price in Model.FlatListPrices)
             {
-                <nhs-card>
-                    <h3>Flat price @price.PricingUnit.Description</h3>
+                <nhs-card title="Flat price @price.PricingUnit.Description">
                     <nhs-table label-text="Information about this price" data-test-id="flat-list-price-table">
                         @{var individualPrice = price.CataloguePriceTiers.ElementAt(0);}
                         <nhs-table-column>Price</nhs-table-column>
