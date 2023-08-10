@@ -356,6 +356,10 @@
                                               nameof(OrderController.Download),
                                               typeof(OrderController).ControllerName(),
                                               new { Model.InternalOrgId, Model.CallOffId })" />
+        @if (Model.CanBeTerminated)
+        {
+            <vc:nhs-delete-button url="@Url.Action(nameof(OrderController.TerminateOrder), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })" text="Terminate this contract"/>
+        }
         </div>
 
         <div class="nhsuk-u-margin-top-3">

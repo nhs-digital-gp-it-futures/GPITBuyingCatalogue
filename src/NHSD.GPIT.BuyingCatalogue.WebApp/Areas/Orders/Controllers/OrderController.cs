@@ -142,18 +142,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             var order = orderWrapper.Order;
             var hasSubsequentRevisions = await orderService.HasSubsequentRevisions(callOffId);
 
-            var canBeAmended = !order.AssociatedServicesOnly
-                && order.OrderStatus == OrderStatus.Completed
-                && !hasSubsequentRevisions;
-
             var defaultPlan = await implementationPlanService.GetDefaultImplementationPlan();
 
-            var model = new SummaryModel(orderWrapper, internalOrgId, defaultPlan)
+            var model = new SummaryModel(orderWrapper, internalOrgId, hasSubsequentRevisions, defaultPlan)
             {
                 BackLink = GetBackLink(internalOrgId, callOffId, order),
                 Title = GetTitle(order),
                 AdviceText = GetAdvice(order, !hasSubsequentRevisions),
-                CanBeAmended = canBeAmended,
             };
 
             return View(model);
@@ -169,18 +164,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                 ModelState.AddModelError(ErrorKey, ErrorMessage);
                 var hasSubsequentRevisions = await orderService.HasSubsequentRevisions(callOffId);
 
-                var canBeAmended = !order.AssociatedServicesOnly
-                    && order.OrderStatus == OrderStatus.Completed
-                    && !hasSubsequentRevisions;
-
                 var defaultPlan = await implementationPlanService.GetDefaultImplementationPlan();
 
-                var model = new SummaryModel(orderWrapper, internalOrgId, defaultPlan)
+                var model = new SummaryModel(orderWrapper, internalOrgId, hasSubsequentRevisions, defaultPlan)
                 {
                     BackLink = GetBackLink(internalOrgId, callOffId, order),
                     Title = GetTitle(order),
                     AdviceText = GetAdvice(order, !hasSubsequentRevisions),
-                    CanBeAmended = canBeAmended,
                 };
 
                 return View(model);
@@ -294,9 +284,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         {
             return order.OrderStatus switch
             {
-                OrderStatus.Completed when order.AssociatedServicesOnly => "This order has been confirmed and can no longer be changed.",
-                OrderStatus.Completed when latestOrder => "This order has already been completed, but you can amend it if needed.",
-                OrderStatus.Completed => "This order can no longer be changed as there is already an amendment in progress.",
+                OrderStatus.Completed when order.AssociatedServicesOnly => "This order has already been completed, but you can terminate the contract if needed.",
+                OrderStatus.Completed when latestOrder => "This order has already been completed, but you can amend or terminate the contract if needed.",
+                OrderStatus.Completed => "There is an amendment currently in progress for this contract.",
                 _ => order.CanComplete()
                     ? "Review the items you’ve added to your order before completing it."
                     : "This is what's been added to your order so far. You must complete all mandatory steps before you can confirm your order.",

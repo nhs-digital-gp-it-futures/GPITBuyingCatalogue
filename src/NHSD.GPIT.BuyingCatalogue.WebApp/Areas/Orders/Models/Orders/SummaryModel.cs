@@ -7,11 +7,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 {
     public sealed class SummaryModel : OrderingBaseModel
     {
-        public SummaryModel(OrderWrapper orderWrapper, string internalOrgId, ImplementationPlan defaultPlan = null)
+        public SummaryModel(OrderWrapper orderWrapper, string internalOrgId, bool hasSubsequentRevisions, ImplementationPlan defaultPlan = null)
         {
             InternalOrgId = internalOrgId;
             OrderWrapper = orderWrapper;
             DefaultPlan = defaultPlan;
+            CanBeTerminated = Order.OrderStatus == OrderStatus.Completed && !hasSubsequentRevisions;
+            CanBeAmended = !Order.AssociatedServicesOnly && CanBeTerminated;
         }
 
         public OrderWrapper OrderWrapper { get; }
@@ -26,7 +28,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public string AdviceText { get; set; }
 
-        public bool CanBeAmended { get; set; }
+        public bool CanBeTerminated { get; init; }
+
+        public bool CanBeAmended { get; init; }
 
         public ImplementationPlan DefaultPlan { get; set; }
 
