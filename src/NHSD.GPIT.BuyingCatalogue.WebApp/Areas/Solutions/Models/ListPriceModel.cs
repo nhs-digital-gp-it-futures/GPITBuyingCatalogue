@@ -20,14 +20,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             : base(item, contentStatus)
         {
             FlatListPrices = item.CataloguePrices
-                .Where(cp =>
-                    cp.CataloguePriceType == CataloguePriceType.Flat
-                    && cp.PublishedStatus == PublicationStatus.Published)
-                .Select(cp => new PriceViewModel(cp)).ToList();
+                .Where(p =>
+                    p.CataloguePriceType == CataloguePriceType.Flat
+                    && p.PublishedStatus == PublicationStatus.Published).ToList();
 
             TieredListPrices = item.CataloguePrices
                 .Where(p =>
-                    p.CataloguePriceType == CataloguePriceType.Tiered).ToList();
+                    p.CataloguePriceType == CataloguePriceType.Tiered
+                    && p.PublishedStatus == PublicationStatus.Published).ToList();
 
             ItemType = item.CatalogueItemType;
         }
@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public override int Index => 2;
 
-        public IList<PriceViewModel> FlatListPrices { get; set; }
+        public IList<CataloguePrice> FlatListPrices { get; set; }
 
         public IList<CataloguePrice> TieredListPrices { get; set; }
 

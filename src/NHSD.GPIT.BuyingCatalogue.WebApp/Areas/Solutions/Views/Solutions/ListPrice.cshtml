@@ -19,7 +19,8 @@
             @foreach (var price in Model.TieredListPrices)
             {
                 <nhs-card>
-                    <nhs-table label-text="Tiered price @price.PricingUnit.Description" data-test-id="tiered-list-price-table">
+                    <h3>Tiered price @price.PricingUnit.Description</h3>
+                    <nhs-table label-text="Information about this price" data-test-id="tiered-list-price-table">
                     <nhs-table-column>Tier</nhs-table-column>
                     <nhs-table-column>Price per unit</nhs-table-column>
                     <nhs-table-column>Range</nhs-table-column>
@@ -59,23 +60,39 @@
 
         @if (Model.HasFlatListPrices())
         {
+            @if (Model.TieredListPrices.Any())
+            {
+                <hr />
+            }
             <h2>Flat prices for this Catalogue Solution</h2>
               
-            @foreach (var item in Model.FlatListPrices)
+            @foreach (var price in Model.FlatListPrices)
             {
                 <nhs-card>
-                    <nhs-table label-text="Flat price @item.Unit" data-test-id="flat-list-price-table">
+                    <h3>Flat price @price.PricingUnit.Description</h3>
+                    <nhs-table label-text="Information about this price" data-test-id="flat-list-price-table">
+                        @{var individualPrice = price.CataloguePriceTiers.ElementAt(0);}
                         <nhs-table-column>Price</nhs-table-column>
                         <nhs-table-column>Unit</nhs-table-column>
                                 <nhs-table-row-container>
                                     <nhs-table-cell>
-                                @item.CurrencyCode@item.Price.Value.ToString("N4")
+                                £@individualPrice.Price.ToString()
                                     </nhs-table-cell>
                                     <nhs-table-cell>
-                                @item.Unit.ToLower()
+                                @price.ProvisioningType.Name().ToLower()
                                     </nhs-table-cell>
                                 </nhs-table-row-container>  
                     </nhs-table>
+                    @{
+                        UnitDefinition = price.PricingUnit.Definition?.ToString();
+                    }
+                    <div>
+                        @if (!string.IsNullOrEmpty(@UnitDefinition))
+                        {
+                            <h3 class="nhsuk-heading-s">Unit definitions for this price</h3>
+                            <p>@UnitDefinition</p>
+                        }
+                    </div>
                 </nhs-card>
             }
         }
