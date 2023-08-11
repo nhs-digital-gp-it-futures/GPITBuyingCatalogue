@@ -9,13 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public int OrderId { get; set; }
 
-        public bool? HasSpecificRequirements { get; set; }
-
-        public bool? UseDefaultBilling { get; set; }
-
         public bool? UseDefaultDataProcessing { get; set; }
-
-        public bool? UseDefaultImplementationPlan { get; set; }
 
         public int? LastUpdatedBy { get; set; }
 

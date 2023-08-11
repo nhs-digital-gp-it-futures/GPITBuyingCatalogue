@@ -67,7 +67,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 FundingSource = status,
             };
 
-            order.ContractFlags.UseDefaultImplementationPlan = true;
             order.ContractFlags.UseDefaultDataProcessing = true;
 
             var actual = service.Get(new OrderWrapper(order), state);
@@ -91,7 +90,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 AssociatedServiceBilling = status,
             };
 
-            order.ContractFlags.UseDefaultImplementationPlan = true;
             order.ContractFlags.UseDefaultDataProcessing = true;
 
             var actual = service.Get(new OrderWrapper(order), state);

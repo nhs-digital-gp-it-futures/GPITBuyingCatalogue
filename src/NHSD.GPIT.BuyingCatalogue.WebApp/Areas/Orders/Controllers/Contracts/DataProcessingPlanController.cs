@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             CallOffId callOffId)
         {
             var orderId = await orderService.GetOrderId(internalOrgId, callOffId);
-            var contract = await contractsService.GetContract(orderId);
+            var contract = await contractsService.GetContractFlags(orderId);
 
             var model = new BespokeDataProcessingModel(internalOrgId, callOffId)
             {

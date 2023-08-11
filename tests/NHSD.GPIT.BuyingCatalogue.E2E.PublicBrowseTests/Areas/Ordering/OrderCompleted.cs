@@ -49,25 +49,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         }
 
         [Fact]
-        public async Task OrderCompleted_WithBespokeBilling_SupportingDocumentsDisplayed()
-        {
-            var context = GetEndToEndDbContext();
-
-            var flags = context.GetContractFlags(OrderId);
-
-            flags.UseDefaultBilling = false;
-
-            await context.SaveChangesAsync();
-
-            Driver.Navigate().Refresh();
-
-            CommonActions.ElementIsDisplayed(OrderCompletedObjects.SupportingDocuments).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(OrderCompletedObjects.HasBespokeBilling).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(OrderCompletedObjects.HasBespokeDataProcessing).Should().BeFalse();
-            CommonActions.ElementIsDisplayed(OrderCompletedObjects.HasBespokeImplementationPlan).Should().BeFalse();
-        }
-
-        [Fact]
         public async Task OrderCompleted_WithBespokeDataProcessing_SupportingDocumentsDisplayed()
         {
             var context = GetEndToEndDbContext();
@@ -82,44 +63,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             CommonActions.ElementIsDisplayed(OrderCompletedObjects.SupportingDocuments).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrderCompletedObjects.HasBespokeBilling).Should().BeFalse();
-            CommonActions.ElementIsDisplayed(OrderCompletedObjects.HasBespokeDataProcessing).Should().BeFalse();
-            CommonActions.ElementIsDisplayed(OrderCompletedObjects.HasBespokeImplementationPlan).Should().BeFalse();
-        }
-
-        [Fact]
-        public async Task OrderCompleted_WithBespokeImplementationPlan_SupportingDocumentsDisplayed()
-        {
-            var context = GetEndToEndDbContext();
-
-            var flags = context.GetContractFlags(OrderId);
-
-            flags.UseDefaultImplementationPlan = false;
-
-            await context.SaveChangesAsync();
-
-            Driver.Navigate().Refresh();
-
-            CommonActions.ElementIsDisplayed(OrderCompletedObjects.SupportingDocuments).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(OrderCompletedObjects.HasBespokeBilling).Should().BeFalse();
-            CommonActions.ElementIsDisplayed(OrderCompletedObjects.HasBespokeDataProcessing).Should().BeFalse();
-            CommonActions.ElementIsDisplayed(OrderCompletedObjects.HasBespokeImplementationPlan).Should().BeTrue();
-        }
-
-        [Fact]
-        public async Task OrderCompleted_WithSpecificRequirements_SupportingDocumentsDisplayed()
-        {
-            var context = GetEndToEndDbContext();
-
-            var flags = context.GetContractFlags(OrderId);
-
-            flags.HasSpecificRequirements = true;
-
-            await context.SaveChangesAsync();
-
-            Driver.Navigate().Refresh();
-
-            CommonActions.ElementIsDisplayed(OrderCompletedObjects.SupportingDocuments).Should().BeTrue();
-            CommonActions.ElementIsDisplayed(OrderCompletedObjects.HasBespokeBilling).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrderCompletedObjects.HasBespokeDataProcessing).Should().BeFalse();
             CommonActions.ElementIsDisplayed(OrderCompletedObjects.HasBespokeImplementationPlan).Should().BeFalse();
         }
@@ -184,10 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
 
             var flags = context.GetContractFlags(OrderId);
 
-            flags.HasSpecificRequirements = null;
-            flags.UseDefaultBilling = null;
             flags.UseDefaultDataProcessing = null;
-            flags.UseDefaultImplementationPlan = null;
 
             context.SaveChanges();
         }

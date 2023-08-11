@@ -50,7 +50,7 @@ public class DataProcessingControllerTests
             .ReturnsAsync(orderId);
 
         contractsService
-            .Setup(s => s.GetContract(orderId))
+            .Setup(s => s.GetContractFlags(orderId))
             .ReturnsAsync(contract);
 
         var result = (await controller.Index(internalOrgId, callOffId)).As<ViewResult>();
@@ -86,7 +86,7 @@ public class DataProcessingControllerTests
             .ReturnsAsync(orderId);
 
         contractsService
-            .Setup(s => s.GetContract(orderId))
+            .Setup(s => s.GetContractFlags(orderId))
             .ReturnsAsync(contract);
 
         var result = (await controller.Index(internalOrgId, callOffId)).As<ViewResult>();
