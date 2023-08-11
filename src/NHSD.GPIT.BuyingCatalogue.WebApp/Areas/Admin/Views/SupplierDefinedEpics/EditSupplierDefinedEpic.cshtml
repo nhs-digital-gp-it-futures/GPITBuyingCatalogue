@@ -1,0 +1,69 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics.EditSupplierDefinedEpicModel
+@{
+    ViewBag.Title = "Supplier defined Epic information";
+}
+<partial name="Partials/_BackLink" model="Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary RadioId="IsActive" />
+        <nhs-page-title title="@ViewBag.Title"
+                        caption = "@Model.Name"
+                        advice="Review the information for this supplier defined Epic or edit the details already added." />
+
+        <h4>Supplier defined Epic details</h4>
+        <nhs-table>
+            <nhs-table-row-container>
+                <nhs-table-cell><b>Capabilities</b></nhs-table-cell>
+                <nhs-table-cell>@Model.CapabilityList</nhs-table-cell>
+                <nhs-table-cell>
+                    <a asp-controller="@(typeof(SupplierDefinedEpicsController).ControllerName())"
+                       asp-action="@nameof(SupplierDefinedEpicsController.EditCapabilities)"
+                       asp-route-epicId="@Model.Id">Edit</a>
+                </nhs-table-cell>
+            </nhs-table-row-container>
+            <nhs-table-row-container>
+                <nhs-table-cell><b>Name</b></nhs-table-cell>
+                <nhs-table-cell>@Model.Name</nhs-table-cell>
+                <nhs-table-cell>
+                    <a asp-controller="@(typeof(SupplierDefinedEpicsController).ControllerName())"
+                       asp-action="@nameof(SupplierDefinedEpicsController.EditSupplierDefinedEpicDetails)"
+                       asp-route-epicId="@Model.Id">Edit</a>
+                </nhs-table-cell>
+            </nhs-table-row-container>
+            <nhs-table-row-container>
+                <nhs-table-cell><b>Description</b></nhs-table-cell>
+                <nhs-table-cell>@Model.Description</nhs-table-cell>
+                <nhs-table-cell>
+                    <a asp-controller="@(typeof(SupplierDefinedEpicsController).ControllerName())"
+                       asp-action="@nameof(SupplierDefinedEpicsController.EditSupplierDefinedEpicDetails)"
+                       asp-route-epicId="@Model.Id">Edit</a>
+                </nhs-table-cell>
+            </nhs-table-row-container>
+            <nhs-table-row-container>
+                <nhs-table-cell><b>Status</b></nhs-table-cell>
+                <nhs-table-cell>
+                    <nhs-tag colour="@GetTagColour(Model.IsActive.Value)"
+                             text="@GetTagText(Model.IsActive.Value)" />
+                </nhs-table-cell>
+                <nhs-table-cell>
+                    <a asp-controller="@(typeof(SupplierDefinedEpicsController).ControllerName())"
+                       asp-action="@nameof(SupplierDefinedEpicsController.EditSupplierDefinedEpicDetails)"
+                       asp-route-epicId="@Model.Id">Edit</a>
+                </nhs-table-cell>
+            </nhs-table-row-container>
+        </nhs-table>
+
+        <vc:nhs-secondary-button text="Continue"
+                                 type="Primary"
+                                 url="@Model.BackLink"/>
+    </div>
+</div>
+@{  
+    NhsTagsTagHelper.TagColour GetTagColour(bool status) =>
+        status ? NhsTagsTagHelper.TagColour.Green : NhsTagsTagHelper.TagColour.Grey;
+
+    string GetTagText(bool status) => status ? "Active" : "Inactive";
+}
+

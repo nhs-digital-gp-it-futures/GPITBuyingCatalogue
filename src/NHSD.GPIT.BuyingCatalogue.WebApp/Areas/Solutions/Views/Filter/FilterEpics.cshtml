@@ -35,7 +35,7 @@
                        asp-action="@nameof(FilterController.FilterCapabilities)"
                        asp-controller="@typeof(FilterController).ControllerName()"
                        asp-area="@typeof(FilterController).AreaName()"
-                       asp-route-selectedCapabilityIds="@Model.CapabilityIds">Capabilities</a>
+                       asp-route-selected="@Model.Selected">Capabilities</a>
                 </li>
             </ol>
         </div>
@@ -64,7 +64,7 @@
         <a href="@Url.Action(
                      nameof(FilterController.FilterCapabilities),
                      typeof(FilterController).ControllerName(),
-                     new { selectedCapabilityIds = Model.CapabilityIds, search = Model.SearchTerm })">Edit Capabilities</a>
+                     new { selected = Model.Selected, search = Model.SearchTerm })">Edit Capabilities</a>
 
         <hr/>
 
@@ -78,11 +78,11 @@
                                      url="@Url.Action(
                 nameof(FilterController.FilterEpics),
                 typeof(FilterController).ControllerName(),
-                new { selectedCapabilityIds = Model.CapabilityIds, search = Model.SearchTerm })" />
+                new { Selected = Model.ClearEpics, search = Model.SearchTerm })" />
         </div>
 
         <form method="post">
-            <input type="hidden" asp-for="CapabilityIds"/>
+            <input type="hidden" asp-for="Selected"/>
 
             @foreach (var capability in Model.Groups)
             {
@@ -104,7 +104,7 @@
                         <nhs-table-column>Epic type</nhs-table-column>
                         @foreach (var epic in epics)
                         {
-                            index = Model.EpicSelectedItemsMap[epic.Id];
+                            index = Model.EpicSelectedItemsMap[$"{capability.Id},{epic.Id}"];
                             <nhs-table-row-container>
                                 <nhs-table-cell>
                                     <nhs-checkbox-container>

@@ -2,7 +2,6 @@
 using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
@@ -16,21 +15,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         [CommonAutoData]
         public static void Constructor_PropertiesAreSetCorrectly(
             List<Capability> capabilities,
-            List<Epic> epics)
+            Epic epic)
         {
+            epic.Capabilities.Clear();
+
             for (var i = 0; i < capabilities.Count; i++)
             {
-                epics[i].Capabilities.Add(capabilities[i]);
+                epic.Capabilities.Add(capabilities[i]);
             }
 
-            var model = new FilterEpicsModel(capabilities, epics);
+            var model = new FilterEpicsModel(capabilities, new List<Epic> { epic });
 
-            model.CapabilityIds.Should().Be(capabilities.Select(x => x.Id).ToFilterString());
+            model.Selected.Should().Be(new Dictionary<int, string[]>().ToFilterString());
             model.Groups.Should().BeEquivalentTo(capabilities);
-            model.Total.Should().Be(epics.Count);
-            model.SelectedItems.Should().BeEquivalentTo(epics.Select(x => new SelectionModel
+            model.Total.Should().Be(capabilities.Count);
+            model.SelectedItems.Should().BeEquivalentTo(capabilities.Select(x => new SelectionModel
             {
-                Id = x.Id,
+                Id = $"{x.Id},{epic.Id}",
                 Selected = false,
             }));
         }
@@ -39,24 +40,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         [CommonAutoData]
         public static void Constructor_WithSelectedIds_PropertiesAreSetCorrectly(
             List<Capability> capabilities,
-            List<Epic> epics)
+            Epic epic)
         {
             for (var i = 0; i < capabilities.Count; i++)
             {
-                epics[i].Capabilities.Add(capabilities[i]);
+                epic.Capabilities.Add(capabilities[i]);
             }
 
-            var selectedIds = new[] { epics.First().Id, epics.Last().Id }.ToFilterString();
-            var model = new FilterEpicsModel(capabilities, epics, selectedIds);
-
-            model.CapabilityIds.Should().Be(capabilities.Select(x => x.Id).ToFilterString());
-            model.Groups.Should().BeEquivalentTo(capabilities);
-            model.Total.Should().Be(epics.Count);
-            model.SelectedItems.Should().BeEquivalentTo(epics.Select(x => new SelectionModel
+            var selected = new Dictionary<int, string[]>
             {
-                Id = x.Id,
-                Selected = x.Id == epics.First().Id || x.Id == epics.Last().Id,
-            }));
+                { capabilities[0].Id, new string[] { epic.Id } },
+            };
+
+            var model = new FilterEpicsModel(capabilities, new List<Epic> { epic }, selected);
+
+            model.Selected.Should().Be(selected.ToFilterString());
+            model.Groups.Should().BeEquivalentTo(capabilities);
+            model.Total.Should().Be(capabilities.Count);
+            model.SelectedItems.Count().Should().Be(capabilities.Count);
+            model.SelectedItems.Where(s => s.Selected).Should().BeEquivalentTo(new[]
+            {
+                new SelectionModel
+                {
+                    Id = $"{capabilities[0].Id},{epic.Id}",
+                    Selected = true,
+                },
+            });
         }
 
         [Theory]
