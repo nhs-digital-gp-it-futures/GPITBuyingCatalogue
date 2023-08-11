@@ -1,0 +1,35 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Shared.RequirementTableModel
+
+<div class="nhsuk-u-margin-bottom-9">
+    <nhs-table label-text="@Model.Title">
+        <nhs-table-column>Associated Service name</nhs-table-column>
+        <nhs-table-column>Requirement</nhs-table-column>
+        @if (Model.IsAction)
+        {
+            <nhs-table-column>Action</nhs-table-column>
+        }
+        @foreach (var item in Model.Requirements)
+        {
+            <nhs-table-row-container>
+                <nhs-table-cell>@item.OrderItem.CatalogueItem.Name</nhs-table-cell>
+                <nhs-table-cell>@item.Details</nhs-table-cell>
+                @if (Model.IsAction)
+                {
+                    <nhs-table-cell>
+                        <span data-test-id="milestone-edit-link">
+                            <a asp-action="@nameof(RequirementController.EditRequirement)"
+                               asp-controller="@typeof(RequirementController).ControllerName()"
+                               asp-route-internalOrgId="@Model.InternalOrgId"
+                               asp-route-callOffId="@Model.CallOffId"
+                               asp-route-itemId="@item.Id">Edit</a>
+                        </span>
+                    </nhs-table-cell>
+                }
+            </nhs-table-row-container>
+        }
+    </nhs-table>
+</div>
+

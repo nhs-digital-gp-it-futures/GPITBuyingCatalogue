@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
@@ -229,7 +230,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         }
 
         [Fact]
-        public void DefaultImplementationPlan_AllSectionsDisplayed()
+        public async Task DefaultImplementationPlan_AllSectionsDisplayed()
         {
             var parameters = new Dictionary<string, string>
             {
@@ -242,9 +243,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 parameters);
 
             var context = GetEndToEndDbContext();
-            var flags = context.GetContractFlags(OrderId);
+            var contract = await context.GetContract(OrderId);
 
-            flags.UseDefaultImplementationPlan = true;
+            contract.ImplementationPlan = new ImplementationPlan();
 
             context.SaveChanges();
 
@@ -253,7 +254,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.ImplementationPlanExpander).Should().BeTrue();
             CommonActions.ElementIsDisplayed(OrderSummaryObjects.BespokeImplementationPlan).Should().BeFalse();
 
-            flags.UseDefaultImplementationPlan = false;
+            contract.ImplementationPlan = null;
 
             context.SaveChanges();
         }
@@ -480,7 +481,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                 MaximumTerm = 36,
                 ContractFlags = new ContractFlags
                 {
-                    UseDefaultImplementationPlan = false, UseDefaultDataProcessing = true,
+                    UseDefaultDataProcessing = true,
+                },
+                Contract = new Contract()
+                {
+                    ImplementationPlan = new ImplementationPlan() { Milestones = new List<ImplementationPlanMilestone>(), },
                 },
             };
 
