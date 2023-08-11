@@ -34,7 +34,7 @@ public class SelectServiceRecipientQuantityModel : NavBaseModel
         RangeDefinition = price.RangeDescription;
         BillingPeriod = price.BillingPeriod;
 
-        ServiceRecipients = serviceRecipients
+        ServiceRecipients = (serviceRecipients ?? Enumerable.Empty<ServiceRecipientDto>())
             .Select(CreateServiceRecipient)
             .ToArray();
     }

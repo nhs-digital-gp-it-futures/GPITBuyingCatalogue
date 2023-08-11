@@ -9,6 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -17,6 +18,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.PricingModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Pricing;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services;
 using OdsOrganisation = NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models.OdsOrganisation;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
@@ -29,19 +31,22 @@ public class CompetitionHubController : Controller
 {
     private const string OrderItemViewName = "QuantitySelection/SelectOrderItemQuantity";
     private const string ServiceRecipientViewName = "QuantitySelection/SelectServiceRecipientQuantity";
+    private const string SelectAssociatedServicesViewName = "Services/SelectAssociatedServices";
 
     private readonly ICompetitionsService competitionsService;
     private readonly ICompetitionsPriceService competitionsPriceService;
     private readonly ICompetitionsQuantityService competitionsQuantityService;
     private readonly IListPriceService listPriceService;
     private readonly IGpPracticeService gpPracticeService;
+    private readonly IAssociatedServicesService associatedServicesService;
 
     public CompetitionHubController(
         ICompetitionsService competitionsService,
         ICompetitionsPriceService competitionsPriceService,
         ICompetitionsQuantityService competitionsQuantityService,
         IListPriceService listPriceService,
-        IGpPracticeService gpPracticeService)
+        IGpPracticeService gpPracticeService,
+        IAssociatedServicesService associatedServicesService)
     {
         this.competitionsService = competitionsService ?? throw new ArgumentNullException(nameof(competitionsService));
         this.competitionsPriceService = competitionsPriceService
@@ -50,6 +55,8 @@ public class CompetitionHubController : Controller
             ?? throw new ArgumentNullException(nameof(competitionsQuantityService));
         this.listPriceService = listPriceService ?? throw new ArgumentNullException(nameof(listPriceService));
         this.gpPracticeService = gpPracticeService ?? throw new ArgumentNullException(nameof(gpPracticeService));
+        this.associatedServicesService = associatedServicesService
+            ?? throw new ArgumentNullException(nameof(associatedServicesService));
     }
 
     [HttpGet]
@@ -79,10 +86,15 @@ public class CompetitionHubController : Controller
     {
         var competition = await competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competitionId);
         var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
+        var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(solutionId);
 
         var model = new CompetitionSolutionHubModel(internalOrgId, solution, competition)
         {
             BackLink = Url.Action(nameof(Index), new { internalOrgId, competitionId }),
+            AssociatedServicesAvailable = associatedServices.Any(),
+            AssociatedServicesUrl = Url.Action(
+                nameof(SelectAssociatedServices),
+                new { internalOrgId, competitionId, solutionId }),
         };
 
         return View(model);
@@ -234,7 +246,8 @@ public class CompetitionHubController : Controller
 
         if (competitionSolution is null) return BadRequest();
 
-        (IPrice price, CatalogueItem catalogueItem, int? quantity) = GetGlobalQuantityDetails(competitionSolution, serviceId);
+        (IPrice price, CatalogueItem catalogueItem, int? quantity) =
+            GetGlobalQuantityDetails(competitionSolution, serviceId);
 
         if (price?.IsPerServiceRecipient() ?? false)
         {
@@ -282,7 +295,7 @@ public class CompetitionHubController : Controller
                 int.Parse(model.Quantity));
         }
 
-        return RedirectToAction(nameof(Hub), new { internalOrgId, competitionId, solutionId});
+        return RedirectToAction(nameof(Hub), new { internalOrgId, competitionId, solutionId });
     }
 
     [HttpGet("{solutionId}/select-recipient-quantity")]
@@ -351,6 +364,147 @@ public class CompetitionHubController : Controller
         return RedirectToAction(nameof(Hub), new { internalOrgId, competitionId, solutionId });
     }
 
+    [HttpGet("{solutionId}/associated-services")]
+    public async Task<IActionResult> SelectAssociatedServices(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId)
+    {
+        return View(
+            SelectAssociatedServicesViewName,
+            await GetSelectServicesModel(internalOrgId, competitionId, solutionId));
+    }
+
+    [HttpPost("{solutionId}/associated-services")]
+    public async Task<IActionResult> SelectAssociatedServices(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId,
+        SelectServicesModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(
+                SelectAssociatedServicesViewName,
+                await GetSelectServicesModel(internalOrgId, competitionId, solutionId));
+        }
+
+        var serviceIds = model.Services?
+            .Where(x => x.IsSelected)
+            .Select(x => x.CatalogueItemId)
+            .ToArray() ?? Array.Empty<CatalogueItemId>();
+
+        var competition = await competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competitionId);
+        var solution = competition.CompetitionSolutions.First(x => x.SolutionId == solutionId);
+        var existingServices = solution.GetAssociatedServices();
+
+        if (existingServices.Any(x => !serviceIds.Contains(x.ServiceId)))
+        {
+            return RedirectToAction(
+                nameof(ConfirmAssociatedServiceChanges),
+                new { internalOrgId, competitionId, solutionId, serviceIds = string.Join(',', serviceIds) });
+        }
+
+        await competitionsService.SetAssociatedServices(internalOrgId, competitionId, solutionId, serviceIds);
+
+        return RedirectToAction(nameof(Hub), new { internalOrgId, competitionId, solutionId });
+    }
+
+    [HttpGet("{solutionId}/associated-services/confirm")]
+    public async Task<IActionResult> ConfirmAssociatedServiceChanges(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId,
+        string serviceIds)
+    {
+        var competition = await competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competitionId);
+        var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
+        if (solution == null) return BadRequest();
+
+        var associatedServices =
+            await associatedServicesService.GetPublishedAssociatedServicesForSolution(solutionId);
+
+        var existingServiceIds = solution.GetAssociatedServices()
+            .Select(x => x.ServiceId)
+            .ToList();
+
+        var selectedServiceIds = serviceIds?.Split(',')
+            .Select(CatalogueItemId.ParseExact)
+            .ToArray() ?? Array.Empty<CatalogueItemId>();
+
+        var toAdd = selectedServiceIds
+            .Where(x => !existingServiceIds.Contains(x))
+            .Select(
+                x => new ServiceModel
+                {
+                    CatalogueItemId = x, Description = associatedServices.FirstOrDefault(s => s.Id == x)?.Name,
+                });
+
+        var toRemove = existingServiceIds
+            .Where(x => !selectedServiceIds.Contains(x))
+            .Select(
+                x => new ServiceModel
+                {
+                    CatalogueItemId = x, Description = associatedServices.FirstOrDefault(s => s.Id == x)?.Name,
+                });
+
+        var model = new ConfirmServiceChangesModel(internalOrgId, CatalogueItemType.AssociatedService)
+        {
+            BackLink = Url.Action(
+                nameof(SelectAssociatedServices),
+                new { internalOrgId, competitionId, solutionId }),
+            ToAdd = toAdd.ToList(),
+            ToRemove = toRemove.ToList(),
+            Caption = solution.Solution.CatalogueItem.Name,
+            EntityType = "Competition",
+        };
+
+        return View("Services/ConfirmChanges", model);
+    }
+
+    [HttpPost("{solutionId}/associated-services/confirm")]
+    public async Task<IActionResult> ConfirmAssociatedServiceChanges(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId,
+        ConfirmServiceChangesModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View("Services/ConfirmChanges", model);
+        }
+
+        if (model.ConfirmChanges is false)
+        {
+            return RedirectToAction(
+                nameof(Hub),
+                new { internalOrgId, competitionId, solutionId });
+        }
+
+        var competition = await competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competitionId);
+        var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
+        if (solution == null) return BadRequest();
+
+        var associatedServices = solution.GetAssociatedServices();
+        var associatedServiceIds = associatedServices.Select(x => x.ServiceId);
+
+        var servicesToAdd = model.ToAdd?.Select(x => x.CatalogueItemId) ?? Enumerable.Empty<CatalogueItemId>();
+        var serviceToRemove = model.ToRemove?.Select(x => x.CatalogueItemId) ?? Enumerable.Empty<CatalogueItemId>();
+
+        var serviceIds = associatedServiceIds.Concat(servicesToAdd)
+            .Except(serviceToRemove);
+
+        await competitionsService.SetAssociatedServices(
+            internalOrgId,
+            competitionId,
+            solutionId,
+            serviceIds);
+
+        return RedirectToAction(
+            nameof(Hub),
+            new { internalOrgId, competitionId, solutionId });
+    }
+
     private static (IPrice Price, CatalogueItem CatalogueItem, int? Quantity) GetGlobalQuantityDetails(
         CompetitionSolution competitionSolution,
         CatalogueItemId? serviceId = null)
@@ -364,6 +518,28 @@ public class CompetitionHubController : Controller
         var service = competitionSolution.SolutionServices.FirstOrDefault(x => x.ServiceId == serviceId);
 
         return service is null ? (null, null, null) : (service.Price, service.Service, service.Quantity);
+    }
+
+    private async Task<SelectServicesModel> GetSelectServicesModel(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId)
+    {
+        var competition = await competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competitionId);
+        var solution = competition.CompetitionSolutions.First(x => x.SolutionId == solutionId);
+
+        var currentServices =
+            solution.GetAssociatedServices().Select(x => x.Service);
+
+        var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(solutionId);
+
+        return new SelectServicesModel(currentServices, associatedServices)
+        {
+            BackLink = Url.Action(nameof(Hub), new { internalOrgId, competitionId, solutionId }),
+            InternalOrgId = internalOrgId,
+            SolutionName = solution.Solution.CatalogueItem.Name,
+            EntityType = "Competition",
+        };
     }
 
     private async Task<(IPrice Price, CatalogueItem CatalogueItem, IEnumerable<ServiceRecipientDto> RecipientQuantities)>

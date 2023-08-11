@@ -60,9 +60,19 @@
 @if (Model.PriceProgress is TaskProgress.Completed && Model.QuantityProgress is TaskProgress.Completed)
 {
     <nhs-summary-list>
-        <nhs-summary-list-row label-text="Price per month">£@Model.Price.CalculateCostPerMonth(quantity).ToString("N2")</nhs-summary-list-row>
+        @if (Model.CatalogueItemType is CatalogueItemType.AssociatedService)
+        {
+            <nhs-summary-list-row label-text="Total one-off cost">£@Model.Price.CalculateOneOffCost(quantity).ToString("N2")</nhs-summary-list-row>
+        }
+        else
+        {
+            <nhs-summary-list-row label-text="Price per month">£@Model.Price.CalculateCostPerMonth(quantity).ToString("N2")</nhs-summary-list-row>
+        }
         <nhs-summary-list-row label-text="Quantity">@quantity.ToString($"#,###")</nhs-summary-list-row>
-        <nhs-summary-list-row label-text="Total cost">£@CalculateTotalCost().ToString("N2")</nhs-summary-list-row>
+        @if (Model.CatalogueItemType is not CatalogueItemType.AssociatedService)
+        {
+            <nhs-summary-list-row label-text="Total cost">£@CalculateTotalCost().ToString("N2")</nhs-summary-list-row>
+        }
     </nhs-summary-list>
 }
 

@@ -1,4 +1,4 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Shared.SelectServicesModel
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services.SelectServicesModel
 @{
     ViewBag.Title = "Associated Services";
 }
@@ -8,20 +8,21 @@
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
         <nhs-validation-summary/>
-        
+
         @{
             var advice = Model.AssociatedServicesOnly
                 ? "These are all the Associated Services available for your chosen Catalogue Solution. Select any you want to order."
-                : "Select any Associated Services you want to add to this order or continue if you do not want to add any.";
+                : $"Select any Associated Services you want to add to this {Model.EntityType.ToLowerInvariant()} or continue if you do not want to add any.";
         }
 
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.SolutionName"
                         advice="@advice"/>
-                        
+
         <form method="post">
             <input type="hidden" asp-for="@Model.AssociatedServicesOnly"/>
-        
+            <input type="hidden" asp-for="@Model.EntityType"/>
+
             @if (Model.Services.Any())
             {
                 <div id="services-to-select">

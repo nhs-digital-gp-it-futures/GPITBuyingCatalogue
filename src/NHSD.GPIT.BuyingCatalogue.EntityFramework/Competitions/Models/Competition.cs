@@ -56,6 +56,4 @@ public class Competition
     public ICollection<CompetitionSolution> CompetitionSolutions { get; set; }
 
     public ICollection<OdsOrganisation> Recipients { get; set; }
-
-    public ICollection<CompetitionCatalogueItemPrice> CompetitionCatalogueItemPrices { get; set; }
 }

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -698,7 +697,7 @@ public static class CompetitionsServiceTests
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
-        await service.SetCompetitionCriteria(organisation.Id, competition.Id, true);
+        await service.SetCompetitionCriteria(organisation.InternalIdentifier, competition.Id, true);
 
         var updatedCompetition = await context.Competitions
             .FirstOrDefaultAsync(x => x.Id == competition.Id);

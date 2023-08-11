@@ -1,6 +1,6 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Shared
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services
 {
     public class ServiceModel
     {

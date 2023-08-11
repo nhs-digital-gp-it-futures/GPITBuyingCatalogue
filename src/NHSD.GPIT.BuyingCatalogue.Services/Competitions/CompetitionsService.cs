@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -436,6 +437,45 @@ public class CompetitionsService : ICompetitionsService
 
         if (competitionSolutionScores.Count > 0)
             dbContext.RemoveRange(competitionSolutionScores);
+
+        if (dbContext.ChangeTracker.HasChanges())
+            await dbContext.SaveChangesAsync();
+    }
+
+    public async Task SetAssociatedServices(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId,
+        IEnumerable<CatalogueItemId> associatedServices)
+    {
+        ArgumentNullException.ThrowIfNull(associatedServices);
+
+        var competition = await dbContext.Competitions.Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.SolutionServices)
+            .ThenInclude(x => x.Service)
+            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+
+        var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
+        if (solution == null) return;
+
+        var existingAssociatedServices = solution.SolutionServices.Where(
+            x => !x.IsRequired && x.Service.CatalogueItemType is CatalogueItemType.AssociatedService);
+
+        var selectedAssociatedServices = associatedServices.ToList();
+
+        var toAdd = selectedAssociatedServices.Where(x => existingAssociatedServices.All(y => y.ServiceId != x))
+            .Select(x => new SolutionService(competitionId, solutionId, x, false))
+            .ToList();
+
+        var toRemove = existingAssociatedServices.Where(x => !selectedAssociatedServices.Contains(x.ServiceId))
+            .ToList();
+
+        var pricesToRemove = toRemove.Where(x => x.Price != null).Select(x => x.Price).ToList();
+        if (pricesToRemove.Any())
+            dbContext.RemoveRange(pricesToRemove);
+
+        toRemove.ForEach(x => solution.SolutionServices.Remove(x));
+        toAdd.ForEach(x => solution.SolutionServices.Add(x));
 
         if (dbContext.ChangeTracker.HasChanges())
             await dbContext.SaveChangesAsync();

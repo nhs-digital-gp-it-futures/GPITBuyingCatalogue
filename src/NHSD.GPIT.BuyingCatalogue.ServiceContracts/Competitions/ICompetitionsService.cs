@@ -45,6 +45,12 @@ public interface ICompetitionsService
 
     Task RemoveNonPriceElements(string internalOrgId, int competitionId);
 
+    Task SetAssociatedServices(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId,
+        IEnumerable<CatalogueItemId> associatedServices);
+
     Task SetCompetitionRecipients(int competitionId, IEnumerable<string> odsCodes);
 
     Task SetContractLength(string internalOrgId, int competitionId, int contractLength);

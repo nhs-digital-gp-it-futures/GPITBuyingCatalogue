@@ -5,7 +5,7 @@
     ViewBag.Title = "Price and quantity";
 
     var additionalServices = Model.GetCatalogueItemsByType(CatalogueItemType.AdditionalService).ToList();
-    var associatedServices = Model.GetCatalogueItemsByType(CatalogueItemType.AssociatedService).ToList();
+    var associatedServices = Model.AssociatedServices.ToList();
 }
 
 <partial name="Partials/_BackLink" model="Model"/>
@@ -20,7 +20,7 @@
             <h2>Catalogue Solution</h2>
 
             <div class="nhsuk-u-margin-bottom-9">
-                <partial name="HubCatalogueItem" model="@Model.GetCatalogueItem(Model.SolutionId)" />
+                <partial name="HubCatalogueItem" model="@Model.GetCatalogueItem(Model.SolutionId)"/>
             </div>
         </div>
 
@@ -44,6 +44,14 @@
 
         <div id="AssociatedServiceDetails" class="nhsuk-u-margin-bottom-9">
             <h2>Associated Services</h2>
+
+            @if (Model.AssociatedServicesAvailable)
+            {
+                <span data-test-id="associated-services-action">
+                    <vc:nhs-action-link text="@Model.AssociatedServicesActionText"
+                                        url="@Model.AssociatedServicesUrl"/>
+                </span>
+            }
 
             @if (!associatedServices.Any())
             {

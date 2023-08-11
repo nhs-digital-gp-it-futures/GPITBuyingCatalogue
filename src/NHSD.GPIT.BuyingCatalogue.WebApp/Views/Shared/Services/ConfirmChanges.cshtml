@@ -1,6 +1,6 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Shared.ConfirmServiceChangesModel
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services.ConfirmServiceChangesModel
 @{
     var itemName = Model.CatalogueItemType == CatalogueItemType.Solution
         ? $"{Model.CatalogueItemType.Name()}"
@@ -14,10 +14,10 @@
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary RadioId="@nameof(Model.ConfirmChanges)"/>
-        
+
         @{
-            var article = Model.CatalogueItemType == CatalogueItemType.Solution 
-                ? "a" 
+            var article = Model.CatalogueItemType == CatalogueItemType.Solution
+                ? "a"
                 : "an";
 
             var adviceSuffix = Model.CatalogueItemType == CatalogueItemType.Solution
@@ -30,20 +30,20 @@
         }
 
         <nhs-page-title title="@ViewBag.Title"
-                        caption="Order @Model.CallOffId"
+                        caption="@Model.Caption"
                         advice="You'll lose all the information you've previously entered for @adviceSuffix"/>
-        
+
         <form method="post">
             <input type="hidden" asp-for="CatalogueItemType"/>
             <input type="hidden" asp-for="BackLink" />
-            
+
             <nhs-warning-callout label-text="Changing @article @Model.CatalogueItemType.Name()">
                 Changing @article @Model.CatalogueItemType.Name() will remove any Service Recipients, quantities and prices you've previously @calloutSuffix
             </nhs-warning-callout>
-            
+
             <h2>Changes to your @itemName</h2>
-            <p>You've made the following changes to your order:</p>
-            
+            <p>You've made the following changes to your @Model.EntityType.ToLowerInvariant():</p>
+
             <div id="removed-items">
                 <h3>Removed:</h3>
                 <ul>
@@ -70,7 +70,7 @@
                     </ul>
                 </div>
             }
-            
+
             <hr/>
 
             <h2>Do you want to confirm your changes?</h2>

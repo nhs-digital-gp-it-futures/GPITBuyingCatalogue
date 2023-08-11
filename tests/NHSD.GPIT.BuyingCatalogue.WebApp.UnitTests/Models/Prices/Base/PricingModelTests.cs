@@ -9,19 +9,17 @@ using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Pricing.Base;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.SolutionSelection.Prices.Base
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Prices.Base
 {
-    public abstract class PricingModelTests
+    public class PricingModelTests
     {
-        protected abstract Type ModelType { get; }
-
         [Theory]
         [CommonAutoData]
         public void WithValidCatalogueItem_PropertiesCorrectlySet(CatalogueItem item)
         {
             var price = item.CataloguePrices.First();
 
-            var model = (PricingModel)Activator.CreateInstance(ModelType, item, price.CataloguePriceId, null);
+            var model = new PricingModel(item.CataloguePrices.First(), item);
 
             model!.Title.Should().Be(string.Format(PricingModel.TitleText, model.ItemType.Name()));
             model.Caption.Should().Be(model.ItemName);
@@ -58,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
                 })
                 .ToList();
 
-            var model = (PricingModel)Activator.CreateInstance(ModelType, item, price.CataloguePriceId, orderItem);
+            var model = new PricingModel(item, price, orderItem.OrderItemPrice);
 
             model!.Title.Should().Be(string.Format(PricingModel.TitleText, model.ItemType.Name()));
             model.Caption.Should().Be(model.ItemName);
@@ -77,35 +75,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
                 tier.AgreedPrice.Should().Be(tierPrice.ToString(PricingModel.FourDecimalPlaces, CultureInfo.InvariantCulture));
                 tier.Description.Should().Be(pricingTier.GetRangeDescription());
                 tier.ListPrice.Should().Be(pricingTier.Price);
-                tier.LowerRange.Should().Be(pricingTier.LowerRange);
-                tier.UpperRange.Should().Be(pricingTier.UpperRange);
-            }
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public void WithValidOrderItem_PropertiesCorrectlySet(OrderItem item)
-        {
-            var price = item.OrderItemPrice;
-
-            var model = (PricingModel)Activator.CreateInstance(ModelType, item);
-
-            model!.Title.Should().Be(string.Format(PricingModel.TitleText, model.ItemType.Name()));
-            model.Caption.Should().Be(model.ItemName);
-            model.Basis.Should().Be(price.ToPriceUnitString());
-            model.CalculationType.Should().Be(price.CataloguePriceCalculationType);
-            model.ItemName.Should().Be(item.CatalogueItem.Name);
-            model.ItemType.Should().Be(item.CatalogueItem.CatalogueItemType);
-            model.NumberOfTiers.Should().Be(price.OrderItemPriceTiers.Count);
-            model.PriceType.Should().Be(price.CataloguePriceType);
-
-            foreach (var tier in model.Tiers)
-            {
-                var pricingTier = price.OrderItemPriceTiers.First(x => x.Id == tier.Id);
-
-                tier.AgreedPrice.Should().Be(pricingTier.Price.ToString(PricingModel.FourDecimalPlaces, CultureInfo.InvariantCulture));
-                tier.Description.Should().Be(pricingTier.GetRangeDescription());
-                tier.ListPrice.Should().Be(pricingTier.ListPrice);
                 tier.LowerRange.Should().Be(pricingTier.LowerRange);
                 tier.UpperRange.Should().Be(pricingTier.UpperRange);
             }

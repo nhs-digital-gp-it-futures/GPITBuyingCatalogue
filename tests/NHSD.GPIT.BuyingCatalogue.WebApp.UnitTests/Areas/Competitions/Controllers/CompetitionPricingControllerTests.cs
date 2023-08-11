@@ -38,7 +38,7 @@ public static class CompetitionPricingControllerTests
     {
         competition.CompetitionSolutions = new List<CompetitionSolution>();
 
-        competitionsService.Setup(x => x.GetCompetitionWithServices(internalOrgId, competition.Id, false))
+        competitionsService.Setup(x => x.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id))
             .ReturnsAsync(competition);
 
         var expectedModel = new PricingDashboardModel(competition);
@@ -46,6 +46,7 @@ public static class CompetitionPricingControllerTests
         var result = (await controller.Index(internalOrgId, competition.Id)).As<ViewResult>();
 
         result.Should().NotBeNull();
-        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        result.Model.Should()
+            .BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.InternalOrgId));
     }
 }

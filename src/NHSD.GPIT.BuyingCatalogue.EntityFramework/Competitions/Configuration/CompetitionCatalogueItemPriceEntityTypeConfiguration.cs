@@ -37,7 +37,7 @@ public class CompetitionCatalogueItemPriceEntityTypeConfiguration : IEntityTypeC
             .HasColumnName("CataloguePriceQuantityCalculationTypeId");
 
         builder.HasOne(x => x.Competition)
-            .WithMany(x => x.CompetitionCatalogueItemPrices)
+            .WithMany()
             .HasForeignKey(x => x.CompetitionId)
             .HasConstraintName("FK_CompetitionCatalogueItemPrices_Competition");
     }

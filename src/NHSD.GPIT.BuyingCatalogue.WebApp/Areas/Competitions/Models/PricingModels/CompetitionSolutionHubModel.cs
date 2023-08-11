@@ -59,7 +59,16 @@ public class CompetitionSolutionHubModel : NavBaseModel
 
     public string SolutionName { get; set; }
 
+    public bool AssociatedServicesAvailable { get; set; }
+
+    public string AssociatedServicesUrl { get; set; }
+
+    public string AssociatedServicesActionText => $"{(AssociatedServices?.Any() ?? false ? "Change" : "Add")} Associated Services";
+
     public List<CatalogueItemHubModel> CatalogueItems { get; set; }
+
+    public IEnumerable<CatalogueItemHubModel> AssociatedServices =>
+        GetCatalogueItemsByType(CatalogueItemType.AssociatedService);
 
     public CatalogueItemHubModel GetCatalogueItem(CatalogueItemId catalogueItemId) =>
         CatalogueItems.FirstOrDefault(x => x.CatalogueItemId == catalogueItemId);

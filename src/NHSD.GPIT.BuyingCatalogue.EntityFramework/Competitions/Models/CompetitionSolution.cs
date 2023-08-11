@@ -54,4 +54,8 @@ public class CompetitionSolution : ICompetitionPriceEntity
     public bool AllPricesDefined() =>
         Price is not null
         && (!SolutionServices.Any() || SolutionServices.All(x => x.Price is not null));
+
+    public ICollection<SolutionService> GetAssociatedServices() => SolutionServices.Where(
+            x => !x.IsRequired && x.Service.CatalogueItemType is CatalogueItemType.AssociatedService)
+        .ToList();
 }

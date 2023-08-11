@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Shared;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Shared
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services
 {
     public class ConfirmServiceChangesModel : NavBaseModel
     {
@@ -15,17 +14,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public ConfirmServiceChangesModel(
             string internalOrgId,
-            CallOffId callOffId,
             CatalogueItemType catalogueItemType)
         {
             InternalOrgId = internalOrgId;
-            CallOffId = callOffId;
             CatalogueItemType = catalogueItemType;
         }
 
         public string InternalOrgId { get; set; }
-
-        public CallOffId CallOffId { get; set; }
 
         public CatalogueItemType CatalogueItemType { get; set; }
 
@@ -34,6 +29,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         public List<ServiceModel> ToAdd { get; set; }
 
         public bool? ConfirmChanges { get; set; }
+
+        public string EntityType { get; set; } = "Order";
 
         public IEnumerable<SelectOption<string>> SelectListItems => new[]
         {

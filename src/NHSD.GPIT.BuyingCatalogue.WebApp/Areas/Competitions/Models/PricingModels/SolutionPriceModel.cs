@@ -27,8 +27,10 @@ public class SolutionPriceModel
             solution.Price?.CalculateCostPerMonth(solution.Quantity ?? solution.Quantities.Sum(x => x.Quantity));
         var servicesMonthlyCost = solution.SolutionServices?.Sum(
             x => x.Price?.CalculateCostPerMonth(x.Quantity ?? x.Quantities.Sum(y => y.Quantity)));
+        var oneOffCost = solution.GetAssociatedServices()
+            .Sum(x => x.Price?.CalculateOneOffCost(x.Quantity ?? x.Quantities.Sum(y => y.Quantity)));
 
-        Price = (solutionMonthlyCost + servicesMonthlyCost) * competition.ContractLength;
+        Price = oneOffCost + ((solutionMonthlyCost + servicesMonthlyCost) * competition.ContractLength);
     }
 
     public CatalogueItemId CatalogueItemId { get; }

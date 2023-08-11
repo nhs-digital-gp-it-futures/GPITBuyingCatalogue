@@ -7,21 +7,19 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Pricing.Base
 {
-    public abstract class PricingModel : NavBaseModel
+    public class PricingModel : NavBaseModel
     {
         public const string FourDecimalPlaces = "#,##0.00##";
         public const string TitleText = "Price of {0}";
 
-        protected PricingModel()
+        public PricingModel()
         {
         }
 
-        protected PricingModel(CatalogueItem item, IPrice price, IPrice existingPrice)
+        public PricingModel(CatalogueItem item, IPrice price, IPrice existingPrice)
         {
-            if (item == null)
-            {
-                throw new ArgumentNullException(nameof(item));
-            }
+            ArgumentNullException.ThrowIfNull(item);
+            ArgumentNullException.ThrowIfNull(price);
 
             Tiers = GetTiers(price, existingPrice);
             PriceType = price.CataloguePriceType;
@@ -32,8 +30,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Pricing.Base
             ItemType = item.CatalogueItemType;
         }
 
-        protected PricingModel(IPrice price, CatalogueItem catalogueItem)
+        public PricingModel(IPrice price, CatalogueItem catalogueItem)
         {
+            ArgumentNullException.ThrowIfNull(price);
+
             Tiers = GetTiers(price);
             PriceType = price.CataloguePriceType;
             CalculationType = price.CataloguePriceCalculationType;
