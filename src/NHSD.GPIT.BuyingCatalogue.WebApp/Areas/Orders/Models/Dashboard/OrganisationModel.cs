@@ -40,6 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Dashboard
         {
             return order.OrderStatus switch
             {
+                OrderStatus.Terminated => "View",
                 OrderStatus.Completed when !order.AssociatedServicesOnly && !AnySubsequentRevisions(order.CallOffId) => "Amend",
                 OrderStatus.Completed => "View",
                 OrderStatus.InProgress => "Edit",
@@ -49,6 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Dashboard
 
         public NhsTagsTagHelper.TagColour TagColour(OrderStatus orderStatus) => orderStatus switch
         {
+            OrderStatus.Terminated => NhsTagsTagHelper.TagColour.Red,
             OrderStatus.Completed => NhsTagsTagHelper.TagColour.Green,
             OrderStatus.InProgress => NhsTagsTagHelper.TagColour.Yellow,
             _ => throw new ArgumentOutOfRangeException(nameof(orderStatus)),

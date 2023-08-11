@@ -18,6 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.Property(o => o.Completed);
             builder.Property(o => o.CommencementDate).HasColumnType("date");
             builder.Property(o => o.Created).HasDefaultValue(DateTime.UtcNow);
+            builder.Property(o => o.IsTerminated);
 
             builder.Property(o => o.Description)
                 .IsRequired()
@@ -81,6 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 "IX_OrderNum_IsDeleted_Revision");
 
             builder.HasQueryFilter(o => !o.IsDeleted);
+            //builder.HasQueryFilter(o => !o.IsTerminated);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders.TerminateOrderModel
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders.TerminateOrderModel
 @{
     ViewBag.Title = "Are you sure you want to terminate this contract?";
 }
@@ -42,7 +43,10 @@
             <nhs-submit-button text="Terminate contract"/>
 
             <p>
-                <a href="@Model.BackLink">Cancel</a>
+                <a href="@Url.Action(
+                             nameof(DashboardController.Organisation),
+                             typeof(DashboardController).ControllerName(),
+                             new { Model.InternalOrgId })">Cancel</a>
             </p>
         </form>
 

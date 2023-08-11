@@ -12,6 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
+using NHSD.GPIT.BuyingCatalogue.Services.Orders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
@@ -49,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         {
             var order = (await orderService.GetOrderForTaskListStatuses(callOffId, internalOrgId)).Order;
 
-            if (order.OrderStatus == OrderStatus.Completed)
+            if (order.OrderStatus == OrderStatus.Completed || order.OrderStatus == OrderStatus.Terminated)
             {
                 return RedirectToAction(
                     nameof(Summary),
@@ -254,7 +255,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             return View(new TerminateOrderModel(internalOrgId, callOffId)
             {
                 BackLink = Url.Action(
-                    nameof(AmendOrder),
+                    nameof(Summary),
                     typeof(OrderController).ControllerName(),
                     new { internalOrgId, callOffId }),
             });
@@ -263,27 +264,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         [HttpPost("terminate")]
         public async Task<IActionResult> TerminateOrder(string internalOrgId, CallOffId callOffId, TerminateOrderModel model)
         {
-            var hasSubsequentRevisions = await orderService.HasSubsequentRevisions(callOffId);
-            if (hasSubsequentRevisions)
+            if (!ModelState.IsValid)
             {
-                return RedirectToAction(
-                    nameof(DashboardController.Organisation),
-                    typeof(DashboardController).ControllerName(),
-                    new { internalOrgId });
+                return View(model);
             }
 
-            var amendment = await orderService.AmendOrder(internalOrgId, callOffId);
+            var hasSubsequentRevisions = await orderService.HasSubsequentRevisions(callOffId);
+            if (!hasSubsequentRevisions)
+            {
+                await orderService.TerminateOrder(callOffId, internalOrgId,  model.ConfirmationDate.GetValueOrDefault(), model.Reason);
+            }
 
             return RedirectToAction(
-                nameof(Order),
-                typeof(OrderController).ControllerName(),
-                new { internalOrgId, amendment.CallOffId });
+                nameof(DashboardController.Organisation),
+                typeof(DashboardController).ControllerName(),
+                new { internalOrgId });
         }
 
         internal static string GetAdvice(Order order, bool latestOrder)
         {
             return order.OrderStatus switch
             {
+                OrderStatus.Terminated => "This contract has been terminated, but you can still view the details.",
                 OrderStatus.Completed when order.AssociatedServicesOnly => "This order has already been completed, but you can terminate the contract if needed.",
                 OrderStatus.Completed when latestOrder => "This order has already been completed, but you can amend or terminate the contract if needed.",
                 OrderStatus.Completed => "There is an amendment currently in progress for this contract.",

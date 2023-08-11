@@ -370,6 +370,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             await dbContext.SaveChangesAsync();
         }
 
+        public async Task TerminateOrder(CallOffId callOffId, string internalOrgId, DateTime terminationDate, string reason)
+        {
+            var orderWrapper = await GetOrderWithOrderItems(callOffId, internalOrgId);
+
+            await TerminateOrder(orderWrapper.Order, terminationDate, reason);
+
+            foreach (var order in orderWrapper.PreviousOrders)
+            {
+                await TerminateOrder(order, terminationDate, reason);
+            }
+        }
+
         public async Task CompleteOrder(CallOffId callOffId, string internalOrgId, int userId)
         {
             var order = (await GetOrderThin(callOffId, internalOrgId)).Order;
@@ -487,6 +499,25 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             var order = await dbContext.Order(internalOrgId, callOffId);
 
             order.SelectedFrameworkId = null;
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        private async Task TerminateOrder(Order order, DateTime dateOfTermination, string reason)
+        {
+            order.IsTerminated = true;
+            order.OrderTermination = new OrderTermination()
+            {
+                OrderId = order.Id, DateOfTermination = dateOfTermination, Reason = reason,
+            };
+
+            foreach (var orderItem in order.OrderItems)
+            {
+                foreach (var orderItemRecipient in orderItem.OrderItemRecipients)
+                {
+                    orderItemRecipient.DeliveryDate = dateOfTermination;
+                }
+            }
 
             await dbContext.SaveChangesAsync();
         }

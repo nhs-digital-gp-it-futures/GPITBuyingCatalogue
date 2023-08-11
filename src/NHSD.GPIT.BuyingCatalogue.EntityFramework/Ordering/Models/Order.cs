@@ -64,7 +64,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public bool IsDeleted { get; set; }
 
+        public bool IsTerminated { get; set; }
+
         public virtual OrderDeletionApproval OrderDeletionApproval { get; set; }
+
+        public virtual OrderTermination OrderTermination { get; set; }
 
         [NotMapped]
         [JsonIgnore]
@@ -72,6 +76,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         {
             get
             {
+                if (IsTerminated)
+                    return OrderStatus.Terminated;
+
                 if (IsDeleted)
                     return OrderStatus.Deleted;
 

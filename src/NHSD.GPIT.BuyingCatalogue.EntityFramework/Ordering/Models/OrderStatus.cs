@@ -12,5 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         [EnumMember(Value = "Deleted")]
         Deleted = 3,
+
+        [EnumMember(Value = "Terminated")]
+        Terminated = 4,
     }
 }

@@ -350,31 +350,35 @@
             }
         }
 
-        <div class="nhsuk-u-margin-top-9">
-            @if (Model.Order.OrderStatus == OrderStatus.InProgress)
-            {
-                <h3>Preview order</h3>
-                <p>You can download and review your order before sending it to the supplier for signature.</p>
-            }
-            else
-            {
-                <h3>Order summary</h3>
-                <p>You can download and review your order summary here.</p>
-            }
-
-            <vc:nhs-secondary-button text="Download order form (PDF)"
-                                     type="Secondary"
-                                     url="@Url.Action(
-                                              nameof(OrderController.Download),
-                                              typeof(OrderController).ControllerName(),
-                                              new { Model.InternalOrgId, Model.CallOffId })" />
-        @if (Model.CanBeTerminated)
+    <div class="nhsuk-u-margin-top-9">
+        @if (Model.Order.OrderStatus == OrderStatus.InProgress)
         {
-            <vc:nhs-delete-button url="@Url.Action(nameof(OrderController.TerminateOrder), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })" text="Terminate this contract"/>
+            <h3>Preview order</h3>
+            <p>You can download and review your order before sending it to the supplier for signature.</p>
         }
-        </div>
+        else
+        {
+            <h3>Order summary</h3>
+            <p>You can download and review your order summary here.</p>
+        }
 
+        <vc:nhs-secondary-button text="Download order form (PDF)"
+                                 type="Secondary"
+                                 url="@Url.Action(
+                                          nameof(OrderController.Download),
+                                          typeof(OrderController).ControllerName(),
+                                          new { Model.InternalOrgId, Model.CallOffId })" />
+    </div>
+
+        
+    @if (Model.CanBeTerminated)
+    {
         <div class="nhsuk-u-margin-top-3">
+            <vc:nhs-delete-button url="@Url.Action(nameof(OrderController.TerminateOrder), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })" text="Terminate this contract"/>
+        </div>
+    }
+    
+    <div class="nhsuk-u-margin-top-3">
             @if (Model.Order.OrderStatus == OrderStatus.InProgress
             && Model.Order.CanComplete())
             {
