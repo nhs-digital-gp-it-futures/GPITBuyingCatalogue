@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
@@ -12,12 +13,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         [CommonAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
             string internalOrgId,
+            bool hasSubsequentRevisions,
             EntityFramework.Ordering.Models.Order order)
         {
-            var model = new SummaryModel(new OrderWrapper(order), internalOrgId);
+            var model = new SummaryModel(new OrderWrapper(order), internalOrgId, hasSubsequentRevisions);
 
             model.InternalOrgId.Should().Be(internalOrgId);
             model.Order.Should().BeEquivalentTo(order);
+            model.HasSubsequentRevisions.Should().Be(hasSubsequentRevisions);
+            model.CanBeTerminated.Should().Be(order.OrderStatus == OrderStatus.Completed && !hasSubsequentRevisions);
+            model.CanBeAmended.Should().Be(!order.AssociatedServicesOnly && order.OrderStatus == OrderStatus.Completed && !hasSubsequentRevisions);
         }
     }
 }

@@ -12,8 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             InternalOrgId = internalOrgId;
             OrderWrapper = orderWrapper;
             DefaultPlan = defaultPlan;
-            CanBeTerminated = Order.OrderStatus == OrderStatus.Completed && !hasSubsequentRevisions;
-            CanBeAmended = !Order.AssociatedServicesOnly && CanBeTerminated;
+            HasSubsequentRevisions = hasSubsequentRevisions;
         }
 
         public OrderWrapper OrderWrapper { get; }
@@ -28,9 +27,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public string AdviceText { get; set; }
 
-        public bool CanBeTerminated { get; init; }
+        public bool CanBeTerminated => Order.OrderStatus == OrderStatus.Completed && !HasSubsequentRevisions;
 
-        public bool CanBeAmended { get; init; }
+        public bool CanBeAmended => !Order.AssociatedServicesOnly && CanBeTerminated;
+
+        public bool HasSubsequentRevisions { get; init; }
 
         public ImplementationPlan DefaultPlan { get; set; }
 

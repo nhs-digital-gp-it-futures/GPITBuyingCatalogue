@@ -118,6 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             ImplementationPlan defaultPlan,
+            bool hasSubsequentRevisions,
             [Frozen] Mock<IImplementationPlanService> implementationPlanService,
             [Frozen] Mock<IOrderService> orderService,
             OrderController controller)
@@ -130,10 +131,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
                 .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));
 
+            orderService
+                .Setup(s => s.HasSubsequentRevisions(order.CallOffId))
+                .ReturnsAsync(hasSubsequentRevisions);
+
             var result = await controller.Summary(internalOrgId, order.CallOffId);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
-            var expected = new SummaryModel(new OrderWrapper(order), internalOrgId, defaultPlan);
+            var expected = new SummaryModel(new OrderWrapper(order), internalOrgId, hasSubsequentRevisions, defaultPlan);
 
             actualResult.Model.Should().BeEquivalentTo(
                 expected,

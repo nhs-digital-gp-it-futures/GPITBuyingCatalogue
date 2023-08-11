@@ -35,6 +35,18 @@
     }
 
     <p class="nhsuk-lede-text">@Model.AdviceText</p>
+    
+    @if (Model.HasSubsequentRevisions)
+    {
+        <nhs-inset-text>
+            <p>
+                You cannot terminate this contract as there is currently an amendment in progress. 
+                You must <a href="@Url.Action(nameof(DashboardController.Index),
+                                              typeof(DashboardController).ControllerName(),
+                                              new { Model.InternalOrgId, Model.CallOffId })">cancel the amendment for Order @Model.CallOffId</a> before you can terminate this contract.
+            </p>
+        </nhs-inset-text>
+    }
 
     @if (Model.CanBeAmended)
         {
