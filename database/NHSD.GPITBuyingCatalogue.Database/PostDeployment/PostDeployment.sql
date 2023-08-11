@@ -15,7 +15,7 @@
 
 :r ./InsertAllowedEmailDomains.sql
 :r ./InsertCapabilityStatuses.sql
-:r ./InsertCapabilityCategories.sql
+:r ./TestData/InsertCapabilityCategories.sql
 :r ./InsertCompliancyLevels.sql
 :r ./InsertPublicationStatuses.sql
 :r ./InsertSolutionCapabilityStatuses.sql
