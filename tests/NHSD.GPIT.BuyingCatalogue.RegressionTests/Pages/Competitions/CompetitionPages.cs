@@ -50,21 +50,24 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
 
         internal SingleSolutionFound SingleSolutionFound { get; }
 
+        internal FilterType FilterType { get; set; }
+
         internal IWebDriver Driver { get; }
 
-        public void StepOnePrepareCompetition(string filterType, string competitionName,int addNumberOfSolutions = 0)
+        public void StepOnePrepareCompetition(FilterType filterType, string competitionName,int addNumberOfSolutions = 0)
         {
-            SelectFilter.SelectFilterForNewCompetition(filterType);
+            int selectedFilter = (int)filterType;
+            SelectFilter.SelectFilterForNewCompetition(selectedFilter);
 
             ReviewFilter.ReviewYourFilter();
 
             StartCompetition.CreateCompetition(competitionName);
 
-            if (filterType == "No results filter")
+            if (filterType == FilterType.NoResults)
             {
                 NoSolutionsFound.NoSolutions();
             }
-            else if (filterType == "Single result filter")
+            else if (filterType == FilterType.SingleResult)
             {
                 SingleSolutionFound.SingleSolution();
             }
