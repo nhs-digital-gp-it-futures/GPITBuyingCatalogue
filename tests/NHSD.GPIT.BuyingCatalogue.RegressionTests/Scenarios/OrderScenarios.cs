@@ -24,9 +24,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         private const string NewAdditionalServiceName = "EMIS Mobile";
         private const string NewAssociatedServiceName = "Automated Arrivals – Specialist Cabling";
         private const string AssociatedServiceNameForWebGP = "Engineering";
-        private const string SingleResultFilter = "Single result filter";
-        private const string MultipleResultFilter = "Multiple result filter";
-        private const string NoResultsFilter = "No results filter";
 
         private static readonly Dictionary<string, string> Parameters =
             new()
@@ -2071,8 +2068,31 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             CompetitionPages.BeforeYouStart.ReadyToStart();
 
-            CompetitionPages.StepOnePrepareCompetition(MultipleResultFilter, competitionName, 5);
+            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, 5);
+        }
 
+        [Fact]
+        public void CompetitionForNoResultFilter()
+        {
+            string competitionName = "CompetitionForNoResultFilter";
+
+            CompetitionPages.CompetitionDashboard.CompetitionTriage();
+
+            CompetitionPages.BeforeYouStart.ReadyToStart();
+
+            CompetitionPages.StepOnePrepareCompetition(FilterType.NoResults, competitionName);
+        }
+
+        [Fact]
+        public void CompetitionForSingleResultFilter()
+        {
+            string competitionName = "CompetitionForSingleResultFilter";
+
+            CompetitionPages.CompetitionDashboard.CompetitionTriage();
+
+            CompetitionPages.BeforeYouStart.ReadyToStart();
+
+            CompetitionPages.StepOnePrepareCompetition(FilterType.SingleResult, competitionName);
         }
 
         [Fact]
