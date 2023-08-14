@@ -34,9 +34,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCr
 
         public string GetDescription(string competition)
         {
-            var randomText = TextGenerators.TextInput(150);
+            var randomText = TextGenerators.TextInput(25);
 
-            var newDescription = competition + randomText;
+            var newDescription = $"{competition, 10}  {randomText}";
             return newDescription;
         }
     }
