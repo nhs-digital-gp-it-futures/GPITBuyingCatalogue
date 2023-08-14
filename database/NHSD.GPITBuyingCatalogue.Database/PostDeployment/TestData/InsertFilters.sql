@@ -12,7 +12,6 @@ SET IDENTITY_INSERT [filtering].[Filters] OFF
 SET IDENTITY_INSERT [filtering].[FilterClientApplicationTypes] ON
 
 INSERT [filtering].[FilterClientApplicationTypes] ([Id], [FilterId], [ClientApplicationTypeId]) VALUES (1, 1, 0)
-INSERT [filtering].[FilterClientApplicationTypes] ([Id], [FilterId], [ClientApplicationTypeId]) VALUES (2, 1, 2)
 INSERT [filtering].[FilterClientApplicationTypes] ([Id], [FilterId], [ClientApplicationTypeId]) VALUES (3, 3, 0)
 INSERT [filtering].[FilterClientApplicationTypes] ([Id], [FilterId], [ClientApplicationTypeId]) VALUES (4, 3, 2)
 INSERT [filtering].[FilterClientApplicationTypes] ([Id], [FilterId], [ClientApplicationTypeId]) VALUES (5, 3, 1)
