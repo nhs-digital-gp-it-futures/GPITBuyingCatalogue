@@ -2,6 +2,7 @@
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOne;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOne.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCreateCompetition;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCreateCompetition.SelectFilterType;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCreateCompetition.SolutionSelection;
@@ -21,6 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             SelectSolutions = new SelectSolutions(driver, commonActions);
             SolutionNotShortlisted = new SolutionNotShortlisted(driver, commonActions);
             CompetitionStepOne = new CompetitionStepOne(driver, commonActions);
+            NoSolutionsFound = new NoSolutionsFound(driver, commonActions);
+            SingleSolutionFound = new SingleSolutionFound(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -43,23 +46,41 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
 
         internal CompetitionStepOne CompetitionStepOne { get; }
 
+        internal NoSolutionsFound NoSolutionsFound { get; }
+
+        internal SingleSolutionFound SingleSolutionFound { get; }
+
+        internal FilterType FilterType { get; set; }
+
         internal IWebDriver Driver { get; }
 
-        public void StepOnePrepareCompetition(string filterType, string competitionName, int addNumberOfSolutions)
+        public void StepOnePrepareCompetition(FilterType filterType, string competitionName,int addNumberOfSolutions = 0)
         {
-            SelectFilter.SelectFilterForNewCompetition(filterType);
+            int selectedFilter = (int)filterType;
+            SelectFilter.SelectFilterForNewCompetition(selectedFilter);
 
             ReviewFilter.ReviewYourFilter();
 
             StartCompetition.CreateCompetition(competitionName);
 
-            int competitionId = CompetitionId();
-            int filterId = GetFilterId(competitionId);
-
-            if (filterId == 2)
+            if (filterType == FilterType.NoResults)
             {
-                SelectSolutions.AddSolutions(5);
-                SolutionNotShortlisted.SolutionNotIncludedInShortlisting();
+                NoSolutionsFound.NoSolutions();
+            }
+            else if (filterType == FilterType.SingleResult)
+            {
+                SingleSolutionFound.SingleSolution();
+            }
+            else
+            {
+                int competitionId = CompetitionId();
+                int filterId = GetFilterId(competitionId);
+
+                if (filterId == 2)
+                {
+                    SelectSolutions.AddSolutions(5);
+                    SolutionNotShortlisted.SolutionNotIncludedInShortlisting();
+                }
             }
         }
 
