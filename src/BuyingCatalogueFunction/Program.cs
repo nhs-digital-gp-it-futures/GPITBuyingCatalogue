@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using BuyingCatalogueFunction.Adapters;
-using BuyingCatalogueFunction.Models.Ods;
+using BuyingCatalogueFunction.EpicsAndCapabilities.Interfaces;
+using BuyingCatalogueFunction.EpicsAndCapabilities.Services;
+using BuyingCatalogueFunction.IncrementalUpdate.Adapters;
+using BuyingCatalogueFunction.IncrementalUpdate.Interfaces;
+using BuyingCatalogueFunction.IncrementalUpdate.Models.Ods;
+using BuyingCatalogueFunction.IncrementalUpdate.Services;
 using BuyingCatalogueFunction.Services;
-using BuyingCatalogueFunction.Services.IncrementalUpdate;
-using BuyingCatalogueFunction.Services.IncrementalUpdate.Interfaces;
 using BuyingCatalogueFunction.Settings;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
@@ -45,6 +48,10 @@ public static class Program
                 services.AddTransient<IOdsService, OdsService>();
                 services.AddTransient<IOdsOrganisationService, OdsOrganisationService>();
                 services.AddTransient<IOrganisationUpdateService, OrganisationUpdateService>();
+                services.AddTransient<ICapabilityService, CapabilityService>();
+                services.AddTransient<IEpicService, EpicService>();
+                services.AddTransient<IStandardService, StandardService>();
+                services.AddTransient<IStandardCapabilityService, StandardCapabilityService>();
 
                 services.AddTransient<IAdapter<Org, OdsOrganisation>, OdsOrganisationAdapter>();
                 services.AddTransient<IAdapter<Org, IEnumerable<OrganisationRelationship>>, OrganisationRelationshipsAdapter>();

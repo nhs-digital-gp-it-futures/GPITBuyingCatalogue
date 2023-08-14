@@ -167,8 +167,7 @@ public class CompetitionsDashboardController : Controller
         var solutionsAndServices =
             await solutionsFilterService.GetAllSolutionsFiltered(
                 pageOptions,
-                selectedCapabilityIds: filter.CapabilityIds.ToFilterString(),
-                selectedEpicIds: filter.EpicIds.ToFilterString(),
+                capabilitiesAndEpics: filter.CapabilityAndEpicIds,
                 selectedFrameworkId: filter.FrameworkId,
                 selectedApplicationTypeIds: filter.ApplicationTypeIds.ToFilterString(),
                 selectedHostingTypeIds: filter.HostingTypeIds.ToFilterString());

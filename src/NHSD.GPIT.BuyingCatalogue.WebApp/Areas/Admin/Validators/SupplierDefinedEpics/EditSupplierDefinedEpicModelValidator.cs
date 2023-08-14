@@ -1,10 +1,11 @@
 ﻿using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.SupplierDefinedEpics
 {
-    public sealed class EditSupplierDefinedEpicModelValidator : AbstractValidator<EditSupplierDefinedEpicModel>
+    public sealed class EditSupplierDefinedEpicModelValidator : AbstractValidator<EditSupplierDefinedEpicDetailsModel>
     {
         private readonly ISupplierDefinedEpicsService supplierDefinedEpicsService;
 
@@ -13,7 +14,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.SupplierDefine
         {
             this.supplierDefinedEpicsService = supplierDefinedEpicsService;
 
-            Include(new SupplierDefinedEpicBaseModelValidator(supplierDefinedEpicsService));
+            RuleFor(m => m.Name)
+                .NotEmpty()
+                .WithMessage("Enter a name");
+
+            RuleFor(m => m.Description)
+                .NotEmpty()
+                .WithMessage("Enter a description");
+
+            RuleFor(m => m.IsActive)
+                .NotNull()
+                .WithMessage("Select a status");
+
+            RuleFor(m => m)
+                .Must(NotBeADuplicateEpic)
+                .WithMessage("An Epic with this name already exists. Try another name")
+                .When(m => m.IsActive.HasValue)
+                .OverridePropertyName(
+                    m => m.Name);
 
             RuleFor(m => m.IsActive)
                 .Must(NotBeReferencedByAnySolutions)
@@ -21,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.SupplierDefine
                 .When(m => m.IsActive == false);
         }
 
-        public bool NotBeReferencedByAnySolutions(EditSupplierDefinedEpicModel model, bool? isActive)
+        public bool NotBeReferencedByAnySolutions(EditSupplierDefinedEpicDetailsModel model, bool? isActive)
         {
             var epic = supplierDefinedEpicsService.GetEpic(model.Id).GetAwaiter().GetResult();
             if (epic.IsActive == isActive)
@@ -29,6 +47,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.SupplierDefine
 
             var itemsReferencingEpic = supplierDefinedEpicsService.GetItemsReferencingEpic(model.Id).GetAwaiter().GetResult();
             return itemsReferencingEpic.Count == 0;
+        }
+
+        private bool NotBeADuplicateEpic(AddSupplierDefinedEpicDetailsModel model)
+        {
+            return !supplierDefinedEpicsService.EpicWithNameExists(
+                model.Id,
+                model.Name).GetAwaiter().GetResult();
         }
     }
 }

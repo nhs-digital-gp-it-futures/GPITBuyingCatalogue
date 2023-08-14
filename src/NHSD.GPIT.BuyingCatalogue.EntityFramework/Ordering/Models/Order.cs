@@ -96,5 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public Framework SelectedFramework { get; set; }
 
         public virtual ContractFlags ContractFlags { get; set; }
+
+        public virtual Contract Contract { get; set; }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
@@ -16,7 +18,84 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task<ContractFlags> GetContract(int orderId)
+        public async Task<Contract> GetContract(int orderId)
+        {
+            var contract = await dbContext.Contracts
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.OrderId == orderId);
+
+            var output = await AddContract(contract, orderId);
+
+            return output;
+        }
+
+        public async Task<Contract> GetContractWithImplementationPlan(int orderId)
+        {
+            var contract = await dbContext.Contracts
+                .AsNoTracking()
+                .Include(x => x.ImplementationPlan)
+                    .ThenInclude(x => x.Milestones.OrderBy(m => m.Order))
+                .FirstOrDefaultAsync(x => x.OrderId == orderId);
+
+            var output = await AddContract(contract, orderId);
+
+            return output;
+        }
+
+        public async Task<Contract> GetContractWithContractBilling(int orderId)
+        {
+            var contract = await dbContext.Contracts
+                .AsNoTracking()
+                .AsSplitQuery()
+                .Include(x => x.ContractBilling)
+                    .ThenInclude(x => x.ContractBillingItems)
+                        .ThenInclude(x => x.Milestone)
+                .Include(x => x.ContractBilling)
+                    .ThenInclude(x => x.ContractBillingItems)
+                        .ThenInclude(x => x.OrderItem)
+                            .ThenInclude(x => x.CatalogueItem)
+                .FirstOrDefaultAsync(x => x.OrderId == orderId);
+
+            var output = await AddContract(contract, orderId);
+
+            return output;
+        }
+
+        public async Task<Contract> GetContractWithContractBillingRequirements(int orderId)
+        {
+            var contract = await dbContext.Contracts
+                .AsNoTracking()
+                .AsSplitQuery()
+                .Include(x => x.ContractBilling)
+                    .ThenInclude(x => x.Requirements)
+                        .ThenInclude(x => x.OrderItem)
+                            .ThenInclude(x => x.CatalogueItem)
+                .FirstOrDefaultAsync(x => x.OrderId == orderId);
+
+            var output = await AddContract(contract, orderId);
+
+            return output;
+        }
+
+        public async Task RemoveContract(int orderId)
+        {
+            var contract = await GetContractWithImplementationPlan(orderId);
+            if (contract is not null)
+            {
+                if (contract.ImplementationPlan?.Milestones.Any() ?? false)
+                    dbContext.ImplementationPlanMilestones.RemoveRange(contract.ImplementationPlan.Milestones);
+
+                dbContext.Contracts.Remove(contract);
+                await dbContext.SaveChangesAsync();
+            }
+
+            var flags = await GetContractFlags(orderId);
+            flags.UseDefaultDataProcessing = false;
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task<ContractFlags> GetContractFlags(int orderId)
         {
             var output = await dbContext.ContractFlags.FirstOrDefaultAsync(x => x.OrderId == orderId);
 
@@ -37,52 +116,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             return output;
         }
 
-        public async Task RemoveContract(int orderId)
-        {
-            var contract = await GetContract(orderId);
-
-            contract.UseDefaultImplementationPlan = null;
-            contract.UseDefaultBilling = null;
-            contract.HasSpecificRequirements = null;
-            contract.UseDefaultDataProcessing = false;
-
-            await dbContext.SaveChangesAsync();
-        }
-
-        public async Task RemoveBillingAndRequirements(int orderId)
-        {
-            var contract = await GetContract(orderId);
-
-            contract.UseDefaultBilling = null;
-            contract.HasSpecificRequirements = null;
-
-            await dbContext.SaveChangesAsync();
-        }
-
-        public async Task HasSpecificRequirements(int orderId, bool value)
-        {
-            var flags = await dbContext.ContractFlags.FirstOrDefaultAsync(x => x.OrderId == orderId);
-
-            if (flags != null)
-            {
-                flags.HasSpecificRequirements = value;
-
-                await dbContext.SaveChangesAsync();
-            }
-        }
-
-        public async Task UseDefaultBilling(int orderId, bool value)
-        {
-            var flags = await dbContext.ContractFlags.FirstOrDefaultAsync(x => x.OrderId == orderId);
-
-            if (flags != null)
-            {
-                flags.UseDefaultBilling = value;
-
-                await dbContext.SaveChangesAsync();
-            }
-        }
-
         public async Task UseDefaultDataProcessing(int orderId, bool value)
         {
             var flags = await dbContext.ContractFlags.FirstOrDefaultAsync(x => x.OrderId == orderId);
@@ -95,16 +128,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             }
         }
 
-        public async Task UseDefaultImplementationPlan(int orderId, bool value)
+        private async Task<Contract> AddContract(Contract contract, int orderId)
         {
-            var flags = await dbContext.ContractFlags.FirstOrDefaultAsync(x => x.OrderId == orderId);
-
-            if (flags != null)
+            if (contract is null)
             {
-                flags.UseDefaultImplementationPlan = value;
+                contract = new Contract
+                {
+                    OrderId = orderId,
+                };
+
+                dbContext.Contracts.Add(contract);
 
                 await dbContext.SaveChangesAsync();
             }
+
+            return contract;
         }
     }
 }

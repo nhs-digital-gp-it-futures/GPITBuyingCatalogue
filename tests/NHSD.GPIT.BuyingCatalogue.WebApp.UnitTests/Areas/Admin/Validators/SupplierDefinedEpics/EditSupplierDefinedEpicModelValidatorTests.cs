@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
         public static void Validate_FromActiveToInactive_WithReferencedItems(
             Epic epic,
             List<CatalogueItem> itemsReferencingEpic,
-            EditSupplierDefinedEpicModel model,
+            EditSupplierDefinedEpicDetailsModel model,
             [Frozen] Mock<ISupplierDefinedEpicsService> service,
             EditSupplierDefinedEpicModelValidator validator)
         {
@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
         [CommonAutoData]
         public static void Validate_FromActiveToInactive_NoReferencedItems(
             Epic epic,
-            EditSupplierDefinedEpicModel model,
+            EditSupplierDefinedEpicDetailsModel model,
             [Frozen] Mock<ISupplierDefinedEpicsService> service,
             EditSupplierDefinedEpicModelValidator validator)
         {
@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Supp
         [CommonAutoData]
         public static void Validate_FromInactiveToInactive_NoModelError(
             Epic epic,
-            EditSupplierDefinedEpicModel model,
+            EditSupplierDefinedEpicDetailsModel model,
             [Frozen] Mock<ISupplierDefinedEpicsService> service,
             EditSupplierDefinedEpicModelValidator validator)
         {

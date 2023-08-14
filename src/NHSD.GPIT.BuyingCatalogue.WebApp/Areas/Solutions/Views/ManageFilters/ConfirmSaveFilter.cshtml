@@ -22,22 +22,6 @@
 
         <form method="post">
             <input type="hidden" asp-for="BackLink"/>
-            @if (Model.CapabilityIds != null)
-            {
-                @for (var i = 0; i < Model.CapabilityIds.Count; i++)
-                {
-                    <input type="hidden" asp-for="CapabilityIds[i]" />
-                }
-            }
-            
-            @if (Model.EpicIds != null)
-            {
-                @for (var i = 0; i < Model.EpicIds.Count; i++)
-                {
-                    <input type="hidden" asp-for="EpicIds[i]" />
-                }
-            }
-            
             <input type="hidden" asp-for="FrameworkId" />
             <input type="hidden" asp-for="FrameworkName" />
             <input type="hidden" asp-for="OrganisationId" />
