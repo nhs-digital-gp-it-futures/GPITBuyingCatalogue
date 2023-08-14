@@ -12,10 +12,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
         {
             ISpecimenBuilder ComposerTransformation(ICustomizationComposer<Order> composer) => composer
                 .FromFactory(new OrderSpecimenBuilder(fixture))
-                .Without(x => x.Revision).Do(x => x.Revision = 1)
+                .Without(x => x.Revision)
+                .Do(x => x.Revision = 1)
                 .Without(o => o.IsDeleted)
                 .Without(o => o.LastUpdatedByUser)
-                .Without(o => o.OrderItems);
+                .Without(o => o.OrderItems)
+                .Without(o => o.Contract);
 
             fixture.Customize<Order>(ComposerTransformation);
         }

@@ -24,8 +24,7 @@ public class FiltersSeedData : ISeedData
                 Description = "GPIT Framework Filter",
                 OrganisationId = 77,
                 FrameworkId = "NHSDGP001",
-                Capabilities =
-                    new List<Capability> { capability },
+                Capabilities = new List<Capability> { capability },
                 FilterHostingTypes = new List<FilterHostingType>
                 {
                     new() { FilterId = 1, HostingType = HostingType.Hybrid, },

@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using Fare;
+using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -33,12 +34,30 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
+        [CommonAutoData]
+        public static void Get_AssociatedServicesOnly_ReturnsNotApplicable(
+            Order order,
+            ImplementationPlanStatusProvider service)
+        {
+            var state = new OrderProgress
+            {
+                FundingSource = TaskProgress.Completed,
+            };
+
+            order.AssociatedServicesOnly = true;
+
+            var actual = service.Get(new OrderWrapper(order), state);
+
+            actual.Should().Be(TaskProgress.NotApplicable);
+        }
+
+        [Theory]
         [CommonInlineAutoData(TaskProgress.CannotStart)]
         [CommonInlineAutoData(TaskProgress.InProgress)]
         [CommonInlineAutoData(TaskProgress.NotApplicable)]
         [CommonInlineAutoData(TaskProgress.NotStarted)]
         [CommonInlineAutoData(TaskProgress.Optional)]
-        public static void Get_FundingSourceNotComplete_ReturnsCannotStart(
+        public static void Get_FundingSourceNotComplete_NullContract_ReturnsCannotStart(
             TaskProgress status,
             Order order,
             ImplementationPlanStatusProvider service)
@@ -48,7 +67,30 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 FundingSource = status,
             };
 
-            order.ContractFlags = null;
+            order.Contract = null;
+
+            var actual = service.Get(new OrderWrapper(order), state);
+
+            actual.Should().Be(TaskProgress.CannotStart);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(TaskProgress.CannotStart)]
+        [CommonInlineAutoData(TaskProgress.InProgress)]
+        [CommonInlineAutoData(TaskProgress.NotApplicable)]
+        [CommonInlineAutoData(TaskProgress.NotStarted)]
+        [CommonInlineAutoData(TaskProgress.Optional)]
+        public static void Get_FundingSourceNotComplete_NullImplementationPlan_ReturnsCannotStart(
+            TaskProgress status,
+            Order order,
+            ImplementationPlanStatusProvider service)
+        {
+            var state = new OrderProgress
+            {
+                FundingSource = status,
+            };
+
+            order.Contract = new Contract() { ImplementationPlan = null };
 
             var actual = service.Get(new OrderWrapper(order), state);
 
@@ -71,7 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 FundingSource = status,
             };
 
-            order.ContractFlags.UseDefaultImplementationPlan = true;
+            order.Contract = new Contract() { ImplementationPlan = new ImplementationPlan() };
 
             var actual = service.Get(new OrderWrapper(order), state);
 
@@ -81,7 +123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [Theory]
         [CommonInlineAutoData(TaskProgress.Completed)]
         [CommonInlineAutoData(TaskProgress.Amended)]
-        public static void Get_ContractInfoNotEntered_ReturnsNotStarted(
+        public static void Get_ContractNull_ReturnsNotStarted(
             TaskProgress fundingTaskProgress,
             Order order,
             ImplementationPlanStatusProvider service)
@@ -91,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 FundingSource = fundingTaskProgress,
             };
 
-            order.ContractFlags.UseDefaultImplementationPlan = null;
+            order.Contract = null;
 
             var actual = service.Get(new OrderWrapper(order), state);
 
@@ -99,13 +141,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonInlineAutoData(TaskProgress.Completed, true)]
-        [CommonInlineAutoData(TaskProgress.Completed, false)]
-        [CommonInlineAutoData(TaskProgress.Amended, true)]
-        [CommonInlineAutoData(TaskProgress.Amended, false)]
-        public static void Get_ContractInfoEntered_ReturnsCompleted(
+        [CommonInlineAutoData(TaskProgress.Completed)]
+        [CommonInlineAutoData(TaskProgress.Amended)]
+        public static void Get_ImplementationPlanNull_ReturnsNotStarted(
             TaskProgress fundingTaskProgress,
-            bool useDefaultImplementationPlan,
             Order order,
             ImplementationPlanStatusProvider service)
         {
@@ -114,7 +153,27 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 FundingSource = fundingTaskProgress,
             };
 
-            order.ContractFlags.UseDefaultImplementationPlan = useDefaultImplementationPlan;
+            order.Contract = new Contract() { ImplementationPlan = null };
+
+            var actual = service.Get(new OrderWrapper(order), state);
+
+            actual.Should().Be(TaskProgress.NotStarted);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(TaskProgress.Completed)]
+        [CommonInlineAutoData(TaskProgress.Amended)]
+        public static void Get_ContractInfoEntered_ReturnsCompleted(
+            TaskProgress fundingTaskProgress,
+            Order order,
+            ImplementationPlanStatusProvider service)
+        {
+            var state = new OrderProgress
+            {
+                FundingSource = fundingTaskProgress,
+            };
+
+            order.Contract = new Contract() { ImplementationPlan = new ImplementationPlan() };
 
             var actual = service.Get(new OrderWrapper(order), state);
 

@@ -48,7 +48,7 @@
             <p>A copy of these tasks will be emailed to the address you’ve provided.</p>
         </div>
 
-        @if (Model.SupportingDocumentsRequired)
+        @if (Model.HasBespokeDataProcessing)
         {
             <div class="nhsuk-u-margin-bottom-9" id="supporting-documents">
                 <h2>Supporting documents</h2>
@@ -57,32 +57,11 @@
                 </p>
 
                 <ul>
-                    @if (Model.HasBespokeImplementationPlan)
-                    {
-                        <li id="has-bespoke-implementation-plan">
-                            <a href="https://gpitbjss.atlassian.net/wiki/spaces/BG/pages/12209422525/Order+form+template+Implementation+plan+milestones" target="_blank">
-                                Implementation plan milestones template (opens in a new tab)
-                            </a>
-                        </li>
-                    }
-
-                    @if (Model.HasBespokeBilling)
-                    {
-                        <li id="has-bespoke-billing">
-                            <a href="https://gpitbjss.atlassian.net/wiki/spaces/BG/pages/12209389727/Order+form+template+Associated+Service+billing+and+requirements" target="_blank">
-                                Associated Service billing and requirements template (opens in a new tab)
-                            </a>
-                       </li>
-                    }
-
-                    @if (Model.HasBespokeDataProcessing)
-                    {
-                        <li id="has-bespoke-data-processing">
+                    <li id="has-bespoke-data-processing">
                             <a href="https://gpitbjss.atlassian.net/wiki/spaces/BG/pages/12207980954/Order+form+template+Data+processing+information" target="_blank">
                                 Data processing information template (opens in a new tab)
                             </a>
-                        </li>
-                    }
+                    </li>
                 </ul>
             </div>
         }

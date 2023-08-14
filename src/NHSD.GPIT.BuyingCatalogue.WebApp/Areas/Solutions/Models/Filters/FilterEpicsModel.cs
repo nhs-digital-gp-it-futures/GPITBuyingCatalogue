@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 {
@@ -15,34 +15,40 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
         public FilterEpicsModel(
             List<Capability> capabilities,
             List<Epic> epics,
-            string selectedIds = null,
+            Dictionary<int, string[]> selected = null,
             string search = null)
         {
+            selected ??= new Dictionary<int, string[]>();
+
             Groups = capabilities;
-            CapabilityIds = Groups.Select(x => x.Id).ToFilterString();
+            Selected = selected.ToFilterString();
+            ClearEpics = new Dictionary<int, string[]>(selected.Keys.Select(c => new KeyValuePair<int, string[]>(c, null)))
+                .ToFilterString();
 
             GroupedItems = Groups.ToDictionary(
                 x => x.Id,
                 x => epics.Where(c => c.Capabilities.Any(y => y.Id == x.Id)).OrderBy(c => c.Name));
 
-            var selected = SolutionsFilterHelper.ParseEpicIds(selectedIds);
-
-            SelectedItems = epics.Select(x => new SelectionModel
-            {
-                Id = x.Id,
-                Selected = selected.Contains(x.Id),
-            }).ToArray();
+            SelectedItems = GroupedItems.SelectMany(
+                kv => kv.Value.Select(
+                    e => new SelectionModel
+                    {
+                        Id = $"{kv.Key},{e.Id}",
+                        Selected = selected.GetValueOrDefault(kv.Key)?.Contains(e.Id) ?? false,
+                    })).ToArray();
 
             EpicSelectedItemsMap = SelectedItems
                 .Select((item, index) => new { item.Id, index })
                 .ToDictionary(pair => pair.Id, pair => pair.index);
 
-            Total = epics.Count;
+            Total = SelectedItems.Count();
 
             SearchTerm = search;
         }
 
-        public string CapabilityIds { get; set; }
+        public string Selected { get; set; }
+
+        public string ClearEpics { get; set; }
 
         public Dictionary<string, int> EpicSelectedItemsMap { get; set; }
     }

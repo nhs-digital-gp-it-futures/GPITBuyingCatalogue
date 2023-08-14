@@ -15,24 +15,24 @@
 
 :r ./InsertAllowedEmailDomains.sql
 :r ./InsertCapabilityStatuses.sql
-:r ./InsertCapabilityCategories.sql
+:r ./TestData/InsertCapabilityCategories.sql
 :r ./InsertCompliancyLevels.sql
 :r ./InsertPublicationStatuses.sql
 :r ./InsertSolutionCapabilityStatuses.sql
 :r ./InsertSolutionEpicStatuses.sql
 :r ./InsertCatalogueItemTypes.sql
 :r ./InsertFrameworks.sql
-:r ./InsertCapabilities.sql
+:r ./TestData/InsertCapabilities.sql
 :r ./InsertCataloguePriceTypes.sql
 :r ./InsertCataloguePriceCalculationTypes.sql
 :r ./InsertCataloguePriceQuantityCalculationTypes.sql
-:r ./InsertEpics.sql
+:r ./TestData/InsertEpics.sql
 :r ./InsertPricingUnits.sql
 :r ./InsertProvisioningTypes.sql
 :r ./InsertSuppliers.sql
 :r ./InsertStandardTypes.sql
-:r ./InsertStandards.sql
-:r ./InsertStandardsCapabilities.sql
+:r ./TestData/InsertStandards.sql
+:r ./TestData/InsertStandardsCapabilities.sql
 
 :r ./InsertOrderStatuses.sql
 :r ./InsertOrderTriageValues.sql
@@ -66,3 +66,5 @@
 :r ./TestData/Solutions/InsertServiceLevels.sql
 
 :r ./MigrateEpics.sql
+:r ./MigrateEpicCompliancyLevel.sql
+:r ./MigrateContracts.sql

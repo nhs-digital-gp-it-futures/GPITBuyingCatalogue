@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -273,8 +273,7 @@ public static class CompetitionsDashboardControllerTests
         solutionsFilterService.Setup(
                 x => x.GetAllSolutionsFiltered(
                     It.IsAny<PageOptions>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
+                    It.IsAny<Dictionary<int, string[]>>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),

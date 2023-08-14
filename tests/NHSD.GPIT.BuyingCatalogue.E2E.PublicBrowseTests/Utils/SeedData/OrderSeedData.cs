@@ -1411,8 +1411,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 LastUpdatedBy = user.Id,
                 ContractFlags = new ContractFlags
                 {
-                    UseDefaultImplementationPlan = false,
                     UseDefaultDataProcessing = true,
+                },
+                Contract = new Contract()
+                {
+                    ImplementationPlan = new ImplementationPlan() { Milestones = new List<ImplementationPlanMilestone>(), },
                 },
             };
 

@@ -1,6 +1,6 @@
 ﻿CREATE TABLE catalogue.CapabilityCategories
 (
-     Id int NOT NULL,
+     Id int IDENTITY(1, 1) NOT NULL,
      [Name] nvarchar(50) NOT NULL,
      [Description] nvarchar(200) NULL,
      LastUpdated datetime2(7) DEFAULT GETUTCDATE() NOT NULL,

@@ -87,22 +87,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Configuration
                         j.HasKey("CapabilityId", "FilterId");
                     });
 
-            builder.HasMany(x => x.Epics)
-                .WithMany()
-                .UsingEntity<Dictionary<string, object>>(
-                    r => r.HasOne<Epic>()
-                        .WithMany()
-                        .HasForeignKey("EpicId")
-                        .HasConstraintName("FK_FilterEpics_Epic"),
-                    l => l.HasOne<Filter>()
-                        .WithMany()
-                        .HasForeignKey("FilterId")
-                        .HasConstraintName("FK_FilterEpics_Filter"),
-                    j =>
-                    {
-                        j.ToTable("FilterEpics", Schemas.Filtering);
-                        j.HasKey("EpicId", "FilterId");
-                    });
+            builder.HasMany(x => x.FilterCapabilityEpics)
+                .WithOne()
+                .HasForeignKey(x => x.FilterId);
         }
     }
 }

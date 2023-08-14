@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
@@ -8,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
         public const string YesRadioOption = "Filter by Epics";
         public const string NoRadioOption = "Go to results";
 
-        public string SelectedCapabilityIds { get; set; }
+        public string Selected { get; set; }
 
         public bool? IncludeEpics { get; set; }
 

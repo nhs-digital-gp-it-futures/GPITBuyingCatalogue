@@ -13,8 +13,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
         public CatalogueFilterSearchSummary(
             List<CapabilitiesAndCountModel> capabilitiesAndEpics,
             string searchTerm,
-            string selectedCapabilityids,
-            string selectedEpicIds)
+            string selected,
+            bool includesEpics)
         {
             CapabilitiesAndEpics = capabilitiesAndEpics
                 .OrderByDescending(o => o.CountOfEpics)
@@ -22,17 +22,17 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
                 .ToList();
             SearchTerm = searchTerm;
 
-            SelectedCapabilityIds = selectedCapabilityids;
+            Selected = selected;
 
-            SelectedEpicIds = selectedEpicIds;
+            IncludesEpics = includesEpics;
         }
 
         public ICollection<CapabilitiesAndCountModel> CapabilitiesAndEpics { get; set; }
 
         public string SearchTerm { get; set; }
 
-        public string SelectedCapabilityIds { get; init; }
+        public bool IncludesEpics { get; set; }
 
-        public string SelectedEpicIds { get; init; }
+        public string Selected { get; init; }
     }
 }
