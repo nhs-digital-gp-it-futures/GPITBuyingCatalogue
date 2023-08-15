@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
@@ -109,7 +108,7 @@ public class CompetitionTaskListModel
 
         NonPriceWeightings = CompletedInProgressOrNotStarted(
             competition,
-            c => competition.NonPriceElements.NonPriceWeights is not null,
+            c => c.NonPriceElements.NonPriceWeights is not null,
             c => c.NonPriceElements.HasIncompleteWeighting());
 
         if (NonPriceWeightings is TaskProgress.NotStarted or TaskProgress.InProgress) return;
@@ -138,7 +137,7 @@ public class CompetitionTaskListModel
 
             CompareAndScoreSolutions = CompletedInProgressOrNotStarted(
                 competition,
-                c => c.CompetitionSolutions.All(
+                c => c.CompetitionSolutions.Any() && c.CompetitionSolutions.All(
                     x => x.Scores.Count > 0),
                 c => c.CompetitionSolutions.Any(
                     x => x.Scores.Count > 0 && (HasIncompleteScore(competition, x, ScoreType.Implementation)
@@ -148,12 +147,14 @@ public class CompetitionTaskListModel
 
         if (CompareAndScoreSolutions is not (TaskProgress.NotApplicable or TaskProgress.Completed)) return;
 
+        var solutionProgressStatuses = competition.CompetitionSolutions
+            .Select(x => new CompetitionSolutionProgress(x, competition.Recipients))
+            .ToList();
+
         CalculatePrice = CompletedInProgressOrNotStarted(
             competition,
-            _ => competition.CompetitionSolutions.All(
-                x => x.AllQuantitiesDefined(competition.Recipients) && x.AllPricesDefined()),
-            _ => competition.CompetitionSolutions.Any(
-                x => (x.Price is not null || (x.Quantities.Any() || x.Quantity.HasValue))
-                    && (!x.AllPricesDefined() || !x.AllQuantitiesDefined(competition.Recipients))));
+            _ => solutionProgressStatuses.All(x => x.Progress is TaskProgress.Completed),
+            _ => solutionProgressStatuses.Any(x => x.Progress is TaskProgress.InProgress or TaskProgress.Completed)
+                && !solutionProgressStatuses.All(x => x.Progress is TaskProgress.Completed));
     }
 }

@@ -18,6 +18,7 @@ public static class PricingDashboardModelTests
 
         var model = new PricingDashboardModel(competition);
 
+        model.CompetitionId.Should().Be(competition.Id);
         model.CompetitionName.Should().Be(competition.Name);
         model.SolutionPrices.Should().BeEmpty();
     }

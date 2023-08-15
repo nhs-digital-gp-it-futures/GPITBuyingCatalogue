@@ -136,9 +136,10 @@ public class CompetitionHubController : Controller
     {
         if (!ModelState.IsValid)
         {
-            var solutionWithPrices =
+            var itemWithPrices =
                 await listPriceService.GetCatalogueItemWithPublishedListPrices(serviceId ?? solutionId);
-            model.Prices = solutionWithPrices.CataloguePrices.OrderBy(cp => cp.CataloguePriceType).ToList();
+
+            model.Prices = itemWithPrices.CataloguePrices.OrderBy(cp => cp.CataloguePriceType).ToList();
             return View("PriceSelection/SelectPrice", model);
         }
 
@@ -243,8 +244,6 @@ public class CompetitionHubController : Controller
     {
         var competition = await competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competitionId);
         var competitionSolution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
-
-        if (competitionSolution is null) return BadRequest();
 
         (IPrice price, CatalogueItem catalogueItem, int? quantity) =
             GetGlobalQuantityDetails(competitionSolution, serviceId);

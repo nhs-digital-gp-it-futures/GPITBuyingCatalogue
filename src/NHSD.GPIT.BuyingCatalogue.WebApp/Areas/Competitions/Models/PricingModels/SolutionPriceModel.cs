@@ -2,6 +2,7 @@
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.PricingModels;
@@ -15,11 +16,9 @@ public class SolutionPriceModel
         CatalogueItemId = solution.SolutionId;
         Name = solution.Solution.CatalogueItem.Name;
 
-        Progress = solution.AllQuantitiesDefined(competition.Recipients) && solution.AllPricesDefined()
-            ? TaskProgress.Completed
-            : (solution.Price is not null || (solution.Quantity.HasValue || solution.Quantities.Any())) && (!solution.AllQuantitiesDefined(competition.Recipients) || solution.AllPricesDefined())
-                ? TaskProgress.InProgress
-                : TaskProgress.NotStarted;
+        var competitionSolutionProgress = new CompetitionSolutionProgress(solution, competition.Recipients);
+
+        Progress = competitionSolutionProgress.Progress;
 
         if (Progress is not TaskProgress.Completed) return;
 

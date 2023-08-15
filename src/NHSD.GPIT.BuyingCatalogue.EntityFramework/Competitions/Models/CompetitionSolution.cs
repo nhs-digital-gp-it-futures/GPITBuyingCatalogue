@@ -46,15 +46,6 @@ public class CompetitionSolution : ICompetitionPriceEntity
 
     public SolutionScore GetScoreByType(ScoreType type) => Scores?.FirstOrDefault(x => x.ScoreType == type);
 
-    public bool AllQuantitiesDefined(ICollection<OdsOrganisation> odsOrganisations) =>
-        ((Quantities.Any() && odsOrganisations.All(y => Quantities.Any(z => z.OdsCode == y.Id))) || Quantity.HasValue)
-        && (!SolutionServices.Any() || SolutionServices.All(
-            x => x.Quantity.HasValue || odsOrganisations.All(y => x.Quantities.Any(z => z.OdsCode == y.Id))));
-
-    public bool AllPricesDefined() =>
-        Price is not null
-        && (!SolutionServices.Any() || SolutionServices.All(x => x.Price is not null));
-
     public ICollection<SolutionService> GetAssociatedServices() => SolutionServices.Where(
             x => !x.IsRequired && x.Service.CatalogueItemType is CatalogueItemType.AssociatedService)
         .ToList();

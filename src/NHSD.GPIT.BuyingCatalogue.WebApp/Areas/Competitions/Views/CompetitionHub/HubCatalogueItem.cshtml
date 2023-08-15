@@ -62,7 +62,7 @@
     <nhs-summary-list>
         @if (Model.CatalogueItemType is CatalogueItemType.AssociatedService)
         {
-            <nhs-summary-list-row label-text="Total one-off cost">£@Model.Price.CalculateOneOffCost(quantity).ToString("N2")</nhs-summary-list-row>
+            <nhs-summary-list-row label-text="One-off cost @Model.Price.Description">£@Model.Price.CalculateOneOffCost(quantity).ToString("N2")</nhs-summary-list-row>
         }
         else
         {

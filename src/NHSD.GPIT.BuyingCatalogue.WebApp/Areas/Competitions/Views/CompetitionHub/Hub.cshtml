@@ -24,49 +24,44 @@
             </div>
         </div>
 
-        <div id="AdditionalServiceDetails" class="nhsuk-u-margin-bottom-9">
-            <h2>Additional Services</h2>
+        @if (additionalServices.Any())
+        {
+            <div id="AdditionalServiceDetails" class="nhsuk-u-margin-bottom-9">
+                <h2>Additional Services</h2>
 
-            @if (!additionalServices.Any())
-            {
-                <p>No Additional Services have been added for this Catalogue Solution.</p>
-            }
-            else
-            {
                 @foreach (var item in additionalServices)
                 {
                     <div class="nhsuk-u-margin-bottom-9">
                         <partial name="HubCatalogueItem" model="@Model.GetCatalogueItem(item.CatalogueItemId)"/>
                     </div>
                 }
-            }
-        </div>
+            </div>
+        }
 
-        <div id="AssociatedServiceDetails" class="nhsuk-u-margin-bottom-9">
-            <h2>Associated Services</h2>
-
-            @if (Model.AssociatedServicesAvailable)
-            {
+        @if (Model.AssociatedServicesAvailable)
+        {
+            <div id="AssociatedServiceDetails" class="nhsuk-u-margin-bottom-9">
+                <h2>Associated Services</h2>
                 <span data-test-id="associated-services-action">
                     <vc:nhs-action-link text="@Model.AssociatedServicesActionText"
                                         url="@Model.AssociatedServicesUrl"/>
                 </span>
-            }
 
-            @if (!associatedServices.Any())
-            {
-                <p>No Associated Services have been added for this Catalogue Solution.</p>
-            }
-            else
-            {
-                @foreach (var item in associatedServices)
+                @if (!associatedServices.Any())
                 {
-                    <div class="nhsuk-u-margin-bottom-9">
-                        <partial name="HubCatalogueItem" model="@Model.GetCatalogueItem(item.CatalogueItemId)"/>
-                    </div>
+                    <p>No Associated Services have been added for this Catalogue Solution.</p>
                 }
-            }
-        </div>
+                else
+                {
+                    @foreach (var item in associatedServices)
+                    {
+                        <div class="nhsuk-u-margin-bottom-9">
+                            <partial name="HubCatalogueItem" model="@Model.GetCatalogueItem(item.CatalogueItemId)"/>
+                        </div>
+                    }
+                }
+            </div>
+        }
 
         <vc:nhs-secondary-button text="Continue"
                                  url="@Model.BackLink"

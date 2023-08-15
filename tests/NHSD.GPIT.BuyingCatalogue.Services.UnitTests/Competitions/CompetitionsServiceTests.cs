@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoFixture;
+using AutoFixture.AutoMoq;
+using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +25,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions;
 
 public static class CompetitionsServiceTests
 {
+    [Fact]
+    public static void Constructors_VerifyGuardClauses()
+    {
+        var fixture = new Fixture().Customize(new AutoMoqCustomization());
+        var assertion = new GuardClauseAssertion(fixture);
+        var constructors = typeof(CompetitionsService).GetConstructors();
+
+        assertion.Verify(constructors);
+    }
+
     [Theory]
     [InMemoryDbAutoData]
     public static async Task GetCompetitionCriteriaReview_ReturnsCompetition(
@@ -1673,5 +1686,78 @@ public static class CompetitionsServiceTests
         updatedCompetition.CompetitionSolutions.First()
             .Scores.Should()
             .OnlyContain(x => x.ScoreType == ScoreType.Price);
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task SetAssociatedServices_UpdatesAssociatedServices(
+        Organisation organisation,
+        Supplier supplier,
+        Competition competition,
+        CompetitionSolution competitionSolution,
+        Solution solution,
+        List<AssociatedService> associatedServices,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        supplier.CatalogueItems = null;
+
+        solution.CatalogueItem.Supplier = null;
+        solution.CatalogueItem.SupplierId = supplier.Id;
+
+        associatedServices.ForEach(
+            x =>
+            {
+                x.CatalogueItem.Supplier = null;
+                x.CatalogueItem.SupplierId = supplier.Id;
+            });
+
+        var supplierServiceAssociations = associatedServices.Select(
+            x => new SupplierServiceAssociation(solution.CatalogueItemId, x.CatalogueItemId));
+
+        var existingService = associatedServices.First();
+
+        competition.OrganisationId = organisation.Id;
+        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+
+        competitionSolution.IsShortlisted = true;
+        competitionSolution.CompetitionId = competition.Id;
+        competitionSolution.SolutionId = solution.CatalogueItemId;
+        competitionSolution.SolutionServices = new List<SolutionService>
+        {
+            new(competition.Id, solution.CatalogueItemId, existingService.CatalogueItemId, false),
+        };
+
+        var serviceIds = associatedServices.Skip(1).Select(x => x.CatalogueItemId).ToList();
+
+        context.Organisations.Add(organisation);
+        context.Suppliers.Add(supplier);
+        context.Solutions.Add(solution);
+        context.AssociatedServices.AddRange(associatedServices);
+        context.SupplierServiceAssociations.AddRange(supplierServiceAssociations);
+        context.Competitions.Add(competition);
+
+        await context.SaveChangesAsync();
+
+        context.ChangeTracker.Clear();
+
+        await service.SetAssociatedServices(
+            organisation.InternalIdentifier,
+            competition.Id,
+            solution.CatalogueItemId,
+            serviceIds);
+
+        var updatedCompetition = await context.Competitions.Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.SolutionServices)
+            .ThenInclude(x => x.Service)
+            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == organisation.InternalIdentifier && x.Id == competition.Id);
+
+        var updatedCompetitionSolution =
+            updatedCompetition.CompetitionSolutions.First(x => x.SolutionId == solution.CatalogueItemId);
+
+        var solutionServices = updatedCompetitionSolution.SolutionServices.ToList();
+
+        solutionServices.Should().HaveCount(serviceIds.Count);
+        solutionServices.Should().NotContain(x => x.ServiceId == existingService.CatalogueItemId);
     }
 }
