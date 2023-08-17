@@ -39,7 +39,7 @@ public static class EditCapabilitiesModelTests
 
     [Theory]
     [CommonAutoData]
-    public static void Construct_NoSelectedCapabilities_SelectsAllMustEpics(
+    public static void Construct_NoSelectedEffectiveCapabilities_SelectsAllMustEpics(
         Solution solution,
         CapabilityCategory capabilityCategory,
         Capability capability,
@@ -47,6 +47,8 @@ public static class EditCapabilitiesModelTests
         List<Epic> mayEpics,
         List<CapabilityCategory> capabilityCategories)
     {
+        capability.Status = CapabilityStatus.Effective;
+
         mayEpics.ForEach(e => e.IsActive = true);
         mustEpics.ForEach(e => e.IsActive = true);
 

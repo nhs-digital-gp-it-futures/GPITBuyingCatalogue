@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
             MayEpics = GetCapabilityEpicModels(catalogueItem, capability, capability.GetAllMayEpics());
             MustEpics = GetCapabilityEpicModels(catalogueItem, capability, capability.GetAllMustEpics());
 
-            if (!Selected)
+            if (capability.Status == CapabilityStatus.Effective && !Selected)
                 MustEpics.ForEach(e => e.Selected = true);
         }
 

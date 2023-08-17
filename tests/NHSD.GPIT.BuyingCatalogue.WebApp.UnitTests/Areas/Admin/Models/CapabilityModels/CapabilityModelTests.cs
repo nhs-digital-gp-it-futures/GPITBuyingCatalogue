@@ -82,12 +82,14 @@ public static class CapabilityModelTests
 
     [Theory]
     [CommonAutoData]
-    public static void Construct_CapabilityNotSelected_SelectsAllMustEpics(
+    public static void Construct_Effective_CapabilityNotSelected_SelectsAllMustEpics(
         Solution solution,
         Capability capability,
         List<Epic> mustEpics,
         List<Epic> mayEpics)
     {
+        capability.Status = CapabilityStatus.Effective;
+
         mayEpics.ForEach(e => e.IsActive = true);
         mustEpics.ForEach(e => e.IsActive = true);
 
