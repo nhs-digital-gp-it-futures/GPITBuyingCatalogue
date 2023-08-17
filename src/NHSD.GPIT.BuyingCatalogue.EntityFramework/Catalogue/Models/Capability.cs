@@ -25,6 +25,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public string Name { get; set; }
 
+        public string NameWithStatusSuffix => Status == CapabilityStatus.Expired
+            ? $"{Name} (expired)"
+            : Name;
+
         public string Description { get; set; }
 
         public string SourceUrl { get; set; }

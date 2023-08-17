@@ -12,14 +12,32 @@ public static class CapabilityModelTests
 {
     [Theory]
     [CommonAutoData]
-    public static void Construct_SetsProperties(
+    public static void Construct_SetsProperties_Effective(
         Solution solution,
         Capability capability)
     {
+        capability.Status = CapabilityStatus.Effective;
+
         var model = new CapabilityModel(solution.CatalogueItem, capability);
 
         model.Id.Should().Be(capability.Id);
         model.Name.Should().Be(capability.Name);
+        model.CapabilityRef.Should().Be(capability.CapabilityRef);
+        model.Selected.Should().BeFalse();
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void Construct_SetsProperties_Expired(
+        Solution solution,
+        Capability capability)
+    {
+        capability.Status = CapabilityStatus.Expired;
+
+        var model = new CapabilityModel(solution.CatalogueItem, capability);
+
+        model.Id.Should().Be(capability.Id);
+        model.Name.Should().Be(capability.NameWithStatusSuffix);
         model.CapabilityRef.Should().Be(capability.CapabilityRef);
         model.Selected.Should().BeFalse();
     }
