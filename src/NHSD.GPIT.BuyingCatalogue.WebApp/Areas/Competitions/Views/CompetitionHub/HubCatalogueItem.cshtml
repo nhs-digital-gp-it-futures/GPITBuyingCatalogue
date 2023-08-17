@@ -71,7 +71,7 @@
         <nhs-summary-list-row label-text="Quantity">@quantity.ToString($"#,###")</nhs-summary-list-row>
         @if (Model.CatalogueItemType is not CatalogueItemType.AssociatedService)
         {
-            <nhs-summary-list-row label-text="Total cost">£@CalculateTotalCost().ToString("N2")</nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Total price">£@CalculateTotalCost().ToString("N2")</nhs-summary-list-row>
         }
     </nhs-summary-list>
 }
