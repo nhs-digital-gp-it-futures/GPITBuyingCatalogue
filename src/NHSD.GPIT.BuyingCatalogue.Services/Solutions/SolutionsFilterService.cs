@@ -42,7 +42,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             string search = null,
             string selectedFrameworkId = null,
             string selectedApplicationTypeIds = null,
-            string selectedHostingTypeIds = null)
+            string selectedHostingTypeIds = null,
+            string selectedIM1Integrations = null,
+            string selectedGPConnectIntegrations = null)
         {
             var (query, count) = await GetFilteredAndNonFilteredQueryResults(capabilitiesAndEpics);
 
@@ -67,6 +69,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     selectedHostingTypeIds,
                     GetSelectedFiltersHosting,
                     x => x.Hosting.IsValid());
+            }
+
+            if (!string.IsNullOrWhiteSpace(selectedIM1Integrations))
+            {
+                string[] integrationParts = selectedIM1Integrations.Split('.');
+                foreach (string s in integrationParts)
+                {
+                    query = query.Where(ci => ci.Solution.Integrations.Contains(s));
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(selectedGPConnectIntegrations))
+            {
+                string[] gpIntegrationParts = selectedGPConnectIntegrations.Split('.');
+                foreach (string s in gpIntegrationParts)
+                {
+                    query = query.Where(ci => ci.Solution.Integrations.Contains(s));
+                }
             }
 
             var totalNumberOfItems = await query.CountAsync();

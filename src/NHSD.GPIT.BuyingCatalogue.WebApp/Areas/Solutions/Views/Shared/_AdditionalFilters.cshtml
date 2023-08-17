@@ -59,7 +59,42 @@
 					}
 			</nhs-checkbox-container>
 		</nhs-fieldset-form-label>
-	</nhs-expander>
+    </nhs-expander>
+	<nhs-expander label-text="Interoperability"
+				  open="true">
+        <nhs-fieldset-form-label asp-for="@Model">
+			<nhs-checkbox-container>
+                @*IM1 integrations*@
+                @*<nhs-checkbox asp-for="@Model" label-text="IM1 integrations">*@
+                    <nhs-checkbox asp-for="@Model.InteroperabilityOptions[0].Selected"
+                                          label-text="@Model.InteroperabilityOptions[0].Text integrations"
+                                          hidden-input="@Model.InteroperabilityOptions[0].Value">
+                        <nhs-checkbox-container>
+					        @for (var i = 0; i < Model.IM1IntegrationsOptions.Count; i++)
+					        {
+					            <nhs-checkbox asp-for="@Model.IM1IntegrationsOptions[i].Selected"
+								        label-text="@Model.IM1IntegrationsOptions[i].Text"
+								        hidden-input="@Model.IM1IntegrationsOptions[i].Value" />
+					        }
+                        </nhs-checkbox-container>
+                    </nhs-checkbox>
+                @*  </nhs-checkbox> *@
+                 @*GP Connect integrations*@
+                 <nhs-checkbox asp-for="@Model.InteroperabilityOptions[1].Selected"
+                                          label-text="@Model.InteroperabilityOptions[1].Text integrations"
+                                          hidden-input="@Model.InteroperabilityOptions[1].Value">
+                        <nhs-checkbox-container>
+					@for (var i = 0; i < Model.GPConnectIntegrationsOptions.Count; i++)
+					{
+					<nhs-checkbox asp-for="@Model.GPConnectIntegrationsOptions[i].Selected"
+								label-text="@Model.GPConnectIntegrationsOptions[i].Text"
+								hidden-input="@Model.GPConnectIntegrationsOptions[i].Value" />
+					}
+                    </nhs-checkbox-container>
+                    </nhs-checkbox>
+			</nhs-checkbox-container>
+		</nhs-fieldset-form-label>
+    </nhs-expander>
     <nhs-submit-button style="width:100%" text="View results" class="nhsuk-button--secondary"/>
 
     <nhs-submit-button style="width:100%" text="Save all filters" formaction="@Url.Action(nameof(ManageFiltersController.SaveFilter), typeof(ManageFiltersController).ControllerName())" />

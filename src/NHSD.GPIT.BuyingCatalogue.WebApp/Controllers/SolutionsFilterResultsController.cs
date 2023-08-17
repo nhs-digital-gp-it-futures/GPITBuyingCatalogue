@@ -47,6 +47,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             var selectedFrameworkId = filterIds.FrameworkId;
             var selectedApplicationTypeIds = filterIds.ApplicationTypeIds.ToFilterString();
             var selectedHostingTypeIds = filterIds.HostingTypeIds.ToFilterString();
+            var selectedIM1Integrations = filterIds.IM1Integrations.ToFilterString();
+            var selectedGPConnectIntegrations = filterIds.GPConnectIntegrations.ToFilterString();
 
             var (catalogueItems, _, capabilitiesAndCount) =
                 await solutionsFilterService.GetAllSolutionsFiltered(
@@ -55,7 +57,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                     null,
                     selectedFrameworkId,
                     selectedApplicationTypeIds,
-                    selectedHostingTypeIds);
+                    selectedHostingTypeIds,
+                    selectedIM1Integrations,
+                    selectedGPConnectIntegrations);
 
             var model = new SolutionsFilterResultsModel()
             {

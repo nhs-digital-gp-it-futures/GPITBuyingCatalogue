@@ -170,7 +170,9 @@ public class CompetitionsDashboardController : Controller
                 capabilitiesAndEpics: filter.CapabilityAndEpicIds,
                 selectedFrameworkId: filter.FrameworkId,
                 selectedApplicationTypeIds: filter.ApplicationTypeIds.ToFilterString(),
-                selectedHostingTypeIds: filter.HostingTypeIds.ToFilterString());
+                selectedHostingTypeIds: filter.HostingTypeIds.ToFilterString(),
+                selectedIM1Integrations: filter.IM1Integrations.ToFilterString(),
+                selectedGPConnectIntegrations: filter.GPConnectIntegrations.ToFilterString());
 
         var competitionSolutions = solutionsAndServices.CatalogueItems.Select(
             x => new CompetitionSolution(competition.Id, x.Solution.CatalogueItemId)
