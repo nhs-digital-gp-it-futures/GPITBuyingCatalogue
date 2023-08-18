@@ -70,22 +70,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree
         public void AddBespokeMilestones()
         {
             CommonActions.ClickLinkElement(ImplementationPlanObjects.ImplementationPlanAddBespokeMilestone);
-            EnterMilestoneName(ImplementationPlanObjects.MileStoneValue);
+            EnterMilestoneName();
             CommonActions.ClickSave();
         }
 
-        public void EnterMilestoneName(string milestone)
+        public void EnterMilestoneName()
         {
             CommonActions.LedeText().Should().Be("Add an implementation plan milestone.".FormatForComparison());
-
-            Driver.FindElement(ImplementationPlanObjects.MileStoneName).SendKeys(milestone);
-
-            TextGenerators.TextInputAddText(ImplementationPlanObjects.MileStoneName, 100);
-
-            Driver.FindElement(ImplementationPlanObjects.MilestonePaymentTrigger).SendKeys(milestone);
-
-            TextGenerators.TextInputAddText(ImplementationPlanObjects.MilestonePaymentTrigger, 100);
-
+            TextGenerators.TextInputAddText(ImplementationPlanObjects.MileStoneName, 25);
+            TextGenerators.TextInputAddText(ImplementationPlanObjects.MilestonePaymentTrigger, 50);
             CommonActions.ClickSave();
         }
     }
