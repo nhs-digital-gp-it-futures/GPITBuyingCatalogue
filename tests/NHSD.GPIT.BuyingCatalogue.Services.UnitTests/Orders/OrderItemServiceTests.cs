@@ -405,7 +405,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             item.OrderItemFunding = funding;
 
             order.OrderingParty.OrganisationType = OrganisationType.IB;
-            order.SelectedFramework.LocalFundingOnly = true;
+            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.Local };
 
             context.Orders.Add(order);
 
@@ -431,7 +431,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             item.OrderItemFunding = funding;
 
             order.OrderingParty.OrganisationType = OrganisationType.GP;
-            order.SelectedFramework.LocalFundingOnly = false;
+            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.GPIT };
 
             context.Orders.Add(order);
 
@@ -462,7 +462,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             item.OrderItemFunding = funding;
 
             order.OrderingParty.OrganisationType = OrganisationType.IB;
-            order.SelectedFramework.LocalFundingOnly = true;
+            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.Local };
 
             context.Orders.Add(order);
 
@@ -481,7 +481,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         [InMemoryDbInlineAutoData(OrderItemFundingType.MixedFunding)]
         [InMemoryDbInlineAutoData(OrderItemFundingType.NoFundingRequired)]
         [InMemoryDbInlineAutoData(OrderItemFundingType.None)]
-        public static async Task DetectChangesInFundingAndDelete_FundingTypeChanged_GPPRactice_OrderItemFundingNull(
+        public static async Task DetectChangesInFundingAndDelete_FundingTypeChanged_GPPractice_OrderItemFundingNull(
             OrderItemFundingType fundingType,
             Order order,
             OrderItemFunding funding,
@@ -493,7 +493,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             item.OrderItemFunding = funding;
 
             order.OrderingParty.OrganisationType = OrganisationType.GP;
-            order.SelectedFramework.LocalFundingOnly = false;
+            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.PCARP };
 
             context.Orders.Add(order);
 

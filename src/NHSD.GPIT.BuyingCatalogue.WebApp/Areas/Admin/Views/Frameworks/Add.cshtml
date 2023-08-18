@@ -18,13 +18,17 @@
                        label-hint="Provide a unique name for this framework"
                        asp-for="Name"/>
 
-            <nhs-fieldset-form-label asp-for="IsLocalFundingOnly"
+            <nhs-fieldset-form-label asp-for="FundingTypes"
                                      label-text="What type of funding can be used"
                                      size="Small">
-                <nhs-radio-buttons asp-for="IsLocalFundingOnly"
-                                   values="@Model.FundingTypes.Cast<object>()"
-                                   value-name="Value"
-                                   display-name="Text"/>
+                <nhs-checkbox-container>
+                    @for (var i = 0; i < Model.FundingTypes.Count; i++)
+                    {
+                        <nhs-checkbox asp-for="@Model.FundingTypes[i].Selected"
+                                      label-text="@Model.FundingTypes[i].Text"
+                                      hidden-input="@Model.FundingTypes[i].Value"/>
+                    }
+                </nhs-checkbox-container>
             </nhs-fieldset-form-label>
 
             <div>

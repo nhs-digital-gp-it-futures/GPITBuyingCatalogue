@@ -12,5 +12,6 @@
     SysStartTime datetime2(0) NOT NULL,
     SysEndTime datetime2(0) NOT NULL,
     LocalFundingOnly BIT NULL,
+    FundingTypes NVARCHAR(30) NULL,
     IsExpired BIT NOT NULL DEFAULT(0),
 );

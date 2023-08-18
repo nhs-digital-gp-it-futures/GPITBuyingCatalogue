@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
@@ -10,10 +12,10 @@ public class AddFrameworkModel : NavBaseModel
 
     public string Name { get; set; }
 
-    public bool? IsLocalFundingOnly { get; set; }
-
-    public IEnumerable<SelectOption<bool>> FundingTypes => new[]
+    public List<SelectOption<FundingType>> FundingTypes { get; set; } = new()
     {
-        new SelectOption<bool>("Local funding", true), new SelectOption<bool>("Central funding", false),
+        new SelectOption<FundingType>(FundingType.GPIT.Description(), FundingType.GPIT),
+        new SelectOption<FundingType>(FundingType.Local.Description(), FundingType.Local),
+        new SelectOption<FundingType>(FundingType.PCARP.Description(), FundingType.PCARP),
     };
 }

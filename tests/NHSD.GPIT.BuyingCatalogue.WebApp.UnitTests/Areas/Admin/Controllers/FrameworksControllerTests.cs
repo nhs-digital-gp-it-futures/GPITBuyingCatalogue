@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -7,6 +8,7 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
@@ -81,7 +83,7 @@ public static class FrameworksControllerTests
     {
         var result = (await controller.Add(model)).As<RedirectToActionResult>();
 
-        service.Verify(x => x.AddFramework(model.Name, model.IsLocalFundingOnly.GetValueOrDefault()), Times.Once());
+        service.Verify(x => x.AddFramework(model.Name, It.IsAny<IEnumerable<FundingType>>()), Times.Once());
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Dashboard));

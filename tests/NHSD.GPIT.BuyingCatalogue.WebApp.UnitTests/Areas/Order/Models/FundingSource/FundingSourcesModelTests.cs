@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -36,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
 
             order.OrderItems = order.OrderItems.Where(oi => oi.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution).ToList();
 
-            order.SelectedFramework.LocalFundingOnly = true;
+            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.Local };
 
             var model = new FundingSources(internalOrgId, order.CallOffId, order, 1);
 
@@ -62,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             order.OrderItems.ToList().ForEach(oi => oi.OrderItemFunding.OrderItemFundingType = OrderItemFundingType.LocalFundingOnly);
             order.OrderItems.First().CatalogueItem.Solution = solution;
 
-            order.SelectedFramework.LocalFundingOnly = true;
+            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.Local };
 
             var model = new FundingSources(internalOrgId, order.CallOffId, order, 1);
 
@@ -88,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             order.OrderItems.ToList().ForEach(oi => oi.OrderItemFunding.OrderItemFundingType = OrderItemFundingType.MixedFunding);
             order.OrderItems.First().CatalogueItem.Solution = solution;
 
-            order.SelectedFramework.LocalFundingOnly = true;
+            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.Local };
 
             var model = new FundingSources(internalOrgId, order.CallOffId, order, 1);
 
@@ -108,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             EntityFramework.Ordering.Models.Order order,
             Solution solution)
         {
-            order.SelectedFramework.LocalFundingOnly = false;
+            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.GPIT };
 
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             order.OrderItems.First().CatalogueItem.Solution = solution;

@@ -202,9 +202,16 @@ public static class FrameworkServiceTests
     [Theory]
     [InMemoryDbAutoData]
     public static Task AddFramework_NullName_ThrowsException(FrameworkService service) => FluentActions
-        .Invoking(() => service.AddFramework(null, false))
+        .Invoking(() => service.AddFramework(null, Enumerable.Empty<FundingType>()))
         .Should()
-        .ThrowAsync<ArgumentNullException>();
+        .ThrowAsync<ArgumentException>();
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static Task AddFramework_NullFundingType_ThrowsException(string name, FrameworkService service) => FluentActions
+        .Invoking(() => service.AddFramework(name, null))
+        .Should()
+        .ThrowAsync<ArgumentException>();
 
     [Theory]
     [InMemoryDbAutoData]
