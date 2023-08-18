@@ -16,20 +16,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
             Capability capability)
         {
             Id = capability.Id;
-            Name = capability.Name;
+            Name = capability.NameWithStatusSuffix;
+            Status = capability.Status;
             CapabilityRef = capability.CapabilityRef;
             Selected = catalogueItem.CatalogueItemCapabilities.Any(
                 itemCapability => itemCapability.CapabilityId == capability.Id);
             MayEpics = GetCapabilityEpicModels(catalogueItem, capability, capability.GetAllMayEpics());
             MustEpics = GetCapabilityEpicModels(catalogueItem, capability, capability.GetAllMustEpics());
 
-            if (!Selected)
+            if (capability.Status == CapabilityStatus.Effective && !Selected)
                 MustEpics.ForEach(e => e.Selected = true);
         }
 
         public int Id { get; set; }
 
         public string Name { get; set; }
+
+        public CapabilityStatus Status { get; set; }
 
         public string CapabilityRef { get; set; }
 

@@ -12,14 +12,32 @@ public static class CapabilityModelTests
 {
     [Theory]
     [CommonAutoData]
-    public static void Construct_SetsProperties(
+    public static void Construct_SetsProperties_Effective(
         Solution solution,
         Capability capability)
     {
+        capability.Status = CapabilityStatus.Effective;
+
         var model = new CapabilityModel(solution.CatalogueItem, capability);
 
         model.Id.Should().Be(capability.Id);
         model.Name.Should().Be(capability.Name);
+        model.CapabilityRef.Should().Be(capability.CapabilityRef);
+        model.Selected.Should().BeFalse();
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void Construct_SetsProperties_Expired(
+        Solution solution,
+        Capability capability)
+    {
+        capability.Status = CapabilityStatus.Expired;
+
+        var model = new CapabilityModel(solution.CatalogueItem, capability);
+
+        model.Id.Should().Be(capability.Id);
+        model.Name.Should().Be(capability.NameWithStatusSuffix);
         model.CapabilityRef.Should().Be(capability.CapabilityRef);
         model.Selected.Should().BeFalse();
     }
@@ -64,12 +82,14 @@ public static class CapabilityModelTests
 
     [Theory]
     [CommonAutoData]
-    public static void Construct_CapabilityNotSelected_SelectsAllMustEpics(
+    public static void Construct_Effective_CapabilityNotSelected_SelectsAllMustEpics(
         Solution solution,
         Capability capability,
         List<Epic> mustEpics,
         List<Epic> mayEpics)
     {
+        capability.Status = CapabilityStatus.Effective;
+
         mayEpics.ForEach(e => e.IsActive = true);
         mustEpics.ForEach(e => e.IsActive = true);
 

@@ -11,15 +11,31 @@ public static class CapabilityEpicModelTests
 {
     [Theory]
     [CommonAutoData]
-    public static void Construct_SetsProperties(
+    public static void Construct_SetsProperties_Active(
         Solution solution,
         Capability capability,
         Epic epic)
     {
+        epic.IsActive = true;
         var model = new CapabilityEpicModel(solution.CatalogueItem, capability, epic);
 
         model.Id.Should().Be(epic.Id);
         model.Name.Should().Be(epic.Name);
+        model.Selected.Should().BeFalse();
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void Construct_SetsProperties_Inactive(
+        Solution solution,
+        Capability capability,
+        Epic epic)
+    {
+        epic.IsActive = false;
+        var model = new CapabilityEpicModel(solution.CatalogueItem, capability, epic);
+
+        model.Id.Should().Be(epic.Id);
+        model.Name.Should().Be(epic.NameWithStatusSuffix);
         model.Selected.Should().BeFalse();
     }
 
