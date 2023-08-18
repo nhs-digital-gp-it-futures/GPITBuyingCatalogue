@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Web;
+﻿using System.Diagnostics.Contracts;
+using Microsoft.AspNetCore.Components.Web;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -11,6 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Associate
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.DeliveryDates;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Triage;
+using NHSD.GPIT.BuyingCatalogue.Services.Contracts;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
@@ -284,6 +286,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         public void StepThreeCompleteContract(bool isDefault = true)
         {
             TaskList.ImplementationPlanMilestonesTask();
+            //OrderingStepThree.AddBespokeMilestones();
             OrderingStepThree.SelectImplementationPlan(isDefault);
 
             using var dbContext = Factory.DbContext;
@@ -295,8 +298,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
             if (isOrderWithAssociatedService)
             {
-                TaskList.AssociatedServiceBillingAndRequirementsTask();
-                OrderingStepThree.SelectAssociatedServicesBilling(isDefault);
+            TaskList.AssociatedServiceBillingAndRequirementsTask();
+            OrderingStepThree.SelectAssociatedServicesBilling(isDefault);
             }
 
             TaskList.DataProcessingInformationTask();

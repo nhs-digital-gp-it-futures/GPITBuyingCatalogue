@@ -22,6 +22,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
         public void ClickCancel() =>
             Driver.FindElement(By.LinkText("Cancel")).Click();
 
+        public void ClickAddBespokeMilestone() =>
+            Driver.FindElement(By.ClassName("nhsuk-action-link__link")).Click();
+
         public void ClickStartNewSearch() =>
             Driver.FindElement(By.LinkText("Start a new search")).Click();
 
