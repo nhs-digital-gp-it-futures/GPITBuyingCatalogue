@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using EnumsNET;
-using Flurl.Util;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
@@ -34,8 +31,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
             SetFrameworkOptions(frameworks, selectedFrameworkId);
             SetApplicationTypeOptions(selectedApplicationTypeIds);
             SetHostingTypeOptions(selectedHostingTypeIds);
-            SetIM1IntegrationsOptions(selectedIM1Integrations, selectedInteroperabilityOptions);
-            SetGPConnectIntegrationsOptions(selectedGPConnectIntegrations, selectedInteroperabilityOptions);
+            SetIM1IntegrationsOptions(selectedIM1Integrations);
+            SetGPConnectIntegrationsOptions(selectedGPConnectIntegrations);
             SetInteroperabilityOptions(selectedInteroperabilityOptions);
             Selected = selected;
             SelectedFrameworkId = selectedFrameworkId;
@@ -152,16 +149,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                     x => new SelectOption<int>
                     {
                         Value = (int)x,
-                        Text = x.GetName(),
+                        Text = x.GetEnumMemberValue(),
                         Selected = !string.IsNullOrEmpty(selectedInteroperabilityOptions)
                             && selectedInteroperabilityOptions.Contains(((int)x).ToString()),
                     }).ToList();
         }
 
-        private void SetIM1IntegrationsOptions(string selectedIM1Integrations, string selectedInteroperabilityOptions)
+        private void SetIM1IntegrationsOptions(string selectedIM1Integrations)
         {
-            IM1IntegrationsOptions = Enum.GetValues(typeof(InteropIntegrationIm1Integrations))
-                .Cast<InteropIntegrationIm1Integrations>()
+            IM1IntegrationsOptions = Enum.GetValues(typeof(InteropIm1Integrations))
+                .Cast<InteropIm1Integrations>()
                 .Select(
                     x => new SelectOption<int>
                     {
@@ -172,10 +169,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                     }).ToList();
         }
 
-        private void SetGPConnectIntegrationsOptions(string selectedGPConnectIntegrations, string selectedInteroperabilityOptions)
+        private void SetGPConnectIntegrationsOptions(string selectedGPConnectIntegrations)
         {
-            GPConnectIntegrationsOptions = Enum.GetValues(typeof(InteropIntegrationGpConnectIntegrations))
-                .Cast<InteropIntegrationGpConnectIntegrations>()
+            GPConnectIntegrationsOptions = Enum.GetValues(typeof(InteropGpConnectIntegrations))
+                .Cast<InteropGpConnectIntegrations>()
                 .Select(
                     x => new SelectOption<int>
                     {

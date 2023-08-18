@@ -177,7 +177,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         public static void Constructor_With_SelectedIM1IntegrationsOptions_Creates_InteroperabilityCheckBoxItems_AllSelected(int[] expectedSelectedValues)
         {
             var expectedCount = 3;
-            var expectedFilters = expectedSelectedValues.Select(i => ((InteropIntegrationIm1Integrations)i).Name());
+            var expectedFilters = expectedSelectedValues.Select(i => ((InteropIm1Integrations)i).Name());
 
             var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, string.Empty, string.Empty, expectedSelectedValues.ToFilterString(), string.Empty, string.Empty, string.Empty);
 
@@ -215,7 +215,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         public static void Constructor_With_SelectedGPConnectIntegrationsOptions_Creates_InteroperabilityCheckBoxItems_AllSelected(int[] expectedSelectedValues)
         {
             var expectedCount = 3;
-            var expectedFilters = expectedSelectedValues.Select(i => ((InteropIntegrationGpConnectIntegrations)i).Name());
+            var expectedFilters = expectedSelectedValues.Select(i => ((InteropGpConnectIntegrations)i).Name());
 
             var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, string.Empty, string.Empty, string.Empty, expectedSelectedValues.ToFilterString(), string.Empty, string.Empty);
 
@@ -253,7 +253,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         public static void Constructor_With_SelectedIntegrationsOptions_Creates_InteroperabilityCheckBoxItems_AllSelected(int[] expectedSelectedValues)
         {
             var expectedCount = 2;
-            var expectedFilters = expectedSelectedValues.Select(i => ((InteropIntegrationType)i).GetName());
+            var expectedFilters = expectedSelectedValues.Select(i => ((InteropIntegrationType)i).GetEnumMemberValue());
 
             var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, string.Empty, string.Empty, string.Empty, string.Empty, expectedSelectedValues.ToFilterString(), string.Empty);
 

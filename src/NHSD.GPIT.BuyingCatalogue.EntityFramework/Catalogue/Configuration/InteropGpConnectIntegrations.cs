@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 
-public enum InteropIntegrationGpConnectIntegrations
+public enum InteropGpConnectIntegrations
 {
     [Display(Name = "GP Connect - HTML View")]
     HTMLView,
