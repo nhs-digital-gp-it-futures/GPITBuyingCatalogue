@@ -22,6 +22,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Shared;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.SolutionSelection
@@ -733,10 +734,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new ConfirmServiceChangesModel(internalOrgId, callOffId, CatalogueItemType.Solution)
+            var expected = new ConfirmServiceChangesModel(internalOrgId, CatalogueItemType.Solution)
             {
                 InternalOrgId = internalOrgId,
-                CallOffId = callOffId,
                 ToAdd = new List<ServiceModel>
                 {
                     new() { CatalogueItemId = newSolution.Id, Description = newSolution.Name },
@@ -746,6 +746,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     CatalogueItemId = x.CatalogueItemId,
                     Description = x.CatalogueItem.Name,
                 }).ToList(),
+                Caption = $"Order {callOffId}",
             };
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
@@ -928,10 +929,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new ConfirmServiceChangesModel(internalOrgId, callOffId, CatalogueItemType.Solution)
+            var expected = new ConfirmServiceChangesModel(internalOrgId, CatalogueItemType.Solution)
             {
                 InternalOrgId = internalOrgId,
-                CallOffId = callOffId,
                 ToAdd = new List<ServiceModel>
                 {
                     new() { CatalogueItemId = newSolution.Id, Description = newSolution.Name },

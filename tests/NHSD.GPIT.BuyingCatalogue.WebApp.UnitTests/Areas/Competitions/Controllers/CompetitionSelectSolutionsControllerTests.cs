@@ -6,7 +6,6 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
-using Flurl;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Moq;
@@ -16,7 +15,6 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.SelectSolutionsModels;
@@ -45,7 +43,6 @@ public static class CompetitionSelectSolutionsControllerTests
         Competition competition,
         Solution solution,
         List<CompetitionSolution> competitionSolutions,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
         [Frozen] Mock<ICompetitionsService> competitionsService,
         CompetitionSelectSolutionsController controller)
     {
@@ -55,15 +52,12 @@ public static class CompetitionSelectSolutionsControllerTests
             x =>
             {
                 x.Solution = solution;
-                x.RequiredServices = new List<RequiredService>();
+                x.SolutionServices = new List<SolutionService>();
             });
 
         competition.CompetitionSolutions = competitionSolutions;
 
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(organisation);
-
-        competitionsService.Setup(x => x.GetCompetitionWithServices(organisation.Id, competition.Id, shouldTrack))
+        competitionsService.Setup(x => x.GetCompetitionWithServices(organisation.InternalIdentifier, competition.Id, shouldTrack))
             .ReturnsAsync(competition);
 
         var expectedModel = new SelectSolutionsModel(competition.Name, competition.CompetitionSolutions)
@@ -83,16 +77,12 @@ public static class CompetitionSelectSolutionsControllerTests
     public static async Task SelectSolutions_NullCompetition_RedirectsToDashboard(
         Organisation organisation,
         int competitionId,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
         [Frozen] Mock<ICompetitionsService> competitionsService,
         CompetitionSelectSolutionsController controller)
     {
         const bool shouldTrack = false;
 
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(organisation);
-
-        competitionsService.Setup(x => x.GetCompetitionWithServices(organisation.Id, competitionId, shouldTrack))
+        competitionsService.Setup(x => x.GetCompetitionWithServices(organisation.InternalIdentifier, competitionId, shouldTrack))
             .ReturnsAsync((Competition)null);
 
         var result =
@@ -107,7 +97,6 @@ public static class CompetitionSelectSolutionsControllerTests
     public static async Task SelectSolutions_NoSolutions_DeletesCompetition(
         Organisation organisation,
         Competition competition,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
         [Frozen] Mock<ICompetitionsService> competitionsService,
         CompetitionSelectSolutionsController controller)
     {
@@ -115,10 +104,7 @@ public static class CompetitionSelectSolutionsControllerTests
 
         competition.CompetitionSolutions = new List<CompetitionSolution>();
 
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(organisation);
-
-        competitionsService.Setup(x => x.GetCompetitionWithServices(organisation.Id, competition.Id, shouldTrack))
+        competitionsService.Setup(x => x.GetCompetitionWithServices(organisation.InternalIdentifier, competition.Id, shouldTrack))
             .ReturnsAsync(competition);
 
         var expectedModel = new SelectSolutionsModel(competition.Name, competition.CompetitionSolutions)
@@ -129,7 +115,7 @@ public static class CompetitionSelectSolutionsControllerTests
         var result =
             (await controller.SelectSolutions(organisation.InternalIdentifier, competition.Id)).As<ViewResult>();
 
-        competitionsService.Verify(x => x.DeleteCompetition(organisation.Id, competition.Id), Times.Once());
+        competitionsService.Verify(x => x.DeleteCompetition(organisation.InternalIdentifier, competition.Id), Times.Once());
 
         result.Should().NotBeNull();
         result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -158,19 +144,15 @@ public static class CompetitionSelectSolutionsControllerTests
         int competitionId,
         SelectSolutionsModel model,
         SolutionModel solution,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
         [Frozen] Mock<ICompetitionsService> competitionsService,
         CompetitionSelectSolutionsController controller)
     {
         model.Solutions = new() { solution };
         model.IsDirectAward = true;
 
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(organisation);
-
         var result = (await controller.SelectSolutions(organisation.InternalIdentifier, competitionId, model)).As<RedirectToActionResult>();
 
-        competitionsService.Verify(x => x.CompleteCompetition(organisation.Id, competitionId), Times.Once());
+        competitionsService.Verify(x => x.CompleteCompetition(organisation.InternalIdentifier, competitionId), Times.Once());
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(OrderDescriptionController.NewOrderDescription));
@@ -184,19 +166,15 @@ public static class CompetitionSelectSolutionsControllerTests
         int competitionId,
         SelectSolutionsModel model,
         SolutionModel solution,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
         [Frozen] Mock<ICompetitionsService> competitionsService,
         CompetitionSelectSolutionsController controller)
     {
         model.Solutions = new() { solution };
         model.IsDirectAward = false;
 
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(organisation);
-
         var result = (await controller.SelectSolutions(organisation.InternalIdentifier, competitionId, model)).As<RedirectToActionResult>();
 
-        competitionsService.Verify(x => x.DeleteCompetition(organisation.Id, competitionId), Times.Once());
+        competitionsService.Verify(x => x.DeleteCompetition(organisation.InternalIdentifier, competitionId), Times.Once());
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(CompetitionsDashboardController.Index));
@@ -210,20 +188,16 @@ public static class CompetitionSelectSolutionsControllerTests
         int competitionId,
         SelectSolutionsModel model,
         List<SolutionModel> solutions,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
         [Frozen] Mock<ICompetitionsService> competitionsService,
         CompetitionSelectSolutionsController controller)
     {
         model.Solutions = solutions;
 
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(organisation);
-
         var result = (await controller.SelectSolutions(organisation.InternalIdentifier, competitionId, model)).As<RedirectToActionResult>();
 
         competitionsService.Verify(
             x => x.SetShortlistedSolutions(
-                organisation.Id,
+                organisation.InternalIdentifier,
                 competitionId,
                 It.IsAny<IEnumerable<CatalogueItemId>>()),
             Times.Once());
@@ -238,7 +212,6 @@ public static class CompetitionSelectSolutionsControllerTests
         Organisation organisation,
         Competition competition,
         List<CompetitionSolution> competitionSolutions,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
         [Frozen] Mock<ICompetitionsService> competitionsService,
         CompetitionSelectSolutionsController controller)
     {
@@ -246,10 +219,7 @@ public static class CompetitionSelectSolutionsControllerTests
 
         competition.CompetitionSolutions = competitionSolutions;
 
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(organisation);
-
-        competitionsService.Setup(x => x.GetCompetitionWithServices(organisation.Id, competition.Id, false))
+        competitionsService.Setup(x => x.GetCompetitionWithServices(organisation.InternalIdentifier, competition.Id, false))
             .ReturnsAsync(competition);
 
         var result = (await controller.JustifySolutions(organisation.InternalIdentifier, competition.Id))
@@ -266,7 +236,6 @@ public static class CompetitionSelectSolutionsControllerTests
         Competition competition,
         Solution solution,
         List<CompetitionSolution> competitionSolutions,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
         [Frozen] Mock<ICompetitionsService> competitionsService,
         CompetitionSelectSolutionsController controller)
     {
@@ -278,10 +247,7 @@ public static class CompetitionSelectSolutionsControllerTests
 
         competition.CompetitionSolutions = competitionSolutions;
 
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(organisation);
-
-        competitionsService.Setup(x => x.GetCompetitionWithServices(organisation.Id, competition.Id, false))
+        competitionsService.Setup(x => x.GetCompetitionWithServices(organisation.InternalIdentifier, competition.Id, false))
             .ReturnsAsync(competition);
 
         var expectedModel = new JustifySolutionsModel(competition.Name, nonShortlistedSolutions);
@@ -315,19 +281,15 @@ public static class CompetitionSelectSolutionsControllerTests
         Organisation organisation,
         int competitionId,
         JustifySolutionsModel model,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
         [Frozen] Mock<ICompetitionsService> competitionsService,
         CompetitionSelectSolutionsController controller)
     {
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(organisation);
-
         var result = (await controller.JustifySolutions(organisation.InternalIdentifier, competitionId, model))
             .As<RedirectToActionResult>();
 
         competitionsService.Verify(
             x => x.SetSolutionJustifications(
-                organisation.Id,
+                organisation.InternalIdentifier,
                 competitionId,
                 It.IsAny<Dictionary<CatalogueItemId, string>>()));
 
@@ -341,16 +303,12 @@ public static class CompetitionSelectSolutionsControllerTests
         Organisation organisation,
         Competition competition,
         List<CompetitionSolution> competitionSolutions,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
         [Frozen] Mock<ICompetitionsService> competitionsService,
         CompetitionSelectSolutionsController controller)
     {
         competition.CompetitionSolutions = competitionSolutions;
 
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(organisation);
-
-        competitionsService.Setup(x => x.GetCompetitionWithServices(organisation.Id, competition.Id, false))
+        competitionsService.Setup(x => x.GetCompetitionWithServices(organisation.InternalIdentifier, competition.Id, false))
             .ReturnsAsync(competition);
 
         var expectedModel = new ConfirmSolutionsModel(competition.Name, competitionSolutions);
@@ -368,7 +326,6 @@ public static class CompetitionSelectSolutionsControllerTests
         Organisation organisation,
         Competition competition,
         List<CompetitionSolution> competitionSolutions,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
         [Frozen] Mock<ICompetitionsService> competitionsService,
         [Frozen] Mock<IUrlHelper> urlHelper,
         CompetitionSelectSolutionsController controller)
@@ -377,10 +334,7 @@ public static class CompetitionSelectSolutionsControllerTests
 
         competition.CompetitionSolutions = competitionSolutions;
 
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(organisation);
-
-        competitionsService.Setup(x => x.GetCompetitionWithServices(organisation.Id, competition.Id, false))
+        competitionsService.Setup(x => x.GetCompetitionWithServices(organisation.InternalIdentifier, competition.Id, false))
             .ReturnsAsync(competition);
 
         _ = (await controller.ConfirmSolutions(organisation.InternalIdentifier, competition.Id)).As<ViewResult>();
@@ -394,7 +348,6 @@ public static class CompetitionSelectSolutionsControllerTests
         Organisation organisation,
         Competition competition,
         List<CompetitionSolution> competitionSolutions,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
         [Frozen] Mock<ICompetitionsService> competitionsService,
         [Frozen] Mock<IUrlHelper> urlHelper,
         CompetitionSelectSolutionsController controller)
@@ -404,10 +357,7 @@ public static class CompetitionSelectSolutionsControllerTests
 
         competition.CompetitionSolutions = competitionSolutions;
 
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(organisation);
-
-        competitionsService.Setup(x => x.GetCompetitionWithServices(organisation.Id, competition.Id, false))
+        competitionsService.Setup(x => x.GetCompetitionWithServices(organisation.InternalIdentifier, competition.Id, false))
             .ReturnsAsync(competition);
 
         _ = (await controller.ConfirmSolutions(organisation.InternalIdentifier, competition.Id)).As<ViewResult>();
@@ -421,17 +371,13 @@ public static class CompetitionSelectSolutionsControllerTests
         Organisation organisation,
         int competitionId,
         ConfirmSolutionsModel model,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
         [Frozen] Mock<ICompetitionsService> competitionsService,
         CompetitionSelectSolutionsController controller)
     {
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(organisation);
-
         var result = (await controller.ConfirmSolutions(organisation.InternalIdentifier, competitionId, model))
             .As<RedirectToActionResult>();
 
-        competitionsService.Verify(x => x.AcceptShortlist(organisation.Id, competitionId), Times.Once());
+        competitionsService.Verify(x => x.AcceptShortlist(organisation.InternalIdentifier, competitionId), Times.Once());
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(CompetitionsDashboardController.Index));

@@ -1,6 +1,7 @@
 ﻿@using System.Linq;
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.DetailsAndExpander
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Review.ReviewExpanderModel
@@ -8,7 +9,7 @@
     var totalCostsRolledUp = Model.OrderItemPrice.CostPerTierForBillingPeriod(Model.RolledUpTotalQuantity);
     var totalCostsPrevious = Model.OrderItemPrice.CostPerTierForBillingPeriod(Model.PreviousTotalQuantity);
     var hasTieredPricing = Model.OrderItemPrice.CataloguePriceType is CataloguePriceType.Tiered;
-    var hasServiceRecipientQuantities = Model.OrderItemPrice.IsPerServiceRecipient();
+    var hasServiceRecipientQuantities = ((IPrice)Model.OrderItemPrice).IsPerServiceRecipient();
     var tableText = Model.IsAmendment ? "Pricing and total quantities" : "Pricing";
 }
 
@@ -36,7 +37,7 @@
                             <div class="bc-c-task-list__task-status">
                                 <strong class="nhsuk-tag nhsuk-tag--blue">Added</strong>
                             </div>
-                        } 
+                        }
                         else
                         {
                             <span aria-label="Existing"></span>
@@ -84,7 +85,7 @@
                     </nhs-table-cell>
                 }
                 <nhs-table-cell>
-                    £@($"{totalCostsRolledUp[i].Price:#,###,##0.00##}") @Model.OrderItemPrice.ToPriceUnitString()
+                    £@($"{totalCostsRolledUp[i].Price:#,###,##0.00##}") @(Model.OrderItemPrice.ToPriceUnitString())
                 </nhs-table-cell>
                 @if (Model.IsAmendment)
                 {

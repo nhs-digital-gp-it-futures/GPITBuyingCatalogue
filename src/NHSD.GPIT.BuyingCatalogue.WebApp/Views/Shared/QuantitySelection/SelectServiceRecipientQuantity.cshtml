@@ -1,0 +1,104 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities.SelectServiceRecipientQuantityModel
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row" data-test-id="perServiceRecipient">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+        <nhs-page-title model="Model" />
+
+        @if (Model.ShouldShowInset)
+        {
+            <nhs-inset-text>
+                <p>
+                    The latest practice list sizes are published on
+                    <a href="https://digital.nhs.uk/data-and-information/publications/statistical/patients-registered-at-a-gp-practice"
+                       target="_blank">the NHS Digital website (opens in a new tab)</a>.
+                </p>
+            </nhs-inset-text>
+        }
+
+        <form method="post">
+            <hidden-inputs title="Title" caption="Caption" advice="Advice"/>
+            <input type="hidden" asp-for="@Model.BackLink"/>
+            <input type="hidden" asp-for="@Model.ItemName"/>
+            <input type="hidden" asp-for="@Model.ItemType"/>
+            <input type="hidden" asp-for="@Model.Source"/>
+            <input type="hidden" asp-for="@Model.ProvisioningType"/>
+            <input type="hidden" asp-for="@Model.RangeDefinition"/>
+            <input type="hidden" asp-for="@Model.BillingPeriod"/>
+
+            <h2>
+                @($"{Model.RangeDefinition.CapitaliseFirstLetter()} per practice {Model.BillingPeriod?.Description() ?? string.Empty}")
+            </h2>
+
+            <nhs-table data-test-id="additional-service-dashboard-table">
+                <nhs-table-column>Recipient name (ODS code)</nhs-table-column>
+                <nhs-table-column>@Model.QuantityColumnTitle</nhs-table-column>
+
+                @for (var i = 0; i < Model.ServiceRecipients.Length; i++)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>
+                            <input type="hidden" asp-for="@Model.ServiceRecipients[i].Name"/>
+                            <input type="hidden" asp-for="@Model.ServiceRecipients[i].OdsCode"/>
+                            <input type="hidden" asp-for="@Model.ServiceRecipients[i].Quantity"/>
+                            @if (Model.ServiceRecipients[i].Quantity > 0
+                                && Model.ProvisioningType == ProvisioningType.PerServiceRecipient)
+                            {
+                                @Model.ServiceRecipients[i].Description
+                            }
+                            else
+                            {
+                                <div style="margin-top: 6px">
+                                    @Model.ServiceRecipients[i].Description
+                                </div>
+                            }
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            @if (Model.ServiceRecipients[i].Quantity > 0
+                                && Model.ProvisioningType == ProvisioningType.PerServiceRecipient)
+                            {
+                                <div style="text-align: right">
+                                    @($"{Model.ServiceRecipients[i].Quantity:N0}")
+                                </div>
+                            }
+                            else
+                            {
+                                <div style="text-align: right">
+                                    <nhs-input asp-for="@Model.ServiceRecipients[i].InputQuantity"
+                                               input-width="Five"
+                                               data-test-id="input_quantity"/>
+                                </div>
+                            }
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+            </nhs-table>
+
+            @if (Model.PreviouslySelected?.Any() ?? false)
+            {
+                <div id="previously-selected-quantities">
+                    <nhs-details label-text="View Service Recipients from the original order">
+                        <ul>
+                            @foreach (var (recipient, index) in Model.PreviouslySelected.Select((x, i) => (x, i)))
+                            {
+                                <input type="hidden" asp-for="PreviouslySelected[index].Name"/>
+                                <input type="hidden" asp-for="PreviouslySelected[index].OdsCode"/>
+                                <input type="hidden" asp-for="PreviouslySelected[index].InputQuantity"/>
+                                <li>@recipient.Description : @recipient.InputQuantity</li>
+                            }
+                        </ul>
+                    </nhs-details>
+                </div>
+            }
+
+            <div class="nhsuk-u-margin-top-9">
+                <nhs-submit-button/>
+            </div>
+        </form>
+    </div>
+</div>

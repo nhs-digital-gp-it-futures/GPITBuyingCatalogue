@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -34,9 +35,9 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.NonPriceElements.ServiceLevel)
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
-    public async Task<IEnumerable<Competition>> GetCompetitionsDashboard(int organisationId)
+    public async Task<IEnumerable<Competition>> GetCompetitionsDashboard(string internalOrgId)
         => await dbContext.Competitions.Include(x => x.CompetitionSolutions)
-            .Where(x => x.OrganisationId == organisationId)
+            .Where(x => x.Organisation.InternalIdentifier == internalOrgId)
             .ToListAsync();
 
     public async Task<Competition> GetCompetitionWithNonPriceElements(string internalOrgId, int competitionId)
@@ -52,12 +53,12 @@ public class CompetitionsService : ICompetitionsService
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
-    public async Task<Competition> GetCompetitionWithWeightings(int organisationId, int competitionId) =>
+    public async Task<Competition> GetCompetitionWithWeightings(string internalOrgId, int competitionId) =>
         await dbContext.Competitions.Include(x => x.Weightings)
-            .FirstOrDefaultAsync(x => x.OrganisationId == organisationId && x.Id == competitionId);
+            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
     public async Task<Competition> GetCompetitionWithServices(
-        int organisationId,
+        string internalOrgId,
         int competitionId,
         bool shouldTrack = false)
     {
@@ -66,16 +67,15 @@ public class CompetitionsService : ICompetitionsService
             .ThenInclude(x => x.CatalogueItem)
             .ThenInclude(x => x.Supplier)
             .Include(x => x.CompetitionSolutions)
-            .ThenInclude(x => x.RequiredServices)
+            .ThenInclude(x => x.SolutionServices)
             .ThenInclude(x => x.Service)
-            .ThenInclude(x => x.CatalogueItem)
             .IgnoreQueryFilters()
             .AsSplitQuery();
 
         if (!shouldTrack)
             query = query.AsNoTracking();
 
-        return await query.FirstOrDefaultAsync(x => x.OrganisationId == organisationId && x.Id == competitionId);
+        return await query.FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
     }
 
     public async Task<Competition> GetCompetitionWithSolutions(string internalOrgId, int competitionId)
@@ -90,6 +90,36 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.NonPriceElements.Interoperability)
             .Include(x => x.NonPriceElements.Implementation)
             .Include(x => x.NonPriceElements.ServiceLevel)
+            .Include(x => x.Recipients)
+            .AsNoTracking()
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+
+    public async Task<Competition> GetCompetitionWithSolutionsHub(string internalOrgId, int competitionId)
+        => await dbContext.Competitions
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Solution)
+            .ThenInclude(x => x.CatalogueItem)
+            .ThenInclude(x => x.CataloguePrices)
+            .ThenInclude(x => x.CataloguePriceTiers)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Price)
+            .ThenInclude(x => x.Tiers)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.SolutionServices)
+            .ThenInclude(x => x.Price)
+            .ThenInclude(x => x.Tiers)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.SolutionServices)
+            .ThenInclude(x => x.Service)
+            .ThenInclude(x => x.CataloguePrices)
+            .ThenInclude(x => x.CataloguePriceTiers)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.SolutionServices)
+            .ThenInclude(x => x.Quantities)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Quantities)
+            .Include(x => x.Recipients)
             .AsNoTracking()
             .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
@@ -98,52 +128,52 @@ public class CompetitionsService : ICompetitionsService
         => await dbContext.Competitions.AsNoTracking()
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
-    public async Task<Competition> GetCompetitionWithRecipients(int organisationId, int competitionId)
+    public async Task<Competition> GetCompetitionWithRecipients(string internalOrgId, int competitionId)
         => await dbContext.Competitions.Include(x => x.Recipients)
             .AsNoTracking()
             .AsSplitQuery()
-            .FirstOrDefaultAsync(x => x.OrganisationId == organisationId && x.Id == competitionId);
+            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
     public async Task AddCompetitionSolutions(
-        int organisationId,
+        string internalOrgId,
         int competitionId,
         IEnumerable<CompetitionSolution> competitionSolutions)
     {
         var competition = await dbContext.Competitions.Include(x => x.CompetitionSolutions)
-            .ThenInclude(x => x.RequiredServices)
-            .FirstOrDefaultAsync(x => x.OrganisationId == organisationId && x.Id == competitionId);
+            .ThenInclude(x => x.SolutionServices)
+            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
         competition.CompetitionSolutions.AddRange(competitionSolutions);
 
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task SetContractLength(int organisationId, int competitionId, int contractLength)
+    public async Task SetContractLength(string internalOrgId, int competitionId, int contractLength)
     {
         var competition =
             await dbContext.Competitions.FirstOrDefaultAsync(
-                x => x.OrganisationId == organisationId && x.Id == competitionId);
+                x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
         competition.ContractLength = contractLength;
 
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task SetCompetitionCriteria(int organisationId, int competitionId, bool includesNonPrice)
+    public async Task SetCompetitionCriteria(string internalOrgId, int competitionId, bool includesNonPrice)
     {
         var competition =
             await dbContext.Competitions.FirstOrDefaultAsync(
-                x => x.OrganisationId == organisationId && x.Id == competitionId);
+                x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
         competition.IncludesNonPrice = includesNonPrice;
 
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task SetCompetitionWeightings(int organisationId, int competitionId, int priceWeighting, int nonPriceWeighting)
+    public async Task SetCompetitionWeightings(string internalOrgId, int competitionId, int priceWeighting, int nonPriceWeighting)
     {
         var competition = await dbContext.Competitions.Include(x => x.Weightings)
-            .FirstOrDefaultAsync(x => x.OrganisationId == organisationId && x.Id == competitionId);
+            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
         competition.Weightings ??= new Weightings();
 
@@ -268,13 +298,13 @@ public class CompetitionsService : ICompetitionsService
     }
 
     public async Task SetShortlistedSolutions(
-        int organisationId,
+        string internalOrgId,
         int competitionId,
         IEnumerable<CatalogueItemId> shortlistedSolutions)
     {
         var competition = await dbContext.Competitions.IgnoreQueryFilters()
             .Include(x => x.CompetitionSolutions)
-            .FirstOrDefaultAsync(x => x.OrganisationId == organisationId && x.Id == competitionId);
+            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
         if (competition == null) return;
 
@@ -291,7 +321,7 @@ public class CompetitionsService : ICompetitionsService
     }
 
     public async Task SetSolutionJustifications(
-        int organisationId,
+        string internalOrgId,
         int competitionId,
         Dictionary<CatalogueItemId, string> solutionsJustification)
     {
@@ -300,7 +330,7 @@ public class CompetitionsService : ICompetitionsService
 
         var competition = await dbContext.Competitions.IgnoreQueryFilters()
             .Include(x => x.CompetitionSolutions)
-            .FirstOrDefaultAsync(x => x.OrganisationId == organisationId && x.Id == competitionId);
+            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
         var solutions = competition.CompetitionSolutions.ToList();
         solutions.ForEach(x => x.Justification = null);
@@ -343,11 +373,11 @@ public class CompetitionsService : ICompetitionsService
             solutionsScores ?? throw new ArgumentNullException(nameof(solutionsScores)),
             ScoreType.ServiceLevel);
 
-    public async Task AcceptShortlist(int organisationId, int competitionId)
+    public async Task AcceptShortlist(string internalOrgId, int competitionId)
     {
         var competition =
             await dbContext.Competitions.FirstOrDefaultAsync(
-                x => x.OrganisationId == organisationId && x.Id == competitionId);
+                x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
         if (competition.ShortlistAccepted.HasValue)
             return;
@@ -357,11 +387,11 @@ public class CompetitionsService : ICompetitionsService
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task CompleteCompetition(int organisationId, int competitionId)
+    public async Task CompleteCompetition(string internalOrgId, int competitionId)
     {
         var competition =
             await dbContext.Competitions.FirstOrDefaultAsync(
-                x => x.OrganisationId == organisationId && x.Id == competitionId);
+                x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
         if (competition.Completed.HasValue)
             return;
@@ -371,11 +401,11 @@ public class CompetitionsService : ICompetitionsService
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task DeleteCompetition(int organisationId, int competitionId)
+    public async Task DeleteCompetition(string internalOrgId, int competitionId)
     {
         var competition =
             await dbContext.Competitions.FirstOrDefaultAsync(
-                x => x.OrganisationId == organisationId && x.Id == competitionId);
+                x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
         if (competition == null)
             return;
@@ -383,6 +413,72 @@ public class CompetitionsService : ICompetitionsService
         competition.IsDeleted = true;
 
         await dbContext.SaveChangesAsync();
+    }
+
+    public async Task RemoveNonPriceElements(string internalOrgId, int competitionId)
+    {
+        var competition = await dbContext.Competitions
+            .Include(x => x.NonPriceElements)
+            .Include(x => x.Weightings)
+            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+
+        var nonPriceElementScores = ScoreTypeExtensions.GetNonPriceElementScores();
+        var competitionSolutionScores = await dbContext.CompetitionSolutionScores
+            .Where(x => x.CompetitionId == competitionId && nonPriceElementScores.Contains(x.ScoreType))
+            .ToListAsync();
+
+        competition.HasReviewedCriteria = false;
+
+        if (competition.Weightings != null)
+            dbContext.Remove(competition.Weightings);
+
+        if (competition.NonPriceElements != null)
+            dbContext.Remove(competition.NonPriceElements);
+
+        if (competitionSolutionScores.Count > 0)
+            dbContext.RemoveRange(competitionSolutionScores);
+
+        if (dbContext.ChangeTracker.HasChanges())
+            await dbContext.SaveChangesAsync();
+    }
+
+    public async Task SetAssociatedServices(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId,
+        IEnumerable<CatalogueItemId> associatedServices)
+    {
+        ArgumentNullException.ThrowIfNull(associatedServices);
+
+        var competition = await dbContext.Competitions.Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.SolutionServices)
+            .ThenInclude(x => x.Service)
+            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+
+        var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
+        if (solution == null) return;
+
+        var existingAssociatedServices = solution.SolutionServices.Where(
+            x => !x.IsRequired && x.Service.CatalogueItemType is CatalogueItemType.AssociatedService);
+
+        var selectedAssociatedServices = associatedServices.ToList();
+
+        var toAdd = selectedAssociatedServices.Where(x => existingAssociatedServices.All(y => y.ServiceId != x))
+            .Select(x => new SolutionService(competitionId, solutionId, x, false))
+            .ToList();
+
+        var toRemove = existingAssociatedServices.Where(x => !selectedAssociatedServices.Contains(x.ServiceId))
+            .ToList();
+
+        var pricesToRemove = toRemove.Where(x => x.Price != null).Select(x => x.Price).ToList();
+        if (pricesToRemove.Any())
+            dbContext.RemoveRange(pricesToRemove);
+
+        toRemove.ForEach(x => solution.SolutionServices.Remove(x));
+        toAdd.ForEach(x => solution.SolutionServices.Add(x));
+
+        if (dbContext.ChangeTracker.HasChanges())
+            await dbContext.SaveChangesAsync();
     }
 
     public async Task<int> AddCompetition(int organisationId, int filterId, string name, string description)
@@ -399,9 +495,9 @@ public class CompetitionsService : ICompetitionsService
         return competition.Id;
     }
 
-    public async Task<bool> Exists(int organisationId, string competitionName) =>
+    public async Task<bool> Exists(string internalOrgId, string competitionName) =>
         await dbContext.Competitions.AnyAsync(
-            x => x.OrganisationId == organisationId && string.Equals(x.Name, competitionName));
+            x => x.Organisation.InternalIdentifier == internalOrgId && string.Equals(x.Name, competitionName));
 
     public async Task SetCompetitionRecipients(int competitionId, IEnumerable<string> odsCodes)
     {
@@ -420,7 +516,7 @@ public class CompetitionsService : ICompetitionsService
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task<CompetitionTaskListModel> GetCompetitionTaskList(int organisationId, int competitionId) =>
+    public async Task<CompetitionTaskListModel> GetCompetitionTaskList(string internalOrgId, int competitionId) =>
         await dbContext
             .Competitions
             .Include(x => x.Weightings)
@@ -430,18 +526,25 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.NonPriceElements.Implementation)
             .Include(x => x.NonPriceElements.Interoperability)
             .Include(x => x.NonPriceElements.ServiceLevel)
+            .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Scores)
+            .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Price)
+            .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Quantities)
             .Include(x => x.CompetitionSolutions)
-            .ThenInclude(x => x.Scores)
+            .ThenInclude(x => x.SolutionServices)
+            .ThenInclude(x => x.Quantities)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.SolutionServices)
+            .ThenInclude(x => x.Price)
             .AsNoTracking()
             .AsSplitQuery()
-            .Where(x => x.OrganisationId == organisationId && x.Id == competitionId)
+            .Where(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId)
             .Select(
                 x => new CompetitionTaskListModel(x))
             .FirstOrDefaultAsync();
 
-    public async Task<string> GetCompetitionName(int organisationId, int competitionId) => await dbContext.Competitions
+    public async Task<string> GetCompetitionName(string internalOrgId, int competitionId) => await dbContext.Competitions
         .AsNoTracking()
-        .Where(x => x.OrganisationId == organisationId && x.Id == competitionId)
+        .Where(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId)
         .Select(x => x.Name)
         .FirstOrDefaultAsync();
 

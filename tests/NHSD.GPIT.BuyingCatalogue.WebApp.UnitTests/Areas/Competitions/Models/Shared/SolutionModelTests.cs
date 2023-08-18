@@ -17,21 +17,26 @@ public static class SolutionModelTests
         Solution solution,
         Supplier supplier,
         AdditionalService requiredService,
-        List<RequiredService> requiredServices,
+        List<SolutionService> requiredServices,
         CompetitionSolution competitionSolution)
     {
         solution.CatalogueItem.Supplier = supplier;
-        requiredServices.ForEach(x => x.Service = requiredService);
+        requiredServices.ForEach(
+            x =>
+            {
+                x.IsRequired = true;
+                x.Service = requiredService.CatalogueItem;
+            });
 
         competitionSolution.Solution = solution;
-        competitionSolution.RequiredServices = requiredServices;
+        competitionSolution.SolutionServices = requiredServices;
 
         var model = new SolutionModel(competitionSolution);
 
         model.SolutionId.Should().Be(solution.CatalogueItemId);
         model.SolutionName.Should().Be(solution.CatalogueItem.Name);
         model.SupplierName.Should().Be(supplier.Name);
-        model.RequiredServices.Should().BeEquivalentTo(requiredServices.Select(x => x.Service.CatalogueItem.Name));
+        model.RequiredServices.Should().BeEquivalentTo(requiredServices.Select(x => x.Service.Name));
         model.Selected.Should().Be(competitionSolution.IsShortlisted);
     }
 

@@ -45,7 +45,7 @@ public class CompetitionRecipientsController : Controller
         SelectionMode? selectionMode = null)
     {
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-        var competition = await competitionsService.GetCompetitionWithRecipients(organisation.Id, competitionId);
+        var competition = await competitionsService.GetCompetitionWithRecipients(internalOrgId, competitionId);
         var recipients = await GetServiceRecipients(internalOrgId);
         var splitRecipientIds = string.Join(',', recipientIds, importedRecipients).Split(
             ',',

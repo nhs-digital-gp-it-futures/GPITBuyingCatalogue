@@ -11,4 +11,6 @@ public class ServiceLevelCriteria
     public DateTime TimeUntil { get; set; }
 
     public string ApplicableDays { get; set; }
+
+    public int NonPriceElementsId { get; set; }
 }
