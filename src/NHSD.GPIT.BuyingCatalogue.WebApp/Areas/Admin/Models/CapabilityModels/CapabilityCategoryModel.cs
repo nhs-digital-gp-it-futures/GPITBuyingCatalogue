@@ -16,6 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
         {
             Name = capabilityCategory.Name;
             Capabilities = capabilityCategory.Capabilities.Select(c => new CapabilityModel(catalogueItem, c))
+                .Where(c => c.Status == CapabilityStatus.Effective
+                    || (c.Status == CapabilityStatus.Expired && (c.Selected || c.Epics.Any(e => e.Selected))))
                 .OrderBy(c => c.Id)
                 .ToList();
         }
