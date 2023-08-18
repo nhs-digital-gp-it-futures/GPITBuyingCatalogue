@@ -83,23 +83,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var inputOptions = new PageOptions(page, sortBy);
 
-            (IQueryable<CatalogueItem> catalogueItemsWithoutFrameworkFilter, _) =
-                await solutionsFilterService.GetFilteredAndNonFilteredQueryResults(capabilityAndEpicIds);
-
-            var frameworks = await frameworkService.GetFrameworksByCatalogueItems(
-                catalogueItemsWithoutFrameworkFilter.Select(x => x.Id).ToList());
-
-            var additionalFilters = new AdditionalFiltersModel(
-                frameworks,
-                selectedFrameworkId,
-                selectedApplicationTypeIds,
-                selectedHostingTypeIds,
-                selectedIM1Integrations,
-                selectedGPConnectIntegrations,
-                selectedInteroperabilityOptions,
-                selected)
-            { FilterId = filterId, SortBy = sortBy };
-
             (IList<CatalogueItem> catalogueItems, PageOptions options, List<CapabilitiesAndCountModel> capabilitiesAndCount) =
                 await solutionsFilterService.GetAllSolutionsFiltered(
                     inputOptions,
@@ -111,8 +94,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     selectedIM1Integrations,
                     selectedGPConnectIntegrations);
 
-            
-            
+            (IQueryable<CatalogueItem> catalogueItemsWithoutFrameworkFilter, _) =
+                await solutionsFilterService.GetFilteredAndNonFilteredQueryResults(capabilityAndEpicIds);
+
+            var frameworks = await frameworkService.GetFrameworksByCatalogueItems(
+                catalogueItemsWithoutFrameworkFilter.Select(x => x.Id).ToList());
+            var additionalFilters = new AdditionalFiltersModel(
+                frameworks,
+                selectedFrameworkId,
+                selectedApplicationTypeIds,
+                selectedHostingTypeIds,
+                selectedIM1Integrations,
+                selectedGPConnectIntegrations,
+                selectedInteroperabilityOptions,
+                selected)
+            { FilterId = filterId, SortBy = sortBy };
 
             return View(
                 new SolutionsModel
@@ -142,6 +138,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         {
             _ = model;
 
+            var selectedInteroperabilityOptions = additionalFiltersModel.CombineSelectedOptions(
+                            additionalFiltersModel.InteroperabilityOptions);
+
             return RedirectToAction(
                 nameof(Index),
                 typeof(SolutionsController).ControllerName(),
@@ -156,12 +155,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                             additionalFiltersModel.ApplicationTypeOptions),
                     selectedHostingTypeIds =
                         additionalFiltersModel.CombineSelectedOptions(additionalFiltersModel.HostingTypeOptions),
-                    selectedIM1Integrations = additionalFiltersModel.CombineSelectedOptions(
-                            additionalFiltersModel.IM1IntegrationsOptions),
-                    selectedGPConnectIntegrations = additionalFiltersModel.CombineSelectedOptions(
-                            additionalFiltersModel.GPConnectIntegrationsOptions),
-                    selectedInteroperabilityOptions = additionalFiltersModel.CombineSelectedOptions(
-                            additionalFiltersModel.InteroperabilityOptions),
+                    selectedIM1Integrations = selectedInteroperabilityOptions.Contains('0') ? additionalFiltersModel.CombineSelectedOptions(
+                            additionalFiltersModel.IM1IntegrationsOptions) : null,
+                    selectedGPConnectIntegrations = selectedInteroperabilityOptions.Contains('1') ? additionalFiltersModel.CombineSelectedOptions(
+                            additionalFiltersModel.GPConnectIntegrationsOptions) : null,
+                    selectedInteroperabilityOptions,
                     filterId,
                     sortBy,
                 });

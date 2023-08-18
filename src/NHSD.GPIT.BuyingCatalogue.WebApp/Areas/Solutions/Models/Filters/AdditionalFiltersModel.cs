@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
+using EnumsNET;
+using Flurl.Util;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
@@ -63,21 +67,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
             ?.Select(f => f.Text)
             ?.ToArray() ?? Array.Empty<string>();
 
-        public List<SelectOption<string>> InteroperabilityOptions { get; set; }
+        public List<SelectOption<int>> InteroperabilityOptions { get; set; }
 
-        public string[] IM1IntegrationsSelect => InteroperabilityOptions
+        public string[] InteroperabilityFilters => InteroperabilityOptions
             ?.Where(f => f.Selected)
             ?.Select(f => f.Text)
             ?.ToArray() ?? Array.Empty<string>();
 
-        public List<SelectOption<string>> IM1IntegrationsOptions { get; set; }
+        public List<SelectOption<int>> IM1IntegrationsOptions { get; set; }
 
         public string[] IM1IntegrationsFilters => IM1IntegrationsOptions
             ?.Where(f => f.Selected)
             ?.Select(f => f.Text)
             ?.ToArray() ?? Array.Empty<string>();
 
-        public List<SelectOption<string>> GPConnectIntegrationsOptions { get; set; }
+        public List<SelectOption<int>> GPConnectIntegrationsOptions { get; set; }
 
         public string[] GPConnectIntegrationsFilters => GPConnectIntegrationsOptions
             ?.Where(f => f.Selected)
@@ -87,11 +91,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
         public string CombineSelectedOptions(List<SelectOption<int>> options)
         {
             return (options?.Where(x => x.Selected)?.Select(x => x.Value) ?? Enumerable.Empty<int>()).ToFilterString();
-        }
-
-        public string CombineSelectedOptions(List<SelectOption<string>> options)
-        {
-            return (options?.Where(x => x.Selected)?.Select(x => x.Value) ?? Enumerable.Empty<string>()).ToFilterString();
         }
 
         private void SetFrameworkOptions(List<FrameworkFilterInfo> frameworks, string selectedFrameworkId)
@@ -145,51 +144,46 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                 .ToList();
         }
 
+        private void SetInteroperabilityOptions(string selectedInteroperabilityOptions)
+        {
+            InteroperabilityOptions = Enum.GetValues(typeof(InteropIntegrationType))
+                .Cast<InteropIntegrationType>()
+                .Select(
+                    x => new SelectOption<int>
+                    {
+                        Value = (int)x,
+                        Text = x.GetName(),
+                        Selected = !string.IsNullOrEmpty(selectedInteroperabilityOptions)
+                            && selectedInteroperabilityOptions.Contains(((int)x).ToString()),
+                    }).ToList();
+        }
+
         private void SetIM1IntegrationsOptions(string selectedIM1Integrations, string selectedInteroperabilityOptions)
         {
-            IM1IntegrationsOptions = Interoperability.Im1Integrations
-            .Select(x => new SelectOption<string>
-            {
-                Value = x.Key,
-                Text = x.Value,
-                Selected = !string.IsNullOrEmpty(selectedIM1Integrations)
-                            && selectedIM1Integrations.Contains(x.Key) && (!string.IsNullOrEmpty(selectedInteroperabilityOptions)
-                            && selectedInteroperabilityOptions.Contains(Interoperability.IM1IntegrationType)),
-            }).ToList();
+            IM1IntegrationsOptions = Enum.GetValues(typeof(InteropIntegrationIm1Integrations))
+                .Cast<InteropIntegrationIm1Integrations>()
+                .Select(
+                    x => new SelectOption<int>
+                    {
+                        Value = (int)x,
+                        Text = x.Name(),
+                        Selected = !string.IsNullOrEmpty(selectedIM1Integrations)
+                            && selectedIM1Integrations.Contains(((int)x).ToString()),
+                    }).ToList();
         }
 
         private void SetGPConnectIntegrationsOptions(string selectedGPConnectIntegrations, string selectedInteroperabilityOptions)
         {
-            GPConnectIntegrationsOptions = Interoperability.GpConnectIntegrations
-            .Select(x => new SelectOption<string>
-            {
-                Value = x.Key,
-                Text = x.Value,
-                Selected = !string.IsNullOrEmpty(selectedGPConnectIntegrations)
-                            && selectedGPConnectIntegrations.Contains(x.Key) && (!string.IsNullOrEmpty(selectedInteroperabilityOptions)
-                            && selectedInteroperabilityOptions.Contains(Interoperability.GpConnectIntegrationType)),
-            }).ToList();
-        }
-
-        private void SetInteroperabilityOptions(string selectedInteroperabilityOptions)
-        {
-            InteroperabilityOptions = new List<SelectOption<string>>
-            {
-                new SelectOption<string>
-                {
-                    Value = Interoperability.IM1IntegrationType,
-                    Text = Interoperability.IM1IntegrationType,
-                    Selected = !string.IsNullOrEmpty(selectedInteroperabilityOptions)
-                                && selectedInteroperabilityOptions.Contains(Interoperability.IM1IntegrationType),
-                },
-                new SelectOption<string>
-                {
-                    Value = Interoperability.GpConnectIntegrationType,
-                    Text = Interoperability.GpConnectIntegrationType,
-                    Selected = !string.IsNullOrEmpty(selectedInteroperabilityOptions)
-                                && selectedInteroperabilityOptions.Contains(Interoperability.GpConnectIntegrationType),
-                },
-            };
+            GPConnectIntegrationsOptions = Enum.GetValues(typeof(InteropIntegrationGpConnectIntegrations))
+                .Cast<InteropIntegrationGpConnectIntegrations>()
+                .Select(
+                    x => new SelectOption<int>
+                    {
+                        Value = (int)x,
+                        Text = x.Name(),
+                        Selected = !string.IsNullOrEmpty(selectedGPConnectIntegrations)
+                            && selectedGPConnectIntegrations.Contains(((int)x).ToString()),
+                    }).ToList();
         }
     }
 }
