@@ -89,6 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 { "selectedHostingTypeIds", additionalFilters.CombineSelectedOptions(additionalFilters.HostingTypeOptions) },
                 { "selectedIM1Integrations", additionalFilters.CombineSelectedOptions(additionalFilters.IM1IntegrationsOptions) },
                 { "selectedGPConnectIntegrations", additionalFilters.CombineSelectedOptions(additionalFilters.GPConnectIntegrationsOptions) },
+                { "selectedInteroperabilityOptions", additionalFilters.CombineSelectedOptions(additionalFilters.InteroperabilityOptions) },
                 { "filterId", null },
             });
         }
