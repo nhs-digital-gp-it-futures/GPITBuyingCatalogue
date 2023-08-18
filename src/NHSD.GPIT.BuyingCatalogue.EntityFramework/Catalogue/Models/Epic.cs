@@ -16,6 +16,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public string Name { get; set; }
 
+        public string NameWithStatusSuffix => IsActive
+            ? Name
+            : $"{Name} (inactive)";
+
         public string Description { get; set; }
 
         public string SourceUrl { get; set; }
