@@ -5,9 +5,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 public enum InteropGpConnectIntegrations
 {
     [Display(Name = "GP Connect - HTML View")]
-    HTMLView,
+    HTML_View,
     [Display(Name = "GP Connect - Appointment Booking")]
-    AppointmentBooking,
+    Appointment_Booking,
     [Display(Name = "GP Connect - Structured Record")]
-    StructuredRecord,
+    Structured_Record,
 }

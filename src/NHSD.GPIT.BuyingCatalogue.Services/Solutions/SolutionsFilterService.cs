@@ -5,9 +5,11 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using EnumsNET;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -73,20 +75,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             if (!string.IsNullOrWhiteSpace(selectedIM1Integrations))
             {
-                string[] integrationParts = selectedIM1Integrations.Split('.');
-                foreach (string s in integrationParts)
-                {
-                    query = query.Where(ci => ci.Solution.Integrations.Contains(s));
-                }
+                query = ApplyAdditionalFilterToQuery<InteropIm1Integrations>(
+                    query,
+                    selectedIM1Integrations,
+                    GetSelectedFiltersIm1Integration,
+                    x => x.Integrations != null);
             }
 
             if (!string.IsNullOrWhiteSpace(selectedGPConnectIntegrations))
             {
-                string[] gpIntegrationParts = selectedGPConnectIntegrations.Split('.');
-                foreach (string s in gpIntegrationParts)
-                {
-                    query = query.Where(ci => ci.Solution.Integrations.Contains(s));
-                }
+                query = ApplyAdditionalFilterToQuery<InteropGpConnectIntegrations>(
+                    query,
+                    selectedGPConnectIntegrations,
+                    GetSelectedFiltersGpConnectIntegration,
+                    x => x.Integrations != null);
             }
 
             var totalNumberOfItems = await query.CountAsync();
@@ -278,6 +280,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         private static IEnumerable<HostingType> GetSelectedFiltersHosting(Solution solution, IEnumerable<HostingType> selectedFilterEnums)
         {
             return selectedFilterEnums?.Where(t => solution.Hosting.HasHostingType(t));
+        }
+
+        private static IEnumerable<InteropIm1Integrations> GetSelectedFiltersIm1Integration(Solution solution, IEnumerable<InteropIm1Integrations> selectedFilterEnums)
+        {
+            return selectedFilterEnums?.Where(t => solution.Integrations.Contains(t.GetName().Replace('_', ' '), StringComparison.OrdinalIgnoreCase));
+        }
+
+        private static IEnumerable<InteropGpConnectIntegrations> GetSelectedFiltersGpConnectIntegration(Solution solution, IEnumerable<InteropGpConnectIntegrations> selectedFilterEnums)
+        {
+            return selectedFilterEnums?.Where(t => solution.Integrations.Contains(t.GetName().Replace('_', ' '), StringComparison.OrdinalIgnoreCase));
         }
     }
 }

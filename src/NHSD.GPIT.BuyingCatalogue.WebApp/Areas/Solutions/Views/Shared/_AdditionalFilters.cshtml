@@ -8,7 +8,7 @@
 
     <input type="hidden" asp-for="Selected"/>
     <input type="hidden" asp-for="SortBy" />
-
+    
     <nhs-expander label-text="Framework"
                   open="true"
                   data-test-id="filter-framework-expander">
@@ -66,7 +66,7 @@
         {
             <nhs-fieldset-form-label asp-for="@Model">
                 <nhs-checkbox-container>
-                    <nhs-checkbox asp-for="@Model.InteroperabilityOptions[j].Selected"
+                    <nhs-checkbox size=Small asp-for="@Model.InteroperabilityOptions[j].Selected"
                                           label-text="@Model.InteroperabilityOptions[j].Text integrations"
                                           hidden-input="@Model.InteroperabilityOptions[j].Value">
                         @if (@Model.InteroperabilityOptions[j].Text == @Model.InteroperabilityOptions[0].Text)
@@ -74,7 +74,7 @@
                             <nhs-checkbox-container>
                                 @for (var i = 0; i < Model.IM1IntegrationsOptions.Count; i++)
                                 {
-                                    <nhs-checkbox asp-for="@Model.IM1IntegrationsOptions[i].Selected"
+                                    <nhs-checkbox size=Small asp-for="@Model.IM1IntegrationsOptions[i].Selected"
                                       label-text="@Model.IM1IntegrationsOptions[i].Text"
                                       hidden-input="@Model.IM1IntegrationsOptions[i].Value"/>
                                 }
@@ -85,7 +85,7 @@
                             <nhs-checkbox-container>
 					            @for (var i = 0; i < Model.GPConnectIntegrationsOptions.Count; i++)
 					            {
-					                <nhs-checkbox asp-for="@Model.GPConnectIntegrationsOptions[i].Selected"
+                                    <nhs-checkbox size=Small asp-for ="@Model.GPConnectIntegrationsOptions[i].Selected"
 								    label-text="@Model.GPConnectIntegrationsOptions[i].Text"
 								    hidden-input="@Model.GPConnectIntegrationsOptions[i].Value" />
 					            }

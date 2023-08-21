@@ -9,5 +9,5 @@ public enum InteropIm1Integrations
     [Display(Name = "IM1 Transactional")]
     Transactional,
     [Display(Name = "IM1 Patient Facing")]
-    PatientFacing,
+    Patient_Facing,
 }

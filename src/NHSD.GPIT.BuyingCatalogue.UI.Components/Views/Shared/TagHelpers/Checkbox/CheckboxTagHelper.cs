@@ -21,6 +21,15 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
         public CheckboxTagHelper(IHtmlGenerator htmlGenerator) => this.htmlGenerator = htmlGenerator;
 
+        public enum CheckboxSize
+        {
+            Small,
+            Medium,
+        }
+
+        [HtmlAttributeName("size")]
+        public CheckboxSize Size { get; set; } = CheckboxSize.Medium;
+
         [HtmlAttributeNotBound]
         [ViewContext]
         public ViewContext ViewContext { get; set; }
@@ -101,12 +110,18 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
         private TagBuilder GetCheckboxInputBuilder()
         {
+            var inputClass = Size switch
+            {
+                CheckboxSize.Small => "nhsuk-checkboxes__input--small",
+                _ => "nhsuk-checkboxes__input",
+            };
+
             return htmlGenerator.GenerateCheckBox(
                 ViewContext,
                 For.ModelExplorer,
                 For.Name,
                 (bool)For.Model,
-                new { @class = NhsCheckboxInput });
+                new { @class = inputClass });
         }
 
         private TagBuilder GetCheckboxLabelBuilder()
