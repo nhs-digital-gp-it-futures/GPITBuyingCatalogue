@@ -1,9 +1,9 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.Contracts;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree
@@ -19,19 +19,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree
         {
             if (isDefault)
             {
-                CommonActions.ClickFirstRadio();
                 CommonActions.ClickSave();
             }
             else
             {
-                CommonActions.ClickRadioButtonWithText(ImplementationPlanObjects.BespokeMilestonesAgreed);
-                CommonActions.ClickSave();
-
-                //CommonActions.PageLoadedCorrectGetIndex(
-                //   typeof(ImplementationPlanController),
-                //   nameof(ImplementationPlanController.CustomImplementationPlan)).Should().BeTrue();
-
-                CommonActions.ClickContinue();
+                AddBespokeMilestones();
             }
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -43,46 +35,44 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree
         {
             if (isDefault)
             {
-                CommonActions.ClickFirstRadio();
-
                 CommonActions.ClickSave();
             }
             else
             {
                 CommonActions.ClickRadioButtonWithText(AssociatedServicesBillingObjects.BespokeMilestonesAgreed);
                 CommonActions.ClickSave();
-
-                //CommonActions.PageLoadedCorrectGetIndex(
-                //    typeof(ContractBillingController),
-                //    nameof(ContractBillingController.BespokeBilling)).Should().BeTrue();
-
                 CommonActions.ClickContinue();
             }
 
-            //CommonActions.PageLoadedCorrectGetIndex(
-            //       typeof(ContractBillingController),
-            //       nameof(ContractBillingController.SpecificRequirements)).Should().BeTrue();
-
             if (isDefault)
             {
-                CommonActions.ClickFirstRadio();
                 CommonActions.ClickSave();
             }
             else
             {
                 CommonActions.ClickRadioButtonWithText(AssociatedServicesBillingObjects.SpecificRequirementsAgreed);
                 CommonActions.ClickSave();
-
-                //CommonActions.PageLoadedCorrectGetIndex(
-                //   typeof(ContractBillingController),
-                //   nameof(ContractBillingController.BespokeRequirements)).Should().BeTrue();
-
                 CommonActions.ClickContinue();
             }
 
             CommonActions.PageLoadedCorrectGetIndex(
             typeof(OrderController),
             nameof(OrderController.Order)).Should().BeTrue();
+        }
+
+        public void AddBespokeMilestones()
+        {
+            CommonActions.ClickLinkElement(ImplementationPlanObjects.ImplementationPlanAddBespokeMilestone);
+            EnterMilestoneName();
+            CommonActions.ClickSave();
+        }
+
+        public void EnterMilestoneName()
+        {
+            CommonActions.LedeText().Should().Be("Add an implementation plan milestone.".FormatForComparison());
+            TextGenerators.TextInputAddText(ImplementationPlanObjects.MileStoneName, 25);
+            TextGenerators.TextInputAddText(ImplementationPlanObjects.MilestonePaymentTrigger, 50);
+            CommonActions.ClickSave();
         }
     }
 }

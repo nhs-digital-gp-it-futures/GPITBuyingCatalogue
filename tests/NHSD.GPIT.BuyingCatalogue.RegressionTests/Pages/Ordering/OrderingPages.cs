@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Web;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
+﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard;
