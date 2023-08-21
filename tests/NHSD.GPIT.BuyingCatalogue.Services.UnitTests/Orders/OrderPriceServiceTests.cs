@@ -12,6 +12,7 @@ using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.Services.Orders;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -36,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         public static void UpsertPrice_RecipientIsNull_ThrowsException(OrderPriceService service)
         {
             FluentActions
-                .Awaiting(() => service.UpsertPrice(0, null, new List<OrderPricingTierDto>()))
+                .Awaiting(() => service.UpsertPrice(0, null, new List<PricingTierDto>()))
                 .Should().ThrowAsync<ArgumentNullException>()
                 .WithParameterName("price");
         }
@@ -62,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             context.Orders.Add(order);
             await context.SaveChangesAsync();
 
-            await service.UpsertPrice(order.Id, price, new List<OrderPricingTierDto>());
+            await service.UpsertPrice(order.Id, price, new List<PricingTierDto>());
 
             var actual = context.OrderItemPrices
                 .FirstOrDefault(x => x.OrderId == order.Id
@@ -87,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             var price = orderItem.CatalogueItem.CataloguePrices.First();
 
-            await service.UpsertPrice(order.Id, price, new List<OrderPricingTierDto>());
+            await service.UpsertPrice(order.Id, price, new List<PricingTierDto>());
 
             var actual = context.OrderItemPrices
                 .FirstOrDefault(x => x.OrderId == order.Id
@@ -148,7 +149,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 .Setup(x => x.ResetItemQuantities(order.Id, orderItem.CatalogueItemId))
                 .Verifiable();
 
-            await service.UpsertPrice(order.Id, price, new List<OrderPricingTierDto>());
+            await service.UpsertPrice(order.Id, price, new List<PricingTierDto>());
 
             mockOrderQuantityService.VerifyAll();
 
@@ -196,7 +197,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             var price = orderItem.CatalogueItem.CataloguePrices.First();
 
             var agreedPrices = price.CataloguePriceTiers
-                .Select(x => new OrderPricingTierDto
+                .Select(x => new PricingTierDto
                 {
                     Price = x.Price / 2,
                     LowerRange = x.LowerRange,
@@ -263,7 +264,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             var solutionId = order.GetSolution().CatalogueItemId;
 
-            await service.UpdatePrice(order.Id, solutionId, new List<OrderPricingTierDto>());
+            await service.UpdatePrice(order.Id, solutionId, new List<PricingTierDto>());
 
             var actual = context.OrderItemPrices
                 .FirstOrDefault(x => x.OrderId == order.Id
@@ -292,7 +293,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 .First(x => x.OrderId == order.Id
                     && x.CatalogueItemId == solutionId);
 
-            await service.UpdatePrice(order.Id, solutionId, new List<OrderPricingTierDto>());
+            await service.UpdatePrice(order.Id, solutionId, new List<PricingTierDto>());
 
             var actual = context.OrderItemPrices
                 .First(x => x.OrderId == order.Id
@@ -306,7 +307,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         public static async Task UpdatePrice_OrderItemPriceInDatabase_PricingTierSupplied_UpdatesPrices(
             [Frozen] BuyingCatalogueDbContext context,
             Order order,
-            List<OrderPricingTierDto> agreedPrices,
+            List<PricingTierDto> agreedPrices,
             OrderPriceService service)
         {
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
@@ -98,5 +99,15 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public virtual ContractFlags ContractFlags { get; set; }
 
         public virtual Contract Contract { get; set; }
+
+        public IEnumerable<CatalogueItem> GetServices(CatalogueItemType catalogueItemType)
+        {
+            return catalogueItemType switch
+            {
+                CatalogueItemType.AdditionalService => GetAdditionalServices().Select(x => x.CatalogueItem).ToList(),
+                CatalogueItemType.AssociatedService => GetAssociatedServices().Select(x => x.CatalogueItem).ToList(),
+                _ => throw new ArgumentOutOfRangeException(nameof(catalogueItemType), catalogueItemType, null),
+            };
+        }
     }
 }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -12,6 +13,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Quantity;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
 {
@@ -20,8 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
     [Route("order/organisation/{internalOrgId}/order/{callOffId}")]
     public class QuantityController : Controller
     {
-        private const string OrderItemViewName = "SelectOrderItemQuantity";
-        private const string ServiceRecipientViewName = "SelectServiceRecipientQuantity";
+        private const string OrderItemViewName = "QuantitySelection/SelectOrderItemQuantity";
+        private const string ServiceRecipientViewName = "QuantitySelection/SelectServiceRecipientQuantity";
 
         private readonly IGpPracticeService gpPracticeService;
         private readonly IOrderService orderService;
@@ -52,8 +54,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
             var orderItem = order.OrderItem(catalogueItemId);
+            if (orderItem is null) return BadRequest();
 
-            if (orderItem.OrderItemPrice.IsPerServiceRecipient())
+            if (((IPrice)orderItem?.OrderItemPrice)?.IsPerServiceRecipient() ?? false)
             {
                 return RedirectToAction(
                     nameof(SelectServiceRecipientQuantity),
@@ -66,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 order,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
 
-            var model = new SelectOrderItemQuantityModel(orderItem)
+            var model = new SelectOrderItemQuantityModel(orderItem.CatalogueItem, orderItem.OrderItemPrice, orderItem.Quantity)
             {
                 BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
                 IsAmendment = callOffId.IsAmendment,
@@ -122,10 +125,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 order,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
 
-            var model = new SelectServiceRecipientQuantityModel(orderItem, previousItem)
+            var recipients = orderItem.OrderItemRecipients.Select(
+                x => new ServiceRecipientDto(x.OdsCode, x.Recipient?.Name, x.Quantity));
+
+            var previousRecipients = previousItem?.OrderItemRecipients?.Select(
+                x => new ServiceRecipientDto(x.OdsCode, x.Recipient?.Name, x.Quantity));
+
+            var model = new SelectServiceRecipientQuantityModel(
+                orderItem.CatalogueItem,
+                orderItem.OrderItemPrice,
+                recipients,
+                previousRecipients)
             {
-                BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
-                Source = source,
+                BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues), Source = source,
             };
 
             if (orderItem.OrderItemPrice.ProvisioningType != ProvisioningType.Patient)
@@ -192,7 +204,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Previous;
             var orderItem = order.OrderItem(catalogueItemId);
 
-            if (orderItem.OrderItemPrice?.IsPerServiceRecipient() ?? false)
+            if (((IPrice)orderItem?.OrderItemPrice)?.IsPerServiceRecipient() ?? false)
             {
                 return RedirectToAction(
                     nameof(ViewServiceRecipientQuantity),

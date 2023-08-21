@@ -15,10 +15,11 @@ public static class RequiredServiceTests
         CatalogueItemId solutionId,
         CatalogueItemId serviceId)
     {
-        var model = new RequiredService(competitionId, solutionId, serviceId);
+        var model = new SolutionService(competitionId, solutionId, serviceId, true);
 
         model.CompetitionId.Should().Be(competitionId);
         model.SolutionId.Should().Be(solutionId);
         model.ServiceId.Should().Be(serviceId);
+        model.IsRequired.Should().BeTrue();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
@@ -15,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 if (OrderItemPrice == null)
                     return 0;
 
-                return OrderItemPrice.IsPerServiceRecipient()
+                return ((IPrice)OrderItemPrice).IsPerServiceRecipient()
                     ? OrderItemRecipients?.Sum(x => x.Quantity ?? 0) ?? 0
                     : Quantity ?? 0;
             }
@@ -30,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 if (OrderItemPrice == null)
                     return false;
 
-                return OrderItemPrice.IsPerServiceRecipient()
+                return ((IPrice)OrderItemPrice).IsPerServiceRecipient()
                     ? OrderItemRecipients?.All(x => x.Quantity.HasValue) ?? false
                     : Quantity.HasValue;
             }

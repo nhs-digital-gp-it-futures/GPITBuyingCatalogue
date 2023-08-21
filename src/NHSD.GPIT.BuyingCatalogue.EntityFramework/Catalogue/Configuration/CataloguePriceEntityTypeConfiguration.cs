@@ -43,6 +43,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .HasConversion<int>()
                 .HasColumnName("TimeUnitId");
 
+            builder.Ignore(x => x.RangeDescription);
+            builder.Ignore(x => x.Description);
+
             builder.Property(p => p.LastUpdated).HasDefaultValue(DateTime.UtcNow);
 
             builder.HasOne(p => p.CatalogueItem)
