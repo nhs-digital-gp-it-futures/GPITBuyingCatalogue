@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.Contract
 
         public static By HasSpecificRequirementsError => By.Id("specific-requirements-error");
 
-        public static By AssociatedServiceBillingAndRequirementsLink => By.LinkText("Associated Service billing and requirements");
+        public static By AssociatedServiceBillingAndRequirementsLink => By.LinkText("Associated Service milestones and requirements");
 
         public static string BespokeMilestonesAgreed => "No, I've agreed bespoke milestones with the supplier";
 

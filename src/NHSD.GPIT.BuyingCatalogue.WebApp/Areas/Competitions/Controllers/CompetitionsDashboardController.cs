@@ -46,7 +46,7 @@ public class CompetitionsDashboardController : Controller
     {
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
-        var competitions = await competitionsService.GetCompetitionsDashboard(organisation.Id);
+        var competitions = await competitionsService.GetCompetitionsDashboard(internalOrgId);
 
         var model = new CompetitionDashboardModel(internalOrgId, organisation.Name, competitions);
 
@@ -128,7 +128,7 @@ public class CompetitionsDashboardController : Controller
         _ = filterId;
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
-        var model = new SaveCompetitionModel(organisation.Id, organisation.Name)
+        var model = new SaveCompetitionModel(internalOrgId, organisation.Name)
         {
             BackLink = Url.Action(nameof(ReviewFilter), new { internalOrgId, filterId }),
         };
@@ -150,7 +150,7 @@ public class CompetitionsDashboardController : Controller
             model.Name,
             model.Description);
 
-        await AssignCompetitionSolutions(organisation.Id, competitionId, filterId);
+        await AssignCompetitionSolutions(organisation.Id, internalOrgId, competitionId, filterId);
 
         return RedirectToAction(
             nameof(CompetitionSelectSolutionsController.SelectSolutions),
@@ -158,9 +158,9 @@ public class CompetitionsDashboardController : Controller
             new { internalOrgId, competitionId });
     }
 
-    private async Task AssignCompetitionSolutions(int organisationId, int competitionId, int filterId)
+    private async Task AssignCompetitionSolutions(int organisationId, string internalOrgId, int competitionId, int filterId)
     {
-        var competition = await competitionsService.GetCompetitionWithServices(organisationId, competitionId, true);
+        var competition = await competitionsService.GetCompetitionWithServices(internalOrgId, competitionId, true);
         var filter = await filterService.GetFilterIds(organisationId, filterId);
 
         var pageOptions = new PageOptions { PageSize = 100 };
@@ -177,11 +177,11 @@ public class CompetitionsDashboardController : Controller
         var competitionSolutions = solutionsAndServices.CatalogueItems.Select(
             x => new CompetitionSolution(competition.Id, x.Solution.CatalogueItemId)
             {
-                RequiredServices = x.Solution.AdditionalServices.Select(
-                        y => new RequiredService(competition.Id, x.Solution.CatalogueItemId, y.CatalogueItemId))
+                SolutionServices = x.Solution.AdditionalServices.Select(
+                        y => new SolutionService(competition.Id, x.Solution.CatalogueItemId, y.CatalogueItemId, true))
                     .ToList(),
             });
 
-        await competitionsService.AddCompetitionSolutions(organisationId, competition.Id, competitionSolutions);
+        await competitionsService.AddCompetitionSolutions(internalOrgId, competition.Id, competitionSolutions);
     }
 }
