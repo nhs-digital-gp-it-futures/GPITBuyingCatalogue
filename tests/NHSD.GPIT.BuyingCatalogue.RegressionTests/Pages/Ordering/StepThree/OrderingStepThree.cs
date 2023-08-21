@@ -18,8 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree
     {
         public OrderingStepThree(IWebDriver driver, CommonActions commonActions)
             : base(driver, commonActions)
-            {
-            }
+        {
+        }
 
         public void SelectImplementationPlan(bool isDefault = true)
         {
@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree
         {
             if (isDefault)
             {
-              CommonActions.ClickSave();
+                CommonActions.ClickSave();
             }
             else
             {

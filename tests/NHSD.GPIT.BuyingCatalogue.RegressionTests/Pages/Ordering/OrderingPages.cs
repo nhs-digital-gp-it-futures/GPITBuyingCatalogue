@@ -300,8 +300,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
             if (isOrderWithAssociatedService)
             {
-            TaskList.AssociatedServiceBillingAndRequirementsTask();
-            OrderingStepThree.SelectAssociatedServicesBilling(isDefault);
+                TaskList.AssociatedServiceBillingAndRequirementsTask();
+                OrderingStepThree.SelectAssociatedServicesBilling(isDefault);
             }
 
             TaskList.DataProcessingInformationTask();
