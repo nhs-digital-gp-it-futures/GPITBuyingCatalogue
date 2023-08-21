@@ -47,7 +47,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree
             {
                 CommonActions.ClickRadioButtonWithText(AssociatedServicesBillingObjects.BespokeMilestonesAgreed);
                 CommonActions.ClickSave();
-
                 CommonActions.ClickContinue();
             }
 
