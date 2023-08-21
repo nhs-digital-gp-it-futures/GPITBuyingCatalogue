@@ -49,7 +49,7 @@ public static class CompetitionRecipientsControllerTests
         organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
             .ReturnsAsync(organisation);
 
-        competitionsService.Setup(x => x.GetCompetitionWithRecipients(organisation.Id, competition.Id))
+        competitionsService.Setup(x => x.GetCompetitionWithRecipients(organisation.InternalIdentifier, competition.Id))
             .ReturnsAsync(competition);
 
         odsService.Setup(x => x.GetServiceRecipientsByParentInternalIdentifier(organisation.InternalIdentifier))

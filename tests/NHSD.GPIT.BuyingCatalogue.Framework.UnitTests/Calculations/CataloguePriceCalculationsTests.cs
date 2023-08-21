@@ -5,6 +5,7 @@ using AutoFixture;
 using FluentAssertions;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -542,7 +543,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
                 .With(p => p.CataloguePriceCalculationType, cataloguePriceCalculationType)
                 .With(p => p.ProvisioningType, ProvisioningType.Patient)
                 .With(p => p.OrderItemPriceTiers, new HashSet<OrderItemPriceTier>(priceTiers))
-                .Create();
+                .Create() as IPrice;
 
             var recipientBuilder = fixture.Build<OrderItemRecipient>()
                 .With(r => r.Quantity, itemPrice.IsPerServiceRecipient() ? quantity : null);

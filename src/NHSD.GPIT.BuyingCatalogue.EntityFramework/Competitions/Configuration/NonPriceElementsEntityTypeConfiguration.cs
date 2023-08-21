@@ -19,13 +19,13 @@ public sealed class NonPriceElementsEntityTypeConfiguration : IEntityTypeConfigu
 
         builder.HasOne(x => x.Implementation)
             .WithOne()
-            .HasForeignKey<NonPriceElements>(x => x.ImplementationId)
+            .HasForeignKey<ImplementationCriteria>(x => x.NonPriceElementsId)
             .HasConstraintName("FK_NonPriceElements_ImplementationCriteria")
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(x => x.ServiceLevel)
             .WithOne()
-            .HasForeignKey<NonPriceElements>(x => x.ServiceLevelId)
+            .HasForeignKey<ServiceLevelCriteria>(x => x.NonPriceElementsId)
             .HasConstraintName("FK_NonPriceElements_ServiceLevelCriteria")
             .OnDelete(DeleteBehavior.Cascade);
 
