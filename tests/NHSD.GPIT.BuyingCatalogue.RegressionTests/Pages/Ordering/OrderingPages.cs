@@ -794,6 +794,5 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
             return result;
         }
-        
     }
 }
