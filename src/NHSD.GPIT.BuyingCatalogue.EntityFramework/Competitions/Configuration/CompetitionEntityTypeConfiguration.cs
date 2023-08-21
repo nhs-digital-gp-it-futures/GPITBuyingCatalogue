@@ -63,11 +63,11 @@ internal sealed class CompetitionEntityTypeConfiguration : IEntityTypeConfigurat
         builder.HasMany(x => x.Recipients)
             .WithMany()
             .UsingEntity<CompetitionRecipient>(
-                r => r.HasOne<OdsOrganisation>()
+                r => r.HasOne(x => x.OdsOrganisation)
                     .WithMany()
                     .HasForeignKey(x => x.OdsCode)
                     .HasConstraintName("FK_CompetitionRecipients_ServiceRecipient"),
-                l => l.HasOne<Competition>()
+                l => l.HasOne(x => x.Competition)
                     .WithMany()
                     .HasForeignKey(x => x.CompetitionId)
                     .HasConstraintName("FK_CompetitionRecipients_Competition"),

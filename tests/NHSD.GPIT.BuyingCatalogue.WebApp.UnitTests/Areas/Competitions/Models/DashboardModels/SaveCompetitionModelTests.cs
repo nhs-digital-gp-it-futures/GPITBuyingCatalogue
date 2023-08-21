@@ -10,12 +10,12 @@ public static class SaveCompetitionModelTests
     [Theory]
     [CommonAutoData]
     public static void Construct_SetsProperties(
-        int organisationId,
+        string internalOrgId,
         string organisationName)
     {
-        var model = new SaveCompetitionModel(organisationId, organisationName);
+        var model = new SaveCompetitionModel(internalOrgId, organisationName);
 
-        model.OrganisationId.Should().Be(organisationId);
+        model.InternalOrgId.Should().Be(internalOrgId);
         model.OrganisationName.Should().Be(organisationName);
     }
 }

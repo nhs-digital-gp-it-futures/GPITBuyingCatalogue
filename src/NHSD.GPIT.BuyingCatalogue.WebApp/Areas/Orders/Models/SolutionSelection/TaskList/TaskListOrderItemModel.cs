@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 
@@ -84,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                     return TaskProgress.CannotStart;
                 }
 
-                if (orderItem.OrderItemPrice.IsPerServiceRecipient())
+                if (((IPrice)orderItem.OrderItemPrice).IsPerServiceRecipient())
                 {
                     if (orderItem.OrderItemRecipients?.All(x => x.Quantity != null) ?? false)
                     {

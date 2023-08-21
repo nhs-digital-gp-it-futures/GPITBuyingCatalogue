@@ -23,6 +23,7 @@ using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Shared;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.SolutionSelection
@@ -155,12 +156,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] Mock<IAssociatedServicesService> mockAssociatedServicesService,
             AssociatedServicesController controller)
         {
+            var orderWrapper = new OrderWrapper(order);
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
             mockOrderService
                 .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+                .ReturnsAsync(orderWrapper);
 
             mockAssociatedServicesService
                 .Setup(x => x.GetPublishedAssociatedServicesForSolution(order.GetSolution().CatalogueItemId))
@@ -173,11 +175,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new SelectServicesModel(new OrderWrapper(order), services, CatalogueItemType.AssociatedService)
+            var previousItems = orderWrapper.Previous?.GetAssociatedServices().Select(x => x.CatalogueItem)
+                ?? Enumerable.Empty<CatalogueItem>();
+            var currentItems = orderWrapper.Order?.GetAssociatedServices().Select(x => x.CatalogueItem)
+                ?? Enumerable.Empty<CatalogueItem>();
+
+            var expected = new SelectServicesModel(previousItems,  currentItems, services)
             {
                 InternalOrgId = internalOrgId,
-                CallOffId = callOffId,
                 AssociatedServicesOnly = order.AssociatedServicesOnly,
+                SolutionName = order.AssociatedServicesOnly
+                    ? orderWrapper.RolledUp.Solution.Name
+                    : orderWrapper.RolledUp.GetSolution()?.CatalogueItem.Name,
             };
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(o => o.BackLink));
@@ -195,12 +204,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             SelectServicesModel model,
             AssociatedServicesController controller)
         {
+            var orderWrapper = new OrderWrapper(order);
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
             mockOrderService
                 .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+                .ReturnsAsync(orderWrapper);
 
             mockAssociatedServicesService
                 .Setup(x => x.GetPublishedAssociatedServicesForSolution(order.GetSolution().CatalogueItemId))
@@ -215,11 +225,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new SelectServicesModel(new OrderWrapper(order), services, CatalogueItemType.AssociatedService)
+            var previousItems = orderWrapper.Previous?.GetAssociatedServices().Select(x => x.CatalogueItem)
+                ?? Enumerable.Empty<CatalogueItem>();
+            var currentItems = orderWrapper.Order?.GetAssociatedServices().Select(x => x.CatalogueItem)
+                ?? Enumerable.Empty<CatalogueItem>();
+
+            var expected = new SelectServicesModel(previousItems,  currentItems, services)
             {
                 InternalOrgId = internalOrgId,
-                CallOffId = callOffId,
                 AssociatedServicesOnly = order.AssociatedServicesOnly,
+                SolutionName = order.AssociatedServicesOnly
+                    ? orderWrapper.RolledUp.Solution.Name
+                    : orderWrapper.RolledUp.GetSolution()?.CatalogueItem.Name,
             };
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(o => o.BackLink));
@@ -292,12 +309,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] Mock<IAssociatedServicesService> mockAssociatedServicesService,
             AssociatedServicesController controller)
         {
+            var orderWrapper = new OrderWrapper(order);
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
             mockOrderService
                 .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+                .ReturnsAsync(orderWrapper);
 
             mockAssociatedServicesService
                 .Setup(x => x.GetPublishedAssociatedServicesForSolution(order.GetSolution().CatalogueItemId))
@@ -310,11 +328,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new SelectServicesModel(new OrderWrapper(order), services, CatalogueItemType.AdditionalService)
+            var previousItems = orderWrapper.Previous?.GetAssociatedServices().Select(x => x.CatalogueItem)
+                ?? Enumerable.Empty<CatalogueItem>();
+            var currentItems = orderWrapper.Order?.GetAssociatedServices().Select(x => x.CatalogueItem)
+                ?? Enumerable.Empty<CatalogueItem>();
+
+            var expected = new SelectServicesModel(previousItems,  currentItems, services)
             {
                 InternalOrgId = internalOrgId,
-                CallOffId = order.CallOffId,
                 AssociatedServicesOnly = order.AssociatedServicesOnly,
+                SolutionName = order.AssociatedServicesOnly
+                    ? orderWrapper.RolledUp.Solution.Name
+                    : orderWrapper.RolledUp.GetSolution()?.CatalogueItem.Name,
             };
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
@@ -481,10 +506,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new ConfirmServiceChangesModel(internalOrgId, callOffId, CatalogueItemType.AssociatedService)
+            var expected = new ConfirmServiceChangesModel(internalOrgId, CatalogueItemType.AssociatedService)
             {
                 InternalOrgId = internalOrgId,
-                CallOffId = callOffId,
                 ToAdd = new List<ServiceModel>
                 {
                     new() { CatalogueItemId = services.First().Id, Description = services.First().Name },

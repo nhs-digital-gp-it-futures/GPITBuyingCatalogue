@@ -158,6 +158,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<CompetitionRecipient> CompetitionRecipients { get; set; }
 
+        public DbSet<SolutionScore> CompetitionSolutionScores { get; set; }
+
         public async Task<Order> Order(CallOffId callOffId)
         {
             return await Orders

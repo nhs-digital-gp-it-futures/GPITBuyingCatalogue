@@ -9,13 +9,13 @@ public class SaveCompetitionModel : NavBaseModel
     {
     }
 
-    public SaveCompetitionModel(int organisationId, string organisationName)
+    public SaveCompetitionModel(string internalOrgId, string organisationName)
     {
-        OrganisationId = organisationId;
+        InternalOrgId = internalOrgId;
         OrganisationName = organisationName;
     }
 
-    public int OrganisationId { get; set; }
+    public string InternalOrgId { get; set; }
 
     public string OrganisationName { get; set; }
 

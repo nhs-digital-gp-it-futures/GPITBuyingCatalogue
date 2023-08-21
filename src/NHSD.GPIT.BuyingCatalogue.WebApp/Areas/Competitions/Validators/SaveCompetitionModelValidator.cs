@@ -16,7 +16,7 @@ public class SaveCompetitionModelValidator : AbstractValidator<SaveCompetitionMo
         RuleFor(x => x.Name)
             .NotEmpty()
             .WithMessage(NameMissingError)
-            .Must((model, name) => !competitionsService.Exists(model.OrganisationId, name).GetAwaiter().GetResult())
+            .Must((model, name) => !competitionsService.Exists(model.InternalOrgId, name).GetAwaiter().GetResult())
             .WithMessage(DuplicateNameError);
 
         RuleFor(x => x.Description)

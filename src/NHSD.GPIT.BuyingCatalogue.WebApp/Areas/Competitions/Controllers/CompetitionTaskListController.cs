@@ -33,7 +33,7 @@ public class CompetitionTaskListController : Controller
     public async Task<IActionResult> Index(string internalOrgId, int competitionId)
     {
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-        var competition = await competitionsService.GetCompetitionTaskList(organisation.Id, competitionId);
+        var competition = await competitionsService.GetCompetitionTaskList(internalOrgId, competitionId);
 
         var model = new CompetitionTaskListViewModel(organisation, competition)
         {
@@ -49,8 +49,7 @@ public class CompetitionTaskListController : Controller
     [HttpGet("shortlisted-solutions")]
     public async Task<IActionResult> ShortlistedSolutions(string internalOrgId, int competitionId)
     {
-        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-        var competition = await competitionsService.GetCompetitionWithServices(organisation.Id, competitionId);
+        var competition = await competitionsService.GetCompetitionWithServices(internalOrgId, competitionId);
 
         var model = new CompetitionShortlistedSolutionsModel(competition)
         {
@@ -84,9 +83,7 @@ public class CompetitionTaskListController : Controller
         if (!ModelState.IsValid)
             return View(model);
 
-        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-
-        await competitionsService.SetContractLength(organisation.Id, competitionId, model.ContractLength.GetValueOrDefault());
+        await competitionsService.SetContractLength(internalOrgId, competitionId, model.ContractLength.GetValueOrDefault());
 
         return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
     }
@@ -110,12 +107,44 @@ public class CompetitionTaskListController : Controller
         if (!ModelState.IsValid)
             return View(model);
 
-        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
+        var includesNonPrice = model.IncludesNonPrice.GetValueOrDefault();
+
+        var competition = await GetCompetition(internalOrgId, competitionId);
+
+        if (competition.IncludesNonPrice.GetValueOrDefault() && !includesNonPrice)
+            return RedirectToAction(nameof(ConfirmAwardCriteria), new { internalOrgId, competitionId });
 
         await competitionsService.SetCompetitionCriteria(
-            organisation.Id,
+            internalOrgId,
             competitionId,
             model.IncludesNonPrice.GetValueOrDefault());
+
+        return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
+    }
+
+    [HttpGet("award-criteria/confirm")]
+    public async Task<IActionResult> ConfirmAwardCriteria(string internalOrgId, int competitionId)
+    {
+        var competition = await GetCompetition(internalOrgId, competitionId);
+
+        var model = new CompetitionAwardCriteriaModel(competition)
+        {
+            BackLink = Url.Action(nameof(AwardCriteria), new { internalOrgId, competitionId }),
+        };
+
+        return View(model);
+    }
+
+    [HttpPost("award-criteria/confirm")]
+    public async Task<IActionResult> ConfirmAwardCriteria(
+        string internalOrgId,
+        int competitionId,
+        CompetitionAwardCriteriaModel model)
+    {
+        _ = model;
+
+        await competitionsService.SetCompetitionCriteria(internalOrgId, competitionId, false);
+        await competitionsService.RemoveNonPriceElements(internalOrgId, competitionId);
 
         return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
     }
@@ -126,8 +155,7 @@ public class CompetitionTaskListController : Controller
         int competitionId,
         string returnUrl = null)
     {
-        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-        var competition = await competitionsService.GetCompetitionWithWeightings(organisation.Id, competitionId);
+        var competition = await competitionsService.GetCompetitionWithWeightings(internalOrgId, competitionId);
 
         var model = new CompetitionWeightingsModel(competition)
         {
@@ -147,10 +175,8 @@ public class CompetitionTaskListController : Controller
         if (!ModelState.IsValid)
             return View(model);
 
-        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-
         await competitionsService.SetCompetitionWeightings(
-            organisation.Id,
+            internalOrgId,
             competitionId,
             model.Price.GetValueOrDefault(),
             model.NonPrice.GetValueOrDefault());

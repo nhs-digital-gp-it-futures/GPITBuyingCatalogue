@@ -4,6 +4,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 
 public static class ScoreTypeExtensions
 {
+    private static readonly ScoreType[] NonPriceElementScores = new[]
+    {
+        ScoreType.Implementation, ScoreType.Interoperability, ScoreType.ServiceLevel,
+    };
+
     public static NonPriceElement? AsNonPriceElement(this ScoreType scoreType) => scoreType switch
     {
         ScoreType.Implementation => NonPriceElement.Implementation,
@@ -11,4 +16,6 @@ public static class ScoreTypeExtensions
         ScoreType.ServiceLevel => NonPriceElement.ServiceLevel,
         _ => null,
     };
+
+    public static ScoreType[] GetNonPriceElementScores() => NonPriceElementScores;
 }

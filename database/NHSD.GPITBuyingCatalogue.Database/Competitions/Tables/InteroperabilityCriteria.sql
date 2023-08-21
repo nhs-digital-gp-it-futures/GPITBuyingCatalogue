@@ -4,5 +4,5 @@
     [NonPriceElementsId] INT NOT NULL,
     [Qualifier] NVARCHAR(20) NOT NULL,
     [IntegrationType] INT NOT NULL,
-    CONSTRAINT FK_InteroperabilityCriteria_NonPriceElements FOREIGN KEY ([NonPriceElementsId]) REFERENCES [competitions].[NonPriceElements] ([Id])
+    CONSTRAINT FK_InteroperabilityCriteria_NonPriceElements FOREIGN KEY ([NonPriceElementsId]) REFERENCES [competitions].[NonPriceElements] ([Id]) ON DELETE CASCADE
 )

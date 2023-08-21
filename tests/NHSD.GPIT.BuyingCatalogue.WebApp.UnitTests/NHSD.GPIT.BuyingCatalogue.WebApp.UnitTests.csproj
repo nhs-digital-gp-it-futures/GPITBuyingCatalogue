@@ -45,4 +45,8 @@
     <ProjectReference Include="..\NHSD.GPIT.BuyingCatalogue.UnitTest.Framework\NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Areas\Order\Validators\SolutionSelection\Prices" />
+  </ItemGroup>
+
 </Project>
