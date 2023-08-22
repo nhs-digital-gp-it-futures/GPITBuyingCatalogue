@@ -86,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     x => x.Integrations != null,
                     isInteropFilter);
             }
-            else if (!string.IsNullOrWhiteSpace(selectedInteroperabilityOptions) && selectedInteroperabilityOptions.Contains('0'))
+            else if (!string.IsNullOrWhiteSpace(selectedInteroperabilityOptions) && selectedInteroperabilityOptions.Contains('0', StringComparison.Ordinal))
             {
                 InteropIm1Integrations[] enumValues = (InteropIm1Integrations[])Enum.GetValues(typeof(InteropIm1Integrations));
                 string im1integrations = string.Join(".", enumValues.Select(e => (int)e));
@@ -108,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     x => x.Integrations != null,
                     isInteropFilter);
             }
-            else if (!string.IsNullOrWhiteSpace(selectedInteroperabilityOptions) && selectedInteroperabilityOptions.Contains('1'))
+            else if (!string.IsNullOrWhiteSpace(selectedInteroperabilityOptions) && selectedInteroperabilityOptions.Contains('1', StringComparison.Ordinal))
             {
                 InteropGpConnectIntegrations[] enumValues = (InteropGpConnectIntegrations[])Enum.GetValues(typeof(InteropIm1Integrations));
                 string gpConnectIntegrations = string.Join(".", enumValues.Select(e => (int)e));
@@ -182,7 +182,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             string selectedFilterIds,
             Func<Solution, IEnumerable<T>, IEnumerable<T>> getSelectedFilters,
             Predicate<Solution> isValid,
-            bool IsInteropFilter)
+            bool isInteropFilter)
             where T : struct, Enum
         {
             if (string.IsNullOrEmpty(selectedFilterIds))
@@ -208,7 +208,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
                 if (matchingTypes.Count() < selectedFilterEnums?.Count)
                 {
-                    if (IsInteropFilter)
+                    if (isInteropFilter)
                     {
                         bool shouldKeepRow = matchingTypes.Any(mt => selectedFilterEnums.Contains(mt));
 
@@ -221,7 +221,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     {
                         query = query.Where(ci => ci.Id != row.Id);
                     }
-
                 }
             }
 
