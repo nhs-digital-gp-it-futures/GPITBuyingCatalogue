@@ -46,8 +46,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             string selectedApplicationTypeIds = null,
             string selectedHostingTypeIds = null,
             string selectedIM1Integrations = null,
-            string selectedGPConnectIntegrations = null)
+            string selectedGPConnectIntegrations = null,
+            string selectedInteroperabilityOptions = null)
         {
+            bool isInteropFilter = false;
             var (query, count) = await GetFilteredAndNonFilteredQueryResults(capabilitiesAndEpics);
 
             if (!string.IsNullOrWhiteSpace(search))
@@ -61,7 +63,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     query,
                     selectedApplicationTypeIds,
                     GetSelectedFilterApplication,
-                    x => x.ApplicationTypeDetail != null);
+                    x => x.ApplicationTypeDetail != null,
+                    isInteropFilter);
             }
 
             if (!string.IsNullOrWhiteSpace(selectedHostingTypeIds))
@@ -70,7 +73,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     query,
                     selectedHostingTypeIds,
                     GetSelectedFiltersHosting,
-                    x => x.Hosting.IsValid());
+                    x => x.Hosting.IsValid(),
+                    isInteropFilter);
             }
 
             if (!string.IsNullOrWhiteSpace(selectedIM1Integrations))
@@ -79,7 +83,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     query,
                     selectedIM1Integrations,
                     GetSelectedFiltersIm1Integration,
-                    x => x.Integrations != null);
+                    x => x.Integrations != null,
+                    isInteropFilter);
+            }
+            else if (!string.IsNullOrWhiteSpace(selectedInteroperabilityOptions) && selectedInteroperabilityOptions.Contains('0'))
+            {
+                InteropIm1Integrations[] enumValues = (InteropIm1Integrations[])Enum.GetValues(typeof(InteropIm1Integrations));
+                string im1integrations = string.Join(".", enumValues.Select(e => (int)e));
+                isInteropFilter = true;
+                query = ApplyAdditionalFilterToQuery<InteropIm1Integrations>(
+                    query,
+                    im1integrations,
+                    GetSelectedFiltersIm1Integration,
+                    x => x.Integrations != null,
+                    isInteropFilter);
             }
 
             if (!string.IsNullOrWhiteSpace(selectedGPConnectIntegrations))
@@ -88,7 +105,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     query,
                     selectedGPConnectIntegrations,
                     GetSelectedFiltersGpConnectIntegration,
-                    x => x.Integrations != null);
+                    x => x.Integrations != null,
+                    isInteropFilter);
+            }
+            else if (!string.IsNullOrWhiteSpace(selectedInteroperabilityOptions) && selectedInteroperabilityOptions.Contains('1'))
+            {
+                InteropGpConnectIntegrations[] enumValues = (InteropGpConnectIntegrations[])Enum.GetValues(typeof(InteropIm1Integrations));
+                string gpConnectIntegrations = string.Join(".", enumValues.Select(e => (int)e));
+                isInteropFilter = true;
+                query = ApplyAdditionalFilterToQuery<InteropGpConnectIntegrations>(
+                    query,
+                    gpConnectIntegrations,
+                    GetSelectedFiltersGpConnectIntegration,
+                    x => x.Integrations != null,
+                    isInteropFilter);
             }
 
             var totalNumberOfItems = await query.CountAsync();
@@ -151,7 +181,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             IQueryable<CatalogueItem> query,
             string selectedFilterIds,
             Func<Solution, IEnumerable<T>, IEnumerable<T>> getSelectedFilters,
-            Predicate<Solution> isValid)
+            Predicate<Solution> isValid,
+            bool IsInteropFilter)
             where T : struct, Enum
         {
             if (string.IsNullOrEmpty(selectedFilterIds))
@@ -177,7 +208,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
                 if (matchingTypes.Count() < selectedFilterEnums?.Count)
                 {
-                    query = query.Where(ci => ci.Id != row.Id);
+                    if (IsInteropFilter)
+                    {
+                        bool shouldKeepRow = matchingTypes.Any(mt => selectedFilterEnums.Contains(mt));
+
+                        if (!shouldKeepRow)
+                        {
+                            query = query.Where(ci => ci.Id != row.Id);
+                        }
+                    }
+                    else
+                    {
+                        query = query.Where(ci => ci.Id != row.Id);
+                    }
+
                 }
             }
 

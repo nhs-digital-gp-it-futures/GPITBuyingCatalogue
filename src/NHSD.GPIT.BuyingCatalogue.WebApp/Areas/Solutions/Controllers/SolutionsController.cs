@@ -92,7 +92,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     selectedApplicationTypeIds,
                     selectedHostingTypeIds,
                     selectedIM1Integrations,
-                    selectedGPConnectIntegrations);
+                    selectedGPConnectIntegrations,
+                    selectedInteroperabilityOptions);
 
             (IQueryable<CatalogueItem> catalogueItemsWithoutFrameworkFilter, _) =
                 await solutionsFilterService.GetFilteredAndNonFilteredQueryResults(capabilityAndEpicIds);

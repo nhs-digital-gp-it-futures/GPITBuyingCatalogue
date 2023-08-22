@@ -49,6 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             var selectedHostingTypeIds = filterIds.HostingTypeIds.ToFilterString();
             var selectedIM1Integrations = filterIds.IM1Integrations.ToFilterString();
             var selectedGPConnectIntegrations = filterIds.GPConnectIntegrations.ToFilterString();
+            var selectedInteroperabilityOptions = filterIds.InteroperabilityOptions.ToFilterString();
 
             var (catalogueItems, _, capabilitiesAndCount) =
                 await solutionsFilterService.GetAllSolutionsFiltered(
@@ -59,7 +60,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                     selectedApplicationTypeIds,
                     selectedHostingTypeIds,
                     selectedIM1Integrations,
-                    selectedGPConnectIntegrations);
+                    selectedGPConnectIntegrations,
+                    selectedInteroperabilityOptions);
 
             var model = new SolutionsFilterResultsModel()
             {

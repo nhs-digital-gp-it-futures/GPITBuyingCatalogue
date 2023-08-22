@@ -15,5 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels
         public IEnumerable<string> IM1Integrations { get; set; }
 
         public IEnumerable<string> GPConnectIntegrations { get; set; }
+
+        public IEnumerable<string> InteroperabilityOptions { get; set; }
     }
 }
