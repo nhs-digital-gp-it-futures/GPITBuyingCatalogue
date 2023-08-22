@@ -66,31 +66,30 @@
         {
             <nhs-fieldset-form-label asp-for="@Model">
                 <nhs-checkbox-container>
-                    <nhs-checkbox size=Small asp-for="@Model.InteroperabilityOptions[j].Selected"
+                    <nhs-checkbox asp-for="@Model.InteroperabilityOptions[j].Selected"
                                           label-text="@Model.InteroperabilityOptions[j].Text integrations"
                                           hidden-input="@Model.InteroperabilityOptions[j].Value">
+                        <nhs-checkbox-container>
                         @if (@Model.InteroperabilityOptions[j].Text == @Model.InteroperabilityOptions[0].Text)
                         {
-                            <nhs-checkbox-container>
                                 @for (var i = 0; i < Model.IM1IntegrationsOptions.Count; i++)
                                 {
-                                    <nhs-checkbox size=Small asp-for="@Model.IM1IntegrationsOptions[i].Selected"
+                                    <nhs-checkbox asp-for="@Model.IM1IntegrationsOptions[i].Selected"
                                       label-text="@Model.IM1IntegrationsOptions[i].Text"
                                       hidden-input="@Model.IM1IntegrationsOptions[i].Value"/>
                                 }
-                            </nhs-checkbox-container>
+                            
                         }
                         @if (@Model.InteroperabilityOptions[j].Text == @Model.InteroperabilityOptions[1].Text)
                         {
-                            <nhs-checkbox-container>
 					            @for (var i = 0; i < Model.GPConnectIntegrationsOptions.Count; i++)
 					            {
-                                    <nhs-checkbox size=Small asp-for ="@Model.GPConnectIntegrationsOptions[i].Selected"
+                                    <nhs-checkbox asp-for ="@Model.GPConnectIntegrationsOptions[i].Selected"
 								    label-text="@Model.GPConnectIntegrationsOptions[i].Text"
 								    hidden-input="@Model.GPConnectIntegrationsOptions[i].Value" />
 					            }
-                            </nhs-checkbox-container>
                         }
+                        </nhs-checkbox-container>
                     </nhs-checkbox>
 			</nhs-checkbox-container>
 		</nhs-fieldset-form-label>
