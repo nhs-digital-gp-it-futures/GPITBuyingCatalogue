@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -50,6 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             string selectedInteroperabilityOptions = null)
         {
             bool isInteropFilter = false;
+
             var (query, count) = await GetFilteredAndNonFilteredQueryResults(capabilitiesAndEpics);
 
             if (!string.IsNullOrWhiteSpace(search))
@@ -86,10 +88,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     x => x.Integrations != null,
                     isInteropFilter);
             }
-            else if (!string.IsNullOrWhiteSpace(selectedInteroperabilityOptions) && selectedInteroperabilityOptions.Contains('0', StringComparison.Ordinal))
+            else if (!string.IsNullOrWhiteSpace(selectedInteroperabilityOptions) && selectedInteroperabilityOptions.Contains(InteropIntegrationType.Im1.GtEnumMemberIntValue(), StringComparison.Ordinal))
             {
                 InteropIm1Integrations[] enumValues = (InteropIm1Integrations[])Enum.GetValues(typeof(InteropIm1Integrations));
-                string im1integrations = string.Join(".", enumValues.Select(e => (int)e));
+                string im1integrations = string.Join(FilterConstants.Delimiter, enumValues.Select(e => (int)e));
                 isInteropFilter = true;
                 query = ApplyAdditionalFilterToQuery<InteropIm1Integrations>(
                     query,
@@ -108,10 +110,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     x => x.Integrations != null,
                     isInteropFilter);
             }
-            else if (!string.IsNullOrWhiteSpace(selectedInteroperabilityOptions) && selectedInteroperabilityOptions.Contains('1', StringComparison.Ordinal))
+            else if (!string.IsNullOrWhiteSpace(selectedInteroperabilityOptions) && selectedInteroperabilityOptions.Contains(InteropIntegrationType.GpConnect.GtEnumMemberIntValue(), StringComparison.Ordinal))
             {
                 InteropGpConnectIntegrations[] enumValues = (InteropGpConnectIntegrations[])Enum.GetValues(typeof(InteropIm1Integrations));
-                string gpConnectIntegrations = string.Join(".", enumValues.Select(e => (int)e));
+                string gpConnectIntegrations = string.Join(FilterConstants.Delimiter, enumValues.Select(e => (int)e));
                 isInteropFilter = true;
                 query = ApplyAdditionalFilterToQuery<InteropGpConnectIntegrations>(
                     query,

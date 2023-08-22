@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -156,9 +158,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                             additionalFiltersModel.ApplicationTypeOptions),
                     selectedHostingTypeIds =
                         additionalFiltersModel.CombineSelectedOptions(additionalFiltersModel.HostingTypeOptions),
-                    selectedIM1Integrations = selectedInteroperabilityOptions.Contains('0') ? additionalFiltersModel.CombineSelectedOptions(
+                    selectedIM1Integrations = selectedInteroperabilityOptions.Contains(InteropIntegrationType.Im1.GtEnumMemberIntValue()) ? additionalFiltersModel.CombineSelectedOptions(
                             additionalFiltersModel.IM1IntegrationsOptions) : null,
-                    selectedGPConnectIntegrations = selectedInteroperabilityOptions.Contains('1') ? additionalFiltersModel.CombineSelectedOptions(
+                    selectedGPConnectIntegrations = selectedInteroperabilityOptions.Contains(InteropIntegrationType.GpConnect.GtEnumMemberIntValue()) ? additionalFiltersModel.CombineSelectedOptions(
                             additionalFiltersModel.GPConnectIntegrationsOptions) : null,
                     selectedInteroperabilityOptions,
                     filterId,
