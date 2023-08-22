@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
 
         public FundingSources(string internalOrgId, CallOffId callOffId, Order order, int countOfOrderFrameworks)
         {
-            if (order is null || order.OrderingParty is null || order.SelectedFramework is null)
+            if (order?.OrderingParty is null || order.SelectedFramework is null)
                 throw new ArgumentNullException(nameof(order));
 
             Order = order;
@@ -29,9 +29,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
 
             var completedOrderItems = order.OrderItems.Where(oi => oi.AllQuantitiesEntered).ToList();
 
-            if (order.IsLocalFundingOnly)
+            if (order.HasSingleFundingType)
             {
-                OrderItemsLocalOnly = completedOrderItems.Where(oi => oi.OrderItemPrice.CostForBillingPeriod(oi.TotalQuantity) != 0).ToList();
+                OrderItemsSingleFundingType = completedOrderItems.Where(oi => oi.OrderItemPrice.CostForBillingPeriod(oi.TotalQuantity) != 0).ToList();
             }
             else
             {
@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
 
         public List<OrderItem> OrderItemsSelectable { get; set; }
 
-        public List<OrderItem> OrderItemsLocalOnly { get; set; }
+        public List<OrderItem> OrderItemsSingleFundingType { get; set; }
 
         public List<OrderItem> OrderItemsNoFundingRequired { get; set; }
 

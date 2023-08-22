@@ -1,69 +1,39 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources.FundingSource
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources.FundingSource
 @{
-	ViewBag.Title = Model.Title;
+    ViewBag.Title = Model.Title;
 
-	var SummaryListLabel = $"Total cost of {Model.CatalogueItemName}";
+    var summaryListLabel = $"Total cost of {Model.CatalogueItemName}";
 }
-<partial name="Partials/_BackLink" model="Model" />
+<partial name="Partials/_BackLink" model="Model"/>
 <div class="nhsuk-grid-row">
-	<div class="nhsuk-grid-column-two-thirds">
-		<nhs-validation-summary RadioId="@nameof(Model.SelectedFundingType)"/>
-		<nhs-page-title title="@ViewBag.Title"
-						advice="Confirm how you'll be paying for this solution or service. If you're using both local and central funding, select mixed funding"
-						caption="@Model.Caption" />
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary RadioId="@nameof(Model.SelectedFundingType)"/>
+        <nhs-page-title title="@ViewBag.Title"
+                        advice="Confirm how you'll be paying for this solution or service."
+                        caption="@Model.Caption"/>
 
-		<nhs-summary-list>
-			<nhs-summary-list-row label-text="@SummaryListLabel">
-				@($"£{Model.TotalCost.ToString("N2")}")
-			</nhs-summary-list-row>
-		</nhs-summary-list>
-		<form method="post">
-			<input type="hidden" asp-for="BackLink" />
-            <input type="hidden" asp-for="Title" />
-			<input type="hidden" asp-for="Caption"/>
-			<input type="hidden" asp-for="TotalCost" />
-			<input type="hidden" asp-for="CatalogueItemName"/>
+        <nhs-summary-list>
+            <nhs-summary-list-row label-text="@summaryListLabel">
+                @($"£{Model.TotalCost:N2}")
+            </nhs-summary-list-row>
+        </nhs-summary-list>
+        <form method="post">
+            <input type="hidden" asp-for="BackLink"/>
+            <input type="hidden" asp-for="Title"/>
+            <input type="hidden" asp-for="Caption"/>
+            <input type="hidden" asp-for="TotalCost"/>
+            <input type="hidden" asp-for="CatalogueItemName"/>
 
-			<nhs-fieldset-form-label asp-for="@Model"
-									 label-text="How would you like to pay?"
-									 label-hint="Select one option">
-				<nhs-radio-button-container>
-					<nhs-radio-button asp-for="SelectedFundingType"
-									  value="OrderItemFundingType.CentralFunding"
-									  value-name="EnumMemberName"
-									  display-name="Description"
-									  hint-text="If you're using your central allocation, make sure you have enough available before selecting central funding."
-									  index="0">
-					</nhs-radio-button>
-						<nhs-radio-button asp-for="SelectedFundingType"
-									  value="OrderItemFundingType.LocalFunding"
-									  value-name="EnumMemberName"
-									  hint-text="If you're using local funding, the supplier will invoice you directly for payment."
-									  display-name="Description"
-									  index="1">
-					</nhs-radio-button>
-						<nhs-radio-button asp-for="SelectedFundingType"
-									  value="OrderItemFundingType.MixedFunding"
-									  value-name="EnumMemberName"
-									  display-name="Description"
-									  hint-text="If you're using both funding sources, make sure you have enough of your central allocation available before selecting mixed funding."
-									  index="2">
-					</nhs-radio-button>
-				</nhs-radio-button-container>
-			</nhs-fieldset-form-label>
-
-			<nhs-details label-text="What is central, local and mixed funding?">
-				<h2 class="nhsuk-heading-m">Central funding</h2>
-				<p>Central funding means you're using your centrally held allocation to pay for the order. Any solutions or services you order will be paid for by either NHS England or NHS Digital. The supplier will invoice the relevant organisation directly.</p>
-				<p>You should make sure you have enough of your central allocation available to pay for your order before placing it.</p>
-				<h2 class="nhsuk-heading-m">Local funding</h2>
-				<p>Local funding means your organisation will be paying for the order. The supplier will invoice you directly.</p>
-				<h2 class="nhsuk-heading-m">Mixed funding</h2>
-				<p>Mixed funding means your organisation will start paying with central funding, and when your allocation runs out, will move over to local funding.</p>
-			</nhs-details>
-
-			<nhs-submit-button/>
-		</form>
-	</div>
+            <nhs-fieldset-form-label asp-for="@Model"
+                                     label-text="How would you like to pay?"
+                                     label-hint="Select one option">
+                <nhs-radio-buttons asp-for="SelectedFundingType"
+                                   values="@Model.AvailableFundingTypes"
+                                   value-name="Value"
+                                   display-name="Text"
+                                   hint-name="Advice"/>
+            </nhs-fieldset-form-label>
+            <nhs-submit-button/>
+        </form>
+    </div>
 </div>

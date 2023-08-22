@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                     v => string.Join(',', v.Select(x => x.ToString("D")).ToArray()),
                     v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(Enum.Parse<FundingType>).ToArray());
 
-            builder.Ignore(x => x.LocalFundingOnly);
+            builder.Ignore(x => x.HasSingleFundingType);
 
             builder.HasOne(f => f.LastUpdatedByUser)
                 .WithMany()

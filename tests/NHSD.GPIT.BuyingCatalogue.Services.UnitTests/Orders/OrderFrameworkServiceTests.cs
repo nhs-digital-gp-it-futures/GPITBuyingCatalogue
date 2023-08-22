@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [InMemoryDbInlineAutoData(FundingType.Local)]
-        [InMemoryDbInlineAutoData(FundingType.GPIT)]
+        [InMemoryDbInlineAutoData(FundingType.Gpit)]
         public static async Task UpdateFundingSourceAndSetSelectedFrameworkForOrder_NotGP_LocalFrameworkOnlyUnchanged_UpdatesSelectedFramework(
             FundingType fundingType,
             Order order,
@@ -65,8 +65,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(FundingType.Local, FundingType.GPIT)]
-        [InMemoryDbInlineAutoData(FundingType.GPIT, FundingType.Local)]
+        [InMemoryDbInlineAutoData(FundingType.Local, FundingType.Gpit)]
+        [InMemoryDbInlineAutoData(FundingType.Gpit, FundingType.Local)]
         public static async Task UpdateFundingSourceAndSetSelectedFrameworkForOrder_GPPractice_LocalFrameworkOnlyChanged_UpdatesSelectedFramework(
             FundingType fundingType,
             FundingType orderFundingType,
@@ -101,8 +101,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(FundingType.Local, FundingType.GPIT)]
-        [InMemoryDbInlineAutoData(FundingType.GPIT, FundingType.Local)]
+        [InMemoryDbInlineAutoData(FundingType.Local, FundingType.Gpit)]
+        [InMemoryDbInlineAutoData(FundingType.Gpit, FundingType.Local)]
         public static async Task UpdateFundingSourceAndSetSelectedFrameworkForOrder_NotGP_LocalFrameworkOnlyChanged_OrderItemFundingNull(
             FundingType fundingType,
             FundingType orderFundingType,

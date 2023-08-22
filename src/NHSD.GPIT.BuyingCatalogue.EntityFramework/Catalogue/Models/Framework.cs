@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public string ShortName { get; set; }
 
-        public bool LocalFundingOnly => FundingTypes.Count == 1 && FundingTypes.Any(x => x is FundingType.Local);
+        public bool HasSingleFundingType => FundingTypes.Count == 1;
 
         public DateTime LastUpdated { get; set; }
 

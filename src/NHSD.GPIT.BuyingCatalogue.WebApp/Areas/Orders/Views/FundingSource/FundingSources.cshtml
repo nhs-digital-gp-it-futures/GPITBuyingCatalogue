@@ -3,7 +3,6 @@
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models
 @using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.DetailsAndExpander
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InsetText
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
@@ -15,54 +14,41 @@
     ViewBag.Title = Model.Title;
 
     var advice = string.Empty;
-    
+
     @if (Model.OrderItemsSelectable != null && Model.OrderItemsSelectable.Any())
         advice = Model.Order.IsAmendment
             ? "Provide information on how you'll be paying for the amendments you've made to the previous order."
-            : "Allocate the funding sources you want to use to pay for the following solutions or services.";
-    else if (Model.OrderItemsLocalOnly != null && Model.OrderItemsLocalOnly.Any())
+            : "Provide information on how you’ll be paying for the items you’ve added to this order.";
+    else if (Model.OrderItemsSingleFundingType != null && Model.OrderItemsSingleFundingType.Any())
         advice = Model.Order.OrderingParty.OrganisationType == OrganisationType.GP
             ? "As you are buying for a single practice, you can only pay for this order using local funding."
-            : "You can only pay for the following solutions or services with local funding due to the framework they're available from.";
+            : $"As you're buying from the {Model.SelectedFramework.ShortName} framework, you can only pay for this order using {Model.SelectedFramework.FundingTypes.First().Description()}.";
     else
         advice = "You do not need to pay for the following solutions or services as they’re available free of charge.";
 }
 
-<partial name="Partials/_BackLink" model="Model" />
+<partial name="Partials/_BackLink" model="Model"/>
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-validation-summary />
+        <nhs-validation-summary/>
         <nhs-page-title title="@ViewBag.Title"
                         advice="@advice"
-                        caption="@Model.Caption" />
+                        caption="@Model.Caption"/>
 
         @if (Model.Order.IsAmendment == false && Model.CountOfOrderFrameworks > 1)
         {
             <nhs-inset-text data-test-id="funding-sources-multiple-frameworks-change">
                 <p>
                     These items are available from more than one framework. You’re procuring them from the @(Model.SelectedFramework.ShortName) framework.
-                    <a href="@Url.Action(
-                                 nameof(FundingSourceController.SelectFramework),
-                                 typeof(FundingSourceController).ControllerName(),
-                                 new { Model.InternalOrgId, Model.CallOffId })">Change framework</a>
+                    <a href="@Url.Action(nameof(FundingSourceController.SelectFramework), typeof(FundingSourceController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })">Change framework</a>
                 </p>
             </nhs-inset-text>
         }
 
         @if (Model.OrderItemsSelectable != null && Model.OrderItemsSelectable.Any())
         {
-            <nhs-details label-text="What is central, local and mixed funding?">
-                <h2 class="nhsuk-heading-m">Central funding</h2>
-                <p>Central funding means you're using your centrally held allocation to pay for the order. Any solutions or services you order will be paid for by either NHS England or NHS Digital. The supplier will invoice the relevant organisation directly.</p>
-                <p>You should make sure you have enough of your central allocation available to pay for your order before placing it.</p>
-                <h2 class="nhsuk-heading-m">Local funding</h2>
-                <p>Local funding means your organisation will be paying for the order. The supplier will invoice you directly.</p>
-                <h2 class="nhsuk-heading-m">Mixed funding</h2>
-                <p>Mixed funding means your organisation will start paying with central funding, and when your allocation runs out, will move over to local funding.</p>
-            </nhs-details>
-
             <nhs-table data-test-id="funding-sources-items-editable"
-                   label-text="Allocate funding">
+                       label-text="Allocate funding">
                 <nhs-table-column>Solution or service</nhs-table-column>
                 <nhs-table-column>Total cost</nhs-table-column>
                 <nhs-table-column>Funding type</nhs-table-column>
@@ -72,57 +58,69 @@
                 {
                     <nhs-table-row-container>
                         <nhs-table-cell>@item.CatalogueItem.Name</nhs-table-cell>
-                        <nhs-table-cell>@($"£{CalculateTotalCost(item).ToString("N2")}")</nhs-table-cell>
+                        <nhs-table-cell>@($"£{CalculateTotalCost(item):N2}")</nhs-table-cell>
                         <nhs-table-cell>@item.FundingType.Description()</nhs-table-cell>
-                        <nhs-table-cell><nhs-tag status-enum="@GetStatus(item)"></nhs-tag></nhs-table-cell>
+                        <nhs-table-cell>
+                            <nhs-tag status-enum="@GetStatus(item)"></nhs-tag>
+                        </nhs-table-cell>
                         <nhs-table-cell>
                             <a data-test-id="@item.CatalogueItem.Name.Trim().Replace(' ', '-')" asp-controller="@typeof(FundingSourceController).ControllerName()"
-                                asp-action="@nameof(FundingSourceController.FundingSource)"
-                                asp-route-internalOrgId="@Model.InternalOrgId"
-                                asp-route-callOffId="@Model.CallOffId"
-                                asp-route-catalogueItemId="@item.CatalogueItem.Id">Edit</a>
+                               asp-action="@nameof(FundingSourceController.FundingSource)"
+                               asp-route-internalOrgId="@Model.InternalOrgId"
+                               asp-route-callOffId="@Model.CallOffId"
+                               asp-route-catalogueItemId="@item.CatalogueItem.Id">
+                                Edit
+                            </a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
                 }
                 <nhs-table-row-container>
-                    <nhs-table-cell><b>Total</b></nhs-table-cell>
-                    <nhs-table-cell>@($"£{Model.OrderItemsSelectable.Sum(oi => CalculateTotalCost(oi)).ToString("N2")}")</nhs-table-cell>
+                    <nhs-table-cell>
+                        <b>Total</b>
+                    </nhs-table-cell>
+                    <nhs-table-cell>@($"£{Model.OrderItemsSelectable.Sum(CalculateTotalCost):N2}")</nhs-table-cell>
                     <nhs-table-cell></nhs-table-cell>
                     <nhs-table-cell></nhs-table-cell>
                 </nhs-table-row-container>
             </nhs-table>
-            <p><b>All prices exclude VAT.</b></p>
-            <br />
+            <p>
+                <b>All prices exclude VAT.</b>
+            </p>
+            <br/>
         }
-        @if (Model.OrderItemsLocalOnly != null && Model.OrderItemsLocalOnly.Any())
+        @if (Model.OrderItemsSingleFundingType != null && Model.OrderItemsSingleFundingType.Any())
         {
             <nhs-table data-test-id="funding-sources-items-local-only"
-                   label-text="Funding sources">
+                       label-text="Funding sources">
                 <nhs-table-column>Solution or service</nhs-table-column>
                 <nhs-table-column>Total cost</nhs-table-column>
                 <nhs-table-column></nhs-table-column>
                 <nhs-table-column></nhs-table-column>
-                @foreach (var item in Model.OrderItemsLocalOnly)
+                @foreach (var item in Model.OrderItemsSingleFundingType)
                 {
                     <nhs-table-row-container>
                         <nhs-table-cell>@item.CatalogueItem.Name</nhs-table-cell>
-                        <nhs-table-cell>@($"£{CalculateTotalCost(item).ToString("N2")}")</nhs-table-cell>
+                        <nhs-table-cell>@($"£{CalculateTotalCost(item):N2}")</nhs-table-cell>
                         <nhs-table-cell></nhs-table-cell>
                         <nhs-table-cell></nhs-table-cell>
                     </nhs-table-row-container>
                 }
                 <nhs-table-row-container>
-                    <nhs-table-cell><b>Total</b></nhs-table-cell>
-                    <nhs-table-cell>@($"£{Model.OrderItemsLocalOnly.Sum(oi => CalculateTotalCost(oi)).ToString("N2")}")</nhs-table-cell>
+                    <nhs-table-cell>
+                        <b>Total</b>
+                    </nhs-table-cell>
+                    <nhs-table-cell>@($"£{Model.OrderItemsSingleFundingType.Sum(CalculateTotalCost):N2}")</nhs-table-cell>
                 </nhs-table-row-container>
             </nhs-table>
-            <p><b>All prices exclude VAT.</b></p>
-            <br />
+            <p>
+                <b>All prices exclude VAT.</b>
+            </p>
+            <br/>
         }
         @if (Model.OrderItemsNoFundingRequired != null && Model.OrderItemsNoFundingRequired.Any())
         {
             <nhs-table data-test-id="funding-sources-items-no-funding-required"
-                   label-text="No funding required">
+                       label-text="No funding required">
                 <nhs-table-column>Solution or service</nhs-table-column>
                 <nhs-table-column>Total cost</nhs-table-column>
                 <nhs-table-column></nhs-table-column>
@@ -131,16 +129,16 @@
                 {
                     <nhs-table-row-container>
                         <nhs-table-cell>@item.CatalogueItem.Name</nhs-table-cell>
-                        <nhs-table-cell>@($"£{CalculateTotalCost(item).ToString("N2")}")</nhs-table-cell>
+                        <nhs-table-cell>@($"£{CalculateTotalCost(item):N2}")</nhs-table-cell>
                         <nhs-table-cell></nhs-table-cell>
                         <nhs-table-cell></nhs-table-cell>
                     </nhs-table-row-container>
                 }
             </nhs-table>
-            <br />
+            <br/>
         }
         <form method="post">
-            <nhs-submit-button text="Continue" />
+            <nhs-submit-button text="Continue"/>
         </form>
     </div>
 </div>
@@ -150,4 +148,3 @@
 
     decimal CalculateTotalCost(OrderItem item) => Model.Order.TotalCostForOrderItem(item.CatalogueItem.Id);
 }
-

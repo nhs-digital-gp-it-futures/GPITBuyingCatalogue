@@ -431,7 +431,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             item.OrderItemFunding = funding;
 
             order.OrderingParty.OrganisationType = OrganisationType.GP;
-            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.GPIT };
+            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.Gpit };
 
             context.Orders.Add(order);
 
@@ -493,7 +493,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             item.OrderItemFunding = funding;
 
             order.OrderingParty.OrganisationType = OrganisationType.GP;
-            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.PCARP };
+            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.Pcarp };
 
             context.Orders.Add(order);
 

@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             model.CallOffId.Should().Be(order.CallOffId);
             model.InternalOrgId.Should().Be(internalOrgId);
             model.Caption.Should().Be($"Order {order.CallOffId}");
-            model.OrderItemsLocalOnly.Should().NotBeEmpty().And.HaveCount(order.OrderItems.Count);
+            model.OrderItemsSingleFundingType.Should().NotBeEmpty().And.HaveCount(order.OrderItems.Count);
             model.OrderItemsSelectable.Should().BeNull();
             model.CountOfOrderFrameworks.Should().Be(1);
         }
@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             model.CallOffId.Should().Be(order.CallOffId);
             model.InternalOrgId.Should().Be(internalOrgId);
             model.Caption.Should().Be($"Order {order.CallOffId}");
-            model.OrderItemsLocalOnly.Should().NotBeEmpty().And.HaveCount(order.OrderItems.Count);
+            model.OrderItemsSingleFundingType.Should().NotBeEmpty().And.HaveCount(order.OrderItems.Count);
             model.OrderItemsSelectable.Should().BeNull();
             model.CountOfOrderFrameworks.Should().Be(1);
         }
@@ -97,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             model.CallOffId.Should().Be(order.CallOffId);
             model.InternalOrgId.Should().Be(internalOrgId);
             model.Caption.Should().Be($"Order {order.CallOffId}");
-            model.OrderItemsLocalOnly.Should().NotBeEmpty().And.HaveCount(order.OrderItems.Count);
+            model.OrderItemsSingleFundingType.Should().NotBeEmpty().And.HaveCount(order.OrderItems.Count);
             model.OrderItemsSelectable.Should().BeNull();
             model.CountOfOrderFrameworks.Should().Be(1);
         }
@@ -109,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             EntityFramework.Ordering.Models.Order order,
             Solution solution)
         {
-            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.GPIT };
+            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.Gpit };
 
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             order.OrderItems.First().CatalogueItem.Solution = solution;
@@ -123,7 +123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             model.CallOffId.Should().Be(order.CallOffId);
             model.InternalOrgId.Should().Be(internalOrgId);
             model.Caption.Should().Be($"Order {order.CallOffId}");
-            model.OrderItemsLocalOnly.Should().BeNull();
+            model.OrderItemsSingleFundingType.Should().BeNull();
             model.OrderItemsSelectable.Should().NotBeEmpty().And.HaveCount(order.OrderItems.Count);
             model.CountOfOrderFrameworks.Should().Be(1);
         }

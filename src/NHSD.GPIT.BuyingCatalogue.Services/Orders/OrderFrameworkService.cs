@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             var selectedFramework = await dbContext.Frameworks.FirstAsync(f => f.Id == frameworkId);
 
-            if (selectedFramework.LocalFundingOnly != order.SelectedFramework.LocalFundingOnly && order.OrderingParty.OrganisationType != OrganisationType.GP)
+            if (selectedFramework.HasSingleFundingType != order.SelectedFramework.HasSingleFundingType && order.OrderingParty.OrganisationType != OrganisationType.GP)
             {
                 order.OrderItems.Where(oi => oi.OrderItemFunding != null).ForEach(oi =>
                 {

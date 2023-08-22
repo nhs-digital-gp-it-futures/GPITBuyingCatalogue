@@ -270,7 +270,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             // Frameworks
             List<EntityFramework.Catalogue.Models.Framework> frameworks = new()
             {
-                new EntityFramework.Catalogue.Models.Framework { Id = "NHSDGP001", Name = "NHS Digital GP IT Futures Framework 1", ShortName = "GP IT Futures", FundingTypes = new List<FundingType> { FundingType.GPIT } },
+                new EntityFramework.Catalogue.Models.Framework { Id = "NHSDGP001", Name = "NHS Digital GP IT Futures Framework 1", ShortName = "GP IT Futures", FundingTypes = new List<FundingType> { FundingType.Gpit } },
                 new EntityFramework.Catalogue.Models.Framework { Id = "DFOCVC001", Name = "Digital First Online Consultation and Video Consultation Framework 1", ShortName = "DFOCVC", FundingTypes = new List<FundingType> { FundingType.Local } },
             };
             context.AddRange(frameworks);
