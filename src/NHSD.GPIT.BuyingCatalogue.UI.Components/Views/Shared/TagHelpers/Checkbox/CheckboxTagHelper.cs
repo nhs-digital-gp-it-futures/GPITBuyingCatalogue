@@ -21,15 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
         public CheckboxTagHelper(IHtmlGenerator htmlGenerator) => this.htmlGenerator = htmlGenerator;
 
-        public enum CheckboxSize
-        {
-            Small,
-            Medium,
-        }
-
-        [HtmlAttributeName("size")]
-        public CheckboxSize Size { get; set; } = CheckboxSize.Medium;
-
         [HtmlAttributeNotBound]
         [ViewContext]
         public ViewContext ViewContext { get; set; }
