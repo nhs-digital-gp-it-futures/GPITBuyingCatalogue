@@ -36,11 +36,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree
             if (isDefault)
             {
                 CommonActions.ClickSave();
+                CommonActions.ClickSave();
             }
             else
             {
-                CommonActions.ClickRadioButtonWithText(AssociatedServicesBillingObjects.BespokeMilestonesAgreed);
-                CommonActions.ClickSave();
+                //CommonActions.ClickRadioButtonWithText(AssociatedServicesBillingObjects.BespokeMilestonesAgreed);
+                //CommonActions.ClickSave();
+                AddBespokeMilestonesAssociatedServices();
                 CommonActions.ClickContinue();
             }
 
@@ -63,6 +65,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree
         public void AddBespokeMilestones()
         {
             CommonActions.ClickLinkElement(ImplementationPlanObjects.ImplementationPlanAddBespokeMilestone);
+            EnterMilestoneName();
+            CommonActions.ClickSave();
+        }
+
+        public void AddBespokeMilestonesAssociatedServices()
+        {
+            CommonActions.ClickLinkElement(ImplementationPlanObjects.ImplementationPlanAddBespokeMilestone);
+            CommonActions.SelectRandomDropDownItem();
             EnterMilestoneName();
             CommonActions.ClickSave();
         }

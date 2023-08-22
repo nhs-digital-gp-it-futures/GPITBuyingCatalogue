@@ -301,6 +301,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             TaskList.DataProcessingInformationTask();
         }
 
+        public void StepThreeContractAssociatedServices()
+        {
+            TaskList.AssociatedServiceBillingAndRequirementsTask();
+        }
+
         public void StepFourReviewAndCompleteOrder()
         {
             TaskList.ReviewAndCompleteOrderTask();
