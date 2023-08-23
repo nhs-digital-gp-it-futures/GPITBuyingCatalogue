@@ -41,7 +41,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Dashboard
             return order.OrderStatus switch
             {
                 OrderStatus.Terminated => "View",
-                OrderStatus.Completed when !order.AssociatedServicesOnly && !AnySubsequentRevisions(order.CallOffId) => "Amend",
                 OrderStatus.Completed => "View",
                 OrderStatus.InProgress => "Edit",
                 _ => string.Empty,
