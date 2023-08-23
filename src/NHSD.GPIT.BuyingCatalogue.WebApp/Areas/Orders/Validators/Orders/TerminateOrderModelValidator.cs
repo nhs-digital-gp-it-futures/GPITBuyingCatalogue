@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.DeleteOrder
     {
         public const string ReasonEmptyErrorMessage = "Provide a reason why the contract is being terminated";
         public const string TerminationDateDayMissingErrorMessage = "Termination date must include a day";
-        public const string TerminationDateInTheFutureErrorMessage = "Termination date must not be in the future";
+        public const string TerminationDateInThePastErrorMessage = "Termination date must be in the future";
         public const string TerminationDateInvalidErrorMessage = "Termination date must be a real date";
         public const string TerminationDateMonthMissingErrorMessage = "Termination date must include a month";
         public const string TerminationDateYearMissingErrorMessage = "Termination date must include a year";
@@ -43,9 +43,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.DeleteOrder
                 .Must(x => x.TerminationDate != null)
                 .Unless(TerminationDateIsInvalid)
                 .WithMessage(TerminationDateInvalidErrorMessage)
-                .Must(x => x.TerminationDate > DateTime.UtcNow.Date)
+                .Must(x => x.TerminationDate.GetValueOrDefault().Date > DateTime.UtcNow.Date)
                 .Unless(TerminationDateIsInvalid)
-                .WithMessage(TerminationDateInTheFutureErrorMessage)
+                .WithMessage(TerminationDateInThePastErrorMessage)
                 .OverridePropertyName(x => x.Day);
 
             RuleFor(x => x.Confirm)
