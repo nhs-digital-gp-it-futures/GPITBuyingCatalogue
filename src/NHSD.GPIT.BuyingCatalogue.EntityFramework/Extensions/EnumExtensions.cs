@@ -16,8 +16,5 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
 
         public static string GetEnumMemberValue<TEnum>(this TEnum value)
             where TEnum : struct, Enum => value.EnumMemberName();
-
-        public static string GtEnumMemberIntValue<TEnun>(this TEnun value)
-            where TEnun : struct, Enum => Convert.ToInt32(value).ToString();
     }
 }

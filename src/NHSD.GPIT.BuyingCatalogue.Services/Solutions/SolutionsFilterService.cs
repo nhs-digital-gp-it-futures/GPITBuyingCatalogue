@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -11,7 +12,6 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     x => x.Integrations != null,
                     isInteropFilter);
             }
-            else if (!string.IsNullOrWhiteSpace(selectedInteroperabilityOptions) && selectedInteroperabilityOptions.Contains(InteropIntegrationType.Im1.GtEnumMemberIntValue(), StringComparison.Ordinal))
+            else if (!string.IsNullOrWhiteSpace(selectedInteroperabilityOptions) && selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.Im1).ToString(CultureInfo.InvariantCulture), StringComparison.OrdinalIgnoreCase))
             {
                 InteropIm1Integrations[] enumValues = (InteropIm1Integrations[])Enum.GetValues(typeof(InteropIm1Integrations));
                 string im1integrations = string.Join(FilterConstants.Delimiter, enumValues.Select(e => (int)e));
@@ -110,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     x => x.Integrations != null,
                     isInteropFilter);
             }
-            else if (!string.IsNullOrWhiteSpace(selectedInteroperabilityOptions) && selectedInteroperabilityOptions.Contains(InteropIntegrationType.GpConnect.GtEnumMemberIntValue(), StringComparison.Ordinal))
+            else if (!string.IsNullOrWhiteSpace(selectedInteroperabilityOptions) && selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.GpConnect).ToString(CultureInfo.InvariantCulture), StringComparison.OrdinalIgnoreCase))
             {
                 InteropGpConnectIntegrations[] enumValues = (InteropGpConnectIntegrations[])Enum.GetValues(typeof(InteropIm1Integrations));
                 string gpConnectIntegrations = string.Join(FilterConstants.Delimiter, enumValues.Select(e => (int)e));
