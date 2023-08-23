@@ -62,10 +62,11 @@
     </nhs-expander>
 	<nhs-expander label-text="Interoperability"
 				  open="true">
-        @for (int j = 0; j < @Model.InteroperabilityOptions.Count();j++)
-        {
-            <nhs-fieldset-form-label asp-for="@Model">
-                <nhs-checkbox-container>
+        <nhs-fieldset-form-label asp-for="@Model">
+            <nhs-checkbox-container>
+                @for (int j = 0; j < @Model.InteroperabilityOptions.Count();j++)
+                {
+            
                     <nhs-checkbox asp-for="@Model.InteroperabilityOptions[j].Selected"
                                           label-text="@Model.InteroperabilityOptions[j].Text integrations"
                                           hidden-input="@Model.InteroperabilityOptions[j].Value">
@@ -91,9 +92,9 @@
                         }
                         </nhs-checkbox-container>
                     </nhs-checkbox>
-			</nhs-checkbox-container>
-		</nhs-fieldset-form-label>
-        }
+                }
+            </nhs-checkbox-container>
+        </nhs-fieldset-form-label>
     </nhs-expander>
     <nhs-submit-button style="width:100%" text="View results" class="nhsuk-button--secondary"/>
 
