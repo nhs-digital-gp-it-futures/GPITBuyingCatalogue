@@ -446,7 +446,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Fact]
         public void OrderWithSolutionAdditionalAndAssociatedServiceBetween40Kand250K()
         {
-            string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceBetween40Kand250K";
+            string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceBetween40Kand250K";            
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
@@ -461,6 +461,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals", associatedService: "Automated Arrivals – Engineering Half Day");
 
             OrderingPages.StepThreeCompleteContract(false);
+
+            //OrderingPages.StepThreeContractAssociatedServices(false);
 
             OrderingPages.StepFourReviewAndCompleteOrder();
         }
@@ -634,7 +636,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
 
-            OrderingPages.StepThreeCompleteContract();
+            OrderingPages.StepThreeContractAssociatedServices(false);
 
             OrderingPages.StepFourReviewAndCompleteOrder();
         }

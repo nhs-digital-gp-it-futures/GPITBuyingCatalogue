@@ -295,15 +295,17 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             if (isOrderWithAssociatedService)
             {
                 TaskList.AssociatedServiceBillingAndRequirementsTask();
-                OrderingStepThree.SelectAssociatedServicesBilling(isDefault);
+                OrderingStepThree.SelectAssociatedServicesBilling();
             }
 
             TaskList.DataProcessingInformationTask();
         }
 
-        public void StepThreeContractAssociatedServices()
+        public void StepThreeContractAssociatedServices(bool isDefault = true)
         {
             TaskList.AssociatedServiceBillingAndRequirementsTask();
+            OrderingStepThree.SelectAssociatedServicesBilling();
+            TaskList.DataProcessingInformationTask();
         }
 
         public void StepFourReviewAndCompleteOrder()
