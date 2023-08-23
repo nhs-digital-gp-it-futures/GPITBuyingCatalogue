@@ -42,7 +42,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Orde
                 .WithErrorMessage(TerminateOrderModelValidator.TerminationDateMonthMissingErrorMessage);
         }
 
-
         [Theory]
         [CommonAutoData]
         public static void Validate_YearMissing_ThrowsValidationError(
