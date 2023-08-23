@@ -9,9 +9,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models.Registration
         public string FullName { get; set; }
 
         [StringLength(500)]
-        public string TelephoneNumber { get; set; }
-
-        [StringLength(500)]
         public string EmailAddress { get; set; }
 
         [StringLength(500)]

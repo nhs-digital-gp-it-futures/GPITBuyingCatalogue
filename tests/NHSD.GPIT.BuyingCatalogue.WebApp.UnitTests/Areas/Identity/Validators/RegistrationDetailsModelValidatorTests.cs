@@ -22,7 +22,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Validators
             model.EmailAddress = inputValue;
             model.FullName = inputValue;
             model.OrganisationName = inputValue;
-            model.TelephoneNumber = inputValue;
 
             var result = validator.TestValidate(model);
 
