@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using EnumsNET;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -22,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         {
             frameworks.ForEach(f => f.Expired = false);
 
-            var model = new AdditionalFiltersModel(frameworks, null, null, string.Empty, string.Empty);
+            var model = new AdditionalFiltersModel(frameworks, null, null, string.Empty, string.Empty, null, null, null);
 
             model.FrameworkOptions.Should().NotBeNull();
             model.FrameworkOptions.Should().HaveCount(frameworks.Count);
@@ -47,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
 
             var framework = frameworks.Last();
 
-            var model = new AdditionalFiltersModel(frameworks, framework.Id, null, string.Empty, string.Empty);
+            var model = new AdditionalFiltersModel(frameworks, framework.Id, null, string.Empty, string.Empty, null, null, null);
 
             model.FrameworkOptions.Should().NotBeNull();
             model.FrameworkOptions.Should().HaveCount(frameworks.Count);
@@ -62,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
 
             var framework = frameworks.Last();
 
-            var model = new AdditionalFiltersModel(frameworks, framework.Id, null, string.Empty, string.Empty);
+            var model = new AdditionalFiltersModel(frameworks, framework.Id, null, string.Empty, null, null, null, string.Empty);
 
             model.FrameworkOptions.Should().NotBeNull();
             model.FrameworkOptions.Should().BeEmpty();
@@ -76,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
             var expectedCount = 3;
             var expectedFilters = expectedSelectedValues.Select(i => ((ApplicationType)i).Name());
 
-            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, expectedSelectedValues.ToFilterString(), string.Empty, string.Empty);
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, expectedSelectedValues.ToFilterString(), string.Empty, null, null, null, string.Empty);
 
             model.ApplicationTypeOptions.Should().NotBeNull();
             model.ApplicationTypeOptions.Should().HaveCount(expectedCount);
@@ -102,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
             var expectedCount = 3;
             var expectedFilters = expectedSelectedValues.Select(i => ((ApplicationType)i).Name());
 
-            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, expectedSelectedValues.ToFilterString(), string.Empty, string.Empty);
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, expectedSelectedValues.ToFilterString(), string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
 
             model.ApplicationTypeOptions.Should().NotBeNull();
             model.ApplicationTypeOptions.Should().HaveCount(expectedCount);
@@ -121,7 +123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         {
             var expectedCount = 3;
 
-            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), string.Empty, selectedApplicationTypeIds, string.Empty, string.Empty);
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), string.Empty, selectedApplicationTypeIds, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
 
             model.ApplicationTypeOptions.Should().NotBeNull();
             model.ApplicationTypeOptions.Should().HaveCount(expectedCount);
@@ -139,7 +141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
             var expectedCount = 4;
             var expectedFilters = expectedSelectedValues.Select(i => ((HostingType)i).Name());
 
-            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, string.Empty, expectedSelectedValues.ToFilterString(), string.Empty);
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, string.Empty, expectedSelectedValues.ToFilterString(), string.Empty, string.Empty, string.Empty, string.Empty);
 
             model.HostingTypeOptions.Should().NotBeNull();
             model.HostingTypeOptions.Should().HaveCount(expectedCount);
@@ -158,7 +160,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         {
             var expectedCount = 4;
 
-            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, string.Empty, selectedHostingTypeIds, string.Empty);
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, string.Empty, selectedHostingTypeIds, string.Empty, string.Empty, string.Empty, string.Empty);
 
             model.HostingTypeOptions.Should().NotBeNull();
             model.HostingTypeOptions.Should().HaveCount(expectedCount);
@@ -171,10 +173,124 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         }
 
         [Theory]
+        [InlineData(new[] { 0, 1, 2 })]
+        public static void Constructor_With_SelectedIM1IntegrationsOptions_Creates_InteroperabilityCheckBoxItems_AllSelected(int[] expectedSelectedValues)
+        {
+            var expectedCount = 3;
+            var expectedFilters = expectedSelectedValues.Select(i => ((InteropIm1Integrations)i).Name());
+
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, string.Empty, string.Empty, expectedSelectedValues.ToFilterString(), string.Empty, string.Empty, string.Empty);
+
+            model.IM1IntegrationsOptions.Should().NotBeNull();
+            model.IM1IntegrationsOptions.Should().HaveCount(expectedCount);
+            model.IM1IntegrationsFilters.Should().BeEquivalentTo(expectedFilters);
+
+            foreach (var item in model.IM1IntegrationsOptions)
+            {
+                var isSelected = expectedSelectedValues.Contains(item.Value);
+                item.Selected.Should().Be(isSelected);
+            }
+        }
+
+        [Theory]
+        [InlineData(null)]
+        public static void Constructor_WithNull_SelectedIM1IntegrationsOptions_Creates_IM1IntegrationsOption_NoneSelected(string selectedIM1Integrations)
+        {
+            var expectedCount = 3;
+
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, string.Empty, string.Empty, selectedIM1Integrations, string.Empty, string.Empty, string.Empty);
+
+            model.IM1IntegrationsOptions.Should().NotBeNull();
+            model.IM1IntegrationsOptions.Should().HaveCount(expectedCount);
+            model.IM1IntegrationsFilters.Should().BeEquivalentTo(Array.Empty<string>());
+
+            foreach (var item in model.IM1IntegrationsOptions)
+            {
+                item.Selected.Should().BeFalse();
+            }
+        }
+
+        [Theory]
+        [InlineData(new[] { 0, 1, 2 })]
+        public static void Constructor_With_SelectedGPConnectIntegrationsOptions_Creates_InteroperabilityCheckBoxItems_AllSelected(int[] expectedSelectedValues)
+        {
+            var expectedCount = 3;
+            var expectedFilters = expectedSelectedValues.Select(i => ((InteropGpConnectIntegrations)i).Name());
+
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, string.Empty, string.Empty, string.Empty, expectedSelectedValues.ToFilterString(), string.Empty, string.Empty);
+
+            model.GPConnectIntegrationsOptions.Should().NotBeNull();
+            model.GPConnectIntegrationsOptions.Should().HaveCount(expectedCount);
+            model.GPConnectIntegrationsFilters.Should().BeEquivalentTo(expectedFilters);
+
+            foreach (var item in model.GPConnectIntegrationsOptions)
+            {
+                var isSelected = expectedSelectedValues.Contains(item.Value);
+                item.Selected.Should().Be(isSelected);
+            }
+        }
+
+        [Theory]
+        [InlineData(null)]
+        public static void Constructor_WithNull_SelectedGPConnectIntegrationsOptions_Creates_IGPConnectIntegrationsOption_NoneSelected(string selectedGPConnectIntegrations)
+        {
+            var expectedCount = 3;
+
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, string.Empty, string.Empty, string.Empty, selectedGPConnectIntegrations, string.Empty, string.Empty);
+
+            model.GPConnectIntegrationsOptions.Should().NotBeNull();
+            model.GPConnectIntegrationsOptions.Should().HaveCount(expectedCount);
+            model.GPConnectIntegrationsFilters.Should().BeEquivalentTo(Array.Empty<string>());
+
+            foreach (var item in model.GPConnectIntegrationsOptions)
+            {
+                item.Selected.Should().BeFalse();
+            }
+        }
+
+        [Theory]
+        [InlineData(new[] { 0, 1 })]
+        public static void Constructor_With_SelectedIntegrationsOptions_Creates_InteroperabilityCheckBoxItems_AllSelected(int[] expectedSelectedValues)
+        {
+            var expectedCount = 2;
+            var expectedFilters = expectedSelectedValues.Select(i => ((InteropIntegrationType)i).EnumMemberName());
+
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, string.Empty, string.Empty, string.Empty, string.Empty, expectedSelectedValues.ToFilterString(), string.Empty);
+
+            model.InteroperabilityOptions.Should().NotBeNull();
+            model.InteroperabilityOptions.Should().HaveCount(expectedCount);
+            model.InteroperabilityFilters.Should().BeEquivalentTo(expectedFilters);
+
+            foreach (var item in model.InteroperabilityOptions)
+            {
+                var isSelected = expectedSelectedValues.Contains(item.Value);
+                item.Selected.Should().Be(isSelected);
+            }
+        }
+
+        [Theory]
+        [InlineData(null)]
+        public static void Constructor_WithNull_SelectedIntegrationsOptions_Creates_IntegrationsOption_NoneSelected(string selectedIntegrations)
+        {
+            var expectedCount = 2;
+
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, string.Empty, string.Empty, string.Empty, string.Empty, selectedIntegrations, string.Empty);
+
+            model.InteroperabilityOptions.Should().NotBeNull();
+            model.InteroperabilityOptions.Should().HaveCount(expectedCount);
+            model.InteroperabilityFilters.Should().BeEquivalentTo(Array.Empty<string>());
+
+            foreach (var item in model.InteroperabilityOptions)
+            {
+                item.Selected.Should().BeFalse();
+            }
+        }
+
+        [Theory]
         [CommonAutoData]
         public static void Constructor_WithSelectedCapabilityAndEpics_Property_SetCorrectly(string selected)
         {
-            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, null, null, selected);
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, null, null, null, null, null, selected);
 
             model.Selected.Should().Be(selected);
         }
