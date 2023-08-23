@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public string Year { get; set; }
 
-        public DateTime? ConfirmationDate =>
+        public DateTime? TerminationDate =>
             DateTime.TryParseExact($"{Day}/{Month}/{Year}", "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out DateTime parsedDate)
                 ? parsedDate : null;
 

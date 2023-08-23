@@ -262,7 +262,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     .Where(o => o.OrderingPartyId == organisationId)
                     .ToListAsync())
                 .GroupBy(x => x.OrderNumber)
-                .SelectMany(x => x.OrderByDescending(y => y.Revision).TakeUntil(y => y.OrderStatus == OrderStatus.Completed))
+                .SelectMany(x => x.OrderByDescending(y => y.Revision).TakeUntil(y => y.OrderStatus is OrderStatus.Completed or OrderStatus.Terminated))
                 .ToList();
 
             if (!string.IsNullOrWhiteSpace(search))
@@ -295,7 +295,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     .Where(o => o.OrderingPartyId == organisationId)
                     .ToListAsync())
                 .GroupBy(x => x.OrderNumber)
-                .SelectMany(x => x.OrderByDescending(y => y.Revision).TakeUntil(y => y.OrderStatus == OrderStatus.Completed))
+                .SelectMany(x => x.OrderByDescending(y => y.Revision).TakeUntil(y => y.OrderStatus is OrderStatus.Completed or OrderStatus.Terminated))
                 .ToList();
 
             var matches = baseData

@@ -82,8 +82,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 "IX_OrderNum_IsDeleted_Revision");
 
             builder.HasQueryFilter(o => !o.IsDeleted);
-
-            // builder.HasQueryFilter(o => !o.IsTerminated);
         }
     }
 }

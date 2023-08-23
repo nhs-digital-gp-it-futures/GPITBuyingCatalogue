@@ -272,7 +272,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             var hasSubsequentRevisions = await orderService.HasSubsequentRevisions(callOffId);
             if (!hasSubsequentRevisions)
             {
-                await orderService.TerminateOrder(callOffId, internalOrgId,  model.ConfirmationDate.GetValueOrDefault(), model.Reason);
+                await orderService.TerminateOrder(callOffId, internalOrgId,  model.TerminationDate.GetValueOrDefault(), model.Reason);
             }
 
             return RedirectToAction(
