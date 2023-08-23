@@ -34,9 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Validators
 
             result.ShouldHaveValidationErrorFor(m => m.OrganisationName)
                 .WithErrorMessage(RegistrationDetailsModelValidator.OrganisationNameErrorMessage);
-
-            result.ShouldHaveValidationErrorFor(m => m.TelephoneNumber)
-                .WithErrorMessage(RegistrationDetailsModelValidator.TelephoneNumberErrorMessage);
         }
 
         [Theory]

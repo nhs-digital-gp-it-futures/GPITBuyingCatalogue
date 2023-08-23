@@ -42,7 +42,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
             var tokens = new Dictionary<string, dynamic>
             {
                 { FullNameToken, request.FullName },
-                { PhoneNumberToken, request.TelephoneNumber },
                 { EmailAddressToken, request.EmailAddress },
                 { OrganisationNameToken, request.OrganisationName },
                 { OrganisationOdsCodeToken, odsCode },

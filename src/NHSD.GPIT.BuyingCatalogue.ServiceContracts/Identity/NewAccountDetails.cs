@@ -4,8 +4,6 @@
     {
         public string FullName { get; set; }
 
-        public string TelephoneNumber { get; set; }
-
         public string EmailAddress { get; set; }
 
         public string OrganisationName { get; set; }

@@ -76,10 +76,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Registration
                     RegistrationDetailsModelValidator.FullNameErrorMessage).Should().BeTrue();
 
                 CommonActions.ElementShowingCorrectErrorMessage(
-                    RegistrationObjects.TelephoneNumberError,
-                    RegistrationDetailsModelValidator.TelephoneNumberErrorMessage).Should().BeTrue();
-
-                CommonActions.ElementShowingCorrectErrorMessage(
                     RegistrationObjects.EmailAddressError,
                     RegistrationDetailsModelValidator.EmailAddressMissingErrorMessage).Should().BeTrue();
 
