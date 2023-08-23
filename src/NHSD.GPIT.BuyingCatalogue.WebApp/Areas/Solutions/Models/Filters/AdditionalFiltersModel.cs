@@ -149,7 +149,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                     x => new SelectOption<int>
                     {
                         Value = (int)x,
-                        Text = x.GetEnumMemberValue(),
+                        Text = x.EnumMemberName(),
                         Selected = !string.IsNullOrEmpty(selectedInteroperabilityOptions)
                             && selectedInteroperabilityOptions.Contains(((int)x).ToString()),
                     }).ToList();

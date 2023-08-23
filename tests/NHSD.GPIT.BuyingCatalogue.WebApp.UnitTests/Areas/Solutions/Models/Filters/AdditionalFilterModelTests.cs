@@ -253,7 +253,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         public static void Constructor_With_SelectedIntegrationsOptions_Creates_InteroperabilityCheckBoxItems_AllSelected(int[] expectedSelectedValues)
         {
             var expectedCount = 2;
-            var expectedFilters = expectedSelectedValues.Select(i => ((InteropIntegrationType)i).GetEnumMemberValue());
+            var expectedFilters = expectedSelectedValues.Select(i => ((InteropIntegrationType)i).EnumMemberName());
 
             var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, string.Empty, string.Empty, string.Empty, string.Empty, expectedSelectedValues.ToFilterString(), string.Empty);
 
