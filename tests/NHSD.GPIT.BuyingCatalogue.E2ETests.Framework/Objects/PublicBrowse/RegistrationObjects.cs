@@ -10,10 +10,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.PublicBrowse
 
         public static By FullNameError => By.Id("FullName-error");
 
-        public static By TelephoneNumberInput => By.Id("TelephoneNumber");
-
-        public static By TelephoneNumberError => By.Id("TelephoneNumber-error");
-
         public static By EmailAddressInput => By.Id("EmailAddress");
 
         public static By EmailAddressError => By.Id("EmailAddress-error");

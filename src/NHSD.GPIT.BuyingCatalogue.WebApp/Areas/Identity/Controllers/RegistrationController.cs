@@ -55,7 +55,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             await requestAccountService.RequestAccount(new NewAccountDetails
             {
                 FullName = viewModel.FullName,
-                TelephoneNumber = viewModel.TelephoneNumber,
                 EmailAddress = viewModel.EmailAddress,
                 OrganisationName = viewModel.OrganisationName,
                 OdsCode = viewModel.OdsCode,
