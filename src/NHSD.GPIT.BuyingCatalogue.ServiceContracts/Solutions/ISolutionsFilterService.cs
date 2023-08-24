@@ -10,19 +10,20 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 {
     public interface ISolutionsFilterService
     {
-       Task<(IQueryable<CatalogueItem> CatalogueItems, List<CapabilitiesAndCountModel> CapabilitiesAndCount)> GetFilteredAndNonFilteredQueryResults(
-            string selectedCapabilityIds = null,
-            string selectedEpicIds = null);
+        Task<(IQueryable<CatalogueItem> CatalogueItems, List<CapabilitiesAndCountModel> CapabilitiesAndCount)> GetFilteredAndNonFilteredQueryResults(
+             Dictionary<int, string[]> capabiltiesAndEpics);
 
-       Task<(IList<CatalogueItem> CatalogueItems, PageOptions Options, List<CapabilitiesAndCountModel> CapabilitiesAndCount)> GetAllSolutionsFiltered(
-            PageOptions options = null,
-            string selectedCapabilityIds = null,
-            string selectedEpicIds = null,
-            string search = null,
-            string selectedFrameworkId = null,
-            string selectedApplicationTypeIds = null,
-            string selectedHostingTypeIds = null);
+        Task<(IList<CatalogueItem> CatalogueItems, PageOptions Options, List<CapabilitiesAndCountModel> CapabilitiesAndCount)> GetAllSolutionsFiltered(
+             PageOptions options = null,
+             Dictionary<int, string[]> capabilitiesAndEpics = null,
+             string search = null,
+             string selectedFrameworkId = null,
+             string selectedApplicationTypeIds = null,
+             string selectedHostingTypeIds = null,
+             string selectedIM1Integrations = null,
+             string selectedGPConnectIntegrations = null,
+             string selectedInteroperabilityOptions = null);
 
-       Task<List<SearchFilterModel>> GetSolutionsBySearchTerm(string searchTerm, int maxToBringBack = 15);
+        Task<List<SearchFilterModel>> GetSolutionsBySearchTerm(string searchTerm, int maxToBringBack = 15);
     }
 }

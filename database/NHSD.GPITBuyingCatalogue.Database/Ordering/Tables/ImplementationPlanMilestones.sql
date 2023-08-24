@@ -1,7 +1,8 @@
 ﻿CREATE TABLE ordering.ImplementationPlanMilestones
 (
     Id int IDENTITY(1, 1) NOT NULL,
-    ImplementationPlanId int NOT NULL,
+    ImplementationPlanId int NULL DEFAULT NULL,
+    ContractBillingItemId int NULL DEFAULT NULL,
     [Order] int NOT NULL,
     Title nvarchar(1000) NOT NULL,
     [PaymentTrigger] nvarchar(1000) NOT NULL,
@@ -12,5 +13,6 @@
     PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
     CONSTRAINT PK_ImplementationPlanMilestones PRIMARY KEY (Id),
     CONSTRAINT FK_ImplementationPlanMilestones_ImplementationPlan FOREIGN KEY (ImplementationPlanId) REFERENCES ordering.ImplementationPlans(Id),
+    CONSTRAINT FK_ImplementationPlanMilestones_ContractBillingItem FOREIGN KEY (ContractBillingItemId) REFERENCES ordering.ContractBillingItems(Id) ON DELETE CASCADE,
     CONSTRAINT FK_ImplementationPlanMilestones_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id)
 ) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = ordering.ImplementationPlanMilestones_History));

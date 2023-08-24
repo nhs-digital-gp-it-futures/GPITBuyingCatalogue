@@ -34,19 +34,15 @@ public class CompetitionImportServiceRecipientsController : Controller
 
     private const string CompetitionCacheKey = "competitions";
     private readonly IServiceRecipientImportService importService;
-    private readonly IOrganisationsService organisationsService;
     private readonly ICompetitionsService competitionsService;
     private readonly IOdsService odsService;
 
     public CompetitionImportServiceRecipientsController(
         IServiceRecipientImportService importService,
-        IOrganisationsService organisationsService,
         ICompetitionsService competitionsService,
         IOdsService odsService)
     {
         this.importService = importService ?? throw new ArgumentNullException(nameof(importService));
-        this.organisationsService =
-            organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
         this.competitionsService =
             competitionsService ?? throw new ArgumentNullException(nameof(competitionsService));
         this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
@@ -59,8 +55,7 @@ public class CompetitionImportServiceRecipientsController : Controller
     {
         await importService.Clear(new(User.UserId(), internalOrgId, CompetitionCacheKey, competitionId));
 
-        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-        var competitionName = await competitionsService.GetCompetitionName(organisation.Id, competitionId);
+        var competitionName = await competitionsService.GetCompetitionName(internalOrgId, competitionId);
         var model = new ImportServiceRecipientModel
         {
             BackLink = Url.Action(
@@ -119,8 +114,7 @@ public class CompetitionImportServiceRecipientsController : Controller
         var mismatchedOdsCodes = GetMismatchedOdsCodes(cachedRecipients, organisationServiceRecipients).ToList();
         if (mismatchedOdsCodes.Any())
         {
-            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-            var competitionName = await competitionsService.GetCompetitionName(organisation.Id, competitionId);
+            var competitionName = await competitionsService.GetCompetitionName(internalOrgId, competitionId);
             var model = new ValidateOdsModel(
                 mismatchedOdsCodes)
             {
@@ -159,8 +153,7 @@ public class CompetitionImportServiceRecipientsController : Controller
         var mismatchedRecipients = GetMismatchedNames(cachedRecipients.ToList(), organisationServiceRecipients);
         if (mismatchedRecipients.Any())
         {
-            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-            var competitionName = await competitionsService.GetCompetitionName(organisation.Id, competitionId);
+            var competitionName = await competitionsService.GetCompetitionName(internalOrgId, competitionId);
             var model = new ValidateNamesModel(mismatchedRecipients)
             {
                 BackLink = Url.Action(

@@ -39,7 +39,7 @@ public static class EditCapabilitiesModelTests
 
     [Theory]
     [CommonAutoData]
-    public static void Construct_NoSelectedCapabilities_SelectsAllMustEpics(
+    public static void Construct_NoSelectedEffectiveCapabilities_SelectsAllMustEpics(
         Solution solution,
         CapabilityCategory capabilityCategory,
         Capability capability,
@@ -47,10 +47,17 @@ public static class EditCapabilitiesModelTests
         List<Epic> mayEpics,
         List<CapabilityCategory> capabilityCategories)
     {
-        mustEpics.ForEach(e => e.CompliancyLevel = CompliancyLevel.Must);
-        mayEpics.ForEach(e => e.CompliancyLevel = CompliancyLevel.May);
+        capability.Status = CapabilityStatus.Effective;
 
-        capability.Epics = mustEpics.Concat(mayEpics).ToList();
+        mayEpics.ForEach(e => e.IsActive = true);
+        mustEpics.ForEach(e => e.IsActive = true);
+
+        var mustCapabilityEpics = mustEpics
+            .Select(e => new CapabilityEpic() { Epic = e, CompliancyLevel = CompliancyLevel.Must });
+        var mayCapabilityEpics = mayEpics
+            .Select(e => new CapabilityEpic() { Epic = e, CompliancyLevel = CompliancyLevel.May });
+
+        capability.CapabilityEpics = mustCapabilityEpics.Concat(mayCapabilityEpics).ToList();
 
         capabilityCategory.Capabilities.Add(capability);
         capabilityCategories.Add(capabilityCategory);
@@ -75,10 +82,15 @@ public static class EditCapabilitiesModelTests
         List<Epic> mayEpics,
         List<CapabilityCategory> capabilityCategories)
     {
-        mustEpics.ForEach(e => e.CompliancyLevel = CompliancyLevel.Must);
-        mayEpics.ForEach(e => e.CompliancyLevel = CompliancyLevel.May);
+        mayEpics.ForEach(e => e.IsActive = true);
+        mustEpics.ForEach(e => e.IsActive = true);
 
-        capability.Epics = mustEpics.Concat(mayEpics).ToList();
+        var mustCapabilityEpics = mustEpics
+            .Select(e => new CapabilityEpic() { Epic = e, CompliancyLevel = CompliancyLevel.Must });
+        var mayCapabilityEpics = mayEpics
+            .Select(e => new CapabilityEpic() { Epic = e, CompliancyLevel = CompliancyLevel.May });
+
+        capability.CapabilityEpics = mustCapabilityEpics.Concat(mayCapabilityEpics).ToList();
 
         capabilityCategory.Capabilities.Add(capability);
         capabilityCategories.Add(capabilityCategory);

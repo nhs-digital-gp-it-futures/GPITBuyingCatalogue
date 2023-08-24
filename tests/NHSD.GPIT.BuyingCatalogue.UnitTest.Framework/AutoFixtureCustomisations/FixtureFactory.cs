@@ -60,10 +60,19 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
             new CompetitionCustomization(),
             new CompetitionSolutionCustomization(),
             new RequiredServiceCustomization(),
+            new CompetitionCatalogueItemPriceCustomization(),
+            new CompetitionCatalogueItemPriceTierCustomization(),
+            new SolutionQuantityCustomization(),
+            new ServiceQuantityCustomization(),
             new NonPriceElementsCustomization(),
             new OdsOrganisationCustomization(),
             new OrganisationRoleCustomization(),
             new OrganisationRelationshipCustomization(),
+            new ContractCustomization(),
+            new ContractBillingCustomization(),
+            new ContractBillingItemCustomization(),
+            new ImplementationPlanCustomization(),
+            new ImplementationPlanMilestoneCustomization(),
         };
 
         internal static IFixture Create() => Create(Customizations);

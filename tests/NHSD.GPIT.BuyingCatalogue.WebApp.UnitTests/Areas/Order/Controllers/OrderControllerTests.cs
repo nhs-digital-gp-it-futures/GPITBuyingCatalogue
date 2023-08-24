@@ -187,6 +187,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
             [Frozen] Mock<IOrderService> orderService,
             OrderController controller)
         {
+            order.Contract = new Contract() { ContractBilling = new ContractBilling(), ImplementationPlan = new ImplementationPlan(), };
             order.ContractFlags.UseDefaultDataProcessing = true;
             order.Completed = null;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);

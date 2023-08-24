@@ -1,0 +1,53 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Shared
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.ActionLink
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Requirement.RequirementModel
+@{
+    ViewBag.Title = "Associated Service requirements";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="Order @Model.CallOffId"
+                        advice="Provide details of any specific requirements for your Associated Services." />
+        
+        <div class="nhsuk-u-margin-bottom-9">
+            <nhs-details label-text="What are specific requirements?">
+                <p style="white-space: pre-line">
+                    For example, you may require all your practice managers to attend training sessions on a given day or for engineering to take place only at weekends.
+                </p>
+            </nhs-details>
+        </div>
+
+        <vc:nhs-action-link text="Add a requirement"
+                            url="@Url.Action(nameof(RequirementController.AddRequirement),
+                                     typeof(RequirementController).ControllerName(),
+                                     new { Model.InternalOrgId, Model.CallOffId })" />
+
+        @if (Model.HasRequirements)
+        {
+                <partial name="RequirementTable" model="new RequirementTableModel(Model.RequirementLabelText, Model.ContractBilling?.Requirements, true, Model.CallOffId, Model.InternalOrgId)" />
+        }
+        else
+        {
+            <p>No specific requirements have been added to this order.</p>
+        }
+
+        <form method="post">
+            <div class="nhsuk-u-margin-top-9">
+
+                <input type="hidden" asp-for="BackLink" />
+                <input type="hidden" asp-for="CallOffId" />
+                <input type="hidden" asp-for="InternalOrgId" />
+
+                <nhs-submit-button text="Continue" />
+            </div>
+        </form>
+    </div>
+</div>

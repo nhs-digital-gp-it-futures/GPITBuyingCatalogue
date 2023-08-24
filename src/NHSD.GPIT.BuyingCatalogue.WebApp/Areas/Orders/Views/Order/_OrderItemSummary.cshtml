@@ -1,13 +1,16 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.DetailsAndExpander
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions;
 @model AmendOrderItemModel
 
 @{
     var totalCost = Model.OrderItemPrice.CostForBillingPeriod(Model.RolledUpTotalQuantity);
-    var hasServiceRecipientQuantities = Model.OrderItemPrice?.IsPerServiceRecipient() ?? false;
+    var hasServiceRecipientQuantities = ((IPrice)Model.OrderItemPrice)?.IsPerServiceRecipient() ?? false;
     var hasTieredPricing = Model.OrderItemPrice?.CataloguePriceType is CataloguePriceType.Tiered;
 }
 
@@ -44,7 +47,7 @@
                                 <div class="bc-c-task-list__task-status">
                                     <strong class="nhsuk-tag nhsuk-tag--blue">Added</strong>
                                 </div>
-                            } 
+                            }
                             else
                             {
                                 <span aria-label="Existing"></span>

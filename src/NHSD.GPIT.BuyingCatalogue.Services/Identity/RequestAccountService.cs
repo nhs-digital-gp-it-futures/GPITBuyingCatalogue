@@ -11,7 +11,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
     public class RequestAccountService : IRequestAccountService
     {
         public const string FullNameToken = "full_name";
-        public const string PhoneNumberToken = "phone_number";
         public const string EmailAddressToken = "email_address";
         public const string OrganisationNameToken = "organisation_name";
         public const string OrganisationOdsCodeToken = "organisation_ods_code";
@@ -42,7 +41,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
             var tokens = new Dictionary<string, dynamic>
             {
                 { FullNameToken, request.FullName },
-                { PhoneNumberToken, request.TelephoneNumber },
                 { EmailAddressToken, request.EmailAddress },
                 { OrganisationNameToken, request.OrganisationName },
                 { OrganisationOdsCodeToken, odsCode },

@@ -126,11 +126,17 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<ContractFlags> ContractFlags { get; set; }
 
+        public DbSet<Contract> Contracts { get; set; }
+
+        public DbSet<ContractBilling> ContractBilling { get; set; }
+
+        public DbSet<ContractBillingItem> ContractBillingItems { get; set; }
+
+        public DbSet<Requirement> Requirements { get; set; }
+
         public DbSet<ImplementationPlan> ImplementationPlans { get; set; }
 
         public DbSet<ImplementationPlanMilestone> ImplementationPlanMilestones { get; set; }
-
-        public DbSet<ImplementationPlanAcceptanceCriteria> ImplementationPlanAcceptanceCriteria { get; set; }
 
         public DbSet<EmailDomain> EmailDomains { get; set; }
 
@@ -151,6 +157,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
         public DbSet<Competition> Competitions { get; set; }
 
         public DbSet<CompetitionRecipient> CompetitionRecipients { get; set; }
+
+        public DbSet<SolutionScore> CompetitionSolutionScores { get; set; }
 
         public async Task<Order> Order(CallOffId callOffId)
         {

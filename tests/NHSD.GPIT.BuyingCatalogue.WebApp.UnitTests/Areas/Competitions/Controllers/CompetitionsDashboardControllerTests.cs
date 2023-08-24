@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -51,7 +51,7 @@ public static class CompetitionsDashboardControllerTests
         organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
             .ReturnsAsync(organisation);
 
-        competitionsService.Setup(x => x.GetCompetitionsDashboard(organisation.Id))
+        competitionsService.Setup(x => x.GetCompetitionsDashboard(organisation.InternalIdentifier))
             .ReturnsAsync(competitions);
 
         var expectedModel = new CompetitionDashboardModel(
@@ -222,7 +222,7 @@ public static class CompetitionsDashboardControllerTests
         organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
             .ReturnsAsync(organisation);
 
-        var expectedModel = new SaveCompetitionModel(organisation.Id, organisation.Name);
+        var expectedModel = new SaveCompetitionModel(organisation.InternalIdentifier, organisation.Name);
 
         var result = (await controller.SaveCompetition(organisation.InternalIdentifier, filterId)).As<ViewResult>();
 
@@ -264,7 +264,7 @@ public static class CompetitionsDashboardControllerTests
         organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
             .ReturnsAsync(organisation);
 
-        competitionsService.Setup(x => x.GetCompetitionWithServices(organisation.Id, It.IsAny<int>(), true))
+        competitionsService.Setup(x => x.GetCompetitionWithServices(organisation.InternalIdentifier, It.IsAny<int>(), true))
             .ReturnsAsync(competition);
 
         filtersService.Setup(x => x.GetFilterIds(organisation.Id, filterId))
@@ -273,6 +273,8 @@ public static class CompetitionsDashboardControllerTests
         solutionsFilterService.Setup(
                 x => x.GetAllSolutionsFiltered(
                     It.IsAny<PageOptions>(),
+                    It.IsAny<Dictionary<int, string[]>>(),
+                    It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
@@ -287,7 +289,7 @@ public static class CompetitionsDashboardControllerTests
         competitionsService.Verify(x => x.AddCompetition(organisation.Id, filterId, model.Name, model.Description));
         competitionsService.Verify(
             x => x.AddCompetitionSolutions(
-                organisation.Id,
+                organisation.InternalIdentifier,
                 competition.Id,
                 It.IsAny<IEnumerable<CompetitionSolution>>()));
 

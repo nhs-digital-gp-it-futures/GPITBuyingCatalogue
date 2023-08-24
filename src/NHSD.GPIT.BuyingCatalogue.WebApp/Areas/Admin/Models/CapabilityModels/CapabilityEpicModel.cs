@@ -16,7 +16,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
             Epic epic)
         {
             Id = epic.Id;
-            Name = epic.Name;
+            Name = epic.NameWithStatusSuffix;
+            IsActive = epic.IsActive;
+
             Selected = catalogueItem.CatalogueItemEpics
                 .Where(itemEpic => itemEpic.CapabilityId == capability.Id)
                 .Any(
@@ -29,6 +31,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels
         public string Id { get; set; }
 
         public string Name { get; set; }
+
+        public bool IsActive { get; set; }
 
         public bool Selected { get; set; }
     }

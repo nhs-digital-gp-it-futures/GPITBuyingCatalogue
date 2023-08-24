@@ -1,0 +1,81 @@
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@using NHSD.GPIT.BuyingCatalogue.Framework.Calculations
+@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums
+@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing
+@model CatalogueItemHubModel
+
+@{
+    const RoutingSource source = RoutingSource.TaskList;
+
+    var priceEditUrl = Model.CatalogueItemType is CatalogueItemType.Solution
+        ? Url.Action(nameof(CompetitionHubController.SelectPrice), typeof(CompetitionHubController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, solutionId = Model.SolutionId })
+        : Url.Action(nameof(CompetitionHubController.SelectPrice), typeof(CompetitionHubController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, solutionId = Model.SolutionId, serviceId = Model.CatalogueItemId });
+
+    var priceConfirmUrl = Model.CatalogueItemType is CatalogueItemType.Solution
+        ? Url.Action(nameof(CompetitionHubController.ConfirmPrice), typeof(CompetitionHubController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, Model.PriceId, solutionId = Model.SolutionId, source })
+        : Url.Action(nameof(CompetitionHubController.ConfirmPrice), typeof(CompetitionHubController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, Model.PriceId, solutionId = Model.SolutionId, serviceId = Model.CatalogueItemId, source });
+
+    var priceUrl = Model.NumberOfCataloguePrices > 1
+            ? priceEditUrl
+            : priceConfirmUrl;
+
+    var quantityUrl = Model.CatalogueItemType is CatalogueItemType.Solution
+        ? Url.Action(nameof(CompetitionHubController.SelectQuantity), typeof(CompetitionHubController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, solutionId = Model.SolutionId, source })
+        : Url.Action(nameof(CompetitionHubController.SelectQuantity), typeof(CompetitionHubController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, solutionId = Model.SolutionId, serviceId = Model.CatalogueItemId, source });
+
+    var quantity = (Model.GlobalQuantity ?? Model.OdsOrganisations.Sum(x => x.Value)).GetValueOrDefault();
+}
+
+<h3>@Model.CatalogueItemName</h3>
+
+<nhs-table>
+    <nhs-table-column>Item</nhs-table-column>
+    <nhs-table-column>Status</nhs-table-column>
+    <nhs-table-column>Action</nhs-table-column>
+
+    <nhs-table-row-container>
+        <nhs-table-cell>Price</nhs-table-cell>
+        <nhs-table-cell>
+            <nhs-tag status-enum="@Model.PriceProgress"></nhs-tag>
+        </nhs-table-cell>
+        <nhs-table-cell>
+            <a href="@priceUrl">Edit</a>
+        </nhs-table-cell>
+    </nhs-table-row-container>
+
+    <nhs-table-row-container>
+        <nhs-table-cell>Quantity</nhs-table-cell>
+        <nhs-table-cell>
+            <nhs-tag status-enum="@Model.QuantityProgress"></nhs-tag>
+        </nhs-table-cell>
+        <nhs-table-cell>
+            @if (Model.QuantityProgress != TaskProgress.CannotStart)
+            {
+                <a href="@quantityUrl">Edit</a>
+            }
+        </nhs-table-cell>
+    </nhs-table-row-container>
+</nhs-table>
+
+@if (Model.PriceProgress is TaskProgress.Completed && Model.QuantityProgress is TaskProgress.Completed)
+{
+    <nhs-summary-list>
+        @if (Model.Price.BillingPeriod is null)
+        {
+            <nhs-summary-list-row label-text="One-off cost @Model.Price.Description">£@Model.Price.CalculateOneOffCost(quantity).ToString("N2")</nhs-summary-list-row>
+        }
+        else
+        {
+            <nhs-summary-list-row label-text="Price per month">£@Model.Price.CalculateCostPerMonth(quantity).ToString("N2")</nhs-summary-list-row>
+        }
+        <nhs-summary-list-row label-text="Quantity">@quantity.ToString($"#,###")</nhs-summary-list-row>
+        @if (Model.Price.BillingPeriod is not null)
+        {
+            <nhs-summary-list-row label-text="Total price">£@CalculateTotalCost().ToString("N2")</nhs-summary-list-row>
+        }
+    </nhs-summary-list>
+}
+
+@{
+    decimal CalculateTotalCost() => Model.Price.CalculateCostPerMonth(quantity) * Model.ContractLength.GetValueOrDefault();
+}

@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.PublicBrowse;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using Xunit;
@@ -13,12 +15,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Filtering
     [Collection(nameof(SharedContextCollection))]
     public class IncludeEpics : BuyerTestBase
     {
-        private const string ValidCapabilityId = "1";
         private const string InvalidCapabilityId = "41";
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
-            { "selectedCapabilityIds", ValidCapabilityId },
+            { "selected", new Dictionary<int, string[]>() { { 1, Array.Empty<string>() } }.ToFilterString() },
         };
 
         public IncludeEpics(LocalWebApplicationFactory factory)
@@ -45,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Filtering
                 null,
                 new Dictionary<string, string>
                 {
-                    { "selectedCapabilityIds", InvalidCapabilityId },
+                    { "selected", new Dictionary<int, string[]>() { { 41, Array.Empty<string>() } }.ToFilterString() },
                 });
 
             CommonActions.PageLoadedCorrectGetIndex(

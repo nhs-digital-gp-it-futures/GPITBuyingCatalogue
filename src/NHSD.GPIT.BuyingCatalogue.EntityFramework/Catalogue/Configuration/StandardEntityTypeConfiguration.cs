@@ -35,6 +35,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 
             builder.Property(s => s.LastUpdated).HasDefaultValue(DateTime.UtcNow);
 
+            builder.HasQueryFilter(o => !o.IsDeleted);
+
             builder.HasMany(s => s.StandardCapabilities)
                 .WithOne(sc => sc.Standard)
                 .HasForeignKey(sc => sc.StandardId);

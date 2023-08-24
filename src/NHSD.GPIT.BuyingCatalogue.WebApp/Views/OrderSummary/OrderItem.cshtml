@@ -1,6 +1,8 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.SummaryList
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders.AmendOrderItemModel;
 
@@ -9,7 +11,7 @@
 @{
     var itemType = Model.CatalogueItem.CatalogueItemType.DisplayName();
     var orderItemCostBasis = Model.OrderItemPrice?.BillingPeriod?.Description() ?? string.Empty;
-    var hasServiceRecipientQuantities = Model.OrderItemPrice?.IsPerServiceRecipient() ?? false;
+    var hasServiceRecipientQuantities = ((IPrice)Model.OrderItemPrice)?.IsPerServiceRecipient() ?? false;
     var tierCosts = Model.OrderItemPrice?.CostPerTierForBillingPeriod(Model.RolledUpTotalQuantity) ?? new List<PriceCalculationModel>();
     var tiers = Model.OrderItemPrice?.OrderItemPriceTiers?.OrderBy(x => x.LowerRange).ToList() ?? new List<OrderItemPriceTier>();
 }
@@ -55,7 +57,7 @@
                         @if (Model.IsServiceRecipientAdded(recipient.OdsCode))
                         {
                             @("Added")
-                        } 
+                        }
                     </td>
                 }
                 <td>

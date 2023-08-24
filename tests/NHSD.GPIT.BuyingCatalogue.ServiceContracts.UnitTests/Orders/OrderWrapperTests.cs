@@ -3,6 +3,7 @@ using System.Linq;
 using AutoFixture;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -132,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
             var itemPrice = fixture.Build<OrderItemPrice>()
                 .Without(p => p.OrderItem)
                 .With(p => p.OrderItemPriceTiers, new HashSet<OrderItemPriceTier>())
-                .Create();
+                .Create() as IPrice;
 
             var recipient = fixture.Build<OrderItemRecipient>()
                 .With(r => r.Quantity, itemPrice.IsPerServiceRecipient() ? quantity : null)

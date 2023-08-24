@@ -1,0 +1,35 @@
+@model CompetitionAwardCriteriaModel
+
+@{
+    ViewBag.Title = "Are you sure you want to change your award criteria?";
+}
+
+<partial name="Partials/_BackLink" model="Model"/>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary RadioId="@nameof(Model.IncludesNonPrice)"/>
+
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.CompetitionName"
+                        advice="You are about to change your award criteria for this competition."/>
+
+        <form method="post">
+            <input type="hidden" asp-for="BackLink"/>
+            <input type="hidden" asp-for="CompetitionName"/>
+
+            <nhs-warning-callout label-text="Changing award criteria">
+                <p>Changing your award criteria for this competition means you’ll permanently lose any information you’ve added for non-price elements.</p>
+
+                <p>Once you continue, this cannot be undone.</p>
+            </nhs-warning-callout>
+
+            <br/>
+            <nhs-submit-button text="Continue"/>
+            <div>
+                <a href="@Model.BackLink">Cancel</a>
+            </div>
+        </form>
+
+    </div>
+</div>

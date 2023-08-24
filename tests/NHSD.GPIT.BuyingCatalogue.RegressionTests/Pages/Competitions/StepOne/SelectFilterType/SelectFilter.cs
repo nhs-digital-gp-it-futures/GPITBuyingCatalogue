@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCr
         {
         }
 
-        public void SelectFilterForNewCompetition(string value)
+        public void SelectFilterForNewCompetition(int value)
         {
             CommonActions.LedeText().Should().Be("The results produced by your selected filter can be taken into your competition.".FormatForComparison());
             CommonActions.PageLoadedCorrectGetIndex(

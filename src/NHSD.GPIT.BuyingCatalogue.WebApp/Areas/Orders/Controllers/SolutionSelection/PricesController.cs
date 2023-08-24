@@ -9,7 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Prices;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Pricing;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
 {
@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
     [Route("order/organisation/{internalOrgId}/order/{callOffId}/item/{catalogueItemId}")]
     public class PricesController : Controller
     {
-        private const string ConfirmPriceViewName = "ConfirmPrice";
+        private const string ConfirmPriceViewName = "PriceSelection/ConfirmPrice";
 
         private readonly IOrderPriceService orderPriceService;
         private readonly IOrderService orderService;
@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 Source = source,
             };
 
-            return View(model);
+            return View("PriceSelection/SelectPrice", model);
         }
 
         [HttpPost("price/select")]
@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
                 var solutionWithPrices = await listPriceService.GetCatalogueItemWithPublishedListPrices(order.GetSolution().CatalogueItemId);
                 model.Prices = solutionWithPrices.CataloguePrices.OrderBy(cp => cp.CataloguePriceType).ToList();
-                return View(model);
+                return View("PriceSelection/SelectPrice", model);
             }
 
             var priceId = model.SelectedPriceId!.Value;
@@ -106,13 +106,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     Source = source,
                 });
 
-            var model = new ConfirmPriceModel(catalogueItem, priceId, orderItem)
+            var price = catalogueItem.CataloguePrices.First(x => x.CataloguePriceId == priceId);
+
+            var existingPrice = orderItem?.OrderItemPrice?.CataloguePriceId == priceId
+                ? orderItem.OrderItemPrice
+                : null;
+
+            var model = new ConfirmPriceModel(catalogueItem, price, existingPrice)
             {
                 BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
                 Source = source,
             };
 
-            return View(model);
+            return View(ConfirmPriceViewName, model);
         }
 
         [HttpPost("price/{priceId}/confirm")]
@@ -125,7 +131,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return View(ConfirmPriceViewName, model);
             }
 
             var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
@@ -169,7 +175,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 order,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
 
-            var model = new ConfirmPriceModel(order.OrderItem(catalogueItemId))
+            var orderItem = order.OrderItem(catalogueItemId);
+            var price = orderItem.OrderItemPrice;
+
+            var model = new ConfirmPriceModel(price, catalogueItem)
             {
                 BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
                 Source = source,
@@ -215,7 +224,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 wrapper.Order,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
 
-            var model = new ViewPriceModel(order.OrderItem(catalogueItemId))
+            var orderItem = order.OrderItem(catalogueItemId);
+            var price = orderItem.OrderItemPrice;
+
+            var model = new ViewPriceModel(price, orderItem.CatalogueItem)
             {
                 BackLink = Url.Action(
                    nameof(TaskListController.TaskList),
@@ -226,7 +238,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 OnwardLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
             };
 
-            return View(model);
+            return View("PriceSelection/ViewPrice", model);
         }
 
         private async Task<CataloguePrice> GetCataloguePrice(int priceId, CatalogueItemId catalogueItemId)

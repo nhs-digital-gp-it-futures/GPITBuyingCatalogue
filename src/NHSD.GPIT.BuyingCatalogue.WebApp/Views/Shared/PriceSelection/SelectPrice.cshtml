@@ -1,0 +1,72 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using ValidationSummaryTagHelper = Microsoft.AspNetCore.Mvc.TagHelpers.ValidationSummaryTagHelper
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Pricing.SelectPriceModel;
+@{
+	ViewBag.Title = $"List price for {Model.SolutionType}";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+		<nhs-validation-summary RadioId="@nameof(Model.SelectedPriceId)"/>
+
+		<nhs-page-title title="@ViewBag.Title"
+                caption="@Model!.SolutionName"
+                advice="There is more than one list price for this @Model.SolutionType. Select one, and if you've agreed a different price with the supplier, it can be altered later." />
+
+		<h2>Available prices</h2>
+
+		@for(int i = 0; i < Model.Prices.Count; i++)
+		{
+			var price = Model.Prices[i];
+			<h3 class="nhsuk-heading-s" data-test-id="@($"price-title-{i + 1}")">@($"Price {i + 1}: {price.PricingUnit.Description}")</h3>
+			<p>
+			@if(price.CataloguePriceType == CataloguePriceType.Tiered)
+			{
+				var tiers = price.CataloguePriceTiers.OrderBy(t => t.LowerRange);
+				for(int j = 0; j < tiers.Count(); j++)
+				{
+					var tier = tiers.ElementAt(j);
+					@($"Tier {j + 1}: £{tier.Price} for {tier.GetRangeDescription()}")<br/>
+				}
+			}
+			else
+			{
+				var tier = price.CataloguePriceTiers.First();
+				@($"£{tier.Price} {price.PricingUnit.Description}")
+			}
+			</p>
+		}
+
+        <form method="post">
+            <input type="hidden" asp-for="BackLink"/>
+            <input type="hidden" asp-for="SolutionName"/>
+            <input type="hidden" asp-for="SolutionType"/>
+            <input type="hidden" asp-for="Source"/>
+
+            <nhs-fieldset-form-label asp-for="@Model"
+                                     label-text="Select a price"
+                                     label-hint="Select one option.">
+                <nhs-radio-button-container>
+                    @for (int i = 0; i < Model.Prices.Count; i++)
+                    {
+                        var price = Model.Prices[i];
+                        <nhs-radio-button
+                            asp-for="SelectedPriceId"
+                            value="price.CataloguePriceId"
+                            display-text="@($"Price {i + 1}: {price.PricingUnit.Description}")"
+                            index="i"></nhs-radio-button>
+                    }
+                </nhs-radio-button-container>
+            </nhs-fieldset-form-label>
+
+            <br/>
+
+            <nhs-submit-button text="Continue"/>
+        </form>
+	</div>
+</div>

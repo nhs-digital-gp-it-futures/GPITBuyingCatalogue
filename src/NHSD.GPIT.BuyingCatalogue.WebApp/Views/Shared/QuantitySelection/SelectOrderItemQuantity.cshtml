@@ -1,0 +1,30 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities.SelectOrderItemQuantityModel
+@{
+    ViewBag.Title = Model.Title;
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row" data-test-id="perSolution">
+    <div class="nhsuk-grid-column-two-thirds">
+		<nhs-validation-summary/>
+		<nhs-page-title model="Model" />
+
+        <form method="post">
+            <hidden-inputs title="Title" caption="Caption" advice="Advice"/>
+            <input type="hidden" asp-for="@Model.BackLink"/>
+            <input type="hidden" asp-for="@Model.ItemName"/>
+            <input type="hidden" asp-for="@Model.ItemType"/>
+            <input type="hidden" asp-for="@Model.QuantityDescription"/>
+            <input type="hidden" asp-for="@Model.Source"/>
+
+            <div class="nhsuk-u-margin-bottom-9">
+                <nhs-bookended-input asp-for="Quantity"
+                                     label-text="How many @Model.QuantityDescription @Model.TimeUnit do you want?"
+                                     Suffix="@Model.QuantityDescription @Model.TimeUnit"/>
+            </div>
+
+            <nhs-submit-button/>
+        </form>
+	</div>
+</div>
