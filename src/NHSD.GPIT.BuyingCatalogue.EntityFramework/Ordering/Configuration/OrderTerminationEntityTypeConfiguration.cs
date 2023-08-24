@@ -17,18 +17,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.Property(a => a.Reason).IsRequired();
             builder.Property(a => a.DateOfTermination).IsRequired();
 
-            builder.Property(a => a.LastUpdated)
-                .IsRequired()
-                .HasDefaultValue(DateTime.UtcNow);
-
-            builder.Property(a => a.LastUpdatedBy)
-                .IsRequired();
-
-            builder.HasOne(a => a.LastUpdatedByUser)
-                .WithMany()
-                .HasForeignKey(a => a.LastUpdatedBy)
-                .HasConstraintName("FK_OrderTermination_LastUpdatedBy");
-
             builder.HasOne(a => a.Order)
                 .WithOne(o => o.OrderTermination)
                 .HasForeignKey<OrderTermination>(d => d.OrderId)

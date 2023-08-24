@@ -374,12 +374,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             var orderWrapper = await GetOrderWithOrderItems(callOffId, internalOrgId);
 
-            await TerminateOrder(orderWrapper.Order, terminationDate, reason);
+            TerminateOrder(orderWrapper.Order, terminationDate, reason);
 
             foreach (var order in orderWrapper.PreviousOrders)
             {
-                await TerminateOrder(order, terminationDate, reason);
+                TerminateOrder(order, terminationDate, reason);
             }
+
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task CompleteOrder(CallOffId callOffId, string internalOrgId, int userId)
@@ -503,23 +505,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             await dbContext.SaveChangesAsync();
         }
 
-        private async Task TerminateOrder(Order order, DateTime dateOfTermination, string reason)
+        private static void TerminateOrder(Order order, DateTime dateOfTermination, string reason)
         {
             order.IsTerminated = true;
             order.OrderTermination = new OrderTermination()
             {
                 OrderId = order.Id, DateOfTermination = dateOfTermination, Reason = reason,
             };
-
-            foreach (var orderItem in order.OrderItems)
-            {
-                foreach (var orderItemRecipient in orderItem.OrderItemRecipients)
-                {
-                    orderItemRecipient.DeliveryDate = dateOfTermination;
-                }
-            }
-
-            await dbContext.SaveChangesAsync();
         }
     }
 }

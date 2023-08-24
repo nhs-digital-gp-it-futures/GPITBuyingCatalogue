@@ -956,13 +956,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             updatedOrder.OrderTermination.OrderId.Should().Be(id);
             updatedOrder.OrderTermination.DateOfTermination.Should().Be(terminationDate);
             updatedOrder.OrderTermination.Reason.Should().Be(reason);
-            foreach (var orderItem in updatedOrder.OrderItems)
-            {
-                foreach (var orderItemRecipient in orderItem.OrderItemRecipients)
-                {
-                    orderItemRecipient.DeliveryDate.Should().Be(terminationDate);
-                }
-            }
         }
     }
 }

@@ -19,7 +19,7 @@
     Completed DATETIME2 NULL ,
     OrderStatusId INT NULL,
     IsDeleted BIT NOT NULL,
-    IsTerminated BIT NOT NULL,
+    IsTerminated BIT DEFAULT 0 NOT NULL,
     SysStartTime DATETIME2(0) NOT NULL,
     SysEndTime DATETIME2(0) NOT NULL,
     InitialPeriod INT NULL,

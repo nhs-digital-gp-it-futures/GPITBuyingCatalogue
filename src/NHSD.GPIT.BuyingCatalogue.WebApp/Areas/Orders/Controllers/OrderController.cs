@@ -308,7 +308,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 
         private string GetBackLink(string internalOrgId, CallOffId callOffId, Order order)
         {
-            return order.OrderStatus == OrderStatus.Completed
+            return order.OrderStatus is OrderStatus.Completed or OrderStatus.Terminated
                                 ? Url.Action(
                                     nameof(DashboardController.Organisation),
                                     typeof(DashboardController).ControllerName(),

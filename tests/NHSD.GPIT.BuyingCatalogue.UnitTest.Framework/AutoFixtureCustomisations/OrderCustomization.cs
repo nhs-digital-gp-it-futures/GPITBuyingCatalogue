@@ -15,6 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
                 .Without(x => x.Revision).Do(x => x.Revision = 1)
                 .Without(o => o.IsDeleted)
                 .Without(o => o.IsTerminated)
+                .Without(o => o.OrderTermination)
                 .Without(o => o.LastUpdatedByUser)
                 .Without(o => o.OrderItems);
 
