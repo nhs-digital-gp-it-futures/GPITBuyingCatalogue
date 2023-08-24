@@ -36,9 +36,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree
         {
             if (isDefault)
             {
-                //CommonActions.ClickSave();
-                AddBespokeMilestonesAssociatedServices(1);
-                //CommonActions.ClickSave();
+                CommonActions.ClickSave();
+                //AddBespokeMilestonesAssociatedServices(1);
+                CommonActions.ClickSave();
             }
             else
             {

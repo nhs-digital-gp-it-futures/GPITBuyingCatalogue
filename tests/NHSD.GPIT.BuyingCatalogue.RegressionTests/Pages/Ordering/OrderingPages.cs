@@ -294,8 +294,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
             if (isOrderWithAssociatedService)
             {
-                TaskList.AssociatedServiceBillingAndRequirementsTask();
-                OrderingStepThree.SelectAssociatedServicesBilling();
+                //TaskList.AssociatedServiceBillingAndRequirementsTask();
+                //OrderingStepThree.SelectAssociatedServicesBilling();
+                StepThreeContractAssociatedServices();
             }
 
             TaskList.DataProcessingInformationTask();
@@ -304,7 +305,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         public void StepThreeContractAssociatedServices(bool isDefault = true)
         {
             TaskList.AssociatedServiceBillingAndRequirementsTask();
-            OrderingStepThree.SelectAssociatedServicesBilling();
+            OrderingStepThree.SelectAssociatedServicesBilling(isDefault);
             TaskList.DataProcessingInformationTask();
         }
 

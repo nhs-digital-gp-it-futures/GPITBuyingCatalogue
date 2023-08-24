@@ -1034,7 +1034,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.EditAssociatedServiceOnly(NewSolutionName, NewAssociatedServiceName, AssociatedServiceNameForWebGP);
 
-            OrderingPages.StepThreeCompleteContract();
+            //OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepThreeContractAssociatedServices();
 
             OrderingPages.StepFourReviewAndCompleteOrder();
         }
@@ -1272,7 +1274,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.EditAssociatedServiceOnlyServiceRecipients(NewAssociatedServiceName);
 
-            OrderingPages.StepThreeCompleteContract();
+            //OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepThreeContractAssociatedServices();
 
             OrderingPages.StepFourReviewAndCompleteOrder();
         }
@@ -1294,7 +1298,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.EditAssociatedServiceOnlyPrice(NewAssociatedServiceName);
 
-            OrderingPages.StepThreeCompleteContract();
+            //OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepThreeContractAssociatedServices(false);
 
             OrderingPages.StepFourReviewAndCompleteOrder();
         }
