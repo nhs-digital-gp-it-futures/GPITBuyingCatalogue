@@ -1705,7 +1705,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
                 associatedService: AssociatedServiceNameForWebGP,
                 multipleServiceRecipients: 3);
 
-            OrderingPages.StepThreeCompleteContract();
+            //OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepThreeContractAssociatedServices();
 
             OrderingPages.StepFourReviewAndCompleteOrder();
         }

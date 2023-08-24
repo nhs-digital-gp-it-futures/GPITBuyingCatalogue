@@ -294,9 +294,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
             if (isOrderWithAssociatedService)
             {
-                //TaskList.AssociatedServiceBillingAndRequirementsTask();
-                //OrderingStepThree.SelectAssociatedServicesBilling();
-                StepThreeContractAssociatedServices();
+                TaskList.AssociatedServiceBillingAndRequirementsTask();
+                OrderingStepThree.SelectAssociatedServicesBilling();
+                //StepThreeContractAssociatedServices();
             }
 
             TaskList.DataProcessingInformationTask();
