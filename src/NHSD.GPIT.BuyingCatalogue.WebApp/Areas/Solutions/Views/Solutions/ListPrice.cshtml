@@ -15,7 +15,7 @@
 
         @if (Model.TieredListPrices.Any())
         {
-            <h2>Tiered prices for this Catalogue Solution</h2>
+            <h2>Tiered prices for this @Model.PriceFor</h2>
             @foreach (var price in Model.TieredListPrices)
             {
                 <nhs-card title="Tiered price @price.PricingUnit.Description">
@@ -63,7 +63,7 @@
             {
                 <hr />
             }
-            <h2>Flat prices for this Catalogue Solution</h2>
+            <h2>Flat prices for this @Model.PriceFor</h2>
               
             @foreach (var price in Model.FlatListPrices)
             {
@@ -93,6 +93,14 @@
                     </div>
                 </nhs-card>
             }
+        }
+
+        @if (Model.IsSubPage)
+        {
+            string buttonText = "Return to " + @Model.PriceFor + "s";
+            <vc:nhs-secondary-button url=@Model.BackLink
+                                 type="Secondary"
+                                 text=@buttonText />
         }
     </div>
 </article>

@@ -16,8 +16,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         {
         }
 
+        public ListPriceModel(CatalogueItem item, CatalogueItem service, CatalogueItemContentStatus contentStatus, string priceFor)
+            : base(item, contentStatus, true)
+        {
+            FlatListPrices = service.CataloguePrices
+                .Where(p =>
+                    p.CataloguePriceType == CataloguePriceType.Flat
+                    && p.PublishedStatus == PublicationStatus.Published).ToList();
+
+            TieredListPrices = service.CataloguePrices
+                .Where(p =>
+                    p.CataloguePriceType == CataloguePriceType.Tiered
+                    && p.PublishedStatus == PublicationStatus.Published).ToList();
+
+            ItemType = service.CatalogueItemType;
+            PriceFor = priceFor;
+            Title = PriceFor + " prices";
+        }
+
         public ListPriceModel(CatalogueItem item, CatalogueItemContentStatus contentStatus)
-            : base(item, contentStatus)
+            : base(item, contentStatus, false)
         {
             FlatListPrices = item.CataloguePrices
                 .Where(p =>
@@ -30,11 +48,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                     && p.PublishedStatus == PublicationStatus.Published).ToList();
 
             ItemType = item.CatalogueItemType;
+            IndexValue = 2;
+            PriceFor = "Catalogue Solution";
+            SetPaginationFooter();
         }
+
+        public int IndexValue { get; set; }
+
+        public string PriceFor { get; set; }
+
+        public string BackLink { get; set; }
 
         public CatalogueItemType ItemType { get; set; }
 
-        public override int Index => 2;
+        public override int Index => IndexValue;
 
         public IList<CataloguePrice> FlatListPrices { get; set; }
 

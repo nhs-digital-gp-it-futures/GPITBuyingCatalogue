@@ -192,6 +192,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View(new AssociatedServicesModel(solution, associatedServices, contentStatus));
         }
 
+        [HttpGet("{solutionId}/associated-services/{serviceId}/price")]
+        public async Task<IActionResult> AssociatedServicePrice(CatalogueItemId solutionId, CatalogueItemId serviceId)
+        {
+            var item = await solutionsService.GetSolutionWithCataloguePrice(solutionId);
+            var additionalService = await solutionsService.GetSolutionWithCataloguePrice(serviceId);
+            if (item is null)
+                return BadRequest($"No Catalogue Item found for Id: {serviceId}");
+
+            if (item.PublishedStatus == PublicationStatus.Suspended)
+                return RedirectToAction(nameof(Description), new { serviceId });
+
+            var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+
+            return View("ListPrice", new ListPriceModel(item, additionalService, contentStatus, "Associated Service")
+            {
+                BackLink = Url.Action(
+                    nameof(AssociatedServices),
+                    typeof(SolutionsController).ControllerName(),
+                    new { solutionId }),
+                IndexValue = 5
+            });
+        }
+
         [HttpGet("{solutionId}/additional-services")]
         public async Task<IActionResult> AdditionalServices(CatalogueItemId solutionId)
         {
@@ -209,6 +232,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 await solutionsService.GetPublishedAdditionalServicesForSolution(solutionId);
 
             return View(new AdditionalServicesModel(solution, additionalServices, contentStatus));
+        }
+
+        [HttpGet("{solutionId}/additional-services/{serviceId}/price")]
+        public async Task<IActionResult> AdditionalServicePrice(CatalogueItemId solutionId, CatalogueItemId serviceId)
+        {
+            var item = await solutionsService.GetSolutionWithCataloguePrice(solutionId);
+            var additionalService = await solutionsService.GetSolutionWithCataloguePrice(serviceId);
+            if (item is null)
+                return BadRequest($"No Catalogue Item found for Id: {serviceId}");
+
+            if (item.PublishedStatus == PublicationStatus.Suspended)
+                return RedirectToAction(nameof(Description), new { serviceId });
+
+            var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+
+            return View("ListPrice", new ListPriceModel(item, additionalService, contentStatus, "Additional Service")
+            {
+                BackLink = Url.Action(
+                    nameof(AdditionalServices),
+                    typeof(SolutionsController).ControllerName(),
+                    new { solutionId }),
+                IndexValue = 4,
+            });
         }
 
         [HttpGet("{solutionId}/capabilities")]

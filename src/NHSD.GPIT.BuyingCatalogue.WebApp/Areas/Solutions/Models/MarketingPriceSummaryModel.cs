@@ -10,6 +10,8 @@ public class MarketingPriceSummaryModel
 
     public string CapabilitiesAndEpicsUrl { get; set; }
 
+    public string PricePageUrl { get; set; }
+
     public string OrderGuidance { get; set; }
 
     public string ItemDescription { get; set; }

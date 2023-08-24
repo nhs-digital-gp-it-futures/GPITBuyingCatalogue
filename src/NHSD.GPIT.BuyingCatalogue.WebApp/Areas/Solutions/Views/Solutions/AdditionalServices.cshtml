@@ -23,6 +23,10 @@
                     {
                         SolutionId = Model.SolutionId,
                         CapabilitiesAndEpicsUrl = Url.Action(nameof(SolutionsController.CapabilitiesAdditionalServices), typeof(SolutionsController).ControllerName(), new { Model.SolutionId, additionalServiceId = service.Id }),
+                        PricePageUrl = Url.Action(
+                            nameof(SolutionsController.AdditionalServicePrice),
+                            typeof(SolutionsController).ControllerName(), 
+                            new { solutionId = Model.SolutionId, serviceId = service.Id }),
                         Prices = service.CataloguePrices,
                         ItemDescription = service.AdditionalService.FullDescription,
                     };
