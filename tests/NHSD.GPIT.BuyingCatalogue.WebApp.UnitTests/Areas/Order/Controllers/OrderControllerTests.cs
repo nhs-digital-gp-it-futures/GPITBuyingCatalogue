@@ -564,7 +564,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
             };
         }
 
-        private static async Task DownloadReturnsExpectedResult(string internalOrgId,
+        private static async Task DownloadReturnsExpectedResult(
+            string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             [Frozen] Mock<IOrderPdfService> pdfServiceMock,
