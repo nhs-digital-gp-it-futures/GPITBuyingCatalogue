@@ -19,10 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
              string search = null,
              string selectedFrameworkId = null,
              string selectedApplicationTypeIds = null,
-             string selectedHostingTypeIds = null,
-             string selectedIM1Integrations = null,
-             string selectedGPConnectIntegrations = null,
-             string selectedInteroperabilityOptions = null);
+             string selectedHostingTypeIds = null);
 
         Task<List<SearchFilterModel>> GetSolutionsBySearchTerm(string searchTerm, int maxToBringBack = 15);
     }

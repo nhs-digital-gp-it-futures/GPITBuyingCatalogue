@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
@@ -62,9 +61,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             [FromQuery] string selectedFrameworkId,
             [FromQuery] string selectedApplicationTypeIds,
             [FromQuery] string selectedHostingTypeIds,
-            [FromQuery] string selectedIM1Integrations,
-            [FromQuery] string selectedGPConnectIntegrations,
-            [FromQuery] string selectedInteroperabilityOptions,
             [FromQuery] int? filterId)
         {
             string filterName = null;
@@ -91,10 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     search,
                     selectedFrameworkId,
                     selectedApplicationTypeIds,
-                    selectedHostingTypeIds,
-                    selectedIM1Integrations,
-                    selectedGPConnectIntegrations,
-                    selectedInteroperabilityOptions);
+                    selectedHostingTypeIds);
 
             (IQueryable<CatalogueItem> catalogueItemsWithoutFrameworkFilter, _) =
                 await solutionsFilterService.GetFilteredAndNonFilteredQueryResults(capabilityAndEpicIds);
@@ -106,11 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 selectedFrameworkId,
                 selectedApplicationTypeIds,
                 selectedHostingTypeIds,
-                selectedIM1Integrations,
-                selectedGPConnectIntegrations,
-                selectedInteroperabilityOptions,
-                selected)
-            { FilterId = filterId, SortBy = sortBy };
+                selected) { FilterId = filterId, SortBy = sortBy };
 
             return View(
                 new SolutionsModel
@@ -140,9 +129,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         {
             _ = model;
 
-            var selectedInteroperabilityOptions = additionalFiltersModel.CombineSelectedOptions(
-                            additionalFiltersModel.InteroperabilityOptions);
-
             return RedirectToAction(
                 nameof(Index),
                 typeof(SolutionsController).ControllerName(),
@@ -157,11 +143,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                             additionalFiltersModel.ApplicationTypeOptions),
                     selectedHostingTypeIds =
                         additionalFiltersModel.CombineSelectedOptions(additionalFiltersModel.HostingTypeOptions),
-                    selectedIM1Integrations = selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.Im1).ToString()) ? additionalFiltersModel.CombineSelectedOptions(
-                            additionalFiltersModel.IM1IntegrationsOptions) : null,
-                    selectedGPConnectIntegrations = selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.GpConnect).ToString()) ? additionalFiltersModel.CombineSelectedOptions(
-                            additionalFiltersModel.GPConnectIntegrationsOptions) : null,
-                    selectedInteroperabilityOptions,
                     filterId,
                     sortBy,
                 });
