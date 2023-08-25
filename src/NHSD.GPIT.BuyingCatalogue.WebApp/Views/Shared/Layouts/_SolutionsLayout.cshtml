@@ -4,6 +4,7 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionDisplayBaseModel
 @{
     ViewBag.Title = (Model.IsSubPage) ? Model.Title : $"{Model.Section}";
+    ViewBag.Caption = (Model.IsSubPage) ? Model.Caption : $"{Model.SolutionName}";
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -87,7 +88,8 @@
             
                 <div class="nhsuk-grid-column-two-thirds" id="content" >
                     <nhs-page-title title="@ViewBag.Title"
-                                    caption="@Model.SolutionName" />
+                                caption="@ViewBag.Caption" />
+
                     @if (Model.HasExpiredFrameworks)
                     {
                         <partial name="Partials/_ExpiredFrameworks" model="new ExpiredFrameworksModel(Model.Frameworks)" />

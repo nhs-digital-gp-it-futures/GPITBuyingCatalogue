@@ -196,7 +196,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         public async Task<IActionResult> AssociatedServicePrice(CatalogueItemId solutionId, CatalogueItemId serviceId)
         {
             var item = await solutionsService.GetSolutionWithCataloguePrice(solutionId);
-            var additionalService = await solutionsService.GetSolutionWithCataloguePrice(serviceId);
+            var associatedService = await solutionsService.GetSolutionWithCataloguePrice(serviceId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {serviceId}");
 
@@ -205,13 +205,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
 
-            return View("ListPrice", new ListPriceModel(item, additionalService, contentStatus, "Associated Service")
+            return View("ListPrice", new ListPriceModel(item, associatedService, contentStatus, "Associated Service")
             {
                 BackLink = Url.Action(
                     nameof(AssociatedServices),
                     typeof(SolutionsController).ControllerName(),
                     new { solutionId }),
-                IndexValue = 5
+                IndexValue = 5,
+                Caption = associatedService.Name,
             });
         }
 
@@ -254,6 +255,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     typeof(SolutionsController).ControllerName(),
                     new { solutionId }),
                 IndexValue = 4,
+                Caption = additionalService.Name,
             });
         }
 

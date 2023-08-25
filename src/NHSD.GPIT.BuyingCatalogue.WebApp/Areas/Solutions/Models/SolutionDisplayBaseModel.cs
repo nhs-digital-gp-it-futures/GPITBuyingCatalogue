@@ -68,7 +68,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public string IsFoundation { get; }
 
-        public string Title { set; get; }
+        public string Title { get; set; }
+
+        public string Caption { get; set; }
 
         public bool HasExpiredFrameworks => Frameworks.Any(x => x.IsExpired);
 
