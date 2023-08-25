@@ -214,7 +214,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             {
                 OrderStatus.Terminated => $"order-summary-terminated-{callOffId}.pdf",
                 OrderStatus.Completed => $"order-summary-completed-{callOffId}.pdf",
-                _ => $"order-summary-in-progress-{callOffId}.pdf"
+                _ => $"order-summary-in-progress-{callOffId}.pdf",
             };
 
             return File(result.ToArray(), "application/pdf", fileName);
