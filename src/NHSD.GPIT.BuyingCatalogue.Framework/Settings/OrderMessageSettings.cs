@@ -16,6 +16,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
 
         public string UserAmendTemplateId { get; set; }
 
+        public string OrderTerminatedAdminTemplateId { get; set; }
+
+        public string OrderTerminatedUserTemplateId { get; set; }
+
         public EmailAddressTemplate Recipient { get; set; }
     }
 }
