@@ -118,6 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             ImplementationPlan defaultPlan,
+            bool hasSubsequentRevisions,
             [Frozen] Mock<IImplementationPlanService> implementationPlanService,
             [Frozen] Mock<IOrderService> orderService,
             OrderController controller)
@@ -130,10 +131,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
                 .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));
 
+            orderService
+                .Setup(s => s.HasSubsequentRevisions(order.CallOffId))
+                .ReturnsAsync(hasSubsequentRevisions);
+
             var result = await controller.Summary(internalOrgId, order.CallOffId);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
-            var expected = new SummaryModel(new OrderWrapper(order), internalOrgId, defaultPlan);
+            var expected = new SummaryModel(new OrderWrapper(order), internalOrgId, hasSubsequentRevisions, defaultPlan);
 
             actualResult.Model.Should().BeEquivalentTo(
                 expected,
@@ -449,6 +454,84 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
 
         [Theory]
         [CommonAutoData]
+        public static void Get_TerminateOrder_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            OrderController controller)
+        {
+            var result = controller.TerminateOrder(internalOrgId, callOffId);
+
+            var actual = result.Should().BeOfType<ViewResult>().Subject;
+
+            var expected = new TerminateOrderModel(internalOrgId, callOffId);
+
+            actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_TerminateOrder_HasSubsequentRevisions_Redirects(
+            string internalOrgId,
+            CallOffId callOffId,
+            TerminateOrderModel model,
+            [Frozen] Mock<IOrderService> orderService,
+            OrderController controller)
+        {
+            orderService.Setup(x => x.HasSubsequentRevisions(callOffId)).ReturnsAsync(true);
+
+            var result = (await controller.TerminateOrder(internalOrgId, callOffId, model)).As<RedirectToActionResult>();
+
+            orderService.Verify(x => x.HasSubsequentRevisions(callOffId), Times.Once);
+            orderService.Verify(x => x.TerminateOrder(callOffId, internalOrgId, It.IsAny<DateTime>(), It.IsAny<string>()), Times.Never);
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(DashboardController.Organisation));
+            result.ControllerName.Should().Be(typeof(DashboardController).ControllerName());
+            result.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
+            });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_TerminateOrder_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            TerminateOrderModel model,
+            [Frozen] Mock<IOrderService> orderService,
+            OrderController controller)
+        {
+            orderService.Setup(x => x.HasSubsequentRevisions(callOffId)).ReturnsAsync(false);
+
+            var result = (await controller.TerminateOrder(internalOrgId, callOffId, model)).As<RedirectToActionResult>();
+
+            orderService.Verify(x => x.HasSubsequentRevisions(callOffId), Times.Once);
+            orderService.Verify(x => x.TerminateOrder(callOffId, internalOrgId, It.IsAny<DateTime>(), It.IsAny<string>()), Times.Once);
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(DashboardController.Organisation));
+            result.ControllerName.Should().Be(typeof(DashboardController).ControllerName());
+            result.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
+            });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void GetAdvice_TerminatedOrder_ReturnsExpectedAdvice(
+            EntityFramework.Ordering.Models.Order order)
+        {
+            order.IsTerminated = true;
+
+            OrderController.GetAdvice(order, true)
+                .Should()
+                .Be("This contract has been terminated, but you can still view the details.");
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static void GetAdvice_CompletedAssociatedServicesOnlyOrder_ReturnsExpectedAdvice(
             EntityFramework.Ordering.Models.Order order)
         {
@@ -457,7 +540,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
 
             OrderController.GetAdvice(order, true)
                 .Should()
-                .Be("This order has been confirmed and can no longer be changed.");
+                .Be("This order has already been completed, but you can terminate the contract if needed.");
         }
 
         [Theory]
@@ -470,7 +553,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
 
             OrderController.GetAdvice(order, true)
                 .Should()
-                .Be("This order has already been completed, but you can amend it if needed.");
+                .Be("This order has already been completed, but you can amend or terminate the contract if needed.");
         }
 
         [Theory]
@@ -483,7 +566,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
 
             OrderController.GetAdvice(order, false)
                 .Should()
-                .Be("This order can no longer be changed as there is already an amendment in progress.");
+                .Be("There is an amendment currently in progress for this contract.");
         }
 
         private static void SetControllerHttpContext(ControllerBase controller)

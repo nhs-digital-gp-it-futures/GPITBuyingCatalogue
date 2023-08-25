@@ -283,7 +283,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     .Where(o => o.OrderingPartyId == organisationId)
                     .ToListAsync())
                 .GroupBy(x => x.OrderNumber)
-                .SelectMany(x => x.OrderByDescending(y => y.Revision).TakeUntil(y => y.OrderStatus == OrderStatus.Completed))
+                .SelectMany(x => x.OrderByDescending(y => y.Revision).TakeUntil(y => y.OrderStatus is OrderStatus.Completed or OrderStatus.Terminated))
                 .ToList();
 
             if (!string.IsNullOrWhiteSpace(search))
@@ -316,7 +316,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     .Where(o => o.OrderingPartyId == organisationId)
                     .ToListAsync())
                 .GroupBy(x => x.OrderNumber)
-                .SelectMany(x => x.OrderByDescending(y => y.Revision).TakeUntil(y => y.OrderStatus == OrderStatus.Completed))
+                .SelectMany(x => x.OrderByDescending(y => y.Revision).TakeUntil(y => y.OrderStatus is OrderStatus.Completed or OrderStatus.Terminated))
                 .ToList();
 
             var matches = baseData
@@ -387,6 +387,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             dbContext.OrderItemPrices.RemoveRange(dbContext.OrderItemPrices.Where(x => x.OrderId == order.Id));
             dbContext.OrderItemRecipients.RemoveRange(dbContext.OrderItemRecipients.Where(x => x.OrderId == order.Id));
             dbContext.Orders.Remove(order);
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task TerminateOrder(CallOffId callOffId, string internalOrgId, DateTime terminationDate, string reason)
+        {
+            var orderWrapper = await GetOrderWithOrderItems(callOffId, internalOrgId);
+
+            TerminateOrder(orderWrapper.Order, terminationDate, reason);
+
+            foreach (var order in orderWrapper.PreviousOrders)
+            {
+                TerminateOrder(order, terminationDate, reason);
+            }
 
             await dbContext.SaveChangesAsync();
         }
@@ -510,6 +524,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             order.SelectedFrameworkId = null;
 
             await dbContext.SaveChangesAsync();
+        }
+
+        private static void TerminateOrder(Order order, DateTime dateOfTermination, string reason)
+        {
+            order.IsTerminated = true;
+            order.OrderTermination = new OrderTermination()
+            {
+                OrderId = order.Id, DateOfTermination = dateOfTermination, Reason = reason,
+            };
         }
     }
 }

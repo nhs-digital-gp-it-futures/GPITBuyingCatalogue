@@ -259,6 +259,56 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [InMemoryDbAutoData]
+        public static async Task TerminateOrder_TerminatesCurrentOrder(
+            [Frozen] BuyingCatalogueDbContext context,
+            Order order,
+            DateTime terminationDate,
+            string reason,
+            OrderService service)
+        {
+            await context.Orders.AddAsync(order);
+
+            await context.SaveChangesAsync();
+
+            await service.TerminateOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, terminationDate, reason);
+
+            await IsTerminated(context, order.Id, terminationDate, reason);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task TerminateOrder_WithCompletedAmendment_TerminatesAllRevisions(
+            Organisation organisation,
+            List<Order> orders,
+            [Frozen] BuyingCatalogueDbContext context,
+            DateTime terminationDate,
+            string reason,
+            OrderService service)
+        {
+            var originalOrder = orders.First();
+            var amendedOrder = orders.Skip(1).First();
+
+            amendedOrder.OrderNumber = originalOrder.OrderNumber;
+            originalOrder.Revision = 1;
+            amendedOrder.Revision = 2;
+            amendedOrder.Completed = DateTime.UtcNow;
+            originalOrder.Completed = DateTime.UtcNow;
+
+            organisation.Orders.AddRange(orders);
+
+            context.Orders.AddRange(orders);
+            context.Organisations.Add(organisation);
+
+            await context.SaveChangesAsync();
+
+            await service.TerminateOrder(amendedOrder.CallOffId, amendedOrder.OrderingParty.InternalIdentifier, terminationDate, reason);
+
+            await IsTerminated(context, amendedOrder.Id, terminationDate, reason);
+            await IsTerminated(context, originalOrder.Id, terminationDate, reason);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
         public static async Task CompleteOrder_RequestIsValid_OrderStatusUpdated(
             AspNetUser user,
             Order order,
@@ -891,6 +941,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             orderItemFunding.OrderId.Should().Be(order.Id);
             orderItemFunding.CatalogueItemId.Should().Be(orderItem.CatalogueItemId);
             orderItemFunding.OrderItemFundingType.Should().Be(OrderItemFundingType.LocalFundingOnly);
+        }
+
+        private static async Task IsTerminated(BuyingCatalogueDbContext context, int id, DateTime terminationDate, string reason)
+        {
+            var updatedOrder = await context.Orders
+                .Include(x => x.OrderTermination)
+                .Include(x => x.OrderItems)
+                .ThenInclude(x => x.OrderItemRecipients)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            updatedOrder.IsTerminated.Should().BeTrue();
+            updatedOrder.OrderTermination.Should().NotBeNull();
+            updatedOrder.OrderTermination.OrderId.Should().Be(id);
+            updatedOrder.OrderTermination.DateOfTermination.Should().Be(terminationDate);
+            updatedOrder.OrderTermination.Reason.Should().Be(reason);
         }
     }
 }
