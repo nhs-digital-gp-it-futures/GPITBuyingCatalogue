@@ -21,6 +21,7 @@
 
     var contractTerm = Model.Order.MaximumTerm.HasValue ? $" ({Model.Order.MaximumTerm} months)" : " (estimated)";
     var solutionsTitle = solutions.Count > 1 ? "Catalogue Solutions" : "Catalogue Solution";
+    var pdfButton = Model.Order.OrderStatus == OrderStatus.Terminated ? "Download summary (PDF)" : "Download order form (PDF)";
 }
 
 <div class="nhsuk-grid-row">
@@ -127,6 +128,21 @@
             }
         </nhs-summary-list>
 
+        @if (Model.Order.OrderStatus == OrderStatus.Terminated)
+        {
+            <h2>Termination details</h2>
+            <nhs-summary-list>
+                <nhs-summary-list-row label-text="Reason for termination" data-test-id="termination-reason-summary">
+                    @Model.Order.OrderTermination.Reason
+                </nhs-summary-list-row>
+
+                <nhs-summary-list-row label-text="Date of termination" data-test-id="termination-date-summary">
+                    @($"{Model.Order.OrderTermination.DateOfTermination:d MMMM yyyy}")
+                </nhs-summary-list-row>
+			     
+            </nhs-summary-list>
+        }    
+    
         @if (!(Model.Order.OrderItems?.Any() ?? false))
         {
             <p>No items have been added to this order yet</p>
@@ -313,7 +329,12 @@
         }
 
     <div class="nhsuk-u-margin-top-9">
-        @if (Model.Order.OrderStatus == OrderStatus.InProgress)
+        @if (Model.Order.OrderStatus == OrderStatus.Terminated)
+        {
+            <h3>Download summary</h3>
+            <p>You can download a summary of this terminated contract for your records.</p>
+        }
+        else if (Model.Order.OrderStatus == OrderStatus.InProgress)
         {
             <h3>Preview order</h3>
             <p>You can download and review your order before sending it to the supplier for signature.</p>
@@ -324,7 +345,7 @@
             <p>You can download and review your order summary here.</p>
         }
 
-        <vc:nhs-secondary-button text="Download order form (PDF)"
+            <vc:nhs-secondary-button text="@pdfButton"
                                  type="Secondary"
                                  url="@Url.Action(
                                           nameof(OrderController.Download),

@@ -249,7 +249,23 @@
                         }
                     </pdf-summary-list>
 
+                @if (Model.Order.OrderStatus == OrderStatus.Terminated)
+                {
+                    <h2>Termination details</h2>
+                    <pdf-summary-list>
+                        <pdf-summary-list-row label-text="Reason for termination" data-test-id="termination-reason-summary">
+                            @Model.Order.OrderTermination.Reason
+                        </pdf-summary-list-row>
+
+                        <pdf-summary-list-row label-text="Date of termination" data-test-id="termination-date-summary">
+                            @($"{Model.Order.OrderTermination.DateOfTermination:d MMMM yyyy}")
+                        </pdf-summary-list-row>
+                    </pdf-summary-list>
+                }
+                else
+                {
                     <div style="page-break-after: always"></div>
+                }
 
                     <h1>Items added to this order</h1>
 
