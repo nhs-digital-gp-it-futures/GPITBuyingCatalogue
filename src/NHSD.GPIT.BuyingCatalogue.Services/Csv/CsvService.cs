@@ -202,9 +202,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     InitialTerm = oir.OrderItem.Order.InitialPeriod,
                     MaximumTerm = oir.OrderItem.Order.MaximumTerm,
                     CeaseDate = oir.OrderItem.Order.IsTerminated ? oir.OrderItem.Order.OrderTermination.DateOfTermination : null,
-                    PricingType = oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Tiered && oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType == CataloguePriceCalculationType.Cumulative ?
+                    PricingType = oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Tiered ?
                         $"{oir.OrderItem.OrderItemPrice.CataloguePriceType} {oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType}" :
-                           oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Flat ? $"{oir.OrderItem.OrderItemPrice.CataloguePriceType}" : string.Empty,
+                        $"{oir.OrderItem.OrderItemPrice.CataloguePriceType}",
                     TieredArray = oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Tiered && oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType == CataloguePriceCalculationType.Cumulative ?
                         GetTieredArray(oir.OrderItem.OrderItemPrice.OrderItemPriceTiers) : string.Empty,
                 })
