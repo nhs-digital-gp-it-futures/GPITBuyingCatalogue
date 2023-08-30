@@ -72,14 +72,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             var fullName = tokens.Should().ContainKey(RequestAccountService.FullNameToken).WhoseValue as string;
             var organisationName = tokens.Should().ContainKey(RequestAccountService.OrganisationNameToken).WhoseValue as string;
             var odsCode = tokens.Should().ContainKey(RequestAccountService.OrganisationOdsCodeToken).WhoseValue as string;
-            var phoneNumber = tokens.Should().ContainKey(RequestAccountService.PhoneNumberToken).WhoseValue as string;
             var userResearchConsent = tokens.Should().ContainKey(RequestAccountService.UserResearchConsentToken).WhoseValue as string;
 
             emailAddress.Should().Be(request.EmailAddress);
             fullName.Should().Be(request.FullName);
             organisationName.Should().Be(request.OrganisationName);
             odsCode.Should().Be(request.OdsCode);
-            phoneNumber.Should().Be(request.TelephoneNumber);
             userResearchConsent.Should().Be(userResearchConsentToken);
         }
 
