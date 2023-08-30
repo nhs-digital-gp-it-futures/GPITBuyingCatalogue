@@ -802,7 +802,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             //OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.StepThreeContractAssociatedServices(false);
+            OrderingPages.StepThreeContractAssociatedServices();
 
             OrderingPages.StepFourReviewAndCompleteOrder();
         }
@@ -1330,7 +1330,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             //OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.StepThreeContractAssociatedServices(false);
+            OrderingPages.StepThreeContractAssociatedServices();
 
             OrderingPages.StepFourReviewAndCompleteOrder();
         }
@@ -1491,7 +1491,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             //OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.StepThreeContractAssociatedServices(false);
+            OrderingPages.StepThreeContractAssociatedServices();
 
             OrderingPages.StepFourReviewAndCompleteOrder();
         }
@@ -1617,7 +1617,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             //OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.StepThreeContractAssociatedServices(false);
+            OrderingPages.StepThreeContractAssociatedServices();
 
             OrderingPages.StepFourReviewAndCompleteOrder();
         }
@@ -1743,7 +1743,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             //OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.StepThreeContractAssociatedServices(false);
+            OrderingPages.StepThreeContractAssociatedServices();
 
             OrderingPages.StepFourReviewAndCompleteOrder();
         }
@@ -1938,7 +1938,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             //OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.StepThreeContractAssociatedServices(false);
+            OrderingPages.StepThreeContractAssociatedServices();
 
             OrderingPages.StepFourReviewAndCompleteOrder();
         }
@@ -2082,7 +2082,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             //OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.StepThreeContractAssociatedServices(false);
+            OrderingPages.StepThreeContractAssociatedServices();
 
             OrderingPages.StepFourReviewAndCompleteOrder();
         }
