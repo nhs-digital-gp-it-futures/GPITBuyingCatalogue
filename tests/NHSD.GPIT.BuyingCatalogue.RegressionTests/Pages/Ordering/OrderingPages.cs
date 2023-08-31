@@ -296,7 +296,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             {
                 TaskList.AssociatedServiceBillingAndRequirementsTask();
                 OrderingStepThree.SelectAssociatedServicesBilling();
-                //StepThreeContractAssociatedServices();
             }
 
             TaskList.DataProcessingInformationTask();
