@@ -261,7 +261,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         [InMemoryDbAutoData]
         public static async Task TerminateOrder_TerminatesCurrentOrder(
             [Frozen] BuyingCatalogueDbContext context,
-            int userId,
+            AspNetUser user,
             Order order,
             DateTime terminationDate,
             string reason,
@@ -269,9 +269,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         {
             await context.Orders.AddAsync(order);
 
+            await context.Users.AddAsync(user);
+
             await context.SaveChangesAsync();
 
-            await service.TerminateOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, userId, terminationDate, reason);
+            await service.TerminateOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id, terminationDate, reason);
 
             await IsTerminated(context, order.Id, terminationDate, reason);
         }
@@ -282,7 +284,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             Organisation organisation,
             List<Order> orders,
             [Frozen] BuyingCatalogueDbContext context,
-            int userId,
+            AspNetUser user,
             DateTime terminationDate,
             string reason,
             OrderService service)
@@ -301,9 +303,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             context.Orders.AddRange(orders);
             context.Organisations.Add(organisation);
 
+            await context.Users.AddAsync(user);
+
             await context.SaveChangesAsync();
 
-            await service.TerminateOrder(amendedOrder.CallOffId, amendedOrder.OrderingParty.InternalIdentifier, userId, terminationDate, reason);
+            await service.TerminateOrder(amendedOrder.CallOffId, amendedOrder.OrderingParty.InternalIdentifier, user.Id, terminationDate, reason);
 
             await IsTerminated(context, amendedOrder.Id, terminationDate, reason);
             await IsTerminated(context, originalOrder.Id, terminationDate, reason);
