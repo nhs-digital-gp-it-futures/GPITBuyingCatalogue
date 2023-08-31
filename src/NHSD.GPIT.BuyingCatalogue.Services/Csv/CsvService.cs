@@ -31,12 +31,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
         {
             var items = await CreateFullOrderCsv(orderId);
 
-            var order = await dbContext.Orders
-                .FirstOrDefaultAsync(o => o.Id == orderId);
-
             if (showRevisions)
             {
-                var revisions = await dbContext.Orders.Where(x => x.OrderNumber == order.OrderNumber && x.Revision < order.Revision).OrderByDescending(x => x.Revision).Select(y => y.Id).ToListAsync();
+                var order = await dbContext.Orders.AsNoTracking().FirstOrDefaultAsync(o => o.Id == orderId);
+
+                var revisions = await dbContext.Orders
+                    .AsNoTracking()
+                    .Where(x => x.OrderNumber == order.OrderNumber && x.Revision < order.Revision)
+                    .OrderByDescending(x => x.Revision)
+                    .Select(y => y.Id).ToListAsync();
+
                 foreach (var id in revisions)
                 {
                     items.AddRange(await CreateFullOrderCsv(id));
