@@ -95,4 +95,50 @@ public static class CachedOrderPdfServiceTests
 
         pdfContents.ToArray().Should().BeEquivalentTo(fileContents);
     }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task CreateOrderSummaryPdf_TerminatedOrder_CachesPdf(
+        Order order,
+        byte[] fileContents,
+        [Frozen] Mock<IOrderPdfService> orderPdfService,
+        [Frozen] Mock<IAzureBlobStorageService> azureBlobStorageService,
+        CachedOrderPdfService cachedOrderPdfService)
+    {
+        order.IsTerminated = true;
+
+        orderPdfService.Setup(x => x.CreateOrderSummaryPdf(It.IsAny<Order>()))
+            .ReturnsAsync(new MemoryStream(fileContents));
+
+        azureBlobStorageService
+            .Setup(x => x.DownloadAsync(It.IsAny<BlobDocument>()))
+            .ReturnsAsync((MemoryStream)null);
+
+        var pdfContents = await cachedOrderPdfService.CreateOrderSummaryPdf(order);
+
+        orderPdfService.VerifyAll();
+        azureBlobStorageService.VerifyAll();
+        azureBlobStorageService.Verify(x => x.UploadAsync(It.IsAny<BlobDocument>(), It.IsAny<Stream>()));
+
+        pdfContents.ToArray().Should().BeEquivalentTo(fileContents);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task CreateOrderSummaryPdf_CachedTerminatedOrder_DownloadsCachedPdf(
+        Order order,
+        byte[] fileContents,
+        [Frozen] Mock<IAzureBlobStorageService> azureBlobStorageService,
+        CachedOrderPdfService cachedOrderPdfService)
+    {
+        order.IsTerminated = true;
+
+        azureBlobStorageService
+            .Setup(x => x.DownloadAsync(It.IsAny<BlobDocument>()))
+            .ReturnsAsync(new MemoryStream(fileContents));
+
+        var pdfContents = await cachedOrderPdfService.CreateOrderSummaryPdf(order);
+
+        pdfContents.ToArray().Should().BeEquivalentTo(fileContents);
+    }
 }
