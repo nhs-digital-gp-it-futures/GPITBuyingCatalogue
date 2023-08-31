@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         {
             var order = (await orderService.GetOrderForTaskListStatuses(callOffId, internalOrgId)).Order;
 
-            if (order.OrderStatus == OrderStatus.Completed || order.OrderStatus == OrderStatus.Terminated)
+            if (order.OrderStatus is OrderStatus.Completed or OrderStatus.Terminated)
             {
                 return RedirectToAction(
                     nameof(Summary),
@@ -210,9 +210,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 
             var result = await pdfService.CreateOrderSummaryPdf(order);
 
-            var fileName = order.OrderStatus == OrderStatus.Completed
-                ? $"order-summary-completed-{callOffId}.pdf"
-                : $"order-summary-in-progress-{callOffId}.pdf";
+            var fileName = order.OrderStatus switch
+            {
+                OrderStatus.Terminated => $"order-summary-terminated-{callOffId}.pdf",
+                OrderStatus.Completed => $"order-summary-completed-{callOffId}.pdf",
+                _ => $"order-summary-in-progress-{callOffId}.pdf",
+            };
 
             return File(result.ToArray(), "application/pdf", fileName);
         }
@@ -270,15 +273,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             }
 
             var hasSubsequentRevisions = await orderService.HasSubsequentRevisions(callOffId);
-            if (!hasSubsequentRevisions)
+            if (hasSubsequentRevisions)
             {
-                await orderService.TerminateOrder(callOffId, internalOrgId,  model.TerminationDate.GetValueOrDefault(), model.Reason);
+                return RedirectToAction(
+                    nameof(DashboardController.Organisation),
+                    typeof(DashboardController).ControllerName(),
+                    new { internalOrgId });
             }
 
+            await orderService.TerminateOrder(callOffId, internalOrgId, model.TerminationDate.GetValueOrDefault(), model.Reason);
+
             return RedirectToAction(
-                nameof(DashboardController.Organisation),
-                typeof(DashboardController).ControllerName(),
-                new { internalOrgId });
+                nameof(Summary),
+                typeof(OrderController).ControllerName(),
+                new { internalOrgId, callOffId });
         }
 
         internal static string GetAdvice(Order order, bool latestOrder)
@@ -299,6 +307,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         {
             return order.OrderStatus switch
             {
+                OrderStatus.Terminated => "Terminated contract details",
                 OrderStatus.Completed => "Order confirmed",
                 _ => order.CanComplete()
                     ? "Review order summary"

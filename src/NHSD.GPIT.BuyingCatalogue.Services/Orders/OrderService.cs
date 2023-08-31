@@ -219,6 +219,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.OrderItemRecipients.OrderBy(r => r.Recipient.Name))
                     .ThenInclude(r => r.Recipient)
+                .Include(o => o.OrderTermination)
                 .AsNoTracking()
                 .AsSplitQuery()
                 .Where(o => o.OrderNumber == callOffId.OrderNumber

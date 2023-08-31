@@ -333,25 +333,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         {
             order.Completed = DateTime.UtcNow;
 
-            orderServiceMock
-                .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
-
-            pdfServiceMock
-                .Setup(s => s.CreateOrderSummaryPdf(It.IsAny<EntityFramework.Ordering.Models.Order>()))
-                .ReturnsAsync(new MemoryStream(result));
-
-            SetControllerHttpContext(controller);
-
-            var actualResult = await controller.Download(internalOrgId, order.CallOffId);
-
-            orderServiceMock.VerifyAll();
-            pdfServiceMock.VerifyAll();
-
-            actualResult.Should().BeOfType<FileContentResult>();
-            actualResult.As<FileContentResult>().ContentType.Should().Be("application/pdf");
-            actualResult.As<FileContentResult>().FileDownloadName.Should().Be($"order-summary-completed-{order.CallOffId}.pdf");
-            actualResult.As<FileContentResult>().FileContents.Should().BeEquivalentTo(result);
+            await DownloadReturnsExpectedResult(internalOrgId, order, orderServiceMock, pdfServiceMock, result, controller, "order-summary-completed");
         }
 
         [Theory]
@@ -366,25 +348,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         {
             order.Completed = null;
 
-            orderServiceMock
-                .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            await DownloadReturnsExpectedResult(internalOrgId, order, orderServiceMock, pdfServiceMock, result, controller, "order-summary-in-progress");
+        }
 
-            pdfServiceMock
-                .Setup(s => s.CreateOrderSummaryPdf(It.IsAny<EntityFramework.Ordering.Models.Order>()))
-                .ReturnsAsync(new MemoryStream(result));
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_Download_TerminatedOrder_ReturnsExpectedResult(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> orderServiceMock,
+            [Frozen] Mock<IOrderPdfService> pdfServiceMock,
+            byte[] result,
+            OrderController controller)
+        {
+            order.IsTerminated = true;
 
-            SetControllerHttpContext(controller);
-
-            var actualResult = await controller.Download(internalOrgId, order.CallOffId);
-
-            orderServiceMock.VerifyAll();
-            pdfServiceMock.VerifyAll();
-
-            actualResult.Should().BeOfType<FileContentResult>();
-            actualResult.As<FileContentResult>().ContentType.Should().Be("application/pdf");
-            actualResult.As<FileContentResult>().FileDownloadName.Should().Be($"order-summary-in-progress-{order.CallOffId}.pdf");
-            actualResult.As<FileContentResult>().FileContents.Should().BeEquivalentTo(result);
+            await DownloadReturnsExpectedResult(internalOrgId, order, orderServiceMock, pdfServiceMock, result, controller, "order-summary-terminated");
         }
 
         [Theory]
@@ -510,11 +489,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
             orderService.Verify(x => x.TerminateOrder(callOffId, internalOrgId, It.IsAny<DateTime>(), It.IsAny<string>()), Times.Once);
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(DashboardController.Organisation));
-            result.ControllerName.Should().Be(typeof(DashboardController).ControllerName());
+            result.ActionName.Should().Be(nameof(OrderController.Summary));
+            result.ControllerName.Should().Be(typeof(OrderController).ControllerName());
             result.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "internalOrgId", internalOrgId },
+                { "callOffId", callOffId },
             });
         }
 
@@ -582,6 +562,36 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
                     })),
                 },
             };
+        }
+
+        private static async Task DownloadReturnsExpectedResult(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> orderServiceMock,
+            [Frozen] Mock<IOrderPdfService> pdfServiceMock,
+            byte[] result,
+            OrderController controller,
+            string fileName)
+        {
+            orderServiceMock
+                .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            pdfServiceMock
+                .Setup(s => s.CreateOrderSummaryPdf(It.IsAny<EntityFramework.Ordering.Models.Order>()))
+                .ReturnsAsync(new MemoryStream(result));
+
+            SetControllerHttpContext(controller);
+
+            var actualResult = await controller.Download(internalOrgId, order.CallOffId);
+
+            orderServiceMock.VerifyAll();
+            pdfServiceMock.VerifyAll();
+
+            actualResult.Should().BeOfType<FileContentResult>();
+            actualResult.As<FileContentResult>().ContentType.Should().Be("application/pdf");
+            actualResult.As<FileContentResult>().FileDownloadName.Should().Be($"{fileName}-{order.CallOffId}.pdf");
+            actualResult.As<FileContentResult>().FileContents.Should().BeEquivalentTo(result);
         }
     }
 }
