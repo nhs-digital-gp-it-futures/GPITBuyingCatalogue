@@ -14,7 +14,7 @@ services:
     container_name: nhsd_gpitbcdb_deploy
     build:
       context: .
-      dockerfile: database/NHSD.GPITBuyingCatalogue.Database.Deployment/Docker/Dockerfile
+      dockerfile: database/NHSD.GPITBuyingCatalogue.Database/Dockerfile
     environment:
       SA_PASSWORD: "Abc123Abc123"
       NHSD_PASSWORD: "DisruptTheMarket1!"
