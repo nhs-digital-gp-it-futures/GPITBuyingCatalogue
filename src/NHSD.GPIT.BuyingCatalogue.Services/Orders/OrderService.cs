@@ -391,7 +391,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task TerminateOrder(CallOffId callOffId, string internalOrgId, DateTime terminationDate, string reason, int userId)
+        public async Task TerminateOrder(CallOffId callOffId, string internalOrgId, int userId, DateTime terminationDate, string reason)
         {
             var orderWrapper = await GetOrderWithOrderItems(callOffId, internalOrgId);
 
@@ -402,7 +402,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 TerminateOrder(order, terminationDate, reason);
             }
 
-            await SendEmail(orderWrapper.Order, callOffId, userId);
+            await dbContext.SaveChangesAsync();
+
+            await SendEmail(orderWrapper.Order, callOffId, userId, true);
         }
 
         public async Task CompleteOrder(CallOffId callOffId, string internalOrgId, int userId)
@@ -491,12 +493,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             };
         }
 
-        private async Task SendEmail(Order order, CallOffId callOffId, int userId)
+        private async Task SendEmail(Order order, CallOffId callOffId, int userId, bool showRevisions = false)
         {
             await using var fullOrderStream = new MemoryStream();
             await using var patientOrderStream = new MemoryStream();
 
-            await csvService.CreateFullOrderCsvAsync(order.Id, fullOrderStream);
+            await csvService.CreateFullOrderCsvAsync(order.Id, fullOrderStream, showRevisions);
 
             fullOrderStream.Position = 0;
 
@@ -532,7 +534,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 emailService.SendEmailAsync(orderMessageSettings.Recipient.Address, templateId, adminTokens),
                 emailService.SendEmailAsync(userEmail, GetUserTemplateId(order), userTokens),
                 dbContext.SaveChangesAsync());
-
         }
 
         private string GetUserTemplateId(Order order)

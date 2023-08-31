@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public Task HardDeleteOrder(CallOffId callOffId, string internalOrgId);
 
-        public Task TerminateOrder(CallOffId callOffId, string internalOrgId, DateTime terminationDate, string reason, int userId);
+        public Task TerminateOrder(CallOffId callOffId, string internalOrgId, int userId, DateTime terminationDate, string reason);
 
         public Task CompleteOrder(CallOffId callOffId, string internalOrgId, int userId);
 

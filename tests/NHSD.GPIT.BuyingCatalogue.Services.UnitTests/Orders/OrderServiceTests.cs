@@ -261,6 +261,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         [InMemoryDbAutoData]
         public static async Task TerminateOrder_TerminatesCurrentOrder(
             [Frozen] BuyingCatalogueDbContext context,
+            int userId,
             Order order,
             DateTime terminationDate,
             string reason,
@@ -270,7 +271,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             await context.SaveChangesAsync();
 
-            await service.TerminateOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, terminationDate, reason);
+            await service.TerminateOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, userId, terminationDate, reason);
 
             await IsTerminated(context, order.Id, terminationDate, reason);
         }
@@ -281,6 +282,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             Organisation organisation,
             List<Order> orders,
             [Frozen] BuyingCatalogueDbContext context,
+            int userId,
             DateTime terminationDate,
             string reason,
             OrderService service)
@@ -301,7 +303,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             await context.SaveChangesAsync();
 
-            await service.TerminateOrder(amendedOrder.CallOffId, amendedOrder.OrderingParty.InternalIdentifier, terminationDate, reason);
+            await service.TerminateOrder(amendedOrder.CallOffId, amendedOrder.OrderingParty.InternalIdentifier, userId, terminationDate, reason);
 
             await IsTerminated(context, amendedOrder.Id, terminationDate, reason);
             await IsTerminated(context, originalOrder.Id, terminationDate, reason);

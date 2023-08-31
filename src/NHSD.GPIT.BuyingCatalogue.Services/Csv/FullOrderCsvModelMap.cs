@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             Map(o => o.M1Planned).Index(19).Name("M1 planned (Delivery Date)");
             Map(o => o.ActualM1Date).Index(20).Name("Actual M1 date");
             Map(o => o.VerficationDate).Index(21).Name("Buyer verification date (M2)");
-            Map(o => o.CeaseDate).Index(22).Name("Cease Date");
+            Map(o => o.CeaseDate).Index(22).Name("Forecast Cease Date");
             Map(o => o.Framework).Index(23).Name("Framework");
             Map(o => o.InitialTerm).Index(24).Name("Initial Term");
             Map(o => o.MaximumTerm).Index(25).Name("Contract Length (Months)");
