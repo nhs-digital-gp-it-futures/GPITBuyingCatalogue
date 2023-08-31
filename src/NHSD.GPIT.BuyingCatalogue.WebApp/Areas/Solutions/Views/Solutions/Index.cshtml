@@ -105,12 +105,6 @@
             <partial name="_SearchResultsHeader" model="@(Model.PageOptions.TotalNumberOfItems)"/>
             <br/>
 
-            @if (!string.IsNullOrWhiteSpace(Model.SearchSummary.SearchTerm))
-            {
-                <h3 data-test-id="search-term-title">Selected Capabilities and Epics</h3>
-                <p data-test-id="search-term-content">@($"'{Model.SearchSummary.SearchTerm}'")</p>
-            }
-
             @if (Model.SearchSummary.CapabilitiesAndEpics.Count > 0)
             {
                 <h3 data-test-id="filter-summary-title">@(FilterSummaryTitle(Model.SearchSummary.IncludesEpics))</h3>
@@ -126,24 +120,26 @@
             @if (!Model.FilterResultView)
             {
                 <p>
-                    <a style="margin-right:20px;"
-                       asp-area="@typeof(FilterController).AreaName()"
-                       asp-controller="@typeof(FilterController).ControllerName()"
-                       asp-action="@nameof(FilterController.FilterCapabilities)"
-                       asp-route-selected="@Model.SearchSummary.Selected"
-                       asp-route-search="@Model.SearchSummary.SearchTerm">
-                        Edit Capabilities
-                    </a>
-
-                    <a style="margin-right:20px;"
-                       asp-area="@typeof(FilterController).AreaName()"
-                       asp-controller="@typeof(FilterController).ControllerName()"
-                       asp-action="@nameof(FilterController.FilterEpics)"
-                       asp-route-selected="@Model.SearchSummary.Selected"
-                       asp-route-search="@Model.SearchSummary.SearchTerm">
-                        Edit Epics
-                    </a>
-
+                    @if (Model.HasCapabilities)
+                    {
+                        <a style="margin-right:20px;"
+                            asp-area="@typeof(FilterController).AreaName()"
+                            asp-controller="@typeof(FilterController).ControllerName()"
+                            asp-action="@nameof(FilterController.FilterCapabilities)"
+                            asp-route-selected="@Model.SearchSummary.Selected"
+                            asp-route-search="@Model.SearchSummary.SearchTerm">
+                                Edit Capabilities
+                        </a>
+                
+                        <a style="margin-right:20px;"
+                            asp-area="@typeof(FilterController).AreaName()"
+                            asp-controller="@typeof(FilterController).ControllerName()"
+                            asp-action="@nameof(FilterController.FilterEpics)"
+                            asp-route-selected="@Model.SearchSummary.Selected"
+                            asp-route-search="@Model.SearchSummary.SearchTerm">
+                                Edit Epics
+                        </a>
+                    }
                     <a asp-area="@typeof(SolutionsController).AreaName()"
                        asp-controller="@typeof(SolutionsController).ControllerName()"
                        asp-action="@nameof(SolutionsController.Index)">
