@@ -461,7 +461,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
             var result = (await controller.TerminateOrder(internalOrgId, callOffId, model)).As<RedirectToActionResult>();
 
             orderService.Verify(x => x.HasSubsequentRevisions(callOffId), Times.Once);
-            orderService.Verify(x => x.TerminateOrder(callOffId, internalOrgId, It.IsAny<DateTime>(), It.IsAny<string>()), Times.Never);
+            orderService.Verify(x => x.TerminateOrder(callOffId, internalOrgId, It.IsAny<int>(), It.IsAny<DateTime>(), It.IsAny<string>()), Times.Never);
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(DashboardController.Organisation));
@@ -486,7 +486,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
             var result = (await controller.TerminateOrder(internalOrgId, callOffId, model)).As<RedirectToActionResult>();
 
             orderService.Verify(x => x.HasSubsequentRevisions(callOffId), Times.Once);
-            orderService.Verify(x => x.TerminateOrder(callOffId, internalOrgId, It.IsAny<DateTime>(), It.IsAny<string>()), Times.Once);
+            orderService.Verify(x => x.TerminateOrder(callOffId, internalOrgId, It.IsAny<int>(), It.IsAny<DateTime>(), It.IsAny<string>()), Times.Once);
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(OrderController.Summary));

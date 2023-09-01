@@ -281,7 +281,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                     new { internalOrgId });
             }
 
-            await orderService.TerminateOrder(callOffId, internalOrgId, model.TerminationDate.GetValueOrDefault(), model.Reason);
+            await orderService.TerminateOrder(callOffId, internalOrgId, User.UserId(), model.TerminationDate.GetValueOrDefault(), model.Reason);
 
             return RedirectToAction(
                 nameof(Summary),

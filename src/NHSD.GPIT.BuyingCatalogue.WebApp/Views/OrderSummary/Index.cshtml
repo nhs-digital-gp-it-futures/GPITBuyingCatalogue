@@ -8,6 +8,7 @@
     var contractTerm = Model.Order.MaximumTerm.HasValue
         ? $"({Model.Order.MaximumTerm.Value} months)"
         : "(estimated)";
+    var title = Model.Order.OrderStatus == OrderStatus.Terminated ? "Terminated contract details" : "Call-off Order Form";
 }
 
 <!DOCTYPE html>
@@ -164,7 +165,7 @@
         <main class="nhsuk-main-wrapper" id="maincontent">
             <div class="nhsuk-grid-row">
                 <div class="nhsuk-grid-column-full">
-                    <nhs-page-title title="Call-off Order Form"
+                    <nhs-page-title title="@title"
                                     caption="Order @Model.Order.CallOffId" />
 
                     <pdf-summary-list>
