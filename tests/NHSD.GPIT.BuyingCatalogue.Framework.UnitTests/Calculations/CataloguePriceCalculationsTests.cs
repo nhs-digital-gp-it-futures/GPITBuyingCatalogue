@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             OrderItem orderItem = BuildOrderItem(fixture, quantity, new[] { tier }, calculationType);
 
-            var result = orderItem.OrderItemPrice.CostForBillingPeriod(orderItem.TotalQuantity);
+            var result = ((IPrice)orderItem.OrderItemPrice).CostForBillingPeriod(orderItem.TotalQuantity);
 
             result.Should().Be(price);
         }
@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             OrderItem orderItem = BuildOrderItem(fixture, quantity, new[] { tier }, calculationType);
 
-            var result = orderItem.OrderItemPrice.CostPerTierForBillingPeriod(orderItem.TotalQuantity);
+            var result = ((IPrice)orderItem.OrderItemPrice).CostPerTierForBillingPeriod(orderItem.TotalQuantity);
 
             var expected = new PriceCalculationModel(1, quantity, price, cost);
 
@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             OrderItem orderItem = BuildOrderItem(fixture, quantity, new[] { tier }, calculationType);
 
-            var result = orderItem.OrderItemPrice.CostForBillingPeriod(orderItem.TotalQuantity);
+            var result = ((IPrice)orderItem.OrderItemPrice).CostForBillingPeriod(orderItem.TotalQuantity);
 
             result.Should().Be(quantity * price);
         }
@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             OrderItem orderItem = BuildOrderItem(fixture, quantity, new[] { tier }, calculationType);
 
-            var result = orderItem.OrderItemPrice.CostPerTierForBillingPeriod(orderItem.TotalQuantity);
+            var result = ((IPrice)orderItem.OrderItemPrice).CostPerTierForBillingPeriod(orderItem.TotalQuantity);
 
             var expected = new PriceCalculationModel(1, quantity, price, cost);
 
@@ -114,7 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             OrderItem orderItem = BuildOrderItem(fixture, quantity, tiers, calculationType);
 
-            var result = orderItem.OrderItemPrice.CostForBillingPeriod(orderItem.TotalQuantity);
+            var result = ((IPrice)orderItem.OrderItemPrice).CostForBillingPeriod(orderItem.TotalQuantity);
 
             result.Should().Be(expected);
         }
@@ -140,7 +140,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             OrderItem orderItem = BuildOrderItem(fixture, quantity, tiers, calculationType);
 
-            var result = orderItem.OrderItemPrice.CostPerTierForBillingPeriod(orderItem.TotalQuantity);
+            var result = ((IPrice)orderItem.OrderItemPrice).CostPerTierForBillingPeriod(orderItem.TotalQuantity);
 
             var template = new List<PriceCalculationModel>()
             {
@@ -176,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             OrderItem orderItem = BuildOrderItem(fixture, quantity, tiers, calculationType);
 
-            var result = orderItem.OrderItemPrice.CostForBillingPeriod(orderItem.TotalQuantity);
+            var result = ((IPrice)orderItem.OrderItemPrice).CostForBillingPeriod(orderItem.TotalQuantity);
 
             result.Should().Be(expected);
         }
@@ -202,7 +202,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             OrderItem orderItem = BuildOrderItem(fixture, quantity, tiers, calculationType);
 
-            var result = orderItem.OrderItemPrice.CostPerTierForBillingPeriod(orderItem.TotalQuantity);
+            var result = ((IPrice)orderItem.OrderItemPrice).CostPerTierForBillingPeriod(orderItem.TotalQuantity);
 
             var template = new List<PriceCalculationModel>()
             {
@@ -241,7 +241,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             OrderItem orderItem = BuildOrderItem(fixture, quantity, tiers, calculationType);
 
-            var result = orderItem.OrderItemPrice.CostForBillingPeriod(orderItem.TotalQuantity);
+            var result = ((IPrice)orderItem.OrderItemPrice).CostForBillingPeriod(orderItem.TotalQuantity);
 
             result.Should().Be(expected);
         }
@@ -269,7 +269,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             OrderItem orderItem = BuildOrderItem(fixture, quantity, tiers, calculationType);
 
-            var result = orderItem.OrderItemPrice.CostPerTierForBillingPeriod(orderItem.TotalQuantity);
+            var result = ((IPrice)orderItem.OrderItemPrice).CostPerTierForBillingPeriod(orderItem.TotalQuantity);
 
             var template = new List<PriceCalculationModel>()
             {

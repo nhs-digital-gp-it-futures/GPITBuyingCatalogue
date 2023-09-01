@@ -40,6 +40,27 @@ public class CompetitionsService : ICompetitionsService
             .Where(x => x.Organisation.InternalIdentifier == internalOrgId)
             .ToListAsync();
 
+    public async Task<Competition> GetCompetitionForResults(string internalOrgId, int competitionId) =>
+        await dbContext
+            .Competitions
+            .Include(x => x.Weightings)
+            .Include(x => x.Recipients)
+            .Include(x => x.NonPriceElements)
+            .Include(x => x.NonPriceElements.NonPriceWeights)
+            .Include(x => x.NonPriceElements.Implementation)
+            .Include(x => x.NonPriceElements.Interoperability)
+            .Include(x => x.NonPriceElements.ServiceLevel)
+            .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Scores)
+            .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Price).ThenInclude(x => x.Tiers)
+            .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Quantities)
+            .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Solution.CatalogueItem.Supplier)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.SolutionServices).ThenInclude(x => x.Quantities)
+            .Include(x => x.CompetitionSolutions).ThenInclude(x => x.SolutionServices).ThenInclude(x => x.Price).ThenInclude(x => x.Tiers)
+            .AsNoTracking()
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+
     public async Task<Competition> GetCompetitionWithNonPriceElements(string internalOrgId, int competitionId)
         => await dbContext.Competitions
             .Include(x => x.Organisation)

@@ -21,6 +21,8 @@ public interface ICompetitionsService
 
     Task<IEnumerable<Competition>> GetCompetitionsDashboard(string internalOrgId);
 
+    Task<Competition> GetCompetitionForResults(string internalOrgId, int competitionId);
+
     Task<Competition> GetCompetitionWithNonPriceElements(string internalOrgId, int competitionId);
 
     Task<Competition> GetCompetitionWithWeightings(string internalOrgId, int competitionId);

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
@@ -49,4 +50,18 @@ public class CompetitionSolution : ICompetitionPriceEntity
     public ICollection<SolutionService> GetAssociatedServices() => SolutionServices.Where(
             x => !x.IsRequired && x.Service.CatalogueItemType is CatalogueItemType.AssociatedService)
         .ToList();
+
+    public decimal? CalculateTotalPrice(int contractLength)
+    {
+        var price = Price as IPrice;
+
+        var solutionMonthlyCost =
+            price?.CalculateCostPerMonth(Quantity ?? Quantities.Sum(x => x.Quantity));
+        var servicesMonthlyCost = SolutionServices?.Sum(
+            x => ((IPrice)x.Price)?.CalculateCostPerMonth(x.Quantity ?? x.Quantities.Sum(y => y.Quantity)));
+        var oneOffCost = GetAssociatedServices()
+            .Sum(x => ((IPrice)x.Price)?.CalculateOneOffCost(x.Quantity ?? x.Quantities.Sum(y => y.Quantity)));
+
+        return oneOffCost + ((solutionMonthlyCost + servicesMonthlyCost) * contractLength);
+    }
 }
