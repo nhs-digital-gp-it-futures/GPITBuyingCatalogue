@@ -184,7 +184,44 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task RemoveContract_ContractExists_RemovesContractAndDataProcessing(
+        public static async Task RemoveContract_ContractExists_RemovesContract(
+            int orderId,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            ContractsService service)
+        {
+            var contract = new Contract { OrderId = orderId };
+
+            dbContext.Contracts.Add(contract);
+
+            await dbContext.SaveChangesAsync();
+            dbContext.ChangeTracker.Clear();
+
+            await service.RemoveContract(orderId);
+
+            var actualContract = await dbContext.Contracts.FirstOrDefaultAsync(x => x.OrderId == orderId);
+            actualContract.Should().BeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task RemoveContract_ContractDoesNotExist_Returns(
+            int orderId,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            ContractsService service)
+        {
+            var existing = await dbContext.Contracts.FirstOrDefaultAsync(x => x.OrderId == orderId);
+
+            existing.Should().BeNull();
+
+            await service.RemoveContract(orderId);
+
+            var actualContract = await dbContext.Contracts.FirstOrDefaultAsync(x => x.OrderId == orderId);
+            actualContract.Should().BeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task ResetContract_ContractExists_RemovesContractAndDataProcessing(
             int orderId,
             [Frozen] BuyingCatalogueDbContext dbContext,
             ContractsService service)
@@ -200,7 +237,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             await dbContext.SaveChangesAsync();
             dbContext.ChangeTracker.Clear();
 
-            await service.RemoveContract(orderId);
+            await service.ResetContract(orderId);
 
             var actualContract = await dbContext.Contracts.FirstOrDefaultAsync(x => x.OrderId == orderId);
             actualContract.Should().BeNull();
@@ -212,7 +249,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task RemoveContract_ContractDoesNotExist_Returns(
+        public static async Task ResetContract_ContractDoesNotExist_Returns(
             int orderId,
             [Frozen] BuyingCatalogueDbContext dbContext,
             ContractsService service)
@@ -221,7 +258,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
             existing.Should().BeNull();
 
-            await service.RemoveContract(orderId);
+            await service.ResetContract(orderId);
 
             var actualContract = await dbContext.Contracts.FirstOrDefaultAsync(x => x.OrderId == orderId);
             actualContract.Should().BeNull();

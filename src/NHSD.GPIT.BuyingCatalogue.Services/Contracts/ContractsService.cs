@@ -89,10 +89,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
                 await dbContext.SaveChangesAsync();
             }
 
-            var flags = await GetContractFlags(orderId);
-            flags.UseDefaultDataProcessing = false;
-
             await dbContext.SaveChangesAsync();
+        }
+
+        public async Task ResetContract(int orderId)
+        {
+            await RemoveContract(orderId);
+            await RemoveContractFlags(orderId);
         }
 
         public async Task<ContractFlags> GetContractFlags(int orderId)
@@ -143,6 +146,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             }
 
             return contract;
+        }
+
+        private async Task RemoveContractFlags(int orderId)
+        {
+            var flags = await GetContractFlags(orderId);
+            flags.UseDefaultDataProcessing = false;
+
+            await dbContext.SaveChangesAsync();
         }
     }
 }

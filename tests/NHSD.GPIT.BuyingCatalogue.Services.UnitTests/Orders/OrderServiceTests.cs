@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -20,6 +22,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -28,6 +31,7 @@ using NHSD.GPIT.BuyingCatalogue.Services.Orders;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Notify.Client;
 using Xunit;
+using Contract = NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models.Contract;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 {
@@ -229,13 +233,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         [Theory]
         [InMemoryDbAutoData]
         public static async Task HardDeleteOrder_DeletesOrder(
+            Contract contract,
+            ImplementationPlan plan,
             Order order,
             [Frozen] BuyingCatalogueDbContext context,
             OrderService service)
         {
+            contract.ImplementationPlan = plan;
+            order.Contract = contract;
+
             await context.Orders.AddAsync(order);
             await context.SaveChangesAsync();
 
+            context.Contracts.Count().Should().Be(1);
+            context.ImplementationPlans.Count().Should().Be(1);
             context.ContractFlags.Count().Should().Be(1);
             context.Orders.Count().Should().Be(1);
             context.OrderDeletionApprovals.Count().Should().Be(1);
@@ -247,6 +258,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             await service.HardDeleteOrder(order.CallOffId, order.OrderingParty.InternalIdentifier);
 
+            context.Contracts.Should().BeEmpty();
+            context.ImplementationPlans.Should().BeEmpty();
             context.ContractFlags.Should().BeEmpty();
             context.Orders.Should().BeEmpty();
             context.OrderDeletionApprovals.Should().BeEmpty();
@@ -287,6 +300,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [Frozen] Mock<IGovNotifyEmailService> mockEmailService,
             [Frozen] Mock<ICsvService> mockCsvService,
             [Frozen] Mock<IOrderPdfService> mockPdfService,
+            [Frozen] Mock<IContractsService> mockContractsService,
             OrderMessageSettings settings)
         {
             Dictionary<string, dynamic> adminTokens = null;
@@ -312,6 +326,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 mockCsvService.Object,
                 mockEmailService.Object,
                 mockPdfService.Object,
+                mockContractsService.Object,
                 settings);
 
             await service.CompleteOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id);
@@ -335,6 +350,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [Frozen] Mock<IGovNotifyEmailService> mockEmailService,
             [Frozen] Mock<ICsvService> mockCsvService,
             [Frozen] Mock<IOrderPdfService> mockPdfService,
+            [Frozen] Mock<IContractsService> mockContractsService,
             OrderMessageSettings settings)
         {
             Dictionary<string, dynamic> adminTokens = null;
@@ -360,6 +376,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 mockCsvService.Object,
                 mockEmailService.Object,
                 mockPdfService.Object,
+                mockContractsService.Object,
                 settings);
 
             await service.CompleteOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id);
@@ -383,6 +400,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [Frozen] Mock<IGovNotifyEmailService> mockEmailService,
             [Frozen] Mock<ICsvService> mockCsvService,
             [Frozen] Mock<IOrderPdfService> mockPdfService,
+            [Frozen] Mock<IContractsService> mockContractsService,
             OrderMessageSettings settings)
         {
             Dictionary<string, dynamic> userTokens = null;
@@ -411,6 +429,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 mockCsvService.Object,
                 mockEmailService.Object,
                 mockPdfService.Object,
+                mockContractsService.Object,
                 settings);
 
             var expectedOrderSummaryLink = NotificationClient.PrepareUpload(pdfData.ToArray());
@@ -441,6 +460,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [Frozen] Mock<IGovNotifyEmailService> mockEmailService,
             [Frozen] Mock<ICsvService> mockCsvService,
             [Frozen] Mock<IOrderPdfService> mockPdfService,
+            [Frozen] Mock<IContractsService> mockContractsService,
             OrderMessageSettings orderMessageSettings)
         {
             order.AssociatedServicesOnly = false;
@@ -457,6 +477,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 mockCsvService.Object,
                 mockEmailService.Object,
                 mockPdfService.Object,
+                mockContractsService.Object,
                 orderMessageSettings);
 
             await service.CompleteOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id);
@@ -474,6 +495,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [Frozen] Mock<IGovNotifyEmailService> mockEmailService,
             [Frozen] Mock<ICsvService> mockCsvService,
             [Frozen] Mock<IOrderPdfService> mockPdfService,
+            [Frozen] Mock<IContractsService> mockContractsService,
             OrderMessageSettings orderMessageSettings)
         {
             order.AssociatedServicesOnly = true;
@@ -490,6 +512,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 mockCsvService.Object,
                 mockEmailService.Object,
                 mockPdfService.Object,
+                mockContractsService.Object,
                 orderMessageSettings);
 
             await service.CompleteOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id);

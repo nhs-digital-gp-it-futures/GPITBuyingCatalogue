@@ -16,6 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts
 
         Task RemoveContract(int orderId);
 
+        Task ResetContract(int orderId);
+
         Task<ContractFlags> GetContractFlags(int orderId);
 
         Task UseDefaultDataProcessing(int orderId, bool value);

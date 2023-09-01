@@ -12,6 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -35,18 +36,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         private readonly IGovNotifyEmailService emailService;
         private readonly IOrderPdfService pdfService;
         private readonly OrderMessageSettings orderMessageSettings;
+        private readonly IContractsService contractsService;
 
         public OrderService(
             BuyingCatalogueDbContext dbContext,
             ICsvService csvService,
             IGovNotifyEmailService emailService,
             IOrderPdfService pdfService,
+            IContractsService contractsService,
             OrderMessageSettings orderMessageSettings)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             this.csvService = csvService ?? throw new ArgumentNullException(nameof(csvService));
             this.emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
             this.pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
+            this.contractsService = contractsService ?? throw new ArgumentNullException(nameof(contractsService));
             this.orderMessageSettings = orderMessageSettings ?? throw new ArgumentNullException(nameof(orderMessageSettings));
         }
 
@@ -379,6 +383,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             var order = await dbContext.Order(internalOrgId, callOffId);
 
+            await contractsService.RemoveContract(order.Id);
             dbContext.ContractFlags.RemoveRange(dbContext.ContractFlags.Where(x => x.OrderId == order.Id));
             dbContext.OrderDeletionApprovals.RemoveRange(dbContext.OrderDeletionApprovals.Where(x => x.OrderId == order.Id));
             dbContext.OrderItems.RemoveRange(dbContext.OrderItems.Where(x => x.OrderId == order.Id));
