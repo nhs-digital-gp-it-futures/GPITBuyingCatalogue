@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
@@ -16,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         {
         }
 
-        public ListPriceModel(CatalogueItem item, CatalogueItem service, CatalogueItemContentStatus contentStatus, string priceFor)
+        public ListPriceModel(CatalogueItem item, CatalogueItem service, CatalogueItemContentStatus contentStatus)
             : base(item, contentStatus, true)
         {
             FlatListPrices = service.CataloguePrices
@@ -30,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                     && p.PublishedStatus == PublicationStatus.Published).ToList();
 
             ItemType = service.CatalogueItemType;
-            PriceFor = priceFor;
+            PriceFor = service.CatalogueItemType.Name();
             Title = PriceFor + " prices";
         }
 

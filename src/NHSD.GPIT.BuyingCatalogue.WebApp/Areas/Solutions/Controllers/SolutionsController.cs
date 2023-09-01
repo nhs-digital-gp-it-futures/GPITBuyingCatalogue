@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -205,7 +206,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
 
-            return View("ListPrice", new ListPriceModel(item, associatedService, contentStatus, "Associated Service")
+            return View("ListPrice", new ListPriceModel(item, associatedService, contentStatus)
             {
                 BackLink = Url.Action(
                     nameof(AssociatedServices),
@@ -248,7 +249,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
 
-            return View("ListPrice", new ListPriceModel(item, additionalService, contentStatus, "Additional Service")
+            return View("ListPrice", new ListPriceModel(item, additionalService, contentStatus)
             {
                 BackLink = Url.Action(
                     nameof(AdditionalServices),

@@ -11,6 +11,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Controller;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -1014,6 +1015,108 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
             actual.Model.Should().BeEquivalentTo(mockSolutionListPriceModel);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AdditionalServicePricePage_ValidSolutionForId_ReturnsExpectedViewResult(
+            [Frozen] Mock<ISolutionsService> mockService,
+            SolutionsController controller,
+            Solution solution,
+            AdditionalService additionalService,
+            CatalogueItemContentStatus contentStatus,
+            CatalogueItem service)
+        {
+            var catalogueItem = solution.CatalogueItem;
+            catalogueItem.PublishedStatus = PublicationStatus.Published;
+            catalogueItem.AdditionalService = additionalService;
+            service = catalogueItem.AdditionalService.CatalogueItem;
+            var mockSolutionListPriceModel = new ListPriceModel(catalogueItem, service, contentStatus) { IndexValue = 4, };
+
+            mockService.Setup(s => s.GetSolutionWithCataloguePrice(service.Id))
+                .ReturnsAsync(service);
+
+            mockService.Setup(s => s.GetSolutionWithCataloguePrice(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
+
+            mockService.Setup(s => s.GetContentStatusForCatalogueItem(catalogueItem.Id))
+                .ReturnsAsync(contentStatus);
+
+            var actual = (await controller.AdditionalServicePrice(catalogueItem.Id, service.Id)).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().Be("ListPrice");
+            actual.Model.Should().BeEquivalentTo(mockSolutionListPriceModel, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.IndexValue).Excluding(m => m.Caption));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AdditionalServicePricePage_NullCatalogueItem_ReturnsError(
+            [Frozen] Mock<ISolutionsService> mockService,
+            SolutionsController controller,
+            Solution solution,
+            CatalogueItem service,
+            CatalogueItemId catalogueItemId)
+        {
+            solution.CatalogueItem = null;
+            var catalogueItem = solution.CatalogueItem;
+
+            mockService.Setup(s => s.GetSolutionWithCataloguePrice(catalogueItemId)).ReturnsAsync(catalogueItem);
+
+            var actual = (await controller.AdditionalServicePrice(catalogueItemId, service.Id)).As<ViewResult>();
+
+            actual.Should().BeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AssociatedServicePricePage_ValidSolutionForId_ReturnsExpectedViewResult(
+            [Frozen] Mock<ISolutionsService> mockService,
+            SolutionsController controller,
+            Solution solution,
+            AssociatedService associatedService,
+            CatalogueItemContentStatus contentStatus,
+            CatalogueItem service)
+        {
+            var catalogueItem = solution.CatalogueItem;
+            catalogueItem.PublishedStatus = PublicationStatus.Published;
+            catalogueItem.AssociatedService = associatedService;
+            service = catalogueItem.AssociatedService.CatalogueItem;
+            var mockSolutionListPriceModel = new ListPriceModel(catalogueItem, service, contentStatus) { IndexValue = 5, };
+
+            mockService.Setup(s => s.GetSolutionWithCataloguePrice(service.Id))
+                .ReturnsAsync(service);
+
+            mockService.Setup(s => s.GetSolutionWithCataloguePrice(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
+
+            mockService.Setup(s => s.GetContentStatusForCatalogueItem(catalogueItem.Id))
+                .ReturnsAsync(contentStatus);
+
+            var actual = (await controller.AssociatedServicePrice(catalogueItem.Id, service.Id)).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().Be("ListPrice");
+            actual.Model.Should().BeEquivalentTo(mockSolutionListPriceModel, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.IndexValue).Excluding(m => m.Caption));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AssociatedServicePricePage_NullCatalogueItem_ReturnsError(
+            [Frozen] Mock<ISolutionsService> mockService,
+            SolutionsController controller,
+            Solution solution,
+            CatalogueItem service,
+            CatalogueItemId catalogueItemId)
+        {
+            solution.CatalogueItem = null;
+            var catalogueItem = solution.CatalogueItem;
+
+            mockService.Setup(s => s.GetSolutionWithCataloguePrice(catalogueItemId)).ReturnsAsync(catalogueItem);
+
+            var actual = (await controller.AssociatedServicePrice(catalogueItemId, service.Id)).As<ViewResult>();
+
+            actual.Should().BeNull();
         }
 
         [Theory]
