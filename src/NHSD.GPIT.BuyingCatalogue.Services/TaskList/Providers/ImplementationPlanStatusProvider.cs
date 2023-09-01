@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
             }
 
             return order.Contract?.ImplementationPlan != null
-                ? TaskProgress.Completed
+                ? order.IsAmendment ? TaskProgress.Amended : TaskProgress.Completed
                 : TaskProgress.NotStarted;
         }
     }
