@@ -20,10 +20,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             ReviewFilter = new ReviewFilter(driver, commonActions);
             StartCompetition = new StartCompetition(driver, commonActions);
             SelectSolutions = new SelectSolutions(driver, commonActions);
-            SolutionNotShortlisted = new SolutionNotShortlisted(driver, commonActions);
+            SolutionShortlisted = new SolutionShortlisted(driver, commonActions);
             CompetitionStepOne = new CompetitionStepOne(driver, commonActions);
             NoSolutionsFound = new NoSolutionsFound(driver, commonActions);
             SingleSolutionFound = new SingleSolutionFound(driver, commonActions);
+            CompetitionTaskList = new CompetitionTaskList(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -42,13 +43,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
 
         internal SelectSolutions SelectSolutions { get; }
 
-        internal SolutionNotShortlisted SolutionNotShortlisted { get; }
+        internal SolutionShortlisted SolutionShortlisted { get; }
 
         internal CompetitionStepOne CompetitionStepOne { get; }
 
         internal NoSolutionsFound NoSolutionsFound { get; }
 
         internal SingleSolutionFound SingleSolutionFound { get; }
+
+        internal CompetitionTaskList CompetitionTaskList { get; }
 
         internal FilterType FilterType { get; set; }
 
@@ -79,8 +82,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                 if (filterId == 2)
                 {
                     SelectSolutions.AddSolutions(5);
-                    SolutionNotShortlisted.SolutionNotIncludedInShortlisting();
+                    SolutionShortlisted.SolutionNotIncludedInShortlisting();
+                    SolutionShortlisted.ConfirmSolutions();
                 }
+
+                CompetitionTaskList.CompetitionServiceRecipientsTask();
             }
         }
 
