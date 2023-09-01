@@ -379,6 +379,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             var order = await dbContext.Order(internalOrgId, callOffId);
 
+            dbContext.ImplementationPlanMilestones.RemoveRange(dbContext.ImplementationPlanMilestones.Where(x => x.Plan.Contract.OrderId == order.Id));
+            dbContext.ImplementationPlans.RemoveRange(dbContext.ImplementationPlans.Where(x => x.Contract.OrderId == order.Id));
+            dbContext.Contracts.RemoveRange(dbContext.Contracts.Where(x => x.OrderId == order.Id));
             dbContext.ContractFlags.RemoveRange(dbContext.ContractFlags.Where(x => x.OrderId == order.Id));
             dbContext.OrderDeletionApprovals.RemoveRange(dbContext.OrderDeletionApprovals.Where(x => x.OrderId == order.Id));
             dbContext.OrderItems.RemoveRange(dbContext.OrderItems.Where(x => x.OrderId == order.Id));
