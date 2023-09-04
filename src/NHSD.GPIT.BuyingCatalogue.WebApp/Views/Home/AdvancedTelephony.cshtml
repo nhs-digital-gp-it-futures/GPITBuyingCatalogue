@@ -1,6 +1,6 @@
 ﻿@model NavBaseModel
 @{
-    ViewBag.Title = "Advanced Telephony Better Purchasing framework";
+    ViewBag.Title = "Digital Services for Integrated Care - Advanced Telephony Better Purchasing framework";
 
     var returnUrl = Url.Action(
         nameof(HomeController.AdvancedTelephony),
@@ -17,63 +17,28 @@
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-page-title title="@ViewBag.Title"
-                        advice="A new way of supporting the commissioning of advanced, cloud-hosted GP telephony systems."/>
+                        advice="A new way of supporting the commissioning of advanced, cloud-hosted GP telephony systems." />
 
         <p>
-            The Advanced Telephony Better Purchasing framework allows commissioners to procure cloud-based telephone systems from a number of assured telephony suppliers within the Better Purchasing Framework List.
+            The Advanced Telephony Better Purchasing framework (BPf) allows commissioners to procure cloud-based telephone systems from a number of telephony suppliers within the Better Purchasing framework List who have been through early assurance.
         </p>
-
         <p>
-            Owned by the National Commercial and Procurement Hub, the list includes suppliers who meet a national cloud-based telephony specification and NHS terms and conditions.
+            Owned by the National Commercial and Procurement Hub (the Hub), the list comprises assured suppliers against the BPf requirements. These suppliers have also signed NHS England’s Digital Care Services Catalogue Agreement and have agreed to adopt the NHS terms and conditions for practice contracts which set a maximum term of 3 years.
         </p>
-
         <p>
-            The framework offers commissioners support with requirements identification, procurement support, exit and migration support and supplier management.
+            The framework offers commissioners full procurement support including requirements identification, pricing classification, exit fee negotiation, contract drafting and finalisation and issue resolution with suppliers. These services are funded by NHS England and are made available to support General Practices, Primary Care Networks and Integrated Care Boards at no cost.
         </p>
-
         <p>
-            Later this year, the list will be replaced by the Digital Care Services Cloud Telephony framework. Until then, practices with urgent telephony solutions requirements, such as those whose contracts are coming to an end, can move forward with procurement using the list.
+            In 2024, the BPf supplier list will be replaced by the Digital Care Services Cloud Telephony framework. Until then, practices with urgent requirements, such as those whose contracts are coming to an end or who are on analogue solutions, are required to use the BPf under current GP contract obligations.
         </p>
-
         <p>
-            Suppliers that are on the list will be pre-committed to the terms of the new Digital Care Services Cloud Telephony framework, prior to its launch. Buying organisations can therefore procure services from any of the suppliers with confidence in the capability of the advanced telephony solutions offered and the suppliers operating them.
+            To benefit from national funding support to transition to cloud-based telephony, practices are required to engage the Hub who will assist practices, Primary Care Networks and Integrated Care Boards throughout the process, providing a wraparound service.
+        </p>
+        <p>
+            Suppliers that are on the list will be pre-committed to the terms of the new Digital Care Services Cloud Telephony framework and will be required to achieve Catalogue Compliance by January 2024 as a condition of entry.
         </p>
 
-        <h2>Suppliers on the Better Purchasing Framework List</h2>
-
-        <p>These are the suppliers that are available from the list. You can find information about their solutions using the links:</p>
-
-        <ul>
-            <li>
-                <a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.GetAdvancedTelephonyPdf)" asp-route-file="@AdvancedTelephonyConstants.BabbleVoice">Babblevoice (PDF)</a>
-            </li>
-            <li>
-                <a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.GetAdvancedTelephonyPdf)" asp-route-file="@AdvancedTelephonyConstants.CheckCloud">Check Communications Ltd (PDF)</a>
-            </li>
-            <li>
-                <a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.GetAdvancedTelephonyPdf)" asp-route-file="@AdvancedTelephonyConstants.DaisyPatientLine">Daisy Communications Ltd (PDF)</a>
-            </li>
-            <li>
-                <a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.GetAdvancedTelephonyPdf)" asp-route-file="@AdvancedTelephonyConstants.LouisComm">Louiscomm (PDF)</a>
-            </li>
-            <li>
-                <a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.GetAdvancedTelephonyPdf)" asp-route-file="@AdvancedTelephonyConstants.Redcentric">Redcentric Solutions Ltd (PDF)</a>
-            </li>
-            <li>
-                <a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.GetAdvancedTelephonyPdf)" asp-route-file="@AdvancedTelephonyConstants.RpmPatientContact">RPM Business Communications (PDF)</a>
-            </li>
-            <li>
-                <a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.GetAdvancedTelephonyPdf)" asp-route-file="@AdvancedTelephonyConstants.SurgeryConnect">Surgery Connect (PDF)</a>
-            </li>
-            <li>
-                <a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.GetAdvancedTelephonyPdf)" asp-route-file="@AdvancedTelephonyConstants.ThinkHealthcare">Think Healthcare (PDF)</a>
-            </li>
-            <li>
-                <a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.GetAdvancedTelephonyPdf)" asp-route-file="@AdvancedTelephonyConstants.WaveNet">Wavenet (PDF)</a>
-            </li>
-        </ul>
-
-        <p>The list will grow over time as more suppliers meet the qualification criteria.</p>
+        <h2>Help and support</h2>
 
         <p>
             Find out more about the Better Purchasing framework in the buyer’s guide produced by the National Commercial and Procurement Hub.
@@ -81,7 +46,7 @@
 
         <vc:nhs-secondary-button type="Secondary"
                                  text="Download buyer’s guide (PDF)"
-                                 url="@Url.Action(nameof(AdvancedTelephonyController.GetAdvancedTelephonyPdf), typeof(AdvancedTelephonyController).ControllerName(), new { file = AdvancedTelephonyConstants.BuyersGuide })"/>
+                                 url="@Url.Action(nameof(AdvancedTelephonyController.GetAdvancedTelephonyPdf), typeof(AdvancedTelephonyController).ControllerName(), new { file = AdvancedTelephonyConstants.BuyersGuide })" />
 
         <p>
             For more information on the Better Purchasing framework and the suppliers and solutions currently involved, contact National Commercial and Procurement Hub.
@@ -89,39 +54,78 @@
 
         <div class="nhsuk-u-margin-top-6">
             <vc:nhs-action-link text="Contact Procurement Hub"
-                                url="@procurementSupportUrl"/>
+                                url="@procurementSupportUrl" />
         </div>
+
+        <h2>
+            Suppliers on the Better Purchasing framework List
+        </h2>
+
+        <p>
+            These are the suppliers and solutions that are available from the list. You can find information about their solutions using the links:
+        </p>
+
+        <ul>
+            <li>
+                <a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.GetAdvancedTelephonyPdf)" asp-route-file="@AdvancedTelephonyConstants.BabbleVoice">Babble Ltd - Babblevoice (PDF)</a>
+            </li>
+            <li>
+                <a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.GetAdvancedTelephonyPdf)" asp-route-file="@AdvancedTelephonyConstants.CheckCloud">Checkcomm – Check Cloud (PDF)</a>
+            </li>
+            <li>
+                <a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.GetAdvancedTelephonyPdf)" asp-route-file="@AdvancedTelephonyConstants.DaisyPatientLine">Daisy Communications Ltd  – Daisy Patient Line (PDF)</a>
+            </li>
+            <li>
+                <a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.GetAdvancedTelephonyPdf)" asp-route-file="@AdvancedTelephonyConstants.ThinkHealthcare">Focus Group - Think Healthcare (PDF)</a>
+            </li>
+            <li>
+                <a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.GetAdvancedTelephonyPdf)" asp-route-file="@AdvancedTelephonyConstants.LouisComm">Louiscomm - CareConnect with Horizon Contact (PDF)</a>
+            </li>
+            <li>
+                <a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.GetAdvancedTelephonyPdf)" asp-route-file="@AdvancedTelephonyConstants.Redcentric">Redcentric Solutions Ltd – Unity GP (PDF)</a>
+            </li>
+            <li>
+                <a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.GetAdvancedTelephonyPdf)" asp-route-file="@AdvancedTelephonyConstants.RpmPatientContact">RPM Business Communications – Patient Contact (PDF)</a>
+            </li>
+            <li>
+                <a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.GetAdvancedTelephonyPdf)" asp-route-file="@AdvancedTelephonyConstants.WaveNet">Wavenet – GP Voice (PDF)</a>
+            </li>
+            <li>
+                <a asp-controller="@typeof(AdvancedTelephonyController).ControllerName()" asp-action="@nameof(AdvancedTelephonyController.GetAdvancedTelephonyPdf)" asp-route-file="@AdvancedTelephonyConstants.SurgeryConnect">X-On - Surgery Connect (PDF)</a>
+            </li>
+        </ul>
+
+        <p>
+            The list will grow over time as more suppliers meet the qualification criteria.
+        </p>
 
         <h2>
             Digital Care Services Cloud Telephony framework
         </h2>
 
         <p>
-            The Digital Care Services Cloud Telephony framework is planned to launch in spring 2023. It will set the strategic technical and commercial direction for future services, as well as the standard for unified communications and telephony services in general practice and primary care.
+            The Digital Care Services Cloud Telephony framework is planned to launch next year. It’ll set the strategic technical and commercial direction for future services, as well as the standard for unified communications and telephony services in general practice and primary care.
         </p>
 
         <p>
-            The Digital Care Services Cloud Telephony framework will support practices, Primary Care Networks and their Integrated Care Boards in commissioning advanced GP telephony systems built around cloud-hosted Voiceover IP (VoIP) systems, which include clinical system integration, remote access and peak demand management capabilities.
+            The Digital Care Services Cloud Telephony framework will support practices, Primary Care Networks and their Integrated Care Boards in commissioning advanced GP telephony systems built around cloud-hosted Voiceover IP (VoIP) systems, which include clinical system integration, remote access and peak demand management functionality.
         </p>
 
         <p>
-            The framework will be built around the following Capabilities:
+            The framework will be built around the following Capabilities defined by the NHS:
         </p>
+
         <ul>
             <li>Auto-Attendant and Interactive Voice Response (IVR)</li>
-            <li>Call Reporting and Forecasting</li>
+            <li>Call Reporting</li>
             <li>Call Recording</li>
             <li>Office Telephony</li>
-            <li>Rule-based Call Routing</li>
+            <li>Video Consultation</li>
         </ul>
-
-        <p>
-            It is being planned for implementation before the end of the first quarter of financial year 2023 to 2024.
-        </p>
 
 
         <vc:nhs-secondary-button text="Back to homepage"
                                  type="Primary"
-                                 url="@Url.Action(nameof(HomeController.Index), typeof(HomeController).ControllerName())"/>
+                                 url="@Url.Action(nameof(HomeController.Index), typeof(HomeController).ControllerName())" />
     </div>
 </div>
