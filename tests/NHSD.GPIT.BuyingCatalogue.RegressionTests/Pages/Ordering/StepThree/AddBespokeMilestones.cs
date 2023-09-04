@@ -38,9 +38,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree
             CommonActions.LedeText().Should().Be("Add an Associated Service milestone.".FormatForComparison());
             CommonActions.ClickDropDownListItem(value);
             AssociatedServicesEnterMilestoneName();
-            TextGenerators.NumberInputAddRandomNumber(ImplementationPlanObjects.MilestoneAssociatedServiceUnits, 1, 20);
-
-            CommonActions.ClickSave();
 
             CommonActions.LedeText().Should().Be("Review the default milestones that will act as payment triggers and create bespoke ones if required.".FormatForComparison());
             CommonActions.ClickSave();
@@ -53,6 +50,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree
         {
             TextGenerators.TextInputAddText(ImplementationPlanObjects.MileStoneName, 25);
             TextGenerators.TextInputAddText(ImplementationPlanObjects.MilestonePaymentTrigger, 50);
+            TextGenerators.NumberInputAddRandomNumber(ImplementationPlanObjects.MilestoneAssociatedServiceUnits, 1, 20);
+
+            CommonActions.ClickSave();
         }
     }
 }

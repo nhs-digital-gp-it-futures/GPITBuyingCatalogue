@@ -10,7 +10,7 @@ using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree
 {
-    internal class OrderingStepThree : PageBase
+    public class OrderingStepThree : PageBase
     {
         public OrderingStepThree(IWebDriver driver, CommonActions commonActions)
             : base(driver, commonActions)
