@@ -23,6 +23,8 @@ public class CompetitionSolution : ICompetitionPriceEntity
 
     public bool IsShortlisted { get; set; }
 
+    public bool IsWinningSolution { get; set; }
+
     public string Justification { get; set; }
 
     /// <summary>

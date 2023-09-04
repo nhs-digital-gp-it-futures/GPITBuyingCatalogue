@@ -38,4 +38,37 @@ public class CompetitionResultsController : Controller
 
         return View(model);
     }
+
+    [HttpPost("confirm")]
+    public async Task<IActionResult> Confirm(
+        string internalOrgId,
+        int competitionId,
+        ConfirmResultsModel model)
+    {
+        _ = model;
+
+        await competitionsService.CompleteCompetition(internalOrgId, competitionId);
+
+        return RedirectToAction(
+            nameof(ViewResults),
+            new { internalOrgId, competitionId });
+    }
+
+    [HttpGet("view")]
+    public async Task<IActionResult> ViewResults(
+        string internalOrgId,
+        int competitionId)
+    {
+        var competition = await competitionsService.GetCompetitionForResults(internalOrgId, competitionId);
+
+        var model = new ViewResultsModel(competition)
+        {
+            BackLink = Url.Action(
+                nameof(CompetitionsDashboardController.Index),
+                typeof(CompetitionsDashboardController).ControllerName(),
+                new { internalOrgId }),
+        };
+
+        return View(model);
+    }
 }

@@ -408,14 +408,33 @@ public class CompetitionsService : ICompetitionsService
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task CompleteCompetition(string internalOrgId, int competitionId)
+    public async Task CompleteCompetition(string internalOrgId, int competitionId, bool isDirectAward = false)
     {
         var competition =
-            await dbContext.Competitions.FirstOrDefaultAsync(
+            await dbContext.Competitions
+                .Include(x => x.Weightings)
+                .Include(x => x.NonPriceElements.NonPriceWeights)
+                .Include(x => x.NonPriceElements.Interoperability)
+                .Include(x => x.NonPriceElements.Implementation)
+                .Include(x => x.NonPriceElements.ServiceLevel)
+                .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Scores)
+                .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Quantities)
+                .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Price).ThenInclude(x => x.Tiers)
+                .Include(x => x.CompetitionSolutions).ThenInclude(x => x.SolutionServices).ThenInclude(x => x.Quantities)
+                .Include(x => x.CompetitionSolutions).ThenInclude(x => x.SolutionServices).ThenInclude(x => x.Price).ThenInclude(x => x.Tiers)
+                .AsSplitQuery()
+                .FirstOrDefaultAsync(
                 x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
         if (competition.Completed.HasValue)
             return;
+
+        if (!isDirectAward)
+        {
+            ScoreSolutionPrices(competition);
+            SetNonPriceScoreWeightings(competition);
+            SetWinningSolution(competition);
+        }
 
         competition.Completed = DateTime.UtcNow;
 
@@ -577,6 +596,89 @@ public class CompetitionsService : ICompetitionsService
 
             solution.Scores.Remove(score);
         }
+    }
+
+    private static void ScoreSolutionPrices(Competition competition)
+    {
+        static decimal GetWeightedPriceScore(Competition competition, int score)
+        {
+            var weight = competition.IncludesNonPrice.GetValueOrDefault()
+                ? competition.Weightings.Price.GetValueOrDefault()
+                : 100;
+
+            return CompetitionFormulas.CalculateWeightedScore(
+                score,
+                weight);
+        }
+
+        var competitionSolutions = competition.CompetitionSolutions;
+        var orderedSolutions = competitionSolutions
+            .Select(x => (Solution: x, Price: x.CalculateTotalPrice(competition.ContractLength.GetValueOrDefault())!.Value))
+            .OrderBy(x => x.Price)
+            .ToList();
+
+        const int maxScore = 5;
+
+        var lowestPricedSolution = orderedSolutions.First();
+        lowestPricedSolution.Solution.Scores.Add(new SolutionScore(ScoreType.Price, maxScore, GetWeightedPriceScore(competition, maxScore)));
+
+        var remainingSolutions = orderedSolutions.Skip(1);
+
+        foreach ((CompetitionSolution solution, var currentPrice) in remainingSolutions)
+        {
+            var score = CompetitionFormulas.CalculatePriceDifferenceScore(lowestPricedSolution.Price, currentPrice);
+
+            var priceWeightedScore = GetWeightedPriceScore(competition, score);
+
+            solution.Scores.Add(new SolutionScore(ScoreType.Price, score, priceWeightedScore));
+        }
+    }
+
+    private static void SetNonPriceScoreWeightings(Competition competition)
+    {
+        if (!competition.IncludesNonPrice.GetValueOrDefault()) return;
+
+        var competitionSolutions = competition.CompetitionSolutions;
+        var selectedNonPriceElements = competition.NonPriceElements.GetNonPriceElements()
+            .Select(
+                x => (NonPriceElement: x,
+                    NonPriceWeight: competition.NonPriceElements.GetNonPriceWeight(x).GetValueOrDefault()))
+            .ToList();
+
+        foreach (var competitionSolution in competitionSolutions)
+        {
+            foreach (var nonPriceElementAndWeight in selectedNonPriceElements)
+            {
+                var nonPriceElementScore = competitionSolution.GetScoreByType(nonPriceElementAndWeight.NonPriceElement.AsScoreType());
+
+                var nonPriceElementWeightedScore = CompetitionFormulas.CalculateWeightedScore(
+                    nonPriceElementScore.Score,
+                    nonPriceElementAndWeight.NonPriceWeight);
+
+                nonPriceElementScore.WeightedScore = nonPriceElementWeightedScore;
+            }
+        }
+    }
+
+    private static void SetWinningSolution(Competition competition)
+    {
+        var solutionsAndScores = new Dictionary<CompetitionSolution, decimal>();
+        foreach (var competitionSolution in competition.CompetitionSolutions)
+        {
+            var priceScore = competitionSolution.GetScoreByType(ScoreType.Price);
+            var nonPriceScores = competitionSolution.Scores.Where(x => x.ScoreType is not ScoreType.Price).ToList();
+
+            var nonPriceScoreSum = nonPriceScores.Sum(x => x.WeightedScore);
+            var nonPriceWeightedScore = CompetitionFormulas.CalculateWeightedScore(
+                nonPriceScoreSum,
+                competition.Weightings?.NonPrice.GetValueOrDefault() ?? 0);
+
+            var totalScore = nonPriceWeightedScore + priceScore.Score;
+            solutionsAndScores[competitionSolution] = totalScore;
+        }
+
+        var winningSolution = solutionsAndScores.MaxBy(x => x.Value);
+        winningSolution.Key.IsWinningSolution = true;
     }
 
     private async Task SetSolutionScores(

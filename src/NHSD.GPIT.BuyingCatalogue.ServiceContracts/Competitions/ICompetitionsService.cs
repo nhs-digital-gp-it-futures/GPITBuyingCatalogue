@@ -41,7 +41,7 @@ public interface ICompetitionsService
 
     Task AcceptShortlist(string internalOrgId, int competitionId);
 
-    Task CompleteCompetition(string internalOrgId, int competitionId);
+    Task CompleteCompetition(string internalOrgId, int competitionId, bool isDirectAward = false);
 
     Task DeleteCompetition(string internalOrgId, int competitionId);
 
