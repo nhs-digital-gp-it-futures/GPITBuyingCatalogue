@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         public async Task<IActionResult> TaskList(string internalOrgId, CallOffId callOffId, RoutingSource? source = null)
         {
             var wrapper = await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId);
-            // TODO: MJK review????
+
             if (wrapper.IsAmendment)
             {
                 await orderService.InitialiseAmendedOrderItemsIfRequired(internalOrgId, callOffId);

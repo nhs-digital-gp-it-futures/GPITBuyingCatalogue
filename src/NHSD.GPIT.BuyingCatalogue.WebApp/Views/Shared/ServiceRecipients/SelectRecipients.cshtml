@@ -6,16 +6,13 @@
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.ActionLink
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSecondaryButton
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.SelectRecipientsModel;
-@{
-    ViewBag.Title = "Service Recipients";
-}
 
 <partial name="Partials/_BackLink" model="Model" />
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
         <nhs-validation-summary />
-        <nhs-page-title title="@ViewBag.Title" caption="@Model.Caption" advice="@Model.Advice" />
+        <nhs-page-title model="@Model" />
 
         @if ((Model.SubLocations?.Any() ?? false) && Model.OrganisationType != OrganisationType.GP)
         {
@@ -41,10 +38,15 @@
                 </nhs-inset-text>
             }
 
+            <hr />
+            <h2>Upload your Service Recipients</h2>
+            <p>
+                You can upload your Service Recipients using a CSV file or select them manually below.
+            </p>
             <vc:nhs-action-link text="Upload Service Recipients"
                             url="@Model.ImportRecipientsLink" />
+            <hr />
 
-            <h2>Select Service Recipients</h2>
             <vc:nhs-secondary-button url="@Url.PageLink(values: new { selectionMode = Model.RecipientSelectionMode })"
                                  text="@Model.SelectionCaption"
                                  type="Secondary" />

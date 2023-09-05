@@ -67,12 +67,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     splitImportedRecipients,
                     selectionMode)
                 {
+                    Title = "Service Recipients for this order",
                     BackLink =
                         Url.Action(
                             nameof(TaskListController.TaskList),
                             typeof(TaskListController).ControllerName(),
                             new { internalOrgId, callOffId }),
-                    Caption = callOffId.ToString(),
+                    Caption = $"Order {callOffId}",
                     Advice = "Select the organisations you want to receive the items you’re ordering.",
                     ImportRecipientsLink = Url.Action(
                         nameof(ImportServiceRecipientsController.Index),
@@ -122,10 +123,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var selectedRecipients = await odsService.GetServiceRecipientsById(internalOrgId, selectedRecipientOdsCodes);
             var previousRecipients = await odsService.GetServiceRecipientsById(internalOrgId, previouslySelectedIds);
 
-            var model = new ConfirmChangesModel(order.OrderingParty)
+            var model = new ConfirmChangesModel() //order.OrderingParty)
             {
+                Title = "Confirm Service Recipients",
                 BackLink = Url.Action(nameof(SelectServiceRecipients), new { internalOrgId, callOffId, recipientIds }),
-                Caption = callOffId.ToString(),
+                Caption = $"Order {callOffId}",
                 Selected = selectedRecipients.Select(x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OrgId, Location = x.Location }).ToList(),
                 Advice = callOffId.IsAmendment
                     ? ConfirmChangesModel.AdditionalAdviceText

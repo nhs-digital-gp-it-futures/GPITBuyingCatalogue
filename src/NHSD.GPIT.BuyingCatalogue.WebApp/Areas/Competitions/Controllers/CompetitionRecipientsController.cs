@@ -62,6 +62,7 @@ public class CompetitionRecipientsController : Controller
             splitRecipientIds,
             selectionMode)
         {
+            Title = "Service Recipients",
             BackLink = Url.Action(
                 nameof(CompetitionTaskListController.Index),
                 typeof(CompetitionTaskListController).ControllerName(),
