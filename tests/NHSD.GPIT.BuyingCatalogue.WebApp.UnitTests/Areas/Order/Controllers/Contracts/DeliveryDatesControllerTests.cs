@@ -419,7 +419,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             DeliveryDatesController controller)
         {
             order.SetupCatalogueSolution();
-            // order.OrderItems.ForEach(x => x.OrderItemRecipients.ForEach(r => r.Recipient = new ServiceRecipient { Name = "Recipient Name" }));
 
             var catalogueItemId = order.OrderItems.First().CatalogueItemId;
 
@@ -470,7 +469,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             var catalogueItemId = order.OrderItems.First().CatalogueItemId;
 
-            var orderWrapper =new OrderWrapper(order);
+            var orderWrapper = new OrderWrapper(order);
             orderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
                 .ReturnsAsync(orderWrapper);

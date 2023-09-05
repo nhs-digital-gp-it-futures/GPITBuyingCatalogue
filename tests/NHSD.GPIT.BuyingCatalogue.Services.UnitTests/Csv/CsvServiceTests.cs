@@ -92,7 +92,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             var recipient2 = BuildOrderRecipient(fixture, new[] { originalCatalogueItem.Id });
 
             order.OrderItems = new HashSet<OrderItem>() { orderItem };
-            order.OrderRecipients = new HashSet<OrderRecipient>() {
+            order.OrderRecipients = new HashSet<OrderRecipient>()
+            {
                 recipient1,
                 recipient2,
             };

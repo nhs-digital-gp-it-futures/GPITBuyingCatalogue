@@ -188,7 +188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            var orderWrapper =  new OrderWrapper(order);
+            var orderWrapper = new OrderWrapper(order);
             mockOrderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
                 .ReturnsAsync(orderWrapper);
@@ -279,19 +279,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             solution.OrderItemPrice.ProvisioningType = ProvisioningType.Patient;
-            // solution.OrderItemRecipients.ForEach(x => x.Quantity = NumberOfPatients);
             order.OrderRecipients.ForEach(r => r.SetQuantityForItem(solution.CatalogueItemId, NumberOfPatients));
 
             var orderItem = order.OrderItems.ElementAt(1);
 
             orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.Patient;
-            // orderItem.OrderItemRecipients.ForEach(x => x.Quantity = null);
             order.OrderRecipients.ForEach(r => r.OrderItemRecipients.Where(i => i.CatalogueItemId == orderItem.CatalogueItemId).ForEach(x => x.Quantity = null));
-
-            //for (var i = 0; i < solution.OrderItemRecipients.Count; i++)
-            //{
-            //    orderItem.OrderItemRecipients.ElementAt(i).OdsCode = solution.OrderItemRecipients.ElementAt(i).OdsCode;
-            //}
 
             mockOrderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))

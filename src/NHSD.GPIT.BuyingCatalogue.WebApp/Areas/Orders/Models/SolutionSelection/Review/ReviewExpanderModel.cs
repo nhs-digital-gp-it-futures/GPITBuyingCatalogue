@@ -49,7 +49,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
             return (rolledUpRecipient != null && previousRecipient == null)
                 || Previous == null;
-
         }
     }
 }

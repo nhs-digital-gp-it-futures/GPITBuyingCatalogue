@@ -68,7 +68,6 @@ public static class ImportServiceRecipientsControllerTests
         IList<ServiceRecipientImportModel> importedServiceRecipients,
         string internalOrgId,
         CallOffId callOffId,
-        CatalogueItemId catalogueItemId,
         ImportServiceRecipientModel model,
         [Frozen] Mock<IServiceRecipientImportService> importService,
         ImportServiceRecipientsController controller)
@@ -163,7 +162,8 @@ public static class ImportServiceRecipientsControllerTests
         importedServiceRecipients.First().OdsCode = "MISMATCH";
 
         var expectedModel = new ValidateOdsModel(
-            importedServiceRecipients.Take(1).ToList()) { Caption = callOffId.ToString() };
+            importedServiceRecipients.Take(1).ToList())
+        { Caption = callOffId.ToString() };
 
         importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
             .ReturnsAsync(importedServiceRecipients);
@@ -401,7 +401,6 @@ public static class ImportServiceRecipientsControllerTests
     }
 
     [Theory]
-    // [CommonInlineAutoData(ServiceRecipientImportMode.Edit, nameof(ServiceRecipientsController.EditServiceRecipients))]
     [CommonInlineAutoData(ServiceRecipientImportMode.Add, nameof(ServiceRecipientsController.SelectServiceRecipients))]
     public static void CancelImport_Redirects(
         ServiceRecipientImportMode importMode,

@@ -69,7 +69,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
             return (rolledUpRecipient != null && previousRecipient == null)
                 || Previous == null;
-
         }
     }
 }

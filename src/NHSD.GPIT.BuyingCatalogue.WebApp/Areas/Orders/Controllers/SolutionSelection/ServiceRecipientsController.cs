@@ -18,9 +18,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
     [Route("order/organisation/{internalOrgId}/order/{callOffId}")]
     public class ServiceRecipientsController : Controller
     {
+        public const char Separator = ',';
+
         private const string SelectViewName = "ServiceRecipients/SelectRecipients";
         private const string ConfirmViewName = "ServiceRecipients/ConfirmChanges";
-        public const char Separator = ',';
 
         private readonly IOdsService odsService;
         private readonly IOrderService orderService;
