@@ -404,7 +404,7 @@ public static class CompetitionsServiceTests
 
     [Theory]
     [InMemoryDbAutoData]
-    public static async Task CompleteCompetition_SetsCompletionDate(
+    public static async Task CompleteCompetition_DirectAward_SetsCompletionDate(
         Organisation organisation,
         Competition competition,
         [Frozen] BuyingCatalogueDbContext context,
@@ -419,7 +419,7 @@ public static class CompetitionsServiceTests
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
-        await service.CompleteCompetition(organisation.InternalIdentifier, competition.Id);
+        await service.CompleteCompetition(organisation.InternalIdentifier, competition.Id, true);
 
         var updatedCompetition =
             await context.Competitions.AsNoTracking().FirstOrDefaultAsync(x => x.Id == competition.Id);
