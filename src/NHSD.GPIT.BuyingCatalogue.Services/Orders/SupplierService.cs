@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
@@ -63,6 +62,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.SupplierContacts)
                 .Where(s => s.Id == id)
                 .FirstAsync();
+        }
+
+        public async Task<Supplier> GetSupplierByDate(int id, DateTime dateTime)
+        {
+            return await dbContext.Suppliers
+                .TemporalAsOf(dateTime)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task AddOrderSupplier(CallOffId callOffId, string internalOrgId, int supplierId)

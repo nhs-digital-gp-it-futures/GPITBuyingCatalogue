@@ -40,11 +40,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Assoc
 
         public void EditServiceRecipient(string associatedServiceName)
         {
-            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemServiceRecipientLink(GetAssociatedServiceID(associatedServiceName)));
-
             CommonActions.PageLoadedCorrectGetIndex(
              typeof(ServiceRecipientsController),
-             nameof(ServiceRecipientsController.EditServiceRecipients)).Should().BeTrue();
+             nameof(ServiceRecipientsController.SelectServiceRecipients)).Should().BeTrue();
 
             CommonActions.ClickFirstCheckbox();
 

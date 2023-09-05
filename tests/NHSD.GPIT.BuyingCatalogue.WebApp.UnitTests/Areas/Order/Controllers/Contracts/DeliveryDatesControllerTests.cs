@@ -202,17 +202,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         {
             var orderItem = order.OrderItems.First();
             var catalogueItemId = orderItem.CatalogueItemId;
-            var date = orderItem.OrderItemRecipients.First().DeliveryDate;
+            var date = order.OrderRecipients.First().GetDeliveryDateForItem(orderItem.CatalogueItemId);
 
+            var orderWrapper = new OrderWrapper(order);
             orderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+                .ReturnsAsync(orderWrapper);
 
             RouteValues routeValues = null;
 
             routingService
-                .Setup(x => x.GetRoute(RoutingPoint.AmendDeliveryDatesBackLink, order, It.IsAny<RouteValues>()))
-                .Callback<RoutingPoint, EntityFramework.Ordering.Models.Order, RouteValues>((_, _, x) => routeValues = x)
+                .Setup(x => x.GetRoute(RoutingPoint.AmendDeliveryDatesBackLink, orderWrapper, It.IsAny<RouteValues>()))
+                .Callback<RoutingPoint, OrderWrapper, RouteValues>((_, _, x) => routeValues = x)
                 .Returns(routingResult);
 
             var result = await controller.AmendDate(internalOrgId, callOffId, catalogueItemId);
@@ -271,15 +272,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 .Setup(x => x.SetDeliveryDate(internalOrgId, callOffId, catalogueItemId, model.Date.Value))
                 .Verifiable();
 
+            var orderWrapper = new OrderWrapper(order);
+
             orderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+                .ReturnsAsync(orderWrapper);
 
             RouteValues routeValues = null;
 
             routingService
-                .Setup(x => x.GetRoute(RoutingPoint.AmendDeliveryDates, order, It.IsAny<RouteValues>()))
-                .Callback<RoutingPoint, EntityFramework.Ordering.Models.Order, RouteValues>((_, _, x) => routeValues = x)
+                .Setup(x => x.GetRoute(RoutingPoint.AmendDeliveryDates, orderWrapper, It.IsAny<RouteValues>()))
+                .Callback<RoutingPoint, OrderWrapper, RouteValues>((_, _, x) => routeValues = x)
                 .Returns(routingResult);
 
             var result = await controller.AmendDate(internalOrgId, callOffId, catalogueItemId, model);
@@ -416,7 +419,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             DeliveryDatesController controller)
         {
             order.SetupCatalogueSolution();
-            order.OrderItems.ForEach(x => x.OrderItemRecipients.ForEach(r => r.Recipient = new ServiceRecipient { Name = "Recipient Name" }));
+            // order.OrderItems.ForEach(x => x.OrderItemRecipients.ForEach(r => r.Recipient = new ServiceRecipient { Name = "Recipient Name" }));
 
             var catalogueItemId = order.OrderItems.First().CatalogueItemId;
 
@@ -467,9 +470,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             var catalogueItemId = order.OrderItems.First().CatalogueItemId;
 
+            var orderWrapper =new OrderWrapper(order);
             orderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+                .ReturnsAsync(orderWrapper);
 
             var deliveryDates = new List<RecipientDeliveryDateDto>();
             var routeValues = new RouteValues();
@@ -479,8 +483,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 .Callback<int, CatalogueItemId, List<RecipientDeliveryDateDto>>((_, _, x) => deliveryDates = x);
 
             routingService
-                .Setup(x => x.GetRoute(RoutingPoint.EditDeliveryDates, order, It.IsAny<RouteValues>()))
-                .Callback<RoutingPoint, EntityFramework.Ordering.Models.Order, RouteValues>((_, _, x) => routeValues = x)
+                .Setup(x => x.GetRoute(RoutingPoint.EditDeliveryDates, orderWrapper, It.IsAny<RouteValues>()))
+                .Callback<RoutingPoint, OrderWrapper, RouteValues>((_, _, x) => routeValues = x)
                 .Returns(new RoutingResult
                 {
                     ActionName = "action",
@@ -636,8 +640,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             orderService.VerifyAll();
             deliveryDateService.VerifyAll();
 
-            recipientDates.Count.Should().Be(orderItem.OrderItemRecipients.Count);
-            recipientDates.Select(x => x.OdsCode).Should().BeEquivalentTo(orderItem.OrderItemRecipients.Select(x => x.OdsCode));
+            var recipients = order.DetermineOrderRecipients(null, catalogueItemId);
+
+            recipientDates.Count.Should().Be(recipients.Count);
+            recipientDates.Select(x => x.OdsCode).Should().BeEquivalentTo(recipients.Select(x => x.OdsCode));
             recipientDates.ForEach(x => x.DeliveryDate.Should().Be(order.DeliveryDate));
 
             var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;

@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
+﻿using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 
@@ -20,6 +19,6 @@ public class ServiceRecipientsStatusProvider : ITaskProgressProvider
             return TaskProgress.CannotStart;
         }
 
-        return wrapper.Order.OrderRecipients.Any() ? TaskProgress.Completed : TaskProgress.NotStarted;
+        return wrapper.HasNewOrderRecipients ? TaskProgress.Completed : TaskProgress.NotStarted;
     }
 }

@@ -66,7 +66,6 @@ public class ValidateImportOrganisationNames : BuyerTestBase
     }
 
     [Theory]
-    [InlineData(ServiceRecipientImportMode.Edit, nameof(ServiceRecipientsController.EditServiceRecipients))]
     [InlineData(ServiceRecipientImportMode.Add, nameof(ServiceRecipientsController.SelectServiceRecipients))]
     public void ClickCancel_NavigatesToCorrectPage(
         ServiceRecipientImportMode importMode,
@@ -90,7 +89,6 @@ public class ValidateImportOrganisationNames : BuyerTestBase
     }
 
     [Theory]
-    [InlineData(ServiceRecipientImportMode.Edit, nameof(ServiceRecipientsController.EditServiceRecipients))]
     [InlineData(ServiceRecipientImportMode.Add, nameof(ServiceRecipientsController.SelectServiceRecipients))]
     public void ClickSubmit_NavigatesTyoCorrectPage(
         ServiceRecipientImportMode importMode,

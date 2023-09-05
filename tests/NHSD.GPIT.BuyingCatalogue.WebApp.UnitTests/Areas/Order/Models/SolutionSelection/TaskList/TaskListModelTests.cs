@@ -67,13 +67,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         public static void WithValidArguments_Amendment_PropertiesSetCorrectly(
             string internalOrgId,
             CallOffId callOffId,
-            EntityFramework.Ordering.Models.Order order,
-            EntityFramework.Ordering.Models.Order amendment)
+            EntityFramework.Ordering.Models.Order order)
         {
             callOffId = new CallOffId(callOffId.OrderNumber, 1);
 
-            amendment.OrderNumber = order.OrderNumber;
-            amendment.Revision = 2;
+            var amendment = order.BuildAmendment(2);
 
             order.AssociatedServicesOnly = false;
 
@@ -154,9 +152,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             var solution = order.OrderItems.ElementAt(0);
 
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-            solution.OrderItemRecipients.Clear();
 
             order.OrderItems = new List<OrderItem> { solution };
+            order.OrderRecipients.ForEach(r => r.OrderItemRecipients.Clear());
 
             var model = new TaskListModel(internalOrgId, callOffId, new OrderWrapper(order));
 

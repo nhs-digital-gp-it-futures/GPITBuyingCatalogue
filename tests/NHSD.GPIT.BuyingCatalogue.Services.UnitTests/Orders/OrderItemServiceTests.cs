@@ -7,6 +7,7 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
@@ -146,158 +147,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [InMemoryDbAutoData]
-        public static void CopyOrderItems_ItemIdsAreNull_ThrowsException(
-            string internalOrgId,
-            CallOffId callOffId,
-            OrderItemService service)
-        {
-            FluentActions
-                .Awaiting(() => service.CopyOrderItems(internalOrgId, callOffId, null))
-                .Should().ThrowAsync<ArgumentNullException>();
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
-        public static async Task CopyOrderItems_NoOrder_NoActionTaken(
-            string internalOrgId,
-            CallOffId callOffId,
-            List<CatalogueItemId> itemIds,
-            Order order,
-            [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            OrderItemService service)
-        {
-            itemIds.ForEach(x => context.CatalogueItems.Add(new CatalogueItem { Id = x, Name = $"{x}" }));
-            await context.SaveChangesAsync();
-
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper());
-
-            await service.CopyOrderItems(internalOrgId, callOffId, itemIds);
-
-            mockOrderService.VerifyAll();
-
-            itemIds.ForEach(x =>
-            {
-                var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == order.Id && o.CatalogueItemId == x);
-
-                actual.Should().BeNull();
-            });
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
-        public static async Task CopyOrderItems_AddsOrderItemsToDatabase(
-            string internalOrgId,
-            CallOffId callOffId,
-            List<CatalogueItemId> itemIds,
-            Order order,
-            [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            OrderItemService service)
-        {
-            itemIds.ForEach(x => context.CatalogueItems.Add(new CatalogueItem { Id = x, Name = $"{x}" }));
-            await context.SaveChangesAsync();
-
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
-
-            await service.CopyOrderItems(internalOrgId, callOffId, itemIds);
-
-            mockOrderService.VerifyAll();
-
-            itemIds.ForEach(x =>
-            {
-                var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == order.Id && o.CatalogueItemId == x);
-
-                actual.Should().NotBeNull();
-            });
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
-        public static async Task CopyOrderItems_WithExistingItems_AddsOrderItemsToDatabase(
-            string internalOrgId,
-            CallOffId callOffId,
-            List<CatalogueItemId> itemIds,
-            Order order,
-            [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            OrderItemService service)
-        {
-            itemIds.ForEach(x => context.CatalogueItems.Add(new CatalogueItem { Id = x, Name = $"{x}" }));
-
-            await context.SaveChangesAsync();
-
-            order.OrderItems.First().CatalogueItem.Id = itemIds.First();
-
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
-
-            await service.CopyOrderItems(internalOrgId, callOffId, itemIds);
-
-            mockOrderService.VerifyAll();
-
-            itemIds.ForEach(x =>
-            {
-                var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == order.Id && o.CatalogueItem.Id == x);
-
-                if (x == itemIds.First())
-                {
-                    actual.Should().BeNull();
-                }
-                else
-                {
-                    actual.Should().NotBeNull();
-                }
-            });
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
-        public static async Task CopyOrderItems_Amendment_AddsOrderItemsToDatabaseWithExistingPrice(
-            string internalOrgId,
-            CallOffId callOffId,
-            CataloguePrice cataloguePrice,
-            Order original,
-            [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            OrderItemService service)
-        {
-            original.Revision = 1;
-            var amendment = original.BuildAmendment(2);
-
-            var orders = new[] { original, amendment };
-
-            var orderItem = original.OrderItems.First();
-            var catalogueItemId = orderItem.CatalogueItem.Id;
-            cataloguePrice.CatalogueItemId = orderItem.CatalogueItem.Id;
-            context.Orders.Add(amendment);
-            context.CataloguePrices.Add(cataloguePrice);
-            context.CatalogueItems.Add(new CatalogueItem { Id = catalogueItemId, Name = $"{catalogueItemId}" });
-            await context.SaveChangesAsync();
-
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(new[] { original, amendment }));
-
-            await service.CopyOrderItems(internalOrgId, callOffId, new[] { catalogueItemId });
-
-            mockOrderService.VerifyAll();
-
-            var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == amendment.Id && o.CatalogueItem.Id == catalogueItemId);
-            actual.Should().NotBeNull();
-            actual.OrderItemPrice.Should().NotBeNull();
-            actual.OrderItemPrice.PriceTiers.Select(x => new { x.LowerRange, x.UpperRange, x.Price })
-                .Should()
-                .BeEquivalentTo(orderItem.OrderItemPrice.PriceTiers.Select(x => new { x.LowerRange, x.UpperRange, x.Price }));
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
         public static void DeleteOrderItems_ItemIdsAreNull_ThrowsException(
             string internalOrgId,
             CallOffId callOffId,
@@ -377,19 +226,27 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             Order order,
             OrderItemFunding funding,
             [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IOrderService> mockOrderService,
             OrderItemService orderItemService)
         {
             var item = order.OrderItems.First();
             item.OrderItemFunding = funding;
-            item.OrderItemRecipients = null;
 
             context.Orders.Add(order);
 
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            mockOrderService
+                .Setup(x => x.GetOrderWithOrderItems(order.CallOffId, order.OrderingParty.InternalIdentifier))
+                .ReturnsAsync(new OrderWrapper(order));
 
             await orderItemService.DetectChangesInFundingAndDelete(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId);
-            var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
-            actual!.OrderItemFunding.Should().BeEquivalentTo(funding);
+            var actual = context.OrderItems
+                .Include(i => i.OrderItemFunding)
+                .FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
+
+            actual!.OrderItemFunding.OrderItemFundingType.Should().Be(funding.OrderItemFundingType);
         }
 
         [Theory]
@@ -398,6 +255,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             Order order,
             OrderItemFunding funding,
             [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IOrderService> mockOrderService,
             OrderItemService orderItemService)
         {
             var item = order.OrderItems.First();
@@ -410,12 +268,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             context.Orders.Add(order);
 
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            mockOrderService
+                .Setup(x => x.GetOrderWithOrderItems(order.CallOffId, order.OrderingParty.InternalIdentifier))
+                .ReturnsAsync(new OrderWrapper(order));
 
             await orderItemService.DetectChangesInFundingAndDelete(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId);
 
-            var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
+            var actual = context.OrderItems
+                .Include(i => i.OrderItemFunding)
+                .FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
 
-            actual!.OrderItemFunding.Should().BeEquivalentTo(funding);
+            actual!.OrderItemFunding.OrderItemFundingType.Should().Be(OrderItemFundingType.LocalFundingOnly);
         }
 
         [Theory]
@@ -424,6 +289,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             Order order,
             OrderItemFunding funding,
             [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IOrderService> mockOrderService,
             OrderItemService orderItemService)
         {
             var item = order.OrderItems.First();
@@ -436,12 +302,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             context.Orders.Add(order);
 
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            mockOrderService
+                .Setup(x => x.GetOrderWithOrderItems(order.CallOffId, order.OrderingParty.InternalIdentifier))
+                .ReturnsAsync(new OrderWrapper(order));
 
             await orderItemService.DetectChangesInFundingAndDelete(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId);
 
-            var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
+            var actual = context.OrderItems
+                .Include(i => i.OrderItemFunding)
+                .FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
 
-            actual!.OrderItemFunding.Should().BeEquivalentTo(funding);
+            actual!.OrderItemFunding.OrderItemFundingType.Should().Be(OrderItemFundingType.LocalFundingOnly);
         }
 
         [Theory]
@@ -455,18 +328,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             Order order,
             OrderItemFunding funding,
             [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IOrderService> mockOrderService,
             OrderItemService orderItemService)
         {
             var item = order.OrderItems.First();
             funding.OrderItemFundingType = fundingType;
             item.OrderItemFunding = funding;
-
             order.OrderingParty.OrganisationType = OrganisationType.IB;
             order.SelectedFramework.LocalFundingOnly = true;
-
             context.Orders.Add(order);
-
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            mockOrderService
+                .Setup(x => x.GetOrderWithOrderItems(order.CallOffId, order.OrderingParty.InternalIdentifier))
+                .ReturnsAsync(new OrderWrapper(order));
 
             await orderItemService.DetectChangesInFundingAndDelete(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId);
 
@@ -486,6 +362,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             Order order,
             OrderItemFunding funding,
             [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IOrderService> mockOrderService,
             OrderItemService orderItemService)
         {
             var item = order.OrderItems.First();
@@ -498,6 +375,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             context.Orders.Add(order);
 
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            mockOrderService
+                .Setup(x => x.GetOrderWithOrderItems(order.CallOffId, order.OrderingParty.InternalIdentifier))
+                .ReturnsAsync(new OrderWrapper(order));
 
             await orderItemService.DetectChangesInFundingAndDelete(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId);
 

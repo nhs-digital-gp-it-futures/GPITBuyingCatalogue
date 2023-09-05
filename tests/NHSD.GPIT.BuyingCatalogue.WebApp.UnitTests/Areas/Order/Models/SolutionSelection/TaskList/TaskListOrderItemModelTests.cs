@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             int numberOfPrices,
             int priceId)
         {
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem)
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, orderItem)
             {
                 NumberOfPrices = numberOfPrices,
                 PriceId = priceId,
@@ -39,109 +39,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
         [Theory]
         [CommonAutoData]
-        public static void DisplayPriceViewLink_NotFromPreviousRevision_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            OrderItem orderItem)
-        {
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem)
-            {
-                FromPreviousRevision = false,
-            };
-
-            model.DisplayPriceViewLink.Should().BeFalse();
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void DisplayPriceViewLink_FromPreviousRevision_PriceStatusCannotStart_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            OrderItem orderItem)
-        {
-            orderItem.OrderItemRecipients.Clear();
-
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem)
-            {
-                FromPreviousRevision = true,
-            };
-
-            model.DisplayPriceViewLink.Should().BeFalse();
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void DisplayPriceViewLink_FromPreviousRevision_PriceStatusNotCannotStart_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            OrderItem orderItem)
-        {
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem)
-            {
-                FromPreviousRevision = true,
-            };
-
-            model.DisplayPriceViewLink.Should().BeTrue();
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void ServiceRecipientStatus_NoServiceRecipientsEntered_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            OrderItem orderItem)
-        {
-            orderItem.OrderItemRecipients.Clear();
-
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem);
-
-            model.ServiceRecipientsStatus.Should().Be(TaskProgress.NotStarted);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void ServiceRecipientStatus_ServiceRecipientsEntered_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            OrderItem orderItem)
-        {
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem);
-
-            model.ServiceRecipientsStatus.Should().Be(TaskProgress.Completed);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void ServiceRecipientStatus_Amendment_ServiceRecipientsEntered_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            OrderItem orderItem)
-        {
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem)
-            {
-                FromPreviousRevision = true,
-                HasCurrentAmendments = true,
-            };
-
-            model.ServiceRecipientsStatus.Should().Be(TaskProgress.Amended);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void PriceStatus_NoServiceRecipientsEntered_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            OrderItem orderItem)
-        {
-            orderItem.OrderItemRecipients.Clear();
-
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem);
-
-            model.PriceStatus.Should().Be(TaskProgress.CannotStart);
-        }
-
-        [Theory]
-        [CommonAutoData]
         public static void PriceStatus_NoPriceEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -149,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         {
             orderItem.OrderItemPrice.OrderItemPriceTiers.Clear();
 
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem);
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, orderItem);
 
             model.PriceStatus.Should().Be(TaskProgress.NotStarted);
         }
@@ -161,23 +58,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             CallOffId callOffId,
             OrderItem orderItem)
         {
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem);
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, orderItem);
 
             model.PriceStatus.Should().Be(TaskProgress.Completed);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void QuantityStatus_NoServiceRecipientsEntered_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            OrderItem orderItem)
-        {
-            orderItem.OrderItemRecipients.Clear();
-
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem);
-
-            model.QuantityStatus.Should().Be(TaskProgress.CannotStart);
         }
 
         [Theory]
@@ -189,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         {
             orderItem.OrderItemPrice.OrderItemPriceTiers.Clear();
 
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem);
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, orderItem);
 
             model.QuantityStatus.Should().Be(TaskProgress.CannotStart);
         }
@@ -199,12 +82,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         public static void QuantityStatus_NoQuantityEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
-            OrderItem orderItem)
+            OrderItem orderItem,
+            OrderRecipient[] recipients)
         {
             orderItem.Quantity = null;
-            orderItem.OrderItemRecipients.ForEach(x => x.Quantity = null);
+            recipients.ForEach(x => x.OrderItemRecipients.Clear());
 
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem);
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, recipients, orderItem);
 
             model.QuantityStatus.Should().Be(TaskProgress.NotStarted);
         }
@@ -214,14 +98,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         public static void QuantityStatus_PerServiceRecipientProvisioningType_OrderItemQuantityEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
-            OrderItem orderItem)
+            OrderItem orderItem,
+            OrderRecipient[] recipients)
         {
             orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.PerServiceRecipient;
 
             orderItem.Quantity = 1;
-            orderItem.OrderItemRecipients.ForEach(x => x.Quantity = null);
+            recipients.ForEach(x => x.OrderItemRecipients.Clear());
 
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem);
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, recipients, orderItem);
 
             model.QuantityStatus.Should().Be(TaskProgress.NotStarted);
         }
@@ -231,14 +116,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         public static void QuantityStatus_PerServiceRecipientProvisioningType_OrderItemRecipientQuantitiesEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
-            OrderItem orderItem)
+            OrderItem orderItem,
+            OrderRecipient[] recipients)
         {
             orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.PerServiceRecipient;
 
             orderItem.Quantity = null;
-            orderItem.OrderItemRecipients.ForEach(x => x.Quantity = 1);
+            recipients.ForEach(x => x.SetQuantityForItem(orderItem.CatalogueItemId, 1));
 
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem);
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, orderItem);
 
             model.QuantityStatus.Should().Be(TaskProgress.Completed);
         }
@@ -248,14 +134,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         public static void QuantityStatus_Amendment_PerServiceRecipientProvisioningType_OrderItemRecipientQuantitiesEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
-            OrderItem orderItem)
+            OrderItem orderItem,
+            OrderRecipient[] recipients)
         {
             orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.PerServiceRecipient;
 
             orderItem.Quantity = null;
-            orderItem.OrderItemRecipients.ForEach(x => x.Quantity = 1);
+            recipients.ForEach(x => x.SetQuantityForItem(orderItem.CatalogueItemId, 1));
 
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem)
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, recipients, orderItem)
             {
                 FromPreviousRevision = true,
                 HasCurrentAmendments = true,
@@ -269,16 +156,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         public static void QuantityStatus_PerOrderItemProvisioningType_OrderItemQuantityEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
-            OrderItem orderItem)
+            OrderItem orderItem,
+            OrderRecipient[] recipients)
         {
             orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.Declarative;
             orderItem.OrderItemPrice.CataloguePriceQuantityCalculationType =
                 CataloguePriceQuantityCalculationType.PerSolutionOrService;
 
             orderItem.Quantity = 1;
-            orderItem.OrderItemRecipients.ForEach(x => x.Quantity = null);
+            recipients.ForEach(x => x.OrderItemRecipients.Clear());
 
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem);
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, recipients, orderItem);
 
             model.QuantityStatus.Should().Be(TaskProgress.Completed);
         }
@@ -288,16 +176,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         public static void QuantityStatus_Amendment_PerOrderItemProvisioningType_OrderItemQuantityEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
-            OrderItem orderItem)
+            OrderItem orderItem,
+            OrderRecipient[] recipients)
         {
             orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.Declarative;
             orderItem.OrderItemPrice.CataloguePriceQuantityCalculationType =
                 CataloguePriceQuantityCalculationType.PerSolutionOrService;
 
             orderItem.Quantity = 1;
-            orderItem.OrderItemRecipients.ForEach(x => x.Quantity = null);
+            recipients.ForEach(x => x.OrderItemRecipients.Clear());
 
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem)
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, recipients, orderItem)
             {
                 FromPreviousRevision = true,
                 HasCurrentAmendments = true,
@@ -311,16 +200,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         public static void QuantityStatus_PerOrderItemProvisioningType_OrderItemRecipientQuantitiesEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
-            OrderItem orderItem)
+            OrderItem orderItem,
+            OrderRecipient[] recipients)
         {
             orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.Declarative;
             orderItem.OrderItemPrice.CataloguePriceQuantityCalculationType =
                 CataloguePriceQuantityCalculationType.PerSolutionOrService;
 
             orderItem.Quantity = null;
-            orderItem.OrderItemRecipients.ForEach(x => x.Quantity = 1);
+            recipients.ForEach(x => x.SetQuantityForItem(orderItem.CatalogueItemId, 1));
 
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem);
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, recipients, orderItem);
 
             model.QuantityStatus.Should().Be(TaskProgress.NotStarted);
         }
@@ -330,15 +220,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         public static void QuantityStatus_OrderItemRecipientQuantitiesPartiallyEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
-            OrderItem orderItem)
+            OrderItem orderItem,
+            OrderRecipient[] recipients)
         {
             orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.PerServiceRecipient;
 
             orderItem.Quantity = null;
-            orderItem.OrderItemRecipients.ForEach(x => x.Quantity = null);
-            orderItem.OrderItemRecipients.First().Quantity = 1;
+            recipients.ForEach(x => x.OrderItemRecipients.Clear());
+            recipients.First().SetQuantityForItem(orderItem.CatalogueItemId, 1);
 
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem);
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, recipients, orderItem);
 
             model.QuantityStatus.Should().Be(TaskProgress.InProgress);
         }
@@ -348,11 +239,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         public static void DeliveryDatesStatus_NoOrderItemRecipients_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
-            OrderItem orderItem)
+            OrderItem orderItem,
+            OrderRecipient[] recipients)
         {
-            orderItem.OrderItemRecipients.Clear();
-
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem);
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, recipients, orderItem);
 
             model.DeliveryDatesStatus.Should().Be(TaskProgress.CannotStart);
         }
@@ -362,11 +252,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         public static void DeliveryDatesStatus_NoDeliveryDatesEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
-            OrderItem orderItem)
+            OrderItem orderItem,
+            OrderRecipient[] recipients)
         {
-            orderItem.OrderItemRecipients.ForEach(x => x.DeliveryDate = null);
+            recipients.ForEach(r => r.OrderItemRecipients.Clear());
+            recipients.ForEach(r => r.SetQuantityForItem(orderItem.CatalogueItemId, 1));
 
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem);
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, recipients, orderItem);
 
             model.DeliveryDatesStatus.Should().Be(TaskProgress.NotStarted);
         }
@@ -376,12 +268,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         public static void DeliveryDatesStatus_SomeDeliveryDatesEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
-            OrderItem orderItem)
+            OrderItem orderItem,
+            OrderRecipient[] recipients)
         {
-            orderItem.OrderItemRecipients.ForEach(x => x.DeliveryDate = null);
-            orderItem.OrderItemRecipients.First().DeliveryDate = DateTime.Today;
+            recipients.ForEach(r => r.OrderItemRecipients.Clear());
+            recipients.ForEach(r => r.SetQuantityForItem(orderItem.CatalogueItemId, 1));
+            recipients.First().SetDeliveryDateForItem(orderItem.CatalogueItemId, DateTime.Today);
 
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem);
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, recipients, orderItem);
 
             model.DeliveryDatesStatus.Should().Be(TaskProgress.InProgress);
         }
@@ -391,11 +285,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         public static void DeliveryDatesStatus_AllDeliveryDatesEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
-            OrderItem orderItem)
+            OrderItem orderItem,
+            OrderRecipient[] recipients)
         {
-            orderItem.OrderItemRecipients.ForEach(x => x.DeliveryDate = DateTime.Today);
+            recipients.ForEach(r => r.SetQuantityForItem(orderItem.CatalogueItemId, 1));
+            recipients.ForEach(r => r.SetDeliveryDateForItem(orderItem.CatalogueItemId, DateTime.Today));
 
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem);
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, recipients, orderItem);
 
             model.DeliveryDatesStatus.Should().Be(TaskProgress.Completed);
         }
@@ -405,11 +301,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         public static void DeliveryDatesStatus_Amendment_AllDeliveryDatesEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
-            OrderItem orderItem)
+            OrderItem orderItem,
+            OrderRecipient[] recipients)
         {
-            orderItem.OrderItemRecipients.ForEach(x => x.DeliveryDate = DateTime.Today);
+            recipients.ForEach(r => r.SetQuantityForItem(orderItem.CatalogueItemId, 1));
+            recipients.ForEach(r => r.SetDeliveryDateForItem(orderItem.CatalogueItemId, DateTime.Today));
 
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderItem)
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, recipients, orderItem)
             {
                 FromPreviousRevision = true,
                 HasCurrentAmendments = true,

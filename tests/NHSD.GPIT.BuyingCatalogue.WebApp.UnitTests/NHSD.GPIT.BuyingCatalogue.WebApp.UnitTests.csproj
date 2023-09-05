@@ -46,6 +46,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\Order\Models\SolutionSelection\ServiceRecipients\" />
     <Folder Include="Areas\Order\Validators\SolutionSelection\Prices" />
   </ItemGroup>
 

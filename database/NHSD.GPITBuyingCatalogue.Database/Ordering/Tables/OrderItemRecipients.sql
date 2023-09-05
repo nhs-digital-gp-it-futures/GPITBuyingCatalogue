@@ -12,6 +12,6 @@
     PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
     CONSTRAINT PK_OrderItemRecipients PRIMARY KEY (OrderId, CatalogueItemId, OdsCode),
     CONSTRAINT FK_OrderItemRecipients_OrderItem FOREIGN KEY (OrderId, CatalogueItemId) REFERENCES ordering.OrderItems (OrderId, CatalogueItemId) ON DELETE CASCADE,
-    CONSTRAINT FK_OrderItemRecipients_OdsCode FOREIGN KEY (OrderId, OdsCode) REFERENCES ordering.OrderRecipients (OrderId, OdsCode),
+    CONSTRAINT FK_OrderItemRecipients_OdsCode FOREIGN KEY (OrderId, OdsCode) REFERENCES ordering.OrderRecipients (OrderId, OdsCode) ON DELETE CASCADE,
     CONSTRAINT FK_OrderItemRecipients_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
 ) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = ordering.OrderItemRecipients_History));

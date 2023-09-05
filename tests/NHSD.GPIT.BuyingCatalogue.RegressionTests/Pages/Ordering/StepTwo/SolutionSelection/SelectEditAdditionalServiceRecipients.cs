@@ -28,11 +28,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
         public void AmendEditAdditionalServiceRecipient(string additionalService)
         {
-            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemServiceRecipientLink(GetAdditionalServiceID(additionalService)));
-
             CommonActions.PageLoadedCorrectGetIndex(
             typeof(ServiceRecipientsController),
-            nameof(ServiceRecipientsController.EditServiceRecipients)).Should().BeTrue();
+            nameof(ServiceRecipientsController.SelectServiceRecipients)).Should().BeTrue();
 
             CommonActions.ClickCheckboxByLabel("BRIG ROYD SURGERY");
 
@@ -41,11 +39,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
         public void EditAdditionalServiceRecipient(string additionalServiceName)
         {
-            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemServiceRecipientLink(GetAdditionalServiceID(additionalServiceName)));
+            //CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemServiceRecipientLink(GetAdditionalServiceID(additionalServiceName)));
 
             CommonActions.PageLoadedCorrectGetIndex(
               typeof(ServiceRecipientsController),
-              nameof(ServiceRecipientsController.EditServiceRecipients)).Should().BeTrue();
+              nameof(ServiceRecipientsController.SelectServiceRecipients)).Should().BeTrue();
 
             CommonActions.ClickFirstCheckbox();
 

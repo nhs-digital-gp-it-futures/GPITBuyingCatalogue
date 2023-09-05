@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
     public class ReviewExpanderModel
     {
         public ReviewExpanderModel(
-            IEnumerable<OrderRecipient> recipients,
+            IEnumerable<OrderRecipient> rolledUp,
             IEnumerable<OrderRecipient> previousRecipients,
             OrderItem orderItem,
             OrderItem previous,
@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             IsOrderItemAdded = orderItem != null && previous == null;
             OrderItem = orderItem;
             Previous = previous;
-            Recipients = recipients.ToList();
+            RolledUpRecipients = rolledUp.ToList();
             PreviousRecipients = (previousRecipients ?? Enumerable.Empty<OrderRecipient>()).ToList();
         }
 
@@ -30,20 +30,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public CatalogueItem CatalogueItem => OrderItem.CatalogueItem;
 
-        public List<OrderRecipient> Recipients { get; }
+        public List<OrderRecipient> RolledUpRecipients { get; }
 
-        public List<OrderRecipient> PreviousRecipients { get; }
+        public int RolledUpTotalQuantity => OrderItem.TotalQuantity(RolledUpRecipients);
 
-        public int RolledUpTotalQuantity => OrderItem.TotalQuantity;
+        public int PreviousTotalQuantity => Previous?.TotalQuantity(PreviousRecipients) ?? 0;
 
-        public int PreviousTotalQuantity => Previous?.TotalQuantity ?? 0;
+        private List<OrderRecipient> PreviousRecipients { get; }
 
         private OrderItem OrderItem { get; }
 
         private OrderItem Previous { get; }
 
-        public bool IsServiceRecipientAdded(string odsCode) =>
-            Recipients?.FirstOrDefault(x => x.OdsCode == odsCode) != null
-            && PreviousRecipients?.FirstOrDefault(x => x.OdsCode == odsCode) == null;
+        public bool IsServiceRecipientAdded(string odsCode)
+        {
+            var rolledUpRecipient = RolledUpRecipients?.FirstOrDefault(x => x.OdsCode == odsCode);
+            var previousRecipient = PreviousRecipients?.FirstOrDefault(x => x.OdsCode == odsCode);
+
+            return (rolledUpRecipient != null && previousRecipient == null)
+                || Previous == null;
+
+        }
     }
 }

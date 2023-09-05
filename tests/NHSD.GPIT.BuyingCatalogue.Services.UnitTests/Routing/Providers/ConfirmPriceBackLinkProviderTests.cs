@@ -4,6 +4,7 @@ using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -15,14 +16,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
     {
         [Theory]
         [CommonAutoData]
-        public void Process_OrderIsNull_ThrowsException(
+        public void Process_OrderWrapperIsNull_ThrowsException(
             RouteValues routeValues,
             ConfirmPriceBackLinkProvider provider)
         {
             FluentActions
                 .Invoking(() => provider.Process(null, routeValues))
                 .Should().Throw<ArgumentNullException>()
-                .WithParameterName("order");
+                .WithParameterName("orderWrapper");
         }
 
         [Theory]
@@ -32,41 +33,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             ConfirmPriceBackLinkProvider provider)
         {
             FluentActions
-                .Invoking(() => provider.Process(order, null))
+                .Invoking(() => provider.Process(new OrderWrapper(order), null))
                 .Should().Throw<ArgumentNullException>()
                 .WithParameterName("routeValues");
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public void Process_WithSinglePrice_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            Order order,
-            ConfirmPriceBackLinkProvider provider)
-        {
-            order.OrderItems.ToList().ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
-
-            var solution = order.OrderItems.First();
-
-            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-            solution.CatalogueItem.CataloguePrices = new List<CataloguePrice>
-            {
-                solution.CatalogueItem.CataloguePrices.First(),
-            };
-
-            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, solution.CatalogueItemId));
-
-            var expected = new
-            {
-                InternalOrgId = internalOrgId,
-                CallOffId = callOffId,
-                solution.CatalogueItemId,
-            };
-
-            result.ActionName.Should().Be(Constants.Actions.EditServiceRecipients);
-            result.ControllerName.Should().Be(Constants.Controllers.ServiceRecipients);
-            result.RouteValues.Should().BeEquivalentTo(expected);
         }
 
         [Theory]
@@ -87,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
                 solution.CatalogueItem.CataloguePrices.First(),
             };
 
-            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, solution.CatalogueItemId)
+            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, solution.CatalogueItemId)
             {
                 Source = RoutingSource.TaskList,
             });
@@ -117,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
 
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, solution.CatalogueItemId));
+            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, solution.CatalogueItemId));
 
             var expected = new
             {

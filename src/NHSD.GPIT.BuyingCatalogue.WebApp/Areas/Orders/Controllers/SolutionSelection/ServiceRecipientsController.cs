@@ -26,12 +26,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         private readonly IOrderService orderService;
         private readonly IOrderRecipientService orderRecipientService;
         private readonly IOrganisationsService organisationsService;
+        private readonly IOrderItemService orderItemService;
 
         public ServiceRecipientsController(
             IOdsService odsService,
             IOrderService orderService,
             IOrderRecipientService orderRecipientService,
-            IOrganisationsService organisationsService)
+            IOrganisationsService organisationsService,
+            IOrderItemService orderItemService)
         {
             this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
@@ -39,6 +41,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 orderRecipientService ?? throw new ArgumentNullException(nameof(orderRecipientService));
             this.organisationsService =
                 organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
+            this.orderItemService =
+                orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
         }
 
         [HttpGet("select-recipients")]
@@ -58,7 +62,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 new SelectRecipientsModel(
                     organisation,
                     serviceRecipients,
-                    wrapper.Order.OrderRecipients.Select(x => x.OdsCode),
+                    wrapper.AddedOrderRecipients().Select(x => x.OdsCode),
+                    wrapper.ExistingOrderRecipients.Select(x => x.OdsCode),
                     splitImportedRecipients,
                     selectionMode)
                 {
@@ -108,18 +113,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
             var order = wrapper.RolledUp;
-            var recipientOdsCodes = recipientIds.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            var selectedRecipientOdsCodes = recipientIds.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-            var recipients = await odsService.GetServiceRecipientsById(internalOrgId, recipientOdsCodes);
+            var previouslySelectedIds = wrapper.Previous?.OrderRecipients
+                ?.Select(x => x.OdsCode)
+                .ToList() ?? Enumerable.Empty<string>();
+
+            var selectedRecipients = await odsService.GetServiceRecipientsById(internalOrgId, selectedRecipientOdsCodes);
+            var previousRecipients = await odsService.GetServiceRecipientsById(internalOrgId, previouslySelectedIds);
 
             var model = new ConfirmChangesModel(order.OrderingParty)
             {
                 BackLink = Url.Action(nameof(SelectServiceRecipients), new { internalOrgId, callOffId, recipientIds }),
                 Caption = callOffId.ToString(),
-                Selected = recipients.Select(x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OrgId, Location = x.Location }).ToList(),
+                Selected = selectedRecipients.Select(x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OrgId, Location = x.Location }).ToList(),
                 Advice = callOffId.IsAmendment
                     ? ConfirmChangesModel.AdditionalAdviceText
                     : ConfirmChangesModel.AdviceText,
+                PreviouslySelected = previousRecipients.Select(x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OrgId, Location = x.Location }).ToList(),
             };
 
             return View(ConfirmViewName, model);

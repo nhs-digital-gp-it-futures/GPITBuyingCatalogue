@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
@@ -15,12 +16,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
             this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
         }
 
-        public RoutingResult Process(Order order, RouteValues routeValues)
+        public RoutingResult Process(OrderWrapper orderWrapper, RouteValues routeValues)
         {
-            if (order == null)
-            {
-                throw new ArgumentNullException(nameof(order));
-            }
+            ArgumentNullException.ThrowIfNull(orderWrapper);
+            var order = orderWrapper.Order ?? throw new ArgumentNullException(nameof(orderWrapper));
 
             if (routeValues?.CatalogueItemId == null)
             {
@@ -28,7 +27,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
             }
 
             var orderItem = order.OrderItem(routeValues.CatalogueItemId.Value);
-            var attentionRequired = order.IsAmendment && !orderItem.AllDeliveryDatesEntered;
+            var attentionRequired = order.IsAmendment
+                && !orderWrapper.DetermineOrderRecipients(orderItem.CatalogueItemId)
+                                .AllDeliveryDatesEntered(orderItem.CatalogueItemId);
 
             if (routeValues.Source == RoutingSource.TaskList
                 && !attentionRequired)

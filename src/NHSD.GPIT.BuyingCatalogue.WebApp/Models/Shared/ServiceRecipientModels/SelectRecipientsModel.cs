@@ -4,7 +4,6 @@ using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
-
 public class SelectRecipientsModel : NavBaseModel
 {
     public const string SelectAll = "Select all";
@@ -19,6 +18,7 @@ public class SelectRecipientsModel : NavBaseModel
         Organisation organisation,
         IEnumerable<ServiceRecipientModel> serviceRecipients,
         IEnumerable<string> existingRecipients,
+        IEnumerable<string> excludeRecipients,
         IEnumerable<string> preSelectedRecipients,
         SelectionMode? selectionMode = null)
     {
@@ -26,12 +26,15 @@ public class SelectRecipientsModel : NavBaseModel
 
         OrganisationName = organisation.Name;
         OrganisationType = organisation.OrganisationType.GetValueOrDefault();
+
+        PreviouslySelected = excludeRecipients.ToList();
+
         SubLocations = serviceRecipients
             .GroupBy(x => x.Location)
             .Select(
                 x => new SublocationModel(
                     x.Key,
-                    x.OrderBy(y => y.Name).ToList()))
+                    x.Where(x => !excludeRecipients.Contains(x.OdsCode)).OrderBy(y => y.Name).ToList()))
             .OrderBy(x => x.Name)
             .ToArray();
 
@@ -47,6 +50,8 @@ public class SelectRecipientsModel : NavBaseModel
     public SublocationModel[] SubLocations { get; set; } = Array.Empty<SublocationModel>();
 
     public bool HasImportedRecipients { get; set; }
+
+    public List<string> PreviouslySelected { get; set; }
 
     public bool ShouldExpand { get; set; }
 

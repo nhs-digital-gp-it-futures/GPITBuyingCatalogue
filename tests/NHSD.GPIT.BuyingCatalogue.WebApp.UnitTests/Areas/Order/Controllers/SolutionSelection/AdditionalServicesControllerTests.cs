@@ -135,12 +135,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         {
             model.Services.ForEach(x => x.IsSelected = false);
 
+            var orderWrapper = new OrderWrapper(order);
             mockOrderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+                .ReturnsAsync(orderWrapper);
 
             mockRoutingService
-                .Setup(x => x.GetRoute(RoutingPoint.SelectAdditionalServices, order, It.IsAny<RouteValues>()))
+                .Setup(x => x.GetRoute(RoutingPoint.SelectAdditionalServices, orderWrapper, It.IsAny<RouteValues>()))
                 .Returns(new RoutingResult
                 {
                     ActionName = Constants.Actions.TaskList,
@@ -185,12 +186,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Setup(x => x.AddOrderItems(internalOrgId, callOffId, new[] { catalogueItemId }))
                 .Returns(Task.CompletedTask);
 
+            var orderWrapper = new OrderWrapper(order);
             mockOrderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+                .ReturnsAsync(orderWrapper);
 
             mockRoutingService
-                .Setup(x => x.GetRoute(RoutingPoint.SelectAdditionalServices, order, It.IsAny<RouteValues>()))
+                .Setup(x => x.GetRoute(RoutingPoint.SelectAdditionalServices, orderWrapper, It.IsAny<RouteValues>()))
                 .Returns(new RoutingResult
                 {
                     ActionName = Constants.Actions.TaskList,
@@ -347,8 +349,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
-            actualResult.ControllerName.Should().Be(typeof(ServiceRecipientsController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(ServiceRecipientsController.SelectServiceRecipients));
+            actualResult.ControllerName.Should().Be(typeof(PricesController).ControllerName());
+            actualResult.ActionName.Should().Be(nameof(PricesController.SelectPrice));
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "internalOrgId", internalOrgId },
@@ -535,8 +537,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
-            actualResult.ControllerName.Should().Be(typeof(ServiceRecipientsController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(ServiceRecipientsController.SelectServiceRecipients));
+            actualResult.ControllerName.Should().Be(typeof(PricesController).ControllerName());
+            actualResult.ActionName.Should().Be(nameof(PricesController.SelectPrice));
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "internalOrgId", internalOrgId },

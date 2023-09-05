@@ -32,7 +32,7 @@ public class OrderRecipient
     public void SetQuantityForItem(CatalogueItemId catalogueItemId, int quantity)
     {
         var itemRecipient = OrderItemRecipients.FirstOrDefault(
-            x => x.OrderId == OrderId && x.OdsCode == OdsCode && x.CatalogueItemId == catalogueItemId);
+            x => x.CatalogueItemId == catalogueItemId);
 
         if (itemRecipient == null)
         {
@@ -46,7 +46,7 @@ public class OrderRecipient
     public void SetDeliveryDateForItem(CatalogueItemId catalogueItemId, DateTime deliveryDate)
     {
         var itemRecipient = OrderItemRecipients.FirstOrDefault(
-            x => x.OrderId == OrderId && x.OdsCode == OdsCode && x.CatalogueItemId == catalogueItemId);
+            x => x.CatalogueItemId == catalogueItemId);
 
         if (itemRecipient == null)
         {
@@ -57,11 +57,11 @@ public class OrderRecipient
         itemRecipient.DeliveryDate = deliveryDate;
     }
 
-    public int? GetQuantityForItem(CatalogueItemId catalogueItemId) => OrderItemRecipients.FirstOrDefault(
-            x => x.OrderId == OrderId && x.OdsCode == OdsCode && x.CatalogueItemId == catalogueItemId)
+    public int? GetQuantityForItem(CatalogueItemId catalogueItemId) => OrderItemRecipients
+        .FirstOrDefault(x => x.CatalogueItemId == catalogueItemId)
         ?.Quantity;
 
-    public DateTime? GetDeliveryDateForItem(CatalogueItemId catalogueItemId) => OrderItemRecipients.FirstOrDefault(
-            x => x.OrderId == OrderId && x.OdsCode == OdsCode && x.CatalogueItemId == catalogueItemId)
+    public DateTime? GetDeliveryDateForItem(CatalogueItemId catalogueItemId) => OrderItemRecipients
+        .FirstOrDefault(x => x.CatalogueItemId == catalogueItemId)
         ?.DeliveryDate;
 }

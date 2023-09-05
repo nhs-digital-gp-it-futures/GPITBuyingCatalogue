@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Security.Claims;
 using AutoFixture;
 using AutoFixture.Dsl;
 using AutoFixture.Kernel;
@@ -19,7 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
                 .Without(oi => oi.Order)
                 .Without(oi => oi.OrderId)
                 .Without(oi => oi.OrderItemPrice)
-                .Without(oi => oi.OrderItemRecipients)
                 .Without(oi => oi.CatalogueItem)
                 .Without(oi => oi.CatalogueItemId);
 
@@ -36,24 +34,10 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
                 var item = new OrderItem();
 
                 AddOrderItemCatalogueItem(item, context);
-                AddOrderItemRecipients(item, context);
                 AddOrderItemPrice(item, context);
                 AddOrderItemFunding(item, context);
 
                 return item;
-            }
-
-            private static void AddOrderItemRecipients(OrderItem item, ISpecimenContext context)
-            {
-                var recipients = context.CreateMany<OrderItemRecipient>();
-
-                foreach (var recipient in recipients)
-                {
-                    recipient.OrderItem = item;
-                    recipient.OrderId = item.OrderId;
-                    recipient.CatalogueItemId = item.CatalogueItemId;
-                    item.OrderItemRecipients.Add(recipient);
-                }
             }
 
             private static void AddOrderItemFunding(OrderItem item, ISpecimenContext context)

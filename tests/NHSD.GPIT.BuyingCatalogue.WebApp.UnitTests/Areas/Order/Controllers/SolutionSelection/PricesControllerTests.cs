@@ -224,16 +224,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             catalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
+            var orderWrapper = new OrderWrapper(order);
             mockOrderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+                .ReturnsAsync(orderWrapper);
 
             mockListPriceService
                 .Setup(lps => lps.GetCatalogueItemWithPublishedListPrices(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
             mockRoutingService
-                .Setup(x => x.GetRoute(RoutingPoint.ConfirmPrice, order, It.IsAny<RouteValues>()))
+                .Setup(x => x.GetRoute(RoutingPoint.ConfirmPrice, orderWrapper, It.IsAny<RouteValues>()))
                 .Returns(new RoutingResult { ActionName = Constants.Actions.SelectQuantity, ControllerName = Constants.Controllers.Quantity });
 
             List<PricingTierDto> actual = null;
@@ -411,9 +412,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
+            var orderWrapper = new OrderWrapper(order);
             mockOrderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+                .ReturnsAsync(orderWrapper);
 
             List<PricingTierDto> actual = null;
 
@@ -431,7 +433,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             });
 
             mockRoutingService
-                .Setup(x => x.GetRoute(RoutingPoint.EditPrice, order, It.IsAny<RouteValues>()))
+                .Setup(x => x.GetRoute(RoutingPoint.EditPrice, orderWrapper, It.IsAny<RouteValues>()))
                 .Returns(new RoutingResult
                 {
                     ActionName = nameof(QuantityController.SelectQuantity),

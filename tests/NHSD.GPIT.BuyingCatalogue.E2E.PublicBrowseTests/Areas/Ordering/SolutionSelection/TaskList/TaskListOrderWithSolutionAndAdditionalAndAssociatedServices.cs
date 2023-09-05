@@ -43,16 +43,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ta
                 PriceLinkActive = false,
                 QuantityLinkActive = false,
             },
-            new TaskListOrderItem
-            {
-                Name = "E2E Multiple Prices Associated Service",
-                CatalogueItemId = new CatalogueItemId(99998, "S-997"),
-                ServiceRecipientsAction = nameof(ServiceRecipientsController.EditServiceRecipients),
-                PriceLinkActive = true,
-                PriceAction = nameof(PricesController.SelectPrice),
-                QuantityLinkActive = true,
-                QuantityAction = nameof(QuantityController.SelectServiceRecipientQuantity),
-            },
         };
     }
 }

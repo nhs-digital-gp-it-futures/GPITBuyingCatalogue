@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
@@ -30,9 +31,15 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
                 : new List<Order>();
         }
 
-        public IEnumerable<Order> PreviousOrders => previous;
+        public IReadOnlyList<Order> PreviousOrders => previous;
 
         public bool IsAmendment => Order.CallOffId.IsAmendment;
+
+        public bool HasNewOrderRecipients => Order.OrderRecipients
+            .Any(r => Previous?.OrderRecipients?
+            .FirstOrDefault(x => x.OdsCode == r.OdsCode) == null);
+
+        public ICollection<OrderRecipient> ExistingOrderRecipients => Previous?.OrderRecipients ?? Enumerable.Empty<OrderRecipient>().ToList();
 
         public Order Last => previous.Any()
             ? previous.Last()
@@ -75,23 +82,27 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             }
         }
 
-        public bool HasCurrentAmendments(OrderItem orderItem)
+        public ICollection<OrderRecipient> AddedOrderRecipients() => Order.AddedOrderRecipients(Previous);
+
+        public ICollection<OrderRecipient> DetermineOrderRecipients(CatalogueItemId catalogueItemId) => Order.DetermineOrderRecipients(Previous, catalogueItemId);
+
+        public OrderRecipient InitialiseOrderRecipient(string odsCode)
         {
-            var previousOrder = Previous;
-
-            if (previousOrder == null)
+            var newRecipient = Order.InitialiseOrderRecipient(odsCode);
+            if (Order.DeliveryDate.HasValue)
             {
-                return false;
+                Order.OrderItems.ToList().ForEach(i =>
+                {
+                    if (Previous == null
+                    || !Previous.Exists(i.CatalogueItemId)
+                    || !Previous.OrderRecipients.Exists(odsCode))
+                    {
+                        newRecipient.SetDeliveryDateForItem(i.CatalogueItemId, Order.DeliveryDate.Value);
+                    }
+                });
             }
 
-            if (Order.OrderItems.Any(x => x.CatalogueItemId == orderItem.CatalogueItemId)
-                && previousOrder.OrderItems.All(x => x.CatalogueItemId != orderItem.CatalogueItemId))
-            {
-                return true;
-            }
-
-            return Order.OrderItems.Any(x => x.CatalogueItemId == orderItem.CatalogueItemId)
-                && previousOrder.OrderItems.Any(x => x.CatalogueItemId == orderItem.CatalogueItemId);
+            return newRecipient;
         }
 
         public IEnumerable<OrderItemFundingType> FundingTypesForItem(CatalogueItemId catalogueItemId)

@@ -1,17 +1,14 @@
 ﻿using System;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
 {
     public class AmendDeliveryDatesProvider : IRoutingResultProvider
     {
-        public RoutingResult Process(Order order, RouteValues routeValues)
+        public RoutingResult Process(OrderWrapper orderWrapper, RouteValues routeValues)
         {
-            if (order == null)
-            {
-                throw new ArgumentNullException(nameof(order));
-            }
+            ArgumentNullException.ThrowIfNull(orderWrapper);
 
             if (routeValues?.CatalogueItemId == null)
             {

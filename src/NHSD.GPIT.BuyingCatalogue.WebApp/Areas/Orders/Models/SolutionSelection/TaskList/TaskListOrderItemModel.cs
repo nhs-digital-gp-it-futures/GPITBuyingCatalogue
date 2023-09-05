@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 
@@ -8,18 +8,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 {
     public class TaskListOrderItemModel
     {
-        private readonly OrderItem orderItem;
+        private readonly OrderItem rolledUpOrderItem;
 
-        public TaskListOrderItemModel(string internalOrgId, CallOffId callOffId, IEnumerable<OrderRecipient> orderRecipients, OrderItem orderItem)
+        public TaskListOrderItemModel(string internalOrgId, CallOffId callOffId, IEnumerable<OrderRecipient> rolledUpOrderRecipients, OrderItem rolledUpOrderItem)
         {
-            this.orderItem = orderItem;
+            this.rolledUpOrderItem = rolledUpOrderItem;
 
             InternalOrgId = internalOrgId;
             CallOffId = callOffId;
 
-            CatalogueItemId = orderItem?.CatalogueItemId ?? default;
-            Name = orderItem?.CatalogueItem?.Name ?? string.Empty;
-            OrderRecipients = (orderRecipients ?? Enumerable.Empty<OrderRecipient>()).ToList();
+            CatalogueItemId = rolledUpOrderItem?.CatalogueItemId ?? default;
+            Name = rolledUpOrderItem?.CatalogueItem?.Name ?? string.Empty;
+            RolledUpOrderRecipients = (rolledUpOrderRecipients ?? Enumerable.Empty<OrderRecipient>()).ToList();
         }
 
         public string InternalOrgId { get; set; }
@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public bool HasCurrentAmendments { get; set; }
 
-        public List<OrderRecipient> OrderRecipients { get; set; }
+        public List<OrderRecipient> RolledUpOrderRecipients { get; set; }
 
         public CatalogueItemId CatalogueItemId { get; set; }
 
@@ -42,23 +42,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public int PriceId { get; set; }
 
-        public bool DisplayPriceViewLink
-        {
-            get
-            {
-                var priceStatus = PriceStatus;
-
-                return FromPreviousRevision
-                    && priceStatus != TaskProgress.NotApplicable
-                    && priceStatus != TaskProgress.CannotStart;
-            }
-        }
-
         public TaskProgress PriceStatus
         {
             get
             {
-                return (orderItem?.OrderItemPrice?.OrderItemPriceTiers?.Count ?? 0) == 0
+                return (rolledUpOrderItem?.OrderItemPrice?.OrderItemPriceTiers?.Count ?? 0) == 0
                     ? TaskProgress.NotStarted
                     : TaskProgress.Completed;
             }
@@ -73,15 +61,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                     return TaskProgress.CannotStart;
                 }
 
-                // TODO: MJK REVIEW MERGE
-                if (!orderItem.OrderItemRecipients.Any()) return TaskProgress.NotStarted;
-
-                if (((IPrice)orderItem.OrderItemPrice).IsPerServiceRecipient() && OrderRecipients.Any(x => !x.GetQuantityForItem(CatalogueItemId).HasValue))
+                if (RolledUpOrderRecipients.AllQuantitiesEntered(rolledUpOrderItem))
+                {
+                    return FromPreviousRevision ? TaskProgress.Amended : TaskProgress.Completed;
+                }
+                else if (RolledUpOrderRecipients.SomeButNotAllQuantitiesEntered(rolledUpOrderItem))
                 {
                     return TaskProgress.InProgress;
                 }
 
-                return (FromPreviousRevision && HasCurrentAmendments) ? TaskProgress.Amended : TaskProgress.Completed;
+                return TaskProgress.NotStarted;
             }
         }
 
@@ -89,20 +78,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         {
             get
             {
-                if ((QuantityStatus is TaskProgress.CannotStart or TaskProgress.NotStarted)
-                    || !orderItem.OrderItemRecipients.Any())
+                if (QuantityStatus is TaskProgress.CannotStart or TaskProgress.NotStarted)
                 {
                     return TaskProgress.CannotStart;
                 }
 
-                if (orderItem.OrderItemRecipients.All(x => x.DeliveryDate.HasValue))
+                if (RolledUpOrderRecipients.AllDeliveryDatesEntered(rolledUpOrderItem.CatalogueItemId))
                 {
-                    return (FromPreviousRevision && HasCurrentAmendments) ? TaskProgress.Amended : TaskProgress.Completed;
+                    return FromPreviousRevision ? TaskProgress.Amended : TaskProgress.Completed;
+                }
+                else if (!RolledUpOrderRecipients.NoDeliveryDatesEntered(rolledUpOrderItem.CatalogueItemId))
+                {
+                    return TaskProgress.InProgress;
                 }
 
-                return orderItem.OrderItemRecipients.Any(x => x.DeliveryDate.HasValue)
-                    ? TaskProgress.InProgress
-                    : TaskProgress.NotStarted;
+                return TaskProgress.NotStarted;
             }
         }
     }

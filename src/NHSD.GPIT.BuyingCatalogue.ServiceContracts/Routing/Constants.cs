@@ -1,4 +1,6 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing
+﻿using System;
+
+namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing
 {
     public static class Constants
     {

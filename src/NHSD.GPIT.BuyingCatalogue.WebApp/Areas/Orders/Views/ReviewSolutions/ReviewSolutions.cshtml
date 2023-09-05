@@ -46,7 +46,7 @@
             <h2 id="catalogue-solutions-title">@solutionsTitle</h2>
             @foreach (var solution in Model.CatalogueSolutions)
             {
-                <partial name="_ReviewExpander" model="@(new ReviewExpanderModel(Model.Order.OrderRecipients, Model.Previous?.OrderRecipients, solution, Model.Previous?.OrderItem(solution.CatalogueItemId), Model.Order.IsAmendment))" />
+                <partial name="_ReviewExpander" model="@(new ReviewExpanderModel(Model.RolledUp.OrderRecipients, Model.Previous?.OrderRecipients, solution, Model.Previous?.OrderItem(solution.CatalogueItemId), Model.Order.IsAmendment))" />
             }
         }
 
@@ -55,7 +55,7 @@
             <h2 id="additional-services-title">Additional Services</h2>
             @foreach (var service in Model.AdditionalServices)
             {
-                <partial name="_ReviewExpander" model="@(new ReviewExpanderModel(Model.Order.OrderRecipients, Model.Previous?.OrderRecipients, service, Model.Previous?.OrderItem(service.CatalogueItemId), Model.Order.IsAmendment))" />
+                <partial name="_ReviewExpander" model="@(new ReviewExpanderModel(Model.RolledUp.OrderRecipients, Model.Previous?.OrderRecipients, service, Model.Previous?.OrderItem(service.CatalogueItemId), Model.Order.IsAmendment))" />
             }
         }
 
@@ -64,7 +64,7 @@
             <h2 id="associated-services-title">Associated Services</h2>
             @foreach (var service in Model.AssociatedServices)
             {
-                 <partial name="_ReviewExpander" model="@(new ReviewExpanderModel(Model.Order.OrderRecipients, Model.Previous?.OrderRecipients, service, Model.Previous?.OrderItem(service.CatalogueItemId), Model.Order.IsAmendment))" />
+                 <partial name="_ReviewExpander" model="@(new ReviewExpanderModel(Model.RolledUp.OrderRecipients, Model.Previous?.OrderRecipients, service, Model.Previous?.OrderItem(service.CatalogueItemId), Model.Order.IsAmendment))" />
             }
         }
 
@@ -82,13 +82,13 @@
                         <strong>Total one-off cost:</strong>
                     </nhs-table-cell>
                     <nhs-table-cell numeric="true">
-                        £@($"{Model.Previous.TotalOneOffCost(true):N2}")
+                        £@($"{Model.Previous.TotalOneOffCost(null, true):N2}")
                     </nhs-table-cell>
                     <nhs-table-cell numeric="true">
-                        £@($"{Model.RolledUp.TotalOneOffCost(true)-Model.Previous.TotalOneOffCost(true):N2}")
+                        £@($"{Model.RolledUp.TotalOneOffCost(null, true)-Model.Previous.TotalOneOffCost(null, true):N2}")
                     </nhs-table-cell>
                     <nhs-table-cell numeric="true">
-                        £@($"{Model.RolledUp.TotalOneOffCost(true):N2}")
+                        £@($"{Model.RolledUp.TotalOneOffCost(null, true):N2}")
                     </nhs-table-cell>
                  </nhs-table-row-container>
                  <nhs-table-row-container>
@@ -96,13 +96,13 @@
                         <strong>Total monthly cost:</strong>
                     </nhs-table-cell>
                     <nhs-table-cell numeric="true">
-                        £@($"{Model.Previous.TotalMonthlyCost(true):N2}")
+                        £@($"{Model.Previous.TotalMonthlyCost(null, true):N2}")
                     </nhs-table-cell>
                     <nhs-table-cell numeric="true">
-                        £@($"{Model.RolledUp.TotalMonthlyCost(true)-Model.Previous.TotalMonthlyCost(true):N2}")
+                        £@($"{Model.RolledUp.TotalMonthlyCost(null, true)-Model.Previous.TotalMonthlyCost(null, true):N2}")
                     </nhs-table-cell>
                     <nhs-table-cell numeric="true">
-                        £@($"{Model.RolledUp.TotalMonthlyCost(true):N2}")
+                        £@($"{Model.RolledUp.TotalMonthlyCost(null, true):N2}")
                     </nhs-table-cell>
                  </nhs-table-row-container>
                  <nhs-table-row-container>
@@ -110,13 +110,13 @@
                         <strong>Total cost for one year:</strong>
                     </nhs-table-cell>
                     <nhs-table-cell numeric="true">
-                        £@($"{Model.Previous.TotalAnnualCost(true):N2}")
+                        £@($"{Model.Previous.TotalAnnualCost(null, true):N2}")
                     </nhs-table-cell>
                     <nhs-table-cell numeric="true">
-                        £@($"{Model.RolledUp.TotalAnnualCost(true)-Model.Previous.TotalAnnualCost(true):N2}")
+                        £@($"{Model.RolledUp.TotalAnnualCost(null ,true)-Model.Previous.TotalAnnualCost(null, true):N2}")
                     </nhs-table-cell>
                     <nhs-table-cell numeric="true">
-                        £@($"{Model.RolledUp.TotalAnnualCost(true):N2}")
+                        £@($"{Model.RolledUp.TotalAnnualCost(null, true):N2}")
                     </nhs-table-cell>
                  </nhs-table-row-container>
                  <nhs-table-row-container>
@@ -140,15 +140,15 @@
              <h2 id="review-solutions-indicative-costs">Indicative costs</h2>
              <nhs-summary-list>
                  <nhs-summary-list-row label-text="Total one-off cost:">
-                     £@($"{Model.Order.TotalOneOffCost(true):N2}")
+                     £@($"{Model.Order.TotalOneOffCost(null, true):N2}")
                  </nhs-summary-list-row>
 
                  <nhs-summary-list-row label-text="Total monthly cost:">
-                     £@($"{Model.Order.TotalMonthlyCost(true):N2}")
+                     £@($"{Model.Order.TotalMonthlyCost(null, true):N2}")
                  </nhs-summary-list-row>
 
                  <nhs-summary-list-row label-text="Total cost for one year:">
-                     £@($"{Model.Order.TotalAnnualCost(true):N2}")
+                     £@($"{Model.Order.TotalAnnualCost(null, true):N2}")
                  </nhs-summary-list-row>
 
                  <nhs-summary-list-row label-text="Total cost of contract (@Model.ContractLength months):">

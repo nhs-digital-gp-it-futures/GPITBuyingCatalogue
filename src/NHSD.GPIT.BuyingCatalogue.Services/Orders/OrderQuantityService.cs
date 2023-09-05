@@ -22,9 +22,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public async Task ResetItemQuantities(int orderId, CatalogueItemId catalogueItemId)
         {
             var orderItem = await dbContext.OrderItems
-                .Include(x => x.OrderItemRecipients)
                 .FirstOrDefaultAsync(x => x.OrderId == orderId
                     && x.CatalogueItemId == catalogueItemId);
+
+            var orderRecipients = await dbContext.OrderRecipients
+                .Include(x => x.OrderItemRecipients)
+                .Where(x => x.OrderId == orderId)
+                .ToListAsync();
 
             if (orderItem == null)
             {
@@ -33,10 +37,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             orderItem.Quantity = null;
 
-            if (orderItem.OrderItemRecipients?.Any() ?? false)
-            {
-                orderItem.OrderItemRecipients.ForEach(x => x.Quantity = null);
-            }
+            var toDelete = orderRecipients.Select(r => r.OrderItemRecipients.FirstOrDefault(i => i.CatalogueItemId == catalogueItemId));
+            dbContext.OrderItemRecipients.RemoveRange(toDelete);
 
             await dbContext.SaveChangesAsync();
         }

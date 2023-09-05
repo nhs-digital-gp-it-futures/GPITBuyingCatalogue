@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         {
             var state = new OrderProgress
             {
-                CommencementDateStatus = TaskProgress.Completed,
+                ServiceRecipients = TaskProgress.Completed,
             };
 
             order.AssociatedServicesOnly = false;
@@ -79,23 +79,30 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
 
         [Theory]
         [CommonAutoData]
-        public static void Get_NothingAmended_ReturnsNotStarted(
+        public static void Get_NewRecipient_NothingAmended_ReturnsInProgress(
             Order order,
+            OrderRecipient orderRecipient,
             SolutionOrServiceStatusProvider service)
         {
             var state = new OrderProgress
             {
-                CommencementDateStatus = TaskProgress.Completed,
+                ServiceRecipients = TaskProgress.Completed,
             };
 
             order.Revision = 1;
             order.AssociatedServicesOnly = false;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
             var amendedOrder = order.BuildAmendment(2);
+            order.OrderItems.ForEach(i =>
+            {
+                var matchingItem = amendedOrder.OrderItems.FirstOrDefault(a => a.CatalogueItemId == i.CatalogueItemId);
+                matchingItem.CatalogueItem = i.CatalogueItem;
+            });
+            amendedOrder.OrderRecipients.Add(orderRecipient);
 
             var actual = service.Get(new OrderWrapper(new[] { order, amendedOrder }), state);
 
-            actual.Should().Be(TaskProgress.NotStarted);
+            actual.Should().Be(TaskProgress.InProgress);
         }
 
         [Theory]
@@ -108,13 +115,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         {
             var state = new OrderProgress
             {
-                CommencementDateStatus = TaskProgress.Completed,
+                ServiceRecipients = TaskProgress.Completed,
             };
 
             order.Revision = 1;
             order.AssociatedServicesOnly = false;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = itemType);
             var amendedOrder = order.BuildAmendment(2);
+            order.OrderItems.ForEach(i =>
+            {
+                var matchingItem = amendedOrder.OrderItems.FirstOrDefault(a => a.CatalogueItemId == i.CatalogueItemId);
+                matchingItem.CatalogueItem = i.CatalogueItem;
+            });
+
             var orderItem = order.OrderItems.First();
             var orderItemToAdd = new OrderItem
             {
@@ -137,7 +150,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         {
             var state = new OrderProgress
             {
-                CommencementDateStatus = TaskProgress.Completed,
+                ServiceRecipients = TaskProgress.Completed,
             };
 
             order.AssociatedServicesOnly = true;
@@ -157,7 +170,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         {
             var state = new OrderProgress
             {
-                CommencementDateStatus = TaskProgress.Completed,
+                ServiceRecipients = TaskProgress.Completed,
             };
 
             order.AssociatedServicesOnly = true;
@@ -180,7 +193,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         {
             var state = new OrderProgress
             {
-                CommencementDateStatus = TaskProgress.Completed,
+                ServiceRecipients = TaskProgress.Completed,
             };
 
             order.Revision = revision;
@@ -204,14 +217,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         {
             var state = new OrderProgress
             {
-                CommencementDateStatus = TaskProgress.Completed,
+                ServiceRecipients = TaskProgress.Completed,
             };
 
             order.Revision = revision;
             order.AssociatedServicesOnly = false;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-            order.OrderItems.ForEach(x => x.OrderItemRecipients.ForEach(r => r.DeliveryDate = null));
+            order.OrderRecipients.ForEach(r => r.OrderItemRecipients.ForEach(i => i.DeliveryDate = null));
 
             var actual = service.Get(new OrderWrapper(order), state);
 

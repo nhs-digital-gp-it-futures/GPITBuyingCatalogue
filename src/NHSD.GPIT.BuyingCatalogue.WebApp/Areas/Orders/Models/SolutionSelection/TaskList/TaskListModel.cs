@@ -32,9 +32,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             CallOffId callOffId,
             OrderWrapper wrapper)
         {
-            var order = wrapper?.RolledUp;
+            var rolledUpOrder = wrapper?.RolledUp;
 
-            if (order == null)
+            if (rolledUpOrder == null)
             {
                 throw new ArgumentNullException(nameof(wrapper));
             }
@@ -43,22 +43,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
             InternalOrgId = internalOrgId;
             CallOffId = callOffId;
-            AssociatedServicesOnly = order.AssociatedServicesOnly;
-            CatalogueSolution = order.GetSolution();
-            AdditionalServices = order.GetAdditionalServices();
-            AssociatedServices = order.GetAssociatedServices();
+            AssociatedServicesOnly = rolledUpOrder.AssociatedServicesOnly;
+            CatalogueSolution = rolledUpOrder.GetSolution();
+            AdditionalServices = rolledUpOrder.GetAdditionalServices();
+            AssociatedServices = rolledUpOrder.GetAssociatedServices();
 
-            if (order.AssociatedServicesOnly)
+            if (rolledUpOrder.AssociatedServicesOnly)
             {
-                SolutionName = order.Solution?.Name;
+                SolutionName = rolledUpOrder.Solution?.Name;
             }
 
             if (CatalogueSolution != null)
             {
-                taskModels.Add(CatalogueSolution.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, order.OrderRecipients, CatalogueSolution)
+                taskModels.Add(CatalogueSolution.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, rolledUpOrder.OrderRecipients, CatalogueSolution)
                 {
-                    FromPreviousRevision = previous?.OrderItems.Any(x => x.CatalogueItemId == CatalogueSolution.CatalogueItemId) ?? false,
-                    HasCurrentAmendments = wrapper.HasCurrentAmendments(CatalogueSolution),
+                    FromPreviousRevision = previous?.Exists(CatalogueSolution.CatalogueItemId) ?? false,
                     NumberOfPrices = CatalogueSolution.CatalogueItem.CataloguePrices.Count,
                     PriceId = CatalogueSolution.CatalogueItem.CataloguePrices.Count == 1
                         ? CatalogueSolution.CatalogueItem.CataloguePrices.First().CataloguePriceId
@@ -66,20 +65,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                 });
             }
 
-            AdditionalServices.ForEach(x => taskModels.Add(x.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, order.OrderRecipients, x)
+            AdditionalServices.ForEach(x => taskModels.Add(x.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, rolledUpOrder.OrderRecipients, x)
             {
-                FromPreviousRevision = previous?.OrderItems.Any(oi => oi.CatalogueItemId == x.CatalogueItemId) ?? false,
-                HasCurrentAmendments = wrapper.HasCurrentAmendments(x),
+                FromPreviousRevision = previous?.Exists(x.CatalogueItemId) ?? false,
                 NumberOfPrices = x.CatalogueItem.CataloguePrices.Count,
                 PriceId = x.CatalogueItem.CataloguePrices.Count == 1
                     ? x.CatalogueItem.CataloguePrices.First().CataloguePriceId
                     : 0,
             }));
 
-            AssociatedServices.ForEach(x => taskModels.Add(x.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, order.OrderRecipients, x)
+            AssociatedServices.ForEach(x => taskModels.Add(x.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, rolledUpOrder.OrderRecipients, x)
             {
-                FromPreviousRevision = previous?.OrderItems.Any(oi => oi.CatalogueItemId == x.CatalogueItemId) ?? false,
-                HasCurrentAmendments = wrapper.HasCurrentAmendments(x),
+                FromPreviousRevision = previous?.Exists(x.CatalogueItemId) ?? false,
                 NumberOfPrices = x.CatalogueItem.CataloguePrices.Count,
                 PriceId = x.CatalogueItem.CataloguePrices.Count == 1
                     ? x.CatalogueItem.CataloguePrices.First().CataloguePriceId

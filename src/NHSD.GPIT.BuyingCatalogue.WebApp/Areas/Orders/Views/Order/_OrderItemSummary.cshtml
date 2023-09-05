@@ -19,7 +19,7 @@
               added-sticker="@Model.IsAmendment && @Model.IsOrderItemAdded"
 			  open="true"
 			  bold-title="true">
-    @if (Model.Recipients.Any())
+    @if (Model.RolledUpRecipients.Any())
     {
         <br/>
         <nhs-table label-text="Service Recipients" catches-errors="false">
@@ -32,7 +32,7 @@
             <nhs-table-column>Planned delivery date</nhs-table-column>
             <nhs-table-column>Quantity</nhs-table-column>
 
-			@foreach(var serviceRecipient in Model.Recipients)
+			@foreach(var serviceRecipient in Model.RolledUpRecipients)
 			{
 			    var quantity = serviceRecipient.GetQuantityForItem(Model.CatalogueItem.Id);
 			    var deliveryDate = serviceRecipient.GetDeliveryDateForItem(Model.CatalogueItem.Id);

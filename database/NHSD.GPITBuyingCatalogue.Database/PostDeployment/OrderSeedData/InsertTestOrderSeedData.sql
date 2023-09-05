@@ -276,6 +276,12 @@ BEGIN
     FROM catalogue.CataloguePriceTiers
     WHERE CataloguePriceId = @CatalogueSolutionPriceId
 
+    INSERT INTO ordering.OrderRecipients (OrderId, OdsCode)
+    VALUES
+    (@OrderId, 'B84007'),
+    (@OrderId, 'B84016'),
+    (@OrderId, 'B84613'),
+    (@OrderId, 'Y02572');
 
     INSERT INTO ordering.OrderItemRecipients (OrderId, CatalogueItemId, OdsCode, Quantity)
     VALUES

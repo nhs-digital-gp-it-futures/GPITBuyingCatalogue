@@ -7,6 +7,7 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -32,29 +33,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task ResetItemQuantities_OrderItemNotInDatabase_NoActionTaken(
-            int orderId,
-            CatalogueItemId catalogueItemId,
-            [Frozen] BuyingCatalogueDbContext context,
-            OrderQuantityService service)
-        {
-            var expected = context.OrderItems
-                .FirstOrDefault(x => x.OrderId == orderId
-                    && x.CatalogueItemId == catalogueItemId);
-
-            expected.Should().BeNull();
-
-            await service.ResetItemQuantities(orderId, catalogueItemId);
-
-            var actual = context.OrderItems
-                .FirstOrDefault(x => x.OrderId == orderId
-                    && x.CatalogueItemId == catalogueItemId);
-
-            actual.Should().BeNull();
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
         public static async Task ResetItemQuantities_OrderItemInDatabase_ExpectedResult(
             Order order,
             [Frozen] BuyingCatalogueDbContext context,
@@ -66,53 +44,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             order.OrderItems.ForEach(x =>
             {
                 x.Quantity = 1;
-                x.OrderItemRecipients.ForEach(r => r.Quantity = 1);
+                order.OrderRecipients.ForEach(r => r.SetQuantityForItem(x.CatalogueItemId, 1));
             });
-
             context.Orders.Add(order);
-
             await context.SaveChangesAsync();
-
-            var expected = context.OrderItems
-                .FirstOrDefault(x => x.OrderId == order.Id
-                    && x.CatalogueItemId == orderItem.CatalogueItemId);
-
-            expected.Should().NotBeNull();
-            expected!.Quantity.Should().Be(1);
-            expected.OrderItemRecipients.ForEach(x => x.Quantity.Should().Be(1));
+            context.ChangeTracker.Clear();
 
             await service.ResetItemQuantities(order.Id, orderItem.CatalogueItemId);
+            var dbOrder = await context.Orders
+                .Include(x => x.OrderRecipients)
+                    .ThenInclude(x => x.OrderItemRecipients)
+                .Include(x => x.OrderItems)
+                .FirstAsync(x => x.Id == order.Id);
 
-            var actual = context.OrderItems
-                .FirstOrDefault(x => x.OrderId == order.Id
-                    && x.CatalogueItemId == orderItem.CatalogueItemId);
+            var actual = dbOrder.OrderItems.FirstOrDefault(x => x.CatalogueItemId == orderItem.CatalogueItemId);
 
             actual.Should().NotBeNull();
-            actual!.Quantity.Should().BeNull();
-            actual.OrderItemRecipients.ForEach(x => x.Quantity.Should().BeNull());
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
-        public static async Task SetOrderItemQuantity_OrderItemNotInDatabase_NoActionTaken(
-            [Frozen] BuyingCatalogueDbContext context,
-            int orderId,
-            CatalogueItemId catalogueItemId,
-            OrderQuantityService service)
-        {
-            var expected = context.OrderItems
-                .FirstOrDefault(x => x.OrderId == orderId
-                    && x.CatalogueItemId == catalogueItemId);
-
-            expected.Should().BeNull();
-
-            await service.SetOrderItemQuantity(orderId, catalogueItemId, 1);
-
-            var actual = context.OrderItems
-                .FirstOrDefault(x => x.OrderId == orderId
-                    && x.CatalogueItemId == catalogueItemId);
-
-            actual.Should().BeNull();
+            actual.Quantity.Should().BeNull();
+            dbOrder.OrderRecipients.ForEach(r => r.GetQuantityForItem(actual.CatalogueItemId).Should().BeNull());
         }
 
         [Theory]
@@ -129,6 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             context.Orders.Add(order);
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
 
             var solutionId = order.OrderItems.First().CatalogueItemId;
 
@@ -161,67 +111,38 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task SetServiceRecipientQuantities_OrderItemNotInDatabase_NoActionTaken(
-            [Frozen] BuyingCatalogueDbContext context,
-            int orderId,
-            CatalogueItemId catalogueItemId,
-            List<OrderItemRecipientQuantityDto> quantities,
-            OrderQuantityService service)
-        {
-            var expected = context.OrderItems
-                .FirstOrDefault(x => x.OrderId == orderId
-                    && x.CatalogueItemId == catalogueItemId);
-
-            expected.Should().BeNull();
-
-            await service.SetServiceRecipientQuantities(orderId, catalogueItemId, quantities);
-
-            var actual = context.OrderItems
-                .FirstOrDefault(x => x.OrderId == orderId
-                    && x.CatalogueItemId == catalogueItemId);
-
-            actual.Should().BeNull();
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
         public static async Task SetServiceRecipientQuantities_OrderItemInDatabase_UpdatesQuantities(
+            IFixture fixture,
             [Frozen] BuyingCatalogueDbContext context,
             Order order,
-            List<OrderItemRecipientQuantityDto> quantities,
             OrderQuantityService service)
         {
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
-            order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-            order.OrderItems.First().OrderItemRecipients.ForEach(x => x.Quantity = 1);
-
+            var solution = order.OrderItems.First();
+            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            order.OrderRecipients.ForEach(r => r.SetQuantityForItem(solution.CatalogueItemId, 1));
             context.Orders.Add(order);
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
 
-            var solutionId = order.OrderItems.First().CatalogueItemId;
+            var quantities = order.OrderRecipients
+                .Select(r => new OrderItemRecipientQuantityDto() { OdsCode = r.OdsCode, Quantity = fixture.Create<int>() })
+                .ToList();
 
-            var expected = context.OrderItems
-                .First(x => x.OrderId == order.Id
-                    && x.CatalogueItemId == solutionId);
+            await service.SetServiceRecipientQuantities(order.Id, solution.CatalogueItemId, quantities);
 
-            for (var i = 0; i < expected.OrderItemRecipients.Count; i++)
+            var dbOrder = await context.Orders
+                .Include(x => x.OrderRecipients)
+                    .ThenInclude(x => x.OrderItemRecipients)
+                .Include(x => x.OrderItems)
+                .FirstAsync(x => x.Id == order.Id);
+
+            var actual = dbOrder.OrderItems.First(x => x.CatalogueItemId == solution.CatalogueItemId);
+
+            foreach (var i in dbOrder.OrderRecipients)
             {
-                expected.OrderItemRecipients.ElementAt(i).Quantity.Should().Be(1);
-                quantities[i].OdsCode = expected.OrderItemRecipients.ElementAt(i).OdsCode;
-            }
-
-            await service.SetServiceRecipientQuantities(order.Id, solutionId, quantities);
-
-            var actual = context.OrderItems
-                .First(x => x.OrderId == order.Id
-                    && x.CatalogueItemId == solutionId);
-
-            for (var i = 0; i < actual.OrderItemRecipients.Count; i++)
-            {
-                var recipient = actual.OrderItemRecipients.ElementAt(i);
-                var quantity = quantities.First(x => x.OdsCode == recipient.OdsCode);
-
-                recipient.Quantity.Should().Be(quantity.Quantity);
+                var quantity = quantities.First(x => x.OdsCode == i.OdsCode);
+                i.GetQuantityForItem(actual.CatalogueItemId).Should().Be(quantity.Quantity);
             }
         }
     }

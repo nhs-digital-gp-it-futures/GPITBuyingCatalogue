@@ -282,7 +282,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var route = routingService.GetRoute(
                 RoutingPoint.SelectAssociatedServicesBackLink,
-                order,
+                wrapper,
                 new RouteValues(internalOrgId, callOffId) { Source = source });
 
             return new SelectServicesModel(

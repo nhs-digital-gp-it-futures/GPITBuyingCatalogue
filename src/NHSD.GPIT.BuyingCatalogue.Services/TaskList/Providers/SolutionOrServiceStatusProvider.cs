@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
@@ -28,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
                 return TaskProgress.NotStarted;
             }
 
-            return SolutionsCompleted(order)
+            return SolutionsCompleted(wrapper)
                 ? CompletedOrAmended(order.IsAmendment)
                 : TaskProgress.InProgress;
         }
@@ -55,33 +56,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
             return order.OrderItems.Any(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution);
         }
 
-        private static bool SolutionsCompleted(EntityFramework.Ordering.Models.Order order)
+        private static bool SolutionsCompleted(OrderWrapper orderWrapper)
         {
-            if (!order.OrderItems.Any())
+            if (!orderWrapper.Order.OrderItems.Any())
             {
                 return false;
             }
 
-            return order.OrderItems.All(x =>
+            return orderWrapper.Order.OrderItems.All(x =>
                 x.CatalogueItem != null
                 && x.OrderItemPrice != null
-                && x.AllQuantitiesEntered)
-                && AllDeliveryDatesEnteredIfRequired(order);
-        }
-
-        private static bool AllDeliveryDatesEnteredIfRequired(EntityFramework.Ordering.Models.Order order)
-        {
-            if (order.IsAmendment)
-            {
-                var recipients = order.OrderItems
-                    .SelectMany(x => x.OrderItemRecipients)
-                    .ToList();
-
-                return recipients.Any()
-                    && recipients.All(x => x.DeliveryDate != null);
-            }
-
-            return true;
+                && orderWrapper.DetermineOrderRecipients(x.CatalogueItemId)
+                    .AllQuantitiesEntered(x)
+                && (orderWrapper.Order.IsAmendment
+                        ? orderWrapper.DetermineOrderRecipients(x.CatalogueItemId)
+                            .AllDeliveryDatesEntered(x.CatalogueItemId)
+                        : true));
         }
     }
 }

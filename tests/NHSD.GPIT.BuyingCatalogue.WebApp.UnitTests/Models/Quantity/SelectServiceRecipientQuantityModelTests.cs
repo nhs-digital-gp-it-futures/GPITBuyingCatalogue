@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Quantity
             model.Advice.Should().Be(SelectServiceRecipientQuantityModel.AdviceTextPatient);
             model.ItemName.Should().Be(item.CatalogueItem.Name);
             model.ItemType.Should().Be(item.CatalogueItem.CatalogueItemType.Description());
-            model.ServiceRecipients.Length.Should().Be(item.OrderItemRecipients.Count);
+            model.ServiceRecipients.Length.Should().Be(serviceRecipients.Count);
 
             foreach (var serviceRecipient in model.ServiceRecipients)
             {
@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Quantity
             model.Advice.Should().Be(SelectServiceRecipientQuantityModel.AdviceTextServiceRecipient);
             model.ItemName.Should().Be(item.CatalogueItem.Name);
             model.ItemType.Should().Be(item.CatalogueItem.CatalogueItemType.Description());
-            model.ServiceRecipients.Length.Should().Be(item.OrderItemRecipients.Count);
+            model.ServiceRecipients.Length.Should().Be(serviceRecipients.Count);
 
             foreach (var serviceRecipient in model.ServiceRecipients)
             {

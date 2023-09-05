@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
 [Authorize("Buyer")]
 [Area("Orders")]
-[Route("order/organisation/{internalOrgId}/order/{callOffId}/item/{catalogueItemId}/import-service-recipients")]
+[Route("order/organisation/{internalOrgId}/order/{callOffId}/import-service-recipients")]
 public class ImportServiceRecipientsController : Controller
 {
     internal const int OdsCodeLength = 8;

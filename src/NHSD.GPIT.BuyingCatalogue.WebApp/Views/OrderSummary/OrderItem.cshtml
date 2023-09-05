@@ -36,7 +36,7 @@
     </tr>
     </thead>
 
-    @if (!(Model.Recipients?.Any() ?? false))
+    @if (!(Model.RolledUpRecipients?.Any() ?? false))
     {
         <tr>
             <td style="column-span: all">No Service Recipients have been entered for this @itemType.</td>
@@ -44,7 +44,7 @@
     }
     else
     {
-        @foreach (var recipient in Model.Recipients)
+        @foreach (var recipient in Model.RolledUpRecipients)
         {
             var quantity = recipient.GetQuantityForItem(Model.CatalogueItem.Id);
             var deliveryDate = recipient.GetDeliveryDateForItem(Model.CatalogueItem.Id);
@@ -82,7 +82,7 @@
         }
 
         @if (hasServiceRecipientQuantities
-            && Model.Recipients.Count > 1)
+            && Model.RolledUpRecipients.Count > 1)
         {
             <tr class="totals">
                 @if (Model.IsAmendment)
@@ -93,7 +93,7 @@
                 <td/>
                 <td/>
                 <td class="numeric total">
-                    @($"{Model.Recipients.Sum(x => x.GetQuantityForItem(Model.CatalogueItem.Id) ?? 0):N0}")
+                    @($"{Model.RolledUpRecipients.Sum(x => x.GetQuantityForItem(Model.CatalogueItem.Id) ?? 0):N0}")
                 </td>
             </tr>
         }

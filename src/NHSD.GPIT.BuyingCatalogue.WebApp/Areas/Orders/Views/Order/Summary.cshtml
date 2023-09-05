@@ -155,7 +155,7 @@
                 <h2 id="catalogue-solutions-title">@solutionsTitle</h2>
                 @foreach (var solution in solutions)
                 {
-                    <partial name="_OrderItemSummary" model="@(new AmendOrderItemModel(Model.CallOffId, Model.Order.OrderRecipients, Model.Previous?.OrderRecipients, solution, Model.Previous?.OrderItem(solution.CatalogueItemId), Model.Order.IsAmendment, Model.FundingTypeDescription(solution.CatalogueItemId)))" />
+                    <partial name="_OrderItemSummary" model="@(new AmendOrderItemModel(Model.CallOffId, Model.RolledUp.OrderRecipients, Model.Previous?.OrderRecipients, solution, Model.Previous?.OrderItem(solution.CatalogueItemId), Model.Order.IsAmendment, Model.FundingTypeDescription(solution.CatalogueItemId)))" />
                 }
             }
 
@@ -164,7 +164,7 @@
                 <h2 id="additional-services-title">Additional Services</h2>
                 @foreach (var additionalService in additionalServices)
                 {
-                    <partial name="_OrderItemSummary" model="@(new AmendOrderItemModel(Model.CallOffId, Model.Order.OrderRecipients, Model.Previous?.OrderRecipients, additionalService, Model.Previous?.OrderItem(additionalService.CatalogueItemId), Model.Order.IsAmendment, Model.FundingTypeDescription(additionalService.CatalogueItemId)))" />
+                    <partial name="_OrderItemSummary" model="@(new AmendOrderItemModel(Model.CallOffId, Model.RolledUp.OrderRecipients, Model.Previous?.OrderRecipients, additionalService, Model.Previous?.OrderItem(additionalService.CatalogueItemId), Model.Order.IsAmendment, Model.FundingTypeDescription(additionalService.CatalogueItemId)))" />
                 }
             }
 
@@ -185,7 +185,7 @@
                 <h2 id="associated-services-title">Associated Services</h2>
                 @foreach (var associatedService in associatedServices)
                 {
-                    <partial name="_OrderItemSummary" model="@(new AmendOrderItemModel(Model.CallOffId, Model.Order.OrderRecipients, Model.Previous?.OrderRecipients, associatedService, Model.Previous?.OrderItem(associatedService.CatalogueItemId), Model.Order.IsAmendment, Model.FundingTypeDescription(associatedService.CatalogueItemId)))" />
+                    <partial name="_OrderItemSummary" model="@(new AmendOrderItemModel(Model.CallOffId, Model.RolledUp.OrderRecipients, Model.Previous?.OrderRecipients, associatedService, Model.Previous?.OrderItem(associatedService.CatalogueItemId), Model.Order.IsAmendment, Model.FundingTypeDescription(associatedService.CatalogueItemId)))" />
                 }
 
                 <h2 id="as-milestones-title">Milestones and payment triggers for Associated Services</h2>
@@ -241,13 +241,13 @@
                             <strong>Total one-off cost:</strong>
                         </nhs-table-cell>
                         <nhs-table-cell numeric="true">
-                            £@($"{Model.Previous.TotalOneOffCost(true):N2}")
+                            £@($"{Model.Previous.TotalOneOffCost(null, true):N2}")
                         </nhs-table-cell>
                         <nhs-table-cell numeric="true">
-                            £@($"{Model.RolledUp.TotalOneOffCost(true) - Model.Previous.TotalOneOffCost(true):N2}")
+                            £@($"{Model.RolledUp.TotalOneOffCost(null, true) - Model.Previous.TotalOneOffCost(null, true):N2}")
                         </nhs-table-cell>
                         <nhs-table-cell numeric="true">
-                            £@($"{Model.RolledUp.TotalOneOffCost(true):N2}")
+                            £@($"{Model.RolledUp.TotalOneOffCost(null, true):N2}")
                         </nhs-table-cell>
                     </nhs-table-row-container>
                     <nhs-table-row-container>
@@ -255,13 +255,13 @@
                             <strong>Total monthly cost:</strong>
                         </nhs-table-cell>
                         <nhs-table-cell numeric="true">
-                            £@($"{Model.Previous.TotalMonthlyCost(true):N2}")
+                            £@($"{Model.Previous.TotalMonthlyCost(null, true):N2}")
                         </nhs-table-cell>
                         <nhs-table-cell numeric="true">
-                            £@($"{Model.RolledUp.TotalMonthlyCost(true) - Model.Previous.TotalMonthlyCost(true):N2}")
+                            £@($"{Model.RolledUp.TotalMonthlyCost(null, true) - Model.Previous.TotalMonthlyCost(null, true):N2}")
                         </nhs-table-cell>
                         <nhs-table-cell numeric="true">
-                            £@($"{Model.RolledUp.TotalMonthlyCost(true):N2}")
+                            £@($"{Model.RolledUp.TotalMonthlyCost(null, true):N2}")
                         </nhs-table-cell>
                     </nhs-table-row-container>
                     <nhs-table-row-container>
@@ -269,13 +269,13 @@
                             <strong>Total cost for one year:</strong>
                         </nhs-table-cell>
                         <nhs-table-cell numeric="true">
-                            £@($"{Model.Previous.TotalAnnualCost(true):N2}")
+                            £@($"{Model.Previous.TotalAnnualCost(null, true):N2}")
                         </nhs-table-cell>
                         <nhs-table-cell numeric="true">
-                            £@($"{Model.RolledUp.TotalAnnualCost(true) - Model.Previous.TotalAnnualCost(true):N2}")
+                            £@($"{Model.RolledUp.TotalAnnualCost(null, true) - Model.Previous.TotalAnnualCost(null, true):N2}")
                         </nhs-table-cell>
                         <nhs-table-cell numeric="true">
-                            £@($"{Model.RolledUp.TotalAnnualCost(true):N2}")
+                            £@($"{Model.RolledUp.TotalAnnualCost(null, true):N2}")
                         </nhs-table-cell>
                     </nhs-table-row-container>
                     <nhs-table-row-container>
@@ -301,15 +301,15 @@
                 <h4 data-test-id="indicative-costs-title">Indicative costs not including VAT</h4>
                 <nhs-summary-list>
                     <nhs-summary-list-row label-text="Total one-off cost:" data-test-id="one-off-cost-summary">
-                        £@($"{Model.Order.TotalOneOffCost():N2}")
+                        £@($"{Model.Order.TotalOneOffCost(null):N2}")
                     </nhs-summary-list-row>
 
                     <nhs-summary-list-row label-text="Total monthly cost:" data-test-id="monthly-cost-summary">
-                        £@($"{Model.Order.TotalMonthlyCost():N2}")
+                        £@($"{Model.Order.TotalMonthlyCost(null):N2}")
                     </nhs-summary-list-row>
 
                     <nhs-summary-list-row label-text="Total cost for one year:" data-test-id="one-year-cost-summary">
-                        £@($"{Model.Order.TotalAnnualCost():N2}")
+                        £@($"{Model.Order.TotalAnnualCost(null):N2}")
                     </nhs-summary-list-row>
 
                     <nhs-summary-list-row label-text="@($"Total cost of contract{contractTerm}:")" data-test-id="total-cost-summary">
@@ -363,7 +363,7 @@
     
     <div class="nhsuk-u-margin-top-3">
             @if (Model.Order.OrderStatus == OrderStatus.InProgress
-            && Model.Order.CanComplete())
+            && Model.Order.CanComplete(Model.RolledUp.OrderRecipients))
             {
                 <h3>Complete order</h3>
                 <p>After agreeing the contents of your order with the supplier, mark it complete, download your Call-off Order Form and send it to the supplier for signature. Make sure you include the blank templates for the supplier to fill out.</p>

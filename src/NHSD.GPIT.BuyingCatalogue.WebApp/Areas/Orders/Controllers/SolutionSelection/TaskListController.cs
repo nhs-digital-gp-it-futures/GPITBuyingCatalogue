@@ -40,16 +40,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         public async Task<IActionResult> TaskList(string internalOrgId, CallOffId callOffId, RoutingSource? source = null)
         {
             var wrapper = await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId);
+            // TODO: MJK review????
+            if (wrapper.IsAmendment)
+            {
+                await orderService.InitialiseAmendedOrderItemsIfRequired(internalOrgId, callOffId);
+            }
+
             var order = wrapper.IsAmendment ? wrapper.RolledUp : wrapper.Order;
 
             var backRoute = routingService.GetRoute(
                 RoutingPoint.TaskListBackLink,
-                order,
+                wrapper,
                 new RouteValues(internalOrgId, callOffId) { Source = source });
 
             var onwardRoute = routingService.GetRoute(
                 RoutingPoint.TaskList,
-                order,
+                wrapper,
                 new RouteValues(internalOrgId, callOffId) { Source = source });
 
             var solutionId = order.GetSolutionId();
