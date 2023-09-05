@@ -25,6 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             NoSolutionsFound = new NoSolutionsFound(driver, commonActions);
             SingleSolutionFound = new SingleSolutionFound(driver, commonActions);
             CompetitionTaskList = new CompetitionTaskList(driver, commonActions);
+            CompetitionServiceRecipients = new CompetitionServiceRecipients(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -53,11 +54,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
 
         internal CompetitionTaskList CompetitionTaskList { get; }
 
+        internal CompetitionServiceRecipients CompetitionServiceRecipients { get; }
+
         internal FilterType FilterType { get; set; }
 
         internal IWebDriver Driver { get; }
 
-        public void StepOnePrepareCompetition(FilterType filterType, string competitionName,int addNumberOfSolutions = 0)
+        public void StepOnePrepareCompetition(FilterType filterType, string competitionName, int addNumberOfSolutions = 0, int multipleServiceRecipients = 0, bool allServiceRecipients = false)
         {
             int selectedFilter = (int)filterType;
             SelectFilter.SelectFilterForNewCompetition(selectedFilter);
@@ -87,6 +90,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                 }
 
                 CompetitionTaskList.CompetitionServiceRecipientsTask();
+                CompetitionServiceRecipients.AddCompetitionServiceRecipient(multipleServiceRecipients, allServiceRecipients);
+                CompetitionServiceRecipients.ConfirmServiceReceipientsChanges();
             }
         }
 

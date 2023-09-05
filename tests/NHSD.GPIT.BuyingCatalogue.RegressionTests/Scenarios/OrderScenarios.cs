@@ -2068,7 +2068,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             CompetitionPages.BeforeYouStart.ReadyToStart();
 
-            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, 5);
+            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, 5,3);
         }
 
         [Fact]
