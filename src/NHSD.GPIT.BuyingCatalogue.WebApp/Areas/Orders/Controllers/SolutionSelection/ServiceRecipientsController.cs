@@ -123,7 +123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var selectedRecipients = await odsService.GetServiceRecipientsById(internalOrgId, selectedRecipientOdsCodes);
             var previousRecipients = await odsService.GetServiceRecipientsById(internalOrgId, previouslySelectedIds);
 
-            var model = new ConfirmChangesModel() //order.OrderingParty)
+            var model = new ConfirmChangesModel()
             {
                 Title = "Confirm Service Recipients",
                 BackLink = Url.Action(nameof(SelectServiceRecipients), new { internalOrgId, callOffId, recipientIds }),

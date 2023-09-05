@@ -82,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
 
                         // TODO: Stop this reporting incorrectly when quantity is (erroneously) defined at both order item & recipient level
                         QuantityOrdered = or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
-                            ? 0
+                            ? (oir.OrderItem.Quantity ?? 0)
                             : or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId).Quantity ?? oir.OrderItem.Quantity ?? 0,
                         UnitOfOrder = oir.OrderItem.OrderItemPrice.Description,
                         Price = prices[oir.OrderItem.CatalogueItemId],
