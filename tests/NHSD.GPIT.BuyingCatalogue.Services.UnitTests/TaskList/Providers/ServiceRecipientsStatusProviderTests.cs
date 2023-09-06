@@ -1,5 +1,4 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -10,12 +9,12 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
 {
-    public static class ReviewAndCompleteStatusProviderTests
+    public static class ServiceRecipientsStatusProviderTests
     {
         [Theory]
         [CommonAutoData]
         public static void Get_OrderWrapperIsNull_ReturnsCannotStart(
-            ReviewAndCompleteStatusProvider service)
+            ServiceRecipientsStatusProvider service)
         {
             var actual = service.Get(null, new OrderProgress());
 
@@ -25,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [Theory]
         [CommonAutoData]
         public static void Get_OrderIsNull_ReturnsCannotStart(
-            ReviewAndCompleteStatusProvider service)
+            ServiceRecipientsStatusProvider service)
         {
             var actual = service.Get(new OrderWrapper(), new OrderProgress());
 
@@ -36,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [CommonAutoData]
         public static void Get_StateIsNull_ReturnsCannotStart(
             Order order,
-            ReviewAndCompleteStatusProvider service)
+            ServiceRecipientsStatusProvider service)
         {
             var actual = service.Get(new OrderWrapper(order), null);
 
@@ -45,29 +44,32 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
 
         [Theory]
         [CommonAutoData]
-        public static void Get_OrderIsCompleted_ReturnsCompleted(
+        public static void Get_CommencementDateStatus_NotCompleted_ReturnsCannotStart(
             Order order,
-            ReviewAndCompleteStatusProvider service)
+            ServiceRecipientsStatusProvider service)
         {
-            order.Completed = DateTime.Today;
+            var state = new OrderProgress()
+            {
+                CommencementDateStatus = TaskProgress.InProgress,
+            };
 
-            var actual = service.Get(new OrderWrapper(order), new OrderProgress());
+            var actual = service.Get(new OrderWrapper(order), state);
 
-            actual.Should().Be(TaskProgress.Completed);
+            actual.Should().Be(TaskProgress.CannotStart);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void Get_DataProcessingCompleted_ReturnsNotStarted(
+        public static void Get_CommencementDateStatus_Completed_No_New_Recipients_ReturnsNotStarted(
             Order order,
-            ReviewAndCompleteStatusProvider service)
+            ServiceRecipientsStatusProvider service)
         {
-            var state = new OrderProgress
+            var state = new OrderProgress()
             {
-                DataProcessingInformation = TaskProgress.Completed,
+                CommencementDateStatus = TaskProgress.Completed,
             };
 
-            order.Completed = null;
+            order.OrderRecipients.Clear();
 
             var actual = service.Get(new OrderWrapper(order), state);
 
@@ -76,20 +78,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
 
         [Theory]
         [CommonAutoData]
-        public static void Get_DataProcessingIncomplete_ReturnsCannotStart(
+        public static void Get_CommencementDateStatus_Completed_With_New_Recipients_ReturnsCompleted(
             Order order,
-            ReviewAndCompleteStatusProvider service)
+            ServiceRecipientsStatusProvider service)
         {
-            var state = new OrderProgress
+            var state = new OrderProgress()
             {
-                DataProcessingInformation = TaskProgress.InProgress,
+                CommencementDateStatus = TaskProgress.Completed,
             };
-
-            order.Completed = null;
 
             var actual = service.Get(new OrderWrapper(order), state);
 
-            actual.Should().Be(TaskProgress.CannotStart);
+            actual.Should().Be(TaskProgress.Completed);
         }
     }
 }

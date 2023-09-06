@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
+        [ExcludeFromCodeCoverage(Justification = "Method uses Temporal tables which the In-Memory provider doesn't support.")]
         public async Task<Supplier> GetSupplierByDate(int id, DateTime dateTime)
         {
             return await dbContext.Suppliers

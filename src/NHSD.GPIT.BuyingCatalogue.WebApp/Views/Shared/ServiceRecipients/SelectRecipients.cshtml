@@ -8,6 +8,7 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.SelectRecipientsModel;
 
 <partial name="Partials/_BackLink" model="Model" />
+<script type="text/javascript" src="@Url.Content("~/js/Recipients.min.js")" asp-append-version="true"></script>
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
@@ -64,10 +65,17 @@
                 @foreach (var (location, lIndex) in Model.SubLocations.Select((x, i) => (x, i)))
                 {
                     <input type="hidden" asp-for="@Model.SubLocations[lIndex].Name" />
-                    <nhs-expander label-text="@location.Name" bold-title="true" open="@(Model.ShouldExpand || location.ServiceRecipients.Any(x => x.Selected))">
+                    <nhs-expander label-text="@location.Name" secondary-text-title="@(location.ServiceRecipients.Count(r => r.Selected)) " secondary-text="recipients selected" bold-title="true" open="@(Model.ShouldExpand || location.ServiceRecipients.Any(x => x.Selected))">
 
                         <nhs-table>
-                            <nhs-table-column>Organisation</nhs-table-column>
+                            <nhs-table-column>
+                                <div class="nhsuk-checkboxes__item">
+                                    <input type="checkbox" class="nhsuk-checkboxes__input" name="selectAll@(lIndex)" id="selectAll@(lIndex)" />
+                                    <label for="selectAll@(lIndex)" class="nhsuk-label nhsuk-checkboxes__label">
+                                        Organisation
+                                    </label>
+                                </div>
+                            </nhs-table-column>
                             <nhs-table-column>ODS code</nhs-table-column>
                             @foreach (var (item, rIndex) in location.ServiceRecipients.Select((x, i) => (x, i)))
                             {

@@ -16,10 +16,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
     {
         [Theory]
         [CommonAutoData]
-        public static void Get_OrderIsNull_ReturnsCannotStart(
+        public static void Get_OrderWrapperIsNull_ReturnsCannotStart(
             DeliveryDatesStatusProvider service)
         {
             var actual = service.Get(null, new OrderProgress());
+
+            actual.Should().Be(TaskProgress.CannotStart);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Get_OrderIsNull_ReturnsCannotStart(
+            DeliveryDatesStatusProvider service)
+        {
+            var actual = service.Get(new OrderWrapper(), new OrderProgress());
 
             actual.Should().Be(TaskProgress.CannotStart);
         }
