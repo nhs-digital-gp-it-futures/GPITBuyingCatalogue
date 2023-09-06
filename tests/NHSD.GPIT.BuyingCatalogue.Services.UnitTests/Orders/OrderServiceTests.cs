@@ -229,13 +229,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         [Theory]
         [InMemoryDbAutoData]
         public static async Task HardDeleteOrder_DeletesOrder(
+            Contract contract,
+            ImplementationPlan plan,
+            ImplementationPlanMilestone milestone,
             Order order,
             [Frozen] BuyingCatalogueDbContext context,
             OrderService service)
         {
+            plan.Milestones.Add(milestone);
+            contract.ImplementationPlan = plan;
+            order.Contract = contract;
+
             await context.Orders.AddAsync(order);
             await context.SaveChangesAsync();
 
+            context.Contracts.Count().Should().Be(1);
+            context.ImplementationPlans.Count().Should().Be(1);
+            context.ImplementationPlanMilestones.Count().Should().Be(1);
             context.ContractFlags.Count().Should().Be(1);
             context.Orders.Count().Should().Be(1);
             context.OrderDeletionApprovals.Count().Should().Be(1);
@@ -247,6 +257,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             await service.HardDeleteOrder(order.CallOffId, order.OrderingParty.InternalIdentifier);
 
+            context.Contracts.Should().BeEmpty();
+            context.ImplementationPlans.Should().BeEmpty();
+            context.ImplementationPlanMilestones.Should().BeEmpty();
             context.ContractFlags.Should().BeEmpty();
             context.Orders.Should().BeEmpty();
             context.OrderDeletionApprovals.Should().BeEmpty();
