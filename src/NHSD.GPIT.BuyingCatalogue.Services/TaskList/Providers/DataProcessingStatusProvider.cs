@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
             }
 
             if ((state.AssociatedServiceBilling == TaskProgress.Completed)
-                || (state.AssociatedServiceBilling == TaskProgress.NotApplicable && state.ImplementationPlan == TaskProgress.Completed))
+                || (state.AssociatedServiceBilling == TaskProgress.NotApplicable && okToProgress.Contains(state.ImplementationPlan)))
             {
                 return order.ContractFlags?.UseDefaultDataProcessing == true
                     ? TaskProgress.Completed
