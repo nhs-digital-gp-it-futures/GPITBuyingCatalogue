@@ -10,6 +10,7 @@ using FluentAssertions;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
@@ -90,6 +91,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             string frameworkId,
             List<ApplicationType> applicationTypes,
             List<HostingType> hostingTypes,
+            List<InteropIm1Integrations> iM1IntegrationsTypes,
+            List<InteropGpConnectIntegrations> gPConnectIntegrationsTypes,
+            List<InteropIntegrationType> interoperabilityIntegrationTypes,
             ManageFiltersService service)
         {
             FluentActions
@@ -101,7 +105,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                         capabilityAndEpics,
                         frameworkId,
                         applicationTypes,
-                        hostingTypes))
+                        hostingTypes,
+                        iM1IntegrationsTypes,
+                        gPConnectIntegrationsTypes,
+                        interoperabilityIntegrationTypes))
                 .Should()
                 .ThrowAsync<ArgumentNullException>(nameof(name));
         }
@@ -118,6 +125,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             string frameworkId,
             List<ApplicationType> applicationTypes,
             List<HostingType> hostingTypes,
+            List<InteropIm1Integrations> iM1IntegrationsTypes,
+            List<InteropGpConnectIntegrations> gPConnectIntegrationsTypes,
+            List<InteropIntegrationType> interoperabilityIntegrationTypes,
             ManageFiltersService service)
         {
             FluentActions
@@ -129,7 +139,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                         capabilityAndEpics,
                         frameworkId,
                         applicationTypes,
-                        hostingTypes))
+                        hostingTypes,
+                        iM1IntegrationsTypes,
+                        gPConnectIntegrationsTypes,
+                        interoperabilityIntegrationTypes))
                 .Should()
                 .ThrowAsync<ArgumentNullException>(nameof(description));
         }
@@ -144,6 +157,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             string frameworkId,
             List<ApplicationType> applicationTypes,
             List<HostingType> hostingTypes,
+            List<InteropIm1Integrations> iM1IntegrationsTypes,
+            List<InteropGpConnectIntegrations> gPConnectIntegrationsTypes,
+            List<InteropIntegrationType> interoperabilityIntegrationTypes,
             ManageFiltersService service)
         {
             FluentActions
@@ -155,7 +171,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                         capabilityAndEpics,
                         frameworkId,
                         applicationTypes,
-                        hostingTypes))
+                        hostingTypes,
+                        iM1IntegrationsTypes,
+                        gPConnectIntegrationsTypes,
+                        interoperabilityIntegrationTypes))
                 .Should()
                 .ThrowAsync<ArgumentException>("organisationId");
         }
@@ -182,6 +201,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 organisation.Id,
                 null,
                 framework.Id,
+                null,
+                null,
+                null,
                 null,
                 null);
             result.Should().NotBe(0);
@@ -226,6 +248,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 new Dictionary<int, string[]>() { { capability.Id, null } },
                 framework.Id,
                 null,
+                null,
+                null,
+                null,
                 null);
             result.Should().NotBe(0);
             context.ChangeTracker.Clear();
@@ -268,6 +293,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 organisation.Id,
                 new Dictionary<int, string[]>() { { capability.Id, new string[] { capability.Epics.First().Id } } },
                 framework.Id,
+                null,
+                null,
+                null,
                 null,
                 null);
             result.Should().NotBe(0);

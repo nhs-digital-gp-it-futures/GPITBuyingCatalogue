@@ -74,6 +74,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     model.SelectedFrameworkId,
                     selectedApplicationTypeIds = model.CombineSelectedOptions(model.ApplicationTypeOptions),
                     selectedHostingTypeIds = model.CombineSelectedOptions(model.HostingTypeOptions),
+                    selectedIM1IntegrationsIds = model.CombineSelectedOptions(model.IM1IntegrationsOptions),
+                    selectedGPConnectIntegrationsIds = model.CombineSelectedOptions(model.GPConnectIntegrationsOptions),
+                    selectedInteroperabilityIds = model.CombineSelectedOptions(model.InteroperabilityOptions),
                 });
         }
 
@@ -82,7 +85,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             string selected,
             string selectedFrameworkId,
             string selectedApplicationTypeIds,
-            string selectedHostingTypeIds)
+            string selectedHostingTypeIds,
+            string selectedIM1IntegrationsIds,
+            string selectedGPConnectIntegrationsIds,
+            string selectedInteroperabilityIds)
         {
             var backLink =
                 Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new
@@ -91,6 +97,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     selectedFrameworkId,
                     selectedApplicationTypeIds,
                     selectedHostingTypeIds,
+                    selectedIM1IntegrationsIds,
+                    selectedGPConnectIntegrationsIds,
+                    selectedInteroperabilityIds,
                 });
 
             var organisationId = (await GetUserOrganisation()).Id;
@@ -105,8 +114,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var applicationTypes = SolutionsFilterHelper.ParseApplicationTypeIds(selectedApplicationTypeIds)?.ToList();
             var hostingTypes = SolutionsFilterHelper.ParseHostingTypeIds(selectedHostingTypeIds)?.ToList();
+            var iM1IntegrationsTypes = SolutionsFilterHelper.ParseInteropIm1IntegrationsIds(selectedIM1IntegrationsIds)?.ToList();
+            var gPConnectIntegrationsTypes = SolutionsFilterHelper.ParseInteropGpConnectIntegrationsIds(selectedGPConnectIntegrationsIds)?.ToList();
+            var interoperabilityIntegrationTypes = SolutionsFilterHelper.ParseInteropIntegrationTypeIds(selectedInteroperabilityIds)?.ToList();
 
-            var model = new SaveFilterModel(capabilitiesAndEpics, framework, applicationTypes, hostingTypes, organisationId)
+            var model = new SaveFilterModel(capabilitiesAndEpics, framework, applicationTypes, hostingTypes, iM1IntegrationsTypes, gPConnectIntegrationsTypes, interoperabilityIntegrationTypes, organisationId)
             {
                 BackLink = backLink,
             };
@@ -134,7 +146,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 capabilityAndEpicIds,
                 model.FrameworkId,
                 model.ApplicationTypes,
-                model.HostingTypes);
+                model.HostingTypes,
+                model.IM1IntegrationsTypes,
+                model.GPConnectIntegrationsTypes,
+                model.InteroperabilityIntegrationTypes);
 
             return RedirectToAction(
                 nameof(Index),

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -28,7 +29,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             Dictionary<int, string[]> capabilityAndEpicIds,
             string frameworkId,
             List<ApplicationType> applicationTypes,
-            List<HostingType> hostingTypes)
+            List<HostingType> hostingTypes,
+            List<InteropIm1Integrations> iM1IntegrationsTypes,
+            List<InteropGpConnectIntegrations> gPConnectIntegrationsTypes,
+            List<InteropIntegrationType> interoperabilityIntegrationTypes)
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException(nameof(name));
@@ -61,6 +65,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await AddFilterCapabilityEpics(filter.Id, capabilityAndEpicIds);
             await AddFilterApplicationTypes(filter.Id, applicationTypes);
             await AddFilterHostingTypes(filter.Id, hostingTypes);
+            await AddInteroperabilityIntegrationTypes(filter.Id, interoperabilityIntegrationTypes);
+            await AddIM1IntegrationsTypes(filter.Id, iM1IntegrationsTypes);
+            await AddGPConnectIntegrationsTypes(filter.Id, gPConnectIntegrationsTypes);
 
             return filter.Id;
         }
@@ -106,6 +113,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         FrameworkId = x.FrameworkId,
                         ApplicationTypeIds = x.FilterApplicationTypes.Select(fc => (int)fc.ApplicationTypeID),
                         HostingTypeIds = x.FilterHostingTypes.Select(fc => (int)fc.HostingType),
+                        IM1Integrations = x.FilterIM1IntegrationsTypes.Select(fc => (int)fc.IM1IntegrationsType),
+                        GPConnectIntegrations = x.FilterGPConnectIntegrationsTypes.Select(fc => (int)fc.GPConnectIntegrationsType),
+                        InteroperabilityOptions = x.FilterInteropIntegrationTypes.Select(fc => (int)fc.InteroperabilityIntegrationType),
                     })
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
@@ -124,6 +134,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         HostingTypes = x.FilterHostingTypes.Select(y => y.HostingType).ToList(),
                         ApplicationTypes =
                             x.FilterApplicationTypes.Select(y => y.ApplicationTypeID).ToList(),
+                        InteropIntegrationTypes = x.FilterInteropIntegrationTypes.Select(y => y.InteroperabilityIntegrationType).ToList(),
+                        InteropIm1IntegrationsTypes = x.FilterIM1IntegrationsTypes.Select(y => y.IM1IntegrationsType).ToList(),
+                        InteropGpConnectIntegrationsTypes = x.FilterGPConnectIntegrationsTypes.Select(y => y.GPConnectIntegrationsType).ToList(),
                         Invalid = x.FilterCapabilityEpics.Any(e => e.CapabilityId == null)
                             || x.Capabilities.Any(c => c.Status == CapabilityStatus.Expired)
                             || x.FilterCapabilityEpics.Any(e => e.Epic.IsActive == false)
@@ -233,6 +246,75 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 {
                     FilterId = filterId,
                     HostingType = type,
+                });
+            }
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        internal async Task AddInteroperabilityIntegrationTypes(int filterId, List<InteropIntegrationType> interopIntegrationTypes)
+        {
+            if (interopIntegrationTypes is null || interopIntegrationTypes.Count == 0) return;
+
+            var filter = await dbContext.Filters.FirstOrDefaultAsync(o => o.Id == filterId);
+
+            if (filter is null)
+            {
+                return;
+            }
+
+            foreach (var type in interopIntegrationTypes)
+            {
+                filter.FilterInteropIntegrationTypes.Add(new FilterInteroperabilityIntegrationType()
+                {
+                    FilterId = filterId,
+                    InteroperabilityIntegrationType = type,
+                });
+            }
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        internal async Task AddIM1IntegrationsTypes(int filterId, List<InteropIm1Integrations> interopIm1IntegrationsTypes)
+        {
+            if (interopIm1IntegrationsTypes is null || interopIm1IntegrationsTypes.Count == 0) return;
+
+            var filter = await dbContext.Filters.FirstOrDefaultAsync(o => o.Id == filterId);
+
+            if (filter is null)
+            {
+                return;
+            }
+
+            foreach (var type in interopIm1IntegrationsTypes)
+            {
+                filter.FilterIM1IntegrationsTypes.Add(new FilterIM1IntegrationsType()
+                {
+                    FilterId = filterId,
+                    IM1IntegrationsType = type,
+                });
+            }
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        internal async Task AddGPConnectIntegrationsTypes(int filterId, List<InteropGpConnectIntegrations> interopGpConnectIntegrationsTypes)
+        {
+            if (interopGpConnectIntegrationsTypes is null || interopGpConnectIntegrationsTypes.Count == 0) return;
+
+            var filter = await dbContext.Filters.FirstOrDefaultAsync(o => o.Id == filterId);
+
+            if (filter is null)
+            {
+                return;
+            }
+
+            foreach (var type in interopGpConnectIntegrationsTypes)
+            {
+                filter.FilterGPConnectIntegrationsTypes.Add(new FilterGPConnectIntegrationsType()
+                {
+                    FilterId = filterId,
+                    GPConnectIntegrationsType = type,
                 });
             }
 
