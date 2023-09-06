@@ -108,6 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 selectionMode) { };
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x
+                .Excluding(o => o.Title)
                 .Excluding(o => o.BackLink)
                 .Excluding(o => o.Caption)
                 .Excluding(o => o.Advice)
@@ -257,9 +258,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new ConfirmChangesModel(order.OrderingParty)
+            var expected = new ConfirmChangesModel()
             {
-                Caption = callOffId.ToString(),
+                Title = "Confirm Service Recipients",
+                Caption = $"Order {callOffId}",
                 Advice = string.Format(ConfirmChangesModel.AdviceText, solution.CatalogueItem.CatalogueItemType.Name()),
                 Selected = serviceRecipients.Select(x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OrgId, Location = x.Location }).ToList(),
                 PreviouslySelected = new List<ServiceRecipientModel>(),
