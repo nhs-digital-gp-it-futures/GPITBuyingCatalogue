@@ -626,7 +626,7 @@ public class CompetitionsService : ICompetitionsService
 
         foreach ((CompetitionSolution solution, var currentPrice) in remainingSolutions)
         {
-            var score = CompetitionFormulas.CalculatePriceDifferenceScore(lowestPricedSolution.Price, currentPrice);
+            var score = CompetitionFormulas.CalculatePriceIncreaseScore(lowestPricedSolution.Price, currentPrice);
 
             var priceWeightedScore = GetWeightedPriceScore(competition, score);
 
@@ -677,8 +677,14 @@ public class CompetitionsService : ICompetitionsService
             solutionsAndScores[competitionSolution] = totalScore;
         }
 
-        var winningSolution = solutionsAndScores.MaxBy(x => x.Value);
-        winningSolution.Key.IsWinningSolution = true;
+        var winningSolutions = solutionsAndScores
+            .GroupBy(x => x.Value)
+            .OrderByDescending(x => x.Key)
+            .First()
+            .Select(x => x.Key)
+            .ToList();
+
+        winningSolutions.ForEach(x => x.IsWinningSolution = true);
     }
 
     private async Task SetSolutionScores(

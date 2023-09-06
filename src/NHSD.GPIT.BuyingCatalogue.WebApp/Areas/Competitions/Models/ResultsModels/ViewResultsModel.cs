@@ -30,8 +30,8 @@ public class ViewResultsModel : NavBaseModel
             .OrderByDescending(x => x.TotalWeightedScore)
             .ToList();
 
-        WinningSolution = competitionSolutionResults.FirstOrDefault(x => x.IsWinningSolution);
-        OtherSolutionResults = competitionSolutionResults.Where(x => x != WinningSolution).ToList();
+        WinningSolutions = competitionSolutionResults.Where(x => x.IsWinningSolution).OrderBy(x => x.SolutionName).ToList();
+        OtherSolutionResults = competitionSolutionResults.Except(WinningSolutions).ToList();
     }
 
     public string CompetitionName { get; set; }
@@ -42,7 +42,7 @@ public class ViewResultsModel : NavBaseModel
 
     public Dictionary<NonPriceElement, int> NonPriceElementWeightings { get; set; }
 
-    public CompetitionSolutionResult WinningSolution { get; set; }
+    public List<CompetitionSolutionResult> WinningSolutions { get; set; }
 
     public List<CompetitionSolutionResult> OtherSolutionResults { get; set; }
 }

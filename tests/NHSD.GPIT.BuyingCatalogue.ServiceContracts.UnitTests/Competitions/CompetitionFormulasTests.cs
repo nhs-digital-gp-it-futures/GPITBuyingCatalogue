@@ -10,13 +10,14 @@ public static class CompetitionFormulasTests
     [InlineData(1000, 3500, 1)]
     [InlineData(1000, 2000, 2)]
     [InlineData(1000, 1500, 3)]
-    [InlineData(1000, 1100,  4)]
-    public static void CalculatePriceDifferenceScore_ReturnsExpected(
+    [InlineData(1000, 1100, 4)]
+    [InlineData(1000, 1000, 5)]
+    public static void CalculatePriceIncreaseScore_ReturnsExpected(
         decimal lowestPrice,
         decimal currentPrice,
         int expectedScore)
     {
-        CompetitionFormulas.CalculatePriceDifferenceScore(lowestPrice, currentPrice).Should().Be(expectedScore);
+        CompetitionFormulas.CalculatePriceIncreaseScore(lowestPrice, currentPrice).Should().Be(expectedScore);
     }
 
     [Theory]
