@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using FluentAssertions;
+﻿using FluentAssertions;
+using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             bool isAmendment,
             FundingTypeDescriptionModel fundingTypeDescription)
         {
-            var model = new AmendOrderItemModel(callOffId, new OrderRecipient[] { }, null, orderItem, null, isAmendment, fundingTypeDescription);
+            var model = new AmendOrderItemModel(callOffId, System.Array.Empty<OrderRecipient>(), null, orderItem, null, isAmendment, fundingTypeDescription);
             model.IsOrderItemAdded.Should().BeTrue();
         }
 
@@ -32,6 +32,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         {
             var model = new AmendOrderItemModel(callOffId, System.Array.Empty<OrderRecipient>(), null, orderItem, orderItem, isAmendment, fundingTypeDescription);
             model.IsOrderItemAdded.Should().BeFalse();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void IsServiceRecipientAdded_True_When_Previous_Recipients_Null(
+            CallOffId callOffId,
+            OrderItem orderItem,
+            bool isAmendment,
+            OrderRecipient[] recipients,
+            FundingTypeDescriptionModel fundingTypeDescription)
+        {
+            var model = new AmendOrderItemModel(callOffId, recipients, null, orderItem, orderItem, isAmendment, fundingTypeDescription);
+            recipients.ForEach(x => model.IsServiceRecipientAdded(x.OdsCode).Should().BeTrue());
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void IsServiceRecipientAdded_False_When_Previous_Recipients_Same(
+            CallOffId callOffId,
+            OrderItem orderItem,
+            bool isAmendment,
+            OrderRecipient[] recipients,
+            FundingTypeDescriptionModel fundingTypeDescription)
+        {
+            var model = new AmendOrderItemModel(callOffId, recipients, recipients, orderItem, orderItem, isAmendment, fundingTypeDescription);
+            recipients.ForEach(x => model.IsServiceRecipientAdded(x.OdsCode).Should().BeFalse());
         }
 
         [Theory]
