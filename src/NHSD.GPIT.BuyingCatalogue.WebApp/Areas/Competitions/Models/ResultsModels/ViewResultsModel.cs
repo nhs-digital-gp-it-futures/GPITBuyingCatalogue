@@ -30,7 +30,7 @@ public class ViewResultsModel : NavBaseModel
             .OrderByDescending(x => x.TotalWeightedScore)
             .ToList();
 
-        WinningSolution = competitionSolutionResults.First(x => x.IsWinningSolution);
+        WinningSolution = competitionSolutionResults.FirstOrDefault(x => x.IsWinningSolution);
         OtherSolutionResults = competitionSolutionResults.Where(x => x != WinningSolution).ToList();
     }
 

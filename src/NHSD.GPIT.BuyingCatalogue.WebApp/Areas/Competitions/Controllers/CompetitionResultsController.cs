@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -18,7 +19,7 @@ public class CompetitionResultsController : Controller
     public CompetitionResultsController(
         ICompetitionsService competitionsService)
     {
-        this.competitionsService = competitionsService;
+        this.competitionsService = competitionsService ?? throw new ArgumentNullException(nameof(competitionsService));
     }
 
     [HttpGet("confirm")]

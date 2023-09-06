@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 
@@ -23,9 +24,7 @@ public static class CompetitionFormulas
             > 25 and <= 50 => 3,
             > 50 and <= 100 => 2,
             > 100 => 1,
-            _ => throw new ArgumentOutOfRangeException(
-                nameof(currentPrice),
-                @"Difference between lowest and current price was negative"),
+            _ => throw new UnreachableException(),
         };
     }
 }
