@@ -1091,6 +1091,32 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             orderItemFunding.OrderItemFundingType.Should().Be(OrderItemFundingType.LocalFundingOnly);
         }
 
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task EnsureOrderItemsForAmendment_Adds_OrderItems(
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            order.OrderingPartyId = order.OrderingParty.Id;
+            order.Revision = 1;
+            var amendment = order.BuildAmendment(2);
+            amendment.OrderItems.Clear();
+
+            context.Orders.Add(order);
+            context.Orders.Add(amendment);
+            await context.SaveChangesAsync();
+
+            await service.EnsureOrderItemsForAmendment(amendment.OrderingParty.InternalIdentifier, amendment.CallOffId);
+            context.ChangeTracker.Clear();
+
+            var dbOrder = await context.Orders
+                .Include(o => o.OrderItems)
+                .FirstAsync(x => x.Id == amendment.Id);
+
+            order.OrderItems.ForEach(i => dbOrder.Exists(i.CatalogueItemId).Should().BeTrue());
+        }
+
         private static async Task IsTerminated(BuyingCatalogueDbContext context, int id, DateTime terminationDate, string reason)
         {
             var updatedOrder = await context.Orders

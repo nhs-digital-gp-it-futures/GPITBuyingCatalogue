@@ -9,7 +9,6 @@ using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
@@ -318,7 +317,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return amendment;
         }
 
-        public async Task InitialiseAmendedOrderItemsIfRequired(string internalOrgId, CallOffId callOffId)
+        public async Task EnsureOrderItemsForAmendment(string internalOrgId, CallOffId callOffId)
         {
             if (callOffId.IsAmendment)
             {

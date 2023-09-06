@@ -300,13 +300,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             return new OrderRecipient(Id, odsCode);
         }
 
-        public OrderItem InitialiseOrderItem(CatalogueItemId catalogueItemId, OrderItemPrice orderItemPrice)
-        {
-            var orderItem = InitialiseOrderItem(catalogueItemId);
-            orderItem.OrderItemPrice = orderItemPrice;
-            return orderItem;
-        }
-
         public ICollection<OrderRecipient> AddedOrderRecipients(Order previous) => OrderRecipients
             .Where(r => !(previous?.OrderRecipients?.Exists(r.OdsCode) ?? false)).ToList();
 
@@ -330,6 +323,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public bool Exists(CatalogueItemId catalogueItemId)
         {
             return OrderItems.Any(x => x.CatalogueItemId == catalogueItemId);
+        }
+
+        private OrderItem InitialiseOrderItem(CatalogueItemId catalogueItemId, OrderItemPrice orderItemPrice)
+        {
+            var orderItem = InitialiseOrderItem(catalogueItemId);
+            orderItem.OrderItemPrice = orderItemPrice;
+            return orderItem;
         }
     }
 }

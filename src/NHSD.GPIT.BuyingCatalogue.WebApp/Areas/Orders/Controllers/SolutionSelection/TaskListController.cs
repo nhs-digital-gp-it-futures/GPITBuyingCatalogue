@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             if (wrapper.IsAmendment)
             {
-                await orderService.InitialiseAmendedOrderItemsIfRequired(internalOrgId, callOffId);
+                await orderService.EnsureOrderItemsForAmendment(internalOrgId, callOffId);
             }
 
             var order = wrapper.IsAmendment ? wrapper.RolledUp : wrapper.Order;
