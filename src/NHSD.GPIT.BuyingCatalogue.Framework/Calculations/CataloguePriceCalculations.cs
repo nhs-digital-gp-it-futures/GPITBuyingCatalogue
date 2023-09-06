@@ -124,26 +124,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
             return total;
         }
 
-        public static decimal TotalCostForOrderItem(this Order order, CatalogueItemId catalogueItemId)
-        {
-            if (order == null)
-            {
-                return decimal.Zero;
-            }
-
-            var orderItem = order.OrderItem(catalogueItemId);
-
-            if (order.IsAmendment)
-            {
-                return CalculateForTerm(orderItem, GetTerm(order.EndDate, order.OrderRecipients, orderItem), order.OrderRecipients);
-            }
-            else
-            {
-                var maximumTerm = order.MaximumTerm ?? 36;
-                return CalculateForTerm(orderItem, maximumTerm, order.OrderRecipients);
-            }
-        }
-
         public static decimal TotalCostForOrderItem(this OrderWrapper orderWrapper, CatalogueItemId catalogueItemId)
         {
             if (orderWrapper == null)
