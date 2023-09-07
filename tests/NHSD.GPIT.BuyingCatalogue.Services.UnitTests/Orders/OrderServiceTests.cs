@@ -9,6 +9,7 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Newtonsoft.Json.Linq;
@@ -232,6 +233,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             Contract contract,
             ImplementationPlan plan,
             ImplementationPlanMilestone milestone,
+            OrderTermination orderTermination,
             Order order,
             [Frozen] BuyingCatalogueDbContext context,
             OrderService service)
@@ -239,6 +241,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             plan.Milestones.Add(milestone);
             contract.ImplementationPlan = plan;
             order.Contract = contract;
+            order.OrderTermination = orderTermination;
 
             await context.Orders.AddAsync(order);
             await context.SaveChangesAsync();
@@ -247,6 +250,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             context.ImplementationPlans.Count().Should().Be(1);
             context.ImplementationPlanMilestones.Count().Should().Be(1);
             context.ContractFlags.Count().Should().Be(1);
+            context.OrderTerminations.Count().Should().Be(1);
             context.Orders.Count().Should().Be(1);
             context.OrderDeletionApprovals.Count().Should().Be(1);
             context.OrderItems.Count().Should().Be(3);
@@ -261,6 +265,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             context.ImplementationPlans.Should().BeEmpty();
             context.ImplementationPlanMilestones.Should().BeEmpty();
             context.ContractFlags.Should().BeEmpty();
+            context.OrderTerminations.Should().BeEmpty();
             context.Orders.Should().BeEmpty();
             context.OrderDeletionApprovals.Should().BeEmpty();
             context.OrderItems.Should().BeEmpty();
@@ -268,6 +273,169 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             context.OrderItemPriceTiers.Should().BeEmpty();
             context.OrderItemPrices.Should().BeEmpty();
             context.OrderItemRecipients.Should().BeEmpty();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task TerminateOrder_TerminatesCurrentOrder(
+            [Frozen] BuyingCatalogueDbContext context,
+            AspNetUser user,
+            Order order,
+            DateTime terminationDate,
+            string reason,
+            OrderService service)
+        {
+            await context.Orders.AddAsync(order);
+
+            await context.Users.AddAsync(user);
+
+            await context.SaveChangesAsync();
+
+            await service.TerminateOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id, terminationDate, reason);
+
+            await IsTerminated(context, order.Id, terminationDate, reason);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task TerminateOrder_WithCompletedAmendment_TerminatesAllRevisions(
+            Organisation organisation,
+            List<Order> orders,
+            [Frozen] BuyingCatalogueDbContext context,
+            AspNetUser user,
+            DateTime terminationDate,
+            string reason,
+            OrderService service)
+        {
+            var originalOrder = orders.First();
+            var amendedOrder = orders.Skip(1).First();
+
+            amendedOrder.OrderNumber = originalOrder.OrderNumber;
+            originalOrder.Revision = 1;
+            amendedOrder.Revision = 2;
+            amendedOrder.Completed = DateTime.UtcNow;
+            originalOrder.Completed = DateTime.UtcNow;
+
+            organisation.Orders.AddRange(orders);
+
+            context.Orders.AddRange(orders);
+            context.Organisations.Add(organisation);
+
+            await context.Users.AddAsync(user);
+
+            await context.SaveChangesAsync();
+
+            await service.TerminateOrder(amendedOrder.CallOffId, amendedOrder.OrderingParty.InternalIdentifier, user.Id, terminationDate, reason);
+
+            await IsTerminated(context, amendedOrder.Id, terminationDate, reason);
+            await IsTerminated(context, originalOrder.Id, terminationDate, reason);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task TerminateOrder_SendsFinanceCSVEmail(
+            AspNetUser user,
+            Order order,
+            DateTime terminationDate,
+            string reason,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IGovNotifyEmailService> mockEmailService,
+            [Frozen] Mock<ICsvService> mockCsvService,
+            [Frozen] Mock<IOrderPdfService> mockPdfService,
+            OrderMessageSettings settings)
+        {
+            Dictionary<string, dynamic> adminTokens = null;
+
+            await context.Orders.AddAsync(order);
+            await context.Users.AddAsync(user);
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            mockEmailService
+                .Setup(x => x.SendEmailAsync(settings.Recipient.Address, settings.OrderTerminatedAdminTemplateId, It.IsAny<Dictionary<string, dynamic>>()))
+                .Callback<string, string, Dictionary<string, dynamic>>((_, _, x) => adminTokens = x)
+                .Returns(Task.CompletedTask);
+
+            var expectedToken = NotificationClient.PrepareUpload(new MemoryStream().ToArray(), true);
+
+            var service = new OrderService(
+                context,
+                mockCsvService.Object,
+                mockEmailService.Object,
+                mockPdfService.Object,
+                settings);
+
+            await service.TerminateOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id, terminationDate, reason);
+
+            mockCsvService.Verify(x => x.CreateFullOrderCsvAsync(order.Id, It.IsAny<MemoryStream>(), true), Times.Once);
+            mockCsvService.Verify(x => x.CreatePatientNumberCsvAsync(order.Id, It.IsAny<MemoryStream>()), Times.Never);
+            mockEmailService.Verify(x => x.SendEmailAsync(settings.Recipient.Address, settings.OrderTerminatedAdminTemplateId, It.IsAny<Dictionary<string, dynamic>>()));
+            adminTokens.Should().NotBeNull();
+            adminTokens.Should().HaveCount(2);
+            var organisationName = adminTokens.Should().ContainKey(OrderService.OrganisationNameToken).WhoseValue as string;
+            var fullOrderCsv = adminTokens.Should().ContainKey(OrderService.FullOrderCsvToken).WhoseValue as JObject;
+            organisationName.Should().Be(order.OrderingParty.Name);
+            fullOrderCsv.Should().BeEquivalentTo(expectedToken);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task TerminateOrder_SendsUserCSVEmail(
+            AspNetUser user,
+            Order order,
+            string email,
+            DateTime terminationDate,
+            string reason,
+            byte[] pdfContents,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IGovNotifyEmailService> mockEmailService,
+            [Frozen] Mock<ICsvService> mockCsvService,
+            [Frozen] Mock<IOrderPdfService> mockPdfService,
+            OrderMessageSettings settings)
+        {
+            Dictionary<string, dynamic> userTokens = null;
+
+            var pdfData = new MemoryStream(pdfContents);
+
+            await context.Orders.AddAsync(order);
+
+            user.Email = email;
+            await context.Users.AddAsync(user);
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            mockPdfService.Setup(x => x.CreateOrderSummaryPdf(order))
+                .ReturnsAsync(pdfData);
+
+            mockEmailService
+                .Setup(x => x.SendEmailAsync(user.Email, settings.OrderTerminatedUserTemplateId, It.IsAny<Dictionary<string, dynamic>>()))
+                .Callback<string, string, Dictionary<string, dynamic>>((_, _, x) => userTokens = x)
+                .Returns(Task.CompletedTask);
+
+            var service = new OrderService(
+                context,
+                mockCsvService.Object,
+                mockEmailService.Object,
+                mockPdfService.Object,
+                settings);
+
+            var expectedOrderSummaryCsv = NotificationClient.PrepareUpload(new MemoryStream().ToArray(), true);
+
+            await service.TerminateOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id, terminationDate, reason);
+
+            mockPdfService.VerifyAll();
+            mockEmailService.VerifyAll();
+
+            userTokens.Should().NotBeNull();
+            userTokens.Should().HaveCount(2);
+
+            var orderId = userTokens.Should().ContainKey(OrderService.OrderIdToken).WhoseValue as string;
+            var orderSummaryCsv = userTokens.Should().ContainKey(OrderService.OrderSummaryCsv).WhoseValue as JObject;
+
+            orderId.Should().Be($"{order.CallOffId}");
+            orderSummaryCsv.Should().BeEquivalentTo(expectedOrderSummaryCsv);
         }
 
         [Theory]
@@ -904,6 +1072,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             orderItemFunding.OrderId.Should().Be(order.Id);
             orderItemFunding.CatalogueItemId.Should().Be(orderItem.CatalogueItemId);
             orderItemFunding.OrderItemFundingType.Should().Be(OrderItemFundingType.LocalFundingOnly);
+        }
+
+        private static async Task IsTerminated(BuyingCatalogueDbContext context, int id, DateTime terminationDate, string reason)
+        {
+            var updatedOrder = await context.Orders
+                .Include(x => x.OrderTermination)
+                .Include(x => x.OrderItems)
+                .ThenInclude(x => x.OrderItemRecipients)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            updatedOrder.IsTerminated.Should().BeTrue();
+            updatedOrder.OrderTermination.Should().NotBeNull();
+            updatedOrder.OrderTermination.OrderId.Should().Be(id);
+            updatedOrder.OrderTermination.DateOfTermination.Should().Be(terminationDate);
+            updatedOrder.OrderTermination.Reason.Should().Be(reason);
         }
     }
 }

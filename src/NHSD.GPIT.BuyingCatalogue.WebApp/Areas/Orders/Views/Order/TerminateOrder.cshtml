@@ -1,0 +1,54 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders.TerminateOrderModel
+@{
+    ViewBag.Title = "Are you sure you want to terminate this contract?";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="Order @Model.CallOffId"
+                        advice="Provide the following information and confirm you want to terminate this contract." />
+
+        <nhs-warning-callout label-text="Terminating a contract">
+            <p>Terminating a contract means your Service Recipients will stop receiving any solutions and services that were ordered. You should have contacted the supplier in writing and given them at least 30 days’ notice.</p>
+
+            <p>Once terminated, you’ll no longer be able to reactivate this contract.</p>
+        </nhs-warning-callout>
+
+        <form method="post">
+            <input type="hidden" asp-for="BackLink"/>
+
+            <nhs-textarea asp-for="Reason"
+                          label-text="Why is this contract being terminated?"
+                          label-hint="Provide the reason you want to terminate this contract."/>
+
+            <nhs-fieldset-form-label asp-for="@Model"
+                                     label-text="What date will the termination take place?"
+                                     label-hint="For example, 12 3 2023. The termination date must be at least 30 days’ from when you gave written notice to the supplier."
+                                     size="ExtraSmall">
+                <nhs-date-input asp-for="@Model" day="Day" month="Month" year="Year"/>
+            </nhs-fieldset-form-label>
+
+            <nhs-fieldset-form-label asp-for="@Model"
+                                     label-text="Confirm termination"
+                                     label-hint="Confirm you want to terminate this contract and are authorised to do so."
+                                     size="ExtraSmall">
+                <nhs-checkbox-container>
+                    <nhs-checkbox asp-for="Confirm"
+                                  label-text="I confirm I want to terminate this contract"/>
+                </nhs-checkbox-container>
+            </nhs-fieldset-form-label>
+
+            <nhs-submit-button text="Terminate contract"/>
+
+            <p>
+                <a href="@Url.Action( nameof(DashboardController.Organisation), typeof(DashboardController).ControllerName(), new { Model.InternalOrgId })">Cancel</a>
+            </p>
+        </form>
+
+    </div>
+</div>
