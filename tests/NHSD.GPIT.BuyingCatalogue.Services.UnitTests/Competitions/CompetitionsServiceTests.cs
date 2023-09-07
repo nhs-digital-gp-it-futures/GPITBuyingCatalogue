@@ -1760,4 +1760,162 @@ public static class CompetitionsServiceTests
         solutionServices.Should().HaveCount(serviceIds.Count);
         solutionServices.Should().NotContain(x => x.ServiceId == existingService.CatalogueItemId);
     }
+
+    [Theory]
+    [CommonAutoData]
+    public static void ScoreSolutionPrices_IncludesNonPriceElements_ScoresAsExpected(
+        Competition competition,
+        CompetitionSolution winningSolution,
+        CompetitionSolution nonWinningSolution)
+    {
+        const int priceWeighting = 70;
+        const int nonPriceWeighting = 100 - priceWeighting;
+
+        competition.IncludesNonPrice = true;
+        competition.Weightings = new() { Price = priceWeighting, NonPrice = nonPriceWeighting, };
+
+        winningSolution.Quantity = 1000;
+        winningSolution.Price = new()
+        {
+            BillingPeriod = TimeUnit.PerMonth,
+            ProvisioningType = ProvisioningType.Patient,
+            CataloguePriceType = CataloguePriceType.Flat,
+            CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
+            Tiers = new List<CompetitionCatalogueItemPriceTier>
+            {
+                new() { LowerRange = 0, ListPrice = 1.01M, Price = 1.01M, },
+            },
+        };
+
+        nonWinningSolution.Quantity = 1000;
+        nonWinningSolution.Price = new()
+        {
+            BillingPeriod = TimeUnit.PerMonth,
+            ProvisioningType = ProvisioningType.Patient,
+            CataloguePriceType = CataloguePriceType.Flat,
+            CataloguePriceCalculationType = CataloguePriceCalculationType.Volume,
+            Tiers = new List<CompetitionCatalogueItemPriceTier>
+            {
+                new() { LowerRange = 0, ListPrice = 5M, Price = 5M, },
+            },
+        };
+
+        competition.CompetitionSolutions = new List<CompetitionSolution> { winningSolution, nonWinningSolution };
+
+        CompetitionsService.ScoreSolutionPrices(competition);
+
+        winningSolution.Scores.Should().ContainSingle(x => x.Score == 5 && x.WeightedScore == 3.5M);
+        nonWinningSolution.Scores.Should().ContainSingle(x => x.Score == 1 && x.WeightedScore == 0.7M);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void ScoreSolutionPrices_PriceOnly_ScoresAsExpected(
+        Competition competition,
+        CompetitionSolution winningSolution,
+        CompetitionSolution nonWinningSolution)
+    {
+        competition.IncludesNonPrice = false;
+
+        winningSolution.Quantity = 1000;
+        winningSolution.Price = new()
+        {
+            BillingPeriod = TimeUnit.PerMonth,
+            ProvisioningType = ProvisioningType.Patient,
+            CataloguePriceType = CataloguePriceType.Flat,
+            CataloguePriceCalculationType = CataloguePriceCalculationType.SingleFixed,
+            Tiers = new List<CompetitionCatalogueItemPriceTier>
+            {
+                new() { LowerRange = 0, ListPrice = 1.01M, Price = 1.01M, },
+            },
+        };
+
+        nonWinningSolution.Quantity = 1000;
+        nonWinningSolution.Price = new()
+        {
+            BillingPeriod = TimeUnit.PerMonth,
+            ProvisioningType = ProvisioningType.Patient,
+            CataloguePriceType = CataloguePriceType.Flat,
+            CataloguePriceCalculationType = CataloguePriceCalculationType.Volume,
+            Tiers = new List<CompetitionCatalogueItemPriceTier>
+            {
+                new() { LowerRange = 0, ListPrice = 5M, Price = 5M, },
+            },
+        };
+
+        competition.CompetitionSolutions = new List<CompetitionSolution> { winningSolution, nonWinningSolution };
+
+        CompetitionsService.ScoreSolutionPrices(competition);
+
+        winningSolution.Scores.Should().ContainSingle(x => x.Score == 5 && x.WeightedScore == 5M);
+        nonWinningSolution.Scores.Should().ContainSingle(x => x.Score == 1 && x.WeightedScore == 1M);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void SetNonPriceScoreWeightings(
+        Competition competition,
+        CompetitionSolution competitionSolution)
+    {
+        competition.IncludesNonPrice = true;
+        competition.NonPriceElements = new()
+        {
+            NonPriceWeights = new() { Implementation = 50, Interoperability = 25, ServiceLevel = 25, },
+            Implementation = new(),
+            Interoperability = new List<InteroperabilityCriteria> { new() },
+            ServiceLevel = new(),
+        };
+
+        competitionSolution.Scores = new List<SolutionScore>
+        {
+            new(ScoreType.Implementation, 5), new(ScoreType.Interoperability, 3), new(ScoreType.ServiceLevel, 2),
+        };
+
+        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+
+        CompetitionsService.SetNonPriceScoreWeightings(competition);
+
+        competitionSolution.Scores.Should()
+            .ContainSingle(x => x.ScoreType == ScoreType.Implementation && x.Score == 5 && x.WeightedScore == 2.5M);
+
+        competitionSolution.Scores.Should()
+            .ContainSingle(x => x.ScoreType == ScoreType.Interoperability && x.Score == 3 && x.WeightedScore == 0.75M);
+
+        competitionSolution.Scores.Should()
+            .ContainSingle(x => x.ScoreType == ScoreType.ServiceLevel && x.Score == 2 && x.WeightedScore == 0.5M);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void SetWinningSolution(
+        Competition competition,
+        CompetitionSolution winningSolution,
+        CompetitionSolution nonWinningSolution)
+    {
+        winningSolution.IsWinningSolution = true;
+        winningSolution.Scores = new List<SolutionScore>
+        {
+            new(ScoreType.Price, 5, 3.5M),
+            new(ScoreType.Implementation, 5, 3.5M),
+            new(ScoreType.Interoperability, 3, 0.75M),
+            new(ScoreType.ServiceLevel, 2, 0.5M),
+        };
+
+        nonWinningSolution.IsWinningSolution = false;
+        nonWinningSolution.Scores = new List<SolutionScore>
+        {
+            new(ScoreType.Price, 2, 1.4M),
+            new(ScoreType.Implementation, 5, 3.5M),
+            new(ScoreType.Interoperability, 3, 0.75M),
+            new(ScoreType.ServiceLevel, 2, 0.5M),
+        };
+
+        competition.Weightings = new() { Price = 70, NonPrice = 30 };
+        competition.CompetitionSolutions = new List<CompetitionSolution> { winningSolution, nonWinningSolution };
+
+        CompetitionsService.SetWinningSolution(competition);
+
+        winningSolution.IsWinningSolution.Should().BeTrue();
+        nonWinningSolution.IsWinningSolution.Should().BeFalse();
+    }
 }

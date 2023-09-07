@@ -39,7 +39,7 @@ public class CompetitionCatalogueItemPrice : IPrice
 
     public int CataloguePriceId { get; set; }
 
-    public TimeUnit? BillingPeriod { get; }
+    public TimeUnit? BillingPeriod { get; set; }
 
     public ProvisioningType ProvisioningType { get; set; }
 

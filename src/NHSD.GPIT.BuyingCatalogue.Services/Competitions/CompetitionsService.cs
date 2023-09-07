@@ -588,17 +588,7 @@ public class CompetitionsService : ICompetitionsService
         .Select(x => x.Name)
         .FirstOrDefaultAsync();
 
-    private static void RemoveScoreType(ScoreType scoreType, Competition competition)
-    {
-        foreach (var solution in competition.CompetitionSolutions.Where(x => x.HasScoreType(scoreType)))
-        {
-            var score = solution.GetScoreByType(scoreType);
-
-            solution.Scores.Remove(score);
-        }
-    }
-
-    private static void ScoreSolutionPrices(Competition competition)
+    internal static void ScoreSolutionPrices(Competition competition)
     {
         static decimal GetWeightedPriceScore(Competition competition, int score)
         {
@@ -634,7 +624,7 @@ public class CompetitionsService : ICompetitionsService
         }
     }
 
-    private static void SetNonPriceScoreWeightings(Competition competition)
+    internal static void SetNonPriceScoreWeightings(Competition competition)
     {
         if (!competition.IncludesNonPrice.GetValueOrDefault()) return;
 
@@ -660,7 +650,7 @@ public class CompetitionsService : ICompetitionsService
         }
     }
 
-    private static void SetWinningSolution(Competition competition)
+    internal static void SetWinningSolution(Competition competition)
     {
         var solutionsAndScores = new Dictionary<CompetitionSolution, decimal>();
         foreach (var competitionSolution in competition.CompetitionSolutions)
@@ -685,6 +675,16 @@ public class CompetitionsService : ICompetitionsService
             .ToList();
 
         winningSolutions.ForEach(x => x.IsWinningSolution = true);
+    }
+
+    private static void RemoveScoreType(ScoreType scoreType, Competition competition)
+    {
+        foreach (var solution in competition.CompetitionSolutions.Where(x => x.HasScoreType(scoreType)))
+        {
+            var score = solution.GetScoreByType(scoreType);
+
+            solution.Scores.Remove(score);
+        }
     }
 
     private async Task SetSolutionScores(

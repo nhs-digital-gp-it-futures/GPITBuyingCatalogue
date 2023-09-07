@@ -8,10 +8,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.ResultsMode
 
 public class ViewResultsModel : NavBaseModel
 {
-    public ViewResultsModel()
-    {
-    }
-
     public ViewResultsModel(
         Competition competition)
     {
