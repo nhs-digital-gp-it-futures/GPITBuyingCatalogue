@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                 taskModels.Add(CatalogueSolution.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, rolledUpOrder.OrderRecipients, CatalogueSolution)
                 {
                     FromPreviousRevision = previous?.Exists(CatalogueSolution.CatalogueItemId) ?? false,
-                    HasNewRecipients = wrapper.HasNewOrderRecipients, //  previous?.Exists(CatalogueSolution.CatalogueItemId) ?? false,
+                    HasNewRecipients = wrapper.HasNewOrderRecipients,
                     NumberOfPrices = CatalogueSolution.CatalogueItem.CataloguePrices.Count,
                     PriceId = CatalogueSolution.CatalogueItem.CataloguePrices.Count == 1
                         ? CatalogueSolution.CatalogueItem.CataloguePrices.First().CataloguePriceId
@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             AdditionalServices.ForEach(x => taskModels.Add(x.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, rolledUpOrder.OrderRecipients, x)
             {
                 FromPreviousRevision = previous?.Exists(x.CatalogueItemId) ?? false,
-                HasNewRecipients = wrapper.HasNewOrderRecipients, //  previous?.Exists(CatalogueSolution.CatalogueItemId) ?? false,
+                HasNewRecipients = wrapper.HasNewOrderRecipients,
                 NumberOfPrices = x.CatalogueItem.CataloguePrices.Count,
                 PriceId = x.CatalogueItem.CataloguePrices.Count == 1
                     ? x.CatalogueItem.CataloguePrices.First().CataloguePriceId
@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             AssociatedServices.ForEach(x => taskModels.Add(x.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, rolledUpOrder.OrderRecipients, x)
             {
                 FromPreviousRevision = previous?.Exists(x.CatalogueItemId) ?? false,
-                HasNewRecipients = wrapper.HasNewOrderRecipients, //  previous?.Exists(CatalogueSolution.CatalogueItemId) ?? false,
+                HasNewRecipients = wrapper.HasNewOrderRecipients,
                 NumberOfPrices = x.CatalogueItem.CataloguePrices.Count,
                 PriceId = x.CatalogueItem.CataloguePrices.Count == 1
                     ? x.CatalogueItem.CataloguePrices.First().CataloguePriceId

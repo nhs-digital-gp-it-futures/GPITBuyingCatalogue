@@ -234,15 +234,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             return records.ToList();
         }
 
-        private static Order BuildOrder(IFixture fixture, OrderItem[] orderItems, OrderRecipient[] recipients)
-        {
-            return fixture.Build<Order>()
-                .With(o => o.OrderRecipients, new HashSet<OrderRecipient>(recipients))
-                .With(o => o.Revision, 1)
-                .With(o => o.OrderItems, new HashSet<OrderItem>(orderItems))
-                .Create();
-        }
-
         private static OrderItem BuildOrderItem(
             IFixture fixture,
             CatalogueItem catalogueItem,
