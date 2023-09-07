@@ -25,6 +25,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
         }
 
         [Theory]
+        [InMemoryDbAutoData]
+        public static void Constructor_NullOrder_ThrowsException(
+            string internalOrgId,
+            CallOffId id)
+        {
+            var actual = Assert.Throws<ArgumentNullException>(() => new FundingSources(internalOrgId, id, new OrderWrapper(), 1));
+
+            actual.ParamName.Should().Be("orderWrapper");
+        }
+
+        [Theory]
         [CommonAutoData]
         public static void WithValidArguments_CatalogueSolution_LocalFundingOnly_SetsCorrectly(
             string internalOrgId,
