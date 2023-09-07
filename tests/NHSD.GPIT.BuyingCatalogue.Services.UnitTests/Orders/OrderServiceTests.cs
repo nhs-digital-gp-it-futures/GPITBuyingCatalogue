@@ -233,6 +233,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             Contract contract,
             ImplementationPlan plan,
             ImplementationPlanMilestone milestone,
+            OrderTermination orderTermination,
             Order order,
             [Frozen] BuyingCatalogueDbContext context,
             OrderService service)
@@ -240,6 +241,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             plan.Milestones.Add(milestone);
             contract.ImplementationPlan = plan;
             order.Contract = contract;
+            order.OrderTermination = orderTermination;
 
             await context.Orders.AddAsync(order);
             await context.SaveChangesAsync();
@@ -248,6 +250,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             context.ImplementationPlans.Count().Should().Be(1);
             context.ImplementationPlanMilestones.Count().Should().Be(1);
             context.ContractFlags.Count().Should().Be(1);
+            context.OrderTerminations.Count().Should().Be(1);
             context.Orders.Count().Should().Be(1);
             context.OrderDeletionApprovals.Count().Should().Be(1);
             context.OrderItems.Count().Should().Be(3);
@@ -262,6 +265,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             context.ImplementationPlans.Should().BeEmpty();
             context.ImplementationPlanMilestones.Should().BeEmpty();
             context.ContractFlags.Should().BeEmpty();
+            context.OrderTerminations.Should().BeEmpty();
             context.Orders.Should().BeEmpty();
             context.OrderDeletionApprovals.Should().BeEmpty();
             context.OrderItems.Should().BeEmpty();

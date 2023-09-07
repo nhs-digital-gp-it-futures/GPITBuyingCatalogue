@@ -20,7 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.HasOne(a => a.Order)
                 .WithOne(o => o.OrderTermination)
                 .HasForeignKey<OrderTermination>(d => d.OrderId)
-                .HasConstraintName("FK_OrderTermination_Order");
+                .HasConstraintName("FK_OrderTermination_Order")
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
