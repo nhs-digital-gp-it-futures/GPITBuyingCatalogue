@@ -145,7 +145,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             var model = new TaskListOrderItemModel(internalOrgId, callOffId, recipients, orderItem)
             {
                 FromPreviousRevision = true,
-                HasCurrentAmendments = true,
+                HasNewRecipients = true,
             };
 
             model.QuantityStatus.Should().Be(TaskProgress.Amended);
@@ -189,7 +189,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             var model = new TaskListOrderItemModel(internalOrgId, callOffId, recipients, orderItem)
             {
                 FromPreviousRevision = true,
-                HasCurrentAmendments = true,
+                HasNewRecipients = true,
             };
 
             model.QuantityStatus.Should().Be(TaskProgress.Amended);
@@ -310,7 +310,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             var model = new TaskListOrderItemModel(internalOrgId, callOffId, recipients, orderItem)
             {
                 FromPreviousRevision = true,
-                HasCurrentAmendments = true,
+                HasNewRecipients = true,
             };
 
             model.DeliveryDatesStatus.Should().Be(TaskProgress.Amended);

@@ -89,7 +89,28 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
 
         [Theory]
         [CommonAutoData]
-        public static void Get_NewRecipient_NothingAmended_ReturnsInProgress(
+        public static void Get_Amended_Order_With_Nothing_Added_ReturnsNotStarted(
+            Order order,
+            SolutionOrServiceStatusProvider service)
+        {
+            var state = new OrderProgress
+            {
+                ServiceRecipients = TaskProgress.Completed,
+            };
+
+            order.Revision = 1;
+            order.AssociatedServicesOnly = false;
+            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+            var amendedOrder = order.BuildAmendment(2);
+
+            var actual = service.Get(new OrderWrapper(new[] { order, amendedOrder }), state);
+
+            actual.Should().Be(TaskProgress.NotStarted);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Get_Amended_NewRecipient_ReturnsInProgress(
             Order order,
             OrderRecipient orderRecipient,
             SolutionOrServiceStatusProvider service)
@@ -101,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
 
             order.Revision = 1;
             order.AssociatedServicesOnly = false;
-            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution);
             var amendedOrder = order.BuildAmendment(2);
             order.OrderItems.ForEach(i =>
             {
@@ -116,10 +137,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonInlineAutoData(CatalogueItemType.Solution)]
-        [CommonInlineAutoData(CatalogueItemType.AdditionalService)]
-        public static void Get_Amending_ReturnsInProgress(
-            CatalogueItemType itemType,
+        [CommonAutoData]
+        public static void Get_Amended_NewOrderItem_ReturnsInProgress(
+            OrderItem orderItemToAdd,
             Order order,
             SolutionOrServiceStatusProvider service)
         {
@@ -130,7 +150,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
 
             order.Revision = 1;
             order.AssociatedServicesOnly = false;
-            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = itemType);
+            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution);
             var amendedOrder = order.BuildAmendment(2);
             order.OrderItems.ForEach(i =>
             {
@@ -138,13 +158,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 matchingItem.CatalogueItem = i.CatalogueItem;
             });
 
-            var orderItem = order.OrderItems.First();
-            var orderItemToAdd = new OrderItem
-            {
-                OrderId = order.Id,
-                CatalogueItemId = orderItem.CatalogueItemId,
-                CatalogueItem = orderItem.CatalogueItem,
-            };
             amendedOrder.OrderItems.Add(orderItemToAdd);
 
             var actual = service.Get(new OrderWrapper(new[] { order, amendedOrder }), state);

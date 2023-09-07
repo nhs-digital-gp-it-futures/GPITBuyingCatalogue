@@ -21,7 +21,9 @@ public class SelectRecipientsModelValidator : AbstractValidator<SelectRecipients
         if (subLocations is null || !subLocations.Any())
             return false;
 
-        var serviceRecipients = subLocations.SelectMany(x => x.ServiceRecipients).ToList();
+        var serviceRecipients = subLocations
+            .Where(x => x.ServiceRecipients != null)
+            .SelectMany(x => x.ServiceRecipients).ToList();
 
         return !serviceRecipients.Any()
             || serviceRecipients.Any(x => x.Selected);

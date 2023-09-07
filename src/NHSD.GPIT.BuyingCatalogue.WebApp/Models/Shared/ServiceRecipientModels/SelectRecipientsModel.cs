@@ -6,8 +6,6 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 public class SelectRecipientsModel : NavBaseModel
 {
-    public const string SelectAll = "Select all";
-    public const string SelectNone = "Deselect all";
     private readonly SelectionMode? selectionMode;
 
     public SelectRecipientsModel()
@@ -55,13 +53,11 @@ public class SelectRecipientsModel : NavBaseModel
 
     public bool ShouldExpand { get; set; }
 
-    public string SelectionCaption { get; set; } = SelectAll;
-
-    public SelectionMode? RecipientSelectionMode { get; set; } = SelectionMode.All;
-
     public IEnumerable<ServiceRecipientModel> GetServiceRecipients()
     {
-        return SubLocations.SelectMany(x => x.ServiceRecipients);
+        return SubLocations
+            .Where(x => x.ServiceRecipients != null)
+            .SelectMany(x => x.ServiceRecipients);
     }
 
     public IEnumerable<ServiceRecipientModel> GetSelectedServiceRecipients()
@@ -82,13 +78,9 @@ public class SelectRecipientsModel : NavBaseModel
         {
             case SelectionMode.All:
                 GetServiceRecipients().ToList().ForEach(x => x.Selected = true);
-                RecipientSelectionMode = SelectionMode.None;
-                SelectionCaption = SelectNone;
                 break;
             case SelectionMode.None:
                 GetServiceRecipients().ToList().ForEach(x => x.Selected = false);
-                RecipientSelectionMode = SelectionMode.All;
-                SelectionCaption = SelectAll;
                 break;
             default:
                 if (recipients == null) return;
@@ -104,8 +96,6 @@ public class SelectRecipientsModel : NavBaseModel
 
                 var allSelected = GetServiceRecipients().All(x => x.Selected);
 
-                RecipientSelectionMode = allSelected ? SelectionMode.None : SelectionMode.All;
-                SelectionCaption = allSelected ? SelectNone : SelectAll;
                 break;
         }
     }

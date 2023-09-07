@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public bool FromPreviousRevision { get; set; }
 
-        public bool HasCurrentAmendments { get; set; }
+        public bool HasNewRecipients { get; set; }
 
         public List<OrderRecipient> RolledUpOrderRecipients { get; set; }
 
@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
                 if (RolledUpOrderRecipients.AllQuantitiesEntered(rolledUpOrderItem))
                 {
-                    return FromPreviousRevision ? TaskProgress.Amended : TaskProgress.Completed;
+                    return FromPreviousRevision && HasNewRecipients ? TaskProgress.Amended : TaskProgress.Completed;
                 }
                 else if (RolledUpOrderRecipients.SomeButNotAllQuantitiesEntered(rolledUpOrderItem))
                 {
@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
                 if (RolledUpOrderRecipients.AllDeliveryDatesEntered(rolledUpOrderItem.CatalogueItemId))
                 {
-                    return FromPreviousRevision ? TaskProgress.Amended : TaskProgress.Completed;
+                    return FromPreviousRevision && HasNewRecipients ? TaskProgress.Amended : TaskProgress.Completed;
                 }
                 else if (!RolledUpOrderRecipients.NoDeliveryDatesEntered(rolledUpOrderItem.CatalogueItemId))
                 {

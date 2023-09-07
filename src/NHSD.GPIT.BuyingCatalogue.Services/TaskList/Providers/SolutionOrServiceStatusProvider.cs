@@ -17,14 +17,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
                 return TaskProgress.CannotStart;
             }
 
-            if (state.ServiceRecipients != TaskProgress.Completed)
+            var okToProgress = new[] { TaskProgress.Completed, TaskProgress.Amended };
+            if (!okToProgress.Contains(state.ServiceRecipients))
             {
                 return TaskProgress.CannotStart;
             }
 
             var order = wrapper.Order;
 
-            if (!ValidCatalogueItems(order))
+            if (!ValidCatalogueItems(wrapper))
             {
                 return TaskProgress.NotStarted;
             }
@@ -39,13 +40,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
             return isAmendment ? TaskProgress.Amended : TaskProgress.Completed;
         }
 
-        private static bool ValidCatalogueItems(EntityFramework.Ordering.Models.Order order)
+        private static bool ValidCatalogueItems(OrderWrapper orderWrapper)
         {
-            if (order.IsAmendment)
+            var order = orderWrapper.Order;
+
+            if (orderWrapper.IsAmendment && !orderWrapper.HasNewOrderRecipients && !orderWrapper.HasNewOrderItems)
             {
-                return order.OrderItems.Any(
-                    x => x.CatalogueItem.CatalogueItemType is CatalogueItemType.Solution
-                        or CatalogueItemType.AdditionalService);
+                return false;
             }
 
             if (order.AssociatedServicesOnly)

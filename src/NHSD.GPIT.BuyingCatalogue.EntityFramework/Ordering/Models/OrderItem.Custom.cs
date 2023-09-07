@@ -20,9 +20,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         }
 
         public bool IsReadyForReview(bool isAmendment, ICollection<OrderRecipient> recipients) =>
-            (recipients?.Any() ?? false)
-            && OrderItemPrice != null
+            (isAmendment && !recipients.Any())
+            || (OrderItemPrice != null
             && TotalQuantity(recipients) > 0
-            && (!isAmendment || recipients.AllDeliveryDatesEntered(CatalogueItemId));
+            && (!isAmendment || recipients.AllDeliveryDatesEntered(CatalogueItemId)));
     }
 }

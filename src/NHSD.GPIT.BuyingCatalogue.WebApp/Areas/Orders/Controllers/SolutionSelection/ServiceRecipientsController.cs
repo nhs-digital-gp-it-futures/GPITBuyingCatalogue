@@ -71,8 +71,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     Title = "Service Recipients for this order",
                     BackLink =
                         Url.Action(
-                            nameof(TaskListController.TaskList),
-                            typeof(TaskListController).ControllerName(),
+                            nameof(OrderController.Order),
+                            typeof(OrderController).ControllerName(),
                             new { internalOrgId, callOffId }),
                     Caption = $"Order {callOffId}",
                     Advice = "Select the organisations you want to receive the items you’re ordering.",

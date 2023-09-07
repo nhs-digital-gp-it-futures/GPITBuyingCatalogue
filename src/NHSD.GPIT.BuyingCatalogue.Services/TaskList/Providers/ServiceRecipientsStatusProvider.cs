@@ -1,4 +1,6 @@
-﻿using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 
@@ -19,6 +21,16 @@ public class ServiceRecipientsStatusProvider : ITaskProgressProvider
             return TaskProgress.CannotStart;
         }
 
-        return wrapper.HasNewOrderRecipients ? TaskProgress.Completed : TaskProgress.NotStarted;
+        if (wrapper.HasNewOrderRecipients)
+        {
+            return wrapper.IsAmendment ? TaskProgress.Amended : TaskProgress.Completed;
+        }
+
+        if (wrapper.IsAmendment && wrapper.Order.OrderRecipients.Any())
+        {
+            return TaskProgress.Completed;
+        }
+
+        return TaskProgress.NotStarted;
     }
 }

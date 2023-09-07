@@ -1,5 +1,6 @@
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models
 @using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 @using ValidationSummaryTagHelper = NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers.ValidationSummaryTagHelper
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InsetText
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
@@ -48,8 +49,11 @@
                             url="@Model.ImportRecipientsLink" />
             <hr />
 
-            <vc:nhs-secondary-button url="@Url.PageLink(values: new { selectionMode = Model.RecipientSelectionMode })"
-                                 text="@Model.SelectionCaption"
+            <vc:nhs-secondary-button url="@Url.PageLink(values: new { selectionMode = SelectionMode.All })"
+                                 text="Select all"
+                                 type="Secondary" />
+            <vc:nhs-secondary-button url="@Url.PageLink(values: new { selectionMode = SelectionMode.None })"
+                                 text="Deselect all"
                                  type="Secondary" />
         }
 

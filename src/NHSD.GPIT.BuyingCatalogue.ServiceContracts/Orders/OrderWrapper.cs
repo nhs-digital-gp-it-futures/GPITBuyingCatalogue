@@ -39,6 +39,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             .Any(r => Previous?.OrderRecipients?
             .FirstOrDefault(x => x.OdsCode == r.OdsCode) == null);
 
+        public bool HasNewOrderItems => Order.OrderItems
+            .Any(r => Previous?.OrderItems?
+            .FirstOrDefault(x => x.CatalogueItemId == r.CatalogueItemId) == null);
+
         public ICollection<OrderRecipient> ExistingOrderRecipients => Previous?.OrderRecipients ?? Enumerable.Empty<OrderRecipient>().ToList();
 
         public Order Last => previous.Any()

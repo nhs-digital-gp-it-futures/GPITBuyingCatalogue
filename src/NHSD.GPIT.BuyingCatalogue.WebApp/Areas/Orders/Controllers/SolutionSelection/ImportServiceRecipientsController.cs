@@ -181,7 +181,7 @@ public class ImportServiceRecipientsController : Controller
         ValidateNamesModel model,
         ServiceRecipientImportMode? importMode = ServiceRecipientImportMode.Edit)
     {
-        var cacheKey = new ServiceRecipientCacheKey(User.UserId(), internalOrgId, callOffId, catalogueItemId);
+        var cacheKey = new ServiceRecipientCacheKey(User.UserId(), internalOrgId, callOffId);
         var cachedRecipients = await importService.GetCached(cacheKey);
         var organisationServiceRecipients =
             await odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId);
