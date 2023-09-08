@@ -13,14 +13,23 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOne.S
         {
         }
 
-        public void AddCompetitionServiceRecipient(int multipleServiceRecipients, bool allServiceRecipients)
+        public void AddCompetitionServiceRecipient(ServiceRecipientSelectionMode recipients)
         {
-            if (multipleServiceRecipients > 0 && !allServiceRecipients)
-                CommonActions.ClickMultipleCheckboxes(multipleServiceRecipients);
-            else if (multipleServiceRecipients == 0 && allServiceRecipients)
-                CommonActions.ClickAllCheckboxes();
-            else
-                CommonActions.ClickFirstCheckbox();
+            switch (recipients)
+            {
+                case ServiceRecipientSelectionMode.All:
+                    CommonActions.ClickAllCheckboxes();
+                    break;
+                case ServiceRecipientSelectionMode.Single:
+                    CommonActions.ClickFirstCheckbox();
+                    break;
+                case ServiceRecipientSelectionMode.Multiple:
+                    CommonActions.ClickMultipleCheckboxes(new Random().Next(2, 10));
+                    break;
+                case ServiceRecipientSelectionMode.None:
+                default:
+                    break;
+            }
 
             CommonActions.ClickSave();
         }

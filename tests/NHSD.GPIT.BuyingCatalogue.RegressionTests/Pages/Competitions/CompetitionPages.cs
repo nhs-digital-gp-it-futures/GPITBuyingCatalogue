@@ -1,4 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
+﻿using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOne;
@@ -60,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
 
         internal IWebDriver Driver { get; }
 
-        public void StepOnePrepareCompetition(FilterType filterType, string competitionName, int addNumberOfSolutions = 0, int multipleServiceRecipients = 0, bool allServiceRecipients = false)
+        public void StepOnePrepareCompetition(FilterType filterType, string competitionName, ServiceRecipientSelectionMode recipients = ServiceRecipientSelectionMode.None)
         {
             int selectedFilter = (int)filterType;
             SelectFilter.SelectFilterForNewCompetition(selectedFilter);
@@ -84,13 +85,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
 
                 if (filterId == 2)
                 {
-                    SelectSolutions.AddSolutions(5);
+                    int solutions = NoOfSlutions();
+
+                    SelectSolutions.AddSolutions(solutions);
                     SolutionShortlisted.SolutionNotIncludedInShortlisting();
                     SolutionShortlisted.ConfirmSolutions();
                 }
 
                 CompetitionTaskList.CompetitionServiceRecipientsTask();
-                CompetitionServiceRecipients.AddCompetitionServiceRecipient(multipleServiceRecipients, allServiceRecipients);
+                CompetitionServiceRecipients.AddCompetitionServiceRecipient(recipients);
                 CompetitionServiceRecipients.ConfirmServiceReceipientsChanges();
             }
         }
@@ -113,6 +116,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                 .Select(y => y.FilterId).First();
 
             return result;
+        }
+
+        private int NoOfSlutions()
+        {
+            return new Random().Next(2, 5);
         }
     }
 }

@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
             Driver.FindElements(By.XPath("//*[@class=\"nhsuk-textarea\"]")).ToList().ForEach(element => element.SendKeys(x));
 
         public void ClickExpander() =>
-            Driver.FindElement(By.XPath("//*[@id=\"maincontent\"]/div[2]/div/form/details[1]/summary/span/b")).Click();
+            Driver.FindElement(By.XPath("//details[1]/summary/span/b")).Click();
 
 
         public IEnumerable<string> GetRadioButtonsOptions() =>
