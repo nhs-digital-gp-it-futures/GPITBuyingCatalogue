@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
         public FundingSources(string internalOrgId, CallOffId callOffId, OrderWrapper orderWrapper, int countOfOrderFrameworks)
         {
             ArgumentNullException.ThrowIfNull(orderWrapper);
-            var order = orderWrapper.Order ?? throw new ArgumentNullException(nameof(orderWrapper));
+            var order = orderWrapper.Order;
 
             if (order is null || order.OrderingParty is null || order.SelectedFramework is null)
                 throw new ArgumentNullException(nameof(orderWrapper));
