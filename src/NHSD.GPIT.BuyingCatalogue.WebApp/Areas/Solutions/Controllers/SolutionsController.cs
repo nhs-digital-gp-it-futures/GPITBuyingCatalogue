@@ -10,6 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SolutionsFilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -27,6 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
     public sealed class SolutionsController : Controller
     {
         private readonly ISolutionsService solutionsService;
+        private readonly IListPriceService listPriceService;
         private readonly IAdditionalServicesService additionalServicesService;
         private readonly ISolutionsFilterService solutionsFilterService;
         private readonly IFrameworkService frameworkService;
@@ -35,6 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
         public SolutionsController(
             ISolutionsService solutionsService,
+            IListPriceService listPriceService,
             IAdditionalServicesService additionalServicesService,
             ISolutionsFilterService solutionsFilterService,
             IFrameworkService frameworkService,
@@ -42,6 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             IManageFiltersService manageFiltersService)
         {
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
+            this.listPriceService = listPriceService ?? throw new ArgumentNullException(nameof(listPriceService));
             this.additionalServicesService = additionalServicesService
                 ?? throw new ArgumentNullException(nameof(additionalServicesService));
             this.solutionsFilterService = solutionsFilterService
@@ -197,7 +201,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         public async Task<IActionResult> AssociatedServicePrice(CatalogueItemId solutionId, CatalogueItemId serviceId)
         {
             var item = await solutionsService.GetSolutionWithCataloguePrice(solutionId);
-            var associatedService = await solutionsService.GetSolutionWithCataloguePrice(serviceId);
+            var associatedService = await listPriceService.GetCatalogueItemWithListPrices(serviceId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {serviceId}");
 
@@ -240,7 +244,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         public async Task<IActionResult> AdditionalServicePrice(CatalogueItemId solutionId, CatalogueItemId serviceId)
         {
             var item = await solutionsService.GetSolutionWithCataloguePrice(solutionId);
-            var additionalService = await solutionsService.GetSolutionWithCataloguePrice(serviceId);
+            var additionalService = await listPriceService.GetCatalogueItemWithListPrices(serviceId);
             if (item is null)
                 return BadRequest($"No Catalogue Item found for Id: {serviceId}");
 

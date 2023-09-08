@@ -18,6 +18,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SolutionsFilterModels;
@@ -1020,7 +1021,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_AdditionalServicePricePage_ValidSolutionForId_ReturnsExpectedViewResult(
-            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            [Frozen] Mock<IListPriceService> mockListPriceService,
             SolutionsController controller,
             Solution solution,
             AdditionalService additionalService,
@@ -1033,13 +1035,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             service = catalogueItem.AdditionalService.CatalogueItem;
             var mockSolutionListPriceModel = new ListPriceModel(catalogueItem, service, contentStatus) { IndexValue = 4, };
 
-            mockService.Setup(s => s.GetSolutionWithCataloguePrice(service.Id))
+            mockListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(service.Id))
                 .ReturnsAsync(service);
 
-            mockService.Setup(s => s.GetSolutionWithCataloguePrice(catalogueItem.Id))
+            mockSolutionsService.Setup(s => s.GetSolutionWithCataloguePrice(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
-            mockService.Setup(s => s.GetContentStatusForCatalogueItem(catalogueItem.Id))
+            mockSolutionsService.Setup(s => s.GetContentStatusForCatalogueItem(catalogueItem.Id))
                 .ReturnsAsync(contentStatus);
 
             var actual = (await controller.AdditionalServicePrice(catalogueItem.Id, service.Id)).As<ViewResult>();
@@ -1071,7 +1073,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_AssociatedServicePricePage_ValidSolutionForId_ReturnsExpectedViewResult(
-            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            [Frozen] Mock<IListPriceService> mockListPriceService,
             SolutionsController controller,
             Solution solution,
             AssociatedService associatedService,
@@ -1084,13 +1087,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             service = catalogueItem.AssociatedService.CatalogueItem;
             var mockSolutionListPriceModel = new ListPriceModel(catalogueItem, service, contentStatus) { IndexValue = 5, };
 
-            mockService.Setup(s => s.GetSolutionWithCataloguePrice(service.Id))
+            mockListPriceService.Setup(s => s.GetCatalogueItemWithListPrices(service.Id))
                 .ReturnsAsync(service);
 
-            mockService.Setup(s => s.GetSolutionWithCataloguePrice(catalogueItem.Id))
+            mockSolutionsService.Setup(s => s.GetSolutionWithCataloguePrice(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
-            mockService.Setup(s => s.GetContentStatusForCatalogueItem(catalogueItem.Id))
+            mockSolutionsService.Setup(s => s.GetContentStatusForCatalogueItem(catalogueItem.Id))
                 .ReturnsAsync(contentStatus);
 
             var actual = (await controller.AssociatedServicePrice(catalogueItem.Id, service.Id)).As<ViewResult>();
