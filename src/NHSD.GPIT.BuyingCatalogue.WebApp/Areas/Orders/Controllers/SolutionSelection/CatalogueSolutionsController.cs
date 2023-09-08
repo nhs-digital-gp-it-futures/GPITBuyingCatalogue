@@ -8,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
@@ -29,19 +30,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         private readonly IOrderService orderService;
         private readonly ISolutionsService solutionsService;
         private readonly IContractsService contractsService;
+        private readonly IAssociatedServicesService associatedServicesService;
 
         public CatalogueSolutionsController(
             IAdditionalServicesService additionalServicesService,
             IOrderItemService orderItemService,
             IOrderService orderService,
             ISolutionsService solutionsService,
-            IContractsService contractsService)
+            IContractsService contractsService,
+            IAssociatedServicesService associatedServicesService)
         {
             this.additionalServicesService = additionalServicesService ?? throw new ArgumentNullException(nameof(additionalServicesService));
             this.orderItemService = orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
             this.contractsService = contractsService ?? throw new ArgumentNullException(nameof(contractsService));
+            this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
         }
 
         [HttpGet("select")]
@@ -78,10 +82,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             await orderItemService.AddOrderItems(internalOrgId, callOffId, ids);
 
+            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(catalogueItemId);
+
+            if (associatedServices.Any())
+            {
+                return RedirectToAction(
+                    nameof(AssociatedServicesController.AddAssociatedServices),
+                    typeof(AssociatedServicesController).ControllerName(),
+                    new { internalOrgId, callOffId, catalogueItemId });
+            }
+
             return RedirectToAction(
-                nameof(PricesController.SelectPrice),
-                typeof(PricesController).ControllerName(),
-                new { internalOrgId, callOffId, catalogueItemId });
+                nameof(TaskListController.TaskList),
+                typeof(TaskListController).ControllerName(),
+                new { internalOrgId, callOffId });
         }
 
         [HttpGet("select/associated-services-only")]

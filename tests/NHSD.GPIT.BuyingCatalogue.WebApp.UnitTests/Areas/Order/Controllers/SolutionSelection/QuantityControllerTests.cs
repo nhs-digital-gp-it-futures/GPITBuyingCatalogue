@@ -370,7 +370,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             SelectServiceRecipientQuantityModel model,
             [Frozen] Mock<IOrderService> mockOrderService,
             [Frozen] Mock<IOrderQuantityService> mockOrderQuantityService,
-            [Frozen] Mock<IRoutingService> mockRoutingService,
             QuantityController controller)
         {
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
@@ -391,10 +390,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Callback<int, CatalogueItemId, List<OrderItemRecipientQuantityDto>>((_, _, x) => actual = x)
                 .Returns(Task.CompletedTask);
 
-            mockRoutingService
-                .Setup(x => x.GetRoute(RoutingPoint.SelectQuantity, orderWrapper, It.IsAny<RouteValues>()))
-                .Returns(Route(internalOrgId, callOffId));
-
             model.ServiceRecipients.ForEach(x => x.InputQuantity = x.Quantity > 0 ? string.Empty : "1");
 
             var result = await controller.SelectServiceRecipientQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId, model);
@@ -411,8 +406,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
-            actualResult.ControllerName.Should().Be(typeof(AssociatedServicesController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(AssociatedServicesController.AddAssociatedServices));
+            actualResult.ControllerName.Should().Be(typeof(TaskListController).ControllerName());
+            actualResult.ActionName.Should().Be(nameof(TaskListController.TaskList));
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "internalOrgId", internalOrgId },

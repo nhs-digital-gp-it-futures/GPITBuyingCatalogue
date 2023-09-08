@@ -130,7 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             return await dbContext.OrderItems
                 .Include(x => x.OrderItemFunding)
                 .AsNoTracking()
-                .Where(x => x.OrderId == orderId)
+                .Where(x => x.OrderId == orderId && x.OrderItemFunding != null)
                 .Select(x => x.OrderItemFunding.OrderItemFundingType)
                 .Distinct()
                 .ToListAsync();

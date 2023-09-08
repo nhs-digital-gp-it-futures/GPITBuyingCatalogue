@@ -141,12 +141,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             await orderItemService.SetOrderItemEstimationPeriod(callOffId, internalOrgId, catalogueItemId, price);
 
-            var route = routingService.GetRoute(
-                RoutingPoint.ConfirmPrice,
-                orderWrapper,
-                new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = model.Source });
-
-            return RedirectToAction(route.ActionName, route.ControllerName, route.RouteValues);
+            return RedirectToAction(
+                nameof(TaskListController.TaskList),
+                typeof(TaskListController).ControllerName(),
+                new { internalOrgId, callOffId });
         }
 
         [HttpGet("price/edit")]
@@ -204,12 +202,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             await orderItemService.DetectChangesInFundingAndDelete(callOffId, internalOrgId, catalogueItemId);
 
-            var route = routingService.GetRoute(
-                RoutingPoint.EditPrice,
-                orderWrapper,
-                new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = model.Source });
-
-            return RedirectToAction(route.ActionName, route.ControllerName, route.RouteValues);
+            return RedirectToAction(
+                nameof(TaskListController.TaskList),
+                typeof(TaskListController).ControllerName(),
+                new { internalOrgId, callOffId });
         }
 
         [HttpGet("price/view")]

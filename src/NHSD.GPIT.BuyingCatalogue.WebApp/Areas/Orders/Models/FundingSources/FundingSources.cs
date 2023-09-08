@@ -33,7 +33,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
 
             SelectedFramework = order.SelectedFramework;
 
-            var completedOrderItems = order.OrderItems.Where(oi => orderWrapper.DetermineOrderRecipients(oi.CatalogueItemId).AllQuantitiesEntered(oi)).ToList();
+            var completedOrderItems = order.OrderItems.Where(oi =>
+            {
+                var recipients = orderWrapper.DetermineOrderRecipients(oi.CatalogueItemId);
+                return recipients.Count > 0 && recipients.AllQuantitiesEntered(oi);
+            }).ToList();
 
             if (order.IsLocalFundingOnly)
             {

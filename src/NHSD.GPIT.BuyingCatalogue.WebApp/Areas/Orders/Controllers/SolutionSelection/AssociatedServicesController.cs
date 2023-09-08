@@ -88,8 +88,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             }
 
             return RedirectToAction(
-                nameof(ReviewSolutionsController.ReviewSolutions),
-                typeof(ReviewSolutionsController).ControllerName(),
+                nameof(TaskListController.TaskList),
+                typeof(TaskListController).ControllerName(),
                 new { internalOrgId, callOffId });
         }
 
@@ -117,16 +117,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 await orderItemService.AddOrderItems(internalOrgId, callOffId, serviceIds);
 
                 var catalogueItemId = serviceIds.First();
-
-                return RedirectToAction(
-                    nameof(PricesController.SelectPrice),
-                    typeof(PricesController).ControllerName(),
-                    new { internalOrgId, callOffId, catalogueItemId });
             }
 
             return RedirectToAction(
-                nameof(ReviewSolutionsController.ReviewSolutions),
-                typeof(ReviewSolutionsController).ControllerName(),
+                nameof(TaskListController.TaskList),
+                typeof(TaskListController).ControllerName(),
                 new { internalOrgId, callOffId });
         }
 
@@ -159,20 +154,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             {
                 var newServiceIds = selectedServiceIds.Except(existingServiceIds).ToList();
 
-                if (!newServiceIds.Any())
+                if (newServiceIds.Any())
                 {
-                    return RedirectToAction(
-                        nameof(TaskListController.TaskList),
-                        typeof(TaskListController).ControllerName(),
-                        new { internalOrgId, callOffId });
+                    await orderItemService.AddOrderItems(internalOrgId, callOffId, newServiceIds);
                 }
 
-                await orderItemService.AddOrderItems(internalOrgId, callOffId, newServiceIds);
-
                 return RedirectToAction(
-                    nameof(PricesController.SelectPrice),
-                    typeof(PricesController).ControllerName(),
-                    new { internalOrgId, callOffId, catalogueItemId = newServiceIds.First() });
+                    nameof(TaskListController.TaskList),
+                    typeof(TaskListController).ControllerName(),
+                    new { internalOrgId, callOffId });
             }
 
             var serviceIds = string.Join(Separator, selectedServiceIds);
@@ -253,20 +243,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 await orderItemService.DeleteOrderItems(internalOrgId, callOffId, model.ToRemove.Select(x => x.CatalogueItemId));
             }
 
-            if (!addingServices)
+            if (addingServices)
             {
-                return RedirectToAction(
-                    nameof(TaskListController.TaskList),
-                    typeof(TaskListController).ControllerName(),
-                    new { internalOrgId, callOffId });
+                await orderItemService.AddOrderItems(internalOrgId, callOffId, model.ToAdd.Select(x => x.CatalogueItemId));
             }
 
-            await orderItemService.AddOrderItems(internalOrgId, callOffId, model.ToAdd.Select(x => x.CatalogueItemId));
-
             return RedirectToAction(
-                nameof(PricesController.SelectPrice),
-                typeof(PricesController).ControllerName(),
-                new { internalOrgId, callOffId, model.ToAdd.First().CatalogueItemId });
+                nameof(TaskListController.TaskList),
+                typeof(TaskListController).ControllerName(),
+                new { internalOrgId, callOffId });
         }
 
         private async Task<SelectServicesModel> GetSelectServicesModel(
