@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
@@ -21,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             this.orderQuantityService = orderQuantityService ?? throw new ArgumentNullException(nameof(orderQuantityService));
         }
 
-        public async Task UpdatePrice(int orderId, CatalogueItemId catalogueItemId, List<OrderPricingTierDto> agreedPrices)
+        public async Task UpdatePrice(int orderId, CatalogueItemId catalogueItemId, List<PricingTierDto> agreedPrices)
         {
             if (agreedPrices == null)
             {
@@ -56,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             }
         }
 
-        public async Task UpsertPrice(int orderId, CataloguePrice price, List<OrderPricingTierDto> agreedPrices)
+        public async Task UpsertPrice(int orderId, CataloguePrice price, List<PricingTierDto> agreedPrices)
         {
             if (price == null)
             {

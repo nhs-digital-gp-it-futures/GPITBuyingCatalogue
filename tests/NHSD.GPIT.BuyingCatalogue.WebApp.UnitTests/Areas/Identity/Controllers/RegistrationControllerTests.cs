@@ -103,7 +103,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
             result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(RegistrationController.Confirmation));
 
             actual.FullName.Should().Be(expected.FullName);
-            actual.TelephoneNumber.Should().Be(expected.TelephoneNumber);
             actual.EmailAddress.Should().Be(expected.EmailAddress);
             actual.OrganisationName.Should().Be(expected.OrganisationName);
             actual.OdsCode.Should().Be(expected.OdsCode);

@@ -21,6 +21,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Quantity;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.SolutionSelection
@@ -73,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeOfType<SelectOrderItemQuantityModel>().Subject;
-            var expected = new SelectOrderItemQuantityModel(orderItem);
+            var expected = new SelectOrderItemQuantityModel(orderItem.CatalogueItem, orderItem.OrderItemPrice, orderItem.Quantity);
 
             model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
         }
@@ -253,7 +254,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeOfType<SelectServiceRecipientQuantityModel>().Subject;
 
-            var expected = new SelectServiceRecipientQuantityModel(orderItem, null);
+            var recipients = orderItem.OrderItemRecipients.Select(
+                x => new ServiceRecipientDto(x.OdsCode, x.Recipient?.Name, x.Quantity));
+
+            var expected = new SelectServiceRecipientQuantityModel(orderItem.CatalogueItem, orderItem.OrderItemPrice, recipients);
             expected.ServiceRecipients.ForEach(x => x.InputQuantity = $"{NumberOfPatients}");
 
             model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
@@ -296,7 +300,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeOfType<SelectServiceRecipientQuantityModel>().Subject;
-            var expected = new SelectServiceRecipientQuantityModel(orderItem, null);
+
+            var recipients = orderItem.OrderItemRecipients.Select(
+                x => new ServiceRecipientDto(x.OdsCode, x.Recipient?.Name, x.Quantity));
+
+            var expected = new SelectServiceRecipientQuantityModel(orderItem.CatalogueItem, orderItem.OrderItemPrice, recipients);
 
             expected.ServiceRecipients.ForEach(x => x.InputQuantity = $"{NumberOfPatients}");
 
@@ -328,7 +336,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeOfType<SelectServiceRecipientQuantityModel>().Subject;
-            var expected = new SelectServiceRecipientQuantityModel(orderItem, null);
+
+            var recipients = orderItem.OrderItemRecipients.Select(
+                x => new ServiceRecipientDto(x.OdsCode, x.Recipient?.Name, x.Quantity));
+
+            var expected = new SelectServiceRecipientQuantityModel(orderItem.CatalogueItem, orderItem.OrderItemPrice, recipients);
 
             expected.ServiceRecipients.ForEach(x => x.Quantity = expectedQuantity);
 

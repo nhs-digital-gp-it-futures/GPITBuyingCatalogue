@@ -30,13 +30,13 @@
                             <br/>
                             <span class="nhsuk-caption-m nhsuk-caption--bottom">@solution.Solution.CatalogueItem.Supplier.LegalName</span>
                         </nhs-table-cell>
-                        @if (solution.RequiredServices.Any())
+                        @if (solution.SolutionServices.Any())
                         {
                             <nhs-table-cell>
                                 <ul>
-                                    @foreach (var item in solution.RequiredServices)
+                                    @foreach (var item in solution.SolutionServices)
                                     {
-                                        <li>@item.Service.CatalogueItem.Name</li>
+                                        <li>@item.Service.Name</li>
                                     }
                                 </ul>
                             </nhs-table-cell>
@@ -65,13 +65,13 @@
                                 <br/>
                                 <span class="nhsuk-caption-m nhsuk-caption--bottom">@solution.Solution.CatalogueItem.Supplier.LegalName</span>
                             </nhs-table-cell>
-                            @if (solution.RequiredServices.Any())
+                            @if (solution.SolutionServices.Any())
                             {
                                 <nhs-table-cell>
                                     <ul>
-                                        @foreach (var item in solution.RequiredServices)
+                                        @foreach (var item in solution.SolutionServices.Where(x => x.IsRequired))
                                         {
-                                            <li>@item.Service.CatalogueItem.Name</li>
+                                            <li>@item.Service.Name</li>
                                         }
                                     </ul>
                                 </nhs-table-cell>

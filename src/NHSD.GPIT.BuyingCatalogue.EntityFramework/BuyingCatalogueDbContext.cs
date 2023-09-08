@@ -124,6 +124,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<OrderItemPriceTier> OrderItemPriceTiers { get; set; }
 
+        public DbSet<OrderTermination> OrderTerminations { get; set; }
+
         public DbSet<ContractFlags> ContractFlags { get; set; }
 
         public DbSet<Contract> Contracts { get; set; }
@@ -157,6 +159,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
         public DbSet<Competition> Competitions { get; set; }
 
         public DbSet<CompetitionRecipient> CompetitionRecipients { get; set; }
+
+        public DbSet<SolutionScore> CompetitionSolutionScores { get; set; }
 
         public async Task<Order> Order(CallOffId callOffId)
         {

@@ -220,6 +220,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.OrderItemRecipients.OrderBy(r => r.Recipient.Name))
                     .ThenInclude(r => r.Recipient)
+                .Include(o => o.OrderTermination)
                 .AsNoTracking()
                 .AsSplitQuery()
                 .Where(o => o.OrderNumber == callOffId.OrderNumber
@@ -284,7 +285,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     .Where(o => o.OrderingPartyId == organisationId)
                     .ToListAsync())
                 .GroupBy(x => x.OrderNumber)
-                .SelectMany(x => x.OrderByDescending(y => y.Revision).TakeUntil(y => y.OrderStatus == OrderStatus.Completed))
+                .SelectMany(x => x.OrderByDescending(y => y.Revision).TakeUntil(y => y.OrderStatus is OrderStatus.Completed or OrderStatus.Terminated))
                 .ToList();
 
             if (!string.IsNullOrWhiteSpace(search))
@@ -317,7 +318,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     .Where(o => o.OrderingPartyId == organisationId)
                     .ToListAsync())
                 .GroupBy(x => x.OrderNumber)
-                .SelectMany(x => x.OrderByDescending(y => y.Revision).TakeUntil(y => y.OrderStatus == OrderStatus.Completed))
+                .SelectMany(x => x.OrderByDescending(y => y.Revision).TakeUntil(y => y.OrderStatus is OrderStatus.Completed or OrderStatus.Terminated))
                 .ToList();
 
             var matches = baseData
@@ -380,6 +381,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             var order = await dbContext.Order(internalOrgId, callOffId);
 
+            dbContext.ImplementationPlanMilestones.RemoveRange(dbContext.ImplementationPlanMilestones.Where(x => x.Plan.Contract.OrderId == order.Id));
+            dbContext.ImplementationPlans.RemoveRange(dbContext.ImplementationPlans.Where(x => x.Contract.OrderId == order.Id));
+            dbContext.Contracts.RemoveRange(dbContext.Contracts.Where(x => x.OrderId == order.Id));
             dbContext.ContractFlags.RemoveRange(dbContext.ContractFlags.Where(x => x.OrderId == order.Id));
             dbContext.OrderDeletionApprovals.RemoveRange(dbContext.OrderDeletionApprovals.Where(x => x.OrderId == order.Id));
             dbContext.OrderItems.RemoveRange(dbContext.OrderItems.Where(x => x.OrderId == order.Id));
@@ -392,56 +396,28 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             await dbContext.SaveChangesAsync();
         }
 
+        public async Task TerminateOrder(CallOffId callOffId, string internalOrgId, int userId, DateTime terminationDate, string reason)
+        {
+            var orderWrapper = await GetOrderWithOrderItems(callOffId, internalOrgId);
+
+            TerminateOrder(orderWrapper.Order, terminationDate, reason);
+
+            foreach (var order in orderWrapper.PreviousOrders)
+            {
+                TerminateOrder(order, terminationDate, reason);
+            }
+
+            await dbContext.SaveChangesAsync();
+
+            await SendEmail(orderWrapper.Order, callOffId, userId, true);
+        }
+
         public async Task CompleteOrder(CallOffId callOffId, string internalOrgId, int userId)
         {
             var order = (await GetOrderThin(callOffId, internalOrgId)).Order;
             order.Complete();
 
-            await using var fullOrderStream = new MemoryStream();
-            await using var patientOrderStream = new MemoryStream();
-
-            await csvService.CreateFullOrderCsvAsync(order.Id, fullOrderStream);
-
-            fullOrderStream.Position = 0;
-
-            var adminTokens = new Dictionary<string, dynamic>
-            {
-                { OrganisationNameToken, order.OrderingParty.Name },
-                { FullOrderCsvToken, NotificationClient.PrepareUpload(fullOrderStream.ToArray(), true) },
-            };
-
-            var templateId = orderMessageSettings.SingleCsvTemplateId;
-
-            if (await csvService.CreatePatientNumberCsvAsync(order.Id, patientOrderStream) > 0)
-            {
-                patientOrderStream.Position = 0;
-                adminTokens.Add(PatientOrderCsvToken, NotificationClient.PrepareUpload(patientOrderStream.ToArray(), true));
-                templateId = orderMessageSettings.DualCsvTemplateId;
-            }
-
-            fullOrderStream.Position = 0;
-            var userTokens = new Dictionary<string, dynamic>
-            {
-                { OrderIdToken, $"{callOffId}" },
-                { OrderSummaryCsv, NotificationClient.PrepareUpload(fullOrderStream.ToArray(), true) },
-            };
-
-            dbContext.Entry(order).State = EntityState.Modified;
-
-            _ = await pdfService.CreateOrderSummaryPdf(order);
-
-            var userTemplateId = order.AssociatedServicesOnly
-                ? orderMessageSettings.UserAssociatedServiceTemplateId
-                : order.IsAmendment
-                    ? orderMessageSettings.UserAmendTemplateId
-                    : orderMessageSettings.UserTemplateId;
-
-            var userEmail = dbContext.Users.First(x => x.Id == userId).Email;
-
-            await Task.WhenAll(
-                emailService.SendEmailAsync(orderMessageSettings.Recipient.Address, templateId, adminTokens),
-                emailService.SendEmailAsync(userEmail, userTemplateId, userTokens),
-                dbContext.SaveChangesAsync());
+            await SendEmail(order, callOffId, userId);
         }
 
         public async Task<List<Order>> GetUserOrders(int userId)
@@ -512,6 +488,68 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             order.SelectedFrameworkId = null;
 
             await dbContext.SaveChangesAsync();
+        }
+
+        private static void TerminateOrder(Order order, DateTime dateOfTermination, string reason)
+        {
+            order.IsTerminated = true;
+            order.OrderTermination = new OrderTermination()
+            {
+                OrderId = order.Id, DateOfTermination = dateOfTermination, Reason = reason,
+            };
+        }
+
+        private async Task SendEmail(Order order, CallOffId callOffId, int userId, bool showRevisions = false)
+        {
+            await using var fullOrderStream = new MemoryStream();
+            await using var patientOrderStream = new MemoryStream();
+
+            await csvService.CreateFullOrderCsvAsync(order.Id, fullOrderStream, showRevisions);
+
+            fullOrderStream.Position = 0;
+
+            var adminTokens = new Dictionary<string, dynamic>
+            {
+                { OrganisationNameToken, order.OrderingParty.Name },
+                { FullOrderCsvToken, NotificationClient.PrepareUpload(fullOrderStream.ToArray(), true) },
+            };
+
+            var templateId = order.IsTerminated ? orderMessageSettings.OrderTerminatedAdminTemplateId : orderMessageSettings.SingleCsvTemplateId;
+
+            if (!order.IsTerminated && await csvService.CreatePatientNumberCsvAsync(order.Id, patientOrderStream) > 0)
+            {
+                patientOrderStream.Position = 0;
+                adminTokens.Add(PatientOrderCsvToken, NotificationClient.PrepareUpload(patientOrderStream.ToArray(), true));
+                templateId = orderMessageSettings.DualCsvTemplateId;
+            }
+
+            fullOrderStream.Position = 0;
+            var userTokens = new Dictionary<string, dynamic>
+            {
+                { OrderIdToken, $"{callOffId}" },
+                { OrderSummaryCsv, NotificationClient.PrepareUpload(fullOrderStream.ToArray(), true) },
+            };
+
+            dbContext.Entry(order).State = EntityState.Modified;
+
+            _ = await pdfService.CreateOrderSummaryPdf(order);
+
+            var userEmail = dbContext.Users.First(x => x.Id == userId).Email;
+
+            await Task.WhenAll(
+                emailService.SendEmailAsync(orderMessageSettings.Recipient.Address, templateId, adminTokens),
+                emailService.SendEmailAsync(userEmail, GetUserTemplateId(order), userTokens),
+                dbContext.SaveChangesAsync());
+        }
+
+        private string GetUserTemplateId(Order order)
+        {
+            return order.IsTerminated ? orderMessageSettings.OrderTerminatedUserTemplateId
+                : order.AssociatedServicesOnly
+                ? orderMessageSettings.UserAssociatedServiceTemplateId
+                : order.IsAmendment
+                    ? orderMessageSettings.UserAmendTemplateId
+                    : orderMessageSettings.UserTemplateId;
         }
     }
 }

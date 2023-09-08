@@ -42,16 +42,12 @@ public static class CompetitionImportServiceRecipientsControllerTests
     public static async Task Index_ReturnsViewWithModel(
         Organisation organisation,
         Competition competition,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
         [Frozen] Mock<IServiceRecipientImportService> importService,
         [Frozen] Mock<ICompetitionsService> competitionsService,
         CompetitionImportServiceRecipientsController controller)
     {
-        competitionsService.Setup(s => s.GetCompetitionName(It.IsAny<int>(), competition.Id))
+        competitionsService.Setup(s => s.GetCompetitionName(It.IsAny<string>(), competition.Id))
             .ReturnsAsync(competition.Name);
-
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(organisation);
 
         var expectedModel = new ImportServiceRecipientModel { Caption = competition.Name };
 
@@ -161,7 +157,6 @@ public static class CompetitionImportServiceRecipientsControllerTests
         Organisation organisation,
         Competition competition,
         List<ServiceRecipient> serviceRecipients,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
         [Frozen] Mock<IServiceRecipientImportService> importService,
         [Frozen] Mock<ICompetitionsService> competitionsService,
         [Frozen] Mock<IOdsService> odsService,
@@ -175,13 +170,10 @@ public static class CompetitionImportServiceRecipientsControllerTests
         var expectedModel = new ValidateOdsModel(
             importedServiceRecipients.Take(1).ToList()) { Caption = competition.Name };
 
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(organisation);
-
         importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
             .ReturnsAsync(importedServiceRecipients);
 
-        competitionsService.Setup(s => s.GetCompetitionName(It.IsAny<int>(), competition.Id))
+        competitionsService.Setup(s => s.GetCompetitionName(It.IsAny<string>(), competition.Id))
             .ReturnsAsync(competition.Name);
 
         odsService.Setup(s => s.GetServiceRecipientsByParentInternalIdentifier(organisation.InternalIdentifier))
@@ -274,7 +266,6 @@ public static class CompetitionImportServiceRecipientsControllerTests
         Organisation organisation,
         Competition competition,
         List<ServiceRecipient> serviceRecipients,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
         [Frozen] Mock<IServiceRecipientImportService> importService,
         [Frozen] Mock<ICompetitionsService> competitionsService,
         [Frozen] Mock<IOdsService> odsService,
@@ -296,13 +287,10 @@ public static class CompetitionImportServiceRecipientsControllerTests
         var expectedModel = new ValidateNamesModel(
             mismatchedNames) { Caption = competition.Name };
 
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(organisation);
-
         importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
             .ReturnsAsync(importedServiceRecipients);
 
-        competitionsService.Setup(s => s.GetCompetitionName(It.IsAny<int>(), competition.Id))
+        competitionsService.Setup(s => s.GetCompetitionName(It.IsAny<string>(), competition.Id))
             .ReturnsAsync(competition.Name);
 
         odsService.Setup(s => s.GetServiceRecipientsByParentInternalIdentifier(organisation.InternalIdentifier))
@@ -394,7 +382,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
         importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
             .ReturnsAsync(importedRecipients);
 
-        competitionsService.Setup(s => s.GetCompetitionName(It.IsAny<int>(), competition.Id))
+        competitionsService.Setup(s => s.GetCompetitionName(It.IsAny<string>(), competition.Id))
             .ReturnsAsync(competition.Name);
 
         odsService.Setup(s => s.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))

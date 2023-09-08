@@ -13,6 +13,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Shared;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
 {
@@ -268,7 +269,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 Description = x.CatalogueItem.Name,
             }));
 
-            var model = new ConfirmServiceChangesModel(internalOrgId, callOffId, CatalogueItemType.Solution)
+            var model = new ConfirmServiceChangesModel(internalOrgId, CatalogueItemType.Solution)
             {
                 BackLink = Url.Action(
                     nameof(EditSolution),
@@ -276,9 +277,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     new { internalOrgId, callOffId }),
                 ToAdd = toAdd.ToList(),
                 ToRemove = toRemove.ToList(),
+                Caption = $"Order {callOffId}",
             };
 
-            return View("ConfirmChanges", model);
+            return View("Services/ConfirmChanges", model);
         }
 
         [HttpPost("confirm-changes")]
@@ -286,7 +288,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             if (!ModelState.IsValid)
             {
-                return View("ConfirmChanges", model);
+                return View("Services/ConfirmChanges", model);
             }
 
             if (model.ConfirmChanges is false)
@@ -351,7 +353,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 Description = x.CatalogueItem.Name,
             }));
 
-            var model = new ConfirmServiceChangesModel(internalOrgId, callOffId, CatalogueItemType.Solution)
+            var model = new ConfirmServiceChangesModel(internalOrgId, CatalogueItemType.Solution)
             {
                 BackLink = Url.Action(
                     nameof(EditSolutionAssociatedServicesOnly),
@@ -361,7 +363,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 ToRemove = toRemove.ToList(),
             };
 
-            return View("ConfirmChanges", model);
+            return View("Services/ConfirmChanges", model);
         }
 
         [HttpPost("confirm-changes/associated-services-only")]
@@ -369,7 +371,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             if (!ModelState.IsValid)
             {
-                return View("ConfirmChanges", model);
+                return View("Services/ConfirmChanges", model);
             }
 
             if (model.ConfirmChanges is false)

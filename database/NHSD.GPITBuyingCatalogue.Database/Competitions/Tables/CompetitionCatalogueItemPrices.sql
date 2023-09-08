@@ -1,0 +1,20 @@
+﻿CREATE TABLE [competitions].[CompetitionCatalogueItemPrices]
+(
+    [Id] INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
+    [CompetitionId] INT NOT NULL,
+    [CataloguePriceId] INT NOT NULL, 
+    [BillingPeriodId] INT NULL,
+    [ProvisioningTypeId] INT NOT NULL,
+    [CataloguePriceTypeId] INT NOT NULL,
+    [CataloguePriceCalculationTypeId] INT NOT NULL,
+    [CataloguePriceQuantityCalculationTypeId] INT NULL,
+    [CurrencyCode] NVARCHAR(3) NOT NULL,
+    [Description] NVARCHAR(100) NOT NULL,
+    [RangeDescription] NVARCHAR(100) NULL,
+    CONSTRAINT FK_CompetitionCatalogueItemPrices_Competition FOREIGN KEY (CompetitionId) REFERENCES competitions.Competitions (Id),
+    CONSTRAINT FK_CompetitionCatalogueItemPrices_EstimationPeriod FOREIGN KEY (BillingPeriodId) REFERENCES catalogue.TimeUnits (Id),
+    CONSTRAINT FK_CompetitionCatalogueItemPrices_CataloguePriceType FOREIGN KEY (CataloguePriceTypeId) REFERENCES catalogue.CataloguePriceTypes (Id),
+    CONSTRAINT FK_CompetitionCatalogueItemPrices_ProvisioningType FOREIGN KEY (ProvisioningTypeId) REFERENCES catalogue.ProvisioningTypes (Id),
+    CONSTRAINT FK_CompetitionCatalogueItemPrices_CataloguePriceCalculationType FOREIGN KEY (CataloguePriceCalculationTypeId) REFERENCES catalogue.CataloguePriceCalculationTypes (Id),
+    CONSTRAINT FK_CompetitionCatalogueItemPrices_CataloguePriceQuantityCalculationType FOREIGN KEY (CataloguePriceQuantityCalculationTypeId) REFERENCES catalogue.CataloguePriceQuantityCalculationTypes(Id),
+);
