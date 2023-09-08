@@ -19,6 +19,7 @@
     Completed DATETIME2 NULL CONSTRAINT Order_CompletedNotBeforeCreated CHECK (Completed >= Created),
     OrderStatusId INT NULL,
     IsDeleted BIT CONSTRAINT DF_Order_IsDeleted DEFAULT 0 NOT NULL,
+    IsTerminated BIT CONSTRAINT DF_Order_IsTerminated DEFAULT 0 NOT NULL,
     SysStartTime DATETIME2(0) GENERATED ALWAYS AS ROW START NOT NULL,
     SysEndTime DATETIME2(0) GENERATED ALWAYS AS ROW END NOT NULL,
     PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
