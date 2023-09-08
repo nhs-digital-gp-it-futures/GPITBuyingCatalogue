@@ -427,6 +427,48 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             orderItem.TotalCost().Should().Be(0);
         }
 
+        [Theory]
+        [CommonAutoData]
+        public static void OrderItem_TotalCost_PerMonth_ReturnsExpected(
+            OrderItem orderItem,
+            OrderItemPrice orderItemPrice)
+        {
+            orderItemPrice.BillingPeriod = TimeUnit.PerMonth;
+            orderItem.OrderItemPrice = orderItemPrice;
+
+            var expectedResult = ((IPrice)orderItemPrice).CalculateCostPerMonth(orderItem.TotalQuantity);
+
+            orderItem.TotalCost().Should().Be(expectedResult);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void OrderItem_TotalCost_PerYear_ReturnsExpected(
+            OrderItem orderItem,
+            OrderItemPrice orderItemPrice)
+        {
+            orderItemPrice.BillingPeriod = TimeUnit.PerYear;
+            orderItem.OrderItemPrice = orderItemPrice;
+
+            var expectedResult = ((IPrice)orderItemPrice).CalculateCostPerYear(orderItem.TotalQuantity);
+
+            orderItem.TotalCost().Should().Be(expectedResult);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void OrderItem_TotalCost_OneOff_ReturnsExpected(
+            OrderItem orderItem,
+            OrderItemPrice orderItemPrice)
+        {
+            orderItemPrice.BillingPeriod = null;
+            orderItem.OrderItemPrice = orderItemPrice;
+
+            var expectedResult = ((IPrice)orderItemPrice).CalculateOneOffCost(orderItem.TotalQuantity);
+
+            orderItem.TotalCost().Should().Be(expectedResult);
+        }
+
         [Fact]
         public static void OrderWrapper_Null_TotalPreviousCost_Returns_0()
         {

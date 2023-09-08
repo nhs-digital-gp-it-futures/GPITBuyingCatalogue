@@ -21,8 +21,7 @@ public static class CompetitionFormulas
             > 0 and <= 25 => 4,
             > 25 and <= 50 => 3,
             > 50 and <= 100 => 2,
-            > 100 => 1,
-            _ => throw new UnreachableException(),
+            _ or > 100 => 1,
         };
     }
 }

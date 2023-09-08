@@ -137,6 +137,27 @@ public static class CompetitionsServiceTests
 
     [Theory]
     [InMemoryDbAutoData]
+    public static async Task GetCompetitionForResults_ReturnsCompetition(
+        Organisation organisation,
+        Competition competition,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        competition.OrganisationId = organisation.Id;
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        var result = await service.GetCompetitionForResults(organisation.InternalIdentifier, competition.Id);
+
+        result.Should().BeEquivalentTo(competition, opt => opt.Excluding(x => x.Organisation));
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
     public static async Task GetCompetition_ReturnsExpected(
         Organisation organisation,
         Competition competition,
@@ -400,6 +421,42 @@ public static class CompetitionsServiceTests
             await context.Competitions.AsNoTracking().FirstOrDefaultAsync(x => x.Id == competition.Id);
 
         refreshedCompetition.ShortlistAccepted.Should().Be(acceptedDate);
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task CompleteCompetition_SetsCompletionDate(
+        Organisation organisation,
+        Competition competition,
+        CompetitionCatalogueItemPrice price,
+        CompetitionCatalogueItemPriceTier tier,
+        Solution solution,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        price.Tiers = new List<CompetitionCatalogueItemPriceTier> { tier };
+
+        competition.Completed = null;
+        competition.OrganisationId = organisation.Id;
+        competition.Weightings = new() { Price = 70, NonPrice = 30 };
+        competition.CompetitionSolutions = new List<CompetitionSolution>
+        {
+            new(competition.Id, solution.CatalogueItemId) { Quantity = 500, Price = price, IsShortlisted = true },
+        };
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+        context.Solutions.Add(solution);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        await service.CompleteCompetition(organisation.InternalIdentifier, competition.Id);
+
+        var updatedCompetition =
+            await context.Competitions.AsNoTracking().FirstOrDefaultAsync(x => x.Id == competition.Id);
+
+        updatedCompetition.Completed.Should().NotBeNull();
     }
 
     [Theory]
