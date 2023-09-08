@@ -10,17 +10,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Validators.Registratio
         public const string FullNameErrorMessage = "Enter your full name";
         public const string OrganisationNameErrorMessage = "Enter the name of your organisation";
         public const string PrivacyPolicyErrorMessage = "Confirm you have read and understood our privacy policy";
-        public const string TelephoneNumberErrorMessage = "Enter your telephone number";
 
         public RegistrationDetailsModelValidator()
         {
             RuleFor(x => x.FullName)
                 .NotEmpty()
                 .WithMessage(FullNameErrorMessage);
-
-            RuleFor(x => x.TelephoneNumber)
-                .NotEmpty()
-                .WithMessage(TelephoneNumberErrorMessage);
 
             RuleFor(x => x.EmailAddress)
                 .NotEmpty()

@@ -34,6 +34,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Dashboar
 
         [Theory]
         [CommonAutoData]
+        public static void LinkName_Terminated_ReturnsExpectedLink(
+            EntityFramework.Ordering.Models.Order order,
+            OrganisationModel model)
+        {
+            order.Revision = 1;
+            order.AssociatedServicesOnly = false;
+            order.Completed = DateTime.UtcNow;
+            order.IsDeleted = false;
+            order.IsTerminated = true;
+
+            model.OrderIds = Enumerable.Empty<CallOffId>();
+
+            model.LinkName(order).Should().Be("View");
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static void LinkName_CompletedNoSubsequentRevisions_ReturnsExpectedLink(
             EntityFramework.Ordering.Models.Order order,
             OrganisationModel model)
@@ -45,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Dashboar
 
             model.OrderIds = Enumerable.Empty<CallOffId>();
 
-            model.LinkName(order).Should().Be("Amend");
+            model.LinkName(order).Should().Be("View");
         }
 
         [Theory]

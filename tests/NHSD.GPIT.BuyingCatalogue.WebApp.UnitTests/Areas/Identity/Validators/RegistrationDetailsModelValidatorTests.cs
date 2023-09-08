@@ -22,7 +22,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Validators
             model.EmailAddress = inputValue;
             model.FullName = inputValue;
             model.OrganisationName = inputValue;
-            model.TelephoneNumber = inputValue;
 
             var result = validator.TestValidate(model);
 
@@ -34,9 +33,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Validators
 
             result.ShouldHaveValidationErrorFor(m => m.OrganisationName)
                 .WithErrorMessage(RegistrationDetailsModelValidator.OrganisationNameErrorMessage);
-
-            result.ShouldHaveValidationErrorFor(m => m.TelephoneNumber)
-                .WithErrorMessage(RegistrationDetailsModelValidator.TelephoneNumberErrorMessage);
         }
 
         [Theory]

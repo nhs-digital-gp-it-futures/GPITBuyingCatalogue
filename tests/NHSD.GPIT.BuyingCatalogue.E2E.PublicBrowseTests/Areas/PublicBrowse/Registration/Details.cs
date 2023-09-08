@@ -33,7 +33,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Registration
                 CommonActions.GoBackLinkDisplayed().Should().BeTrue();
                 CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
                 CommonActions.ElementIsDisplayed(RegistrationObjects.FullNameInput).Should().BeTrue();
-                CommonActions.ElementIsDisplayed(RegistrationObjects.TelephoneNumberInput).Should().BeTrue();
                 CommonActions.ElementIsDisplayed(RegistrationObjects.EmailAddressInput).Should().BeTrue();
                 CommonActions.ElementIsDisplayed(RegistrationObjects.OrganisationNameInput).Should().BeTrue();
                 CommonActions.ElementIsDisplayed(RegistrationObjects.OdsCodeInput).Should().BeTrue();
@@ -76,10 +75,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Registration
                     RegistrationDetailsModelValidator.FullNameErrorMessage).Should().BeTrue();
 
                 CommonActions.ElementShowingCorrectErrorMessage(
-                    RegistrationObjects.TelephoneNumberError,
-                    RegistrationDetailsModelValidator.TelephoneNumberErrorMessage).Should().BeTrue();
-
-                CommonActions.ElementShowingCorrectErrorMessage(
                     RegistrationObjects.EmailAddressError,
                     RegistrationDetailsModelValidator.EmailAddressMissingErrorMessage).Should().BeTrue();
 
@@ -99,7 +94,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Registration
             RunTest(() =>
             {
                 TextGenerators.TextInputAddText(RegistrationObjects.FullNameInput, 10);
-                TextGenerators.TextInputAddText(RegistrationObjects.TelephoneNumberInput, 10);
                 TextGenerators.TextInputAddText(RegistrationObjects.EmailAddressInput, 10);
                 TextGenerators.TextInputAddText(RegistrationObjects.OrganisationNameInput, 10);
                 CommonActions.ClickCheckboxByLabel(PrivacyPolicyLabelText);
@@ -125,7 +119,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Registration
             RunTest(() =>
             {
                 TextGenerators.TextInputAddText(RegistrationObjects.FullNameInput, 10);
-                TextGenerators.TextInputAddText(RegistrationObjects.TelephoneNumberInput, 10);
                 TextGenerators.EmailInputAddText(RegistrationObjects.EmailAddressInput, 50);
                 TextGenerators.TextInputAddText(RegistrationObjects.OrganisationNameInput, 10);
                 CommonActions.ClickCheckboxByLabel(PrivacyPolicyLabelText);
