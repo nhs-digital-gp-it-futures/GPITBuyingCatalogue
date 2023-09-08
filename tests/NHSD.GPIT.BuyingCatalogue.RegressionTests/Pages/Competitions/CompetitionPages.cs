@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
 
         internal IWebDriver Driver { get; }
 
-        public void StepOnePrepareCompetition(FilterType filterType, string competitionName,int addNumberOfSolutions = 0)
+        public void StepOnePrepareCompetition(FilterType filterType, string competitionName, int addNumberOfSolutions = 0)
         {
             int selectedFilter = (int)filterType;
             SelectFilter.SelectFilterForNewCompetition(selectedFilter);
