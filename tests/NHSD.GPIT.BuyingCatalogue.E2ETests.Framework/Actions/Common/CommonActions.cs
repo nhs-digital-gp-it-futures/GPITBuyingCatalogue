@@ -81,6 +81,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
             new SelectElement(
             Driver.FindElement(CommonSelectors.DropDownList)).SelectByIndex(value);
 
+        public void ClickDropDownListItem(int value) =>
+            new SelectElement(
+            Driver.FindElement(CommonSelectors.DropDownItem)).SelectByIndex(value);
+
+
         public void EnterTextInTextBoxes(string x) =>
             Driver.FindElements(By.XPath("//*[@class=\"nhsuk-textarea\"]")).ToList().ForEach(element => element.SendKeys(x));
 

@@ -39,6 +39,16 @@
         </form>
 
         <div class="nhsuk-u-margin-top-6">
+            <h2>Terminate contract</h2>
+            <p>
+                Alternatively, you can <a href="@Url.Action(
+                                                    nameof(OrderController.TerminateOrder),
+                                                    typeof(OrderController).ControllerName(),
+                                                    new { Model.InternalOrgId, Model.CallOffId })">terminate this contract</a> altogether.
+            </p>
+        </div>
+
+        <div class="nhsuk-u-margin-top-6">
             <h2>Need help?</h2>
             <p>
                 For help using the Buying Catalogue, contact the National and Commercial Procurement Hub:
