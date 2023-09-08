@@ -23,8 +23,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         protected SolutionDisplayBaseModel(
             CatalogueItem catalogueItem,
-            CatalogueItemContentStatus contentStatus)
+            CatalogueItemContentStatus contentStatus,
+            bool isSubPage = false)
         {
+            IsSubPage = isSubPage;
             if (catalogueItem?.Solution is null)
                 throw new ArgumentNullException(nameof(catalogueItem));
 
@@ -41,6 +43,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             SetSections(contentStatus);
             SetPaginationFooter();
         }
+
+        public bool IsSubPage { get; private set; }
 
         public abstract int Index { get; }
 
@@ -63,6 +67,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public string SupplierName { get; }
 
         public string IsFoundation { get; }
+
+        public string Title { get; set; }
+
+        public string Caption { get; set; }
 
         public bool HasExpiredFrameworks => Frameworks.Any(x => x.IsExpired);
 
