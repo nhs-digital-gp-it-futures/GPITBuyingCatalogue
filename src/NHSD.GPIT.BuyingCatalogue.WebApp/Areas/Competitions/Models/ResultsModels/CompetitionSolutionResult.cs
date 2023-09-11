@@ -17,26 +17,8 @@ public class CompetitionSolutionResult
         Weightings = competition.Weightings;
         IsWinningSolution = competitionSolution.IsWinningSolution;
 
-        var selectedNonPriceElements = competition.NonPriceElements.GetNonPriceElements();
-
-        NonPriceElementWeights = selectedNonPriceElements.Select(
-                x =>
-                {
-                    var nonPriceElementScore = competitionSolution.GetScoreByType(x.AsScoreType());
-
-                    return new NonPriceElementWeighting(
-                        x,
-                        nonPriceElementScore.Score,
-                        nonPriceElementScore.WeightedScore);
-                })
-            .OrderBy(x => x.NonPriceElement);
-
-        var priceScore = competitionSolution.GetScoreByType(ScoreType.Price);
-
-        PriceScoreWeighting = new PriceWeighting(
-            competitionSolution.CalculateTotalPrice(competition.ContractLength.GetValueOrDefault()).GetValueOrDefault(),
-            priceScore.Score,
-            priceScore.WeightedScore);
+        NonPriceElementWeights = GetNonPriceElementWeightings(competition, competitionSolution);
+        PriceScoreWeighting = GetPriceScoreWeighting(competition, competitionSolution);
     }
 
     public string SolutionName { get; set; }
@@ -61,6 +43,37 @@ public class CompetitionSolutionResult
 
     public decimal? GetWeightedNonPriceElementWeight() =>
         CompetitionFormulas.CalculateWeightedScore(GetTotalNonPriceElementWeight().GetValueOrDefault(), Weightings?.NonPrice.GetValueOrDefault() ?? 0);
+
+    private static IEnumerable<NonPriceElementWeighting> GetNonPriceElementWeightings(
+        Competition competition,
+        CompetitionSolution competitionSolution)
+    {
+        var selectedNonPriceElements = competition.NonPriceElements.GetNonPriceElements();
+
+        return selectedNonPriceElements.Select(
+                x =>
+                {
+                    var nonPriceElementScore = competitionSolution.GetScoreByType(x.AsScoreType());
+
+                    return new NonPriceElementWeighting(
+                        x,
+                        nonPriceElementScore.Score,
+                        nonPriceElementScore.WeightedScore);
+                })
+            .OrderBy(x => x.NonPriceElement);
+    }
+
+    private static PriceWeighting GetPriceScoreWeighting(
+        Competition competition,
+        CompetitionSolution competitionSolution)
+    {
+        var priceScore = competitionSolution.GetScoreByType(ScoreType.Price);
+
+        return new PriceWeighting(
+            competitionSolution.CalculateTotalPrice(competition.ContractLength.GetValueOrDefault()).GetValueOrDefault(),
+            priceScore.Score,
+            priceScore.WeightedScore);
+    }
 
     public record NonPriceElementWeighting(NonPriceElement NonPriceElement, int Score, decimal WeightedScore);
 
