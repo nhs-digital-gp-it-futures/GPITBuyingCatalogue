@@ -406,7 +406,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var actualResultModel = actualResult.Model.Should().BeOfType<SaveFilterModel>().Subject;
 
-            var expected = new SaveFilterModel(groupedEpics, null, new List<ApplicationType>(), new List<HostingType>(), new List<InteropIm1Integrations>(), new List<InteropGpConnectIntegrations>(), new List<InteropIntegrationType>(), organisation.Id);
+            var expected = new SaveFilterModel(groupedEpics, null, new List<ApplicationType>(), new List<HostingType>(), new List<InteropIm1IntegrationType>(), new List<InteropGpConnectIntegrationType>(), new List<InteropIntegrationType>(), organisation.Id);
             actualResultModel.Should()
                 .BeEquivalentTo(expected, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.BackLinkText));
         }

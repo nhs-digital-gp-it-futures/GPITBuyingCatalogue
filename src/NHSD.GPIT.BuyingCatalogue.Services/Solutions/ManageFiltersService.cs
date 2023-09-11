@@ -30,8 +30,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             string frameworkId,
             List<ApplicationType> applicationTypes,
             List<HostingType> hostingTypes,
-            List<InteropIm1Integrations> iM1IntegrationsTypes,
-            List<InteropGpConnectIntegrations> gPConnectIntegrationsTypes,
+            List<InteropIm1IntegrationType> iM1IntegrationsTypes,
+            List<InteropGpConnectIntegrationType> gPConnectIntegrationsTypes,
             List<InteropIntegrationType> interoperabilityIntegrationTypes)
         {
             if (string.IsNullOrEmpty(name))
@@ -275,7 +275,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await dbContext.SaveChangesAsync();
         }
 
-        internal async Task AddIM1IntegrationsTypes(int filterId, List<InteropIm1Integrations> interopIm1IntegrationsTypes)
+        internal async Task AddIM1IntegrationsTypes(int filterId, List<InteropIm1IntegrationType> interopIm1IntegrationsTypes)
         {
             if (interopIm1IntegrationsTypes is null || interopIm1IntegrationsTypes.Count == 0) return;
 
@@ -298,7 +298,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await dbContext.SaveChangesAsync();
         }
 
-        internal async Task AddGPConnectIntegrationsTypes(int filterId, List<InteropGpConnectIntegrations> interopGpConnectIntegrationsTypes)
+        internal async Task AddGPConnectIntegrationsTypes(int filterId, List<InteropGpConnectIntegrationType> interopGpConnectIntegrationsTypes)
         {
             if (interopGpConnectIntegrationsTypes is null || interopGpConnectIntegrationsTypes.Count == 0) return;
 

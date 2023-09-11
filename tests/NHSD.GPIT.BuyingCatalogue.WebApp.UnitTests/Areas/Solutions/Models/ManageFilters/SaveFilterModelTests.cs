@@ -20,8 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Mana
             EntityFramework.Catalogue.Models.Framework framework,
             List<ApplicationType> applicationTypes,
             List<HostingType> hostingTypes,
-            List<InteropIm1Integrations> iM1IntegrationsTypes,
-            List<InteropGpConnectIntegrations> gPConnectIntegrationsTypes,
+            List<InteropIm1IntegrationType> iM1IntegrationsTypes,
+            List<InteropGpConnectIntegrationType> gPConnectIntegrationsTypes,
             List<InteropIntegrationType> interoperabilityIntegrationTypes,
             int organisationId)
         {

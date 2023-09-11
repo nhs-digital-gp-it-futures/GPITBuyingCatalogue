@@ -266,6 +266,44 @@
                                 }
                             }
                         </pdf-summary-list-row>
+                            <pdf-summary-list-row label-text="Interoperability">
+                            @if (!Model.ReviewFilter.HasInteroperabilityIntegrationTypes())
+                            {
+                                <p>
+                                    None selected
+                                </p>
+                            }
+                            else
+                                {
+                                    @for (int j = 0; j < Model.ReviewFilter.FilterDetails.InteropIntegrationTypes.Count(); j++)
+                                    {
+                                        @if (@Model.ReviewFilter.FilterDetails.InteropIntegrationTypes[j].EnumMemberName() == "IM1")
+                                        {
+                                            <p> @(Model.ReviewFilter.FilterDetails.InteropIntegrationTypes[j].EnumMemberName()) integrations</p>
+                                            <ul>
+                                                @foreach (var item in Model.ReviewFilter.FilterDetails.InteropIm1IntegrationsTypes)
+                                                {
+                                                    <li>
+                                                        @item.Name()
+                                                    </li>
+                                                }
+                                            </ul>
+                                        }
+                                        @if (Model.ReviewFilter.FilterDetails.InteropIntegrationTypes[j].EnumMemberName() == "GP Connect")
+                                        {
+                                            <p> @(Model.ReviewFilter.FilterDetails.InteropIntegrationTypes[j].EnumMemberName()) integrations</p>
+                                            <ul>
+                                                @foreach (var item in Model.ReviewFilter.FilterDetails.InteropGpConnectIntegrationsTypes)
+                                                {
+                                                    <li>
+                                                        @item.Name()
+                                                    </li>
+                                                }
+                                            </ul>
+                                        }
+                                    }
+                                }
+                        </pdf-summary-list-row>
                     </pdf-summary-list>
                 </div>
                 @if (Model.CatalogueItems.Count == 0)

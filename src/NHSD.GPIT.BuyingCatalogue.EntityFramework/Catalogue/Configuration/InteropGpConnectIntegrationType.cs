@@ -2,7 +2,7 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 
-public enum InteropGpConnectIntegrations
+public enum InteropGpConnectIntegrationType
 {
     [Display(Name = "GP Connect - HTML View")]
     HTML_View,

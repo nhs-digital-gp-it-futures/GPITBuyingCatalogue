@@ -157,8 +157,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 
         private void SetIM1IntegrationsOptions(string selectedIM1Integrations)
         {
-            IM1IntegrationsOptions = Enum.GetValues(typeof(InteropIm1Integrations))
-                .Cast<InteropIm1Integrations>()
+            IM1IntegrationsOptions = Enum.GetValues(typeof(InteropIm1IntegrationType))
+                .Cast<InteropIm1IntegrationType>()
                 .Select(
                     x => new SelectOption<int>
                     {
@@ -171,8 +171,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 
         private void SetGPConnectIntegrationsOptions(string selectedGPConnectIntegrations)
         {
-            GPConnectIntegrationsOptions = Enum.GetValues(typeof(InteropGpConnectIntegrations))
-                .Cast<InteropGpConnectIntegrations>()
+            GPConnectIntegrationsOptions = Enum.GetValues(typeof(InteropGpConnectIntegrationType))
+                .Cast<InteropGpConnectIntegrationType>()
                 .Select(
                     x => new SelectOption<int>
                     {

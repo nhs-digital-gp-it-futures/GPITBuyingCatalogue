@@ -20,8 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
             EntityFramework.Catalogue.Models.Framework framework,
             List<ApplicationType> applicationTypes,
             List<HostingType> hostingTypes,
-            List<InteropIm1Integrations> iM1IntegrationsTypes,
-            List<InteropGpConnectIntegrations> gPConnectIntegrationsTypes,
+            List<InteropIm1IntegrationType> iM1IntegrationsTypes,
+            List<InteropGpConnectIntegrationType> gPConnectIntegrationsTypes,
             List<InteropIntegrationType> interoperabilityIntegrationTypes,
             int organisationId)
         {
@@ -56,9 +56,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
 
         public List<HostingType> HostingTypes { get; init; }
 
-        public List<InteropIm1Integrations> IM1IntegrationsTypes { get; set; }
+        public List<InteropIm1IntegrationType> IM1IntegrationsTypes { get; set; }
 
-        public List<InteropGpConnectIntegrations> GPConnectIntegrationsTypes { get; set; }
+        public List<InteropGpConnectIntegrationType> GPConnectIntegrationsTypes { get; set; }
 
         public List<InteropIntegrationType> InteroperabilityIntegrationTypes { get; set; }
 

@@ -24,9 +24,9 @@ public class FilterDetailsModel
 
     public List<InteropIntegrationType> InteropIntegrationTypes { get; set; } = Enumerable.Empty<InteropIntegrationType>().ToList();
 
-    public List<InteropIm1Integrations> InteropIm1IntegrationsTypes { get; set; } = Enumerable.Empty<InteropIm1Integrations>().ToList();
+    public List<InteropIm1IntegrationType> InteropIm1IntegrationsTypes { get; set; } = Enumerable.Empty<InteropIm1IntegrationType>().ToList();
 
-    public List<InteropGpConnectIntegrations> InteropGpConnectIntegrationsTypes { get; set; } = Enumerable.Empty<InteropGpConnectIntegrations>().ToList();
+    public List<InteropGpConnectIntegrationType> InteropGpConnectIntegrationsTypes { get; set; } = Enumerable.Empty<InteropGpConnectIntegrationType>().ToList();
 
     public List<KeyValuePair<string, List<string>>> Capabilities { get; set; }
 }

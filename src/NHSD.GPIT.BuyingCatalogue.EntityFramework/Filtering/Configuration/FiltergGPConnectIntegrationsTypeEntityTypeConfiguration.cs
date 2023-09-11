@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 
@@ -10,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Configuration
         public void Configure(EntityTypeBuilder<FilterGPConnectIntegrationsType> builder)
         {
             builder.ToTable(
-                "FiltergGPConnectIntegrationsTypes",
+                "FilterGPConnectIntegrationsTypes",
                 Schemas.Filtering);
 
             builder.HasKey(fht => fht.Id);

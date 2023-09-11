@@ -2,7 +2,7 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 
-public enum InteropIm1Integrations
+public enum InteropIm1IntegrationType
 {
     [Display(Name = "IM1 Bulk")]
     Bulk,

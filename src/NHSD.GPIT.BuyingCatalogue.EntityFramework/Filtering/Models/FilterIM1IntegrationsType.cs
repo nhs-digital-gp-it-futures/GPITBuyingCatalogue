@@ -8,6 +8,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models
 
         public int Id { get; set; }
 
-        public InteropIm1Integrations IM1IntegrationsType { get; set; }
+        public InteropIm1IntegrationType IM1IntegrationsType { get; set; }
     }
 }

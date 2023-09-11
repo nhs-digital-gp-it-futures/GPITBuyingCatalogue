@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             if (!string.IsNullOrWhiteSpace(selectedIM1Integrations))
             {
-                query = ApplyAdditionalFilterToQuery<InteropIm1Integrations>(
+                query = ApplyAdditionalFilterToQuery<InteropIm1IntegrationType>(
                     query,
                     selectedIM1Integrations,
                     GetSelectedFiltersIm1Integration,
@@ -90,10 +90,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             }
             else if (!string.IsNullOrWhiteSpace(selectedInteroperabilityOptions) && selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.Im1).ToString(CultureInfo.InvariantCulture), StringComparison.OrdinalIgnoreCase))
             {
-                InteropIm1Integrations[] enumValues = (InteropIm1Integrations[])Enum.GetValues(typeof(InteropIm1Integrations));
+                InteropIm1IntegrationType[] enumValues = (InteropIm1IntegrationType[])Enum.GetValues(typeof(InteropIm1IntegrationType));
                 string im1integrations = string.Join(FilterConstants.Delimiter, enumValues.Select(e => (int)e));
                 isInteropFilter = true;
-                query = ApplyAdditionalFilterToQuery<InteropIm1Integrations>(
+                query = ApplyAdditionalFilterToQuery<InteropIm1IntegrationType>(
                     query,
                     im1integrations,
                     GetSelectedFiltersIm1Integration,
@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             if (!string.IsNullOrWhiteSpace(selectedGPConnectIntegrations))
             {
-                query = ApplyAdditionalFilterToQuery<InteropGpConnectIntegrations>(
+                query = ApplyAdditionalFilterToQuery<InteropGpConnectIntegrationType>(
                     query,
                     selectedGPConnectIntegrations,
                     GetSelectedFiltersGpConnectIntegration,
@@ -112,10 +112,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             }
             else if (!string.IsNullOrWhiteSpace(selectedInteroperabilityOptions) && selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.GpConnect).ToString(CultureInfo.InvariantCulture), StringComparison.OrdinalIgnoreCase))
             {
-                InteropGpConnectIntegrations[] enumValues = (InteropGpConnectIntegrations[])Enum.GetValues(typeof(InteropIm1Integrations));
+                InteropGpConnectIntegrationType[] enumValues = (InteropGpConnectIntegrationType[])Enum.GetValues(typeof(InteropIm1IntegrationType));
                 string gpConnectIntegrations = string.Join(FilterConstants.Delimiter, enumValues.Select(e => (int)e));
                 isInteropFilter = true;
-                query = ApplyAdditionalFilterToQuery<InteropGpConnectIntegrations>(
+                query = ApplyAdditionalFilterToQuery<InteropGpConnectIntegrationType>(
                     query,
                     gpConnectIntegrations,
                     GetSelectedFiltersGpConnectIntegration,
@@ -327,12 +327,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return selectedFilterEnums?.Where(t => solution.Hosting.HasHostingType(t));
         }
 
-        private static IEnumerable<InteropIm1Integrations> GetSelectedFiltersIm1Integration(Solution solution, IEnumerable<InteropIm1Integrations> selectedFilterEnums)
+        private static IEnumerable<InteropIm1IntegrationType> GetSelectedFiltersIm1Integration(Solution solution, IEnumerable<InteropIm1IntegrationType> selectedFilterEnums)
         {
             return selectedFilterEnums?.Where(t => solution.Integrations.Contains(t.GetName().Replace('_', ' '), StringComparison.OrdinalIgnoreCase));
         }
 
-        private static IEnumerable<InteropGpConnectIntegrations> GetSelectedFiltersGpConnectIntegration(Solution solution, IEnumerable<InteropGpConnectIntegrations> selectedFilterEnums)
+        private static IEnumerable<InteropGpConnectIntegrationType> GetSelectedFiltersGpConnectIntegration(Solution solution, IEnumerable<InteropGpConnectIntegrationType> selectedFilterEnums)
         {
             return selectedFilterEnums?.Where(t => solution.Integrations.Contains(t.GetName().Replace('_', ' '), StringComparison.OrdinalIgnoreCase));
         }

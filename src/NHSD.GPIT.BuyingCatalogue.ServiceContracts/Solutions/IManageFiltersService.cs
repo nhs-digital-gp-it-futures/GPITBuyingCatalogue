@@ -17,8 +17,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
             string frameworkId,
             List<ApplicationType> applicationTypes,
             List<HostingType> hostingTypes,
-            List<InteropIm1Integrations> iM1IntegrationsTypes,
-            List<InteropGpConnectIntegrations> gPConnectIntegrationsTypes,
+            List<InteropIm1IntegrationType> iM1IntegrationsTypes,
+            List<InteropGpConnectIntegrationType> gPConnectIntegrationsTypes,
             List<InteropIntegrationType> interoperabilityIntegrationTypes);
 
         Task<bool> FilterExists(string filterName, int organisationId);

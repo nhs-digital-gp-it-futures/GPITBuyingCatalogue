@@ -219,7 +219,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseInteropIm1IntegrationsIds(input);
 
-            var expected = new List<InteropIm1Integrations> { InteropIm1Integrations.Bulk, InteropIm1Integrations.Transactional, InteropIm1Integrations.Patient_Facing };
+            var expected = new List<InteropIm1IntegrationType> { InteropIm1IntegrationType.Bulk, InteropIm1IntegrationType.Transactional, InteropIm1IntegrationType.Patient_Facing };
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -231,7 +231,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseInteropIm1IntegrationsIds(input);
 
-            var expected = new List<InteropIm1Integrations> { InteropIm1Integrations.Bulk, InteropIm1Integrations.Transactional, InteropIm1Integrations.Patient_Facing };
+            var expected = new List<InteropIm1IntegrationType> { InteropIm1IntegrationType.Bulk, InteropIm1IntegrationType.Transactional, InteropIm1IntegrationType.Patient_Facing };
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -243,7 +243,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseInteropIm1IntegrationsIds(input);
 
-            var expected = new List<InteropIm1Integrations> { InteropIm1Integrations.Bulk, InteropIm1Integrations.Transactional, InteropIm1Integrations.Patient_Facing };
+            var expected = new List<InteropIm1IntegrationType> { InteropIm1IntegrationType.Bulk, InteropIm1IntegrationType.Transactional, InteropIm1IntegrationType.Patient_Facing };
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -255,7 +255,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseInteropIm1IntegrationsIds(input);
 
-            var expected = new List<InteropIm1Integrations>();
+            var expected = new List<InteropIm1IntegrationType>();
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -267,7 +267,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseInteropIm1IntegrationsIds(input);
 
-            var expected = new List<InteropIm1Integrations>();
+            var expected = new List<InteropIm1IntegrationType>();
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -279,7 +279,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseInteropIm1IntegrationsIds(input);
 
-            var expected = new List<InteropIm1Integrations> { InteropIm1Integrations.Bulk, InteropIm1Integrations.Transactional, InteropIm1Integrations.Patient_Facing };
+            var expected = new List<InteropIm1IntegrationType> { InteropIm1IntegrationType.Bulk, InteropIm1IntegrationType.Transactional, InteropIm1IntegrationType.Patient_Facing };
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -291,7 +291,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseInteropGpConnectIntegrationsIds(input);
 
-            var expected = new List<InteropGpConnectIntegrations> { InteropGpConnectIntegrations.HTML_View, InteropGpConnectIntegrations.Appointment_Booking, InteropGpConnectIntegrations.Structured_Record };
+            var expected = new List<InteropGpConnectIntegrationType> { InteropGpConnectIntegrationType.HTML_View, InteropGpConnectIntegrationType.Appointment_Booking, InteropGpConnectIntegrationType.Structured_Record };
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -303,7 +303,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseInteropGpConnectIntegrationsIds(input);
 
-            var expected = new List<InteropGpConnectIntegrations> { InteropGpConnectIntegrations.HTML_View, InteropGpConnectIntegrations.Appointment_Booking, InteropGpConnectIntegrations.Structured_Record };
+            var expected = new List<InteropGpConnectIntegrationType> { InteropGpConnectIntegrationType.HTML_View, InteropGpConnectIntegrationType.Appointment_Booking, InteropGpConnectIntegrationType.Structured_Record };
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -315,7 +315,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseInteropGpConnectIntegrationsIds(input);
 
-            var expected = new List<InteropGpConnectIntegrations> { InteropGpConnectIntegrations.HTML_View, InteropGpConnectIntegrations.Appointment_Booking, InteropGpConnectIntegrations.Structured_Record };
+            var expected = new List<InteropGpConnectIntegrationType> { InteropGpConnectIntegrationType.HTML_View, InteropGpConnectIntegrationType.Appointment_Booking, InteropGpConnectIntegrationType.Structured_Record };
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -327,7 +327,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseInteropGpConnectIntegrationsIds(input);
 
-            var expected = new List<InteropGpConnectIntegrations>();
+            var expected = new List<InteropGpConnectIntegrationType>();
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -339,7 +339,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseInteropGpConnectIntegrationsIds(input);
 
-            var expected = new List<InteropGpConnectIntegrations>();
+            var expected = new List<InteropGpConnectIntegrationType>();
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -351,7 +351,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseInteropGpConnectIntegrationsIds(input);
 
-            var expected = new List<InteropGpConnectIntegrations> { InteropGpConnectIntegrations.HTML_View, InteropGpConnectIntegrations.Appointment_Booking, InteropGpConnectIntegrations.Structured_Record };
+            var expected = new List<InteropGpConnectIntegrationType> { InteropGpConnectIntegrationType.HTML_View, InteropGpConnectIntegrationType.Appointment_Booking, InteropGpConnectIntegrationType.Structured_Record };
 
             result.Should().BeEquivalentTo(expected);
         }
