@@ -505,7 +505,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         {
             order.IsTerminated = true;
 
-            OrderController.GetAdvice(new OrderWrapper(order), true)
+            OrderController.GetAdvice(order, order.OrderRecipients, true)
                 .Should()
                 .Be("This contract has been terminated, but you can still view the details.");
         }
@@ -518,7 +518,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
             order.AssociatedServicesOnly = true;
             order.Completed = DateTime.UtcNow;
 
-            OrderController.GetAdvice(new OrderWrapper(order), true)
+            OrderController.GetAdvice(order, order.OrderRecipients, true)
                 .Should()
                 .Be("This order has already been completed, but you can terminate the contract if needed.");
         }
@@ -531,7 +531,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
             order.AssociatedServicesOnly = false;
             order.Completed = DateTime.UtcNow;
 
-            OrderController.GetAdvice(new OrderWrapper(order), true)
+            OrderController.GetAdvice(order, order.OrderRecipients, true)
                 .Should()
                 .Be("This order has already been completed, but you can amend or terminate the contract if needed.");
         }
@@ -544,7 +544,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
             order.AssociatedServicesOnly = false;
             order.Completed = DateTime.UtcNow;
 
-            OrderController.GetAdvice(new OrderWrapper(order), false)
+            OrderController.GetAdvice(order, order.OrderRecipients, false)
                 .Should()
                 .Be("There is an amendment currently in progress for this contract.");
         }

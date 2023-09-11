@@ -146,8 +146,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             var model = new SummaryModel(orderWrapper, internalOrgId, hasSubsequentRevisions, defaultPlan)
             {
                 BackLink = GetBackLink(internalOrgId, callOffId, order),
-                Title = GetTitle(orderWrapper),
-                AdviceText = GetAdvice(orderWrapper, !hasSubsequentRevisions),
+                Title = GetTitle(order, orderWrapper.RolledUp.OrderRecipients),
+                AdviceText = GetAdvice(order, orderWrapper.RolledUp.OrderRecipients, !hasSubsequentRevisions),
             };
 
             return View(model);
@@ -157,7 +157,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         public async Task<IActionResult> SummaryComplete(string internalOrgId, CallOffId callOffId)
         {
             var orderWrapper = await orderService.GetOrderForSummary(callOffId, internalOrgId);
-            if (!orderWrapper.CanComplete())
+            var order = orderWrapper.Order;
+            if (!order.CanComplete(orderWrapper.RolledUp.OrderRecipients))
             {
                 ModelState.AddModelError(ErrorKey, ErrorMessage);
                 var hasSubsequentRevisions = await orderService.HasSubsequentRevisions(callOffId);
@@ -166,9 +167,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 
                 var model = new SummaryModel(orderWrapper, internalOrgId, hasSubsequentRevisions, defaultPlan)
                 {
-                    BackLink = GetBackLink(internalOrgId, callOffId, orderWrapper.Order),
-                    Title = GetTitle(orderWrapper),
-                    AdviceText = GetAdvice(orderWrapper, !hasSubsequentRevisions),
+                    BackLink = GetBackLink(internalOrgId, callOffId, order),
+                    Title = GetTitle(order, orderWrapper.RolledUp.OrderRecipients),
+                    AdviceText = GetAdvice(order, orderWrapper.RolledUp.OrderRecipients, !hasSubsequentRevisions),
                 };
 
                 return View(model);
@@ -286,31 +287,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                 new { internalOrgId, callOffId });
         }
 
-        internal static string GetAdvice(OrderWrapper orderWrapper, bool latestOrder)
+        internal static string GetAdvice(Order order, ICollection<OrderRecipient> orderRecipients, bool latestOrder)
         {
-            var order = orderWrapper.Order;
-
             return order.OrderStatus switch
             {
                 OrderStatus.Terminated => "This contract has been terminated, but you can still view the details.",
                 OrderStatus.Completed when order.AssociatedServicesOnly => "This order has already been completed, but you can terminate the contract if needed.",
                 OrderStatus.Completed when latestOrder => "This order has already been completed, but you can amend or terminate the contract if needed.",
                 OrderStatus.Completed => "There is an amendment currently in progress for this contract.",
-                _ => orderWrapper.CanComplete()
+                _ => order.CanComplete(orderRecipients)
                     ? "Review the items you’ve added to your order before completing it."
                     : "This is what's been added to your order so far. You must complete all mandatory steps before you can confirm your order.",
             };
         }
 
-        private static string GetTitle(OrderWrapper orderWrapper)
+        private static string GetTitle(Order order, ICollection<OrderRecipient> orderRecipients)
         {
-            var order = orderWrapper.Order;
-
             return order.OrderStatus switch
             {
                 OrderStatus.Terminated => "Terminated contract details",
                 OrderStatus.Completed => "Order confirmed",
-                _ => orderWrapper.CanComplete()
+                _ => order.CanComplete(orderRecipients)
                     ? "Review order summary"
                     : "Order summary",
             };

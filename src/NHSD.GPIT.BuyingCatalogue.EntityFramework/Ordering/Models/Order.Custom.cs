@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             Completed = DateTime.UtcNow;
         }
 
-        public bool CanComplete(ICollection<OrderRecipient> orderRecipients, ICollection<OrderItem> orderItems)
+        public bool CanComplete(ICollection<OrderRecipient> orderRecipients)
         {
             return
                 !string.IsNullOrWhiteSpace(Description)
@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 && (HasValidCatalogueItems() || HasAssociatedService())
                 && OrderItems.Count > 0
                 && HaveAllDeliveryDates(orderRecipients)
-                && orderItems.All(oi => oi.OrderItemFunding is not null)
+                && OrderItems.All(oi => oi.OrderItemFunding is not null)
                 && ContractFlags is not null
                 && (AssociatedServicesOnly || Contract?.ImplementationPlan is not null)
                 && (IsAmendment || !HasAssociatedService() || Contract?.ContractBilling is not null)
@@ -273,19 +273,14 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         {
             foreach (var item in items)
             {
-                if (item.CatalogueItem.CatalogueItemType != CatalogueItemType.AssociatedService)
-                {
-                    var existingOrderItem = OrderItems.FirstOrDefault(x => x.CatalogueItemId == item.CatalogueItemId);
+                var existingOrderItem = OrderItems.FirstOrDefault(x => x.CatalogueItemId == item.CatalogueItemId);
 
-                    if (existingOrderItem == null)
-                    {
-                        OrderItems.Add(
-                            InitialiseOrderItem(
-                                item.CatalogueItem.Id,
-                                item.OrderItemPrice?.Copy(),
-                                item.Quantity,
-                                item.EstimationPeriod));
-                    }
+                if (existingOrderItem == null)
+                {
+                    OrderItems.Add(
+                        InitialiseOrderItem(
+                            item.CatalogueItem.Id,
+                            item.OrderItemPrice?.Copy()));
                 }
             }
         }
@@ -330,12 +325,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             return OrderItems.Any(x => x.CatalogueItemId == catalogueItemId);
         }
 
-        private OrderItem InitialiseOrderItem(CatalogueItemId catalogueItemId, OrderItemPrice orderItemPrice, int? quantity, TimeUnit? estimationPeriod)
+        private OrderItem InitialiseOrderItem(CatalogueItemId catalogueItemId, OrderItemPrice orderItemPrice)
         {
             var orderItem = InitialiseOrderItem(catalogueItemId);
             orderItem.OrderItemPrice = orderItemPrice;
-            orderItem.Quantity = quantity;
-            orderItem.EstimationPeriod = estimationPeriod;
             return orderItem;
         }
     }

@@ -363,7 +363,7 @@
     
     <div class="nhsuk-u-margin-top-3">
             @if (Model.Order.OrderStatus == OrderStatus.InProgress
-            && Model.OrderWrapper.CanComplete())
+            && Model.Order.CanComplete(Model.RolledUp.OrderRecipients))
             {
                 <h3>Complete order</h3>
                 <p>After agreeing the contents of your order with the supplier, mark it complete, download your Call-off Order Form and send it to the supplier for signature. Make sure you include the blank templates for the supplier to fill out.</p>
