@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models
                 priceType,
                 calculationType);
 
-            Assert.Equal($"What is a {calculationType.Name().ToLowerInvariant()} price?", model.DetailsTitle);
+            Assert.Equal($"What is a {priceType.ToString().ToLowerInvariant()} {calculationType.Name().ToLowerInvariant()} price?", model.DetailsTitle);
         }
 
         [Theory]
