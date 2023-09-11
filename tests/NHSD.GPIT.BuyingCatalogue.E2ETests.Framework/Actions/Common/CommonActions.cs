@@ -89,6 +89,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
         public void EnterTextInTextBoxes(string x) =>
             Driver.FindElements(By.XPath("//*[@class=\"nhsuk-textarea\"]")).ToList().ForEach(element => element.SendKeys(x));
 
+        public void ClickExpander() =>
+            Driver.FindElement(By.XPath("//details[1]/summary/span/b")).Click();
+
 
         public IEnumerable<string> GetRadioButtonsOptions() =>
             Driver
