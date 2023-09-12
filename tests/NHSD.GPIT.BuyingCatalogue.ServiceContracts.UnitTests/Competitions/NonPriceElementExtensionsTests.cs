@@ -155,4 +155,10 @@ public static class NonPriceElementExtensionsTests
     public static void GetNonPriceElements_ReturnsExpected(
         NonPriceElements nonPriceElements,
         IEnumerable<NonPriceElement> expected) => nonPriceElements.GetNonPriceElements().Should().BeEquivalentTo(expected);
+
+    [Fact]
+    public static void AsScoreType_InvalidInput_ThrowsException() => FluentActions
+        .Invoking(() => ((NonPriceElement)int.MaxValue).AsScoreType())
+        .Should()
+        .Throw<ArgumentOutOfRangeException>();
 }

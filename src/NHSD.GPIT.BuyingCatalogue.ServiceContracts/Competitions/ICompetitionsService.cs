@@ -21,6 +21,8 @@ public interface ICompetitionsService
 
     Task<IEnumerable<Competition>> GetCompetitionsDashboard(string internalOrgId);
 
+    Task<Competition> GetCompetitionForResults(string internalOrgId, int competitionId);
+
     Task<Competition> GetCompetitionWithNonPriceElements(string internalOrgId, int competitionId);
 
     Task<Competition> GetCompetitionWithWeightings(string internalOrgId, int competitionId);
@@ -39,7 +41,7 @@ public interface ICompetitionsService
 
     Task AcceptShortlist(string internalOrgId, int competitionId);
 
-    Task CompleteCompetition(string internalOrgId, int competitionId);
+    Task CompleteCompetition(string internalOrgId, int competitionId, bool isDirectAward = false);
 
     Task DeleteCompetition(string internalOrgId, int competitionId);
 

@@ -9,7 +9,7 @@
 @model AmendOrderItemModel
 
 @{
-    var totalCost = Model.OrderItemPrice.CostForBillingPeriod(Model.RolledUpTotalQuantity);
+    var totalCost = ((IPrice)Model.OrderItemPrice).CostForBillingPeriod(Model.RolledUpTotalQuantity);
     var hasServiceRecipientQuantities = ((IPrice)Model.OrderItemPrice)?.IsPerServiceRecipient() ?? false;
     var hasTieredPricing = Model.OrderItemPrice?.CataloguePriceType is CataloguePriceType.Tiered;
 }
@@ -95,8 +95,8 @@
                 <nhs-table-column>Total cost (@billingPeriod)</nhs-table-column>
             }
             @{
-                var rolledUpCosts = Model.OrderItemPrice.CostPerTierForBillingPeriod(Model.RolledUpTotalQuantity);
-                var previousCosts = Model.OrderItemPrice.CostPerTierForBillingPeriod(Model.PreviousTotalQuantity);
+                var rolledUpCosts = ((IPrice)Model.OrderItemPrice).CostPerTierForBillingPeriod(Model.RolledUpTotalQuantity);
+                var previousCosts = ((IPrice)Model.OrderItemPrice).CostPerTierForBillingPeriod(Model.PreviousTotalQuantity);
                 @for (var i = 0; i < rolledUpCosts.Count; i++)
                 {
                     <nhs-table-row-container>
