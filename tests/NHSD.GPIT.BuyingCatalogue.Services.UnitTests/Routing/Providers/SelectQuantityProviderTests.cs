@@ -93,6 +93,77 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         }
 
         [Theory]
+        [CommonInlineAutoData(CatalogueItemType.AdditionalService)]
+        [CommonInlineAutoData(CatalogueItemType.AssociatedService)]
+        public void Process_OrderHasServiceWithNoPrice_MultipleAvailable_ExpectedResult(
+            CatalogueItemType catalogueItemType,
+            string internalOrgId,
+            CallOffId callOffId,
+            Order order,
+            SelectQuantityProvider provider)
+        {
+            callOffId = new CallOffId(callOffId.OrderNumber, 1);
+
+            order.OrderItems = order.OrderItems.Take(2).ToList();
+
+            var solution = order.OrderItems.First();
+            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+
+            var additionalService = order.OrderItems.ElementAt(1);
+            additionalService.CatalogueItem.CatalogueItemType = catalogueItemType;
+            additionalService.OrderItemPrice = null;
+
+            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, solution.CatalogueItemId));
+
+            var expected = new
+            {
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+                additionalService.CatalogueItemId,
+            };
+
+            result.ActionName.Should().Be(Constants.Actions.SelectPrice);
+            result.ControllerName.Should().Be(Constants.Controllers.Prices);
+            result.RouteValues.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(CatalogueItemType.AdditionalService)]
+        [CommonInlineAutoData(CatalogueItemType.AssociatedService)]
+        public void Process_OrderHasAssociatedServiceWithNoPrice_SingleAvailable_ExpectedResult(
+            CatalogueItemType catalogueItemType,
+            string internalOrgId,
+            CallOffId callOffId,
+            Order order,
+            SelectQuantityProvider provider)
+        {
+            callOffId = new CallOffId(callOffId.OrderNumber, 1);
+
+            order.OrderItems = order.OrderItems.Take(2).ToList();
+
+            var solution = order.OrderItems.First();
+            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+
+            var service = order.OrderItems.ElementAt(1);
+            service.CatalogueItem.CataloguePrices = service.CatalogueItem.CataloguePrices.Take(1).ToList();
+            service.CatalogueItem.CatalogueItemType = catalogueItemType;
+            service.OrderItemPrice = null;
+
+            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, solution.CatalogueItemId));
+
+            var expected = new
+            {
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+                service.CatalogueItemId,
+            };
+
+            result.ActionName.Should().Be(Constants.Actions.ConfirmPrice);
+            result.ControllerName.Should().Be(Constants.Controllers.Prices);
+            result.RouteValues.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
         [CommonAutoData]
         public void Process_OrderHasNoAdditionalServicesWithNoServiceRecipients_ExpectedResult(
             string internalOrgId,
