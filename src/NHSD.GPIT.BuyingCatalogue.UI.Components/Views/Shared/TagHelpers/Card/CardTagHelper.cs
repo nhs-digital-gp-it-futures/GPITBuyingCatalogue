@@ -93,10 +93,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
 
         private async Task<TagBuilder> BuildCardTextAsync(TagHelperOutput output)
         {
-            var cardText = new TagBuilder(TagHelperConstants.Paragraph);
+            var hasText = !string.IsNullOrWhiteSpace(Text);
+            var cardText = new TagBuilder(hasText ? TagHelperConstants.Paragraph : TagHelperConstants.Span);
             cardText.AddCssClass(CardDescriptionClass);
 
-            if (!string.IsNullOrWhiteSpace(Text))
+            if (hasText)
             {
                 cardText.InnerHtml.Append(Text);
                 return cardText;

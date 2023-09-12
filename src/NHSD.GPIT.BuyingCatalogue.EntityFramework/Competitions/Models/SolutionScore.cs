@@ -16,6 +16,15 @@ public class SolutionScore
         Score = score;
     }
 
+    public SolutionScore(
+        ScoreType scoreType,
+        int score,
+        decimal weightedScore)
+    : this(scoreType, score)
+    {
+        WeightedScore = weightedScore;
+    }
+
     public int Id { get; set; }
 
     public int CompetitionId { get; set; }
@@ -25,4 +34,6 @@ public class SolutionScore
     public ScoreType ScoreType { get; set; }
 
     public int Score { get; set; }
+
+    public decimal WeightedScore { get; set; }
 }

@@ -81,7 +81,9 @@
 
 @{
     (string LinkText, string Link) GetCompetitionActionLink(CompetitionDashboardItem competition)
-        => competition.Progress == TaskProgress.Completed ? ("N/A", "#") : ("Edit", GetEditLink(competition));
+        => competition.Progress == TaskProgress.Completed
+            ? ("View", Url.Action(nameof(CompetitionResultsController.ViewResults), typeof(CompetitionResultsController).ControllerName(), new { Area = typeof(CompetitionResultsController).AreaName(), internalOrgId = Model.InternalOrgId, competitionId = competition.Id }))
+            : ("Edit", GetEditLink(competition));
 
     string GetEditLink(CompetitionDashboardItem competition)
     {
