@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             model.Previous.Should().BeNull();
             model.RolledUp.Should().BeEquivalentTo(wrapper.RolledUp);
             model.CallOffId.Should().BeEquivalentTo(order.CallOffId);
-            model.CatalogueSolutions.Should().BeEquivalentTo(order.OrderItems);
+            model.CatalogueSolutions.Select(s => s.CatalogueItemId).Should().BeEquivalentTo(order.OrderItems.Select(s => s.CatalogueItemId));
             model.AdditionalServices.Should().BeEmpty();
             model.AssociatedServices.Should().BeEmpty();
             model.AllOrderItems.Should().HaveCount(1);

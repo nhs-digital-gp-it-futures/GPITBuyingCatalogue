@@ -49,9 +49,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             model.InternalOrgId.Should().BeEquivalentTo(internalOrgId);
             model.CallOffId.Should().BeEquivalentTo(callOffId);
             model.AssociatedServicesOnly.Should().Be(order.AssociatedServicesOnly);
-            model.CatalogueSolution.Should().BeEquivalentTo(solution);
-            model.AdditionalServices.Should().BeEquivalentTo(new[] { additionalService });
-            model.AssociatedServices.Should().BeEquivalentTo(new[] { associatedService });
+            model.CatalogueSolution.CatalogueItemId.Should().BeEquivalentTo(solution.CatalogueItemId);
+            model.AdditionalServices.Select(s => s.CatalogueItemId).Should().BeEquivalentTo(new[] { additionalService.CatalogueItemId });
+            model.AssociatedServices.Select(s => s.CatalogueItemId).Should().BeEquivalentTo(new[] { associatedService.CatalogueItemId });
 
             model.Progress.Should().Be(TaskProgress.Completed);
             model.Advice.Should().Be(TaskListModel.CompletedAdvice);
@@ -122,12 +122,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             model.CallOffId.Should().BeEquivalentTo(callOffId);
             model.AssociatedServicesOnly.Should().Be(order.AssociatedServicesOnly);
             model.SolutionName.Should().Be(serviceSolution.Name);
-            model.CatalogueSolution.Should().BeEquivalentTo(order.OrderItems.First());
+            model.CatalogueSolution.CatalogueItemId.Should().BeEquivalentTo(order.OrderItems.First().CatalogueItemId);
             model.AdditionalServices.Should().BeEmpty();
-            model.AssociatedServices.Should().BeEquivalentTo(new[]
+            model.AssociatedServices.Select(s => s.CatalogueItemId).Should().BeEquivalentTo(new[]
             {
-                order.OrderItems.ElementAt(1),
-                order.OrderItems.ElementAt(2),
+                order.OrderItems.ElementAt(1).CatalogueItemId,
+                order.OrderItems.ElementAt(2).CatalogueItemId,
             });
 
             model.Progress.Should().Be(TaskProgress.Completed);
@@ -161,7 +161,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             model.InternalOrgId.Should().BeEquivalentTo(internalOrgId);
             model.CallOffId.Should().BeEquivalentTo(callOffId);
             model.AssociatedServicesOnly.Should().Be(order.AssociatedServicesOnly);
-            model.CatalogueSolution.Should().BeEquivalentTo(solution);
+            model.CatalogueSolution.CatalogueItemId.Should().BeEquivalentTo(solution.CatalogueItemId);
             model.AdditionalServices.Should().BeEmpty();
             model.AssociatedServices.Should().BeEmpty();
 

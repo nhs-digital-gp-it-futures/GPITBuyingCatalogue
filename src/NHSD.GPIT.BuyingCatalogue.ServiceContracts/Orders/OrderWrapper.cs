@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -8,14 +9,20 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
     public class OrderWrapper
     {
         private readonly List<Order> previous = new();
+        private Lazy<Order> previousLazy;
+        private Lazy<Order> rolledUpLazy;
 
         public OrderWrapper()
         {
+            previousLazy = new Lazy<Order>((Order)null);
+            rolledUpLazy = new Lazy<Order>((Order)null);
         }
 
         public OrderWrapper(Order order)
         {
             Order = order;
+            previousLazy = new Lazy<Order>((Order)null);
+            rolledUpLazy = new Lazy<Order>(() => Order.Clone());
         }
 
         public OrderWrapper(IEnumerable<Order> orders)
@@ -29,6 +36,35 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             previous = ordered.Count > 1
                 ? ordered.SkipLast(1).ToList()
                 : new List<Order>();
+
+            previousLazy = new Lazy<Order>(() =>
+            {
+                if (!previous.Any())
+                {
+                    return null;
+                }
+
+                var output = previous.First().Clone();
+
+                previous.Skip(1).ToList().ForEach(p => output.Apply(p.Clone()));
+
+                return output;
+            });
+
+            rolledUpLazy = new Lazy<Order>(() =>
+            {
+                var output = Previous?.Clone();
+
+                if (output == null)
+                {
+                    return Order.Clone();
+                }
+
+                output.Apply(Order.Clone());
+                output.Revision = Order.Revision;
+
+                return output;
+            });
         }
 
         public IReadOnlyList<Order> PreviousOrders => previous;
@@ -55,40 +91,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public Order Order { get; set; }
 
-        public Order Previous
-        {
-            get
-            {
-                if (!previous.Any())
-                {
-                    return null;
-                }
+        public Order Previous => previousLazy.Value;
 
-                var output = previous.First().Clone();
-
-                previous.Skip(1).ToList().ForEach(output.Apply);
-
-                return output;
-            }
-        }
-
-        public Order RolledUp
-        {
-            get
-            {
-                var output = Previous?.Clone();
-
-                if (output == null)
-                {
-                    return Order;
-                }
-
-                output.Apply(Order);
-                output.Revision = Order.Revision;
-
-                return output;
-            }
-        }
+        public Order RolledUp => rolledUpLazy.Value;
 
         public ICollection<OrderRecipient> AddedOrderRecipients() => Order.AddedOrderRecipients(Previous);
 
