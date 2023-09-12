@@ -53,7 +53,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 };
             }
 
-            // TODO: MJK review - With global service recpients do we always match? We are using same recipients on every order item
             var solutionDates = orderWrapper.DetermineOrderRecipients(solution.CatalogueItemId)
                 .Select(x => x.GetDeliveryDateForItem(solution.CatalogueItemId))
                 .Distinct()

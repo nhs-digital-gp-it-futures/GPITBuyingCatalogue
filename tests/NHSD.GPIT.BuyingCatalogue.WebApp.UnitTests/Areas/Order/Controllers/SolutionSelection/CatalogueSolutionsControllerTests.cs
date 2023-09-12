@@ -175,10 +175,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             string internalOrgId,
             CallOffId callOffId,
             SelectSolutionModel model,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> mockOrderService,
             [Frozen] Mock<IOrderItemService> mockOrderItemService,
             CatalogueSolutionsController controller)
         {
+            var orderItem = order.OrderItems.First();
             var catalogueItemId = new CatalogueItemId(1, "abc");
+            orderItem.CatalogueItemId = catalogueItemId;
+            orderItem.CatalogueItem.Id = catalogueItemId;
 
             model.SelectedCatalogueSolutionId = $"{catalogueItemId}";
 
@@ -186,6 +191,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             {
                 model.AdditionalServices[i].CatalogueItemId = CatalogueItemId.ParseExact($"{catalogueItemId}{i:000}");
             }
+
+            mockOrderService
+                .Setup(x => x.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
 
             var ids = model.AdditionalServices
                 .Where(x => x.IsSelected)

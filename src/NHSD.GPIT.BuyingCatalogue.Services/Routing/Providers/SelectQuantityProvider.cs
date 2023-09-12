@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
@@ -58,6 +60,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 };
             }
 
+            var additionalService = order.GetAdditionalServices()
+                .FirstOrDefault(x => x.OrderItemPrice is null);
+
+            if (additionalService != null)
+            {
+                return PricesRoute(routeValues, additionalService);
+            }
+
+            var associatedService = order.GetAssociatedServices()
+                .FirstOrDefault(x => x.OrderItemPrice is null);
+
+            if (associatedService != null)
+            {
+                return PricesRoute(routeValues, associatedService);
+            }
+
             if (order.GetAssociatedServices().Any())
             {
                 return new RoutingResult
@@ -85,6 +103,43 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 ControllerName = Constants.Controllers.Review,
                 ActionName = Constants.Actions.Review,
                 RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId },
+            };
+        }
+
+        private static RoutingResult PricesRoute(RouteValues routeValues, OrderItem service)
+        {
+            var publishedPrices = service.CatalogueItem.CataloguePrices
+                .Where(x => x.PublishedStatus == PublicationStatus.Published)
+                .ToList();
+
+            if (publishedPrices.Count > 1)
+            {
+                return new RoutingResult
+                {
+                    ControllerName = Constants.Controllers.Prices,
+                    ActionName = Constants.Actions.SelectPrice,
+                    RouteValues = new
+                    {
+                        routeValues.InternalOrgId,
+                        routeValues.CallOffId,
+                        service.CatalogueItemId,
+                        routeValues.Source,
+                    },
+                };
+            }
+
+            return new RoutingResult
+            {
+                ControllerName = Constants.Controllers.Prices,
+                ActionName = Constants.Actions.ConfirmPrice,
+                RouteValues = new
+                {
+                    routeValues.InternalOrgId,
+                    routeValues.CallOffId,
+                    service.CatalogueItemId,
+                    priceId = publishedPrices[0].CataloguePriceId,
+                    routeValues.Source,
+                },
             };
         }
     }

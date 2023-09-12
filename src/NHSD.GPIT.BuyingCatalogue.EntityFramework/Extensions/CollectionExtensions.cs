@@ -48,6 +48,11 @@ public static class CollectionExtensions
 
     public static bool Exists(this ICollection<OrderRecipient> recipients, string odsCode)
     {
-        return recipients?.FirstOrDefault(x => x.OdsCode == odsCode) != null;
+        return recipients?.Get(odsCode) != null;
+    }
+
+    public static OrderRecipient Get(this ICollection<OrderRecipient> recipients, string odsCode)
+    {
+        return recipients?.FirstOrDefault(x => x.OdsCode == odsCode);
     }
 }

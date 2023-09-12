@@ -65,14 +65,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
             }
 
             return orderWrapper.Order.OrderItems.All(x =>
-                x.CatalogueItem != null
-                && x.OrderItemPrice != null
-                && orderWrapper.DetermineOrderRecipients(x.CatalogueItemId)
-                    .AllQuantitiesEntered(x)
-                && (orderWrapper.Order.IsAmendment
-                        ? orderWrapper.DetermineOrderRecipients(x.CatalogueItemId)
-                            .AllDeliveryDatesEntered(x.CatalogueItemId)
-                        : true));
+            {
+                var recpients = orderWrapper.DetermineOrderRecipients(x.CatalogueItemId);
+                var allQuantites = recpients.AllQuantitiesEntered(x);
+                var allDatesIfAmendment = orderWrapper.Order.IsAmendment
+                        ? recpients.AllDeliveryDatesEntered(x.CatalogueItemId)
+                        : true;
+
+                return x.CatalogueItem != null
+                    && x.OrderItemPrice != null
+                    && allQuantites
+                    && allDatesIfAmendment;
+            });
         }
     }
 }

@@ -92,7 +92,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 return View(OrderItemViewName, model);
             }
 
-            var orderWrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var orderWrapper = await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId);
+
             var order = orderWrapper.Order;
 
             await orderQuantityService.SetOrderItemQuantity(
@@ -173,7 +174,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 return View(ServiceRecipientViewName, model);
             }
 
-            var orderWrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var orderWrapper = await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId);
             var order = orderWrapper.Order;
             var quantities = model.ServiceRecipients
                 .Select(x => new OrderItemRecipientQuantityDto

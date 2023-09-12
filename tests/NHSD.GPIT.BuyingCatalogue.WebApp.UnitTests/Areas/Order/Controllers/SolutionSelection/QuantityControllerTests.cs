@@ -190,7 +190,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var orderWrapper = new OrderWrapper(order);
             mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .Setup(x => x.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId))
                 .ReturnsAsync(orderWrapper);
 
             mockOrderQuantityService
@@ -381,7 +381,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var orderWrapper = new OrderWrapper(order);
             mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .Setup(x => x.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId))
                 .ReturnsAsync(orderWrapper);
 
             List<OrderItemRecipientQuantityDto> actual = null;

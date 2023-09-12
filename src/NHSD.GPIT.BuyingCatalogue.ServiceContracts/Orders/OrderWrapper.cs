@@ -43,6 +43,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             .Any(r => Previous?.OrderItems?
             .FirstOrDefault(x => x.CatalogueItemId == r.CatalogueItemId) == null);
 
+        public ICollection<OrderItem> OrderItems =>
+            Order.OrderItems.Where(oi => DetermineOrderRecipients(oi.CatalogueItemId).Count > 0)
+            .ToList();
+
         public ICollection<OrderRecipient> ExistingOrderRecipients => Previous?.OrderRecipients ?? Enumerable.Empty<OrderRecipient>().ToList();
 
         public Order Last => previous.Any()
@@ -89,6 +93,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
         public ICollection<OrderRecipient> AddedOrderRecipients() => Order.AddedOrderRecipients(Previous);
 
         public ICollection<OrderRecipient> DetermineOrderRecipients(CatalogueItemId catalogueItemId) => Order.DetermineOrderRecipients(Previous, catalogueItemId);
+
+        public bool CanComplete()
+        {
+            return Order.CanComplete(RolledUp.OrderRecipients, OrderItems);
+        }
 
         public OrderRecipient InitialiseOrderRecipient(string odsCode)
         {

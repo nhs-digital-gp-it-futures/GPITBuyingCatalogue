@@ -78,10 +78,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             await orderItemService.AddOrderItems(internalOrgId, callOffId, ids);
 
+            var wrapper = await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId);
+            var orderItem = wrapper.Order.OrderItem(catalogueItemId);
+
+            var publishedPrices = orderItem.CatalogueItem.CataloguePrices
+                .Where(x => x.PublishedStatus == PublicationStatus.Published)
+                .ToList();
+
+            if (publishedPrices.Count > 1)
+            {
+                return RedirectToAction(
+                    nameof(PricesController.SelectPrice),
+                    typeof(PricesController).ControllerName(),
+                    new { internalOrgId, callOffId, catalogueItemId });
+            }
+
             return RedirectToAction(
-                nameof(PricesController.SelectPrice),
+                nameof(PricesController.ConfirmPrice),
                 typeof(PricesController).ControllerName(),
-                new { internalOrgId, callOffId, catalogueItemId });
+                new { internalOrgId, callOffId, catalogueItemId, priceId = publishedPrices[0].CataloguePriceId });
         }
 
         [HttpGet("select/associated-services-only")]
