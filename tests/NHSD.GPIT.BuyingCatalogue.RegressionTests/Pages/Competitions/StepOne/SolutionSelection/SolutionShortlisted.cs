@@ -6,9 +6,9 @@ using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCreateCompetition.SolutionSelection
 {
-    public class SolutionNotShortlisted : PageBase
+    public class SolutionShortlisted : PageBase
     {
-        public SolutionNotShortlisted(IWebDriver driver, CommonActions commonActions)
+        public SolutionShortlisted(IWebDriver driver, CommonActions commonActions)
             : base(driver, commonActions)
         {
         }
@@ -20,6 +20,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCr
             var textInput = TextGenerators.TextInput(100);
             CommonActions.EnterTextInTextBoxes(textInput);
 
+            CommonActions.ClickSave();
+        }
+
+        public void ConfirmSolutions()
+        {
+            CommonActions.LedeText().Should().Be("Confirm the solutions you want to include as part of this competition.".FormatForComparison());
             CommonActions.ClickSave();
         }
     }
