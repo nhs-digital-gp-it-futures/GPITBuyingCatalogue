@@ -1,32 +1,109 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ListPriceModel;
+@{
+    string UnitDefinition = "";
+}
 
 <article class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
         <partial name="_solutionSummary" model="Model"/>
 
-        <nhs-card title="Price of Catalogue Solution">
-            <p>This is how much this Catalogue Solution costs:</p>
+        @if (Model.TieredListPrices.Any())
+        {
+            <h2>Tiered prices for this @Model.PriceFor</h2>
+            @foreach (var price in Model.TieredListPrices)
+            {
+                <nhs-card title="Tiered price @price.PricingUnit.Description">
+                    <nhs-table label-text="Information about this price" data-test-id="tiered-list-price-table">
+                    <nhs-table-column>Tier</nhs-table-column>
+                    <nhs-table-column>Price per unit</nhs-table-column>
+                    <nhs-table-column>Range</nhs-table-column>
+                    @for (var i = 0; i < price.CataloguePriceTiers.Count; i++)
+                    {
+                        var priceTier = price.CataloguePriceTiers.OrderBy(p => p.LowerRange).ElementAt(i);
+                        <nhs-table-row-container>
+                            <nhs-table-cell>
+                               @GetTierName(i)
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                               £@priceTier.Price @price.ProvisioningType.Name().ToLower()
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                @priceTier.GetRangeDescription()
+                            </nhs-table-cell>
+                        </nhs-table-row-container>
+
+                    }
+                    </nhs-table>
+                    @{
+                        UnitDefinition = price.PricingUnit.Definition?.ToString();
+                    }
+                    <div>
+                        @if (!string.IsNullOrEmpty(@UnitDefinition))
+                        {
+                            <h3 class="nhsuk-heading-s">Unit definitions for this price</h3>
+                            <p>@UnitDefinition</p>
+                        }
+                    </div>
+                    <div data-test-id="price-details">
+                        <partial name="PriceDetails/_PriceDetailsComponent" model="new PriceCalculationDetailsModel( Model.ItemType, price.CataloguePriceType, price.CataloguePriceCalculationType)" />
+                    </div>
+                </nhs-card>
+            }
+        }
 
         @if (Model.HasFlatListPrices())
         {
-            <nhs-table data-test-id="flat-list-price-table">
-                <nhs-table-column>Price</nhs-table-column>
-                <nhs-table-column>Unit</nhs-table-column>
-
-                @foreach (var item in Model.FlatListPrices)
-                {
-                    <nhs-table-row-container>
-                        <nhs-table-cell data-test-id="price">
-                            @item.CurrencyCode@item.Price.Value.ToString("N4")
-                        </nhs-table-cell>
-                        <nhs-table-cell>
-                            @item.Unit
-                        </nhs-table-cell>
-                    </nhs-table-row-container>
-                }
-            </nhs-table>
+            @if (Model.TieredListPrices.Any())
+            {
+                <hr />
+            }
+            <h2>Flat prices for this @Model.PriceFor</h2>
+              
+            @foreach (var price in Model.FlatListPrices)
+            {
+                <nhs-card title="Flat price @price.PricingUnit.Description">
+                    <nhs-table label-text="Information about this price" data-test-id="flat-list-price-table">
+                        @{var individualPrice = price.CataloguePriceTiers.ElementAt(0);}
+                        <nhs-table-column>Price</nhs-table-column>
+                        <nhs-table-column>Unit</nhs-table-column>
+                                <nhs-table-row-container>
+                                    <nhs-table-cell>
+                                £@individualPrice.Price.ToString()
+                                    </nhs-table-cell>
+                                    <nhs-table-cell>
+                                @price.ProvisioningType.Name().ToLower()
+                                    </nhs-table-cell>
+                                </nhs-table-row-container>  
+                    </nhs-table>
+                    @{
+                        UnitDefinition = price.PricingUnit.Definition?.ToString();
+                    }
+                    <div>
+                        @if (!string.IsNullOrEmpty(@UnitDefinition))
+                        {
+                            <h3 class="nhsuk-heading-s">Unit definitions for this price</h3>
+                            <p>@UnitDefinition</p>
+                        }
+                    </div>
+                </nhs-card>
+            }
         }
-        </nhs-card>
+
+        @if (Model.IsSubPage)
+        {
+            string buttonText = "Return to " + @Model.PriceFor + "s";
+            <vc:nhs-secondary-button url=@Model.BackLink
+                                 type="Secondary"
+                                 text=@buttonText />
+        }
     </div>
 </article>
+@{
+    static string GetTierName(int index) => $"Tier {index + 1}";
+}

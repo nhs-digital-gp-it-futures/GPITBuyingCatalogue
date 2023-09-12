@@ -1,4 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
+﻿using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOne;
@@ -20,10 +21,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             ReviewFilter = new ReviewFilter(driver, commonActions);
             StartCompetition = new StartCompetition(driver, commonActions);
             SelectSolutions = new SelectSolutions(driver, commonActions);
-            SolutionNotShortlisted = new SolutionNotShortlisted(driver, commonActions);
+            SolutionShortlisted = new SolutionShortlisted(driver, commonActions);
             CompetitionStepOne = new CompetitionStepOne(driver, commonActions);
             NoSolutionsFound = new NoSolutionsFound(driver, commonActions);
             SingleSolutionFound = new SingleSolutionFound(driver, commonActions);
+            CompetitionTaskList = new CompetitionTaskList(driver, commonActions);
+            CompetitionServiceRecipients = new CompetitionServiceRecipients(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -42,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
 
         internal SelectSolutions SelectSolutions { get; }
 
-        internal SolutionNotShortlisted SolutionNotShortlisted { get; }
+        internal SolutionShortlisted SolutionShortlisted { get; }
 
         internal CompetitionStepOne CompetitionStepOne { get; }
 
@@ -50,11 +53,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
 
         internal SingleSolutionFound SingleSolutionFound { get; }
 
+        internal CompetitionTaskList CompetitionTaskList { get; }
+
+        internal CompetitionServiceRecipients CompetitionServiceRecipients { get; }
+
         internal FilterType FilterType { get; set; }
 
         internal IWebDriver Driver { get; }
 
-        public void StepOnePrepareCompetition(FilterType filterType, string competitionName, int addNumberOfSolutions = 0)
+        public void StepOnePrepareCompetition(FilterType filterType, string competitionName, ServiceRecipientSelectionMode recipients = ServiceRecipientSelectionMode.None)
         {
             int selectedFilter = (int)filterType;
             SelectFilter.SelectFilterForNewCompetition(selectedFilter);
@@ -78,9 +85,16 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
 
                 if (filterId == 2)
                 {
-                    SelectSolutions.AddSolutions(5);
-                    SolutionNotShortlisted.SolutionNotIncludedInShortlisting();
+                    int solutions = NoOfSlutions();
+
+                    SelectSolutions.AddSolutions(solutions);
+                    SolutionShortlisted.SolutionNotIncludedInShortlisting();
+                    SolutionShortlisted.ConfirmSolutions();
                 }
+
+                CompetitionTaskList.CompetitionServiceRecipientsTask();
+                CompetitionServiceRecipients.AddCompetitionServiceRecipient(recipients);
+                CompetitionServiceRecipients.ConfirmServiceReceipientsChanges();
             }
         }
 
@@ -102,6 +116,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                 .Select(y => y.FilterId).First();
 
             return result;
+        }
+
+        private int NoOfSlutions()
+        {
+            return new Random().Next(2, 5);
         }
     }
 }
