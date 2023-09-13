@@ -5,5 +5,6 @@
     [SolutionId] NVARCHAR(14) NOT NULL,
     [ScoreType] INT NOT NULL,
     [Score] INT NOT NULL,
+    [WeightedScore] DECIMAL(3, 2),
     CONSTRAINT FK_SolutionScores_Solution FOREIGN KEY ([CompetitionId], [SolutionId]) REFERENCES competitions.CompetitionSolutions ([CompetitionId], [SolutionId])
 )

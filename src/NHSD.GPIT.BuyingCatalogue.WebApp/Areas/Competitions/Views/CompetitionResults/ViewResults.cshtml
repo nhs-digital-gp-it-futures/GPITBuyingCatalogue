@@ -1,0 +1,93 @@
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
+@model ViewResultsModel
+
+@{
+    ViewBag.Title = "Competition results";
+    var hasMultipleWinners = Model.WinningSolutions.Count > 1;
+    var winningSolutionHeading = hasMultipleWinners ? "Winning solutions" : "Winning solution";
+}
+
+<partial name="Partials/_BackLink" model="Model"/>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-page-title title="@ViewBag.Title" caption="@Model.CompetitionName" advice="These are the results for this competition."/>
+
+        @if (hasMultipleWinners)
+        {
+            <nhs-inset-text>
+                <p>Your competition has produced more than 1 solution with a winning score. You can therefore choose to procure any of the winning solutions.</p>
+            </nhs-inset-text>
+        }
+
+        <nhs-card>
+            <h2>@winningSolutionHeading</h2>
+
+            @foreach (var solutionResult in Model.WinningSolutions)
+            {
+                <partial name="_SolutionResult" model="@solutionResult"/>
+                if (Model.IncludesNonPriceElements)
+                {
+                    <hr/>
+                }
+                else
+                {
+                    <br/>
+                }
+            }
+        </nhs-card>
+
+        @if (Model.OtherSolutionResults.Any())
+        {
+            <h2>Other shortlisted solutions</h2>
+            <nhs-expander label-text="View other shortlisted solutions" open="true">
+                @foreach (var solutionResult in Model.OtherSolutionResults)
+                {
+                    <partial name="_SolutionResult" model="@solutionResult"/>
+                    if (Model.IncludesNonPriceElements)
+                    {
+                        <hr/>
+                    }
+                    else
+                    {
+                        <br/>
+                    }
+                }
+            </nhs-expander>
+        }
+
+        @if (Model.IncludesNonPriceElements)
+        {
+            <h2>Award criteria weightings</h2>
+
+            <nhs-expander label-text="View award criteria weightings" open="true">
+                <h3>Award criteria weighting</h3>
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Price">@Model.AwardCriteriaWeightings.Price%</nhs-summary-list-row>
+                    <nhs-summary-list-row label-text="Non-price">@Model.AwardCriteriaWeightings.NonPrice%</nhs-summary-list-row>
+                </nhs-summary-list>
+
+                <h3>Non-price weighting</h3>
+                <nhs-summary-list>
+                    @foreach (var nonPriceElementWeighting in Model.NonPriceElementWeightings)
+                    {
+                        <nhs-summary-list-row label-text="@nonPriceElementWeighting.Key.EnumMemberName()">@nonPriceElementWeighting.Value%</nhs-summary-list-row>
+                    }
+                </nhs-summary-list>
+            </nhs-expander>
+        }
+    </div>
+
+    <div class="nhsuk-grid-column-three-quarters">
+        <h2>Download your results</h2>
+
+        <p>Download the results of your competition as evidence of how you arrived at your winning solution.</p>
+
+        <vc:nhs-secondary-button text="Download results (PDF)"
+                                 url="#"
+                                 type="Primary"/>
+
+        <h2>Ordering information</h2>
+        <a href="#">View and download the information</a> you’ll need to create an order for this solution. It includes the Service Recipients you added and any services you may also need to order.
+    </div>
+</div>

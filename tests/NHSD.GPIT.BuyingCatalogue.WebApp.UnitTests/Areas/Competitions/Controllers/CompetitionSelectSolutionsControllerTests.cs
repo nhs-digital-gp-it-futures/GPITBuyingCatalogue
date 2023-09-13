@@ -152,7 +152,7 @@ public static class CompetitionSelectSolutionsControllerTests
 
         var result = (await controller.SelectSolutions(organisation.InternalIdentifier, competitionId, model)).As<RedirectToActionResult>();
 
-        competitionsService.Verify(x => x.CompleteCompetition(organisation.InternalIdentifier, competitionId), Times.Once());
+        competitionsService.Verify(x => x.CompleteCompetition(organisation.InternalIdentifier, competitionId, true), Times.Once());
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(OrderDescriptionController.NewOrderDescription));
