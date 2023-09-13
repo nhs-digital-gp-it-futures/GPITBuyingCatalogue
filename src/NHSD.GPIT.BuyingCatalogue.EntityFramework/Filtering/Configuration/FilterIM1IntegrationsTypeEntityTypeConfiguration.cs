@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Configuration
         public void Configure(EntityTypeBuilder<FilterIM1IntegrationsType> builder)
         {
             builder.ToTable(
-                "FilterIM1IntegrationsTypes",
+                "FilterIM1IntegrationTypes",
                 Schemas.Filtering);
 
             builder.HasKey(fht => fht.Id);

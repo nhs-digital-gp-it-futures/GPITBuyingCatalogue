@@ -113,8 +113,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         FrameworkId = x.FrameworkId,
                         ApplicationTypeIds = x.FilterApplicationTypes.Select(fc => (int)fc.ApplicationTypeID),
                         HostingTypeIds = x.FilterHostingTypes.Select(fc => (int)fc.HostingType),
-                        IM1Integrations = x.FilterIM1IntegrationsTypes.Select(fc => (int)fc.IM1IntegrationsType),
-                        GPConnectIntegrations = x.FilterGPConnectIntegrationsTypes.Select(fc => (int)fc.GPConnectIntegrationsType),
+                        IM1Integrations = x.FilterIM1IntegrationTypes.Select(fc => (int)fc.IM1IntegrationsType),
+                        GPConnectIntegrations = x.FilterGPConnectIntegrationTypes.Select(fc => (int)fc.GPConnectIntegrationsType),
                         InteroperabilityOptions = x.FilterInteropIntegrationTypes.Select(fc => (int)fc.InteroperabilityIntegrationType),
                     })
                 .AsNoTracking()
@@ -135,8 +135,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         ApplicationTypes =
                             x.FilterApplicationTypes.Select(y => y.ApplicationTypeID).ToList(),
                         InteropIntegrationTypes = x.FilterInteropIntegrationTypes.Select(y => y.InteroperabilityIntegrationType).ToList(),
-                        InteropIm1IntegrationsTypes = x.FilterIM1IntegrationsTypes.Select(y => y.IM1IntegrationsType).ToList(),
-                        InteropGpConnectIntegrationsTypes = x.FilterGPConnectIntegrationsTypes.Select(y => y.GPConnectIntegrationsType).ToList(),
+                        InteropIm1IntegrationsTypes = x.FilterIM1IntegrationTypes.Select(y => y.IM1IntegrationsType).ToList(),
+                        InteropGpConnectIntegrationsTypes = x.FilterGPConnectIntegrationTypes.Select(y => y.GPConnectIntegrationsType).ToList(),
                         Invalid = x.FilterCapabilityEpics.Any(e => e.CapabilityId == null)
                             || x.Capabilities.Any(c => c.Status == CapabilityStatus.Expired)
                             || x.FilterCapabilityEpics.Any(e => e.Epic.IsActive == false)
@@ -288,7 +288,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             foreach (var type in interopIm1IntegrationsTypes)
             {
-                filter.FilterIM1IntegrationsTypes.Add(new FilterIM1IntegrationsType()
+                filter.FilterIM1IntegrationTypes.Add(new FilterIM1IntegrationsType()
                 {
                     FilterId = filterId,
                     IM1IntegrationsType = type,
@@ -311,7 +311,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             foreach (var type in interopGpConnectIntegrationsTypes)
             {
-                filter.FilterGPConnectIntegrationsTypes.Add(new FilterGPConnectIntegrationsType()
+                filter.FilterGPConnectIntegrationTypes.Add(new FilterGPConnectIntegrationsType()
                 {
                     FilterId = filterId,
                     GPConnectIntegrationsType = type,

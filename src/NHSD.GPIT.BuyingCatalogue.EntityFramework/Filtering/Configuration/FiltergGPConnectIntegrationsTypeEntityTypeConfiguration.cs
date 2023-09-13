@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Configuration
         public void Configure(EntityTypeBuilder<FilterGPConnectIntegrationsType> builder)
         {
             builder.ToTable(
-                "FilterGPConnectIntegrationsTypes",
+                "FilterGPConnectIntegrationTypes",
                 Schemas.Filtering);
 
             builder.HasKey(fht => fht.Id);

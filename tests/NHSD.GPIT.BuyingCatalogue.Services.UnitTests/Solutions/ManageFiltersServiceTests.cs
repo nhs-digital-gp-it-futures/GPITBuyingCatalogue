@@ -737,7 +737,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             [Frozen] BuyingCatalogueDbContext context,
             ManageFiltersService service)
         {
-            filter.FilterIM1IntegrationsTypes.Clear();
+            filter.FilterIM1IntegrationTypes.Clear();
             context.Organisations.Add(organisation);
             context.Filters.Add(filter);
             await context.SaveChangesAsync();
@@ -748,7 +748,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             var result = await context.Filters.FirstAsync(f => f.Id == filter.Id);
             result.Should().NotBeNull();
 
-            result.FilterIM1IntegrationsTypes.Should().BeEmpty();
+            result.FilterIM1IntegrationTypes.Should().BeEmpty();
         }
 
         [Theory]
@@ -775,7 +775,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             [Frozen] BuyingCatalogueDbContext context,
             ManageFiltersService service)
         {
-            filter.FilterIM1IntegrationsTypes.Clear();
+            filter.FilterIM1IntegrationTypes.Clear();
             context.Organisations.Add(organisation);
             context.Filters.Add(filter);
             await context.SaveChangesAsync();
@@ -783,13 +783,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             await service.AddIM1IntegrationsTypes(filter.Id, interopIm1Integrations);
             context.ChangeTracker.Clear();
 
-            var result = await context.Filters.Include(f => f.FilterIM1IntegrationsTypes).FirstOrDefaultAsync(f => f.Id == filter.Id);
+            var result = await context.Filters.Include(f => f.FilterIM1IntegrationTypes).FirstOrDefaultAsync(f => f.Id == filter.Id);
             result.Should().NotBeNull();
 
-            result.FilterIM1IntegrationsTypes.Should().NotBeNullOrEmpty();
-            result.FilterIM1IntegrationsTypes.Count.Should().Be(interopIm1Integrations.Count);
+            result.FilterIM1IntegrationTypes.Should().NotBeNullOrEmpty();
+            result.FilterIM1IntegrationTypes.Count.Should().Be(interopIm1Integrations.Count);
 
-            foreach (var x in result.FilterIM1IntegrationsTypes)
+            foreach (var x in result.FilterIM1IntegrationTypes)
             {
                 x.FilterId.Should().Be(filter.Id);
                 interopIm1Integrations.Should().Contain(x.IM1IntegrationsType);
@@ -804,7 +804,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             [Frozen] BuyingCatalogueDbContext context,
             ManageFiltersService service)
         {
-            filter.FilterGPConnectIntegrationsTypes.Clear();
+            filter.FilterGPConnectIntegrationTypes.Clear();
             context.Organisations.Add(organisation);
             context.Filters.Add(filter);
             await context.SaveChangesAsync();
@@ -815,7 +815,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             var result = await context.Filters.FirstAsync(f => f.Id == filter.Id);
             result.Should().NotBeNull();
 
-            result.FilterGPConnectIntegrationsTypes.Should().BeEmpty();
+            result.FilterGPConnectIntegrationTypes.Should().BeEmpty();
         }
 
         [Theory]
@@ -842,7 +842,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             [Frozen] BuyingCatalogueDbContext context,
             ManageFiltersService service)
         {
-            filter.FilterGPConnectIntegrationsTypes.Clear();
+            filter.FilterGPConnectIntegrationTypes.Clear();
             context.Organisations.Add(organisation);
             context.Filters.Add(filter);
             await context.SaveChangesAsync();
@@ -850,13 +850,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             await service.AddGPConnectIntegrationsTypes(filter.Id, interopGpConnectIntegrations);
             context.ChangeTracker.Clear();
 
-            var result = await context.Filters.Include(f => f.FilterGPConnectIntegrationsTypes).FirstOrDefaultAsync(f => f.Id == filter.Id);
+            var result = await context.Filters.Include(f => f.FilterGPConnectIntegrationTypes).FirstOrDefaultAsync(f => f.Id == filter.Id);
             result.Should().NotBeNull();
 
-            result.FilterGPConnectIntegrationsTypes.Should().NotBeNullOrEmpty();
-            result.FilterGPConnectIntegrationsTypes.Count.Should().Be(interopGpConnectIntegrations.Count);
+            result.FilterGPConnectIntegrationTypes.Should().NotBeNullOrEmpty();
+            result.FilterGPConnectIntegrationTypes.Count.Should().Be(interopGpConnectIntegrations.Count);
 
-            foreach (var x in result.FilterGPConnectIntegrationsTypes)
+            foreach (var x in result.FilterGPConnectIntegrationTypes)
             {
                 x.FilterId.Should().Be(filter.Id);
                 interopGpConnectIntegrations.Should().Contain(x.GPConnectIntegrationsType);
@@ -1156,8 +1156,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             filterIds.FrameworkId.Should().Be(filter.FrameworkId);
             filterIds.ApplicationTypeIds.Should().BeEquivalentTo(filter.FilterApplicationTypes.Select(fc => (int)fc.ApplicationTypeID));
             filterIds.HostingTypeIds.Should().BeEquivalentTo(filter.FilterHostingTypes.Select(fc => (int)fc.HostingType));
-            filterIds.IM1Integrations.Should().BeEquivalentTo(filter.FilterIM1IntegrationsTypes.Select(fc => (int)fc.IM1IntegrationsType));
-            filterIds.GPConnectIntegrations.Should().BeEquivalentTo(filter.FilterGPConnectIntegrationsTypes.Select(fc => (int)fc.GPConnectIntegrationsType));
+            filterIds.IM1Integrations.Should().BeEquivalentTo(filter.FilterIM1IntegrationTypes.Select(fc => (int)fc.IM1IntegrationsType));
+            filterIds.GPConnectIntegrations.Should().BeEquivalentTo(filter.FilterGPConnectIntegrationTypes.Select(fc => (int)fc.GPConnectIntegrationsType));
             filterIds.InteroperabilityOptions.Should().BeEquivalentTo(filter.FilterInteropIntegrationTypes.Select(fc => (int)fc.InteroperabilityIntegrationType));
         }
 
