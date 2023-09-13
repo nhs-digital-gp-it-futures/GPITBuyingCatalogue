@@ -1,4 +1,4 @@
-﻿CREATE TABLE filtering.FilterIM1IntegrationsTypes
+﻿CREATE TABLE filtering.FilterIM1IntegrationTypes
 (
 	Id int IDENTITY(1, 1) NOT NULL,
     FilterId int NOT NULL,

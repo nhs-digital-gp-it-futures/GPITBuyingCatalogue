@@ -1,4 +1,4 @@
-﻿CREATE TABLE filtering.FilterGPConnectIntegrationsTypes
+﻿CREATE TABLE filtering.FilterGPConnectIntegrationTypes
 (
 	Id int IDENTITY(1, 1) NOT NULL,
     FilterId int NOT NULL,
