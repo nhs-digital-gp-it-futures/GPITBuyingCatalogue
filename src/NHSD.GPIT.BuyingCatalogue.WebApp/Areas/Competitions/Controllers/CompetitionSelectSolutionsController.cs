@@ -137,7 +137,7 @@ public class CompetitionSelectSolutionsController : Controller
 
     private async Task<IActionResult> HandleDirectAward(string internalOrgId, int competitionId)
     {
-        await competitionsService.CompleteCompetition(internalOrgId, competitionId);
+        await competitionsService.CompleteCompetition(internalOrgId, competitionId, true);
 
         return RedirectToAction(
             nameof(OrderDescriptionController.NewOrderDescription),

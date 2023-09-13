@@ -1,4 +1,4 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
+﻿namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces
 {
     public sealed class PriceCalculationModel
     {

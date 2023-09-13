@@ -1,0 +1,67 @@
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
+@model CompetitionSolutionResult
+
+<h3>
+    @Model.SolutionName
+    <span class="nhsuk-caption-m nhsuk-caption--bottom">
+        @Model.SupplierName
+    </span>
+</h3>
+
+@if (Model.IncludesNonPriceElements)
+{
+    <nhs-table label-text="Non-price element scores">
+        <nhs-table-column>Non-price element</nhs-table-column>
+        <nhs-table-column>Score</nhs-table-column>
+        <nhs-table-column>Weighted score</nhs-table-column>
+
+        @foreach (var nonPriceElementWeight in Model.NonPriceElementWeights)
+        {
+            <nhs-table-row-container>
+                <nhs-table-cell>@nonPriceElementWeight.NonPriceElement.EnumMemberName()</nhs-table-cell>
+                <nhs-table-cell>@nonPriceElementWeight.Score</nhs-table-cell>
+                <nhs-table-cell>@nonPriceElementWeight.WeightedScore</nhs-table-cell>
+            </nhs-table-row-container>
+        }
+
+        <nhs-table-row-container>
+            <nhs-table-cell>
+                <b>Total</b>
+            </nhs-table-cell>
+            <nhs-table-cell></nhs-table-cell>
+            <nhs-table-cell>@Model.GetTotalNonPriceElementWeight()</nhs-table-cell>
+        </nhs-table-row-container>
+
+        <nhs-table-row-container>
+            <nhs-table-cell>
+                <b>Total weighted score for non-price elements</b>
+            </nhs-table-cell>
+            <nhs-table-cell></nhs-table-cell>
+            <nhs-table-cell>@Model.GetWeightedNonPriceElementWeight().GetValueOrDefault().ToString("N2")</nhs-table-cell>
+        </nhs-table-row-container>
+    </nhs-table>
+}
+
+<nhs-table label-text="Price score">
+    <nhs-table-column>Price</nhs-table-column>
+    <nhs-table-column>Score</nhs-table-column>
+    @if (Model.IncludesNonPriceElements)
+    {
+        <nhs-table-column>Weighted score</nhs-table-column>
+    }
+
+    <nhs-table-row-container>
+        <nhs-table-cell>£@Model.PriceScoreWeighting.Price.ToString("N2")</nhs-table-cell>
+        <nhs-table-cell>@Model.PriceScoreWeighting.Score</nhs-table-cell>
+        @if (Model.IncludesNonPriceElements)
+        {
+            <nhs-table-cell>@Model.PriceScoreWeighting.WeightedScore</nhs-table-cell>
+        }
+    </nhs-table-row-container>
+</nhs-table>
+
+@if (Model.IncludesNonPriceElements)
+{
+    <h4>Total weighted score: @Model.TotalWeightedScore.ToString("N2")</h4>
+}
