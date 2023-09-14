@@ -53,6 +53,38 @@
         @("None selected")
     }
 </nhs-expander>
+<nhs-expander label-text="Interoperability" open="true">
+    @if (Model.InteroperabilityFilters.Any())
+    {
+        @for(int j=0; j < Model.InteroperabilityFilters.Length; j++)
+        {
+            @if (Model.InteroperabilityFilters[j] == "IM1")
+            {
+                <p> @(Model.InteroperabilityFilters[j]) integrations</p>
+                <ul>
+                    @for(int i=0; i < Model.IM1IntegrationsFilters.Count(); i++)
+                    {
+                        <li> @(Model.IM1IntegrationsFilters[i])</li>
+                    }
+                </ul>
+            }
+            @if (Model.InteroperabilityFilters[j] == "GP Connect")
+            {
+                <p> @(Model.InteroperabilityFilters[j]) integrations</p>
+                <ul>
+                    @for(int i=0; i < Model.GPConnectIntegrationsFilters.Count(); i++)
+                    {
+                        <li> @(Model.GPConnectIntegrationsFilters[i])</li>
+                    }
+                </ul>
+            }
+        }
+    }
+    else
+    {
+        @("None selected")
+    }
+</nhs-expander>
 @if (Model.FilterId.HasValue)
 {
     <div>

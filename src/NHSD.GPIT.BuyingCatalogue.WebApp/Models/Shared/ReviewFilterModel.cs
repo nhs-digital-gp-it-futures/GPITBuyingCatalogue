@@ -28,6 +28,8 @@ public class ReviewFilterModel : NavBaseModel
 
     public bool HasApplicationTypes() => FilterDetails.ApplicationTypes.Any();
 
+    public bool HasInteroperabilityIntegrationTypes() => FilterDetails.InteropIntegrationTypes.Any();
+
     public bool HasAdditionalFilters() => HasFramework()
-        || HasHostingTypes() || HasApplicationTypes();
+        || HasHostingTypes() || HasApplicationTypes() || HasInteroperabilityIntegrationTypes();
 }

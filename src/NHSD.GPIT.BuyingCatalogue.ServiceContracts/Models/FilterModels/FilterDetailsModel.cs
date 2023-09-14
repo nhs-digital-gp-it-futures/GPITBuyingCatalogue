@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
@@ -20,6 +21,12 @@ public class FilterDetailsModel
     public List<HostingType> HostingTypes { get; set; } = Enumerable.Empty<HostingType>().ToList();
 
     public List<ApplicationType> ApplicationTypes { get; set; } = Enumerable.Empty<ApplicationType>().ToList();
+
+    public List<InteropIntegrationType> InteropIntegrationTypes { get; set; } = Enumerable.Empty<InteropIntegrationType>().ToList();
+
+    public List<InteropIm1IntegrationType> InteropIm1IntegrationsTypes { get; set; } = Enumerable.Empty<InteropIm1IntegrationType>().ToList();
+
+    public List<InteropGpConnectIntegrationType> InteropGpConnectIntegrationsTypes { get; set; } = Enumerable.Empty<InteropGpConnectIntegrationType>().ToList();
 
     public List<KeyValuePair<string, List<string>>> Capabilities { get; set; }
 }
