@@ -136,5 +136,41 @@ else
                 }
             }
         </nhs-summary-list-row>
+        <nhs-summary-list-row label-text="Interoperability">
+            @if (Model.HasInteroperabilityIntegrationTypes())
+            {
+                @for (int j = 0; j < Model.FilterDetails.InteropIntegrationTypes.Count(); j++)
+                {
+                    @if (@Model.FilterDetails.InteropIntegrationTypes[j].EnumMemberName() == "IM1")
+                    {
+                        <p> @(Model.FilterDetails.InteropIntegrationTypes[j].EnumMemberName()) integrations</p>
+                        <ul>
+                            @foreach (var item in Model.FilterDetails.InteropIm1IntegrationsTypes)
+                            {
+                                <li>
+                                    @item.Name()
+                                </li>
+                            }
+                        </ul>
+                    }
+                    @if (Model.FilterDetails.InteropIntegrationTypes[j].EnumMemberName() == "GP Connect")
+                    {
+                        <p> @(Model.FilterDetails.InteropIntegrationTypes[j].EnumMemberName()) integrations</p>
+                        <ul>
+                            @foreach (var item in Model.FilterDetails.InteropGpConnectIntegrationsTypes)
+                            {
+                                <li>
+                                    @item.Name()
+                                </li>
+                            }
+                        </ul>
+                    }
+                }
+            }
+            else
+            {
+                @("None selected")
+            }
+        </nhs-summary-list-row>
     </nhs-summary-list>
 }
