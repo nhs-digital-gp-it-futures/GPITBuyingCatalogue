@@ -178,7 +178,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .OrderBy(ssfm => ssfm.Title)
                 .Take(maxToBringBack)
                 .ToListAsync();
-        } 
+        }
 
         private static IQueryable<CatalogueItem> ApplyAdditionalFilterToQuery<T>(
             IQueryable<CatalogueItem> query,
@@ -220,7 +220,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             return query;
         }
-
 
         private static (IQueryable<CatalogueItem> Query, List<CapabilitiesAndCountModel> Count) NonFilteredQuery(BuyingCatalogueDbContext dbContext) =>
             (dbContext.CatalogueItems
