@@ -7,9 +7,7 @@
     const RoutingSource source = RoutingSource.TaskList;
 }
 
-<h3 id="Name_@Model.CatalogueItemId">@Model.Name</h3>
-
-<nhs-table>
+<nhs-table label-text="@Model.Name" >
     <nhs-table-column>Section</nhs-table-column>
     <nhs-table-column>Status</nhs-table-column>
     <nhs-table-column>Action</nhs-table-column>
@@ -90,7 +88,7 @@
             }
         </nhs-table-cell>
     </nhs-table-row-container>
-    @if (Model.IsAmendment && (Model.HasNewRecipients || !Model.FromPreviousRevision))
+    @if (Model.IsAmendment && (Model.HasNewRecipients || !Model.FromPreviousRevision || Model.DeliveryDatesStatus == TaskProgress.InProgress))
     {
         <nhs-table-row-container>
             <nhs-table-cell>Planned delivery dates</nhs-table-cell>
