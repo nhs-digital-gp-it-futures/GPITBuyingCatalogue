@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
@@ -19,6 +20,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
             EntityFramework.Catalogue.Models.Framework framework,
             List<ApplicationType> applicationTypes,
             List<HostingType> hostingTypes,
+            List<InteropIm1IntegrationType> iM1IntegrationsTypes,
+            List<InteropGpConnectIntegrationType> gPConnectIntegrationsTypes,
+            List<InteropIntegrationType> interoperabilityIntegrationTypes,
             int organisationId)
         {
             if (framework != null)
@@ -29,6 +33,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
 
             ApplicationTypes = applicationTypes;
             HostingTypes = hostingTypes;
+            IM1IntegrationsTypes = iM1IntegrationsTypes;
+            GPConnectIntegrationsTypes = gPConnectIntegrationsTypes;
+            InteroperabilityIntegrationTypes = interoperabilityIntegrationTypes;
             OrganisationId = organisationId;
             GroupedCapabilities = groupedCapabilities;
         }
@@ -48,6 +55,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
         public List<ApplicationType> ApplicationTypes { get; init; }
 
         public List<HostingType> HostingTypes { get; init; }
+
+        public List<InteropIm1IntegrationType> IM1IntegrationsTypes { get; set; }
+
+        public List<InteropGpConnectIntegrationType> GPConnectIntegrationsTypes { get; set; }
+
+        public List<InteropIntegrationType> InteroperabilityIntegrationTypes { get; set; }
 
         public Dictionary<string, IOrderedEnumerable<Epic>> GroupedCapabilities { get; set; } = new();
     }
