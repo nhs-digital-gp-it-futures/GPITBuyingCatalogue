@@ -43,6 +43,7 @@ public class CompetitionsService : ICompetitionsService
     public async Task<Competition> GetCompetitionForResults(string internalOrgId, int competitionId) =>
         await dbContext
             .Competitions
+            .Include(x => x.Organisation)
             .Include(x => x.Weightings)
             .Include(x => x.Recipients)
             .Include(x => x.NonPriceElements)

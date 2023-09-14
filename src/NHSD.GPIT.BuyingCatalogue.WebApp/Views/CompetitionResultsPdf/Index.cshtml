@@ -1,0 +1,227 @@
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.SummaryList
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsAddress
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.CompetitionResultsPdf.PdfViewResultsModel
+@{
+    Layout = "";
+    var hasMultipleWinners = Model.WinningSolutions.Count > 1;
+    var winningSolutionHeading = hasMultipleWinners ? "Winning solutions" : "Winning solution";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Competition Results">
+    <title>Filter Results</title>
+    <link rel="stylesheet" href="~/css/main.min.css">
+    <link href="https://www.nhs.uk/" rel="preconnect">
+    <link href="https://assets.nhs.uk/" rel="preconnect" crossorigin>
+    <link type="font/woff2" href="https://assets.nhs.uk/fonts/FrutigerLTW01-55Roman.woff2" rel="preload" as="font" crossorigin>
+    <link type="font/woff2" href="https://assets.nhs.uk/fonts/FrutigerLTW01-65Bold.woff2" rel="preload" as="font" crossorigin>
+    <link rel="shortcut icon" href="~/nhsuk-frontend/assets/favicons/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="~/nhsuk-frontend/assets/favicons/apple-touch-icon-180x180.png">
+    <link rel="mask-icon" href="~/nhsuk-frontend/assets/favicons/favicon.svg" color="#005eb8">
+    <link rel="icon" sizes="192x192" href="~/nhsuk-frontend/assets/favicons/favicon-192x192.png">
+    <meta name="msapplication-TileImage" content="~/nhsuk-frontend/assets/favicons/mediumtile-144x144.png">
+    <meta name="msapplication-TileColor" content="#005eb8">
+    <meta name="msapplication-square70x70logo" content="~/nhsuk-frontend/assets/favicons/smalltile-70x70.png">
+    <meta name="msapplication-square150x150logo" content="~/nhsuk-frontend/assets/favicons/mediumtile-150x150.png">
+    <meta name="msapplication-wide310x150logo" content="~/nhsuk-frontend/assets/favicons/widetile-310x150.png">
+    <meta name="msapplication-square310x310logo" content="~/nhsuk-frontend/assets/favicons/largetile-310x310.png">
+    <meta name="robots" content="noindex">
+    <meta name="googlebot" content="noindex">
+    <style>
+            @@media print {
+            @@page {
+                size: A4 landscape;
+                max-height: 100%;
+                max-width: 100%
+            }
+        }
+
+        .nhsuk-table-responsive th {
+            font-size: 1em;
+            white-space: normal;
+        }
+
+        .nhsuk-table-responsive td {
+            font-size: 1em;
+        }
+
+        h3 {
+            border-bottom: 1px solid lightgray;
+            width: 100%;
+        }
+
+        .pdf-container {
+            -webkit-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        table {
+            -webkit-break-inside: auto;
+            break-inside: auto;
+        }
+
+        td, thead th {
+            border: 0;
+            padding-top: 4px;
+            padding-right: 12px;
+            padding-bottom: 0;
+        }
+
+        th {
+            white-space: nowrap;
+        }
+
+        tr {
+            -ms-break-after: auto;
+            -webkit-break-after: auto;
+            -webkit-break-inside: avoid;
+            break-after: auto;
+            break-inside: avoid;
+        }
+
+        tbody tr.alternating:nth-child(even) {
+            background-color: #F8F8F8;
+        }
+
+        tbody tr.totals {
+            background-color: #FFFFFF;
+        }
+
+        td:last-child {
+            padding-right: 0;
+        }
+
+        .total {
+            border-top: 1px solid lightgray;
+            font-weight: 600;
+        }
+
+        .numeric {
+            text-align: right;
+        }
+
+        .signature td {
+            padding-top: 20px;
+            width: auto;
+            border-bottom: 1px solid lightgray;
+        }
+
+            .signature td:first-child {
+                width: 20%;
+                border-bottom: none;
+            }
+
+        .pdf-summary-list {
+            -webkit-break-inside: avoid;
+            break-inside: avoid;
+            display: table;
+            font-size: 1.1875rem;
+            font-weight: 400;
+            line-height: 1.47368;
+            margin-bottom: 40px;
+            table-layout: fixed;
+            vertical-align: top;
+            width: 100%;
+        }
+
+        .pdf-summary-list-row {
+            display: table-row;
+            margin-bottom: 32px;
+        }
+
+            .pdf-summary-list-row div {
+                display: table-cell;
+                padding-top: 0;
+                padding-right: 24px;
+                padding-bottom: 0;
+                width: 50%;
+            }
+
+                .pdf-summary-list-row div:first-child {
+                    font-weight: 600;
+                    width: 30%;
+                }
+
+        .nhsuk-main-wrapper {
+            padding-top: 5px;
+        }
+        </style>
+</head>
+<body class="nhsuk-bc-print">
+<div class="nhsuk-width-container">
+    <main class="nhsuk-main-wrapper" id="maincontent">
+        <div class="nhsuk-grid-row">
+            <div class="nhsuk-grid-column-full">
+                <nhs-page-title title="Competition results" caption="@Model.Competition.Name"/>
+                <pdf-summary-list>
+                    <pdf-summary-list-row label-text="Competition name">
+                        @Model.Competition.Name
+                    </pdf-summary-list-row>
+                    <pdf-summary-list-row label-text="Competition description">
+                        @Model.Competition.Description
+                    </pdf-summary-list-row>
+                    <pdf-summary-list-row label-text="Competition created">
+                        @Model.Competition.Created.ToString("d MMMM yyyy")
+                    </pdf-summary-list-row>
+                    <pdf-summary-list-row label-text="Competition completed">
+                        @Model.Competition.Completed.GetValueOrDefault().ToString("d MMMM yyyy")
+                    </pdf-summary-list-row>
+                    <pdf-summary-list-row label-text="Organisation details">
+                        @Model.Competition.Organisation.Name (@Model.Competition.Organisation.ExternalIdentifier)<br/>
+                        <vc:nhs-address address="@Model.Competition.Organisation.Address"/>
+                    </pdf-summary-list-row>
+                </pdf-summary-list>
+
+                <div style="page-break-after: always"></div>
+
+                <div class="pdf-container">
+                    <h2>@winningSolutionHeading</h2>
+
+                    @foreach (var solutionResult in Model.WinningSolutions)
+                    {
+                        <partial name="_SolutionResultPdf" model="solutionResult"/>
+                    }
+                </div>
+
+                @if (Model.OtherSolutionResults.Any())
+                {
+                    <div class="pdf-container">
+                        <h2>Other shortlisted solutions</h2>
+
+                        @foreach (var otherSolution in Model.OtherSolutionResults)
+                        {
+                            <partial name="_SolutionResultPdf" model="otherSolution"/>
+                        }
+                    </div>
+                }
+
+                @if (Model.IncludesNonPriceElements)
+                {
+                    <h2>Award criteria weightings</h2>
+
+                    <h3>Award criteria weighting</h3>
+                    <pdf-summary-list>
+                        <pdf-summary-list-row label-text="Price">@Model.AwardCriteriaWeightings.Price%</pdf-summary-list-row>
+                        <pdf-summary-list-row label-text="Non-price">@Model.AwardCriteriaWeightings.NonPrice%</pdf-summary-list-row>
+                    </pdf-summary-list>
+
+                    <h3>Non-price weighting</h3>
+                    <pdf-summary-list>
+                        @foreach (var nonPriceElementWeighting in Model.NonPriceElementWeightings)
+                        {
+                            <pdf-summary-list-row label-text="@nonPriceElementWeighting.Key.EnumMemberName()">@nonPriceElementWeighting.Value%</pdf-summary-list-row>
+                        }
+                    </pdf-summary-list>
+                }
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>
