@@ -188,6 +188,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             bool isInteropFilter)
             where T : struct, Enum
         {
+            if (string.IsNullOrEmpty(selectedFilterIds))
+                return query;
+
             var selectedFilterEnums = SolutionsFilterHelper.ParseSelectedFilterIds<T>(selectedFilterIds);
 
             foreach (var row in query)
