@@ -58,5 +58,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers
                 .Where(x => Enum.TryParse(typeof(InteropIntegrationType), x, out var hostingValue) && Enum.IsDefined(typeof(InteropIntegrationType), hostingValue))
                 .Select(t => (InteropIntegrationType)Enum.Parse(typeof(InteropIntegrationType), t))
                 .ToList() ?? new List<InteropIntegrationType>();
+
+        public static ICollection<T> ParseSelectedFilterIds<T>(string selectedFilterIds)
+        where T : struct, Enum
+        {
+            if (string.IsNullOrEmpty(selectedFilterIds))
+                return new List<T>();
+
+            var selectedFilterEnums = selectedFilterIds.Split(FilterConstants.Delimiter)
+                .Where(t => Enum.TryParse<T>(t, out var enumVal) && Enum.IsDefined(enumVal))
+                .Select(Enum.Parse<T>)
+                .ToList();
+
+            if (selectedFilterEnums == null || !selectedFilterEnums.Any())
+                throw new ArgumentException("Invalid filter format", nameof(selectedFilterIds));
+
+            return selectedFilterEnums;
+        }
     }
 }

@@ -18,6 +18,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SolutionsFilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 {
@@ -91,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             else if (!string.IsNullOrWhiteSpace(selectedInteroperabilityOptions) && selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.Im1).ToString(CultureInfo.InvariantCulture), StringComparison.OrdinalIgnoreCase))
             {
                 InteropIm1IntegrationType[] enumValues = (InteropIm1IntegrationType[])Enum.GetValues(typeof(InteropIm1IntegrationType));
-                string im1integrations = string.Join(FilterConstants.Delimiter, enumValues.Select(e => (int)e));
+                string im1integrations = enumValues.Select(e => (int)e).ToFilterString();
                 isInteropFilter = true;
                 query = ApplyAdditionalFilterToQuery<InteropIm1IntegrationType>(
                     query,
@@ -113,7 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             else if (!string.IsNullOrWhiteSpace(selectedInteroperabilityOptions) && selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.GpConnect).ToString(CultureInfo.InvariantCulture), StringComparison.OrdinalIgnoreCase))
             {
                 InteropGpConnectIntegrationType[] enumValues = (InteropGpConnectIntegrationType[])Enum.GetValues(typeof(InteropIm1IntegrationType));
-                string gpConnectIntegrations = string.Join(FilterConstants.Delimiter, enumValues.Select(e => (int)e));
+                string gpConnectIntegrations = enumValues.Select(e => (int)e).ToFilterString();
                 isInteropFilter = true;
                 query = ApplyAdditionalFilterToQuery<InteropGpConnectIntegrationType>(
                     query,
@@ -177,7 +178,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .OrderBy(ssfm => ssfm.Title)
                 .Take(maxToBringBack)
                 .ToListAsync();
-        }
+        } 
 
         private static IQueryable<CatalogueItem> ApplyAdditionalFilterToQuery<T>(
             IQueryable<CatalogueItem> query,
@@ -187,16 +188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             bool isInteropFilter)
             where T : struct, Enum
         {
-            if (string.IsNullOrEmpty(selectedFilterIds))
-                return query;
-
-            var selectedFilterEnums = selectedFilterIds.Split(FilterConstants.Delimiter)
-                .Where(t => Enum.TryParse<T>(t, out var enumVal) && Enum.IsDefined(enumVal))
-                .Select(Enum.Parse<T>)
-                .ToList();
-
-            if (selectedFilterEnums == null || !selectedFilterEnums.Any())
-                throw new ArgumentException("Invalid filter format", nameof(selectedFilterIds));
+            var selectedFilterEnums = SolutionsFilterHelper.ParseSelectedFilterIds<T>(selectedFilterIds);
 
             foreach (var row in query)
             {
@@ -228,6 +220,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             return query;
         }
+
 
         private static (IQueryable<CatalogueItem> Query, List<CapabilitiesAndCountModel> Count) NonFilteredQuery(BuyingCatalogueDbContext dbContext) =>
             (dbContext.CatalogueItems

@@ -427,5 +427,75 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             result.Should().BeEquivalentTo(expected);
         }
+
+        [Fact]
+        public static void ParseSelectedFilterIds_OneItemNotParseable_GeneratesResults()
+        {
+            var input = "0.1.hello.2.3";
+
+            var result = SolutionsFilterHelper.ParseSelectedFilterIds<InteropIntegrationType>(input);
+
+            var expected = new List<InteropIntegrationType> { InteropIntegrationType.Im1, InteropIntegrationType.GpConnect };
+
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public static void ParseSelectedFilterIds_OneItemNotInEnum_GeneratesResults()
+        {
+            var input = "0.1.2.6.3";
+
+            var result = SolutionsFilterHelper.ParseSelectedFilterIds<InteropIntegrationType>(input);
+
+            var expected = new List<InteropIntegrationType> { InteropIntegrationType.Im1, InteropIntegrationType.GpConnect };
+
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public static void ParseSelectedFilterIds_EmptyAndWhiteSpace_GeneratesResults()
+        {
+            var input = "0.1. .2..    .3";
+
+            var result = SolutionsFilterHelper.ParseSelectedFilterIds<InteropIntegrationType>(input);
+
+            var expected = new List<InteropIntegrationType> { InteropIntegrationType.Im1, InteropIntegrationType.GpConnect };
+
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public static void ParseSelectedFilterIds_NullString_GeneratesResults()
+        {
+            var input = string.Empty;
+
+            var result = SolutionsFilterHelper.ParseSelectedFilterIds<InteropIntegrationType>(input);
+
+            var expected = new List<InteropIntegrationType>();
+
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public static void ParseSelectedFilterIds_CorrectInput_GeneratesResults()
+        {
+            var input = "0.1.2.3";
+
+            var result = SolutionsFilterHelper.ParseSelectedFilterIds<InteropIntegrationType>(input);
+
+            var expected = new List<InteropIntegrationType> { InteropIntegrationType.Im1, InteropIntegrationType.GpConnect };
+
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public static void ParseSelectedFilterIds_InvalidInput_ThrowsArgumentException()
+        {
+            var input = "invalid.enum.value";
+
+            Action action = () => SolutionsFilterHelper.ParseSelectedFilterIds<InteropIntegrationType>(input);
+
+            action.Should().Throw<ArgumentException>().WithMessage("Invalid filter format*");
+        }
     }
 }
