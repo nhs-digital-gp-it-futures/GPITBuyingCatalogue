@@ -336,18 +336,18 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             {
                 SelectEditCatalogueSolution.EditSolution(newSolutionName, newAdditionalServiceNames);
 
-                SelectEditCatalogueSolutionServiceRecipients.AddCatalogueSolutionServiceRecipient(multipleServiceRecipients, allServiceRecipients);
-                ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
-                SelectEditAndConfirmPrices.SelectAndConfirmPrice();
+                //SelectEditCatalogueSolutionServiceRecipients.AddCatalogueSolutionServiceRecipient(multipleServiceRecipients, allServiceRecipients);
+                //ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
+                SelectEditAndConfirmPrices.SelectEditPrice(newSolutionName);
                 Quantity.AddQuantity();
 
                 if (HasAdditionalService(newSolutionName) && newAdditionalServiceNames != default && newAdditionalServiceNames.All(a => !string.IsNullOrWhiteSpace(a)))
                 {
                     foreach (var additionalService in newAdditionalServiceNames)
                     {
-                        SelectEditAdditionalServiceRecipients.AddServiceRecipients();
-                        ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
-                        SelectEditAndConfirmAdditionalServicePrice.SelectAndConfirmPrice();
+                        //SelectEditAdditionalServiceRecipients.AddServiceRecipients();
+                        //ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
+                        SelectEditAndConfirmAdditionalServicePrice.SelectEditAdditionalServicePrice(additionalService);
                         Quantity.AddQuantity();
                     }
                 }
@@ -356,11 +356,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 {
                     if (newAssociatedServices != default && newAssociatedServices.All(a => !string.IsNullOrWhiteSpace(a)))
                     {
-                        SelectEditAssociatedService.AddAssociatedService(newAssociatedServices, "Yes");
+                        //SelectEditAssociatedService.AddAssociatedService(newAssociatedServices, "Yes");
+                        SelectEditAssociatedService.AddAssociatedService(newAssociatedServices);
                         foreach (var associatedService in newAssociatedServices)
                         {
-                            SelectEditAssociatedServiceRecipents.AddServiceRecipient();
-                            ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
+                            //SelectEditAssociatedServiceRecipents.AddServiceRecipient();
+                            //ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
                             SelectEditAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
                             Quantity.AddQuantity();
                         }
@@ -373,6 +374,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             }
 
             SolutionAndServicesReview.ReviewSolutionAndServices();
+
+            TaskList.SelectPlannedDeliveryDatesTask();
+            PlannedDeliveryDates.PlannedDeliveryDate(newSolutionName, isAssociatedServiceOnlyOrder, newAssociatedServices, newAdditionalServiceNames);
 
             TaskList.SelectFundingSourcesTask();
             SelectFundingSources.AddFundingSources(newSolutionName, isAssociatedServiceOnlyOrder, newAssociatedServices, newAdditionalServiceNames);
