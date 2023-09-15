@@ -7,7 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.NonPriceElementModels;
 
-public class AddServiceLevelCriteriaModel : NavBaseModel
+public class AddServiceLevelCriteriaModel : NonPriceElementBase
 {
     public AddServiceLevelCriteriaModel()
     {
@@ -20,6 +20,7 @@ public class AddServiceLevelCriteriaModel : NavBaseModel
         TimeFrom = competition.NonPriceElements?.ServiceLevel?.TimeFrom;
         TimeUntil = competition.NonPriceElements?.ServiceLevel?.TimeUntil;
         ApplicableDays = competition.NonPriceElements?.ServiceLevel?.ApplicableDays;
+        CanDelete = competition.NonPriceElements?.ServiceLevel is not null;
     }
 
     public string CompetitionName { get; set; }

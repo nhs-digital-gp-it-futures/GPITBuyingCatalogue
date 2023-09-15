@@ -1,0 +1,32 @@
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
+@model DeleteNonPriceElementModel
+
+@{
+    ViewBag.Title = "Are you sure you want to delete this requirement?";
+}
+
+<partial name="Partials/_BackLink" model="Model"/>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary/>
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.NonPriceElement.EnumMemberName() requirement"
+                        advice="Deleting this requirement will remove the non-price element from your competition."/>
+
+        <nhs-warning-callout label-text="Deleting a requirement">
+            Deleting a requirement will remove the non-price element it relates to. You’ll therefore need to redo your non-price weightings for this competition.
+        </nhs-warning-callout>
+
+        <form method="post">
+            <br/>
+            <div>
+                <nhs-submit-button text="Delete requirement"/>
+            </div>
+            <div>
+                <a href="@Model.BackLink">Cancel</a>
+            </div>
+        </form>
+
+    </div>
+</div>

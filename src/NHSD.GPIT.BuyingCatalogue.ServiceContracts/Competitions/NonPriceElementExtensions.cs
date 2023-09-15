@@ -7,6 +7,12 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 
 public static class NonPriceElementExtensions
 {
+    public static bool HasAllNonPriceElements(this NonPriceElements nonPriceElements) =>
+        GetAllNonPriceElements().All(nonPriceElements.HasNonPriceElement);
+
+    public static bool HasAnyNonPriceElements(this NonPriceElements nonPriceElements) =>
+        GetAllNonPriceElements().Any(nonPriceElements.HasNonPriceElement);
+
     public static bool HasNonPriceElement(this NonPriceElements nonPriceElements, NonPriceElement nonPriceElement)
     {
         if (nonPriceElements is null) return false;
@@ -37,6 +43,27 @@ public static class NonPriceElementExtensions
                 nonPriceElement,
                 "Invalid element specified"),
         };
+    }
+
+    public static void RemoveNonPriceElement(this NonPriceElements nonPriceElements, NonPriceElement nonPriceElement)
+    {
+        switch (nonPriceElement)
+        {
+            case NonPriceElement.Implementation:
+                nonPriceElements.Implementation = null;
+                break;
+            case NonPriceElement.Interoperability:
+                nonPriceElements.Interoperability.Clear();
+                break;
+            case NonPriceElement.ServiceLevel:
+                nonPriceElements.ServiceLevel = null;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(
+                    nameof(nonPriceElement),
+                    nonPriceElement,
+                    "Invalid element specified");
+        }
     }
 
     public static bool HasIncompleteWeighting(this NonPriceElements nonPriceElements)
