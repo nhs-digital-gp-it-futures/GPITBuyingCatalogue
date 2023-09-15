@@ -1030,7 +1030,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [Frozen] BuyingCatalogueDbContext context,
             OrderService service)
         {
-            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.Local };
+            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.LocalFunding };
             orderItem.OrderItemFunding = null;
             order.OrderItems = new List<OrderItem>() { orderItem };
             context.Orders.Add(order);

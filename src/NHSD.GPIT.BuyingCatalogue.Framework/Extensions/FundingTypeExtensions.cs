@@ -9,6 +9,6 @@ public static class FundingTypeExtensions
     {
         FundingType.Gpit => OrderItemFundingType.Gpit,
         FundingType.Pcarp => OrderItemFundingType.Pcarp,
-        _ or FundingType.Local => OrderItemFundingType.LocalFundingOnly,
+        _ or FundingType.LocalFunding => OrderItemFundingType.LocalFunding,
     };
 }

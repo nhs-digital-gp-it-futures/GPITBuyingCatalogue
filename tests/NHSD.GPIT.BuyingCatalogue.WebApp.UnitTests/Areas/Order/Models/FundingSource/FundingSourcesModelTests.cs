@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
 
             order.OrderItems = order.OrderItems.Where(oi => oi.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution).ToList();
 
-            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.Local };
+            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.LocalFunding };
 
             var model = new FundingSources(internalOrgId, order.CallOffId, order, 1);
 
@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             order.OrderItems.ToList().ForEach(oi => oi.OrderItemFunding.OrderItemFundingType = OrderItemFundingType.LocalFundingOnly);
             order.OrderItems.First().CatalogueItem.Solution = solution;
 
-            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.Local };
+            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.LocalFunding };
 
             var model = new FundingSources(internalOrgId, order.CallOffId, order, 1);
 
@@ -89,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             order.OrderItems.ToList().ForEach(oi => oi.OrderItemFunding.OrderItemFundingType = OrderItemFundingType.MixedFunding);
             order.OrderItems.First().CatalogueItem.Solution = solution;
 
-            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.Local };
+            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.LocalFunding };
 
             var model = new FundingSources(internalOrgId, order.CallOffId, order, 1);
 

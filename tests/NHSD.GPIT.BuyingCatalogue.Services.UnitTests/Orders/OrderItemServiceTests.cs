@@ -405,7 +405,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             item.OrderItemFunding = funding;
 
             order.OrderingParty.OrganisationType = OrganisationType.IB;
-            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.Local };
+            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.LocalFunding };
 
             context.Orders.Add(order);
 
@@ -462,7 +462,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             item.OrderItemFunding = funding;
 
             order.OrderingParty.OrganisationType = OrganisationType.IB;
-            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.Local };
+            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.LocalFunding };
 
             context.Orders.Add(order);
 
