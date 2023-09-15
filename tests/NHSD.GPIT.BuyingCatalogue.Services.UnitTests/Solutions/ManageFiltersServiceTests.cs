@@ -10,6 +10,7 @@ using FluentAssertions;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
@@ -90,6 +91,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             string frameworkId,
             List<ApplicationType> applicationTypes,
             List<HostingType> hostingTypes,
+            List<InteropIm1IntegrationType> iM1IntegrationsTypes,
+            List<InteropGpConnectIntegrationType> gPConnectIntegrationsTypes,
+            List<InteropIntegrationType> interoperabilityIntegrationTypes,
             ManageFiltersService service)
         {
             FluentActions
@@ -101,7 +105,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                         capabilityAndEpics,
                         frameworkId,
                         applicationTypes,
-                        hostingTypes))
+                        hostingTypes,
+                        iM1IntegrationsTypes,
+                        gPConnectIntegrationsTypes,
+                        interoperabilityIntegrationTypes))
                 .Should()
                 .ThrowAsync<ArgumentNullException>(nameof(name));
         }
@@ -118,6 +125,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             string frameworkId,
             List<ApplicationType> applicationTypes,
             List<HostingType> hostingTypes,
+            List<InteropIm1IntegrationType> iM1IntegrationsTypes,
+            List<InteropGpConnectIntegrationType> gPConnectIntegrationsTypes,
+            List<InteropIntegrationType> interoperabilityIntegrationTypes,
             ManageFiltersService service)
         {
             FluentActions
@@ -129,7 +139,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                         capabilityAndEpics,
                         frameworkId,
                         applicationTypes,
-                        hostingTypes))
+                        hostingTypes,
+                        iM1IntegrationsTypes,
+                        gPConnectIntegrationsTypes,
+                        interoperabilityIntegrationTypes))
                 .Should()
                 .ThrowAsync<ArgumentNullException>(nameof(description));
         }
@@ -144,6 +157,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             string frameworkId,
             List<ApplicationType> applicationTypes,
             List<HostingType> hostingTypes,
+            List<InteropIm1IntegrationType> iM1IntegrationsTypes,
+            List<InteropGpConnectIntegrationType> gPConnectIntegrationsTypes,
+            List<InteropIntegrationType> interoperabilityIntegrationTypes,
             ManageFiltersService service)
         {
             FluentActions
@@ -155,7 +171,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                         capabilityAndEpics,
                         frameworkId,
                         applicationTypes,
-                        hostingTypes))
+                        hostingTypes,
+                        iM1IntegrationsTypes,
+                        gPConnectIntegrationsTypes,
+                        interoperabilityIntegrationTypes))
                 .Should()
                 .ThrowAsync<ArgumentException>("organisationId");
         }
@@ -182,6 +201,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 organisation.Id,
                 null,
                 framework.Id,
+                null,
+                null,
+                null,
                 null,
                 null);
             result.Should().NotBe(0);
@@ -226,6 +248,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 new Dictionary<int, string[]>() { { capability.Id, null } },
                 framework.Id,
                 null,
+                null,
+                null,
+                null,
                 null);
             result.Should().NotBe(0);
             context.ChangeTracker.Clear();
@@ -268,6 +293,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 organisation.Id,
                 new Dictionary<int, string[]>() { { capability.Id, new string[] { capability.Epics.First().Id } } },
                 framework.Id,
+                null,
+                null,
+                null,
                 null,
                 null);
             result.Should().NotBe(0);
@@ -703,6 +731,207 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
         [Theory]
         [InMemoryDbAutoData]
+        public static async Task AddFilterIM1IntegrationsTypes_EmptyIM1IntegrationsTypeIds_NoIM1IntegrationsTypesAdded(
+            Organisation organisation,
+            Filter filter,
+            [Frozen] BuyingCatalogueDbContext context,
+            ManageFiltersService service)
+        {
+            filter.FilterIM1IntegrationTypes.Clear();
+            context.Organisations.Add(organisation);
+            context.Filters.Add(filter);
+            await context.SaveChangesAsync();
+
+            await service.AddIM1IntegrationsTypes(filter.Id, new List<InteropIm1IntegrationType>());
+            context.ChangeTracker.Clear();
+
+            var result = await context.Filters.FirstAsync(f => f.Id == filter.Id);
+            result.Should().NotBeNull();
+
+            result.FilterIM1IntegrationTypes.Should().BeEmpty();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddFilterIM1IntegrationsTypes_NullFilter_NoIM1IntegrationsTypesAdded(
+            [Frozen] BuyingCatalogueDbContext context,
+            List<InteropIm1IntegrationType> interopIm1Integrations,
+            int invalidFilterId,
+            ManageFiltersService service)
+        {
+            await service.AddIM1IntegrationsTypes(invalidFilterId, interopIm1Integrations);
+            context.ChangeTracker.Clear();
+
+            var filter = await context.Filters.FirstOrDefaultAsync(f => f.Id == invalidFilterId);
+            filter.Should().BeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddFilterIM1IntegrationsTypes_ValidParameters_IM1IntegrationsTypesAdded(
+            List<InteropIm1IntegrationType> interopIm1Integrations,
+            Organisation organisation,
+            Filter filter,
+            [Frozen] BuyingCatalogueDbContext context,
+            ManageFiltersService service)
+        {
+            filter.FilterIM1IntegrationTypes.Clear();
+            context.Organisations.Add(organisation);
+            context.Filters.Add(filter);
+            await context.SaveChangesAsync();
+
+            await service.AddIM1IntegrationsTypes(filter.Id, interopIm1Integrations);
+            context.ChangeTracker.Clear();
+
+            var result = await context.Filters.Include(f => f.FilterIM1IntegrationTypes).FirstOrDefaultAsync(f => f.Id == filter.Id);
+            result.Should().NotBeNull();
+
+            result.FilterIM1IntegrationTypes.Should().NotBeNullOrEmpty();
+            result.FilterIM1IntegrationTypes.Count.Should().Be(interopIm1Integrations.Count);
+
+            foreach (var x in result.FilterIM1IntegrationTypes)
+            {
+                x.FilterId.Should().Be(filter.Id);
+                interopIm1Integrations.Should().Contain(x.IM1IntegrationsType);
+            }
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddFilterGPConnectIntegrationsTypes_EmptyGPConnectIntegrationsTypeIds_NoGPConnectIntegrationsTypesAdded(
+            Organisation organisation,
+            Filter filter,
+            [Frozen] BuyingCatalogueDbContext context,
+            ManageFiltersService service)
+        {
+            filter.FilterGPConnectIntegrationTypes.Clear();
+            context.Organisations.Add(organisation);
+            context.Filters.Add(filter);
+            await context.SaveChangesAsync();
+
+            await service.AddGPConnectIntegrationsTypes(filter.Id, new List<InteropGpConnectIntegrationType>());
+            context.ChangeTracker.Clear();
+
+            var result = await context.Filters.FirstAsync(f => f.Id == filter.Id);
+            result.Should().NotBeNull();
+
+            result.FilterGPConnectIntegrationTypes.Should().BeEmpty();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddFilterGPConnectIntegrationsTypes_NullFilter_NoGPConnectIntegrationsTypesAdded(
+            [Frozen] BuyingCatalogueDbContext context,
+            List<InteropGpConnectIntegrationType> interopGpConnectIntegrations,
+            int invalidFilterId,
+            ManageFiltersService service)
+        {
+            await service.AddGPConnectIntegrationsTypes(invalidFilterId, interopGpConnectIntegrations);
+            context.ChangeTracker.Clear();
+
+            var filter = await context.Filters.FirstOrDefaultAsync(f => f.Id == invalidFilterId);
+            filter.Should().BeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddFilterGPConnectIntegrationsTypes_ValidParameters_GPConnectIntegrationsTypesAdded(
+            List<InteropGpConnectIntegrationType> interopGpConnectIntegrations,
+            Organisation organisation,
+            Filter filter,
+            [Frozen] BuyingCatalogueDbContext context,
+            ManageFiltersService service)
+        {
+            filter.FilterGPConnectIntegrationTypes.Clear();
+            context.Organisations.Add(organisation);
+            context.Filters.Add(filter);
+            await context.SaveChangesAsync();
+
+            await service.AddGPConnectIntegrationsTypes(filter.Id, interopGpConnectIntegrations);
+            context.ChangeTracker.Clear();
+
+            var result = await context.Filters.Include(f => f.FilterGPConnectIntegrationTypes).FirstOrDefaultAsync(f => f.Id == filter.Id);
+            result.Should().NotBeNull();
+
+            result.FilterGPConnectIntegrationTypes.Should().NotBeNullOrEmpty();
+            result.FilterGPConnectIntegrationTypes.Count.Should().Be(interopGpConnectIntegrations.Count);
+
+            foreach (var x in result.FilterGPConnectIntegrationTypes)
+            {
+                x.FilterId.Should().Be(filter.Id);
+                interopGpConnectIntegrations.Should().Contain(x.GPConnectIntegrationsType);
+            }
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddFilterInteroperabilityIntegrationTypes_EmptyInteroperabilityIntegrationTypeIds_NoInteroperabilityIntegrationTypeAdded(
+            Organisation organisation,
+            Filter filter,
+            [Frozen] BuyingCatalogueDbContext context,
+            ManageFiltersService service)
+        {
+            filter.FilterInteropIntegrationTypes.Clear();
+            context.Organisations.Add(organisation);
+            context.Filters.Add(filter);
+            await context.SaveChangesAsync();
+
+            await service.AddInteroperabilityIntegrationTypes(filter.Id, new List<InteropIntegrationType>());
+            context.ChangeTracker.Clear();
+
+            var result = await context.Filters.FirstAsync(f => f.Id == filter.Id);
+            result.Should().NotBeNull();
+
+            result.FilterInteropIntegrationTypes.Should().BeEmpty();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddFilterInteroperabilityIntegrationTypes_NullFilter_NoInteroperabilityIntegrationTypesAdded(
+            [Frozen] BuyingCatalogueDbContext context,
+            List<InteropIntegrationType> interopIntegrationType,
+            int invalidFilterId,
+            ManageFiltersService service)
+        {
+            await service.AddInteroperabilityIntegrationTypes(invalidFilterId, interopIntegrationType);
+            context.ChangeTracker.Clear();
+
+            var filter = await context.Filters.FirstOrDefaultAsync(f => f.Id == invalidFilterId);
+            filter.Should().BeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task AddFilterInteroperabilityIntegrationTypes_ValidParameters_InteroperabilityIntegrationTypesAdded(
+            List<InteropIntegrationType> interopIntegrationType,
+            Organisation organisation,
+            Filter filter,
+            [Frozen] BuyingCatalogueDbContext context,
+            ManageFiltersService service)
+        {
+            filter.FilterInteropIntegrationTypes.Clear();
+            context.Organisations.Add(organisation);
+            context.Filters.Add(filter);
+            await context.SaveChangesAsync();
+
+            await service.AddInteroperabilityIntegrationTypes(filter.Id, interopIntegrationType);
+            context.ChangeTracker.Clear();
+
+            var result = await context.Filters.Include(f => f.FilterInteropIntegrationTypes).FirstOrDefaultAsync(f => f.Id == filter.Id);
+            result.Should().NotBeNull();
+
+            result.FilterInteropIntegrationTypes.Should().NotBeNullOrEmpty();
+            result.FilterInteropIntegrationTypes.Count.Should().Be(interopIntegrationType.Count);
+
+            foreach (var x in result.FilterInteropIntegrationTypes)
+            {
+                x.FilterId.Should().Be(filter.Id);
+                interopIntegrationType.Should().Contain(x.InteroperabilityIntegrationType);
+            }
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
         public static async Task GetFilters_ReturnsExpectedResults(
             Organisation organisation,
             Filter filter,
@@ -933,6 +1162,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             filterIds.FrameworkId.Should().Be(filter.FrameworkId);
             filterIds.ApplicationTypeIds.Should().BeEquivalentTo(filter.FilterApplicationTypes.Select(fc => (int)fc.ApplicationTypeID));
             filterIds.HostingTypeIds.Should().BeEquivalentTo(filter.FilterHostingTypes.Select(fc => (int)fc.HostingType));
+            filterIds.IM1Integrations.Should().BeEquivalentTo(filter.FilterIM1IntegrationTypes.Select(fc => (int)fc.IM1IntegrationsType));
+            filterIds.GPConnectIntegrations.Should().BeEquivalentTo(filter.FilterGPConnectIntegrationTypes.Select(fc => (int)fc.GPConnectIntegrationsType));
+            filterIds.InteroperabilityOptions.Should().BeEquivalentTo(filter.FilterInteropIntegrationTypes.Select(fc => (int)fc.InteroperabilityIntegrationType));
         }
 
         [Theory]

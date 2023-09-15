@@ -149,6 +149,47 @@
                         }
                     }
                 </nhs-summary-list-row>
+                <nhs-summary-list-row label-text="Interoperability">
+                    @if (Model.InteroperabilityIntegrationTypes is null || !Model.InteroperabilityIntegrationTypes.Any())
+                    {
+                        <p>
+                            None selected
+                        </p>
+                    }
+                    else
+                    {
+                        @for (int j = 0; j < @Model.InteroperabilityIntegrationTypes.Count(); j++)
+                        {
+                            <input type="hidden" asp-for="InteroperabilityIntegrationTypes[j]" />
+                            @if (@Model.InteroperabilityIntegrationTypes[j].EnumMemberName() == "IM1")
+                            {
+                                <p>
+                                    @Model.InteroperabilityIntegrationTypes[j].EnumMemberName() integrations
+                                </p>
+                                @for (var i = 0; i < Model.IM1IntegrationsTypes.Count; i++)
+                                {
+                                    <input type="hidden" asp-for="IM1IntegrationsTypes[i]" />
+                                     <li>
+                                          @Model.IM1IntegrationsTypes[i].Name()
+                                     </li>
+                                }
+                            }
+                            @if (@Model.InteroperabilityIntegrationTypes[j].EnumMemberName() == "GP Connect")
+                            {
+                                <p>
+                                    @Model.InteroperabilityIntegrationTypes[j].EnumMemberName() integrations
+                                </p>
+                                @for (var i = 0; i < Model.GPConnectIntegrationsTypes.Count; i++)
+                                {
+                                    <input type="hidden" asp-for="GPConnectIntegrationsTypes[i]" />
+                                    <li>
+                                        @Model.GPConnectIntegrationsTypes[i].Name()
+                                    </li>
+                                }
+                            }
+                        }
+                    }
+                </nhs-summary-list-row>
             </nhs-summary-list>
 
             <nhs-submit-button/>

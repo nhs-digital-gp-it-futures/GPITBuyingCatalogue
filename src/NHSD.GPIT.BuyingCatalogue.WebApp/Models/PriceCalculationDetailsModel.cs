@@ -24,9 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
         private static string GetTitle(
             CataloguePriceType priceType,
             CataloguePriceCalculationType calculationType)
-            => priceType == CataloguePriceType.Tiered && (calculationType != CataloguePriceCalculationType.SingleFixed)
-                ? $"What is a {calculationType.Name().ToLowerInvariant()} price?"
-                : $"What is a {priceType.ToString().ToLowerInvariant()} {calculationType.Name().ToLowerInvariant()} price?";
+            => $"What is a {priceType.ToString().ToLowerInvariant()} {calculationType.Name().ToLowerInvariant()} price?";
 
         private static string GetHeading(
             CatalogueItemType itemType,

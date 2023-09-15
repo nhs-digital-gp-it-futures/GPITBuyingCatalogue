@@ -27,4 +27,33 @@ public static class SolutionPriceModelTests
         model.Price.Should().BeNull();
         model.Progress.Should().Be(TaskProgress.NotStarted);
     }
+
+    [Theory]
+    [CommonAutoData]
+    public static void Construct_PriceProgressCompleted_SetsPrice(
+        Competition competition,
+        Solution solution,
+        CompetitionSolution competitionSolution,
+        CompetitionCatalogueItemPrice price,
+        CompetitionCatalogueItemPriceTier tier,
+        int quantity)
+    {
+        tier.LowerRange = 0;
+        tier.UpperRange = null;
+
+        price.Tiers = new List<CompetitionCatalogueItemPriceTier> { tier };
+
+        competitionSolution.Solution = solution;
+        competitionSolution.Quantity = quantity;
+        competitionSolution.Price = price;
+
+        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+
+        var expectedPrice = competitionSolution.CalculateTotalPrice(competition.ContractLength.GetValueOrDefault());
+
+        var model = new SolutionPriceModel(competitionSolution, competition);
+
+        model.Progress.Should().Be(TaskProgress.Completed);
+        model.Price.Should().Be(expectedPrice);
+    }
 }

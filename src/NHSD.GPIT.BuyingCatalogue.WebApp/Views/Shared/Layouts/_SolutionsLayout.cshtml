@@ -2,7 +2,10 @@
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionDisplayBaseModel
-@{ ViewBag.Title = $"{Model.Section}"; }
+@{
+    ViewBag.Title = (Model.IsSubPage) ? Model.Title : $"{Model.Section}";
+    ViewBag.Caption = (Model.IsSubPage) ? Model.Caption : $"{Model.SolutionName}";
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -85,7 +88,8 @@
             
                 <div class="nhsuk-grid-column-two-thirds" id="content" >
                     <nhs-page-title title="@ViewBag.Title"
-                                    caption="@Model.SolutionName" />
+                                caption="@ViewBag.Caption" />
+
                     @if (Model.HasExpiredFrameworks)
                     {
                         <partial name="Partials/_ExpiredFrameworks" model="new ExpiredFrameworksModel(Model.Frameworks)" />
@@ -127,7 +131,7 @@
                     <nhs-endnote>
                         Solution information last reviewed: @Model.LastReviewed.ToString("d MMMM yyyy")
                     </nhs-endnote>
-                    @if (!Model.IsSuspended())
+                    @if (!Model.IsSuspended() && !Model.IsSubPage)
                     {
                         <nhs-page-link-pagination next-url="@Url.Action(
                     Model.PaginationFooter?.Next?.Action,

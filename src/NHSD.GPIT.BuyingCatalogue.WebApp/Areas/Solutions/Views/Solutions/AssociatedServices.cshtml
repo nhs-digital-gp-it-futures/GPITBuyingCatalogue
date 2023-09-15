@@ -1,6 +1,8 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.DetailsAndExpander
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 
@@ -31,6 +33,10 @@
                         {
                             SolutionId = Model.SolutionId,
                             OrderGuidance = service.AssociatedService.OrderGuidance,
+                            PricePageUrl = Url.Action(
+                                nameof(SolutionsController.AssociatedServicePrice),
+                                typeof(SolutionsController).ControllerName(),
+                                new { solutionId = Model.SolutionId, serviceId = service.Id }),
                             Prices = service.CataloguePrices,
                             ItemDescription = service.AssociatedService.Description,
                         };
