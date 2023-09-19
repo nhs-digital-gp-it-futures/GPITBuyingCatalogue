@@ -64,13 +64,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .FirstAsync();
         }
 
-        public async Task<Supplier> GetSupplierByDate(int id, DateTime dateTime)
-        {
-            return await dbContext.Suppliers
-                .TemporalAsOf(dateTime)
-                .FirstOrDefaultAsync(x => x.Id == id);
-        }
-
         public async Task AddOrderSupplier(CallOffId callOffId, string internalOrgId, int supplierId)
         {
             var supplier = await GetSupplierFromBuyingCatalogue(supplierId);

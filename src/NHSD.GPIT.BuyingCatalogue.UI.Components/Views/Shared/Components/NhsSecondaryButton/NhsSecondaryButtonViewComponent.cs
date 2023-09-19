@@ -8,7 +8,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSec
     {
         private const string NhsSecondary = "nhsuk-button--secondary";
         private const string NhsDelete = "nhsuk-button--delete";
-        private const string NhsDisabled = "nhsuk-button--disabled";
 
         public enum ButtonType
         {
@@ -17,13 +16,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSec
             Delete = 2,
         }
 
-        public async Task<IViewComponentResult> InvokeAsync(string text, string url, ButtonType type, bool disabled = false)
+        public async Task<IViewComponentResult> InvokeAsync(string text, string url, ButtonType type)
         {
             var model = new NhsSecondaryButtonModel
             {
                 Text = text,
                 Url = url,
-                DisabledClass = disabled ? NhsDisabled : string.Empty,
             };
 
             model.ButtonClass = type switch
