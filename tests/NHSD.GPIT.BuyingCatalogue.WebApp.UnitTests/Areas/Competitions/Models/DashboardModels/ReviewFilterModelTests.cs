@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -32,6 +33,12 @@ public static class ReviewFilterModelTests
     {
         new object[] { new List<ApplicationType> { ApplicationType.Desktop }, true, },
         new object[] { Enumerable.Empty<ApplicationType>().ToList(), false, },
+    };
+
+    public static IEnumerable<object[]> HasHasInteroperabilityIntegrationTypesTestData => new[]
+    {
+        new object[] { new List<InteropIntegrationType> { InteropIntegrationType.Im1 }, true, },
+        new object[] { Enumerable.Empty<InteropIntegrationType>().ToList(), false, },
     };
 
     public static IEnumerable<object[]> HasAdditionalFiltersTestData => new[]
@@ -140,6 +147,20 @@ public static class ReviewFilterModelTests
         var model = new ReviewFilterModel(filterDetailsModel);
 
         model.HasApplicationTypes().Should().Be(expected);
+    }
+
+    [Theory]
+    [CommonMemberAutoData(nameof(HasHasInteroperabilityIntegrationTypesTestData))]
+    public static void HasInteroperabilityIntegrationTypes_ReturnsExpected(
+        List<InteropIntegrationType> interopIntegrationTypes,
+        bool expected,
+        FilterDetailsModel filterDetailsModel)
+    {
+        filterDetailsModel.InteropIntegrationTypes = interopIntegrationTypes;
+
+        var model = new ReviewFilterModel(filterDetailsModel);
+
+        model.HasInteroperabilityIntegrationTypes().Should().Be(expected);
     }
 
     [Theory]

@@ -1,7 +1,11 @@
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces
 @using NHSD.GPIT.BuyingCatalogue.Framework.Calculations
 @using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums
 @using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.SummaryList
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
 @model CatalogueItemHubModel
 
 @{
@@ -62,11 +66,11 @@
     <nhs-summary-list>
         @if (Model.Price.BillingPeriod is null)
         {
-            <nhs-summary-list-row label-text="One-off cost @Model.Price.Description">£@Model.Price.CalculateOneOffCost(quantity).ToString("N2")</nhs-summary-list-row>
+            <nhs-summary-list-row label-text="One-off cost @Model.Price.Description">£@(((IPrice)Model.Price).CalculateOneOffCost(quantity).ToString("N2"))</nhs-summary-list-row>
         }
         else
         {
-            <nhs-summary-list-row label-text="Price per month">£@Model.Price.CalculateCostPerMonth(quantity).ToString("N2")</nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Price per month">£@(((IPrice)Model.Price).CalculateCostPerMonth(quantity).ToString("N2"))</nhs-summary-list-row>
         }
         <nhs-summary-list-row label-text="Quantity">@quantity.ToString($"#,###")</nhs-summary-list-row>
         @if (Model.Price.BillingPeriod is not null)
@@ -77,5 +81,5 @@
 }
 
 @{
-    decimal CalculateTotalCost() => Model.Price.CalculateCostPerMonth(quantity) * Model.ContractLength.GetValueOrDefault();
+    decimal CalculateTotalCost() => ((IPrice)Model.Price).CalculateCostPerMonth(quantity) * Model.ContractLength.GetValueOrDefault();
 }

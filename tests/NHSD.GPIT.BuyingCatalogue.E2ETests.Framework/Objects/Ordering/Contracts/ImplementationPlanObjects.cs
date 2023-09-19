@@ -16,10 +16,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.Contract
 
         public static By ImplementationPlanAddBespokeMilestone => By.LinkText("Add a bespoke milestone");
 
+        public static By AssociatedServicesAddBespokeMilestone => By.LinkText("Add a milestone");
+
         public static By MileStoneName => By.ClassName("nhsuk-input");
 
         public static string MileStoneValue => "Milestone";
 
-        public static By MilestonePaymentTrigger = By.Id("PaymentTrigger");
+        public static By MilestonePaymentTrigger => By.Id("PaymentTrigger");
+
+        public static By MilestoneAssociatedServiceUnits => By.Id("Quantity");
     }
 }

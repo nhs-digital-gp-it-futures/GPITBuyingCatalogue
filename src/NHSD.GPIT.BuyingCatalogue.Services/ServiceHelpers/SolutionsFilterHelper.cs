@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -39,5 +40,40 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers
                 .Where(x => Enum.TryParse(typeof(HostingType), x, out var hostingValue) && Enum.IsDefined(typeof(HostingType), hostingValue))
                 .Select(t => (HostingType)Enum.Parse(typeof(HostingType), t))
                 .ToList() ?? new List<HostingType>();
+
+        public static ICollection<InteropIm1IntegrationType> ParseInteropIm1IntegrationsIds(string interopIm1IntegrationsIds) =>
+            interopIm1IntegrationsIds?.Split(FilterConstants.Delimiter, StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries)
+                .Where(x => Enum.TryParse(typeof(InteropIm1IntegrationType), x, out var hostingValue) && Enum.IsDefined(typeof(InteropIm1IntegrationType), hostingValue))
+                .Select(t => (InteropIm1IntegrationType)Enum.Parse(typeof(InteropIm1IntegrationType), t))
+                .ToList() ?? new List<InteropIm1IntegrationType>();
+
+        public static ICollection<InteropGpConnectIntegrationType> ParseInteropGpConnectIntegrationsIds(string selectedGPConnectIntegrationsIds) =>
+            selectedGPConnectIntegrationsIds?.Split(FilterConstants.Delimiter, StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries)
+                .Where(x => Enum.TryParse(typeof(InteropGpConnectIntegrationType), x, out var hostingValue) && Enum.IsDefined(typeof(InteropGpConnectIntegrationType), hostingValue))
+                .Select(t => (InteropGpConnectIntegrationType)Enum.Parse(typeof(InteropGpConnectIntegrationType), t))
+                .ToList() ?? new List<InteropGpConnectIntegrationType>();
+
+        public static ICollection<InteropIntegrationType> ParseInteropIntegrationTypeIds(string selectedInteroperabilityIds) =>
+            selectedInteroperabilityIds?.Split(FilterConstants.Delimiter, StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries)
+                .Where(x => Enum.TryParse(typeof(InteropIntegrationType), x, out var hostingValue) && Enum.IsDefined(typeof(InteropIntegrationType), hostingValue))
+                .Select(t => (InteropIntegrationType)Enum.Parse(typeof(InteropIntegrationType), t))
+                .ToList() ?? new List<InteropIntegrationType>();
+
+        public static ICollection<T> ParseSelectedFilterIds<T>(string selectedFilterIds)
+        where T : struct, Enum
+        {
+            if (string.IsNullOrEmpty(selectedFilterIds))
+                return new List<T>();
+
+            var selectedFilterEnums = selectedFilterIds.Split(FilterConstants.Delimiter)
+                .Where(t => Enum.TryParse<T>(t, out var enumVal) && Enum.IsDefined(enumVal))
+                .Select(Enum.Parse<T>)
+                .ToList();
+
+            if (selectedFilterEnums == null || !selectedFilterEnums.Any())
+                throw new ArgumentException("Invalid filter format", nameof(selectedFilterIds));
+
+            return selectedFilterEnums;
+        }
     }
 }

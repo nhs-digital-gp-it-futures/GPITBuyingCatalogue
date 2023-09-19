@@ -3,6 +3,7 @@
     [CompetitionId] INT NOT NULL,
     [SolutionId] NVARCHAR(14) NOT NULL,
     [IsShortlisted] BIT DEFAULT 0 NOT NULL,
+    [IsWinningSolution] BIT DEFAULT 0 NOT NULL,
     [Justification] NVARCHAR(1000) NULL,
     [CompetitionItemPriceId] INT NULL,
     [Quantity] INT NULL,

@@ -28,10 +28,10 @@ public class CachedOrderPdfService : IOrderPdfService
     {
         if (order == null) throw new ArgumentNullException(nameof(order));
 
-        if (order.OrderStatus != OrderStatus.Completed)
+        if (order.OrderStatus != OrderStatus.Completed && order.OrderStatus != OrderStatus.Terminated)
             return await orderPdfService.CreateOrderSummaryPdf(order);
 
-        var blobDocument = $"{order.CallOffId.ToString()}.pdf";
+        var blobDocument = order.OrderStatus == OrderStatus.Completed ? $"{order.CallOffId.ToString()}.pdf" : $"{order.CallOffId.ToString()}-terminated.pdf";
         var cachedPdf = await azureBlobStorageService.DownloadAsync(new(settings.OrderPdfContainerName, blobDocument));
         if (cachedPdf != null)
             return cachedPdf;

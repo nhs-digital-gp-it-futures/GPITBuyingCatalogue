@@ -12,6 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
+using NHSD.GPIT.BuyingCatalogue.Services.Orders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
@@ -49,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         {
             var order = (await orderService.GetOrderForTaskListStatuses(callOffId, internalOrgId)).Order;
 
-            if (order.OrderStatus == OrderStatus.Completed)
+            if (order.OrderStatus is OrderStatus.Completed or OrderStatus.Terminated)
             {
                 return RedirectToAction(
                     nameof(Summary),
@@ -142,18 +143,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             var order = orderWrapper.Order;
             var hasSubsequentRevisions = await orderService.HasSubsequentRevisions(callOffId);
 
-            var canBeAmended = !order.AssociatedServicesOnly
-                && order.OrderStatus == OrderStatus.Completed
-                && !hasSubsequentRevisions;
-
             var defaultPlan = await implementationPlanService.GetDefaultImplementationPlan();
 
-            var model = new SummaryModel(orderWrapper, internalOrgId, defaultPlan)
+            var model = new SummaryModel(orderWrapper, internalOrgId, hasSubsequentRevisions, defaultPlan)
             {
                 BackLink = GetBackLink(internalOrgId, callOffId, order),
                 Title = GetTitle(order),
                 AdviceText = GetAdvice(order, !hasSubsequentRevisions),
-                CanBeAmended = canBeAmended,
             };
 
             return View(model);
@@ -169,18 +165,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                 ModelState.AddModelError(ErrorKey, ErrorMessage);
                 var hasSubsequentRevisions = await orderService.HasSubsequentRevisions(callOffId);
 
-                var canBeAmended = !order.AssociatedServicesOnly
-                    && order.OrderStatus == OrderStatus.Completed
-                    && !hasSubsequentRevisions;
-
                 var defaultPlan = await implementationPlanService.GetDefaultImplementationPlan();
 
-                var model = new SummaryModel(orderWrapper, internalOrgId, defaultPlan)
+                var model = new SummaryModel(orderWrapper, internalOrgId, hasSubsequentRevisions, defaultPlan)
                 {
                     BackLink = GetBackLink(internalOrgId, callOffId, order),
                     Title = GetTitle(order),
                     AdviceText = GetAdvice(order, !hasSubsequentRevisions),
-                    CanBeAmended = canBeAmended,
                 };
 
                 return View(model);
@@ -219,9 +210,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 
             var result = await pdfService.CreateOrderSummaryPdf(order);
 
-            var fileName = order.OrderStatus == OrderStatus.Completed
-                ? $"order-summary-completed-{callOffId}.pdf"
-                : $"order-summary-in-progress-{callOffId}.pdf";
+            var fileName = order.OrderStatus switch
+            {
+                OrderStatus.Terminated => $"order-summary-terminated-{callOffId}.pdf",
+                OrderStatus.Completed => $"order-summary-completed-{callOffId}.pdf",
+                _ => $"order-summary-in-progress-{callOffId}.pdf",
+            };
 
             return File(result.ToArray(), "application/pdf", fileName);
         }
@@ -258,13 +252,51 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                 new { internalOrgId, amendment.CallOffId });
         }
 
+        [HttpGet("terminate")]
+        public IActionResult TerminateOrder(string internalOrgId, CallOffId callOffId)
+        {
+            return View(new TerminateOrderModel(internalOrgId, callOffId)
+            {
+                BackLink = Url.Action(
+                    nameof(Summary),
+                    typeof(OrderController).ControllerName(),
+                    new { internalOrgId, callOffId }),
+            });
+        }
+
+        [HttpPost("terminate")]
+        public async Task<IActionResult> TerminateOrder(string internalOrgId, CallOffId callOffId, TerminateOrderModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var hasSubsequentRevisions = await orderService.HasSubsequentRevisions(callOffId);
+            if (hasSubsequentRevisions)
+            {
+                return RedirectToAction(
+                    nameof(DashboardController.Organisation),
+                    typeof(DashboardController).ControllerName(),
+                    new { internalOrgId });
+            }
+
+            await orderService.TerminateOrder(callOffId, internalOrgId, User.UserId(), model.TerminationDate.GetValueOrDefault(), model.Reason);
+
+            return RedirectToAction(
+                nameof(Summary),
+                typeof(OrderController).ControllerName(),
+                new { internalOrgId, callOffId });
+        }
+
         internal static string GetAdvice(Order order, bool latestOrder)
         {
             return order.OrderStatus switch
             {
-                OrderStatus.Completed when order.AssociatedServicesOnly => "This order has been confirmed and can no longer be changed.",
-                OrderStatus.Completed when latestOrder => "This order has already been completed, but you can amend it if needed.",
-                OrderStatus.Completed => "This order can no longer be changed as there is already an amendment in progress.",
+                OrderStatus.Terminated => "This contract has been terminated, but you can still view the details.",
+                OrderStatus.Completed when order.AssociatedServicesOnly => "This order has already been completed, but you can terminate the contract if needed.",
+                OrderStatus.Completed when latestOrder => "This order has already been completed, but you can amend or terminate the contract if needed.",
+                OrderStatus.Completed => "There is an amendment currently in progress for this contract.",
                 _ => order.CanComplete()
                     ? "Review the items you’ve added to your order before completing it."
                     : "This is what's been added to your order so far. You must complete all mandatory steps before you can confirm your order.",
@@ -275,6 +307,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         {
             return order.OrderStatus switch
             {
+                OrderStatus.Terminated => "Terminated contract details",
                 OrderStatus.Completed => "Order confirmed",
                 _ => order.CanComplete()
                     ? "Review order summary"
@@ -284,7 +317,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 
         private string GetBackLink(string internalOrgId, CallOffId callOffId, Order order)
         {
-            return order.OrderStatus == OrderStatus.Completed
+            return order.OrderStatus is OrderStatus.Completed or OrderStatus.Terminated
                                 ? Url.Action(
                                     nameof(DashboardController.Organisation),
                                     typeof(DashboardController).ControllerName(),

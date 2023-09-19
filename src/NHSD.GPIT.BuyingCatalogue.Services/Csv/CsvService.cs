@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
@@ -11,6 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.FundingTypes;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
 {
@@ -26,52 +28,25 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             this.fundingTypeService = fundingTypeService ?? throw new ArgumentNullException(nameof(fundingTypeService));
         }
 
-        public async Task CreateFullOrderCsvAsync(int orderId, MemoryStream stream)
+        public async Task CreateFullOrderCsvAsync(int orderId, MemoryStream stream, bool showRevisions = false)
         {
-            var billingPeriods = await GetBillingPeriods(orderId);
-            var fundingTypes = await GetFundingTypes(orderId);
-            var prices = await GetPrices(orderId);
-            var (supplierId, supplierName) = await GetSupplierDetails(orderId);
+            var items = await CreateFullOrderCsv(orderId);
 
-            var items = await dbContext.OrderItemRecipients
-                .Include(x => x.OrderItem).ThenInclude(x => x.OrderItemFunding)
-                .AsNoTracking()
-                .Where(oir => oir.OrderId == orderId)
-                .Select(oir => new FullOrderCsvModel
+            if (showRevisions)
+            {
+                var order = await dbContext.Orders.AsNoTracking().FirstOrDefaultAsync(o => o.Id == orderId);
+
+                var revisions = await dbContext.Orders
+                    .AsNoTracking()
+                    .Where(x => x.OrderNumber == order.OrderNumber && x.Revision < order.Revision)
+                    .OrderByDescending(x => x.Revision)
+                    .Select(y => y.Id).ToListAsync();
+
+                foreach (var id in revisions)
                 {
-                    CallOffId = oir.OrderItem.Order.CallOffId,
-                    OdsCode = oir.OrderItem.Order.OrderingParty.ExternalIdentifier,
-                    OrganisationName = oir.OrderItem.Order.OrderingParty.Name,
-                    CommencementDate = oir.OrderItem.Order.CommencementDate,
-                    ServiceRecipientId = oir.Recipient.OdsCode,
-                    ServiceRecipientName = oir.Recipient.Name,
-                    SupplierId = $"{supplierId}",
-                    SupplierName = supplierName,
-                    ProductId = oir.OrderItem.CatalogueItemId.ToString(),
-                    ProductName = oir.OrderItem.CatalogueItem.Name,
-                    ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
-                    ProductTypeId = (int)oir.OrderItem.CatalogueItem.CatalogueItemType,
-
-                    // TODO: Stop this reporting incorrectly when quantity is (erroneously) defined at both order item & recipient level
-                    QuantityOrdered = oir.Quantity ?? oir.OrderItem.Quantity ?? 0,
-                    UnitOfOrder = oir.OrderItem.OrderItemPrice.Description,
-                    UnitTime = TimeUnitDescription(billingPeriods[oir.OrderItem.CatalogueItemId]),
-                    EstimationPeriod = TimeUnitDescription(oir.OrderItem.EstimationPeriod),
-                    Price = prices[oir.OrderItem.CatalogueItemId],
-                    OrderType = (int)oir.OrderItem.OrderItemPrice.ProvisioningType,
-                    M1Planned = oir.DeliveryDate,
-                    FundingType = fundingTypeService.GetFundingType(fundingTypes, oir.OrderItem.FundingType).Description(),
-                    Framework = oir.OrderItem.Order.SelectedFrameworkId,
-                    InitialTerm = oir.OrderItem.Order.InitialPeriod,
-                    MaximumTerm = oir.OrderItem.Order.MaximumTerm,
-                })
-                .OrderBy(o => o.ProductTypeId)
-                .ThenBy(o => o.ProductName)
-                .ThenBy(o => o.ServiceRecipientName)
-                .ToListAsync();
-
-            for (int i = 0; i < items.Count; i++)
-                items[i].ServiceRecipientItemId = $"{items[i].CallOffId}-{items[i].ServiceRecipientId}-{i}";
+                    items.AddRange(await CreateFullOrderCsv(id));
+                }
+            }
 
             await WriteRecordsAsync<FullOrderCsvModel, FullOrderCsvModelMap>(stream, items);
         }
@@ -124,6 +99,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
         }
 
         private static string TimeUnitDescription(TimeUnit? timeUnit) => timeUnit?.Description() ?? string.Empty;
+
+        private static string GetTieredArray(ICollection<OrderItemPriceTier> orderItemPriceTiers)
+        {
+            return $"[{string.Join(";", orderItemPriceTiers.Select(item => $"[{item.LowerRange}:{item.Price}]"))}]";
+        }
 
         private async Task<Dictionary<CatalogueItemId, TimeUnit?>> GetBillingPeriods(int orderId)
         {
@@ -181,6 +161,62 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             var legalName = output?.LegalName ?? string.Empty;
 
             return (output?.Id ?? 0, string.Equals(name, legalName, StringComparison.OrdinalIgnoreCase) ? name : legalName);
+        }
+
+        private async Task<List<FullOrderCsvModel>> CreateFullOrderCsv(int orderId)
+        {
+            var billingPeriods = await GetBillingPeriods(orderId);
+            var fundingTypes = await GetFundingTypes(orderId);
+            var prices = await GetPrices(orderId);
+            var (supplierId, supplierName) = await GetSupplierDetails(orderId);
+
+            var items = await dbContext.OrderItemRecipients
+                .Include(x => x.OrderItem).ThenInclude(x => x.OrderItemFunding)
+                .AsNoTracking()
+                .Where(oir => oir.OrderId == orderId)
+                .Select(oir => new FullOrderCsvModel
+                {
+                    CallOffId = oir.OrderItem.Order.CallOffId,
+                    OdsCode = oir.OrderItem.Order.OrderingParty.ExternalIdentifier,
+                    OrganisationName = oir.OrderItem.Order.OrderingParty.Name,
+                    CommencementDate = oir.OrderItem.Order.CommencementDate,
+                    ServiceRecipientId = oir.Recipient.OdsCode,
+                    ServiceRecipientName = oir.Recipient.Name,
+                    SupplierId = $"{supplierId}",
+                    SupplierName = supplierName,
+                    ProductId = oir.OrderItem.CatalogueItemId.ToString(),
+                    ProductName = oir.OrderItem.CatalogueItem.Name,
+                    ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
+                    ProductTypeId = (int)oir.OrderItem.CatalogueItem.CatalogueItemType,
+
+                    // TODO: Stop this reporting incorrectly when quantity is (erroneously) defined at both order item & recipient level
+                    QuantityOrdered = oir.Quantity ?? oir.OrderItem.Quantity ?? 0,
+                    UnitOfOrder = oir.OrderItem.OrderItemPrice.Description,
+                    UnitTime = TimeUnitDescription(billingPeriods[oir.OrderItem.CatalogueItemId]),
+                    EstimationPeriod = TimeUnitDescription(oir.OrderItem.EstimationPeriod),
+                    Price = prices[oir.OrderItem.CatalogueItemId],
+                    OrderType = (int)oir.OrderItem.OrderItemPrice.ProvisioningType,
+                    M1Planned = oir.DeliveryDate,
+                    FundingType = fundingTypeService.GetFundingType(fundingTypes, oir.OrderItem.FundingType).Description(),
+                    Framework = oir.OrderItem.Order.SelectedFrameworkId,
+                    InitialTerm = oir.OrderItem.Order.InitialPeriod,
+                    MaximumTerm = oir.OrderItem.Order.MaximumTerm,
+                    CeaseDate = oir.OrderItem.Order.IsTerminated ? oir.OrderItem.Order.OrderTermination.DateOfTermination : null,
+                    PricingType = oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Tiered ?
+                        $"{oir.OrderItem.OrderItemPrice.CataloguePriceType} {oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType}" :
+                        $"{oir.OrderItem.OrderItemPrice.CataloguePriceType}",
+                    TieredArray = oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Tiered && oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType == CataloguePriceCalculationType.Cumulative ?
+                        GetTieredArray(oir.OrderItem.OrderItemPrice.OrderItemPriceTiers) : string.Empty,
+                })
+                .OrderBy(o => o.ProductTypeId)
+                .ThenBy(o => o.ProductName)
+                .ThenBy(o => o.ServiceRecipientName)
+                .ToListAsync();
+
+            for (int i = 0; i < items.Count; i++)
+                items[i].ServiceRecipientItemId = $"{items[i].CallOffId}-{items[i].ServiceRecipientId}-{i}";
+
+            return items;
         }
     }
 }

@@ -277,6 +277,9 @@ public static class CompetitionsDashboardControllerTests
                     It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
                     It.IsAny<string>()))
             .ReturnsAsync((catalogueItems, null, null));
 

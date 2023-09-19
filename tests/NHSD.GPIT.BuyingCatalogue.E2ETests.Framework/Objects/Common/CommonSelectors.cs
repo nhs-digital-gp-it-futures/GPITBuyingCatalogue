@@ -24,6 +24,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common
 
         public static By DropDownList => By.Id("SelectedFilterId");
 
+        public static By DropDownItem => By.Id("SelectedOrderItemId");
+
         public static By BreadcrumbList => By.ClassName("nhsuk-breadcrumb__list");
 
         public static By BreadcrumbItem => By.ClassName("nhsuk-breadcrumb__item");

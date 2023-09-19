@@ -1,0 +1,57 @@
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.WarningCallout
+@model ConfirmResultsModel
+
+@{
+    ViewBag.Title = "Are you ready to view the results for this competition?";
+}
+
+<partial name="Partials/_BackLink" model="Model"/>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="@ViewBag.Title" caption="@Model.CompetitionName" advice="Review the information you’ve added for this competition. If you’re happy, you can view your results and see your winning solution."/>
+
+        <nhs-warning-callout label-text="Viewing your results">
+            <p>Viewing your results means you’ll no longer be able to make any changes to the information you’ve provided and this competition will be complete.</p>
+            <p>You can then order your winning solution.</p>
+        </nhs-warning-callout>
+
+        @if (Model.IncludesNonPriceElements)
+        {
+            <h2>Review your non-price scoring</h2>
+
+            @foreach (var competitionSolution in Model.CompetitionSolutions.OrderBy(x => x.Solution.CatalogueItem.Name))
+            {
+                <nhs-card>
+                    <h3>
+                        @competitionSolution.Solution.CatalogueItem.Name
+                        <span class="nhsuk-caption-m nhsuk-caption--bottom">
+                            @competitionSolution.Solution.CatalogueItem.Supplier.Name
+                        </span>
+                    </h3>
+
+                    <nhs-table label-text="Non-price element scoring">
+                        <nhs-table-column>Non-price element</nhs-table-column>
+                        <nhs-table-column>Score</nhs-table-column>
+
+                        @foreach (var nonPriceElement in Model.NonPriceElements)
+                        {
+                            <nhs-table-row-container>
+                                <nhs-table-cell>@nonPriceElement.EnumMemberName()</nhs-table-cell>
+                                <nhs-table-cell>@(competitionSolution.GetScoreByType(nonPriceElement.AsScoreType())?.Score)</nhs-table-cell>
+                            </nhs-table-row-container>
+                        }
+                    </nhs-table>
+                </nhs-card>
+            }
+        }
+
+        <form method="post">
+            <nhs-submit-button text="View results"></nhs-submit-button>
+        </form>
+    </div>
+</div>
