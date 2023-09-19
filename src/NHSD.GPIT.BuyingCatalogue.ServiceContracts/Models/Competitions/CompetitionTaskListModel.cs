@@ -54,10 +54,11 @@ public class CompetitionTaskListModel
         Predicate<Competition> inProgressPredicate)
     {
         var inProgressResult = inProgressPredicate(competition);
+        var completedResult = completedPredicate(competition);
 
         return inProgressResult
             ? TaskProgress.InProgress
-            : completedPredicate(competition)
+            : completedResult
                 ? TaskProgress.Completed
                 : TaskProgress.NotStarted;
     }
@@ -156,5 +157,11 @@ public class CompetitionTaskListModel
             _ => solutionProgressStatuses.All(x => x.Progress is TaskProgress.Completed),
             _ => solutionProgressStatuses.Any(x => x.Progress is TaskProgress.InProgress or TaskProgress.Completed)
                 && !solutionProgressStatuses.All(x => x.Progress is TaskProgress.Completed));
+
+        if (CalculatePrice is not TaskProgress.Completed) return;
+
+        ViewResults = CompletedOrNotStarted(
+            competition,
+            c => false);
     }
 }

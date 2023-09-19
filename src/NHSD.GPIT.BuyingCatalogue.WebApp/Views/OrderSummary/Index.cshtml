@@ -8,6 +8,7 @@
     var contractTerm = Model.Order.MaximumTerm.HasValue
         ? $"({Model.Order.MaximumTerm.Value} months)"
         : "(estimated)";
+    var title = Model.Order.OrderStatus == OrderStatus.Terminated ? "Terminated contract details" : "Call-off Order Form";
 }
 
 <!DOCTYPE html>
@@ -164,7 +165,7 @@
         <main class="nhsuk-main-wrapper" id="maincontent">
             <div class="nhsuk-grid-row">
                 <div class="nhsuk-grid-column-full">
-                    <nhs-page-title title="Call-off Order Form"
+                    <nhs-page-title title="@title"
                                     caption="Order @Model.Order.CallOffId" />
 
                     <pdf-summary-list>
@@ -249,7 +250,23 @@
                         }
                     </pdf-summary-list>
 
+                @if (Model.Order.OrderStatus == OrderStatus.Terminated)
+                {
+                    <h2>Termination details</h2>
+                    <pdf-summary-list>
+                        <pdf-summary-list-row label-text="Reason for termination" data-test-id="termination-reason-summary">
+                            @Model.Order.OrderTermination.Reason
+                        </pdf-summary-list-row>
+
+                        <pdf-summary-list-row label-text="Date of termination" data-test-id="termination-date-summary">
+                            @($"{Model.Order.OrderTermination.DateOfTermination:d MMMM yyyy}")
+                        </pdf-summary-list-row>
+                    </pdf-summary-list>
+                }
+                else
+                {
                     <div style="page-break-after: always"></div>
+                }
 
                     <h1>Items added to this order</h1>
 

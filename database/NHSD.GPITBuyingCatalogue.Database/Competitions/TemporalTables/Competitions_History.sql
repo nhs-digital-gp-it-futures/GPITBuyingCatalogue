@@ -5,6 +5,7 @@ CREATE TABLE [competitions].[Competitions_History]
     [Description] NVARCHAR(250) NOT NULL,
     [FilterId] INT NOT NULL,
     [OrganisationId] INT NOT NULL,
+    [Created] DATETIME2(7) NOT NULL,
     [LastUpdated] DATETIME2(7) NOT NULL,
     [LastUpdatedBy] INT NULL,
     [ShortlistAccepted] DATETIME2(7) NULL,

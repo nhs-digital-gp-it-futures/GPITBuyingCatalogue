@@ -57,4 +57,12 @@ public static class NonPriceElementExtensions
 
     public static IEnumerable<NonPriceElement> GetAllNonPriceElements() =>
         Enum.GetValues<NonPriceElement>();
+
+    public static ScoreType AsScoreType(this NonPriceElement nonPriceElement) => nonPriceElement switch
+    {
+        NonPriceElement.Implementation => ScoreType.Implementation,
+        NonPriceElement.Interoperability => ScoreType.Interoperability,
+        NonPriceElement.ServiceLevel => ScoreType.ServiceLevel,
+        _ => throw new ArgumentOutOfRangeException(nameof(nonPriceElement)),
+    };
 }

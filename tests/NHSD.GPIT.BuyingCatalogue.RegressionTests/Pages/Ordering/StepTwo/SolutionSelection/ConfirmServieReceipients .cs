@@ -8,7 +8,7 @@ using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.SolutionSelection
 {
-    internal class ConfirmServieReceipients : PageBase
+    public class ConfirmServieReceipients : PageBase
     {
         public ConfirmServieReceipients(IWebDriver driver, CommonActions commonActions)
             : base(driver, commonActions)
