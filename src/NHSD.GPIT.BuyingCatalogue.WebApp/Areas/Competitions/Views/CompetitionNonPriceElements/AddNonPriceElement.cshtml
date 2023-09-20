@@ -24,8 +24,8 @@
             }
 
             <nhs-fieldset-form-label asp-for="@Model"
-                                     label-text="Select non-price elements"
-                                     label-hint="You must add non-price elements 1 at a time. If you want to add more than 1, you can do so later.">
+                                     label-text="Non-price elements"
+                                     label-hint="Select all the non-price elements you want to include as part of this competition.">
 
                 <nhs-checkbox-container>
                     @for (var i = 0; i < Model.AvailableNonPriceElements.Count; i++)

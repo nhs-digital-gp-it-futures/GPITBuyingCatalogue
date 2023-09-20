@@ -17,12 +17,14 @@
 
         <h2>Your service level criteria</h2>
 
-        <h3>Core support hours</h3>
+        <nhs-card>
+            <h3>Core support hours</h3>
 
-        <nhs-summary-list>
-            <nhs-summary-list-row label-text="Times">@($"{Model.From:HH:mm} to {Model.Until:HH:mm}")</nhs-summary-list-row>
-            <nhs-summary-list-row label-text="Days">@Model.ApplicableDays</nhs-summary-list-row>
-        </nhs-summary-list>
+            <nhs-summary-list>
+                <nhs-summary-list-row label-text="Times">@($"{Model.From:HH:mm} to {Model.Until:HH:mm}")</nhs-summary-list-row>
+                <nhs-summary-list-row label-text="Days">@Model.ApplicableDays</nhs-summary-list-row>
+            </nhs-summary-list>
+        </nhs-card>
     </div>
 </div>
 

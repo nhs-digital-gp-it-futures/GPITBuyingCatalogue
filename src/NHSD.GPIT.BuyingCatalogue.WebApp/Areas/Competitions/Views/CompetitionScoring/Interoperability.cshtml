@@ -22,43 +22,45 @@
 
         <h2>Your interoperability criteria</h2>
 
-        <h3>IM1 integrations</h3>
-        <nhs-summary-list>
-            <nhs-summary-list-row label-text="Integration type">
-                @if (!im1Integrations.Any())
-                {
-                    <span>None selected</span>
-                }
-                else
-                {
-                    <ul>
-                        @foreach (var integration in im1Integrations.Order())
-                        {
-                            <li>@integration</li>
-                        }
-                    </ul>
-                }
-            </nhs-summary-list-row>
-        </nhs-summary-list>
+        <nhs-card>
+            <h3>IM1 integrations</h3>
+            <nhs-summary-list>
+                <nhs-summary-list-row label-text="Integration type">
+                    @if (!im1Integrations.Any())
+                    {
+                        <span>None selected</span>
+                    }
+                    else
+                    {
+                        <ul>
+                            @foreach (var integration in im1Integrations.Order())
+                            {
+                                <li>@integration</li>
+                            }
+                        </ul>
+                    }
+                </nhs-summary-list-row>
+            </nhs-summary-list>
 
-        <h3>GP Connect integrations</h3>
-        <nhs-summary-list>
-            <nhs-summary-list-row label-text="Integration type">
-                @if (!gpConnectIntegrations.Any())
-                {
-                    <span>None selected</span>
-                }
-                else
-                {
-                    <ul>
-                        @foreach (var integration in gpConnectIntegrations.Order())
-                        {
-                            <li>@integration</li>
-                        }
-                    </ul>
-                }
-            </nhs-summary-list-row>
-        </nhs-summary-list>
+            <h3>GP Connect integrations</h3>
+            <nhs-summary-list>
+                <nhs-summary-list-row label-text="Integration type">
+                    @if (!gpConnectIntegrations.Any())
+                    {
+                        <span>None selected</span>
+                    }
+                    else
+                    {
+                        <ul>
+                            @foreach (var integration in gpConnectIntegrations.Order())
+                            {
+                                <li>@integration</li>
+                            }
+                        </ul>
+                    }
+                </nhs-summary-list-row>
+            </nhs-summary-list>
+        </nhs-card>
     </div>
 </div>
 
