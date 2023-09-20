@@ -65,6 +65,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\Orders\Models\Contracts\Review\" />
     <Folder Include="wwwroot\css\" />
   </ItemGroup>
 

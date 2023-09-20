@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         public static void OrderItemIsNull_ThrowsException()
         {
             FluentActions
-                .Invoking(() => new ViewServiceRecipientQuantityModel(null))
+                .Invoking(() => new ViewServiceRecipientQuantityModel(null, null))
                 .Should().Throw<ArgumentNullException>();
         }
 
@@ -26,11 +26,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         [CommonInlineAutoData(ProvisioningType.PerServiceRecipient)]
         public static void WithValidOrderItem_PropertiesCorrectlySet(
             ProvisioningType provisioningType,
-            OrderItem item)
+            OrderItem item,
+            OrderRecipient[] recipients)
         {
             item.OrderItemPrice.ProvisioningType = provisioningType;
 
-            var model = new ViewServiceRecipientQuantityModel(item);
+            var model = new ViewServiceRecipientQuantityModel(item, recipients);
 
             model.Title.Should().Be(string.Format(ViewServiceRecipientQuantityModel.TitleText, model.ItemType));
             model.Caption.Should().Be(model.ItemName);
@@ -38,24 +39,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             model.ItemName.Should().Be(item.CatalogueItem.Name);
             model.ItemType.Should().Be(item.CatalogueItem.CatalogueItemType.Description());
             model.QuantityColumnTitle.Should().Be(ViewServiceRecipientQuantityModel.QuantityColumnText);
-            model.ServiceRecipients.Length.Should().Be(item.OrderItemRecipients.Count);
-
-            foreach (var serviceRecipient in model.ServiceRecipients)
-            {
-                var recipient = item.OrderItemRecipients.First(x => x.OdsCode == serviceRecipient.OdsCode);
-
-                serviceRecipient.Name.Should().Be(recipient.Recipient?.Name);
-                serviceRecipient.Quantity.Should().Be(recipient.Quantity);
-            }
+            model.ServiceRecipients.Length.Should().Be(recipients.Length);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void WithValidOrderItem_Patient_PropertiesCorrectlySet(OrderItem item)
+        public static void WithValidOrderItem_Patient_PropertiesCorrectlySet(OrderItem item, OrderRecipient[] recipients)
         {
             item.OrderItemPrice.ProvisioningType = ProvisioningType.Patient;
 
-            var model = new ViewServiceRecipientQuantityModel(item);
+            var model = new ViewServiceRecipientQuantityModel(item, recipients);
 
             model.Title.Should().Be(string.Format(ViewServiceRecipientQuantityModel.TitleText, model.ItemType));
             model.Caption.Should().Be(model.ItemName);
@@ -63,15 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             model.ItemName.Should().Be(item.CatalogueItem.Name);
             model.ItemType.Should().Be(item.CatalogueItem.CatalogueItemType.Description());
             model.QuantityColumnTitle.Should().Be(ViewServiceRecipientQuantityModel.QuantityColumnPatientText);
-            model.ServiceRecipients.Length.Should().Be(item.OrderItemRecipients.Count);
-
-            foreach (var serviceRecipient in model.ServiceRecipients)
-            {
-                var recipient = item.OrderItemRecipients.First(x => x.OdsCode == serviceRecipient.OdsCode);
-
-                serviceRecipient.Name.Should().Be(recipient.Recipient?.Name);
-                serviceRecipient.Quantity.Should().Be(recipient.Quantity);
-            }
+            model.ServiceRecipients.Length.Should().Be(recipients.Length);
         }
     }
 }

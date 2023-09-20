@@ -40,24 +40,16 @@ public static class ImportServiceRecipientsControllerTests
     [Theory]
     [CommonAutoData]
     public static async Task Index_ReturnsViewWithModel(
-        string catalogueItemName,
         string internalOrgId,
         CallOffId callOffId,
-        CatalogueItemId catalogueItemId,
-        ServiceRecipientImportMode importMode,
         [Frozen] Mock<IServiceRecipientImportService> importService,
-        [Frozen] Mock<ICatalogueItemService> catalogueItemService,
         ImportServiceRecipientsController controller)
     {
-        catalogueItemService.Setup(s => s.GetCatalogueItemName(catalogueItemId))
-            .ReturnsAsync(catalogueItemName);
+        var expectedModel = new ImportServiceRecipientModel { Caption = callOffId.ToString() };
 
-        var expectedModel = new ImportServiceRecipientModel { Caption = catalogueItemName };
-
-        var result = (await controller.Index(internalOrgId, callOffId, catalogueItemId, importMode)).As<ViewResult>();
+        var result = (await controller.Index(internalOrgId, callOffId)).As<ViewResult>();
 
         importService.VerifyAll();
-        catalogueItemService.VerifyAll();
 
         result.Should().NotBeNull();
         result.Model.Should()
@@ -76,7 +68,6 @@ public static class ImportServiceRecipientsControllerTests
         IList<ServiceRecipientImportModel> importedServiceRecipients,
         string internalOrgId,
         CallOffId callOffId,
-        CatalogueItemId catalogueItemId,
         ImportServiceRecipientModel model,
         [Frozen] Mock<IServiceRecipientImportService> importService,
         ImportServiceRecipientsController controller)
@@ -84,7 +75,7 @@ public static class ImportServiceRecipientsControllerTests
         importService.Setup(s => s.ReadFromStream(It.IsAny<Stream>()))
             .ReturnsAsync(importedServiceRecipients);
 
-        _ = await controller.Index(internalOrgId, callOffId, catalogueItemId, model);
+        _ = await controller.Index(internalOrgId, callOffId, model);
 
         importService.VerifyAll();
 
@@ -101,9 +92,7 @@ public static class ImportServiceRecipientsControllerTests
     public static async Task Index_ValidRecipients_Redirects(
         string internalOrgId,
         CallOffId callOffId,
-        CatalogueItemId catalogueItemId,
         ImportServiceRecipientModel model,
-        ServiceRecipientImportMode importMode,
         [Frozen] Mock<IServiceRecipientImportService> importService,
         ImportServiceRecipientsController controller)
     {
@@ -114,9 +103,7 @@ public static class ImportServiceRecipientsControllerTests
         var result = (await controller.Index(
                 internalOrgId,
                 callOffId,
-                catalogueItemId,
-                model,
-                importMode))
+                model))
             .As<RedirectToActionResult>();
 
         importService.VerifyAll();
@@ -129,8 +116,6 @@ public static class ImportServiceRecipientsControllerTests
                 {
                     { nameof(internalOrgId), internalOrgId },
                     { nameof(callOffId), callOffId },
-                    { nameof(catalogueItemId), catalogueItemId },
-                    { nameof(importMode), importMode },
                 });
     }
 
@@ -139,15 +124,13 @@ public static class ImportServiceRecipientsControllerTests
     public static async Task ValidateOds_CachedRecipientsNull_Redirects(
         string internalOrgId,
         CallOffId callOffId,
-        CatalogueItemId catalogueItemId,
-        ServiceRecipientImportMode importMode,
         [Frozen] Mock<IServiceRecipientImportService> importService,
         ImportServiceRecipientsController controller)
     {
         importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
             .ReturnsAsync((IList<ServiceRecipientImportModel>)null);
 
-        var result = (await controller.ValidateOds(internalOrgId, callOffId, catalogueItemId, importMode))
+        var result = (await controller.ValidateOds(internalOrgId, callOffId))
             .As<RedirectToActionResult>();
 
         importService.VerifyAll();
@@ -160,22 +143,16 @@ public static class ImportServiceRecipientsControllerTests
                 {
                     { nameof(internalOrgId), internalOrgId },
                     { nameof(callOffId), callOffId },
-                    { nameof(catalogueItemId), catalogueItemId },
-                    { nameof(importMode), importMode },
                 });
     }
 
     [Theory]
     [CommonAutoData]
     public static async Task ValidateOds_MismatchedOdsCodes_ReturnsViewWithModel(
-        string catalogueItemName,
         string internalOrgId,
         CallOffId callOffId,
-        CatalogueItemId catalogueItemId,
-        ServiceRecipientImportMode importMode,
         List<ServiceRecipient> serviceRecipients,
         [Frozen] Mock<IServiceRecipientImportService> importService,
-        [Frozen] Mock<ICatalogueItemService> catalogueItemService,
         [Frozen] Mock<IOdsService> odsService,
         ImportServiceRecipientsController controller)
     {
@@ -185,22 +162,19 @@ public static class ImportServiceRecipientsControllerTests
         importedServiceRecipients.First().OdsCode = "MISMATCH";
 
         var expectedModel = new ValidateOdsModel(
-            importedServiceRecipients.Take(1).ToList(), importMode) { Caption = catalogueItemName };
+            importedServiceRecipients.Take(1).ToList())
+        { Caption = callOffId.ToString() };
 
         importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
             .ReturnsAsync(importedServiceRecipients);
 
-        catalogueItemService.Setup(s => s.GetCatalogueItemName(catalogueItemId))
-            .ReturnsAsync(catalogueItemName);
-
         odsService.Setup(s => s.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))
             .ReturnsAsync(serviceRecipients);
 
-        var result = (await controller.ValidateOds(internalOrgId, callOffId, catalogueItemId, importMode))
+        var result = (await controller.ValidateOds(internalOrgId, callOffId))
             .As<ViewResult>();
 
         importService.VerifyAll();
-        catalogueItemService.VerifyAll();
         odsService.VerifyAll();
 
         result.Should().NotBeNull();
@@ -218,8 +192,6 @@ public static class ImportServiceRecipientsControllerTests
     public static async Task ValidateOds_ValidOdsCodes_Redirects(
         string internalOrgId,
         CallOffId callOffId,
-        CatalogueItemId catalogueItemId,
-        ServiceRecipientImportMode importMode,
         List<ServiceRecipient> serviceRecipients,
         [Frozen] Mock<IServiceRecipientImportService> importService,
         [Frozen] Mock<IOdsService> odsService,
@@ -235,7 +207,7 @@ public static class ImportServiceRecipientsControllerTests
         odsService.Setup(s => s.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))
             .ReturnsAsync(serviceRecipients);
 
-        var result = (await controller.ValidateOds(internalOrgId, callOffId, catalogueItemId, importMode))
+        var result = (await controller.ValidateOds(internalOrgId, callOffId))
             .As<RedirectToActionResult>();
 
         importService.VerifyAll();
@@ -249,8 +221,6 @@ public static class ImportServiceRecipientsControllerTests
                 {
                     { nameof(internalOrgId), internalOrgId },
                     { nameof(callOffId), callOffId },
-                    { nameof(catalogueItemId), catalogueItemId },
-                    { nameof(importMode), importMode },
                 });
     }
 
@@ -259,15 +229,13 @@ public static class ImportServiceRecipientsControllerTests
     public static async Task ValidateNames_CachedRecipientsNull_Redirects(
         string internalOrgId,
         CallOffId callOffId,
-        CatalogueItemId catalogueItemId,
-        ServiceRecipientImportMode importMode,
         [Frozen] Mock<IServiceRecipientImportService> importService,
         ImportServiceRecipientsController controller)
     {
         importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
             .ReturnsAsync((IList<ServiceRecipientImportModel>)null);
 
-        var result = (await controller.ValidateNames(internalOrgId, callOffId, catalogueItemId, importMode))
+        var result = (await controller.ValidateNames(internalOrgId, callOffId))
             .As<RedirectToActionResult>();
 
         importService.VerifyAll();
@@ -280,22 +248,16 @@ public static class ImportServiceRecipientsControllerTests
                 {
                     { nameof(internalOrgId), internalOrgId },
                     { nameof(callOffId), callOffId },
-                    { nameof(catalogueItemId), catalogueItemId },
-                    { nameof(importMode), importMode },
                 });
     }
 
     [Theory]
     [CommonAutoData]
     public static async Task ValidateNames_MismatchedNames_ReturnsViewWithModel(
-        string catalogueItemName,
         string internalOrgId,
         CallOffId callOffId,
-        CatalogueItemId catalogueItemId,
-        ServiceRecipientImportMode importMode,
         List<ServiceRecipient> serviceRecipients,
         [Frozen] Mock<IServiceRecipientImportService> importService,
-        [Frozen] Mock<ICatalogueItemService> catalogueItemService,
         [Frozen] Mock<IOdsService> odsService,
         ImportServiceRecipientsController controller)
     {
@@ -311,24 +273,21 @@ public static class ImportServiceRecipientsControllerTests
             ("MISMATCH", serviceRecipient.Name, serviceRecipient.OrgId),
         };
 
-        var expectedModel = new ValidateNamesModel(
-            mismatchedNames,
-            importMode) { Caption = catalogueItemName };
+        var expectedModel = new ValidateNamesModel(mismatchedNames)
+        {
+            Caption = callOffId.ToString(),
+        };
 
         importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
             .ReturnsAsync(importedServiceRecipients);
 
-        catalogueItemService.Setup(s => s.GetCatalogueItemName(catalogueItemId))
-            .ReturnsAsync(catalogueItemName);
-
         odsService.Setup(s => s.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))
             .ReturnsAsync(serviceRecipients);
 
-        var result = (await controller.ValidateNames(internalOrgId, callOffId, catalogueItemId, importMode))
+        var result = (await controller.ValidateNames(internalOrgId, callOffId))
             .As<ViewResult>();
 
         importService.VerifyAll();
-        catalogueItemService.VerifyAll();
         odsService.VerifyAll();
 
         result.Should().NotBeNull();
@@ -345,14 +304,11 @@ public static class ImportServiceRecipientsControllerTests
     public static async Task ValidateNames_ValidNames_Redirects(
         string internalOrgId,
         CallOffId callOffId,
-        CatalogueItemId catalogueItemId,
         List<ServiceRecipient> serviceRecipients,
         [Frozen] Mock<IServiceRecipientImportService> importService,
         [Frozen] Mock<IOdsService> odsService,
         ImportServiceRecipientsController controller)
     {
-        const ServiceRecipientImportMode importMode = ServiceRecipientImportMode.Edit;
-
         var importedRecipients = serviceRecipients.Take(2)
             .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
             .ToList();
@@ -363,14 +319,14 @@ public static class ImportServiceRecipientsControllerTests
         odsService.Setup(s => s.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))
             .ReturnsAsync(serviceRecipients);
 
-        var result = (await controller.ValidateNames(internalOrgId, callOffId, catalogueItemId, importMode))
+        var result = (await controller.ValidateNames(internalOrgId, callOffId))
             .As<RedirectToActionResult>();
 
         importService.VerifyAll();
         odsService.VerifyAll();
 
         result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(ServiceRecipientsController.EditServiceRecipients));
+        result.ActionName.Should().Be(nameof(ServiceRecipientsController.SelectServiceRecipients));
         result.ControllerName.Should().Be(typeof(ServiceRecipientsController).ControllerName());
         result.RouteValues.Should()
             .BeEquivalentTo(
@@ -378,7 +334,6 @@ public static class ImportServiceRecipientsControllerTests
                 {
                     { nameof(internalOrgId), internalOrgId },
                     { nameof(callOffId), callOffId },
-                    { nameof(catalogueItemId), catalogueItemId },
                     { nameof(importedRecipients), string.Join(',', importedRecipients.Select(s => s.OdsCode)) },
                 });
     }
@@ -432,7 +387,7 @@ public static class ImportServiceRecipientsControllerTests
         odsService.VerifyAll();
 
         result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(ServiceRecipientsController.EditServiceRecipients));
+        result.ActionName.Should().Be(nameof(ServiceRecipientsController.SelectServiceRecipients));
         result.ControllerName.Should().Be(typeof(ServiceRecipientsController).ControllerName());
         result.RouteValues.Should()
             .BeEquivalentTo(
@@ -446,8 +401,7 @@ public static class ImportServiceRecipientsControllerTests
     }
 
     [Theory]
-    [CommonInlineAutoData(ServiceRecipientImportMode.Edit, nameof(ServiceRecipientsController.EditServiceRecipients))]
-    [CommonInlineAutoData(ServiceRecipientImportMode.Add, nameof(ServiceRecipientsController.AddServiceRecipients))]
+    [CommonInlineAutoData(ServiceRecipientImportMode.Add, nameof(ServiceRecipientsController.SelectServiceRecipients))]
     public static void CancelImport_Redirects(
         ServiceRecipientImportMode importMode,
         string expectedRedirectAction,

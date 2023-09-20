@@ -1,5 +1,6 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
 {
@@ -9,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
         {
         }
 
-        public FundingSource(string internalOrgId, CallOffId callOffId, Order order, OrderItem orderItem)
+        public FundingSource(string internalOrgId, CallOffId callOffId, OrderWrapper orderWrapper, OrderItem orderItem)
         {
             Title = "Funding source";
             Caption = orderItem.CatalogueItem.Name;
@@ -17,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
             CallOffId = callOffId;
             CatalogueItemName = orderItem.CatalogueItem.Name;
             SelectedFundingType = orderItem.FundingType;
-            TotalCost = order.TotalCostForOrderItem(orderItem.CatalogueItem.Id);
+            TotalCost = orderWrapper.TotalCostForOrderItem(orderItem.CatalogueItem.Id);
         }
 
         public string CatalogueItemName { get; set; }

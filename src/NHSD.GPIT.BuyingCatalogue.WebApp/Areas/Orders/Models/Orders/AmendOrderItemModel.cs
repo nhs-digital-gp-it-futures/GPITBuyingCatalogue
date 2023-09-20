@@ -4,12 +4,20 @@ using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Services.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 {
     public class AmendOrderItemModel
     {
-        public AmendOrderItemModel(CallOffId callOffId, OrderItem orderItem, OrderItem previous, bool isAmendment, FundingTypeDescriptionModel fundingTypeDescription)
+        public AmendOrderItemModel(
+            CallOffId callOffId,
+            IEnumerable<OrderRecipient> recipients,
+            IEnumerable<OrderRecipient> previousRecipients,
+            OrderItem orderItem,
+            OrderItem previous,
+            bool isAmendment,
+            FundingTypeDescriptionModel fundingTypeDescription)
         {
             CallOffId = callOffId;
             IsAmendment = isAmendment;
@@ -17,6 +25,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             OrderItem = orderItem;
             Previous = previous;
             FundingTypeDescriptionModel = fundingTypeDescription;
+            RolledUpRecipients = recipients.ToList();
+            PreviousRecipients = (previousRecipients ?? Enumerable.Empty<OrderRecipient>()).ToList();
         }
 
         public CallOffId CallOffId { get; }
@@ -29,11 +39,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public CatalogueItem CatalogueItem => OrderItem.CatalogueItem;
 
-        public ICollection<OrderItemRecipient> OrderItemRecipients => OrderItem.OrderItemRecipients;
+        public List<OrderRecipient> RolledUpRecipients { get; }
 
-        public int RolledUpTotalQuantity => OrderItem.TotalQuantity;
+        public int RolledUpTotalQuantity => OrderItem.TotalQuantity(RolledUpRecipients);
 
-        public int PreviousTotalQuantity => Previous?.TotalQuantity ?? 0;
+        public int PreviousTotalQuantity => Previous?.TotalQuantity(PreviousRecipients) ?? 0;
 
         public string FundingTypeDescription
         {
@@ -44,14 +54,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             }
         }
 
+        private List<OrderRecipient> PreviousRecipients { get; }
+
         private OrderItem OrderItem { get; }
 
         private OrderItem Previous { get; }
 
         private FundingTypeDescriptionModel FundingTypeDescriptionModel { get; }
 
-        public bool IsServiceRecipientAdded(string odsCode) =>
-            OrderItem?.OrderItemRecipients?.FirstOrDefault(x => x.OdsCode == odsCode) != null
-            && Previous?.OrderItemRecipients?.FirstOrDefault(x => x.OdsCode == odsCode) == null;
+        public bool IsServiceRecipientAdded(string odsCode)
+        {
+            var rolledUpRecipient = RolledUpRecipients?.FirstOrDefault(x => x.OdsCode == odsCode);
+            var previousRecipient = PreviousRecipients?.FirstOrDefault(x => x.OdsCode == odsCode);
+
+            return (rolledUpRecipient != null && previousRecipient == null)
+                || Previous == null;
+        }
     }
 }

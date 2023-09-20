@@ -10,13 +10,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
         {
         }
 
-        public RecipientDateModel(OrderItemRecipient recipient, DateTime commencementDate)
+        public RecipientDateModel(OrderRecipient recipient, DateTime? deliveryDate, DateTime commencementDate)
         {
             OdsCode = recipient.OdsCode;
-            Description = recipient.Recipient.Name;
+            Description = recipient.OdsOrganisation.Name;
             CommencementDate = commencementDate;
 
-            SetDateFields(recipient.DeliveryDate);
+            SetDateFields(deliveryDate);
         }
 
         public string OdsCode { get; set; }

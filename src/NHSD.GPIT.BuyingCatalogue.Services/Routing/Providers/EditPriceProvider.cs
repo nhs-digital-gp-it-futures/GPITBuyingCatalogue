@@ -1,17 +1,16 @@
 ﻿using System;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
 {
     public class EditPriceProvider : IRoutingResultProvider
     {
-        public RoutingResult Process(Order order, RouteValues routeValues)
+        public RoutingResult Process(OrderWrapper orderWrapper, RouteValues routeValues)
         {
-            if (order == null)
-            {
-                throw new ArgumentNullException(nameof(order));
-            }
+            ArgumentNullException.ThrowIfNull(orderWrapper);
+            var order = orderWrapper.Order ?? throw new ArgumentNullException(nameof(orderWrapper));
 
             if (routeValues?.CatalogueItemId == null)
             {
@@ -19,7 +18,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
             }
 
             var orderItem = order.OrderItem(routeValues.CatalogueItemId.Value);
-            var attentionRequired = !orderItem.AllQuantitiesEntered || (order.IsAmendment && !orderItem.AllDeliveryDatesEntered);
+            var recipientsForOrderItem = orderWrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
+
+            var attentionRequired = !recipientsForOrderItem.AllQuantitiesEntered(orderItem)
+                || (order.IsAmendment && !recipientsForOrderItem.AllDeliveryDatesEntered(orderItem.CatalogueItemId));
 
             if (routeValues.Source == RoutingSource.TaskList
                 && !attentionRequired)

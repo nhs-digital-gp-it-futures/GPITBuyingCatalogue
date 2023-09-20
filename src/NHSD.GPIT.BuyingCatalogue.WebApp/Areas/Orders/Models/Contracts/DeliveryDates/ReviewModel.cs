@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
                 x => x.CatalogueItemId,
                 x => x.CatalogueItem.Name);
 
-            Recipients = order.OrderItems
+            Recipients = order.OrderRecipients
                 .SelectMany(x => x.OrderItemRecipients)
                 .Select(x => new OrderItemRecipientModel(x))
                 .ToList();

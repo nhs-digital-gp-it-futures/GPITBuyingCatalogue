@@ -275,7 +275,7 @@
                         <h2>@(Model.RolledUp.GetSolutions().Count() > 1 ? "Catalogue Solutions" : "Catalogue Solution")</h2>
                         @foreach (var solution in Model.RolledUp.GetSolutions())
                         {
-                            <partial name="OrderItem" model="new AmendOrderItemModel(Model.CallOffId, solution, Model.Previous?.OrderItem(solution.CatalogueItemId), Model.Order.IsAmendment, Model.FundingTypeDescription(solution.CatalogueItemId))" />
+                            <partial name="OrderItem" model="@(new AmendOrderItemModel(Model.CallOffId, Model.RolledUp.OrderRecipients, Model.Previous?.OrderRecipients, solution, Model.Previous?.OrderItem(solution.CatalogueItemId), Model.Order.IsAmendment, Model.FundingTypeDescription(solution.CatalogueItemId)))" />
                             <div style="page-break-after: always"></div>
                         }
                     }
@@ -285,7 +285,7 @@
                         <h2>Additional Services</h2>
                         @foreach (var service in Model.RolledUp.GetAdditionalServices())
                         {
-                            <partial name="OrderItem" model="new AmendOrderItemModel(Model.CallOffId, service, Model.Previous?.OrderItem(service.CatalogueItemId), Model.Order.IsAmendment, Model.FundingTypeDescription(service.CatalogueItemId))" />
+                            <partial name="OrderItem" model="@(new AmendOrderItemModel(Model.CallOffId, Model.RolledUp.OrderRecipients, Model.Previous?.OrderRecipients, service, Model.Previous?.OrderItem(service.CatalogueItemId), Model.Order.IsAmendment, Model.FundingTypeDescription(service.CatalogueItemId)))" />
                             <div style="page-break-after: always"></div>
                         }
                     }
@@ -295,7 +295,7 @@
                         <h2>Associated Services</h2>
                         @foreach (var service in Model.RolledUp.GetAssociatedServices())
                         {
-                            <partial name="OrderItem" model="new AmendOrderItemModel(Model.CallOffId, service, Model.Previous?.OrderItem(service.CatalogueItemId), Model.Order.IsAmendment, Model.FundingTypeDescription(service.CatalogueItemId))" />
+                            <partial name="OrderItem" model="@(new AmendOrderItemModel(Model.CallOffId, Model.RolledUp.OrderRecipients, Model.Previous?.OrderRecipients, service, Model.Previous?.OrderItem(service.CatalogueItemId), Model.Order.IsAmendment, Model.FundingTypeDescription(service.CatalogueItemId)))" />
                             <div style="page-break-after: always"></div>
                         }
                     }
@@ -462,13 +462,13 @@
                                         <strong>Total one-off cost</strong>
                                     </td>
                                     <td>
-                                        £@($"{Model.Previous.TotalOneOffCost(true):N2}")
+                                        £@($"{Model.Previous.TotalOneOffCost(null, true):N2}")
                                     </td>
                                     <td>
-                                        £@($"{Model.RolledUp.TotalOneOffCost(true) - Model.Previous.TotalOneOffCost(true):N2}")
+                                        £@($"{Model.RolledUp.TotalOneOffCost(null, true) - Model.Previous.TotalOneOffCost(null, true):N2}")
                                     </td>
                                     <td>
-                                        £@($"{Model.RolledUp.TotalOneOffCost(true):N2}")
+                                        £@($"{Model.RolledUp.TotalOneOffCost(null, true):N2}")
                                     </td>
                                 </tr>
                                 <tr>
@@ -476,13 +476,13 @@
                                         <strong>Total monthly cost</strong>
                                     </td>
                                     <td>
-                                        £@($"{Model.Previous.TotalMonthlyCost(true):N2}")
+                                        £@($"{Model.Previous.TotalMonthlyCost(null, true):N2}")
                                     </td>
                                     <td>
-                                        £@($"{Model.RolledUp.TotalMonthlyCost(true) - Model.Previous.TotalMonthlyCost(true):N2}")
+                                        £@($"{Model.RolledUp.TotalMonthlyCost(null, true) - Model.Previous.TotalMonthlyCost(null, true):N2}")
                                     </td>
                                     <td>
-                                        £@($"{Model.RolledUp.TotalMonthlyCost(true):N2}")
+                                        £@($"{Model.RolledUp.TotalMonthlyCost(null, true):N2}")
                                     </td>
                                 </tr>
                                 <tr>
@@ -490,13 +490,13 @@
                                         <strong>Total annual cost</strong>
                                     </td>
                                     <td>
-                                        £@($"{Model.Previous.TotalAnnualCost(true):N2}")
+                                        £@($"{Model.Previous.TotalAnnualCost(null, true):N2}")
                                     </td>
                                     <td>
-                                        £@($"{Model.RolledUp.TotalAnnualCost(true) - Model.Previous.TotalAnnualCost(true):N2}")
+                                        £@($"{Model.RolledUp.TotalAnnualCost(null, true) - Model.Previous.TotalAnnualCost(null, true):N2}")
                                     </td>
                                     <td>
-                                        £@($"{Model.RolledUp.TotalAnnualCost(true):N2}")
+                                        £@($"{Model.RolledUp.TotalAnnualCost(null, true):N2}")
                                     </td>
                                 </tr>
                                 <tr>
@@ -519,15 +519,15 @@
                         {
                             <pdf-summary-list>
                                 <pdf-summary-list-row label-text="Total one-off cost">
-                                    @($"£{Model.Order.TotalOneOffCost():N2}")
+                                    @($"£{Model.Order.TotalOneOffCost(null):N2}")
                                 </pdf-summary-list-row>
 
                                 <pdf-summary-list-row label-text="Total monthly cost">
-                                    @($"£{Model.Order.TotalMonthlyCost():N2}")
+                                    @($"£{Model.Order.TotalMonthlyCost(null):N2}")
                                 </pdf-summary-list-row>
 
                                 <pdf-summary-list-row label-text="Total annual cost">
-                                    @($"£{Model.Order.TotalAnnualCost():N2}")
+                                    @($"£{Model.Order.TotalAnnualCost(null):N2}")
                                 </pdf-summary-list-row>
 
                                 <pdf-summary-list-row label-text="Total cost of contract @contractTerm">

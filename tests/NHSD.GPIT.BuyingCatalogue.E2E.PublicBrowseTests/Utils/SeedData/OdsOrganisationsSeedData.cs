@@ -2,16 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Database;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 {
@@ -78,7 +71,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     .Select(
                         x => new OrganisationRelationship
                         {
-                            RelationshipTypeId = LocatedInRelationshipType, TargetOrganisation = x,
+                            RelationshipTypeId = LocatedInRelationshipType,
+                            TargetOrganisation = x,
                         })
                     .ToList(),
             };
@@ -98,7 +92,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     .Select(
                         x => new OrganisationRelationship
                         {
-                            RelationshipTypeId = LocatedInRelationshipType, TargetOrganisation = x,
+                            RelationshipTypeId = LocatedInRelationshipType,
+                            TargetOrganisation = x,
                         })
                     .ToList(),
             };
@@ -118,7 +113,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     .Select(
                         x => new OrganisationRelationship
                         {
-                            RelationshipTypeId = LocatedInRelationshipType, TargetOrganisation = x,
+                            RelationshipTypeId = LocatedInRelationshipType,
+                            TargetOrganisation = x,
                         })
                     .ToList(),
             };
@@ -129,7 +125,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                     .Select(
                         x => new OrganisationRelationship
                         {
-                            TargetOrganisation = x, RelationshipTypeId = CommissionedByRelationshipType,
+                            TargetOrganisation = x,
+                            RelationshipTypeId = CommissionedByRelationshipType,
                         }));
 
             // Organisations
@@ -195,7 +192,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 return recipients;
             }
 
-
             return Enumerable.Range(0, 3)
                 .Select(
                     x => new OdsOrganisation
@@ -215,7 +211,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                             .Select(
                                 x => new OrganisationRelationship
                                 {
-                                    TargetOrganisation = x, RelationshipTypeId = CommissionedByRelationshipType,
+                                    TargetOrganisation = x,
+                                    RelationshipTypeId = CommissionedByRelationshipType,
                                 })
                             .ToList(),
                     });

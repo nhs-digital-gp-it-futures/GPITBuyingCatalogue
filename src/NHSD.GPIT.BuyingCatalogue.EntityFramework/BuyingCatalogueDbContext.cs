@@ -80,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<Order> Orders { get; set; }
 
-        public DbSet<ServiceRecipient> ServiceRecipients { get; set; }
+        public DbSet<OrderRecipient> OrderRecipients { get; set; }
 
         public DbSet<Solution> Solutions { get; set; }
 

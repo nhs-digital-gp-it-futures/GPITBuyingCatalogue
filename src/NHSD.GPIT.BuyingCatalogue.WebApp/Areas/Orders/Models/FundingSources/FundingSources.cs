@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
 {
@@ -14,11 +16,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
         {
         }
 
-        public FundingSources(string internalOrgId, CallOffId callOffId, Order order, int countOfOrderFrameworks)
+        public FundingSources(string internalOrgId, CallOffId callOffId, OrderWrapper orderWrapper, int countOfOrderFrameworks)
         {
-            if (order is null || order.OrderingParty is null || order.SelectedFramework is null)
-                throw new ArgumentNullException(nameof(order));
+            ArgumentNullException.ThrowIfNull(orderWrapper);
+            var order = orderWrapper.Order;
 
+            if (order is null || order.OrderingParty is null || order.SelectedFramework is null)
+                throw new ArgumentNullException(nameof(orderWrapper));
+
+            OrderWrapper = orderWrapper;
             Order = order;
             Title = "Funding sources";
             InternalOrgId = internalOrgId;
@@ -28,21 +34,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
 
             SelectedFramework = order.SelectedFramework;
 
-            var completedOrderItems = order.OrderItems.Where(oi => oi.AllQuantitiesEntered).ToList();
+            var completedOrderItems = order.OrderItems.Where(oi =>
+            {
+                var recipients = orderWrapper.DetermineOrderRecipients(oi.CatalogueItemId);
+                return recipients.Count > 0 && recipients.AllQuantitiesEntered(oi);
+            }).ToList();
 
             if (order.IsLocalFundingOnly)
             {
-                OrderItemsLocalOnly = completedOrderItems.Where(oi => ((IPrice)oi.OrderItemPrice).CostForBillingPeriod(oi.TotalQuantity) != 0).ToList();
+                OrderItemsLocalOnly = completedOrderItems.Where(oi => ((IPrice)oi.OrderItemPrice).CostForBillingPeriod(oi.TotalQuantity(orderWrapper.DetermineOrderRecipients(oi.CatalogueItemId))) != 0).ToList();
             }
             else
             {
-                OrderItemsSelectable = completedOrderItems.Where(oi => ((IPrice)oi.OrderItemPrice).CostForBillingPeriod(oi.TotalQuantity) != 0).ToList();
+                OrderItemsSelectable = completedOrderItems.Where(oi => ((IPrice)oi.OrderItemPrice).CostForBillingPeriod(oi.TotalQuantity(orderWrapper.DetermineOrderRecipients(oi.CatalogueItemId))) != 0).ToList();
             }
 
-            OrderItemsNoFundingRequired = completedOrderItems.Where(oi => ((IPrice)oi.OrderItemPrice).CostForBillingPeriod(oi.TotalQuantity) == 0).ToList();
+            OrderItemsNoFundingRequired = completedOrderItems.Where(oi => ((IPrice)oi.OrderItemPrice).CostForBillingPeriod(oi.TotalQuantity(orderWrapper.DetermineOrderRecipients(oi.CatalogueItemId))) == 0).ToList();
         }
 
         public Order Order { get; set; }
+
+        public OrderWrapper OrderWrapper { get; set; }
 
         public CallOffId CallOffId { get; set; }
 

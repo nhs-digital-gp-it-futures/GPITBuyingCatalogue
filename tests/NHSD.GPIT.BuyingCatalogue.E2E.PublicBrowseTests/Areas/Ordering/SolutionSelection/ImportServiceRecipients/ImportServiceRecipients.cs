@@ -47,8 +47,7 @@ public class ImportServiceRecipients : BuyerTestBase
     }
 
     [Theory]
-    [InlineData(ServiceRecipientImportMode.Edit, nameof(ServiceRecipientsController.EditServiceRecipients))]
-    [InlineData(ServiceRecipientImportMode.Add, nameof(ServiceRecipientsController.AddServiceRecipients))]
+    [InlineData(ServiceRecipientImportMode.Add, nameof(ServiceRecipientsController.SelectServiceRecipients))]
     public void ClickGoBackLink_NavigatesToCorrectPage(
         ServiceRecipientImportMode importMode,
         string expectedAction)

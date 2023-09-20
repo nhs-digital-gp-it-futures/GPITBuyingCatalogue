@@ -6,6 +6,7 @@
         OrderingParty,
         Supplier,
         CommencementDate,
+        ServiceRecipients,
         SolutionsAndServices,
         PlannedDeliveryDates,
         FundingSources,

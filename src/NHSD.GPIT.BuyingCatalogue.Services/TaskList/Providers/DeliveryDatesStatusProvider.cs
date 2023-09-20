@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
@@ -16,7 +17,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
             }
 
             var order = wrapper.Order;
-            var anyDeliveryDatesEntered = AnyDeliveryDatesEntered(order);
+            var anyDeliveryDatesEntered = !order.OrderItems
+                .All(x => wrapper
+                    .DetermineOrderRecipients(x.CatalogueItemId)
+                    .NoDeliveryDatesEntered(x.CatalogueItemId));
 
             if (state.SolutionOrService != TaskProgress.Completed
                 && !anyDeliveryDatesEntered)
@@ -24,26 +28,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
                 return TaskProgress.CannotStart;
             }
 
-            return AllDeliveryDatesEntered(order)
+            return order.HaveAllDeliveryDates(wrapper.RolledUp.OrderRecipients)
                 ? TaskProgress.Completed
                 : (anyDeliveryDatesEntered ? TaskProgress.InProgress : TaskProgress.NotStarted);
-        }
-
-        private static bool AllDeliveryDatesEntered(EntityFramework.Ordering.Models.Order order)
-        {
-            var recipients = order.OrderItems
-                .SelectMany(x => x.OrderItemRecipients)
-                .ToList();
-
-            return recipients.Any()
-                && recipients.All(x => x.DeliveryDate != null);
-        }
-
-        private static bool AnyDeliveryDatesEntered(EntityFramework.Ordering.Models.Order order)
-        {
-            return order.OrderItems
-                .SelectMany(x => x.OrderItemRecipients)
-                .Any(x => x.DeliveryDate != null);
         }
     }
 }

@@ -49,9 +49,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Contracts.DeliveryDa
             var recipients = GetEndToEndDbContext()
                 .OrderItemRecipients
                 .Include(x => x.Recipient)
+                    .ThenInclude(x => x.OdsOrganisation)
                 .Where(x => x.OrderId == orderId
                     && x.CatalogueItemId == catalogueItemId)
-                .OrderBy(x => x.Recipient.Name)
+                .OrderBy(x => x.Recipient.OdsOrganisation.Name)
                 .ToList();
 
             recipients.Select((x, i) => (x, i)).ForEach(x =>

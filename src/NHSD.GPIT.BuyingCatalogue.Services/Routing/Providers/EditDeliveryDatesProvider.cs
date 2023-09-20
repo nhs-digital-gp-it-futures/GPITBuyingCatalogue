@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Linq;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
 {
     public class EditDeliveryDatesProvider : IRoutingResultProvider
     {
-        public RoutingResult Process(Order order, RouteValues routeValues)
+        public RoutingResult Process(OrderWrapper orderWrapper, RouteValues routeValues)
         {
-            if (order == null)
-            {
-                throw new ArgumentNullException(nameof(order));
-            }
+            ArgumentNullException.ThrowIfNull(orderWrapper);
+            var order = orderWrapper.Order ?? throw new ArgumentNullException(nameof(orderWrapper));
 
             if (routeValues?.CatalogueItemId == null)
             {
@@ -54,13 +52,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 };
             }
 
-            var solutionDates = solution.OrderItemRecipients
-                .Select(x => x.DeliveryDate)
+            var solutionDates = orderWrapper.DetermineOrderRecipients(solution.CatalogueItemId)
+                .Select(x => x.GetDeliveryDateForItem(solution.CatalogueItemId))
                 .Distinct()
                 .ToList();
 
-            var solutionOdsCodes = solution.OrderItemRecipients.Select(x => x.OdsCode);
-            var nextItemOdsCodes = order.OrderItem(catalogueItemId.Value).OrderItemRecipients.Select(x => x.OdsCode);
+            var solutionOdsCodes = orderWrapper.DetermineOrderRecipients(solution.CatalogueItemId).Select(x => x.OdsCode);
+            var nextItemOdsCodes = orderWrapper.DetermineOrderRecipients(catalogueItemId.Value).Select(x => x.OdsCode);
             var crossOver = solutionOdsCodes.Intersect(nextItemOdsCodes);
 
             if (!solutionDates.Any()

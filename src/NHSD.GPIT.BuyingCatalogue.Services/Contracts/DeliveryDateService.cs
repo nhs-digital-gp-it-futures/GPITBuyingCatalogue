@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LinqKit;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -12,45 +13,48 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
 {
     public class DeliveryDateService : IDeliveryDateService
     {
+        private readonly IOrderService orderService;
         private readonly BuyingCatalogueDbContext dbContext;
 
-        public DeliveryDateService(BuyingCatalogueDbContext dbContext)
+        public DeliveryDateService(
+            IOrderService orderService,
+            BuyingCatalogueDbContext dbContext)
         {
+            this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         public async Task SetDeliveryDate(string internalOrgId, CallOffId callOffId, DateTime deliveryDate)
         {
-            var order = await dbContext.Order(internalOrgId, callOffId);
+            var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = wrapper.Order;
 
             order.DeliveryDate = deliveryDate;
 
-            var recipients = await dbContext.OrderItemRecipients
-                .Where(x => x.OrderId == order.Id)
-                .ToListAsync();
+            var orderItems = order.OrderItems
+                .Select(x => x.CatalogueItemId)
+                .ToList();
 
-            recipients.ForEach(x => x.DeliveryDate = deliveryDate);
+            orderItems.ForEach(i => wrapper
+                .DetermineOrderRecipients(i)
+                .ForEach(r => r.SetDeliveryDateForItem(i, deliveryDate)));
 
             await dbContext.SaveChangesAsync();
         }
 
         public async Task SetDeliveryDate(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, DateTime deliveryDate)
         {
-            var order = await dbContext.Order(internalOrgId, callOffId);
-
-            var recipients = await dbContext.OrderItemRecipients
-                .Where(x => x.OrderId == order.Id && x.CatalogueItemId == catalogueItemId)
-                .ToListAsync();
-
-            recipients.ForEach(x => x.DeliveryDate = deliveryDate);
+            var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var recipients = wrapper.DetermineOrderRecipients(catalogueItemId).ToList();
+            recipients.ForEach(x => x.SetDeliveryDateForItem(catalogueItemId, deliveryDate));
 
             await dbContext.SaveChangesAsync();
         }
 
         public async Task SetDeliveryDates(int orderId, CatalogueItemId catalogueItemId, List<RecipientDeliveryDateDto> deliveryDates)
         {
-            var recipients = await dbContext.OrderItemRecipients
-                .Where(x => x.OrderId == orderId && x.CatalogueItemId == catalogueItemId)
+            var recipients = await dbContext.OrderRecipients.Include(x => x.OrderItemRecipients)
+                .Where(x => x.OrderId == orderId)
                 .ToListAsync();
 
             foreach (var recipient in recipients)
@@ -59,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
 
                 if (dto != null)
                 {
-                    recipient.DeliveryDate = dto.DeliveryDate;
+                    recipient.SetDeliveryDateForItem(catalogueItemId, dto.DeliveryDate);
                 }
             }
 

@@ -139,11 +139,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.FundingSourc
         [HttpGet]
         public async Task<IActionResult> FundingSources(string internalOrgId, CallOffId callOffId)
         {
-            var order = (await orderService.GetOrderWithOrderItemsForFunding(callOffId, internalOrgId)).Order;
+            var orderWrapper = await orderService.GetOrderWithOrderItemsForFunding(callOffId, internalOrgId);
+            var order = orderWrapper.Order;
 
             var availableFrameworks = await orderFrameworkService.GetFrameworksForOrder(callOffId, internalOrgId, order.AssociatedServicesOnly);
 
-            var model = new FundingSources(internalOrgId, callOffId, order, availableFrameworks.Count)
+            var model = new FundingSources(internalOrgId, callOffId, orderWrapper, availableFrameworks.Count)
             {
                 BackLink = Url.Action(
                     nameof(OrderController.Order),
@@ -168,11 +169,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.FundingSourc
         [HttpGet("{catalogueItemId}/funding-source")]
         public async Task<IActionResult> FundingSource(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId)
         {
-            var order = (await orderService.GetOrderWithOrderItemsForFunding(callOffId, internalOrgId)).Order;
+            var orderWrapper = await orderService.GetOrderWithOrderItemsForFunding(callOffId, internalOrgId);
 
             var item = await orderItemService.GetOrderItem(callOffId, internalOrgId, catalogueItemId);
 
-            var model = new Models.FundingSources.FundingSource(internalOrgId, callOffId, order, item)
+            var model = new Models.FundingSources.FundingSource(internalOrgId, callOffId, orderWrapper, item)
             {
                 BackLink = Url.Action(
                     nameof(FundingSources),

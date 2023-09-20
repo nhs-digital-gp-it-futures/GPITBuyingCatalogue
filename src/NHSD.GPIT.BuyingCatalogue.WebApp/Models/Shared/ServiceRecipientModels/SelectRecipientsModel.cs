@@ -1,18 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.ServiceRecipients;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.RecipientsModels;
-
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 public class SelectRecipientsModel : NavBaseModel
 {
-    public const string SelectAll = "Select all";
-    public const string SelectNone = "Deselect all";
     private readonly SelectionMode? selectionMode;
 
     public SelectRecipientsModel()
@@ -23,6 +16,7 @@ public class SelectRecipientsModel : NavBaseModel
         Organisation organisation,
         IEnumerable<ServiceRecipientModel> serviceRecipients,
         IEnumerable<string> existingRecipients,
+        IEnumerable<string> excludeRecipients,
         IEnumerable<string> preSelectedRecipients,
         SelectionMode? selectionMode = null)
     {
@@ -30,12 +24,15 @@ public class SelectRecipientsModel : NavBaseModel
 
         OrganisationName = organisation.Name;
         OrganisationType = organisation.OrganisationType.GetValueOrDefault();
+
+        PreviouslySelected = excludeRecipients.ToList();
+
         SubLocations = serviceRecipients
             .GroupBy(x => x.Location)
             .Select(
                 x => new SublocationModel(
                     x.Key,
-                    x.OrderBy(y => y.Name).ToList()))
+                    x.Where(x => !excludeRecipients.Contains(x.OdsCode)).OrderBy(y => y.Name).ToList()))
             .OrderBy(x => x.Name)
             .ToArray();
 
@@ -52,15 +49,15 @@ public class SelectRecipientsModel : NavBaseModel
 
     public bool HasImportedRecipients { get; set; }
 
+    public List<string> PreviouslySelected { get; set; }
+
     public bool ShouldExpand { get; set; }
-
-    public string SelectionCaption { get; set; } = SelectAll;
-
-    public SelectionMode? RecipientSelectionMode { get; set; } = SelectionMode.All;
 
     public IEnumerable<ServiceRecipientModel> GetServiceRecipients()
     {
-        return SubLocations.SelectMany(x => x.ServiceRecipients);
+        return SubLocations
+            .Where(x => x.ServiceRecipients != null)
+            .SelectMany(x => x.ServiceRecipients);
     }
 
     public IEnumerable<ServiceRecipientModel> GetSelectedServiceRecipients()
@@ -81,13 +78,9 @@ public class SelectRecipientsModel : NavBaseModel
         {
             case SelectionMode.All:
                 GetServiceRecipients().ToList().ForEach(x => x.Selected = true);
-                RecipientSelectionMode = SelectionMode.None;
-                SelectionCaption = SelectNone;
                 break;
             case SelectionMode.None:
                 GetServiceRecipients().ToList().ForEach(x => x.Selected = false);
-                RecipientSelectionMode = SelectionMode.All;
-                SelectionCaption = SelectAll;
                 break;
             default:
                 if (recipients == null) return;
@@ -103,8 +96,6 @@ public class SelectRecipientsModel : NavBaseModel
 
                 var allSelected = GetServiceRecipients().All(x => x.Selected);
 
-                RecipientSelectionMode = allSelected ? SelectionMode.None : SelectionMode.All;
-                SelectionCaption = allSelected ? SelectNone : SelectAll;
                 break;
         }
     }

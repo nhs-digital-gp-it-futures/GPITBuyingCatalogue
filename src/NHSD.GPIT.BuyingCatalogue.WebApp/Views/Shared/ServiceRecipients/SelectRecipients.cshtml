@@ -1,0 +1,112 @@
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
+@using ValidationSummaryTagHelper = NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers.ValidationSummaryTagHelper
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InsetText
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.ActionLink
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSecondaryButton
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.SelectRecipientsModel;
+
+<partial name="Partials/_BackLink" model="Model" />
+<script type="text/javascript" src="@Url.Content("~/js/Recipients.min.js")" asp-append-version="true"></script>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-validation-summary />
+        <nhs-page-title model="@Model" />
+
+        @if ((Model.SubLocations?.Any() ?? false) && Model.OrganisationType != OrganisationType.GP)
+        {
+            if (Model.HasImportedRecipients
+            || (Model.PreviouslySelected?.Any() ?? false))
+            {
+                <nhs-inset-text>
+                    @if (Model.HasImportedRecipients)
+                    {
+                        <p>
+                            <span>Your Service Recipients have been imported successfully.</span>
+
+                            If you need to make changes, you can do so manually or re-import them.
+                        </p>
+                    }
+
+                    @if (Model.PreviouslySelected?.Any() ?? false)
+                    {
+                        <p id="previously-selected">
+                            We're only showing the Service Recipients which were not included in the original order.
+                        </p>
+                    }
+                </nhs-inset-text>
+            }
+
+            <hr />
+            <h2>Upload your Service Recipients</h2>
+            <p>
+                You can upload your Service Recipients using a CSV file or select them manually below.
+            </p>
+            <vc:nhs-action-link text="Upload Service Recipients"
+                            url="@Model.ImportRecipientsLink" />
+            <hr />
+
+            <vc:nhs-secondary-button url="@Url.PageLink(values: new { selectionMode = SelectionMode.All })"
+                                 text="Select all"
+                                 type="Secondary" />
+            <vc:nhs-secondary-button url="@Url.PageLink(values: new { selectionMode = SelectionMode.None })"
+                                 text="Deselect all"
+                                 type="Secondary" />
+        }
+
+        <form method="post">
+            <input type="hidden" asp-for="ImportRecipientsLink" />
+            @if (Model.SubLocations?.Any() ?? false)
+            {
+                @if (Model.OrganisationType != OrganisationType.GP)
+                {
+                    <h3 style="white-space:nowrap">Sublocations for @Model.OrganisationName</h3>
+                }
+
+                @foreach (var (location, lIndex) in Model.SubLocations.Select((x, i) => (x, i)))
+                {
+                    <input type="hidden" asp-for="@Model.SubLocations[lIndex].Name" />
+                    <nhs-expander label-text="@location.Name" secondary-text-title="@(location.ServiceRecipients.Count(r => r.Selected)) " secondary-text="recipients selected" bold-title="true" open="@(Model.ShouldExpand || location.ServiceRecipients.Any(x => x.Selected))">
+
+                        <nhs-table>
+                            <nhs-table-column>
+                                <div class="nhsuk-checkboxes__item">
+                                    <input type="checkbox" class="nhsuk-checkboxes__input" name="selectAll@(lIndex)" id="selectAll@(lIndex)" />
+                                    <label for="selectAll@(lIndex)" class="nhsuk-label nhsuk-checkboxes__label">
+                                        Organisation
+                                    </label>
+                                </div>
+                            </nhs-table-column>
+                            <nhs-table-column>ODS code</nhs-table-column>
+                            @foreach (var (item, rIndex) in location.ServiceRecipients.Select((x, i) => (x, i)))
+                            {
+                                <nhs-table-row-container>
+                                    <nhs-table-cell>
+                                        <nhs-checkbox-container>
+                                            <nhs-checkbox asp-for="@Model.SubLocations[lIndex].ServiceRecipients[rIndex].Selected"
+                                              label-text="@item.Name"
+                                              hidden-input="@Model.SubLocations[lIndex].ServiceRecipients[rIndex].Name" />
+                                        </nhs-checkbox-container>
+                                    </nhs-table-cell>
+                                    <nhs-table-cell>
+                                        <div class="nhsuk-input--width-10 nhsuk-u-margin-top-2">@item.OdsCode</div>
+                                        <input type="hidden" asp-for="@Model.SubLocations[lIndex].ServiceRecipients[rIndex].OdsCode" />
+                                    </nhs-table-cell>
+                                </nhs-table-row-container>
+                            }
+                        </nhs-table>
+                    </nhs-expander>
+                }
+                <br />
+                <nhs-submit-button />
+            }
+            else
+            {
+                <nhs-submit-button text="Continue" />
+            }
+        </form>
+    </div>
+</div>

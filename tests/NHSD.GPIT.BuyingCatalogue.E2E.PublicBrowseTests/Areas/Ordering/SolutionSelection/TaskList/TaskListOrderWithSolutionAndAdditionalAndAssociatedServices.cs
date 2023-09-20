@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ta
             {
                 Name = "E2E With Contact Multiple Prices",
                 CatalogueItemId = new CatalogueItemId(99998, "001"),
-                ServiceRecipientsAction = nameof(ServiceRecipientsController.AddServiceRecipients),
+                ServiceRecipientsAction = nameof(ServiceRecipientsController.SelectServiceRecipients),
                 PriceLinkActive = false,
                 QuantityLinkActive = false,
             },
@@ -39,19 +39,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ta
             {
                 Name = "E2E No Contact Single Price Additional Service",
                 CatalogueItemId = new CatalogueItemId(99998, "002A999"),
-                ServiceRecipientsAction = nameof(ServiceRecipientsController.AddServiceRecipients),
+                ServiceRecipientsAction = nameof(ServiceRecipientsController.SelectServiceRecipients),
                 PriceLinkActive = false,
                 QuantityLinkActive = false,
-            },
-            new TaskListOrderItem
-            {
-                Name = "E2E Multiple Prices Associated Service",
-                CatalogueItemId = new CatalogueItemId(99998, "S-997"),
-                ServiceRecipientsAction = nameof(ServiceRecipientsController.EditServiceRecipients),
-                PriceLinkActive = true,
-                PriceAction = nameof(PricesController.SelectPrice),
-                QuantityLinkActive = true,
-                QuantityAction = nameof(QuantityController.SelectServiceRecipientQuantity),
             },
         };
     }

@@ -104,41 +104,38 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
-        public static async Task TaskList_WithAssociatedServicesAvailable_ExpectedResult(
+        [CommonInlineAutoData(1)]
+        [CommonInlineAutoData(2)]
+        public static async Task TaskList_EnsureOrderItemsForAmendment_ExpectedResult2(
+            int revision,
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
-            List<CatalogueItem> associatedServices,
             [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IAssociatedServicesService> mockAssociatedServicesService,
             TaskListController controller)
         {
+            order.Revision = revision;
             order.AssociatedServicesOnly = false;
-            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
-            order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
             mockOrderService
                 .Setup(x => x.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));
 
-            mockAssociatedServicesService
-                .Setup(x => x.GetPublishedAssociatedServicesForSolution(order.OrderItems.First().CatalogueItemId))
-                .ReturnsAsync(associatedServices);
+            mockOrderService
+                .Setup(x => x.EnsureOrderItemsForAmendment(internalOrgId, callOffId));
 
             var result = await controller.TaskList(internalOrgId, callOffId);
 
-            mockOrderService.VerifyAll();
-            mockAssociatedServicesService.VerifyAll();
+            mockOrderService.Verify(x => x.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId), Times.Once);
 
-            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
-
-            var expected = new TaskListModel(internalOrgId, callOffId, new OrderWrapper(order))
+            if (revision == 1)
             {
-                AssociatedServicesAvailable = true,
-            };
-
-            actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink).Excluding(m => m.OnwardLink));
+                mockOrderService.Verify(x => x.EnsureOrderItemsForAmendment(internalOrgId, callOffId), Times.Never);
+            }
+            else
+            {
+                mockOrderService.Verify(x => x.EnsureOrderItemsForAmendment(internalOrgId, callOffId), Times.Once);
+            }
         }
     }
 }

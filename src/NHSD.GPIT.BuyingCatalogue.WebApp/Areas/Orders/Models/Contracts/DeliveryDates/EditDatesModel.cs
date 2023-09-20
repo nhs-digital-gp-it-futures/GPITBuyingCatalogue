@@ -27,8 +27,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
             CatalogueItemType = orderItem.CatalogueItem.CatalogueItemType;
             Description = orderItem.CatalogueItem.Name;
 
-            Recipients = orderItem.OrderItemRecipients
-                .Select(x => new RecipientDateModel(x, order.CommencementDate!.Value))
+            Recipients = order.OrderRecipients
+                .Select(x => new RecipientDateModel(x, x.GetDeliveryDateForItem(orderItem.CatalogueItemId), order.CommencementDate!.Value))
                 .ToArray();
         }
 

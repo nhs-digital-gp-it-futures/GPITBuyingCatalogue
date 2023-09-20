@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
@@ -15,12 +18,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
             this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
         }
 
-        public RoutingResult Process(Order order, RouteValues routeValues)
+        public RoutingResult Process(OrderWrapper orderWrapper, RouteValues routeValues)
         {
-            if (order == null)
-            {
-                throw new ArgumentNullException(nameof(order));
-            }
+            ArgumentNullException.ThrowIfNull(orderWrapper);
+            var order = orderWrapper.Order ?? throw new ArgumentNullException(nameof(orderWrapper));
 
             if (routeValues?.CatalogueItemId == null)
             {
@@ -28,7 +29,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
             }
 
             var orderItem = order.OrderItem(routeValues.CatalogueItemId.Value);
-            var attentionRequired = order.IsAmendment && !orderItem.AllDeliveryDatesEntered;
+            var attentionRequired = order.IsAmendment
+                && !orderWrapper.DetermineOrderRecipients(orderItem.CatalogueItemId)
+                                .AllDeliveryDatesEntered(orderItem.CatalogueItemId);
 
             if (routeValues.Source == RoutingSource.TaskList
                 && !attentionRequired)
@@ -58,41 +61,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
             }
 
             var additionalService = order.GetAdditionalServices()
-                .FirstOrDefault(x => (x.OrderItemRecipients?.Count ?? 0) == 0);
+                .FirstOrDefault(x => x.OrderItemPrice is null);
 
             if (additionalService != null)
             {
-                return new RoutingResult
-                {
-                    ControllerName = Constants.Controllers.ServiceRecipients,
-                    ActionName = Constants.Actions.AddServiceRecipients,
-                    RouteValues = new
-                    {
-                        routeValues.InternalOrgId,
-                        routeValues.CallOffId,
-                        additionalService.CatalogueItemId,
-                        routeValues.Source,
-                    },
-                };
+                return PricesRoute(routeValues, additionalService);
             }
 
             var associatedService = order.GetAssociatedServices()
-                .FirstOrDefault(x => (x.OrderItemRecipients?.Count ?? 0) == 0);
+                .FirstOrDefault(x => x.OrderItemPrice is null);
 
             if (associatedService != null)
             {
-                return new RoutingResult
-                {
-                    ControllerName = Constants.Controllers.ServiceRecipients,
-                    ActionName = Constants.Actions.AddServiceRecipients,
-                    RouteValues = new
-                    {
-                        routeValues.InternalOrgId,
-                        routeValues.CallOffId,
-                        associatedService.CatalogueItemId,
-                        routeValues.Source,
-                    },
-                };
+                return PricesRoute(routeValues, associatedService);
             }
 
             if (order.GetAssociatedServices().Any())
@@ -122,6 +103,43 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 ControllerName = Constants.Controllers.Review,
                 ActionName = Constants.Actions.Review,
                 RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId },
+            };
+        }
+
+        private static RoutingResult PricesRoute(RouteValues routeValues, OrderItem service)
+        {
+            var publishedPrices = service.CatalogueItem.CataloguePrices
+                .Where(x => x.PublishedStatus == PublicationStatus.Published)
+                .ToList();
+
+            if (publishedPrices.Count > 1)
+            {
+                return new RoutingResult
+                {
+                    ControllerName = Constants.Controllers.Prices,
+                    ActionName = Constants.Actions.SelectPrice,
+                    RouteValues = new
+                    {
+                        routeValues.InternalOrgId,
+                        routeValues.CallOffId,
+                        service.CatalogueItemId,
+                        routeValues.Source,
+                    },
+                };
+            }
+
+            return new RoutingResult
+            {
+                ControllerName = Constants.Controllers.Prices,
+                ActionName = Constants.Actions.ConfirmPrice,
+                RouteValues = new
+                {
+                    routeValues.InternalOrgId,
+                    routeValues.CallOffId,
+                    service.CatalogueItemId,
+                    priceId = publishedPrices[0].CataloguePriceId,
+                    routeValues.Source,
+                },
             };
         }
     }

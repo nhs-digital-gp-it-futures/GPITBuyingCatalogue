@@ -37,6 +37,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public Task<Order> AmendOrder(string internalOrgId, CallOffId callOffId);
 
+        public Task EnsureOrderItemsForAmendment(string internalOrgId, CallOffId callOffId);
+
         public Task SoftDeleteOrder(CallOffId callOffId, string internalOrgId);
 
         public Task HardDeleteOrder(CallOffId callOffId, string internalOrgId);

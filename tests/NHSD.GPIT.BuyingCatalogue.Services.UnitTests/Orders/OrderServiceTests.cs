@@ -10,6 +10,7 @@ using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using LinqKit;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Newtonsoft.Json.Linq;
@@ -63,19 +64,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             order.SelectedFramework = selectedFramework;
 
             orderItem.CatalogueItem = catalogueItem;
+            order.OrderRecipients.ForEach(r => r.OrderItemRecipients.Clear());
             order.OrderItems.Clear();
             order.OrderItems.Add(orderItem);
 
             context.Orders.Add(order);
 
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
 
             var result = (await service.GetOrderWithCatalogueItemAndPrices(order.CallOffId, order.OrderingParty.InternalIdentifier)).Order;
 
             result.OrderingParty.Should().BeEquivalentTo(organisation);
             result.SelectedFramework.Should().BeEquivalentTo(selectedFramework);
             result.OrderItems.Count.Should().Be(1);
-            result.OrderItems.First().Should().BeEquivalentTo(orderItem);
+            var actual = result.OrderItems.First();
+            actual.CatalogueItem.Id.Should().Be(orderItem.CatalogueItem.Id);
+            actual.CatalogueItem.CataloguePrices.Count.Should().Be(orderItem.CatalogueItem.CataloguePrices.Count);
         }
 
         [Theory]
@@ -96,19 +101,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             order.SelectedFramework = selectedFramework;
 
             orderItem.CatalogueItem = catalogueItem;
+            order.OrderRecipients.ForEach(r => r.OrderItemRecipients.Clear());
             order.OrderItems.Clear();
             order.OrderItems.Add(orderItem);
 
             context.Orders.Add(order);
 
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
 
             var result = (await service.GetOrderWithOrderItems(order.CallOffId, order.OrderingParty.InternalIdentifier)).Order;
 
             result.OrderingParty.Should().BeEquivalentTo(organisation);
             result.SelectedFramework.Should().BeEquivalentTo(selectedFramework);
             result.OrderItems.Count.Should().Be(1);
-            result.OrderItems.First().Should().BeEquivalentTo(orderItem);
+            var actual = result.OrderItems.First();
+            actual.CatalogueItem.Id.Should().Be(orderItem.CatalogueItem.Id);
+            actual.CatalogueItem.CataloguePrices.Count.Should().Be(0);
         }
 
         [Theory]
@@ -129,19 +138,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             order.SelectedFramework = selectedFramework;
 
             orderItem.CatalogueItem = catalogueItem;
+            order.OrderRecipients.ForEach(r => r.OrderItemRecipients.Clear());
             order.OrderItems.Clear();
             order.OrderItems.Add(orderItem);
 
             context.Orders.Add(order);
 
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
 
             var result = (await service.GetOrderWithOrderItemsForFunding(order.CallOffId, order.OrderingParty.InternalIdentifier)).Order;
 
             result.OrderingParty.Should().BeEquivalentTo(organisation);
             result.SelectedFramework.Should().BeEquivalentTo(selectedFramework);
             result.OrderItems.Count.Should().Be(1);
-            result.OrderItems.First().Should().BeEquivalentTo(orderItem);
+            var actual = result.OrderItems.First();
+            actual.CatalogueItem.Id.Should().Be(orderItem.CatalogueItem.Id);
+            actual.OrderItemFunding.Should().NotBeNull();
+            actual.OrderItemFunding.OrderItemFundingType.Should().Be(orderItem.OrderItemFunding.OrderItemFundingType);
         }
 
         [Theory]
@@ -166,7 +180,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             order.OrderingParty.InternalIdentifier.Should().Be(organisation.InternalIdentifier);
         }
 
-        [Theory(Skip = "Temporal queries not supported in EF Core 7.")]
+        [Theory]
         [InMemoryDbAutoData]
         public static async Task AmendOrder_UpdatesDatabase(
             Order order,
@@ -204,6 +218,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             result.SupplierContact.Department.Should().Be(order.SupplierContact.Department);
             result.SupplierContact.Email.Should().Be(order.SupplierContact.Email);
             result.SupplierContact.Phone.Should().Be(order.SupplierContact.Phone);
+
+            result.OrderRecipients.Count.Should().Be(order.OrderRecipients.Count);
+            result.OrderItems.Count.Should().Be(order.OrderItems.Count);
         }
 
         [Theory]
@@ -1074,12 +1091,36 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             orderItemFunding.OrderItemFundingType.Should().Be(OrderItemFundingType.LocalFundingOnly);
         }
 
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task EnsureOrderItemsForAmendment_Adds_OrderItems(
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            order.OrderingPartyId = order.OrderingParty.Id;
+            order.Revision = 1;
+            var amendment = order.BuildAmendment(2);
+            amendment.OrderItems.Clear();
+
+            context.Orders.Add(order);
+            context.Orders.Add(amendment);
+            await context.SaveChangesAsync();
+
+            await service.EnsureOrderItemsForAmendment(amendment.OrderingParty.InternalIdentifier, amendment.CallOffId);
+            context.ChangeTracker.Clear();
+
+            var dbOrder = await context.Orders
+                .Include(o => o.OrderItems)
+                .FirstAsync(x => x.Id == amendment.Id);
+
+            order.OrderItems.ForEach(i => dbOrder.Exists(i.CatalogueItemId).Should().BeTrue());
+        }
+
         private static async Task IsTerminated(BuyingCatalogueDbContext context, int id, DateTime terminationDate, string reason)
         {
             var updatedOrder = await context.Orders
                 .Include(x => x.OrderTermination)
-                .Include(x => x.OrderItems)
-                .ThenInclude(x => x.OrderItemRecipients)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             updatedOrder.IsTerminated.Should().BeTrue();

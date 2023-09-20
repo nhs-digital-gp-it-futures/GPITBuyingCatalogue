@@ -17,7 +17,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
         {
             AddDefaultData(context);
             AddCatalogueItems(context);
-            AddMockedItems(context);
             await context.SaveChangesAsync();
         }
 
@@ -975,18 +974,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             };
 
             context.AddRange(standardCapabilities);
-        }
-
-        private static void AddMockedItems(BuyingCatalogueDbContext context)
-        {
-            var subLocations = context.OrganisationRelationships.Where(x => x.OwnerOrganisationId == "03F").Select(x => x.TargetOrganisationId);
-            var serviceRecipients = context.OrganisationRelationships
-                .Where(x => subLocations.Contains(x.OwnerOrganisationId))
-                .Select(x => x.TargetOrganisation)
-                .Take(3)
-                .Select(x => new ServiceRecipient { Name = x.Name, OdsCode = x.Id });
-
-            context.AddRange(serviceRecipients);
         }
     }
 }

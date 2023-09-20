@@ -8,6 +8,7 @@ using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -19,14 +20,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
     {
         [Theory]
         [CommonAutoData]
-        public void Process_OrderIsNull_ThrowsException(
+        public void Process_OrderWrapperIsNull_ThrowsException(
             RouteValues routeValues,
             SelectQuantityProvider provider)
         {
             FluentActions
                 .Invoking(() => provider.Process(null, routeValues))
                 .Should().Throw<ArgumentNullException>()
-                .WithParameterName("order");
+                .WithParameterName("orderWrapper");
         }
 
         [Theory]
@@ -36,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             SelectQuantityProvider provider)
         {
             FluentActions
-                .Invoking(() => provider.Process(order, null))
+                .Invoking(() => provider.Process(new OrderWrapper(order), null))
                 .Should().Throw<ArgumentNullException>()
                 .WithParameterName("routeValues");
         }
@@ -50,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             Order order,
             SelectQuantityProvider provider)
         {
-            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId)
+            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, catalogueItemId)
             {
                 Source = RoutingSource.TaskList,
             });
@@ -77,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         {
             callOffId = new CallOffId(callOffId.OrderNumber, 2);
 
-            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId));
+            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, catalogueItemId));
 
             var expected = new
             {
@@ -92,8 +93,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         }
 
         [Theory]
-        [CommonAutoData]
-        public void Process_OrderHasAdditionalServiceWithNoServiceRecipients_ExpectedResult(
+        [CommonInlineAutoData(CatalogueItemType.AdditionalService)]
+        [CommonInlineAutoData(CatalogueItemType.AssociatedService)]
+        public void Process_OrderHasServiceWithNoPrice_MultipleAvailable_ExpectedResult(
+            CatalogueItemType catalogueItemType,
             string internalOrgId,
             CallOffId callOffId,
             Order order,
@@ -101,15 +104,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         {
             callOffId = new CallOffId(callOffId.OrderNumber, 1);
 
-            order.OrderItems.ToList().ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+            order.OrderItems = order.OrderItems.Take(2).ToList();
 
             var solution = order.OrderItems.First();
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
             var additionalService = order.OrderItems.ElementAt(1);
-            additionalService.OrderItemRecipients.Clear();
+            additionalService.CatalogueItem.CatalogueItemType = catalogueItemType;
+            additionalService.OrderItemPrice = null;
 
-            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, solution.CatalogueItemId));
+            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, solution.CatalogueItemId));
 
             var expected = new
             {
@@ -118,14 +122,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
                 additionalService.CatalogueItemId,
             };
 
-            result.ActionName.Should().Be(Constants.Actions.AddServiceRecipients);
-            result.ControllerName.Should().Be(Constants.Controllers.ServiceRecipients);
+            result.ActionName.Should().Be(Constants.Actions.SelectPrice);
+            result.ControllerName.Should().Be(Constants.Controllers.Prices);
             result.RouteValues.Should().BeEquivalentTo(expected);
         }
 
         [Theory]
-        [CommonAutoData]
-        public void Process_OrderHasAssociatedServiceWithNoServiceRecipients_ExpectedResult(
+        [CommonInlineAutoData(CatalogueItemType.AdditionalService)]
+        [CommonInlineAutoData(CatalogueItemType.AssociatedService)]
+        public void Process_OrderHasAssociatedServiceWithNoPrice_SingleAvailable_ExpectedResult(
+            CatalogueItemType catalogueItemType,
             string internalOrgId,
             CallOffId callOffId,
             Order order,
@@ -133,15 +139,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         {
             callOffId = new CallOffId(callOffId.OrderNumber, 1);
 
-            order.OrderItems.ToList().ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
+            order.OrderItems = order.OrderItems.Take(2).ToList();
 
             var solution = order.OrderItems.First();
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
             var service = order.OrderItems.ElementAt(1);
-            service.OrderItemRecipients.Clear();
+            service.CatalogueItem.CataloguePrices = service.CatalogueItem.CataloguePrices.Take(1).ToList();
+            service.CatalogueItem.CatalogueItemType = catalogueItemType;
+            service.OrderItemPrice = null;
 
-            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, solution.CatalogueItemId));
+            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, solution.CatalogueItemId));
 
             var expected = new
             {
@@ -150,8 +158,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
                 service.CatalogueItemId,
             };
 
-            result.ActionName.Should().Be(Constants.Actions.AddServiceRecipients);
-            result.ControllerName.Should().Be(Constants.Controllers.ServiceRecipients);
+            result.ActionName.Should().Be(Constants.Actions.ConfirmPrice);
+            result.ControllerName.Should().Be(Constants.Controllers.Prices);
             result.RouteValues.Should().BeEquivalentTo(expected);
         }
 
@@ -170,7 +178,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             var solution = order.OrderItems.First();
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, solution.CatalogueItemId));
+            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, solution.CatalogueItemId));
 
             var expected = new
             {
@@ -203,7 +211,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
                 .Setup(x => x.GetPublishedAssociatedServicesForSolution(order.OrderItems.First().CatalogueItemId))
                 .ReturnsAsync(associatedServices);
 
-            var result = provider.Process(order, new RouteValues(
+            var result = provider.Process(new OrderWrapper(order), new RouteValues(
                 internalOrgId,
                 callOffId,
                 order.OrderItems.First().CatalogueItemId));
@@ -235,7 +243,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             order.OrderItems.ElementAt(1).CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
             order.OrderItems.ElementAt(2).CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
 
-            var result = provider.Process(order, new RouteValues(
+            var result = provider.Process(new OrderWrapper(order), new RouteValues(
                 internalOrgId,
                 callOffId,
                 order.OrderItems.First().CatalogueItemId));

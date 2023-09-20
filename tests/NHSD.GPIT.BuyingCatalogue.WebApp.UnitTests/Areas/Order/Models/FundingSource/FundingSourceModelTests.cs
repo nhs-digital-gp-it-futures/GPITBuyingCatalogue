@@ -2,6 +2,7 @@
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Xunit;
 
@@ -16,11 +17,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             [Frozen] CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order)
         {
+            var orderWrapper = new OrderWrapper(order);
             var orderItem = order.OrderItems.First();
 
             orderItem.OrderItemFunding = null;
 
-            var model = new WebApp.Areas.Orders.Models.FundingSources.FundingSource(internalOrgId, callOffId, order, orderItem);
+            var model = new WebApp.Areas.Orders.Models.FundingSources.FundingSource(internalOrgId, callOffId, orderWrapper, orderItem);
 
             model.Title.Should().Be("Funding source");
             model.CallOffId.Should().Be(callOffId);
@@ -37,8 +39,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             EntityFramework.Ordering.Models.Order order)
         {
             var orderItem = order.OrderItems.First();
+            var orderWrapper = new OrderWrapper(order);
 
-            var model = new WebApp.Areas.Orders.Models.FundingSources.FundingSource(internalOrgId, callOffId, order, orderItem);
+            var model = new WebApp.Areas.Orders.Models.FundingSources.FundingSource(internalOrgId, callOffId, orderWrapper, orderItem);
 
             model.Title.Should().Be("Funding source");
             model.CallOffId.Should().Be(callOffId);
