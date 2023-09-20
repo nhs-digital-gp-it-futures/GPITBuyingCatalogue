@@ -284,7 +284,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 .Include(i => i.OrderItemFunding)
                 .FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
 
-            actual!.OrderItemFunding.OrderItemFundingType.Should().Be(OrderItemFundingType.LocalFundingOnly);
+            actual!.OrderItemFunding.OrderItemFundingType.Should().Be(fundingType.AsOrderItemFundingType());
         }
 
         [Theory]
