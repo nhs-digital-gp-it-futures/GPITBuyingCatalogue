@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
             TotalCost = orderWrapper.TotalCostForOrderItem(orderItem.CatalogueItem.Id);
 
             AvailableFundingTypes =
-                order.SelectedFramework.FundingTypes.Select(
+                orderWrapper.Order.SelectedFramework.FundingTypes.Select(
                         x =>
                         {
                             var fundingType = x.AsOrderItemFundingType();

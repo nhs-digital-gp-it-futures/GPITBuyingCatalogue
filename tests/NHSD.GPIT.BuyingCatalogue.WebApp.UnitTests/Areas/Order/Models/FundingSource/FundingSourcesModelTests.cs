@@ -50,7 +50,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
 
             order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.LocalFunding };
 
-            var model = new FundingSources(internalOrgId, order.CallOffId, order, 1);
+            var orderWrapper = new OrderWrapper(order);
+            var model = new FundingSources(internalOrgId, order.CallOffId, orderWrapper, 1);
 
             model.Title.Should().Be("Funding sources");
             model.CallOffId.Should().Be(order.CallOffId);
