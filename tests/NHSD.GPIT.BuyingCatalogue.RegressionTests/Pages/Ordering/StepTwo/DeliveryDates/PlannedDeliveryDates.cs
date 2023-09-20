@@ -46,6 +46,60 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
              nameof(TaskListController.TaskList)).Should().BeTrue();
         }
 
+        public void EditPlannedDeliveryDate(string solutionName, bool isAssociatedServiceOnly, IEnumerable<string>? associatedServices, IEnumerable<string>? additionalServices)
+        {
+            if (!isAssociatedServiceOnly)
+            {
+                CommonActions.ClickLinkElement(DeliveryDatesObjects.ReviewChangeDeliveryDateLink);
+
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(DeliveryDatesController),
+                    nameof(DeliveryDatesController.SelectDate)).Should().BeTrue();
+
+                SetDefaultPlannedDeliveryDate(DateTime.Today.AddDays(8));
+                ConfirmPlannedDeliveryPageYesOption();
+
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(DeliveryDatesController),
+                    nameof(DeliveryDatesController.EditDates)).Should().BeTrue();
+
+                EditDefaultPlannedDeliveryDate(DateTime.Today.AddDays(9));
+                CommonActions.ClickSave();
+
+                var names = SelectSolutionAndServices.EditPlannedDeliveryDateSelectSolutionServices(isAssociatedServiceOnly, associatedServices, additionalServices);
+
+                foreach (var name in names)
+                {
+                    MatchDatesPlannedDeliveryDate();
+                    EditDatePlannedDeliveryDate();
+                }
+
+                ReviewPlannedDeliveryDate();
+
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(OrderController),
+                    nameof(OrderController.Order)).Should().BeTrue();
+            }
+            else
+            {
+                CommonActions.ClickLinkElement(DeliveryDatesObjects.ReviewChangeDeliveryDateLink);
+
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(DeliveryDatesController),
+                    nameof(DeliveryDatesController.SelectDate)).Should().BeTrue();
+
+                SetDefaultPlannedDeliveryDate(DateTime.Today.AddDays(8));
+                ConfirmPlannedDeliveryPageYesOption();
+
+                EditDatePlannedDeliveryDate();
+                ReviewPlannedDeliveryDate();
+
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(OrderController),
+                    nameof(OrderController.Order)).Should().BeTrue();
+            }
+        }
+
         public void EditPlannedDeliveryDate(string solutionName, bool isAssociatedServiceOnly, string associatedServices, string additionalServices, bool editplanneddeliverydate)
         {
             if (!isAssociatedServiceOnly)
