@@ -48,7 +48,7 @@ public class InteroperabilityScoringModel : NavBaseModel
             .Select(
                 x =>
                 {
-                    var score = x.GetScoreByType(ScoreType.ServiceLevel);
+                    var score = x.GetScoreByType(ScoreType.Interoperability);
 
                     return new InteroperabilitySolutionScoreModel(
                         x.Solution,
