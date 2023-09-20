@@ -52,7 +52,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             CatalogueItemId catalogueItemId,
             RoutingSource? source = null)
         {
-            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
+            var orderWrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = orderWrapper.Order;
             var orderItem = order.OrderItem(catalogueItemId);
             if (orderItem is null) return BadRequest();
 
@@ -66,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var route = routingService.GetRoute(
                 RoutingPoint.SelectQuantityBackLink,
-                order,
+                orderWrapper,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
 
             var model = new SelectOrderItemQuantityModel(orderItem.CatalogueItem, orderItem.OrderItemPrice, orderItem.Quantity)
@@ -91,7 +92,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 return View(OrderItemViewName, model);
             }
 
-            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
+            var orderWrapper = await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId);
+
+            var order = orderWrapper.Order;
 
             await orderQuantityService.SetOrderItemQuantity(
                 order.Id,
@@ -102,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var route = routingService.GetRoute(
                 RoutingPoint.SelectQuantity,
-                order,
+                orderWrapper,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = model.Source });
 
             return RedirectToAction(route.ActionName, route.ControllerName, route.RouteValues);
@@ -118,18 +121,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
             var order = wrapper.Order;
             var orderItem = order.OrderItem(catalogueItemId);
-            var previousItem = wrapper.Previous?.OrderItem(catalogueItemId);
 
             var route = routingService.GetRoute(
                 RoutingPoint.SelectQuantityBackLink,
-                order,
+                wrapper,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
 
-            var recipients = orderItem.OrderItemRecipients.Select(
-                x => new ServiceRecipientDto(x.OdsCode, x.Recipient?.Name, x.Quantity));
+            var recipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId).Select(
+                x => new ServiceRecipientDto(x.OdsCode, x.OdsOrganisation?.Name, x.GetQuantityForItem(orderItem.CatalogueItemId)));
 
-            var previousRecipients = previousItem?.OrderItemRecipients?.Select(
-                x => new ServiceRecipientDto(x.OdsCode, x.Recipient?.Name, x.Quantity));
+            var previousRecipients = wrapper.Previous?.OrderRecipients?.Select(
+                x => new ServiceRecipientDto(x.OdsCode, x.OdsOrganisation?.Name, x.GetQuantityForItem(orderItem.CatalogueItemId)));
 
             var model = new SelectServiceRecipientQuantityModel(
                 orderItem.CatalogueItem,
@@ -150,7 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             if (solution?.OrderItemPrice?.ProvisioningType is ProvisioningType.Patient
                 && solution.CatalogueItemId != catalogueItemId)
             {
-                await SetPracticeSizes(model, solution);
+                await SetPracticeSizes(model, solution,  wrapper.DetermineOrderRecipients(solution.CatalogueItemId));
             }
             else
             {
@@ -172,7 +174,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 return View(ServiceRecipientViewName, model);
             }
 
-            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
+            var orderWrapper = await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId);
+            var order = orderWrapper.Order;
             var quantities = model.ServiceRecipients
                 .Select(x => new OrderItemRecipientQuantityDto
                 {
@@ -189,7 +192,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var route = routingService.GetRoute(
                 RoutingPoint.SelectQuantity,
-                order,
+                orderWrapper,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = model.Source });
 
             return RedirectToAction(route.ActionName, route.ControllerName, route.RouteValues);
@@ -232,9 +235,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             CatalogueItemId catalogueItemId)
         {
             var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Previous;
+            var recipients = order.OrderRecipients;
             var orderItem = order.OrderItem(catalogueItemId);
 
-            var model = new ViewServiceRecipientQuantityModel(orderItem)
+            var model = new ViewServiceRecipientQuantityModel(orderItem, recipients)
             {
                 BackLink = Url.Action(
                     nameof(TaskListController.TaskList),
@@ -247,7 +251,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             return View(model);
         }
 
-        private async Task SetPracticeSizes(SelectServiceRecipientQuantityModel model, OrderItem solution = null)
+        private async Task SetPracticeSizes(SelectServiceRecipientQuantityModel model, OrderItem solution = null, ICollection<OrderRecipient> recipients = null)
         {
             var odsCodes = model.ServiceRecipients.Where(x => x.Quantity == 0).Select(x => x.OdsCode).ToArray();
             var practiceSizes =
@@ -262,11 +266,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     continue;
                 }
 
-                var existing = solution?.OrderItemRecipients.FirstOrDefault(x => x.OdsCode == serviceRecipient.OdsCode);
+                var existing = recipients
+                    ?.FirstOrDefault(x => x.OdsCode == serviceRecipient.OdsCode)
+                    ?.GetQuantityForItem(solution.CatalogueItemId);
 
-                if (existing?.Quantity != null)
+                if (existing.HasValue)
                 {
-                    serviceRecipient.InputQuantity = $"{existing.Quantity}";
+                    serviceRecipient.InputQuantity = $"{existing.Value}";
                 }
                 else
                 {

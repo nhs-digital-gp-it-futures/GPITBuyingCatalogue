@@ -242,14 +242,6 @@ BEGIN
     DECLARE @OrderId INT;
     SELECT @OrderId = Id FROM @OrderIdCatSolAdditional
 
-	--insert service recipients
-	INSERT INTO ordering.ServiceRecipients (OdsCode, Name)
-	VALUES
-	('B84007','BRIG ROYD SURGERY'),
-	('B84016','BANKFIELD SURGERY'),
-	('B84613','BEECHWOOD MEDICAL CENTRE'),
-	('Y02572', 'CALDER COMMUNITY PRACTICE');
-
     --insert cat sol
 
     INSERT INTO ordering.OrderItems (OrderId, CatalogueItemId, Created, LastUpdated)
@@ -284,6 +276,12 @@ BEGIN
     FROM catalogue.CataloguePriceTiers
     WHERE CataloguePriceId = @CatalogueSolutionPriceId
 
+    INSERT INTO ordering.OrderRecipients (OrderId, OdsCode)
+    VALUES
+    (@OrderId, 'B84007'),
+    (@OrderId, 'B84016'),
+    (@OrderId, 'B84613'),
+    (@OrderId, 'Y02572');
 
     INSERT INTO ordering.OrderItemRecipients (OrderId, CatalogueItemId, OdsCode, Quantity)
     VALUES

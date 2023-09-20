@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Linq;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
 {
     public class TaskListBackLinkProvider : IRoutingResultProvider
     {
-        public RoutingResult Process(Order order, RouteValues routeValues)
+        public RoutingResult Process(OrderWrapper orderWrapper, RouteValues routeValues)
         {
-            if (order == null)
-            {
-                throw new ArgumentNullException(nameof(order));
-            }
+            ArgumentNullException.ThrowIfNull(orderWrapper);
+
+            var order = orderWrapper.Order ?? throw new ArgumentNullException(nameof(orderWrapper));
 
             if (routeValues == null)
             {
@@ -34,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
             if (!order.AssociatedServicesOnly)
             {
                 if (order.GetSolution() == null
-                    || order.OrderItems.Any(x => !x.IsReadyForReview(isAmendment)))
+                    || order.OrderItems.Any(x => !x.IsReadyForReview(isAmendment, orderWrapper.DetermineOrderRecipients(x.CatalogueItemId))))
                 {
                     return new RoutingResult
                     {
@@ -46,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
             }
             else
             {
-                if (order.GetAssociatedServices().Any(x => !x.IsReadyForReview(isAmendment)))
+                if (order.GetAssociatedServices().Any(x => !x.IsReadyForReview(isAmendment, orderWrapper.DetermineOrderRecipients(x.CatalogueItemId))))
                 {
                     return new RoutingResult
                     {

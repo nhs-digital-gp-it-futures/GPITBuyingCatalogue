@@ -48,6 +48,12 @@
     ]
   },
   {
+    "outputFileName": "wwwroot/js/Recipients.min.js",
+    "inputFiles": [
+      "wwwroot/js/Recipients.js"
+    ]
+  },
+  {
     "outputFileName": "wwwroot/govuk-frontend/assets/js/govuk-frontend.min.js",
     "inputFiles": [
       "wwwroot/govuk-frontend/assets/js/govuk-frontend.min.js"

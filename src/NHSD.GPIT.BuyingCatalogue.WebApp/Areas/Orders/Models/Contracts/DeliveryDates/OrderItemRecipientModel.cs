@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
             CatalogueItemId = recipient.CatalogueItemId;
             DeliveryDate = recipient.DeliveryDate;
             OdsCode = recipient.OdsCode;
-            RecipientName = recipient.Recipient?.Name;
+            RecipientName = recipient.Recipient?.OdsOrganisation.Name;
         }
 
         public CatalogueItemId CatalogueItemId { get; set; }

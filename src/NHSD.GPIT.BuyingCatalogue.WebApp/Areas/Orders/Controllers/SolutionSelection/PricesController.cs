@@ -95,11 +95,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
             var orderItem = order.OrderItem(catalogueItemId);
             var catalogueItem = await listPriceService.GetCatalogueItemWithPublishedListPrices(catalogueItemId);
-            var routeOrder = (await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId)).Order;
 
             var route = routingService.GetRoute(
                 RoutingPoint.ConfirmPriceBackLink,
-                routeOrder,
+                await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId),
                 new RouteValues(internalOrgId, callOffId, catalogueItemId)
                 {
                     SelectedPriceId = priceId,
@@ -134,7 +133,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 return View(ConfirmPriceViewName, model);
             }
 
-            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
+            var orderWrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = orderWrapper.Order;
             var price = await GetCataloguePrice(priceId, catalogueItemId);
 
             await orderPriceService.UpsertPrice(order.Id, price, model.AgreedPrices);
@@ -143,7 +143,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var route = routingService.GetRoute(
                 RoutingPoint.ConfirmPrice,
-                order,
+                orderWrapper,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = model.Source });
 
             return RedirectToAction(route.ActionName, route.ControllerName, route.RouteValues);
@@ -156,7 +156,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             CatalogueItemId catalogueItemId,
             RoutingSource? source = null)
         {
-            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
+            var orderWrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = orderWrapper.Order;
+
             var catalogueItem = await listPriceService.GetCatalogueItemWithPublishedListPrices(catalogueItemId);
 
             if (source == RoutingSource.TaskList
@@ -172,7 +174,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var route = routingService.GetRoute(
                 RoutingPoint.EditPriceBackLink,
-                order,
+                orderWrapper,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
 
             var orderItem = order.OrderItem(catalogueItemId);
@@ -195,7 +197,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 return View(ConfirmPriceViewName, model);
             }
 
-            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
+            var orderWrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = orderWrapper.Order;
 
             await orderPriceService.UpdatePrice(order.Id, catalogueItemId, model.AgreedPrices);
 
@@ -203,7 +206,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var route = routingService.GetRoute(
                 RoutingPoint.EditPrice,
-                order,
+                orderWrapper,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = model.Source });
 
             return RedirectToAction(route.ActionName, route.ControllerName, route.RouteValues);
@@ -221,7 +224,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var route = routingService.GetRoute(
                 RoutingPoint.ViewPrice,
-                wrapper.Order,
+                wrapper,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
 
             var orderItem = order.OrderItem(catalogueItemId);

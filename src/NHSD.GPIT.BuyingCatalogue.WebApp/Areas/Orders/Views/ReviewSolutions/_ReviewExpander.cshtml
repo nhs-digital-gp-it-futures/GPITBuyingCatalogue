@@ -15,10 +15,10 @@
 
 <nhs-expander label-text="@Model.CatalogueItem.Name"
               added-sticker="@Model.IsAmendment && @Model.IsOrderItemAdded"
-			  colour-mode="BlackAndWhite"
-			  open="true"
-			  bold-title="true">
-	<br/>
+              colour-mode="BlackAndWhite"
+              open="true"
+              bold-title="true">
+    <br />
     <nhs-table label-text="Service Recipients">
         @if (Model.IsAmendment)
         {
@@ -26,7 +26,7 @@
         }
         <nhs-table-column>Recipient</nhs-table-column>
         <nhs-table-column>Quantity</nhs-table-column>
-        @foreach (var recipient in Model.OrderItemRecipients)
+        @foreach (var recipient in Model.RolledUpRecipients)
         {
             <nhs-table-row-container>
                 @if (Model.IsAmendment)
@@ -45,12 +45,13 @@
                     </nhs-table-cell>
                 }
                 <nhs-table-cell>
-                    @recipient.Recipient.Name
+                    @recipient.OdsOrganisation.Name
                 </nhs-table-cell>
                 <nhs-table-cell>
                     @if (hasServiceRecipientQuantities)
                     {
-                        @(recipient.Quantity.HasValue ? $"{recipient.Quantity:N0}" : "-")
+                        var quantity = recipient.GetQuantityForItem(Model.CatalogueItem.Id);
+                        @(quantity.HasValue ? $"{quantity:N0}" : "-")
                     }
                     else
                     {
@@ -67,12 +68,15 @@
             <nhs-table-column>Pricing Tier</nhs-table-column>
         }
         <nhs-table-column>Price per unit</nhs-table-column>
-        @if (Model.IsAmendment) {
+        @if (Model.IsAmendment)
+        {
             <nhs-table-column>Old quantity</nhs-table-column>
             <nhs-table-column>New quantity</nhs-table-column>
             <nhs-table-column>Old price</nhs-table-column>
             <nhs-table-column>New price</nhs-table-column>
-        } else {
+        }
+        else
+        {
             <nhs-table-column>Quantity</nhs-table-column>
         }
         @for (var i = 0; i < totalCostsRolledUp.Count; i++)
@@ -92,9 +96,9 @@
                     <nhs-table-cell>
                         @(
                             totalCostsPrevious[i].Quantity == 0
-                              ? "N/A"
-                              : $"{totalCostsPrevious[i].Quantity:N0}"
-                        )
+                            ? "N/A"
+                            : $"{totalCostsPrevious[i].Quantity:N0}"
+                            )
                     </nhs-table-cell>
                 }
                 <nhs-table-cell>
@@ -105,9 +109,9 @@
                     <nhs-table-cell>
                         @(
                             totalCostsPrevious[i].Cost == 0
-                              ? "N/A"
-                              : $"£{totalCostsPrevious[i].Cost:N2}"
-                        )
+                            ? "N/A"
+                            : $"£{totalCostsPrevious[i].Cost:N2}"
+                            )
                     </nhs-table-cell>
                     <nhs-table-cell>
                         £@($"{totalCostsRolledUp[i].Cost:N2}")

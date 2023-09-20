@@ -1,6 +1,7 @@
 ﻿using System;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -17,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             SelectQuantityBackLinkProvider provider)
         {
             FluentActions
-                .Invoking(() => provider.Process(order, null))
+                .Invoking(() => provider.Process(new OrderWrapper(order), null))
                 .Should().Throw<ArgumentNullException>();
         }
 

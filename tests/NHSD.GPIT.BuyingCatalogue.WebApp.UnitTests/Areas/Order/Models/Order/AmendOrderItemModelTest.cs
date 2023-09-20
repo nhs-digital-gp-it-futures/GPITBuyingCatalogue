@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -17,20 +18,46 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             bool isAmendment,
             FundingTypeDescriptionModel fundingTypeDescription)
         {
-            var model = new AmendOrderItemModel(callOffId, orderItem, null, isAmendment, fundingTypeDescription);
+            var model = new AmendOrderItemModel(callOffId, System.Array.Empty<OrderRecipient>(), null, orderItem, null, isAmendment, fundingTypeDescription);
             model.IsOrderItemAdded.Should().BeTrue();
         }
 
         [Theory]
         [CommonAutoData]
-        public static void IsOrderItemAdded_False_When_Previous_OrderItem_Null(
+        public static void IsOrderItemAdded_False_When_Previous_OrderItem_NotNull(
             CallOffId callOffId,
             OrderItem orderItem,
             bool isAmendment,
             FundingTypeDescriptionModel fundingTypeDescription)
         {
-            var model = new AmendOrderItemModel(callOffId, orderItem, orderItem, isAmendment, fundingTypeDescription);
+            var model = new AmendOrderItemModel(callOffId, System.Array.Empty<OrderRecipient>(), null, orderItem, orderItem, isAmendment, fundingTypeDescription);
             model.IsOrderItemAdded.Should().BeFalse();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void IsServiceRecipientAdded_True_When_Previous_Recipients_Null(
+            CallOffId callOffId,
+            OrderItem orderItem,
+            bool isAmendment,
+            OrderRecipient[] recipients,
+            FundingTypeDescriptionModel fundingTypeDescription)
+        {
+            var model = new AmendOrderItemModel(callOffId, recipients, null, orderItem, orderItem, isAmendment, fundingTypeDescription);
+            recipients.ForEach(x => model.IsServiceRecipientAdded(x.OdsCode).Should().BeTrue());
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void IsServiceRecipientAdded_False_When_Previous_Recipients_Same(
+            CallOffId callOffId,
+            OrderItem orderItem,
+            bool isAmendment,
+            OrderRecipient[] recipients,
+            FundingTypeDescriptionModel fundingTypeDescription)
+        {
+            var model = new AmendOrderItemModel(callOffId, recipients, recipients, orderItem, orderItem, isAmendment, fundingTypeDescription);
+            recipients.ForEach(x => model.IsServiceRecipientAdded(x.OdsCode).Should().BeFalse());
         }
 
         [Theory]
@@ -42,15 +69,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             bool isAmendment,
             FundingTypeDescriptionModel fundingTypeDescription)
         {
-            var model = new AmendOrderItemModel(callOffId, orderItem, previousOrderItem, isAmendment, fundingTypeDescription);
+            var model = new AmendOrderItemModel(callOffId, System.Array.Empty<OrderRecipient>(), null, orderItem, previousOrderItem, isAmendment, fundingTypeDescription);
 
             model.CallOffId.Should().Be(callOffId);
             model.IsAmendment.Should().Be(isAmendment);
             model.OrderItemPrice.Should().Be(orderItem.OrderItemPrice);
             model.CatalogueItem.Should().Be(orderItem.CatalogueItem);
-            model.OrderItemRecipients.Should().BeEquivalentTo(orderItem.OrderItemRecipients);
-            model.RolledUpTotalQuantity.Should().Be(orderItem.TotalQuantity);
-            model.PreviousTotalQuantity.Should().Be(previousOrderItem.TotalQuantity);
+            model.RolledUpRecipients.Should().BeEquivalentTo(System.Array.Empty<OrderRecipient>());
+            model.RolledUpTotalQuantity.Should().Be(orderItem.TotalQuantity(null));
+            model.PreviousTotalQuantity.Should().Be(previousOrderItem.TotalQuantity(null));
             model.FundingTypeDescription.Should().Be(fundingTypeDescription.Value(orderItem.CatalogueItem.CatalogueItemType.DisplayName()));
         }
     }

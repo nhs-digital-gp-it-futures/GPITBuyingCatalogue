@@ -12,18 +12,14 @@ public class ValidateOdsModel : NavBaseModel
     }
 
     public ValidateOdsModel(
-        IEnumerable<ServiceRecipientImportModel> invalidServiceRecipients,
-        ServiceRecipientImportMode? importMode = null)
+        IEnumerable<ServiceRecipientImportModel> invalidServiceRecipients)
     {
-        ImportMode = importMode;
         InvalidServiceRecipients = invalidServiceRecipients.OrderBy(s => s.Organisation).ToList();
     }
 
     public string CancelLink { get; set; }
 
     public string ValidateNamesLink { get; set; }
-
-    public ServiceRecipientImportMode? ImportMode { get; set; }
 
     public IList<ServiceRecipientImportModel> InvalidServiceRecipients { get; set; }
 }

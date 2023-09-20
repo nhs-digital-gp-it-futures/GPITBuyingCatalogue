@@ -4,6 +4,7 @@ using FluentAssertions;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -15,14 +16,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
     {
         [Theory]
         [CommonAutoData]
-        public void Process_OrderIsNull_ThrowsException(
+        public void Process_OrderWrapperIsNull_ThrowsException(
             RouteValues routeValues,
             TaskListProvider provider)
         {
             FluentActions
                 .Invoking(() => provider.Process(null, routeValues))
                 .Should().Throw<ArgumentNullException>()
-                .WithParameterName("order");
+                .WithParameterName("orderWrapper");
         }
 
         [Theory]
@@ -32,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             TaskListProvider provider)
         {
             FluentActions
-                .Invoking(() => provider.Process(order, null))
+                .Invoking(() => provider.Process(new OrderWrapper(order), null))
                 .Should().Throw<ArgumentNullException>()
                 .WithParameterName("routeValues");
         }
@@ -56,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
                 order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             }
 
-            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId));
+            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, catalogueItemId));
 
             var expected = new
             {
@@ -86,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             solution.OrderItemPrice = null;
 
-            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId));
+            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, catalogueItemId));
 
             var expected = new
             {
@@ -114,16 +115,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             order.OrderItems.ForEach(x =>
             {
                 x.Quantity = 1;
-                x.OrderItemRecipients.ForEach(r => r.Quantity = 1);
+                order.OrderRecipients.ForEach(r => r.SetQuantityForItem(x.CatalogueItemId, 1));
+                order.OrderRecipients.ForEach(r => r.OrderItemRecipients.Where(i => i.CatalogueItemId == x.CatalogueItemId).ForEach(y => y.DeliveryDate = null));
                 x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
-                x.OrderItemRecipients.ForEach(r => r.DeliveryDate = null);
             });
 
             var solution = order.OrderItems.First();
 
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId));
+            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, catalogueItemId));
 
             var expected = new
             {
@@ -149,7 +150,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             order.OrderItems.ForEach(x =>
             {
                 x.Quantity = 0;
-                x.OrderItemRecipients.ForEach(r => r.Quantity = 0);
+                order.OrderRecipients.ForEach(r => r.SetQuantityForItem(x.CatalogueItemId, 0));
                 x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
             });
 
@@ -157,7 +158,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
 
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId));
+            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, catalogueItemId));
 
             var expected = new
             {
@@ -184,7 +185,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             order.OrderItems.ElementAt(1).OrderItemPrice = null;
 
-            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId));
+            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, catalogueItemId));
 
             var expected = new
             {
@@ -199,7 +200,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
 
         [Theory]
         [CommonAutoData]
-        public void Process_AssociatedServicesOnly_WithIncompleteServices_ExpectedResult(
+        public void Process_AssociatedServicesOnly_WithIncompleteServices_MissingPrice_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             CatalogueItemId catalogueItemId,
@@ -208,10 +209,35 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         {
             order.AssociatedServicesOnly = true;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
-            order.OrderItems.ElementAt(1).OrderItemRecipients.Clear();
             order.OrderItems.ElementAt(2).OrderItemPrice = null;
 
-            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId));
+            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, catalogueItemId));
+
+            var expected = new
+            {
+                InternalOrgId = internalOrgId,
+                CallOffId = callOffId,
+            };
+
+            result.ActionName.Should().Be(Constants.Actions.OrderDashboard);
+            result.ControllerName.Should().Be(Constants.Controllers.Orders);
+            result.RouteValues.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public void Process_AssociatedServicesOnly_WithIncompleteServices_MissingRecipientValues_ExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            Order order,
+            TaskListProvider provider)
+        {
+            order.AssociatedServicesOnly = true;
+            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
+            order.OrderRecipients.ForEach(r => r.OrderItemRecipients.Clear());
+
+            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, catalogueItemId));
 
             var expected = new
             {
@@ -236,7 +262,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             order.AssociatedServicesOnly = true;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
 
-            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId));
+            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, catalogueItemId));
 
             var expected = new
             {

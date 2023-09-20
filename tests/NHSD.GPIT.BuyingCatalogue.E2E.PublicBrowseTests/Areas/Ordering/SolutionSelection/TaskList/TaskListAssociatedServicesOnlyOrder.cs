@@ -30,19 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ta
 
         protected override bool ChangeAdditionalServicesLinkVisible => false;
 
-        protected override List<TaskListOrderItem> OrderItems => new()
-        {
-            new TaskListOrderItem
-            {
-                Name = "E2E Multiple Prices Associated Service",
-                CatalogueItemId = new CatalogueItemId(99998, "S-997"),
-                ServiceRecipientsAction = nameof(ServiceRecipientsController.EditServiceRecipients),
-                PriceLinkActive = true,
-                PriceAction = nameof(PricesController.SelectPrice),
-                QuantityLinkActive = true,
-                QuantityAction = nameof(QuantityController.SelectServiceRecipientQuantity),
-            },
-        };
+        protected override List<TaskListOrderItem> OrderItems => new() { };
 
         protected override Type ContinueController => typeof(ReviewSolutionsController);
 

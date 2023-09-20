@@ -104,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(ServiceRecipientsController),
-                nameof(ServiceRecipientsController.AddServiceRecipients)).Should().BeTrue();
+                nameof(ServiceRecipientsController.SelectServiceRecipients)).Should().BeTrue();
 
             GetAdditionalServices().Count.Should().Be(1);
         }

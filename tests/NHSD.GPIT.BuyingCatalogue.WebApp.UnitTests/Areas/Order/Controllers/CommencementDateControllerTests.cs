@@ -110,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 MaximumTerm = $"{maximumTerm}",
             };
 
-            order.OrderItems.SelectMany(x => x.OrderItemRecipients).ForEach(x => x.DeliveryDate = null);
+            order.OrderRecipients.SelectMany(x => x.OrderItemRecipients).ForEach(x => x.DeliveryDate = null);
 
             orderService
                 .Setup(x => x.GetOrderWithOrderItems(order.CallOffId, internalOrgId))
@@ -158,7 +158,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 MaximumTerm = $"{maximumTerm}",
             };
 
-            order.OrderItems.SelectMany(x => x.OrderItemRecipients).ForEach(x => x.DeliveryDate = DateTime.Today);
+            order.OrderItems.ForEach(i => order.OrderRecipients.ForEach(r => r.SetDeliveryDateForItem(i.CatalogueItemId, DateTime.Today)));
 
             orderService
                 .Setup(x => x.GetOrderWithOrderItems(order.CallOffId, internalOrgId))
@@ -196,7 +196,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             CommencementDateController controller)
         {
             order.CommencementDate = DateTime.Today;
-            order.OrderItems.SelectMany(x => x.OrderItemRecipients).ForEach(x => x.DeliveryDate = DateTime.Today);
+            var dates = order.OrderRecipients.SelectMany(x => x.OrderItemRecipients).ToList();
+            dates.ForEach(x => x.DeliveryDate = DateTime.Today);
 
             orderService
                 .Setup(s => s.GetOrderWithOrderItems(order.CallOffId, internalOrgId))
@@ -216,8 +217,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 CallOffId = order.CallOffId,
                 CurrentDate = order.CommencementDate.Value,
                 NewDate = DateTime.Today.AddDays(1),
-                AffectedPlannedDeliveryDates = order.OrderItems.SelectMany(x => x.OrderItemRecipients).Count(),
-                TotalPlannedDeliveryDates = order.OrderItems.SelectMany(x => x.OrderItemRecipients).Count(),
+                AffectedPlannedDeliveryDates = dates.Count(),
+                TotalPlannedDeliveryDates = dates.Count(),
             };
 
             actualResult.ViewData.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));

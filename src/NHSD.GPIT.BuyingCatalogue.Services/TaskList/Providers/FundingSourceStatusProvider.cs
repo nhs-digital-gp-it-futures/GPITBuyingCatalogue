@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
@@ -15,8 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
                 return TaskProgress.CannotStart;
             }
 
-            var order = wrapper.Order;
-            var anyFundingSourcesEntered = AnyFundingSourcesEntered(order);
+            var anyFundingSourcesEntered = AnyFundingSourcesEntered(wrapper.OrderItems);
 
             if (state.DeliveryDates != TaskProgress.Completed
                 && !anyFundingSourcesEntered)
@@ -24,8 +25,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
                 return TaskProgress.CannotStart;
             }
 
-            return AllFundingSourcesEntered(order)
-                ? CompletedOrAmended(order.IsAmendment)
+            return AllFundingSourcesEntered(wrapper)
+                ? CompletedOrAmended(wrapper.IsAmendment)
                 : (anyFundingSourcesEntered ? TaskProgress.InProgress : TaskProgress.NotStarted);
         }
 
@@ -34,16 +35,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
             return isAmendment ? TaskProgress.Amended : TaskProgress.Completed;
         }
 
-        private static bool AllFundingSourcesEntered(EntityFramework.Ordering.Models.Order order)
+        private static bool AllFundingSourcesEntered(OrderWrapper wrapper)
         {
-            return order.SelectedFramework != null
-                && order.OrderItems.Any()
-                && order.OrderItems.All(x => x.OrderItemFunding != null);
+            return wrapper.Order.SelectedFramework != null
+                && wrapper.OrderItems.Any()
+                && wrapper.OrderItems.All(x => x.OrderItemFunding != null);
         }
 
-        private static bool AnyFundingSourcesEntered(EntityFramework.Ordering.Models.Order order)
+        private static bool AnyFundingSourcesEntered(ICollection<OrderItem> orderItems)
         {
-            return order.OrderItems.Any(x => x.OrderItemFunding != null);
+            return orderItems.Any(x => x.OrderItemFunding != null);
         }
     }
 }

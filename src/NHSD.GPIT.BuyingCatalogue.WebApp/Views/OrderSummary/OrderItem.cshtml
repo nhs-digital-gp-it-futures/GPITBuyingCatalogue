@@ -36,7 +36,7 @@
     </tr>
     </thead>
 
-    @if (!(Model.OrderItemRecipients?.Any() ?? false))
+    @if (!(Model.RolledUpRecipients?.Any() ?? false))
     {
         <tr>
             <td style="column-span: all">No Service Recipients have been entered for this @itemType.</td>
@@ -44,10 +44,12 @@
     }
     else
     {
-        @foreach (var recipient in Model.OrderItemRecipients)
+        @foreach (var recipient in Model.RolledUpRecipients)
         {
-            var deliveryDate = recipient.DeliveryDate.HasValue
-                ? $"{recipient.DeliveryDate.Value:d MMM yyyy}"
+            var quantity = recipient.GetQuantityForItem(Model.CatalogueItem.Id);
+            var deliveryDate = recipient.GetDeliveryDateForItem(Model.CatalogueItem.Id);
+            var deliveryDateText = deliveryDate.HasValue
+                ? $"{deliveryDate.Value:d MMM yyyy}"
                 : "No date entered";
 
             <tr class="alternating">
@@ -61,26 +63,26 @@
                     </td>
                 }
                 <td>
-                    @($"{recipient.Recipient.Name} ({recipient.Recipient.OdsCode})")
+                    @($"{recipient.OdsOrganisation.Name} ({recipient.OdsCode})")
                 </td>
                 <td>
-                    @($"{Model.CallOffId}-{recipient.Recipient.OdsCode}-{ViewContext.HttpContext.NextLineId()}")
+                    @($"{Model.CallOffId}-{recipient.OdsCode}-{ViewContext.HttpContext.NextLineId()}")
                 </td>
                 <td>
-                    @deliveryDate
+                    @deliveryDateText
                 </td>
 
                 @if (hasServiceRecipientQuantities)
                 {
-                <td class="numeric">
-	                @(recipient.Quantity.HasValue ? $"{recipient.Quantity:N0}" : "-")
-                </td>
+                    <td class="numeric">
+                        @(quantity.HasValue ? $"{quantity:N0}" : "-")
+                    </td>
                 }
             </tr>
         }
 
         @if (hasServiceRecipientQuantities
-            && Model.OrderItemRecipients.Count > 1)
+            && Model.RolledUpRecipients.Count > 1)
         {
             <tr class="totals">
                 @if (Model.IsAmendment)
@@ -91,7 +93,7 @@
                 <td/>
                 <td/>
                 <td class="numeric total">
-                    @($"{Model.OrderItemRecipients.Sum(x => x.Quantity ?? 0):N0}")
+                    @($"{Model.RolledUpRecipients.Sum(x => x.GetQuantityForItem(Model.CatalogueItem.Id) ?? 0):N0}")
                 </td>
             </tr>
         }
@@ -120,7 +122,7 @@
                     @($"{tierCosts[0].Quantity:N0}")
                 </pdf-summary-list-row>
 
-                <pdf-summary-list-row label-text="Total cost @(Model.OrderItemPrice.BillingPeriod == null ? "(one-off)" : "")">
+                <pdf-summary-list-row label-text="Total cost @(Model.OrderItemPrice.BillingPeriod == null ? "(one - off)" : "")">
                     @($"£{tierCosts[0].Cost:N2}") @orderItemCostBasis
                 </pdf-summary-list-row>
             </pdf-summary-list>

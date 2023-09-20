@@ -32,6 +32,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Qu
 
         protected override Type OnwardController => typeof(ServiceRecipientsController);
 
-        protected override string OnwardActionName => Constants.Actions.AddServiceRecipients;
+        protected override string OnwardActionName => Constants.Actions.TaskList; // AddServiceRecipients;
     }
 }

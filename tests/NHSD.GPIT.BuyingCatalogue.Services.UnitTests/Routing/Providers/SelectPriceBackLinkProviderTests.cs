@@ -1,6 +1,7 @@
 ﻿using System;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -17,30 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             SelectPriceBackLinkProvider provider)
         {
             FluentActions
-                .Invoking(() => provider.Process(order, null))
+                .Invoking(() => provider.Process(new OrderWrapper(order), null))
                 .Should().Throw<ArgumentNullException>();
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public void Process_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            CatalogueItemId catalogueItemId,
-            SelectPriceBackLinkProvider provider)
-        {
-            var result = provider.Process(null, new RouteValues(internalOrgId, callOffId, catalogueItemId));
-
-            var expected = new
-            {
-                InternalOrgId = internalOrgId,
-                CallOffId = callOffId,
-                CatalogueItemId = catalogueItemId,
-            };
-
-            result.ActionName.Should().Be(Constants.Actions.EditServiceRecipients);
-            result.ControllerName.Should().Be(Constants.Controllers.ServiceRecipients);
-            result.RouteValues.Should().BeEquivalentTo(expected);
         }
 
         [Theory]

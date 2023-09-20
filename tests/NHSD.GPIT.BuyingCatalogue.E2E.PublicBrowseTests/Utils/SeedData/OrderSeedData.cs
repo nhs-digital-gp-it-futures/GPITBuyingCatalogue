@@ -431,17 +431,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 LastUpdatedBy = user.Id,
             };
 
-            var recipients = context.ServiceRecipients.ToList();
+            var recipients = new List<string> { "B84007", "B84016", "B84613" };
 
             recipients.ForEach(r =>
             {
-                var recipient = new OrderItemRecipient
+                var recipient = new OrderRecipient
                 {
-                    Recipient = r,
-                    Quantity = 1000,
+                    OdsCode = r,
                 };
+                recipient.SetQuantityForItem(addedSolution.CatalogueItemId, 1000);
 
-                addedSolution.OrderItemRecipients.Add(recipient);
+                order.OrderRecipients.Add(recipient);
             });
 
             order.OrderItems.Add(addedSolution);
@@ -503,18 +503,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99999, "003")),
             };
 
-            var recipients = context.ServiceRecipients.ToList();
+            var recipients = new List<string> { "B84007", "B84016", "B84613" };
 
             recipients.ForEach(r =>
             {
-                var recipient = new OrderItemRecipient
+                var recipient = new OrderRecipient
                 {
-                    Recipient = r,
-                    Quantity = 1000,
-                    DeliveryDate = DateTime.Today.AddDays(2),
+                    OdsCode = r,
                 };
+                recipient.SetQuantityForItem(addedSolution.CatalogueItemId, 1000);
+                recipient.SetDeliveryDateForItem(addedSolution.CatalogueItemId, DateTime.Today.AddDays(2));
 
-                addedSolution.OrderItemRecipients.Add(recipient);
+                order.OrderRecipients.Add(recipient);
             });
 
             order.OrderItems.Add(addedSolution);
@@ -577,18 +577,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99999, "003")),
             };
 
-            var recipients = context.ServiceRecipients.ToList();
+            var recipients = new List<string> { "B84007", "B84016", "B84613" };
 
             recipients.ForEach(r =>
             {
-                var recipient = new OrderItemRecipient
+                var recipient = new OrderRecipient
                 {
-                    Recipient = r,
-                    Quantity = 1000,
-                    DeliveryDate = DateTime.Today.AddDays(2),
+                    OdsCode = r,
                 };
+                recipient.SetQuantityForItem(addedSolution.CatalogueItemId, 1000);
+                recipient.SetDeliveryDateForItem(addedSolution.CatalogueItemId, DateTime.Today.AddDays(2));
 
-                addedSolution.OrderItemRecipients.Add(recipient);
+                order.OrderRecipients.Add(recipient);
             });
 
             order.OrderItems.Add(addedSolution);
@@ -777,15 +777,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "002")),
             };
 
-            var recipients = context.ServiceRecipients.ToList();
+            var recipients = new List<string> { "B84007", "B84016", "B84613" };
 
             recipients.ForEach(r =>
             {
-                addedSolution.OrderItemRecipients.Add(new()
+                var recipient = new OrderRecipient
                 {
-                    Recipient = r,
-                    Quantity = 1000,
-                });
+                    OdsCode = r,
+                };
+                recipient.SetQuantityForItem(addedSolution.CatalogueItemId, 1000);
+
+                order.OrderRecipients.Add(recipient);
             });
 
             order.OrderItems.Add(addedSolution);
@@ -865,18 +867,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "001A99")),
             };
 
-            var recipients = context.ServiceRecipients.ToList();
+            var recipients = new List<string> { "B84007", "B84016", "B84613" };
 
             recipients.ForEach(r =>
             {
-                var recipient = new OrderItemRecipient
+                var recipient = new OrderRecipient
                 {
-                    Recipient = r,
-                    Quantity = 1000,
+                    OdsCode = r,
                 };
+                recipient.SetQuantityForItem(addedSinglePriceCatalogueSolution.CatalogueItemId, 1000);
+                recipient.SetQuantityForItem(addedMultiplePriceCatalogueSolution.CatalogueItemId, 1000);
 
-                addedSinglePriceCatalogueSolution.OrderItemRecipients.Add(recipient);
-                addedMultiplePriceCatalogueSolution.OrderItemRecipients.Add(recipient);
+                order.OrderRecipients.Add(recipient);
             });
 
             order.OrderItems.Add(addedSinglePriceCatalogueSolution);
@@ -960,26 +962,22 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "002A999")),
             };
 
-            var recipients = context.ServiceRecipients.ToList();
+            var recipients = new List<string> { "B84007", "B84016", "B84613" };
 
             recipients.ForEach(r =>
             {
-                var recipient = new OrderItemRecipient
+                var recipient = new OrderRecipient
                 {
-                    Recipient = r,
-                    Quantity = 1000,
-                    DeliveryDate = timeNow.AddDays(1).Date,
+                    OdsCode = r,
                 };
+                recipient.SetQuantityForItem(addedSinglePriceCatalogueSolution.CatalogueItemId, 1000);
+                recipient.SetDeliveryDateForItem(addedSinglePriceCatalogueSolution.CatalogueItemId, timeNow.AddDays(1).Date);
+                recipient.SetQuantityForItem(addedMultiplePriceCatalogueSolution.CatalogueItemId, 1000);
+                recipient.SetDeliveryDateForItem(addedMultiplePriceCatalogueSolution.CatalogueItemId, timeNow.AddDays(1).Date);
+                recipient.SetQuantityForItem(addedAdditionalSolution.CatalogueItemId, 1000);
+                recipient.SetDeliveryDateForItem(addedAdditionalSolution.CatalogueItemId, timeNow.AddDays(2).Date);
 
-                addedSinglePriceCatalogueSolution.OrderItemRecipients.Add(recipient);
-                addedMultiplePriceCatalogueSolution.OrderItemRecipients.Add(recipient);
-
-                addedAdditionalSolution.OrderItemRecipients.Add(new OrderItemRecipient
-                {
-                    Recipient = r,
-                    Quantity = 1000,
-                    DeliveryDate = timeNow.AddDays(2).Date,
-                });
+                order.OrderRecipients.Add(recipient);
             });
 
             order.OrderItems.Add(addedSinglePriceCatalogueSolution);
@@ -1138,9 +1136,17 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "S-999")),
             };
 
-            var recipients = context.ServiceRecipients.ToList();
+            var recipients = new List<string> { "B84007", "B84016", "B84613" };
 
-            recipients.ForEach(r => addedSolution.OrderItemRecipients.Add(new OrderItemRecipient { Recipient = r }));
+            recipients.ForEach(r =>
+            {
+                var recipient = new OrderRecipient
+                {
+                    OdsCode = r,
+                };
+
+                order.OrderRecipients.Add(recipient);
+            });
 
             order.OrderItems.Add(addedSolution);
 
@@ -1229,19 +1235,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "S-997")),
             };
 
-            var recipients = context.ServiceRecipients.ToList();
+            var recipients = new List<string> { "B84007", "B84016", "B84613" };
 
             recipients.ForEach(r =>
             {
-                var recipient = new OrderItemRecipient
+                var recipient = new OrderRecipient
                 {
-                    Recipient = r,
-                    Quantity = 1000,
+                    OdsCode = r,
                 };
 
-                addedMultiplePriceCatalogueSolution.OrderItemRecipients.Add(recipient);
-                addedAdditionalSolution.OrderItemRecipients.Add(recipient);
-                addedAssociatedSolution.OrderItemRecipients.Add(recipient);
+                recipient.SetQuantityForItem(addedMultiplePriceCatalogueSolution.CatalogueItemId, 1000);
+                recipient.SetQuantityForItem(addedAdditionalSolution.CatalogueItemId, 1000);
+                recipient.SetQuantityForItem(addedAssociatedSolution.CatalogueItemId, 1000);
+
+                order.OrderRecipients.Add(recipient);
             });
 
             order.OrderItems.Add(addedMultiplePriceCatalogueSolution);
@@ -1297,14 +1304,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             order.OrderItems.Add(new OrderItem { Created = DateTime.UtcNow, OrderId = orderId, CatalogueItem = additionalService });
             order.OrderItems.Add(new OrderItem { Created = DateTime.UtcNow, OrderId = orderId, CatalogueItem = associatedService });
 
-            var recipients = context.ServiceRecipients.ToList();
+            var recipients = new List<string> { "B84007", "B84016", "B84613" };
 
-            recipients.ForEach(r => order.OrderItems.ToList().ForEach(x => x.OrderItemRecipients.Add(new OrderItemRecipient
+            recipients.ForEach(r =>
             {
-                Recipient = r,
-                OdsCode = r.OdsCode,
-                DeliveryDate = timeNow.AddDays(3).Date,
-            })));
+                order.OrderItems.ForEach(i =>
+                {
+                    var recipient = new OrderRecipient
+                    {
+                        OdsCode = r,
+                    };
+                    recipient.SetDeliveryDateForItem(i.CatalogueItemId, timeNow.AddDays(3).Date);
+                    order.OrderRecipients.Add(recipient);
+                });
+            });
 
             return order;
         }
@@ -1354,19 +1367,21 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
             order.OrderItems.Add(new OrderItem { Created = DateTime.UtcNow, OrderId = orderId, CatalogueItem = additionalService });
             order.OrderItems.Add(new OrderItem { Created = DateTime.UtcNow, OrderId = orderId, CatalogueItem = associatedService });
 
-            context.ServiceRecipients.ForEach(r =>
-            {
-                order.OrderItems.ToList().ForEach(x => x.OrderItemRecipients.Add(new OrderItemRecipient
-                {
-                    Recipient = r,
-                    DeliveryDate = timeNow.AddDays(3).Date,
-                }));
+            var recipients = new List<string> { "B84007", "B84016", "B84613" };
 
-                solutionItem.OrderItemRecipients.Add(new OrderItemRecipient
+            recipients.ForEach(r =>
+            {
+                var recipient = new OrderRecipient
                 {
-                    Recipient = r,
-                    DeliveryDate = timeNow.AddDays(2).Date,
+                    OdsCode = r,
+                };
+                order.OrderItems.ForEach(i =>
+                {
+                    recipient.SetDeliveryDateForItem(i.CatalogueItemId, timeNow.AddDays(3).Date);
                 });
+                recipient.SetDeliveryDateForItem(solutionItem.CatalogueItemId, timeNow.AddDays(2).Date);
+
+                order.OrderRecipients.Add(recipient);
             });
 
             order.OrderItems.Add(solutionItem);
@@ -1434,18 +1449,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "001")),
             };
 
-            var recipients = context.ServiceRecipients.ToList();
+            var recipients = new List<string> { "B84007", "B84016", "B84613" };
 
             recipients.ForEach(r =>
             {
-                var recipient = new OrderItemRecipient
+                var recipient = new OrderRecipient
                 {
-                    Recipient = r,
-                    Quantity = 1000,
-                    DeliveryDate = timeNow.AddDays(1).Date,
+                    OdsCode = r,
                 };
 
-                addedSolution.OrderItemRecipients.Add(recipient);
+                recipient.SetQuantityForItem(addedSolution.CatalogueItemId, 1000);
+                recipient.SetDeliveryDateForItem(addedSolution.CatalogueItemId, timeNow.AddDays(1).Date);
+
+                order.OrderRecipients.Add(recipient);
             });
 
             addedSolution.OrderItemFunding = new OrderItemFunding
@@ -1515,17 +1531,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "S-997")),
             };
 
-            var recipients = context.ServiceRecipients.ToList();
+            var recipients = new List<string> { "B84007", "B84016", "B84613" };
 
             recipients.ForEach(r =>
             {
-                var recipient = new OrderItemRecipient
+                var recipient = new OrderRecipient
                 {
-                    Recipient = r,
-                    Quantity = 1000,
+                    OdsCode = r,
                 };
 
-                service.OrderItemRecipients.Add(recipient);
+                recipient.SetQuantityForItem(service.CatalogueItemId, 1000);
+
+                order.OrderRecipients.Add(recipient);
             });
 
             order.OrderItems.Add(service);
@@ -1697,19 +1714,28 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 LastUpdatedBy = user.Id,
             };
 
-            var recipients = context.ServiceRecipients.Select(x => new OrderItemRecipient
-            {
-                Recipient = x,
-                Quantity = 1,
-            });
-
-            order.OrderItems.Add(new OrderItem
+            var orderItem = new OrderItem
             {
                 Created = DateTime.UtcNow,
                 OrderId = orderId,
                 CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "S-997")),
-                OrderItemRecipients = recipients.ToList(),
+            };
+
+            var recipients = new List<string> { "B84007", "B84016", "B84613" };
+
+            recipients.ForEach(r =>
+            {
+                var recipient = new OrderRecipient
+                {
+                    OdsCode = r,
+                };
+
+                recipient.SetQuantityForItem(orderItem.CatalogueItemId, 1);
+
+                order.OrderRecipients.Add(recipient);
             });
+
+            order.OrderItems.Add(orderItem);
 
             order.OrderItems.Add(new OrderItem
             {
@@ -1773,17 +1799,18 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CatalogueItem = context.CatalogueItems.First(c => c.Id == new CatalogueItemId(99998, "001")),
             };
 
-            var recipients = context.ServiceRecipients.ToList();
+            var recipients = new List<string> { "B84007", "B84016", "B84613" };
 
             recipients.ForEach(r =>
             {
-                var recipient = new OrderItemRecipient
+                var recipient = new OrderRecipient
                 {
-                    Recipient = r,
-                    Quantity = 1000,
+                    OdsCode = r,
                 };
 
-                addedSolution.OrderItemRecipients.Add(recipient);
+                recipient.SetQuantityForItem(addedSolution.CatalogueItemId, 1000);
+
+                order.OrderRecipients.Add(recipient);
             });
 
             addedSolution.OrderItemFunding = new OrderItemFunding
@@ -1836,18 +1863,19 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CatalogueItem = catalogueItem,
             };
 
-            var recipients = context.ServiceRecipients.ToList();
+            var recipients = new List<string> { "B84007", "B84016", "B84613" };
 
             recipients.ForEach(r =>
             {
-                var recipient = new OrderItemRecipient
+                var recipient = new OrderRecipient
                 {
-                    Recipient = r,
-                    Quantity = 1000,
-                    DeliveryDate = DateTime.UtcNow.AddDays(1),
+                    OdsCode = r,
                 };
 
-                orderItem.OrderItemRecipients.Add(recipient);
+                recipient.SetQuantityForItem(orderItem.CatalogueItemId, 1000);
+                recipient.SetDeliveryDateForItem(orderItem.CatalogueItemId, DateTime.UtcNow.AddDays(1));
+
+                order.OrderRecipients.Add(recipient);
             });
 
             order.OrderItems.Add(orderItem);

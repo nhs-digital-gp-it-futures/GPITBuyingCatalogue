@@ -326,14 +326,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
             EntityFramework.Catalogue.Models.Framework framework,
             FundingSourceController controller)
         {
+            var orderWrapper = new OrderWrapper(order);
             orderServiceMock
                 .Setup(o => o.GetOrderWithOrderItemsForFunding(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+                .ReturnsAsync(orderWrapper);
 
             frameworkServiceMock.Setup(f => f.GetFrameworksForOrder(order.CallOffId, internalOrgId, order.AssociatedServicesOnly))
                 .ReturnsAsync(new List<EntityFramework.Catalogue.Models.Framework>() { framework });
 
-            var expectedViewData = new FundingSources(internalOrgId, order.CallOffId, order, 1);
+            var expectedViewData = new FundingSources(internalOrgId, order.CallOffId, orderWrapper, 1);
 
             var actual = await controller.FundingSources(internalOrgId, order.CallOffId);
 
@@ -354,11 +355,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
             orderItemServiceMock.Setup(oi => oi.GetOrderItem(order.CallOffId, internalOrgId, orderItem.CatalogueItemId))
                 .ReturnsAsync(orderItem);
 
+            var orderWrapper = new OrderWrapper(order);
             orderService
                 .Setup(o => o.GetOrderWithOrderItemsForFunding(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+                .ReturnsAsync(orderWrapper);
 
-            var expectedViewData = new WebApp.Areas.Orders.Models.FundingSources.FundingSource(internalOrgId, order.CallOffId, order, orderItem);
+            var expectedViewData = new WebApp.Areas.Orders.Models.FundingSources.FundingSource(internalOrgId, order.CallOffId, orderWrapper, orderItem);
 
             var actual = await controller.FundingSource(internalOrgId, order.CallOffId, orderItem.CatalogueItemId);
 
@@ -377,7 +379,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
             [Frozen] Mock<IOrderItemService> orderItemServiceMock,
             FundingSourceController controller)
         {
-            var model = new WebApp.Areas.Orders.Models.FundingSources.FundingSource(internalOrgId, order.CallOffId, order, orderItem)
+            var orderWrapper = new OrderWrapper(order);
+            var model = new WebApp.Areas.Orders.Models.FundingSources.FundingSource(internalOrgId, order.CallOffId, orderWrapper, orderItem)
             {
                 SelectedFundingType = OrderItemFundingType.CentralFunding,
             };
@@ -408,7 +411,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
             [Frozen] Mock<IOrderItemService> orderItemServiceMock,
             FundingSourceController controller)
         {
-            var model = new WebApp.Areas.Orders.Models.FundingSources.FundingSource(internalOrgId, order.CallOffId, order, orderItem);
+            var orderWrapper = new OrderWrapper(order);
+            var model = new WebApp.Areas.Orders.Models.FundingSources.FundingSource(internalOrgId, order.CallOffId, orderWrapper, orderItem);
 
             controller.ModelState.AddModelError("test", "test");
 

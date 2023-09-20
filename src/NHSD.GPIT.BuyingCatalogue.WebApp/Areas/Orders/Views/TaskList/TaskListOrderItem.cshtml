@@ -7,46 +7,19 @@
     const RoutingSource source = RoutingSource.TaskList;
 }
 
-<h3 id="Name_@Model.CatalogueItemId">@Model.Name</h3>
-
-<nhs-table>
+<nhs-table label-text="@Model.Name" >
     <nhs-table-column>Section</nhs-table-column>
     <nhs-table-column>Status</nhs-table-column>
     <nhs-table-column>Action</nhs-table-column>
 
     <nhs-table-row-container>
-        <nhs-table-cell>Service Recipients</nhs-table-cell>
-        <nhs-table-cell>
-            <nhs-tag status-enum="@Model.ServiceRecipientsStatus"/>
-        </nhs-table-cell>
-        <nhs-table-cell>
-            @if (Model.ServiceRecipientsStatus == TaskProgress.NotStarted)
-            {
-                <a id="ServiceRecipients_@Model.CatalogueItemId"
-                   href="@Url.Action(
-                             nameof(ServiceRecipientsController.AddServiceRecipients),
-                             typeof(ServiceRecipientsController).ControllerName(),
-                             new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, source })">Edit</a>
-            }
-            else
-            {
-                <a id="ServiceRecipients_@Model.CatalogueItemId"
-                   href="@Url.Action(
-                             nameof(ServiceRecipientsController.EditServiceRecipients),
-                             typeof(ServiceRecipientsController).ControllerName(),
-                             new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, source })">Edit</a>
-            }
-        </nhs-table-cell>
-    </nhs-table-row-container>
-
-    <nhs-table-row-container>
         <nhs-table-cell>Price</nhs-table-cell>
         <nhs-table-cell>
-            <nhs-tag status-enum="@Model.PriceStatus"/>
+            <nhs-tag status-enum="@Model.PriceStatus" />
         </nhs-table-cell>
         <nhs-table-cell>
             @if (Model.IsAmendment
-                && Model.DisplayPriceViewLink)
+            && Model.FromPreviousRevision)
             {
                 <a id="Price_@Model.CatalogueItemId"
                    href="@Url.Action(
@@ -91,12 +64,12 @@
     <nhs-table-row-container>
         <nhs-table-cell>Quantity</nhs-table-cell>
         <nhs-table-cell>
-            <nhs-tag status-enum="@Model.QuantityStatus"/>
+            <nhs-tag status-enum="@Model.QuantityStatus" />
         </nhs-table-cell>
         <nhs-table-cell>
             @if (Model.QuantityStatus != TaskProgress.CannotStart)
             {
-                if (Model.IsAmendment && !Model.HasCurrentAmendments)
+                if (Model.IsAmendment && Model.FromPreviousRevision && !Model.HasNewRecipients && Model.QuantityStatus != TaskProgress.InProgress)
                 {
                     <a id="Quantity_@Model.CatalogueItemId" 
                        href="@Url.Action(
@@ -106,8 +79,8 @@
                 }
                 else
                 {
-                    <a id="Quantity_@Model.CatalogueItemId" 
-                       href="@Url.Action(
+                <a id="Quantity_@Model.CatalogueItemId"
+                   href="@Url.Action(
                                  nameof(QuantityController.SelectQuantity),
                                  typeof(QuantityController).ControllerName(),
                                  new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, source })">Edit</a>
@@ -115,20 +88,19 @@
             }
         </nhs-table-cell>
     </nhs-table-row-container>
-
-    @if (Model.HasCurrentAmendments)
+    @if (Model.IsAmendment && (Model.HasNewRecipients || !Model.FromPreviousRevision || Model.DeliveryDatesStatus == TaskProgress.InProgress))
     {
         <nhs-table-row-container>
             <nhs-table-cell>Planned delivery dates</nhs-table-cell>
             <nhs-table-cell>
-                <nhs-tag status-enum="@Model.DeliveryDatesStatus"/>
+                <nhs-tag status-enum="@Model.DeliveryDatesStatus" />
             </nhs-table-cell>
             <nhs-table-cell>
                 @if (Model.DeliveryDatesStatus != TaskProgress.NotApplicable
-                    && Model.DeliveryDatesStatus != TaskProgress.CannotStart)
+               && Model.DeliveryDatesStatus != TaskProgress.CannotStart)
                 {
                     <a id="Quantity_@Model.CatalogueItemId"
-                       href="@Url.Action( 
+                       href="@Url.Action(
                                  nameof(DeliveryDatesController.AmendDate),
                                  typeof(DeliveryDatesController).ControllerName(),
                                  new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, source })">Edit</a>

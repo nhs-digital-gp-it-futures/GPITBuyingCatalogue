@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             Completed = DateTime.UtcNow;
         }
 
-        public bool CanComplete()
+        public bool CanComplete(ICollection<OrderRecipient> orderRecipients, ICollection<OrderItem> orderItems)
         {
             return
                 !string.IsNullOrWhiteSpace(Description)
@@ -37,13 +37,18 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 && CommencementDate is not null
                 && (HasValidCatalogueItems() || HasAssociatedService())
                 && OrderItems.Count > 0
-                && OrderItems.All(x => x.OrderItemRecipients.All(r => r.DeliveryDate != null))
-                && OrderItems.All(oi => oi.OrderItemFunding is not null)
+                && HaveAllDeliveryDates(orderRecipients)
+                && orderItems.All(oi => oi.OrderItemFunding is not null)
                 && ContractFlags is not null
                 && (AssociatedServicesOnly || Contract?.ImplementationPlan is not null)
                 && (IsAmendment || !HasAssociatedService() || Contract?.ContractBilling is not null)
                 && ContractFlags?.UseDefaultDataProcessing == true
                 && OrderStatus != OrderStatus.Completed;
+        }
+
+        public bool HaveAllDeliveryDates(ICollection<OrderRecipient> orderRecipients)
+        {
+            return OrderItems.All(x => orderRecipients.AllDeliveryDatesEntered(x.CatalogueItemId));
         }
 
         public CatalogueItemId? GetSolutionId()
@@ -167,22 +172,29 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public void Apply(Order order)
         {
-            foreach (var orderItem in order.OrderItems)
+            // helps with backwards compatability - if we have an amendment where we didn't copy across all the items.
+            foreach (var orderItemToApply in order.OrderItems)
             {
-                var existing = OrderItems.FirstOrDefault(x => x.CatalogueItemId == orderItem.CatalogueItemId);
+                var existingOrderItem = OrderItems.FirstOrDefault(x => x.CatalogueItemId == orderItemToApply.CatalogueItemId);
 
-                if (existing == null)
+                if (existingOrderItem == null)
                 {
-                    OrderItems.Add(orderItem);
+                    OrderItems.Add(orderItemToApply);
+                }
+            }
+
+            foreach (var recipient in order.OrderRecipients)
+            {
+                var existingRecipient = OrderRecipients.FirstOrDefault(r => r.OdsCode == recipient.OdsCode);
+                if (existingRecipient == null)
+                {
+                    OrderRecipients.Add(recipient);
                 }
                 else
                 {
-                    foreach (var recipient in orderItem.OrderItemRecipients)
+                    foreach (var orderItemRecipient in recipient.OrderItemRecipients)
                     {
-                        if (existing.OrderItemRecipients.All(x => x.OdsCode != recipient.OdsCode))
-                        {
-                            existing.OrderItemRecipients.Add(recipient);
-                        }
+                        existingRecipient.OrderItemRecipients.Add(orderItemRecipient);
                     }
                 }
             }
@@ -228,7 +240,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public Order BuildAmendment(int newRevision)
         {
-            return new Order
+            var amendedOrder = new Order
             {
                 OrderNumber = OrderNumber,
                 Revision = newRevision,
@@ -244,23 +256,93 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 SupplierId = SupplierId,
                 SupplierContact = SupplierContact.Clone(),
             };
+
+            amendedOrder.InitialiseOrderItemsFrom(OrderItems);
+
+            foreach (var recipient in OrderRecipients)
+            {
+                amendedOrder.OrderRecipients.Add(
+                    amendedOrder.InitialiseOrderRecipient(
+                        recipient.OdsCode));
+            }
+
+            return amendedOrder;
         }
 
-        public OrderItem InitialiseOrderItem(CatalogueItem catalogueItem)
+        public void InitialiseOrderItemsFrom(ICollection<OrderItem> items)
+        {
+            foreach (var item in items)
+            {
+                if (item.CatalogueItem.CatalogueItemType != CatalogueItemType.AssociatedService)
+                {
+                    var existingOrderItem = OrderItems.FirstOrDefault(x => x.CatalogueItemId == item.CatalogueItemId);
+
+                    if (existingOrderItem == null)
+                    {
+                        OrderItems.Add(
+                            InitialiseOrderItem(
+                                item.CatalogueItem.Id,
+                                item.OrderItemPrice?.Copy(),
+                                item.Quantity,
+                                item.EstimationPeriod));
+                    }
+                }
+            }
+        }
+
+        public OrderItem InitialiseOrderItem(CatalogueItemId catalogueItemId)
         {
             return new OrderItem
             {
                 OrderId = Id,
-                CatalogueItemId = catalogueItem.Id,
-                CatalogueItem = catalogueItem,
+                CatalogueItemId = catalogueItemId,
                 Created = DateTime.UtcNow,
             };
         }
 
-        public OrderItem InitialiseOrderItem(CatalogueItem catalogueItem, OrderItemPrice orderItemPrice)
+        public OrderRecipient InitialiseOrderRecipient(string odsCode)
         {
-            var orderItem = InitialiseOrderItem(catalogueItem);
+            return new OrderRecipient(Id, odsCode);
+        }
+
+        public ICollection<OrderRecipient> AddedOrderRecipients(Order previous) => OrderRecipients
+            .Where(r => !(previous?.OrderRecipients?.Exists(r.OdsCode) ?? false)).ToList();
+
+        public ICollection<OrderRecipient> DetermineOrderRecipients(Order previous, CatalogueItemId catalogueItemId)
+        {
+            if (Exists(catalogueItemId))
+            {
+                if (previous == null || !previous.Exists(catalogueItemId))
+                {
+                    // No previous order or this order item is new, all recipients apply
+                    return OrderRecipients;
+                }
+
+                // only the new recipients or recipients from previous orders with missing values
+                // which might happen if we amend migrated order that wasn't global recipient compatible
+                return OrderRecipients.Where(r =>
+                {
+                    var previousRecipient = previous.OrderRecipients.Get(r.OdsCode);
+                    return previousRecipient == null
+                            || previousRecipient.OrderItemRecipients.All(oir => oir.CatalogueItemId != catalogueItemId);
+                }).ToList();
+            }
+
+            // it doesn't exsit on this order so no recipients apply
+            return Enumerable.Empty<OrderRecipient>().ToList();
+        }
+
+        public bool Exists(CatalogueItemId catalogueItemId)
+        {
+            return OrderItems.Any(x => x.CatalogueItemId == catalogueItemId);
+        }
+
+        private OrderItem InitialiseOrderItem(CatalogueItemId catalogueItemId, OrderItemPrice orderItemPrice, int? quantity, TimeUnit? estimationPeriod)
+        {
+            var orderItem = InitialiseOrderItem(catalogueItemId);
             orderItem.OrderItemPrice = orderItemPrice;
+            orderItem.Quantity = quantity;
+            orderItem.EstimationPeriod = estimationPeriod;
             return orderItem;
         }
     }

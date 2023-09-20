@@ -44,36 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 }
 
                 var catalogueItem = dbContext.CatalogueItems.First(x => x.Id == id);
-                dbContext.OrderItems.Add(order.InitialiseOrderItem(catalogueItem));
-            }
-
-            await dbContext.SaveChangesAsync();
-        }
-
-        public async Task CopyOrderItems(string internalOrgId, CallOffId callOffId, IEnumerable<CatalogueItemId> itemIds)
-        {
-            ArgumentNullException.ThrowIfNull(itemIds);
-
-            var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
-            var order = wrapper.Order;
-
-            if (order == null)
-            {
-                return;
-            }
-
-            foreach (var id in itemIds)
-            {
-                if (order.OrderItem(id) != null)
-                {
-                    continue;
-                }
-
-                var catalogueItem = dbContext.CatalogueItems.First(x => x.Id == id);
-                dbContext.OrderItems.Add(
-                    order.InitialiseOrderItem(
-                        catalogueItem,
-                        wrapper.RolledUp.OrderItem(id)?.OrderItemPrice?.Copy()));
+                dbContext.OrderItems.Add(order.InitialiseOrderItem(catalogueItem.Id));
             }
 
             await dbContext.SaveChangesAsync();
@@ -118,8 +89,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(oi => oi.CatalogueItem)
                 .Include(oi => oi.OrderItemPrice)
                     .ThenInclude(ip => ip.OrderItemPriceTiers)
-                .Include(oi => oi.OrderItemRecipients)
-                    .ThenInclude(ir => ir.Recipient)
                 .FirstOrDefaultAsync(oi => oi.OrderId == orderId
                     && oi.CatalogueItemId == catalogueItemId
                     && oi.Order.OrderingParty.InternalIdentifier == internalOrgId);
@@ -134,14 +103,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task DetectChangesInFundingAndDelete(CallOffId callOffId, string internalOrgId, CatalogueItemId catalogueItemId)
         {
-            var item = await GetOrderItemTracked(callOffId, internalOrgId, catalogueItemId);
+            var orderWrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = orderWrapper.Order;
+            var item = order.OrderItems.FirstOrDefault(oi => oi.CatalogueItemId == catalogueItemId);
 
-            if (item.OrderItemFunding is null || !item.IsReadyForReview(callOffId.IsAmendment))
+            if (item.OrderItemFunding is null || !item.IsReadyForReview(callOffId.IsAmendment, orderWrapper.DetermineOrderRecipients(item.CatalogueItemId)))
                 return;
 
             var newFundingType = item.FundingType;
 
-            if (item.TotalCost() == 0)
+            if (item.TotalCost(order.OrderRecipients) == 0)
                 newFundingType = OrderItemFundingType.NoFundingRequired;
             else if (item.Order.OrderingParty.OrganisationType == OrganisationType.GP)
                 newFundingType = OrderItemFundingType.LocalFundingOnly;
@@ -188,8 +159,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(oi => oi.CatalogueItem)
                 .Include(oi => oi.OrderItemPrice)
                     .ThenInclude(ip => ip.OrderItemPriceTiers)
-                .Include(oi => oi.OrderItemRecipients)
-                    .ThenInclude(ir => ir.Recipient)
                 .Include(oi => oi.Order)
                     .ThenInclude(o => o.SelectedFramework)
                 .Include(oi => oi.Order)
