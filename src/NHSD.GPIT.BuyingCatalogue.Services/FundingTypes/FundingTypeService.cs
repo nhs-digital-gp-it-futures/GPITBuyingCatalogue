@@ -22,17 +22,27 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.FundingTypes
             return fundingType switch
             {
                 OrderItemFundingType.LocalFundingOnly => OrderItemFundingType.LocalFunding,
-                OrderItemFundingType.MixedFunding => GetMixed(allFundingTypes),
-                _ => OrderItemFundingType.None,
+                OrderItemFundingType.MixedFunding => GetDefault(allFundingTypes),
+                _ => GetNoFunding(allFundingTypes),
             };
         }
 
-        private static OrderItemFundingType GetMixed(List<OrderItemFundingType> allFundingTypes)
+        private static OrderItemFundingType GetDefault(List<OrderItemFundingType> allFundingTypes)
         {
             var containsCentral = allFundingTypes.Contains(OrderItemFundingType.CentralFunding);
             var containsLocal = allFundingTypes.Contains(OrderItemFundingType.LocalFunding) || allFundingTypes.Contains(OrderItemFundingType.LocalFundingOnly);
 
             return (!containsCentral && containsLocal) ? OrderItemFundingType.LocalFunding : OrderItemFundingType.CentralFunding;
         }
-}
+
+        private static OrderItemFundingType GetNoFunding(List<OrderItemFundingType> allFundingTypes)
+        {
+            var containsCentral = allFundingTypes.Contains(OrderItemFundingType.CentralFunding);
+            var containsMixed = allFundingTypes.Contains(OrderItemFundingType.MixedFunding);
+
+            // If order contains deprecated Central and Mixed funding types then can assume it is an old order.
+            // In all other cases set to None
+            return (containsCentral || containsMixed) ? GetDefault(allFundingTypes) : OrderItemFundingType.None;
+        }
+    }
 }
