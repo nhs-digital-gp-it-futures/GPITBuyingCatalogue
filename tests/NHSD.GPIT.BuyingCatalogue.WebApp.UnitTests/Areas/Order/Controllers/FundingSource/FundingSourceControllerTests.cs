@@ -355,7 +355,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
                 .ReturnsAsync(orderItem);
 
             orderService
-                .Setup(o => o.GetOrderThin(order.CallOffId, internalOrgId))
+                .Setup(o => o.GetOrderWithOrderItemsForFunding(order.CallOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));
 
             var expectedViewData = new WebApp.Areas.Orders.Models.FundingSources.FundingSource(internalOrgId, order.CallOffId, order, orderItem);

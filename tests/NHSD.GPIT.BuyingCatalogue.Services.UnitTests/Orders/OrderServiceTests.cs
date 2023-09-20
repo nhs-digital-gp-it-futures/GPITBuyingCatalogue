@@ -1023,14 +1023,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
-        public static async Task SetFundingSourceForForceFundedItems_FrameworkLocalFundingOnly_UpdatesDatabase(
+        [InMemoryDbInlineAutoData(FundingType.LocalFunding)]
+        [InMemoryDbInlineAutoData(FundingType.Gpit)]
+        [InMemoryDbInlineAutoData(FundingType.Pcarp)]
+        public static async Task SetFundingSourceForForceFundedItems_FrameworkHasSingleFundingType_UpdatesDatabase(
+            FundingType fundingType,
             Order order,
             OrderItem orderItem,
             [Frozen] BuyingCatalogueDbContext context,
             OrderService service)
         {
-            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.LocalFunding };
+            order.SelectedFramework.FundingTypes = new List<FundingType> { fundingType };
             orderItem.OrderItemFunding = null;
             order.OrderItems = new List<OrderItem>() { orderItem };
             context.Orders.Add(order);
@@ -1044,7 +1047,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             orderItemFunding.Should().NotBeNull();
             orderItemFunding.OrderId.Should().Be(order.Id);
             orderItemFunding.CatalogueItemId.Should().Be(orderItem.CatalogueItemId);
-            orderItemFunding.OrderItemFundingType.Should().Be(OrderItemFundingType.LocalFundingOnly);
+            orderItemFunding.OrderItemFundingType.Should().Be(fundingType.AsOrderItemFundingType());
         }
 
         [Theory]
