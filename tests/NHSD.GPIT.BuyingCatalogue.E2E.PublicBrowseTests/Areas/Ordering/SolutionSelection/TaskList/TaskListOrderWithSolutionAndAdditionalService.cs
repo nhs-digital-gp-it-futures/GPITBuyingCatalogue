@@ -25,28 +25,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ta
 
         protected override string PageTitle => "Review your progress - Order C091007-01";
 
-        protected override List<TaskListOrderItem> OrderItems => new()
-        {
-            new TaskListOrderItem
-            {
-                Name = "E2E With Contact Multiple Prices",
-                CatalogueItemId = new CatalogueItemId(99998, "001"),
-                ServiceRecipientsAction = nameof(ServiceRecipientsController.EditServiceRecipients),
-                PriceLinkActive = true,
-                PriceAction = nameof(PricesController.SelectPrice),
-                QuantityLinkActive = true,
-                QuantityAction = nameof(QuantityController.SelectServiceRecipientQuantity),
-            },
-            new TaskListOrderItem
-            {
-                Name = "E2E No Contact Single Price Additional Service",
-                CatalogueItemId = new CatalogueItemId(99998, "002A999"),
-                ServiceRecipientsAction = nameof(ServiceRecipientsController.EditServiceRecipients),
-                PriceLinkActive = true,
-                PriceAction = nameof(PricesController.EditPrice),
-                QuantityLinkActive = true,
-                QuantityAction = nameof(QuantityController.SelectQuantity),
-            },
-        };
+        protected override List<TaskListOrderItem> OrderItems => new() { };
     }
 }

@@ -3,6 +3,7 @@ using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Xunit;
@@ -13,10 +14,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
     {
         [Theory]
         [CommonAutoData]
-        public static void Get_OrderIsNull_ReturnsCannotStart(
+        public static void Get_OrderWrapperIsNull_ReturnsCannotStart(
             OrderingPartyStatusProvider service)
         {
             var actual = service.Get(null, new());
+
+            actual.Should().Be(TaskProgress.CannotStart);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Get_OrderIsNull_ReturnsCannotStart(
+            OrderingPartyStatusProvider service)
+        {
+            var actual = service.Get(new OrderWrapper(), new());
 
             actual.Should().Be(TaskProgress.CannotStart);
         }

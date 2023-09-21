@@ -3,7 +3,6 @@ using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.RecipientsModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 using Xunit;
 
@@ -23,6 +22,7 @@ public static class SelectRecipientsModelTests
             organisation,
             serviceRecipients,
             existingRecipients,
+            Enumerable.Empty<string>(),
             preSelectedRecipients);
 
         var groupedSubLocations = serviceRecipients.GroupBy(x => x.Location)
@@ -56,6 +56,7 @@ public static class SelectRecipientsModelTests
             organisation,
             serviceRecipients,
             existingRecipients,
+            Enumerable.Empty<string>(),
             preSelectedRecipients,
             selectionMode);
 
@@ -77,6 +78,7 @@ public static class SelectRecipientsModelTests
             organisation,
             serviceRecipients,
             existingRecipients,
+            Enumerable.Empty<string>(),
             preSelectedRecipients);
 
         model.GetSelectedServiceRecipients().Select(x => x.OdsCode).Should().BeEquivalentTo(preSelectedRecipients);
@@ -96,6 +98,7 @@ public static class SelectRecipientsModelTests
             organisation,
             serviceRecipients,
             existingRecipients,
+            Enumerable.Empty<string>(),
             preSelectedRecipients);
 
         model.HasSelectedRecipients().Should().BeFalse();
@@ -116,6 +119,7 @@ public static class SelectRecipientsModelTests
             organisation,
             serviceRecipients,
             existingRecipients,
+            Enumerable.Empty<string>(),
             preSelectedRecipients);
 
         model.GetSelectedServiceRecipients().Select(x => x.OdsCode).Should().BeEquivalentTo(preSelectedRecipients);

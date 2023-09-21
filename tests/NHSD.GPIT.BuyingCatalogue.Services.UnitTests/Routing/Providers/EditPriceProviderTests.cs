@@ -3,6 +3,7 @@ using System.Linq;
 using FluentAssertions;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -14,14 +15,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
     {
         [Theory]
         [CommonAutoData]
-        public void Process_OrderIsNull_ThrowsException(
+        public void Process_OrderWrapperIsNull_ThrowsException(
             RouteValues routeValues,
             EditPriceProvider provider)
         {
             FluentActions
                 .Invoking(() => provider.Process(null, routeValues))
                 .Should().Throw<ArgumentNullException>()
-                .WithParameterName("order");
+                .WithParameterName("orderWrapper");
         }
 
         [Theory]
@@ -30,8 +31,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             Order order,
             EditPriceProvider provider)
         {
+            var orderWrapper = new OrderWrapper(order);
+
             FluentActions
-                .Invoking(() => provider.Process(order, null))
+                .Invoking(() => provider.Process(new OrderWrapper(order), null))
                 .Should().Throw<ArgumentNullException>()
                 .WithParameterName("routeValues");
 
@@ -41,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             };
 
             FluentActions
-                .Invoking(() => provider.Process(order, routeValues))
+                .Invoking(() => provider.Process(orderWrapper, routeValues))
                 .Should().Throw<ArgumentNullException>()
                 .WithParameterName("routeValues");
         }
@@ -55,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             EditPriceProvider provider)
         {
             var catalogueItemId = order.OrderItems.First().CatalogueItemId;
-            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId));
+            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, catalogueItemId));
 
             var expected = new
             {
@@ -78,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             EditPriceProvider provider)
         {
             var catalogueItemId = order.OrderItems.First().CatalogueItemId;
-            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId)
+            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, catalogueItemId)
             {
                 Source = RoutingSource.TaskList,
             });
@@ -106,9 +109,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             var catalogueItemId = orderItem.CatalogueItemId;
 
             orderItem.Quantity = null;
-            orderItem.OrderItemRecipients.ForEach(x => x.Quantity = null);
+            order.OrderRecipients.ForEach(o => o.OrderItemRecipients.Clear());
 
-            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId)
+            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, catalogueItemId)
             {
                 Source = RoutingSource.TaskList,
             });

@@ -1,18 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Environments;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
-using NHSD.GPIT.BuyingCatalogue.Services.Orders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
@@ -148,8 +146,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             var model = new SummaryModel(orderWrapper, internalOrgId, hasSubsequentRevisions, defaultPlan)
             {
                 BackLink = GetBackLink(internalOrgId, callOffId, order),
-                Title = GetTitle(order),
-                AdviceText = GetAdvice(order, !hasSubsequentRevisions),
+                Title = GetTitle(orderWrapper),
+                AdviceText = GetAdvice(orderWrapper, !hasSubsequentRevisions),
             };
 
             return View(model);
@@ -159,8 +157,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         public async Task<IActionResult> SummaryComplete(string internalOrgId, CallOffId callOffId)
         {
             var orderWrapper = await orderService.GetOrderForSummary(callOffId, internalOrgId);
-            var order = orderWrapper.Order;
-            if (!order.CanComplete())
+            if (!orderWrapper.CanComplete())
             {
                 ModelState.AddModelError(ErrorKey, ErrorMessage);
                 var hasSubsequentRevisions = await orderService.HasSubsequentRevisions(callOffId);
@@ -169,9 +166,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 
                 var model = new SummaryModel(orderWrapper, internalOrgId, hasSubsequentRevisions, defaultPlan)
                 {
-                    BackLink = GetBackLink(internalOrgId, callOffId, order),
-                    Title = GetTitle(order),
-                    AdviceText = GetAdvice(order, !hasSubsequentRevisions),
+                    BackLink = GetBackLink(internalOrgId, callOffId, orderWrapper.Order),
+                    Title = GetTitle(orderWrapper),
+                    AdviceText = GetAdvice(orderWrapper, !hasSubsequentRevisions),
                 };
 
                 return View(model);
@@ -289,27 +286,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                 new { internalOrgId, callOffId });
         }
 
-        internal static string GetAdvice(Order order, bool latestOrder)
+        internal static string GetAdvice(OrderWrapper orderWrapper, bool latestOrder)
         {
+            var order = orderWrapper.Order;
+
             return order.OrderStatus switch
             {
                 OrderStatus.Terminated => "This contract has been terminated, but you can still view the details.",
                 OrderStatus.Completed when order.AssociatedServicesOnly => "This order has already been completed, but you can terminate the contract if needed.",
                 OrderStatus.Completed when latestOrder => "This order has already been completed, but you can amend or terminate the contract if needed.",
                 OrderStatus.Completed => "There is an amendment currently in progress for this contract.",
-                _ => order.CanComplete()
+                _ => orderWrapper.CanComplete()
                     ? "Review the items you’ve added to your order before completing it."
                     : "This is what's been added to your order so far. You must complete all mandatory steps before you can confirm your order.",
             };
         }
 
-        private static string GetTitle(Order order)
+        private static string GetTitle(OrderWrapper orderWrapper)
         {
+            var order = orderWrapper.Order;
+
             return order.OrderStatus switch
             {
                 OrderStatus.Terminated => "Terminated contract details",
                 OrderStatus.Completed => "Order confirmed",
-                _ => order.CanComplete()
+                _ => orderWrapper.CanComplete()
                     ? "Review order summary"
                     : "Order summary",
             };

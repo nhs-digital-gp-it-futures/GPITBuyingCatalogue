@@ -129,12 +129,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         [HttpGet("{catalogueItemId}/amend")]
         public async Task<IActionResult> AmendDate(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, RoutingSource? source = null)
         {
-            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
-            var deliveryDate = order.OrderItem(catalogueItemId)?.OrderItemRecipients?.FirstOrDefault()?.DeliveryDate;
+            var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = wrapper.Order;
+
+            var recipients = wrapper.DetermineOrderRecipients(catalogueItemId);
+            var deliveryDate = recipients.FirstOrDefault()?.GetDeliveryDateForItem(catalogueItemId);
 
             var route = routingService.GetRoute(
                 RoutingPoint.AmendDeliveryDatesBackLink,
-                order,
+                wrapper,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
 
             var model = new AmendDateModel(internalOrgId, callOffId, catalogueItemId, order, deliveryDate)
@@ -156,11 +159,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
 
             await deliveryDateService.SetDeliveryDate(internalOrgId, callOffId, catalogueItemId, model.Date!.Value);
 
-            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
+            var orderWrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
 
             var route = routingService.GetRoute(
                 RoutingPoint.AmendDeliveryDates,
-                order,
+                orderWrapper,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = model.Source });
 
             return RedirectToAction(route.ActionName, route.ControllerName, route.RouteValues);
@@ -169,11 +172,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         [HttpGet("{catalogueItemId}/edit")]
         public async Task<IActionResult> EditDates(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, RoutingSource? source = null)
         {
-            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
+            var orderWrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = orderWrapper.Order;
 
             var route = routingService.GetRoute(
                 RoutingPoint.EditDeliveryDatesBackLink,
-                order,
+                orderWrapper,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
 
             var model = new EditDatesModel(order, catalogueItemId, source)
@@ -192,7 +196,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                 return View(model);
             }
 
-            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
+            var orderWrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = orderWrapper.Order;
 
             var deliveryDates = model.Recipients
                 .Select(x => new RecipientDeliveryDateDto(x.OdsCode, x.Date!.Value))
@@ -202,7 +207,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
 
             var route = routingService.GetRoute(
                 RoutingPoint.EditDeliveryDates,
-                order,
+                orderWrapper,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = model.Source });
 
             return RedirectToAction(route.ActionName, route.ControllerName, route.RouteValues);
@@ -234,7 +239,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                 return View(model);
             }
 
-            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
+            var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = wrapper.Order;
 
             if (model.MatchDates == true)
             {
@@ -247,9 +253,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             }
             else
             {
-                var orderItem = order.OrderItem(catalogueItemId);
-
-                var recipients = orderItem.OrderItemRecipients
+                var recipients = wrapper.DetermineOrderRecipients(catalogueItemId)
                     .Select(x => new RecipientDeliveryDateDto(x.OdsCode, order.DeliveryDate!.Value))
                     .ToList();
 

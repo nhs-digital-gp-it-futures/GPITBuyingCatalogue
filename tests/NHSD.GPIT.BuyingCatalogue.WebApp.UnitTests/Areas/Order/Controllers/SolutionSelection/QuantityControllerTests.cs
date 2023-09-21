@@ -188,16 +188,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
+            var orderWrapper = new OrderWrapper(order);
             mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+                .Setup(x => x.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId))
+                .ReturnsAsync(orderWrapper);
 
             mockOrderQuantityService
                 .Setup(x => x.SetOrderItemQuantity(order.Id, orderItem.CatalogueItemId, quantity))
                 .Returns(Task.CompletedTask);
 
             mockRoutingService
-                .Setup(x => x.GetRoute(RoutingPoint.SelectQuantity, order, It.IsAny<RouteValues>()))
+                .Setup(x => x.GetRoute(RoutingPoint.SelectQuantity, orderWrapper, It.IsAny<RouteValues>()))
                 .Returns(Route(internalOrgId, callOffId));
 
             model.Quantity = $"{quantity}";
@@ -233,7 +234,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.Patient;
             orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-            orderItem.OrderItemRecipients.ForEach(x => x.Quantity = null);
+            order.OrderRecipients.ForEach(r => r.OrderItemRecipients.ForEach(x => x.Quantity = null));
 
             mockOrderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
@@ -242,7 +243,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             mockGpPracticeService
                 .Setup(x => x.GetNumberOfPatients(It.IsAny<IEnumerable<string>>()))
                 .ReturnsAsync(
-                    orderItem.OrderItemRecipients.Select(
+                    order.OrderRecipients.Select(
                             x => new GpPracticeSize { OdsCode = x.OdsCode, NumberOfPatients = NumberOfPatients })
                         .ToList());
 
@@ -254,8 +255,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeOfType<SelectServiceRecipientQuantityModel>().Subject;
 
-            var recipients = orderItem.OrderItemRecipients.Select(
-                x => new ServiceRecipientDto(x.OdsCode, x.Recipient?.Name, x.Quantity));
+            var recipients = order.OrderRecipients.Select(
+                x => new ServiceRecipientDto(x.OdsCode, x.OdsOrganisation?.Name, x.GetQuantityForItem(orderItem.CatalogueItemId)));
 
             var expected = new SelectServiceRecipientQuantityModel(orderItem.CatalogueItem, orderItem.OrderItemPrice, recipients);
             expected.ServiceRecipients.ForEach(x => x.InputQuantity = $"{NumberOfPatients}");
@@ -278,17 +279,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             solution.OrderItemPrice.ProvisioningType = ProvisioningType.Patient;
-            solution.OrderItemRecipients.ForEach(x => x.Quantity = NumberOfPatients);
+            order.OrderRecipients.ForEach(r => r.SetQuantityForItem(solution.CatalogueItemId, NumberOfPatients));
 
             var orderItem = order.OrderItems.ElementAt(1);
 
             orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.Patient;
-            orderItem.OrderItemRecipients.ForEach(x => x.Quantity = null);
-
-            for (var i = 0; i < solution.OrderItemRecipients.Count; i++)
-            {
-                orderItem.OrderItemRecipients.ElementAt(i).OdsCode = solution.OrderItemRecipients.ElementAt(i).OdsCode;
-            }
+            order.OrderRecipients.ForEach(r => r.OrderItemRecipients.Where(i => i.CatalogueItemId == orderItem.CatalogueItemId).ForEach(x => x.Quantity = null));
 
             mockOrderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
@@ -301,8 +297,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeOfType<SelectServiceRecipientQuantityModel>().Subject;
 
-            var recipients = orderItem.OrderItemRecipients.Select(
-                x => new ServiceRecipientDto(x.OdsCode, x.Recipient?.Name, x.Quantity));
+            var recipients = order.OrderRecipients.Select(
+                x => new ServiceRecipientDto(x.OdsCode, x.OdsOrganisation?.Name, x.GetQuantityForItem(orderItem.CatalogueItemId)));
 
             var expected = new SelectServiceRecipientQuantityModel(orderItem.CatalogueItem, orderItem.OrderItemPrice, recipients);
 
@@ -337,8 +333,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeOfType<SelectServiceRecipientQuantityModel>().Subject;
 
-            var recipients = orderItem.OrderItemRecipients.Select(
-                x => new ServiceRecipientDto(x.OdsCode, x.Recipient?.Name, x.Quantity));
+            var recipients = order.OrderRecipients.Select(
+                x => new ServiceRecipientDto(x.OdsCode, x.OdsOrganisation?.Name, x.GetQuantityForItem(orderItem.CatalogueItemId)));
 
             var expected = new SelectServiceRecipientQuantityModel(orderItem.CatalogueItem, orderItem.OrderItemPrice, recipients);
 
@@ -383,9 +379,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
+            var orderWrapper = new OrderWrapper(order);
             mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+                .Setup(x => x.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId))
+                .ReturnsAsync(orderWrapper);
 
             List<OrderItemRecipientQuantityDto> actual = null;
 
@@ -395,7 +392,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Returns(Task.CompletedTask);
 
             mockRoutingService
-                .Setup(x => x.GetRoute(RoutingPoint.SelectQuantity, order, It.IsAny<RouteValues>()))
+                .Setup(x => x.GetRoute(RoutingPoint.SelectQuantity, orderWrapper, It.IsAny<RouteValues>()))
                 .Returns(Route(internalOrgId, callOffId));
 
             model.ServiceRecipients.ForEach(x => x.InputQuantity = x.Quantity > 0 ? string.Empty : "1");
@@ -531,7 +528,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new ViewServiceRecipientQuantityModel(orderItem)
+            var expected = new ViewServiceRecipientQuantityModel(orderItem, order.OrderRecipients)
             {
                 InternalOrgId = internalOrgId,
                 CallOffId = callOffId,

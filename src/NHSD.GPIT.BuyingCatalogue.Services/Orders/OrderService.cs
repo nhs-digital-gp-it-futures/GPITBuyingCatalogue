@@ -9,7 +9,6 @@ using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
@@ -99,10 +98,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.OrderItemPrice)
                     .ThenInclude(ip => ip.OrderItemPriceTiers)
-                .Include(o => o.OrderItems)
-                    .ThenInclude(i => i.OrderItemRecipients)
-                    .ThenInclude(r => r.Recipient)
                 .Include(o => o.SelectedFramework)
+                .Include(x => x.OrderRecipients).ThenInclude(x => x.OrderItemRecipients)
+                .Include(x => x.OrderRecipients).ThenInclude(x => x.OdsOrganisation)
                 .AsSplitQuery()
                 .Where(o => o.OrderNumber == callOffId.OrderNumber
                     && o.Revision <= callOffId.Revision
@@ -124,10 +122,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.OrderItemPrice)
                     .ThenInclude(ip => ip.OrderItemPriceTiers.OrderBy(t => t.LowerRange))
-                .Include(o => o.OrderItems)
-                    .ThenInclude(i => i.OrderItemRecipients.OrderBy(oir => oir.Recipient.Name))
-                    .ThenInclude(r => r.Recipient)
                 .Include(o => o.SelectedFramework)
+                .Include(x => x.OrderRecipients).ThenInclude(x => x.OdsOrganisation)
+                .Include(x => x.OrderRecipients).ThenInclude(x => x.OrderItemRecipients)
                 .AsSplitQuery()
                 .Where(o => o.OrderNumber == callOffId.OrderNumber
                     && o.Revision <= callOffId.Revision
@@ -148,10 +145,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.OrderItemPrice)
                     .ThenInclude(ip => ip.OrderItemPriceTiers)
-                .Include(o => o.OrderItems)
-                    .ThenInclude(i => i.OrderItemRecipients)
-                    .ThenInclude(r => r.Recipient)
                 .Include(o => o.SelectedFramework)
+                .Include(x => x.OrderRecipients)
+                    .ThenInclude(x => x.OdsOrganisation)
+                .Include(x => x.OrderRecipients)
+                    .ThenInclude(x => x.OrderItemRecipients)
                 .AsSplitQuery()
                 .Where(o => o.OrderNumber == callOffId.OrderNumber
                     && o.Revision <= callOffId.Revision
@@ -177,55 +175,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         [ExcludeFromCodeCoverage(Justification = "Method uses Temporal tables which the In-Memory provider doesn't support.")]
         public async Task<OrderWrapper> GetOrderForSummary(CallOffId callOffId, string internalOrgId)
         {
-            var orders = await dbContext.Orders
-                .Include(x => x.ContractFlags)
-                .Include(x => x.Contract)
-                    .ThenInclude(i => i.ImplementationPlan)
-                        .ThenInclude(m => m.Milestones)
-                .Include(x => x.Contract)
-                    .ThenInclude(i => i.ContractBilling)
-                        .ThenInclude(m => m.ContractBillingItems)
-                            .ThenInclude(m => m.Milestone)
-                .Include(x => x.Contract)
-                    .ThenInclude(i => i.ContractBilling)
-                        .ThenInclude(m => m.ContractBillingItems)
-                            .ThenInclude(m => m.OrderItem)
-                                .ThenInclude(m => m.CatalogueItem)
-                .Include(x => x.Contract)
-                    .ThenInclude(i => i.ContractBilling)
-                        .ThenInclude(m => m.Requirements)
-                            .ThenInclude(m => m.OrderItem)
-                                .ThenInclude(m => m.CatalogueItem)
-                .Include(o => o.OrderingParty)
-                .Include(o => o.OrderingPartyContact)
-                .Include(o => o.Solution)
-                .ThenInclude(o => o.Solution)
-                .ThenInclude(o => o.FrameworkSolutions)
-                .ThenInclude(o => o.Framework)
-                .Include(o => o.Supplier)
-                .Include(o => o.SupplierContact)
-                .Include(o => o.LastUpdatedByUser)
-                .Include(o => o.SelectedFramework)
-                .Include(o => o.OrderItems)
-                    .ThenInclude(i => i.CatalogueItem)
-                    .ThenInclude(ci => ci.Solution)
-                    .ThenInclude(s => s.FrameworkSolutions)
-                    .ThenInclude(fs => fs.Framework)
-                .Include(o => o.OrderItems)
-                    .ThenInclude(i => i.OrderItemFunding)
-                .Include(o => o.OrderItems)
-                    .ThenInclude(i => i.OrderItemPrice)
-                    .ThenInclude(ip => ip.OrderItemPriceTiers.OrderBy(pt => pt.LowerRange))
-                .Include(o => o.OrderItems)
-                    .ThenInclude(i => i.OrderItemRecipients.OrderBy(r => r.Recipient.Name))
-                    .ThenInclude(r => r.Recipient)
-                .Include(o => o.OrderTermination)
-                .AsNoTracking()
-                .AsSplitQuery()
-                .Where(o => o.OrderNumber == callOffId.OrderNumber
-                    && o.Revision <= callOffId.Revision
-                    && o.OrderingParty.InternalIdentifier == internalOrgId)
-                .ToListAsync();
+            List<Order> orders = await OrdersForSummary(callOffId, internalOrgId);
 
             foreach (var order in orders)
             {
@@ -257,13 +207,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     .ThenInclude(x => x.OrderItemFunding)
                 .Include(x => x.OrderItems)
                     .ThenInclude(x => x.OrderItemPrice)
-                .Include(x => x.OrderItems)
-                    .ThenInclude(x => x.OrderItemRecipients)
                 .Include(x => x.OrderingPartyContact)
                 .Include(x => x.OrderingParty)
                 .Include(x => x.Supplier)
                 .Include(x => x.SupplierContact)
                 .Include(x => x.SelectedFramework)
+                .Include(x => x.OrderRecipients).ThenInclude(x => x.OrderItemRecipients)
+                .Include(x => x.OrderRecipients).ThenInclude(x => x.OdsOrganisation)
                 .AsSplitQuery()
                 .AsNoTracking()
                 .Where(x => x.OrderNumber == callOffId.OrderNumber
@@ -353,10 +303,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return order;
         }
 
-        [ExcludeFromCodeCoverage(Justification = "Method indirectly uses Temporal tables which the In-Memory provider doesn't support.")]
         public async Task<Order> AmendOrder(string internalOrgId, CallOffId callOffId)
         {
-            var order = (await GetOrderForSummary(callOffId, internalOrgId)).Order;
+            var orderWrapper = new OrderWrapper(await OrdersForSummary(callOffId, internalOrgId));
+            var order = orderWrapper.Order;
 
             var amendment = order.BuildAmendment(await dbContext.NextRevision(order.OrderNumber));
 
@@ -365,6 +315,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             await dbContext.SaveChangesAsync();
 
             return amendment;
+        }
+
+        public async Task EnsureOrderItemsForAmendment(string internalOrgId, CallOffId callOffId)
+        {
+            if (callOffId.IsAmendment)
+            {
+                var orderWrapper = await GetOrderWithOrderItems(callOffId, internalOrgId);
+                var order = orderWrapper.Order;
+                order.InitialiseOrderItemsFrom(orderWrapper.RolledUp.OrderItems);
+                await dbContext.SaveChangesAsync();
+            }
         }
 
         public async Task SoftDeleteOrder(CallOffId callOffId, string internalOrgId)
@@ -385,6 +346,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             dbContext.Contracts.RemoveRange(dbContext.Contracts.Where(x => x.OrderId == order.Id));
             dbContext.ContractFlags.RemoveRange(dbContext.ContractFlags.Where(x => x.OrderId == order.Id));
             dbContext.OrderDeletionApprovals.RemoveRange(dbContext.OrderDeletionApprovals.Where(x => x.OrderId == order.Id));
+            dbContext.OrderRecipients.RemoveRange(dbContext.OrderRecipients.Where(x => x.OrderId == order.Id));
             dbContext.OrderItems.RemoveRange(dbContext.OrderItems.Where(x => x.OrderId == order.Id));
             dbContext.OrderItemFunding.RemoveRange(dbContext.OrderItemFunding.Where(x => x.OrderId == order.Id));
             dbContext.OrderItemPriceTiers.RemoveRange(dbContext.OrderItemPriceTiers.Where(x => x.OrderId == order.Id));
@@ -444,11 +406,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     .ThenInclude(oi => oi.OrderItemPrice)
                     .ThenInclude(oip => oip.OrderItemPriceTiers)
                 .Include(o => o.OrderItems)
-                    .ThenInclude(oi => oi.OrderItemRecipients)
-                .Include(o => o.OrderItems)
                     .ThenInclude(oi => oi.OrderItemFunding)
                 .Include(o => o.SelectedFramework)
                 .Include(o => o.OrderingParty)
+                .Include(x => x.OrderRecipients).ThenInclude(x => x.OrderItemRecipients)
+                .Include(x => x.OrderRecipients).ThenInclude(x => x.OdsOrganisation)
                 .AsSplitQuery()
                 .FirstAsync(o => o.OrderNumber == callOffId.OrderNumber
                     && o.Revision == callOffId.Revision
@@ -458,7 +420,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             {
                 var selectedFundingType = OrderItemFundingType.None;
 
-                if (orderItem.TotalCost() == 0)
+                if (orderItem.TotalCost(order.OrderRecipients) == 0)
                     selectedFundingType = OrderItemFundingType.NoFundingRequired;
                 else if (order.IsLocalFundingOnly)
                     selectedFundingType = OrderItemFundingType.LocalFundingOnly;
@@ -548,6 +510,58 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 : order.IsAmendment
                     ? orderMessageSettings.UserAmendTemplateId
                     : orderMessageSettings.UserTemplateId;
+        }
+
+        private async Task<List<Order>> OrdersForSummary(CallOffId callOffId, string internalOrgId)
+        {
+            return await dbContext.Orders
+                .Include(x => x.ContractFlags)
+                .Include(x => x.Contract)
+                    .ThenInclude(i => i.ImplementationPlan)
+                        .ThenInclude(m => m.Milestones)
+                .Include(x => x.Contract)
+                    .ThenInclude(i => i.ContractBilling)
+                        .ThenInclude(m => m.ContractBillingItems)
+                            .ThenInclude(m => m.Milestone)
+                .Include(x => x.Contract)
+                    .ThenInclude(i => i.ContractBilling)
+                        .ThenInclude(m => m.ContractBillingItems)
+                            .ThenInclude(m => m.OrderItem)
+                                .ThenInclude(m => m.CatalogueItem)
+                .Include(x => x.Contract)
+                    .ThenInclude(i => i.ContractBilling)
+                        .ThenInclude(m => m.Requirements)
+                            .ThenInclude(m => m.OrderItem)
+                                .ThenInclude(m => m.CatalogueItem)
+                .Include(o => o.OrderingParty)
+                .Include(o => o.OrderingPartyContact)
+                .Include(o => o.Solution)
+                .ThenInclude(o => o.Solution)
+                .ThenInclude(o => o.FrameworkSolutions)
+                .ThenInclude(o => o.Framework)
+                .Include(o => o.Supplier)
+                .Include(o => o.SupplierContact)
+                .Include(o => o.LastUpdatedByUser)
+                .Include(o => o.SelectedFramework)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(i => i.CatalogueItem)
+                    .ThenInclude(ci => ci.Solution)
+                    .ThenInclude(s => s.FrameworkSolutions)
+                    .ThenInclude(fs => fs.Framework)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(i => i.OrderItemFunding)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(i => i.OrderItemPrice)
+                    .ThenInclude(ip => ip.OrderItemPriceTiers.OrderBy(pt => pt.LowerRange))
+                .Include(o => o.OrderTermination)
+                .Include(x => x.OrderRecipients).ThenInclude(x => x.OrderItemRecipients)
+                .Include(x => x.OrderRecipients).ThenInclude(x => x.OdsOrganisation)
+                .AsNoTracking()
+                .AsSplitQuery()
+                .Where(o => o.OrderNumber == callOffId.OrderNumber
+                    && o.Revision <= callOffId.Revision
+                    && o.OrderingParty.InternalIdentifier == internalOrgId)
+                .ToListAsync();
         }
     }
 }

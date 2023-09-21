@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
 using OpenQA.Selenium;
@@ -22,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
         {
             CommonActions.PageLoadedCorrectGetIndex(
               typeof(ServiceRecipientsController),
-              nameof(ServiceRecipientsController.AddServiceRecipients)).Should().BeTrue();
+              nameof(ServiceRecipientsController.SelectServiceRecipients)).Should().BeTrue();
 
             if (multipleServiceRecipients > 0 && !allServiceRecipients)
                 CommonActions.ClickMultipleCheckboxes(multipleServiceRecipients);
@@ -36,11 +35,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
         public void EditCatalogueSolutionServiceRecipient(string solutionName)
         {
-            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemServiceRecipientLink(GetCatalogueSolutionID(solutionName)));
-
             CommonActions.PageLoadedCorrectGetIndex(
               typeof(ServiceRecipientsController),
-              nameof(ServiceRecipientsController.EditServiceRecipients)).Should().BeTrue();
+              nameof(ServiceRecipientsController.SelectServiceRecipients)).Should().BeTrue();
 
             CommonActions.ClickFirstCheckbox();
 
@@ -51,11 +48,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
         public void AmendEditCatalogueSolutionServiceRecipient(string solutionName, int multipleServiceRecipients)
         {
-            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemServiceRecipientLink(GetCatalogueSolutionID(solutionName)));
-
             CommonActions.PageLoadedCorrectGetIndex(
             typeof(ServiceRecipientsController),
-            nameof(ServiceRecipientsController.EditServiceRecipients)).Should().BeTrue();
+            nameof(ServiceRecipientsController.SelectServiceRecipients)).Should().BeTrue();
 
             if (multipleServiceRecipients == 0)
             {
@@ -71,11 +66,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
         public void AmendImportServiceRecipients(string solutionName, string fileName)
         {
-            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemServiceRecipientLink(GetCatalogueSolutionID(solutionName)));
-
             CommonActions.PageLoadedCorrectGetIndex(
             typeof(ServiceRecipientsController),
-            nameof(ServiceRecipientsController.EditServiceRecipients)).Should().BeTrue();
+            nameof(ServiceRecipientsController.SelectServiceRecipients)).Should().BeTrue();
 
             CommonActions.ClickLinkElement(ServiceRecipientObjects.ImportServiceRecipients);
 
@@ -87,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
             CommonActions.PageLoadedCorrectGetIndex(
             typeof(ServiceRecipientsController),
-            nameof(ServiceRecipientsController.EditServiceRecipients)).Should().BeTrue();
+            nameof(ServiceRecipientsController.SelectServiceRecipients)).Should().BeTrue();
 
             CommonActions.ClickSave();
         }

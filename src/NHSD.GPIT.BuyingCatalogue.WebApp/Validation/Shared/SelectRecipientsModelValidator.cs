@@ -1,9 +1,8 @@
 ﻿using System.Linq;
 using FluentValidation;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.RecipientsModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Validators;
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared;
 
 public class SelectRecipientsModelValidator : AbstractValidator<SelectRecipientsModel>
 {
@@ -22,9 +21,11 @@ public class SelectRecipientsModelValidator : AbstractValidator<SelectRecipients
         if (subLocations is null || !subLocations.Any())
             return false;
 
-        var serviceRecipients = subLocations.SelectMany(x => x.ServiceRecipients).ToList();
+        var serviceRecipients = subLocations
+            .Where(x => x.ServiceRecipients != null)
+            .SelectMany(x => x.ServiceRecipients).ToList();
 
-        return !(serviceRecipients?.Any() ?? false)
+        return !serviceRecipients.Any()
             || serviceRecipients.Any(x => x.Selected);
     }
 }

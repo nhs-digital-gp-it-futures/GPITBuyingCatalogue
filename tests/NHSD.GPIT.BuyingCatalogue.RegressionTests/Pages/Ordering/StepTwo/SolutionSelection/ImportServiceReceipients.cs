@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
         {
             CommonActions.PageLoadedCorrectGetIndex(
               typeof(ServiceRecipientsController),
-              nameof(ServiceRecipientsController.AddServiceRecipients)).Should().BeTrue();
+              nameof(ServiceRecipientsController.SelectServiceRecipients)).Should().BeTrue();
 
             CommonActions.ClickLinkElement(ServiceRecipientObjects.ImportServiceRecipients);
 
@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
             CommonActions.PageLoadedCorrectGetIndex(
               typeof(ServiceRecipientsController),
-              nameof(ServiceRecipientsController.AddServiceRecipients)).Should().BeTrue();
+              nameof(ServiceRecipientsController.SelectServiceRecipients)).Should().BeTrue();
 
             CommonActions.ClickSave();
         }

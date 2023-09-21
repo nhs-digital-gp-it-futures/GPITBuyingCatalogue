@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.RecipientsModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
@@ -47,15 +46,23 @@ public class CompetitionRecipientsController : Controller
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
         var competition = await competitionsService.GetCompetitionWithRecipients(internalOrgId, competitionId);
         var recipients = await GetServiceRecipients(internalOrgId);
-        var splitRecipientIds = string.Join(',', recipientIds, importedRecipients).Split(
-            ',',
-            StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+        var splitRecipientIds = string.Join(',', recipientIds, importedRecipients)
+            .Split(
+                ',',
+                StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
         const string pageAdvice =
             "Select the organisations that will receive the winning solution for this competition or upload them using a CSV file.";
 
-        var model = new SelectRecipientsModel(organisation, recipients, competition.Recipients.Select(x => x.Id), splitRecipientIds, selectionMode)
+        var model = new SelectRecipientsModel(
+            organisation,
+            recipients,
+            competition.Recipients.Select(x => x.Id),
+            Enumerable.Empty<string>(),
+            splitRecipientIds,
+            selectionMode)
         {
+            Title = "Service Recipients",
             BackLink = Url.Action(
                 nameof(CompetitionTaskListController.Index),
                 typeof(CompetitionTaskListController).ControllerName(),
@@ -69,7 +76,7 @@ public class CompetitionRecipientsController : Controller
             HasImportedRecipients = !string.IsNullOrWhiteSpace(importedRecipients),
         };
 
-        return View(model);
+        return View("ServiceRecipients/SelectRecipients", model);
     }
 
     [HttpPost("select-recipients")]
@@ -88,16 +95,21 @@ public class CompetitionRecipientsController : Controller
         }
 
         model.ShouldExpand = true;
-        return View(model);
+        return View("ServiceRecipients/SelectRecipients", model);
     }
 
     [HttpGet("confirm-recipients")]
-    public async Task<IActionResult> ConfirmRecipients(string internalOrgId, int competitionId, string recipientIds)
+    public async Task<IActionResult> ConfirmRecipients(
+        string internalOrgId,
+        int competitionId,
+        string recipientIds)
     {
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
         var competition = await competitionsService.GetCompetition(internalOrgId, competitionId);
 
-        var recipientOdsCodes = recipientIds.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        var recipientOdsCodes = recipientIds.Split(
+            ',',
+            StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
         var recipients = await odsService.GetServiceRecipientsById(internalOrgId, recipientOdsCodes);
 
@@ -105,7 +117,9 @@ public class CompetitionRecipientsController : Controller
         {
             BackLink = Url.Action(nameof(Index), new { internalOrgId, competitionId, recipientIds }),
             Caption = competition.Name,
-            Selected = recipients.Select(x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OrgId, Location = x.Location }).ToList(),
+            Selected = recipients.Select(
+                    x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OrgId, Location = x.Location })
+                .ToList(),
             Advice = ConfirmRecipientsAdvice,
         };
 
@@ -113,7 +127,10 @@ public class CompetitionRecipientsController : Controller
     }
 
     [HttpPost("confirm-recipients")]
-    public async Task<IActionResult> ConfirmRecipients(string internalOrgId, int competitionId, ConfirmChangesModel model)
+    public async Task<IActionResult> ConfirmRecipients(
+        string internalOrgId,
+        int competitionId,
+        ConfirmChangesModel model)
     {
         await competitionsService.SetCompetitionRecipients(competitionId, model.Selected.Select(x => x.OdsCode));
 

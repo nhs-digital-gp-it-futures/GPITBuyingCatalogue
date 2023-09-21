@@ -16,10 +16,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
     {
         [Theory]
         [CommonAutoData]
-        public static void Get_OrderIsNull_ReturnsCannotStart(
+        public static void Get_OrderWrapperIsNull_ReturnsCannotStart(
             DeliveryDatesStatusProvider service)
         {
             var actual = service.Get(null, new OrderProgress());
+
+            actual.Should().Be(TaskProgress.CannotStart);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Get_OrderIsNull_ReturnsCannotStart(
+            DeliveryDatesStatusProvider service)
+        {
+            var actual = service.Get(new OrderWrapper(), new OrderProgress());
 
             actual.Should().Be(TaskProgress.CannotStart);
         }
@@ -51,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 SolutionOrService = status,
             };
 
-            order.OrderItems.ForEach(x => x.OrderItemRecipients.ForEach(r => r.DeliveryDate = null));
+            order.OrderRecipients.ForEach(x => x.OrderItemRecipients.Clear());
 
             var actual = service.Get(new OrderWrapper(order), state);
 
@@ -69,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 SolutionOrService = TaskProgress.Completed,
             };
 
-            order.OrderItems.ForEach(x => x.OrderItemRecipients.ForEach(r => r.DeliveryDate = null));
+            order.OrderRecipients.ForEach(x => x.OrderItemRecipients.Clear());
 
             var actual = service.Get(new OrderWrapper(order), state);
 
@@ -87,8 +97,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 SolutionOrService = TaskProgress.Completed,
             };
 
-            order.OrderItems.ForEach(x => x.OrderItemRecipients.ForEach(r => r.DeliveryDate = null));
-            order.OrderItems.First().OrderItemRecipients.ForEach(x => x.DeliveryDate = DateTime.Today);
+            order.OrderRecipients.ForEach(x => x.OrderItemRecipients.Clear());
+            var orderItem = order.OrderItems.First();
+            order.OrderRecipients.ForEach(x => x.SetDeliveryDateForItem(orderItem.CatalogueItemId, DateTime.Today));
 
             var actual = service.Get(new OrderWrapper(order), state);
 

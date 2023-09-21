@@ -8,11 +8,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
     [Serializable]
     public sealed partial class OrderItem : IAudited
     {
-        public OrderItem()
-        {
-            OrderItemRecipients = new HashSet<OrderItemRecipient>();
-        }
-
         public int OrderId { get; set; }
 
         public Order Order { get; set; }
@@ -36,7 +31,5 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public OrderItemFunding OrderItemFunding { get; set; }
 
         public OrderItemPrice OrderItemPrice { get; set; }
-
-        public ICollection<OrderItemRecipient> OrderItemRecipients { get; set; }
     }
 }

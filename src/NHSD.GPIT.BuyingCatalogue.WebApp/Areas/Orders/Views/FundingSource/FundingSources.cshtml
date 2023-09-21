@@ -148,6 +148,6 @@
 @{
     TaskProgress GetStatus(OrderItem item) => item.FundingType == OrderItemFundingType.None ? TaskProgress.NotStarted : TaskProgress.Completed;
 
-    decimal CalculateTotalCost(OrderItem item) => Model.Order.TotalCostForOrderItem(item.CatalogueItem.Id);
+    decimal CalculateTotalCost(OrderItem item) => Model.OrderWrapper.TotalCostForOrderItem(item.CatalogueItem.Id);
 }
 

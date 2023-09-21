@@ -69,11 +69,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 await orderItemService.AddOrderItems(internalOrgId, callOffId, serviceIds);
             }
 
-            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
+            var orderWrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
+            var order = orderWrapper.Order;
 
             var route = routingService.GetRoute(
                 RoutingPoint.SelectAdditionalServices,
-                order,
+                orderWrapper,
                 new RouteValues(internalOrgId, callOffId));
 
             return RedirectToAction(route.ActionName, route.ControllerName, route.RouteValues);
@@ -117,8 +118,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 await orderItemService.AddOrderItems(internalOrgId, callOffId, newServiceIds);
 
                 return RedirectToAction(
-                    nameof(ServiceRecipientsController.AddServiceRecipients),
-                    typeof(ServiceRecipientsController).ControllerName(),
+                    nameof(PricesController.SelectPrice),
+                    typeof(PricesController).ControllerName(),
                     new { internalOrgId, callOffId, catalogueItemId = newServiceIds.First() });
             }
 
@@ -207,8 +208,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             await orderItemService.AddOrderItems(internalOrgId, callOffId, model.ToAdd.Select(x => x.CatalogueItemId));
 
             return RedirectToAction(
-                nameof(ServiceRecipientsController.AddServiceRecipients),
-                typeof(ServiceRecipientsController).ControllerName(),
+                nameof(PricesController.SelectPrice),
+                typeof(PricesController).ControllerName(),
                 new { internalOrgId, callOffId, model.ToAdd.First().CatalogueItemId });
         }
 

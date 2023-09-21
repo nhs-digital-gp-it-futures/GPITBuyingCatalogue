@@ -4,6 +4,7 @@ using FluentAssertions;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -15,14 +16,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
     {
         [Theory]
         [CommonAutoData]
-        public void Process_OrderIsNull_ThrowsException(
+        public void Process_OrderWrapperIsNull_ThrowsException(
             RouteValues routeValues,
             AmendDeliveryDatesProvider provider)
         {
             FluentActions
                 .Invoking(() => provider.Process(null, routeValues))
                 .Should().Throw<ArgumentNullException>()
-                .WithParameterName("order");
+                .WithParameterName("orderWrapper");
         }
 
         [Theory]
@@ -32,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             AmendDeliveryDatesProvider provider)
         {
             FluentActions
-                .Invoking(() => provider.Process(order, null))
+                .Invoking(() => provider.Process(new OrderWrapper(order), null))
                 .Should().Throw<ArgumentNullException>()
                 .WithParameterName("routeValues");
         }
@@ -46,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             Order order,
             AmendDeliveryDatesProvider provider)
         {
-            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId)
+            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, catalogueItemId)
             {
                 Source = RoutingSource.TaskList,
             });
@@ -71,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             Order order,
             AmendDeliveryDatesProvider provider)
         {
-            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId));
+            var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, catalogueItemId));
 
             var expected = new
             {
@@ -81,36 +82,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
 
             result.ActionName.Should().Be(Constants.Actions.TaskList);
             result.ControllerName.Should().Be(Constants.Controllers.TaskList);
-            result.RouteValues.Should().BeEquivalentTo(expected);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public void Process_WithNextOrderItem_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            Order order,
-            AmendDeliveryDatesProvider provider)
-        {
-            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
-            order.OrderItems.ElementAt(0).CatalogueItem.Name = "A";
-            order.OrderItems.ElementAt(1).CatalogueItem.Name = "B";
-            order.OrderItems.ElementAt(2).CatalogueItem.Name = "C";
-
-            var catalogueItemId = order.OrderItems.First().CatalogueItemId;
-            var nextCatalogueItemId = order.OrderItems.ElementAt(1).CatalogueItemId;
-
-            var result = provider.Process(order, new RouteValues(internalOrgId, callOffId, catalogueItemId));
-
-            var expected = new
-            {
-                InternalOrgId = internalOrgId,
-                CallOffId = callOffId,
-                CatalogueItemId = nextCatalogueItemId,
-            };
-
-            result.ActionName.Should().Be(Constants.Actions.AddServiceRecipients);
-            result.ControllerName.Should().Be(Constants.Controllers.ServiceRecipients);
             result.RouteValues.Should().BeEquivalentTo(expected);
         }
     }
