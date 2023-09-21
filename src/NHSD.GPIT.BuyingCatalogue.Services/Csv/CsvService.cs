@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
@@ -71,8 +70,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         OdsCode = or.Order.OrderingParty.ExternalIdentifier,
                         OrganisationName = or.Order.OrderingParty.Name,
                         CommencementDate = or.Order.CommencementDate,
-                        ServiceRecipientId = or.OdsCode,
-                        ServiceRecipientName = or.OdsOrganisation.Name,
+                        ServiceRecipientId = oir.OrderItem.OrderItemPrice.CataloguePriceQuantityCalculationType == CataloguePriceQuantityCalculationType.PerSolutionOrService && (oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.Declarative || oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.OnDemand)
+                        ? or.Order.OrderingParty.ExternalIdentifier : or.OdsCode,
+                        ServiceRecipientName = oir.OrderItem.OrderItemPrice.CataloguePriceQuantityCalculationType == CataloguePriceQuantityCalculationType.PerSolutionOrService && (oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.Declarative || oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.OnDemand)
+                        ? or.Order.OrderingParty.Name : or.OdsOrganisation.Name,
                         SupplierId = supplierId,
                         SupplierName = supplierName,
                         ProductId = oir.OrderItem.CatalogueItemId.ToString(),
@@ -99,12 +100,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             if (items.Count == 0)
                 return 0;
 
-            for (int i = 0; i < items.Count; i++)
-                items[i].ServiceRecipientItemId = $"{items[i].CallOffId}-{items[i].ServiceRecipientId}-{i + 1}";
+            var distinctItems = items.DistinctBy(item => new
+            {
+                item.CallOffId,
+                item.ServiceRecipientId,
+                item.ProductId,
+            }).ToList();
 
-            await WriteRecordsAsync<PatientOrderCsvModel, PatientOrderCsvModelMap>(stream, items);
+            for (int i = 0; i < distinctItems.Count; i++)
+                distinctItems[i].ServiceRecipientItemId = $"{distinctItems[i].CallOffId}-{distinctItems[i].ServiceRecipientId}-{i + 1}";
 
-            return items.Count;
+            await WriteRecordsAsync<PatientOrderCsvModel, PatientOrderCsvModelMap>(stream, distinctItems);
+
+            return distinctItems.Count;
         }
 
         private static string TimeUnitDescription(TimeUnit? timeUnit) => timeUnit?.Description() ?? string.Empty;
@@ -188,8 +196,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     OdsCode = or.Order.OrderingParty.ExternalIdentifier,
                     OrganisationName = or.Order.OrderingParty.Name,
                     CommencementDate = or.Order.CommencementDate,
-                    ServiceRecipientId = or.OdsCode,
-                    ServiceRecipientName = or.OdsOrganisation.Name,
+                    ServiceRecipientId = oir.OrderItem.OrderItemPrice.CataloguePriceQuantityCalculationType == CataloguePriceQuantityCalculationType.PerSolutionOrService && (oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.Declarative || oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.OnDemand)
+                    ? or.Order.OrderingParty.ExternalIdentifier : or.OdsCode,
+                    ServiceRecipientName = oir.OrderItem.OrderItemPrice.CataloguePriceQuantityCalculationType == CataloguePriceQuantityCalculationType.PerSolutionOrService && (oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.Declarative || oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.OnDemand)
+                    ? or.Order.OrderingParty.Name : or.OdsOrganisation.Name,
                     SupplierId = $"{supplierId}",
                     SupplierName = supplierName,
                     ProductId = oir.OrderItem.CatalogueItemId.ToString(),
@@ -225,10 +235,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                 .ThenBy(o => o.ServiceRecipientName)
                 .ToListAsync();
 
-            for (int i = 0; i < items.Count; i++)
-                items[i].ServiceRecipientItemId = $"{items[i].CallOffId}-{items[i].ServiceRecipientId}-{i}";
+            var distinctItems = items.DistinctBy(item => new
+            {
+                item.CallOffId,
+                item.ServiceRecipientId,
+                item.ProductId,
+            }).ToList();
 
-            return items;
+            for (int i = 0; i < distinctItems.Count; i++)
+                distinctItems[i].ServiceRecipientItemId = $"{distinctItems[i].CallOffId}-{distinctItems[i].ServiceRecipientId}-{i}";
+
+            return distinctItems;
         }
     }
 }
