@@ -70,9 +70,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         OdsCode = or.Order.OrderingParty.ExternalIdentifier,
                         OrganisationName = or.Order.OrderingParty.Name,
                         CommencementDate = or.Order.CommencementDate,
-                        ServiceRecipientId = oir.OrderItem.OrderItemPrice.CataloguePriceQuantityCalculationType == CataloguePriceQuantityCalculationType.PerSolutionOrService && (oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.Declarative || oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.OnDemand)
+                        ServiceRecipientId = oir.OrderItem.OrderItemPrice.CataloguePriceQuantityCalculationType != CataloguePriceQuantityCalculationType.PerServiceRecipient && (oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.Declarative || oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.OnDemand)
                         ? or.Order.OrderingParty.ExternalIdentifier : or.OdsCode,
-                        ServiceRecipientName = oir.OrderItem.OrderItemPrice.CataloguePriceQuantityCalculationType == CataloguePriceQuantityCalculationType.PerSolutionOrService && (oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.Declarative || oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.OnDemand)
+                        ServiceRecipientName = oir.OrderItem.OrderItemPrice.CataloguePriceQuantityCalculationType != CataloguePriceQuantityCalculationType.PerServiceRecipient && (oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.Declarative || oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.OnDemand)
                         ? or.Order.OrderingParty.Name : or.OdsOrganisation.Name,
                         SupplierId = supplierId,
                         SupplierName = supplierName,
@@ -196,9 +196,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     OdsCode = or.Order.OrderingParty.ExternalIdentifier,
                     OrganisationName = or.Order.OrderingParty.Name,
                     CommencementDate = or.Order.CommencementDate,
-                    ServiceRecipientId = oir.OrderItem.OrderItemPrice.CataloguePriceQuantityCalculationType == CataloguePriceQuantityCalculationType.PerSolutionOrService && (oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.Declarative || oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.OnDemand)
+                    ServiceRecipientId = oir.OrderItem.OrderItemPrice.CataloguePriceQuantityCalculationType != CataloguePriceQuantityCalculationType.PerServiceRecipient && (oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.Declarative || oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.OnDemand)
                     ? or.Order.OrderingParty.ExternalIdentifier : or.OdsCode,
-                    ServiceRecipientName = oir.OrderItem.OrderItemPrice.CataloguePriceQuantityCalculationType == CataloguePriceQuantityCalculationType.PerSolutionOrService && (oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.Declarative || oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.OnDemand)
+                    ServiceRecipientName = oir.OrderItem.OrderItemPrice.CataloguePriceQuantityCalculationType != CataloguePriceQuantityCalculationType.PerServiceRecipient && (oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.Declarative || oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.OnDemand)
                     ? or.Order.OrderingParty.Name : or.OdsOrganisation.Name,
                     SupplierId = $"{supplierId}",
                     SupplierName = supplierName,
