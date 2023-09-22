@@ -71,10 +71,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         OdsCode = or.Order.OrderingParty.ExternalIdentifier,
                         OrganisationName = or.Order.OrderingParty.Name,
                         CommencementDate = or.Order.CommencementDate,
-                        ServiceRecipientId = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient() && (oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.Declarative || oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.OnDemand)
-                        ? or.Order.OrderingParty.ExternalIdentifier : or.OdsCode,
-                        ServiceRecipientName = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient() && (oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.Declarative || oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.OnDemand)
-                        ? or.Order.OrderingParty.Name : or.OdsOrganisation.Name,
+                        ServiceRecipientId = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient() ? or.Order.OrderingParty.ExternalIdentifier : or.OdsCode,
+                        ServiceRecipientName = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient() ? or.Order.OrderingParty.Name : or.OdsOrganisation.Name,
                         SupplierId = supplierId,
                         SupplierName = supplierName,
                         ProductId = oir.OrderItem.CatalogueItemId.ToString(),
@@ -197,10 +195,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     OdsCode = or.Order.OrderingParty.ExternalIdentifier,
                     OrganisationName = or.Order.OrderingParty.Name,
                     CommencementDate = or.Order.CommencementDate,
-                    ServiceRecipientId = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient() && (oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.Declarative || oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.OnDemand)
-                    ? or.Order.OrderingParty.ExternalIdentifier : or.OdsCode,
-                    ServiceRecipientName = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient() && (oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.Declarative || oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.OnDemand)
-                    ? or.Order.OrderingParty.Name : or.OdsOrganisation.Name,
+                    ServiceRecipientId = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient() ? or.Order.OrderingParty.ExternalIdentifier : or.OdsCode,
+                    ServiceRecipientName = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient() ? or.Order.OrderingParty.Name : or.OdsOrganisation.Name,
                     SupplierId = $"{supplierId}",
                     SupplierName = supplierName,
                     ProductId = oir.OrderItem.CatalogueItemId.ToString(),
