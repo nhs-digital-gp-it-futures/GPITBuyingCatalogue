@@ -46,9 +46,15 @@ public class InteroperabilityScoringModel : NavBaseModel
     {
         SolutionScores = solutions.OrderBy(x => x.Solution.CatalogueItem.Name)
             .Select(
-                x => new InteroperabilitySolutionScoreModel(
-                    x.Solution,
-                    setScores ? x.GetScoreByType(ScoreType.Interoperability)?.Score : null))
+                x =>
+                {
+                    var score = x.GetScoreByType(ScoreType.Interoperability);
+
+                    return new InteroperabilitySolutionScoreModel(
+                        x.Solution,
+                        setScores ? score?.Score : null,
+                        score?.Justification);
+                })
             .ToList();
 
         return this;

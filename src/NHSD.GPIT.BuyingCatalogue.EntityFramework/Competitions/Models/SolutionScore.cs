@@ -19,8 +19,17 @@ public class SolutionScore
     public SolutionScore(
         ScoreType scoreType,
         int score,
+        string justification)
+        : this(scoreType, score)
+    {
+        Justification = justification;
+    }
+
+    public SolutionScore(
+        ScoreType scoreType,
+        int score,
         decimal weightedScore)
-    : this(scoreType, score)
+        : this(scoreType, score)
     {
         WeightedScore = weightedScore;
     }
@@ -36,4 +45,6 @@ public class SolutionScore
     public int Score { get; set; }
 
     public decimal WeightedScore { get; set; }
+
+    public string Justification { get; set; }
 }

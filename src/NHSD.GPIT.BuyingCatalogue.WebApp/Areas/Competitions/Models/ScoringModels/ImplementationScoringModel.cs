@@ -30,9 +30,15 @@ public class ImplementationScoringModel : NavBaseModel
     {
         SolutionScores = solutions.OrderBy(x => x.Solution.CatalogueItem.Name)
             .Select(
-                x => new SolutionScoreModel(
-                    x.Solution,
-                    setScores ? x.GetScoreByType(ScoreType.Implementation)?.Score : null))
+                x =>
+                {
+                    var score = x.GetScoreByType(ScoreType.Implementation);
+
+                    return new SolutionScoreModel(
+                        x.Solution,
+                        setScores ? score?.Score : null,
+                        score?.Justification);
+                })
             .ToList();
     }
 }

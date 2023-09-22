@@ -1393,6 +1393,7 @@ public static class CompetitionsServiceTests
         Competition competition,
         Solution solution,
         int score,
+        string justification,
         [Frozen] BuyingCatalogueDbContext context,
         CompetitionsService service)
     {
@@ -1418,7 +1419,7 @@ public static class CompetitionsServiceTests
         await service.SetSolutionsImplementationScores(
             organisation.InternalIdentifier,
             competition.Id,
-            new Dictionary<CatalogueItemId, int> { { competitionSolution.SolutionId, score } });
+            new Dictionary<CatalogueItemId, (int, string)> { { competitionSolution.SolutionId, (score, justification) } });
 
         var updatedCompetition =
             await service.GetCompetitionWithSolutions(organisation.InternalIdentifier, competition.Id);
@@ -1427,6 +1428,7 @@ public static class CompetitionsServiceTests
 
         updatedSolution.HasScoreType(scoreType).Should().BeTrue();
         updatedSolution.GetScoreByType(scoreType).Score.Should().Be(score);
+        updatedSolution.GetScoreByType(scoreType).Justification.Should().Be(justification);
     }
 
     [Theory]
@@ -1436,6 +1438,7 @@ public static class CompetitionsServiceTests
         Competition competition,
         Solution solution,
         int score,
+        string justification,
         [Frozen] BuyingCatalogueDbContext context,
         CompetitionsService service)
     {
@@ -1460,7 +1463,7 @@ public static class CompetitionsServiceTests
         await service.SetSolutionsImplementationScores(
             organisation.InternalIdentifier,
             competition.Id,
-            new Dictionary<CatalogueItemId, int> { { competitionSolution.SolutionId, score } });
+            new Dictionary<CatalogueItemId, (int, string)> { { competitionSolution.SolutionId, (score, justification) } });
 
         var updatedCompetition =
             await service.GetCompetitionWithSolutions(organisation.InternalIdentifier, competition.Id);
@@ -1469,6 +1472,7 @@ public static class CompetitionsServiceTests
 
         updatedSolution.HasScoreType(scoreType).Should().BeTrue();
         updatedSolution.GetScoreByType(scoreType).Score.Should().Be(score);
+        updatedSolution.GetScoreByType(scoreType).Justification.Should().Be(justification);
     }
 
     [Theory]
@@ -1489,6 +1493,7 @@ public static class CompetitionsServiceTests
         Competition competition,
         Solution solution,
         int score,
+        string justification,
         [Frozen] BuyingCatalogueDbContext context,
         CompetitionsService service)
     {
@@ -1514,7 +1519,7 @@ public static class CompetitionsServiceTests
         await service.SetSolutionsInteroperabilityScores(
             organisation.InternalIdentifier,
             competition.Id,
-            new Dictionary<CatalogueItemId, int> { { competitionSolution.SolutionId, score } });
+            new Dictionary<CatalogueItemId, (int, string)> { { competitionSolution.SolutionId, (score, justification) } });
 
         var updatedCompetition =
             await service.GetCompetitionWithSolutions(organisation.InternalIdentifier, competition.Id);
@@ -1523,6 +1528,7 @@ public static class CompetitionsServiceTests
 
         updatedSolution.HasScoreType(scoreType).Should().BeTrue();
         updatedSolution.GetScoreByType(scoreType).Score.Should().Be(score);
+        updatedSolution.GetScoreByType(scoreType).Justification.Should().Be(justification);
     }
 
     [Theory]
@@ -1532,6 +1538,7 @@ public static class CompetitionsServiceTests
         Competition competition,
         Solution solution,
         int score,
+        string justification,
         [Frozen] BuyingCatalogueDbContext context,
         CompetitionsService service)
     {
@@ -1556,7 +1563,7 @@ public static class CompetitionsServiceTests
         await service.SetSolutionsInteroperabilityScores(
             organisation.InternalIdentifier,
             competition.Id,
-            new Dictionary<CatalogueItemId, int> { { competitionSolution.SolutionId, score } });
+            new Dictionary<CatalogueItemId, (int, string)> { { competitionSolution.SolutionId, (score, justification) } });
 
         var updatedCompetition =
             await service.GetCompetitionWithSolutions(organisation.InternalIdentifier, competition.Id);
@@ -1565,6 +1572,7 @@ public static class CompetitionsServiceTests
 
         updatedSolution.HasScoreType(scoreType).Should().BeTrue();
         updatedSolution.GetScoreByType(scoreType).Score.Should().Be(score);
+        updatedSolution.GetScoreByType(scoreType).Justification.Should().Be(justification);
     }
 
     [Theory]
@@ -1585,6 +1593,7 @@ public static class CompetitionsServiceTests
         Competition competition,
         Solution solution,
         int score,
+        string justification,
         [Frozen] BuyingCatalogueDbContext context,
         CompetitionsService service)
     {
@@ -1610,7 +1619,7 @@ public static class CompetitionsServiceTests
         await service.SetSolutionsServiceLevelScores(
             organisation.InternalIdentifier,
             competition.Id,
-            new Dictionary<CatalogueItemId, int> { { competitionSolution.SolutionId, score } });
+            new Dictionary<CatalogueItemId, (int, string)> { { competitionSolution.SolutionId, (score, justification) } });
 
         var updatedCompetition =
             await service.GetCompetitionWithSolutions(organisation.InternalIdentifier, competition.Id);
@@ -1619,6 +1628,7 @@ public static class CompetitionsServiceTests
 
         updatedSolution.HasScoreType(scoreType).Should().BeTrue();
         updatedSolution.GetScoreByType(scoreType).Score.Should().Be(score);
+        updatedSolution.GetScoreByType(scoreType).Justification.Should().Be(justification);
     }
 
     [Theory]
@@ -1628,6 +1638,7 @@ public static class CompetitionsServiceTests
         Competition competition,
         Solution solution,
         int score,
+        string justification,
         [Frozen] BuyingCatalogueDbContext context,
         CompetitionsService service)
     {
@@ -1652,7 +1663,7 @@ public static class CompetitionsServiceTests
         await service.SetSolutionsServiceLevelScores(
             organisation.InternalIdentifier,
             competition.Id,
-            new Dictionary<CatalogueItemId, int> { { competitionSolution.SolutionId, score } });
+            new Dictionary<CatalogueItemId, (int, string)> { { competitionSolution.SolutionId, (score, justification) } });
 
         var updatedCompetition =
             await service.GetCompetitionWithSolutions(organisation.InternalIdentifier, competition.Id);
@@ -1661,6 +1672,7 @@ public static class CompetitionsServiceTests
 
         updatedSolution.HasScoreType(scoreType).Should().BeTrue();
         updatedSolution.GetScoreByType(scoreType).Score.Should().Be(score);
+        updatedSolution.GetScoreByType(scoreType).Justification.Should().Be(justification);
     }
 
     [Theory]

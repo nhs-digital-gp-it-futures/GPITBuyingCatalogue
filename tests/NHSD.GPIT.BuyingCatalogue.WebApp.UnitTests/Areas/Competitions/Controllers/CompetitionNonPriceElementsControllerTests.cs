@@ -6,11 +6,15 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
@@ -21,6 +25,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Controll
 
 public static class CompetitionNonPriceElementsControllerTests
 {
+    public static IEnumerable<object[]> GetRedirectNonPriceElementTestData => new[]
+    {
+        new object[]
+        {
+            new[]
+            {
+                NonPriceElement.Implementation,
+                NonPriceElement.Interoperability,
+                NonPriceElement.ServiceLevel,
+            },
+            NonPriceElement.Implementation,
+        },
+        new object[]
+        {
+            new[] { NonPriceElement.Interoperability, NonPriceElement.ServiceLevel },
+            NonPriceElement.Interoperability,
+        },
+        new object[] { new[] { NonPriceElement.ServiceLevel }, NonPriceElement.ServiceLevel, },
+    };
+
     [Fact]
     public static void Constructors_VerifyGuardClauses()
     {
@@ -41,7 +65,8 @@ public static class CompetitionNonPriceElementsControllerTests
     {
         competition.Organisation = organisation;
 
-        competitionsService.Setup(x => x.GetCompetitionWithNonPriceElements(organisation.InternalIdentifier, competition.Id))
+        competitionsService.Setup(
+                x => x.GetCompetitionWithNonPriceElements(organisation.InternalIdentifier, competition.Id))
             .ReturnsAsync(competition);
 
         var expectedModel = new NonPriceElementsModel(competition);
@@ -62,7 +87,8 @@ public static class CompetitionNonPriceElementsControllerTests
     {
         competition.Organisation = organisation;
 
-        competitionsService.Setup(x => x.GetCompetitionWithNonPriceElements(organisation.InternalIdentifier, competition.Id))
+        competitionsService.Setup(
+                x => x.GetCompetitionWithNonPriceElements(organisation.InternalIdentifier, competition.Id))
             .ReturnsAsync(competition);
 
         var expectedModel = new AddNonPriceElementModel(competition);
@@ -90,7 +116,8 @@ public static class CompetitionNonPriceElementsControllerTests
             ServiceLevel = new(),
         };
 
-        competitionsService.Setup(x => x.GetCompetitionWithNonPriceElements(organisation.InternalIdentifier, competition.Id))
+        competitionsService.Setup(
+                x => x.GetCompetitionWithNonPriceElements(organisation.InternalIdentifier, competition.Id))
             .ReturnsAsync(competition);
 
         var result = (await controller.AddNonPriceElement(organisation.InternalIdentifier, competition.Id))
@@ -118,56 +145,34 @@ public static class CompetitionNonPriceElementsControllerTests
 
     [Theory]
     [CommonAutoData]
-    public static void AddNonPriceElement_InvalidSelection_RedirectsToIndex(
+    public static void AddNonPriceElement_SelectedElements_Redirects(
         string internalOrgId,
         int competitionId,
         AddNonPriceElementModel model,
         CompetitionNonPriceElementsController controller)
     {
-        model.AvailableNonPriceElements.Clear();
-        model.SelectedNonPriceElement = null;
-
-        var result = controller.AddNonPriceElement(internalOrgId, competitionId, model)
-            .As<RedirectToActionResult>();
-
-        result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(controller.Index));
-    }
-
-    [Theory]
-    [CommonAutoData]
-    public static void AddNonPriceElement_SingleAvailableElement_SelectsCorrectElement(
-        string internalOrgId,
-        int competitionId,
-        AddNonPriceElementModel model,
-        CompetitionNonPriceElementsController controller)
-    {
-        model.SelectedNonPriceElement = null;
-        model.AvailableNonPriceElements = model.AvailableNonPriceElements.Take(1).ToList();
-
-        model.AvailableNonPriceElements[0].Selected = true;
+        model.AvailableNonPriceElements = new List<SelectOption<NonPriceElement>>
+        {
+            new(NonPriceElement.Implementation.EnumMemberName(), NonPriceElement.Implementation, true),
+            new(NonPriceElement.Interoperability.EnumMemberName(), NonPriceElement.Interoperability, true),
+            new(NonPriceElement.ServiceLevel.EnumMemberName(), NonPriceElement.ServiceLevel, true),
+        };
 
         var result = controller.AddNonPriceElement(internalOrgId, competitionId, model).As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
-        result.ActionName.Should().Be(model.AvailableNonPriceElements[0].Value.ToString());
-    }
-
-    [Theory]
-    [CommonAutoData]
-    public static void AddNonPriceElement_MultipleAvailableElements_SelectsCorrectElement(
-        NonPriceElement element,
-        string internalOrgId,
-        int competitionId,
-        AddNonPriceElementModel model,
-        CompetitionNonPriceElementsController controller)
-    {
-        model.SelectedNonPriceElement = element;
-
-        var result = controller.AddNonPriceElement(internalOrgId, competitionId, model).As<RedirectToActionResult>();
-
-        result.Should().NotBeNull();
-        result.ActionName.Should().Be(element.ToString());
+        result.ActionName.Should().Be(NonPriceElement.Implementation.ToString());
+        result.RouteValues.Should()
+            .BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { nameof(internalOrgId), internalOrgId },
+                    { nameof(competitionId), competitionId },
+                    {
+                        "selectedNonPriceElements",
+                        string.Join(',', new[] { NonPriceElement.Interoperability, NonPriceElement.ServiceLevel })
+                    },
+                });
     }
 
     [Theory]
@@ -184,7 +189,10 @@ public static class CompetitionNonPriceElementsControllerTests
                 x => x.GetCompetitionWithNonPriceElements(organisation.InternalIdentifier, competition.Id))
             .ReturnsAsync(competition);
 
-        var expectedModel = new SelectInteroperabilityCriteriaModel(competition);
+        var expectedModel = new SelectInteroperabilityCriteriaModel(competition)
+        {
+            InternalOrgId = organisation.InternalIdentifier, CompetitionId = competition.Id,
+        };
 
         var result = (await controller.Interoperability(organisation.InternalIdentifier, competition.Id)).As<ViewResult>();
 
@@ -246,7 +254,10 @@ public static class CompetitionNonPriceElementsControllerTests
                 x => x.GetCompetitionWithNonPriceElements(organisation.InternalIdentifier, competition.Id))
             .ReturnsAsync(competition);
 
-        var expectedModel = new AddImplementationCriteriaModel(competition);
+        var expectedModel = new AddImplementationCriteriaModel(competition)
+        {
+            InternalOrgId = organisation.InternalIdentifier, CompetitionId = competition.Id,
+        };
 
         var result = (await controller.Implementation(organisation.InternalIdentifier, competition.Id))
             .As<ViewResult>();
@@ -303,7 +314,10 @@ public static class CompetitionNonPriceElementsControllerTests
                 x => x.GetCompetitionWithNonPriceElements(organisation.InternalIdentifier, competition.Id))
             .ReturnsAsync(competition);
 
-        var expectedModel = new AddServiceLevelCriteriaModel(competition);
+        var expectedModel = new AddServiceLevelCriteriaModel(competition)
+        {
+            InternalOrgId = organisation.InternalIdentifier, CompetitionId = competition.Id,
+        };
 
         var result = (await controller.ServiceLevel(organisation.InternalIdentifier, competition.Id)).As<ViewResult>();
 
@@ -409,5 +423,88 @@ public static class CompetitionNonPriceElementsControllerTests
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(CompetitionTaskListController.Index));
         result.ControllerName.Should().Be(typeof(CompetitionTaskListController).ControllerName());
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void Delete_ReturnsViewWithModel(
+        string internalOrgId,
+        int competitionId,
+        NonPriceElement nonPriceElement,
+        CompetitionNonPriceElementsController controller)
+    {
+        var expectedModel = new DeleteNonPriceElementModel(nonPriceElement);
+
+        var result = controller.Delete(internalOrgId, competitionId, nonPriceElement).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task Delete_Redirects(
+        string internalOrgId,
+        int competitionId,
+        NonPriceElement nonPriceElement,
+        DeleteNonPriceElementModel model,
+        CompetitionNonPriceElementsController controller)
+    {
+        var result = (await controller.Delete(internalOrgId, competitionId, nonPriceElement, model))
+            .As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.Index));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void GetRedirect_WithReturnUrl_ReturnsRedirect(
+        string internalOrgId,
+        int competitionId,
+        string returnUrl,
+        string selectedNonPriceElements,
+        CompetitionNonPriceElementsController controller)
+    {
+        var result = controller.GetRedirect(internalOrgId, competitionId, returnUrl, selectedNonPriceElements).As<RedirectResult>();
+
+        result.Should().NotBeNull();
+        result.Url.Should().Be(returnUrl);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void GetRedirect_WithNoSelectedNonPriceElements_RedirectsToIndex(
+        string internalOrgId,
+        int competitionId,
+        CompetitionNonPriceElementsController controller)
+    {
+        const string returnUrl = null;
+        const string selectedNonPriceElements = null;
+
+        var result = controller.GetRedirect(internalOrgId, competitionId, returnUrl, selectedNonPriceElements)
+            .As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.Index));
+    }
+
+    [Theory]
+    [CommonMemberAutoData(nameof(GetRedirectNonPriceElementTestData))]
+    public static void GetRedirect_WithSelectedNonPriceElements_RedirectsToNonPriceElement(
+        NonPriceElement[] nonPriceElements,
+        NonPriceElement expectedNonPriceElementAction,
+        string internalOrgId,
+        int competitionId,
+        CompetitionNonPriceElementsController controller)
+    {
+        const string returnUrl = null;
+
+        var selectedNonPriceElements = string.Join(',', nonPriceElements);
+
+        var result = controller.GetRedirect(internalOrgId, competitionId, returnUrl, selectedNonPriceElements).As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(expectedNonPriceElementAction.ToString());
     }
 }

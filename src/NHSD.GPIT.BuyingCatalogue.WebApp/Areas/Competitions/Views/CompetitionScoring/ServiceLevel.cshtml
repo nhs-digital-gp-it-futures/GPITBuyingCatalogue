@@ -1,91 +1,91 @@
 @model ServiceLevelScoringModel
 
 @{
-    ViewBag.Title = "Compare service levels";
-    Layout = "Layouts/_SolutionScoringLayout";
+    ViewBag.Title = "Compare and score service levels";
 }
+<partial name="Partials/_BackLink" model="Model"/>
 
-<form method="post">
-    <input type="hidden" asp-for="CompetitionName"/>
-    <input type="hidden" asp-for="BackLink"/>
-    <input type="hidden" asp-for="ApplicableDays"/>
-    <input type="hidden" asp-for="From"/>
-    <input type="hidden" asp-for="Until"/>
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary/>
 
-    <section class="nhsuk-section">
-        <div class="nhsuk-width-container">
-            <div class="nhsuk-grid-row">
-                <div class="nhsuk-grid-column-two-thirds">
-                    <partial name="Partials/_BackLink" model="Model"/>
+        <nhs-page-title title="@ViewBag.Title"
+                        advice="Compare and score shortlisted solutions based on your service level criteria."
+                        caption="@Model.CompetitionName"/>
 
-                    <nhs-validation-summary/>
+        <partial name="_ScoringGuidancePartial"/>
 
-                    <nhs-page-title title="@ViewBag.Title"
-                                    advice="Compare and score shortlisted solutions based on your service level criteria."
-                                    caption="@Model.CompetitionName"/>
+        <h2>Your service level criteria</h2>
 
-                    <nhs-details label-text="How do I score solutions?">
-                        <b>How to score solutions:</b>
-                        <p>1 = Bad, no requirements met</p>
-                        <p>2 = Poor, few requirements met</p>
-                        <p>3 = Adequate, just meets requirements</p>
-                        <p>4 = Good, requirements covered well</p>
-                        <p>5 = Excellent, all requirements covered well</p>
-                        <p>You should keep a record of the rationale you used to score each solution.</p>
-                    </nhs-details>
+        <nhs-card>
+            <h3>Core support hours</h3>
 
-                    <h2>Your service level criteria</h2>
+            <nhs-summary-list>
+                <nhs-summary-list-row label-text="Times">@($"{Model.From:HH:mm} to {Model.Until:HH:mm}")</nhs-summary-list-row>
+                <nhs-summary-list-row label-text="Days">@Model.ApplicableDays</nhs-summary-list-row>
+            </nhs-summary-list>
+        </nhs-card>
+    </div>
+</div>
 
-                    <h3>Core support hours</h3>
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <form method="post">
+            <input type="hidden" asp-for="CompetitionName"/>
+            <input type="hidden" asp-for="BackLink"/>
+            <input type="hidden" asp-for="ApplicableDays"/>
+            <input type="hidden" asp-for="From"/>
+            <input type="hidden" asp-for="Until"/>
+            @for (var i = 0; i < Model.SolutionScores.Count; i++)
+            {
+                var solutionScoreModel = Model.SolutionScores[i];
+                var solutionName = solutionScoreModel.Solution.CatalogueItem.Name;
 
-                    <nhs-summary-list>
-                        <nhs-summary-list-row label-text="Times">@($"{Model.From:HH:mm} to {Model.Until:HH:mm}")</nhs-summary-list-row>
-                        <nhs-summary-list-row label-text="Days">@Model.ApplicableDays</nhs-summary-list-row>
-                    </nhs-summary-list>
-                </div>
-            </div>
-        </div>
-    </section>
+                <h2>@solutionName</h2>
+                <nhs-expander label-text="View @solutionName implementation details" open="true">
+                    <h2>@solutionScoreModel.Solution.CatalogueItem.Name</h2>
 
-    @for (var i = 0; i < Model.SolutionScores.Count; i++)
-    {
-        var solutionScoreModel = Model.SolutionScores[i];
-        <section class="nhsuk-section">
-            <div class="nhsuk-width-container">
-                <div class="nhsuk-grid-row">
-                    <div class="nhsuk-grid-column-full section-content">
-                        <h2>@solutionScoreModel.Solution.CatalogueItem.Name</h2>
+                    <b>These are the levels of service the supplier has committed to for this Catalogue Solution:</b>
 
-                        <nhs-table label-text="Service availability">
-                            <nhs-table-column>Category</nhs-table-column>
-                            <nhs-table-column>Time period</nhs-table-column>
-                            <nhs-table-column>Applicable days</nhs-table-column>
+                    <br/>
+                    <br/>
 
-                            @foreach (var serviceLevelItem in solutionScoreModel.Solution.ServiceLevelAgreement.ServiceHours)
-                            {
-                                <nhs-table-row-container>
-                                    <nhs-table-cell>@serviceLevelItem.Category</nhs-table-cell>
-                                    <nhs-table-cell>@($"{serviceLevelItem.TimeFrom:HH:mm} - {serviceLevelItem.TimeUntil:HH:mm}")</nhs-table-cell>
-                                    <nhs-table-cell>@serviceLevelItem.ApplicableDays</nhs-table-cell>
-                                </nhs-table-row-container>
-                            }
-                        </nhs-table>
+                    <nhs-table label-text="Service availability">
+                        <nhs-table-column>Category</nhs-table-column>
+                        <nhs-table-column>Time period</nhs-table-column>
+                        <nhs-table-column>Applicable days</nhs-table-column>
 
-                        <nhs-fieldset-form-label asp-for="@Model.SolutionScores[i]"
-                                                 label-text="What score would you give this solution?"
-                                                 label-hint="Score each solution between 1 and 5. The higher the score, the better you think a solution meets your needs." size="Medium">
-                            <input type="hidden" asp-for="@Model.SolutionScores[i].SolutionId"/>
-                            <nhs-input asp-for="@Model.SolutionScores[i].Score" input-width="Three"/>
-                        </nhs-fieldset-form-label>
-
-                        @if (i == Model.SolutionScores.Count - 1)
+                        @foreach (var serviceLevelItem in solutionScoreModel.Solution.ServiceLevelAgreement.ServiceHours)
                         {
-                            <br/>
-                            <nhs-submit-button/>
+                            <nhs-table-row-container>
+                                <nhs-table-cell>@serviceLevelItem.Category</nhs-table-cell>
+                                <nhs-table-cell>@($"{serviceLevelItem.TimeFrom:HH:mm} - {serviceLevelItem.TimeUntil:HH:mm}")</nhs-table-cell>
+                                <nhs-table-cell>@serviceLevelItem.ApplicableDays</nhs-table-cell>
+                            </nhs-table-row-container>
                         }
-                    </div>
-                </div>
-            </div>
-        </section>
-    }
-</form>
+                    </nhs-table>
+
+                    <nhs-fieldset-form-label asp-for="@Model.SolutionScores[i]"
+                                             label-text="What score would you give this solution?"
+                                             label-hint="Score each solution between 1 and 5. The higher the score, the better you think a solution meets your needs." size="Medium">
+                        <input type="hidden" asp-for="@Model.SolutionScores[i].SolutionId"/>
+                        <nhs-input asp-for="@Model.SolutionScores[i].Score" input-width="Three"/>
+                    </nhs-fieldset-form-label>
+
+                    <nhs-fieldset-form-label asp-for="@Model.SolutionScores[i]"
+                                             label-text="Why have you given this score?"
+                                             label-hint="Provide a justification for the score you have given this solution." size="Medium">
+                        <input type="hidden" asp-for="@Model.SolutionScores[i].SolutionId"/>
+                        <nhs-textarea asp-for="@Model.SolutionScores[i].Justification" character-count="false"/>
+                    </nhs-fieldset-form-label>
+                </nhs-expander>
+                @if (i == Model.SolutionScores.Count - 1)
+                {
+                    <br/>
+                    <nhs-submit-button/>
+                }
+                <hr/>
+            }
+        </form>
+    </div>
+</div>

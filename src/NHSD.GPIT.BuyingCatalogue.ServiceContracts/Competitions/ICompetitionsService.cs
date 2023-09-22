@@ -98,15 +98,15 @@ public interface ICompetitionsService
     Task SetSolutionsImplementationScores(
         string internalOrgId,
         int competitionId,
-        Dictionary<CatalogueItemId, int> solutionsScores);
+        Dictionary<CatalogueItemId, (int Score, string Justification)> solutionsScores);
 
     Task SetSolutionsInteroperabilityScores(
         string internalOrgId,
         int competitionId,
-        Dictionary<CatalogueItemId, int> solutionsScores);
+        Dictionary<CatalogueItemId, (int Score, string Justification)> solutionsScores);
 
     Task SetSolutionsServiceLevelScores(
         string internalOrgId,
         int competitionId,
-        Dictionary<CatalogueItemId, int> solutionsScores);
+        Dictionary<CatalogueItemId, (int Score, string Justification)> solutionsScores);
 }

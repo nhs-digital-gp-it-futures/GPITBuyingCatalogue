@@ -2,6 +2,7 @@
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.ScoringModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Validators;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Validators.Scoring;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Validators;
@@ -20,6 +21,20 @@ public static class SolutionScoreModelValidatorTests
 
         result.ShouldHaveValidationErrorFor(x => x.Score)
             .WithErrorMessage(SolutionScoreModelValidator.NullScoreError);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void Validate_NullJustification_SetsModelError(
+        SolutionScoreModel model,
+        SolutionScoreModelValidator validator)
+    {
+        model.Justification = null;
+
+        var result = validator.TestValidate(model);
+
+        result.ShouldHaveValidationErrorFor(x => x.Justification)
+            .WithErrorMessage(SolutionScoreModelValidator.NullJustificationError);
     }
 
     [Theory]
@@ -45,6 +60,7 @@ public static class SolutionScoreModelValidatorTests
         SolutionScoreModelValidator validator)
     {
         model.Score = 3;
+        model.Justification = "Justification";
 
         var result = validator.TestValidate(model);
 
