@@ -196,7 +196,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     OrganisationName = or.Order.OrderingParty.Name,
                     CommencementDate = or.Order.CommencementDate,
                     ServiceRecipientId = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient() ? or.Order.OrderingParty.ExternalIdentifier : or.OdsCode,
-                    ServiceRecipientName = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient() ? or.Order.OrderingParty.Name : or.OdsOrganisation.Name,
+                    ServiceRecipientName = oir.OrderItem.OrderItemPrice.CataloguePriceQuantityCalculationType != CataloguePriceQuantityCalculationType.PerServiceRecipient ? or.Order.OrderingParty.Name : or.OdsOrganisation.Name,
                     SupplierId = $"{supplierId}",
                     SupplierName = supplierName,
                     ProductId = oir.OrderItem.CatalogueItemId.ToString(),
