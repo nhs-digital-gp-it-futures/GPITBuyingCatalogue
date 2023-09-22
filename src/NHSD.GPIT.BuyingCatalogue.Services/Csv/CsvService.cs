@@ -63,6 +63,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             var (supplierId, supplierName) = await GetSupplierDetails(orderId);
 
             var items = await dbContext.OrderRecipients
+                .Include(x => x.OrderItemRecipients)
+                    .ThenInclude(x => x.OrderItem)
+                    .ThenInclude(x => x.OrderItemFunding)
                 .AsNoTracking()
                 .Where(oir => oir.OrderId == orderId)
                 .SelectMany(or => or.OrderItemRecipients, (or, oir) => new PatientOrderCsvModel
@@ -86,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                             : or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId).Quantity ?? oir.OrderItem.Quantity ?? 0,
                         UnitOfOrder = oir.OrderItem.OrderItemPrice.Description,
                         Price = prices[oir.OrderItem.CatalogueItemId],
-                        FundingType = fundingTypeService.GetFundingType(fundingTypes, oir.OrderItem.OrderItemFunding.OrderItemFundingType).Description(),
+                        FundingType = fundingTypeService.GetFundingType(fundingTypes, oir.OrderItem.FundingType).Description(),
                         M1Planned = or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
                             ? null
                             : or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId).DeliveryDate,
@@ -187,6 +190,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             var (supplierId, supplierName) = await GetSupplierDetails(orderId);
 
             var items = await dbContext.OrderRecipients
+                .Include(x => x.OrderItemRecipients)
+                    .ThenInclude(x => x.OrderItem)
+                    .ThenInclude(x => x.OrderItemFunding)
                 .AsNoTracking()
                 .Where(or => or.OrderId == orderId)
                 .SelectMany(or => or.OrderItemRecipients, (or, oir) => new FullOrderCsvModel
