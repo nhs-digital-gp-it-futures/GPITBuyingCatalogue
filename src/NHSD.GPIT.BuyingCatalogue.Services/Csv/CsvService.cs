@@ -209,7 +209,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     M1Planned = or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
                         ? null
                         : or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId).DeliveryDate,
-                    FundingType = fundingTypeService.GetFundingType(fundingTypes, oir.OrderItem.FundingType).Description(),
+                    FundingType = fundingTypeService.GetFundingType(fundingTypes, oir.OrderItem.OrderItemFunding.OrderItemFundingType).Description(),
                     Framework = or.Order.SelectedFrameworkId,
                     InitialTerm = or.Order.InitialPeriod,
                     MaximumTerm = or.Order.MaximumTerm,
