@@ -12,12 +12,14 @@ public static class SolutionScoreModelTests
     [CommonAutoData]
     public static void Construct_SetsPropertiesAsExpected(
         Solution solution,
-        int? score)
+        int? score,
+        string justification)
     {
-        var model = new SolutionScoreModel(solution, score);
+        var model = new SolutionScoreModel(solution, score, justification);
 
         model.SolutionId.Should().Be(solution.CatalogueItemId);
         model.Solution.Should().Be(solution);
         model.Score.Should().Be(score);
+        model.Justification.Should().Be(justification);
     }
 }

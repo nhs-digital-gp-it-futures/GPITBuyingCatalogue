@@ -2,12 +2,12 @@
 using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.ScoringModels;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Validators;
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Validators.Scoring;
 
 [ExcludeFromCodeCoverage(Justification = "Configures a sub-validator to use on a property and doesn't have validation logic")]
-public class ServiceLevelScoringModelValidator : AbstractValidator<ServiceLevelScoringModel>
+public class ImplementationScoringModelValidator : AbstractValidator<ImplementationScoringModel>
 {
-    public ServiceLevelScoringModelValidator()
+    public ImplementationScoringModelValidator()
     {
         RuleForEach(x => x.SolutionScores)
             .Cascade(CascadeMode.Continue)

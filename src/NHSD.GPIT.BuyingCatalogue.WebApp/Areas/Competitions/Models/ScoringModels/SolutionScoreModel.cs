@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ModelBinders;
@@ -13,11 +14,13 @@ public class SolutionScoreModel
 
     public SolutionScoreModel(
         Solution solution,
-        int? score)
+        int? score,
+        string justification)
     {
         SolutionId = solution.CatalogueItemId;
         Solution = solution;
         Score = score;
+        Justification = justification;
     }
 
     public CatalogueItemId SolutionId { get; set; }
@@ -26,4 +29,7 @@ public class SolutionScoreModel
 
     [ModelBinder(typeof(NumberModelBinder))]
     public int? Score { get; set; }
+
+    [StringLength(1000)]
+    public string Justification { get; set; }
 }

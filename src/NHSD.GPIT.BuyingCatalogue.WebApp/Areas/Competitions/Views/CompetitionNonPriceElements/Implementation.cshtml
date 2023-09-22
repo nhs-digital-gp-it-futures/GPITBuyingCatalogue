@@ -1,3 +1,5 @@
+@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsDeleteButton
 @model AddImplementationCriteriaModel
 
 @{
@@ -14,6 +16,9 @@
                         advice="Explain your requirements for when the winning solution is implemented."/>
 
         <form method="post">
+            <input type="hidden" asp-for="CanDelete"/>
+            <input type="hidden" asp-for="InternalOrgId"/>
+            <input type="hidden" asp-for="CompetitionId"/>
             <input type="hidden" asp-for="CompetitionName"/>
             <input type="hidden" asp-for="BackLink"/>
 
@@ -28,6 +33,13 @@
             <div>
                 <a href="@Model.BackLink">Cancel</a>
             </div>
+            @if (Model.CanDelete)
+            {
+                <br/>
+                <div>
+                    <vc:nhs-delete-button text="Delete this requirement" url="@Url.Action(nameof(CompetitionNonPriceElementsController.Delete), typeof(CompetitionNonPriceElementsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, nonPriceElement = NonPriceElement.Implementation })"/>
+                </div>
+            }
         </form>
 
     </div>

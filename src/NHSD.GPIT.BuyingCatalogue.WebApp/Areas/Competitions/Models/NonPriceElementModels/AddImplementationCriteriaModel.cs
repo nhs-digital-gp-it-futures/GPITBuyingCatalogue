@@ -4,7 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.NonPriceElementModels;
 
-public class AddImplementationCriteriaModel : NavBaseModel
+public class AddImplementationCriteriaModel : NonPriceElementBase
 {
     public AddImplementationCriteriaModel()
     {
@@ -14,6 +14,7 @@ public class AddImplementationCriteriaModel : NavBaseModel
     {
         CompetitionName = competition.Name;
         Requirements = competition.NonPriceElements?.Implementation?.Requirements;
+        CanDelete = competition.NonPriceElements?.Implementation is not null;
     }
 
     public string CompetitionName { get; set; }

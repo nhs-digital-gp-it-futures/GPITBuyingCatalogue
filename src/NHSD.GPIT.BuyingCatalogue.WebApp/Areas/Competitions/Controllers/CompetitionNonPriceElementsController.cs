@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -16,11 +17,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 public class CompetitionNonPriceElementsController : Controller
 {
     private readonly ICompetitionsService competitionsService;
+    private readonly ICompetitionNonPriceElementsService competitionNonPriceElementsService;
 
     public CompetitionNonPriceElementsController(
-        ICompetitionsService competitionsService)
+        ICompetitionsService competitionsService,
+        ICompetitionNonPriceElementsService competitionNonPriceElementsService)
     {
         this.competitionsService = competitionsService ?? throw new ArgumentNullException(nameof(competitionsService));
+        this.competitionNonPriceElementsService = competitionNonPriceElementsService ?? throw new ArgumentNullException(nameof(competitionNonPriceElementsService));
     }
 
     [HttpGet("dashboard")]
@@ -68,29 +72,43 @@ public class CompetitionNonPriceElementsController : Controller
         if (!ModelState.IsValid)
             return View(model);
 
-        var selectedNonPriceElement = model.AvailableNonPriceElements.Count == 1
-            ? model.AvailableNonPriceElements.FirstOrDefault(x => x.Selected)?.Value
-            : model.SelectedNonPriceElement;
+        var selectedNonPriceElements =
+            model.AvailableNonPriceElements.Where(x => x.Selected).Select(x => x.Value).ToList();
+
+        (NonPriceElement? nextNonPriceElement, IEnumerable<NonPriceElement> remainingNonPriceElements) =
+            GetNextNonPriceElement(selectedNonPriceElements);
 
         return RedirectToAction(
-            selectedNonPriceElement is null ? nameof(Index) : selectedNonPriceElement.GetValueOrDefault().ToString(),
-            new { internalOrgId, competitionId });
+            nextNonPriceElement.ToString(),
+            new
+            {
+                internalOrgId,
+                competitionId,
+                selectedNonPriceElements = string.Join(
+                    ',',
+                    remainingNonPriceElements),
+            });
     }
 
     [HttpGet("add/interoperability")]
     public async Task<IActionResult> Interoperability(
         string internalOrgId,
         int competitionId,
-        bool? isEdit = false,
-        string returnUrl = null)
+        string returnUrl = null,
+        string selectedNonPriceElements = null)
     {
         _ = returnUrl;
+        _ = selectedNonPriceElements;
 
         var competition = await competitionsService.GetCompetitionWithNonPriceElements(internalOrgId, competitionId);
 
         var model = new SelectInteroperabilityCriteriaModel(competition)
         {
-            BackLink = returnUrl ?? Url.Action(isEdit.GetValueOrDefault() ? nameof(Index) : nameof(AddNonPriceElement), new { internalOrgId, competitionId }),
+            BackLink = returnUrl ?? Url.Action(
+                nameof(Index),
+                new { internalOrgId, competitionId }),
+            InternalOrgId = internalOrgId,
+            CompetitionId = competitionId,
         };
 
         return View(model);
@@ -101,7 +119,8 @@ public class CompetitionNonPriceElementsController : Controller
         string internalOrgId,
         int competitionId,
         SelectInteroperabilityCriteriaModel model,
-        string returnUrl = null)
+        string returnUrl = null,
+        string selectedNonPriceElements = null)
     {
         if (!ModelState.IsValid)
             return View(model);
@@ -115,23 +134,28 @@ public class CompetitionNonPriceElementsController : Controller
             im1Integrations,
             gpConnectIntegrations);
 
-        return GetRedirect(internalOrgId, competitionId, returnUrl);
+        return GetRedirect(internalOrgId, competitionId, returnUrl, selectedNonPriceElements);
     }
 
     [HttpGet("add/implementation")]
     public async Task<IActionResult> Implementation(
         string internalOrgId,
         int competitionId,
-        bool? isEdit = false,
-        string returnUrl = null)
+        string returnUrl = null,
+        string selectedNonPriceElements = null)
     {
         _ = returnUrl;
+        _ = selectedNonPriceElements;
 
         var competition = await competitionsService.GetCompetitionWithNonPriceElements(internalOrgId, competitionId);
 
         var model = new AddImplementationCriteriaModel(competition)
         {
-            BackLink = returnUrl ?? Url.Action(isEdit.GetValueOrDefault() ? nameof(Index) : nameof(AddNonPriceElement), new { internalOrgId, competitionId }),
+            BackLink = returnUrl ?? Url.Action(
+                nameof(Index),
+                new { internalOrgId, competitionId }),
+            InternalOrgId = internalOrgId,
+            CompetitionId = competitionId,
         };
 
         return View(model);
@@ -142,30 +166,36 @@ public class CompetitionNonPriceElementsController : Controller
         string internalOrgId,
         int competitionId,
         AddImplementationCriteriaModel model,
-        string returnUrl = null)
+        string returnUrl = null,
+        string selectedNonPriceElements = null)
     {
         if (!ModelState.IsValid)
             return View(model);
 
         await competitionsService.SetImplementationCriteria(internalOrgId, competitionId, model.Requirements);
 
-        return GetRedirect(internalOrgId, competitionId, returnUrl);
+        return GetRedirect(internalOrgId, competitionId, returnUrl, selectedNonPriceElements);
     }
 
     [HttpGet("add/service-level")]
     public async Task<IActionResult> ServiceLevel(
         string internalOrgId,
         int competitionId,
-        bool? isEdit = false,
-        string returnUrl = null)
+        string returnUrl = null,
+        string selectedNonPriceElements = null)
     {
         _ = returnUrl;
+        _ = selectedNonPriceElements;
 
         var competition = await competitionsService.GetCompetitionWithNonPriceElements(internalOrgId, competitionId);
 
         var model = new AddServiceLevelCriteriaModel(competition)
         {
-            BackLink = returnUrl ?? Url.Action(isEdit.GetValueOrDefault() ? nameof(Index) : nameof(AddNonPriceElement), new { internalOrgId, competitionId }),
+            BackLink = returnUrl ?? Url.Action(
+                nameof(Index),
+                new { internalOrgId, competitionId }),
+            InternalOrgId = internalOrgId,
+            CompetitionId = competitionId,
         };
 
         return View(model);
@@ -176,7 +206,8 @@ public class CompetitionNonPriceElementsController : Controller
         string internalOrgId,
         int competitionId,
         AddServiceLevelCriteriaModel model,
-        string returnUrl = null)
+        string returnUrl = null,
+        string selectedNonPriceElements = null)
     {
         if (!ModelState.IsValid)
             return View(model);
@@ -188,7 +219,7 @@ public class CompetitionNonPriceElementsController : Controller
             model.TimeUntil.GetValueOrDefault(),
             model.ApplicableDays);
 
-        return GetRedirect(internalOrgId, competitionId, returnUrl);
+        return GetRedirect(internalOrgId, competitionId, returnUrl, selectedNonPriceElements);
     }
 
     [HttpGet("weights")]
@@ -231,8 +262,71 @@ public class CompetitionNonPriceElementsController : Controller
             new { internalOrgId, competitionId });
     }
 
-    private IActionResult GetRedirect(string internalOrgId, int competitionId, string returnUrl) =>
-        string.IsNullOrWhiteSpace(returnUrl)
-            ? RedirectToAction(nameof(Index), new { internalOrgId, competitionId })
-            : Redirect(returnUrl);
+    [HttpGet("delete/{nonPriceElement}")]
+    public IActionResult Delete(
+        string internalOrgId,
+        int competitionId,
+        NonPriceElement nonPriceElement)
+    {
+        _ = internalOrgId;
+        _ = competitionId;
+
+        var model = new DeleteNonPriceElementModel(nonPriceElement)
+        {
+            BackLink = Url.Action(nonPriceElement.ToString(), new { internalOrgId, competitionId }),
+        };
+
+        return View(model);
+    }
+
+    [HttpPost("delete/{nonPriceElement}")]
+    public async Task<IActionResult> Delete(
+        string internalOrgId,
+        int competitionId,
+        NonPriceElement nonPriceElement,
+        DeleteNonPriceElementModel model)
+    {
+        _ = model;
+
+        await competitionNonPriceElementsService.DeleteNonPriceElement(internalOrgId, competitionId, nonPriceElement);
+
+        return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
+    }
+
+    internal IActionResult GetRedirect(string internalOrgId, int competitionId, string returnUrl, string selectedNonPriceElements)
+    {
+        if (!string.IsNullOrWhiteSpace(returnUrl))
+            return Redirect(returnUrl);
+
+        if (string.IsNullOrWhiteSpace(selectedNonPriceElements))
+            return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
+
+        var parsedNonPriceElements = ParseNonPriceElements(selectedNonPriceElements);
+        (NonPriceElement? nextNonPriceElement, IEnumerable<NonPriceElement> remainingNonPriceElements) = GetNextNonPriceElement(parsedNonPriceElements.ToList());
+
+        return RedirectToAction(
+            nextNonPriceElement.ToString(),
+            new
+            {
+                internalOrgId,
+                competitionId,
+                selectedNonPriceElements = string.Join(',', remainingNonPriceElements),
+            });
+    }
+
+    private static (NonPriceElement? NextNonPriceElement, IEnumerable<NonPriceElement> RemainingNonPriceElements)
+        GetNextNonPriceElement(
+            ICollection<NonPriceElement> nonPriceElements)
+    {
+        if (!nonPriceElements.Any()) return (null, nonPriceElements);
+
+        var nextNonPriceElement = nonPriceElements.First();
+
+        return (nextNonPriceElement, nonPriceElements.Where(x => x != nextNonPriceElement));
+    }
+
+    private static IEnumerable<NonPriceElement> ParseNonPriceElements(string nonPriceElementsQuery) =>
+        nonPriceElementsQuery.Split(',', StringSplitOptions.RemoveEmptyEntries)
+            .Where(x => Enum.TryParse<NonPriceElement>(x, out var parsedEnum) && Enum.IsDefined(parsedEnum))
+            .Select(Enum.Parse<NonPriceElement>);
 }

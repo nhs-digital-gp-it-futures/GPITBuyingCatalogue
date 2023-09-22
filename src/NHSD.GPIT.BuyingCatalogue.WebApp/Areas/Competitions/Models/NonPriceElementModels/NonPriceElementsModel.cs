@@ -30,8 +30,8 @@ public class NonPriceElementsModel : NavBaseModel
     public NonPriceElements NonPriceElements { get; set; }
 
     public bool HasAllNonPriceElements() =>
-        NonPriceElementExtensions.GetAllNonPriceElements().All(NonPriceElements.HasNonPriceElement);
+        NonPriceElements.HasAllNonPriceElements();
 
     public bool HasAnyNonPriceElements() =>
-        NonPriceElementExtensions.GetAllNonPriceElements().Any(NonPriceElements.HasNonPriceElement);
+        NonPriceElements.HasAnyNonPriceElements();
 }

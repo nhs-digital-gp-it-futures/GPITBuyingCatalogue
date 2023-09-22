@@ -1,5 +1,8 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using FluentValidation.TestHelper;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.NonPriceElementModels;
@@ -12,40 +15,35 @@ public static class AddNonPriceElementModelValidatorTests
 {
     [Theory]
     [CommonAutoData]
-    public static void Validate_SingleNonPriceElement_NoModelErrors(
-        AddNonPriceElementModel model,
-        AddNonPriceElementModelValidator validator)
-    {
-        model.SelectedNonPriceElement = null;
-        model.AvailableNonPriceElements = model.AvailableNonPriceElements.Take(1).ToList();
-
-        var result = validator.TestValidate(model);
-
-        result.ShouldNotHaveAnyValidationErrors();
-    }
-
-    [Theory]
-    [CommonAutoData]
     public static void Validate_NoSelectedNonPriceElement_SetsModelError(
         AddNonPriceElementModel model,
         AddNonPriceElementModelValidator validator)
     {
-        model.SelectedNonPriceElement = null;
+        model.AvailableNonPriceElements = new List<SelectOption<NonPriceElement>>
+        {
+            new(NonPriceElement.Implementation.EnumMemberName(), NonPriceElement.Implementation),
+            new(NonPriceElement.Interoperability.EnumMemberName(), NonPriceElement.Interoperability),
+            new(NonPriceElement.ServiceLevel.EnumMemberName(), NonPriceElement.ServiceLevel),
+        };
 
         var result = validator.TestValidate(model);
 
-        result.ShouldHaveValidationErrorFor(x => x.SelectedNonPriceElement)
+        result.ShouldHaveValidationErrorFor("AvailableNonPriceElements[0].Selected")
             .WithErrorMessage(AddNonPriceElementModelValidator.NoSelectionError);
     }
 
     [Theory]
     [CommonAutoData]
     public static void Validate_Valid_NoModelErrors(
-        NonPriceElement element,
         AddNonPriceElementModel model,
         AddNonPriceElementModelValidator validator)
     {
-        model.SelectedNonPriceElement = element;
+        model.AvailableNonPriceElements = new List<SelectOption<NonPriceElement>>
+        {
+            new(NonPriceElement.Implementation.EnumMemberName(), NonPriceElement.Implementation),
+            new(NonPriceElement.Interoperability.EnumMemberName(), NonPriceElement.Interoperability),
+            new(NonPriceElement.ServiceLevel.EnumMemberName(), NonPriceElement.ServiceLevel, selected: true),
+        };
 
         var result = validator.TestValidate(model);
 
