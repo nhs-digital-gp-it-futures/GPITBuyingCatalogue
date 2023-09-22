@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using System.Linq;
+using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.NonPriceElementModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Validators;
@@ -9,9 +10,9 @@ public class AddNonPriceElementModelValidator : AbstractValidator<AddNonPriceEle
 
     public AddNonPriceElementModelValidator()
     {
-        RuleFor(x => x.SelectedNonPriceElement)
-            .NotNull()
+        RuleFor(x => x.AvailableNonPriceElements)
+            .Must(x => x.Any(y => y.Selected))
             .WithMessage(NoSelectionError)
-            .When(x => x.AvailableNonPriceElements.Count > 1);
+            .OverridePropertyName("AvailableNonPriceElements[0].Selected");
     }
 }

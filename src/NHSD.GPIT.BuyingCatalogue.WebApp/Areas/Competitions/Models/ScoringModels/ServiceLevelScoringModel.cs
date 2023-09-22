@@ -38,9 +38,15 @@ public class ServiceLevelScoringModel : NavBaseModel
     {
         SolutionScores = solutions.OrderBy(x => x.Solution.CatalogueItem.Name)
             .Select(
-                x => new SolutionScoreModel(
-                    x.Solution,
-                    setScores ? x.GetScoreByType(ScoreType.ServiceLevel)?.Score : null))
+                x =>
+                {
+                    var score = x.GetScoreByType(ScoreType.ServiceLevel);
+
+                    return new SolutionScoreModel(
+                        x.Solution,
+                        setScores ? score?.Score : null,
+                        score?.Justification);
+                })
             .ToList();
     }
 }

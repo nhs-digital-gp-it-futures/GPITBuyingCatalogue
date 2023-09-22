@@ -120,7 +120,7 @@ public static class CompetitionScoringControllerTests
             x => x.SetSolutionsInteroperabilityScores(
                 internalOrgId,
                 competitionId,
-                It.IsAny<Dictionary<CatalogueItemId, int>>()),
+                It.IsAny<Dictionary<CatalogueItemId, (int, string)>>()),
             Times.Once());
 
         result.Should().NotBeNull();
@@ -194,7 +194,7 @@ public static class CompetitionScoringControllerTests
             x => x.SetSolutionsImplementationScores(
                 internalOrgId,
                 competitionId,
-                It.IsAny<Dictionary<CatalogueItemId, int>>()),
+                It.IsAny<Dictionary<CatalogueItemId, (int, string)>>()),
             Times.Once());
 
         result.Should().NotBeNull();
@@ -268,7 +268,7 @@ public static class CompetitionScoringControllerTests
             x => x.SetSolutionsServiceLevelScores(
                 internalOrgId,
                 competitionId,
-                It.IsAny<Dictionary<CatalogueItemId, int>>()),
+                It.IsAny<Dictionary<CatalogueItemId, (int, string)>>()),
             Times.Once());
 
         result.Should().NotBeNull();

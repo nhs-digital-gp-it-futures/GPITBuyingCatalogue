@@ -7,7 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.NonPriceElementModels;
 
-public class SelectInteroperabilityCriteriaModel : NavBaseModel
+public class SelectInteroperabilityCriteriaModel : NonPriceElementBase
 {
     public SelectInteroperabilityCriteriaModel()
     {
@@ -17,6 +17,8 @@ public class SelectInteroperabilityCriteriaModel : NavBaseModel
         Competition competition)
     {
         CompetitionName = competition.Name;
+
+        CanDelete = competition.NonPriceElements?.Interoperability?.Any() ?? false;
 
         Im1Integrations = GetIntegrationsSelectOptions(Interoperability.Im1Integrations, competition).ToList();
 

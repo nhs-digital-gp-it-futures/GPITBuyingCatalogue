@@ -13,8 +13,9 @@ public class InteroperabilitySolutionScoreModel : SolutionScoreModel
 
     public InteroperabilitySolutionScoreModel(
         Solution solution,
-        int? score)
-    : base(solution, score)
+        int? score,
+        string justification)
+    : base(solution, score, justification)
     {
         var integrations = Solution.GetIntegrations().ToList();
 

@@ -20,12 +20,11 @@ public class AddNonPriceElementModel : NavBaseModel
         CompetitionName = competition.Name;
         AvailableNonPriceElements = competition.NonPriceElements.GetAvailableNonPriceElements()
             .Select(x => new SelectOption<NonPriceElement>(x.EnumMemberName(), x))
+            .OrderBy(x => x.Text)
             .ToList();
     }
 
     public string CompetitionName { get; set; }
-
-    public NonPriceElement? SelectedNonPriceElement { get; set; }
 
     public List<SelectOption<NonPriceElement>> AvailableNonPriceElements { get; set; }
 }

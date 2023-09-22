@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using FluentAssertions;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -15,7 +14,8 @@ public static class InteroperabilitySolutionScoreModelTests
     [CommonAutoData]
     public static void Construct_SetsPropertiesAsExpected(
         Solution solution,
-        int? score)
+        int? score,
+        string justification)
     {
         var integrations = new List<Integration>
         {
@@ -25,10 +25,11 @@ public static class InteroperabilitySolutionScoreModelTests
 
         solution.Integrations = JsonConvert.SerializeObject(integrations);
 
-        var model = new InteroperabilitySolutionScoreModel(solution, score);
+        var model = new InteroperabilitySolutionScoreModel(solution, score, justification);
 
         model.Score.Should().Be(score);
         model.Im1Integrations.Should().ContainSingle();
         model.GpConnectIntegrations.Should().ContainSingle();
+        model.Justification.Should().Be(justification);
     }
 }
