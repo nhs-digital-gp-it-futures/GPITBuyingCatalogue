@@ -376,7 +376,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             SolutionAndServicesReview.ReviewSolutionAndServices();
 
             TaskList.SelectPlannedDeliveryDatesTask();
-            PlannedDeliveryDates.EditPlannedDeliveryDate(newSolutionName, isAssociatedServiceOnlyOrder, newAssociatedServices, newAdditionalServiceNames);
+            PlannedDeliveryDates.PlannedDeliveryDate(newSolutionName, isAssociatedServiceOnlyOrder, newAssociatedServices, newAdditionalServiceNames);
 
             TaskList.SelectFundingSourcesTask();
             SelectFundingSources.AddFundingSources(newSolutionName, isAssociatedServiceOnlyOrder, newAssociatedServices, newAdditionalServiceNames);
@@ -465,14 +465,17 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             {
                 foreach (var associatedService in newAssociatedServices)
                 {
-                    SelectEditAssociatedServiceRecipents.AddServiceRecipient();
-                    ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
+                    //SelectEditAssociatedServiceRecipents.AddServiceRecipient();
+                    //ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
                     SelectEditAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
                     Quantity.AddQuantity();
                 }
             }
 
             SolutionAndServicesReview.ReviewSolutionAndServices();
+
+            TaskList.EditPlannedDeliveryDateTask();
+            PlannedDeliveryDates.EditPlannedDeliveryDate(solutionName, isAssociatedServiceOnlyOrder,  newAssociatedServices, additionalServices);
 
             TaskList.SelectFundingSourcesTask();
             SelectFundingSources.AddFundingSources(solutionName, isAssociatedServiceOnlyOrder, newAssociatedServices, additionalServices);
@@ -514,14 +517,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         public void EditCatalogueSolutionServiceRecipient(string solutionName)
         {
             var orderId = OrderID();
-            TaskList.EditSolutionsAndServicesTask(IsAssociatedServiceOnlyOrder(orderId));
+            TaskList.SelectOrderRecipients();
 
             SelectEditCatalogueSolutionServiceRecipients.EditCatalogueSolutionServiceRecipient(solutionName);
             ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
-            SelectEditAndConfirmAdditionalServicePrice.EditConfirmPrice();
+            TaskList.EditSolutionAndServicesTask();
+            //SelectEditAndConfirmAdditionalServicePrice.EditConfirmPrice();
 
-            Quantity.AddQuantity();
-            TaskList.EditCatalogueAdditionalAndAssociatedServiceTask();
+            Quantity.EditQuantity(solutionName);
+            //TaskList.EditCatalogueAdditionalAndAssociatedServiceTask();
         }
 
         public void AmendOrderDescription(string amendOrderDescription)
