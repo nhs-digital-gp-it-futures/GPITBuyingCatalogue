@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
@@ -10,6 +11,7 @@ public class AddFrameworkModel : NavBaseModel
 {
     public string FrameworkId { get; set; }
 
+    [StringLength(100)]
     public string Name { get; set; }
 
     public List<SelectOption<FundingType>> FundingTypes { get; set; } = new()
