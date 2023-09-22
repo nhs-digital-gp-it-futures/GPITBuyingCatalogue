@@ -47,8 +47,7 @@
 
         @if (Model.OrderItemsSelectable != null && Model.OrderItemsSelectable.Any())
         {
-            <nhs-table data-test-id="funding-sources-items-editable"
-                       label-text="Allocate funding">
+            <nhs-table data-test-id="funding-sources-items-editable">
                 <nhs-table-column>Solution or service</nhs-table-column>
                 <nhs-table-column>Total cost</nhs-table-column>
                 <nhs-table-column>Funding type</nhs-table-column>
@@ -69,7 +68,7 @@
                                asp-route-internalOrgId="@Model.InternalOrgId"
                                asp-route-callOffId="@Model.CallOffId"
                                asp-route-catalogueItemId="@item.CatalogueItem.Id">
-                                Edit
+                                @GetLinkText(item)
                             </a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
@@ -91,7 +90,7 @@
         @if (Model.OrderItemsSingleFundingType != null && Model.OrderItemsSingleFundingType.Any())
         {
             <nhs-table data-test-id="funding-sources-items-local-only"
-                       label-text="Funding sources">
+                       label-text="Item and cost">
                 <nhs-table-column>Solution or service</nhs-table-column>
                 <nhs-table-column>Total cost</nhs-table-column>
                 <nhs-table-column></nhs-table-column>
@@ -145,6 +144,7 @@
 
 @{
     TaskProgress GetStatus(OrderItem item) => item.FundingType == OrderItemFundingType.None ? TaskProgress.NotStarted : TaskProgress.Completed;
+    string GetLinkText(OrderItem item) => item.FundingType == OrderItemFundingType.None ? "Edit" : "View";
 
     decimal CalculateTotalCost(OrderItem item) => Model.OrderWrapper.TotalCostForOrderItem(item.CatalogueItem.Id);
 }
