@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.FundingTypes;
@@ -70,9 +71,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         OdsCode = or.Order.OrderingParty.ExternalIdentifier,
                         OrganisationName = or.Order.OrderingParty.Name,
                         CommencementDate = or.Order.CommencementDate,
-                        ServiceRecipientId = oir.OrderItem.OrderItemPrice.CataloguePriceQuantityCalculationType != CataloguePriceQuantityCalculationType.PerServiceRecipient && (oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.Declarative || oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.OnDemand)
+                        ServiceRecipientId = (oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient() == false && (oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.Declarative || oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.OnDemand)
                         ? or.Order.OrderingParty.ExternalIdentifier : or.OdsCode,
-                        ServiceRecipientName = oir.OrderItem.OrderItemPrice.CataloguePriceQuantityCalculationType != CataloguePriceQuantityCalculationType.PerServiceRecipient && (oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.Declarative || oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.OnDemand)
+                        ServiceRecipientName = (oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient() == false && (oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.Declarative || oir.OrderItem.OrderItemPrice.ProvisioningType == ProvisioningType.OnDemand)
                         ? or.Order.OrderingParty.Name : or.OdsOrganisation.Name,
                         SupplierId = supplierId,
                         SupplierName = supplierName,
