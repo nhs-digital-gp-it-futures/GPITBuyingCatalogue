@@ -22,10 +22,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Files\MPS Networks Ltd BPF Supplier solution details submitted 31.05.2023[92].pdf" />
-  </ItemGroup>
-
-  <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
       <_Parameter1>$(AssemblyName).UnitTests</_Parameter1>
       <!-- We use the value of AssemblyName to declare the value of the attribute -->
