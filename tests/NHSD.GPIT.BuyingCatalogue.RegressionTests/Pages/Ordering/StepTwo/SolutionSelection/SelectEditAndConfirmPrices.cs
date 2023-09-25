@@ -40,7 +40,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
              typeof(PricesController),
              nameof(PricesController.EditPrice)).Should().BeTrue();
 
-            //TextGenerators.PriceInputAddPrice(PriceObjects.AgreedPriceInput(0), MaxPrice);
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -68,7 +67,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
                typeof(PricesController),
                nameof(PricesController.ConfirmPrice)).Should().BeTrue();
 
-            //TextGenerators.PriceInputAddPrice(PriceObjects.AgreedPriceInput(0), MaxPrice);
             CommonActions.ClickSave();
         }
 
