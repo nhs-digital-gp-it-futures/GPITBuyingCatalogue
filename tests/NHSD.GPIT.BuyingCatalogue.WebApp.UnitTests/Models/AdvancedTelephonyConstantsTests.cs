@@ -18,6 +18,7 @@ public static class AdvancedTelephonyConstantsTests
     [CommonInlineAutoData(AdvancedTelephonyConstants.CheckCloud)]
     [CommonInlineAutoData(AdvancedTelephonyConstants.DaisyPatientLine)]
     [CommonInlineAutoData(AdvancedTelephonyConstants.LouisComm)]
+    [CommonInlineAutoData(AdvancedTelephonyConstants.MpsNetworks)]
     [CommonInlineAutoData(AdvancedTelephonyConstants.Redcentric)]
     [CommonInlineAutoData(AdvancedTelephonyConstants.RpmPatientContact)]
     [CommonInlineAutoData(AdvancedTelephonyConstants.SurgeryConnect)]
