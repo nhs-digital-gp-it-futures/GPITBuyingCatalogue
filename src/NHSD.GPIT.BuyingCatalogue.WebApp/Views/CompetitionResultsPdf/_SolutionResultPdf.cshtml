@@ -1,0 +1,92 @@
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.ResultsModels.CompetitionSolutionResult
+
+<h3>
+    @Model.SolutionName
+    <span class="nhsuk-caption-m nhsuk-caption--bottom">
+        @Model.SupplierName
+    </span>
+</h3>
+
+@if (Model.IncludesNonPriceElements)
+{
+    <table>
+        <h3>Non-price element scores</h3>
+        <thead>
+        <tr>
+            <th>Non-price element</th>
+            <th>Score</th>
+            <th>Weighted score</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        @foreach (var nonPriceElementWeight in Model.NonPriceElementWeights)
+        {
+            <tr class="alternating">
+                <td>@nonPriceElementWeight.NonPriceElement.EnumMemberName()</td>
+                <td>@nonPriceElementWeight.Score</td>
+                <td>@nonPriceElementWeight.WeightedScore</td>
+            </tr>
+        }
+
+        <tr class="alternating">
+            <td>
+                <strong>Total</strong>
+            </td>
+            <td></td>
+            <td>
+                <strong>
+                    @Model.GetTotalNonPriceElementWeight()
+                </strong>
+            </td>
+        </tr>
+
+        <tr class="alternating">
+            <td>
+                <strong>Total weighted score for non-price elements</strong>
+            </td>
+            <td></td>
+            <td>
+                <strong>
+                    @Model.GetWeightedNonPriceElementWeight().GetValueOrDefault().ToString("N2")
+                </strong>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+}
+
+<table>
+    <h3>Price score</h3>
+    <thead>
+    <tr>
+        <th>Price</th>
+        <th>Score</th>
+        @if (Model.IncludesNonPriceElements)
+        {
+            <th>Weighted score</th>
+        }
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr>
+        <td>£@Model.PriceScoreWeighting.Price.ToString("N2")</td>
+        <td>@Model.PriceScoreWeighting.Score</td>
+        @if (Model.IncludesNonPriceElements)
+        {
+            <td>@Model.PriceScoreWeighting.WeightedScore</td>
+        }
+    </tr>
+    </tbody>
+</table>
+
+@if (Model.IncludesNonPriceElements)
+{
+    <br/>
+    <br/>
+    <h2>Total weighted score: @Model.TotalWeightedScore.ToString("N2")</h2>
+}
+
+<div style="page-break-after: always"></div>

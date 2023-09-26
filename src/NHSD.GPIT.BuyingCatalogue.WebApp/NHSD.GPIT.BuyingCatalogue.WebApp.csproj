@@ -31,6 +31,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Files\Buyer's Guide for Advanced Cloud-based Telephony-Jan 2023.pdf" />
     <EmbeddedResource Include="Files\Daisy Patient Line.pdf" />
+    <EmbeddedResource Include="Files\MPS Networks Ltd BPF Supplier solution details submitted 31.05.2023[92].pdf" />
     <EmbeddedResource Include="Files\Think Healthcare.pdf" />
     <EmbeddedResource Include="Files\Redcentric.pdf" />
     <EmbeddedResource Include="Files\Surgery Connect.pdf" />

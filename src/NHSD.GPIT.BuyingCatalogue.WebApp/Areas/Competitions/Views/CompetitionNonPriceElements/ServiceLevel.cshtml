@@ -1,3 +1,4 @@
+@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions
 @model AddServiceLevelCriteriaModel
 
 @{
@@ -14,8 +15,11 @@
                         advice="Provide information on the level of support you require for a winning solution."/>
 
         <form method="post">
-            <input type="hidden" asp-for="CompetitionName" />
-            <input type="hidden" asp-for="BackLink" />
+            <input type="hidden" asp-for="CanDelete"/>
+            <input type="hidden" asp-for="InternalOrgId"/>
+            <input type="hidden" asp-for="CompetitionId"/>
+            <input type="hidden" asp-for="CompetitionName"/>
+            <input type="hidden" asp-for="BackLink"/>
 
             <nhs-fieldset-form-label asp-for="@Model"
                                      label-text="Times you require core support to be available"
@@ -36,6 +40,13 @@
             <div>
                 <a href="@Model.BackLink">Cancel</a>
             </div>
+            @if (Model.CanDelete)
+            {
+                <br/>
+                <div>
+                    <vc:nhs-delete-button text="Delete this requirement" url="@Url.Action(nameof(CompetitionNonPriceElementsController.Delete), typeof(CompetitionNonPriceElementsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, nonPriceElement = NonPriceElement.ServiceLevel })"/>
+                </div>
+            }
         </form>
 
     </div>

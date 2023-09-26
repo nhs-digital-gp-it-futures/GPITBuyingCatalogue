@@ -8,7 +8,7 @@
         ? "All available non-price elements have been added for this competition."
         : "Add at least 1 optional non-price element to help you score your shortlisted solutions, for example implementation, interoperability or service levels.";
     var routeValues = new { internalOrgId = Model.InternalOrgId, competitionId = Model.CompetitionId };
-    var editRouteValues = new { internalOrgId = Model.InternalOrgId, competitionId = Model.CompetitionId, isEdit = true, returnUrl = Url.ActionLink() };
+    var editRouteValues = new { internalOrgId = Model.InternalOrgId, competitionId = Model.CompetitionId, returnUrl = Url.ActionLink() };
 }
 
 <partial name="Partials/_BackLink" model="Model"/>
@@ -26,7 +26,7 @@
 
         @if (!Model.HasAnyNonPriceElements())
         {
-            <p>No non-price elements have been added yet for this competition. </p>
+            <p>No non-price elements have been added yet for this competition.</p>
         }
         else
         {

@@ -34,6 +34,8 @@ public class ViewResultsModel : NavBaseModel
 
     public bool IncludesNonPriceElements { get; set; }
 
+    public string PdfUrl { get; set; }
+
     public Weightings AwardCriteriaWeightings { get; set; }
 
     public Dictionary<NonPriceElement, int> NonPriceElementWeightings { get; set; }

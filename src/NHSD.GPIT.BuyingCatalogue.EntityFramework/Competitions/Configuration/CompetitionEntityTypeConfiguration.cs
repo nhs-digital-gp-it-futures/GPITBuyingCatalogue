@@ -29,6 +29,8 @@ internal sealed class CompetitionEntityTypeConfiguration : IEntityTypeConfigurat
 
         builder.Property(x => x.Description).HasMaxLength(250);
 
+        builder.Property(x => x.Created).HasDefaultValue(DateTime.UtcNow);
+
         builder.Property(x => x.LastUpdated).HasDefaultValue(DateTime.UtcNow);
 
         builder.Property(x => x.Completed);

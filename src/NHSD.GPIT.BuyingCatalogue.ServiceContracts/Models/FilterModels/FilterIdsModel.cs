@@ -11,5 +11,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels
         public IEnumerable<int> ApplicationTypeIds { get; set; }
 
         public IEnumerable<int> HostingTypeIds { get; set; }
+
+        public IEnumerable<int> IM1Integrations { get; set; }
+
+        public IEnumerable<int> GPConnectIntegrations { get; set; }
+
+        public IEnumerable<int> InteroperabilityOptions { get; set; }
     }
 }

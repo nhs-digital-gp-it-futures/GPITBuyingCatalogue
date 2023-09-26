@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
     public class TaskListModel : NavBaseModel
     {
         public const string AmendmentAdvice = "Add Service Recipients to existing items or add Additional Services.";
-        public const string AmendmentTitle = "Amend items from the original order";
+        public const string AmendmentTitle = "Amend items from the previous order";
         public const string CompletedAdvice = "Select the sections that you want to edit.";
         public const string CompletedTitle = "Edit solutions and services";
         public const string InProgressAdvice = "Review the progress of your order. Make sure you’ve included everything you want to order and that all sections are completed.";

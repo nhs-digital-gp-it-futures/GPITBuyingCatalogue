@@ -9,6 +9,7 @@ public static class AdvancedTelephonyConstants
     public const string CheckCloud = "CheckCloud";
     public const string DaisyPatientLine = "DaisyPatientLine";
     public const string LouisComm = "Louiscomm";
+    public const string MpsNetworks = "MPSNetworks";
     public const string Redcentric = "Redcentric";
     public const string RpmPatientContact = "RPMPatientContact";
     public const string SurgeryConnect = "SurgeryConnect";
@@ -22,6 +23,7 @@ public static class AdvancedTelephonyConstants
         { CheckCloud, "Check Cloud" },
         { DaisyPatientLine, "Daisy Patient Line" },
         { LouisComm, "Louiscomm" },
+        { MpsNetworks, "MPS Networks Ltd BPF Supplier solution details submitted 31.05.2023[92]" },
         { Redcentric, "Redcentric" },
         { RpmPatientContact, "RPM Patient Contact" },
         { SurgeryConnect, "Surgery Connect" },

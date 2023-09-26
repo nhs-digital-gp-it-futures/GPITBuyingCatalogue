@@ -43,6 +43,7 @@ public class CompetitionsService : ICompetitionsService
     public async Task<Competition> GetCompetitionForResults(string internalOrgId, int competitionId) =>
         await dbContext
             .Competitions
+            .Include(x => x.Organisation)
             .Include(x => x.Weightings)
             .Include(x => x.Recipients)
             .Include(x => x.NonPriceElements)
@@ -367,7 +368,7 @@ public class CompetitionsService : ICompetitionsService
     public async Task SetSolutionsImplementationScores(
         string internalOrgId,
         int competitionId,
-        Dictionary<CatalogueItemId, int> solutionsScores)
+        Dictionary<CatalogueItemId, (int Score, string Justification)> solutionsScores)
         => await SetSolutionScores(
             internalOrgId,
             competitionId,
@@ -377,7 +378,7 @@ public class CompetitionsService : ICompetitionsService
     public async Task SetSolutionsInteroperabilityScores(
         string internalOrgId,
         int competitionId,
-        Dictionary<CatalogueItemId, int> solutionsScores)
+        Dictionary<CatalogueItemId, (int Score, string Justification)> solutionsScores)
         => await SetSolutionScores(
             internalOrgId,
             competitionId,
@@ -387,7 +388,7 @@ public class CompetitionsService : ICompetitionsService
     public async Task SetSolutionsServiceLevelScores(
         string internalOrgId,
         int competitionId,
-        Dictionary<CatalogueItemId, int> solutionsScores)
+        Dictionary<CatalogueItemId, (int Score, string Justification)> solutionsScores)
         => await SetSolutionScores(
             internalOrgId,
             competitionId,
@@ -690,7 +691,7 @@ public class CompetitionsService : ICompetitionsService
     private async Task SetSolutionScores(
         string internalOrgId,
         int competitionId,
-        Dictionary<CatalogueItemId, int> solutionsScores,
+        Dictionary<CatalogueItemId, (int Score, string Justification)> solutionsScores,
         ScoreType scoreType)
     {
         var competition = await dbContext.Competitions.Include(x => x.CompetitionSolutions)
@@ -707,12 +708,13 @@ public class CompetitionsService : ICompetitionsService
             if (solution.HasScoreType(scoreType))
             {
                 solutionScore = solution.GetScoreByType(scoreType);
-                solutionScore.Score = solutionAndScore.Value;
+                solutionScore.Score = solutionAndScore.Value.Score;
+                solutionScore.Justification = solutionAndScore.Value.Justification;
 
                 continue;
             }
 
-            solutionScore = new SolutionScore(scoreType, solutionAndScore.Value);
+            solutionScore = new SolutionScore(scoreType, solutionAndScore.Value.Score, solutionAndScore.Value.Justification);
             solution.Scores.Add(solutionScore);
         }
 

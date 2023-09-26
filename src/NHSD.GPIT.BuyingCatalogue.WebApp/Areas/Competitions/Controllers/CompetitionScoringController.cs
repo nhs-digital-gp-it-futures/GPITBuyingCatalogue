@@ -73,7 +73,7 @@ public class CompetitionScoringController : Controller
             return View(model);
         }
 
-        var solutionsAndScores = model.SolutionScores.ToDictionary(x => x.SolutionId, x => x.Score.GetValueOrDefault());
+        var solutionsAndScores = model.SolutionScores.ToDictionary(x => x.SolutionId, x => (x.Score.GetValueOrDefault(), x.Justification));
 
         await competitionsService.SetSolutionsInteroperabilityScores(internalOrgId, competitionId, solutionsAndScores);
 
@@ -112,7 +112,7 @@ public class CompetitionScoringController : Controller
             return View(model);
         }
 
-        var solutionsAndScores = model.SolutionScores.ToDictionary(x => x.SolutionId, x => x.Score.GetValueOrDefault());
+        var solutionsAndScores = model.SolutionScores.ToDictionary(x => x.SolutionId, x => (x.Score.GetValueOrDefault(), x.Justification));
 
         await competitionsService.SetSolutionsImplementationScores(internalOrgId, competitionId, solutionsAndScores);
 
@@ -149,7 +149,7 @@ public class CompetitionScoringController : Controller
             return View(model);
         }
 
-        var solutionsAndScores = model.SolutionScores.ToDictionary(x => x.SolutionId, x => x.Score.GetValueOrDefault());
+        var solutionsAndScores = model.SolutionScores.ToDictionary(x => x.SolutionId, x => (x.Score.GetValueOrDefault(), x.Justification));
 
         await competitionsService.SetSolutionsServiceLevelScores(internalOrgId, competitionId, solutionsAndScores);
 
