@@ -42,10 +42,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
             Driver.FindElement(CommonSelectors.SubmitButton).Click();
 
         public void ClickFirstCheckbox() =>
-            Driver.FindElements(By.CssSelector("input[type=checkbox]")).First().Click();
+            Driver.FindElements(By.CssSelector("input[type=checkbox][value=true]")).First().Click();
 
         public void ClickFirstExpander() =>
-            Driver.FindElements(By.CssSelector("details.nhsuk-expander")).First().Click();
+            Driver.FindElements(By.CssSelector("details.nhsuk-expander")).First().Click();        
 
         public void ClickFirstRadio() =>
             Driver.FindElements(By.CssSelector("input[type=radio]")).First().Click();
@@ -58,10 +58,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
             .Where(r => !r.Selected).First().Click();
 
         public void ClickAllCheckboxes() =>
-            Driver.FindElements(By.CssSelector("input[type=checkbox]")).ToList().ForEach(element => element.Click());
+            Driver.FindElements(By.CssSelector("input[type=checkbox][value=true]")).ToList().ForEach(element => element.Click());
 
         public void ClickMultipleCheckboxes(int multipleServiceRecipients) =>
-            Driver.FindElements(By.CssSelector("input[type=checkbox]")).ToList().Take(multipleServiceRecipients).ForEach(element => element.Click());
+            Driver.FindElements(By.CssSelector("input[type=checkbox][value=true]")).ToList().Take(multipleServiceRecipients).ForEach(element => element.Click());
 
         public void UncheckAllCheckboxes() =>
             Driver.FindElements(By.CssSelector("input[type=checkbox]"))

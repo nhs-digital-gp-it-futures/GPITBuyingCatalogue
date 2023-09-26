@@ -147,6 +147,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
              nameof(TaskListController.TaskList)).Should().BeTrue();
         }
 
+        public void EditSolutionAndServicesTask()
+        {
+            CommonActions.ClickLinkElement(CatalogueSolutionObjects.SelectSolutionsAndServicesLink);
+
+            CommonActions.LedeText()
+            .Should()
+            .Be("Review the progress of your order. Make sure you’ve included everything you want to order and that all sections are completed.".FormatForComparison());
+        }
+
         public void SelectFrameWork()
         {
             CommonActions.ClickLinkElement(FundingSources.SelectFundingSourcesLink);
