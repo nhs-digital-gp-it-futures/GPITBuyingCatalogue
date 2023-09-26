@@ -9,6 +9,8 @@ public static class CompetitionsDashboardObjects
 
     public static By CreateCompetitionLink => By.LinkText("Create a new competition");
 
+    public static By SelectAllServiceRecipients => By.LinkText("Select all");
+
     public static By CreateManageCompetitionLink => By.LinkText("Create or manage competitions");
 
     public static By ServiceRecipientsLink => By.LinkText("Service Recipients");

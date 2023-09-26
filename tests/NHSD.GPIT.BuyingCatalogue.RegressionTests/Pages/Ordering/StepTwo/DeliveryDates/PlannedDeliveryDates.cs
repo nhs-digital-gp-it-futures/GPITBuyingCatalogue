@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.Contracts;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts;
@@ -12,10 +13,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
 {
     public class PlannedDeliveryDates : PageBase
     {
-        public PlannedDeliveryDates(IWebDriver driver, CommonActions commonActions)
+        public PlannedDeliveryDates(IWebDriver driver, CommonActions commonActions, LocalWebApplicationFactory factory)
             : base(driver, commonActions)
         {
+            Factory = factory;
         }
+
+        public LocalWebApplicationFactory Factory { get; }
 
         public void PlannedDeliveryDate(string solutionName, bool isAssociatedServiceOnly, IEnumerable<string>? associatedServices, IEnumerable<string>? additionalServices)
         {
@@ -36,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
                 nameof(OrderController.Order)).Should().BeTrue();
         }
 
-        public void AmendPlannedDeliveryDate(string Name)
+        public void AmendPlannedDeliveryDate(string name)
         {
             SetDefaultPlannedDeliveryDate(DateTime.Today.AddDays(7));
             CommonActions.ClickSave();
@@ -46,7 +50,39 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
              nameof(TaskListController.TaskList)).Should().BeTrue();
         }
 
-        public void EditPlannedDeliveryDate(string solutionName, bool isAssociatedServiceOnly, string associatedServices, string additionalServices, bool editplanneddeliverydate)
+        public void AmendEditPlannedDeliveryDate(string name)
+        {
+            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemQuantiyLink(GetCatalogueItemID(name)));
+            CommonActions.ClickSave();
+
+            SetDefaultPlannedDeliveryDate(DateTime.Today.AddDays(7));
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+             typeof(TaskListController),
+             nameof(TaskListController.TaskList)).Should().BeTrue();
+        }
+
+        public void EditPlannedDeliveryDate(string solutionName, bool isAssociatedServiceOnly, IEnumerable<string>? associatedServices, IEnumerable<string>? additionalServices)
+        {
+            var names = SelectSolutionAndServices.SelectSolutionServices(solutionName, isAssociatedServiceOnly, associatedServices, additionalServices);
+
+            foreach (var name in names)
+            {
+                CommonActions.ClickLinkElement(DeliveryDatesObjects.ReviewEditDeliveryDatesLink(name));
+
+                EditDefaultPlannedDeliveryDate(DateTime.Today.AddDays(8));
+                CommonActions.ClickSave();
+            }
+
+            CommonActions.ClickContinue();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(OrderController),
+                    nameof(OrderController.Order)).Should().BeTrue();
+        }
+
+        public void EditPlannedDeliveryDate(string solutionName, bool isAssociatedServiceOnly, string associatedServices, string additionalServices, bool editplanneddeliverydate = false)
         {
             if (!isAssociatedServiceOnly)
             {
@@ -152,6 +188,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
                 nameof(DeliveryDatesController.EditDates)).Should().BeTrue();
 
             CommonActions.ClickSave();
+        }
+
+        private string GetCatalogueItemID(string catalogueItemName)
+        {
+            using var dbContext = Factory.DbContext;
+
+            var catalogueItem = dbContext.CatalogueItems.FirstOrDefault(i => i.Name == catalogueItemName);
+
+            return (catalogueItem != null) ? catalogueItem.Id.ToString() : string.Empty;
         }
     }
 }
