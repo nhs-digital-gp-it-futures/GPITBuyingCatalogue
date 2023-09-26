@@ -8,13 +8,10 @@ using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
-using Bogus;
 using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
 using FluentAssertions;
-using LinqKit;
-using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
@@ -220,6 +217,46 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             records.Where(r => r.ServiceRecipientId == originalRecipient.OdsCode && r.ProductId == addedCatalogueItem.Id.ToString())
                 .FirstOrDefault()
                 .Should().NotBeNull();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task One_OrderItem_Two_Recipients_With_PerOrderItemQuantity_Results_In_One_Row(
+            Order order,
+            CsvService service,
+            CatalogueItem originalCatalogueItem,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            IFixture fixture)
+        {
+            OrderItem orderItem = BuildOrderItem(
+                fixture,
+                originalCatalogueItem,
+                OrderItemFundingType.LocalFunding,
+                CataloguePriceQuantityCalculationType.PerSolutionOrService);
+
+            var recipient1 = BuildOrderRecipient(fixture, new[] { originalCatalogueItem.Id });
+            var recipient2 = BuildOrderRecipient(fixture, new[] { originalCatalogueItem.Id });
+
+            order.OrderItems = new HashSet<OrderItem>() { orderItem };
+            order.OrderRecipients = new HashSet<OrderRecipient>()
+        {
+            recipient1,
+            recipient2,
+        };
+
+            dbContext.Orders.Add(order);
+            await dbContext.SaveChangesAsync();
+            dbContext.ChangeTracker.Clear();
+
+            await using var fullOrderStream = new MemoryStream();
+            await service.CreateFullOrderCsvAsync(order.Id, fullOrderStream);
+            fullOrderStream.Position = 0;
+
+            var records = GetRows(fullOrderStream);
+
+            records.Count().Should().Be(1);
+            records.First().ProductId.Should().Be(originalCatalogueItem.Id.ToString());
+            records.First().ServiceRecipientId.Should().Be(order.OrderingParty.ExternalIdentifier);
         }
 
         private static IEnumerable<FullOrderCsvModel> GetRows(MemoryStream fullOrderStream)
