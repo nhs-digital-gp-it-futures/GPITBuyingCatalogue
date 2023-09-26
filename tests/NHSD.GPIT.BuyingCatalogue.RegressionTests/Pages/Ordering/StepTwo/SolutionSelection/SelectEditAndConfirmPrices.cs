@@ -40,7 +40,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
              typeof(PricesController),
              nameof(PricesController.EditPrice)).Should().BeTrue();
 
-            TextGenerators.PriceInputAddPrice(PriceObjects.AgreedPriceInput(0), MaxPrice);
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -58,6 +57,17 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             CommonActions.PageLoadedCorrectGetIndex(
              typeof(OrderController),
              nameof(OrderController.Order)).Should().BeTrue();
+        }
+
+        public void SelectEditPrice(string solutionName)
+        {
+            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemPriceLink(GetCatalogueSolutionID(solutionName)));
+
+            CommonActions.PageLoadedCorrectGetIndex(
+               typeof(PricesController),
+               nameof(PricesController.ConfirmPrice)).Should().BeTrue();
+
+            CommonActions.ClickSave();
         }
 
         private void SelectPrice()

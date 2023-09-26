@@ -2,8 +2,6 @@
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using Xunit;
 using Xunit.Abstractions;
