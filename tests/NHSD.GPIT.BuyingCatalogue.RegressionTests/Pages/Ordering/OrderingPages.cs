@@ -325,8 +325,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 {
                     foreach (var associatedService in newAssociatedServices)
                     {
-                        SelectEditAssociatedServiceRecipientOnly.AddServiceRecipient(multipleServiceRecipients);
-                        ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
+                        //SelectEditAssociatedServiceRecipientOnly.AddServiceRecipient(multipleServiceRecipients);
+                        //ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
                         SelectEditAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
                         Quantity.AddQuantity();
                     }
@@ -493,13 +493,16 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
             foreach (var associatedService in newAssociatedServices)
             {
-                SelectEditAssociatedServiceRecipientOnly.AddServiceRecipient(multipleServiceRecipients);
-                ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
+                //SelectEditAssociatedServiceRecipientOnly.AddServiceRecipient(multipleServiceRecipients);
+                //ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
                 SelectEditAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
                 Quantity.AddQuantity();
             }
 
             SolutionAndServicesReview.ReviewSolutionAndServices();
+
+            TaskList.SelectPlannedDeliveryDatesTask();
+            PlannedDeliveryDates.EditPlannedDeliveryDate(solutionName, isAssociatedServiceOnlyOrder, newAssociatedServices,null);
 
             TaskList.SelectFundingSourcesTask();
             SelectFundingSources.AddFundingSources(solutionName, isAssociatedServiceOnlyOrder, newAssociatedServices, null);
@@ -669,7 +672,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 }
             }
 
-            SolutionAndServicesReview.AmendReviewMultipleSolutionAndServices();
+            SolutionAndServicesReview.AmendReviewSolutionAndServices();
             TaskList.SelectFundingSourcesTask();
             SelectFundingSources.AmendAddFundingSources(solutionName, additionalServices);
 
