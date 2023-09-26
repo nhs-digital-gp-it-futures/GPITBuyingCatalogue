@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
                 nameof(OrderController.Order)).Should().BeTrue();
         }
 
-        public void AmendPlannedDeliveryDate(string Name)
+        public void AmendPlannedDeliveryDate(string name)
         {
             SetDefaultPlannedDeliveryDate(DateTime.Today.AddDays(7));
             CommonActions.ClickSave();
@@ -48,20 +48,19 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
             CommonActions.PageLoadedCorrectGetIndex(
              typeof(TaskListController),
              nameof(TaskListController.TaskList)).Should().BeTrue();
-            //CommonActions.ClickContinue();
         }
 
-        public void AmendEditPlannedDeliveryDate(string Name)
+        public void AmendEditPlannedDeliveryDate(string name)
         {
-            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemQuantiyLink(GetCatalogueItemID(Name)));
+            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemQuantiyLink(GetCatalogueItemID(name)));
             CommonActions.ClickSave();
+
             SetDefaultPlannedDeliveryDate(DateTime.Today.AddDays(7));
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
              typeof(TaskListController),
              nameof(TaskListController.TaskList)).Should().BeTrue();
-            //CommonActions.ClickContinue();
         }
 
         public void EditPlannedDeliveryDate(string solutionName, bool isAssociatedServiceOnly, IEnumerable<string>? associatedServices, IEnumerable<string>? additionalServices)

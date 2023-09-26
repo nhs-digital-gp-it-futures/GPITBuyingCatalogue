@@ -669,7 +669,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 }
             }
 
-            SolutionAndServicesReview.AmendReviewSolutionAndServices();
+            SolutionAndServicesReview.AmendReviewMultipleSolutionAndServices();
             TaskList.SelectFundingSourcesTask();
             SelectFundingSources.AmendAddFundingSources(solutionName, additionalServices);
 
