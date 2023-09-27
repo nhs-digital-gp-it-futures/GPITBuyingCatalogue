@@ -24,11 +24,11 @@
             <input type="hidden" asp-for="TotalCost"/>
             <input type="hidden" asp-for="CatalogueItemName"/>
 
-            <nhs-fieldset-form-label asp-for="@Model"
+            <nhs-fieldset-form-label asp-for="SelectedFundingType"
                                      label-text="How would you like to pay?"
                                      label-hint="Select one option">
                 <nhs-radio-buttons asp-for="SelectedFundingType"
-                                   values="@Model.AvailableFundingTypes"
+                                   values="@Model.AvailableFundingTypes.Cast<object>()"
                                    value-name="Value"
                                    display-name="Text"
                                    hint-name="Advice"/>

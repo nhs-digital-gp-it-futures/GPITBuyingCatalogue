@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
@@ -26,18 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
             SelectedFundingType = orderItem.FundingType;
             TotalCost = orderWrapper.TotalCostForOrderItem(orderItem.CatalogueItem.Id);
 
-            AvailableFundingTypes =
-                orderWrapper.Order.SelectedFramework.FundingTypes.Select(
-                        x =>
-                        {
-                            var fundingType = x.AsOrderItemFundingType();
-
-                            return new SelectOption<OrderItemFundingType>(
-                                fundingType.Description(),
-                                GetFundingTypeHintText(fundingType),
-                                fundingType);
-                        })
-                    .ToList();
+            SetFundingTypes(orderWrapper.Order.SelectedFramework.FundingTypes);
         }
 
         public string CatalogueItemName { get; set; }
@@ -49,6 +39,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
         public List<SelectOption<OrderItemFundingType>> AvailableFundingTypes { get; set; }
 
         public decimal TotalCost { get; set; }
+
+        public void SetFundingTypes(ICollection<FundingType> fundingTypes) => AvailableFundingTypes = fundingTypes.Select(
+                x =>
+                {
+                    var fundingType = x.AsOrderItemFundingType();
+
+                    return new SelectOption<OrderItemFundingType>(
+                        fundingType.Description(),
+                        GetFundingTypeHintText(fundingType),
+                        fundingType);
+                })
+            .ToList();
 
         private static string GetFundingTypeHintText(OrderItemFundingType fundingType) => fundingType switch
         {

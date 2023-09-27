@@ -20,7 +20,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         private const string NhsValidationSummaryList = "nhsuk-error-summary__list";
 
         private const string RadioIdName = "RadioId";
-        private const string CheckboxIdName = "CheckboxId";
 
         private const string DefaultTitle = "There is a problem";
 
@@ -33,9 +32,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
         [HtmlAttributeName(RadioIdName)]
         public string RadioId { get; set; }
-
-        [HtmlAttributeName(CheckboxIdName)]
-        public string CheckboxId { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -76,11 +72,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 && RadioId.Split(',', StringSplitOptions.TrimEntries).Contains(linkElement))
             {
                 linkElement = $"{linkElement}_0";
-            }
-            else if (!string.IsNullOrWhiteSpace(CheckboxId)
-                && CheckboxId.Split(',', StringSplitOptions.TrimEntries).Contains(linkElement))
-            {
-                linkElement = $"{linkElement}_0__Selected";
             }
 
             var sanitizedLinkElement = TagBuilder.CreateSanitizedId(linkElement, "_");

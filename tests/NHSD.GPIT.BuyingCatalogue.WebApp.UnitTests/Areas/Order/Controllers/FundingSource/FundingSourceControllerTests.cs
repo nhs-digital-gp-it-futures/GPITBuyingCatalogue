@@ -408,17 +408,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] OrderItem orderItem,
-            [Frozen] Mock<IOrderItemService> orderItemServiceMock,
+            [Frozen] Mock<IOrderService> orderServiceMock,
             FundingSourceController controller)
         {
             var orderWrapper = new OrderWrapper(order);
             var model = new WebApp.Areas.Orders.Models.FundingSources.FundingSource(internalOrgId, order.CallOffId, orderWrapper, orderItem);
 
+            orderServiceMock.Setup(o => o.GetOrderWithOrderItemsForFunding(order.CallOffId, internalOrgId))
+                .ReturnsAsync(orderWrapper);
+
             controller.ModelState.AddModelError("test", "test");
 
             var actual = await controller.FundingSource(internalOrgId, order.CallOffId, orderItem.CatalogueItemId, model);
 
-            orderItemServiceMock.VerifyAll();
+            orderServiceMock.VerifyAll();
 
             actual.Should().BeOfType<ViewResult>();
             actual.As<ViewResult>().ViewData.ModelState.ValidationState.Should().Be(ModelValidationState.Invalid);

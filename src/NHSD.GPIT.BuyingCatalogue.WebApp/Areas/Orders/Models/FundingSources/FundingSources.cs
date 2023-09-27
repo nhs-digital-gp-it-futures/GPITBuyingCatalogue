@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
 
             OrderWrapper = orderWrapper;
             Order = order;
-            Title = "Funding sources";
+            Title = order.HasSingleFundingType ? "Funding source" : "Funding sources";
             InternalOrgId = internalOrgId;
             CallOffId = callOffId;
             Caption = $"Order {CallOffId}";

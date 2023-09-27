@@ -7,7 +7,7 @@
 <partial name="Partials/_BackLink" model="Model"/>
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-validation-summary CheckboxId="FundingTypes" />
+        <nhs-validation-summary/>
 
         <nhs-page-title title="@ViewBag.Title" advice="Provide details for this framework."/>
 
@@ -27,7 +27,8 @@
                         <input type="hidden" asp-for="@Model.FundingTypes[i].Text"/>
                         <nhs-checkbox asp-for="@Model.FundingTypes[i].Selected"
                                       label-text="@Model.FundingTypes[i].Text"
-                                      hidden-input="@Model.FundingTypes[i].Value"/>
+                                      hidden-input="@Model.FundingTypes[i].Value"
+                                      data-test-id="funding-types-text" />
                     }
                 </nhs-checkbox-container>
             </nhs-fieldset-form-label>
