@@ -244,7 +244,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                 item.ProductId,
             }).OrderBy(o => o.ProductTypeId)
               .ThenBy(o => o.ProductName)
-              .ThenBy(o => o.ServiceRecipientItemId)
+              .ThenBy(o => o.ServiceRecipientName)
               .ToList();
         }
     }
