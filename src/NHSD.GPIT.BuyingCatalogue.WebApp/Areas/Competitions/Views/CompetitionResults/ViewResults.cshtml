@@ -46,15 +46,21 @@
                     <partial name="_SolutionResult" model="@solutionResult"/>
                     if (Model.IncludesNonPriceElements)
                     {
-                        <hr/>
+                        <hr style="margin-top: 60px; margin-bottom: 60px"/>
                     }
                     else
                     {
-                        <br/>
+                        <br style="margin-top: 60px; margin-bottom: 60px"/>
                     }
                 }
             </nhs-expander>
         }
+
+        <h2>Filter details</h2>
+
+        <nhs-expander label-text="View filter details" open="true">
+            <partial name="Partials/_FilterDetailsPartial" model="@Model.FilterDetailsModel"/>
+        </nhs-expander>
 
         @if (Model.IncludesNonPriceElements)
         {
@@ -76,6 +82,52 @@
                 </nhs-summary-list>
             </nhs-expander>
         }
+
+        @if (Model.NonShortlistedSolutions.Any())
+        {
+            <h2>Non-shortlisted solutions</h2>
+
+            <nhs-expander label-text="View non-shortlisted solutions" open="true">
+                <nhs-table label-text="Solutions not included">
+                    <nhs-table-column>Solution</nhs-table-column>
+                    <nhs-table-column>Additional Services required</nhs-table-column>
+                    <nhs-table-column>Justification</nhs-table-column>
+
+                    @foreach (var nonShortlistedSolution in Model.NonShortlistedSolutions.OrderBy(x => x.Solution.CatalogueItem.Name))
+                    {
+                        var requiredCompetitionServices = nonShortlistedSolution.SolutionServices.Where(x => x.IsRequired).OrderBy(x => x.Service.Name).ToList();
+                        <nhs-table-row-container>
+                            <nhs-table-cell style="width:30%">
+                                @nonShortlistedSolution.Solution.CatalogueItem.Name
+                                <span class="nhsuk-caption-m">
+                                    @nonShortlistedSolution.Solution.CatalogueItem.Supplier.Name
+                                </span>
+                            </nhs-table-cell>
+                            <nhs-table-cell style="width:20%">
+                                @if (requiredCompetitionServices.Any())
+                                {
+                                    <ul>
+                                        @foreach (var competitionService in requiredCompetitionServices)
+                                        {
+                                            <li>@competitionService.Service.Name</li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <p>None</p>
+                                }
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                <p>
+                                    @nonShortlistedSolution.Justification
+                                </p>
+                            </nhs-table-cell>
+                        </nhs-table-row-container>
+                    }
+                </nhs-table>
+            </nhs-expander>
+        }
     </div>
 
     <div class="nhsuk-grid-column-three-quarters">
@@ -88,6 +140,10 @@
                                  type="Primary"/>
 
         <h2>Ordering information</h2>
-        <a href="#">View and download the information</a> you’ll need to create an order for this solution. It includes the Service Recipients you added and any services you may also need to order.
+        Download the information you’ll need to create an order for this solution. It includes the Service Recipients you added and any services you may also need to order.
+
+        <vc:nhs-secondary-button text="Download ordering information (PDF)"
+                                 url="#"
+                                 type="Secondary"/>
     </div>
 </div>
