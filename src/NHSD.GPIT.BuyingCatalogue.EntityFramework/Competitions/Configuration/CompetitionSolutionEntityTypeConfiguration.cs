@@ -25,7 +25,7 @@ public sealed class CompetitionSolutionEntityTypeConfiguration : IEntityTypeConf
         builder.Property(x => x.Justification)
             .HasMaxLength(1000);
 
-        builder.HasOne<Competition>()
+        builder.HasOne(x => x.Competition)
             .WithMany(x => x.CompetitionSolutions)
             .HasForeignKey(x => x.CompetitionId)
             .HasConstraintName("FK_CompetitionSolutions_Competition")

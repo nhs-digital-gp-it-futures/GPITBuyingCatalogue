@@ -1987,4 +1987,41 @@ public static class CompetitionsServiceTests
         winningSolution.IsWinningSolution.Should().BeTrue();
         nonWinningSolution.IsWinningSolution.Should().BeFalse();
     }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task GetNonShortlistedSolutions_ReturnsExpected(
+        Organisation organisation,
+        Competition competition,
+        List<Solution> solutions,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        competition.OrganisationId = organisation.Id;
+        competition.CompetitionSolutions = solutions.Select(
+                x => new CompetitionSolution(competition.Id, x.CatalogueItemId) { IsShortlisted = true })
+            .ToList();
+
+        var expectedNonShortlistedSolutions = competition.CompetitionSolutions.Take(2).ToList();
+        expectedNonShortlistedSolutions.ForEach(x => x.IsShortlisted = false);
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+        context.Solutions.AddRange(solutions);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        var nonShortlistedSolutions =
+            await service.GetNonShortlistedSolutions(organisation.InternalIdentifier, competition.Id);
+
+        nonShortlistedSolutions.Should().NotBeEmpty();
+        nonShortlistedSolutions.Should()
+            .BeEquivalentTo(
+                expectedNonShortlistedSolutions,
+                opt => opt
+                    .Excluding(m => m.Competition)
+                    .Excluding(m => m.Solution)
+                    .Excluding(m => m.SolutionServices));
+    }
 }

@@ -55,8 +55,7 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Price).ThenInclude(x => x.Tiers)
             .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Quantities)
             .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Solution.CatalogueItem.Supplier)
-            .Include(x => x.CompetitionSolutions)
-            .ThenInclude(x => x.SolutionServices).ThenInclude(x => x.Quantities)
+            .Include(x => x.CompetitionSolutions).ThenInclude(x => x.SolutionServices).ThenInclude(x => x.Quantities)
             .Include(x => x.CompetitionSolutions).ThenInclude(x => x.SolutionServices).ThenInclude(x => x.Price).ThenInclude(x => x.Tiers)
             .AsNoTracking()
             .AsSplitQuery()
@@ -105,6 +104,7 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.Solution)
             .ThenInclude(x => x.CatalogueItem)
+            .ThenInclude(x => x.Supplier)
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.Solution.ServiceLevelAgreement.ServiceHours)
             .Include(x => x.CompetitionSolutions)
@@ -155,6 +155,18 @@ public class CompetitionsService : ICompetitionsService
             .AsNoTracking()
             .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+
+    public async Task<ICollection<CompetitionSolution>> GetNonShortlistedSolutions(
+        string internalOrgId,
+        int competitionId)
+        => await dbContext.CompetitionSolutions.IgnoreQueryFilters()
+            .Include(x => x.Solution.CatalogueItem.Supplier)
+            .Include(x => x.SolutionServices)
+            .ThenInclude(x => x.Service)
+            .Where(
+                x => x.CompetitionId == competitionId && x.Competition.Organisation.InternalIdentifier == internalOrgId
+                    && !x.IsShortlisted)
+            .ToListAsync();
 
     public async Task AddCompetitionSolutions(
         string internalOrgId,

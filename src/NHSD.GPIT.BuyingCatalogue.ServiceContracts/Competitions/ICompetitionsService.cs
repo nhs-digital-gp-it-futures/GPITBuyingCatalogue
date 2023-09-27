@@ -37,6 +37,8 @@ public interface ICompetitionsService
 
     Task<CompetitionTaskListModel> GetCompetitionTaskList(string internalOrgId, int competitionId);
 
+    Task<ICollection<CompetitionSolution>> GetNonShortlistedSolutions(string internalOrgId, int competitionId);
+
     Task AddCompetitionSolutions(string internalOrgId, int competitionId, IEnumerable<CompetitionSolution> competitionSolutions);
 
     Task AcceptShortlist(string internalOrgId, int competitionId);

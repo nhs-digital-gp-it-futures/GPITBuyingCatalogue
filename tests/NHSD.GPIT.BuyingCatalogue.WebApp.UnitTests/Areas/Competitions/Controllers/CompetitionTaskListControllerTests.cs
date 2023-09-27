@@ -62,7 +62,7 @@ public static class CompetitionTaskListControllerTests
         [Frozen] Mock<ICompetitionsService> competitionsService,
         CompetitionTaskListController controller)
     {
-        competitionsService.Setup(x => x.GetCompetitionWithServices(organisation.InternalIdentifier, competition.Id, false))
+        competitionsService.Setup(x => x.GetCompetitionWithSolutions(organisation.InternalIdentifier, competition.Id))
             .ReturnsAsync(competition);
 
         var expectedModel = new CompetitionShortlistedSolutionsModel(competition);
