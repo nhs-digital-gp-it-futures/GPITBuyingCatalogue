@@ -82,8 +82,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         ProductName = oir.OrderItem.CatalogueItem.Name,
                         ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
                         ProductTypeId = (int)oir.OrderItem.CatalogueItem.CatalogueItemType,
-
-                        // TODO: Stop this reporting incorrectly when quantity is (erroneously) defined at both order item & recipient level
                         QuantityOrdered = or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
                             ? (oir.OrderItem.Quantity ?? 0)
                             : or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId).Quantity ?? oir.OrderItem.Quantity ?? 0,
@@ -209,8 +207,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     ProductName = oir.OrderItem.CatalogueItem.Name,
                     ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
                     ProductTypeId = (int)oir.OrderItem.CatalogueItem.CatalogueItemType,
-
-                    // TODO: Stop this reporting incorrectly when quantity is (erroneously) defined at both order item & recipient level
                     QuantityOrdered = or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
                         ? (oir.OrderItem.Quantity ?? 0)
                         : or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId).Quantity ?? oir.OrderItem.Quantity ?? 0,
@@ -239,7 +235,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
 
             return items.DistinctBy(item => new
             {
-                item.CallOffId,
                 item.ServiceRecipientId,
                 item.ProductId,
             }).OrderBy(o => o.ProductTypeId)
