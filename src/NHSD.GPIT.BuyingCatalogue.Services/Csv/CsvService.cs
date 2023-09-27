@@ -74,8 +74,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         OdsCode = or.Order.OrderingParty.ExternalIdentifier,
                         OrganisationName = or.Order.OrderingParty.Name,
                         CommencementDate = or.Order.CommencementDate,
-                        ServiceRecipientId = oir.OrderItem.OrderItemPrice.CataloguePriceQuantityCalculationType != CataloguePriceQuantityCalculationType.PerServiceRecipient ? or.Order.OrderingParty.ExternalIdentifier : or.OdsCode,
-                        ServiceRecipientName = oir.OrderItem.OrderItemPrice.CataloguePriceQuantityCalculationType != CataloguePriceQuantityCalculationType.PerServiceRecipient ? or.Order.OrderingParty.Name : or.OdsOrganisation.Name,
+                        ServiceRecipientId = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient() ? or.Order.OrderingParty.ExternalIdentifier : or.OdsCode,
+                        ServiceRecipientName = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient() ? or.Order.OrderingParty.Name : or.OdsOrganisation.Name,
                         SupplierId = supplierId,
                         SupplierName = supplierName,
                         ProductId = oir.OrderItem.CatalogueItemId.ToString(),
@@ -201,8 +201,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     OdsCode = or.Order.OrderingParty.ExternalIdentifier,
                     OrganisationName = or.Order.OrderingParty.Name,
                     CommencementDate = or.Order.CommencementDate,
-                    ServiceRecipientId = oir.OrderItem.OrderItemPrice.CataloguePriceQuantityCalculationType != CataloguePriceQuantityCalculationType.PerServiceRecipient ? or.Order.OrderingParty.ExternalIdentifier : or.OdsCode,
-                    ServiceRecipientName = oir.OrderItem.OrderItemPrice.CataloguePriceQuantityCalculationType != CataloguePriceQuantityCalculationType.PerServiceRecipient ? or.Order.OrderingParty.Name : or.OdsOrganisation.Name,
+                    ServiceRecipientId = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient() ? or.Order.OrderingParty.ExternalIdentifier : or.OdsCode,
+                    ServiceRecipientName = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient() ? or.Order.OrderingParty.Name : or.OdsOrganisation.Name,
                     SupplierId = $"{supplierId}",
                     SupplierName = supplierName,
                     ProductId = oir.OrderItem.CatalogueItemId.ToString(),
@@ -232,18 +232,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         $"{oir.OrderItem.OrderItemPrice.CataloguePriceType}",
                     TieredArray = oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Tiered && oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType == CataloguePriceCalculationType.Cumulative ?
                         GetTieredArray(oir.OrderItem.OrderItemPrice.OrderItemPriceTiers) : string.Empty,
-                })
-                .OrderBy(o => o.ProductTypeId)
-                .ThenBy(o => o.ProductName)
-                .ThenBy(o => o.ServiceRecipientName)
-                .ToListAsync();
+                }).ToListAsync();
 
             var distinctItems = items.DistinctBy(item => new
             {
                 item.CallOffId,
                 item.ServiceRecipientId,
                 item.ProductId,
-            }).ToList();
+            })
+                .OrderBy(o => o.ProductTypeId)
+                .ThenBy(o => o.ProductName)
+                .ThenBy(o => o.ServiceRecipientItemId)
+                .ToList();
 
             for (int i = 0; i < distinctItems.Count; i++)
                 distinctItems[i].ServiceRecipientItemId = $"{distinctItems[i].CallOffId}-{distinctItems[i].ServiceRecipientId}-{i}";
