@@ -53,6 +53,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo
              nameof(OrderController.Order)).Should().BeTrue();
         }
 
+        public void AmendEditQuantity(string catalogueItemName)
+        {
+            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemQuantiyLink(GetCatalogueItemID(catalogueItemName)));
+
+            AddQuantity();
+        }
+
         private void AddPracticeListSize()
         {
             CommonActions.PageLoadedCorrectGetIndex(

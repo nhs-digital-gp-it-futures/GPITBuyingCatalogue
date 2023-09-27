@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Competitions;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
 using OpenQA.Selenium;
@@ -27,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             if (multipleServiceRecipients > 0 && !allServiceRecipients)
                 CommonActions.ClickMultipleCheckboxes(multipleServiceRecipients);
             else if (multipleServiceRecipients == 0 && allServiceRecipients)
-                CommonActions.ClickAllCheckboxes();
+                CommonActions.ClickLinkElement(CompetitionsDashboardObjects.SelectAllServiceRecipients);
             else
                 CommonActions.ClickFirstCheckbox();
 

@@ -38,6 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 && (HasValidCatalogueItems() || HasAssociatedService())
                 && OrderItems.Count > 0
                 && HaveAllDeliveryDates(orderRecipients)
+                && HaveAllQuantities(orderRecipients)
                 && orderItems.All(oi => oi.OrderItemFunding is not null)
                 && ContractFlags is not null
                 && (AssociatedServicesOnly || Contract?.ImplementationPlan is not null)
@@ -344,6 +345,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             orderItem.Quantity = quantity;
             orderItem.EstimationPeriod = estimationPeriod;
             return orderItem;
+        }
+
+        private bool HaveAllQuantities(ICollection<OrderRecipient> orderRecipients)
+        {
+            return OrderItems.All(x => orderRecipients.AllQuantitiesEntered(x));
         }
     }
 }

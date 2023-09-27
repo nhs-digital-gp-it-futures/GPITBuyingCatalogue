@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.FundingTypes;
@@ -63,6 +63,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             var (supplierId, supplierName) = await GetSupplierDetails(orderId);
 
             var items = await dbContext.OrderRecipients
+                .Include(x => x.OrderItemRecipients)
+                    .ThenInclude(x => x.OrderItem)
+                    .ThenInclude(x => x.OrderItemFunding)
                 .AsNoTracking()
                 .Where(oir => oir.OrderId == orderId)
                 .SelectMany(or => or.OrderItemRecipients, (or, oir) => new PatientOrderCsvModel
@@ -71,8 +74,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         OdsCode = or.Order.OrderingParty.ExternalIdentifier,
                         OrganisationName = or.Order.OrderingParty.Name,
                         CommencementDate = or.Order.CommencementDate,
-                        ServiceRecipientId = or.OdsCode,
-                        ServiceRecipientName = or.OdsOrganisation.Name,
+                        ServiceRecipientId = oir.OrderItem.OrderItemPrice.CataloguePriceQuantityCalculationType != CataloguePriceQuantityCalculationType.PerServiceRecipient ? or.Order.OrderingParty.ExternalIdentifier : or.OdsCode,
+                        ServiceRecipientName = oir.OrderItem.OrderItemPrice.CataloguePriceQuantityCalculationType != CataloguePriceQuantityCalculationType.PerServiceRecipient ? or.Order.OrderingParty.Name : or.OdsOrganisation.Name,
                         SupplierId = supplierId,
                         SupplierName = supplierName,
                         ProductId = oir.OrderItem.CatalogueItemId.ToString(),
@@ -86,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                             : or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId).Quantity ?? oir.OrderItem.Quantity ?? 0,
                         UnitOfOrder = oir.OrderItem.OrderItemPrice.Description,
                         Price = prices[oir.OrderItem.CatalogueItemId],
-                        FundingType = fundingTypeService.GetFundingType(fundingTypes, oir.OrderItem.OrderItemFunding.OrderItemFundingType).Description(),
+                        FundingType = fundingTypeService.GetFundingType(fundingTypes, oir.OrderItem.FundingType).Description(),
                         M1Planned = or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
                             ? null
                             : or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId).DeliveryDate,
@@ -99,12 +102,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             if (items.Count == 0)
                 return 0;
 
-            for (int i = 0; i < items.Count; i++)
-                items[i].ServiceRecipientItemId = $"{items[i].CallOffId}-{items[i].ServiceRecipientId}-{i + 1}";
+            var distinctItems = items.DistinctBy(item => new
+            {
+                item.CallOffId,
+                item.ServiceRecipientId,
+                item.ProductId,
+            }).ToList();
 
-            await WriteRecordsAsync<PatientOrderCsvModel, PatientOrderCsvModelMap>(stream, items);
+            for (int i = 0; i < distinctItems.Count; i++)
+                distinctItems[i].ServiceRecipientItemId = $"{distinctItems[i].CallOffId}-{distinctItems[i].ServiceRecipientId}-{i + 1}";
 
-            return items.Count;
+            await WriteRecordsAsync<PatientOrderCsvModel, PatientOrderCsvModelMap>(stream, distinctItems);
+
+            return distinctItems.Count;
         }
 
         private static string TimeUnitDescription(TimeUnit? timeUnit) => timeUnit?.Description() ?? string.Empty;
@@ -180,6 +190,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             var (supplierId, supplierName) = await GetSupplierDetails(orderId);
 
             var items = await dbContext.OrderRecipients
+                .Include(x => x.OrderItemRecipients)
+                    .ThenInclude(x => x.OrderItem)
+                    .ThenInclude(x => x.OrderItemFunding)
                 .AsNoTracking()
                 .Where(or => or.OrderId == orderId)
                 .SelectMany(or => or.OrderItemRecipients, (or, oir) => new FullOrderCsvModel
@@ -188,8 +201,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     OdsCode = or.Order.OrderingParty.ExternalIdentifier,
                     OrganisationName = or.Order.OrderingParty.Name,
                     CommencementDate = or.Order.CommencementDate,
-                    ServiceRecipientId = or.OdsCode,
-                    ServiceRecipientName = or.OdsOrganisation.Name,
+                    ServiceRecipientId = oir.OrderItem.OrderItemPrice.CataloguePriceQuantityCalculationType != CataloguePriceQuantityCalculationType.PerServiceRecipient ? or.Order.OrderingParty.ExternalIdentifier : or.OdsCode,
+                    ServiceRecipientName = oir.OrderItem.OrderItemPrice.CataloguePriceQuantityCalculationType != CataloguePriceQuantityCalculationType.PerServiceRecipient ? or.Order.OrderingParty.Name : or.OdsOrganisation.Name,
                     SupplierId = $"{supplierId}",
                     SupplierName = supplierName,
                     ProductId = oir.OrderItem.CatalogueItemId.ToString(),
@@ -225,10 +238,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                 .ThenBy(o => o.ServiceRecipientName)
                 .ToListAsync();
 
-            for (int i = 0; i < items.Count; i++)
-                items[i].ServiceRecipientItemId = $"{items[i].CallOffId}-{items[i].ServiceRecipientId}-{i}";
+            var distinctItems = items.DistinctBy(item => new
+            {
+                item.CallOffId,
+                item.ServiceRecipientId,
+                item.ProductId,
+            }).ToList();
 
-            return items;
+            for (int i = 0; i < distinctItems.Count; i++)
+                distinctItems[i].ServiceRecipientItemId = $"{distinctItems[i].CallOffId}-{distinctItems[i].ServiceRecipientId}-{i}";
+
+            return distinctItems;
         }
     }
 }
