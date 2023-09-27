@@ -234,21 +234,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         GetTieredArray(oir.OrderItem.OrderItemPrice.OrderItemPriceTiers) : string.Empty,
                 }).ToListAsync();
 
-            var distinctItems = items.DistinctBy(item => new
+            for (int i = 0; i < items.Count; i++)
+                items[i].ServiceRecipientItemId = $"{items[i].CallOffId}-{items[i].ServiceRecipientId}-{i}";
+
+            return items.DistinctBy(item => new
             {
                 item.CallOffId,
                 item.ServiceRecipientId,
                 item.ProductId,
-            })
-                .OrderBy(o => o.ProductTypeId)
-                .ThenBy(o => o.ProductName)
-                .ThenBy(o => o.ServiceRecipientItemId)
-                .ToList();
-
-            for (int i = 0; i < distinctItems.Count; i++)
-                distinctItems[i].ServiceRecipientItemId = $"{distinctItems[i].CallOffId}-{distinctItems[i].ServiceRecipientId}-{i}";
-
-            return distinctItems;
+            }).OrderBy(o => o.ProductTypeId)
+              .ThenBy(o => o.ProductName)
+              .ThenBy(o => o.ServiceRecipientItemId)
+              .ToList();
         }
     }
 }
