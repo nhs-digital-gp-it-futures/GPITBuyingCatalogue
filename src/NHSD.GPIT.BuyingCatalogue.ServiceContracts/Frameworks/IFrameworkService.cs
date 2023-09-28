@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks
 
         Task AddFramework(string name, IEnumerable<FundingType> fundingTypes);
 
-        Task UpdateFramework(string frameworkId, string name, bool isLocalFundingOnly);
+        Task UpdateFramework(string frameworkId, string name, IEnumerable<FundingType> fundingTypes);
 
         Task MarkAsExpired(string frameworkId);
 

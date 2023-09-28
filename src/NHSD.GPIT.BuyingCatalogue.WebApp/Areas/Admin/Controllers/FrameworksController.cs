@@ -52,22 +52,33 @@ public class FrameworksController : Controller
         if (framework is null)
             return RedirectToAction(nameof(Dashboard));
 
-        return View("Add", new AddFrameworkModel
+        var view = View("Add", new AddFrameworkModel
         {
             BackLink = Url.Action(nameof(Dashboard)),
             FrameworkId = frameworkId,
             Name = framework.Name,
-            IsLocalFundingOnly = framework.LocalFundingOnly,
-        });
+            //TODO: Populate selected funding types
+            //FundingTypes = framework.FundingTypes.
+            //FundingTypes.Select(x => x.Selected).Where(x => x.Selected)
+            /*FundingTypes = framework.FundingTypes.Select(x => new SelectionModel
+            {
+                Id = $"{x.Id}",
+                Selected = selected.Contains(x.Id),
+            }).ToArray(),*/
+        //FundingTypes.S.Where(x =>
+        //FundingTypes = (System.Collections.Generic.List<Framework.Models.SelectOption<EntityFramework.Catalogue.Models.FundingType>>)framework.FundingTypes,
+    });
+        return view;
     }
 
     [HttpPost("edit/{frameworkId}")]
     public async Task<IActionResult> Edit(string frameworkId, AddFrameworkModel model)
     {
         if (!ModelState.IsValid)
-            return View(model);
+            return View("add", model);
+        //TODO: Validation won't let you keep same name
 
-        await frameworkService.UpdateFramework(frameworkId, model.Name, model.IsLocalFundingOnly.GetValueOrDefault());
+        await frameworkService.UpdateFramework(frameworkId, model.Name, model.FundingTypes.Where(x => x.Selected).Select(x => x.Value));
 
         return RedirectToAction(nameof(Dashboard));
     }
