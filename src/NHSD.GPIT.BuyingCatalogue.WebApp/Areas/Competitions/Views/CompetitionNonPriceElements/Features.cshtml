@@ -1,0 +1,24 @@
+@model FeaturesRequirementsModel
+
+@{
+    ViewBag.Title = "Review features requirements";
+}
+
+<partial name="Partials/_BackLink" model="Model"/>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary/>
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.CompetitionName"
+                        advice="Review the information you’ve provided and add any more features requirements if needed."/>
+
+        <vc:nhs-action-link text="Add another requirement" url="@Url.Action(nameof(CompetitionNonPriceElementsController.FeatureRequirement), typeof(CompetitionNonPriceElementsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, selectedNonPriceElements = Model.SelectedNonPriceElements })"/>
+
+        <partial name="Partials/_FeaturesRequirements" model="@(new FeaturesRequirementsPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.Features))" />
+
+        <form method="post">
+            <nhs-submit-button text="Continue"/>
+        </form>
+    </div>
+</div>

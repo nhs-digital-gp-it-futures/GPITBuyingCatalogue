@@ -42,6 +42,7 @@ public static class NonPriceElementsModelTests
         {
             Implementation = new(),
             Interoperability = new List<InteroperabilityCriteria> { new() },
+            Features = new List<FeaturesCriteria> { new() },
             ServiceLevel = new(),
         };
 

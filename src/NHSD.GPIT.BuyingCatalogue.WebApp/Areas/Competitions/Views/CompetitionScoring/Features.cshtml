@@ -1,0 +1,106 @@
+@model FeaturesScoringModel
+
+@{
+    ViewBag.Title = "Compare and score features";
+}
+
+<partial name="Partials/_BackLink" model="Model"/>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary/>
+
+        <nhs-page-title title="@ViewBag.Title"
+                        advice="Compare and score shortlisted solutions based on your features criteria."
+                        caption="@Model.CompetitionName"/>
+
+        <partial name="_ScoringGuidancePartial"/>
+
+        <h2>Your implementation criteria</h2>
+
+        <nhs-card>
+            <h3>Your features requirement details</h3>
+
+            @if (Model.MustFeatures.Any())
+            {
+                <h4>Must requirements</h4>
+                <ul>
+                    @foreach (var requirement in Model.MustFeatures)
+                    {
+                        <li>@requirement.Requirements</li>
+                    }
+                </ul>
+            }
+
+            @if (Model.ShouldFeatures.Any())
+            {
+                <h4>Should requirements</h4>
+                <ul>
+                    @foreach (var requirement in Model.ShouldFeatures)
+                    {
+                        <li>@requirement.Requirements</li>
+                    }
+                </ul>
+            }
+        </nhs-card>
+    </div>
+</div>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <form method="post">
+            @for (var i = 0; i < Model.Features.Count; i++)
+            {
+                <input type="hidden" asp-for="@Model.Features[i].Id" />
+                <input type="hidden" asp-for="@Model.Features[i].Compliance" />
+                <input type="hidden" asp-for="@Model.Features[i].Requirements" />
+            }
+
+            <input type="hidden" asp-for="CompetitionName"/>
+            <input type="hidden" asp-for="BackLink"/>
+
+            @for (var i = 0; i < Model.SolutionScores.Count; i++)
+            {
+                var solutionScoreModel = Model.SolutionScores[i];
+                var solutionName = solutionScoreModel.Solution.CatalogueItem.Name;
+
+                <h2>@solutionName</h2>
+                <nhs-expander label-text="View @solutionName features details" open="true">
+                    <h2>@solutionScoreModel.Solution.CatalogueItem.Name</h2>
+
+                    <b>These are the features provided by this solution that can help meet needs in primary care:</b>
+
+                    <br/>
+                    <br/>
+
+                    <ul>
+                        @foreach (var feature in solutionScoreModel.Solution.GetFeatures().Where(x => !string.IsNullOrWhiteSpace(x)).Order())
+                        {
+                            <li>@feature</li>
+                        }
+                    </ul>
+
+                    <nhs-fieldset-form-label asp-for="@Model.SolutionScores[i]"
+                                             label-text="What score would you give this solution?"
+                                             label-hint="Score each solution between 1 and 5. The higher the score, the better you think a solution meets your needs." size="Medium">
+                        <input type="hidden" asp-for="@Model.SolutionScores[i].SolutionId"/>
+                        <nhs-input asp-for="@Model.SolutionScores[i].Score" input-width="Three"/>
+                    </nhs-fieldset-form-label>
+
+                    <nhs-fieldset-form-label asp-for="@Model.SolutionScores[i]"
+                                             label-text="Why have you given this score?"
+                                             label-hint="Provide a justification for the score you have given this solution." size="Medium">
+                        <input type="hidden" asp-for="@Model.SolutionScores[i].SolutionId"/>
+                        <nhs-textarea asp-for="@Model.SolutionScores[i].Justification" character-count="false"/>
+                    </nhs-fieldset-form-label>
+                </nhs-expander>
+                @if (i == Model.SolutionScores.Count - 1)
+                {
+                    <br/>
+                    <nhs-submit-button/>
+                }
+                <hr/>
+            }
+        </form>
+    </div>
+</div>

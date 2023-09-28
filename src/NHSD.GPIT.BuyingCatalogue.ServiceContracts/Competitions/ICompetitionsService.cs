@@ -78,7 +78,8 @@ public interface ICompetitionsService
         int competitionId,
         int? implementationWeight,
         int? interoperabilityWeight,
-        int? serviceLevelWeight);
+        int? serviceLevelWeight,
+        int? featuresWeight);
 
     Task SetServiceLevelCriteria(
         string internalOrgId,
@@ -108,6 +109,11 @@ public interface ICompetitionsService
         Dictionary<CatalogueItemId, (int Score, string Justification)> solutionsScores);
 
     Task SetSolutionsServiceLevelScores(
+        string internalOrgId,
+        int competitionId,
+        Dictionary<CatalogueItemId, (int Score, string Justification)> solutionsScores);
+
+    Task SetSolutionsFeaturesScores(
         string internalOrgId,
         int competitionId,
         Dictionary<CatalogueItemId, (int Score, string Justification)> solutionsScores);

@@ -13,12 +13,21 @@ public class NonPriceElementsPartialModel
     }
 
     public NonPriceElementsPartialModel(
+        string internalOrgId,
+        int competitionId,
         NonPriceElements nonPriceElements,
         object routeValues)
     {
+        InternalOrgId = internalOrgId;
+        CompetitionId = competitionId;
+
         NonPriceElements = nonPriceElements;
         RouteValues = routeValues;
     }
+
+    public string InternalOrgId { get; set; }
+
+    public int CompetitionId { get; set; }
 
     public NonPriceElements NonPriceElements { get; set; }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -175,5 +176,67 @@ public static class CompetitionNonPriceElementsServiceTests
             .FirstOrDefaultAsync(x => x.OrganisationId == organisation.Id && x.Id == competition.Id);
 
         updatedCompetition.CompetitionSolutions.Should().NotContain(x => x.HasScoreType(ScoreType.Implementation));
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task AddFeatureRequirement_AddsRequirement(
+        Organisation organisation,
+        Competition competition,
+        string requirement,
+        CompliancyLevel compliance,
+        [Frozen] BuyingCatalogueDbContext dbContext,
+        CompetitionNonPriceElementsService service)
+    {
+        competition.OrganisationId = organisation.Id;
+
+        dbContext.Add(organisation);
+        dbContext.Add(competition);
+
+        await dbContext.SaveChangesAsync();
+        dbContext.ChangeTracker.Clear();
+
+        await service.AddFeatureRequirement(organisation.InternalIdentifier, competition.Id, requirement, compliance);
+
+        var updatedCompetition = await dbContext.Competitions.Include(x => x.NonPriceElements.Features)
+            .FirstOrDefaultAsync(x => x.Id == competition.Id);
+
+        updatedCompetition.NonPriceElements.Features.Should()
+            .ContainSingle(x => x.Requirements == requirement && x.Compliance == compliance);
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task EditFeatureRequirement_EditsRequirement(
+        Organisation organisation,
+        Competition competition,
+        string requirement,
+        CompliancyLevel compliance,
+        string newRequirement,
+        CompliancyLevel newCompliance,
+        [Frozen] BuyingCatalogueDbContext dbContext,
+        CompetitionNonPriceElementsService service)
+    {
+        competition.OrganisationId = organisation.Id;
+        competition.NonPriceElements = new() { Features = new List<FeaturesCriteria> { new(requirement, compliance) } };
+
+        dbContext.Add(organisation);
+        dbContext.Add(competition);
+
+        await dbContext.SaveChangesAsync();
+
+        var featureCriteriaId = competition.NonPriceElements.Features.FirstOrDefault()?.Id;
+
+        featureCriteriaId.Should().NotBeNull();
+
+        dbContext.ChangeTracker.Clear();
+
+        await service.EditFeatureRequirement(organisation.InternalIdentifier, competition.Id, featureCriteriaId!.Value, newRequirement, newCompliance);
+
+        var updatedCompetition = await dbContext.Competitions.Include(x => x.NonPriceElements.Features)
+            .FirstOrDefaultAsync(x => x.Id == competition.Id);
+
+        updatedCompetition.NonPriceElements.Features.Should()
+            .ContainSingle(x => x.Requirements == newRequirement && x.Compliance == newCompliance);
     }
 }

@@ -67,6 +67,7 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.NonPriceElements.Implementation)
             .Include(x => x.NonPriceElements.Interoperability)
             .Include(x => x.NonPriceElements.ServiceLevel)
+            .Include(x => x.NonPriceElements.Features)
             .Include(x => x.NonPriceElements.NonPriceWeights)
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.Scores)
@@ -112,6 +113,7 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.NonPriceElements.Interoperability)
             .Include(x => x.NonPriceElements.Implementation)
             .Include(x => x.NonPriceElements.ServiceLevel)
+            .Include(x => x.NonPriceElements.Features)
             .Include(x => x.Recipients)
             .AsNoTracking()
             .AsSplitQuery()
@@ -288,7 +290,8 @@ public class CompetitionsService : ICompetitionsService
         int competitionId,
         int? implementationWeight,
         int? interoperabilityWeight,
-        int? serviceLevelWeight)
+        int? serviceLevelWeight,
+        int? featuresWeight)
     {
         var competition = await dbContext.Competitions.Include(x => x.NonPriceElements.NonPriceWeights)
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
@@ -298,6 +301,7 @@ public class CompetitionsService : ICompetitionsService
         nonPriceWeights.Implementation = implementationWeight;
         nonPriceWeights.Interoperability = interoperabilityWeight;
         nonPriceWeights.ServiceLevel = serviceLevelWeight;
+        nonPriceWeights.Features = featuresWeight;
 
         if (dbContext.Entry(nonPriceWeights).State is EntityState.Modified)
             competition.HasReviewedCriteria = false;
@@ -406,6 +410,16 @@ public class CompetitionsService : ICompetitionsService
             competitionId,
             solutionsScores ?? throw new ArgumentNullException(nameof(solutionsScores)),
             ScoreType.ServiceLevel);
+
+    public async Task SetSolutionsFeaturesScores(
+        string internalOrgId,
+        int competitionId,
+        Dictionary<CatalogueItemId, (int Score, string Justification)> solutionsScores)
+        => await SetSolutionScores(
+            internalOrgId,
+            competitionId,
+            solutionsScores ?? throw new ArgumentNullException(nameof(solutionsScores)),
+            ScoreType.Features);
 
     public async Task AcceptShortlist(string internalOrgId, int competitionId)
     {

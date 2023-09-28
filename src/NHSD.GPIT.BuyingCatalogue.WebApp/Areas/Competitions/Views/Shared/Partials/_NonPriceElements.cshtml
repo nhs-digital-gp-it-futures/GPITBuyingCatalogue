@@ -1,5 +1,14 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.Shared.NonPriceElementsPartialModel
 
+@if (Model.NonPriceElements.Features.Any())
+{
+    <nhs-card title="Features">
+        <partial name="Partials/_FeaturesRequirements" model="@(new FeaturesRequirementsPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.NonPriceElements.Features) { BackLink = Url.ActionLink() })"/>
+
+        <vc:nhs-action-link text="Add another features requirement" url="@Url.Action(nameof(CompetitionNonPriceElementsController.FeatureRequirement), typeof(CompetitionNonPriceElementsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, returnUrl = Url.ActionLink() })"/>
+    </nhs-card>
+}
+
 @if (Model.NonPriceElements.Implementation != null)
 {
     var implementationUrl = Url.Action(nameof(CompetitionNonPriceElementsController.Implementation), typeof(CompetitionNonPriceElementsController).ControllerName(), Model.RouteValues);
@@ -74,5 +83,3 @@
         </nhs-summary-list>
     </nhs-card>
 }
-
-

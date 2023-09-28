@@ -186,6 +186,64 @@ public static class NonPriceElementWeightsModelValidatorTests
 
     [Theory]
     [CommonAutoData]
+    public static void Validate_HasFeaturesWithNullFeaturesScore_SetsModelError(
+        NonPriceElementWeightsModel model,
+        NonPriceElementWeightsModelValidator validator)
+    {
+        model.HasFeatures = true;
+        model.Features = null;
+
+        var result = validator.TestValidate(model);
+
+        result.ShouldHaveValidationErrorFor(x => x.Features)
+            .WithErrorMessage(NonPriceElementWeightsModelValidator.FeaturesNullError);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void Validate_NoFeaturesWithNullFeaturesScore_NoModelError(
+        NonPriceElementWeightsModel model,
+        NonPriceElementWeightsModelValidator validator)
+    {
+        model.HasFeatures = false;
+        model.Features = null;
+
+        var result = validator.TestValidate(model);
+
+        result.ShouldNotHaveValidationErrorFor(x => x.Features);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void Validate_HasFeaturesWithInvalidFeaturesScore_SetsModelError(
+        NonPriceElementWeightsModel model,
+        NonPriceElementWeightsModelValidator validator)
+    {
+        model.HasFeatures = true;
+        model.Features = NumberNotDivisibleByFive;
+
+        var result = validator.TestValidate(model);
+
+        result.ShouldHaveValidationErrorFor(x => x.Features)
+            .WithErrorMessage(NonPriceElementWeightsModelValidator.FeaturesDivisionError);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void Validate_NoFeaturesWithInvalidFeaturesScore_NoModelError(
+        NonPriceElementWeightsModel model,
+        NonPriceElementWeightsModelValidator validator)
+    {
+        model.HasFeatures = false;
+        model.Features = NumberNotDivisibleByFive;
+
+        var result = validator.TestValidate(model);
+
+        result.ShouldNotHaveValidationErrorFor(x => x.Features);
+    }
+
+    [Theory]
+    [CommonAutoData]
     public static void Validate_TotalNotEqualToHundred_SetsModelError(
         NonPriceElementWeightsModel model,
         NonPriceElementWeightsModelValidator validator)
@@ -209,9 +267,8 @@ public static class NonPriceElementWeightsModelValidatorTests
         NonPriceElementWeightsModel model,
         NonPriceElementWeightsModelValidator validator)
     {
-        model.HasImplementation = model.HasInteroperability = model.HasServiceLevel = true;
-        model.Implementation = 50;
-        model.Interoperability = model.ServiceLevel = 25;
+        model.HasImplementation = model.HasInteroperability = model.HasServiceLevel = model.HasFeatures = true;
+        model.Implementation = model.Interoperability = model.ServiceLevel = model.Features = 25;
 
         var result = validator.TestValidate(model);
 
