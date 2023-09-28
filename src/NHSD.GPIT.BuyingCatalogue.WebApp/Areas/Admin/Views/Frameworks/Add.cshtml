@@ -1,7 +1,9 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.FrameworkModels.AddFrameworkModel
 
 @{
-    ViewBag.Title = "Add a framework";
+    ViewBag.Title = Model.FrameworkId is null
+        ? "Add a framework"
+        : "Edit framework";
 }
 
 <partial name="Partials/_BackLink" model="Model"/>
@@ -39,6 +41,18 @@
             <div>
                 <a href="@Model.BackLink">Cancel</a>
             </div>
+            @if(Model.FrameworkId is not null)
+            {
+                <div style="margin-top:15px">
+                    <vc:nhs-delete-button url="@Url.Action(
+                                                   nameof(FrameworksController.Expire),
+                                                   typeof(FrameworksController).ControllerName(),
+                                                   new { Model.FrameworkId})"
+                                      text="Expire this framework" />
+                </div>
+            }
+            
+
         </form>
     </div>
 </div>

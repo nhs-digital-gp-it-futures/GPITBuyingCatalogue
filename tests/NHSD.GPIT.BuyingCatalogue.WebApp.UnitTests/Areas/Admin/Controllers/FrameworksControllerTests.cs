@@ -91,6 +91,56 @@ public static class FrameworksControllerTests
 
     [Theory]
     [CommonAutoData]
+    public static async Task Edit_ReturnsViewWithModel(
+        string frameworkId,
+        EntityFramework.Catalogue.Models.Framework framework,
+        [Frozen] Mock<IFrameworkService> service,
+        FrameworksController controller)
+    {
+        service
+            .Setup(x => x.GetFramework(frameworkId))
+            .ReturnsAsync(framework);
+
+        var result = (await controller.Edit(frameworkId)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().NotBeNull();
+        result.Model.Should().BeOfType<AddFrameworkModel>();
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task Edit_InvalidModel_ReturnsView(
+        string frameworkId,
+        AddFrameworkModel model,
+        FrameworksController controller)
+    {
+        controller.ModelState.AddModelError("some-key", "some-error");
+
+        var result = (await controller.Edit(frameworkId, model)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().Be(model);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task Edit_Valid_AddsFrameworkAndRedirects(
+        string frameworkId,
+        AddFrameworkModel model,
+        [Frozen] Mock<IFrameworkService> service,
+        FrameworksController controller)
+    {
+        var result = (await controller.Edit(frameworkId, model)).As<RedirectToActionResult>();
+
+        service.Verify(x => x.UpdateFramework(frameworkId, model.Name, model.IsLocalFundingOnly.GetValueOrDefault()), Times.Once());
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.Dashboard));
+    }
+
+    [Theory]
+    [CommonAutoData]
     public static async Task Expire_InvalidFramework_Redirects(
         string frameworkId,
         [Frozen] Mock<IFrameworkService> frameworkService,

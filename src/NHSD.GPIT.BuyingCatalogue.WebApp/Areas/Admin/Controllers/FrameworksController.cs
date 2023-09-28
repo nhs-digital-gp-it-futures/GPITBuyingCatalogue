@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -41,6 +41,33 @@ public class FrameworksController : Controller
             return View(model);
 
         await frameworkService.AddFramework(model.Name, model.FundingTypes.Where(x => x.Selected).Select(x => x.Value));
+
+        return RedirectToAction(nameof(Dashboard));
+    }
+
+    [HttpGet("edit/{frameworkId}")]
+    public async Task<IActionResult> Edit(string frameworkId)
+    {
+        var framework = await frameworkService.GetFramework(frameworkId);
+        if (framework is null)
+            return RedirectToAction(nameof(Dashboard));
+
+        return View("Add", new AddFrameworkModel
+        {
+            BackLink = Url.Action(nameof(Dashboard)),
+            FrameworkId = frameworkId,
+            Name = framework.Name,
+            IsLocalFundingOnly = framework.LocalFundingOnly,
+        });
+    }
+
+    [HttpPost("edit/{frameworkId}")]
+    public async Task<IActionResult> Edit(string frameworkId, AddFrameworkModel model)
+    {
+        if (!ModelState.IsValid)
+            return View(model);
+
+        await frameworkService.UpdateFramework(frameworkId, model.Name, model.IsLocalFundingOnly.GetValueOrDefault());
 
         return RedirectToAction(nameof(Dashboard));
     }
