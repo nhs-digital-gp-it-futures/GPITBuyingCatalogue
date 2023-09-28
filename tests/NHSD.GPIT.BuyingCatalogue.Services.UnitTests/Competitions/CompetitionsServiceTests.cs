@@ -1300,6 +1300,7 @@ public static class CompetitionsServiceTests
         int implementationWeight,
         int interoperabilityWeight,
         int serviceLevelWeight,
+        int featuresWeight,
         Organisation organisation,
         Competition competition,
         [Frozen] BuyingCatalogueDbContext context,
@@ -1320,7 +1321,8 @@ public static class CompetitionsServiceTests
             competition.Id,
             implementationWeight,
             interoperabilityWeight,
-            serviceLevelWeight);
+            serviceLevelWeight,
+            featuresWeight);
 
         var updatedCompetition = await service.GetCompetitionWithNonPriceElements(
             organisation.InternalIdentifier,
@@ -1332,6 +1334,7 @@ public static class CompetitionsServiceTests
         nonPriceElementWeightings.Implementation.Should().Be(implementationWeight);
         nonPriceElementWeightings.Interoperability.Should().Be(interoperabilityWeight);
         nonPriceElementWeightings.ServiceLevel.Should().Be(serviceLevelWeight);
+        nonPriceElementWeightings.Features.Should().Be(featuresWeight);
     }
 
     [Theory]
@@ -1340,6 +1343,7 @@ public static class CompetitionsServiceTests
         int implementationWeight,
         int interoperabilityWeight,
         int serviceLevelWeight,
+        int featuresWeight,
         NonPriceWeights nonPriceWeights,
         Organisation organisation,
         Competition competition,
@@ -1361,7 +1365,8 @@ public static class CompetitionsServiceTests
             competition.Id,
             implementationWeight,
             interoperabilityWeight,
-            serviceLevelWeight);
+            serviceLevelWeight,
+            featuresWeight);
 
         var updatedCompetition = await service.GetCompetitionWithNonPriceElements(
             organisation.InternalIdentifier,
@@ -1373,6 +1378,7 @@ public static class CompetitionsServiceTests
         nonPriceElementWeightings.Implementation.Should().Be(implementationWeight);
         nonPriceElementWeightings.Interoperability.Should().Be(interoperabilityWeight);
         nonPriceElementWeightings.ServiceLevel.Should().Be(serviceLevelWeight);
+        nonPriceElementWeightings.Features.Should().Be(featuresWeight);
     }
 
     [Theory]
@@ -1661,6 +1667,106 @@ public static class CompetitionsServiceTests
         await context.SaveChangesAsync();
 
         await service.SetSolutionsServiceLevelScores(
+            organisation.InternalIdentifier,
+            competition.Id,
+            new Dictionary<CatalogueItemId, (int, string)> { { competitionSolution.SolutionId, (score, justification) } });
+
+        var updatedCompetition =
+            await service.GetCompetitionWithSolutions(organisation.InternalIdentifier, competition.Id);
+        var updatedSolution =
+            updatedCompetition.CompetitionSolutions.First(x => x.SolutionId == competitionSolution.SolutionId);
+
+        updatedSolution.HasScoreType(scoreType).Should().BeTrue();
+        updatedSolution.GetScoreByType(scoreType).Score.Should().Be(score);
+        updatedSolution.GetScoreByType(scoreType).Justification.Should().Be(justification);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static Task SetSolutionsFeaturesScores_NullSolutionsScores_ThrowsArgumentNullException(
+        string internalOrgId,
+        int competitionId,
+        CompetitionsService service)
+        => FluentActions
+            .Awaiting(() => service.SetSolutionsFeaturesScores(internalOrgId, competitionId, null))
+            .Should()
+            .ThrowAsync<ArgumentNullException>();
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task SetSolutionsFeaturesScores_ExistingScore_UpdatesScore(
+        Organisation organisation,
+        Competition competition,
+        Solution solution,
+        int score,
+        string justification,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        const ScoreType scoreType = ScoreType.Features;
+
+        var competitionSolution = new CompetitionSolution(competition.Id, solution.CatalogueItemId)
+        {
+            Scores = new List<SolutionScore> { new(scoreType, score + 2) },
+            IsShortlisted = true,
+        };
+
+        competition.OrganisationId = organisation.Id;
+        competition.CompetitionSolutions.Add(competitionSolution);
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+        context.Solutions.Add(solution);
+
+        competitionSolution.HasScoreType(scoreType).Should().BeTrue();
+
+        await context.SaveChangesAsync();
+
+        await service.SetSolutionsFeaturesScores(
+            organisation.InternalIdentifier,
+            competition.Id,
+            new Dictionary<CatalogueItemId, (int, string)> { { competitionSolution.SolutionId, (score, justification) } });
+
+        var updatedCompetition =
+            await service.GetCompetitionWithSolutions(organisation.InternalIdentifier, competition.Id);
+        var updatedSolution =
+            updatedCompetition.CompetitionSolutions.First(x => x.SolutionId == competitionSolution.SolutionId);
+
+        updatedSolution.HasScoreType(scoreType).Should().BeTrue();
+        updatedSolution.GetScoreByType(scoreType).Score.Should().Be(score);
+        updatedSolution.GetScoreByType(scoreType).Justification.Should().Be(justification);
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task SetSolutionsFeaturesScores_NewScore_AddsScore(
+        Organisation organisation,
+        Competition competition,
+        Solution solution,
+        int score,
+        string justification,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        const ScoreType scoreType = ScoreType.Features;
+
+        var competitionSolution = new CompetitionSolution(competition.Id, solution.CatalogueItemId)
+        {
+            IsShortlisted = true,
+        };
+
+        competition.OrganisationId = organisation.Id;
+        competition.CompetitionSolutions.Add(competitionSolution);
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+        context.Solutions.Add(solution);
+
+        competitionSolution.HasScoreType(scoreType).Should().BeFalse();
+
+        await context.SaveChangesAsync();
+
+        await service.SetSolutionsFeaturesScores(
             organisation.InternalIdentifier,
             competition.Id,
             new Dictionary<CatalogueItemId, (int, string)> { { competitionSolution.SolutionId, (score, justification) } });

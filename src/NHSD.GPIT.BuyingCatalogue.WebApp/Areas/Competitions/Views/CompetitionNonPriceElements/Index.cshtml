@@ -30,7 +30,7 @@
         }
         else
         {
-            <partial name="Partials/_NonPriceElements" model="@(new NonPriceElementsPartialModel(Model.NonPriceElements, editRouteValues))" />
+            <partial name="Partials/_NonPriceElements" model="@(new NonPriceElementsPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.NonPriceElements, editRouteValues))" />
         }
 
         <br/>

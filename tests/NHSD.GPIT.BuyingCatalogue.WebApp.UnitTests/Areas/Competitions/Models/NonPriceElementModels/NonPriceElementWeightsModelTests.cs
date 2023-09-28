@@ -17,6 +17,7 @@ public static class NonPriceElementWeightsModelTests
     {
         competition.NonPriceElements = new()
         {
+            Features = new List<FeaturesCriteria> { new() },
             Interoperability = new List<InteroperabilityCriteria> { new() },
             Implementation = new(),
             ServiceLevel = new(),
@@ -29,9 +30,11 @@ public static class NonPriceElementWeightsModelTests
             HasInteroperability = true,
             HasImplementation = true,
             HasServiceLevel = true,
+            HasFeatures = true,
             Implementation = nonPriceWeights.Implementation,
             Interoperability = nonPriceWeights.Interoperability,
             ServiceLevel = nonPriceWeights.ServiceLevel,
+            Features = nonPriceWeights.Features,
         };
 
         var model = new NonPriceElementWeightsModel(competition);

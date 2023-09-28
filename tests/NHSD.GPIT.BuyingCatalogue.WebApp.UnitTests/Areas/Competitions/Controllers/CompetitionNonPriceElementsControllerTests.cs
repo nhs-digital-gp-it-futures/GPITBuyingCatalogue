@@ -19,6 +19,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.NonPriceElementModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.NonPriceElementModels.FeaturesModels;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Controllers;
@@ -112,8 +113,9 @@ public static class CompetitionNonPriceElementsControllerTests
         competition.NonPriceElements = new()
         {
             Implementation = new(),
-            Interoperability = new List<InteroperabilityCriteria>() { new(), },
+            Interoperability = new List<InteroperabilityCriteria> { new(), },
             ServiceLevel = new(),
+            Features = new List<FeaturesCriteria> { new() },
         };
 
         competitionsService.Setup(
@@ -367,6 +369,254 @@ public static class CompetitionNonPriceElementsControllerTests
 
     [Theory]
     [CommonAutoData]
+    public static async Task Features_NoExistingFeaturesCriteria_RedirectsToFeatureRequirement(
+        string internalOrgId,
+        Competition competition,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionNonPriceElementsController controller)
+    {
+        competition.NonPriceElements = new() { Features = new List<FeaturesCriteria>() };
+
+        competitionsService.Setup(x => x.GetCompetitionWithNonPriceElements(internalOrgId, competition.Id))
+            .ReturnsAsync(competition);
+
+        var result = (await controller.Features(internalOrgId, competition.Id)).As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.FeatureRequirement));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task Features_WithExistingFeaturesCriteria_ReturnsViewWithModel(
+        string internalOrgId,
+        Competition competition,
+        List<FeaturesCriteria> featuresCriteria,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionNonPriceElementsController controller)
+    {
+        competition.NonPriceElements = new() { Features = featuresCriteria };
+
+        competitionsService.Setup(x => x.GetCompetitionWithNonPriceElements(internalOrgId, competition.Id))
+            .ReturnsAsync(competition);
+
+        var expectedModel = new FeaturesRequirementsModel(competition) { InternalOrgId = internalOrgId };
+
+        var result = (await controller.Features(internalOrgId, competition.Id)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should()
+            .BeEquivalentTo(
+                expectedModel,
+                opt => opt.Excluding(m => m.BackLink)
+                    .Excluding(m => m.SelectedNonPriceElements));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task FeatureRequirement_ReturnsViewWithModel(
+        string internalOrgId,
+        Competition competition,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionNonPriceElementsController controller)
+    {
+        competitionsService.Setup(x => x.GetCompetitionWithNonPriceElements(internalOrgId, competition.Id))
+            .ReturnsAsync(competition);
+
+        var expectedModel = new FeaturesRequirementModel(competition);
+
+        var result = (await controller.FeatureRequirement(internalOrgId, competition.Id)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task FeatureRequirement_InvalidModel_ReturnsViewWithModel(
+        string internalOrgId,
+        int competitionId,
+        FeaturesRequirementModel model,
+        CompetitionNonPriceElementsController controller)
+    {
+        controller.ModelState.AddModelError("some-key", "some-error");
+
+        var result = (await controller.FeatureRequirement(internalOrgId, competitionId, model)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().Be(model);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task FeatureRequirement_ValidModel_AddsFeatureRequirement(
+        string internalOrgId,
+        int competitionId,
+        FeaturesRequirementModel model,
+        [Frozen] Mock<ICompetitionNonPriceElementsService> competitionNonPriceElementsService,
+        CompetitionNonPriceElementsController controller)
+    {
+        _ = await controller.FeatureRequirement(internalOrgId, competitionId, model);
+
+        competitionNonPriceElementsService.Verify(
+            x => x.AddFeatureRequirement(
+                internalOrgId,
+                competitionId,
+                model.Requirements,
+                model.SelectedCompliance!.Value),
+            Times.Once());
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task FeatureRequirement_WithReturnUrl_ReturnsRedirectResult(
+        string internalOrgId,
+        int competitionId,
+        string returnUrl,
+        FeaturesRequirementModel model,
+        CompetitionNonPriceElementsController controller)
+    {
+        var result = (await controller.FeatureRequirement(internalOrgId, competitionId, model, returnUrl))
+            .As<RedirectResult>();
+
+        result.Should().NotBeNull();
+        result.Url.Should().Be(returnUrl);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task FeatureRequirement_WithoutReturnUrl_ReturnsRedirectToActionResult(
+        string internalOrgId,
+        int competitionId,
+        FeaturesRequirementModel model,
+        CompetitionNonPriceElementsController controller)
+    {
+        var result = (await controller.FeatureRequirement(internalOrgId, competitionId, model)).As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.Features));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task EditFeatureRequirement_InvalidRequirementId_ReturnsRedirect(
+        string internalOrgId,
+        Competition competition,
+        int requirementId,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionNonPriceElementsController controller)
+    {
+        competition.NonPriceElements = new();
+
+        competitionsService.Setup(x => x.GetCompetitionWithNonPriceElements(internalOrgId, competition.Id))
+            .ReturnsAsync(competition);
+
+        var result = (await controller.EditFeatureRequirement(internalOrgId, competition.Id, requirementId))
+            .As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.Index));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task EditFeatureRequirement_ValidRequirementId_ReturnsViewWithModel(
+        string internalOrgId,
+        Competition competition,
+        List<FeaturesCriteria> featuresCriteria,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionNonPriceElementsController controller)
+    {
+        competition.NonPriceElements = new() { Features = featuresCriteria };
+
+        competitionsService.Setup(x => x.GetCompetitionWithNonPriceElements(internalOrgId, competition.Id))
+            .ReturnsAsync(competition);
+
+        var requirement = featuresCriteria.First();
+
+        var expectedModel = new FeaturesRequirementModel(competition, requirement);
+
+        var result = (await controller.EditFeatureRequirement(internalOrgId, competition.Id, requirement.Id))
+            .As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task EditFeatureRequirement_InvalidModel_AddsFeatureRequirement(
+        string internalOrgId,
+        int competitionId,
+        int requirementId,
+        FeaturesRequirementModel model,
+        CompetitionNonPriceElementsController controller)
+    {
+        controller.ModelState.AddModelError("some-key", "some-error");
+
+        var result = (await controller.EditFeatureRequirement(internalOrgId, competitionId, requirementId, model))
+            .As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().Be(model);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task EditFeatureRequirement_ValidModel_AddsFeatureRequirement(
+        string internalOrgId,
+        int competitionId,
+        int requirementId,
+        FeaturesRequirementModel model,
+        [Frozen] Mock<ICompetitionNonPriceElementsService> competitionNonPriceElementsService,
+        CompetitionNonPriceElementsController controller)
+    {
+        _ = await controller.EditFeatureRequirement(internalOrgId, competitionId, requirementId, model);
+
+        competitionNonPriceElementsService.Verify(
+            x => x.EditFeatureRequirement(
+                internalOrgId,
+                competitionId,
+                requirementId,
+                model.Requirements,
+                model.SelectedCompliance!.Value),
+            Times.Once());
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task EditFeatureRequirement_WithReturnUrl_ReturnsRedirectResult(
+        string internalOrgId,
+        int competitionId,
+        int requirementId,
+        string returnUrl,
+        FeaturesRequirementModel model,
+        CompetitionNonPriceElementsController controller)
+    {
+        var result = (await controller.EditFeatureRequirement(internalOrgId, competitionId, requirementId, model, returnUrl))
+            .As<RedirectResult>();
+
+        result.Should().NotBeNull();
+        result.Url.Should().Be(returnUrl);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task EditFeatureRequirement_WithoutReturnUrl_ReturnsRedirectToActionResult(
+        string internalOrgId,
+        int competitionId,
+        int requirementId,
+        FeaturesRequirementModel model,
+        CompetitionNonPriceElementsController controller)
+    {
+        var result = (await controller.EditFeatureRequirement(internalOrgId, competitionId, requirementId, model)).As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.Features));
+    }
+
+    [Theory]
+    [CommonAutoData]
     public static async Task Weights_ReturnsViewWithModel(
         string internalOrgId,
         Competition competition,
@@ -417,7 +667,8 @@ public static class CompetitionNonPriceElementsControllerTests
                 competitionId,
                 model.Implementation.GetValueOrDefault(),
                 model.Interoperability.GetValueOrDefault(),
-                model.ServiceLevel.GetValueOrDefault()),
+                model.ServiceLevel.GetValueOrDefault(),
+                model.Features.GetValueOrDefault()),
             Times.Once());
 
         result.Should().NotBeNull();
@@ -463,10 +714,9 @@ public static class CompetitionNonPriceElementsControllerTests
         string internalOrgId,
         int competitionId,
         string returnUrl,
-        string selectedNonPriceElements,
         CompetitionNonPriceElementsController controller)
     {
-        var result = controller.GetRedirect(internalOrgId, competitionId, returnUrl, selectedNonPriceElements).As<RedirectResult>();
+        var result = controller.GetRedirect(internalOrgId, competitionId, returnUrl, null).As<RedirectResult>();
 
         result.Should().NotBeNull();
         result.Url.Should().Be(returnUrl);
