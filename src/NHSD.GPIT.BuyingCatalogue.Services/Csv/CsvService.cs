@@ -74,16 +74,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         OdsCode = or.Order.OrderingParty.ExternalIdentifier,
                         OrganisationName = or.Order.OrderingParty.Name,
                         CommencementDate = or.Order.CommencementDate,
-                        ServiceRecipientId = oir.OrderItem.OrderItemPrice.CataloguePriceQuantityCalculationType != CataloguePriceQuantityCalculationType.PerServiceRecipient ? or.Order.OrderingParty.ExternalIdentifier : or.OdsCode,
-                        ServiceRecipientName = oir.OrderItem.OrderItemPrice.CataloguePriceQuantityCalculationType != CataloguePriceQuantityCalculationType.PerServiceRecipient ? or.Order.OrderingParty.Name : or.OdsOrganisation.Name,
+                        ServiceRecipientId = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient() ? or.Order.OrderingParty.ExternalIdentifier : or.OdsCode,
+                        ServiceRecipientName = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient() ? or.Order.OrderingParty.Name : or.OdsOrganisation.Name,
                         SupplierId = supplierId,
                         SupplierName = supplierName,
                         ProductId = oir.OrderItem.CatalogueItemId.ToString(),
                         ProductName = oir.OrderItem.CatalogueItem.Name,
                         ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
                         ProductTypeId = (int)oir.OrderItem.CatalogueItem.CatalogueItemType,
-
-                        // TODO: Stop this reporting incorrectly when quantity is (erroneously) defined at both order item & recipient level
                         QuantityOrdered = or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
                             ? (oir.OrderItem.Quantity ?? 0)
                             : or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId).Quantity ?? oir.OrderItem.Quantity ?? 0,
@@ -201,16 +199,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     OdsCode = or.Order.OrderingParty.ExternalIdentifier,
                     OrganisationName = or.Order.OrderingParty.Name,
                     CommencementDate = or.Order.CommencementDate,
-                    ServiceRecipientId = oir.OrderItem.OrderItemPrice.CataloguePriceQuantityCalculationType != CataloguePriceQuantityCalculationType.PerServiceRecipient ? or.Order.OrderingParty.ExternalIdentifier : or.OdsCode,
-                    ServiceRecipientName = oir.OrderItem.OrderItemPrice.CataloguePriceQuantityCalculationType != CataloguePriceQuantityCalculationType.PerServiceRecipient ? or.Order.OrderingParty.Name : or.OdsOrganisation.Name,
+                    ServiceRecipientId = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient() ? or.Order.OrderingParty.ExternalIdentifier : or.OdsCode,
+                    ServiceRecipientName = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient() ? or.Order.OrderingParty.Name : or.OdsOrganisation.Name,
                     SupplierId = $"{supplierId}",
                     SupplierName = supplierName,
                     ProductId = oir.OrderItem.CatalogueItemId.ToString(),
                     ProductName = oir.OrderItem.CatalogueItem.Name,
                     ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
                     ProductTypeId = (int)oir.OrderItem.CatalogueItem.CatalogueItemType,
-
-                    // TODO: Stop this reporting incorrectly when quantity is (erroneously) defined at both order item & recipient level
                     QuantityOrdered = or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
                         ? (oir.OrderItem.Quantity ?? 0)
                         : or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId).Quantity ?? oir.OrderItem.Quantity ?? 0,
@@ -232,23 +228,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         $"{oir.OrderItem.OrderItemPrice.CataloguePriceType}",
                     TieredArray = oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Tiered && oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType == CataloguePriceCalculationType.Cumulative ?
                         GetTieredArray(oir.OrderItem.OrderItemPrice.OrderItemPriceTiers) : string.Empty,
-                })
-                .OrderBy(o => o.ProductTypeId)
-                .ThenBy(o => o.ProductName)
-                .ThenBy(o => o.ServiceRecipientName)
-                .ToListAsync();
+                }).ToListAsync();
 
-            var distinctItems = items.DistinctBy(item => new
+            for (int i = 0; i < items.Count; i++)
+                items[i].ServiceRecipientItemId = $"{items[i].CallOffId}-{items[i].ServiceRecipientId}-{i}";
+
+            return items.DistinctBy(item => new
             {
-                item.CallOffId,
                 item.ServiceRecipientId,
                 item.ProductId,
-            }).ToList();
-
-            for (int i = 0; i < distinctItems.Count; i++)
-                distinctItems[i].ServiceRecipientItemId = $"{distinctItems[i].CallOffId}-{distinctItems[i].ServiceRecipientId}-{i}";
-
-            return distinctItems;
+            }).OrderBy(o => o.ProductTypeId)
+              .ThenBy(o => o.ProductName)
+              .ThenBy(o => o.ServiceRecipientName)
+              .ToList();
         }
     }
 }
