@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             var orderWrapper = new OrderWrapper(order);
             var model = new FundingSources(internalOrgId, order.CallOffId, orderWrapper, 1);
 
-            model.Title.Should().Be("Funding sources");
+            model.Title.Should().Be("Funding source");
             model.CallOffId.Should().Be(order.CallOffId);
             model.InternalOrgId.Should().Be(internalOrgId);
             model.Caption.Should().Be($"Order {order.CallOffId}");
@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
 
             var model = new FundingSources(internalOrgId, order.CallOffId, orderWrapper, 1);
 
-            model.Title.Should().Be("Funding sources");
+            model.Title.Should().Be("Funding source");
             model.CallOffId.Should().Be(order.CallOffId);
             model.InternalOrgId.Should().Be(internalOrgId);
             model.Caption.Should().Be($"Order {order.CallOffId}");
@@ -107,7 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
 
             var model = new FundingSources(internalOrgId, order.CallOffId, orderWrapper, 1);
 
-            model.Title.Should().Be("Funding sources");
+            model.Title.Should().Be("Funding source");
             model.CallOffId.Should().Be(order.CallOffId);
             model.InternalOrgId.Should().Be(internalOrgId);
             model.Caption.Should().Be($"Order {order.CallOffId}");
@@ -134,7 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
 
             var model = new FundingSources(internalOrgId, order.CallOffId, orderWrapper, 1);
 
-            model.Title.Should().Be("Funding sources");
+            model.Title.Should().Be("Funding source");
             model.CallOffId.Should().Be(order.CallOffId);
             model.InternalOrgId.Should().Be(internalOrgId);
             model.Caption.Should().Be($"Order {order.CallOffId}");

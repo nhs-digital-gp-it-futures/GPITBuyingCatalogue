@@ -25,7 +25,7 @@ public static class AddFrameworkModelValidatorTests
 
         var result = validator.TestValidate(model);
 
-        result.ShouldHaveValidationErrorFor(x => x.FundingTypes)
+        result.ShouldHaveValidationErrorFor("FundingTypes[0].Selected")
             .WithErrorMessage(AddFrameworkModelValidator.FundingTypeError);
     }
 
