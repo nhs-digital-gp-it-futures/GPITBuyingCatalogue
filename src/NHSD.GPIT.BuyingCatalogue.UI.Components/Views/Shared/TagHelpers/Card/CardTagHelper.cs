@@ -16,6 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
         public const string UrlName = "url";
 
         private const string CardClass = "nhsuk-card";
+        private const string CardMinHeightClass = "nhs-card__min-height";
         private const string CardClickableClass = "nhsuk-card--clickable";
         private const string CardContentClass = "nhsuk-card__content";
         private const string CardDescriptionClass = "nhsuk-card__description";
@@ -38,6 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
             output.TagMode = TagMode.StartTagAndEndTag;
 
             output.AddClass(CardClass, HtmlEncoder.Default);
+            output.AddClass(CardMinHeightClass, HtmlEncoder.Default);
 
             if (!string.IsNullOrWhiteSpace(Url))
             {
