@@ -6,7 +6,9 @@ VALUES
     (2, 'Local'),
     (3, 'Mixed'),
     (4, 'No Funding Required'),
-    (5, 'Local Funding Only')
+    (5, 'Local Funding Only'),
+    (6, 'GPIT'),
+    (7, 'PCARP')
 )
 AS SOURCE ([Id], [Name])
 ON TARGET.[Id] = SOURCE.[Id]

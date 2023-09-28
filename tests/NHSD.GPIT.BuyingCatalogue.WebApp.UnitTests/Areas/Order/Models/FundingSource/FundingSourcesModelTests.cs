@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -37,54 +38,80 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
 
         [Theory]
         [CommonAutoData]
-        public static void WithValidArguments_CatalogueSolution_LocalFundingOnly_SetsCorrectly(
+        public static void WithValidArguments_CatalogueSolution_SingleFundingType_SetsCorrectly(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             Solution solution)
         {
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             order.OrderItems.First().CatalogueItem.Solution = solution;
-            order.OrderItems.First().OrderItemFunding.OrderItemFundingType = OrderItemFundingType.LocalFundingOnly;
 
             order.OrderItems = order.OrderItems.Where(oi => oi.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution).ToList();
 
-            order.SelectedFramework.LocalFundingOnly = true;
-            var orderWrapper = new OrderWrapper(order);
+            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.LocalFunding };
 
+            var orderWrapper = new OrderWrapper(order);
             var model = new FundingSources(internalOrgId, order.CallOffId, orderWrapper, 1);
 
-            model.Title.Should().Be("Funding sources");
+            model.Title.Should().Be("Funding source");
             model.CallOffId.Should().Be(order.CallOffId);
             model.InternalOrgId.Should().Be(internalOrgId);
             model.Caption.Should().Be($"Order {order.CallOffId}");
-            model.OrderItemsLocalOnly.Should().NotBeEmpty().And.HaveCount(order.OrderItems.Count);
+            model.OrderItemsSingleFundingType.Should().NotBeEmpty().And.HaveCount(order.OrderItems.Count);
             model.OrderItemsSelectable.Should().BeNull();
             model.CountOfOrderFrameworks.Should().Be(1);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void WithValidArguments_CatalogueSolutionAndAdditionalService_LocalFundingOnly_SetsCorrectly(
+        public static void WithValidArguments_CatalogueSolution_GpPRactice_SetsCorrectly(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             Solution solution)
         {
-            order.OrderingParty.OrganisationType = OrganisationType.IB;
+            order.OrderingParty.OrganisationType = OrganisationType.GP;
+
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-            order.OrderItems.Where(oi => oi.CatalogueItem.CatalogueItemType != CatalogueItemType.Solution).ToList().ForEach(oi => oi.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
-            order.OrderItems.ToList().ForEach(oi => oi.OrderItemFunding.OrderItemFundingType = OrderItemFundingType.LocalFundingOnly);
             order.OrderItems.First().CatalogueItem.Solution = solution;
 
-            order.SelectedFramework.LocalFundingOnly = true;
+            order.OrderItems = order.OrderItems.Where(oi => oi.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution).ToList();
+
+            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.LocalFunding, FundingType.Gpit };
             var orderWrapper = new OrderWrapper(order);
 
             var model = new FundingSources(internalOrgId, order.CallOffId, orderWrapper, 1);
 
-            model.Title.Should().Be("Funding sources");
+            model.Title.Should().Be("Funding source");
             model.CallOffId.Should().Be(order.CallOffId);
             model.InternalOrgId.Should().Be(internalOrgId);
             model.Caption.Should().Be($"Order {order.CallOffId}");
-            model.OrderItemsLocalOnly.Should().NotBeEmpty().And.HaveCount(order.OrderItems.Count);
+            model.OrderItemsSingleFundingType.Should().NotBeEmpty().And.HaveCount(order.OrderItems.Count);
+            model.OrderItemsSelectable.Should().BeNull();
+            model.CountOfOrderFrameworks.Should().Be(1);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void WithValidArguments_CatalogueSolutionAndAdditionalService_SingleFundingType_SetsCorrectly(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            Solution solution)
+        {
+            order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            order.OrderItems.Where(oi => oi.CatalogueItem.CatalogueItemType != CatalogueItemType.Solution).ToList().ForEach(oi => oi.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+            order.OrderItems.ToList().ForEach(oi => oi.OrderItemFunding.OrderItemFundingType = OrderItemFundingType.Gpit);
+            order.OrderItems.First().CatalogueItem.Solution = solution;
+
+            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.Gpit };
+            var orderWrapper = new OrderWrapper(order);
+
+            var model = new FundingSources(internalOrgId, order.CallOffId, orderWrapper, 1);
+
+            model.Title.Should().Be("Funding source");
+            model.CallOffId.Should().Be(order.CallOffId);
+            model.InternalOrgId.Should().Be(internalOrgId);
+            model.Caption.Should().Be($"Order {order.CallOffId}");
+            model.OrderItemsSingleFundingType.Should().NotBeEmpty().And.HaveCount(order.OrderItems.Count);
             model.OrderItemsSelectable.Should().BeNull();
             model.CountOfOrderFrameworks.Should().Be(1);
         }
@@ -99,38 +126,38 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             order.OrderingParty.OrganisationType = OrganisationType.GP;
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             order.OrderItems.Where(oi => oi.CatalogueItem.CatalogueItemType != CatalogueItemType.Solution).ToList().ForEach(oi => oi.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
-            order.OrderItems.ToList().ForEach(oi => oi.OrderItemFunding.OrderItemFundingType = OrderItemFundingType.MixedFunding);
+            order.OrderItems.ToList().ForEach(oi => oi.OrderItemFunding.OrderItemFundingType = OrderItemFundingType.Gpit);
             order.OrderItems.First().CatalogueItem.Solution = solution;
 
-            order.SelectedFramework.LocalFundingOnly = true;
+            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.LocalFunding, FundingType.Gpit };
             var orderWrapper = new OrderWrapper(order);
 
             var model = new FundingSources(internalOrgId, order.CallOffId, orderWrapper, 1);
 
-            model.Title.Should().Be("Funding sources");
+            model.Title.Should().Be("Funding source");
             model.CallOffId.Should().Be(order.CallOffId);
             model.InternalOrgId.Should().Be(internalOrgId);
             model.Caption.Should().Be($"Order {order.CallOffId}");
-            model.OrderItemsLocalOnly.Should().NotBeEmpty().And.HaveCount(order.OrderItems.Count);
+            model.OrderItemsSingleFundingType.Should().NotBeEmpty().And.HaveCount(order.OrderItems.Count);
             model.OrderItemsSelectable.Should().BeNull();
             model.CountOfOrderFrameworks.Should().Be(1);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void WithValidArguments_CatalogueSolution_MixedFundingFrameworks_SetsCorrectly(
+        public static void WithValidArguments_CatalogueSolution_MultipleFundingFrameworks_SetsCorrectly(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             Solution solution)
         {
-            order.SelectedFramework.LocalFundingOnly = false;
-
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             order.OrderItems.First().CatalogueItem.Solution = solution;
-            order.OrderItems.First().OrderItemFunding.OrderItemFundingType = OrderItemFundingType.MixedFunding;
+            order.OrderItems.First().OrderItemFunding.OrderItemFundingType = OrderItemFundingType.Gpit;
 
             order.OrderItems = order.OrderItems.Where(oi => oi.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution).ToList();
             var orderWrapper = new OrderWrapper(order);
+
+            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.LocalFunding, FundingType.Gpit };
 
             var model = new FundingSources(internalOrgId, order.CallOffId, orderWrapper, 1);
 
@@ -138,7 +165,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             model.CallOffId.Should().Be(order.CallOffId);
             model.InternalOrgId.Should().Be(internalOrgId);
             model.Caption.Should().Be($"Order {order.CallOffId}");
-            model.OrderItemsLocalOnly.Should().BeNull();
+            model.OrderItemsSingleFundingType.Should().BeNull();
             model.OrderItemsSelectable.Should().NotBeEmpty().And.HaveCount(order.OrderItems.Count);
             model.CountOfOrderFrameworks.Should().Be(1);
         }

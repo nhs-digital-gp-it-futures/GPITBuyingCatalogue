@@ -14,8 +14,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public const string CentralFunding = "Central";
 
         [JsonIgnore]
-        public bool IsLocalFundingOnly =>
-            SelectedFramework.LocalFundingOnly || OrderingParty.OrganisationType == OrganisationType.GP;
+        public bool HasSingleFundingType =>
+            SelectedFramework.HasSingleFundingType || OrderingParty.OrganisationType == OrganisationType.GP;
 
         [JsonIgnore]
         public EndDate EndDate => new(CommencementDate, MaximumTerm);

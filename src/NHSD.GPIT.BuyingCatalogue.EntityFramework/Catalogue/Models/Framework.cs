@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
@@ -12,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public string ShortName { get; set; }
 
-        public bool LocalFundingOnly { get; set; }
+        public bool HasSingleFundingType => FundingTypes.Count == 1;
 
         public DateTime LastUpdated { get; set; }
 
@@ -21,5 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public AspNetUser LastUpdatedByUser { get; set; }
 
         public bool IsExpired { get; set; }
+
+        public ICollection<FundingType> FundingTypes { get; set; } = new HashSet<FundingType>();
     }
 }

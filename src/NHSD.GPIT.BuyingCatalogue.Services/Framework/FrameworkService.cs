@@ -47,15 +47,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
         [ExcludeFromCodeCoverage(
             Justification =
                 "Can't be tested until the ID migration due to another bizarre Entity Framework design choice where HasDefaultValue doesn't work for the In-memory provider.")]
-        public async Task AddFramework(string name, bool isLocalFundingOnly)
+        public async Task AddFramework(string name, IEnumerable<FundingType> fundingTypes)
         {
-            if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentNullException(nameof(name));
+            ArgumentException.ThrowIfNullOrEmpty(name);
+            ArgumentNullException.ThrowIfNull(fundingTypes);
 
             var framework =
                 new EntityFramework.Catalogue.Models.Framework
                 {
-                    Name = name, ShortName = name, LocalFundingOnly = isLocalFundingOnly,
+                    Name = name, ShortName = name, FundingTypes = fundingTypes.ToArray(),
                 };
 
             dbContext.Frameworks.Add(framework);

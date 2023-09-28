@@ -7,7 +7,7 @@
 <partial name="Partials/_BackLink" model="Model"/>
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-validation-summary RadioId="IsLocalFundingOnly"/>
+        <nhs-validation-summary/>
 
         <nhs-page-title title="@ViewBag.Title" advice="Provide details for this framework."/>
 
@@ -18,13 +18,19 @@
                        label-hint="Provide a unique name for this framework"
                        asp-for="Name"/>
 
-            <nhs-fieldset-form-label asp-for="IsLocalFundingOnly"
+            <nhs-fieldset-form-label asp-for="@Model"
                                      label-text="What type of funding can be used"
                                      size="Small">
-                <nhs-radio-buttons asp-for="IsLocalFundingOnly"
-                                   values="@Model.FundingTypes.Cast<object>()"
-                                   value-name="Value"
-                                   display-name="Text"/>
+                <nhs-checkbox-container>
+                    @for (var i = 0; i < Model.FundingTypes.Count; i++)
+                    {
+                        <input type="hidden" asp-for="@Model.FundingTypes[i].Text"/>
+                        <nhs-checkbox asp-for="@Model.FundingTypes[i].Selected"
+                                      label-text="@Model.FundingTypes[i].Text"
+                                      hidden-input="@Model.FundingTypes[i].Value"
+                                      data-test-id="funding-types-text" />
+                    }
+                </nhs-checkbox-container>
             </nhs-fieldset-form-label>
 
             <div>
