@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.FrameworkModels;
 
@@ -52,22 +53,19 @@ public class FrameworksController : Controller
         if (framework is null)
             return RedirectToAction(nameof(Dashboard));
 
-        var view = View("Add", new AddFrameworkModel
+        AddFrameworkModel model = new AddFrameworkModel
         {
             BackLink = Url.Action(nameof(Dashboard)),
             FrameworkId = frameworkId,
             Name = framework.Name,
-            //TODO: Populate selected funding types
-            //FundingTypes = framework.FundingTypes.
-            //FundingTypes.Select(x => x.Selected).Where(x => x.Selected)
-            /*FundingTypes = framework.FundingTypes.Select(x => new SelectionModel
-            {
-                Id = $"{x.Id}",
-                Selected = selected.Contains(x.Id),
-            }).ToArray(),*/
-        //FundingTypes.S.Where(x =>
-        //FundingTypes = (System.Collections.Generic.List<Framework.Models.SelectOption<EntityFramework.Catalogue.Models.FundingType>>)framework.FundingTypes,
-    });
+        };
+
+        foreach (FundingType i in framework.FundingTypes)
+        {
+            model.FundingTypes.Where(x => x.Value == i).FirstOrDefault().Selected = true;
+        }
+
+        var view = View("Add", model);
         return view;
     }
 
@@ -76,7 +74,6 @@ public class FrameworksController : Controller
     {
         if (!ModelState.IsValid)
             return View("add", model);
-        //TODO: Validation won't let you keep same name
 
         await frameworkService.UpdateFramework(frameworkId, model.Name, model.FundingTypes.Where(x => x.Selected).Select(x => x.Value));
 

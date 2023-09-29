@@ -21,5 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks
         Task MarkAsExpired(string frameworkId);
 
         Task<bool> FrameworkNameExists(string frameworkName);
+
+        Task<bool> FrameworkNameExistsExcludeSelf(string frameworkName, string frameworkId);
     }
 }

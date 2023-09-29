@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.FrameworkModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
@@ -20,10 +21,10 @@ public sealed class AddFrameworkModelValidator : AbstractValidator<AddFrameworkM
             .WithMessage(FundingTypeError)
             .OverridePropertyName($"{nameof(AddFrameworkModel.FundingTypes)}[0].Selected");
 
-        RuleFor(x => x.Name)
+        RuleFor(x => x)
             .NotEmpty()
             .WithMessage(NameMissingError)
-            .Must(x => !frameworkService.FrameworkNameExists(x).GetAwaiter().GetResult())
+            .Must(x => !frameworkService.FrameworkNameExistsExcludeSelf(x.Name, x.FrameworkId).GetAwaiter().GetResult())
             .WithMessage(NameDuplicationError);
     }
 }
