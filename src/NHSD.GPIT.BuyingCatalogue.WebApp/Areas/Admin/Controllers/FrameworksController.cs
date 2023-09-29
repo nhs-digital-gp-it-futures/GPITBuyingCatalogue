@@ -89,7 +89,7 @@ public class FrameworksController : Controller
 
         var model = new ExpireFrameworkModel
         {
-            Name = framework.ShortName, BackLink = Url.Action(nameof(Dashboard), new { frameworkId }),
+            Name = framework.ShortName, BackLink = Url.Action(nameof(Edit), new { frameworkId }),
         };
 
         return View(model);
