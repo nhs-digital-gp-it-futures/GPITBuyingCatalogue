@@ -1,0 +1,65 @@
+#home-hero {
+    margin-left: 0px;
+    margin-right: 0px;
+    position: relative;
+    background-image: url(/images/test-image-home-page-2.jpg);
+
+    background-position: top right;
+    background-repeat: no-repeat;
+    background-size: cover;
+    min-height: 370px;
+
+
+
+    .nhsuk-hero-content {
+        bottom: -48px;
+        margin-bottom: 0;
+        max-width: 35em;
+        padding: 32px 40px;
+        position: absolute;
+        top: auto;
+        background-color: #005eb8;
+        color: #fff;
+    }
+
+    .nhsuk-hero__arrow {
+        left: 46px;
+        bottom: -10px;
+        display: block;
+        height: 20px;
+        background-color: #005eb8;
+        overflow: hidden;
+        position: absolute;
+        transform: rotate(45deg);
+        width: 20px;
+    }
+}
+
+.nhs-card__min-height {
+    min-height: 320px;
+
+    .nhsuk-card__heading {
+        min-height: 60px;
+    }
+}
+
+.card-title-min-height {
+    min-height: 96px;
+}
+
+.card-min-content-height {
+    min-height: 130px;
+}
+
+.white-section {
+    background-color: white;
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+.padding-removed {
+    padding-left: 0px;
+    padding-right: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+}
