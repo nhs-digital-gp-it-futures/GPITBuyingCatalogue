@@ -5,6 +5,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.FundingTypes
 {
     public interface IFundingTypeService
     {
-        OrderItemFundingType GetFundingType(List<OrderItemFundingType> allFundingTypes, OrderItemFundingType current);
+        OrderItemFundingType GetFundingType(List<OrderItemFundingType> allFundingTypes, OrderItemFundingType fundingType);
     }
 }

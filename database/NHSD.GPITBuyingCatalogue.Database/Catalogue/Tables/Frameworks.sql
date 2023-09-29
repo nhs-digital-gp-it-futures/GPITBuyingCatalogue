@@ -2,7 +2,7 @@
 (
     Id NVARCHAR(36) NOT NULL,
     [Name] NVARCHAR(100) NOT NULL,
-    ShortName NVARCHAR(25) NULL,
+    ShortName NVARCHAR(100) NULL,
     [Description] NVARCHAR(max) NULL,
     [Owner] NVARCHAR(100) NULL,
     ActiveDate DATE NULL,
@@ -12,6 +12,7 @@
     SysStartTime DATETIME2(0) GENERATED ALWAYS AS ROW START NOT NULL,
     SysEndTime DATETIME2(0) GENERATED ALWAYS AS ROW END NOT NULL,
     LocalFundingOnly BIT NULL,
+    FundingTypes NVARCHAR(30) NULL,
     IsExpired BIT NOT NULL DEFAULT(0),
     PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
     CONSTRAINT PK_Frameworks PRIMARY KEY (Id),

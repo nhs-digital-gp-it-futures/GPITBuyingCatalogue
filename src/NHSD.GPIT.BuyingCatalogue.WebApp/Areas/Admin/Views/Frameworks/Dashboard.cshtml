@@ -48,7 +48,10 @@
                 {
                     <nhs-table-row-container>
                         <nhs-table-cell>@framework.ShortName</nhs-table-cell>
-                        <nhs-table-cell>@GetFundingType(framework.LocalFundingOnly)</nhs-table-cell>
+                        @if (framework.FundingTypes?.Any() ?? false)
+                        {
+                            <nhs-table-cell>@string.Join(", ", framework.FundingTypes.Select(x => x.Description()))</nhs-table-cell>
+                        }
                         <nhs-table-cell>
                             <nhs-tag text="@GetTagText(framework.IsExpired)" colour="@GetTagColour(framework.IsExpired)" />
                         </nhs-table-cell>
@@ -80,5 +83,4 @@
 @{
     string GetTagText(bool isExpired) => isExpired ? "Expired" : "Active";
     NhsTagsTagHelper.TagColour GetTagColour(bool isExpired) => isExpired ? NhsTagsTagHelper.TagColour.Grey : NhsTagsTagHelper.TagColour.Green;
-    string GetFundingType(bool isLocallyFunded) => isLocallyFunded ? "Local funding" : "Central funding";
 }

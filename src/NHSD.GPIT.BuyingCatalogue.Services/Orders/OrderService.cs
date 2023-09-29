@@ -9,7 +9,9 @@ using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
@@ -422,20 +424,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
                 if (orderItem.TotalCost(order.OrderRecipients) == 0)
                     selectedFundingType = OrderItemFundingType.NoFundingRequired;
-                else if (order.IsLocalFundingOnly)
+                else if (order.OrderingParty.OrganisationType == OrganisationType.GP)
                     selectedFundingType = OrderItemFundingType.LocalFundingOnly;
+                else if (order.HasSingleFundingType)
+                    selectedFundingType = order.SelectedFramework.FundingTypes.First().AsOrderItemFundingType();
 
-                if (selectedFundingType != OrderItemFundingType.None)
+                if (selectedFundingType == OrderItemFundingType.None) continue;
+
+                var orderId = await dbContext.OrderId(internalOrgId, callOffId);
+
+                orderItem.OrderItemFunding = new OrderItemFunding
                 {
-                    var orderId = await dbContext.OrderId(internalOrgId, callOffId);
-
-                    orderItem.OrderItemFunding = new OrderItemFunding
-                    {
-                        OrderId = orderId,
-                        CatalogueItemId = orderItem.CatalogueItemId,
-                        OrderItemFundingType = selectedFundingType,
-                    };
-                }
+                    OrderId = orderId,
+                    CatalogueItemId = orderItem.CatalogueItemId,
+                    OrderItemFundingType = selectedFundingType,
+                };
             }
 
             await dbContext.SaveChangesAsync();

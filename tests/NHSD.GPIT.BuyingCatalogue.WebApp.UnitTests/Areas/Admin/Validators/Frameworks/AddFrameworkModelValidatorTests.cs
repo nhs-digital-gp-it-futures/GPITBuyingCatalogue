@@ -1,6 +1,10 @@
-﻿using AutoFixture.Xunit2;
+﻿using System.Collections.Generic;
+using System.Linq;
+using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.FrameworkModels;
@@ -17,11 +21,11 @@ public static class AddFrameworkModelValidatorTests
         AddFrameworkModel model,
         AddFrameworkModelValidator validator)
     {
-        model.IsLocalFundingOnly = null;
+        model.FundingTypes.ForEach(x => x.Selected = false);
 
         var result = validator.TestValidate(model);
 
-        result.ShouldHaveValidationErrorFor(x => x.IsLocalFundingOnly)
+        result.ShouldHaveValidationErrorFor("FundingTypes[0].Selected")
             .WithErrorMessage(AddFrameworkModelValidator.FundingTypeError);
     }
 
@@ -68,7 +72,7 @@ public static class AddFrameworkModelValidatorTests
             .ReturnsAsync(false);
 
         model.Name = new string('a', 9);
-        model.IsLocalFundingOnly = true;
+        model.FundingTypes.First().Selected = true;
 
         var result = validator.TestValidate(model);
 

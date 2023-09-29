@@ -30,24 +30,26 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(true)]
-        [InMemoryDbInlineAutoData(false)]
+        [InMemoryDbInlineAutoData(FundingType.LocalFunding)]
+        [InMemoryDbInlineAutoData(FundingType.Gpit)]
         public static async Task UpdateFundingSourceAndSetSelectedFrameworkForOrder_NotGP_LocalFrameworkOnlyUnchanged_UpdatesSelectedFramework(
-            bool localFundingOnly,
+            FundingType fundingType,
             Order order,
             OrderItem orderItem,
             EntityFramework.Catalogue.Models.Framework selectedFramework,
             [Frozen] BuyingCatalogueDbContext context,
             OrderFrameworkService service)
         {
-            selectedFramework.LocalFundingOnly = localFundingOnly;
+            var fundingTypes = new List<FundingType> { fundingType };
+
+            selectedFramework.FundingTypes = fundingTypes;
 
             orderItem.OrderItemFunding.OrderItemFundingType = OrderItemFundingType.LocalFundingOnly;
 
             order.OrderItems.Clear();
             order.OrderItems.Add(orderItem);
             order.OrderingParty.OrganisationType = OrganisationType.IB;
-            order.SelectedFramework.LocalFundingOnly = localFundingOnly;
+            order.SelectedFramework.FundingTypes = fundingTypes;
 
             context.Frameworks.Add(selectedFramework);
             context.Orders.Add(order);
@@ -63,24 +65,27 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(true)]
-        [InMemoryDbInlineAutoData(false)]
+        [InMemoryDbInlineAutoData(FundingType.LocalFunding, FundingType.Gpit)]
+        [InMemoryDbInlineAutoData(FundingType.Gpit, FundingType.LocalFunding)]
         public static async Task UpdateFundingSourceAndSetSelectedFrameworkForOrder_GPPractice_LocalFrameworkOnlyChanged_UpdatesSelectedFramework(
-            bool localFundingOnly,
+            FundingType fundingType,
+            FundingType orderFundingType,
             Order order,
             OrderItem orderItem,
             EntityFramework.Catalogue.Models.Framework selectedFramework,
             [Frozen] BuyingCatalogueDbContext context,
             OrderFrameworkService service)
         {
-            selectedFramework.LocalFundingOnly = localFundingOnly;
+            var fundingTypes = new List<FundingType> { fundingType };
+
+            selectedFramework.FundingTypes = fundingTypes;
 
             orderItem.OrderItemFunding.OrderItemFundingType = OrderItemFundingType.LocalFundingOnly;
 
             order.OrderItems.Clear();
             order.OrderItems.Add(orderItem);
             order.OrderingParty.OrganisationType = OrganisationType.GP;
-            order.SelectedFramework.LocalFundingOnly = !localFundingOnly;
+            order.SelectedFramework.FundingTypes = new List<FundingType> { orderFundingType };
 
             context.Frameworks.Add(selectedFramework);
             context.Orders.Add(order);
@@ -96,24 +101,27 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(true)]
-        [InMemoryDbInlineAutoData(false)]
+        [InMemoryDbInlineAutoData(FundingType.LocalFunding, FundingType.Gpit)]
+        [InMemoryDbInlineAutoData(FundingType.Gpit, FundingType.LocalFunding)]
         public static async Task UpdateFundingSourceAndSetSelectedFrameworkForOrder_NotGP_LocalFrameworkOnlyChanged_OrderItemFundingNull(
-            bool localFundingOnly,
+            FundingType fundingType,
+            FundingType orderFundingType,
             Order order,
             OrderItem orderItem,
             EntityFramework.Catalogue.Models.Framework selectedFramework,
             [Frozen] BuyingCatalogueDbContext context,
             OrderFrameworkService service)
         {
-            selectedFramework.LocalFundingOnly = localFundingOnly;
+            var fundingTypes = new List<FundingType> { fundingType };
+
+            selectedFramework.FundingTypes = fundingTypes;
 
             orderItem.OrderItemFunding.OrderItemFundingType = OrderItemFundingType.LocalFundingOnly;
 
             order.OrderItems.Clear();
             order.OrderItems.Add(orderItem);
             order.OrderingParty.OrganisationType = OrganisationType.IB;
-            order.SelectedFramework.LocalFundingOnly = !localFundingOnly;
+            order.SelectedFramework.FundingTypes = new List<FundingType> { orderFundingType };
 
             context.Frameworks.Add(selectedFramework);
             context.Orders.Add(order);

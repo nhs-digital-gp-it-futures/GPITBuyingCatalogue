@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -39,7 +40,7 @@ public class FrameworksController : Controller
         if (!ModelState.IsValid)
             return View(model);
 
-        await frameworkService.AddFramework(model.Name, model.IsLocalFundingOnly.GetValueOrDefault());
+        await frameworkService.AddFramework(model.Name, model.FundingTypes.Where(x => x.Selected).Select(x => x.Value));
 
         return RedirectToAction(nameof(Dashboard));
     }

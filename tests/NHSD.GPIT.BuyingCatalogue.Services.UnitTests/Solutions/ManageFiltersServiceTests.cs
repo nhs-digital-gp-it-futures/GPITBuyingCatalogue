@@ -972,6 +972,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             [Frozen] BuyingCatalogueDbContext context,
             ManageFiltersService service)
         {
+            filter.IsDeleted = false;
             filter.Framework = null;
             filter.FrameworkId = framework.Id;
             filter.Capabilities.ForEach(c => c.Status = CapabilityStatus.Effective);
@@ -1013,6 +1014,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             [Frozen] BuyingCatalogueDbContext context,
             ManageFiltersService service)
         {
+            filter.IsDeleted = false;
             filter.Framework = null;
             filter.FrameworkId = framework.Id;
             filter.Capabilities.ForEach(c => c.Status = CapabilityStatus.Effective);
@@ -1036,12 +1038,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task GetFilterDetails_With_Expired_Capabilties_Is_Invalid(
+        public static async Task GetFilterDetails_With_Expired_Capabilities_Is_Invalid(
             EntityFramework.Catalogue.Models.Framework framework,
             Filter filter,
             [Frozen] BuyingCatalogueDbContext context,
             ManageFiltersService service)
         {
+            filter.IsDeleted = false;
             filter.Framework = null;
             filter.FrameworkId = framework.Id;
             filter.Capabilities.ForEach(c => c.Status = CapabilityStatus.Expired);
@@ -1066,6 +1069,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             [Frozen] BuyingCatalogueDbContext context,
             ManageFiltersService service)
         {
+            filter.IsDeleted = false;
             filter.Framework = null;
             filter.FrameworkId = framework.Id;
             filter.Capabilities.ForEach(c => c.Status = CapabilityStatus.Effective);
@@ -1090,6 +1094,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             [Frozen] BuyingCatalogueDbContext context,
             ManageFiltersService service)
         {
+            filter.IsDeleted = false;
             filter.Framework = null;
             filter.FrameworkId = framework.Id;
             filter.Capabilities.ForEach(c => c.Status = CapabilityStatus.Effective);
@@ -1126,6 +1131,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             ManageFiltersService service)
         {
             var epic = filter.Capabilities.First().Epics.First();
+            filter.IsDeleted = false;
             filter.FilterCapabilityEpics.Clear();
             filter.Capabilities.ForEach(c => filter.FilterCapabilityEpics.Add(new FilterCapabilityEpic()
             {

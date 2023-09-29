@@ -188,7 +188,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.FundingSourc
         public async Task<IActionResult> FundingSource(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, Models.FundingSources.FundingSource model)
         {
             if (!ModelState.IsValid)
+            {
+                var orderWrapper = await orderService.GetOrderWithOrderItemsForFunding(callOffId, internalOrgId);
+                model.SetFundingTypes(orderWrapper.Order.SelectedFramework.FundingTypes);
                 return View(model);
+            }
 
             await orderItemService.UpdateOrderItemFunding(callOffId, internalOrgId, catalogueItemId, model.SelectedFundingType);
 

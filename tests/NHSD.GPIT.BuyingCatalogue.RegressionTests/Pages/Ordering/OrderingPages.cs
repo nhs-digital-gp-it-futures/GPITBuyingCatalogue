@@ -724,7 +724,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 return false;
             }
 
-            return frameworks.First().LocalFundingOnly;
+            return frameworks.First().HasSingleFundingType;
         }
 
         private bool HasAdditionalService(string solutionName)

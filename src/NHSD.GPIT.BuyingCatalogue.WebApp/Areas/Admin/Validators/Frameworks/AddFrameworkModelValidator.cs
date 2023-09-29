@@ -1,6 +1,8 @@
-﻿using FluentValidation;
+﻿using System.Linq;
+using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.FrameworkModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Frameworks;
 
@@ -13,9 +15,10 @@ public sealed class AddFrameworkModelValidator : AbstractValidator<AddFrameworkM
     public AddFrameworkModelValidator(
         IFrameworkService frameworkService)
     {
-        RuleFor(x => x.IsLocalFundingOnly)
-            .NotNull()
-            .WithMessage(FundingTypeError);
+        RuleFor(x => x.FundingTypes)
+            .Must(x => x.Any(y => y.Selected))
+            .WithMessage(FundingTypeError)
+            .OverridePropertyName($"{nameof(AddFrameworkModel.FundingTypes)}[0].Selected");
 
         RuleFor(x => x.Name)
             .NotEmpty()
