@@ -110,14 +110,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         [Theory]
         [InMemoryDbAutoData]
         public static async Task GetAllSuppliersFromBuyingCatalogue_ExpiredFramework_ReturnsExpected(
-            [Frozen] BuyingCatalogueDbContext context,
             List<Solution> solutions,
             List<Supplier> suppliers,
+            [Frozen] BuyingCatalogueDbContext context,
             SupplierService service)
         {
+            solutions.Take(1).ToList().ForEach(x => x.FrameworkSolutions.ToList().ForEach(y => y.Framework.IsExpired = true));
             solutions.Skip(1).ToList().ForEach(x => x.FrameworkSolutions.ToList().ForEach(y => y.Framework.IsExpired = false));
-            solutions.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution);
-            solutions.ForEach(x => x.CatalogueItem.PublishedStatus = PublicationStatus.Published);
+            solutions.ForEach(
+                x =>
+                {
+                    x.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+                    x.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+                    x.CatalogueItem.Supplier = null;
+                    x.AdditionalServices = new List<AdditionalService>();
+                });
+
             context.Solutions.AddRange(solutions);
 
             for (var i = 0; i < suppliers.Count; i++)
@@ -129,10 +137,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             context.Suppliers.AddRange(suppliers);
 
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
 
             var result = await service.GetAllSuppliersFromBuyingCatalogue();
 
-            result.Should().BeEquivalentTo(suppliers.Skip(1));
+            result.Should()
+                .BeEquivalentTo(
+                    suppliers.Skip(1),
+                    opt => opt.Excluding(m => m.CatalogueItems).Excluding(m => m.SupplierContacts));
         }
 
         [Theory]
@@ -230,6 +242,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             List<Supplier> suppliers,
             SupplierService service)
         {
+            solutions.Take(1).ToList().ForEach(x => x.FrameworkSolutions.ToList().ForEach(y => y.Framework.IsExpired = true));
             solutions.Skip(1).ToList().ForEach(x => x.FrameworkSolutions.ToList().ForEach(y => y.Framework.IsExpired = false));
             solutions.ForEach(s => s.CatalogueItem.SupplierServiceAssociations = new List<SupplierServiceAssociation>());
 

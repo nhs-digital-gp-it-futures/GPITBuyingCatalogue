@@ -14,6 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.Services.Orders;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -250,8 +251,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
-        public static async Task DetectChangesInFundingAndDelete_LocalFundingOnly_FrameworkLocalFundingOnly_OrderItemFundingUnchanged(
+        [InMemoryDbInlineAutoData(FundingType.LocalFunding)]
+        [InMemoryDbInlineAutoData(FundingType.Gpit)]
+        [InMemoryDbInlineAutoData(FundingType.Pcarp)]
+        public static async Task DetectChangesInFundingAndDelete_SingleFundingType_FrameworkSingleFundingType_OrderItemFundingUnchanged(
+            FundingType fundingType,
             Order order,
             OrderItemFunding funding,
             [Frozen] BuyingCatalogueDbContext context,
@@ -259,11 +263,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             OrderItemService orderItemService)
         {
             var item = order.OrderItems.First();
-            funding.OrderItemFundingType = OrderItemFundingType.LocalFundingOnly;
+            funding.OrderItemFundingType = fundingType.AsOrderItemFundingType();
             item.OrderItemFunding = funding;
 
             order.OrderingParty.OrganisationType = OrganisationType.IB;
-            order.SelectedFramework.LocalFundingOnly = true;
+            order.SelectedFramework.FundingTypes = new List<FundingType> { fundingType };
 
             context.Orders.Add(order);
 
@@ -280,12 +284,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 .Include(i => i.OrderItemFunding)
                 .FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
 
-            actual!.OrderItemFunding.OrderItemFundingType.Should().Be(OrderItemFundingType.LocalFundingOnly);
+            actual!.OrderItemFunding.OrderItemFundingType.Should().Be(fundingType.AsOrderItemFundingType());
         }
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task DetectChangesInFundingAndDelete_LocalFundingOnly_GPPRactice_OrderItemFundingUnchanged(
+        public static async Task DetectChangesInFundingAndDelete_GPPRactice_OrderItemFundingUnchanged(
             Order order,
             OrderItemFunding funding,
             [Frozen] BuyingCatalogueDbContext context,
@@ -297,7 +301,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             item.OrderItemFunding = funding;
 
             order.OrderingParty.OrganisationType = OrganisationType.GP;
-            order.SelectedFramework.LocalFundingOnly = false;
+            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.Gpit };
 
             context.Orders.Add(order);
 
@@ -319,11 +323,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [InMemoryDbInlineAutoData(OrderItemFundingType.CentralFunding)]
-        [InMemoryDbInlineAutoData(OrderItemFundingType.LocalFunding)]
+        [InMemoryDbInlineAutoData(OrderItemFundingType.Gpit)]
+        [InMemoryDbInlineAutoData(OrderItemFundingType.Pcarp)]
         [InMemoryDbInlineAutoData(OrderItemFundingType.MixedFunding)]
         [InMemoryDbInlineAutoData(OrderItemFundingType.NoFundingRequired)]
         [InMemoryDbInlineAutoData(OrderItemFundingType.None)]
-        public static async Task DetectChangesInFundingAndDelete_FundingTypeChanged_FrameworkLocalFundingOnly_OrderItemFundingNull(
+        public static async Task DetectChangesInFundingAndDelete_FundingTypeChanged_SingleFundingTypeFramework_OrderItemFundingNull(
             OrderItemFundingType fundingType,
             Order order,
             OrderItemFunding funding,
@@ -335,7 +340,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             funding.OrderItemFundingType = fundingType;
             item.OrderItemFunding = funding;
             order.OrderingParty.OrganisationType = OrganisationType.IB;
-            order.SelectedFramework.LocalFundingOnly = true;
+            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.LocalFunding };
+
             context.Orders.Add(order);
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
@@ -357,7 +363,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         [InMemoryDbInlineAutoData(OrderItemFundingType.MixedFunding)]
         [InMemoryDbInlineAutoData(OrderItemFundingType.NoFundingRequired)]
         [InMemoryDbInlineAutoData(OrderItemFundingType.None)]
-        public static async Task DetectChangesInFundingAndDelete_FundingTypeChanged_GPPRactice_OrderItemFundingNull(
+        public static async Task DetectChangesInFundingAndDelete_FundingTypeChanged_GPPractice_OrderItemFundingNull(
             OrderItemFundingType fundingType,
             Order order,
             OrderItemFunding funding,
@@ -370,7 +376,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             item.OrderItemFunding = funding;
 
             order.OrderingParty.OrganisationType = OrganisationType.GP;
-            order.SelectedFramework.LocalFundingOnly = false;
+            order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.Pcarp };
 
             context.Orders.Add(order);
 

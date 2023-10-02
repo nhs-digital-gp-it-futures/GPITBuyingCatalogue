@@ -71,6 +71,72 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.FundingTypes
         }
 
         [Theory]
+        [CommonAutoData]
+        public static void GetFundingType_GPIT_AllOrderItemsGPIT_ReturnsGPIT(
+            FundingTypeService service)
+        {
+            var fundingTypes = new List<OrderItemFundingType>
+            {
+                OrderItemFundingType.Gpit,
+            };
+
+            var result = service.GetFundingType(fundingTypes, OrderItemFundingType.Gpit);
+
+            result.Should().Be(OrderItemFundingType.Gpit);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void GetFundingType_GPIT_ReturnsGPIT(
+            FundingTypeService service)
+        {
+            var fundingTypes = new List<OrderItemFundingType>
+            {
+                OrderItemFundingType.Gpit,
+                OrderItemFundingType.LocalFunding,
+                OrderItemFundingType.None,
+                OrderItemFundingType.Pcarp,
+            };
+
+            var result = service.GetFundingType(fundingTypes, OrderItemFundingType.Gpit);
+
+            result.Should().Be(OrderItemFundingType.Gpit);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void GetFundingType_PCARP_AllOrderItemsPCARP_ReturnsPCARP(
+            FundingTypeService service)
+        {
+            var fundingTypes = new List<OrderItemFundingType>
+            {
+                OrderItemFundingType.Pcarp,
+            };
+
+            var result = service.GetFundingType(fundingTypes, OrderItemFundingType.Pcarp);
+
+            result.Should().Be(OrderItemFundingType.Pcarp);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void GetFundingType_PCARP_ReturnsPCARP(
+            FundingTypeService service)
+        {
+            var fundingTypes = new List<OrderItemFundingType>
+            {
+                OrderItemFundingType.Gpit,
+                OrderItemFundingType.LocalFunding,
+                OrderItemFundingType.None,
+                OrderItemFundingType.Pcarp,
+            };
+
+            var result = service.GetFundingType(fundingTypes, OrderItemFundingType.Pcarp);
+
+            result.Should().Be(OrderItemFundingType.Pcarp);
+        }
+
+        [Theory]
         [CommonInlineAutoData(OrderItemFundingType.CentralFunding)]
         [CommonInlineAutoData(OrderItemFundingType.MixedFunding)]
         public static void GetFundingType_MixtureOfCentralAndMixedOrderItems_ReturnsCentral(
@@ -131,8 +197,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.FundingTypes
         [Theory]
         [CommonInlineAutoData(OrderItemFundingType.LocalFunding)]
         [CommonInlineAutoData(OrderItemFundingType.LocalFundingOnly)]
-        [CommonInlineAutoData(OrderItemFundingType.NoFundingRequired)]
-        [CommonInlineAutoData(OrderItemFundingType.None)]
         public static void GetFundingType_MixtureOfLocalAndNotFundedOrderItems_ReturnsLocal(
             OrderItemFundingType fundingType,
             FundingTypeService service)
@@ -178,7 +242,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.FundingTypes
         [Theory]
         [CommonInlineAutoData(OrderItemFundingType.NoFundingRequired)]
         [CommonInlineAutoData(OrderItemFundingType.None)]
-        public static void GetFundingType_OrderItemsDoNotRequireFunding_ReturnsLocal(
+        public static void GetFundingType_NoFundingRequiredOnly_ReturnsNone(
             OrderItemFundingType fundingType,
             FundingTypeService service)
         {
@@ -190,7 +254,27 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.FundingTypes
 
             var result = service.GetFundingType(fundingTypes, fundingType);
 
-            result.Should().Be(OrderItemFundingType.CentralFunding);
+            result.Should().Be(OrderItemFundingType.None);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(OrderItemFundingType.NoFundingRequired)]
+        [CommonInlineAutoData(OrderItemFundingType.None)]
+        public static void GetFundingType_MixtureOfNewAndExistingFundingTypes_NoFunding_ReturnsNone(
+            OrderItemFundingType fundingType,
+            FundingTypeService service)
+        {
+            var fundingTypes = new List<OrderItemFundingType>
+            {
+                OrderItemFundingType.Pcarp,
+                OrderItemFundingType.Gpit,
+                OrderItemFundingType.NoFundingRequired,
+                OrderItemFundingType.None,
+            };
+
+            var result = service.GetFundingType(fundingTypes, fundingType);
+
+            result.Should().Be(OrderItemFundingType.None);
         }
 
         [Theory]

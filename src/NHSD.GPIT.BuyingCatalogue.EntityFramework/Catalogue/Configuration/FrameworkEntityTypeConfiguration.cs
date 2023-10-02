@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
@@ -14,10 +15,17 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 
             builder.Property(f => f.Id).HasDefaultValue(Guid.NewGuid().ToString()).HasMaxLength(36);
 
-            builder.Property(f => f.ShortName).HasMaxLength(25);
+            builder.Property(f => f.ShortName).HasMaxLength(100);
             builder.Property(f => f.LastUpdated).HasDefaultValue(DateTime.UtcNow);
 
             builder.Property(f => f.IsExpired);
+
+            builder.Property(x => x.FundingTypes)
+                .HasConversion(
+                    v => string.Join(',', v.Select(x => x.ToString("D")).ToArray()),
+                    v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(Enum.Parse<FundingType>).ToArray());
+
+            builder.Ignore(x => x.HasSingleFundingType);
 
             builder.HasOne(f => f.LastUpdatedByUser)
                 .WithMany()

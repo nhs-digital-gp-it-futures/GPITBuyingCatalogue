@@ -33,6 +33,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
                 return $"This {itemType} is being paid for using central funding.";
             }
 
+            if (FundingTypes.Contains(OrderItemFundingType.Gpit))
+            {
+                return $"This {itemType} is being paid for using GPIT funding.";
+            }
+
+            if (FundingTypes.Contains(OrderItemFundingType.Pcarp))
+            {
+                return $"This {itemType} is being paid for using PCARP funding.";
+            }
+
             if (FundingTypes.Contains(OrderItemFundingType.NoFundingRequired))
             {
                 return $"This {itemType} does not require funding.";
