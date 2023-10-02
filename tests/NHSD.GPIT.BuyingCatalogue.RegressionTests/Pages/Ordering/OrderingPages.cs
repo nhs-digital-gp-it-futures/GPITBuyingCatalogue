@@ -325,8 +325,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 {
                     foreach (var associatedService in newAssociatedServices)
                     {
-                        //SelectEditAssociatedServiceRecipientOnly.AddServiceRecipient(multipleServiceRecipients);
-                        //ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
                         SelectEditAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
                         Quantity.AddQuantity();
                     }
@@ -493,8 +491,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
             foreach (var associatedService in newAssociatedServices)
             {
-                //SelectEditAssociatedServiceRecipientOnly.AddServiceRecipient(multipleServiceRecipients);
-                //ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
                 SelectEditAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
                 Quantity.AddQuantity();
             }
