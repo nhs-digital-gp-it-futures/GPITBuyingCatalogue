@@ -39,7 +39,7 @@ public static class AddFrameworkModelValidatorTests
 
         var result = validator.TestValidate(model);
 
-        result.ShouldHaveValidationErrorFor(x => x.Name)
+        result.ShouldHaveValidationErrorFor(x => x)
             .WithErrorMessage(AddFrameworkModelValidator.NameMissingError);
     }
 
@@ -51,12 +51,12 @@ public static class AddFrameworkModelValidatorTests
         AddFrameworkModelValidator validator)
     {
         frameworkService
-            .Setup(x => x.FrameworkNameExists(It.IsAny<string>()))
+            .Setup(x => x.FrameworkNameExistsExcludeSelf(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(true);
 
         var result = validator.TestValidate(model);
 
-        result.ShouldHaveValidationErrorFor(x => x.Name)
+        result.ShouldHaveValidationErrorFor(x => x)
             .WithErrorMessage(AddFrameworkModelValidator.NameDuplicationError);
     }
 

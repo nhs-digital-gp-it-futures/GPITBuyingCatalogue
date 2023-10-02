@@ -21,7 +21,7 @@ public sealed class AddFrameworkModelValidator : AbstractValidator<AddFrameworkM
             .OverridePropertyName($"{nameof(AddFrameworkModel.FundingTypes)}[0].Selected");
 
         RuleFor(x => x)
-            .NotEmpty()
+            .Must(x => x.Name is not null && x.Name.Length > 0)
             .WithMessage(NameMissingError)
             .Must(x => !frameworkService.FrameworkNameExistsExcludeSelf(x.Name, x.FrameworkId).GetAwaiter().GetResult())
             .WithMessage(NameDuplicationError);
