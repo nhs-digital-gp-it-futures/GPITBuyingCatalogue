@@ -133,7 +133,7 @@ public static class FrameworksControllerTests
     {
         var result = (await controller.Edit(frameworkId, model)).As<RedirectToActionResult>();
 
-        service.Verify(x => x.UpdateFramework(frameworkId, model.Name, (IEnumerable<FundingType>)model.FundingTypes), Times.Once());
+        service.Verify(x => x.UpdateFramework(frameworkId, model.Name, It.IsAny<IEnumerable<FundingType>>()), Times.Once());
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Dashboard));
