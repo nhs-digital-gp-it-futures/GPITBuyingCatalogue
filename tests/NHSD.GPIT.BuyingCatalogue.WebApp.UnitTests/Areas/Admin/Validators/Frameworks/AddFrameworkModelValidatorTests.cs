@@ -39,7 +39,7 @@ public static class AddFrameworkModelValidatorTests
 
         var result = validator.TestValidate(model);
 
-        result.ShouldHaveValidationErrorFor(x => x)
+        result.ShouldHaveValidationErrorFor(x => x.Name)
             .WithErrorMessage(AddFrameworkModelValidator.NameMissingError);
     }
 
@@ -56,7 +56,7 @@ public static class AddFrameworkModelValidatorTests
 
         var result = validator.TestValidate(model);
 
-        result.ShouldHaveValidationErrorFor(x => x)
+        result.ShouldHaveValidationErrorFor(x => x.Name)
             .WithErrorMessage(AddFrameworkModelValidator.NameDuplicationError);
     }
 
