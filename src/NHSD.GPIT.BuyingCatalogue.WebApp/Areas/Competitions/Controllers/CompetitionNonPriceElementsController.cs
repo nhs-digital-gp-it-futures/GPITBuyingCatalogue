@@ -370,13 +370,14 @@ public class CompetitionNonPriceElementsController : Controller
     [HttpGet("weights")]
     public async Task<IActionResult> Weights(
         string internalOrgId,
-        int competitionId)
+        int competitionId,
+        string returnUrl = null)
     {
         var competition = await competitionsService.GetCompetitionWithNonPriceElements(internalOrgId, competitionId);
 
         var model = new NonPriceElementWeightsModel(competition)
         {
-            BackLink = Url.Action(
+            BackLink = returnUrl ?? Url.Action(
                 nameof(CompetitionTaskListController.Index),
                 typeof(CompetitionTaskListController).ControllerName(),
                 new { internalOrgId, competitionId }),
@@ -389,7 +390,8 @@ public class CompetitionNonPriceElementsController : Controller
     public async Task<IActionResult> Weights(
         string internalOrgId,
         int competitionId,
-        NonPriceElementWeightsModel model)
+        NonPriceElementWeightsModel model,
+        string returnUrl = null)
     {
         if (!ModelState.IsValid)
             return View(model);
@@ -402,10 +404,12 @@ public class CompetitionNonPriceElementsController : Controller
             model.ServiceLevel,
             model.Features);
 
-        return RedirectToAction(
-            nameof(CompetitionTaskListController.Index),
-            typeof(CompetitionTaskListController).ControllerName(),
-            new { internalOrgId, competitionId });
+        return !string.IsNullOrWhiteSpace(returnUrl)
+            ? Redirect(returnUrl)
+            : RedirectToAction(
+                nameof(CompetitionTaskListController.Index),
+                typeof(CompetitionTaskListController).ControllerName(),
+                new { internalOrgId, competitionId });
     }
 
     [HttpGet("delete/{nonPriceElement}")]

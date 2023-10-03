@@ -6,7 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.NonPriceElementModels.FeaturesModels;
 
-public class FeaturesRequirementsPartialModel : NavBaseModel
+public class FeaturesRequirementsPartialModel
 {
     public FeaturesRequirementsPartialModel()
     {
@@ -27,6 +27,10 @@ public class FeaturesRequirementsPartialModel : NavBaseModel
     public string InternalOrgId { get; set; }
 
     public int CompetitionId { get; set; }
+
+    public string ReturnUrl { get; set; }
+
+    public string SelectedNonPriceElements { get; set; }
 
     public List<FeaturesCriteria> MustRequirements { get; set; }
 

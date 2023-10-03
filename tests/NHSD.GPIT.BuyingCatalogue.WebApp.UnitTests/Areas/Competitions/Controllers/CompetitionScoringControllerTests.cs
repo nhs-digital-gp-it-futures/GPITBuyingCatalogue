@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -213,7 +214,7 @@ public static class CompetitionScoringControllerTests
     {
         competitionSolutions.ForEach(x => x.Solution = solution);
         competition.CompetitionSolutions = competitionSolutions;
-        competition.NonPriceElements = new() { ServiceLevel = new() };
+        competition.NonPriceElements = new() { ServiceLevel = new() { ApplicableDays = Enum.GetValues<Iso8601DayOfWeek>() } };
 
         competitionsService.Setup(x => x.GetCompetitionWithSolutions(internalOrgId, competition.Id))
             .ReturnsAsync(competition);

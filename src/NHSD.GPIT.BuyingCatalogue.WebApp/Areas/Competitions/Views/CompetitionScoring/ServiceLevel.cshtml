@@ -22,7 +22,14 @@
 
             <nhs-summary-list>
                 <nhs-summary-list-row label-text="Times">@($"{Model.From:HH:mm} to {Model.Until:HH:mm}")</nhs-summary-list-row>
-                <nhs-summary-list-row label-text="Days">@Model.ApplicableDays</nhs-summary-list-row>
+                <nhs-summary-list-row label-text="Days">
+                    <ul>
+                        @foreach (var day in Model.ApplicableDays)
+                        {
+                            <li>@day.ToString()</li>
+                        }
+                    </ul>
+                </nhs-summary-list-row>
             </nhs-summary-list>
         </nhs-card>
     </div>
@@ -33,9 +40,13 @@
         <form method="post">
             <input type="hidden" asp-for="CompetitionName"/>
             <input type="hidden" asp-for="BackLink"/>
-            <input type="hidden" asp-for="ApplicableDays"/>
             <input type="hidden" asp-for="From"/>
             <input type="hidden" asp-for="Until"/>
+            @for (var i = 0; i < Model.ApplicableDays.Count; i++)
+            {
+                <input type="hidden" asp-for="@Model.ApplicableDays[i]" />
+            }
+
             @for (var i = 0; i < Model.SolutionScores.Count; i++)
             {
                 var solutionScoreModel = Model.SolutionScores[i];

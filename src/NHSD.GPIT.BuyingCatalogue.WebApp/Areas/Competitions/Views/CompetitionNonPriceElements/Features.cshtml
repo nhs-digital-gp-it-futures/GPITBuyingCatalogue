@@ -15,7 +15,7 @@
 
         <vc:nhs-action-link text="Add another requirement" url="@Url.Action(nameof(CompetitionNonPriceElementsController.FeatureRequirement), typeof(CompetitionNonPriceElementsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, selectedNonPriceElements = Model.SelectedNonPriceElements })"/>
 
-        <partial name="Partials/_FeaturesRequirements" model="@(new FeaturesRequirementsPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.Features))" />
+        <partial name="Partials/_FeaturesRequirements" model="@(new FeaturesRequirementsPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.Features) { SelectedNonPriceElements = Model.SelectedNonPriceElements})" />
 
         <form method="post">
             <nhs-submit-button text="Continue"/>

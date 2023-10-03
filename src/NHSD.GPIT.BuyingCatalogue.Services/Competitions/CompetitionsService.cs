@@ -33,6 +33,7 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.NonPriceElements.Implementation)
             .Include(x => x.NonPriceElements.Interoperability)
             .Include(x => x.NonPriceElements.ServiceLevel)
+            .Include(x => x.NonPriceElements.Features)
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
     public async Task<IEnumerable<Competition>> GetCompetitionsDashboard(string internalOrgId)
@@ -51,6 +52,7 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.NonPriceElements.Implementation)
             .Include(x => x.NonPriceElements.Interoperability)
             .Include(x => x.NonPriceElements.ServiceLevel)
+            .Include(x => x.NonPriceElements.Features)
             .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Scores)
             .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Price).ThenInclude(x => x.Tiers)
             .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Quantities)
@@ -447,6 +449,7 @@ public class CompetitionsService : ICompetitionsService
                 .Include(x => x.NonPriceElements.Interoperability)
                 .Include(x => x.NonPriceElements.Implementation)
                 .Include(x => x.NonPriceElements.ServiceLevel)
+                .Include(x => x.NonPriceElements.Features)
                 .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Scores)
                 .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Quantities)
                 .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Price).ThenInclude(x => x.Tiers)
@@ -596,6 +599,7 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.NonPriceElements.Implementation)
             .Include(x => x.NonPriceElements.Interoperability)
             .Include(x => x.NonPriceElements.ServiceLevel)
+            .Include(x => x.NonPriceElements.Features)
             .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Scores)
             .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Price)
             .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Quantities)

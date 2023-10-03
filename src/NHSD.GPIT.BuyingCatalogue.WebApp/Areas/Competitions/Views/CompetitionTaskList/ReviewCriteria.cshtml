@@ -6,6 +6,7 @@
     var editRouteValues = new { internalOrgId = Model.InternalOrgId, competitionId = Model.CompetitionId, returnUrl = Url.ActionLink() };
 
     var editPriceWeightings = Url.Action(nameof(CompetitionTaskListController.Weightings), typeof(CompetitionTaskListController).ControllerName(), editRouteValues);
+    var editNonPriceElementWeightings = Url.Action(nameof(CompetitionNonPriceElementsController.Weights), typeof(CompetitionNonPriceElementsController).ControllerName(), editRouteValues);
 }
 
 <partial name="Partials/_BackLink" model="Model"/>
@@ -16,11 +17,22 @@
                         caption="@Model.CompetitionName"
                         advice="Review the weightings you’ve applied to your competition and the details of any non-price elements you’ve added."/>
 
-        <h2 class="nhsuk-heading-m">Weightings</h2>
-        <nhs-summary-list>
-            <nhs-summary-list-row label-text="Price" action="@("Edit", editPriceWeightings)">@Model.CompetitionWeights.Price%</nhs-summary-list-row>
-            <nhs-summary-list-row label-text="Non-price" action="@("Edit", editPriceWeightings)">@Model.CompetitionWeights.NonPrice%</nhs-summary-list-row>
-        </nhs-summary-list>
+        <nhs-card>
+            <h2 class="nhsuk-heading-m">Weightings</h2>
+            <h3 class="nhsuk-heading-s">Award criteria weighting</h3>
+            <nhs-summary-list>
+                <nhs-summary-list-row label-text="Price" action="@("Edit", editPriceWeightings)">@Model.CompetitionWeights.Price%</nhs-summary-list-row>
+                <nhs-summary-list-row label-text="Non-price" action="@("Edit", editPriceWeightings)">@Model.CompetitionWeights.NonPrice%</nhs-summary-list-row>
+            </nhs-summary-list>
+
+            <h3 class="nhsuk-heading-s">Non-price weighting</h3>
+            <nhs-summary-list>
+                @foreach (var nonPriceWeighting in Model.NonPriceWeights)
+                {
+                    <nhs-summary-list-row label-text="@nonPriceWeighting.Key.ToString()" action="@("Edit", editNonPriceElementWeightings)">@nonPriceWeighting.Value%</nhs-summary-list-row>
+                }
+            </nhs-summary-list>
+        </nhs-card>
 
         <partial name="Partials/_NonPriceElements" model="@(new NonPriceElementsPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.NonPriceElements, editRouteValues))"/>
         <br/>
