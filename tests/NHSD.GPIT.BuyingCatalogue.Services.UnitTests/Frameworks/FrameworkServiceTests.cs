@@ -230,6 +230,29 @@ public static class FrameworkServiceTests
 
     [Theory]
     [InMemoryDbAutoData]
+    public static async Task EditFramework_Valid_UpdatesFramework(
+        FrameworkService service,
+        List<EntityFramework.Catalogue.Models.Framework> frameworks,
+        [Frozen] BuyingCatalogueDbContext dbContext,
+        List<FundingType> fundingTypes)
+    {
+        var frameworkId = frameworks.First().Id;
+        string newName = "New Name";
+
+        dbContext.Frameworks.RemoveRange(dbContext.Frameworks);
+        dbContext.Frameworks.AddRange(frameworks);
+        await dbContext.SaveChangesAsync();
+
+        await service.UpdateFramework(frameworkId, newName, fundingTypes);
+
+        dbContext.Frameworks.AsNoTracking()
+            .FirstOrDefault(x => x.Id == frameworkId && x.Name == newName && x.FundingTypes == fundingTypes)
+            .Should()
+            .NotBeNull();
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
     public static async Task MarkAsExpired_InvalidFramework_DoesNothing(
         string frameworkId,
         List<EntityFramework.Catalogue.Models.Framework> frameworks,
