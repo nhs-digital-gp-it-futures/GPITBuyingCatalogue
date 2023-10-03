@@ -57,7 +57,7 @@ public class FrameworksController : Controller
         {
             BackLink = Url.Action(nameof(Dashboard)),
             FrameworkId = frameworkId,
-            Name = framework.Name,
+            Name = framework.ShortName,
         };
 
         foreach (FundingType i in framework.FundingTypes)

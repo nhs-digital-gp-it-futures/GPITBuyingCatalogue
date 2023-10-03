@@ -92,6 +92,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
             await dbContext.Frameworks.AsNoTracking().AnyAsync(x => x.ShortName == frameworkName);
 
         public async Task<bool> FrameworkNameExistsExcludeSelf(string frameworkName, string frameworkId) =>
-            await dbContext.Frameworks.AsNoTracking().AnyAsync(x => x.Name == frameworkName && x.Id != frameworkId);
+            await dbContext.Frameworks.AsNoTracking().AnyAsync(x => x.ShortName == frameworkName && x.Id != frameworkId);
     }
 }
