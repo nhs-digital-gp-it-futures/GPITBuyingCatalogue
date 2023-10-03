@@ -20,10 +20,10 @@ public sealed class AddFrameworkModelValidator : AbstractValidator<AddFrameworkM
             .WithMessage(FundingTypeError)
             .OverridePropertyName($"{nameof(AddFrameworkModel.FundingTypes)}[0].Selected");
 
-        RuleFor(x => x)
-            .Must(x => x.Name is not null && x.Name.Length > 0)
+        RuleFor(x => x.Name)
+            .NotEmpty()
             .WithMessage(NameMissingError)
-            .Must(x => !frameworkService.FrameworkNameExistsExcludeSelf(x.Name, x.FrameworkId).GetAwaiter().GetResult())
+            .Must((model, name) => !frameworkService.FrameworkNameExistsExcludeSelf(name, model.FrameworkId).GetAwaiter().GetResult())
             .WithMessage(NameDuplicationError);
     }
 }

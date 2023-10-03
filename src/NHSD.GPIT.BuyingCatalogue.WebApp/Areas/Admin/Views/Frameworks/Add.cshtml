@@ -22,6 +22,7 @@
 
             <nhs-fieldset-form-label asp-for="@Model"
                                      label-text="What type of funding can be used"
+                                     label-hint="Select all funding types that apply."
                                      size="Small">
                 <nhs-checkbox-container>
                     @for (var i = 0; i < Model.FundingTypes.Count; i++)

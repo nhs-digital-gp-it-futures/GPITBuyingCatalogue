@@ -215,6 +215,21 @@ public static class FrameworkServiceTests
 
     [Theory]
     [InMemoryDbAutoData]
+    public static async Task<Task<ArgumentException>> EditFramework_NullName_ThrowsException(
+        FrameworkService service,
+        List<EntityFramework.Catalogue.Models.Framework> frameworks,
+        [Frozen] BuyingCatalogueDbContext dbContext)
+    {
+        string id = frameworks.FirstOrDefault().Id;
+        dbContext.Frameworks.RemoveRange(dbContext.Frameworks);
+        dbContext.Frameworks.AddRange(frameworks);
+        await dbContext.SaveChangesAsync();
+
+        return Assert.ThrowsAsync<ArgumentException>(() => service.UpdateFramework(id, null, Enumerable.Empty<FundingType>()));
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
     public static async Task MarkAsExpired_InvalidFramework_DoesNothing(
         string frameworkId,
         List<EntityFramework.Catalogue.Models.Framework> frameworks,
