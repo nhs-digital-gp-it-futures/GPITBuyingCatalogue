@@ -78,7 +78,15 @@
                 @($"{Model.NonPriceElements.ServiceLevel.TimeFrom:HH:mm} to {Model.NonPriceElements.ServiceLevel.TimeUntil:HH:mm}")
             </nhs-summary-list-row>
             <nhs-summary-list-row label-text="Applicable days" action="@("Edit", serviceLevelUrl)">
-                @Model.NonPriceElements.ServiceLevel.ApplicableDays
+                <ul>
+                    @foreach (var day in Model.NonPriceElements.ServiceLevel.ApplicableDays)
+                    {
+                        <li>@day.ToString()</li>
+                    }
+                </ul>
+            </nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Including Bank Holidays?" action="@("Edit", serviceLevelUrl)">
+                @Model.NonPriceElements.ServiceLevel.IncludesBankHolidays.ToYesNo()
             </nhs-summary-list-row>
         </nhs-summary-list>
     </nhs-card>

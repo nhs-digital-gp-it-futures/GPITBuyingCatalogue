@@ -86,7 +86,8 @@ public interface ICompetitionsService
         int competitionId,
         DateTime timeFrom,
         DateTime timeUntil,
-        string applicableDays);
+        IEnumerable<Iso8601DayOfWeek> applicableDays,
+        bool includesBankHolidays);
 
     Task SetShortlistedSolutions(
         string internalOrgId,

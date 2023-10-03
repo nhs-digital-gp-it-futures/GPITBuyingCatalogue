@@ -219,7 +219,8 @@ public class CompetitionNonPriceElementsController : Controller
             competitionId,
             model.TimeFrom.GetValueOrDefault(),
             model.TimeUntil.GetValueOrDefault(),
-            model.ApplicableDays);
+            model.ApplicableDays.Where(x => x.Selected).Select(x => x.Value),
+            model.IncludesBankHolidays!.Value);
 
         return GetRedirect(internalOrgId, competitionId, returnUrl, selectedNonPriceElements);
     }

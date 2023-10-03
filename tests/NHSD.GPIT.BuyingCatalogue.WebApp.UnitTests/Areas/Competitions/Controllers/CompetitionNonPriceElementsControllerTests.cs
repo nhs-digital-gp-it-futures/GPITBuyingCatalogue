@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -360,7 +361,8 @@ public static class CompetitionNonPriceElementsControllerTests
                 competitionId,
                 model.TimeFrom.GetValueOrDefault(),
                 model.TimeUntil.GetValueOrDefault(),
-                model.ApplicableDays),
+                It.IsAny<IEnumerable<Iso8601DayOfWeek>>(),
+                model.IncludesBankHolidays!.Value),
             Times.Once());
 
         result.Should().NotBeNull();

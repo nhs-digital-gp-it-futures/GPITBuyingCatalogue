@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 
@@ -16,6 +18,12 @@ public sealed class ServiceLevelCriteriaEntityTypeConfiguration : IEntityTypeCon
 
         builder.Property(x => x.TimeUntil).IsRequired();
 
-        builder.Property(x => x.ApplicableDays).IsRequired().HasMaxLength(1000);
+        builder.Property(x => x.ApplicableDays)
+            .IsRequired()
+            .HasConversion(
+                v => string.Join(',', v.Select(x => x.ToString("D")).ToArray()),
+                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(Enum.Parse<Iso8601DayOfWeek>).ToArray());
+
+        builder.Property(x => x.IncludesBankHolidays).HasDefaultValue(false);
     }
 }

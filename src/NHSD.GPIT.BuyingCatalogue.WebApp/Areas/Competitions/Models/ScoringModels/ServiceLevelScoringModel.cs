@@ -32,7 +32,7 @@ public class ServiceLevelScoringModel : NavBaseModel
 
     public DateTime Until { get; set; }
 
-    public string ApplicableDays { get; set; }
+    public ICollection<Iso8601DayOfWeek> ApplicableDays { get; set; }
 
     public void WithSolutions(IEnumerable<CompetitionSolution> solutions, bool setScores = true)
     {

@@ -975,9 +975,10 @@ public static class CompetitionsServiceTests
     [Theory]
     [InMemoryDbAutoData]
     public static async Task SetServiceLevelCriteria_NullNonPriceElements_CreatesNonPriceElements(
-        string applicableDays,
+        List<Iso8601DayOfWeek> applicableDays,
         DateTime timeFrom,
         DateTime timeUntil,
+        bool includesBankHolidays,
         Organisation organisation,
         Competition competition,
         [Frozen] BuyingCatalogueDbContext context,
@@ -998,7 +999,8 @@ public static class CompetitionsServiceTests
             competition.Id,
             timeFrom,
             timeUntil,
-            applicableDays);
+            applicableDays,
+            includesBankHolidays);
 
         var updatedCompetition = await service.GetCompetitionWithNonPriceElements(
             organisation.InternalIdentifier,
@@ -1006,17 +1008,19 @@ public static class CompetitionsServiceTests
 
         updatedCompetition.NonPriceElements.Should().NotBeNull();
         updatedCompetition.NonPriceElements.ServiceLevel.Should().NotBeNull();
-        updatedCompetition.NonPriceElements.ServiceLevel.ApplicableDays.Should().Be(applicableDays);
+        updatedCompetition.NonPriceElements.ServiceLevel.ApplicableDays.Should().BeEquivalentTo(applicableDays);
         updatedCompetition.NonPriceElements.ServiceLevel.TimeFrom.Should().Be(timeFrom);
         updatedCompetition.NonPriceElements.ServiceLevel.TimeUntil.Should().Be(timeUntil);
+        updatedCompetition.NonPriceElements.ServiceLevel.IncludesBankHolidays.Should().Be(includesBankHolidays);
     }
 
     [Theory]
     [InMemoryDbAutoData]
     public static async Task SetServiceLevelCriteria_NullServiceLevelCriteria_CreatesServiceLevelCriteria(
-        string applicableDays,
+        List<Iso8601DayOfWeek> applicableDays,
         DateTime timeFrom,
         DateTime timeUntil,
+        bool includesBankHolidays,
         Organisation organisation,
         Competition competition,
         [Frozen] BuyingCatalogueDbContext context,
@@ -1039,7 +1043,8 @@ public static class CompetitionsServiceTests
             competition.Id,
             timeFrom,
             timeUntil,
-            applicableDays);
+            applicableDays,
+            includesBankHolidays);
 
         var updatedCompetition = await service.GetCompetitionWithNonPriceElements(
             organisation.InternalIdentifier,
@@ -1047,9 +1052,10 @@ public static class CompetitionsServiceTests
 
         updatedCompetition.NonPriceElements.Should().NotBeNull();
         updatedCompetition.NonPriceElements.ServiceLevel.Should().NotBeNull();
-        updatedCompetition.NonPriceElements.ServiceLevel.ApplicableDays.Should().Be(applicableDays);
+        updatedCompetition.NonPriceElements.ServiceLevel.ApplicableDays.Should().BeEquivalentTo(applicableDays);
         updatedCompetition.NonPriceElements.ServiceLevel.TimeFrom.Should().Be(timeFrom);
         updatedCompetition.NonPriceElements.ServiceLevel.TimeUntil.Should().Be(timeUntil);
+        updatedCompetition.NonPriceElements.ServiceLevel.IncludesBankHolidays.Should().Be(includesBankHolidays);
     }
 
     [Theory]
@@ -1081,7 +1087,8 @@ public static class CompetitionsServiceTests
             competition.Id,
             newServiceLevelCriteria.TimeFrom,
             newServiceLevelCriteria.TimeUntil,
-            newServiceLevelCriteria.ApplicableDays);
+            newServiceLevelCriteria.ApplicableDays,
+            newServiceLevelCriteria.IncludesBankHolidays);
 
         var updatedCompetition = await service.GetCompetitionWithNonPriceElements(
             organisation.InternalIdentifier,
@@ -1131,7 +1138,8 @@ public static class CompetitionsServiceTests
             competition.Id,
             newServiceLevelCriteria.TimeFrom,
             newServiceLevelCriteria.TimeUntil,
-            newServiceLevelCriteria.ApplicableDays);
+            newServiceLevelCriteria.ApplicableDays,
+            newServiceLevelCriteria.IncludesBankHolidays);
 
         var updatedCompetition = await service.GetCompetitionWithNonPriceElements(
             organisation.InternalIdentifier,
@@ -1793,7 +1801,7 @@ public static class CompetitionsServiceTests
         competition.NonPriceElements = new()
         {
             ServiceLevel =
-                new() { ApplicableDays = "Test", TimeFrom = DateTime.UtcNow, TimeUntil = DateTime.UtcNow },
+                new() { ApplicableDays = Enum.GetValues<Iso8601DayOfWeek>(), TimeFrom = DateTime.UtcNow, TimeUntil = DateTime.UtcNow },
             Implementation = new() { Requirements = "Test" },
             Interoperability = new List<InteroperabilityCriteria>
             {

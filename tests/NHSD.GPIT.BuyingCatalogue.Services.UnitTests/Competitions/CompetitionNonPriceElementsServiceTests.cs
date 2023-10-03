@@ -51,7 +51,15 @@ public static class CompetitionNonPriceElementsServiceTests
             ServiceLevel =
                 new()
                 {
-                    ApplicableDays = "Mon-Fri",
+                    ApplicableDays =
+                        new List<Iso8601DayOfWeek>
+                        {
+                            Iso8601DayOfWeek.Monday,
+                            Iso8601DayOfWeek.Tuesday,
+                            Iso8601DayOfWeek.Wednesday,
+                            Iso8601DayOfWeek.Thursday,
+                            Iso8601DayOfWeek.Friday,
+                        },
                     TimeFrom = DateTime.UtcNow.AddHours(-1),
                     TimeUntil = DateTime.UtcNow,
                 },
@@ -231,7 +239,12 @@ public static class CompetitionNonPriceElementsServiceTests
 
         dbContext.ChangeTracker.Clear();
 
-        await service.EditFeatureRequirement(organisation.InternalIdentifier, competition.Id, featureCriteriaId!.Value, newRequirement, newCompliance);
+        await service.EditFeatureRequirement(
+            organisation.InternalIdentifier,
+            competition.Id,
+            featureCriteriaId!.Value,
+            newRequirement,
+            newCompliance);
 
         var updatedCompetition = await dbContext.Competitions.Include(x => x.NonPriceElements.Features)
             .FirstOrDefaultAsync(x => x.Id == competition.Id);

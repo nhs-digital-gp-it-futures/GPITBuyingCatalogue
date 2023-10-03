@@ -314,7 +314,8 @@ public class CompetitionsService : ICompetitionsService
         int competitionId,
         DateTime timeFrom,
         DateTime timeUntil,
-        string applicableDays)
+        IEnumerable<Iso8601DayOfWeek> applicableDays,
+        bool includesBankHolidays)
     {
         var competition = await dbContext.Competitions.Include(x => x.NonPriceElements.ServiceLevel)
             .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Scores)
@@ -325,7 +326,9 @@ public class CompetitionsService : ICompetitionsService
 
         serviceLevelCriteria.TimeFrom = timeFrom;
         serviceLevelCriteria.TimeUntil = timeUntil;
-        serviceLevelCriteria.ApplicableDays = applicableDays;
+        serviceLevelCriteria.ApplicableDays = applicableDays.ToList();
+        serviceLevelCriteria.IncludesBankHolidays = includesBankHolidays;
+
         if (dbContext.Entry(serviceLevelCriteria).State is EntityState.Modified)
         {
             competition.HasReviewedCriteria = false;
