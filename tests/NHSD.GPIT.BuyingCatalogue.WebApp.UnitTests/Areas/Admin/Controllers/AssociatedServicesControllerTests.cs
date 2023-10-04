@@ -90,6 +90,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
+        public static async Task Post_AssociatedServices_InvalidModel_ReturnsViewWithModel(
+            Solution solution,
+            AssociatedServicesModel model,
+            AssociatedServicesController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            var actual = (await controller.AssociatedServices(solution.CatalogueItemId, model)).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNull();
+            actual.Model.Should().BeEquivalentTo(model);
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static async Task Post_AssociatedServices_Saves_And_RedirectsToDesktop(
             CatalogueItemId catalogueItemId,
             AssociatedServicesModel model,
@@ -145,6 +161,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.Should().BeOfType<BadRequestObjectResult>();
 
             actual.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AddAssociatedService_Redirects(
+            CatalogueItem catalogueItem,
+            CatalogueItemId assocaitedServiceId,
+            AddAssociatedServiceModel model,
+            [Frozen] Mock<ISolutionsService> mockSolutionService,
+            [Frozen] Mock<IAssociatedServicesService> mockAssociatedServicesService,
+            AssociatedServicesController controller)
+        {
+            mockSolutionService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
+
+            mockAssociatedServicesService.Setup(s => s.AddAssociatedService(It.IsAny<CatalogueItem>(), It.IsAny<AssociatedServicesDetailsModel>()))
+                .ReturnsAsync(assocaitedServiceId);
+
+            var actual = await controller.AddAssociatedService(catalogueItem.Id, model);
+
+            actual.Should().BeOfType<RedirectToActionResult>();
+            actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(AssociatedServicesController.EditAssociatedService));
         }
 
         [Theory]
