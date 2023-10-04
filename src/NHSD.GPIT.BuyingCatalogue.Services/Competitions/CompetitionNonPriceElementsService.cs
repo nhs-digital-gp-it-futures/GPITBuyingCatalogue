@@ -24,6 +24,7 @@ public class CompetitionNonPriceElementsService : ICompetitionNonPriceElementsSe
         var competition = await dbContext.Competitions.Include(x => x.NonPriceElements.ServiceLevel)
             .Include(x => x.NonPriceElements.Interoperability)
             .Include(x => x.NonPriceElements.Implementation)
+            .Include(x => x.NonPriceElements.Features)
             .Include(x => x.NonPriceElements.NonPriceWeights)
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.Scores)
