@@ -224,6 +224,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Get_EditAssociatedServiceDetails_ValidIds_ReturnsViewWithExpectedModel(
             CatalogueItem solution,
             AssociatedService associatedService,
+            List<SolutionMergerAndSplitTypesModel> solutionMergerAndSplitTypes,
             [Frozen] Mock<ISolutionsService> mockSolutionService,
             [Frozen] Mock<IAssociatedServicesService> mockAssociatedServicesService,
             AssociatedServicesController controller)
@@ -235,6 +236,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockAssociatedServicesService.Setup(s => s.GetAssociatedService(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
+            mockAssociatedServicesService.Setup(s => s.GetSolutionsWithMergerAndSplitTypesForButExcludingAssociatedService(catalogueItem.Id))
+                .ReturnsAsync(solutionMergerAndSplitTypes);
+
             var actual = await controller.EditAssociatedServiceDetails(solution.Id, catalogueItem.Id);
 
             mockSolutionService.Verify(s => s.GetSolutionThin(solution.Id));
@@ -243,7 +247,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.Should().BeOfType<ViewResult>();
 
             actual.As<ViewResult>().ViewName.Should().BeNull();
-            actual.As<ViewResult>().Model.Should().BeEquivalentTo(new EditAssociatedServiceDetailsModel(solution, catalogueItem), opt => opt.Excluding(m => m.BackLink));
+            actual.As<ViewResult>().Model.Should().BeEquivalentTo(new EditAssociatedServiceDetailsModel(solution.SupplierId, solution.Supplier.Name, catalogueItem, solutionMergerAndSplitTypes), opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -290,7 +294,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             AssociatedService associatedService)
         {
             var catalogueItem = associatedService.CatalogueItem;
-            var model = new EditAssociatedServiceDetailsModel(solution, catalogueItem);
+            var model = new EditAssociatedServiceDetailsModel(solution.SupplierId, solution.Supplier.Name, catalogueItem, null);
 
             mockAssociatedServicesService.Setup(s => s.EditDetails(
                 catalogueItem.Id,
