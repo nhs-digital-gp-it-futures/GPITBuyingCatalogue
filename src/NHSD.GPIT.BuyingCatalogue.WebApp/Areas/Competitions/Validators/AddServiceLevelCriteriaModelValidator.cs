@@ -15,7 +15,8 @@ public class AddServiceLevelCriteriaModelValidator : AbstractValidator<AddServic
     {
         RuleFor(x => x.ApplicableDays)
             .Must(x => x.Any(y => y.Selected))
-            .WithMessage(EmptyApplicableDaysError);
+            .WithMessage(EmptyApplicableDaysError)
+            .OverridePropertyName($"{nameof(AddServiceLevelCriteriaModel.ApplicableDays)}[0].Selected");
 
         RuleFor(x => x.TimeFrom)
             .NotNull()

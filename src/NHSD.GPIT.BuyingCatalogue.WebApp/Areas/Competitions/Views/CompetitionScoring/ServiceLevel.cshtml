@@ -87,7 +87,7 @@
                                              label-text="Why have you given this score?"
                                              label-hint="Provide a justification for the score you have given this solution." size="Medium">
                         <input type="hidden" asp-for="@Model.SolutionScores[i].SolutionId"/>
-                        <nhs-textarea asp-for="@Model.SolutionScores[i].Justification" character-count="false"/>
+                        <nhs-textarea asp-for="@Model.SolutionScores[i].Justification" />
                     </nhs-fieldset-form-label>
                 </nhs-expander>
                 @if (i == Model.SolutionScores.Count - 1)
