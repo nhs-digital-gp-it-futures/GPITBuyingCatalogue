@@ -42,38 +42,37 @@
             </nhs-table-row-container>
         </nhs-table>
 
-        @if(Model.RelatedSolutions.Count > 0)
+        @if (Model.RelatedSolutions.Count > 0)
         {
-            <nhs-table data-test-id="associated-service-related-solutions-table" label-text="Solutions referencing this Associated Service">
-                <nhs-table-column>Solution ID</nhs-table-column>
-                <nhs-table-column>Solution name</nhs-table-column>
-                <nhs-table-column>Action</nhs-table-column>
-                    @foreach(var referentialSolution in Model.RelatedSolutions)
-                    {
-                        <nhs-table-row-container>
-                            <nhs-table-cell>@referentialSolution.Id</nhs-table-cell>
-                            <nhs-table-cell>@referentialSolution.Name</nhs-table-cell>
-                            <nhs-table-cell>
-                                <a asp-action="@nameof(AssociatedServicesController.AssociatedServices)"
+                <nhs-table data-test-id="associated-service-related-solutions-table" label-text="Solutions referencing this Associated Service">
+                    <nhs-table-column>Solution ID</nhs-table-column>
+                    <nhs-table-column>Solution name</nhs-table-column>
+                    <nhs-table-column>Action</nhs-table-column>
+                @foreach (var referentialSolution in Model.RelatedSolutions)
+                {
+                                <nhs-table-row-container>
+                                    <nhs-table-cell>@referentialSolution.Id</nhs-table-cell>
+                                    <nhs-table-cell>@referentialSolution.Name</nhs-table-cell>
+                                    <nhs-table-cell>
+                                        <a asp-action="@nameof(AssociatedServicesController.AssociatedServices)"
                                    asp-controller="@typeof(AssociatedServicesController).ControllerName()"
                                    asp-route-solutionId="@referentialSolution.Id"
-                                   data-test-id="edit-service-association-@referentialSolution.Id" style="white-space: nowrap;">
-                                Edit
-                                </a>
-                            </nhs-table-cell>
-                        </nhs-table-row-container>
-                    }
-            </nhs-table>
-        } else
+                                           data-test-id="edit-service-association-@referentialSolution.Id" style="white-space: nowrap;">
+                                        Edit
+                                        </a>
+                                    </nhs-table-cell>
+                                </nhs-table-row-container>
+                }
+                </nhs-table>
+        }
+        else
         {
-            <nhs-inset-text data-test-id="associated-service-related-inset">
-                <p>
-                    <b>Solutions referencing this Associated Service</b>
-                </p>
-                <p>
-                    This Associated Service is currently not being referenced by any solutions.
-                </p>
-            </nhs-inset-text>
+                <nhs-inset-text data-test-id="associated-service-related-inset">
+                    <h2 class="nhsuk-heading-s">Solutions referencing this Associated Service</h2>
+                    <p>
+                        This Associated Service is currently not being referenced by any solutions.
+                    </p>
+                </nhs-inset-text>
         }
 
         <form method="post" asp-action="SetPublicationStatus" asp-route-solutionId="@Model.SolutionId" asp-route-associatedServiceId="@Model.AssociatedServiceId">
