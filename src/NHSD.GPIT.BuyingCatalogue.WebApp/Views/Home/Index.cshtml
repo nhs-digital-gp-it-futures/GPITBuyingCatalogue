@@ -1,8 +1,9 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Home
 @{
-    Layout = "Layouts/_AllBannersLayoutNew";
+    Layout = "Layouts/_FullWidthLayout";
     ViewBag.Title = "Buying Catalogue";
 
     // Required for Adobe Analytics (see _HeadIncludes partial for more info)
@@ -27,23 +28,11 @@
     <div class="nhsuk-width-container nhsuk-u-padding-top-7 nhsuk-u-padding-bottom-4">
         <div class="nhsuk-grid-row nhsuk-u-padding-top-7">
             <ul class="nhsuk-grid-row nhs-grid-row__no-padding">
-                    <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
-                        <nhs-card title="Browse Catalogue Solutions" url="@Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new { Area = typeof(SolutionsController).AreaName() })" horizontal-align="true">
-                            <p class="nhsuk-body">All solutions have been assessed against a set of Capabilities defined by the NHS and a set of Standards defined by NHS Digital.</p>
-                        </nhs-card>
-                    </li>
-                <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
-                    <nhs-card title="Create or manage orders" url="@Url.Action(nameof(DashboardController.Index), typeof(DashboardController).ControllerName(), new { Area = typeof(DashboardController).AreaName() })" horizontal-align="true">
-                        <p class="nhsuk-body">Place a new order or complete an order you've already started (log in required).</p>
-                    </nhs-card>
-                </li>
+                <partial name="_ActionCard" model="@(new ActionCardModel("Browse Catalogue Solutions", "All solutions have been assessed against a set of Capabilities defined by the NHS and a set of Standards defined by NHS Digital.", Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new { Area = typeof(SolutionsController).AreaName() })))" />
+                <partial name="_ActionCard" model="@(new ActionCardModel("Create or manage orders", "Place a new order or complete an order you've already started (log in required).", Url.Action(nameof(DashboardController.Index), typeof(DashboardController).ControllerName(), new { Area = typeof(DashboardController).AreaName() })))" />
                 @if (!User.Identity.IsAuthenticated)
                 {
-                    <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
-                        <nhs-card title="Request an account" url="@Url.Action(nameof(RegistrationController.Index), typeof(RegistrationController).ControllerName(), new { Area = typeof(RegistrationController).AreaName() })" horizontal-align="true">
-                            <p class="nhsuk-body">Get log in credentials so you can create orders on the Buying Catalogue.</p>
-                        </nhs-card>
-                    </li>
+                    <partial name="_ActionCard" model="@(new ActionCardModel("Request an account", "Get log in credentials so you can create orders on the Buying Catalogue.", Url.Action(nameof(RegistrationController.Index), typeof(RegistrationController).ControllerName(), new { Area = typeof(RegistrationController).AreaName() })))"/>
                 }
             </ul>
         </div>
@@ -71,36 +60,9 @@
                 <h2>Procurement frameworks</h2>
                 <p class ="nhs-body">Find out more information about procurement frameworks.</p>
                 <ul class="nhsuk-grid-row nhsuk-card-group nhsuk-u-margin-top-5">
-                    <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
-                        <nhs-card title="Tech Innovation framework" horizontal-align="true">
-                            <p class="nhsuk-card__description card-min-content-height">
-                                Supports the delivery of cloud-based, innovative solutions into the GP marketplace.
-                            </p>
-                            <p class ="nhsuk-card__description">
-                                <a href="https://digital.nhs.uk/services/digital-care-services-catalogue/tech-innovation-framework" target="_blank">Find out more about the Tech Innovation framework</a>
-                            </p>
-                        </nhs-card>
-                    </li>
-                    <li class="nhsuk-grid-column-one-third  nhsuk-card-group__item">
-                        <nhs-card title="DFOCVC framework" horizontal-align="true">
-                            <p class="nhsuk-card__description card-min-content-height">
-                                Supports the purchasing of assured online consultation and video consultation systems.
-                            </p>
-                            <p class="nhsuk-card__description">
-                                <a href="https://digital.nhs.uk/services/digital-care-services-catalogue/digital-first-online-consultation-and-video-consultation-framework" target="_blank">Find out more about the DFOCVC framework</a>
-                            </p>
-                        </nhs-card>
-                    </li>
-                    <li class="nhsuk-grid-column-one-third  nhsuk-card-group__item">
-                        <nhs-card title="Advanced Telephony Better Purchasing framework" horizontal-align="true">
-                            <p class="nhsuk-card__description card-min-content-height">
-                                Supports the commissioning of advanced, cloud-hosted GP telephony systems.
-                            </p>
-                            <p class="nhsuk-card__description">
-                                <a href="@Url.Action(nameof(HomeController.AdvancedTelephony), typeof(HomeController).ControllerName())" target="_blank">Find out more about the Advance Telephony Better Purchasing framework</a>
-                            </p>
-                        </nhs-card>
-                    </li>
+                    <partial name="_ProcurementFramework" model="@(new ProcurementFrameworkModel("Tech Innovation framework", "Supports the delivery of cloud-based, innovative solutions into the GP marketplace.", "https://digital.nhs.uk/services/digital-care-services-catalogue/tech-innovation-framework", "Find out more about the Tech Innovation framework"))" />
+                    <partial name="_ProcurementFramework" model="@(new ProcurementFrameworkModel("DFOCVC framework", "Supports the purchasing of assured online consultation and video consultation systems.", "https://digital.nhs.uk/services/digital-care-services-catalogue/digital-first-online-consultation-and-video-consultation-framework", "Find out more about the DFOCVC framework"))" />
+                    <partial name="_ProcurementFramework" model="@(new ProcurementFrameworkModel("Advanced Telephony Better Purchasing framework", "Supports the commissioning of advanced, cloud-hosted GP telephony systems.", Url.Action(nameof(HomeController.AdvancedTelephony), typeof(HomeController).ControllerName()), "Find out more about the Advance Telephony Better Purchasing framework"))" />
                 </ul>
             </div>
         </div>
