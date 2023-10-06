@@ -28,6 +28,15 @@
             <nhs-textarea asp-for="OrderGuidance"
                           label-text="Order guidance"
                           label-hint="Help buyers understand how they should order the Associated Services by providing typical order volumes and implementation timescales." />
+            <nhs-fieldset-form-label asp-for="@Model"
+                                     label-text="Does this Associated Service support practice reorganisation? (optional)"
+                                     label-hint="Select all the types of practice reorganisation this Associated Service supports."
+                                     size="ExtraSmall">
+                <nhs-checkbox-container>
+                    <nhs-checkbox asp-for="PracticeSplit" label-text="Practice split" />
+                    <nhs-checkbox asp-for="PracticeMerger" label-text="Practice merger" />
+                </nhs-checkbox-container>
+            </nhs-fieldset-form-label>
             <nhs-submit-button />
         </form>
     </div>

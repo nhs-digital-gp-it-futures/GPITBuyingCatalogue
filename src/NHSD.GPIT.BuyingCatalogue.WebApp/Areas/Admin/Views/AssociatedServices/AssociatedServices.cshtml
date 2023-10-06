@@ -5,15 +5,16 @@
 }
 <partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-two-thirds">
+    <div class="nhsuk-grid-column-full">
+        <nhs-validation-summary />
         <nhs-page-title title="@ViewBag.Title"
-                        caption="@Model.Solution.Name"
+                        caption="@Model.SolutionName"
                         advice="Select any services that help implement or optimise the live operation of your Catalogue Solution." />
 
         <vc:nhs-action-link url="@Url.Action(
             nameof(AssociatedServicesController.AddAssociatedService),
             typeof(AssociatedServicesController).ControllerName(),
-            new { SolutionId = Model.Solution.Id })" text=" Add an Associated Service" />
+            new { SolutionId = Model.SolutionId })" text=" Add an Associated Service" />
 
         <p>
             If an Associated Service is not listed, you can add it using the link. It’ll then be available for selection on all your Catalogue Solutions.
@@ -22,58 +23,66 @@
         <form method="post">
             <input type="hidden" asp-for="@Model.BackLink" />
             <input type="hidden" asp-for="@Model.BackLinkText" />
+            <input type="hidden" asp-for="@Model.SolutionName" />
 
             @if (Model.SelectableAssociatedServices.Any())
             {
-                <nhs-table data-test-id="associated-services-table" label-text="Associated Services available">
-                    <nhs-table-column>
+                <nhs-fieldset-form-container asp-for="@Model.SelectableAssociatedServices">
+                    <nhs-table data-test-id="associated-services-table" label-text="Associated Services available">
+                        <nhs-table-column>
 
-                    </nhs-table-column>
-                    <nhs-table-column>
-                        Associated Service
-                    </nhs-table-column>
-                    <nhs-table-column>
-                        Description
-                    </nhs-table-column>
-                    <nhs-table-column>
-                        Status
-                    </nhs-table-column>
-                    <nhs-table-column>Action</nhs-table-column>
-                    @for (int i = 0; i < Model.SelectableAssociatedServices.Count; i++)
-                    {
-                        <nhs-table-row-container>
-                            <nhs-table-cell>
-                                @if (Model.SelectableAssociatedServices[i].PublishedStatus == PublicationStatus.Published)
-                                {
-                                    <nhs-checkbox-container>
-                                        <nhs-checkbox asp-for="@Model.SelectableAssociatedServices[i].Selected"
-                                                      hidden-input="@Model.SelectableAssociatedServices[i].CatalogueItemId" />
-                                    </nhs-checkbox-container>
-                                }
-                                else
-                                {
-                                    <input type="hidden" asp-for="@Model.SelectableAssociatedServices[i].CatalogueItemId" />
-                                }
-                            </nhs-table-cell>
-                            <nhs-table-cell>
-                                @Model.SelectableAssociatedServices[i].Name
-                            </nhs-table-cell>
-                            <nhs-table-cell>
-                                @Model.SelectableAssociatedServices[i].Description
-                            </nhs-table-cell>
-                            <nhs-table-cell>
-                                <nhs-tag status-enum="@Model.SelectableAssociatedServices[i].PublishedStatus" />
-                            </nhs-table-cell>
-                            <nhs-table-cell>
-                                <a asp-action="@nameof(AssociatedServicesController.EditAssociatedService)"
-                                   asp-controller="@typeof(AssociatedServicesController).ControllerName()"
-                                   asp-route-solutionId="@Model.Solution.Id"
-                                   asp-route-associatedServiceId="@Model.SelectableAssociatedServices[i].CatalogueItemId"
-                                   data-test-id="edit-link" class="nhsuk-breadcrumb__link">Edit</a>
-                            </nhs-table-cell>
-                        </nhs-table-row-container>
-                    }
-                </nhs-table>
+                        </nhs-table-column>
+                        <nhs-table-column>
+                            Associated Service
+                        </nhs-table-column>
+                        <nhs-table-column>
+                            Description
+                        </nhs-table-column>
+                        <nhs-table-column>
+                            Status
+                        </nhs-table-column>
+                        <nhs-table-column>Action</nhs-table-column>
+                        @for (int i = 0; i < Model.SelectableAssociatedServices.Count; i++)
+                        {
+                            <input type="hidden" asp-for="@Model.SelectableAssociatedServices[i].Name" />
+                            <input type="hidden" asp-for="@Model.SelectableAssociatedServices[i].Description" />
+                            <input type="hidden" asp-for="@Model.SelectableAssociatedServices[i].PublishedStatus" />
+                            <input type="hidden" asp-for="@Model.SelectableAssociatedServices[i].PracticeReorganisation" />
+                            <nhs-table-row-container>
+                                <nhs-table-cell>
+                                    @if (Model.SelectableAssociatedServices[i].PublishedStatus == PublicationStatus.Published)
+                                    {
+                                        <nhs-checkbox-container>
+                                            <nhs-checkbox asp-for="@Model.SelectableAssociatedServices[i].Selected"
+                                              hidden-input="@Model.SelectableAssociatedServices[i].CatalogueItemId" />
+                                        </nhs-checkbox-container>
+                                    }
+                                    else
+                                    {
+                                        <input type="hidden" asp-for="@Model.SelectableAssociatedServices[i].CatalogueItemId" />
+                                    }
+                                    <input type="hidden" asp-for="@Model.SelectableAssociatedServices[i].PracticeReorganisation" />
+                                </nhs-table-cell>
+                                <nhs-table-cell>
+                                    @Model.SelectableAssociatedServices[i].Name
+                                </nhs-table-cell>
+                                <nhs-table-cell>
+                                    @Model.SelectableAssociatedServices[i].Description
+                                </nhs-table-cell>
+                                <nhs-table-cell>
+                                    <nhs-tag status-enum="@Model.SelectableAssociatedServices[i].PublishedStatus" />
+                                </nhs-table-cell>
+                                <nhs-table-cell>
+                                    <a asp-action="@nameof(AssociatedServicesController.EditAssociatedService)"
+                               asp-controller="@typeof(AssociatedServicesController).ControllerName()"
+                               asp-route-solutionId="@Model.SolutionId"
+                               asp-route-associatedServiceId="@Model.SelectableAssociatedServices[i].CatalogueItemId"
+                                       data-test-id="edit-link" class="nhsuk-breadcrumb__link">Edit</a>
+                                </nhs-table-cell>
+                            </nhs-table-row-container>
+                        }
+                    </nhs-table>
+                </nhs-fieldset-form-container>
             }
 
             <nhs-submit-button />

@@ -90,6 +90,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
+        public static async Task Post_AssociatedServices_InvalidModel_ReturnsViewWithModel(
+            Solution solution,
+            AssociatedServicesModel model,
+            AssociatedServicesController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            var actual = (await controller.AssociatedServices(solution.CatalogueItemId, model)).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNull();
+            actual.Model.Should().BeEquivalentTo(model);
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static async Task Post_AssociatedServices_Saves_And_RedirectsToDesktop(
             CatalogueItemId catalogueItemId,
             AssociatedServicesModel model,
@@ -145,6 +161,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.Should().BeOfType<BadRequestObjectResult>();
 
             actual.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AddAssociatedService_Redirects(
+            CatalogueItem catalogueItem,
+            CatalogueItemId assocaitedServiceId,
+            AddAssociatedServiceModel model,
+            [Frozen] Mock<ISolutionsService> mockSolutionService,
+            [Frozen] Mock<IAssociatedServicesService> mockAssociatedServicesService,
+            AssociatedServicesController controller)
+        {
+            mockSolutionService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
+
+            mockAssociatedServicesService.Setup(s => s.AddAssociatedService(It.IsAny<CatalogueItem>(), It.IsAny<AssociatedServicesDetailsModel>()))
+                .ReturnsAsync(assocaitedServiceId);
+
+            var actual = await controller.AddAssociatedService(catalogueItem.Id, model);
+
+            actual.Should().BeOfType<RedirectToActionResult>();
+            actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(AssociatedServicesController.EditAssociatedService));
         }
 
         [Theory]
@@ -224,6 +262,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Get_EditAssociatedServiceDetails_ValidIds_ReturnsViewWithExpectedModel(
             CatalogueItem solution,
             AssociatedService associatedService,
+            List<SolutionMergerAndSplitTypesModel> solutionMergerAndSplitTypes,
             [Frozen] Mock<ISolutionsService> mockSolutionService,
             [Frozen] Mock<IAssociatedServicesService> mockAssociatedServicesService,
             AssociatedServicesController controller)
@@ -235,6 +274,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockAssociatedServicesService.Setup(s => s.GetAssociatedService(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
+            mockAssociatedServicesService.Setup(s => s.GetSolutionsWithMergerAndSplitTypesForButExcludingAssociatedService(catalogueItem.Id))
+                .ReturnsAsync(solutionMergerAndSplitTypes);
+
             var actual = await controller.EditAssociatedServiceDetails(solution.Id, catalogueItem.Id);
 
             mockSolutionService.Verify(s => s.GetSolutionThin(solution.Id));
@@ -243,7 +285,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.Should().BeOfType<ViewResult>();
 
             actual.As<ViewResult>().ViewName.Should().BeNull();
-            actual.As<ViewResult>().Model.Should().BeEquivalentTo(new EditAssociatedServiceDetailsModel(solution, catalogueItem), opt => opt.Excluding(m => m.BackLink));
+            actual.As<ViewResult>().Model.Should().BeEquivalentTo(new EditAssociatedServiceDetailsModel(solution.SupplierId, solution.Supplier.Name, catalogueItem, solutionMergerAndSplitTypes), opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
@@ -290,7 +332,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             AssociatedService associatedService)
         {
             var catalogueItem = associatedService.CatalogueItem;
-            var model = new EditAssociatedServiceDetailsModel(solution, catalogueItem);
+            var model = new EditAssociatedServiceDetailsModel(solution.SupplierId, solution.Supplier.Name, catalogueItem, null);
 
             mockAssociatedServicesService.Setup(s => s.EditDetails(
                 catalogueItem.Id,

@@ -29,5 +29,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
 
         [StringLength(1000)]
         public string OrderGuidance { get; set; }
+
+        public bool PracticeSplit { get; set; }
+
+        public bool PracticeMerger { get; set; }
+
+        public PracticeReorganisationTypeEnum PracticeReorganisation => (PracticeMerger ? PracticeReorganisationTypeEnum.Merger : PracticeReorganisationTypeEnum.None)
+            | (PracticeSplit ? PracticeReorganisationTypeEnum.Split : PracticeReorganisationTypeEnum.None);
     }
 }

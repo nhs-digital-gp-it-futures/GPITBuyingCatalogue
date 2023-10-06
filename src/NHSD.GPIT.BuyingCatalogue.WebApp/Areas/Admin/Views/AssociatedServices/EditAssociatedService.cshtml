@@ -1,16 +1,16 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices.EditAssociatedServiceModel;
 @{
-    ViewBag.Title = $"{Model.AssociatedServiceName} information";
+    ViewBag.Title = $"Associated Service information";
 }
 <partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary RadioId="@nameof(Model.SelectedPublicationStatus)" />
         <nhs-page-title title="@ViewBag.Title"
-                        caption="@Model.SupplierName"
+                        caption="@Model.AssociatedServiceName"
                         advice="Provide information about this Associated Service." />
 
-        <nhs-table data-test-id="associated-service-dashboard-table">
+        <nhs-table data-test-id="associated-service-dashboard-table" label-text="Associated Service information">
             <nhs-table-column>Section</nhs-table-column>
             <nhs-table-column>Mandatory</nhs-table-column>
             <nhs-table-column>Status</nhs-table-column>
@@ -42,38 +42,37 @@
             </nhs-table-row-container>
         </nhs-table>
 
-        @if(Model.RelatedSolutions.Count > 0)
+        @if (Model.RelatedSolutions.Count > 0)
         {
-            <nhs-table data-test-id="associated-service-related-solutions-table" label-text="Solutions referencing this Associated Service">
-                <nhs-table-column>Solution ID</nhs-table-column>
-                <nhs-table-column>Solution name</nhs-table-column>
-                <nhs-table-column>Action</nhs-table-column>
-                    @foreach(var referentialSolution in Model.RelatedSolutions)
-                    {
-                        <nhs-table-row-container>
-                            <nhs-table-cell>@referentialSolution.Id</nhs-table-cell>
-                            <nhs-table-cell>@referentialSolution.Name</nhs-table-cell>
-                            <nhs-table-cell>
-                                <a asp-action="@nameof(AssociatedServicesController.AssociatedServices)"
+                <nhs-table data-test-id="associated-service-related-solutions-table" label-text="Solutions referencing this Associated Service">
+                    <nhs-table-column>Solution ID</nhs-table-column>
+                    <nhs-table-column>Solution name</nhs-table-column>
+                    <nhs-table-column>Action</nhs-table-column>
+                @foreach (var referentialSolution in Model.RelatedSolutions)
+                {
+                                <nhs-table-row-container>
+                                    <nhs-table-cell>@referentialSolution.Id</nhs-table-cell>
+                                    <nhs-table-cell>@referentialSolution.Name</nhs-table-cell>
+                                    <nhs-table-cell>
+                                        <a asp-action="@nameof(AssociatedServicesController.AssociatedServices)"
                                    asp-controller="@typeof(AssociatedServicesController).ControllerName()"
                                    asp-route-solutionId="@referentialSolution.Id"
-                                   data-test-id="edit-service-association-@referentialSolution.Id" style="white-space: nowrap;">
-                                Edit
-                                </a>
-                            </nhs-table-cell>
-                        </nhs-table-row-container>
-                    }
-            </nhs-table>
-        } else
+                                           data-test-id="edit-service-association-@referentialSolution.Id" style="white-space: nowrap;">
+                                        Edit
+                                        </a>
+                                    </nhs-table-cell>
+                                </nhs-table-row-container>
+                }
+                </nhs-table>
+        }
+        else
         {
-            <nhs-inset-text data-test-id="associated-service-related-inset">
-                <p>
-                    <b>Solutions referencing this Associated Service</b>
-                </p>
-                <p>
-                    This Associated Service is currently not being referenced by any solutions.
-                </p>
-            </nhs-inset-text>
+                <nhs-inset-text data-test-id="associated-service-related-inset">
+                    <h2 class="nhsuk-heading-s">Solutions referencing this Associated Service</h2>
+                    <p>
+                        This Associated Service is currently not being referenced by any solutions.
+                    </p>
+                </nhs-inset-text>
         }
 
         <form method="post" asp-action="SetPublicationStatus" asp-route-solutionId="@Model.SolutionId" asp-route-associatedServiceId="@Model.AssociatedServiceId">
@@ -89,7 +88,7 @@
             <input type="hidden" asp-for="AssociatedServicePublicationStatus" />
 
             <nhs-fieldset-form-label asp-for="@Model"
-                                     label-text="Associated Service status"
+                                     label-text="What would you like to do with this Associated Service?"
                                      label-hint="Select one option."
                                      size="Large">
                 <nhs-radio-buttons asp-for="SelectedPublicationStatus"
