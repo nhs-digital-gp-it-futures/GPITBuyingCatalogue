@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
@@ -13,7 +15,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
 
         public AssociatedServicesModel(CatalogueItem catalogueItem, IReadOnlyList<CatalogueItem> associatedServices)
         {
-            Solution = catalogueItem;
+            SolutionId = catalogueItem.Id;
+            SolutionName = catalogueItem.Name;
+
             SelectableAssociatedServices = associatedServices.Select(s => new SelectableAssociatedService
             {
                 Name = s.Name,
@@ -21,11 +25,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
                 PublishedStatus = s.PublishedStatus,
                 CatalogueItemId = s.AssociatedService.CatalogueItemId,
                 Selected = catalogueItem.SupplierServiceAssociations.Any(ssa => ssa.AssociatedServiceId == s.Id),
+                PracticeReorganisation = s.AssociatedService.PracticeReorganisationType,
             }).ToList();
         }
 
-        public CatalogueItem Solution { get; }
+        public CatalogueItemId SolutionId { get; set; }
+
+        public string SolutionName { get; set; }
 
         public List<SelectableAssociatedService> SelectableAssociatedServices { get; } = new();
+
+        public SolutionMergerAndSplitTypesModel SolutionMergerAndSplits => new SolutionMergerAndSplitTypesModel(SolutionName, SelectableAssociatedServices
+            .Where(s => s.Selected)
+            .Select(s => s.PracticeReorganisation));
     }
 }
