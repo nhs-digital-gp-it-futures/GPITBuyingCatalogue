@@ -5,7 +5,10 @@
     <nhs-card title="Features">
         <partial name="Partials/_FeaturesRequirements" model="@(new FeaturesRequirementsPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.NonPriceElements.Features) { ReturnUrl = Url.ActionLink() })"/>
 
-        <vc:nhs-action-link text="Add another features requirement" url="@Url.Action(nameof(CompetitionNonPriceElementsController.FeatureRequirement), typeof(CompetitionNonPriceElementsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, returnUrl = Url.ActionLink() })"/>
+        @if (!Model.IsReviewScreen)
+        {
+            <vc:nhs-action-link text="Add another features requirement" url="@Url.Action(nameof(CompetitionNonPriceElementsController.FeatureRequirement), typeof(CompetitionNonPriceElementsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, returnUrl = Url.ActionLink() })"/>
+        }
     </nhs-card>
 }
 

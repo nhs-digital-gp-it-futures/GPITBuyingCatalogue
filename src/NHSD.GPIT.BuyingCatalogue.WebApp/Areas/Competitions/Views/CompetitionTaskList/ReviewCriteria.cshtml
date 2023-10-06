@@ -34,7 +34,7 @@
             </nhs-summary-list>
         </nhs-card>
 
-        <partial name="Partials/_NonPriceElements" model="@(new NonPriceElementsPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.NonPriceElements, editRouteValues))"/>
+        <partial name="Partials/_NonPriceElements" model="@(new NonPriceElementsPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.NonPriceElements, editRouteValues) { IsReviewScreen = true })"/>
         <br/>
 
         <form method="post">

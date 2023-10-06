@@ -33,6 +33,8 @@ public class NonPriceElementsPartialModel
 
     public object RouteValues { get; set; }
 
+    public bool IsReviewScreen { get; set; }
+
     public List<string> GetIm1Integrations() =>
         NonPriceElements.Interoperability.Where(
                 x => x.IntegrationType == InteropIntegrationType.Im1
