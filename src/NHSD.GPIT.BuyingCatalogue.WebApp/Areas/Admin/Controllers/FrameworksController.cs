@@ -58,7 +58,7 @@ public class FrameworksController : Controller
             BackLink = Url.Action(nameof(Dashboard)),
         };
 
-        return View("Add", model); ;
+        return View("Add", model);
     }
 
     [HttpPost("edit/{frameworkId}")]
