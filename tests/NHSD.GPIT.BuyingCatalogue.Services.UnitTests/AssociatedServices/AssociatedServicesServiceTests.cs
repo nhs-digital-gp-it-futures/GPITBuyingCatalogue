@@ -149,6 +149,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
             solution.Id = new CatalogueItemId(solution.Id.SupplierId, solution.Id.ItemId[4..]);
             context.CatalogueItems.Add(solution);
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
 
             var result = await service.AddAssociatedService(solution, model);
 
@@ -162,6 +163,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
             dbSolution.AssociatedService.Should().NotBeNull();
             dbSolution.AssociatedService.Description.Should().Be(model.Description);
             dbSolution.AssociatedService.OrderGuidance.Should().Be(model.OrderGuidance);
+            dbSolution.AssociatedService.PracticeReorganisationType.Should().Be(model.PracticeReorganisationType);
         }
 
         [Theory]
@@ -187,6 +189,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
             associatedService.AssociatedService = new AssociatedService { CatalogueItemId = solution.Id };
             context.CatalogueItems.Add(associatedService);
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
 
             await service.EditDetails(associatedService.Id, model);
 
@@ -196,6 +199,98 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
             dbSolution.Name.Should().Be(model.Name);
             dbSolution.AssociatedService.Description.Should().Be(model.Description);
             dbSolution.AssociatedService.OrderGuidance.Should().Be(model.OrderGuidance);
+            dbSolution.AssociatedService.PracticeReorganisationType.Should().Be(model.PracticeReorganisationType);
+        }
+
+        [Theory]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.None)]
+        public static async Task GetSolutionsWithMergerAndSplitTypesForAssociatedService_WhenNone_Returns_Solutions_WithEmptyMergerAndSplitValues(
+            PracticeReorganisationTypeEnum reorganisationType,
+            List<Solution> solutions,
+            AssociatedService associatedService,
+            AssociatedService otherAssociatedService,
+            [Frozen] BuyingCatalogueDbContext context,
+            AssociatedServicesService service)
+        {
+            associatedService.PracticeReorganisationType = reorganisationType;
+            otherAssociatedService.PracticeReorganisationType = reorganisationType;
+            solutions.ForEach(s => s.CatalogueItem.SupplierServiceAssociations = new HashSet<SupplierServiceAssociation> { new(s.CatalogueItemId, associatedService.CatalogueItemId), new(s.CatalogueItemId, otherAssociatedService.CatalogueItemId) });
+
+            context.Solutions.AddRange(solutions);
+            context.AssociatedServices.Add(associatedService);
+            context.AssociatedServices.Add(otherAssociatedService);
+
+            context.SaveChanges();
+            context.ChangeTracker.Clear();
+
+            var mergersAndSplits = await service.GetSolutionsWithMergerAndSplitTypesForButExcludingAssociatedService(associatedService.CatalogueItemId);
+
+            mergersAndSplits.Should().NotBeEmpty();
+            mergersAndSplits.Count.Should().Be(solutions.Count);
+            mergersAndSplits.ForEach(s => s.SelectedMergerAndSplitsServices.Should().BeEquivalentTo(Array.Empty<PracticeReorganisationTypeEnum>()));
+            mergersAndSplits.ForEach(s => s.IsValid.Should().BeTrue());
+            mergersAndSplits.ForEach(s => s.With(associatedService.PracticeReorganisationType).IsValid.Should().BeTrue());
+        }
+
+        [Theory]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Merger)]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split)]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split | PracticeReorganisationTypeEnum.Merger)]
+        public static async Task GetSolutionsWithMergerAndSplitTypesForAssociatedService_Returns_Solutions_WithMergerAndSplitValues(
+            PracticeReorganisationTypeEnum reorganisationType,
+            List<Solution> solutions,
+            AssociatedService associatedService,
+            AssociatedService otherAssociatedService,
+            [Frozen] BuyingCatalogueDbContext context,
+            AssociatedServicesService service)
+        {
+            associatedService.PracticeReorganisationType = reorganisationType;
+            otherAssociatedService.PracticeReorganisationType = reorganisationType;
+            solutions.ForEach(s => s.CatalogueItem.SupplierServiceAssociations = new HashSet<SupplierServiceAssociation> { new(s.CatalogueItemId, associatedService.CatalogueItemId), new(s.CatalogueItemId, otherAssociatedService.CatalogueItemId) });
+
+            context.Solutions.AddRange(solutions);
+            context.AssociatedServices.Add(associatedService);
+            context.AssociatedServices.Add(otherAssociatedService);
+
+            context.SaveChanges();
+            context.ChangeTracker.Clear();
+
+            var mergersAndSplits = await service.GetSolutionsWithMergerAndSplitTypesForButExcludingAssociatedService(associatedService.CatalogueItemId);
+
+            mergersAndSplits.Should().NotBeEmpty();
+            mergersAndSplits.Count.Should().Be(solutions.Count);
+            mergersAndSplits.ForEach(s => s.SelectedMergerAndSplitsServices.Should().BeEquivalentTo(new[] { reorganisationType }));
+            mergersAndSplits.ForEach(s => s.IsValid.Should().BeTrue());
+            mergersAndSplits.ForEach(s => s.With(associatedService.PracticeReorganisationType).IsNotValid.Should().BeTrue());
+        }
+
+        [Theory]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.None)]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Merger)]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split)]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split | PracticeReorganisationTypeEnum.Merger)]
+        public static async Task GetSolutionsWithMergerAndSplitTypesForAssociatedService__ExlcudingOnlyService_Returns_Solutions_WithEmptyMergerAndSplitValues(
+            PracticeReorganisationTypeEnum reorganisationType,
+            List<Solution> solutions,
+            AssociatedService associatedService,
+            [Frozen] BuyingCatalogueDbContext context,
+            AssociatedServicesService service)
+        {
+            associatedService.PracticeReorganisationType = reorganisationType;
+            solutions.ForEach(s => s.CatalogueItem.SupplierServiceAssociations = new HashSet<SupplierServiceAssociation> { new(s.CatalogueItemId, associatedService.CatalogueItemId) });
+
+            context.Solutions.AddRange(solutions);
+            context.AssociatedServices.Add(associatedService);
+
+            context.SaveChanges();
+            context.ChangeTracker.Clear();
+
+            var mergersAndSplits = await service.GetSolutionsWithMergerAndSplitTypesForButExcludingAssociatedService(associatedService.CatalogueItemId);
+
+            mergersAndSplits.Should().NotBeEmpty();
+            mergersAndSplits.Count.Should().Be(solutions.Count);
+            mergersAndSplits.ForEach(s => s.SelectedMergerAndSplitsServices.Should().BeEquivalentTo(Array.Empty<PracticeReorganisationTypeEnum>()));
+            mergersAndSplits.ForEach(s => s.IsValid.Should().BeTrue());
         }
 
         [Theory]
@@ -212,6 +307,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
             context.AssociatedServices.Add(associatedService);
 
             context.SaveChanges();
+            context.ChangeTracker.Clear();
 
             var relatedSolutions = await service.GetAllSolutionsForAssociatedService(associatedService.CatalogueItemId);
 

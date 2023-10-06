@@ -61,12 +61,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
         [Theory]
         [CommonAutoData]
+        public static void Validate_PracticeReoganisation_SetsModelError(
+            EditAssociatedServiceDetailsModel model,
+            EditAssociatedServiceDetailsModelValidator validator)
+        {
+            model.PracticeMerger = true;
+            model.PracticeSplit = true;
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor("practice-reorganisation");
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static void Validate_DuplicateNameForSupplier_SetsModelError(
             [Frozen] Mock<IAssociatedServicesService> associatedServicesService,
             EditAssociatedServiceDetailsModel model,
             EditAssociatedServiceDetailsModelValidator validator)
         {
-            associatedServicesService.Setup(s => s.AssociatedServiceExistsWithNameForSupplier(model.Name, model.SolutionId.SupplierId, model.Id.Value))
+            associatedServicesService.Setup(s => s.AssociatedServiceExistsWithNameForSupplier(model.Name, model.SupplierId, model.Id.Value))
                 .ReturnsAsync(true);
 
             var result = validator.TestValidate(model);
@@ -82,8 +96,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             EditAssociatedServiceDetailsModel model,
             EditAssociatedServiceDetailsModelValidator validator)
         {
-            associatedServicesService.Setup(s => s.AssociatedServiceExistsWithNameForSupplier(model.Name, model.SolutionId.SupplierId, default))
+            associatedServicesService.Setup(s => s.AssociatedServiceExistsWithNameForSupplier(model.Name, model.SupplierId, default))
                 .ReturnsAsync(false);
+
+            model.PracticeMerger = false;
+            model.PracticeSplit = false;
 
             var result = validator.TestValidate(model);
 

@@ -23,6 +23,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices
             int supplierId,
             CatalogueItemId currentCatalogueItemId = default);
 
+        Task<List<SolutionMergerAndSplitTypesModel>> GetSolutionsWithMergerAndSplitTypesForButExcludingAssociatedService(CatalogueItemId associatedServiceId);
+
         Task RelateAssociatedServicesToSolution(CatalogueItemId solutionId, IEnumerable<CatalogueItemId> associatedServices);
 
         Task RemoveServiceFromSolution(CatalogueItemId solutionId, CatalogueItemId associatedServiceId);

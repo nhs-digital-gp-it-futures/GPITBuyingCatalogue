@@ -69,4 +69,5 @@
 :r ./MigrateEpicCompliancyLevel.sql
 :r ./MigrateContracts.sql
 :r ./MigrateOrderItemRecipients.sql
+:r ./MigrateMergersAndSplits.sql
 
