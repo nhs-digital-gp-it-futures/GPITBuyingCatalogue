@@ -80,8 +80,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
             {
                 return new RoutingResult
                 {
-                    ControllerName = Constants.Controllers.Review,
-                    ActionName = Constants.Actions.Review,
+                    ControllerName = Constants.Controllers.TaskList,
+                    ActionName = Constants.Actions.TaskList,
                     RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId },
                 };
             }
@@ -100,8 +100,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
 
             return new RoutingResult
             {
-                ControllerName = Constants.Controllers.Review,
-                ActionName = Constants.Actions.Review,
+                ControllerName = Constants.Controllers.TaskList,
+                ActionName = Constants.Actions.TaskList,
                 RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId },
             };
         }

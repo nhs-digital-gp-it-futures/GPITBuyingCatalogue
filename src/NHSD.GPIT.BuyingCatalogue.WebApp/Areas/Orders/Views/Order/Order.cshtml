@@ -198,9 +198,9 @@
                 new { Model.InternalOrgId, Model.CallOffId, Source = RoutingSource.Dashboard }),
 
             TaskProgress.Completed => Url.Action(
-                nameof(ReviewSolutionsController.ReviewSolutions),
-                typeof(ReviewSolutionsController).ControllerName(),
-                new { Model.InternalOrgId, Model.CallOffId }),
+                nameof(TaskListController.TaskList),
+                typeof(TaskListController).ControllerName(),
+                new { Model.InternalOrgId, Model.CallOffId, Source = RoutingSource.Dashboard }),
 
             TaskProgress.CannotStart => string.Empty,
             TaskProgress.NotApplicable => string.Empty,
