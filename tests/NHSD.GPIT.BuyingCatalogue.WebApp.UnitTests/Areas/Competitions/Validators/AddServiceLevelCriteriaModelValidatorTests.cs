@@ -25,7 +25,7 @@ public static class AddServiceLevelCriteriaModelValidatorTests
 
         var result = validator.TestValidate(model);
 
-        result.ShouldHaveValidationErrorFor(x => x.ApplicableDays)
+        result.ShouldHaveValidationErrorFor($"ApplicableDays[0].Selected")
             .WithErrorMessage(AddServiceLevelCriteriaModelValidator.EmptyApplicableDaysError);
     }
 
