@@ -1,6 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
@@ -11,23 +13,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
         {
         }
 
-        public EditAssociatedServiceDetailsModel(CatalogueItem solution, CatalogueItem associatedServiceItem)
+        public EditAssociatedServiceDetailsModel(int supplierId, string supplierName, CatalogueItem associatedServiceItem, List<SolutionMergerAndSplitTypesModel> list)
         {
-            SolutionId = solution.Id;
             Id = associatedServiceItem.Id;
             ServiceName = Name = associatedServiceItem.Name;
-            SupplierName = solution.Supplier.Name;
+            SupplierName = supplierName;
+            SupplierId = supplierId;
             Description = associatedServiceItem.AssociatedService.Description;
             OrderGuidance = associatedServiceItem.AssociatedService.OrderGuidance;
+            PracticeMerger = (associatedServiceItem.AssociatedService.PracticeReorganisationType & PracticeReorganisationTypeEnum.Merger) == PracticeReorganisationTypeEnum.Merger;
+            PracticeSplit = (associatedServiceItem.AssociatedService.PracticeReorganisationType & PracticeReorganisationTypeEnum.Split) == PracticeReorganisationTypeEnum.Split;
+            SolutionMergerAndSplits = list;
         }
-
-        public CatalogueItemId SolutionId { get; set; }
 
         public CatalogueItemId? Id { get; init; }
 
         public string ServiceName { get; set; }
 
         public string SupplierName { get; set; }
+
+        public int SupplierId { get; set; }
 
         [StringLength(255)]
         public string Name { get; set; }
@@ -37,5 +42,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
 
         [StringLength(1000)]
         public string OrderGuidance { get; set; }
+
+        public bool PracticeSplit { get; set; }
+
+        public bool PracticeMerger { get; set; }
+
+        public List<SolutionMergerAndSplitTypesModel> SolutionMergerAndSplits { get; set; } = new();
+
+        public PracticeReorganisationTypeEnum PracticeReorganisation => (PracticeMerger ? PracticeReorganisationTypeEnum.Merger : PracticeReorganisationTypeEnum.None)
+            | (PracticeSplit ? PracticeReorganisationTypeEnum.Split : PracticeReorganisationTypeEnum.None);
     }
 }

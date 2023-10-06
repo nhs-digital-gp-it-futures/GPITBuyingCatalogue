@@ -1,4 +1,6 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AssociatedServices
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+
+namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AssociatedServices
 {
     public sealed class AssociatedServicesDetailsModel
     {
@@ -9,5 +11,7 @@
         public string OrderGuidance { get; set; }
 
         public int UserId { get; set; }
+
+        public PracticeReorganisationTypeEnum PracticeReorganisationType { get; set; }
     }
 }
