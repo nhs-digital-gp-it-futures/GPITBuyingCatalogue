@@ -67,8 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
             var framework = await GetFramework(frameworkId);
             if (framework is null)
                 return;
-            if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentNullException(nameof(name));
+            ArgumentNullException.ThrowIfNullOrEmpty(name);
             ArgumentNullException.ThrowIfNull(fundingTypes);
 
             framework.Name = name;

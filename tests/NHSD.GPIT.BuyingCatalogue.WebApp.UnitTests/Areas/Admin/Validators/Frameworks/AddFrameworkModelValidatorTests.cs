@@ -18,7 +18,7 @@ public static class AddFrameworkModelValidatorTests
     [Theory]
     [CommonAutoData]
     public static void Validate_NoFundingType_SetsModelError(
-        AddFrameworkModel model,
+        AddEditFrameworkModel model,
         AddFrameworkModelValidator validator)
     {
         model.FundingTypes.ForEach(x => x.Selected = false);
@@ -32,7 +32,7 @@ public static class AddFrameworkModelValidatorTests
     [Theory]
     [CommonAutoData]
     public static void Validate_NoName_SetsModelError(
-        AddFrameworkModel model,
+        AddEditFrameworkModel model,
         AddFrameworkModelValidator validator)
     {
         model.Name = null;
@@ -46,7 +46,7 @@ public static class AddFrameworkModelValidatorTests
     [Theory]
     [CommonAutoData]
     public static void Validate_DuplicateName_SetsModelError(
-        AddFrameworkModel model,
+        AddEditFrameworkModel model,
         [Frozen] Mock<IFrameworkService> frameworkService,
         AddFrameworkModelValidator validator)
     {
@@ -63,7 +63,7 @@ public static class AddFrameworkModelValidatorTests
     [Theory]
     [CommonAutoData]
     public static void Validate_Valid_NoErrors(
-        AddFrameworkModel model,
+        AddEditFrameworkModel model,
         [Frozen] Mock<IFrameworkService> frameworkService,
         AddFrameworkModelValidator validator)
     {

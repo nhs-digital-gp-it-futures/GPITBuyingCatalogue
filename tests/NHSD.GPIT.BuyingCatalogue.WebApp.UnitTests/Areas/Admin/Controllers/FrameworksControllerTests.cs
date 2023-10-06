@@ -57,13 +57,13 @@ public static class FrameworksControllerTests
 
         result.Should().NotBeNull();
         result.Model.Should().NotBeNull();
-        result.Model.Should().BeOfType<AddFrameworkModel>();
+        result.Model.Should().BeOfType<AddEditFrameworkModel>();
     }
 
     [Theory]
     [CommonAutoData]
     public static async Task Add_InvalidModel_ReturnsView(
-        AddFrameworkModel model,
+        AddEditFrameworkModel model,
         FrameworksController controller)
     {
         controller.ModelState.AddModelError("some-key", "some-error");
@@ -77,7 +77,7 @@ public static class FrameworksControllerTests
     [Theory]
     [CommonAutoData]
     public static async Task Add_Valid_AddsFrameworkAndRedirects(
-        AddFrameworkModel model,
+        AddEditFrameworkModel model,
         [Frozen] Mock<IFrameworkService> service,
         FrameworksController controller)
     {
@@ -105,14 +105,14 @@ public static class FrameworksControllerTests
 
         result.Should().NotBeNull();
         result.Model.Should().NotBeNull();
-        result.Model.Should().BeOfType<AddFrameworkModel>();
+        result.Model.Should().BeOfType<AddEditFrameworkModel>();
     }
 
     [Theory]
     [CommonAutoData]
     public static async Task Edit_InvalidModel_ReturnsView(
         string frameworkId,
-        AddFrameworkModel model,
+        AddEditFrameworkModel model,
         FrameworksController controller)
     {
         controller.ModelState.AddModelError("some-key", "some-error");
@@ -127,7 +127,7 @@ public static class FrameworksControllerTests
     [CommonAutoData]
     public static async Task Edit_Valid_AddsFrameworkAndRedirects(
         string frameworkId,
-        AddFrameworkModel model,
+        AddEditFrameworkModel model,
         [Frozen] Mock<IFrameworkService> service,
         FrameworksController controller)
     {

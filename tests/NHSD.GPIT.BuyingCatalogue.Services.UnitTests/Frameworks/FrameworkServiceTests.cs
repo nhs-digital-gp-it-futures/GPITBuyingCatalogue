@@ -225,6 +225,8 @@ public static class FrameworkServiceTests
         dbContext.Frameworks.AddRange(frameworks);
         await dbContext.SaveChangesAsync();
 
+        dbContext.ChangeTracker.Clear();
+
         return await Assert.ThrowsAsync<ArgumentNullException>(() => service.UpdateFramework(id, null, Enumerable.Empty<FundingType>()));
     }
 
@@ -330,6 +332,8 @@ public static class FrameworkServiceTests
         dbContext.Frameworks.Add(framework);
         await dbContext.SaveChangesAsync();
 
+        dbContext.ChangeTracker.Clear();
+
         var result = await service.FrameworkNameExistsExcludeSelf(framework.ShortName, uniqueId);
 
         result.Should().BeTrue();
@@ -344,6 +348,8 @@ public static class FrameworkServiceTests
     {
         dbContext.Frameworks.Add(framework);
         await dbContext.SaveChangesAsync();
+
+        dbContext.ChangeTracker.Clear();
 
         var result = await service.FrameworkNameExistsExcludeSelf(framework.ShortName, framework.Id);
 

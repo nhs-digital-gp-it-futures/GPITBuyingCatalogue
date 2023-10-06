@@ -33,10 +33,10 @@ public class FrameworksController : Controller
     }
 
     [HttpGet("add")]
-    public IActionResult Add() => View(new AddFrameworkModel { BackLink = Url.Action(nameof(Dashboard)) });
+    public IActionResult Add() => View(new AddEditFrameworkModel { BackLink = Url.Action(nameof(Dashboard)) });
 
     [HttpPost("add")]
-    public async Task<IActionResult> Add(AddFrameworkModel model)
+    public async Task<IActionResult> Add(AddEditFrameworkModel model)
     {
         if (!ModelState.IsValid)
             return View(model);
@@ -53,24 +53,16 @@ public class FrameworksController : Controller
         if (framework is null)
             return RedirectToAction(nameof(Dashboard));
 
-        AddFrameworkModel model = new AddFrameworkModel
+        AddEditFrameworkModel model = new AddEditFrameworkModel(framework)
         {
             BackLink = Url.Action(nameof(Dashboard)),
-            FrameworkId = frameworkId,
-            Name = framework.ShortName,
         };
 
-        foreach (FundingType i in framework.FundingTypes)
-        {
-            model.FundingTypes.Where(x => x.Value == i).FirstOrDefault().Selected = true;
-        }
-
-        var view = View("Add", model);
-        return view;
+        return View("Add", model); ;
     }
 
     [HttpPost("edit/{frameworkId}")]
-    public async Task<IActionResult> Edit(string frameworkId, AddFrameworkModel model)
+    public async Task<IActionResult> Edit(string frameworkId, AddEditFrameworkModel model)
     {
         if (!ModelState.IsValid)
             return View("add", model);
