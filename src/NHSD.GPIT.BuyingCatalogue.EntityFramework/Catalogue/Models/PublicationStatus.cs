@@ -5,19 +5,19 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     public enum PublicationStatus
     {
-        [Description("Saved as draft")]
+        [Description("Save as draft")]
         [Display(Name = nameof(Draft), Order = 1)]
         Draft = 1,
 
-        [Description("Unpublished")]
+        [Description("Unpublish")]
         [Display(Name = nameof(Unpublished), Order = 3)]
         Unpublished = 2,
 
-        [Description("Published")]
+        [Description("Publish")]
         [Display(Name = nameof(Published), Order = 2)]
         Published = 3,
 
-        [Description("Suspended")]
+        [Description("Suspend")]
         [Display(Name = nameof(Suspended), Order = 5)]
         Suspended = 4,
 

@@ -3,6 +3,7 @@
     CatalogueItemId nvarchar(14) NOT NULL,
     [Description] nvarchar(1000) NULL,
     OrderGuidance nvarchar(1000) NULL,
+    PracticeReorganisationType int NULL,
     LastUpdated datetime2(7) DEFAULT GETUTCDATE() NOT NULL,
     LastUpdatedBy int NULL,
     SysStartTime datetime2(0) GENERATED ALWAYS AS ROW START NOT NULL,

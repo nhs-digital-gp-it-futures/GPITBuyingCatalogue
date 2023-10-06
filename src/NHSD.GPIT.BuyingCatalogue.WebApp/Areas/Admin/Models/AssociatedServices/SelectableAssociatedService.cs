@@ -14,5 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
         public PublicationStatus PublishedStatus { get; set; }
 
         public bool Selected { get; set; }
+
+        public PracticeReorganisationTypeEnum PracticeReorganisation { get; set; }
     }
 }
