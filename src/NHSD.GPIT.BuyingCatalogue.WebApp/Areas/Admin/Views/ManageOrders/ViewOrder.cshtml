@@ -58,7 +58,7 @@
                 <vc:nhs-secondary-button text="Download order summary PDF"
                                          url="@Url.Action(nameof(ManageOrdersController.Download), typeof(ManageOrdersController).ControllerName(), new { internalOrgId = Model.OrganisationInternalIdentifier, callOffId = Model.CallOffId })"
                                          type="Secondary"/>
-                @if (Model.OrderStatus == OrderStatus.Completed)
+                @if (Model.OrderStatus == OrderStatus.Completed || Model.OrderStatus == OrderStatus.Terminated)
                 {
                     <vc:nhs-secondary-button text="Download full order CSV"
                                              url="@Url.Action(nameof(ManageOrdersController.DownloadFullOrderCsv), typeof(ManageOrdersController).ControllerName(), new { externalOrgId = Model.OrganisationExternalIdentifier, callOffId = Model.CallOffId })"
