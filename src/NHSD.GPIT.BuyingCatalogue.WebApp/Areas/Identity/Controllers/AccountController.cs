@@ -16,7 +16,9 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Validators.Registration;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 {
@@ -98,12 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
                 return signinResult.IsLockedOut ? RedirectToAction(nameof(LockedAccount)) : BadLogin();
 
             await odsService.UpdateOrganisationDetails(user.PrimaryOrganisation.ExternalIdentifier);
-            return Redirect((!string.IsNullOrWhiteSpace(viewModel.ReturnUrl) ? viewModel.ReturnUrl :
-                await userManager.IsInRoleAsync(user, OrganisationFunction.Authority.Name) ?
-                    Url.Action(
-                        nameof(HomeController.Index),
-                        typeof(HomeController).ControllerName(),
-                        new { area = "Admin" }) : "~/") ?? string.Empty);
+            return Redirect(await GetLogonReturnUrl(viewModel.ReturnUrl, user));
         }
 
         [HttpGet("LockedAccount")]
@@ -253,8 +250,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 
             if (passwordUsedBefore is not null)
                 ModelState.AddModelError(nameof(UpdatePasswordViewModel.NewPassword), PasswordValidator.PasswordAlreadyUsed);
-
             return View(viewModel);
+        }
+
+        private async Task<string> GetLogonReturnUrl(string returnUrl, AspNetUser user)
+        {
+            if (!string.IsNullOrWhiteSpace(returnUrl))
+                return returnUrl;
+
+            var isAdmin = await userManager.IsInRoleAsync(user, OrganisationFunction.Authority.Name);
+            return isAdmin ?
+                    Url.Action(
+                        nameof(HomeController.Index),
+                        typeof(HomeController).ControllerName(),
+                        new { area = "Admin" }) : "~/";
         }
     }
 }

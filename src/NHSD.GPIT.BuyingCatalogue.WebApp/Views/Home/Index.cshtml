@@ -27,20 +27,20 @@
     <div class="nhsuk-width-container nhsuk-u-padding-top-7 nhsuk-u-padding-bottom-4">
         <div class="nhsuk-grid-row nhsuk-u-padding-top-7">
             <ul class="nhsuk-grid-row nhs-grid-row__no-padding">
+                    <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+                        <nhs-card title="Browse Catalogue Solutions" url="@Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new { Area = typeof(SolutionsController).AreaName() })" horizontal-align="true">
+                            <p class="nhsuk-body">All solutions have been assessed against a set of Capabilities defined by the NHS and a set of Standards defined by NHS Digital.</p>
+                        </nhs-card>
+                    </li>
                 <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
-                    <nhs-card title="Browse Catalogue Solutions" url="@Url.Action( nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new { Area = typeof(SolutionsController).AreaName() })" set-min-height="true">
-                        <p class="nhsuk-body">All solutions have been assessed against a set of Capabilities defined by the NHS and a set of Standards defined by NHS Digital.</p>
-                    </nhs-card>
-                </li>
-                <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
-                    <nhs-card title="Create or manage orders" url="@Url.Action( nameof(DashboardController.Index), typeof(DashboardController).ControllerName(), new { Area = typeof(DashboardController).AreaName() })" set-min-height="true">
+                    <nhs-card title="Create or manage orders" url="@Url.Action(nameof(DashboardController.Index), typeof(DashboardController).ControllerName(), new { Area = typeof(DashboardController).AreaName() })" horizontal-align="true">
                         <p class="nhsuk-body">Place a new order or complete an order you've already started (log in required).</p>
                     </nhs-card>
                 </li>
                 @if (!User.Identity.IsAuthenticated)
                 {
-                     <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
-                        <nhs-card title="Request an account" url="@Url.Action( nameof(RegistrationController.Index), typeof(RegistrationController).ControllerName(), new { Area = typeof(RegistrationController).AreaName() })" set-min-height="true">
+                    <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+                        <nhs-card title="Request an account" url="@Url.Action(nameof(RegistrationController.Index), typeof(RegistrationController).ControllerName(), new { Area = typeof(RegistrationController).AreaName() })" horizontal-align="true">
                             <p class="nhsuk-body">Get log in credentials so you can create orders on the Buying Catalogue.</p>
                         </nhs-card>
                     </li>
@@ -72,7 +72,7 @@
                 <p class ="nhs-body">Find out more information about procurement frameworks.</p>
                 <ul class="nhsuk-grid-row nhsuk-card-group nhsuk-u-margin-top-5">
                     <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
-                        <nhs-card title="Tech Innovation framework" set-heading-min-height="true">
+                        <nhs-card title="Tech Innovation framework" horizontal-align="true">
                             <p class="nhsuk-card__description card-min-content-height">
                                 Supports the delivery of cloud-based, innovative solutions into the GP marketplace.
                             </p>
@@ -82,7 +82,7 @@
                         </nhs-card>
                     </li>
                     <li class="nhsuk-grid-column-one-third  nhsuk-card-group__item">
-                        <nhs-card title="DFOCVC framework" set-heading-min-height="true">
+                        <nhs-card title="DFOCVC framework" horizontal-align="true">
                             <p class="nhsuk-card__description card-min-content-height">
                                 Supports the purchasing of assured online consultation and video consultation systems.
                             </p>
@@ -92,7 +92,7 @@
                         </nhs-card>
                     </li>
                     <li class="nhsuk-grid-column-one-third  nhsuk-card-group__item">
-                        <nhs-card title="Advanced Telephony Better Purchasing framework" set-heading-min-height="true">
+                        <nhs-card title="Advanced Telephony Better Purchasing framework" horizontal-align="true">
                             <p class="nhsuk-card__description card-min-content-height">
                                 Supports the commissioning of advanced, cloud-hosted GP telephony systems.
                             </p>

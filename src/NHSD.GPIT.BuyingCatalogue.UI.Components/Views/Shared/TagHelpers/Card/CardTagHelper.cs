@@ -15,8 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
         public const string TextName = "text";
         public const string TitleName = "title";
         public const string UrlName = "url";
-        public const string SetMinHeightName = "set-min-height";
-        public const string SetHeadingMinHeightName = "set-heading-min-height";
+        public const string HorizontalAlignName = "horizontal-align";
 
         private const string CardClass = "nhsuk-card";
         private const string CardMinHeightClass = "nhs-card__min-height";
@@ -37,11 +36,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
         [HtmlAttributeName(UrlName)]
         public string Url { get; set; }
 
-        [HtmlAttributeName(SetMinHeightName)]
-        public bool SetMinHeight { get; set; }
+        [HtmlAttributeName(HorizontalAlignName)]
+        public bool HorizontalAlign { get; set; }
 
-        [HtmlAttributeName(SetHeadingMinHeightName)]
-        public bool SetHeadingMinHeight { get; set; }
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
@@ -53,11 +50,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
             if (!string.IsNullOrWhiteSpace(Url))
             {
                 output.AddClass(CardClickableClass, HtmlEncoder.Default);
-            }
 
-            if (SetMinHeight)
-            {
-                output.AddClass(CardMinHeightClass, HtmlEncoder.Default);
+                if (HorizontalAlign)
+                    output.AddClass(CardMinHeightClass, HtmlEncoder.Default);
             }
 
             var content = await BuildContentAsync(output);
@@ -84,12 +79,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
             heading.AddCssClass(CardHeadingClass);
             heading.AddCssClass(CardHeadingMobileClass);
 
-            if (SetHeadingMinHeight)
-                heading.AddCssClass(CardHeadingMinHeightClass);
-
             if (string.IsNullOrWhiteSpace(Url))
             {
                 heading.InnerHtml.Append(Title);
+
+                if (HorizontalAlign)
+                    heading.AddCssClass(CardHeadingMinHeightClass);
             }
             else
             {
