@@ -39,7 +39,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
         [HtmlAttributeName(HorizontalAlignName)]
         public bool HorizontalAlign { get; set; }
 
-
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = TagHelperConstants.Div;
