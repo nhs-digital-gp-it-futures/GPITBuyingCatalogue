@@ -8,6 +8,8 @@ public class MarketingPriceSummaryModel
 {
     public CatalogueItemId SolutionId { get; set; }
 
+    public CatalogueItemId ServiceId { get; set; }
+
     public string CapabilitiesAndEpicsUrl { get; set; }
 
     public string PricePageUrl { get; set; }
