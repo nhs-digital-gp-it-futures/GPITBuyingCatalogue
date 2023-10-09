@@ -215,6 +215,48 @@ public static class FrameworkServiceTests
 
     [Theory]
     [InMemoryDbAutoData]
+    public static async Task<ArgumentNullException> EditFramework_NullName_ThrowsException(
+        FrameworkService service,
+        List<EntityFramework.Catalogue.Models.Framework> frameworks,
+        [Frozen] BuyingCatalogueDbContext dbContext)
+    {
+        string id = frameworks.FirstOrDefault().Id;
+        dbContext.Frameworks.RemoveRange(dbContext.Frameworks);
+        dbContext.Frameworks.AddRange(frameworks);
+        await dbContext.SaveChangesAsync();
+
+        dbContext.ChangeTracker.Clear();
+
+        return await Assert.ThrowsAsync<ArgumentNullException>(() => service.UpdateFramework(id, null, Enumerable.Empty<FundingType>()));
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task EditFramework_Valid_UpdatesFramework(
+        FrameworkService service,
+        List<EntityFramework.Catalogue.Models.Framework> frameworks,
+        [Frozen] BuyingCatalogueDbContext dbContext,
+        List<FundingType> fundingTypes)
+    {
+        var frameworkId = frameworks.First().Id;
+        string newName = "New Name";
+
+        dbContext.Frameworks.RemoveRange(dbContext.Frameworks);
+        dbContext.Frameworks.AddRange(frameworks);
+        await dbContext.SaveChangesAsync();
+
+        dbContext.ChangeTracker.Clear();
+
+        await service.UpdateFramework(frameworkId, newName, fundingTypes);
+
+        var framework = dbContext.Frameworks.AsNoTracking().FirstOrDefault(x => x.Id == frameworkId);
+
+        framework.Name.Should().Be(newName);
+        framework.FundingTypes.Should().BeEquivalentTo(fundingTypes);
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
     public static async Task MarkAsExpired_InvalidFramework_DoesNothing(
         string frameworkId,
         List<EntityFramework.Catalogue.Models.Framework> frameworks,
@@ -275,6 +317,53 @@ public static class FrameworkServiceTests
         FrameworkService service)
     {
         var result = await service.FrameworkNameExists(frameworkName);
+
+        result.Should().BeFalse();
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task FrameworkNameExistsExcludeSelf_ReturnsTrue(
+        EntityFramework.Catalogue.Models.Framework framework,
+        [Frozen] BuyingCatalogueDbContext dbContext,
+        FrameworkService service,
+        string uniqueId)
+    {
+        dbContext.Frameworks.Add(framework);
+        await dbContext.SaveChangesAsync();
+
+        dbContext.ChangeTracker.Clear();
+
+        var result = await service.FrameworkNameExistsExcludeSelf(framework.ShortName, uniqueId);
+
+        result.Should().BeTrue();
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task FrameworkNameExistsExcludeSelf_SameId_ReturnsFalse(
+        EntityFramework.Catalogue.Models.Framework framework,
+        [Frozen] BuyingCatalogueDbContext dbContext,
+        FrameworkService service)
+    {
+        dbContext.Frameworks.Add(framework);
+        await dbContext.SaveChangesAsync();
+
+        dbContext.ChangeTracker.Clear();
+
+        var result = await service.FrameworkNameExistsExcludeSelf(framework.ShortName, framework.Id);
+
+        result.Should().BeFalse();
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task FrameworkNameExistsExcludeSelf_UniqueName_ReturnsFalse(
+        string frameworkName,
+        string frameworkId,
+        FrameworkService service)
+    {
+        var result = await service.FrameworkNameExistsExcludeSelf(frameworkName, frameworkId);
 
         result.Should().BeFalse();
     }

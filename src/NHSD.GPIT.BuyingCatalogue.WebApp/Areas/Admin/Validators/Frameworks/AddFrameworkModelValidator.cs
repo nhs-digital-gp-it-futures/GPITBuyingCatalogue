@@ -6,7 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Frameworks;
 
-public sealed class AddFrameworkModelValidator : AbstractValidator<AddFrameworkModel>
+public sealed class AddFrameworkModelValidator : AbstractValidator<AddEditFrameworkModel>
 {
     internal const string FundingTypeError = "Select a funding type";
     internal const string NameMissingError = "Enter a name";
@@ -18,12 +18,12 @@ public sealed class AddFrameworkModelValidator : AbstractValidator<AddFrameworkM
         RuleFor(x => x.FundingTypes)
             .Must(x => x.Any(y => y.Selected))
             .WithMessage(FundingTypeError)
-            .OverridePropertyName($"{nameof(AddFrameworkModel.FundingTypes)}[0].Selected");
+            .OverridePropertyName($"{nameof(AddEditFrameworkModel.FundingTypes)}[0].Selected");
 
         RuleFor(x => x.Name)
             .NotEmpty()
             .WithMessage(NameMissingError)
-            .Must(x => !frameworkService.FrameworkNameExists(x).GetAwaiter().GetResult())
+            .Must((model, name) => !frameworkService.FrameworkNameExistsExcludeSelf(name, model.FrameworkId).GetAwaiter().GetResult())
             .WithMessage(NameDuplicationError);
     }
 }
