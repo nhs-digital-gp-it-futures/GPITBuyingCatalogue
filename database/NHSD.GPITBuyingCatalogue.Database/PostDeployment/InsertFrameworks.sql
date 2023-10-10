@@ -14,6 +14,10 @@ VALUES ('NHSDGP001', 'NHS Digital GP IT Futures Framework 1', 'GP IT Futures', '
        ('DFOCVC001', 'Digital First Online Consultation and Video Consultation Framework 1', 'DFOCVC', 'NHS England', '2', 0),
        ('TIF001', 'Tech Innovation Framework', 'Tech Innovation', 'NHS Digital', '1', 0),
        ('ATP001', 'Advanced Telephony Framework', 'Advanced Telephony', 'NHS England', '2', 0);
+       IF UPPER('$(INSERT_TEST_DATA)') = 'TRUE'
+BEGIN
+    UPDATE @frameworks SET FundingTypes = '1,2' WHERE Id = 'TIF001'
+END
 
 MERGE INTO catalogue.Frameworks AS TARGET
     USING @frameworks AS SOURCE ON TARGET.Id = SOURCE.Id
