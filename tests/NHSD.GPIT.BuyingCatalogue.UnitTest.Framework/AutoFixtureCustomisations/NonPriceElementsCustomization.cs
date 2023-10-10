@@ -14,6 +14,7 @@ public sealed class NonPriceElementsCustomization : ICustomization
             .Without(x => x.Implementation)
             .Without(x => x.ServiceLevel)
             .Without(x => x.Interoperability)
+            .Without(x => x.Features)
             .Without(x => x.NonPriceWeights);
 
         fixture.Customize<NonPriceElements>(ComposerTransformation);

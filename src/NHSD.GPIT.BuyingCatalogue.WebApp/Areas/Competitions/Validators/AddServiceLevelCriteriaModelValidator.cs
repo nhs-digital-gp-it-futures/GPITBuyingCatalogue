@@ -1,19 +1,22 @@
-﻿using FluentValidation;
+﻿using System.Linq;
+using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.NonPriceElementModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Validators;
 
 public class AddServiceLevelCriteriaModelValidator : AbstractValidator<AddServiceLevelCriteriaModel>
 {
-    internal const string EmptyApplicableDaysError = "Enter the applicable days";
+    internal const string EmptyApplicableDaysError = "Select applicable days";
     internal const string EmptyTimeFromError = "Enter a from time";
     internal const string EmptyTimeUntilError = "Enter an until time";
+    internal const string MissingBankHolidaysError = "Select yes if you want to include Bank Holidays";
 
     public AddServiceLevelCriteriaModelValidator()
     {
         RuleFor(x => x.ApplicableDays)
-            .NotEmpty()
-            .WithMessage(EmptyApplicableDaysError);
+            .Must(x => x.Any(y => y.Selected))
+            .WithMessage(EmptyApplicableDaysError)
+            .OverridePropertyName($"{nameof(AddServiceLevelCriteriaModel.ApplicableDays)}[0].Selected");
 
         RuleFor(x => x.TimeFrom)
             .NotNull()
@@ -23,5 +26,9 @@ public class AddServiceLevelCriteriaModelValidator : AbstractValidator<AddServic
             .NotNull()
             .WithMessage(EmptyTimeUntilError)
             .Unless(x => !x.TimeFrom.HasValue);
+
+        RuleFor(x => x.IncludesBankHolidays)
+            .NotNull()
+            .WithMessage(MissingBankHolidaysError);
     }
 }

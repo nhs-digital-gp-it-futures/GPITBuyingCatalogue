@@ -1,0 +1,41 @@
+@model FeaturesRequirementsPartialModel
+
+@if (Model.MustRequirements.Any())
+{
+    <nhs-table label-text="Must requirements">
+        <nhs-table-column>Requirement details</nhs-table-column>
+        <nhs-table-column>Action</nhs-table-column>
+
+        @foreach (var mustRequirement in Model.MustRequirements)
+        {
+            <nhs-table-row-container>
+                <nhs-table-cell>
+                    <p>@mustRequirement.Requirements</p>
+                </nhs-table-cell>
+                <nhs-table-cell>
+                    <a href="@Url.Action(nameof(CompetitionNonPriceElementsController.EditFeatureRequirement), typeof(CompetitionNonPriceElementsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, requirementId = mustRequirement.Id, Model.ReturnUrl, Model.SelectedNonPriceElements })">Edit</a>
+                </nhs-table-cell>
+            </nhs-table-row-container>
+        }
+    </nhs-table>
+}
+
+@if (Model.ShouldRequirements.Any())
+{
+    <nhs-table label-text="Should requirements">
+        <nhs-table-column>Requirement details</nhs-table-column>
+        <nhs-table-column>Action</nhs-table-column>
+
+        @foreach (var shouldRequirement in Model.ShouldRequirements)
+        {
+            <nhs-table-row-container>
+                <nhs-table-cell>
+                    <p>@shouldRequirement.Requirements</p>
+                </nhs-table-cell>
+                <nhs-table-cell>
+                    <a href="@Url.Action(nameof(CompetitionNonPriceElementsController.EditFeatureRequirement), typeof(CompetitionNonPriceElementsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, requirementId = shouldRequirement.Id, Model.ReturnUrl, Model.SelectedNonPriceElements })">Edit</a>
+                </nhs-table-cell>
+            </nhs-table-row-container>
+        }
+    </nhs-table>
+}

@@ -18,4 +18,7 @@ public class NonPriceElements
 
     public ICollection<InteroperabilityCriteria> Interoperability { get; set; } =
         new HashSet<InteroperabilityCriteria>();
+
+    public ICollection<FeaturesCriteria> Features { get; set; } =
+        new HashSet<FeaturesCriteria>();
 }

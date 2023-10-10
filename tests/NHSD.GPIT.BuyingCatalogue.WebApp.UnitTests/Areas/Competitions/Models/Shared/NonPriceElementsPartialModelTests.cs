@@ -14,11 +14,15 @@ public static class NonPriceElementsPartialModelTests
     [Theory]
     [CommonAutoData]
     public static void Construct_SetsPropertiesAsExpected(
+        string internalOrgId,
+        int competitionId,
         NonPriceElements nonPriceElements,
         object routeValues)
     {
-        var model = new NonPriceElementsPartialModel(nonPriceElements, routeValues);
+        var model = new NonPriceElementsPartialModel(internalOrgId, competitionId, nonPriceElements, routeValues);
 
+        model.InternalOrgId.Should().Be(internalOrgId);
+        model.CompetitionId.Should().Be(competitionId);
         model.NonPriceElements.Should().Be(nonPriceElements);
         model.RouteValues.Should().Be(routeValues);
     }
@@ -26,6 +30,8 @@ public static class NonPriceElementsPartialModelTests
     [Theory]
     [CommonAutoData]
     public static void GetIm1Integrations_Returns(
+        string internalOrgId,
+        int competitionId,
         NonPriceElements nonPriceElements,
         object routeValues)
     {
@@ -35,7 +41,7 @@ public static class NonPriceElementsPartialModelTests
 
         nonPriceElements.Interoperability = im1Integrations;
 
-        var model = new NonPriceElementsPartialModel(nonPriceElements, routeValues);
+        var model = new NonPriceElementsPartialModel(internalOrgId, competitionId, nonPriceElements, routeValues);
 
         var actualIntegrations = model.GetIm1Integrations();
 
@@ -48,6 +54,8 @@ public static class NonPriceElementsPartialModelTests
     [Theory]
     [CommonAutoData]
     public static void GetGpConnectIntegrations_Returns(
+        string internalOrgId,
+        int competitionId,
         NonPriceElements nonPriceElements,
         object routeValues)
     {
@@ -57,7 +65,7 @@ public static class NonPriceElementsPartialModelTests
 
         nonPriceElements.Interoperability = gpConnectIntegrations;
 
-        var model = new NonPriceElementsPartialModel(nonPriceElements, routeValues);
+        var model = new NonPriceElementsPartialModel(internalOrgId, competitionId, nonPriceElements, routeValues);
 
         var actualIntegrations = model.GetGpConnectIntegrations();
 

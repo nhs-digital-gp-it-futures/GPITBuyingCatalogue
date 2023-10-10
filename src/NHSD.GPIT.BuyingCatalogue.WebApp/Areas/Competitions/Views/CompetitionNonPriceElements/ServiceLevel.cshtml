@@ -9,7 +9,7 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-validation-summary />
+        <nhs-validation-summary RadioId="@(nameof(Model.IncludesBankHolidays))" />
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.CompetitionName"
                         advice="Provide information on the level of support you require for a winning solution."/>
@@ -29,9 +29,30 @@
                                       asp-for-until="TimeUntil"/>
             </nhs-fieldset-form-label>
 
-            <nhs-input asp-for="ApplicableDays"
-                       label-text="Applicable days"
-                       label-hint="Enter the days you require core support to be available, including if you need support on Bank Holidays."/>
+            <nhs-fieldset-form-label asp-for="@Model"
+                                     label-text="Applicable days"
+                                     label-hint="Select the days you require core support to be available."
+                                     size="Medium">
+                <nhs-checkbox-container>
+                    @for (var i = 0; i < Model.ApplicableDays.Count; i++)
+                    {
+                        <input type="hidden" asp-for="@Model.ApplicableDays[i].Text" />
+                        <nhs-checkbox asp-for="@Model.ApplicableDays[i].Selected"
+                                      label-text="@Model.ApplicableDays[i].Text"
+                                      hidden-input="@Model.ApplicableDays[i].Value"/>
+                    }
+                </nhs-checkbox-container>
+            </nhs-fieldset-form-label>
+
+            <nhs-fieldset-form-label asp-for="@Model"
+                                     label-text="Bank Holidays"
+                                     label-hint="Select if you need support on Bank Holidays."
+                                     size="Medium">
+                <nhs-radio-buttons asp-for="IncludesBankHolidays"
+                                   values="@Model.BankHolidayOptions"
+                                   display-name="Text"
+                                   value-name="Value" />
+            </nhs-fieldset-form-label>
 
             <br/>
             <div>

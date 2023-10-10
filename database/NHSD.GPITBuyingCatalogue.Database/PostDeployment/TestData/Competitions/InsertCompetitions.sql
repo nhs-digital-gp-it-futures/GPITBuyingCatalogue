@@ -717,8 +717,8 @@ BEGIN
     SET IDENTITY_INSERT [competitions].[ImplementationCriteria] OFF
 
     SET IDENTITY_INSERT [competitions].[ServiceLevelCriteria] ON
-    INSERT [competitions].[ServiceLevelCriteria] ([Id], [TimeFrom], [TimeUntil], [ApplicableDays], [NonPriceElementsId]) VALUES (1, GETUTCDATE(), GETUTCDATE(), N'Monday - Friday', 2)
-    INSERT [competitions].[ServiceLevelCriteria] ([Id], [TimeFrom], [TimeUntil], [ApplicableDays], [NonPriceElementsId]) VALUES (2, GETUTCDATE(), GETUTCDATE(), N'Monday - Friday', 3)
+    INSERT [competitions].[ServiceLevelCriteria] ([Id], [TimeFrom], [TimeUntil], [ApplicableDays], [NonPriceElementsId]) VALUES (1, GETUTCDATE(), GETUTCDATE(), N'0,1,2,3,4', 2)
+    INSERT [competitions].[ServiceLevelCriteria] ([Id], [TimeFrom], [TimeUntil], [ApplicableDays], [NonPriceElementsId]) VALUES (2, GETUTCDATE(), GETUTCDATE(), N'0,1,2,3,4', 3)
     SET IDENTITY_INSERT [competitions].[ServiceLevelCriteria] OFF
 
     SET IDENTITY_INSERT [competitions].[InteroperabilityCriteria] ON

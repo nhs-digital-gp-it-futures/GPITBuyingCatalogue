@@ -1,6 +1,8 @@
-﻿using FluentAssertions;
+﻿using System.Linq;
+using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.TaskListModels;
 using Xunit;
@@ -21,6 +23,9 @@ public static class CompetitionReviewCriteriaModelTests
         competition.NonPriceElements = nonPriceElements;
         competition.Weightings = weightings;
 
+        var expectedNonPriceWeights = competition.NonPriceElements.GetNonPriceElements()
+            .ToDictionary(x => x, x => competition.NonPriceElements.GetNonPriceWeight(x));
+
         var model = new CompetitionReviewCriteriaModel(competition);
 
         model.InternalOrgId.Should().Be(organisation.InternalIdentifier);
@@ -28,5 +33,6 @@ public static class CompetitionReviewCriteriaModelTests
         model.CompetitionName.Should().Be(competition.Name);
         model.NonPriceElements.Should().Be(nonPriceElements);
         model.CompetitionWeights.Should().Be(weightings);
+        model.NonPriceWeights.Should().BeEquivalentTo(expectedNonPriceWeights);
     }
 }

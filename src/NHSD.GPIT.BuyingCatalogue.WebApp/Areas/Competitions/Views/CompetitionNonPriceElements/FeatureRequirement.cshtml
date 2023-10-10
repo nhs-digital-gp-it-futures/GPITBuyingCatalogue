@@ -1,0 +1,44 @@
+@model FeaturesRequirementModel
+
+@{
+    ViewBag.Title = "Features requirements";
+}
+
+<partial name="Partials/_BackLink" model="Model"/>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary RadioId="@(nameof(Model.SelectedCompliance))"/>
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.CompetitionName"
+                        advice="Explain your requirements for features provided by the winning solution. You can add more features requirements later if needed."/>
+
+        <form method="post">
+            <input type="hidden" asp-for="CompetitionName"/>
+            <input type="hidden" asp-for="BackLink"/>
+            <input type="hidden" asp-for="FeaturesCriteriaId"/>
+
+            <nhs-fieldset-form-label asp-for="AvailableComplianceLevels"
+                                     label-text="Is this a must or should requirement?"
+                                     label-hint="Is it essential that the winning solution meets this requirement or is it a nice-to-have?"
+                                     size="Medium">
+                <nhs-radio-buttons asp-for="SelectedCompliance" values="@Model.AvailableComplianceLevels"
+                                   value-name="Value"
+                                   display-name="Text"/>
+            </nhs-fieldset-form-label>
+
+            <nhs-textarea asp-for="Requirements"
+                          label-text="Feature requirement"
+                          label-hint="For example, you may need the winning solution to provide certain functionality to meet your business needs."/>
+
+            <br/>
+            <div>
+                <nhs-submit-button/>
+            </div>
+            <div>
+                <a href="@Model.BackLink">Cancel</a>
+            </div>
+        </form>
+
+    </div>
+</div>

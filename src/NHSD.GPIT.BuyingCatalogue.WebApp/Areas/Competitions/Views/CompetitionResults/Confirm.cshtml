@@ -16,8 +16,8 @@
         <nhs-page-title title="@ViewBag.Title" caption="@Model.CompetitionName" advice="Review the information you’ve added for this competition. If you’re happy, you can view your results and see your winning solution."/>
 
         <nhs-warning-callout label-text="Viewing your results">
-            <p>Viewing your results means you’ll no longer be able to make any changes to the information you’ve provided and this competition will be complete.</p>
-            <p>You can then order your winning solution.</p>
+            <p>Viewing your results means you’ll no longer be able to make any changes to the information you’ve provided and this competition will be complete. You can then order your winning solution.</p>
+            <p>However, the result is non-binding so you are under no obligation to place an order for the solution if you don’t want to.</p>
         </nhs-warning-callout>
 
         @if (Model.IncludesNonPriceElements)
@@ -50,8 +50,13 @@
             }
         }
 
+        <p>You can <a href="@Model.BackLink">return to your competition tasklist</a> if you need to make any changes to the information you’ve provided. By continuing you’ll no longer be able to make any changes.</p>
+
         <form method="post">
-            <nhs-submit-button text="View results"></nhs-submit-button>
+            <nhs-button-group>
+                <nhs-submit-button text="View results"/>
+                <vc:nhs-secondary-button type="Secondary" text="Save for later" url="@Url.Action(nameof(CompetitionsDashboardController.Index), typeof(CompetitionsDashboardController).ControllerName(), new { internalOrgId = Model.InternalOrgId })"/>
+            </nhs-button-group>
         </form>
     </div>
 </div>

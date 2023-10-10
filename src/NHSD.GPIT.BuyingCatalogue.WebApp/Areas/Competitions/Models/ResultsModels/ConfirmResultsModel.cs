@@ -22,6 +22,8 @@ public class ConfirmResultsModel : NavBaseModel
         IncludesNonPriceElements = competition.IncludesNonPrice.GetValueOrDefault();
     }
 
+    public string InternalOrgId { get; set; }
+
     public string CompetitionName { get; set; }
 
     public bool IncludesNonPriceElements { get; set; }
