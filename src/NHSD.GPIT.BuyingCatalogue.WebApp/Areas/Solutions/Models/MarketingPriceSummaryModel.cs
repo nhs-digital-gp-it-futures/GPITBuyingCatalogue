@@ -1,12 +1,16 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 
+[ExcludeFromCodeCoverage]
 public class MarketingPriceSummaryModel
 {
     public CatalogueItemId SolutionId { get; set; }
+
+    public CatalogueItemId ServiceId { get; set; }
 
     public string CapabilitiesAndEpicsUrl { get; set; }
 
