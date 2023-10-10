@@ -155,4 +155,41 @@ public class CompetitionScoringController : Controller
 
         return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
     }
+
+    [HttpGet("features")]
+    public async Task<IActionResult> Features(
+        string internalOrgId,
+        int competitionId)
+    {
+        var competition = await competitionsService.GetCompetitionWithSolutions(internalOrgId, competitionId);
+
+        var model = new FeaturesScoringModel(competition)
+        {
+            BackLink = Url.Action(nameof(Index), new { internalOrgId, competitionId }),
+        };
+
+        return View(model);
+    }
+
+    [HttpPost("features")]
+    public async Task<IActionResult> Features(
+        string internalOrgId,
+        int competitionId,
+        FeaturesScoringModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            var competition = await competitionsService.GetCompetitionWithSolutions(internalOrgId, competitionId);
+
+            model.WithSolutions(competition.CompetitionSolutions, false);
+
+            return View(model);
+        }
+
+        var solutionsAndScores = model.SolutionScores.ToDictionary(x => x.SolutionId, x => (x.Score.GetValueOrDefault(), x.Justification));
+
+        await competitionsService.SetSolutionsFeaturesScores(internalOrgId, competitionId, solutionsAndScores);
+
+        return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
+    }
 }

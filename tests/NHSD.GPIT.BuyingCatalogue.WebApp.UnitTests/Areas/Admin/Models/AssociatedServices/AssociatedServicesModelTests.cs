@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices;
 using Xunit;
@@ -23,6 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Associat
                 PublishedStatus = s.CatalogueItem.PublishedStatus,
                 CatalogueItemId = s.CatalogueItemId,
                 Selected = false,
+                PracticeReorganisation = s.PracticeReorganisationType,
             }).ToList();
 
             var actual = new AssociatedServicesModel(
@@ -30,7 +33,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Associat
                 associatedServices.Select(a => a.CatalogueItem).ToList());
 
             actual.SelectableAssociatedServices.Should().BeEquivalentTo(expected);
-            actual.Solution.Should().Be(catalogueItem);
+            actual.SolutionMergerAndSplits.Should().BeEquivalentTo(new SolutionMergerAndSplitTypesModel(catalogueItem.Name, Array.Empty<PracticeReorganisationTypeEnum>()));
+            actual.SolutionName.Should().Be(catalogueItem.Name);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
         }
 
         [Theory]
@@ -53,6 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Associat
                 PublishedStatus = s.CatalogueItem.PublishedStatus,
                 CatalogueItemId = s.CatalogueItemId,
                 Selected = true,
+                PracticeReorganisation = s.PracticeReorganisationType,
             }).ToList();
 
             var actual = new AssociatedServicesModel(
@@ -60,7 +66,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Associat
                 associatedServices.Select(a => a.CatalogueItem).ToList());
 
             actual.SelectableAssociatedServices.Should().BeEquivalentTo(expected);
-            actual.Solution.Should().Be(catalogueItem);
+            actual.SolutionMergerAndSplits.Should().BeEquivalentTo(new SolutionMergerAndSplitTypesModel(catalogueItem.Name, associatedServices.Select(s => s.PracticeReorganisationType)));
+            actual.SolutionName.Should().Be(catalogueItem.Name);
+            actual.SolutionId.Should().Be(catalogueItem.Id);
         }
     }
 }

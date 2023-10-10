@@ -98,6 +98,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
                     && asoc.CatalogueItem.Name == additionalServiceName
                     && asoc.CatalogueItemId != currentCatalogueItemId);
 
+        public async Task<List<SolutionMergerAndSplitTypesModel>> GetSolutionsWithMergerAndSplitTypesForButExcludingAssociatedService(CatalogueItemId associatedServiceId)
+        {
+            return await dbContext.CatalogueItems
+                .Where(i => i.SupplierServiceAssociations.Any(ssa => ssa.AssociatedServiceId == associatedServiceId))
+                .Select(s =>
+                    new SolutionMergerAndSplitTypesModel(
+                            s.Name,
+                            s.SupplierServiceAssociations
+                                .Where(ssa => ssa.AssociatedServiceId != associatedServiceId && ssa.AssociatedService.PracticeReorganisationType != PracticeReorganisationTypeEnum.None)
+                                .Select(ssa => ssa.AssociatedService.PracticeReorganisationType)))
+                .ToListAsync();
+        }
+
         public async Task RelateAssociatedServicesToSolution(
             CatalogueItemId solutionId,
             IEnumerable<CatalogueItemId> associatedServices)
@@ -150,6 +163,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
                 {
                     Description = model.Description,
                     OrderGuidance = model.OrderGuidance,
+                    PracticeReorganisationType = model.PracticeReorganisationType,
                 },
                 CatalogueItemType = CatalogueItemType.AssociatedService,
                 SupplierId = solution.SupplierId,
@@ -177,6 +191,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
             associatedService.Name = model.Name;
             associatedService.AssociatedService.Description = model.Description;
             associatedService.AssociatedService.OrderGuidance = model.OrderGuidance;
+            associatedService.AssociatedService.PracticeReorganisationType = model.PracticeReorganisationType;
 
             await dbContext.SaveChangesAsync();
         }

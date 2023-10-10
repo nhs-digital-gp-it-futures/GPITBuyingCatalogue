@@ -13,16 +13,27 @@ public class NonPriceElementsPartialModel
     }
 
     public NonPriceElementsPartialModel(
+        string internalOrgId,
+        int competitionId,
         NonPriceElements nonPriceElements,
         object routeValues)
     {
+        InternalOrgId = internalOrgId;
+        CompetitionId = competitionId;
+
         NonPriceElements = nonPriceElements;
         RouteValues = routeValues;
     }
 
+    public string InternalOrgId { get; set; }
+
+    public int CompetitionId { get; set; }
+
     public NonPriceElements NonPriceElements { get; set; }
 
     public object RouteValues { get; set; }
+
+    public bool IsReviewScreen { get; set; }
 
     public List<string> GetIm1Integrations() =>
         NonPriceElements.Interoperability.Where(

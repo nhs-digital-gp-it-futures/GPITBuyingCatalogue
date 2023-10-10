@@ -62,6 +62,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
             await dbContext.SaveChangesAsync();
         }
 
+        public async Task UpdateFramework(string frameworkId, string name, IEnumerable<FundingType> fundingTypes)
+        {
+            var framework = await GetFramework(frameworkId);
+            if (framework is null)
+                return;
+            ArgumentNullException.ThrowIfNullOrEmpty(name);
+            ArgumentNullException.ThrowIfNull(fundingTypes);
+
+            framework.Name = name;
+            framework.ShortName = name;
+            framework.FundingTypes = fundingTypes.ToArray();
+            await dbContext.SaveChangesAsync();
+        }
+
         public async Task MarkAsExpired(string frameworkId)
         {
             var framework = await GetFramework(frameworkId);
@@ -75,5 +89,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
 
         public async Task<bool> FrameworkNameExists(string frameworkName) =>
             await dbContext.Frameworks.AsNoTracking().AnyAsync(x => x.ShortName == frameworkName);
+
+        public async Task<bool> FrameworkNameExistsExcludeSelf(string frameworkName, string frameworkId) =>
+            await dbContext.Frameworks.AsNoTracking().AnyAsync(x => x.ShortName == frameworkName && x.Id != frameworkId);
     }
 }

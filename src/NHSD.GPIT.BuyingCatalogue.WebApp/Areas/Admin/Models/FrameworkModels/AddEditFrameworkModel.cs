@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
@@ -7,8 +8,23 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.FrameworkModels;
 
-public class AddFrameworkModel : NavBaseModel
+public class AddEditFrameworkModel : NavBaseModel
 {
+    public AddEditFrameworkModel()
+    {
+    }
+
+    public AddEditFrameworkModel(EntityFramework.Catalogue.Models.Framework framework)
+    {
+        FrameworkId = framework.Id;
+        Name = framework.ShortName;
+
+        foreach (FundingType i in framework.FundingTypes)
+        {
+            FundingTypes.Where(x => x.Value == i).FirstOrDefault().Selected = true;
+        }
+    }
+
     public string FrameworkId { get; set; }
 
     [StringLength(100)]

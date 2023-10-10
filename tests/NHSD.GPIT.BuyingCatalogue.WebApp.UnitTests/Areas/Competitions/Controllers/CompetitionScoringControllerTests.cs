@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -213,7 +214,7 @@ public static class CompetitionScoringControllerTests
     {
         competitionSolutions.ForEach(x => x.Solution = solution);
         competition.CompetitionSolutions = competitionSolutions;
-        competition.NonPriceElements = new() { ServiceLevel = new() };
+        competition.NonPriceElements = new() { ServiceLevel = new() { ApplicableDays = Enum.GetValues<Iso8601DayOfWeek>() } };
 
         competitionsService.Setup(x => x.GetCompetitionWithSolutions(internalOrgId, competition.Id))
             .ReturnsAsync(competition);
@@ -266,6 +267,80 @@ public static class CompetitionScoringControllerTests
 
         competitionsService.Verify(
             x => x.SetSolutionsServiceLevelScores(
+                internalOrgId,
+                competitionId,
+                It.IsAny<Dictionary<CatalogueItemId, (int, string)>>()),
+            Times.Once());
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.Index));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task Features_ReturnsViewWithModel(
+        string internalOrgId,
+        Competition competition,
+        Solution solution,
+        List<CompetitionSolution> competitionSolutions,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionScoringController controller)
+    {
+        competitionSolutions.ForEach(x => x.Solution = solution);
+        competition.CompetitionSolutions = competitionSolutions;
+        competition.NonPriceElements = new() { Features = new List<FeaturesCriteria>() };
+
+        competitionsService.Setup(x => x.GetCompetitionWithSolutions(internalOrgId, competition.Id))
+            .ReturnsAsync(competition);
+
+        var expectedModel = new FeaturesScoringModel(competition);
+
+        var result = (await controller.Features(internalOrgId, competition.Id)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task Features_InvalidModel_ReturnsViewWithModel(
+        string internalOrgId,
+        Competition competition,
+        FeaturesScoringModel model,
+        Solution solution,
+        List<CompetitionSolution> competitionSolutions,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionScoringController controller)
+    {
+        controller.ModelState.AddModelError("some-key", "some-error");
+
+        competitionSolutions.ForEach(x => x.Solution = solution);
+        competition.CompetitionSolutions = competitionSolutions;
+        competition.NonPriceElements = new() { Features = new List<FeaturesCriteria>() };
+
+        competitionsService.Setup(x => x.GetCompetitionWithSolutions(internalOrgId, competition.Id))
+            .ReturnsAsync(competition);
+
+        var result = (await controller.Features(internalOrgId, competition.Id, model)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().NotBeNull();
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task Features_ValidModel_SetsFeaturesScores(
+        string internalOrgId,
+        int competitionId,
+        FeaturesScoringModel model,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionScoringController controller)
+    {
+        var result = (await controller.Features(internalOrgId, competitionId, model))
+            .As<RedirectToActionResult>();
+
+        competitionsService.Verify(
+            x => x.SetSolutionsFeaturesScores(
                 internalOrgId,
                 competitionId,
                 It.IsAny<Dictionary<CatalogueItemId, (int, string)>>()),

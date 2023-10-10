@@ -9,7 +9,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.PublishStatus;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
@@ -56,6 +55,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> AssociatedServices(CatalogueItemId solutionId, AssociatedServicesModel model)
         {
+            if (!ModelState.IsValid)
+                return View(model);
+
             if (model.SelectableAssociatedServices is not null)
             {
                 var associatedServices = model.SelectableAssociatedServices.Where(a => a.Selected).Select(a => a.CatalogueItemId);
@@ -90,12 +92,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 return View(model);
 
             var solution = await solutionsService.GetSolutionThin(solutionId);
+
             var newModel = new AssociatedServicesDetailsModel
             {
                 Name = model.Name,
                 Description = model.Description,
                 OrderGuidance = model.OrderGuidance,
                 UserId = User.UserId(),
+                PracticeReorganisationType = model.PracticeReorganisation,
             };
 
             var associatedServiceId = await associatedServicesService.AddAssociatedService(solution, newModel);
@@ -157,7 +161,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (associatedService is null)
                 return BadRequest($"No Associated Service found for Id: {associatedServiceId}");
 
-            var model = new EditAssociatedServiceDetailsModel(solution, associatedService)
+            var solutionMergersAndSplits = await associatedServicesService.GetSolutionsWithMergerAndSplitTypesForButExcludingAssociatedService(associatedServiceId);
+
+            var model = new EditAssociatedServiceDetailsModel(solution.SupplierId, solution.Supplier.Name, associatedService, solutionMergersAndSplits)
             {
                 BackLink = Url.Action(nameof(EditAssociatedService), new { solutionId, associatedServiceId }),
             };
@@ -187,6 +193,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                     Description = model.Description,
                     OrderGuidance = model.OrderGuidance,
                     UserId = User.UserId(),
+                    PracticeReorganisationType = model.PracticeReorganisation,
                 });
 
             return RedirectToAction(

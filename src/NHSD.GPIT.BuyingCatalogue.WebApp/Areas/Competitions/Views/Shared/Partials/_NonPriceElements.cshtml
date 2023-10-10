@@ -1,5 +1,17 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.Shared.NonPriceElementsPartialModel
 
+@if (Model.NonPriceElements.Features.Any())
+{
+    <nhs-card title="Features">
+        <partial name="Partials/_FeaturesRequirements" model="@(new FeaturesRequirementsPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.NonPriceElements.Features) { ReturnUrl = Url.ActionLink() })"/>
+
+        @if (!Model.IsReviewScreen)
+        {
+            <vc:nhs-action-link text="Add another features requirement" url="@Url.Action(nameof(CompetitionNonPriceElementsController.FeatureRequirement), typeof(CompetitionNonPriceElementsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, returnUrl = Url.ActionLink() })"/>
+        }
+    </nhs-card>
+}
+
 @if (Model.NonPriceElements.Implementation != null)
 {
     var implementationUrl = Url.Action(nameof(CompetitionNonPriceElementsController.Implementation), typeof(CompetitionNonPriceElementsController).ControllerName(), Model.RouteValues);
@@ -69,10 +81,16 @@
                 @($"{Model.NonPriceElements.ServiceLevel.TimeFrom:HH:mm} to {Model.NonPriceElements.ServiceLevel.TimeUntil:HH:mm}")
             </nhs-summary-list-row>
             <nhs-summary-list-row label-text="Applicable days" action="@("Edit", serviceLevelUrl)">
-                @Model.NonPriceElements.ServiceLevel.ApplicableDays
+                <ul>
+                    @foreach (var day in Model.NonPriceElements.ServiceLevel.ApplicableDays)
+                    {
+                        <li>@day.ToString()</li>
+                    }
+                </ul>
+            </nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Including Bank Holidays?" action="@("Edit", serviceLevelUrl)">
+                @Model.NonPriceElements.ServiceLevel.IncludesBankHolidays.ToYesNo()
             </nhs-summary-list-row>
         </nhs-summary-list>
     </nhs-card>
 }
-
-

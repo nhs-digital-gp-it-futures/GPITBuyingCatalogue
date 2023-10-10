@@ -14,7 +14,8 @@ public sealed class CompetitionSolutionCustomization : ICustomization
             .Without(x => x.SolutionServices)
             .Without(x => x.Price)
             .Without(x => x.Scores)
-            .Without(x => x.Quantities);
+            .Without(x => x.Quantities)
+            .Without(x => x.Competition);
 
         fixture.Customize<CompetitionSolution>(ComposerTransformation);
     }
