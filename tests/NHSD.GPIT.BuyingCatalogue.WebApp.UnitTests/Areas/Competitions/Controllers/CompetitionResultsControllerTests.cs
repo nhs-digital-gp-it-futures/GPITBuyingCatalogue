@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -9,7 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.ResultsModels;
@@ -40,7 +43,7 @@ public static class CompetitionResultsControllerTests
         competitionsService.Setup(x => x.GetCompetitionForResults(internalOrgId, competition.Id))
             .ReturnsAsync(competition);
 
-        var expectedModel = new ConfirmResultsModel(competition);
+        var expectedModel = new ConfirmResultsModel(competition) { InternalOrgId = internalOrgId };
 
         var result = (await controller.Confirm(internalOrgId, competition.Id)).As<ViewResult>();
 
@@ -67,13 +70,22 @@ public static class CompetitionResultsControllerTests
     public static async Task ViewResults_ReturnsViewWithModel(
         string internalOrgId,
         Competition competition,
+        FilterDetailsModel filterDetailsModel,
+        ICollection<CompetitionSolution> nonShortlistedSolutions,
         [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] Mock<IManageFiltersService> filtersService,
         CompetitionResultsController controller)
     {
+        filtersService.Setup(x => x.GetFilterDetails(It.IsAny<int>(), competition.FilterId))
+            .ReturnsAsync(filterDetailsModel);
+
         competitionsService.Setup(x => x.GetCompetitionForResults(internalOrgId, competition.Id))
             .ReturnsAsync(competition);
 
-        var expectedModel = new ViewResultsModel(competition);
+        competitionsService.Setup(x => x.GetNonShortlistedSolutions(internalOrgId, competition.Id))
+            .ReturnsAsync(nonShortlistedSolutions);
+
+        var expectedModel = new ViewResultsModel(competition, filterDetailsModel, nonShortlistedSolutions);
 
         var result = (await controller.ViewResults(internalOrgId, competition.Id)).As<ViewResult>();
 

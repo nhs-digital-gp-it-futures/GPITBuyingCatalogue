@@ -14,6 +14,7 @@ public static class ScoreTypeExtensions
         ScoreType.Implementation => NonPriceElement.Implementation,
         ScoreType.Interoperability => NonPriceElement.Interoperability,
         ScoreType.ServiceLevel => NonPriceElement.ServiceLevel,
+        ScoreType.Features => NonPriceElement.Features,
         _ => null,
     };
 

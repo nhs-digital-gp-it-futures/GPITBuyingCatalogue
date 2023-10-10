@@ -6,4 +6,5 @@ public enum ScoreType
     Implementation = 1,
     Interoperability = 2,
     ServiceLevel = 3,
+    Features = 4,
 }

@@ -32,6 +32,8 @@ public class CompetitionSolution : ICompetitionPriceEntity
     /// </summary>
     public int? Quantity { get; set; }
 
+    public Competition Competition { get; set; }
+
     public Solution Solution { get; set; }
 
     public CompetitionCatalogueItemPrice Price { get; set; }

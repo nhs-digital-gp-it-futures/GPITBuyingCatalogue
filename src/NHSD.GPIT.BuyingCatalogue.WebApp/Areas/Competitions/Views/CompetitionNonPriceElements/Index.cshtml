@@ -6,7 +6,7 @@
 
     var advice = Model.HasAllNonPriceElements()
         ? "All available non-price elements have been added for this competition."
-        : "Add at least 1 optional non-price element to help you score your shortlisted solutions, for example implementation, interoperability or service levels.";
+        : "Add at least 1 optional non-price element to help you score your shortlisted solutions, for example features, implementation, interoperability or service levels.";
     var routeValues = new { internalOrgId = Model.InternalOrgId, competitionId = Model.CompetitionId };
     var editRouteValues = new { internalOrgId = Model.InternalOrgId, competitionId = Model.CompetitionId, returnUrl = Url.ActionLink() };
 }
@@ -30,7 +30,7 @@
         }
         else
         {
-            <partial name="Partials/_NonPriceElements" model="@(new NonPriceElementsPartialModel(Model.NonPriceElements, editRouteValues))" />
+            <partial name="Partials/_NonPriceElements" model="@(new NonPriceElementsPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.NonPriceElements, editRouteValues))" />
         }
 
         <br/>

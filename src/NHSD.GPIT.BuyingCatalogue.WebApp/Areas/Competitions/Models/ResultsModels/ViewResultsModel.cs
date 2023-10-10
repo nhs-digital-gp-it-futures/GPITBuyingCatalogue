@@ -2,7 +2,9 @@
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.ResultsModels;
 
@@ -26,8 +28,21 @@ public class ViewResultsModel : NavBaseModel
             .OrderByDescending(x => x.TotalWeightedScore)
             .ToList();
 
-        WinningSolutions = competitionSolutionResults.Where(x => x.IsWinningSolution).OrderBy(x => x.SolutionName).ToList();
+        WinningSolutions = competitionSolutionResults.Where(x => x.IsWinningSolution)
+            .OrderBy(x => x.SolutionName)
+            .ToList();
         OtherSolutionResults = competitionSolutionResults.Except(WinningSolutions).ToList();
+    }
+
+    public ViewResultsModel(
+        Competition competition,
+        FilterDetailsModel filterDetails,
+        ICollection<CompetitionSolution> nonShortlistedSolutions)
+        : this(competition)
+    {
+        NonShortlistedSolutions = nonShortlistedSolutions;
+
+        FilterDetailsModel = new ReviewFilterModel(filterDetails);
     }
 
     public string CompetitionName { get; set; }
@@ -36,6 +51,8 @@ public class ViewResultsModel : NavBaseModel
 
     public string PdfUrl { get; set; }
 
+    public ReviewFilterModel FilterDetailsModel { get; set; }
+
     public Weightings AwardCriteriaWeightings { get; set; }
 
     public Dictionary<NonPriceElement, int> NonPriceElementWeightings { get; set; }
@@ -43,4 +60,6 @@ public class ViewResultsModel : NavBaseModel
     public List<CompetitionSolutionResult> WinningSolutions { get; set; }
 
     public List<CompetitionSolutionResult> OtherSolutionResults { get; set; }
+
+    public ICollection<CompetitionSolution> NonShortlistedSolutions { get; set; }
 }

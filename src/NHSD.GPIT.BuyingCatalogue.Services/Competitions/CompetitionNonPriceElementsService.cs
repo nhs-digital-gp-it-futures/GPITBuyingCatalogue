@@ -3,6 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions;
@@ -22,6 +24,7 @@ public class CompetitionNonPriceElementsService : ICompetitionNonPriceElementsSe
         var competition = await dbContext.Competitions.Include(x => x.NonPriceElements.ServiceLevel)
             .Include(x => x.NonPriceElements.Interoperability)
             .Include(x => x.NonPriceElements.Implementation)
+            .Include(x => x.NonPriceElements.Features)
             .Include(x => x.NonPriceElements.NonPriceWeights)
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.Scores)
@@ -42,6 +45,42 @@ public class CompetitionNonPriceElementsService : ICompetitionNonPriceElementsSe
 
             nonPriceElementScores.ForEach(x => solution.Scores.Remove(x));
         }
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task AddFeatureRequirement(
+        string internalOrgId,
+        int competitionId,
+        string requirements,
+        CompliancyLevel compliance)
+    {
+        var competition = await dbContext.Competitions.Include(x => x.NonPriceElements.Features)
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+
+        var nonPriceElements = competition.NonPriceElements ??= new NonPriceElements();
+        nonPriceElements.Features.Add(new(requirements, compliance));
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task EditFeatureRequirement(
+        string internalOrgId,
+        int competitionId,
+        int requirementId,
+        string requirements,
+        CompliancyLevel compliance)
+    {
+        var competition = await dbContext.Competitions.Include(x => x.NonPriceElements.Features)
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+
+        var featureCriteria = competition.NonPriceElements.Features.FirstOrDefault(x => x.Id == requirementId);
+        if (featureCriteria is null) return;
+
+        featureCriteria.Requirements = requirements;
+        featureCriteria.Compliance = compliance;
 
         await dbContext.SaveChangesAsync();
     }

@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.ResultsModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Models.ResultsModels;
@@ -91,5 +94,18 @@ public static class ViewResultsModelTests
 
         model.WinningSolutions.Should().ContainSingle();
         model.OtherSolutionResults.Should().ContainSingle();
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void Construct_SetsAdditionalPropertiesAsExpected(
+        Competition competition,
+        FilterDetailsModel filterDetailsModel,
+        ICollection<CompetitionSolution> nonShortlistedSolutions)
+    {
+        var model = new ViewResultsModel(competition, filterDetailsModel, nonShortlistedSolutions);
+
+        model.FilterDetailsModel.Should().BeEquivalentTo(new ReviewFilterModel(filterDetailsModel));
+        model.NonShortlistedSolutions.Should().BeEquivalentTo(nonShortlistedSolutions);
     }
 }

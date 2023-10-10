@@ -17,16 +17,22 @@ public class NonPriceElementWeightsModel : NavBaseModel
     {
         CompetitionName = competition.Name;
 
+        HasFeatures = competition.NonPriceElements.HasNonPriceElement(NonPriceElement.Features);
         HasInteroperability = competition.NonPriceElements.HasNonPriceElement(NonPriceElement.Interoperability);
         HasImplementation = competition.NonPriceElements.HasNonPriceElement(NonPriceElement.Implementation);
         HasServiceLevel = competition.NonPriceElements.HasNonPriceElement(NonPriceElement.ServiceLevel);
 
+        Features = competition.NonPriceElements.GetNonPriceWeight(NonPriceElement.Features);
         Implementation = competition.NonPriceElements.GetNonPriceWeight(NonPriceElement.Implementation);
         Interoperability = competition.NonPriceElements.GetNonPriceWeight(NonPriceElement.Interoperability);
         ServiceLevel = competition.NonPriceElements.GetNonPriceWeight(NonPriceElement.ServiceLevel);
     }
 
     public string CompetitionName { get; set; }
+
+    [Description("Features weighting")]
+    [ModelBinder(typeof(NumberModelBinder))]
+    public int? Features { get; set; }
 
     [Description("Implementation weighting")]
     [ModelBinder(typeof(NumberModelBinder))]
@@ -39,6 +45,8 @@ public class NonPriceElementWeightsModel : NavBaseModel
     [Description("Service level weighting")]
     [ModelBinder(typeof(NumberModelBinder))]
     public int? ServiceLevel { get; set; }
+
+    public bool HasFeatures { get; set; }
 
     public bool HasImplementation { get; set; }
 
