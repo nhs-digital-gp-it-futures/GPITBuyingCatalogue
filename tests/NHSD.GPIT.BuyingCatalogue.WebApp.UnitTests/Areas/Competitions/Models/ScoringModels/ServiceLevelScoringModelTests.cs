@@ -26,7 +26,7 @@ public static class ServiceLevelScoringModelTests
         model.CompetitionName.Should().Be(competition.Name);
         model.From.Should().Be(serviceLevelCriteria.TimeFrom);
         model.Until.Should().Be(serviceLevelCriteria.TimeUntil);
-        model.ApplicableDays.Should().Be(serviceLevelCriteria.ApplicableDays);
+        model.ApplicableDays.Should().BeEquivalentTo(serviceLevelCriteria.ApplicableDays);
         model.SolutionScores.Should().ContainSingle();
     }
 }

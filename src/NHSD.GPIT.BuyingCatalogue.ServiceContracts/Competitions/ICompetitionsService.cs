@@ -37,6 +37,8 @@ public interface ICompetitionsService
 
     Task<CompetitionTaskListModel> GetCompetitionTaskList(string internalOrgId, int competitionId);
 
+    Task<ICollection<CompetitionSolution>> GetNonShortlistedSolutions(string internalOrgId, int competitionId);
+
     Task AddCompetitionSolutions(string internalOrgId, int competitionId, IEnumerable<CompetitionSolution> competitionSolutions);
 
     Task AcceptShortlist(string internalOrgId, int competitionId);
@@ -76,14 +78,16 @@ public interface ICompetitionsService
         int competitionId,
         int? implementationWeight,
         int? interoperabilityWeight,
-        int? serviceLevelWeight);
+        int? serviceLevelWeight,
+        int? featuresWeight);
 
     Task SetServiceLevelCriteria(
         string internalOrgId,
         int competitionId,
         DateTime timeFrom,
         DateTime timeUntil,
-        string applicableDays);
+        IEnumerable<Iso8601DayOfWeek> applicableDays,
+        bool includesBankHolidays);
 
     Task SetShortlistedSolutions(
         string internalOrgId,
@@ -106,6 +110,11 @@ public interface ICompetitionsService
         Dictionary<CatalogueItemId, (int Score, string Justification)> solutionsScores);
 
     Task SetSolutionsServiceLevelScores(
+        string internalOrgId,
+        int competitionId,
+        Dictionary<CatalogueItemId, (int Score, string Justification)> solutionsScores);
+
+    Task SetSolutionsFeaturesScores(
         string internalOrgId,
         int competitionId,
         Dictionary<CatalogueItemId, (int Score, string Justification)> solutionsScores);

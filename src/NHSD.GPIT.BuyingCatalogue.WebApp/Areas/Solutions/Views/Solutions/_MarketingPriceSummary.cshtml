@@ -2,6 +2,12 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.MarketingPriceSummaryModel
 
 <nhs-summary-list>
+    <nhs-summary-list-row label-text="Service ID">
+        <p data-test-id="serviceId">
+            @Model.ServiceId
+        </p>
+    </nhs-summary-list-row>
+
     <nhs-summary-list-row label-text="Description">
         <p data-test-id="description">
             @Model.ItemDescription

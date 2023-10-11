@@ -1,4 +1,7 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+﻿using System.Collections.Generic;
+using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.TaskListModels;
@@ -17,6 +20,10 @@ public class CompetitionReviewCriteriaModel : NavBaseModel
         CompetitionName = competition.Name;
         CompetitionWeights = competition.Weightings;
         NonPriceElements = competition.NonPriceElements;
+
+        NonPriceWeights = competition.NonPriceElements.GetNonPriceElements()
+            .OrderBy(x => x.ToString())
+            .ToDictionary(x => x, x => competition.NonPriceElements.GetNonPriceWeight(x));
     }
 
     public string InternalOrgId { get; set; }
@@ -28,4 +35,6 @@ public class CompetitionReviewCriteriaModel : NavBaseModel
     public Weightings CompetitionWeights { get; set; }
 
     public NonPriceElements NonPriceElements { get; set; }
+
+    public Dictionary<NonPriceElement, int?> NonPriceWeights { get; set; }
 }

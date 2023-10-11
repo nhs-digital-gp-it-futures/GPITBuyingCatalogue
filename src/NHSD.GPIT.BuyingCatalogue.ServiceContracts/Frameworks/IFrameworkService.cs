@@ -16,8 +16,12 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks
 
         Task AddFramework(string name, IEnumerable<FundingType> fundingTypes);
 
+        Task UpdateFramework(string frameworkId, string name, IEnumerable<FundingType> fundingTypes);
+
         Task MarkAsExpired(string frameworkId);
 
         Task<bool> FrameworkNameExists(string frameworkName);
+
+        Task<bool> FrameworkNameExistsExcludeSelf(string frameworkName, string frameworkId);
     }
 }

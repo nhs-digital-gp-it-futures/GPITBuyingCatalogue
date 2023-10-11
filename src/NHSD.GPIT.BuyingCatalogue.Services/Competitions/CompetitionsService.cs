@@ -33,6 +33,7 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.NonPriceElements.Implementation)
             .Include(x => x.NonPriceElements.Interoperability)
             .Include(x => x.NonPriceElements.ServiceLevel)
+            .Include(x => x.NonPriceElements.Features)
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
     public async Task<IEnumerable<Competition>> GetCompetitionsDashboard(string internalOrgId)
@@ -51,12 +52,12 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.NonPriceElements.Implementation)
             .Include(x => x.NonPriceElements.Interoperability)
             .Include(x => x.NonPriceElements.ServiceLevel)
+            .Include(x => x.NonPriceElements.Features)
             .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Scores)
             .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Price).ThenInclude(x => x.Tiers)
             .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Quantities)
             .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Solution.CatalogueItem.Supplier)
-            .Include(x => x.CompetitionSolutions)
-            .ThenInclude(x => x.SolutionServices).ThenInclude(x => x.Quantities)
+            .Include(x => x.CompetitionSolutions).ThenInclude(x => x.SolutionServices).ThenInclude(x => x.Quantities)
             .Include(x => x.CompetitionSolutions).ThenInclude(x => x.SolutionServices).ThenInclude(x => x.Price).ThenInclude(x => x.Tiers)
             .AsNoTracking()
             .AsSplitQuery()
@@ -68,6 +69,7 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.NonPriceElements.Implementation)
             .Include(x => x.NonPriceElements.Interoperability)
             .Include(x => x.NonPriceElements.ServiceLevel)
+            .Include(x => x.NonPriceElements.Features)
             .Include(x => x.NonPriceElements.NonPriceWeights)
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.Scores)
@@ -105,6 +107,7 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.Solution)
             .ThenInclude(x => x.CatalogueItem)
+            .ThenInclude(x => x.Supplier)
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.Solution.ServiceLevelAgreement.ServiceHours)
             .Include(x => x.CompetitionSolutions)
@@ -112,6 +115,7 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.NonPriceElements.Interoperability)
             .Include(x => x.NonPriceElements.Implementation)
             .Include(x => x.NonPriceElements.ServiceLevel)
+            .Include(x => x.NonPriceElements.Features)
             .Include(x => x.Recipients)
             .AsNoTracking()
             .AsSplitQuery()
@@ -155,6 +159,18 @@ public class CompetitionsService : ICompetitionsService
             .AsNoTracking()
             .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+
+    public async Task<ICollection<CompetitionSolution>> GetNonShortlistedSolutions(
+        string internalOrgId,
+        int competitionId)
+        => await dbContext.CompetitionSolutions.IgnoreQueryFilters()
+            .Include(x => x.Solution.CatalogueItem.Supplier)
+            .Include(x => x.SolutionServices)
+            .ThenInclude(x => x.Service)
+            .Where(
+                x => x.CompetitionId == competitionId && x.Competition.Organisation.InternalIdentifier == internalOrgId
+                    && !x.IsShortlisted)
+            .ToListAsync();
 
     public async Task AddCompetitionSolutions(
         string internalOrgId,
@@ -276,7 +292,8 @@ public class CompetitionsService : ICompetitionsService
         int competitionId,
         int? implementationWeight,
         int? interoperabilityWeight,
-        int? serviceLevelWeight)
+        int? serviceLevelWeight,
+        int? featuresWeight)
     {
         var competition = await dbContext.Competitions.Include(x => x.NonPriceElements.NonPriceWeights)
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
@@ -286,6 +303,7 @@ public class CompetitionsService : ICompetitionsService
         nonPriceWeights.Implementation = implementationWeight;
         nonPriceWeights.Interoperability = interoperabilityWeight;
         nonPriceWeights.ServiceLevel = serviceLevelWeight;
+        nonPriceWeights.Features = featuresWeight;
 
         if (dbContext.Entry(nonPriceWeights).State is EntityState.Modified)
             competition.HasReviewedCriteria = false;
@@ -298,7 +316,8 @@ public class CompetitionsService : ICompetitionsService
         int competitionId,
         DateTime timeFrom,
         DateTime timeUntil,
-        string applicableDays)
+        IEnumerable<Iso8601DayOfWeek> applicableDays,
+        bool includesBankHolidays)
     {
         var competition = await dbContext.Competitions.Include(x => x.NonPriceElements.ServiceLevel)
             .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Scores)
@@ -309,7 +328,9 @@ public class CompetitionsService : ICompetitionsService
 
         serviceLevelCriteria.TimeFrom = timeFrom;
         serviceLevelCriteria.TimeUntil = timeUntil;
-        serviceLevelCriteria.ApplicableDays = applicableDays;
+        serviceLevelCriteria.ApplicableDays = applicableDays.ToList();
+        serviceLevelCriteria.IncludesBankHolidays = includesBankHolidays;
+
         if (dbContext.Entry(serviceLevelCriteria).State is EntityState.Modified)
         {
             competition.HasReviewedCriteria = false;
@@ -395,6 +416,16 @@ public class CompetitionsService : ICompetitionsService
             solutionsScores ?? throw new ArgumentNullException(nameof(solutionsScores)),
             ScoreType.ServiceLevel);
 
+    public async Task SetSolutionsFeaturesScores(
+        string internalOrgId,
+        int competitionId,
+        Dictionary<CatalogueItemId, (int Score, string Justification)> solutionsScores)
+        => await SetSolutionScores(
+            internalOrgId,
+            competitionId,
+            solutionsScores ?? throw new ArgumentNullException(nameof(solutionsScores)),
+            ScoreType.Features);
+
     public async Task AcceptShortlist(string internalOrgId, int competitionId)
     {
         var competition =
@@ -418,6 +449,7 @@ public class CompetitionsService : ICompetitionsService
                 .Include(x => x.NonPriceElements.Interoperability)
                 .Include(x => x.NonPriceElements.Implementation)
                 .Include(x => x.NonPriceElements.ServiceLevel)
+                .Include(x => x.NonPriceElements.Features)
                 .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Scores)
                 .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Quantities)
                 .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Price).ThenInclude(x => x.Tiers)
@@ -567,6 +599,7 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.NonPriceElements.Implementation)
             .Include(x => x.NonPriceElements.Interoperability)
             .Include(x => x.NonPriceElements.ServiceLevel)
+            .Include(x => x.NonPriceElements.Features)
             .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Scores)
             .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Price)
             .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Quantities)

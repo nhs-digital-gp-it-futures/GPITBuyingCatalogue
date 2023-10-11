@@ -1,7 +1,5 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.AssociatedServices;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
@@ -44,8 +42,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
         public void AddAssociatedService(IEnumerable<string>? associatedServices, string preference = "No")
         {
-            //CommonActions.ClickLinkElement(E2ETests.Framework.Objects.Ordering.AssociatedServicesObjects.AddAssociateServiceLink);
-
             CommonActions.PageLoadedCorrectGetIndex(
                   typeof(AssociatedServicesController),
                   nameof(AssociatedServicesController.AddAssociatedServices)).Should().BeTrue();
@@ -76,30 +72,19 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
         {
             CommonActions.ClickLinkElement(E2ETests.Framework.Objects.Ordering.AssociatedServicesObjects.AddAssociateServiceLink);
 
-            //CommonActions.PageLoadedCorrectGetIndex(
-            //      typeof(AssociatedServicesController),
-            //      nameof(AssociatedServicesController.AddAssociatedServices)).Should().BeTrue();
-
-            //CommonActions.ClickRadioButtonWithText(preference);
-
-            //CommonActions.ClickSave();
-
-           // if (preference == "Yes")
-            //{
-                CommonActions.PageLoadedCorrectGetIndex(
+            CommonActions.PageLoadedCorrectGetIndex(
                  typeof(AssociatedServicesController),
                  nameof(AssociatedServicesController.EditAssociatedServices)).Should().BeTrue();
 
-                if (associatedServices != default && associatedServices.All(a => !string.IsNullOrWhiteSpace(a)))
-                {
+            if (associatedServices != default && associatedServices.All(a => !string.IsNullOrWhiteSpace(a)))
+            {
                     foreach (var associatedService in associatedServices)
                     {
                         CommonActions.ClickCheckboxByLabel(associatedService);
                     }
-                }
+            }
 
-                CommonActions.ClickSave();
-            //}
+            CommonActions.ClickSave();
         }
 
         public void EditAssociatedService(string solutionName, IEnumerable<string> newAssociatedServices, bool hasTheOrderAssociatedService, IEnumerable<string>? oldAssociatedServices)

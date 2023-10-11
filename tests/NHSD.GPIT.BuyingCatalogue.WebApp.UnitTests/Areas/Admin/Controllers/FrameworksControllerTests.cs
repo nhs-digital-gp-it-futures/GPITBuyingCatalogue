@@ -57,13 +57,13 @@ public static class FrameworksControllerTests
 
         result.Should().NotBeNull();
         result.Model.Should().NotBeNull();
-        result.Model.Should().BeOfType<AddFrameworkModel>();
+        result.Model.Should().BeOfType<AddEditFrameworkModel>();
     }
 
     [Theory]
     [CommonAutoData]
     public static async Task Add_InvalidModel_ReturnsView(
-        AddFrameworkModel model,
+        AddEditFrameworkModel model,
         FrameworksController controller)
     {
         controller.ModelState.AddModelError("some-key", "some-error");
@@ -77,13 +77,63 @@ public static class FrameworksControllerTests
     [Theory]
     [CommonAutoData]
     public static async Task Add_Valid_AddsFrameworkAndRedirects(
-        AddFrameworkModel model,
+        AddEditFrameworkModel model,
         [Frozen] Mock<IFrameworkService> service,
         FrameworksController controller)
     {
         var result = (await controller.Add(model)).As<RedirectToActionResult>();
 
         service.Verify(x => x.AddFramework(model.Name, It.IsAny<IEnumerable<FundingType>>()), Times.Once());
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.Dashboard));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task Edit_ReturnsViewWithModel(
+        string frameworkId,
+        EntityFramework.Catalogue.Models.Framework framework,
+        [Frozen] Mock<IFrameworkService> service,
+        FrameworksController controller)
+    {
+        service
+            .Setup(x => x.GetFramework(frameworkId))
+            .ReturnsAsync(framework);
+
+        var result = (await controller.Edit(frameworkId)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().NotBeNull();
+        result.Model.Should().BeOfType<AddEditFrameworkModel>();
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task Edit_InvalidModel_ReturnsView(
+        string frameworkId,
+        AddEditFrameworkModel model,
+        FrameworksController controller)
+    {
+        controller.ModelState.AddModelError("some-key", "some-error");
+
+        var result = (await controller.Edit(frameworkId, model)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().Be(model);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task Edit_Valid_AddsFrameworkAndRedirects(
+        string frameworkId,
+        AddEditFrameworkModel model,
+        [Frozen] Mock<IFrameworkService> service,
+        FrameworksController controller)
+    {
+        var result = (await controller.Edit(frameworkId, model)).As<RedirectToActionResult>();
+
+        service.Verify(x => x.UpdateFramework(frameworkId, model.Name, It.IsAny<IEnumerable<FundingType>>()), Times.Once());
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Dashboard));
