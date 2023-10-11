@@ -1,0 +1,46 @@
+.nhsuk-account__login {
+    float: right;
+    margin-left: 1em;
+    margin-right: -16px;
+    position: relative;
+    z-index: 2
+}
+
+.nhsuk-account__login--icon {
+    fill: #fff;
+    height: 1.6em;
+    margin-left: .6em;
+    position: relative;
+    top: .4em;
+    width: 1.6em;
+}
+
+.nhsuk-account__login--link {
+    text-decoration: none !important;
+}
+
+.nhsuk-account__login--link,
+.nhsuk-account__login--link:visited,
+.nhsuk-account__login--link:hover {
+    color: #fff;
+    padding: 1em
+}
+
+
+.nhsuk-account__login--link:focus .nhsuk-account__login--icon {
+    fill: #212b32
+}
+
+
+@media(min-width: 40.0625em) {
+
+    .nhsuk-account__login {
+        margin-right: -8px
+    }
+
+    .nhsuk-account__login--link,
+    .nhsuk-account__login--link:hover {
+        margin-right: .6em;
+        padding: .6em
+    }
+}
