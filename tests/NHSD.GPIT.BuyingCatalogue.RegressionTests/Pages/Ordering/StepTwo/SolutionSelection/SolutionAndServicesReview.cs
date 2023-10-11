@@ -17,12 +17,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
         public void ReviewSolutionAndServices()
         {
             CommonActions.PageLoadedCorrectGetIndex(
-             typeof(ReviewSolutionsController),
-             nameof(ReviewSolutionsController.ReviewSolutions)).Should().BeTrue();
-
-            CommonActions.ClickContinue();
-
-            CommonActions.PageLoadedCorrectGetIndex(
               typeof(OrderController),
               nameof(OrderController.Order)).Should().BeTrue();
         }
@@ -38,12 +32,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
         public void AmendReviewMultipleSolutionAndServices()
         {
-            CommonActions.ClickContinue();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-             typeof(ReviewSolutionsController),
-             nameof(ReviewSolutionsController.ReviewSolutions)).Should().BeTrue();
-
             CommonActions.ClickContinue();
 
             CommonActions.PageLoadedCorrectGetIndex(

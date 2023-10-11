@@ -2,7 +2,6 @@
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.Contracts;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
@@ -115,12 +114,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
             CommonActions.ClickContinue();
 
             CommonActions.PageLoadedCorrectGetIndex(
-             typeof(ReviewSolutionsController),
-             nameof(ReviewSolutionsController.ReviewSolutions)).Should().BeTrue();
-
-            CommonActions.ClickContinue();
-
-            CommonActions.PageLoadedCorrectGetIndex(
              typeof(OrderController),
              nameof(OrderController.Order)).Should().BeTrue();
         }
@@ -128,19 +121,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
         public void EditSolutionsAndServicesTask(bool isAssociatedServiceOnly)
         {
             CommonActions.ClickLinkElement(CatalogueSolutionObjects.SelectSolutionsAndServicesLink);
-
-            CommonActions.PageLoadedCorrectGetIndex(
-             typeof(ReviewSolutionsController),
-             nameof(ReviewSolutionsController.ReviewSolutions)).Should().BeTrue();
-
-            if (isAssociatedServiceOnly)
-            {
-                CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditAssociatedServicesLink);
-            }
-            else
-            {
-                CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditSolutionAndServicesLink);
-            }
 
             CommonActions.PageLoadedCorrectGetIndex(
              typeof(TaskListController),

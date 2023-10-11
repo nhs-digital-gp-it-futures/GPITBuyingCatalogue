@@ -76,16 +76,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 return PricesRoute(routeValues, associatedService);
             }
 
-            if (order.GetAssociatedServices().Any())
-            {
-                return new RoutingResult
-                {
-                    ControllerName = Constants.Controllers.TaskList,
-                    ActionName = Constants.Actions.TaskList,
-                    RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId },
-                };
-            }
-
             var associatedServices = associatedServicesService.GetPublishedAssociatedServicesForSolution(order.GetSolutionId()).Result;
 
             if (associatedServices.Any())
