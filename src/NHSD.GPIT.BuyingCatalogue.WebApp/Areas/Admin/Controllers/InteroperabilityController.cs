@@ -350,5 +350,50 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             return RedirectToAction(nameof(Interoperability), new { solutionId });
         }
+
+        [HttpGet("add-nhs-app-integration")]
+        public async Task<IActionResult> AddNhsAppIntegration(CatalogueItemId solutionId)
+        {
+            var solution = await solutionsService.GetSolutionThin(solutionId);
+
+            if (solution is null)
+                return BadRequest($"No Solution found for Id: {solutionId}");
+
+            var model = new AddEditNhsAppIntegrationModel(solution)
+            {
+                BackLink = Url.Action(nameof(Interoperability), new { solutionId }),
+            };
+
+            return View("AddEditNhsAppIntegration", model);
+        }
+
+        [HttpPost("add-nhs-app-integration")]
+        public async Task<IActionResult> AddNhsAppIntegration(CatalogueItemId solutionId, AddEditNhsAppIntegrationModel model)
+        {
+            if (!ModelState.IsValid)
+                return View("AddEditNhsAppIntegration", model);
+
+            var integration = new Integration
+            {
+                IntegrationType = Framework.Constants.Interoperability.NhsAppIntegrationType,
+                NHSAppIntegrationTypes = model.NhsAppIntegrationTypes
+                                        .Where(o => o.Checked)
+                                        .Select(o => o.IntegrationType)
+                                        .ToHashSet(),
+            };
+
+            var integrationExists = await interoperabilityService.GetIntegrationById(solutionId, model.IntegrationId);
+
+            if (!integrationExists.IntegrationType.EqualsIgnoreCase(Framework.Constants.Interoperability.NhsAppIntegrationType))
+            {
+                await interoperabilityService.AddIntegration(solutionId, integration);
+            }
+            else
+            {
+                await interoperabilityService.EditIntegration(solutionId, model.IntegrationId, integration);
+            }
+
+            return RedirectToAction(nameof(Interoperability), new { solutionId });
+        }
     }
 }
