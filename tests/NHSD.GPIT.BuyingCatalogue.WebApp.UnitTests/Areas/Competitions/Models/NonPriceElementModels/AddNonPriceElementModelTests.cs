@@ -23,33 +23,47 @@ public static class AddNonPriceElementModelTests
                 new(NonPriceElement.Implementation.EnumMemberName(), NonPriceElement.Implementation),
                 new(NonPriceElement.Interoperability.EnumMemberName(), NonPriceElement.Interoperability),
                 new(NonPriceElement.ServiceLevel.EnumMemberName(), NonPriceElement.ServiceLevel),
+                new(NonPriceElement.Features.EnumMemberName(), NonPriceElement.Features),
             },
         },
         new object[]
         {
-            new NonPriceElements
-            {
-                ServiceLevel = new(),
-            },
+            new NonPriceElements { ServiceLevel = new(), },
             new List<SelectOption<NonPriceElement>>
             {
                 new(NonPriceElement.Implementation.EnumMemberName(), NonPriceElement.Implementation),
                 new(NonPriceElement.Interoperability.EnumMemberName(), NonPriceElement.Interoperability),
+                new(NonPriceElement.Features.EnumMemberName(), NonPriceElement.Features),
             },
         },
         new object[]
         {
-            new NonPriceElements
-            {
-                Interoperability = new List<InteroperabilityCriteria>
-                {
-                    new(),
-                },
-            },
+            new NonPriceElements { Interoperability = new List<InteroperabilityCriteria> { new(), }, },
             new List<SelectOption<NonPriceElement>>
             {
                 new(NonPriceElement.Implementation.EnumMemberName(), NonPriceElement.Implementation),
                 new(NonPriceElement.ServiceLevel.EnumMemberName(), NonPriceElement.ServiceLevel),
+                new(NonPriceElement.Features.EnumMemberName(), NonPriceElement.Features),
+            },
+        },
+        new object[]
+        {
+            new NonPriceElements { Implementation = new(), },
+            new List<SelectOption<NonPriceElement>>
+            {
+                new(NonPriceElement.ServiceLevel.EnumMemberName(), NonPriceElement.ServiceLevel),
+                new(NonPriceElement.Interoperability.EnumMemberName(), NonPriceElement.Interoperability),
+                new(NonPriceElement.Features.EnumMemberName(), NonPriceElement.Features),
+            },
+        },
+        new object[]
+        {
+            new NonPriceElements { Features = new List<FeaturesCriteria> { new() }, },
+            new List<SelectOption<NonPriceElement>>
+            {
+                new(NonPriceElement.ServiceLevel.EnumMemberName(), NonPriceElement.ServiceLevel),
+                new(NonPriceElement.Interoperability.EnumMemberName(), NonPriceElement.Interoperability),
+                new(NonPriceElement.Implementation.EnumMemberName(), NonPriceElement.Implementation),
             },
         },
         new object[]
@@ -57,23 +71,9 @@ public static class AddNonPriceElementModelTests
             new NonPriceElements
             {
                 Implementation = new(),
-            },
-            new List<SelectOption<NonPriceElement>>
-            {
-                new(NonPriceElement.ServiceLevel.EnumMemberName(), NonPriceElement.ServiceLevel),
-                new(NonPriceElement.Interoperability.EnumMemberName(), NonPriceElement.Interoperability),
-            },
-        },
-        new object[]
-        {
-            new NonPriceElements
-            {
-                Implementation = new(),
                 ServiceLevel = new(),
-                Interoperability = new List<InteroperabilityCriteria>
-                {
-                    new(),
-                },
+                Interoperability = new List<InteroperabilityCriteria> { new(), },
+                Features = new List<FeaturesCriteria> { new() },
             },
             Enumerable.Empty<SelectOption<NonPriceElement>>(),
         },

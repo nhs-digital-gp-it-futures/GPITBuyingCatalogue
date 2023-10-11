@@ -975,9 +975,10 @@ public static class CompetitionsServiceTests
     [Theory]
     [InMemoryDbAutoData]
     public static async Task SetServiceLevelCriteria_NullNonPriceElements_CreatesNonPriceElements(
-        string applicableDays,
+        List<Iso8601DayOfWeek> applicableDays,
         DateTime timeFrom,
         DateTime timeUntil,
+        bool includesBankHolidays,
         Organisation organisation,
         Competition competition,
         [Frozen] BuyingCatalogueDbContext context,
@@ -998,7 +999,8 @@ public static class CompetitionsServiceTests
             competition.Id,
             timeFrom,
             timeUntil,
-            applicableDays);
+            applicableDays,
+            includesBankHolidays);
 
         var updatedCompetition = await service.GetCompetitionWithNonPriceElements(
             organisation.InternalIdentifier,
@@ -1006,17 +1008,19 @@ public static class CompetitionsServiceTests
 
         updatedCompetition.NonPriceElements.Should().NotBeNull();
         updatedCompetition.NonPriceElements.ServiceLevel.Should().NotBeNull();
-        updatedCompetition.NonPriceElements.ServiceLevel.ApplicableDays.Should().Be(applicableDays);
+        updatedCompetition.NonPriceElements.ServiceLevel.ApplicableDays.Should().BeEquivalentTo(applicableDays);
         updatedCompetition.NonPriceElements.ServiceLevel.TimeFrom.Should().Be(timeFrom);
         updatedCompetition.NonPriceElements.ServiceLevel.TimeUntil.Should().Be(timeUntil);
+        updatedCompetition.NonPriceElements.ServiceLevel.IncludesBankHolidays.Should().Be(includesBankHolidays);
     }
 
     [Theory]
     [InMemoryDbAutoData]
     public static async Task SetServiceLevelCriteria_NullServiceLevelCriteria_CreatesServiceLevelCriteria(
-        string applicableDays,
+        List<Iso8601DayOfWeek> applicableDays,
         DateTime timeFrom,
         DateTime timeUntil,
+        bool includesBankHolidays,
         Organisation organisation,
         Competition competition,
         [Frozen] BuyingCatalogueDbContext context,
@@ -1039,7 +1043,8 @@ public static class CompetitionsServiceTests
             competition.Id,
             timeFrom,
             timeUntil,
-            applicableDays);
+            applicableDays,
+            includesBankHolidays);
 
         var updatedCompetition = await service.GetCompetitionWithNonPriceElements(
             organisation.InternalIdentifier,
@@ -1047,9 +1052,10 @@ public static class CompetitionsServiceTests
 
         updatedCompetition.NonPriceElements.Should().NotBeNull();
         updatedCompetition.NonPriceElements.ServiceLevel.Should().NotBeNull();
-        updatedCompetition.NonPriceElements.ServiceLevel.ApplicableDays.Should().Be(applicableDays);
+        updatedCompetition.NonPriceElements.ServiceLevel.ApplicableDays.Should().BeEquivalentTo(applicableDays);
         updatedCompetition.NonPriceElements.ServiceLevel.TimeFrom.Should().Be(timeFrom);
         updatedCompetition.NonPriceElements.ServiceLevel.TimeUntil.Should().Be(timeUntil);
+        updatedCompetition.NonPriceElements.ServiceLevel.IncludesBankHolidays.Should().Be(includesBankHolidays);
     }
 
     [Theory]
@@ -1081,7 +1087,8 @@ public static class CompetitionsServiceTests
             competition.Id,
             newServiceLevelCriteria.TimeFrom,
             newServiceLevelCriteria.TimeUntil,
-            newServiceLevelCriteria.ApplicableDays);
+            newServiceLevelCriteria.ApplicableDays,
+            newServiceLevelCriteria.IncludesBankHolidays);
 
         var updatedCompetition = await service.GetCompetitionWithNonPriceElements(
             organisation.InternalIdentifier,
@@ -1131,7 +1138,8 @@ public static class CompetitionsServiceTests
             competition.Id,
             newServiceLevelCriteria.TimeFrom,
             newServiceLevelCriteria.TimeUntil,
-            newServiceLevelCriteria.ApplicableDays);
+            newServiceLevelCriteria.ApplicableDays,
+            newServiceLevelCriteria.IncludesBankHolidays);
 
         var updatedCompetition = await service.GetCompetitionWithNonPriceElements(
             organisation.InternalIdentifier,
@@ -1300,6 +1308,7 @@ public static class CompetitionsServiceTests
         int implementationWeight,
         int interoperabilityWeight,
         int serviceLevelWeight,
+        int featuresWeight,
         Organisation organisation,
         Competition competition,
         [Frozen] BuyingCatalogueDbContext context,
@@ -1320,7 +1329,8 @@ public static class CompetitionsServiceTests
             competition.Id,
             implementationWeight,
             interoperabilityWeight,
-            serviceLevelWeight);
+            serviceLevelWeight,
+            featuresWeight);
 
         var updatedCompetition = await service.GetCompetitionWithNonPriceElements(
             organisation.InternalIdentifier,
@@ -1332,6 +1342,7 @@ public static class CompetitionsServiceTests
         nonPriceElementWeightings.Implementation.Should().Be(implementationWeight);
         nonPriceElementWeightings.Interoperability.Should().Be(interoperabilityWeight);
         nonPriceElementWeightings.ServiceLevel.Should().Be(serviceLevelWeight);
+        nonPriceElementWeightings.Features.Should().Be(featuresWeight);
     }
 
     [Theory]
@@ -1340,6 +1351,7 @@ public static class CompetitionsServiceTests
         int implementationWeight,
         int interoperabilityWeight,
         int serviceLevelWeight,
+        int featuresWeight,
         NonPriceWeights nonPriceWeights,
         Organisation organisation,
         Competition competition,
@@ -1361,7 +1373,8 @@ public static class CompetitionsServiceTests
             competition.Id,
             implementationWeight,
             interoperabilityWeight,
-            serviceLevelWeight);
+            serviceLevelWeight,
+            featuresWeight);
 
         var updatedCompetition = await service.GetCompetitionWithNonPriceElements(
             organisation.InternalIdentifier,
@@ -1373,6 +1386,7 @@ public static class CompetitionsServiceTests
         nonPriceElementWeightings.Implementation.Should().Be(implementationWeight);
         nonPriceElementWeightings.Interoperability.Should().Be(interoperabilityWeight);
         nonPriceElementWeightings.ServiceLevel.Should().Be(serviceLevelWeight);
+        nonPriceElementWeightings.Features.Should().Be(featuresWeight);
     }
 
     [Theory]
@@ -1676,6 +1690,106 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
+    [CommonAutoData]
+    public static Task SetSolutionsFeaturesScores_NullSolutionsScores_ThrowsArgumentNullException(
+        string internalOrgId,
+        int competitionId,
+        CompetitionsService service)
+        => FluentActions
+            .Awaiting(() => service.SetSolutionsFeaturesScores(internalOrgId, competitionId, null))
+            .Should()
+            .ThrowAsync<ArgumentNullException>();
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task SetSolutionsFeaturesScores_ExistingScore_UpdatesScore(
+        Organisation organisation,
+        Competition competition,
+        Solution solution,
+        int score,
+        string justification,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        const ScoreType scoreType = ScoreType.Features;
+
+        var competitionSolution = new CompetitionSolution(competition.Id, solution.CatalogueItemId)
+        {
+            Scores = new List<SolutionScore> { new(scoreType, score + 2) },
+            IsShortlisted = true,
+        };
+
+        competition.OrganisationId = organisation.Id;
+        competition.CompetitionSolutions.Add(competitionSolution);
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+        context.Solutions.Add(solution);
+
+        competitionSolution.HasScoreType(scoreType).Should().BeTrue();
+
+        await context.SaveChangesAsync();
+
+        await service.SetSolutionsFeaturesScores(
+            organisation.InternalIdentifier,
+            competition.Id,
+            new Dictionary<CatalogueItemId, (int, string)> { { competitionSolution.SolutionId, (score, justification) } });
+
+        var updatedCompetition =
+            await service.GetCompetitionWithSolutions(organisation.InternalIdentifier, competition.Id);
+        var updatedSolution =
+            updatedCompetition.CompetitionSolutions.First(x => x.SolutionId == competitionSolution.SolutionId);
+
+        updatedSolution.HasScoreType(scoreType).Should().BeTrue();
+        updatedSolution.GetScoreByType(scoreType).Score.Should().Be(score);
+        updatedSolution.GetScoreByType(scoreType).Justification.Should().Be(justification);
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task SetSolutionsFeaturesScores_NewScore_AddsScore(
+        Organisation organisation,
+        Competition competition,
+        Solution solution,
+        int score,
+        string justification,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        const ScoreType scoreType = ScoreType.Features;
+
+        var competitionSolution = new CompetitionSolution(competition.Id, solution.CatalogueItemId)
+        {
+            IsShortlisted = true,
+        };
+
+        competition.OrganisationId = organisation.Id;
+        competition.CompetitionSolutions.Add(competitionSolution);
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+        context.Solutions.Add(solution);
+
+        competitionSolution.HasScoreType(scoreType).Should().BeFalse();
+
+        await context.SaveChangesAsync();
+
+        await service.SetSolutionsFeaturesScores(
+            organisation.InternalIdentifier,
+            competition.Id,
+            new Dictionary<CatalogueItemId, (int, string)> { { competitionSolution.SolutionId, (score, justification) } });
+
+        var updatedCompetition =
+            await service.GetCompetitionWithSolutions(organisation.InternalIdentifier, competition.Id);
+        var updatedSolution =
+            updatedCompetition.CompetitionSolutions.First(x => x.SolutionId == competitionSolution.SolutionId);
+
+        updatedSolution.HasScoreType(scoreType).Should().BeTrue();
+        updatedSolution.GetScoreByType(scoreType).Score.Should().Be(score);
+        updatedSolution.GetScoreByType(scoreType).Justification.Should().Be(justification);
+    }
+
+    [Theory]
     [InMemoryDbAutoData]
     public static async Task RemoveNonPriceElements_RemovesNonPriceElements(
         Organisation organisation,
@@ -1687,7 +1801,7 @@ public static class CompetitionsServiceTests
         competition.NonPriceElements = new()
         {
             ServiceLevel =
-                new() { ApplicableDays = "Test", TimeFrom = DateTime.UtcNow, TimeUntil = DateTime.UtcNow },
+                new() { ApplicableDays = Enum.GetValues<Iso8601DayOfWeek>(), TimeFrom = DateTime.UtcNow, TimeUntil = DateTime.UtcNow },
             Implementation = new() { Requirements = "Test" },
             Interoperability = new List<InteroperabilityCriteria>
             {
@@ -1986,5 +2100,42 @@ public static class CompetitionsServiceTests
 
         winningSolution.IsWinningSolution.Should().BeTrue();
         nonWinningSolution.IsWinningSolution.Should().BeFalse();
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task GetNonShortlistedSolutions_ReturnsExpected(
+        Organisation organisation,
+        Competition competition,
+        List<Solution> solutions,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        competition.OrganisationId = organisation.Id;
+        competition.CompetitionSolutions = solutions.Select(
+                x => new CompetitionSolution(competition.Id, x.CatalogueItemId) { IsShortlisted = true })
+            .ToList();
+
+        var expectedNonShortlistedSolutions = competition.CompetitionSolutions.Take(2).ToList();
+        expectedNonShortlistedSolutions.ForEach(x => x.IsShortlisted = false);
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+        context.Solutions.AddRange(solutions);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        var nonShortlistedSolutions =
+            await service.GetNonShortlistedSolutions(organisation.InternalIdentifier, competition.Id);
+
+        nonShortlistedSolutions.Should().NotBeEmpty();
+        nonShortlistedSolutions.Should()
+            .BeEquivalentTo(
+                expectedNonShortlistedSolutions,
+                opt => opt
+                    .Excluding(m => m.Competition)
+                    .Excluding(m => m.Solution)
+                    .Excluding(m => m.SolutionServices));
     }
 }

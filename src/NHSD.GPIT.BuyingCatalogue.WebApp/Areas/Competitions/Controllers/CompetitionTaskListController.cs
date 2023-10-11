@@ -49,7 +49,7 @@ public class CompetitionTaskListController : Controller
     [HttpGet("shortlisted-solutions")]
     public async Task<IActionResult> ShortlistedSolutions(string internalOrgId, int competitionId)
     {
-        var competition = await competitionsService.GetCompetitionWithServices(internalOrgId, competitionId);
+        var competition = await competitionsService.GetCompetitionWithSolutions(internalOrgId, competitionId);
 
         var model = new CompetitionShortlistedSolutionsModel(competition)
         {

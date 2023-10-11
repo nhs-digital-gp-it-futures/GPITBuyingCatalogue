@@ -19,7 +19,7 @@ public class ServiceLevelScoringModel : NavBaseModel
 
         From = competition.NonPriceElements.ServiceLevel.TimeFrom;
         Until = competition.NonPriceElements.ServiceLevel.TimeUntil;
-        ApplicableDays = competition.NonPriceElements.ServiceLevel.ApplicableDays;
+        ApplicableDays = competition.NonPriceElements.ServiceLevel.ApplicableDays.ToList();
 
         WithSolutions(competition.CompetitionSolutions);
     }
@@ -32,7 +32,7 @@ public class ServiceLevelScoringModel : NavBaseModel
 
     public DateTime Until { get; set; }
 
-    public string ApplicableDays { get; set; }
+    public IList<Iso8601DayOfWeek> ApplicableDays { get; set; }
 
     public void WithSolutions(IEnumerable<CompetitionSolution> solutions, bool setScores = true)
     {

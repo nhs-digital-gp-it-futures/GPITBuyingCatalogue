@@ -68,7 +68,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Assoc
                typeof(PricesController),
                nameof(PricesController.ConfirmPrice)).Should().BeTrue();
 
-            TextGenerators.PriceInputAddPrice(PriceObjects.AgreedPriceInput(0), MaxPrice);
             CommonActions.ClickSave();
         }
 

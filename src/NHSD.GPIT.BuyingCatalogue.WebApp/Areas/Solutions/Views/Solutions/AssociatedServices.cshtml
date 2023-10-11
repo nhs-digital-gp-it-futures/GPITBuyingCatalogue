@@ -31,6 +31,7 @@
                     @{
                         var priceSummaryModel = new MarketingPriceSummaryModel
                         {
+                            ServiceId = service.Id,
                             SolutionId = Model.SolutionId,
                             OrderGuidance = service.AssociatedService.OrderGuidance,
                             PricePageUrl = Url.Action(

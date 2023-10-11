@@ -1,5 +1,8 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Linq;
+using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.NonPriceElementModels;
 using Xunit;
@@ -16,11 +19,19 @@ public static class AddServiceLevelCriteriaModelTests
     {
         competition.NonPriceElements = new() { ServiceLevel = serviceLevelCriteria };
 
+        var expectedApplicableDays = Enum.GetValues<Iso8601DayOfWeek>()
+            .Select(
+                x => new SelectOption<Iso8601DayOfWeek>(
+                    x.ToString(),
+                    x,
+                    competition.NonPriceElements?.ServiceLevel?.ApplicableDays?.Contains(x) ?? false))
+            .ToList();
+
         var model = new AddServiceLevelCriteriaModel(competition);
 
         model.CompetitionName.Should().Be(competition.Name);
         model.TimeFrom.Should().Be(serviceLevelCriteria.TimeFrom);
         model.TimeUntil.Should().Be(serviceLevelCriteria.TimeUntil);
-        model.ApplicableDays.Should().Be(serviceLevelCriteria.ApplicableDays);
+        model.ApplicableDays.Should().BeEquivalentTo(expectedApplicableDays);
     }
 }

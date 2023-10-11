@@ -21,6 +21,7 @@
                 @{
                     var priceSummaryModel = new MarketingPriceSummaryModel
                     {
+                        ServiceId = service.Id,
                         SolutionId = Model.SolutionId,
                         CapabilitiesAndEpicsUrl = Url.Action(nameof(SolutionsController.CapabilitiesAdditionalServices), typeof(SolutionsController).ControllerName(), new { Model.SolutionId, additionalServiceId = service.Id }),
                         PricePageUrl = Url.Action(

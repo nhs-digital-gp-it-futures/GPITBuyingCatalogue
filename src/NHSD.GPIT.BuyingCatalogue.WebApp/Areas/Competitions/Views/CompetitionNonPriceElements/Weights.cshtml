@@ -17,9 +17,18 @@
         <form method="post">
             <input type="hidden" asp-for="BackLink"/>
             <input type="hidden" asp-for="CompetitionName"/>
+            <input type="hidden" asp-for="HasFeatures"/>
             <input type="hidden" asp-for="HasImplementation"/>
             <input type="hidden" asp-for="HasInteroperability"/>
             <input type="hidden" asp-for="HasServiceLevel"/>
+
+            @if (Model.HasFeatures)
+            {
+                <nhs-bookended-input asp-for="Features"
+                                     label-text="Features weighting as a percentage"
+                                     label-hint="Enter a percentage in multiples of 5. The total weightings must add up to 100%."
+                                     Suffix="%" />
+            }
 
             @if (Model.HasImplementation)
             {

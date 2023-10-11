@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.ResultsModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 
@@ -17,13 +18,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 public class CompetitionResultsController : Controller
 {
     private readonly ICompetitionsService competitionsService;
+    private readonly IManageFiltersService filtersService;
     private readonly IPdfService pdfService;
 
     public CompetitionResultsController(
         ICompetitionsService competitionsService,
+        IManageFiltersService filtersService,
         IPdfService pdfService)
     {
         this.competitionsService = competitionsService ?? throw new ArgumentNullException(nameof(competitionsService));
+        this.filtersService = filtersService ?? throw new ArgumentNullException(nameof(filtersService));
         this.pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
     }
 
@@ -40,6 +44,7 @@ public class CompetitionResultsController : Controller
                 nameof(CompetitionTaskListController.Index),
                 typeof(CompetitionTaskListController).ControllerName(),
                 new { internalOrgId, competitionId }),
+            InternalOrgId = internalOrgId,
         };
 
         return View(model);
@@ -66,8 +71,10 @@ public class CompetitionResultsController : Controller
         int competitionId)
     {
         var competition = await competitionsService.GetCompetitionForResults(internalOrgId, competitionId);
+        var nonShortlistedSolutions = await competitionsService.GetNonShortlistedSolutions(internalOrgId, competitionId);
+        var filterDetails = await filtersService.GetFilterDetails(competition.OrganisationId, competition.FilterId);
 
-        var model = new ViewResultsModel(competition)
+        var model = new ViewResultsModel(competition, filterDetails, nonShortlistedSolutions)
         {
             BackLink = Url.Action(
                 nameof(CompetitionsDashboardController.Index),

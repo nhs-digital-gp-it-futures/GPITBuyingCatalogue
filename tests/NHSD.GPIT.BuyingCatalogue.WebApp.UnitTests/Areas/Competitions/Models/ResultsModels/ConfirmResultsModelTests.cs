@@ -19,6 +19,7 @@ public static class ConfirmResultsModelTests
         competition.CompetitionSolutions = competitionSolutions;
         competition.NonPriceElements = new()
         {
+            Features = new List<FeaturesCriteria> { new() },
             Implementation = new(),
             Interoperability = new List<InteroperabilityCriteria> { new() },
             ServiceLevel = new(),

@@ -19,6 +19,7 @@ public static class NonPriceElementExtensions
 
         return nonPriceElement switch
         {
+            NonPriceElement.Features => nonPriceElements.Features.Any(),
             NonPriceElement.Interoperability => nonPriceElements.Interoperability.Any(),
             NonPriceElement.Implementation => nonPriceElements.Implementation is not null,
             NonPriceElement.ServiceLevel => nonPriceElements.ServiceLevel is not null,
@@ -35,6 +36,7 @@ public static class NonPriceElementExtensions
 
         return nonPriceElement switch
         {
+            NonPriceElement.Features => nonPriceElements.NonPriceWeights.Features,
             NonPriceElement.Implementation => nonPriceElements.NonPriceWeights.Implementation,
             NonPriceElement.Interoperability => nonPriceElements.NonPriceWeights.Interoperability,
             NonPriceElement.ServiceLevel => nonPriceElements.NonPriceWeights.ServiceLevel,
@@ -49,6 +51,9 @@ public static class NonPriceElementExtensions
     {
         switch (nonPriceElement)
         {
+            case NonPriceElement.Features:
+                nonPriceElements.Features.Clear();
+                break;
             case NonPriceElement.Implementation:
                 nonPriceElements.Implementation = null;
                 break;
@@ -70,7 +75,8 @@ public static class NonPriceElementExtensions
         => (nonPriceElements.NonPriceWeights != null) &&
             ((nonPriceElements.HasNonPriceElement(NonPriceElement.Interoperability) && nonPriceElements.GetNonPriceWeight(NonPriceElement.Interoperability) == null)
                 || (nonPriceElements.HasNonPriceElement(NonPriceElement.Implementation) && nonPriceElements.GetNonPriceWeight(NonPriceElement.Implementation) == null)
-                || (nonPriceElements.HasNonPriceElement(NonPriceElement.ServiceLevel) && nonPriceElements.GetNonPriceWeight(NonPriceElement.ServiceLevel) == null));
+                || (nonPriceElements.HasNonPriceElement(NonPriceElement.ServiceLevel) && nonPriceElements.GetNonPriceWeight(NonPriceElement.ServiceLevel) == null)
+                || (nonPriceElements.HasNonPriceElement(NonPriceElement.Features) && nonPriceElements.GetNonPriceWeight(NonPriceElement.Features) == null));
 
     public static IEnumerable<NonPriceElement> GetAvailableNonPriceElements(this NonPriceElements nonPriceElements) =>
         GetAllNonPriceElements().Where(x => !HasNonPriceElement(nonPriceElements, x)).ToArray();
@@ -87,6 +93,7 @@ public static class NonPriceElementExtensions
 
     public static ScoreType AsScoreType(this NonPriceElement nonPriceElement) => nonPriceElement switch
     {
+        NonPriceElement.Features => ScoreType.Features,
         NonPriceElement.Implementation => ScoreType.Implementation,
         NonPriceElement.Interoperability => ScoreType.Interoperability,
         NonPriceElement.ServiceLevel => ScoreType.ServiceLevel,
