@@ -5,9 +5,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsLog
 {
     public sealed class NhsLoginIconViewComponent : ViewComponent
     {
-        public async Task<IViewComponentResult> InvokeAsync()
+        public IViewComponentResult Invoke()
         {
-            return await Task.FromResult(View("NhsLoginIcon"));
+            return View("NhsLoginIcon");
         }
     }
 }

@@ -5,7 +5,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsLog
 {
     public sealed class NhsLoginLinkViewComponent : ViewComponent
     {
-        public async Task<IViewComponentResult> InvokeAsync(bool? isLoggedIn, string url, string text, string linkText = null)
+        public IViewComponentResult Invoke(bool? isLoggedIn, string url, string text, string linkText = null)
         {
             var model = new LoginLinkModel
             {
@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsLog
                 LinkText = linkText ?? "Log in",
             };
 
-            return await Task.FromResult(View("LoginLink", model));
+            return View("LoginLink", model);
         }
     }
 }
