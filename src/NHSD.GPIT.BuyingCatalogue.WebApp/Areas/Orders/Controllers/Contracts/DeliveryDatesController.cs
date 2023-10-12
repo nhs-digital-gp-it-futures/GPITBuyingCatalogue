@@ -149,26 +149,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             return View(model);
         }
 
-        [HttpPost("{catalogueItemId}/amend")]
-        public async Task<IActionResult> AmendDate(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, AmendDateModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            await deliveryDateService.SetDeliveryDate(internalOrgId, callOffId, catalogueItemId, model.Date!.Value);
-
-            var orderWrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
-
-            var route = routingService.GetRoute(
-                RoutingPoint.AmendDeliveryDates,
-                orderWrapper,
-                new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = model.Source });
-
-            return RedirectToAction(route.ActionName, route.ControllerName, route.RouteValues);
-        }
-
         [HttpGet("{catalogueItemId}/edit")]
         public async Task<IActionResult> EditDates(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, RoutingSource? source = null)
         {

@@ -67,14 +67,13 @@
                                         url="@SolutionSelectionUrlTarget(Model.Progress.SolutionOrService)"
                                         status="@Model.Progress.SolutionOrService"/>
 
-                    @if (!Model.IsAmendment)
-                    {
-                        <nhs-task-list-item label-text="Planned delivery dates"
+
+                    <nhs-task-list-item label-text="Planned delivery dates"
                                             label-hint="@Model.StatusDescription(OrderSummaryField.PlannedDeliveryDates, !Model.IsAmendment)"
                                             data-test-id="test-planned-delivery-dates"
                                             url="@DeliveryDatesUrlTarget(Model.Progress.DeliveryDates)"
                                             status="@Model.Progress.DeliveryDates"/>
-                    }
+                    
 
                     <nhs-task-list-item label-text="Select funding sources"
                                         label-hint="@Model.StatusDescription(OrderSummaryField.FundingSources, Model.IsAmendment)"
