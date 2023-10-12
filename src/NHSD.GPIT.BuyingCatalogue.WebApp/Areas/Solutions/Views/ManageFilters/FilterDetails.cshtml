@@ -32,8 +32,11 @@
             <vc:nhs-action-link url="@Url.Action(
                                     nameof(CompetitionsDashboardController.SaveCompetition),
                                     typeof(CompetitionsDashboardController).ControllerName(),
-                                    //typeof(CompetitionsDashboardController).AreaName(),
-                                    new { internalOrgId = Model.InternalOrgId, filterId = Model.FilterDetails.Id })"
+                                    new { 
+                                        internalOrgId = Model.InternalOrgId, 
+                                        filterId = Model.FilterDetails.Id, 
+                                        fromFilter = true,
+                                        Area = typeof(CompetitionsDashboardController).AreaName(),})"
                             text="Begin a competition using this filter" />
         }
         <partial name="Partials/_FilterDetailsPartial" model="Model" />
