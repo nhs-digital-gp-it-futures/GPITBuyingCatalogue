@@ -125,13 +125,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 .OrderBy(x => x.CatalogueItem.Name);
         }
 
-        public OrderItem GetAdditionalService(CatalogueItemId catalogueItemId)
-        {
-            return OrderItems
-                .FirstOrDefault(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService
-                    && x.CatalogueItem.Id == catalogueItemId);
-        }
-
         public IEnumerable<OrderItem> GetAdditionalServices()
         {
             return OrderItems
