@@ -1,59 +1,18 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
+@using HomeController = NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers.HomeController
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsNavigationPanel
+@{
+    var navigationItems = new List<KeyValuePair<string, string>>()
+    {
+        new ("Home", Url.Action(nameof(HomeController.Index), typeof(HomeController).ControllerName(), new { area = typeof(HomeController).AreaName() })),
+        new ("Buyer organisations", Url.Action(nameof(OrganisationsController.Index), typeof(OrganisationsController).ControllerName())),
+        new ("Supplier organisations", Url.Action(nameof(SuppliersController.Index), typeof(SuppliersController).ControllerName())),
+        new ("Catalogue Solutions", Url.Action(nameof(CatalogueSolutionsController.Index), typeof(CatalogueSolutionsController).ControllerName())),
+    };
 
-<nav class="nhsuk-header__navigation" id="header-navigation" role="navigation" aria-label="Primary navigation" aria-labelledby="label-navigation">
-    <div class="nhsuk-width-container">
-        <p class="nhsuk-header__navigation-title">
-            <span id="label-navigation">Menu</span>
-            <button class="nhsuk-header__navigation-close" id="close-menu">
-                <svg class="nhsuk-icon nhsuk-icon__close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                    <path d="M13.41 12l5.3-5.29a1 1 0 1 0-1.42-1.42L12 10.59l-5.29-5.3a1 1 0 0 0-1.42 1.42l5.3 5.29-5.3 5.29a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l5.29-5.3 5.29 5.3a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42z"></path>
-                </svg>
-                <span class="nhsuk-u-visually-hidden">Close menu</span>
-            </button>
-        </p>
-        <ul class="nhsuk-header__navigation-list">
-            <li class="nhsuk-header__navigation-item">
-                <a class="nhsuk-header__navigation-link"
-                   data-test-id="buyer-org-link"
-                   asp-controller="@typeof(OrganisationsController).ControllerName()"
-                   asp-action="@nameof(OrganisationsController.Index)">
-                    Buyer organisations
-                    <svg class="nhsuk-icon nhsuk-icon__chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M15.5 12a1 1 0 0 1-.29.71l-5 5a1 1 0 0 1-1.42-1.42l4.3-4.29-4.3-4.29a1 1 0 0 1 1.42-1.42l5 5a1 1 0 0 1 .29.71z"></path>
-                    </svg>
-                </a>
-            </li>
-            <li class="nhsuk-header__navigation-item">
-                <a class="nhsuk-header__navigation-link"
-                   asp-controller="@typeof(SuppliersController).ControllerName()"
-                   asp-action="@nameof(SuppliersController.Index)">
-                    Supplier organisations
-                    <svg class="nhsuk-icon nhsuk-icon__chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M15.5 12a1 1 0 0 1-.29.71l-5 5a1 1 0 0 1-1.42-1.42l4.3-4.29-4.3-4.29a1 1 0 0 1 1.42-1.42l5 5a1 1 0 0 1 .29.71z"></path>
-                    </svg>
-                </a>
-            </li>
-            <li class="nhsuk-header__navigation-item">
-                <a class="nhsuk-header__navigation-link"
-                   asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
-                   asp-action="@nameof(CatalogueSolutionsController.Index)">
-                    Catalogue Solutions
-                    <svg class="nhsuk-icon nhsuk-icon__chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M15.5 12a1 1 0 0 1-.29.71l-5 5a1 1 0 0 1-1.42-1.42l4.3-4.29-4.3-4.29a1 1 0 0 1 1.42-1.42l5 5a1 1 0 0 1 .29.71z"></path>
-                    </svg>
-                </a>
-            </li>
-            <li class="nhsuk-header__navigation-item">
-                @if (User.Identity.IsAuthenticated)
-                {
-                    <a class="nhsuk-header__navigation-link" href="~/identity/account/logout" data-test-id="logout-link">
-                        Log out
-                        <svg class="nhsuk-icon nhsuk-icon__chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
-                            <path d="M15.5 12a1 1 0 0 1-.29.71l-5 5a1 1 0 0 1-1.42-1.42l4.3-4.29-4.3-4.29a1 1 0 0 1 1.42-1.42l5 5a1 1 0 0 1 .29.71z"></path>
-                        </svg>
-                    </a>
-                }
-            </li>
-        </ul>
-    </div>
-</nav>
+    if (User.Identity?.IsAuthenticated ?? false)
+        navigationItems.Add(new("Log out", Url.Action(nameof(AccountController.Logout), typeof(AccountController).ControllerName(), new { area = typeof(AccountController).AreaName() })));
+}
+
+<vc:nhs-navigation-panel title="Menu" items="navigationItems"/>
