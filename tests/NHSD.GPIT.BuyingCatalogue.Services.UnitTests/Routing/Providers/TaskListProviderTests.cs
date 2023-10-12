@@ -65,8 +65,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
                 CallOffId = callOffId,
             };
 
-            result.ActionName.Should().Be(Constants.Actions.Review);
-            result.ControllerName.Should().Be(Constants.Controllers.Review);
+            result.ActionName.Should().Be(Constants.Actions.OrderDashboard);
+            result.ControllerName.Should().Be(Constants.Controllers.Orders);
             result.RouteValues.Should().BeEquivalentTo(expected);
         }
 
@@ -270,8 +270,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
                 CallOffId = callOffId,
             };
 
-            result.ActionName.Should().Be(Constants.Actions.Review);
-            result.ControllerName.Should().Be(Constants.Controllers.Review);
+            result.ActionName.Should().Be(Constants.Actions.OrderDashboard);
+            result.ControllerName.Should().Be(Constants.Controllers.Orders);
             result.RouteValues.Should().BeEquivalentTo(expected);
         }
     }
