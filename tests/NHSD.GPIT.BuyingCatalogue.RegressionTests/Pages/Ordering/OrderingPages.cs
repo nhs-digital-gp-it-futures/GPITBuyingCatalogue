@@ -199,6 +199,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                             SelectEditAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
                             Quantity.AddQuantity();
                         }
+
+                        SelectEditAssociatedService.AddAssociatedService();
                     }
                     else
                     {
