@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.TaskList.Base;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.TaskList
@@ -32,9 +33,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ta
 
         protected override List<TaskListOrderItem> OrderItems => new() { };
 
-        protected override Type ContinueController => typeof(ReviewSolutionsController);
+        protected override Type ContinueController => typeof(OrderController);
 
-        protected override string ContinueAction => nameof(ReviewSolutionsController.ReviewSolutions);
+        protected override string ContinueAction => nameof(OrderController.Order);
 
         protected override string ChangeSolutionAction => nameof(CatalogueSolutionsController.EditSolutionAssociatedServicesOnly);
     }
