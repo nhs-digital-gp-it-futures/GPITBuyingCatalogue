@@ -120,8 +120,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(ReviewSolutionsController),
-                nameof(ReviewSolutionsController.ReviewSolutions)).Should().BeTrue();
+                typeof(TaskListController),
+                nameof(TaskListController.TaskList)).Should().BeTrue();
         }
 
         [Fact]

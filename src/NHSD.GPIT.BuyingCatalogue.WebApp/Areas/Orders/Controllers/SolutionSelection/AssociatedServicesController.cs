@@ -88,8 +88,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             }
 
             return RedirectToAction(
-                nameof(ReviewSolutionsController.ReviewSolutions),
-                typeof(ReviewSolutionsController).ControllerName(),
+                nameof(TaskListController.TaskList),
+                typeof(TaskListController).ControllerName(),
                 new { internalOrgId, callOffId });
         }
 
@@ -125,8 +125,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             }
 
             return RedirectToAction(
-                nameof(ReviewSolutionsController.ReviewSolutions),
-                typeof(ReviewSolutionsController).ControllerName(),
+                nameof(TaskListController.TaskList),
+                typeof(TaskListController).ControllerName(),
                 new { internalOrgId, callOffId });
         }
 

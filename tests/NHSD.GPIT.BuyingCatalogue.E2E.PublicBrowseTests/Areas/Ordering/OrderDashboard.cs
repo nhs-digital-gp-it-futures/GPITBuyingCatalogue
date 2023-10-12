@@ -179,8 +179,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
             CommonActions.ClickLinkElement(Objects.Ordering.OrderDashboard.SolutionSelectionLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(ReviewSolutionsController),
-                nameof(ReviewSolutionsController.ReviewSolutions)).Should().BeTrue();
+                typeof(TaskListController),
+                nameof(TaskListController.TaskList)).Should().BeTrue();
         }
 
         [Fact]
