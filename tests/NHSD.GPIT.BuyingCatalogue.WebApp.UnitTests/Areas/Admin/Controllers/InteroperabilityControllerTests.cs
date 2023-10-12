@@ -844,7 +844,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<IInteroperabilityService> mockInteroperabilityService,
             InteroperabilityController controller)
         {
-            var nonExistingIntegration = new Integration { IntegrationType = "NonMatchingType" };
+            Integration nonExistingIntegration = null;
             mockInteroperabilityService.Setup(s => s.GetIntegrationById(solutionId, model.IntegrationId)).ReturnsAsync(nonExistingIntegration);
 
             var result = await controller.AddNhsAppIntegration(solutionId, model) as RedirectToActionResult;
