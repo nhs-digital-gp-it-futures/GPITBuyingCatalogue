@@ -219,6 +219,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                         SelectEditAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
                         Quantity.AddQuantity();
                     }
+
+                    SelectEditAssociatedService.AddAssociatedService();
                 }
             }
 
@@ -330,6 +332,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                         SelectEditAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
                         Quantity.AddQuantity();
                     }
+
+                    SelectEditAssociatedService.AddAssociatedService();
                 }
             }
             else
@@ -358,6 +362,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                             SelectEditAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
                             Quantity.AddQuantity();
                         }
+
+                        SelectEditAssociatedService.AddAssociatedService();
                     }
                     else
                     {
@@ -462,7 +468,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                     Quantity.AddQuantity();
                 }
             }
-
+            SelectEditAssociatedService.AddAssociatedService();
             SolutionAndServicesReview.ReviewSolutionAndServices();
 
             TaskList.EditPlannedDeliveryDateTask();
@@ -497,6 +503,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 Quantity.AddQuantity();
             }
 
+            SelectEditAssociatedService.AddAssociatedService();
             SolutionAndServicesReview.ReviewSolutionAndServices();
 
             TaskList.SelectPlannedDeliveryDatesTask();
