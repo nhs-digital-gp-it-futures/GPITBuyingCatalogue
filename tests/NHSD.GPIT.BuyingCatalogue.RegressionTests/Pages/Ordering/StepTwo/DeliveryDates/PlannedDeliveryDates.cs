@@ -66,20 +66,44 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
         public void EditPlannedDeliveryDate(string solutionName, bool isAssociatedServiceOnly, IEnumerable<string>? associatedServices, IEnumerable<string>? additionalServices)
         {
             var names = SelectSolutionAndServices.SelectSolutionServices(solutionName, isAssociatedServiceOnly, associatedServices, additionalServices);
-
-            foreach (var name in names)
+            if (isAssociatedServiceOnly)
             {
-                CommonActions.ClickLinkElement(DeliveryDatesObjects.ReviewEditDeliveryDatesLink(name));
+                CommonActions.PageLoadedCorrectGetIndex(
+                        typeof(DeliveryDatesController),
+                        nameof(DeliveryDatesController.SelectDate)).Should().BeTrue();
 
-                EditDefaultPlannedDeliveryDate(DateTime.Today.AddDays(8));
                 CommonActions.ClickSave();
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(DeliveryDatesController),
+                    nameof(DeliveryDatesController.EditDates)).Should().BeTrue();
+
+                foreach (var name in names)
+                {
+                    EditDefaultPlannedDeliveryDate(DateTime.Today.AddDays(9));
+                    CommonActions.ClickSave();
+                }
+
+                ReviewPlannedDeliveryDate();
+                CommonActions.PageLoadedCorrectGetIndex(
+                        typeof(OrderController),
+                        nameof(OrderController.Order)).Should().BeTrue();
             }
+            else
+            {
+                foreach (var name in names)
+                {
+                    CommonActions.ClickLinkElement(DeliveryDatesObjects.ReviewEditDeliveryDatesLink(name));
 
-            CommonActions.ClickContinue();
+                    EditDefaultPlannedDeliveryDate(DateTime.Today.AddDays(8));
+                    CommonActions.ClickSave();
+                }
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(OrderController),
-                    nameof(OrderController.Order)).Should().BeTrue();
+                CommonActions.ClickContinue();
+
+                CommonActions.PageLoadedCorrectGetIndex(
+                        typeof(OrderController),
+                        nameof(OrderController.Order)).Should().BeTrue();
+            }
         }
 
         public void EditPlannedDeliveryDate(string solutionName, bool isAssociatedServiceOnly, string associatedServices, string additionalServices, bool editplanneddeliverydate = false)

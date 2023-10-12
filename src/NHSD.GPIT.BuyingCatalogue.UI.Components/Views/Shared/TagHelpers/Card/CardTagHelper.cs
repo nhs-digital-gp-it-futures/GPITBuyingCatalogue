@@ -1,5 +1,6 @@
 ﻿using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -14,13 +15,16 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
         public const string TextName = "text";
         public const string TitleName = "title";
         public const string UrlName = "url";
+        public const string HorizontalAlignName = "horizontal-align";
 
         private const string CardClass = "nhsuk-card";
+        private const string CardMinHeightClass = "nhs-card__min-height";
         private const string CardClickableClass = "nhsuk-card--clickable";
         private const string CardContentClass = "nhsuk-card__content";
         private const string CardDescriptionClass = "nhsuk-card__description";
         private const string CardHeadingClass = "nhsuk-card__heading";
-        private const string CardHeadingMobileClass = "nhsuk-heading-m";
+        private const string CardHeadingMobileClass = "nhsuk-heading-s";
+        private const string CardHeadingMinHeightClass = "card-title-min-height";
         private const string CardLinkClass = "nhsuk-card__link";
 
         [HtmlAttributeName(TextName)]
@@ -32,6 +36,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
         [HtmlAttributeName(UrlName)]
         public string Url { get; set; }
 
+        [HtmlAttributeName(HorizontalAlignName)]
+        public bool HorizontalAlign { get; set; }
+
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = TagHelperConstants.Div;
@@ -42,6 +49,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
             if (!string.IsNullOrWhiteSpace(Url))
             {
                 output.AddClass(CardClickableClass, HtmlEncoder.Default);
+
+                if (HorizontalAlign)
+                    output.AddClass(CardMinHeightClass, HtmlEncoder.Default);
             }
 
             var content = await BuildContentAsync(output);
@@ -71,6 +81,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
             if (string.IsNullOrWhiteSpace(Url))
             {
                 heading.InnerHtml.Append(Title);
+
+                if (HorizontalAlign)
+                    heading.AddCssClass(CardHeadingMinHeightClass);
             }
             else
             {
@@ -91,21 +104,16 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
             return link;
         }
 
-        private async Task<TagBuilder> BuildCardTextAsync(TagHelperOutput output)
+        private async Task<IHtmlContent> BuildCardTextAsync(TagHelperOutput output)
         {
             var hasText = !string.IsNullOrWhiteSpace(Text);
-            var cardText = new TagBuilder(hasText ? TagHelperConstants.Paragraph : TagHelperConstants.Span);
+
+            if (!hasText)
+                return await output.GetChildContentAsync();
+
+            var cardText = new TagBuilder(TagHelperConstants.Paragraph);
             cardText.AddCssClass(CardDescriptionClass);
-
-            if (hasText)
-            {
-                cardText.InnerHtml.Append(Text);
-                return cardText;
-            }
-
-            var childContent = await output.GetChildContentAsync();
-            cardText.InnerHtml.AppendHtml(childContent);
-
+            cardText.InnerHtml.Append(Text);
             return cardText;
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,14 +7,18 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Validators.Registration;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 {
@@ -91,13 +96,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 
             var signinResult = await signInManager.PasswordSignInAsync(user, viewModel.Password, false, true);
 
-            if (signinResult.Succeeded)
-            {
-                await odsService.UpdateOrganisationDetails(user.PrimaryOrganisation.ExternalIdentifier);
-                return Redirect(string.IsNullOrWhiteSpace(viewModel.ReturnUrl) ? "~/" : viewModel.ReturnUrl);
-            }
+            if (!signinResult.Succeeded)
+                return signinResult.IsLockedOut ? RedirectToAction(nameof(LockedAccount)) : BadLogin();
 
-            return signinResult.IsLockedOut ? RedirectToAction(nameof(LockedAccount)) : BadLogin();
+            await odsService.UpdateOrganisationDetails(user.PrimaryOrganisation.ExternalIdentifier);
+            return Redirect(await GetLogonReturnUrl(viewModel.ReturnUrl, user));
         }
 
         [HttpGet("LockedAccount")]
@@ -247,8 +250,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 
             if (passwordUsedBefore is not null)
                 ModelState.AddModelError(nameof(UpdatePasswordViewModel.NewPassword), PasswordValidator.PasswordAlreadyUsed);
-
             return View(viewModel);
+        }
+
+        private async Task<string> GetLogonReturnUrl(string returnUrl, AspNetUser user)
+        {
+            if (!string.IsNullOrWhiteSpace(returnUrl))
+                return returnUrl;
+
+            var isAdmin = await userManager.IsInRoleAsync(user, OrganisationFunction.Authority.Name);
+            return isAdmin ?
+                    Url.Action(
+                        nameof(HomeController.Index),
+                        typeof(HomeController).ControllerName(),
+                        new { area = "Admin" }) : "~/";
         }
     }
 }
