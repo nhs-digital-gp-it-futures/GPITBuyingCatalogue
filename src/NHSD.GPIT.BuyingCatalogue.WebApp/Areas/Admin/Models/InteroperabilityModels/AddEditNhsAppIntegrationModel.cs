@@ -48,9 +48,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
         public void CheckIntegrationTypes(ICollection<Integration> integrations)
         {
             var nhsAppIntegration = integrations?.FirstOrDefault(i => i.IntegrationType.EqualsIgnoreCase(Framework.Constants.Interoperability.NhsAppIntegrationType));
+
             if (nhsAppIntegration != null)
             {
-                string[] nhsAppIntegrationTypes = nhsAppIntegration.NHSAppIntegrationTypes.Distinct().ToArray();
+                string[] nhsAppIntegrationTypes = nhsAppIntegration.NHSAppIntegrationTypes?.Distinct().ToArray();
+
                 if (nhsAppIntegrationTypes != null)
                 {
                     IntegrationId = integrations

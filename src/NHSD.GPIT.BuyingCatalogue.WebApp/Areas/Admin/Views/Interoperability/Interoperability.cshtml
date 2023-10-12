@@ -29,7 +29,7 @@
             <h3>IM1 integrations</h3>
             <vc:nhs-action-link url="@Url.Action(nameof(InteroperabilityController.AddIm1Integration), typeof(InteroperabilityController).ControllerName(), new { solutionId = @Model.CatalogueItemId })" text="Add an IM1 integration" />
             <p>
-                Use the links to add information on each of the IM1 integrations your Catalogue Solution works with.
+                Use the link to add information on each of the IM1 integrations your Catalogue Solution works with.
             </p>
 
             @if (Model.IM1Integrations.Any())
@@ -82,7 +82,7 @@
             <vc:nhs-action-link url="@Url.Action(nameof(InteroperabilityController.AddGpConnectIntegration), typeof(InteroperabilityController).ControllerName(), new { solutionId = @Model.CatalogueItemId })" text="Add a GP Connect integration" />
 
             <p>
-                Use the links to add information on each of the GP Connect integrations your Catalogue Solution works with.
+                Use the link to add information on each of the GP Connect integrations your Catalogue Solution works with.
             </p>
 
             @if (Model.GpConnectIntegrations.Any())
