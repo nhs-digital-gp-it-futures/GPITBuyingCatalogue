@@ -93,7 +93,7 @@
                 <hr>
             }
 
-            @if (Model.NhsAppIntegrations.Any())
+            @if (Model.NhsAppIntegrationTypes.Any())
             {
                 <nhs-card title="NHS App integrations">
                     @foreach (var integration in Model.NhsAppIntegrationTypes)
@@ -103,8 +103,8 @@
                         </ul>
                     }
                 </nhs-card>
+                <hr>
             }
-            <hr>
 
             @if (!string.IsNullOrWhiteSpace(Model.IntegrationsUrl))
             {

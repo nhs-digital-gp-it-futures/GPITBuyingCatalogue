@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -857,6 +859,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockInteroperabilityService.Verify(
                 s => s.AddIntegration(solutionId, It.IsAny<Integration>()),
                 Times.Once);
+        }
+
+        [Fact]
+        public static void CheckIntegrationTypes_WhenIntegrationsIsNull_ShouldNotThrowException()
+        {
+            var model = new AddEditNhsAppIntegrationModel();
+
+            Action action = () => model.CheckIntegrationTypes(null);
+
+            action.Should().NotThrow<Exception>();
+        }
+
+        [Fact]
+        public static void CheckIntegrationTypes_WhenNhsAppIntegrationNotFound_ShouldNotChangeIntegrationIdAndCheckedProperties()
+        {
+            var model = new AddEditNhsAppIntegrationModel();
+            var integrations = new List<Integration>();
+
+            model.CheckIntegrationTypes(integrations);
+
+            model.IntegrationId.Should().Be(Guid.Empty);
+            model.NhsAppIntegrationTypes.Should().BeNull();
         }
     }
 }

@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
 
         public Guid IntegrationId { get; set; }
 
-        private void SetIntegrationTypes()
+        public void SetIntegrationTypes()
         {
             NhsAppIntegrationTypes = new NhsAppIntegrationTypeModel[]
             {
@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
             };
         }
 
-        private void CheckIntegrationTypes(ICollection<Integration> integrations)
+        public void CheckIntegrationTypes(ICollection<Integration> integrations)
         {
             var nhsAppIntegration = integrations?.FirstOrDefault(i => i.IntegrationType.EqualsIgnoreCase(Framework.Constants.Interoperability.NhsAppIntegrationType));
             if (nhsAppIntegration != null)

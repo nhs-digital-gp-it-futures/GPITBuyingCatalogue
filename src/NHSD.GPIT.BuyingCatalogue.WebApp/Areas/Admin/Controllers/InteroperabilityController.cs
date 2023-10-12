@@ -384,7 +384,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var integrationExists = await interoperabilityService.GetIntegrationById(solutionId, model.IntegrationId);
 
-            if (!integrationExists.IntegrationType.EqualsIgnoreCase(Framework.Constants.Interoperability.NhsAppIntegrationType))
+            if (string.IsNullOrEmpty(integrationExists?.IntegrationType))
             {
                 await interoperabilityService.AddIntegration(solutionId, integration);
             }
