@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
             }
 
             return order.HaveAllDeliveryDates(wrapper.RolledUp.OrderRecipients)
-                ? TaskProgress.Completed
+                ? order.IsAmendment ? TaskProgress.Amended : TaskProgress.Completed
                 : (anyDeliveryDatesEntered ? TaskProgress.InProgress : TaskProgress.NotStarted);
         }
     }

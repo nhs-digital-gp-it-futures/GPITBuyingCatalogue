@@ -162,6 +162,11 @@
             typeof(DeliveryDatesController).ControllerName(),
             new { Model.InternalOrgId, Model.CallOffId }),
 
+        TaskProgress.Amended => Url.Action(
+            nameof(DeliveryDatesController.Review),
+            typeof(DeliveryDatesController).ControllerName(),
+            new { Model.InternalOrgId, Model.CallOffId }),
+
         TaskProgress.CannotStart => string.Empty,
         TaskProgress.NotApplicable => string.Empty,
         TaskProgress.Optional => string.Empty,

@@ -299,10 +299,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         public static async Task Get_EditDates_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
-            EntityFramework.Ordering.Models.Order order,
+            OrderWrapper orderWrapper,
             [Frozen] Mock<IOrderService> orderService,
             DeliveryDatesController controller)
         {
+            var order = orderWrapper.Order;
             order.SetupCatalogueSolution();
 
             var catalogueItemId = order.OrderItems.First().CatalogueItemId;
@@ -315,7 +316,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             orderService.VerifyAll();
 
-            var expected = new EditDatesModel(order, catalogueItemId);
+            var expected = new EditDatesModel(orderWrapper, catalogueItemId);
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 
             actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));

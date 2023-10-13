@@ -130,14 +130,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         public async Task<IActionResult> EditDates(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, RoutingSource? source = null)
         {
             var orderWrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
-            var order = orderWrapper.Order;
-
+            
             var route = routingService.GetRoute(
                 RoutingPoint.EditDeliveryDatesBackLink,
                 orderWrapper,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
 
-            var model = new EditDatesModel(order, catalogueItemId, source)
+            var model = new EditDatesModel(orderWrapper, catalogueItemId, source)
             {
                 BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
             };
