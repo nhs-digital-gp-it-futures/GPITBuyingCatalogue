@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
     public interface ISolutionsFilterService
     {
         Task<(IQueryable<CatalogueItem> CatalogueItems, List<CapabilitiesAndCountModel> CapabilitiesAndCount)> GetFilteredAndNonFilteredQueryResults(
-             Dictionary<int, string[]> capabiltiesAndEpics);
+             Dictionary<int, string[]> capabilitiesAndEpics);
 
         Task<(IList<CatalogueItem> CatalogueItems, PageOptions Options, List<CapabilitiesAndCountModel> CapabilitiesAndCount)> GetAllSolutionsFiltered(
              PageOptions options = null,
@@ -20,8 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
              string selectedFrameworkId = null,
              string selectedApplicationTypeIds = null,
              string selectedHostingTypeIds = null,
-             string selectedIM1Integrations = null,
-             string selectedGPConnectIntegrations = null,
+             string selectedIm1Integrations = null,
+             string selectedGpConnectIntegrations = null,
              string selectedInteroperabilityOptions = null);
 
         Task<List<SearchFilterModel>> GetSolutionsBySearchTerm(string searchTerm, int maxToBringBack = 15);
