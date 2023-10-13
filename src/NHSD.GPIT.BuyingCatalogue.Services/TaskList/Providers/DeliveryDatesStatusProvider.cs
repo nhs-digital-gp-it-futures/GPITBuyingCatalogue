@@ -22,7 +22,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
                     .DetermineOrderRecipients(x.CatalogueItemId)
                     .NoDeliveryDatesEntered(x.CatalogueItemId));
 
-            if (state.SolutionOrService != TaskProgress.Completed
+            var okToProgress = new[] { TaskProgress.Completed, TaskProgress.Amended };
+
+            if (!okToProgress.Contains(state.SolutionOrService)
                 && !anyDeliveryDatesEntered)
             {
                 return TaskProgress.CannotStart;

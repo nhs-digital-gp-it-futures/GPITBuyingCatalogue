@@ -5,7 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
 {
-    public class EditDeliveryDatesProvider : IRoutingResultProvider
+    public class DeliveryDatesProvider : IRoutingResultProvider
     {
         public RoutingResult Process(OrderWrapper orderWrapper, RouteValues routeValues)
         {

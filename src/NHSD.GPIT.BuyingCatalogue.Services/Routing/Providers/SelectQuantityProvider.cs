@@ -44,22 +44,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 };
             }
 
-            if (routeValues.CallOffId.IsAmendment)
-            {
-                return new RoutingResult
-                {
-                    ControllerName = Constants.Controllers.DeliveryDates,
-                    ActionName = Constants.Actions.AmendDeliveryDate,
-                    RouteValues = new
-                    {
-                        routeValues.InternalOrgId,
-                        routeValues.CallOffId,
-                        routeValues.CatalogueItemId,
-                        routeValues.Source,
-                    },
-                };
-            }
-
             var additionalService = order.GetAdditionalServices()
                 .FirstOrDefault(x => x.OrderItemPrice is null);
 
