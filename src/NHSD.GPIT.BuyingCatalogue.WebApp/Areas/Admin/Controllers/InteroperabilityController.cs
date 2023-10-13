@@ -384,14 +384,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var integrationExists = await interoperabilityService.GetIntegrationById(solutionId, model.IntegrationId);
 
-            if (string.IsNullOrEmpty(integrationExists?.IntegrationType))
-            {
-                await interoperabilityService.AddIntegration(solutionId, integration);
-            }
-            else
-            {
-                await interoperabilityService.EditIntegration(solutionId, model.IntegrationId, integration);
-            }
+            await (string.IsNullOrEmpty(integrationExists?.IntegrationType)
+                ? interoperabilityService.AddIntegration(solutionId, integration)
+                : interoperabilityService.EditIntegration(solutionId, model.IntegrationId, integration));
 
             return RedirectToAction(nameof(Interoperability), new { solutionId });
         }

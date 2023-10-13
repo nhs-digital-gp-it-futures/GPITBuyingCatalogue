@@ -49,24 +49,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
         {
             var nhsAppIntegration = integrations?.FirstOrDefault(i => i.IntegrationType.EqualsIgnoreCase(Framework.Constants.Interoperability.NhsAppIntegrationType));
 
-            if (nhsAppIntegration != null)
-            {
-                string[] nhsAppIntegrationTypes = nhsAppIntegration.NHSAppIntegrationTypes?.Distinct().ToArray();
+            string[] nhsAppIntegrationTypes = nhsAppIntegration?.NHSAppIntegrationTypes?.Distinct().ToArray();
 
-                if (nhsAppIntegrationTypes != null)
-                {
-                    IntegrationId = integrations
-                            .Where(i => i.IntegrationType.EqualsIgnoreCase(Framework.Constants.Interoperability.NhsAppIntegrationType))
-                            .Select(i => i.Id)
-                            .FirstOrDefault();
-                    foreach (var integrationType in NhsAppIntegrationTypes)
-                    {
-                        if (nhsAppIntegrationTypes.Any(s => s.Equals(integrationType.IntegrationType, StringComparison.InvariantCultureIgnoreCase)))
-                        {
-                            integrationType.Checked = true;
-                        }
-                    }
-                }
+            if (nhsAppIntegrationTypes != null)
+            {
+                 IntegrationId = integrations
+                         .Where(i => i.IntegrationType.EqualsIgnoreCase(Framework.Constants.Interoperability.NhsAppIntegrationType))
+                         .Select(i => i.Id)
+                         .FirstOrDefault();
+                 foreach (var integrationType in NhsAppIntegrationTypes)
+                 {
+                     if (nhsAppIntegrationTypes.Any(s => s.Equals(integrationType.IntegrationType, StringComparison.InvariantCultureIgnoreCase)))
+                     {
+                         integrationType.Checked = true;
+                     }
+                 }
             }
         }
     }
