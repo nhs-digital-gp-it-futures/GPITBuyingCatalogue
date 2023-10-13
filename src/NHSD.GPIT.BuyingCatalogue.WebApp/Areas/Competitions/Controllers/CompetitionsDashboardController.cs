@@ -171,8 +171,8 @@ public class CompetitionsDashboardController : Controller
                 selectedFrameworkId: filter.FrameworkId,
                 selectedApplicationTypeIds: filter.ApplicationTypeIds.ToFilterString(),
                 selectedHostingTypeIds: filter.HostingTypeIds.ToFilterString(),
-                selectedIM1Integrations: filter.IM1Integrations.ToFilterString(),
-                selectedGPConnectIntegrations: filter.GPConnectIntegrations.ToFilterString(),
+                selectedIm1Integrations: filter.IM1Integrations.ToFilterString(),
+                selectedGpConnectIntegrations: filter.GPConnectIntegrations.ToFilterString(),
                 selectedInteroperabilityOptions: filter.InteroperabilityOptions.ToFilterString());
 
         var competitionSolutions = solutionsAndServices.CatalogueItems.Select(
