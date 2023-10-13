@@ -194,7 +194,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 });
 
             order.OrderItems = new List<OrderItem> { orderItem };
-            order.Solution = solution.CatalogueItem;
+            order.AssociatedServicesOnlyDetails.Solution = solution.CatalogueItem;
 
             orderItem.CatalogueItem = associatedService.CatalogueItem;
             solution.FrameworkSolutions = frameworkSolutions;

@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public CatalogueItemId? GetSolutionId()
         {
             return AssociatedServicesOnly
-                ? SolutionId
+                ? AssociatedServicesOnlyDetails.SolutionId
                 : GetSolution()?.CatalogueItemId;
         }
 
@@ -238,7 +238,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             {
                 OrderNumber = OrderNumber,
                 Revision = newRevision,
-                AssociatedServicesOnly = AssociatedServicesOnly,
+                OrderType = OrderType,
                 CommencementDate = CommencementDate,
                 Description = Description,
                 InitialPeriod = InitialPeriod,

@@ -203,7 +203,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         {
             callOffId = new CallOffId(callOffId.OrderNumber, 1);
 
-            order.AssociatedServicesOnly = false;
+            order.OrderType = OrderTypeEnum.Solution;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
             order.OrderItems.ElementAt(0).CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 

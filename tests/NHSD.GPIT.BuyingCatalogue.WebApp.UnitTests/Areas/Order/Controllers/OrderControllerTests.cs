@@ -218,6 +218,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         [CommonAutoData]
         public static async Task Get_NewOrder_ReturnsExpectedResult(
             string internalOrgId,
+            OrderTypeEnum orderType,
             [Frozen] Mock<IOrganisationsService> organisationsService,
             Organisation organisation,
             OrderController controller)
@@ -226,7 +227,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
                 .Setup(s => s.GetOrganisationByInternalIdentifier(internalOrgId))
                 .ReturnsAsync(organisation);
 
-            var result = await controller.NewOrder(internalOrgId);
+            var result = await controller.NewOrder(internalOrgId, orderType);
 
             organisationsService.VerifyAll();
 
@@ -243,6 +244,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         [Theory]
         [CommonAutoData]
         public static async Task Get_ReadyToStart_ReturnsView(
+            OrderTypeEnum orderType,
             Organisation organisation,
             [Frozen] Mock<IOrganisationsService> service,
             OrderController controller)
@@ -250,7 +252,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
             service.Setup(s => s.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
                 .ReturnsAsync(organisation);
 
-            var result = await controller.ReadyToStart(organisation.InternalIdentifier);
+            var result = await controller.ReadyToStart(organisation.InternalIdentifier, orderType);
 
             result.As<ViewResult>().Should().NotBeNull();
         }
@@ -283,10 +285,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
             string internalOrgId,
             ReadyToStartModel model,
             OrderTriageValue option,
-            CatalogueItemType orderType,
+            OrderTypeEnum orderType,
             OrderController controller)
         {
-            var result = controller.ReadyToStart(internalOrgId, model, option, orderType).As<RedirectToActionResult>();
+            var result = controller.ReadyToStart(internalOrgId, model, orderType, option).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.NewOrder));
@@ -305,10 +307,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
             string internalOrgId,
             ReadyToStartModel model,
             OrderTriageValue option,
-            CatalogueItemType orderType,
+            OrderTypeEnum orderType,
             OrderController controller)
         {
-            var result = controller.ReadyToStart(internalOrgId, model, option, orderType).As<RedirectToActionResult>();
+            var result = controller.ReadyToStart(internalOrgId, model, orderType, option).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.NewOrder));
@@ -515,7 +517,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         public static void GetAdvice_CompletedAssociatedServicesOnlyOrder_ReturnsExpectedAdvice(
             EntityFramework.Ordering.Models.Order order)
         {
-            order.AssociatedServicesOnly = true;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
             order.Completed = DateTime.UtcNow;
 
             OrderController.GetAdvice(new OrderWrapper(order), true)
@@ -528,7 +530,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         public static void GetAdvice_CompletedOrderIsLatest_ReturnsExpectedAdvice(
             EntityFramework.Ordering.Models.Order order)
         {
-            order.AssociatedServicesOnly = false;
+            order.OrderType = OrderTypeEnum.Solution;
             order.Completed = DateTime.UtcNow;
 
             OrderController.GetAdvice(new OrderWrapper(order), true)
@@ -541,7 +543,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         public static void GetAdvice_CompletedOrderIsNotLatest_ReturnsExpectedAdvice(
             EntityFramework.Ordering.Models.Order order)
         {
-            order.AssociatedServicesOnly = false;
+            order.OrderType = OrderTypeEnum.Solution;
             order.Completed = DateTime.UtcNow;
 
             OrderController.GetAdvice(new OrderWrapper(order), false)

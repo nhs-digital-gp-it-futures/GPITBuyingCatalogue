@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 ServiceRecipients = TaskProgress.Completed,
             };
 
-            order.AssociatedServicesOnly = false;
+            order.OrderType = OrderTypeEnum.Solution;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = itemType);
 
             var actual = service.Get(new OrderWrapper(order), state);
@@ -99,7 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             };
 
             order.Revision = 1;
-            order.AssociatedServicesOnly = false;
+            order.OrderType = OrderTypeEnum.Solution;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
             var amendedOrder = order.BuildAmendment(2);
 
@@ -121,7 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             };
 
             order.Revision = 1;
-            order.AssociatedServicesOnly = false;
+            order.OrderType = OrderTypeEnum.Solution;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution);
             var amendedOrder = order.BuildAmendment(2);
             order.OrderItems.ForEach(i =>
@@ -149,7 +149,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             };
 
             order.Revision = 1;
-            order.AssociatedServicesOnly = false;
+            order.OrderType = OrderTypeEnum.Solution;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution);
             var amendedOrder = order.BuildAmendment(2);
             order.OrderItems.ForEach(i =>
@@ -176,8 +176,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 ServiceRecipients = TaskProgress.Completed,
             };
 
-            order.AssociatedServicesOnly = true;
-            order.SolutionId = null;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
+            order.AssociatedServicesOnlyDetails.SolutionId = null;
 
             var actual = service.Get(new OrderWrapper(order), state);
 
@@ -196,8 +196,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 ServiceRecipients = TaskProgress.Completed,
             };
 
-            order.AssociatedServicesOnly = true;
-            order.SolutionId = solutionId;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
+            order.AssociatedServicesOnlyDetails.SolutionId = solutionId;
             order.OrderItems.Clear();
 
             var actual = service.Get(new OrderWrapper(order), state);
@@ -220,7 +220,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             };
 
             order.Revision = revision;
-            order.AssociatedServicesOnly = false;
+            order.OrderType = OrderTypeEnum.Solution;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
@@ -244,7 +244,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             };
 
             order.Revision = revision;
-            order.AssociatedServicesOnly = false;
+            order.OrderType = OrderTypeEnum.Solution;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             order.OrderRecipients.ForEach(r => r.OrderItemRecipients.ForEach(i => i.DeliveryDate = null));
