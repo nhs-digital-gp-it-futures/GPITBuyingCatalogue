@@ -80,6 +80,15 @@
                         }
                     </ul>
 
+                    <p>
+                        <a href="@Url.Action(
+                                      nameof(SolutionsController.Capabilities),
+                                      typeof(SolutionsController).ControllerName(),
+                                      new { solutionId = @Model.SolutionScores[i].SolutionId, area = "Solutions" })" target="_blank">
+                            View the Capabilities and Epics met by this Catalogue Solution (opens in a new tab)
+                        </a>
+                    </p>
+
                     <nhs-fieldset-form-label asp-for="@Model.SolutionScores[i]"
                                              label-text="What score would you give this solution?"
                                              label-hint="Score each solution between 1 and 5. The higher the score, the better you think a solution meets your needs." size="Medium">
