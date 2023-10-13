@@ -4,10 +4,12 @@ using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -244,6 +246,99 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
             var actualResult = result.Should().BeAssignableTo<RedirectResult>().Subject;
 
             actualResult.Url.Should().Be(model.ReturnUrl);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_Login_NoReturnUrl_NotAdminUser_ReturnsRedirectToHome(
+            string odsCode,
+            AspNetUser user,
+            LoginViewModel model,
+            Mock<UserManager<AspNetUser>> mockUserManager,
+            Mock<SignInManager<AspNetUser>> mockSignInManager,
+            Mock<IOdsService> mockOdsService)
+        {
+            model.ReturnUrl = string.Empty;
+
+            user.Disabled = false;
+            user.PrimaryOrganisation = new Organisation { ExternalIdentifier = odsCode };
+
+            mockUserManager
+                .Setup(x => x.FindByNameAsync(model.EmailAddress))
+                .ReturnsAsync(user);
+
+            mockUserManager
+                .Setup(x => x.IsInRoleAsync(user, OrganisationFunction.Authority.Name))
+                .ReturnsAsync(false);
+
+            mockSignInManager
+                .Setup(x => x.PasswordSignInAsync(user, model.Password, false, true))
+                .ReturnsAsync(SignInResult.Success);
+
+            mockOdsService
+                .Setup(x => x.UpdateOrganisationDetails(odsCode))
+                .Verifiable();
+
+            var controller = CreateController(mockUserManager.Object, mockSignInManager.Object, odsService: mockOdsService.Object);
+
+            var result = await controller.Login(model);
+
+            mockUserManager.VerifyAll();
+            mockSignInManager.VerifyAll();
+            mockOdsService.VerifyAll();
+
+            var actualResult = result.Should().BeAssignableTo<RedirectResult>().Subject;
+
+            actualResult.Url.Should().Be("~/");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_Login_NoReturnUrl_AdminUser_ReturnsRedirectToHome(
+            string odsCode,
+            AspNetUser user,
+            LoginViewModel model,
+            Mock<UserManager<AspNetUser>> mockUserManager,
+            Mock<SignInManager<AspNetUser>> mockSignInManager,
+            Mock<IOdsService> mockOdsService,
+            Mock<IUrlHelper> mockUrlHelper,
+            string adminUrl)
+        {
+            model.ReturnUrl = string.Empty;
+
+            user.Disabled = false;
+            user.PrimaryOrganisation = new Organisation { ExternalIdentifier = odsCode };
+
+            mockUserManager
+                .Setup(x => x.FindByNameAsync(model.EmailAddress))
+                .ReturnsAsync(user);
+
+            mockUserManager
+                .Setup(x => x.IsInRoleAsync(user, OrganisationFunction.Authority.Name))
+                .ReturnsAsync(true);
+
+            mockSignInManager
+                .Setup(x => x.PasswordSignInAsync(user, model.Password, false, true))
+                .ReturnsAsync(SignInResult.Success);
+
+            mockOdsService
+                .Setup(x => x.UpdateOrganisationDetails(odsCode))
+                .Verifiable();
+
+            mockUrlHelper.Setup(x => x.Action(It.IsAny<UrlActionContext>())).Returns(adminUrl);
+
+            var controller = CreateController(mockUserManager.Object, mockSignInManager.Object, odsService: mockOdsService.Object);
+            controller.Url = mockUrlHelper.Object;
+
+            var result = await controller.Login(model);
+
+            mockUserManager.VerifyAll();
+            mockSignInManager.VerifyAll();
+            mockOdsService.VerifyAll();
+
+            var actualResult = result.Should().BeAssignableTo<RedirectResult>().Subject;
+
+            actualResult.Url.Should().Be(adminUrl);
         }
 
         [Theory]
