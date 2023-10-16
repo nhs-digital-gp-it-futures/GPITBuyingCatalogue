@@ -12,7 +12,6 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
@@ -25,6 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
     [ExcludeFromCodeCoverage]
     public sealed class SolutionsFilterService : ISolutionsFilterService
     {
+        private static readonly PublicationStatus[] AllowedPublicationStatuses = { PublicationStatus.Published, PublicationStatus.InRemediation };
         private readonly BuyingCatalogueDbContext dbContext;
 
         public SolutionsFilterService(BuyingCatalogueDbContext dbContext) =>
@@ -172,8 +172,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     ci =>
                         ci.Name.Contains(searchTerm)
                         && ci.CatalogueItemType == CatalogueItemType.Solution
-                        && (ci.PublishedStatus == PublicationStatus.Published
-                            || ci.PublishedStatus == PublicationStatus.InRemediation)
+                        && AllowedPublicationStatuses.Contains(ci.PublishedStatus)
                         && ci.Supplier.IsActive)
                 .Select(ci => new SearchFilterModel { Title = ci.Name, Category = "Solution", });
 
@@ -245,8 +244,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Where(
                     i =>
                         i.CatalogueItemType == CatalogueItemType.Solution
-                        && (i.PublishedStatus == PublicationStatus.Published
-                            || i.PublishedStatus == PublicationStatus.InRemediation)
+                        && AllowedPublicationStatuses.Contains(i.PublishedStatus)
                         && i.Supplier.IsActive), new List<CapabilitiesAndCountModel>());
 
         private static async Task<(IQueryable<CatalogueItem> Query, List<CapabilitiesAndCountModel> Count)>
@@ -271,8 +269,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             var capabilityPredicate =
                 CapabilitiesPredicate(capabilitiesAndEpics.Where(kv => (kv.Value?.Length ?? 0) == 0));
+
             var itemPredicate = PredicateBuilder.New<CatalogueItem>()
                 .Start(p => p.CatalogueItemCapabilities.Any(cic => capabilityPredicate.Invoke(cic)));
+
             capabilitiesAndEpics
                 .Where(kv => (kv.Value?.Length ?? 0) > 0)
                 .ForEach(
@@ -290,7 +290,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     .Include(i => i.Solution)
                     .ThenInclude(
                         s => s.AdditionalServices
-                            .Where(adit => itemPredicate.Invoke(adit.CatalogueItem)))
+                            .Where(adit => AllowedPublicationStatuses.Contains(adit.CatalogueItem.PublishedStatus) || itemPredicate.Invoke(adit.CatalogueItem)))
                     .ThenInclude(adit => adit.CatalogueItem)
                     .ThenInclude(ci => ci.CatalogueItemCapabilities)
                     .ThenInclude(cic => cic.Capability)
@@ -302,6 +302,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     .Where(
                         i =>
                             i.CatalogueItemType == CatalogueItemType.Solution
+                            && AllowedPublicationStatuses.Contains(i.PublishedStatus)
                             && itemPredicate.Invoke(i)
                             && i.Solution.FrameworkSolutions.Select(f => f.Framework)
                                 .Distinct()
@@ -324,10 +325,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         }
 
         private static Expression<Func<CatalogueItemCapability, bool>> CapabilitiesPredicate(
-            IEnumerable<KeyValuePair<int, string[]>> capabiltiesAndEpics)
+            IEnumerable<KeyValuePair<int, string[]>> capabilitiesAndEpics)
         {
             var capabilityPredicate = PredicateBuilder.New<CatalogueItemCapability>();
-            capabiltiesAndEpics
+            capabilitiesAndEpics
                 .ForEach(kv => capabilityPredicate = capabilityPredicate.Or(c => c.CapabilityId == kv.Key));
             return capabilityPredicate;
         }
