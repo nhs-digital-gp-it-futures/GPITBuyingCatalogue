@@ -1,5 +1,6 @@
 ﻿using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOne;
@@ -95,6 +96,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                 CompetitionTaskList.CompetitionServiceRecipientsTask();
                 CompetitionServiceRecipients.AddCompetitionServiceRecipient(recipients);
                 CompetitionServiceRecipients.ConfirmServiceReceipientsChanges();
+
+                var compsolutions = GetCompetitionSolutions(competitionId);
             }
         }
 
@@ -121,6 +124,27 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
         private int NoOfSlutions()
         {
             return new Random().Next(2, 5);
+        }
+
+        private IEnumerable<CatalogueItemId> GetCompetitionSolutions(int competitionId)
+        {
+            using var dbContext = Factory.DbContext;
+
+            var solutions = dbContext.Competitions
+                .SelectMany(x => x.CompetitionSolutions).Where(y => y.CompetitionId == competitionId & y.IsShortlisted == true).ToList();
+
+            var compsolution = solutions.Select(x => x.SolutionId).ToList();
+
+            return compsolution;
+        }
+
+        private string GetSolutionName(CatalogueItemId solutionId)
+        {
+            using var dbContext = Factory.DbContext;
+
+            var name = dbContext.CatalogueItems
+                .FirstOrDefault(x => x.Id == solutionId)?.Name;
+            return name;
         }
     }
 }
