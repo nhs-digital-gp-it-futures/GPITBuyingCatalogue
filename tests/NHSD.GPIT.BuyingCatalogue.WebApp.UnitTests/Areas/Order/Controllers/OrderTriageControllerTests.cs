@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -109,6 +110,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [CommonAutoData]
+        public static void Post_OrderItemType_Throws(
+            string internalOrgId,
+            OrderItemTypeModel model,
+            OrderTriageController controller)
+        {
+            model.SelectedOrderItemType = CatalogueItemType.AdditionalService;
+            FluentActions.Invoking(() => controller.OrderItemType(internalOrgId, model))
+                .Should().Throw<InvalidOperationException>();
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static async Task Get_DetermineAssociatedServiceType_ReturnsView(
             Organisation organisation,
             [Frozen] Mock<IOrganisationsService> service,
@@ -163,10 +176,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonInlineAutoData(OrderTypeEnum.Unknown)]
+        [CommonInlineAutoData(OrderTypeEnum.Solution)]
         public static async Task Get_Index_ReturnsModel(
-            Organisation organisation,
             OrderTypeEnum orderType,
+            Organisation organisation,
             [Frozen] Mock<IOrganisationsService> service,
             OrderTriageController controller)
         {
@@ -180,14 +194,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
         public static async Task Get_Index_WithAssociatedServiceOrderType_Redirects(
+            OrderTypeEnum orderType,
             string internalOrgId,
             OrderTriageController controller)
         {
             var result = (await controller.Index(
                 internalOrgId,
-                orderType: OrderTypeEnum.AssociatedServiceOther)).As<RedirectToActionResult>();
+                orderType)).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(OrderController.ReadyToStart));

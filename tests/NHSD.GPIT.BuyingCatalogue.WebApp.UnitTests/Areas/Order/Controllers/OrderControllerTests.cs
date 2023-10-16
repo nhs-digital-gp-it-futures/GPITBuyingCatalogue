@@ -242,7 +242,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonInlineAutoData(OrderTypeEnum.Unknown)]
+        [CommonInlineAutoData(OrderTypeEnum.Solution)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
         public static async Task Get_ReadyToStart_ReturnsView(
             OrderTypeEnum orderType,
             Organisation organisation,
