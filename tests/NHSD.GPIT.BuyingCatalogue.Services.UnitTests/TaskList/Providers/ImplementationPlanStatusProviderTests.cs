@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 FundingSource = TaskProgress.Completed,
             };
 
-            order.AssociatedServicesOnly = true;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
 
             var actual = service.Get(new OrderWrapper(order), state);
 

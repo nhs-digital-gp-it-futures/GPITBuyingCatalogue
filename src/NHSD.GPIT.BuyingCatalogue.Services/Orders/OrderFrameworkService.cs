@@ -75,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Where(o => o.OrderNumber == callOffId.OrderNumber
                     && o.Revision == callOffId.Revision
                     && o.OrderingParty.InternalIdentifier == internalOrgId)
-                .SelectMany(o => o.Solution.Solution.FrameworkSolutions.Select(fs => fs.Framework).Where(fs => !fs.IsExpired))
+                .SelectMany(o => o.AssociatedServicesOnlyDetails.Solution.Solution.FrameworkSolutions.Select(fs => fs.Framework).Where(fs => !fs.IsExpired))
                 .OrderBy(f => f.ShortName)
                 .ToListAsync();
 

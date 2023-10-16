@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             EntityFramework.Ordering.Models.Order order)
         {
             callOffId = new CallOffId(callOffId.OrderNumber, 1);
-            order.AssociatedServicesOnly = false;
+            order.OrderType = OrderTypeEnum.Solution;
 
             var solution = order.OrderItems.ElementAt(0);
             var additionalService = order.OrderItems.ElementAt(1);
@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
             var amendment = order.BuildAmendment(2);
 
-            order.AssociatedServicesOnly = false;
+            order.OrderType = OrderTypeEnum.Solution;
 
             var solution = order.OrderItems.ElementAt(0);
             var additionalService = order.OrderItems.ElementAt(1);
@@ -110,8 +110,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             EntityFramework.Ordering.Models.Order order)
         {
             callOffId = new CallOffId(callOffId.OrderNumber, 1);
-            order.AssociatedServicesOnly = true;
-            order.Solution = serviceSolution;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
+            order.AssociatedServicesOnlyDetails.Solution = serviceSolution;
 
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;

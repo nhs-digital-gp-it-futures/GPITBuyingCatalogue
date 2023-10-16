@@ -160,6 +160,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [InMemoryDbAutoData]
+        public static async Task CreateOrder_OrderType_Unknown_Throws(
+            [Frozen] BuyingCatalogueDbContext context,
+            string description,
+            OrderTriageValue orderTriageValue,
+            Organisation organisation,
+            OrderService service)
+        {
+            await context.Organisations.AddAsync(organisation);
+            await context.SaveChangesAsync();
+
+            await FluentActions.Invoking(async () => await service.CreateOrder(description, organisation.InternalIdentifier, orderTriageValue, OrderTypeEnum.Unknown))
+                .Should()
+                .ThrowAsync<InvalidOperationException>();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
         public static async Task CreateOrder_UpdatesDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             string description,
@@ -170,7 +187,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await context.Organisations.AddAsync(organisation);
             await context.SaveChangesAsync();
 
-            await service.CreateOrder(description, organisation.InternalIdentifier, orderTriageValue, false);
+            await service.CreateOrder(description, organisation.InternalIdentifier, orderTriageValue, OrderTypeEnum.Solution);
 
             var order = await context.Orders.Include(o => o.OrderingParty).FirstAsync();
 
@@ -587,7 +604,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             var pdfData = new MemoryStream(pdfContents);
 
-            order.AssociatedServicesOnly = false;
+            order.OrderType = OrderTypeEnum.Solution;
             await context.Orders.AddAsync(order);
 
             user.Email = email;
@@ -641,7 +658,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [Frozen] Mock<IOrderPdfService> mockPdfService,
             OrderMessageSettings orderMessageSettings)
         {
-            order.AssociatedServicesOnly = false;
+            order.OrderType = OrderTypeEnum.Solution;
             await context.Orders.AddAsync(order);
 
             user.Email = email;
@@ -674,7 +691,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [Frozen] Mock<IOrderPdfService> mockPdfService,
             OrderMessageSettings orderMessageSettings)
         {
-            order.AssociatedServicesOnly = true;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
             await context.Orders.AddAsync(order);
 
             user.Email = email;
@@ -1025,18 +1042,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [Frozen] BuyingCatalogueDbContext context,
             OrderService service)
         {
-            order.SolutionId = null;
-            order.Solution = null;
+            order.AssociatedServicesOnlyDetails.SolutionId = null;
+            order.AssociatedServicesOnlyDetails.Solution = null;
 
             context.Orders.Add(order);
 
             await context.SaveChangesAsync();
 
-            (await context.Orders.FirstAsync(x => x.Id == order.Id)).SolutionId.Should().BeNull();
+            (await context.Orders.FirstAsync(x => x.Id == order.Id)).AssociatedServicesOnlyDetails.SolutionId.Should().BeNull();
 
             await service.SetSolutionId(order.OrderingParty.InternalIdentifier, order.CallOffId, solutionId);
 
-            (await context.Orders.FirstAsync(x => x.Id == order.Id)).SolutionId.Should().Be(solutionId);
+            (await context.Orders.FirstAsync(x => x.Id == order.Id)).AssociatedServicesOnlyDetails.SolutionId.Should().Be(solutionId);
         }
 
         [Theory]
