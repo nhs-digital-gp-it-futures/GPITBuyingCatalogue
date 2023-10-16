@@ -98,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
 
             var order = context.Orders.First(x => x.Id == OrderId);
 
-            order.SolutionId = null;
+            order.AssociatedServicesOnlyDetails.SolutionId = null;
 
             context.SaveChanges();
         }
@@ -106,9 +106,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ca
         private CatalogueItem GetSolution()
         {
             return GetEndToEndDbContext().Orders
-                .Include(x => x.Solution)
+                .Include(x => x.AssociatedServicesOnlyDetails.Solution)
                 .First(x => x.Id == OrderId)
-                .Solution;
+                .AssociatedServicesOnlyDetails.Solution;
         }
     }
 }

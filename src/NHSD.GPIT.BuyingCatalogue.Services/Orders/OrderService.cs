@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public async Task<OrderWrapper> GetOrderThin(CallOffId callOffId, string internalOrgId)
         {
             var orders = await dbContext.Orders
-                .Include(o => o.Solution)
+                .Include(o => o.AssociatedServicesOnlyDetails.Solution)
                 .Include(o => o.OrderingParty)
                 .Include(o => o.OrderingPartyContact)
                 .Include(o => o.Supplier)
@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             var orders = await dbContext.Orders
                 .Include(x => x.OrderingParty)
-                .Include(x => x.Solution)
+                .Include(x => x.AssociatedServicesOnlyDetails.Solution)
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.CatalogueItem)
                     .ThenInclude(x => x.CataloguePrices.Where(p => p.PublishedStatus == PublicationStatus.Published))
@@ -116,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             var orders = await dbContext.Orders
                 .Include(x => x.OrderingParty)
-                .Include(x => x.Solution)
+                .Include(x => x.AssociatedServicesOnlyDetails.Solution)
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.CatalogueItem)
                 .Include(o => o.OrderItems)
@@ -284,8 +284,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return matches.ToList();
         }
 
-        public async Task<Order> CreateOrder(string description, string internalOrgId, OrderTriageValue? orderTriageValue, bool isAssociatedServiceOnly)
+        public async Task<Order> CreateOrder(string description, string internalOrgId, OrderTriageValue? orderTriageValue, OrderTypeEnum orderType)
         {
+            if (orderType == OrderTypeEnum.Unknown)
+            {
+                throw new InvalidOperationException($"Something has gone wrong during order triage. Cannot create an order if we dont know the order type {orderType}");
+            }
+
             var orderingParty = await dbContext.Organisations.FirstAsync(o => o.InternalIdentifier == internalOrgId);
 
             var order = new Order
@@ -294,7 +299,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 Revision = 1,
                 Description = description,
                 OrderingParty = orderingParty,
-                AssociatedServicesOnly = isAssociatedServiceOnly,
+                OrderType = orderType,
                 OrderTriageValue = orderTriageValue,
             };
 
@@ -396,7 +401,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             var order = await dbContext.Order(internalOrgId, callOffId);
 
-            order.SolutionId = solutionId;
+            order.AssociatedServicesOnlyDetails.SolutionId = solutionId;
 
             await dbContext.SaveChangesAsync();
         }
@@ -538,7 +543,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                                 .ThenInclude(m => m.CatalogueItem)
                 .Include(o => o.OrderingParty)
                 .Include(o => o.OrderingPartyContact)
-                .Include(o => o.Solution)
+                .Include(o => o.AssociatedServicesOnlyDetails.Solution)
                 .ThenInclude(o => o.Solution)
                 .ThenInclude(o => o.FrameworkSolutions)
                 .ThenInclude(o => o.Framework)
