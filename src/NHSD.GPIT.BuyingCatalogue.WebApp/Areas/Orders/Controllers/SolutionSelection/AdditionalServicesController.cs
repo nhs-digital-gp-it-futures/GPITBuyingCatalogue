@@ -259,7 +259,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 AssociatedServicesOnly = order.AssociatedServicesOnly,
                 IsAmendment = wrapper.IsAmendment,
                 SolutionName = order.AssociatedServicesOnly
-                    ? wrapper.RolledUp.Solution.Name
+                    ? wrapper.RolledUp.AssociatedServicesOnlyDetails.Solution.Name
                     : wrapper.RolledUp.GetSolution()?.CatalogueItem.Name,
             };
         }

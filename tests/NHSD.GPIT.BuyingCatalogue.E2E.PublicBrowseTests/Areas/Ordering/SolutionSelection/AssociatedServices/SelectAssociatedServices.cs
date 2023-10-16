@@ -93,8 +93,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
 
             var order = context.Orders.First(x => x.Id == OrderId);
 
-            order.AssociatedServicesOnly = true;
-            order.SolutionId = new CatalogueItemId(99998, "001");
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
+            order.AssociatedServicesOnlyDetails.SolutionId = new CatalogueItemId(99998, "001");
 
             context.SaveChanges();
 
@@ -148,8 +148,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
                 context.OrderItems.Remove(service);
             }
 
-            context.Orders.First(x => x.Id == OrderId).AssociatedServicesOnly = false;
-            context.Orders.First(x => x.Id == OrderId).SolutionId = null;
+            context.Orders.First(x => x.Id == OrderId).OrderType = OrderTypeEnum.Solution;
+            context.Orders.First(x => x.Id == OrderId).AssociatedServicesOnlyDetails.SolutionId = null;
 
             context.SaveChanges();
         }

@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
                 .FromFactory(new OrderSpecimenBuilder(fixture))
                 .Without(x => x.Revision)
                 .Do(x => x.Revision = 1)
-                .With(x => x.AssociatedServicesOnly, false)
+                .With(o => o.OrderType, OrderTypeEnum.Solution)
                 .Without(o => o.IsDeleted)
                 .Without(o => o.IsTerminated)
                 .Without(o => o.OrderTermination)
