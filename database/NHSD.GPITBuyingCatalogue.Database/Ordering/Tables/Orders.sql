@@ -26,6 +26,7 @@
     InitialPeriod INT NULL CONSTRAINT Order_PositiveInitialPeriod CHECK (InitialPeriod >= 0),
     MaximumTerm INT NULL CONSTRAINT Order_PositiveMaximumTerm CHECK (MaximumTerm >= 0),
     AssociatedServicesOnly BIT NULL,
+    OrderTypeId INT NULL,
     [SolutionId] NVARCHAR(14) NULL,
     SelectedFrameworkId NVARCHAR(36) NULL,
     [DeliveryDate] DATE NULL,
