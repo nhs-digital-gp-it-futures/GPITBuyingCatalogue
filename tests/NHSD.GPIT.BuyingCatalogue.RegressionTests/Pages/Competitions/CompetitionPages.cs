@@ -28,6 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             SingleSolutionFound = new SingleSolutionFound(driver, commonActions);
             CompetitionTaskList = new CompetitionTaskList(driver, commonActions);
             CompetitionServiceRecipients = new CompetitionServiceRecipients(driver, commonActions);
+            ContractLength = new ContractLength(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -57,6 +58,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
         internal CompetitionTaskList CompetitionTaskList { get; }
 
         internal CompetitionServiceRecipients CompetitionServiceRecipients { get; }
+
+        internal ContractLength ContractLength { get; }
 
         internal FilterType FilterType { get; set; }
 
@@ -96,6 +99,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                 CompetitionTaskList.CompetitionServiceRecipientsTask();
                 CompetitionServiceRecipients.AddCompetitionServiceRecipient(recipients);
                 CompetitionServiceRecipients.ConfirmServiceReceipientsChanges();
+
+                CompetitionTaskList.ContractLength();
+                ContractLength.CompetitionContractLength();
 
                 var compsolutions = GetCompetitionSolutions(competitionId);
             }

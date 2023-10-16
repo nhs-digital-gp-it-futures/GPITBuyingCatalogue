@@ -14,4 +14,8 @@ public static class CompetitionsDashboardObjects
     public static By CreateManageCompetitionLink => By.LinkText("Create or manage competitions");
 
     public static By ServiceRecipientsLink => By.LinkText("Service Recipients");
+
+    public static By ContractLengthLink => By.LinkText("Contract length");
+
+    public static By ContractLengthInput => By.Id("ContractLength");
 }
