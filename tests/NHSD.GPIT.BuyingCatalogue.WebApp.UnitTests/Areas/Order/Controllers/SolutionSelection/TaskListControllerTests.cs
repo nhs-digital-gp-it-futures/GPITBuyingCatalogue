@@ -76,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] Mock<IAdditionalServicesService> mockAdditionalServicesService,
             TaskListController controller)
         {
-            order.AssociatedServicesOnly = false;
+            order.OrderType = OrderTypeEnum.Solution;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
@@ -115,7 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             TaskListController controller)
         {
             order.Revision = revision;
-            order.AssociatedServicesOnly = false;
+            order.OrderType = OrderTypeEnum.Solution;
 
             mockOrderService
                 .Setup(x => x.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId))

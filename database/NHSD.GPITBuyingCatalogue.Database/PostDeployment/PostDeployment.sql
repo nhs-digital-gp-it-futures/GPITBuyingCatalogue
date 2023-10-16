@@ -70,4 +70,4 @@
 :r ./MigrateContracts.sql
 :r ./MigrateOrderItemRecipients.sql
 :r ./MigrateMergersAndSplits.sql
-
+:r ./MigrateOrderType.sql

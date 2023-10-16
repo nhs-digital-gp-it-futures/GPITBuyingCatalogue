@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             Order order,
             AssociatedServicesBillingStatusProvider service)
         {
-            order.AssociatedServicesOnly = false;
+            order.OrderType = OrderTypeEnum.Solution;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
 
             var actual = service.Get(new OrderWrapper(order), new OrderProgress());
@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 FundingSource = status,
             };
 
-            order.AssociatedServicesOnly = true;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
             order.Contract = new Contract() { ContractBilling = new ContractBilling(), };
 
             var actual = service.Get(new OrderWrapper(order), state);
@@ -97,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 ImplementationPlan = status,
             };
 
-            order.AssociatedServicesOnly = true;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
             order.Contract = new Contract() { ContractBilling = new ContractBilling(), };
 
             var actual = service.Get(new OrderWrapper(order), state);
@@ -122,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 ImplementationPlan = TaskProgress.NotApplicable,
             };
 
-            order.AssociatedServicesOnly = true;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
             order.Contract = null;
 
             var actual = service.Get(new OrderWrapper(order), state);
@@ -146,7 +146,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 ImplementationPlan = status,
             };
 
-            order.AssociatedServicesOnly = true;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
             order.Contract = null;
 
             var actual = service.Get(new OrderWrapper(order), state);
@@ -165,7 +165,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 ImplementationPlan = TaskProgress.Completed,
             };
 
-            order.AssociatedServicesOnly = true;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
             order.Contract = null;
 
             var actual = service.Get(new OrderWrapper(order), state);
@@ -184,7 +184,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 ImplementationPlan = TaskProgress.Completed,
             };
 
-            order.AssociatedServicesOnly = true;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
             order.Contract = new Contract();
 
             var actual = service.Get(new OrderWrapper(order), state);
@@ -204,7 +204,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 ImplementationPlan = TaskProgress.Completed,
             };
 
-            order.AssociatedServicesOnly = true;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
             order.Contract = new Contract() { ContractBilling = new ContractBilling(), };
 
             var actual = service.Get(new OrderWrapper(order), state);
@@ -224,7 +224,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 ImplementationPlan = TaskProgress.Completed,
             };
 
-            order.AssociatedServicesOnly = true;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
             order.Contract = new Contract() { ContractBilling = new ContractBilling() { HasConfirmedRequirements = true, }, };
 
             var actual = service.Get(new OrderWrapper(order), state);

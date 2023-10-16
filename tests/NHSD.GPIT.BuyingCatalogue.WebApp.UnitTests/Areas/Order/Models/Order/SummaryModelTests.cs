@@ -75,7 +75,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         {
             order.CommencementDate = contractExpired ? DateTime.Now.AddMonths(-2) : null;
             order.MaximumTerm = contractExpired ? 1 : null;
-            order.AssociatedServicesOnly = associatedServicesOnly;
+            order.OrderType = associatedServicesOnly
+                ? OrderTypeEnum.AssociatedServiceOther
+                : OrderTypeEnum.Solution;
             order.Completed = completed ? DateTime.Now : null;
             var model = new SummaryModel(new OrderWrapper(order), internalOrgId, hasSubsequentRevisions, new ImplementationPlan());
 

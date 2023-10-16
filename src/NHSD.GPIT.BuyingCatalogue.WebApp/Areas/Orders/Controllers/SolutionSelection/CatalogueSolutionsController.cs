@@ -104,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
-            if (order.SolutionId is not null
+            if (order.AssociatedServicesOnlyDetails.SolutionId is not null
                 && source != RoutingSource.SelectAssociatedServices)
             {
                 return RedirectToAction(
@@ -198,7 +198,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
 
-            if (order.Solution is null)
+            if (order.AssociatedServicesOnlyDetails.Solution is null)
             {
                 return RedirectToAction(
                     nameof(SelectSolutionAssociatedServicesOnly),
@@ -233,7 +233,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var catalogueItemId = CatalogueItemId.ParseExact(model.SelectedCatalogueSolutionId);
             var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
 
-            if (order.Solution.Id == catalogueItemId)
+            if (order.AssociatedServicesOnlyDetails.Solution.Id == catalogueItemId)
             {
                 return RedirectToAction(
                     nameof(TaskListController.TaskList),
@@ -357,8 +357,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             {
                 new()
                 {
-                    CatalogueItemId = order.Solution.Id,
-                    Description = order.Solution.Name,
+                    CatalogueItemId = order.AssociatedServicesOnlyDetails.Solution.Id,
+                    Description = order.AssociatedServicesOnlyDetails.Solution.Name,
                 },
             };
 

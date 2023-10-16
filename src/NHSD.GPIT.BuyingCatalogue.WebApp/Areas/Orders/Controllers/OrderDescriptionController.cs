@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -65,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         }
 
         [HttpGet("~/organisation/{internalOrgId}/order/neworder/description")]
-        public async Task<IActionResult> NewOrderDescription(string internalOrgId, OrderTriageValue? option = null, CatalogueItemType? orderType = null)
+        public async Task<IActionResult> NewOrderDescription(string internalOrgId, OrderTypeEnum orderType, OrderTriageValue? option = null)
         {
             var user = await usersService.GetUser(User.UserId());
             var organisation = await organisationsService.GetOrganisation(user?.PrimaryOrganisationId ?? 0);
@@ -82,14 +81,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         }
 
         [HttpPost("~/organisation/{internalOrgId}/order/neworder/description")]
-        public async Task<IActionResult> NewOrderDescription(string internalOrgId, OrderDescriptionModel model, OrderTriageValue? option = null, CatalogueItemType? orderType = null)
+        public async Task<IActionResult> NewOrderDescription(string internalOrgId, OrderDescriptionModel model, OrderTypeEnum orderType, OrderTriageValue? option = null)
         {
             if (!ModelState.IsValid)
                 return View("OrderDescription", model);
 
-            var isAssociatedServiceOnly = orderType is CatalogueItemType.AssociatedService;
-
-            var order = await orderService.CreateOrder(model.Description, model.InternalOrgId, option, isAssociatedServiceOnly);
+            var order = await orderService.CreateOrder(model.Description, model.InternalOrgId, option, orderType);
 
             return RedirectToAction(
                 nameof(OrderController.Order),

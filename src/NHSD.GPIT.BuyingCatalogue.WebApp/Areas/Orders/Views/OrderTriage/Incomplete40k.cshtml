@@ -37,7 +37,7 @@
                                          new { returnUrl = Url.Action(
                                              nameof(OrderTriageController.StepsNotCompleted),
                                              typeof(OrderTriageController).ControllerName(),
-                                             new { Model.InternalOrgId, option = OrderTriageValue.Under40K }) })"
+                                             new { Model.InternalOrgId, option = OrderTriageValue.Under40K, orderType = OrderTypeEnum.Solution }) })"
                                 text="Get procurement support" />
         </div>
     </div>
