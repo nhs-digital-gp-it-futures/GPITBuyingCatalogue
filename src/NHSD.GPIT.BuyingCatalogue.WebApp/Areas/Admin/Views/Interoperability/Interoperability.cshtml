@@ -10,35 +10,36 @@
             <nhs-validation-summary />
             <nhs-page-title title="@ViewBag.Title"
                             caption="@Model.SolutionName"
-                            advice="Provide information on how your Catalogue Solution exchanges data with customers or providers." />
+                            advice="Provide information on the integrations your Catalogue Solution works with." />
 
             <h2>NHS assured integrations (optional)</h2>
 
             <nhs-details label-text="What are NHS assured integrations?">
                 <p>
-                    IM1 and GP Connect offer integrations specified and assured by the NHS. They allow clinical information and data to be shared quickly and efficiently between IT systems.
+                    IM1, GP Connect and the NHS App offer integrations specified and assured by the NHS. They allow clinical information and data to be shared quickly and efficiently between IT systems.
                 </p>
                 <p>
                     If your Catalogue Solution uses any of these integrations, you must provide information on them using the add integrations links.
                 </p>
                 <p>
-                    You can find more information about <a href="https://digital.nhs.uk/services/gp-it-futures-systems/im1-pairing-integration">IM1 integrations</a> and <a href="https://digital.nhs.uk/services/gp-connect">GP Connect integrations</a> on the NHS Digital website.
+                    You can find more information about <a href="https://digital.nhs.uk/services/gp-it-futures-systems/im1-pairing-integration">IM1 integrations</a>, <a href="https://digital.nhs.uk/services/gp-connect">GP Connect integrations</a> and <a href="https://digital.nhs.uk/services/nhs-app">NHS App integrations</a> on the NHS Digital website.
                 </p>
             </nhs-details>
 
             <h3>IM1 integrations</h3>
             <vc:nhs-action-link url="@Url.Action(nameof(InteroperabilityController.AddIm1Integration), typeof(InteroperabilityController).ControllerName(), new { solutionId = @Model.CatalogueItemId })" text="Add an IM1 integration" />
             <p>
-                Use the links to add information on each of the IM1 integrations your Catalogue Solution works with.
+                Use the link to add information on each of the IM1 integrations your Catalogue Solution works with.
             </p>
 
             @if (Model.IM1Integrations.Any())
             {
                 @foreach (var qualifier in Model.IM1IntegrationQualifiers)
                 {
-                    <nhs-table label-text=@($"IM1 {qualifier}")>
+                    <nhs-expander label-text="@($"IM1 {qualifier}")" open="false">
+                    <nhs-table>
                         <nhs-table-column>
-                            Provider or consumer
+                            Provider or<br>consumer
                         </nhs-table-column>
                         <nhs-table-column>
                             System integrating with
@@ -72,10 +73,7 @@
                             </nhs-table-row-container>
                         }
                     </nhs-table>
-
-                    <div class="nhsuk-u-margin-bottom-5">
-                        <partial name="Partials/_BackToTop" />
-                    </div>
+                    </nhs-expander>
                 }
             }
 
@@ -84,14 +82,15 @@
             <vc:nhs-action-link url="@Url.Action(nameof(InteroperabilityController.AddGpConnectIntegration), typeof(InteroperabilityController).ControllerName(), new { solutionId = @Model.CatalogueItemId })" text="Add a GP Connect integration" />
 
             <p>
-                Use the links to add information on each of the GP Connect integrations your Catalogue Solution works with.
+                Use the link to add information on each of the GP Connect integrations your Catalogue Solution works with.
             </p>
 
             @if (Model.GpConnectIntegrations.Any())
             {
                 @foreach (var qualifier in Model.GpConnectIntegrationQualifiers)
                 {
-                    <nhs-table label-text=@($"GP Connect {qualifier}")>
+                    <nhs-expander label-text="@($"GP Connect {qualifier}")" open="false">
+                    <nhs-table>
                         <nhs-table-column>
                             Provider or consumer
                         </nhs-table-column>
@@ -121,13 +120,45 @@
                             </nhs-table-row-container>
                         }
                     </nhs-table>
-
-                    <div class="nhsuk-u-margin-bottom-5">
-                        <partial name="Partials/_BackToTop" />
-                    </div>
+                    </nhs-expander>
                 }
             }
 
+            <h3>NHS App integrations</h3>
+
+            <vc:nhs-action-link url="@Url.Action(nameof(InteroperabilityController.AddNhsAppIntegration), typeof(InteroperabilityController).ControllerName(), new { solutionId = @Model.CatalogueItemId})" text="Add NHS App integrations" />
+
+            <p>
+                Use the link to add all the NHS App integrations your Catalogue Solution works with.
+            </p>
+            @if (Model.NhsAppIntegrationTypes.Any())
+            {
+                <nhs-card title="Selected NHS App integrations">
+                    <nhs-table>
+                        <nhs-table-row-container>
+                            <nhs-table-cell class="no-bottom-border">
+                                <strong>Integrations</strong>
+                            </nhs-table-cell>
+                            <nhs-table-cell class="no-bottom-border">
+                                @foreach (var integration in Model.NhsAppIntegrationTypes)
+                                {
+                                    <p>
+                                        @integration
+                                    </p>
+                                }
+                            </nhs-table-cell>
+                            <nhs-table-cell class="no-bottom-border">
+                                <a asp-action="@nameof(InteroperabilityController.AddNhsAppIntegration)"
+                                   asp-controller="@typeof(InteroperabilityController).ControllerName()"
+                                   asp-route-solutionId="@Model.CatalogueItemId">
+                                    Edit
+                                </a>
+                            </nhs-table-cell>
+                        </nhs-table-row-container>
+                    </nhs-table>
+                </nhs-card>
+            }
+            <hr>
             <h2 for="@nameof(Model.Link)">Supplier asserted integrations (optional)</h2>
 
             <form method="post">

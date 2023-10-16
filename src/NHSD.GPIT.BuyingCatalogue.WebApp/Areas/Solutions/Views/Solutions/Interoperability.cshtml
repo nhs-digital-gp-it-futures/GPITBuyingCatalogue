@@ -9,11 +9,12 @@
                 NHS assured integrations
             </h3>
             <p>
-                There are two types of integrations specified and assured by the NHS. Use the links to find out more about these integrations.
+                There are three types of integrations specified and assured by the NHS: IM1, GP Connect and the NHS App.
             </p>
             <ul>
-                <li><strong>IM1: </strong><a href="https://digital.nhs.uk/services/gp-it-futures-systems/im1-pairing-integration" target="_blank">https://digital.nhs.uk/services/gp-it-futures-systems/im1-pairing-integration (opens in new tab)</a></li>
-                <li><strong>GP Connect: </strong><a href="https://digital.nhs.uk/services/gp-connect" target="_blank">https://digital.nhs.uk/services/gp-connect (opens in new tab)</a></li>
+                <li><a href="https://digital.nhs.uk/services/gp-it-futures-systems/im1-pairing-integration" target="_blank">More information on IM1 (opens in new tab)</a></li>
+                <li><a href="https://digital.nhs.uk/services/gp-connect" target="_blank">More information on GP Connect (opens in new tab)</a></li>
+                <li><a href="https://digital.nhs.uk/services/nhs-app" target="_blank">More information on the NHS App (opens in new tab)</a></li>
             </ul>
             <hr>
 
@@ -91,6 +92,20 @@
                 }
                 <hr>
             }
+
+            @if (Model.NhsAppIntegrationTypes.Any())
+            {
+                <nhs-card title="NHS App integrations">
+                    @foreach (var integration in Model.NhsAppIntegrationTypes)
+                    {
+                        <ul class="nhsuk-list">
+                            <li>@integration</li>
+                        </ul>
+                    }
+                </nhs-card>
+                <hr>
+            }
+
             @if (!string.IsNullOrWhiteSpace(Model.IntegrationsUrl))
             {
                 <h6 class="nhsuk-heading-s">Supplier asserted integrations</h6>

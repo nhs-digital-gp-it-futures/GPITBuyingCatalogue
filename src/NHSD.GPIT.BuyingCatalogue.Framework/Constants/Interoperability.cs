@@ -8,6 +8,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Constants
 
         public const string GpConnectIntegrationType = "GP Connect";
 
+        public const string NhsAppIntegrationType = "NHS App";
+
         public const string Consumer = nameof(Consumer);
 
         public const string Provider = nameof(Provider);
