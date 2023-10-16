@@ -76,7 +76,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 o => o.AssociatedServicesOnlyDetails,
                 a =>
                 {
-                    // a.Property(p => p.AssociatedServicesOnly).HasColumnName("AssociatedServicesOnly");
                     a.Property(p => p.SolutionId)
                         .HasColumnName("SolutionId");
                     a.HasOne(p => p.Solution)
