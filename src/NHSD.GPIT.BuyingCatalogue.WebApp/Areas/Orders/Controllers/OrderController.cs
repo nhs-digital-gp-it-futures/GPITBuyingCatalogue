@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -75,11 +74,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         }
 
         [HttpGet("~/order/organisation/{internalOrgId}/order/ready-to-start")]
-        public async Task<IActionResult> ReadyToStart(string internalOrgId, OrderTriageValue? option = null, CatalogueItemType? orderType = null)
+        public async Task<IActionResult> ReadyToStart(string internalOrgId, OrderTypeEnum orderType, OrderTriageValue? option = null)
         {
+            var orderTypeValue = new OrderType(orderType);
             string backLink;
 
-            if (orderType != CatalogueItemType.AssociatedService)
+            if (orderTypeValue.ToCatalogueItemType != CatalogueItemType.AssociatedService)
             {
                 backLink = Url.Action(
                     nameof(OrderTriageController.TriageSelection),
@@ -88,14 +88,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             }
             else
             {
-                var actionName = User.GetSecondaryOrganisationInternalIdentifiers().Any()
-                    ? nameof(OrderTriageController.SelectOrganisation)
-                    : nameof(OrderTriageController.OrderItemType);
-
-                backLink = Url.Action(
-                    actionName,
+                if (User.GetSecondaryOrganisationInternalIdentifiers().Any())
+                {
+                    backLink = Url.Action(
+                    nameof(OrderTriageController.SelectOrganisation),
                     typeof(OrderTriageController).ControllerName(),
                     new { internalOrgId, orderType });
+                }
+                else
+                {
+                    backLink = Url.Action(
+                    nameof(OrderTriageController.DetermineAssociatedServiceType),
+                    typeof(OrderTriageController).ControllerName(),
+                    new { internalOrgId, orderType });
+                }
             }
 
             var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
@@ -110,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         }
 
         [HttpPost("~/order/organisation/{internalOrgId}/order/ready-to-start")]
-        public IActionResult ReadyToStart(string internalOrgId, ReadyToStartModel model, OrderTriageValue? option = null, CatalogueItemType? orderType = null)
+        public IActionResult ReadyToStart(string internalOrgId, ReadyToStartModel model, OrderTypeEnum orderType, OrderTriageValue? option = null)
         {
             return RedirectToAction(
                 nameof(NewOrder),
@@ -118,7 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         }
 
         [HttpGet("~/order/organisation/{internalOrgId}/order/new-order")]
-        public async Task<IActionResult> NewOrder(string internalOrgId, OrderTriageValue? option = null, CatalogueItemType? orderType = null)
+        public async Task<IActionResult> NewOrder(string internalOrgId, OrderTypeEnum orderType, OrderTriageValue? option = null)
         {
             var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 

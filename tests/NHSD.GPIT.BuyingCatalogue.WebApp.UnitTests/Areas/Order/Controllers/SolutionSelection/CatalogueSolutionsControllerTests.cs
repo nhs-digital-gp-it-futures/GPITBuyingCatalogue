@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] Mock<IOrderService> mockOrderService,
             CatalogueSolutionsController controller)
         {
-            order.AssociatedServicesOnly = true;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
 
             mockOrderService
                 .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
@@ -89,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] Mock<IAdditionalServicesService> mockAdditionalServicesService,
             CatalogueSolutionsController controller)
         {
-            order.AssociatedServicesOnly = false;
+            order.OrderType = OrderTypeEnum.Solution;
 
             mockOrderService
                 .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
@@ -135,7 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] Mock<IAdditionalServicesService> mockAdditionalServicesService,
             CatalogueSolutionsController controller)
         {
-            order.AssociatedServicesOnly = false;
+            order.OrderType = OrderTypeEnum.Solution;
 
             mockOrderService
                 .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
@@ -231,8 +231,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] Mock<IOrderService> mockOrderService,
             CatalogueSolutionsController controller)
         {
-            order.AssociatedServicesOnly = true;
-            order.SolutionId = solutionId;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
+            order.AssociatedServicesOnlyDetails.SolutionId = solutionId;
 
             mockOrderService
                 .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
@@ -265,8 +265,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] Mock<ISolutionsService> mockSolutionsService,
             CatalogueSolutionsController controller)
         {
-            order.AssociatedServicesOnly = true;
-            order.SolutionId = solutionId;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
+            order.AssociatedServicesOnlyDetails.SolutionId = solutionId;
 
             mockOrderService
                 .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
@@ -302,8 +302,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] Mock<ISolutionsService> mockSolutionsService,
             CatalogueSolutionsController controller)
         {
-            order.AssociatedServicesOnly = true;
-            order.SolutionId = null;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
+            order.AssociatedServicesOnlyDetails.SolutionId = null;
 
             mockOrderService
                 .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
@@ -340,8 +340,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] Mock<ISolutionsService> mockSolutionsService,
             CatalogueSolutionsController controller)
         {
-            order.AssociatedServicesOnly = true;
-            order.SolutionId = null;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
+            order.AssociatedServicesOnlyDetails.SolutionId = null;
 
             mockOrderService
                 .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
@@ -409,7 +409,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] Mock<IOrderService> mockOrderService,
             CatalogueSolutionsController controller)
         {
-            order.AssociatedServicesOnly = true;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
 
             mockOrderService
@@ -441,7 +441,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] Mock<ISolutionsService> mockSolutionsService,
             CatalogueSolutionsController controller)
         {
-            order.AssociatedServicesOnly = false;
+            order.OrderType = OrderTypeEnum.Solution;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
@@ -550,8 +550,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] Mock<IOrderService> mockOrderService,
             CatalogueSolutionsController controller)
         {
-            order.AssociatedServicesOnly = true;
-            order.Solution = null;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
+            order.AssociatedServicesOnlyDetails.Solution = null;
 
             mockOrderService
                 .Setup(s => s.GetOrderWithOrderItems(callOffId, internalOrgId))
@@ -582,7 +582,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] Mock<ISolutionsService> mockSolutionsService,
             CatalogueSolutionsController controller)
         {
-            order.AssociatedServicesOnly = true;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
 
             mockOrderService
@@ -606,7 +606,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var expected = new SelectSolutionModel(order, solutions, Enumerable.Empty<CatalogueItem>())
             {
-                SelectedCatalogueSolutionId = $"{order.SolutionId}",
+                SelectedCatalogueSolutionId = $"{order.AssociatedServicesOnlyDetails.SolutionId}",
             };
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
@@ -658,7 +658,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] Mock<IOrderService> mockOrderService,
             CatalogueSolutionsController controller)
         {
-            model.SelectedCatalogueSolutionId = $"{order.Solution.Id}";
+            model.SelectedCatalogueSolutionId = $"{order.AssociatedServicesOnlyDetails.Solution.Id}";
 
             mockOrderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
@@ -952,7 +952,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 }).ToList(),
             };
 
-            expected.ToRemove.Add(new ServiceModel { CatalogueItemId = order.Solution.Id, Description = order.Solution.Name });
+            expected.ToRemove.Add(new ServiceModel { CatalogueItemId = order.AssociatedServicesOnlyDetails.Solution.Id, Description = order.AssociatedServicesOnlyDetails.Solution.Name });
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
         }

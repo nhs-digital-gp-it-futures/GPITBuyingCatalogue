@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
             if (rolledUpOrder.AssociatedServicesOnly)
             {
-                SolutionName = rolledUpOrder.Solution?.Name;
+                SolutionName = rolledUpOrder.AssociatedServicesOnlyDetails.Solution?.Name;
             }
 
             if (CatalogueSolution != null)
