@@ -110,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             Order order,
             EditDeliveryDatesBackLinkProvider provider)
         {
-            order.AssociatedServicesOnly = true;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
             order.OrderItems.ElementAt(0).CatalogueItem.Name = "A";
             order.OrderItems.ElementAt(1).CatalogueItem.Name = "B";

@@ -192,14 +192,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [CommonInlineAutoData(true)]
         [CommonInlineAutoData(false)]
         public static async Task Get_SelectSupplier_WithSupplier_RedirectsCorrectly(
-            bool associatedServicesOnly,
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             SupplierController controller)
         {
-            order.AssociatedServicesOnly = associatedServicesOnly;
-
             orderServiceMock
                 .Setup(s => s.GetOrderWithSupplier(order.CallOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));
@@ -267,7 +264,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             SupplierController controller)
         {
             order.Supplier = null;
-            order.AssociatedServicesOnly = true;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
 
             orderService
                 .Setup(s => s.GetOrderWithSupplier(order.CallOffId, internalOrgId))
