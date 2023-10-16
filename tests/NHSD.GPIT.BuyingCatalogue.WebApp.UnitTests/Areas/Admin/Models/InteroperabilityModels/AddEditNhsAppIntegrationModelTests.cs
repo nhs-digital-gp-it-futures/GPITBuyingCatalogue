@@ -8,7 +8,6 @@ using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels;
 using Xunit;
@@ -56,6 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Interope
             context.Solutions.Add(solution);
 
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
 
             var solutionIntegrations = solution.GetIntegrations();
             model.CheckIntegrationTypes(solutionIntegrations);
@@ -88,6 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Interope
             context.Solutions.Add(solution);
 
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
 
             var solutionIntegrations = solution.GetIntegrations();
             model.CheckIntegrationTypes(solutionIntegrations);

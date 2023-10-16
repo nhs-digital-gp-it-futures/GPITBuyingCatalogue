@@ -51,19 +51,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
 
             string[] nhsAppIntegrationTypes = nhsAppIntegration?.NHSAppIntegrationTypes?.Distinct().ToArray();
 
-            if (nhsAppIntegrationTypes != null)
-            {
-                 IntegrationId = integrations
+            if (nhsAppIntegrationTypes == null)
+                return;
+
+            IntegrationId = integrations
                          .Where(i => i.IntegrationType.EqualsIgnoreCase(Framework.Constants.Interoperability.NhsAppIntegrationType))
                          .Select(i => i.Id)
                          .FirstOrDefault();
-                 foreach (var integrationType in NhsAppIntegrationTypes)
-                 {
-                     if (nhsAppIntegrationTypes.Any(s => s.Equals(integrationType.IntegrationType, StringComparison.InvariantCultureIgnoreCase)))
-                     {
-                         integrationType.Checked = true;
-                     }
-                 }
+            foreach (var integrationType in NhsAppIntegrationTypes)
+            {
+                if (nhsAppIntegrationTypes.Any(s => s.Equals(integrationType.IntegrationType, StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    integrationType.Checked = true;
+                }
             }
         }
     }
