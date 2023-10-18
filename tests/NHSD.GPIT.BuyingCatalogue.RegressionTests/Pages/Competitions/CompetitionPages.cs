@@ -8,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOne.Solut
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCreateCompetition;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCreateCompetition.SelectFilterType;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCreateCompetition.SolutionSelection;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
@@ -23,12 +24,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             StartCompetition = new StartCompetition(driver, commonActions);
             SelectSolutions = new SelectSolutions(driver, commonActions);
             SolutionShortlisted = new SolutionShortlisted(driver, commonActions);
-            CompetitionStepOne = new CompetitionStepOne(driver, commonActions);
             NoSolutionsFound = new NoSolutionsFound(driver, commonActions);
             SingleSolutionFound = new SingleSolutionFound(driver, commonActions);
             CompetitionTaskList = new CompetitionTaskList(driver, commonActions);
             CompetitionServiceRecipients = new CompetitionServiceRecipients(driver, commonActions);
             ContractLength = new ContractLength(driver, commonActions);
+            AwardCriteria = new AwardCriteria(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -49,8 +50,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
 
         internal SolutionShortlisted SolutionShortlisted { get; }
 
-        internal CompetitionStepOne CompetitionStepOne { get; }
-
         internal NoSolutionsFound NoSolutionsFound { get; }
 
         internal SingleSolutionFound SingleSolutionFound { get; }
@@ -60,6 +59,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
         internal CompetitionServiceRecipients CompetitionServiceRecipients { get; }
 
         internal ContractLength ContractLength { get; }
+
+        internal AwardCriteria AwardCriteria { get; }
 
         internal FilterType FilterType { get; set; }
 
@@ -104,6 +105,16 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                 ContractLength.CompetitionContractLength();
 
                 var compsolutions = GetCompetitionSolutions(competitionId);
+            }
+        }
+
+        public void StepTwoDefineCompetitionCriteria(CompetitionType competitiontype)
+        {
+            CompetitionTaskList.AwardCriteria();
+
+            if (competitiontype == CompetitionType.PriceOnly)
+            {
+                AwardCriteria.PriceONly();
             }
         }
 

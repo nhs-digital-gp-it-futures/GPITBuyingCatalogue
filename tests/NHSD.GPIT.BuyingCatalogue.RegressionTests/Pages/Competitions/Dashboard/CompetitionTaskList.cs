@@ -27,5 +27,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Dashboard
             CommonActions.ClickLinkElement(CompetitionsDashboardObjects.ContractLengthLink);
             CommonActions.LedeText().Should().Be("Confirm how long your contract will be in months.".FormatForComparison());
         }
+
+        public void AwardCriteria()
+        {
+            CommonActions.ClickLinkElement(CompetitionsDashboardObjects.AwardCriteriaLink);
+            CommonActions.LedeText().Should().Be("Select if you want to use price only or price and non-price elements.".FormatForComparison());
+        }
     }
 }

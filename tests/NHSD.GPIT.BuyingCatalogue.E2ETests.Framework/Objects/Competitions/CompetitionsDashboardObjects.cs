@@ -18,4 +18,6 @@ public static class CompetitionsDashboardObjects
     public static By ContractLengthLink => By.LinkText("Contract length");
 
     public static By ContractLengthInput => By.Id("ContractLength");
+
+    public static By AwardCriteriaLink => By.LinkText("Award criteria");
 }
