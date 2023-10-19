@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
     {
         public Task<List<Supplier>> GetAllSuppliersFromBuyingCatalogue();
 
-        public Task<List<Supplier>> GetAllSuppliersWithAssociatedServices();
+        public Task<List<Supplier>> GetAllSuppliersWithAssociatedServices(PracticeReorganisationTypeEnum practiceReorganisationType = PracticeReorganisationTypeEnum.None);
 
         public Task<Supplier> GetSupplierFromBuyingCatalogue(int id);
 
