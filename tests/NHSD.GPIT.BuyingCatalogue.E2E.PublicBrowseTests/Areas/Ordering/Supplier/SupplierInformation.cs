@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 SupplierObjects.SupplierAutoCompleteError,
-                SelectSupplierModelValidator.SupplierMissingErrorMessage).Should().BeTrue();
+                SelectSupplierModelValidator.SupplierSearchMissingErrorMessage).Should().BeTrue();
         }
 
         [Fact]
@@ -107,7 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 SupplierObjects.SupplierAutoCompleteError,
-                SelectSupplierModelValidator.SupplierMissingErrorMessage).Should().BeTrue();
+                SelectSupplierModelValidator.SupplierSearchMissingErrorMessage).Should().BeTrue();
         }
 
         [Fact]
@@ -126,7 +126,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.Supplier
 
             CommonActions.ElementShowingCorrectErrorMessage(
                 SupplierObjects.SupplierAutoCompleteError,
-                SelectSupplierModelValidator.SupplierMissingErrorMessage).Should().BeTrue();
+                SelectSupplierModelValidator.SupplierSearchMissingErrorMessage).Should().BeTrue();
         }
 
         [Fact]

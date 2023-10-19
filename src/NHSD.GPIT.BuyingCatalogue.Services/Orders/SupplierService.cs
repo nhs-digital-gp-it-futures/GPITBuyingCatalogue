@@ -37,9 +37,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .ToListAsync();
         }
 
-        public Task<List<Supplier>> GetAllSuppliersWithAssociatedServices()
+        public Task<List<Supplier>> GetAllSuppliersWithAssociatedServices(PracticeReorganisationTypeEnum practiceReorganisationType = PracticeReorganisationTypeEnum.None)
         {
-            return dbContext
+            var query = dbContext
                 .CatalogueItems
                 .AsNoTracking()
                 .Include(ci => ci.SupplierServiceAssociations)
@@ -48,8 +48,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     ci =>
                         ci.CatalogueItemType == CatalogueItemType.Solution
                         && ci.PublishedStatus == PublicationStatus.Published
-                        && ci.SupplierServiceAssociations.Any()
-                        && ci.Solution.FrameworkSolutions.Select(f => f.Framework).Distinct().Any(f => !f.IsExpired))
+                        && ci.Solution.FrameworkSolutions.Select(f => f.Framework).Distinct().Any(f => !f.IsExpired));
+
+            if (practiceReorganisationType != PracticeReorganisationTypeEnum.None)
+            {
+                query = query.Where(ci => ci.SupplierServiceAssociations.Any(ssa => (ssa.AssociatedService.PracticeReorganisationType & practiceReorganisationType) == practiceReorganisationType));
+            }
+            else
+            {
+                query = query.Where(ci => ci.SupplierServiceAssociations.Any());
+            }
+
+            return query
                 .Select(ci => ci.Supplier)
                 .Where(s => s.IsActive)
                 .Distinct()
