@@ -1,6 +1,4 @@
-﻿using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOne;
@@ -15,6 +13,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
 {
     public class CompetitionPages
     {
+       // private int competitionId = CompetitionId();
+
         public CompetitionPages(IWebDriver driver, CommonActions commonActions, LocalWebApplicationFactory factory)
         {
             CompetitionDashboard = new CompetitionDashboard(driver, commonActions);
@@ -30,6 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             CompetitionServiceRecipients = new CompetitionServiceRecipients(driver, commonActions);
             ContractLength = new ContractLength(driver, commonActions);
             AwardCriteria = new AwardCriteria(driver, commonActions);
+            CalculatePrice = new CalculatePrice(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -62,6 +63,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
 
         internal AwardCriteria AwardCriteria { get; }
 
+        internal CalculatePrice CalculatePrice { get; }
+
         internal FilterType FilterType { get; set; }
 
         internal IWebDriver Driver { get; }
@@ -74,6 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             ReviewFilter.ReviewYourFilter();
 
             StartCompetition.CreateCompetition(competitionName);
+            int competitionId = CompetitionId();
 
             if (filterType == FilterType.NoResults)
             {
@@ -85,7 +89,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             }
             else
             {
-                int competitionId = CompetitionId();
                 int filterId = GetFilterId(competitionId);
 
                 if (filterId == 2)
@@ -101,30 +104,48 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                 CompetitionServiceRecipients.AddCompetitionServiceRecipient(recipients);
                 CompetitionServiceRecipients.ConfirmServiceReceipientsChanges();
 
-                CompetitionTaskList.ContractLength();
+                CompetitionTaskList.ContractLengthTask();
                 ContractLength.CompetitionContractLength();
-
-                var compsolutions = GetCompetitionSolutions(competitionId);
             }
         }
 
         public void StepTwoDefineCompetitionCriteria(CompetitionType competitiontype)
         {
-            CompetitionTaskList.AwardCriteria();
+            int competitionId = CompetitionId();
+
+            var compsolutions = GetCompetitionSolutions(competitionId);
+
+            CompetitionTaskList.AwardCriteriaTask();
 
             if (competitiontype == CompetitionType.PriceOnly)
             {
                 AwardCriteria.PriceONly();
+                CompetitionTaskList.CalculatePriceTask();
+
+                foreach (var solution in compsolutions)
+                {
+                    var name = GetSolutionName(solution);
+                    CalculatePrice.CompetitionCalculatePrice(name);
+                }
             }
         }
 
         private int CompetitionId()
         {
-            string url = Driver.Url;
-            int charPos = url.LastIndexOf("competitions/") + "competitions".Length + 1;
-            int charLength = url.IndexOf("/select-solutions") - charPos;
-            int competitionId = int.Parse(url.Substring(charPos, charLength));
-            return competitionId;
+            var competitionurl = Driver.Url.Split("/");
+
+            for (int i = 0; i < competitionurl.Length - 1; i++)
+            {
+                if (competitionurl[i] == "competitions" && i + 1 < competitionurl.Length)
+                {
+                    if (int.TryParse(competitionurl[i + 1], out int competitionId))
+                    {
+                        return competitionId;
+                    }
+                }
+            }
+
+            throw new InvalidOperationException("Unable to extract competition Id from the competition URL");
         }
 
         private int GetFilterId(int competitionId)

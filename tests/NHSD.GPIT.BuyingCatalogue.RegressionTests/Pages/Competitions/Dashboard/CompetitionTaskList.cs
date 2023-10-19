@@ -22,16 +22,22 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Dashboard
             CommonActions.ClickExpander();
         }
 
-        public void ContractLength()
+        public void ContractLengthTask()
         {
             CommonActions.ClickLinkElement(CompetitionsDashboardObjects.ContractLengthLink);
             CommonActions.LedeText().Should().Be("Confirm how long your contract will be in months.".FormatForComparison());
         }
 
-        public void AwardCriteria()
+        public void AwardCriteriaTask()
         {
             CommonActions.ClickLinkElement(CompetitionsDashboardObjects.AwardCriteriaLink);
             CommonActions.LedeText().Should().Be("Select if you want to use price only or price and non-price elements.".FormatForComparison());
+        }
+
+        public void CalculatePriceTask()
+        {
+            CommonActions.ClickLinkElement(CompetitionsDashboardObjects.CalculatePriceLink);
+            CommonActions.LedeText().Should().Be("Provide information to calculate the price for each of your shortlisted solutions. The calculation will be based on the quantity you want to order and the length of the contract.".FormatForComparison());
         }
     }
 }
