@@ -46,6 +46,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public OrderTypeEnum OrderType { get; set; }
 
+        [JsonIgnore]
+        public OrderType OrderTypeValue => new(OrderType);
+
         public bool AssociatedServicesOnly => OrderType == OrderTypeEnum.AssociatedServiceOther;
 
         public OrderTriageValue? OrderTriageValue { get; set; }

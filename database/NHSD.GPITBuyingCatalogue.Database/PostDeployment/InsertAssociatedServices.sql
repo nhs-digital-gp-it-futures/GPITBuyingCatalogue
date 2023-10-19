@@ -14,12 +14,13 @@ BEGIN
     SET @associatedServiceId = '100000-S-001';
 
     INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
-         VALUES (@associatedServiceId, @associatedServiceItemType, N'Practice reorganisation', 100000, @publishedStatus, @now);
+         VALUES (@associatedServiceId, @associatedServiceItemType, N'Practice Merge', 100000, @publishedStatus, @now);
 
-    INSERT INTO catalogue.AssociatedServices (CatalogueItemId, [Description], OrderGuidance, LastUpdated, LastUpdatedBy)
+    INSERT INTO catalogue.AssociatedServices (CatalogueItemId, [Description], OrderGuidance, PracticeReorganisationType, LastUpdated, LastUpdatedBy)
          VALUES (@associatedServiceId,
-                N'Our practice reorganisation service provides support during practice splits and mergers. When two or more practices decide to split or merge clinical information, our service can target either select patients or the full patient list. It makes organising a change in practice simple. This service is applicable to both implementation and live operations.',
-                N'The typical unit of order for practice mergers and splits is likely to be on an individual basis (one). This is a fixed fee per practice regardless of size.',
+                N'This service merges a single system into another. This service will be required by organisations who previously operated independently but are planning to merge their services, and so need to share a single instance of their software solution.\r\n\r\nPurchasing will allow two practices will combine the elements of both units (including patient lists, staff members, caseloads, etc.) into a single system.', 
+                N'Dependent on business need. This Associated Service (and corresponding fee) is for two practices merging into one, regardless of practice size. If more than two practices are merging, an additional Practice Merge will need to be purchased for each additional practice.', 
+                1,
                 @now, @bobUser);
 
     /***************************************************************************************************************************/
@@ -29,10 +30,11 @@ BEGIN
     INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
          VALUES (@associatedServiceId, @associatedServiceItemType, N'Engineering', 100000, @publishedStatus, @now);
 
-    INSERT INTO catalogue.AssociatedServices (CatalogueItemId, [Description], OrderGuidance, LastUpdated, LastUpdatedBy)
+    INSERT INTO catalogue.AssociatedServices (CatalogueItemId, [Description], OrderGuidance, PracticeReorganisationType, LastUpdated, LastUpdatedBy)
          VALUES (@associatedServiceId,
                 N'This service ensure practice infrastructure is in place and has optimum configuration. This service is applicable to the implementation phase and live operations.',
                 N'Dependent on the issue, a typical range is 1-7 days. Additional Engineering is available and would be dependant on scale and user needs. This could be one day or purchased in bulk.',
+                0,
                 @now, @bobUser);
 
     /***************************************************************************************************************************/
@@ -42,11 +44,12 @@ BEGIN
     INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
          VALUES (@associatedServiceId, @associatedServiceItemType, N'Lloyd George digitisation', 100000, @publishedStatus, @now);
 
-    INSERT INTO catalogue.AssociatedServices (CatalogueItemId, [Description], OrderGuidance, LastUpdated, LastUpdatedBy)
+    INSERT INTO catalogue.AssociatedServices (CatalogueItemId, [Description], OrderGuidance, PracticeReorganisationType, LastUpdated, LastUpdatedBy)
          VALUES (@associatedServiceId,
                  N'A fully managed, ISO compliant, service for the digitisation of Lloyd George records. We’ll collect your paper records, scan them and upload them into EMIS Web as digital files. Following sign-off paper records are securely destroyed by shredding them and then recycling them in an eco-friendly way.',
                  N'The typical volume would be an average of eight thousand which is the typical practice capitation. The largest practice size is the maximum.',
-                @now, @bobUser);
+                 0,
+                 @now, @bobUser);
 
     /***************************************************************************************************************************/
 
@@ -55,10 +58,11 @@ BEGIN
     INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
          VALUES (@associatedServiceId, @associatedServiceItemType, N'Lloyd George digitisation (upload only)', 100000, @publishedStatus, @now);
 
-    INSERT INTO catalogue.AssociatedServices (CatalogueItemId, [Description], OrderGuidance, LastUpdated, LastUpdatedBy)
+    INSERT INTO catalogue.AssociatedServices (CatalogueItemId, [Description], OrderGuidance, PracticeReorganisationType, LastUpdated, LastUpdatedBy)
          VALUES (@associatedServiceId,
                 N'We will take digitised Lloyd George files and upload them into EMIS Web. This allows for full visibility of a patients medical records from within the clinical system for more informed decisions at the point of care.',
                 N'The typical volume would be an average of eight thousand which is the typical practice capitation. The largest practice size is the maximum.',
+                0,
                 @now, @bobUser);
 
     /***************************************************************************************************************************/
@@ -68,11 +72,12 @@ BEGIN
     INSERT INTO catalogue.CatalogueItems(Id, CatalogueItemTypeId, [Name], SupplierId, PublishedStatusId, Created)
          VALUES (@associatedServiceId, @associatedServiceItemType, N'Project management', 100000, @publishedStatus, @now);
 
-    INSERT INTO catalogue.AssociatedServices (CatalogueItemId, [Description], OrderGuidance, LastUpdated, LastUpdatedBy)
+    INSERT INTO catalogue.AssociatedServices (CatalogueItemId, [Description], OrderGuidance, PracticeReorganisationType, LastUpdated, LastUpdatedBy)
          VALUES (@associatedServiceId,
                  N'Our project management service can help organisations to seamlessly manage end-to-end projects based on their requirements. From initial planning to roll-out and ongoing project management, our team provides tailored support to customers.',
                  N'Project Management resource is anticipated to be low for standard installations. For more complex deployments it is anticipated to be higher. The minimum is 1 day, maximum is 10 days per practice',
-                @now, @bobUser);
+                 0,
+                 @now, @bobUser);
 
     /* Insert Prices */
 
