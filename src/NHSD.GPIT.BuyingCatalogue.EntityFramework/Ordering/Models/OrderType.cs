@@ -18,4 +18,29 @@ public record OrderType(OrderTypeEnum Value)
             };
         }
     }
+
+    public PracticeReorganisationTypeEnum ToPracticeReorganisationType
+    {
+        get
+        {
+            return Value switch
+            {
+                OrderTypeEnum.AssociatedServiceMerger => PracticeReorganisationTypeEnum.Merger,
+                OrderTypeEnum.AssociatedServiceSplit => PracticeReorganisationTypeEnum.Split,
+                _ => PracticeReorganisationTypeEnum.None,
+            };
+        }
+    }
+
+    public bool UsesSupplierSearch
+    {
+        get
+        {
+            return Value switch
+            {
+                OrderTypeEnum.Solution or OrderTypeEnum.AssociatedServiceOther => true,
+                _ => false,
+            };
+        }
+    }
 }
