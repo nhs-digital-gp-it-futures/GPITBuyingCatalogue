@@ -1,8 +1,5 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Supplier.ConfirmSupplierModel;
-@{
-    ViewBag.Title = Model!.Title;
-}
 
 <div data-test-id="supplier-page">
     <partial name="Partials/_BackLink" model="Model" />
@@ -10,9 +7,10 @@
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
             <nhs-validation-summary />
-            <nhs-page-title title="@ViewBag.Title" 
-                            caption="Order @Model.CallOffId"
-                            advice="Confirm this is the supplier you want to order from." />
+            @{
+                var pageTitle = Model.GetPageTitle();
+            }
+            <nhs-page-title model="@pageTitle" />
 
             <nhs-summary-list>
                 <nhs-summary-list-row label-text="Supplier name">
@@ -31,12 +29,15 @@
                     </div>
                 </nhs-summary-list-row>
             </nhs-summary-list>
-            
-            <vc:nhs-action-link url="@Url.Action(
+
+            @if (!Model.OnlyOption)
+            {
+                <vc:nhs-action-link url="@Url.Action(
                                          nameof(SupplierController.SelectSupplier),
                                          typeof(SupplierController).ControllerName(),
                                          new { Model.InternalOrgId, Model.CallOffId })"
-                                text="Select a different supplier" />
+                                    text="Select a different supplier" />
+            }
 
             <div class="nhsuk-inset-text">
                 <span class="nhsuk-u-visually-hidden">Information: </span>
