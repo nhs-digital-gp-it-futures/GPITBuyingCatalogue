@@ -18,8 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.Supplier
             RuleFor(x => x.SelectedSupplierId)
                 .NotEmpty()
                 .WithMessage(SupplierSelectMissingErrorMessage)
-                .When(x => !x.OrderType.UsesSupplierSearch)
-                .OverridePropertyName("selected-supplier-id");
+                .When(x => !x.OrderType.UsesSupplierSearch);
         }
     }
 }

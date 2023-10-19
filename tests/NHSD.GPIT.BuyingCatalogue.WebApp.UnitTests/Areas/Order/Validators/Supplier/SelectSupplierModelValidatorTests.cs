@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Supp
 
             var result = systemUnderTest.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor("selected-supplier-id")
+            result.ShouldHaveValidationErrorFor(x => x.SelectedSupplierId)
                 .WithErrorMessage(SelectSupplierModelValidator.SupplierSelectMissingErrorMessage);
         }
     }
