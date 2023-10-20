@@ -1,4 +1,5 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOne;
@@ -7,14 +8,13 @@ using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCreate
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCreateCompetition.SelectFilterType;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCreateCompetition.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo;
+using NuGet.Protocol;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
 {
     public class CompetitionPages
     {
-       // private int competitionId = CompetitionId();
-
         public CompetitionPages(IWebDriver driver, CommonActions commonActions, LocalWebApplicationFactory factory)
         {
             CompetitionDashboard = new CompetitionDashboard(driver, commonActions);
@@ -124,8 +124,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
 
                 foreach (var solution in compsolutions)
                 {
-                    var name = GetSolutionName(solution);
-                    CalculatePrice.CompetitionCalculatePrice(name);
+                    string solutionId = solution.ToString();
+                    CalculatePrice.CompetitionCalculatePrice(solutionId);
                 }
             }
         }
@@ -174,6 +174,16 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             var compsolution = solutions.Select(x => x.SolutionId).ToList();
 
             return compsolution;
+        }
+
+        private IEnumerable<SolutionService> GetCompetitionSolutionServices(int competitionId)
+        {
+            using var dbContext = Factory.DbContext;
+
+            var competitionservices = dbContext.CompetitionSolutions
+                .SelectMany(x => x.SolutionServices).Where(y => y.CompetitionId == competitionId).ToList();
+
+            return competitionservices;
         }
 
         private string GetSolutionName(CatalogueItemId solutionId)
