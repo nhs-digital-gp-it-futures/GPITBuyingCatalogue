@@ -288,7 +288,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new ReviewFilterModel(filterDetailsModel, filterIdsModel) { Caption = organisation.Name };
+            var expected = new ReviewFilterModel(filterDetailsModel, filterIdsModel) { Caption = organisation.Name, InternalOrgId = organisation.InternalIdentifier };
             actualResult.Model.Should().BeEquivalentTo(expected, opt => opt.Excluding(x => x.BackLink));
         }
 

@@ -170,6 +170,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             {
                 BackLink = Url.Action(nameof(Index), typeof(ManageFiltersController).ControllerName()),
                 Caption = organisation.Name,
+                InternalOrgId = organisation.InternalIdentifier,
             };
 
             return View(model);
