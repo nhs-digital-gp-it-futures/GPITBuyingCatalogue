@@ -150,15 +150,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Homepage
                 Driver.Url.Should().Be("https://digital.nhs.uk/services/digital-care-services-catalogue/digital-first-online-consultation-and-video-consultation-framework");
             });
         }
-        [Fact]
-        public void HomePage_ClickAdvancedTelephony_ExpectedResult()
-        {
-                CommonActions.ClickLinkElement(Objects.Home.HomeSelectors.AdvancedTelephonyLink);
-
-                CommonActions.PageLoadedCorrectGetIndex(
-                        typeof(HomeController),
-                        nameof(HomeController.AdvancedTelephony)).Should().BeTrue();
-        }
 
         [Fact]
         public void HomePage_Buyer_ClickManageOrders_ExpectedResult()

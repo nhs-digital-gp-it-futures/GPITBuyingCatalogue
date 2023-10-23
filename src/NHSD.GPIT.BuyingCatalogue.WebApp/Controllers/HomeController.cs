@@ -56,15 +56,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         [HttpGet("unauthorized")]
         public IActionResult NotAuthorized() => View();
 
-        [HttpGet("advanced-telephony-better-purchase")]
-        public IActionResult AdvancedTelephony() => View(
-            new NavBaseModel
-            {
-                BackLink = Url.Action(
-                    nameof(Index),
-                    typeof(HomeController).ControllerName()),
-            });
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error(int? statusCode = null, string error = null)
         {
