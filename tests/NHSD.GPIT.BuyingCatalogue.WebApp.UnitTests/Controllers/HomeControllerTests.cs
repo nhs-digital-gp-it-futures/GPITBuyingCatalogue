@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -84,10 +85,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         [Theory]
         [CommonAutoData]
         public static void Get_Error404_NullFeature_ReturnsPageNotFound(
-            [Frozen] Mock<IFeatureCollection> features,
+            [Frozen] Mock<HttpContext> httpContextMock,
             HomeController controller)
         {
-            features.Setup(c => c.Get<IStatusCodeReExecuteFeature>()).Returns(new StatusCodeReExecuteFeature { });
+            httpContextMock.Setup(x => x.Features.Get<IStatusCodeReExecuteFeature>()).Returns<StatusCodeReExecuteFeature>(null);
 
             var result = controller.Error(404).As<ViewResult>();
 
