@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Diagnostics;
@@ -15,6 +16,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 {
     public static class HomeControllerTests
     {
+        [Fact]
+        public static void CreateHomeController_ContactUsServiceNull()
+        {
+            Assert.Throws<ArgumentNullException>(() => new HomeController(null));
+        }
+
         [Theory]
         [CommonAutoData]
         public static void Get_Index_ReturnsDefaultView(
@@ -72,6 +79,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             result.Should().NotBeNull();
             result.ViewName.Should().Be("PageNotFound");
             result.ViewData.Should().Contain(d => string.Equals(d.Key, "BadUrl") && string.Equals(d.Value, "Incorrect url BAD"));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Get_Error404_NullFeature_ReturnsPageNotFound(
+            [Frozen] Mock<IFeatureCollection> features,
+            HomeController controller)
+        {
+            features.Setup(c => c.Get<IStatusCodeReExecuteFeature>()).Returns(new StatusCodeReExecuteFeature { });
+
+            var result = controller.Error(404).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.ViewName.Should().Be("PageNotFound");
+            result.ViewData.Should().Contain(d => string.Equals(d.Key, "BadUrl") && string.Equals(d.Value, "Incorrect url "));
         }
 
         [Theory]
