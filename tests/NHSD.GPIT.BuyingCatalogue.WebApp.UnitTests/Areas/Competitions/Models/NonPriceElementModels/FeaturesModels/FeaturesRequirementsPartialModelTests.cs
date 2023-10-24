@@ -31,4 +31,21 @@ public static class FeaturesRequirementsPartialModelTests
         model.MustRequirements.Should().Contain(mustFeature);
         model.ShouldRequirements.Should().Contain(shouldFeature);
     }
+
+    [Theory]
+    [CommonAutoData]
+    public static void Construct_Alternate_SetsPropertiesAsExpected(
+        string internalOrgId,
+        int competitionId,
+        List<FeaturesCriteria> featuresCriteria,
+        bool hasReviewedCriteria)
+    {
+        var model = new FeaturesRequirementsPartialModel(
+            internalOrgId,
+            competitionId,
+            featuresCriteria,
+            hasReviewedCriteria);
+
+        model.HasReviewedCriteria.Should().Be(hasReviewedCriteria);
+    }
 }

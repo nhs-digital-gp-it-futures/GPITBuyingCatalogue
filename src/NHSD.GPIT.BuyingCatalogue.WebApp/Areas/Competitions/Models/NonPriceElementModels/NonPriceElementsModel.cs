@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
@@ -18,6 +19,7 @@ public class NonPriceElementsModel : NavBaseModel
         CompetitionId = competition.Id;
 
         CompetitionName = competition.Name;
+        HasReviewedCriteria = competition.HasReviewedCriteria;
         NonPriceElements = competition.NonPriceElements;
     }
 
@@ -27,7 +29,15 @@ public class NonPriceElementsModel : NavBaseModel
 
     public string CompetitionName { get; set; }
 
+    public bool HasReviewedCriteria { get; set; }
+
     public NonPriceElements NonPriceElements { get; set; }
+
+    public override string Advice => HasReviewedCriteria
+        ? "These are the non-price elements you added to help you score your shortlisted solutions."
+        : HasAllNonPriceElements()
+            ? "All available non-price elements have been added for this competition."
+            : "Add at least 1 optional non-price element to help you score your shortlisted solutions, for example features, implementation, interoperability or service levels.";
 
     public bool HasAllNonPriceElements() =>
         NonPriceElements.HasAllNonPriceElements();

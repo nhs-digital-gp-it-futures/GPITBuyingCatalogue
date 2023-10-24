@@ -21,20 +21,20 @@
             <h2 class="nhsuk-heading-m">Weightings</h2>
             <h3 class="nhsuk-heading-s">Award criteria weighting</h3>
             <nhs-summary-list>
-                <nhs-summary-list-row label-text="Price" action="@("Edit", editPriceWeightings)">@Model.CompetitionWeights.Price%</nhs-summary-list-row>
-                <nhs-summary-list-row label-text="Non-price" action="@("Edit", editPriceWeightings)">@Model.CompetitionWeights.NonPrice%</nhs-summary-list-row>
+                <nhs-summary-list-row label-text="Price" action="@CreateAction(editPriceWeightings)">@Model.CompetitionWeights.Price%</nhs-summary-list-row>
+                <nhs-summary-list-row label-text="Non-price" action="@CreateAction(editPriceWeightings)">@Model.CompetitionWeights.NonPrice%</nhs-summary-list-row>
             </nhs-summary-list>
 
             <h3 class="nhsuk-heading-s">Non-price weighting</h3>
             <nhs-summary-list>
                 @foreach (var nonPriceWeighting in Model.NonPriceWeights)
                 {
-                    <nhs-summary-list-row label-text="@nonPriceWeighting.Key.ToString()" action="@("Edit", editNonPriceElementWeightings)">@nonPriceWeighting.Value%</nhs-summary-list-row>
+                    <nhs-summary-list-row label-text="@nonPriceWeighting.Key.ToString()" action="@CreateAction(editNonPriceElementWeightings)">@nonPriceWeighting.Value%</nhs-summary-list-row>
                 }
             </nhs-summary-list>
         </nhs-card>
 
-        <partial name="Partials/_NonPriceElements" model="@(new NonPriceElementsPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.NonPriceElements, editRouteValues) { IsReviewScreen = true })"/>
+        <partial name="Partials/_NonPriceElements" model="@(new NonPriceElementsPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.NonPriceElements, editRouteValues, Model.HasReviewedCriteria) { IsReviewScreen = true })"/>
         <br/>
 
         <form method="post">
@@ -42,3 +42,7 @@
         </form>
     </div>
 </div>
+
+@{
+    (string, string) CreateAction(string url) => Model.HasReviewedCriteria ? (null, null) : ("Edit", url);
+}

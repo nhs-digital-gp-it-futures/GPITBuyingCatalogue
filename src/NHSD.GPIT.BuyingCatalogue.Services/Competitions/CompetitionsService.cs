@@ -152,6 +152,7 @@ public class CompetitionsService : ICompetitionsService
 
     public async Task<Competition> GetCompetition(string internalOrgId, int competitionId)
         => await dbContext.Competitions.AsNoTracking()
+            .Include(x => x.Organisation)
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
     public async Task<Competition> GetCompetitionWithRecipients(string internalOrgId, int competitionId)

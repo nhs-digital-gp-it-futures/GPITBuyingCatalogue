@@ -25,6 +25,24 @@ public static class NonPriceElementsPartialModelTests
         model.CompetitionId.Should().Be(competitionId);
         model.NonPriceElements.Should().Be(nonPriceElements);
         model.RouteValues.Should().Be(routeValues);
+        model.IsReviewScreen.Should().BeFalse();
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void Construct_Alternate_SetsPropertiesAsExpected(
+        string internalOrgId,
+        int competitionId,
+        NonPriceElements nonPriceElements,
+        object routeValues,
+        bool hasReviewedCriteria)
+    {
+        var model = new NonPriceElementsPartialModel(internalOrgId, competitionId, nonPriceElements, routeValues, hasReviewedCriteria);
+
+        model.InternalOrgId.Should().Be(internalOrgId);
+        model.CompetitionId.Should().Be(competitionId);
+        model.NonPriceElements.Should().Be(nonPriceElements);
+        model.RouteValues.Should().Be(routeValues);
     }
 
     [Theory]

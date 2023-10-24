@@ -3,10 +3,6 @@
 
 @{
     ViewBag.Title = "Non-price elements";
-
-    var advice = Model.HasAllNonPriceElements()
-        ? "All available non-price elements have been added for this competition."
-        : "Add at least 1 optional non-price element to help you score your shortlisted solutions, for example features, implementation, interoperability or service levels.";
     var routeValues = new { internalOrgId = Model.InternalOrgId, competitionId = Model.CompetitionId };
     var editRouteValues = new { internalOrgId = Model.InternalOrgId, competitionId = Model.CompetitionId, returnUrl = Url.ActionLink() };
 }
@@ -17,9 +13,9 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.CompetitionName"
-                        advice="@advice"/>
+                        advice="@Model.Advice"/>
 
-        @if (!Model.HasAllNonPriceElements())
+        @if (!Model.HasAllNonPriceElements() && !Model.HasReviewedCriteria)
         {
             <vc:nhs-action-link text="Add a non-price element" url="@Url.Action(nameof(CompetitionNonPriceElementsController.AddNonPriceElement), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues)"/>
         }
@@ -30,7 +26,7 @@
         }
         else
         {
-            <partial name="Partials/_NonPriceElements" model="@(new NonPriceElementsPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.NonPriceElements, editRouteValues))" />
+            <partial name="Partials/_NonPriceElements" model="@(new NonPriceElementsPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.NonPriceElements, editRouteValues, Model.HasReviewedCriteria))" />
         }
 
         <br/>
