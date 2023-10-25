@@ -135,6 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                     else
                     {
                         CalculatePrice.SolutionPrice(solution);
+                        CalculatePrice.ConfirmSolutionPrice(solution);
 
                         //add quantity
                     }
@@ -251,6 +252,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             var prices = dbContext.CatalogueItems
                 .SelectMany(x => x.CataloguePrices).Where(y => y.CatalogueItemId == competitionservice);
             return prices.Count() > 1;
+        }
+
+        private int CatalogueItemPriceId(CatalogueItemId solutionorserice)
+        {
+            using var dbContext = Factory.DbContext;
+            var prices = dbContext.CatalogueItems
+                .SelectMany(x => x.CataloguePrices).Where(y => y.CatalogueItemId == solutionorserice);
+
+            return prices.Select(x => x.CataloguePriceId).FirstOrDefault();
         }
     }
 }
