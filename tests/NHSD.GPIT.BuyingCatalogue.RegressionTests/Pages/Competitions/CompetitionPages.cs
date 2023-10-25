@@ -201,9 +201,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             var solutions = dbContext.Competitions
                 .SelectMany(x => x.CompetitionSolutions).Where(y => y.CompetitionId == competitionId & y.IsShortlisted == true).ToList();
 
-            var compsolution = solutions.Select(x => x.SolutionId).ToList();
+            var competitionsolutions = solutions.Select(x => x.SolutionId).ToList();
 
-            return compsolution;
+            return competitionsolutions;
         }
 
         private Competition GetCompetition(int competitionId)
@@ -216,17 +216,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             return (Competition)competition;
         }
 
-        private IEnumerable<SolutionService> GetCompetitionSolutionServices(int competitionId, CatalogueItemId solutionId)
+        private IEnumerable<CatalogueItemId> GetCompetitionSolutionServices(int competitionId, CatalogueItemId solutionId)
         {
             using var dbContext = Factory.DbContext;
-
-            //var competition = dbContext.Competitions
-            //    .Select(x => x.Id == competitionId);
 
             var competitionservices = dbContext.CompetitionSolutions
                 .SelectMany(x => x.SolutionServices).Where(y => y.CompetitionId == competitionId && y.SolutionId == solutionId).ToList();
 
-            return competitionservices;
+            return competitionservices.Select(x => x.ServiceId).ToList();
         }
 
         private bool HasAdditionalService(CatalogueItemId solutionId)
