@@ -35,6 +35,10 @@ public class CompetitionReviewCriteriaModel : NavBaseModel
 
     public bool HasReviewedCriteria { get; set; }
 
+    public string ContinueButton => HasReviewedCriteria
+        ? "Continue"
+        : "Confirm competition criteria";
+
     public Weightings CompetitionWeights { get; set; }
 
     public NonPriceElements NonPriceElements { get; set; }

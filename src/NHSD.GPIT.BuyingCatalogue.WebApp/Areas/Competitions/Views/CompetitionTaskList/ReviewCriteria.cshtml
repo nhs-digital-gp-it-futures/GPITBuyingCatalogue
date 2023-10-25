@@ -37,8 +37,17 @@
         <partial name="Partials/_NonPriceElements" model="@(new NonPriceElementsPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.NonPriceElements, editRouteValues, Model.HasReviewedCriteria) { IsReviewScreen = true })"/>
         <br/>
 
+        @if (!Model.HasReviewedCriteria)
+        {
+            <nhs-warning-callout label-text="Confirming competition criteria">
+                Confirming your competition criteria will mean you can no longer change the information you’ve provided. Both the award criteria and non-price elements you’ve selected will be locked, as will the weightings you’ve given for each of them.
+
+                If you’re happy with the information you can confirm your competition criteria and proceed.
+            </nhs-warning-callout>
+        }
+
         <form method="post">
-            <nhs-submit-button text="Continue"/>
+            <nhs-submit-button text="@Model.ContinueButton"/>
         </form>
     </div>
 </div>
