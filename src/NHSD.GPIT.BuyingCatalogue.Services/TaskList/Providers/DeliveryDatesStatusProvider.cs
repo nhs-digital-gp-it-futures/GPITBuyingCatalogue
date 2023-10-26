@@ -21,6 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
                 .All(x => wrapper
                     .DetermineOrderRecipients(x.CatalogueItemId)
                     .NoDeliveryDatesEntered(x.CatalogueItemId));
+            var defaultDeliveryDateEntered = order.DeliveryDate.HasValue;
 
             if (state.SolutionOrService != TaskProgress.Completed
                 && !anyDeliveryDatesEntered)
@@ -30,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
 
             return order.HaveAllDeliveryDates(wrapper.RolledUp.OrderRecipients)
                 ? TaskProgress.Completed
-                : (anyDeliveryDatesEntered ? TaskProgress.InProgress : TaskProgress.NotStarted);
+                : (anyDeliveryDatesEntered || defaultDeliveryDateEntered ? TaskProgress.InProgress : TaskProgress.NotStarted);
         }
     }
 }

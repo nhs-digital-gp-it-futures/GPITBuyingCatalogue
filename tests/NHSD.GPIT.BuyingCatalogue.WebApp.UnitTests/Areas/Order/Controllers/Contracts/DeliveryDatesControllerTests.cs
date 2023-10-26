@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -425,6 +426,41 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             orderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));
+
+            var result = await controller.EditDates(internalOrgId, callOffId, catalogueItemId);
+
+            orderService.VerifyAll();
+
+            var expected = new EditDatesModel(order, catalogueItemId);
+            var actual = result.Should().BeOfType<ViewResult>().Subject;
+
+            actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditDates_NullDeliveryDate_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] Mock<ICollection<OrderRecipient>> mockRecipients,
+            DeliveryDatesController controller)
+        {
+            order.SetupCatalogueSolution();
+
+            var catalogueItemId = order.OrderItems.First().CatalogueItemId;
+            //order.OrderRecipients = mockRecipients;
+
+            orderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            mockRecipients.Setup(x => x.(It.IsAny<List<int>>()))
+            .Returns<List<int>>(ids =>
+            {
+                return _users.Where(user => ids.Contains(user.Id)).ToList();
+            });
 
             var result = await controller.EditDates(internalOrgId, callOffId, catalogueItemId);
 
