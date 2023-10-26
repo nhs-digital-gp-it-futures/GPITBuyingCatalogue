@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -24,10 +25,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         public IActionResult PrivacyPolicy()
             => View();
 
+        [Authorize]
         [HttpGet("contact-us")]
         public IActionResult ContactUs()
             => View(new ContactUsModel());
 
+        [Authorize]
         [HttpPost("contact-us")]
         public async Task<IActionResult> ContactUs(ContactUsModel model)
         {
