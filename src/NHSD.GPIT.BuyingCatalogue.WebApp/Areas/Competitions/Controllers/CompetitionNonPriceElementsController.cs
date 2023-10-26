@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.NonPriceElementModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.NonPriceElementModels.FeaturesModels;
 
@@ -47,6 +48,7 @@ public class CompetitionNonPriceElementsController : Controller
         return View(model);
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpGet("add")]
     public async Task<IActionResult> AddNonPriceElement(
         string internalOrgId,
@@ -65,6 +67,7 @@ public class CompetitionNonPriceElementsController : Controller
         return View(model);
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpPost("add")]
     public IActionResult AddNonPriceElement(
         string internalOrgId,
@@ -92,6 +95,7 @@ public class CompetitionNonPriceElementsController : Controller
             });
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpGet("add/interoperability")]
     public async Task<IActionResult> Interoperability(
         string internalOrgId,
@@ -116,6 +120,7 @@ public class CompetitionNonPriceElementsController : Controller
         return View(model);
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpPost("add/interoperability")]
     public async Task<IActionResult> Interoperability(
         string internalOrgId,
@@ -139,6 +144,7 @@ public class CompetitionNonPriceElementsController : Controller
         return GetRedirect(internalOrgId, competitionId, returnUrl, selectedNonPriceElements);
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpGet("add/implementation")]
     public async Task<IActionResult> Implementation(
         string internalOrgId,
@@ -163,6 +169,7 @@ public class CompetitionNonPriceElementsController : Controller
         return View(model);
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpPost("add/implementation")]
     public async Task<IActionResult> Implementation(
         string internalOrgId,
@@ -179,6 +186,7 @@ public class CompetitionNonPriceElementsController : Controller
         return GetRedirect(internalOrgId, competitionId, returnUrl, selectedNonPriceElements);
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpGet("add/service-level")]
     public async Task<IActionResult> ServiceLevel(
         string internalOrgId,
@@ -225,6 +233,7 @@ public class CompetitionNonPriceElementsController : Controller
         return GetRedirect(internalOrgId, competitionId, returnUrl, selectedNonPriceElements);
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpGet("add/features")]
     public async Task<IActionResult> Features(
         string internalOrgId,
@@ -253,6 +262,7 @@ public class CompetitionNonPriceElementsController : Controller
         return View(model);
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpPost("add/features")]
     public IActionResult Features(
         string internalOrgId,
@@ -266,6 +276,7 @@ public class CompetitionNonPriceElementsController : Controller
         return GetRedirect(internalOrgId, competitionId, returnUrl, selectedNonPriceElements);
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpGet("add/features/requirement")]
     public async Task<IActionResult> FeatureRequirement(
         string internalOrgId,
@@ -289,6 +300,7 @@ public class CompetitionNonPriceElementsController : Controller
         return View(model);
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpPost("add/features/requirement")]
     public async Task<IActionResult> FeatureRequirement(
         string internalOrgId,
@@ -313,6 +325,7 @@ public class CompetitionNonPriceElementsController : Controller
                 new { internalOrgId, competitionId, selectedNonPriceElements });
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpGet("add/features/requirement/{requirementId:int}")]
     public async Task<IActionResult> EditFeatureRequirement(
         string internalOrgId,
@@ -341,6 +354,7 @@ public class CompetitionNonPriceElementsController : Controller
         return View("FeatureRequirement", model);
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpPost("add/features/requirement/{requirementId:int}")]
     public async Task<IActionResult> EditFeatureRequirement(
         string internalOrgId,
@@ -386,6 +400,7 @@ public class CompetitionNonPriceElementsController : Controller
         return View(model);
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpPost("weights")]
     public async Task<IActionResult> Weights(
         string internalOrgId,
@@ -412,6 +427,7 @@ public class CompetitionNonPriceElementsController : Controller
                 new { internalOrgId, competitionId });
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpGet("delete/{nonPriceElement}")]
     public IActionResult Delete(
         string internalOrgId,
@@ -429,6 +445,7 @@ public class CompetitionNonPriceElementsController : Controller
         return View(model);
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpPost("delete/{nonPriceElement}")]
     public async Task<IActionResult> Delete(
         string internalOrgId,

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
@@ -8,6 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.Shared;
 
 public class NonPriceElementsPartialModel
 {
+    [ExcludeFromCodeCoverage]
     public NonPriceElementsPartialModel()
     {
     }
@@ -25,6 +27,17 @@ public class NonPriceElementsPartialModel
         RouteValues = routeValues;
     }
 
+    public NonPriceElementsPartialModel(
+        string internalOrgId,
+        int competitionId,
+        NonPriceElements nonPriceElements,
+        object routeValues,
+        bool hasReviewedCriteria)
+        : this(internalOrgId, competitionId, nonPriceElements, routeValues)
+    {
+        HasReviewedCriteria = hasReviewedCriteria;
+    }
+
     public string InternalOrgId { get; set; }
 
     public int CompetitionId { get; set; }
@@ -34,6 +47,8 @@ public class NonPriceElementsPartialModel
     public object RouteValues { get; set; }
 
     public bool IsReviewScreen { get; set; }
+
+    public bool HasReviewedCriteria { get; set; }
 
     public List<string> GetIm1Integrations() =>
         NonPriceElements.Interoperability.Where(

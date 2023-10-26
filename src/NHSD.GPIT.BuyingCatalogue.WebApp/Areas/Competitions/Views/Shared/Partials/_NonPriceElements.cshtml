@@ -2,10 +2,10 @@
 
 @if (Model.NonPriceElements.Features.Any())
 {
-    <nhs-card title="Features">
-        <partial name="Partials/_FeaturesRequirements" model="@(new FeaturesRequirementsPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.NonPriceElements.Features) { ReturnUrl = Url.ActionLink() })"/>
+    <nhs-card title="Features" size="Large">
+        <partial name="Partials/_FeaturesRequirements" model="@(new FeaturesRequirementsPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.NonPriceElements.Features, Model.HasReviewedCriteria) { ReturnUrl = Url.ActionLink() })"/>
 
-        @if (!Model.IsReviewScreen)
+        @if (!Model.IsReviewScreen && !Model.HasReviewedCriteria)
         {
             <vc:nhs-action-link text="Add another features requirement" url="@Url.Action(nameof(CompetitionNonPriceElementsController.FeatureRequirement), typeof(CompetitionNonPriceElementsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, returnUrl = Url.ActionLink() })"/>
         }
@@ -15,9 +15,9 @@
 @if (Model.NonPriceElements.Implementation != null)
 {
     var implementationUrl = Url.Action(nameof(CompetitionNonPriceElementsController.Implementation), typeof(CompetitionNonPriceElementsController).ControllerName(), Model.RouteValues);
-    <nhs-card title="Implementation">
+    <nhs-card title="Implementation" size="Large">
         <nhs-summary-list>
-            <nhs-summary-list-row label-text="Implementation" action="@("Edit", implementationUrl)">
+            <nhs-summary-list-row label-text="Implementation" action="@CreateAction(implementationUrl)">
                 @Model.NonPriceElements.Implementation.Requirements
             </nhs-summary-list-row>
         </nhs-summary-list>
@@ -28,13 +28,13 @@
 {
     var interopUrl = Url.Action(nameof(CompetitionNonPriceElementsController.Interoperability), typeof(CompetitionNonPriceElementsController).ControllerName(), Model.RouteValues);
 
-    <nhs-card title="Interoperability">
+    <nhs-card title="Interoperability" size="Large">
         @{
             var im1Integrations = Model.GetIm1Integrations();
             var gpConnectIntegrations = Model.GetGpConnectIntegrations();
         }
         <nhs-summary-list>
-            <nhs-summary-list-row label-text="IM1 integrations" action="@("Edit", interopUrl)">
+            <nhs-summary-list-row label-text="IM1 integrations" action="@CreateAction(interopUrl)">
                 @if (!im1Integrations.Any())
                 {
                     <span>None selected</span>
@@ -52,7 +52,7 @@
         </nhs-summary-list>
 
         <nhs-summary-list>
-            <nhs-summary-list-row label-text="GP Connect integrations" action="@("Edit", interopUrl)">
+            <nhs-summary-list-row label-text="GP Connect integrations" action="@CreateAction(interopUrl)">
                 @if (!gpConnectIntegrations.Any())
                 {
                     <span>None selected</span>
@@ -75,12 +75,12 @@
 {
     var serviceLevelUrl = Url.Action(nameof(CompetitionNonPriceElementsController.ServiceLevel), typeof(CompetitionNonPriceElementsController).ControllerName(), Model.RouteValues);
 
-    <nhs-card title="Service levels">
+    <nhs-card title="Service levels" size="Large">
         <nhs-summary-list>
-            <nhs-summary-list-row label-text="Core support hours" action="@("Edit", serviceLevelUrl)">
+            <nhs-summary-list-row label-text="Core support hours" action="@CreateAction(serviceLevelUrl)">
                 @($"{Model.NonPriceElements.ServiceLevel.TimeFrom:HH:mm} to {Model.NonPriceElements.ServiceLevel.TimeUntil:HH:mm}")
             </nhs-summary-list-row>
-            <nhs-summary-list-row label-text="Applicable days" action="@("Edit", serviceLevelUrl)">
+            <nhs-summary-list-row label-text="Applicable days" action="@CreateAction(serviceLevelUrl)">
                 <ul>
                     @foreach (var day in Model.NonPriceElements.ServiceLevel.ApplicableDays)
                     {
@@ -88,9 +88,13 @@
                     }
                 </ul>
             </nhs-summary-list-row>
-            <nhs-summary-list-row label-text="Including Bank Holidays?" action="@("Edit", serviceLevelUrl)">
+            <nhs-summary-list-row label-text="Including Bank Holidays?" action="@CreateAction(serviceLevelUrl)">
                 @Model.NonPriceElements.ServiceLevel.IncludesBankHolidays.ToYesNo()
             </nhs-summary-list-row>
         </nhs-summary-list>
     </nhs-card>
+}
+
+@{
+    (string, string) CreateAction(string url) => Model.HasReviewedCriteria ? (null, null) : ("Edit", url);
 }

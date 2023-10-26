@@ -36,22 +36,22 @@
 
             <nhs-task-list-section label-text="Define competition criteria">
                 <nhs-task-list-item label-text="Award criteria"
-                                    label-hint="Select the award criteria you want to use to compare your shortlisted solutions."
+                                    label-hint="@Model.AwardCriteriaText"
                                     url="@Url.Action(nameof(CompetitionTaskListController.AwardCriteria), typeof(CompetitionTaskListController).ControllerName(), routeValues)"
                                     status="@Model.TaskListModel.AwardCriteria"/>
 
                 <nhs-task-list-item label-text="Award criteria weightings"
-                                    label-hint="Give your chosen award criteria weightings based on how important they are to you."
+                                    label-hint="@Model.AwardCriteriaWeightingsText"
                                     url="@Url.Action(nameof(CompetitionTaskListController.Weightings), typeof(CompetitionTaskListController).ControllerName(), routeValues)"
                                     status="@Model.TaskListModel.AwardCriteriaWeightings"/>
 
                 <nhs-task-list-item label-text="Non-price elements"
-                                    label-hint="Select any non-price elements you want to add to help you score your shortlisted solutions."
+                                    label-hint="@Model.NonPriceElementsText"
                                     url="@Url.Action(nameof(CompetitionNonPriceElementsController.Index), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues)"
                                     status="@Model.TaskListModel.NonPriceElements"/>
 
                 <nhs-task-list-item label-text="Non-price weightings"
-                                    label-hint="Give your chosen non-price elements weightings based on how important they are to you."
+                                    label-hint="@Model.NonPriceWeightingsText"
                                     url="@Url.Action(nameof(CompetitionNonPriceElementsController.Weights), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues)"
                                     status="@Model.TaskListModel.NonPriceWeightings"/>
 

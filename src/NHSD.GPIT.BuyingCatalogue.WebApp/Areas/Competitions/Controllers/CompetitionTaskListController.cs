@@ -6,6 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.TaskListModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
@@ -101,6 +102,7 @@ public class CompetitionTaskListController : Controller
         return View(model);
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpPost("award-criteria")]
     public async Task<IActionResult> AwardCriteria(string internalOrgId, int competitionId, CompetitionAwardCriteriaModel model)
     {
@@ -135,6 +137,7 @@ public class CompetitionTaskListController : Controller
         return View(model);
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpPost("award-criteria/confirm")]
     public async Task<IActionResult> ConfirmAwardCriteria(
         string internalOrgId,
@@ -165,6 +168,7 @@ public class CompetitionTaskListController : Controller
         return View(model);
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpPost("weightings")]
     public async Task<IActionResult> Weightings(
         string internalOrgId,

@@ -97,4 +97,58 @@ public static class NonPriceElementsModelTests
 
         model.HasAnyNonPriceElements().Should().BeFalse();
     }
+
+    [Theory]
+    [CommonAutoData]
+    public static void Advice_HasReviewedCriteria_ExpectedContent(
+        Organisation organisation,
+        Competition competition)
+    {
+        competition.HasReviewedCriteria = true;
+        competition.Organisation = organisation;
+        competition.NonPriceElements = new();
+
+        var model = new NonPriceElementsModel(competition);
+
+        model.Advice.Should()
+            .Be("These are the non-price elements you added to help you score your shortlisted solutions.");
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void Advice_HasAllNonPriceElements_ExpectedContent(
+        Organisation organisation,
+        Competition competition)
+    {
+        competition.HasReviewedCriteria = false;
+        competition.Organisation = organisation;
+        competition.NonPriceElements = new()
+        {
+            Implementation = new(),
+            Interoperability = new List<InteroperabilityCriteria> { new() },
+            Features = new List<FeaturesCriteria> { new() },
+            ServiceLevel = new(),
+        };
+
+        var model = new NonPriceElementsModel(competition);
+
+        model.Advice.Should()
+            .Be("All available non-price elements have been added for this competition.");
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void Advice_HasNoNonPriceElements_ExpectedContent(
+        Organisation organisation,
+        Competition competition)
+    {
+        competition.HasReviewedCriteria = false;
+        competition.Organisation = organisation;
+        competition.NonPriceElements = new();
+
+        var model = new NonPriceElementsModel(competition);
+
+        model.Advice.Should()
+            .Be("Add at least 1 optional non-price element to help you score your shortlisted solutions, for example features, implementation, interoperability or service levels.");
+    }
 }
