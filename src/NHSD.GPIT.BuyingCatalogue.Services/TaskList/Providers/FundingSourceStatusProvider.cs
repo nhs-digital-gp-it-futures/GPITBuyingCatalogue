@@ -19,7 +19,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
 
             var anyFundingSourcesEntered = AnyFundingSourcesEntered(wrapper.OrderItems);
 
-            if (state.DeliveryDates != TaskProgress.Completed
+            var okToProgress = new[] { TaskProgress.Completed, TaskProgress.Amended };
+
+            if (!okToProgress.Contains(state.SolutionOrService)
                 && !anyFundingSourcesEntered)
             {
                 return TaskProgress.CannotStart;

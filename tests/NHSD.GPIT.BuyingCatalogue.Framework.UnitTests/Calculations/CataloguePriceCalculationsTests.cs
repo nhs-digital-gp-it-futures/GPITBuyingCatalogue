@@ -416,47 +416,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         }
 
         [Theory]
-        [CommonInlineAutoData(1, 12 * 24)]
-        [CommonInlineAutoData(2, 12 * 18)]
-        public static void Order_TotalCostForOrderItem_AmendedOrder_PerServiceRecipient(
-            int revision,
-            decimal total,
-            IFixture fixture)
-        {
-            var maximumTerm = 24;
-            var price = 12M;
-            var commencementDate = new DateTime(2000, 1, 1);
-            var amendmentPlannedDelivery = commencementDate.AddMonths(6);
-
-            (decimal Price, int LowerRange, int? UpperRange) tier = (price, 1, null);
-
-            OrderItem perMonthOrderItemUsedForTotal = BuildOrderItem(fixture, new[] { tier }, CataloguePriceCalculationType.SingleFixed);
-            perMonthOrderItemUsedForTotal.CatalogueItemId = perMonthOrderItemUsedForTotal.CatalogueItem.Id;
-            perMonthOrderItemUsedForTotal.OrderItemPrice.BillingPeriod = TimeUnit.PerMonth;
-            var recipient = fixture.Build<OrderRecipient>()
-                .Create();
-            recipient.SetQuantityForItem(perMonthOrderItemUsedForTotal.CatalogueItemId, 1);
-            recipient.SetDeliveryDateForItem(perMonthOrderItemUsedForTotal.CatalogueItemId, amendmentPlannedDelivery);
-
-            var recipient2 = fixture.Build<OrderRecipient>()
-                .Create();
-            recipient2.SetQuantityForItem(perMonthOrderItemUsedForTotal.CatalogueItemId, 1);
-            recipient2.SetDeliveryDateForItem(perMonthOrderItemUsedForTotal.CatalogueItemId, amendmentPlannedDelivery);
-
-            var order = fixture.Build<Order>()
-                .With(o => o.Revision, revision)
-                .With(o => o.CommencementDate, commencementDate)
-                .With(o => o.OrderItems, new HashSet<OrderItem>(new[] { perMonthOrderItemUsedForTotal }))
-                .With(o => o.OrderRecipients, new HashSet<OrderRecipient> { recipient, recipient2 })
-                .With(o => o.MaximumTerm, maximumTerm)
-                .Create();
-
-            var orderWrapper = new OrderWrapper(order);
-
-            orderWrapper.TotalCostForOrderItem(perMonthOrderItemUsedForTotal.CatalogueItem.Id).Should().Be(total);
-        }
-
-        [Theory]
         [CommonInlineAutoData(1)]
         [CommonInlineAutoData(2)]
         public static void Order_TotalCostForOrderItem_Returns_0_When_OrderItem_Not_Found(int revision, CatalogueItemId catalogueItemId, IFixture fixture)

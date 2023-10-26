@@ -94,9 +94,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
             var order = orderWrapper.Order;
             var orderItem = orderWrapper.Order.OrderItem(catalogueItemId);
 
-            if (orderItem == null)
-                return decimal.Zero;
-
             var recipients = orderWrapper.DetermineOrderRecipients(catalogueItemId);
 
             if (order.IsAmendment)
@@ -144,7 +141,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
 
         private static decimal TotalCostByPlannedDelivery(this Order order, Order previous)
         {
-            return order.TotalOneOffCost(previous) + order?.OrderItems.Sum(i => ((IPrice)i.OrderItemPrice).CalculateCostPerMonth(i.TotalQuantity(order.DetermineOrderRecipients(previous, i.CatalogueItemId))) * order.GetTerm()) ?? decimal.Zero;
+            return order.TotalOneOffCost(previous) + order?.OrderItems.Sum(i =>
+                ((IPrice)i.OrderItemPrice).CalculateCostPerMonth(i.TotalQuantity(order.DetermineOrderRecipients(previous, i.CatalogueItemId))) * order.GetTerm()) ?? decimal.Zero;
         }
 
         private static decimal TotalCostForMaximumTerm(this Order order, Order previous)
