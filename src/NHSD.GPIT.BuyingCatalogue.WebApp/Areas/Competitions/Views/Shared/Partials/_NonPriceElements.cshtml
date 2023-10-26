@@ -2,7 +2,7 @@
 
 @if (Model.NonPriceElements.Features.Any())
 {
-    <nhs-card title="Features" size="Medium">
+    <nhs-card title="Features" size="Large">
         <partial name="Partials/_FeaturesRequirements" model="@(new FeaturesRequirementsPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.NonPriceElements.Features, Model.HasReviewedCriteria) { ReturnUrl = Url.ActionLink() })"/>
 
         @if (!Model.IsReviewScreen && !Model.HasReviewedCriteria)
@@ -15,7 +15,7 @@
 @if (Model.NonPriceElements.Implementation != null)
 {
     var implementationUrl = Url.Action(nameof(CompetitionNonPriceElementsController.Implementation), typeof(CompetitionNonPriceElementsController).ControllerName(), Model.RouteValues);
-    <nhs-card title="Implementation" size="Medium">
+    <nhs-card title="Implementation" size="Large">
         <nhs-summary-list>
             <nhs-summary-list-row label-text="Implementation" action="@CreateAction(implementationUrl)">
                 @Model.NonPriceElements.Implementation.Requirements
@@ -28,7 +28,7 @@
 {
     var interopUrl = Url.Action(nameof(CompetitionNonPriceElementsController.Interoperability), typeof(CompetitionNonPriceElementsController).ControllerName(), Model.RouteValues);
 
-    <nhs-card title="Interoperability" size="Medium">
+    <nhs-card title="Interoperability" size="Large">
         @{
             var im1Integrations = Model.GetIm1Integrations();
             var gpConnectIntegrations = Model.GetGpConnectIntegrations();
@@ -75,7 +75,7 @@
 {
     var serviceLevelUrl = Url.Action(nameof(CompetitionNonPriceElementsController.ServiceLevel), typeof(CompetitionNonPriceElementsController).ControllerName(), Model.RouteValues);
 
-    <nhs-card title="Service levels" size="Medium">
+    <nhs-card title="Service levels" size="Large">
         <nhs-summary-list>
             <nhs-summary-list-row label-text="Core support hours" action="@CreateAction(serviceLevelUrl)">
                 @($"{Model.NonPriceElements.ServiceLevel.TimeFrom:HH:mm} to {Model.NonPriceElements.ServiceLevel.TimeUntil:HH:mm}")
