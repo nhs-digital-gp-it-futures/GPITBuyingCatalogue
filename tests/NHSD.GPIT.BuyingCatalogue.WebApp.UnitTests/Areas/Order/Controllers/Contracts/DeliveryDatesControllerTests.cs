@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             orderService.VerifyAll();
 
-            var expected = new SelectDateModel(internalOrgId, callOffId, order.CommencementDate!.Value, order.DeliveryDate);
+            var expected = new SelectDateModel(internalOrgId, callOffId, order);
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 
             actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));

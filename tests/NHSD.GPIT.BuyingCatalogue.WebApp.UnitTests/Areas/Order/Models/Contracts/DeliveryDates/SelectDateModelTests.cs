@@ -9,20 +9,16 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contracts.DeliveryDates
 {
-    public static class AmendDateModelTests
+    public static class SelectDateModelTests
     {
         [Theory]
         [CommonAutoData]
         public static void NullOrder_ThrowsException(
             string internalOrgId,
-            CallOffId callOffId,
-            EntityFramework.Ordering.Models.Order order,
-            DateTime date)
+            CallOffId callOffId)
         {
-            var orderItem = order.OrderItems.First();
-
             FluentActions
-                .Invoking(() => new AmendDateModel(internalOrgId, callOffId, orderItem.CatalogueItemId, null, date))
+                .Invoking(() => new SelectDateModel(internalOrgId, callOffId, null))
                 .Should().Throw<ArgumentNullException>();
         }
 
@@ -32,31 +28,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
-            DateTime date,
-            RoutingSource source)
+            DateTime date)
         {
-            var orderItem = order.OrderItems.First();
-
-            var model = new AmendDateModel(internalOrgId, callOffId, orderItem.CatalogueItemId, order, date)
-            {
-                Source = source,
-            };
-
-            model.Title.Should().Be(AmendDateModel.TitleText);
-            model.Caption.Should().Be(model.ItemName);
-            model.Advice.Should().Be(AmendDateModel.AdviceText);
+            order.DeliveryDate = date;
+            var model = new SelectDateModel(internalOrgId, callOffId, order);
 
             model.InternalOrgId.Should().Be(internalOrgId);
             model.CallOffId.Should().Be(callOffId);
-            model.CatalogueItemId.Should().Be(orderItem.CatalogueItemId);
-
-            model.ItemName.Should().Be(orderItem.CatalogueItem.Name);
-
             model.CommencementDate.Should().Be(order.CommencementDate);
             model.MaximumTerm.Should().Be(order.MaximumTerm);
-            model.TriageValue.Should().Be(order.OrderTriageValue);
-
-            model.Source.Should().Be(source);
+            model.IsAmend.Should().Be(order.IsAmendment);
 
             model.Date.Should().Be(date.Date);
             model.Day.Should().Be($"{date.Day:00}");
@@ -69,16 +50,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         public static void ContractEndDate_WithInvalidArguments_ReturnsNull(
             string internalOrgId,
             CallOffId callOffId,
-            EntityFramework.Ordering.Models.Order order,
-            DateTime date,
-            RoutingSource source)
+            EntityFramework.Ordering.Models.Order order)
         {
-            var orderItem = order.OrderItems.First();
-
-            var model = new AmendDateModel(internalOrgId, callOffId, orderItem.CatalogueItemId, order, date)
-            {
-                Source = source,
-            };
+            var model = new SelectDateModel(internalOrgId, callOffId, order);
 
             model.ContractEndDate.Should().NotBeNull();
 
@@ -100,17 +74,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             OrderTriageValue triageValue,
             string internalOrgId,
             CallOffId callOffId,
-            EntityFramework.Ordering.Models.Order order,
-            DateTime date,
-            RoutingSource source)
+            EntityFramework.Ordering.Models.Order order)
         {
-            var orderItem = order.OrderItems.First();
-
-            var model = new AmendDateModel(internalOrgId, callOffId, orderItem.CatalogueItemId, order, date)
-            {
-                Source = source,
-                TriageValue = triageValue,
-            };
+            var model = new SelectDateModel(internalOrgId, callOffId, order);
 
             var expected = order.CommencementDate!.Value
                 .AddMonths(order.MaximumTerm!.Value)

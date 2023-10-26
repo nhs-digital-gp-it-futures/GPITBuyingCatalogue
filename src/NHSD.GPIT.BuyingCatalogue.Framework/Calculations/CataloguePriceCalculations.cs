@@ -100,9 +100,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
             {
                 return CalculateForTerm(orderItem, order.GetTerm(), recipients);
             }
-
-            var maximumTerm = order.MaximumTerm ?? 36;
-            return CalculateForTerm(orderItem, maximumTerm, recipients);
+            else
+            {
+                var maximumTerm = order.MaximumTerm ?? 36;
+                return CalculateForTerm(orderItem, maximumTerm, recipients);
+            }
         }
 
         public static decimal TotalCost(this OrderItem orderItem, ICollection<OrderRecipient> recipients)
@@ -142,7 +144,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
         private static decimal TotalCostByPlannedDelivery(this Order order, Order previous)
         {
             return order.TotalOneOffCost(previous) + order?.OrderItems.Sum(i =>
-                ((IPrice)i.OrderItemPrice).CalculateCostPerMonth(i.TotalQuantity(order.DetermineOrderRecipients(previous, i.CatalogueItemId))) * order.GetTerm()) ?? decimal.Zero;
+            {
+                var term = order.GetTerm();
+                return ((IPrice)i.OrderItemPrice).CalculateCostPerMonth(i.TotalQuantity(order.DetermineOrderRecipients(previous, i.CatalogueItemId))) * term;
+            }) ?? decimal.Zero;
         }
 
         private static decimal TotalCostForMaximumTerm(this Order order, Order previous)

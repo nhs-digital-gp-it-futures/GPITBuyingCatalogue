@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         {
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
-            var model = new SelectDateModel(internalOrgId, callOffId, order.CommencementDate!.Value, order.DeliveryDate)
+            var model = new SelectDateModel(internalOrgId, callOffId, order)
             {
                 BackLink = returnUrl ?? Url.Action(
                     nameof(OrderController.Order),
