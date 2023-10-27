@@ -1,6 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOne;
@@ -129,8 +128,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                 {
                     if (HasTieredPrice(solution))
                     {
-                        //select price
-                        //add quantity
+                        CalculatePrice.SelectPrice(solution);
+                        CalculatePrice.AddSolutionQuantity(solution);
                     }
                     else
                     {
@@ -147,8 +146,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                         {
                             if (HasTieredPrice(servicdid))
                             {
-                                //select price
-                                //add quantity
+                                CalculatePrice.SelectAdditionalServicePrice(servicdid);
+                                CalculatePrice.AddAdditionalServiceQuantity(servicdid);
                             }
                             else
                             {
@@ -161,6 +160,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                     CalculatePrice.ConfirmPriceAndQuantity();
                 }
             }
+
+            CalculatePrice.ConfirmCalculatePrice();
         }
 
         private int CompetitionId()

@@ -14,6 +14,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Competitions
 
         public static By EditAdditionalServiceEditPriceLink(int catalogueservicepriceid) => By.XPath($"//a[contains(@href, 'select-price/{catalogueservicepriceid}')]");
 
-        public static By EditAdditionalServiceQuantityLink(string additionalserviceid) => By.XPath($"//a[contains(@href, 'select-quantity?serviceId="+ additionalserviceid + "')]");
+        public static By EditAdditionalServiceWithTieredPriceEditLink(string additionalserviceid) => By.XPath($"//a[contains(@href, 'select-price?serviceId="+additionalserviceid+"')]");
+
+        public static By EditAdditionalServiceQuantityLink(string additionalserviceid) => By.XPath($"//a[contains(@href, 'select-quantity?serviceId="+additionalserviceid+"')]");
     }
 }
