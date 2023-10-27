@@ -20,6 +20,7 @@ public class CompetitionReviewCriteriaModel : NavBaseModel
         CompetitionName = competition.Name;
         CompetitionWeights = competition.Weightings;
         NonPriceElements = competition.NonPriceElements;
+        HasReviewedCriteria = competition.HasReviewedCriteria;
 
         NonPriceWeights = competition.NonPriceElements.GetNonPriceElements()
             .OrderBy(x => x.ToString())
@@ -31,6 +32,12 @@ public class CompetitionReviewCriteriaModel : NavBaseModel
     public int CompetitionId { get; set; }
 
     public string CompetitionName { get; set; }
+
+    public bool HasReviewedCriteria { get; set; }
+
+    public string ContinueButton => HasReviewedCriteria
+        ? "Continue"
+        : "Confirm competition criteria";
 
     public Weightings CompetitionWeights { get; set; }
 

@@ -35,4 +35,25 @@ public static class CompetitionReviewCriteriaModelTests
         model.CompetitionWeights.Should().Be(weightings);
         model.NonPriceWeights.Should().BeEquivalentTo(expectedNonPriceWeights);
     }
+
+    [Theory]
+    [CommonInlineAutoData(true, "Continue")]
+    [CommonInlineAutoData(false, "Confirm competition criteria")]
+    public static void ContinueButton_ReviewedCriteria_ExpectedContent(
+        bool hasReviewedCriteria,
+        string expectedContent,
+        Organisation organisation,
+        Competition competition,
+        NonPriceElements nonPriceElements,
+        Weightings weightings)
+    {
+        competition.Organisation = organisation;
+        competition.NonPriceElements = nonPriceElements;
+        competition.Weightings = weightings;
+        competition.HasReviewedCriteria = hasReviewedCriteria;
+
+        var model = new CompetitionReviewCriteriaModel(competition);
+
+        model.ContinueButton.Should().Be(expectedContent);
+    }
 }

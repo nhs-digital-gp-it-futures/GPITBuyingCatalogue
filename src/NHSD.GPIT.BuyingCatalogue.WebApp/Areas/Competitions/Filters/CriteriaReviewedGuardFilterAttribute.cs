@@ -1,4 +1,4 @@
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -6,7 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Filters;
 
-public class CompetitionSolutionSelectionFilterAttribute : CompetitionFilterBaseAttribute
+public class CriteriaReviewedGuardFilterAttribute : CompetitionFilterBaseAttribute
 {
     public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
@@ -17,12 +17,12 @@ public class CompetitionSolutionSelectionFilterAttribute : CompetitionFilterBase
             return;
         }
 
-        if (competition.IsShortlistAccepted || competition.Completed.HasValue)
+        if (competition.HasReviewedCriteria)
         {
             context.Result = new RedirectToActionResult(
-                nameof(CompetitionsDashboardController.Index),
-                typeof(CompetitionsDashboardController).ControllerName(),
-                new { internalOrgId = competition.Organisation.InternalIdentifier });
+                nameof(CompetitionTaskListController.Index),
+                typeof(CompetitionTaskListController).ControllerName(),
+                new { internalOrgId = competition.Organisation.InternalIdentifier, competitionId = competition.Id });
         }
 
         await base.OnActionExecutionAsync(context, next);
