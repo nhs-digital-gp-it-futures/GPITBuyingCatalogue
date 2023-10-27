@@ -28,13 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 throw new ArgumentNullException(nameof(routeValues));
             }
 
-            var orderItem = order.OrderItem(routeValues.CatalogueItemId.Value);
-            var attentionRequired = order.IsAmendment
-                && !orderWrapper.DetermineOrderRecipients(orderItem.CatalogueItemId)
-                                .AllDeliveryDatesEntered(orderItem.CatalogueItemId);
-
-            if (routeValues.Source == RoutingSource.TaskList
-                && !attentionRequired)
+            if (routeValues.Source == RoutingSource.TaskList)
             {
                 return new RoutingResult
                 {
@@ -58,6 +52,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
             if (associatedService != null)
             {
                 return PricesRoute(routeValues, associatedService);
+            }
+
+            if (order.GetAssociatedServices().Any())
+            {
+                return new RoutingResult
+                {
+                    ControllerName = Constants.Controllers.TaskList,
+                    ActionName = Constants.Actions.TaskList,
+                    RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId },
+                };
             }
 
             var associatedServices = associatedServicesService.GetPublishedAssociatedServicesForSolution(order.GetSolutionId()).Result;

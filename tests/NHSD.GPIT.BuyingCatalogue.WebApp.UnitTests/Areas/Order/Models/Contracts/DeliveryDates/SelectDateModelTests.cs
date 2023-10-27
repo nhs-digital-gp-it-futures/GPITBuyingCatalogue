@@ -38,6 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             model.CommencementDate.Should().Be(order.CommencementDate);
             model.MaximumTerm.Should().Be(order.MaximumTerm);
             model.IsAmend.Should().Be(order.IsAmendment);
+            model.TriageValue.Should().Be(order.OrderTriageValue);
 
             model.Date.Should().Be(date.Date);
             model.Day.Should().Be($"{date.Day:00}");
@@ -76,6 +77,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order)
         {
+            order.OrderTriageValue = triageValue;
+
             var model = new SelectDateModel(internalOrgId, callOffId, order);
 
             var expected = order.CommencementDate!.Value

@@ -54,13 +54,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonInlineAutoData(OrderTriageValue.Under40K)]
+        [CommonInlineAutoData(OrderTriageValue.Between40KTo250K)]
+        [CommonInlineAutoData(OrderTriageValue.Over250K)]
         public static void Validate_DateAfterContractEndDate_ThrowsValidationError(
+            OrderTriageValue triageValue,
             SelectDateModel model,
             SelectDateModelValidator validator)
         {
             model.CommencementDate = DateTime.UtcNow.AddDays(-1).Date;
             model.MaximumTerm = 1;
+            model.TriageValue = triageValue;
             model.IsAmend = false;
 
             var contractEndDate = new EndDate(model.CommencementDate, model.MaximumTerm).DateTime.Value;
@@ -89,13 +93,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonInlineAutoData(OrderTriageValue.Under40K)]
+        [CommonInlineAutoData(OrderTriageValue.Between40KTo250K)]
+        [CommonInlineAutoData(OrderTriageValue.Over250K)]
         public static void Validate_DateAfterContractEndDate_Amend_ThrowsValidationError(
+            OrderTriageValue triageValue,
             SelectDateModel model,
             SelectDateModelValidator validator)
         {
             model.CommencementDate = DateTime.UtcNow.AddDays(-1).Date;
             model.MaximumTerm = 1;
+            model.TriageValue = triageValue;
             model.IsAmend = true;
 
             var contractEndDate = new EndDate(model.CommencementDate, model.MaximumTerm).DateTime.Value;

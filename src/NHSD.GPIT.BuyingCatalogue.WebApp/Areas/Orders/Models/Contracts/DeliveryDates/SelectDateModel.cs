@@ -21,6 +21,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
             CallOffId = callOffId;
             CommencementDate = order.CommencementDate;
             MaximumTerm = order.MaximumTerm;
+            TriageValue = order.OrderTriageValue;
+
             IsAmend = order.IsAmendment;
 
             SetDateFields(order.DeliveryDate);
@@ -33,6 +35,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
         public DateTime? CommencementDate { get; set; }
 
         public int? MaximumTerm { get; set; }
+
+        public OrderTriageValue? TriageValue { get; set; }
 
         public bool IsAmend { get; set; }
 
