@@ -44,12 +44,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public int? MaximumTerm { get; set; }
 
-        public OrderTypeEnum OrderType { get; set; }
+        public OrderType OrderType { get; set; } = OrderTypeEnum.Unknown;
 
-        [JsonIgnore]
-        public OrderType OrderTypeValue => new(OrderType);
-
-        public bool AssociatedServicesOnly => OrderType == OrderTypeEnum.AssociatedServiceOther;
+        [Obsolete("Work in progress. References will be evaluated and changed to use OrderType")]
+        public bool AssociatedServicesOnly => OrderType.Value == OrderTypeEnum.AssociatedServiceOther;
 
         public OrderTriageValue? OrderTriageValue { get; set; }
 

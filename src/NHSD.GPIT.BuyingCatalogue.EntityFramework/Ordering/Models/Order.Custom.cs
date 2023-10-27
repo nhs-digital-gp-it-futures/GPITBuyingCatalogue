@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 && HaveAllQuantities(orderRecipients)
                 && orderItems.All(oi => oi.OrderItemFunding is not null)
                 && ContractFlags is not null
-                && (AssociatedServicesOnly || Contract?.ImplementationPlan is not null)
+                && (OrderType.ImplementationPlanRequired && Contract?.ImplementationPlan is not null)
                 && (IsAmendment || !HasAssociatedService() || Contract?.ContractBilling is not null)
                 && ContractFlags?.UseDefaultDataProcessing == true
                 && OrderStatus != OrderStatus.Completed;
@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public CatalogueItemId? GetSolutionId()
         {
-            return AssociatedServicesOnly
+            return OrderType.AssociatedServicesOnly
                 ? AssociatedServicesOnlyDetails.SolutionId
                 : GetSolution()?.CatalogueItemId;
         }

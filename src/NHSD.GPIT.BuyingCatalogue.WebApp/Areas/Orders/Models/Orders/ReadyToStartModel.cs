@@ -10,13 +10,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
         {
         }
 
-        public ReadyToStartModel(Organisation organisation)
+        public ReadyToStartModel(Organisation organisation, OrderType orderType)
         {
             InternalOrgId = organisation.InternalIdentifier;
             OrganisationName = organisation.Name;
+            OrderType = orderType;
         }
 
         public string OrganisationName { get; set; }
+
+        public OrderType OrderType { get; set; }
 
         public string InternalOrgId { get; set; }
 

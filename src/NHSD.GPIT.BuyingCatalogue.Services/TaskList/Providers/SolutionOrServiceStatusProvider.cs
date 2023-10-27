@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
                 return false;
             }
 
-            if (order.AssociatedServicesOnly)
+            if (order.OrderType.AssociatedServicesOnly)
             {
                 return order.AssociatedServicesOnlyDetails.SolutionId != null;
             }

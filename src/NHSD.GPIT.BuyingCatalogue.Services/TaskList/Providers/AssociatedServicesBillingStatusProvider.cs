@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
         }
 
         private static bool HasAssociatedServices(Order order) =>
-            order.AssociatedServicesOnly
+            order.OrderType.AssociatedServicesOnly
             || order.HasAssociatedService();
     }
 }
