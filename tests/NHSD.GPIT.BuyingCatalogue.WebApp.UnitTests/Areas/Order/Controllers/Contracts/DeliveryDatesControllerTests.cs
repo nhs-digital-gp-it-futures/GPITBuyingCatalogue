@@ -444,23 +444,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderService,
-            [Frozen] Mock<ICollection<OrderRecipient>> mockRecipients,
             DeliveryDatesController controller)
         {
             order.SetupCatalogueSolution();
 
+            order.OrderRecipients.ForEach(x => x.OrderItemRecipients.FirstOrDefault().DeliveryDate = null);
+
             var catalogueItemId = order.OrderItems.First().CatalogueItemId;
-            //order.OrderRecipients = mockRecipients;
 
             orderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));
-
-            mockRecipients.Setup(x => x.(It.IsAny<List<int>>()))
-            .Returns<List<int>>(ids =>
-            {
-                return _users.Where(user => ids.Contains(user.Id)).ToList();
-            });
 
             var result = await controller.EditDates(internalOrgId, callOffId, catalogueItemId);
 
