@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOne;
@@ -31,6 +32,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             AwardCriteria = new AwardCriteria(driver, commonActions);
             CalculatePrice = new CalculatePrice(driver, commonActions, factory);
             SolutionServicePrice = new SolutionServicePrice(driver, commonActions);
+            SolutionServiceQuantity = new SolutionServiceQuantity(driver, commonActions);
+
             Factory = factory;
             Driver = driver;
         }
@@ -66,6 +69,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
         internal CalculatePrice CalculatePrice { get; }
 
         internal SolutionServicePrice SolutionServicePrice { get; }
+
+        internal SolutionServiceQuantity SolutionServiceQuantity { get; }
 
         internal FilterType FilterType { get; set; }
 
@@ -129,13 +134,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                     if (HasTieredPrice(solution))
                     {
                         CalculatePrice.SelectPrice(solution);
-                        CalculatePrice.AddSolutionQuantity(solution);
+                        SolutionServiceQuantity.AddSolutionQuantity(solution);
                     }
                     else
                     {
                         CalculatePrice.SolutionPrice(solution);
                         CalculatePrice.ConfirmSolutionPrice(solution);
-                        CalculatePrice.AddSolutionQuantity(solution);
+                        SolutionServiceQuantity.AddSolutionQuantity(solution);
                     }
 
                     if (HasAdditionalService(competitionId,solution))
@@ -147,12 +152,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                             if (HasTieredPrice(servicdid))
                             {
                                 CalculatePrice.SelectAdditionalServicePrice(servicdid);
-                                CalculatePrice.AddAdditionalServiceQuantity(servicdid);
+                                SolutionServiceQuantity.AddAdditionalServiceQuantity(servicdid);
                             }
                             else
                             {
                                 CalculatePrice.ConfirmAdditionalServicePrice(servicdid);
-                                CalculatePrice.AddAdditionalServiceQuantity(servicdid);
+                                SolutionServiceQuantity.AddAdditionalServiceQuantity(servicdid);
                             }
                         }
                     }
