@@ -12,7 +12,6 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
@@ -25,41 +24,48 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
     [ExcludeFromCodeCoverage]
     public sealed class SolutionsFilterService : ISolutionsFilterService
     {
+        private static readonly PublicationStatus[] AllowedPublicationStatuses = { PublicationStatus.Published, PublicationStatus.InRemediation };
         private readonly BuyingCatalogueDbContext dbContext;
 
         public SolutionsFilterService(BuyingCatalogueDbContext dbContext) =>
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
-        public async Task<(IQueryable<CatalogueItem> CatalogueItems, List<CapabilitiesAndCountModel> CapabilitiesAndCount)> GetFilteredAndNonFilteredQueryResults(
-            Dictionary<int, string[]> capabiltiesAndEpics)
+        public async
+            Task<(IQueryable<CatalogueItem> CatalogueItems, List<CapabilitiesAndCountModel> CapabilitiesAndCount)>
+            GetFilteredAndNonFilteredQueryResults(
+                Dictionary<int, string[]> capabilitiesAndEpics)
         {
-            var (query, count) = (capabiltiesAndEpics?.Count ?? 0) == 0
+            (IQueryable<CatalogueItem> query, List<CapabilitiesAndCountModel> count) = (capabilitiesAndEpics?.Count ?? 0) == 0
                 ? NonFilteredQuery(dbContext)
-                : await FilteredQuery(dbContext, capabiltiesAndEpics);
+                : await FilteredQuery(dbContext, capabilitiesAndEpics);
 
             return (query, count);
         }
 
-        public async Task<(IList<CatalogueItem> CatalogueItems, PageOptions Options, List<CapabilitiesAndCountModel> CapabilitiesAndCount)> GetAllSolutionsFiltered(
-            PageOptions options,
-            Dictionary<int, string[]> capabilitiesAndEpics = null,
-            string search = null,
-            string selectedFrameworkId = null,
-            string selectedApplicationTypeIds = null,
-            string selectedHostingTypeIds = null,
-            string selectedIM1Integrations = null,
-            string selectedGPConnectIntegrations = null,
-            string selectedInteroperabilityOptions = null)
+        public async
+            Task<(IList<CatalogueItem> CatalogueItems, PageOptions Options, List<CapabilitiesAndCountModel>
+                CapabilitiesAndCount)> GetAllSolutionsFiltered(
+                PageOptions options,
+                Dictionary<int, string[]> capabilitiesAndEpics = null,
+                string search = null,
+                string selectedFrameworkId = null,
+                string selectedApplicationTypeIds = null,
+                string selectedHostingTypeIds = null,
+                string selectedIm1Integrations = null,
+                string selectedGpConnectIntegrations = null,
+                string selectedInteroperabilityOptions = null)
         {
-            bool isInteropFilter = false;
-
-            var (query, count) = await GetFilteredAndNonFilteredQueryResults(capabilitiesAndEpics);
+            (IQueryable<CatalogueItem> query, List<CapabilitiesAndCountModel> count) = await GetFilteredAndNonFilteredQueryResults(capabilitiesAndEpics);
 
             if (!string.IsNullOrWhiteSpace(search))
                 query = query.Where(ci => ci.Supplier.Name.Contains(search) || ci.Name.Contains(search));
 
             if (!string.IsNullOrWhiteSpace(selectedFrameworkId))
-                query = query.Where(ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == selectedFrameworkId));
+            {
+                query = query.Where(
+                    ci => ci.Solution.FrameworkSolutions.Any(fs => fs.FrameworkId == selectedFrameworkId));
+            }
+
             if (!string.IsNullOrWhiteSpace(selectedApplicationTypeIds))
             {
                 query = ApplyAdditionalFilterToQuery<ApplicationType>(
@@ -67,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     selectedApplicationTypeIds,
                     GetSelectedFilterApplication,
                     x => x.ApplicationTypeDetail != null,
-                    isInteropFilter);
+                    false);
             }
 
             if (!string.IsNullOrWhiteSpace(selectedHostingTypeIds))
@@ -76,59 +82,67 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     query,
                     selectedHostingTypeIds,
                     GetSelectedFiltersHosting,
-                    x => x.Hosting.IsValid(),
-                    isInteropFilter);
+                    x => x.Hosting != null && x.Hosting.IsValid(),
+                    false);
             }
 
-            if (!string.IsNullOrWhiteSpace(selectedIM1Integrations))
+            if (!string.IsNullOrWhiteSpace(selectedIm1Integrations))
             {
                 query = ApplyAdditionalFilterToQuery<InteropIm1IntegrationType>(
                     query,
-                    selectedIM1Integrations,
+                    selectedIm1Integrations,
                     GetSelectedFiltersIm1Integration,
                     x => x.Integrations != null,
-                    isInteropFilter);
+                    false);
             }
-            else if (!string.IsNullOrWhiteSpace(selectedInteroperabilityOptions) && selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.Im1).ToString(CultureInfo.InvariantCulture), StringComparison.OrdinalIgnoreCase))
+            else if (!string.IsNullOrWhiteSpace(selectedInteroperabilityOptions)
+                     && selectedInteroperabilityOptions.Contains(
+                         ((int)InteropIntegrationType.Im1).ToString(CultureInfo.InvariantCulture),
+                         StringComparison.OrdinalIgnoreCase))
             {
-                InteropIm1IntegrationType[] enumValues = (InteropIm1IntegrationType[])Enum.GetValues(typeof(InteropIm1IntegrationType));
-                string im1integrations = enumValues.Select(e => (int)e).ToFilterString();
-                isInteropFilter = true;
+                InteropIm1IntegrationType[] enumValues =
+                    (InteropIm1IntegrationType[])Enum.GetValues(typeof(InteropIm1IntegrationType));
+
+                string im1Integrations = enumValues.Select(e => (int)e).ToFilterString();
                 query = ApplyAdditionalFilterToQuery<InteropIm1IntegrationType>(
                     query,
-                    im1integrations,
+                    im1Integrations,
                     GetSelectedFiltersIm1Integration,
                     x => x.Integrations != null,
-                    isInteropFilter);
+                    true);
             }
 
-            if (!string.IsNullOrWhiteSpace(selectedGPConnectIntegrations))
+            if (!string.IsNullOrWhiteSpace(selectedGpConnectIntegrations))
             {
                 query = ApplyAdditionalFilterToQuery<InteropGpConnectIntegrationType>(
                     query,
-                    selectedGPConnectIntegrations,
+                    selectedGpConnectIntegrations,
                     GetSelectedFiltersGpConnectIntegration,
                     x => x.Integrations != null,
-                    isInteropFilter);
+                    false);
             }
-            else if (!string.IsNullOrWhiteSpace(selectedInteroperabilityOptions) && selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.GpConnect).ToString(CultureInfo.InvariantCulture), StringComparison.OrdinalIgnoreCase))
+            else if (!string.IsNullOrWhiteSpace(selectedInteroperabilityOptions)
+                     && selectedInteroperabilityOptions.Contains(
+                         ((int)InteropIntegrationType.GpConnect).ToString(CultureInfo.InvariantCulture),
+                         StringComparison.OrdinalIgnoreCase))
             {
-                InteropGpConnectIntegrationType[] enumValues = (InteropGpConnectIntegrationType[])Enum.GetValues(typeof(InteropIm1IntegrationType));
+                InteropGpConnectIntegrationType[] enumValues =
+                    (InteropGpConnectIntegrationType[])Enum.GetValues(typeof(InteropIm1IntegrationType));
+
                 string gpConnectIntegrations = enumValues.Select(e => (int)e).ToFilterString();
-                isInteropFilter = true;
                 query = ApplyAdditionalFilterToQuery<InteropGpConnectIntegrationType>(
                     query,
                     gpConnectIntegrations,
                     GetSelectedFiltersGpConnectIntegration,
                     x => x.Integrations != null,
-                    isInteropFilter);
+                    true);
             }
 
             var totalNumberOfItems = await query.CountAsync();
             query = (options?.Sort ?? PageOptions.SortOptions.AtoZ) switch
             {
                 PageOptions.SortOptions.LastPublished => query.OrderByDescending(ci => ci.LastPublished)
-                                                                .ThenBy(ci => ci.Name),
+                    .ThenBy(ci => ci.Name),
                 PageOptions.SortOptions.ZToA => query.OrderByDescending(ci => ci.Name),
                 PageOptions.SortOptions.AtoZ or _ => query.OrderBy(ci => ci.Name),
             };
@@ -154,24 +168,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         public async Task<List<SearchFilterModel>> GetSolutionsBySearchTerm(string searchTerm, int maxToBringBack = 15)
         {
             var searchBySolutionNameQuery = dbContext.CatalogueItems.AsNoTracking()
-                .Where(ci =>
-                    ci.Name.Contains(searchTerm)
-                    && ci.CatalogueItemType == CatalogueItemType.Solution
-                    && (ci.PublishedStatus == PublicationStatus.Published || ci.PublishedStatus == PublicationStatus.InRemediation)
-                    && ci.Supplier.IsActive)
-                .Select(ci => new SearchFilterModel
-                {
-                    Title = ci.Name,
-                    Category = "Solution",
-                });
+                .Where(
+                    ci =>
+                        ci.Name.Contains(searchTerm)
+                        && ci.CatalogueItemType == CatalogueItemType.Solution
+                        && AllowedPublicationStatuses.Contains(ci.PublishedStatus)
+                        && ci.Supplier.IsActive)
+                .Select(ci => new SearchFilterModel { Title = ci.Name, Category = "Solution", });
 
             var searchBySupplierNameQuery = dbContext.Suppliers.AsNoTracking()
                 .Where(s => s.Name.Contains(searchTerm) && s.IsActive)
-                .Select(s => new SearchFilterModel
-                {
-                    Title = s.Name,
-                    Category = "Supplier",
-                });
+                .Select(s => new SearchFilterModel { Title = s.Name, Category = "Supplier", });
 
             return await searchBySolutionNameQuery
                 .Union(searchBySupplierNameQuery)
@@ -201,47 +208,49 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     continue;
                 }
 
-                var matchingTypes = getSelectedFilters(row.Solution, selectedFilterEnums);
+                var matchingTypes = getSelectedFilters(row.Solution, selectedFilterEnums).ToList();
 
-                if (matchingTypes.Count() < selectedFilterEnums?.Count)
+                if (!(matchingTypes.Count < selectedFilterEnums?.Count)) continue;
+
+                if (isInteropFilter)
                 {
-                    if (isInteropFilter)
-                    {
-                        bool shouldKeepRow = matchingTypes.Any(mt => selectedFilterEnums.Contains(mt));
+                    bool shouldKeepRow = matchingTypes.Any(mt => selectedFilterEnums.Contains(mt));
 
-                        if (!shouldKeepRow)
-                        {
-                            query = query.Where(ci => ci.Id != row.Id);
-                        }
-                    }
-                    else
+                    if (!shouldKeepRow)
                     {
                         query = query.Where(ci => ci.Id != row.Id);
                     }
+                }
+                else
+                {
+                    query = query.Where(ci => ci.Id != row.Id);
                 }
             }
 
             return query;
         }
 
-        private static (IQueryable<CatalogueItem> Query, List<CapabilitiesAndCountModel> Count) NonFilteredQuery(BuyingCatalogueDbContext dbContext) =>
+        private static (IQueryable<CatalogueItem> Query, List<CapabilitiesAndCountModel> Count) NonFilteredQuery(
+            BuyingCatalogueDbContext dbContext) =>
             (dbContext.CatalogueItems
                 .AsNoTracking()
                 .AsSplitQuery()
                 .Include(i => i.Solution)
-                    .ThenInclude(s => s.FrameworkSolutions)
-                    .ThenInclude(s => s.Framework)
+                .ThenInclude(s => s.FrameworkSolutions)
+                .ThenInclude(s => s.Framework)
                 .Include(i => i.Supplier)
                 .Include(i => i.CatalogueItemCapabilities)
-                    .ThenInclude(cic => cic.Capability)
-                .Where(i =>
-                i.CatalogueItemType == CatalogueItemType.Solution
-                && (i.PublishedStatus == PublicationStatus.Published || i.PublishedStatus == PublicationStatus.InRemediation)
-                && i.Supplier.IsActive), new List<CapabilitiesAndCountModel>());
+                .ThenInclude(cic => cic.Capability)
+                .Where(
+                    i =>
+                        i.CatalogueItemType == CatalogueItemType.Solution
+                        && AllowedPublicationStatuses.Contains(i.PublishedStatus)
+                        && i.Supplier.IsActive), new List<CapabilitiesAndCountModel>());
 
-        private static async Task<(IQueryable<CatalogueItem> Query, List<CapabilitiesAndCountModel> Count)> FilteredQuery(
-            BuyingCatalogueDbContext dbContext,
-            Dictionary<int, string[]> capabilitiesAndEpics)
+        private static async Task<(IQueryable<CatalogueItem> Query, List<CapabilitiesAndCountModel> Count)>
+            FilteredQuery(
+                BuyingCatalogueDbContext dbContext,
+                Dictionary<int, string[]> capabilitiesAndEpics)
         {
             capabilitiesAndEpics.Where(kv => kv.Value == null)
                 .ForEach(kv => capabilitiesAndEpics[kv.Key] = Array.Empty<string>());
@@ -249,45 +258,55 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             var capabilitiesAndCount = await dbContext.Capabilities
                 .AsNoTracking()
                 .Where(c => capabilitiesAndEpics.Keys.Contains(c.Id))
-                .Select(c => new CapabilitiesAndCountModel()
-                {
-                    CapabilityId = c.Id,
-                    CapabilityName = c.Name,
-                    CountOfEpics = capabilitiesAndEpics.GetValueOrDefault(c.Id, Array.Empty<string>()).Length,
-                })
+                .Select(
+                    c => new CapabilitiesAndCountModel()
+                    {
+                        CapabilityId = c.Id,
+                        CapabilityName = c.Name,
+                        CountOfEpics = capabilitiesAndEpics.GetValueOrDefault(c.Id, Array.Empty<string>()).Length,
+                    })
                 .ToListAsync();
 
-            var capabilityPredicate = CapabilitiesPredicate(capabilitiesAndEpics.Where(kv => (kv.Value?.Length ?? 0) == 0));
+            var capabilityPredicate =
+                CapabilitiesPredicate(capabilitiesAndEpics.Where(kv => (kv.Value?.Length ?? 0) == 0));
+
             var itemPredicate = PredicateBuilder.New<CatalogueItem>()
                 .Start(p => p.CatalogueItemCapabilities.Any(cic => capabilityPredicate.Invoke(cic)));
+
             capabilitiesAndEpics
                 .Where(kv => (kv.Value?.Length ?? 0) > 0)
-                .ForEach(kv =>
-                {
-                    var epicsPredicate = EpicsPredicate(kv.Key, kv.Value);
-                    itemPredicate = itemPredicate.Or(epicsPredicate);
-                });
+                .ForEach(
+                    kv =>
+                    {
+                        var epicsPredicate = EpicsPredicate(kv.Key, kv.Value);
+                        itemPredicate = itemPredicate.Or(epicsPredicate);
+                    });
 
             return (dbContext.CatalogueItems
-                .AsNoTracking()
-                .AsExpandable()
-                .AsSplitQuery()
-                .Include(i => i.Supplier)
-                .Include(i => i.Solution)
-                    .ThenInclude(s => s.AdditionalServices
-                        .Where(adit => itemPredicate.Invoke(adit.CatalogueItem)))
+                    .AsNoTracking()
+                    .AsExpandable()
+                    .AsSplitQuery()
+                    .Include(i => i.Supplier)
+                    .Include(i => i.Solution)
+                    .ThenInclude(
+                        s => s.AdditionalServices
+                            .Where(adit => AllowedPublicationStatuses.Contains(adit.CatalogueItem.PublishedStatus) || itemPredicate.Invoke(adit.CatalogueItem)))
                     .ThenInclude(adit => adit.CatalogueItem)
                     .ThenInclude(ci => ci.CatalogueItemCapabilities)
                     .ThenInclude(cic => cic.Capability)
-                .Include(i => i.Solution)
+                    .Include(i => i.Solution)
                     .ThenInclude(s => s.FrameworkSolutions)
                     .ThenInclude(fs => fs.Framework)
-                .Include(i => i.CatalogueItemCapabilities)
+                    .Include(i => i.CatalogueItemCapabilities)
                     .ThenInclude(cic => cic.Capability)
-                .Where(i =>
-                    i.CatalogueItemType == CatalogueItemType.Solution
-                    && itemPredicate.Invoke(i)
-                    && i.Solution.FrameworkSolutions.Select(f => f.Framework).Distinct().Any(f => !f.IsExpired)),
+                    .Where(
+                        i =>
+                            i.CatalogueItemType == CatalogueItemType.Solution
+                            && AllowedPublicationStatuses.Contains(i.PublishedStatus)
+                            && itemPredicate.Invoke(i)
+                            && i.Solution.FrameworkSolutions.Select(f => f.Framework)
+                                .Distinct()
+                                .Any(f => !f.IsExpired)),
                 capabilitiesAndCount);
         }
 
@@ -295,41 +314,54 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         {
             var epicsPredicate = PredicateBuilder.New<CatalogueItem>();
 
-            epics.ForEach(id =>
-            {
-                epicsPredicate = epicsPredicate.And(i => i.CatalogueItemEpics.Any(e => e.CapabilityId == capabilityId && e.EpicId == id));
-            });
+            epics.ForEach(
+                id =>
+                {
+                    epicsPredicate = epicsPredicate.And(
+                        i => i.CatalogueItemEpics.Any(e => e.CapabilityId == capabilityId && e.EpicId == id));
+                });
 
             return epicsPredicate;
         }
 
-        private static Expression<Func<CatalogueItemCapability, bool>> CapabilitiesPredicate(IEnumerable<KeyValuePair<int, string[]>> capabiltiesAndEpics)
+        private static Expression<Func<CatalogueItemCapability, bool>> CapabilitiesPredicate(
+            IEnumerable<KeyValuePair<int, string[]>> capabilitiesAndEpics)
         {
             var capabilityPredicate = PredicateBuilder.New<CatalogueItemCapability>();
-            capabiltiesAndEpics
+            capabilitiesAndEpics
                 .ForEach(kv => capabilityPredicate = capabilityPredicate.Or(c => c.CapabilityId == kv.Key));
             return capabilityPredicate;
         }
 
-        private static IEnumerable<ApplicationType> GetSelectedFilterApplication(Solution solution, IEnumerable<ApplicationType> selectedFilterEnums)
+        private static IEnumerable<ApplicationType> GetSelectedFilterApplication(
+            Solution solution,
+            IEnumerable<ApplicationType> selectedFilterEnums)
         {
             var applicationTypeDetail = solution.ApplicationTypeDetail;
             return selectedFilterEnums?.Where(t => applicationTypeDetail.HasApplicationType(t));
         }
 
-        private static IEnumerable<HostingType> GetSelectedFiltersHosting(Solution solution, IEnumerable<HostingType> selectedFilterEnums)
+        private static IEnumerable<HostingType> GetSelectedFiltersHosting(
+            Solution solution,
+            IEnumerable<HostingType> selectedFilterEnums)
         {
             return selectedFilterEnums?.Where(t => solution.Hosting.HasHostingType(t));
         }
 
-        private static IEnumerable<InteropIm1IntegrationType> GetSelectedFiltersIm1Integration(Solution solution, IEnumerable<InteropIm1IntegrationType> selectedFilterEnums)
+        private static IEnumerable<InteropIm1IntegrationType> GetSelectedFiltersIm1Integration(
+            Solution solution,
+            IEnumerable<InteropIm1IntegrationType> selectedFilterEnums)
         {
-            return selectedFilterEnums?.Where(t => solution.Integrations.Contains(t.GetName().Replace('_', ' '), StringComparison.OrdinalIgnoreCase));
+            return selectedFilterEnums?.Where(
+                t => solution.Integrations.Contains(t.GetName().Replace('_', ' '), StringComparison.OrdinalIgnoreCase));
         }
 
-        private static IEnumerable<InteropGpConnectIntegrationType> GetSelectedFiltersGpConnectIntegration(Solution solution, IEnumerable<InteropGpConnectIntegrationType> selectedFilterEnums)
+        private static IEnumerable<InteropGpConnectIntegrationType> GetSelectedFiltersGpConnectIntegration(
+            Solution solution,
+            IEnumerable<InteropGpConnectIntegrationType> selectedFilterEnums)
         {
-            return selectedFilterEnums?.Where(t => solution.Integrations.Contains(t.GetName().Replace('_', ' '), StringComparison.OrdinalIgnoreCase));
+            return selectedFilterEnums?.Where(
+                t => solution.Integrations.Contains(t.GetName().Replace('_', ' '), StringComparison.OrdinalIgnoreCase));
         }
     }
 }

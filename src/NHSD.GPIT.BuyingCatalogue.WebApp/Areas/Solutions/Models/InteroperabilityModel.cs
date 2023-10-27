@@ -25,6 +25,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             IM1IntegrationQualifiers = IM1Integrations.Select(i => i.Qualifier).Distinct().ToArray();
             GpConnectIntegrations = integrations.Where(i => i.IntegrationType.EqualsIgnoreCase("GP Connect")).ToArray();
             GpConnectIntegrationQualifiers = GpConnectIntegrations.Select(i => i.Qualifier).Distinct().ToArray();
+            NhsAppIntegrations = integrations.Where(i => i.IntegrationType.EqualsIgnoreCase(Framework.Constants.Interoperability.NhsAppIntegrationType)).ToArray();
+            NhsAppIntegrationTypes = NhsAppIntegrations?.SelectMany(i => i.NHSAppIntegrationTypes).Distinct().ToArray();
         }
 
         public Integration[] IM1Integrations { get; set; }
@@ -34,6 +36,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public Integration[] GpConnectIntegrations { get; set; }
 
         public string[] GpConnectIntegrationQualifiers { get; set; }
+
+        public Integration[] NhsAppIntegrations { get; set; }
+
+        public string[] NhsAppIntegrationTypes { get; set; }
 
         public string IntegrationsUrl { get; set; }
 

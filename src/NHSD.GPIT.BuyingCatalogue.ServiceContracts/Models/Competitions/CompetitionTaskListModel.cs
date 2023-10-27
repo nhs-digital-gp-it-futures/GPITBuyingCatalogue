@@ -37,7 +37,7 @@ public class CompetitionTaskListModel
 
     public TaskProgress NonPriceWeightings { get; private set; } = TaskProgress.CannotStart;
 
-    public TaskProgress ReviewCompetitionCriteria { get; private set; } = TaskProgress.CannotStart;
+    public TaskProgress ReviewCompetitionCriteria { get; set; } = TaskProgress.CannotStart;
 
     public TaskProgress CompareAndScoreSolutions { get; private set; } = TaskProgress.CannotStart;
 

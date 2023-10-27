@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.Models;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
@@ -17,13 +18,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
         public const string UrlName = "url";
         public const string HorizontalAlignName = "horizontal-align";
 
+        private const string SizeName = "size";
         private const string CardClass = "nhsuk-card";
         private const string CardMinHeightClass = "nhs-card__min-height";
         private const string CardClickableClass = "nhsuk-card--clickable";
         private const string CardContentClass = "nhsuk-card__content";
         private const string CardDescriptionClass = "nhsuk-card__description";
         private const string CardHeadingClass = "nhsuk-card__heading";
-        private const string CardHeadingMobileClass = "nhsuk-heading-s";
         private const string CardHeadingMinHeightClass = "card-title-min-height";
         private const string CardLinkClass = "nhsuk-card__link";
 
@@ -38,6 +39,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
 
         [HtmlAttributeName(HorizontalAlignName)]
         public bool HorizontalAlign { get; set; }
+
+        [HtmlAttributeName(SizeName)]
+        public HeadingSize HeadingSize { get; set; } = HeadingSize.Small;
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
@@ -76,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
             var heading = new TagBuilder(TagHelperConstants.HeaderTwo);
 
             heading.AddCssClass(CardHeadingClass);
-            heading.AddCssClass(CardHeadingMobileClass);
+            heading.AddCssClass(HeadingSize.ToHeading());
 
             if (string.IsNullOrWhiteSpace(Url))
             {

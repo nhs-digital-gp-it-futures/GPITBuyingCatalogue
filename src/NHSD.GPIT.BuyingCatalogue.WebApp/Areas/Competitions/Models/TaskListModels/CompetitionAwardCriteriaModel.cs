@@ -15,14 +15,27 @@ public class CompetitionAwardCriteriaModel : NavBaseModel
     {
         CompetitionName = competition.Name;
         IncludesNonPrice = competition.IncludesNonPrice;
+        HasReviewedCriteria = competition.HasReviewedCriteria;
     }
 
     public string CompetitionName { get; set; }
 
     public bool? IncludesNonPrice { get; set; }
 
+    public bool HasReviewedCriteria { get; set; }
+
     public List<SelectOption<bool>> AwardCriteriaOptions { get; set; } = new()
     {
         new("Price only", false), new("Price and non-price elements", true),
     };
+
+    public string ContinueButton => HasReviewedCriteria ? "Continue" : "Save and continue";
+
+    public override string Title => HasReviewedCriteria
+        ? "Award criteria"
+        : "What award criteria do you want to use for this competition?";
+
+    public override string Advice => HasReviewedCriteria
+        ? "This is the award criteria you selected to help you compare your shortlisted solutions."
+        : "Select if you want to use price only or price and non-price elements.";
 }

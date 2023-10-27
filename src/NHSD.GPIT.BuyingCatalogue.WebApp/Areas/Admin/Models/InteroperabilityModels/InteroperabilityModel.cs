@@ -31,6 +31,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
 
         public string[] GpConnectIntegrationQualifiers { get; set; }
 
+        public Integration[] NhsAppIntegrations { get; set; }
+
+        public string[] NhsAppIntegrationTypes { get; set; }
+
         [StringLength(1000)]
         public string Link { get; set; }
 
@@ -45,6 +49,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
             IM1IntegrationQualifiers = IM1Integrations.Select(i => i.Qualifier).Distinct().ToArray();
             GpConnectIntegrations = integrations.Where(i => i.IntegrationType.EqualsIgnoreCase(Framework.Constants.Interoperability.GpConnectIntegrationType)).ToArray();
             GpConnectIntegrationQualifiers = GpConnectIntegrations.Select(i => i.Qualifier).Distinct().ToArray();
+            NhsAppIntegrations = integrations.Where(i => i.IntegrationType.EqualsIgnoreCase(Framework.Constants.Interoperability.NhsAppIntegrationType)).ToArray();
+            NhsAppIntegrationTypes = NhsAppIntegrations?.SelectMany(i => i.NHSAppIntegrationTypes).Distinct().ToArray();
             Link = catalogueItem.Solution?.IntegrationsUrl;
             SolutionName = catalogueItem.Name;
             CatalogueItemId = catalogueItem.Id;

@@ -17,8 +17,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
         public void ReviewSolutionAndServices()
         {
             CommonActions.PageLoadedCorrectGetIndex(
-              typeof(OrderController),
-              nameof(OrderController.Order)).Should().BeTrue();
+                typeof(TaskListController),
+                nameof(TaskListController.TaskList)).Should().BeTrue();
+
+            CommonActions.ClickContinue();
         }
 
         public void AmendReviewSolutionAndServices()

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -735,6 +737,128 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .And.BeOfType<BadRequestObjectResult>();
 
             actual.As<BadRequestObjectResult>().Value.Should().Be($"No integration found for Id: {integrationId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AddNhsAppIntegration_ValidId_ReturnsViewWithExpectedModel(
+           Solution solution,
+           List<Integration> integrations,
+           [Frozen] Mock<ISolutionsService> mockService,
+           InteroperabilityController controller)
+        {
+            var catalogueItem = solution.CatalogueItem;
+            solution.Integrations = JsonSerializer.Serialize(integrations);
+
+            mockService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
+
+            var actual = (await controller.AddNhsAppIntegration(catalogueItem.Id)).As<ViewResult>();
+
+            mockService.Verify(s => s.GetSolutionThin(catalogueItem.Id));
+            actual.ViewName.Should().NotBeNull();
+            actual.ViewName.Should().Be("AddEditNhsAppIntegration");
+            actual.Model.Should().BeEquivalentTo(new AddEditNhsAppIntegrationModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AddNhsAppIntegration_InvalidId_ReturnsBadRequestResult(
+            CatalogueItemId catalogueItemId,
+            [Frozen] Mock<ISolutionsService> mockService,
+            InteroperabilityController controller)
+        {
+            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
+                .ReturnsAsync(default(CatalogueItem));
+
+            var actual = (await controller.AddNhsAppIntegration(catalogueItemId)).As<BadRequestObjectResult>();
+
+            actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AddNhsAppIntegration_WhenModelStateIsValid_ShouldSaveIntegrationAndRedirect(
+        CatalogueItemId solutionId,
+        AddEditNhsAppIntegrationModel model,
+        [Frozen] Mock<IInteroperabilityService> mockInteroperabilityService,
+        InteroperabilityController controller)
+        {
+            var result = await controller.AddNhsAppIntegration(solutionId, model) as RedirectToActionResult;
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(InteroperabilityController.Interoperability));
+            result.ControllerName.Should().BeNull();
+            result.RouteValues["solutionId"].Should().Be(solutionId);
+
+            mockInteroperabilityService.Verify(
+                s => s.AddIntegration(solutionId, It.IsAny<Integration>()),
+                Times.Once);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AddNhsAppIntegration_WhenModelStateIsNotValid_ShouldReturnView(
+        CatalogueItemId solutionId,
+        AddEditNhsAppIntegrationModel model,
+        InteroperabilityController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            var result = await controller.AddNhsAppIntegration(solutionId, model) as ViewResult;
+
+            result.Should().NotBeNull();
+            result.ViewName.Should().Be("AddEditNhsAppIntegration");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AddNhsAppIntegration_WhenIntegrationExists_ShouldEditIntegration(
+        CatalogueItemId solutionId,
+        AddEditNhsAppIntegrationModel model,
+        [Frozen] Mock<IInteroperabilityService> mockInteroperabilityService,
+        InteroperabilityController controller)
+        {
+            var existingIntegration = new Integration { IntegrationType = Framework.Constants.Interoperability.NhsAppIntegrationType };
+            mockInteroperabilityService.Setup(s => s.GetIntegrationById(solutionId, model.IntegrationId)).ReturnsAsync(existingIntegration);
+
+            var result = await controller.AddNhsAppIntegration(solutionId, model) as RedirectToActionResult;
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(InteroperabilityController.Interoperability));
+
+            mockInteroperabilityService.Verify(
+                s => s.EditIntegration(solutionId, model.IntegrationId, It.IsAny<Integration>()),
+                Times.Once);
+
+            mockInteroperabilityService.Verify(
+                s => s.AddIntegration(It.IsAny<CatalogueItemId>(), It.IsAny<Integration>()),
+                Times.Never);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AddNhsAppIntegration_WhenIntegrationDoesNotExist_ShouldAddIntegration(
+            CatalogueItemId solutionId,
+            AddEditNhsAppIntegrationModel model,
+            [Frozen] Mock<IInteroperabilityService> mockInteroperabilityService,
+            InteroperabilityController controller)
+        {
+            Integration nonExistingIntegration = null;
+            mockInteroperabilityService.Setup(s => s.GetIntegrationById(solutionId, model.IntegrationId)).ReturnsAsync(nonExistingIntegration);
+
+            var result = await controller.AddNhsAppIntegration(solutionId, model) as RedirectToActionResult;
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(InteroperabilityController.Interoperability));
+
+            mockInteroperabilityService.Verify(
+                s => s.EditIntegration(solutionId, model.IntegrationId, It.IsAny<Integration>()),
+                Times.Never);
+
+            mockInteroperabilityService.Verify(
+                s => s.AddIntegration(solutionId, It.IsAny<Integration>()),
+                Times.Once);
         }
     }
 }

@@ -4,7 +4,10 @@
 {
     <nhs-table label-text="Must requirements">
         <nhs-table-column>Requirement details</nhs-table-column>
-        <nhs-table-column>Action</nhs-table-column>
+        @if (!Model.HasReviewedCriteria)
+        {
+            <nhs-table-column>Action</nhs-table-column>
+        }
 
         @foreach (var mustRequirement in Model.MustRequirements)
         {
@@ -13,7 +16,10 @@
                     <p>@mustRequirement.Requirements</p>
                 </nhs-table-cell>
                 <nhs-table-cell>
-                    <a href="@Url.Action(nameof(CompetitionNonPriceElementsController.EditFeatureRequirement), typeof(CompetitionNonPriceElementsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, requirementId = mustRequirement.Id, Model.ReturnUrl, Model.SelectedNonPriceElements })">Edit</a>
+                    @if (!Model.HasReviewedCriteria)
+                    {
+                        <a href="@Url.Action(nameof(CompetitionNonPriceElementsController.EditFeatureRequirement), typeof(CompetitionNonPriceElementsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, requirementId = mustRequirement.Id, Model.ReturnUrl, Model.SelectedNonPriceElements })">Edit</a>
+                    }
                 </nhs-table-cell>
             </nhs-table-row-container>
         }
@@ -24,7 +30,10 @@
 {
     <nhs-table label-text="Should requirements">
         <nhs-table-column>Requirement details</nhs-table-column>
-        <nhs-table-column>Action</nhs-table-column>
+        @if (!Model.HasReviewedCriteria)
+        {
+            <nhs-table-column>Action</nhs-table-column>
+        }
 
         @foreach (var shouldRequirement in Model.ShouldRequirements)
         {
@@ -33,7 +42,10 @@
                     <p>@shouldRequirement.Requirements</p>
                 </nhs-table-cell>
                 <nhs-table-cell>
-                    <a href="@Url.Action(nameof(CompetitionNonPriceElementsController.EditFeatureRequirement), typeof(CompetitionNonPriceElementsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, requirementId = shouldRequirement.Id, Model.ReturnUrl, Model.SelectedNonPriceElements })">Edit</a>
+                    @if (!Model.HasReviewedCriteria)
+                    {
+                        <a href="@Url.Action(nameof(CompetitionNonPriceElementsController.EditFeatureRequirement), typeof(CompetitionNonPriceElementsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, requirementId = shouldRequirement.Id, Model.ReturnUrl, Model.SelectedNonPriceElements })">Edit</a>
+                    }
                 </nhs-table-cell>
             </nhs-table-row-container>
         }

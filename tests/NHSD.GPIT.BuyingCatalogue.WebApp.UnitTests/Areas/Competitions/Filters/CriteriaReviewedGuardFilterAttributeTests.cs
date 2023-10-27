@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -8,15 +7,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Filters;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Filters;
 
-public static class CompetitionSolutionSelectionFilterAttributeTests
+public static class CriteriaReviewedGuardFilterAttributeTests
 {
     [Theory]
     [CommonAutoData]
@@ -24,7 +24,7 @@ public static class CompetitionSolutionSelectionFilterAttributeTests
         string organisationId,
         ActionExecutingContext context,
         ActionExecutionDelegate next,
-        CompetitionSolutionSelectionFilterAttribute filter)
+        CriteriaReviewedGuardFilterAttribute filter)
     {
         context.ActionArguments.Clear();
         context.ActionArguments.Add(ParameterKeyConstants.InternalOrgIdKey, organisationId);
@@ -40,7 +40,7 @@ public static class CompetitionSolutionSelectionFilterAttributeTests
         int competitionId,
         ActionExecutingContext context,
         ActionExecutionDelegate next,
-        CompetitionSolutionSelectionFilterAttribute filter)
+        CriteriaReviewedGuardFilterAttribute filter)
     {
         context.ActionArguments.Clear();
         context.ActionArguments.Add(ParameterKeyConstants.CompetitionIdKey, competitionId.ToString());
@@ -57,7 +57,7 @@ public static class CompetitionSolutionSelectionFilterAttributeTests
         string competitionId,
         ActionExecutingContext context,
         ActionExecutionDelegate next,
-        CompetitionSolutionSelectionFilterAttribute filter)
+        CriteriaReviewedGuardFilterAttribute filter)
     {
         context.ActionArguments.Clear();
         context.ActionArguments.Add(ParameterKeyConstants.InternalOrgIdKey, organisationId);
@@ -70,17 +70,16 @@ public static class CompetitionSolutionSelectionFilterAttributeTests
 
     [Theory]
     [CommonAutoData]
-    public static async Task OnActionExecution_ShortlistAccepted_SetsResult(
+    public static async Task OnActionExecution_CompetitionCriteriaReviewed_SetsResult(
         Organisation organisation,
         Competition competition,
         ActionExecutingContext context,
         ActionExecutionDelegate next,
         [Frozen] Mock<ICompetitionsService> competitionsService,
-        CompetitionSolutionSelectionFilterAttribute filter)
+        CriteriaReviewedGuardFilterAttribute filter)
     {
         competition.Organisation = organisation;
-        competition.Completed = null;
-        competition.ShortlistAccepted = DateTime.UtcNow;
+        competition.HasReviewedCriteria = true;
 
         competitionsService.Setup(x => x.GetCompetition(organisation.InternalIdentifier, competition.Id))
             .ReturnsAsync(competition);
@@ -94,50 +93,25 @@ public static class CompetitionSolutionSelectionFilterAttributeTests
 
         await filter.OnActionExecutionAsync(context, next);
 
-        context.Result.Should().BeOfType<RedirectToActionResult>();
+        var result = context.Result.As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(CompetitionTaskListController.Index));
+        result.ControllerName.Should().Be(typeof(CompetitionTaskListController).ControllerName());
     }
 
     [Theory]
     [CommonAutoData]
-    public static async Task OnActionExecution_CompetitionCompleted_SetsResult(
+    public static async Task OnActionExecution_CompetitionCriteriaNotReviewed_Returns(
         Organisation organisation,
         Competition competition,
         ActionExecutingContext context,
         ActionExecutionDelegate next,
         [Frozen] Mock<ICompetitionsService> competitionsService,
-        CompetitionSolutionSelectionFilterAttribute filter)
+        CriteriaReviewedGuardFilterAttribute filter)
     {
-        competition.Organisation = organisation;
-        competition.Completed = DateTime.UtcNow;
-        competition.ShortlistAccepted = null;
+        competition.HasReviewedCriteria = false;
 
-        competitionsService.Setup(x => x.GetCompetition(organisation.InternalIdentifier, competition.Id))
-            .ReturnsAsync(competition);
-
-        context.ActionArguments.Add(ParameterKeyConstants.InternalOrgIdKey, organisation.InternalIdentifier);
-        context.ActionArguments.Add(ParameterKeyConstants.CompetitionIdKey, competition.Id.ToString());
-
-        context.HttpContext.RequestServices = new ServiceCollection()
-            .AddSingleton(competitionsService.Object)
-            .BuildServiceProvider();
-
-        await filter.OnActionExecutionAsync(context, next);
-
-        context.Result.Should().BeOfType<RedirectToActionResult>();
-    }
-
-    [Theory]
-    [CommonAutoData]
-    public static async Task OnActionExecution_CompetitionInProgress_Returns(
-        Organisation organisation,
-        Competition competition,
-        ActionExecutingContext context,
-        ActionExecutionDelegate next,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
-        CompetitionSolutionSelectionFilterAttribute filter)
-    {
-        competition.Completed = null;
-        competition.ShortlistAccepted = null;
         competitionsService.Setup(x => x.GetCompetition(organisation.InternalIdentifier, competition.Id))
             .ReturnsAsync(competition);
 

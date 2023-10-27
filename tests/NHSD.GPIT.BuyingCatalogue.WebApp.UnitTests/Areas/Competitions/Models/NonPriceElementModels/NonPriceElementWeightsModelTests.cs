@@ -35,10 +35,56 @@ public static class NonPriceElementWeightsModelTests
             Interoperability = nonPriceWeights.Interoperability,
             ServiceLevel = nonPriceWeights.ServiceLevel,
             Features = nonPriceWeights.Features,
+            HasReviewedCriteria = competition.HasReviewedCriteria,
         };
 
         var model = new NonPriceElementWeightsModel(competition);
 
-        model.Should().BeEquivalentTo(expectedModel);
+        model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.NonPriceWeights));
+    }
+
+    [Theory]
+    [CommonInlineAutoData(true, "Continue")]
+    [CommonInlineAutoData(false, "Save and continue")]
+    public static void ContinueButton_ReviewedCriteria_ExpectedContent(
+        bool hasReviewedCriteria,
+        string expectedContent,
+        Competition competition)
+    {
+        competition.HasReviewedCriteria = hasReviewedCriteria;
+
+        var model = new NonPriceElementWeightsModel(competition);
+
+        model.ContinueButton.Should().Be(expectedContent);
+    }
+
+    [Theory]
+    [CommonInlineAutoData(true, "Non-price weightings")]
+    [CommonInlineAutoData(false, "How would you like to weight your non-price elements for this competition?")]
+    public static void Title_ReviewedCriteria_ExpectedContent(
+        bool hasReviewedCriteria,
+        string expectedContent,
+        Competition competition)
+    {
+        competition.HasReviewedCriteria = hasReviewedCriteria;
+
+        var model = new NonPriceElementWeightsModel(competition);
+
+        model.Title.Should().Be(expectedContent);
+    }
+
+    [Theory]
+    [CommonInlineAutoData(true, "These are the non-price elements weightings you applied for this competition.")]
+    [CommonInlineAutoData(false, "Give your chosen non-price elements weightings based on how important they are to you.")]
+    public static void Advice_ReviewedCriteria_ExpectedContent(
+        bool hasReviewedCriteria,
+        string expectedContent,
+        Competition competition)
+    {
+        competition.HasReviewedCriteria = hasReviewedCriteria;
+
+        var model = new NonPriceElementWeightsModel(competition);
+
+        model.Advice.Should().Be(expectedContent);
     }
 }

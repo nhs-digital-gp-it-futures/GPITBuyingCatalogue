@@ -4,13 +4,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.DashboardModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 
@@ -123,14 +123,19 @@ public class CompetitionsDashboardController : Controller
     }
 
     [HttpGet("select-filter/{filterId:int}/save")]
-    public async Task<IActionResult> SaveCompetition(string internalOrgId, int filterId)
+    public async Task<IActionResult> SaveCompetition(string internalOrgId, int filterId, bool fromFilter = false)
     {
         _ = filterId;
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
         var model = new SaveCompetitionModel(internalOrgId, organisation.Name)
         {
-            BackLink = Url.Action(nameof(ReviewFilter), new { internalOrgId, filterId }),
+            BackLink = fromFilter == true ?
+                Url.Action(
+                    nameof(ManageFiltersController.FilterDetails),
+                    typeof(ManageFiltersController).ControllerName(),
+                    new { filterId, Area = typeof(ManageFiltersController).AreaName() }) :
+                Url.Action(nameof(ReviewFilter), new { internalOrgId, filterId }),
         };
 
         return View(model);
@@ -171,8 +176,8 @@ public class CompetitionsDashboardController : Controller
                 selectedFrameworkId: filter.FrameworkId,
                 selectedApplicationTypeIds: filter.ApplicationTypeIds.ToFilterString(),
                 selectedHostingTypeIds: filter.HostingTypeIds.ToFilterString(),
-                selectedIM1Integrations: filter.IM1Integrations.ToFilterString(),
-                selectedGPConnectIntegrations: filter.GPConnectIntegrations.ToFilterString(),
+                selectedIm1Integrations: filter.IM1Integrations.ToFilterString(),
+                selectedGpConnectIntegrations: filter.GPConnectIntegrations.ToFilterString(),
                 selectedInteroperabilityOptions: filter.InteroperabilityOptions.ToFilterString());
 
         var competitionSolutions = solutionsAndServices.CatalogueItems.Select(

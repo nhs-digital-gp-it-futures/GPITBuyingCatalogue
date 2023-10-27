@@ -1,7 +1,7 @@
 @model CompetitionAwardCriteriaModel
 
 @{
-    ViewBag.Title = "What award criteria do you want to use for this competition?";
+    ViewBag.Title = Model.Title;
 }
 
 <partial name="Partials/_BackLink" model="Model"/>
@@ -12,21 +12,32 @@
 
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.CompetitionName"
-                        advice="Select if you want to use price only or price and non-price elements."/>
+                        advice="@Model.Advice"/>
 
         <form method="post">
             <input type="hidden" asp-for="BackLink"/>
             <input type="hidden" asp-for="CompetitionName"/>
+            <input type="hidden" asp-for="HasReviewedCriteria"/>
 
-            <nhs-fieldset-form-label asp-for="@Model">
-                <nhs-radio-buttons asp-for="IncludesNonPrice"
-                                   values="Model.AwardCriteriaOptions.Cast<object>()"
-                                   value-name="Value"
-                                   display-name="Text"/>
-            </nhs-fieldset-form-label>
+            @if (Model.HasReviewedCriteria)
+            {
+                <input type="hidden" asp-for="IncludesNonPrice"/>
 
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Award criteria">@(Model.AwardCriteriaOptions.First(x => x.Value == Model.IncludesNonPrice.GetValueOrDefault())?.Text)</nhs-summary-list-row>
+                </nhs-summary-list>
+            }
+            else
+            {
+                <nhs-fieldset-form-label asp-for="@Model">
+                    <nhs-radio-buttons asp-for="IncludesNonPrice"
+                                       values="Model.AwardCriteriaOptions.Cast<object>()"
+                                       value-name="Value"
+                                       display-name="Text"/>
+                </nhs-fieldset-form-label>
+            }
             <br/>
-            <nhs-submit-button/>
+            <nhs-submit-button text="@Model.ContinueButton"/>
         </form>
 
     </div>

@@ -20,6 +20,8 @@ public class ReviewFilterModel : NavBaseModel
 
     public FilterIdsModel FilterIds { get; set; }
 
+    public string InternalOrgId { get; set; }
+
     public bool HasEpics() => FilterDetails.Capabilities.Any(x => x.Value.Any());
 
     public bool HasFramework() => !string.IsNullOrEmpty(FilterDetails.FrameworkName);
