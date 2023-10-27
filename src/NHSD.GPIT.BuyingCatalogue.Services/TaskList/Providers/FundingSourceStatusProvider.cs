@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
 
             var okToProgress = new[] { TaskProgress.Completed, TaskProgress.Amended };
 
-            if (!okToProgress.Contains(state.SolutionOrService)
+            if (!okToProgress.Contains(state.DeliveryDates)
                 && !anyFundingSourcesEntered)
             {
                 return TaskProgress.CannotStart;

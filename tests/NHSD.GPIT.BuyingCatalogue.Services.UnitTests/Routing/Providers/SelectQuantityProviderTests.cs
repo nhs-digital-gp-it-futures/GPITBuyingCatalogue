@@ -84,11 +84,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             {
                 InternalOrgId = internalOrgId,
                 CallOffId = callOffId,
-                CatalogueItemId = catalogueItemId,
             };
 
-            result.ActionName.Should().Be(Constants.Actions.AmendDeliveryDate);
-            result.ControllerName.Should().Be(Constants.Controllers.DeliveryDates);
+            result.ActionName.Should().Be(Constants.Actions.TaskList);
+            result.ControllerName.Should().Be(Constants.Controllers.TaskList);
             result.RouteValues.Should().BeEquivalentTo(expected);
         }
 
