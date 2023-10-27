@@ -53,6 +53,8 @@ public class SelectRecipientsModel : NavBaseModel
 
     public bool ShouldExpand { get; set; }
 
+    public int? SelectAtLeast { get; set; }
+
     public IEnumerable<ServiceRecipientModel> GetServiceRecipients()
     {
         return SubLocations
