@@ -136,27 +136,29 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                     {
                         CalculatePrice.SolutionPrice(solution);
                         CalculatePrice.ConfirmSolutionPrice(solution);
-
-                        //add quantity
+                        CalculatePrice.AddSolutionQuantity(solution);
                     }
-                    if (HasAdditionalService(solution))
+
+                    if (HasAdditionalService(competitionId,solution))
                     {
                         var competitionsolutionservices = GetCompetitionSolutionServices(competitionId, solution);
 
                         foreach (var servicdid in competitionsolutionservices)
                         {
-                            //if (HasTieredPrice(servicdid))
-                            //{
-                            //    //select price
-                            //    //add quantity
-                            //}
-                            //else
-                            //{
-                            //    //confirm price
-                            //    //add quantity
-                            //}
+                            if (HasTieredPrice(servicdid))
+                            {
+                                //select price
+                                //add quantity
+                            }
+                            else
+                            {
+                                CalculatePrice.ConfirmAdditionalServicePrice(servicdid);
+                                CalculatePrice.AddAdditionalServiceQuantity(servicdid);
+                            }
                         }
                     }
+
+                    CalculatePrice.ConfirmPriceAndQuantity();
                 }
             }
         }
@@ -207,16 +209,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             return competitionsolutions;
         }
 
-        private Competition GetCompetition(int competitionId)
-        {
-            using var dbContext = Factory.DbContext;
-
-            var competition = dbContext.Competitions
-                .Select(x => x.Id == competitionId);
-
-            return (Competition)competition;
-        }
-
         private IEnumerable<CatalogueItemId> GetCompetitionSolutionServices(int competitionId, CatalogueItemId solutionId)
         {
             using var dbContext = Factory.DbContext;
@@ -227,22 +219,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             return competitionservices.Select(x => x.ServiceId).ToList();
         }
 
-        private bool HasAdditionalService(CatalogueItemId solutionId)
+        private bool HasAdditionalService(int competitionId, CatalogueItemId solutionId)
         {
             using var dbContext = Factory.DbContext;
 
             var competitionservices = dbContext.CompetitionSolutions
-                .SelectMany(x => x.SolutionServices).Where(y => y.SolutionId == solutionId).ToList();
+                .SelectMany(x => x.SolutionServices).Where(y => y.CompetitionId == competitionId && y.SolutionId == solutionId).ToList();
             return competitionservices.Count() > 0;
-        }
-
-        private string GetSolutionName(CatalogueItemId solutionId)
-        {
-            using var dbContext = Factory.DbContext;
-
-            var name = dbContext.CatalogueItems
-                .FirstOrDefault(x => x.Id == solutionId)?.Name;
-            return name;
         }
 
         private bool HasTieredPrice(CatalogueItemId competitionservice)
@@ -252,15 +235,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             var prices = dbContext.CatalogueItems
                 .SelectMany(x => x.CataloguePrices).Where(y => y.CatalogueItemId == competitionservice);
             return prices.Count() > 1;
-        }
-
-        private int CatalogueItemPriceId(CatalogueItemId solutionorserice)
-        {
-            using var dbContext = Factory.DbContext;
-            var prices = dbContext.CatalogueItems
-                .SelectMany(x => x.CataloguePrices).Where(y => y.CatalogueItemId == solutionorserice);
-
-            return prices.Select(x => x.CataloguePriceId).FirstOrDefault();
         }
     }
 }
