@@ -90,7 +90,6 @@ public static class CompetitionNonPriceElementsServiceTests
 
         updatedCompetition.NonPriceElements.Implementation.Should().BeNull();
         updatedCompetition.NonPriceElements.NonPriceWeights.Should().BeNull();
-        updatedCompetition.HasReviewedCriteria.Should().BeFalse();
     }
 
     [Theory]
@@ -127,63 +126,6 @@ public static class CompetitionNonPriceElementsServiceTests
             .FirstOrDefaultAsync(x => x.OrganisationId == organisation.Id && x.Id == competition.Id);
 
         updatedCompetition.NonPriceElements.Should().BeNull();
-        updatedCompetition.HasReviewedCriteria.Should().BeFalse();
-    }
-
-    [Theory]
-    [InMemoryDbAutoData]
-    public static async Task DeleteNonPriceElement_WithSolutionScores_DeletesSolutionScoresForNonPriceElement(
-        Organisation organisation,
-        Competition competition,
-        Solution solution,
-        [Frozen] BuyingCatalogueDbContext dbContext,
-        CompetitionNonPriceElementsService service)
-    {
-        competition.NonPriceElements = new()
-        {
-            Implementation = new() { Requirements = "Requirements" },
-            Interoperability =
-                new List<InteroperabilityCriteria>
-                {
-                    new() { IntegrationType = InteropIntegrationType.Im1, Qualifier = "Test" },
-                },
-            NonPriceWeights = new() { Implementation = 50, Interoperability = 50, },
-        };
-
-        competition.CompetitionSolutions = new List<CompetitionSolution>
-        {
-            new(competition.Id, solution.CatalogueItemId)
-            {
-                IsShortlisted = true,
-                Scores = new List<SolutionScore>
-                {
-                    new(ScoreType.Implementation, 5), new(ScoreType.Interoperability, 4),
-                },
-            },
-        };
-
-        competition.HasReviewedCriteria = true;
-        competition.OrganisationId = organisation.Id;
-
-        dbContext.Organisations.Add(organisation);
-        dbContext.Competitions.Add(competition);
-        dbContext.Solutions.Add(solution);
-
-        await dbContext.SaveChangesAsync();
-
-        dbContext.ChangeTracker.Clear();
-
-        await service.DeleteNonPriceElement(
-            organisation.InternalIdentifier,
-            competition.Id,
-            NonPriceElement.Implementation);
-
-        var updatedCompetition = await dbContext.Competitions
-            .Include(x => x.CompetitionSolutions)
-            .ThenInclude(x => x.Scores)
-            .FirstOrDefaultAsync(x => x.OrganisationId == organisation.Id && x.Id == competition.Id);
-
-        updatedCompetition.CompetitionSolutions.Should().NotContain(x => x.HasScoreType(ScoreType.Implementation));
     }
 
     [Theory]
@@ -251,5 +193,69 @@ public static class CompetitionNonPriceElementsServiceTests
 
         updatedCompetition.NonPriceElements.Features.Should()
             .ContainSingle(x => x.Requirements == newRequirement && x.Compliance == newCompliance);
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task DeleteFeatureRequirement_LastNonPriceElement_DeletesNonPriceElements(
+        Organisation organisation,
+        Competition competition,
+        FeaturesCriteria featuresCriteria,
+        [Frozen] BuyingCatalogueDbContext dbContext,
+        CompetitionNonPriceElementsService service)
+    {
+        competition.OrganisationId = organisation.Id;
+        competition.NonPriceElements = new() { Features = new List<FeaturesCriteria> { featuresCriteria }, };
+
+        dbContext.Add(organisation);
+        dbContext.Add(competition);
+
+        await dbContext.SaveChangesAsync();
+        dbContext.ChangeTracker.Clear();
+
+        await service.DeleteFeatureRequirement(organisation.InternalIdentifier, competition.Id, featuresCriteria.Id);
+
+        var updatedCompetition = await dbContext.Competitions.Include(x => x.NonPriceElements)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == competition.Id);
+
+        updatedCompetition.Should().NotBeNull();
+        updatedCompetition.NonPriceElements.Should().BeNull();
+    }
+
+    [Theory]
+    [InMemoryDbAutoData]
+    public static async Task DeleteFeatureRequirement_LastNonPriceElement_DeletesFeature(
+        Organisation organisation,
+        Competition competition,
+        FeaturesCriteria featuresCriteria,
+        ImplementationCriteria implementationCriteria,
+        [Frozen] BuyingCatalogueDbContext dbContext,
+        CompetitionNonPriceElementsService service)
+    {
+        competition.OrganisationId = organisation.Id;
+        competition.NonPriceElements = new()
+        {
+            Features = new List<FeaturesCriteria> { featuresCriteria }, Implementation = implementationCriteria,
+        };
+
+        dbContext.Add(organisation);
+        dbContext.Add(competition);
+
+        await dbContext.SaveChangesAsync();
+        dbContext.ChangeTracker.Clear();
+
+        await service.DeleteFeatureRequirement(organisation.InternalIdentifier, competition.Id, featuresCriteria.Id);
+
+        var updatedCompetition = await dbContext.Competitions.Include(x => x.NonPriceElements.Features)
+            .Include(x => x.NonPriceElements.ServiceLevel)
+            .Include(x => x.NonPriceElements.Implementation)
+            .Include(x => x.NonPriceElements.Interoperability)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == competition.Id);
+
+        updatedCompetition.Should().NotBeNull();
+        updatedCompetition.NonPriceElements.Should().NotBeNull();
+        updatedCompetition.NonPriceElements.Features.Should().BeEmpty();
     }
 }

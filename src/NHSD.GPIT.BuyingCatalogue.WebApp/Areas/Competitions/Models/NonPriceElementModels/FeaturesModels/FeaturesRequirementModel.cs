@@ -16,6 +16,7 @@ public class FeaturesRequirementModel : NavBaseModel
     public FeaturesRequirementModel(
         Competition competition)
     {
+        CompetitionId = competition.Id;
         CompetitionName = competition.Name;
     }
 
@@ -29,11 +30,19 @@ public class FeaturesRequirementModel : NavBaseModel
         SelectedCompliance = featureCriteria.Compliance;
     }
 
+    public string InternalOrgId { get; set; }
+
+    public int CompetitionId { get; set; }
+
     public int? FeaturesCriteriaId { get; set; }
 
     public string CompetitionName { get; set; }
 
+    public string SelectedNonPriceElements { get; set; }
+
     public bool CanDelete => FeaturesCriteriaId is not null;
+
+    public bool? IsAdding { get; set; }
 
     [StringLength(1100)]
     public string Requirements { get; set; }

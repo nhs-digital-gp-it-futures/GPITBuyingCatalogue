@@ -33,18 +33,9 @@ public class CompetitionNonPriceElementsService : ICompetitionNonPriceElementsSe
 
         competition.NonPriceElements.RemoveNonPriceElement(nonPriceElement);
         competition.NonPriceElements.NonPriceWeights = null;
-        competition.HasReviewedCriteria = false;
 
         if (!competition.NonPriceElements.HasAnyNonPriceElements())
             competition.NonPriceElements = null;
-
-        foreach (var solution in competition.CompetitionSolutions)
-        {
-            var nonPriceElementScores =
-                solution.Scores.Where(x => x.ScoreType == nonPriceElement.AsScoreType()).ToList();
-
-            nonPriceElementScores.ForEach(x => solution.Scores.Remove(x));
-        }
 
         await dbContext.SaveChangesAsync();
     }
@@ -81,6 +72,26 @@ public class CompetitionNonPriceElementsService : ICompetitionNonPriceElementsSe
 
         featureCriteria.Requirements = requirements;
         featureCriteria.Compliance = compliance;
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task DeleteFeatureRequirement(string internalOrgId, int competitionId, int requirementId)
+    {
+        var competition = await dbContext.Competitions.Include(x => x.NonPriceElements.Features)
+            .Include(x => x.NonPriceElements.ServiceLevel)
+            .Include(x => x.NonPriceElements.Interoperability)
+            .Include(x => x.NonPriceElements.Implementation)
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+
+        var featureCriteria = competition.NonPriceElements.Features.FirstOrDefault(x => x.Id == requirementId);
+        if (featureCriteria is null) return;
+
+        competition.NonPriceElements.Features.Remove(featureCriteria);
+
+        if (!competition.NonPriceElements.HasAnyNonPriceElements())
+            competition.NonPriceElements = null;
 
         await dbContext.SaveChangesAsync();
     }

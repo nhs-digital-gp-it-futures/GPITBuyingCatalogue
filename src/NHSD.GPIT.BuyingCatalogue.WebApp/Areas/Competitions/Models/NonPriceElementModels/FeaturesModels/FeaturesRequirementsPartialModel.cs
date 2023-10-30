@@ -45,6 +45,8 @@ public class FeaturesRequirementsPartialModel
 
     public bool HasReviewedCriteria { get; set; }
 
+    public bool? IsAdding { get; set; }
+
     public List<FeaturesCriteria> MustRequirements { get; set; }
 
     public List<FeaturesCriteria> ShouldRequirements { get; set; }
