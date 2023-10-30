@@ -6,16 +6,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Competitions
     {
         public static By SolutionPriceEditLink => By.LinkText("Edit");
 
-        public static By EditCompetitionSolutionLink(string solutionId) => By.XPath($"//a[contains(@href, '/hub/"+solutionId+"')]");
+        public static By EditCompetitionSolutionLink(string catalogueSolutionId) => By.XPath($"//a[contains(@href, '/hub/"+catalogueSolutionId+"')]");
 
-        public static By EditCatalogueItemPriceIdLink(int cataloguesolutionservicepriceid) => By.XPath($"//a[contains(@href, 'select-price/{cataloguesolutionservicepriceid}/confirm')]");
+        public static By EditCatalogueItemPriceIdLink(int catalogueSolutionServicePriceId) => By.XPath($"//a[contains(@href, 'select-price/{catalogueSolutionServicePriceId}/confirm')]");
 
-        public static By EditCatalogueItemQuantityLink(string solutionId) => By.XPath($"//a[contains(@href, '/hub/"+solutionId+"/select-quantity')]");
+        public static By EditCatalogueItemQuantityLink(string catalogueSolutionId) => By.XPath($"//a[contains(@href, '/hub/"+catalogueSolutionId+"/select-quantity')]");
 
-        public static By EditAdditionalServiceEditPriceLink(int catalogueservicepriceid) => By.XPath($"//a[contains(@href, 'select-price/{catalogueservicepriceid}')]");
+        public static By EditAdditionalServiceEditPriceLink(int catalogueServicePriceId) => By.XPath($"//a[contains(@href, 'select-price/{catalogueServicePriceId}')]");
 
-        public static By EditAdditionalServiceWithTieredPriceEditLink(string additionalserviceid) => By.XPath($"//a[contains(@href, 'select-price?serviceId="+additionalserviceid+"')]");
+        public static By EditAdditionalServiceWithTieredPriceEditLink(string additionalServiceId) => By.XPath($"//a[contains(@href, 'select-price?serviceId="+additionalServiceId+"')]");
 
-        public static By EditAdditionalServiceQuantityLink(string additionalserviceid) => By.XPath($"//a[contains(@href, 'select-quantity?serviceId="+additionalserviceid+"')]");
+        public static By EditAdditionalServiceQuantityLink(string additionalServiceId) => By.XPath($"//a[contains(@href, 'select-quantity?serviceId="+additionalServiceId+"')]");
     }
 }

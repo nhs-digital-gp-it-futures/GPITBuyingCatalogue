@@ -19,17 +19,17 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo
 
         public void AddSolutionQuantity(CatalogueItemId solutionId)
         {
-            string solutionid = solutionId.ToString();
+            string catalogueSolutionId = solutionId.ToString();
 
-            CommonActions.ClickLinkElement(PriceAndQuantityObjects.EditCatalogueItemQuantityLink(solutionid));
+            CommonActions.ClickLinkElement(PriceAndQuantityObjects.EditCatalogueItemQuantityLink(catalogueSolutionId));
             AddQuantity();
         }
 
         public void AddAdditionalServiceQuantity(CatalogueItemId serviceid)
         {
-            string additionalserviceid = serviceid.ToString();
+            string additionalServiceId = serviceid.ToString();
 
-            CommonActions.ClickLinkElement(PriceAndQuantityObjects.EditAdditionalServiceQuantityLink(additionalserviceid));
+            CommonActions.ClickLinkElement(PriceAndQuantityObjects.EditAdditionalServiceQuantityLink(additionalServiceId));
             AddQuantity();
         }
 

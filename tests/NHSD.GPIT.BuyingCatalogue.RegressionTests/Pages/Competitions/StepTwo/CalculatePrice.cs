@@ -22,20 +22,20 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo
 
         public void SolutionPrice(CatalogueItemId solutionId)
         {
-            string solutionid = solutionId.ToString();
+            string catalogueSolutionId = solutionId.ToString();
 
-            CommonActions.ClickLinkElement(PriceAndQuantityObjects.EditCompetitionSolutionLink(solutionid));
+            CommonActions.ClickLinkElement(PriceAndQuantityObjects.EditCompetitionSolutionLink(catalogueSolutionId));
             CommonActions.LedeText().Should().Be("Provide information to calculate the price for this shortlisted solution and any Additional or Associated Services you’ll need.".FormatForComparison());
         }
 
         public void SelectPrice(CatalogueItemId solutionId)
         {
-            string solutionid = solutionId.ToString();
+            string catalogueSolutionId = solutionId.ToString();
 
-            CommonActions.ClickLinkElement(PriceAndQuantityObjects.EditCompetitionSolutionLink(solutionid));
+            CommonActions.ClickLinkElement(PriceAndQuantityObjects.EditCompetitionSolutionLink(catalogueSolutionId));
             CommonActions.LedeText().Should().Be("Provide information to calculate the price for this shortlisted solution and any Additional or Associated Services you’ll need.".FormatForComparison());
 
-            CommonActions.ClickLinkElement(PriceAndQuantityObjects.EditCompetitionSolutionLink(solutionid));
+            CommonActions.ClickLinkElement(PriceAndQuantityObjects.EditCompetitionSolutionLink(catalogueSolutionId));
 
             if (CommonActions.GetNumberOfRadioButtonsDisplayed() > 0)
             {
@@ -52,10 +52,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo
             }
         }
 
-        public void SelectAdditionalServicePrice(CatalogueItemId serviceid)
+        public void SelectAdditionalServicePrice(CatalogueItemId serviceId)
         {
-            string additionalserviceid = serviceid.ToString();
-            CommonActions.ClickLinkElement(PriceAndQuantityObjects.EditAdditionalServiceWithTieredPriceEditLink(additionalserviceid));
+            string additionalServiceId = serviceId.ToString();
+            CommonActions.ClickLinkElement(PriceAndQuantityObjects.EditAdditionalServiceWithTieredPriceEditLink(additionalServiceId));
 
             if (CommonActions.GetNumberOfRadioButtonsDisplayed() > 0)
             {
@@ -74,17 +74,17 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo
 
         public void ConfirmSolutionPrice(CatalogueItemId solutionId)
         {
-            int cataloguesolutionservicepriceid = GetCatalogueItemWithPrices(solutionId);
-            CommonActions.ClickLinkElement(PriceAndQuantityObjects.EditCatalogueItemPriceIdLink(cataloguesolutionservicepriceid));
+            int catalogueSolutionServicePriceId = GetCatalogueItemWithPrices(solutionId);
+            CommonActions.ClickLinkElement(PriceAndQuantityObjects.EditCatalogueItemPriceIdLink(catalogueSolutionServicePriceId));
             CommonActions.LedeText().Should().Be("Confirm the price you'll be paying. We've included the list price, but this can be changed if you’ve agreed a different rate with the supplier.".FormatForComparison());
 
             CommonActions.ClickSave();
         }
 
-        public void ConfirmAdditionalServicePrice(CatalogueItemId serviceid)
+        public void ConfirmAdditionalServicePrice(CatalogueItemId serviceId)
         {
-            int catalogueservicepriceid = GetCatalogueItemWithPrices(serviceid);
-            CommonActions.ClickLinkElement(PriceAndQuantityObjects.EditAdditionalServiceEditPriceLink(catalogueservicepriceid));
+            int catalogueServicePriceId = GetCatalogueItemWithPrices(serviceId);
+            CommonActions.ClickLinkElement(PriceAndQuantityObjects.EditAdditionalServiceEditPriceLink(catalogueServicePriceId));
             CommonActions.LedeText().Should().Be("Confirm the price you'll be paying. We've included the list price, but this can be changed if you’ve agreed a different rate with the supplier.".FormatForComparison());
 
             CommonActions.ClickSave();
