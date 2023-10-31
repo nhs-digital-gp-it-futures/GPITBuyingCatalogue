@@ -353,6 +353,7 @@ public class CompetitionNonPriceElementsController : Controller
             IsAdding = isAdding,
             InternalOrgId = internalOrgId,
             SelectedNonPriceElements = selectedNonPriceElements,
+            ReturnUrl = returnUrl,
         };
 
         return View("FeatureRequirement", model);
@@ -416,9 +417,9 @@ public class CompetitionNonPriceElementsController : Controller
 
         var model = new DeleteNonPriceElementModel(NonPriceElement.Features)
         {
-            BackLink = returnUrl ?? Url.Action(
-                nameof(FeatureRequirement),
-                new { internalOrgId, competitionId, selectedNonPriceElements, returnUrl }),
+            BackLink = Url.Action(
+                nameof(EditFeatureRequirement),
+                new { internalOrgId, competitionId, requirementId, selectedNonPriceElements, returnUrl }),
         };
 
         return View("Delete", model);

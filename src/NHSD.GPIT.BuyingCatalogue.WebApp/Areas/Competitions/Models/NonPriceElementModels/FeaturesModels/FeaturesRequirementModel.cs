@@ -44,6 +44,8 @@ public class FeaturesRequirementModel : NavBaseModel
 
     public bool? IsAdding { get; set; }
 
+    public string ReturnUrl { get; set; }
+
     [StringLength(1100)]
     public string Requirements { get; set; }
 

@@ -20,6 +20,7 @@
             <input type="hidden" asp-for="BackLink"/>
             <input type="hidden" asp-for="FeaturesCriteriaId"/>
             <input type="hidden" asp-for="IsAdding"/>
+            <input type="hidden" asp-for="ReturnUrl"/>
 
             <nhs-fieldset-form-label asp-for="AvailableComplianceLevels"
                                      label-text="Is this a must or should requirement?"
@@ -44,7 +45,7 @@
             @if (Model.CanDelete)
             {
                 <div>
-                    <vc:nhs-delete-button text="Delete this requirement" url="@Url.Action(nameof(CompetitionNonPriceElementsController.DeleteFeatureRequirement), typeof(CompetitionNonPriceElementsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, requirementId = Model.FeaturesCriteriaId, selectedNonPriceElements = Model.SelectedNonPriceElements, isAdding = Model.IsAdding })"/>
+                    <vc:nhs-delete-button text="Delete this requirement" url="@Url.Action(nameof(CompetitionNonPriceElementsController.DeleteFeatureRequirement), typeof(CompetitionNonPriceElementsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, requirementId = Model.FeaturesCriteriaId, selectedNonPriceElements = Model.SelectedNonPriceElements, isAdding = Model.IsAdding, ReturnUrl = Model.ReturnUrl })"/>
                 </div>
             }
         </form>
