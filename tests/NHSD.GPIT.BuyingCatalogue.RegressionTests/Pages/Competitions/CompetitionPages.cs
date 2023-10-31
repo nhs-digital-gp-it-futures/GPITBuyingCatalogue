@@ -171,20 +171,18 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
 
         private int CompetitionId()
         {
-            var competitionurl = Driver.Url.Split("/");
+            const string lookupString = "competitions/";
 
-            for (int i = 0; i < competitionurl.Length - 1; i++)
-            {
-                if (competitionurl[i] == "competitions" && i + 1 < competitionurl.Length)
-                {
-                    if (int.TryParse(competitionurl[i + 1], out int competitionId))
-                    {
-                        return competitionId;
-                    }
-                }
-            }
+            var url = Driver.Url.AsSpan();
+            var beginningIndex = url.IndexOf(lookupString, StringComparison.Ordinal) + lookupString.Length;
+            var trimmedUrl = url.Slice(beginningIndex);
+            var endIndex = trimmedUrl.IndexOf('/');
+            var competitionIdLength = endIndex != -1 ? endIndex : trimmedUrl.Length;
+            var competitionId = trimmedUrl.Slice(0, competitionIdLength).ToString();
 
-            throw new InvalidOperationException("Unable to extract competition Id from the competition URL");
+            if (!int.TryParse(competitionId, out var parsedCompetitionId)) throw new InvalidOperationException("Unable to extract competition Id from the competition URL");
+
+            return parsedCompetitionId;
         }
 
         private int GetFilterId(int competitionId)
