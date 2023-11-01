@@ -43,12 +43,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
             InternalOrgId = internalOrgId;
             CallOffId = callOffId;
-            AssociatedServicesOnly = rolledUpOrder.AssociatedServicesOnly;
+            AssociatedServicesOnly = rolledUpOrder.OrderType.AssociatedServicesOnly;
             CatalogueSolution = rolledUpOrder.GetSolution();
             AdditionalServices = rolledUpOrder.GetAdditionalServices();
             AssociatedServices = rolledUpOrder.GetAssociatedServices();
 
-            if (rolledUpOrder.AssociatedServicesOnly)
+            if (rolledUpOrder.OrderType.AssociatedServicesOnly)
             {
                 SolutionName = rolledUpOrder.AssociatedServicesOnlyDetails.Solution?.Name;
             }

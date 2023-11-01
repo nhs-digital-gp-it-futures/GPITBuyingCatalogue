@@ -51,7 +51,7 @@ public class SolutionPublicationStatusService : ISolutionPublicationStatusServic
     private async Task UnpublishStaleAssociatedServicesAsync(CatalogueItemId catalogueItemId)
     {
         var associatedServices =
-            await associatedServicesService.GetPublishedAssociatedServicesForSolution(catalogueItemId);
+            await associatedServicesService.GetPublishedAssociatedServicesForSolution(catalogueItemId, false);
 
         foreach (var associatedService in associatedServices)
         {

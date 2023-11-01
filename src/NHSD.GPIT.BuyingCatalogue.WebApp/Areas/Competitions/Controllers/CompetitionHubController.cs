@@ -89,7 +89,7 @@ public class CompetitionHubController : Controller
     {
         var competition = await competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competitionId);
         var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
-        var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(solutionId);
+        var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(solutionId, true);
 
         var model = new CompetitionSolutionHubModel(internalOrgId, solution, competition)
         {
@@ -424,7 +424,7 @@ public class CompetitionHubController : Controller
         if (solution == null) return BadRequest();
 
         var associatedServices =
-            await associatedServicesService.GetPublishedAssociatedServicesForSolution(solutionId);
+            await associatedServicesService.GetPublishedAssociatedServicesForSolution(solutionId, true);
 
         var existingServiceIds = solution.GetAssociatedServices()
             .Select(x => x.ServiceId)
@@ -550,7 +550,7 @@ public class CompetitionHubController : Controller
         var currentServices =
             solution.GetAssociatedServices().Select(x => x.Service);
 
-        var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(solutionId);
+        var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(solutionId, true);
 
         return new SelectServicesModel(currentServices, associatedServices)
         {
