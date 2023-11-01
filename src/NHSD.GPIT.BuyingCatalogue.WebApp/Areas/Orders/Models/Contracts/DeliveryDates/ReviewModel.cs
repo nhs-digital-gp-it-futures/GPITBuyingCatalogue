@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates
@@ -14,8 +15,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
         {
         }
 
-        public ReviewModel(Order order)
+        public ReviewModel(OrderWrapper orderWrapper)
         {
+            var order = orderWrapper.Order;
             InternalOrgId = order.OrderingParty.InternalIdentifier;
             CallOffId = order.CallOffId;
             DeliveryDate = order.DeliveryDate;
@@ -24,10 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
                 x => x.CatalogueItemId,
                 x => x.CatalogueItem.Name);
 
-            Recipients = order.OrderRecipients
-                .SelectMany(x => x.OrderItemRecipients)
-                .Select(x => new OrderItemRecipientModel(x))
-                .ToList();
+            OrderWrapper = orderWrapper;
 
             SolutionId = order.GetSolution()?.CatalogueItemId;
             AdditionalServiceIds = order.GetAdditionalServices().Select(x => x.CatalogueItemId).ToList();
@@ -46,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
 
         public List<CatalogueItemId> AssociatedServiceIds { get; set; } = new();
 
-        public List<OrderItemRecipientModel> Recipients { get; set; } = new();
+        public OrderWrapper OrderWrapper { get; set; } = new();
 
         public string OrderItemName(CatalogueItemId catalogueItemId) => orderItemNames.ContainsKey(catalogueItemId)
             ? orderItemNames[catalogueItemId]
@@ -54,8 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
 
         public List<DateTime?> OrderItemDates(CatalogueItemId catalogueItemId)
         {
-            return Recipients
-                .Where(x => x.CatalogueItemId == catalogueItemId)
+            return GetRecipientModel(catalogueItemId)
                 .Select(x => x.DeliveryDate)
                 .Distinct()
                 .OrderBy(x => x)
@@ -64,10 +62,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
 
         public List<(string OdsCode, string Name)> OrderItemRecipients(CatalogueItemId catalogueItemId, DateTime? deliveryDate)
         {
-            return Recipients
+            return GetRecipientModel(catalogueItemId)
                 .Where(x => x.CatalogueItemId == catalogueItemId && x.DeliveryDate == deliveryDate)
                 .OrderBy(x => x.RecipientName)
                 .Select(x => (x.OdsCode, x.RecipientName))
+                .ToList();
+        }
+
+        private List<OrderItemRecipientModel> GetRecipientModel(CatalogueItemId catalogueItemId)
+        {
+            return OrderWrapper.DetermineOrderRecipients(catalogueItemId)
+                .SelectMany(x => x.OrderItemRecipients)
+                .Select(x => new OrderItemRecipientModel(x))
                 .ToList();
         }
     }

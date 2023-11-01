@@ -590,7 +590,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             orderService.VerifyAll();
 
-            var expected = new ReviewModel(order);
+            var expected = new ReviewModel(new OrderWrapper(order));
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 
             actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));

@@ -36,7 +36,7 @@
             <hr/>
         }
         
-        @if (Model.SolutionId != null)
+        @if (Model.SolutionId != null && Model.OrderItemDates(Model.SolutionId.Value).Any())
         {
             var catalogueItemId = Model.SolutionId.Value;
             var itemName = Model.OrderItemName(catalogueItemId);

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
@@ -131,6 +132,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         {
             var orderWrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
 
+            // If there are no new recipients for this item (e.g. the original solution in a amend)
+            if (orderWrapper.DetermineOrderRecipients(catalogueItemId).IsNullOrEmpty())
+            {
+                var next = routingService.GetRoute(
+                    RoutingPoint.EditDeliveryDates,
+                    orderWrapper,
+                    new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
+
+                return RedirectToAction(next.ActionName, next.ControllerName, next.RouteValues);
+            }
+
             var route = routingService.GetRoute(
                 RoutingPoint.EditDeliveryDatesBackLink,
                 orderWrapper,
@@ -225,9 +237,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         [HttpGet("review")]
         public async Task<IActionResult> Review(string internalOrgId, CallOffId callOffId)
         {
-            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
+            var orderWrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
 
-            var model = new ReviewModel(order)
+            var model = new ReviewModel(orderWrapper)
             {
                 BackLink = Url.Action(
                     nameof(OrderController.Order),
