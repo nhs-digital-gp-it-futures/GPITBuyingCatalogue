@@ -143,11 +143,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
 
         private static decimal TotalCostByPlannedDelivery(this Order order, Order previous)
         {
-            return order.TotalOneOffCost(previous) + order?.OrderItems.Sum(i =>
-            {
-                var term = order.GetTerm();
-                return ((IPrice)i.OrderItemPrice).CalculateCostPerMonth(i.TotalQuantity(order.DetermineOrderRecipients(previous, i.CatalogueItemId))) * term;
-            }) ?? decimal.Zero;
+            return order.TotalOneOffCost(previous) + (order.TotalMonthlyCost(previous) * order.GetTerm());
         }
 
         private static decimal TotalCostForMaximumTerm(this Order order, Order previous)
