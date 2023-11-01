@@ -150,7 +150,13 @@
                 @if (i == Model.SolutionScores.Count - 1)
                 {
                     <br/>
-                    <nhs-submit-button/>
+                    <nhs-button-group>
+                        <nhs-submit-button/>
+
+                        <vc:nhs-secondary-button text="Download PDF (PDF)"
+                                             url="@Model.PdfUrl"
+                                             type="Secondary" />
+                    </nhs-button-group>
                 }
                 <hr/>
             }

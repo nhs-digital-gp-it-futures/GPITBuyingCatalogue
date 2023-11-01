@@ -45,6 +45,7 @@ public class CompetitionResultsController : Controller
                 typeof(CompetitionTaskListController).ControllerName(),
                 new { internalOrgId, competitionId }),
             InternalOrgId = internalOrgId,
+            PdfUrl = Url.Action(nameof(DownloadConfirmResults), new { internalOrgId, competitionId }),
         };
 
         return View(model);
@@ -103,6 +104,26 @@ public class CompetitionResultsController : Controller
         var result = await pdfService.Convert(new(pdfService.BaseUri(), uri));
 
         var fileName = $"{competition.Name}.pdf";
+        return File(result, "application/pdf", fileName);
+    }
+
+    [HttpGet("downloadConfirm")]
+    public async Task<IActionResult> DownloadConfirmResults(
+        string internalOrgId,
+        int competitionId)
+    {
+        var competition = await competitionsService.GetCompetitionForResults(internalOrgId, competitionId);
+
+        if (competition == null) return NotFound();
+
+        var uri = Url.Action(
+            nameof(CompetitionConfirmResultsPdfController.Index),
+            typeof(CompetitionConfirmResultsPdfController).ControllerName(),
+            new { internalOrgId, competitionId, });
+
+        var result = await pdfService.Convert(new(pdfService.BaseUri(), uri));
+
+        var fileName = "review-scoring.pdf";
         return File(result, "application/pdf", fileName);
     }
 }

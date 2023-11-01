@@ -31,6 +31,8 @@ public class FeaturesScoringModel : NavBaseModel
 
     public List<SolutionScoreModel> SolutionScores { get; set; }
 
+    public string PdfUrl { get; set; }
+
     public void WithSolutions(IEnumerable<CompetitionSolution> solutions, bool setScores = true)
     {
         SolutionScores = solutions.OrderBy(x => x.Solution.CatalogueItem.Name)
