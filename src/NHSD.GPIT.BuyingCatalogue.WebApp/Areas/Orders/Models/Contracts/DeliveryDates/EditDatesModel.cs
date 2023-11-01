@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
             Description = orderItem.CatalogueItem.Name;
 
             Recipients = orderWrapper.DetermineOrderRecipients(catalogueItemId)
-                .Select(x => new RecipientDateModel(x, x.GetDeliveryDateForItem(orderItem.CatalogueItemId), order.CommencementDate!.Value))
+                .Select(x => new RecipientDateModel(x, x.GetDeliveryDateForItem(orderItem.CatalogueItemId) ?? DeliveryDate, order.CommencementDate!.Value))
                 .ToArray();
         }
 

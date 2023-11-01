@@ -20,6 +20,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
     {
         [Theory]
         [InMemoryDbAutoData]
+        public static void CreateDeliveryDate_NullOrderService_ThrowsException(
+            [Frozen] BuyingCatalogueDbContext context)
+        {
+            Assert.Throws<ArgumentNullException>(() => new DeliveryDateService(null, context));
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static void CreateDeliveryDate_NullDBContext_ThrowsException(
+            [Frozen] IOrderService orderService)
+        {
+            Assert.Throws<ArgumentNullException>(() => new DeliveryDateService(orderService, null));
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
         public static async Task SetDeliveryDate_UpdatesDatabase(
             Order order,
             DateTime deliveryDate,

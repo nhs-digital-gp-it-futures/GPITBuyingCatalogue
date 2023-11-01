@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
 
         [Theory]
         [CommonAutoData]
-        public static void Get_NoDeliveryDatesEntered_ReturnsNotStarted(
+        public static void Get_NoDeliveryDatesEntered_ReturnsInProgress(
             Order order,
             DeliveryDatesStatusProvider service)
         {
@@ -80,6 +80,25 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             };
 
             order.OrderRecipients.ForEach(x => x.OrderItemRecipients.Clear());
+
+            var actual = service.Get(new OrderWrapper(order), state);
+
+            actual.Should().Be(TaskProgress.InProgress);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Get_NoDeliveryDatesOrDefaultDeliveryDateEntered_ReturnsNotStarted(
+            Order order,
+            DeliveryDatesStatusProvider service)
+        {
+            var state = new OrderProgress
+            {
+                SolutionOrService = TaskProgress.Completed,
+            };
+
+            order.OrderRecipients.ForEach(x => x.OrderItemRecipients.Clear());
+            order.DeliveryDate = null;
 
             var actual = service.Get(new OrderWrapper(order), state);
 
