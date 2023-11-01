@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 ? new List<CatalogueItem>()
                 : await additionalServicesService.GetAdditionalServicesBySolutionId(solutionId, publishedOnly: true);
 
-            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(solutionId);
+            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(solutionId, true);
 
             return View(new TaskListModel(internalOrgId, callOffId, wrapper)
             {

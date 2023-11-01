@@ -245,7 +245,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             model.CallOffId.Should().Be(order.CallOffId);
             model.InternalOrgId.Should().Be(internalOrgId);
-            model.OrderType.Should().Be(order.OrderTypeValue);
+            model.OrderType.Should().Be(order.OrderType);
 
             foreach (var supplier in suppliers)
             {
@@ -289,7 +289,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             model.CallOffId.Should().Be(order.CallOffId);
             model.InternalOrgId.Should().Be(internalOrgId);
-            model.OrderType.Should().Be(order.OrderTypeValue);
+            model.OrderType.Should().Be(order.OrderType);
 
             foreach (var supplier in suppliers)
             {

@@ -316,19 +316,25 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [InMemoryDbInlineAutoData(true)]
+        [InMemoryDbInlineAutoData(false)]
         public static async Task GetPublishedAssociatedServicesForSolution_NullCatalogueItemId_ReturnsEmptySet(
+            bool excludeMergersAndSplits,
             AssociatedServicesService service)
         {
-            var result = await service.GetPublishedAssociatedServicesForSolution(null);
+            var result = await service.GetPublishedAssociatedServicesForSolution(null, excludeMergersAndSplits);
 
             result.Should().NotBeNull();
             result.Should().BeEmpty();
         }
 
         [Theory]
-        [InMemoryDbAutoData]
-        public static async Task GetPublishedAssociatedServicesForSolution_ReturnsExpectedResult(
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.None)]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Merger)]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split)]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split | PracticeReorganisationTypeEnum.Merger)]
+        public static async Task GetPublishedAssociatedServicesForSolution_NotExcludingMergersAndSplits_WithReturnsExpectedResult(
+            PracticeReorganisationTypeEnum reorganisationType,
             [Frozen] BuyingCatalogueDbContext context,
             CatalogueItem solution,
             CatalogueItem associatedService,
@@ -339,15 +345,42 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
             associatedService.PublishedStatus = PublicationStatus.Published;
 
             context.CatalogueItems.AddRange(solution, associatedService);
-            context.AssociatedServices.Add(new AssociatedService { CatalogueItem = associatedService });
+            context.AssociatedServices.Add(new AssociatedService { CatalogueItem = associatedService, PracticeReorganisationType = reorganisationType });
             context.SupplierServiceAssociations.Add(new SupplierServiceAssociation(solution.Id, associatedService.Id));
 
             await context.SaveChangesAsync();
 
-            var result = await service.GetPublishedAssociatedServicesForSolution(solution.Id);
+            var result = await service.GetPublishedAssociatedServicesForSolution(solution.Id, false);
 
             result.Should().NotBeNull();
             result.Should().BeEquivalentTo(new[] { associatedService });
+        }
+
+        [Theory]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Merger)]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split)]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split | PracticeReorganisationTypeEnum.Merger)]
+        public static async Task GetPublishedAssociatedServicesForSolution_ExcludingMergersAndSplits_WithReturnsExpectedResult(
+            PracticeReorganisationTypeEnum reorganisationType,
+            [Frozen] BuyingCatalogueDbContext context,
+            CatalogueItem solution,
+            CatalogueItem associatedService,
+            AssociatedServicesService service)
+        {
+            solution.CatalogueItemType = CatalogueItemType.Solution;
+            associatedService.CatalogueItemType = CatalogueItemType.AssociatedService;
+            associatedService.PublishedStatus = PublicationStatus.Published;
+
+            context.CatalogueItems.AddRange(solution, associatedService);
+            context.AssociatedServices.Add(new AssociatedService { CatalogueItem = associatedService, PracticeReorganisationType = reorganisationType });
+            context.SupplierServiceAssociations.Add(new SupplierServiceAssociation(solution.Id, associatedService.Id));
+
+            await context.SaveChangesAsync();
+
+            var result = await service.GetPublishedAssociatedServicesForSolution(solution.Id, true);
+
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(Array.Empty<CatalogueItem>());
         }
     }
 }

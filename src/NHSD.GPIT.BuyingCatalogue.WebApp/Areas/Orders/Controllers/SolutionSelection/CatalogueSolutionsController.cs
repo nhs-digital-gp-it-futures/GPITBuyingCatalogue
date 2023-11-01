@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
-            if (order.AssociatedServicesOnly)
+            if (order.OrderType.AssociatedServicesOnly)
             {
                 return RedirectToAction(
                     nameof(SelectSolutionAssociatedServicesOnly),
@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     new { internalOrgId, callOffId });
             }
 
-            var model = await GetSelectModel(internalOrgId, callOffId);
+            var model = await GetSelectModel(internalOrgId, callOffId, includeAdditionalServices: true);
 
             return View(model);
         }
@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             if (!ModelState.IsValid)
             {
-                model = await GetSelectModel(internalOrgId, callOffId, model.SelectedCatalogueSolutionId);
+                model = await GetSelectModel(internalOrgId, callOffId, model.SelectedCatalogueSolutionId, includeAdditionalServices: true);
 
                 return View(model);
             }
@@ -143,7 +143,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
-            if (order.AssociatedServicesOnly)
+            if (order.OrderType.AssociatedServicesOnly)
             {
                 return RedirectToAction(
                     nameof(EditSolutionAssociatedServicesOnly),
@@ -420,7 +420,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
             var solutionId = order.GetSolutionId();
 
-            var solutions = order.AssociatedServicesOnly
+            var solutions = order.OrderType.AssociatedServicesOnly
                 ? await solutionsService.GetSupplierSolutionsWithAssociatedServices(order.SupplierId)
                 : await solutionsService.GetSupplierSolutions(order.SupplierId);
 

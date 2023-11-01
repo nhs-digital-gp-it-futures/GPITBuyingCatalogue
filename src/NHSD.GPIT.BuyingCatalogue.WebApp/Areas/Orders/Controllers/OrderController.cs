@@ -74,17 +74,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         }
 
         [HttpGet("~/order/organisation/{internalOrgId}/order/ready-to-start")]
-        public async Task<IActionResult> ReadyToStart(string internalOrgId, OrderTypeEnum orderType, OrderTriageValue? option = null)
+        public async Task<IActionResult> ReadyToStart(string internalOrgId, OrderType orderType, OrderTriageValue? option = null)
         {
-            var orderTypeValue = new OrderType(orderType);
             string backLink;
 
-            if (orderTypeValue.ToCatalogueItemType != CatalogueItemType.AssociatedService)
+            if (orderType.ToCatalogueItemType != CatalogueItemType.AssociatedService)
             {
                 backLink = Url.Action(
                     nameof(OrderTriageController.TriageSelection),
                     typeof(OrderTriageController).ControllerName(),
-                    new { internalOrgId, option, selected = true, orderType });
+                    new { internalOrgId, option, selected = true, orderType = orderType.Value });
             }
             else
             {
@@ -93,20 +92,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                     backLink = Url.Action(
                     nameof(OrderTriageController.SelectOrganisation),
                     typeof(OrderTriageController).ControllerName(),
-                    new { internalOrgId, orderType });
+                    new { internalOrgId, orderType = orderType.Value });
                 }
                 else
                 {
                     backLink = Url.Action(
                     nameof(OrderTriageController.DetermineAssociatedServiceType),
                     typeof(OrderTriageController).ControllerName(),
-                    new { internalOrgId, orderType });
+                    new { internalOrgId, orderType = orderType.Value });
                 }
             }
 
             var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
-            var model = new ReadyToStartModel(organisation)
+            var model = new ReadyToStartModel(organisation, orderType)
             {
                 Option = option,
                 BackLink = backLink,
@@ -299,7 +298,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             return order.OrderStatus switch
             {
                 OrderStatus.Terminated => "This contract has been terminated, but you can still view the details.",
-                OrderStatus.Completed when order.AssociatedServicesOnly => "This order has already been completed, but you can terminate the contract if needed.",
+                OrderStatus.Completed when order.OrderType.AssociatedServicesOnly => "This order has already been completed, but you can terminate the contract if needed.",
                 OrderStatus.Completed when latestOrder => "This order has already been completed, but you can amend or terminate the contract if needed.",
                 OrderStatus.Completed => "There is an amendment currently in progress for this contract.",
                 _ => orderWrapper.CanComplete()
