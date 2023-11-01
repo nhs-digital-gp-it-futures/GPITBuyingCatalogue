@@ -346,7 +346,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             orderService.VerifyAll();
 
-            var expected = new EditDatesModel(order, catalogueItemId);
+            var expected = new EditDatesModel(new OrderWrapper(order), catalogueItemId);
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 
             actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
