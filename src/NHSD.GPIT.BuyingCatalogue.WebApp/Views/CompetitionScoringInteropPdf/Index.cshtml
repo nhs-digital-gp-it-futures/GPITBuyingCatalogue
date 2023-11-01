@@ -47,6 +47,71 @@
             border-bottom: 1px solid lightgray;
             width: 100%;
         }
+
+        .nhsuk-table-responsive th {
+            font-size: 1em;
+            white-space: normal;
+        }
+
+        .nhsuk-table-responsive td {
+            font-size: 1em;
+        }
+
+        table {
+            -webkit-break-inside: auto;
+            break-inside: auto;
+        }
+
+        td, thead th {
+            border: 0;
+            padding-top: 4px;
+            padding-right: 12px;
+            padding-bottom: 0;
+        }
+
+        th {
+            white-space: nowrap;
+        }
+
+        tr {
+            -ms-break-after: auto;
+            -webkit-break-after: auto;
+            -webkit-break-inside: avoid;
+            break-after: auto;
+            break-inside: avoid;
+        }
+
+        tbody tr.alternating:nth-child(even) {
+            background-color: #F8F8F8;
+        }
+
+        tbody tr.totals {
+            background-color: #FFFFFF;
+        }
+
+        td:last-child {
+            padding-right: 0;
+        }
+
+        .total {
+            border-top: 1px solid lightgray;
+            font-weight: 600;
+        }
+
+        .numeric {
+            text-align: right;
+        }
+
+        .signature td {
+            padding-top: 20px;
+            width: auto;
+            border-bottom: 1px solid lightgray;
+        }
+
+            .signature td:first-child {
+                width: 20%;
+                border-bottom: none;
+            }
     </style>
 </head>
 <body class="nhsuk-bc-print">
@@ -112,20 +177,27 @@
                         {
                             foreach (var integration in solutionScoreModel.Im1Integrations)
                             {
-                                <nhs-table label-text="@integration.Qualifier">
-                                    <nhs-table-column>Provider or<br/>consumer</nhs-table-column>
-                                    <nhs-table-column>System<br />integrating with</nhs-table-column>
-                                    <nhs-table-column>Description</nhs-table-column>
+                                <h4>@integration.Qualifier</h4>
+                                <table>
+                                    <thead>
+                                        <tr class="alternating">
+                                            <th>Provider or<br/>consumer</th>
+                                            <th>System<br/>integrating with</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
 
-                                    @foreach (var specificIntegration in integration.Integrations.OrderBy(x => x.IsConsumer).ThenBy(x => x.IntegratesWith))
-                                    {
-                                        <nhs-table-row-container>
-                                            <nhs-table-cell>@(specificIntegration.IsConsumer ? "Consumer" : "Provider")</nhs-table-cell>
-                                            <nhs-table-cell>@specificIntegration.IntegratesWith</nhs-table-cell>
-                                            <nhs-table-cell>@specificIntegration.Description</nhs-table-cell>
-                                        </nhs-table-row-container>
-                                    }
-                                </nhs-table>
+                                    <tbody>
+                                        @foreach (var specificIntegration in integration.Integrations.OrderBy(x => x.IsConsumer).ThenBy(x => x.IntegratesWith))
+                                        {
+                                            <tr class="alternating">
+                                                <td>@(specificIntegration.IsConsumer ? "Consumer" : "Provider")</td>
+                                                <td>@specificIntegration.IntegratesWith</td>
+                                                <td>@specificIntegration.Description</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
                             }
                         }
 
@@ -139,18 +211,25 @@
                         {
                             foreach (var integration in solutionScoreModel.GpConnectIntegrations)
                             {
-                                <nhs-table label-text="@integration.Qualifier">
-                                    <nhs-table-column>Provider or consumer</nhs-table-column>
-                                    <nhs-table-column>Additional information</nhs-table-column>
+                                <h4>@integration.Qualifier</h4>
+                                <table>
+                                    <thead>
+                                        <tr class="alternating">
+                                            <th>Provider or consumer</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
 
-                                    @foreach (var specificIntegration in integration.Integrations.OrderBy(x => x.IsConsumer).ThenBy(x => x.IntegratesWith))
-                                    {
-                                        <nhs-table-row-container>
-                                            <nhs-table-cell>@(specificIntegration.IsConsumer ? "Consumer" : "Provider")</nhs-table-cell>
-                                            <nhs-table-cell>@specificIntegration.Description</nhs-table-cell>
-                                        </nhs-table-row-container>
-                                    }
-                                </nhs-table>
+                                    <tbody>
+                                        @foreach (var specificIntegration in integration.Integrations.OrderBy(x => x.IsConsumer).ThenBy(x => x.IntegratesWith))
+                                        {
+                                            <tr class="alternating">
+                                                <td>@(specificIntegration.IsConsumer ? "Consumer" : "Provider")</td>
+                                                <td>@specificIntegration.Description</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
                             }
                         }
 

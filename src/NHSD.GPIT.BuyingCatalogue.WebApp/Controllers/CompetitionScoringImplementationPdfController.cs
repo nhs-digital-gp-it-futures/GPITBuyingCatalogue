@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models.CompetitionFeaturesScoringPdf;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.CompetitionScoringImplementationPdf;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 

@@ -48,7 +48,7 @@ public static class CompetitionResultsControllerTests
         var result = (await controller.Confirm(internalOrgId, competition.Id)).As<ViewResult>();
 
         result.Should().NotBeNull();
-        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.PdfUrl));
     }
 
     [Theory]
@@ -130,5 +130,43 @@ public static class CompetitionResultsControllerTests
 
         result.Should().NotBeNull();
         result.FileDownloadName.Should().Be($"{competition.Name}.pdf");
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task DownloadConfirmResults_NullCompetition_ReturnsNotFoundResult(
+        string internalOrgId,
+        int competitionId,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionResultsController controller)
+    {
+        competitionsService.Setup(x => x.GetCompetitionForResults(internalOrgId, competitionId))
+            .ReturnsAsync((Competition)null);
+
+        var result = (await controller.DownloadConfirmResults(internalOrgId, competitionId)).As<NotFoundResult>();
+
+        result.Should().NotBeNull();
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task DownloadConfirmResults_ValidCompetition_ReturnsFileResult(
+        string internalOrgId,
+        Competition competition,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] Mock<IPdfService> pdfService,
+        CompetitionResultsController controller)
+    {
+        competitionsService.Setup(x => x.GetCompetitionForResults(internalOrgId, competition.Id))
+            .ReturnsAsync(competition);
+
+        pdfService
+            .Setup(s => s.BaseUri())
+            .Returns(new Uri("http://localhost"));
+
+        var result = (await controller.DownloadConfirmResults(internalOrgId, competition.Id)).As<FileResult>();
+
+        result.Should().NotBeNull();
+        result.FileDownloadName.Should().Be("review-scoring.pdf");
     }
 }

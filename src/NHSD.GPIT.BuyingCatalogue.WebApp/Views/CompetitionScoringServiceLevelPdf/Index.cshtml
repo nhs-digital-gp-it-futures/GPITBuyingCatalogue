@@ -45,6 +45,71 @@
             border-bottom: 1px solid lightgray;
             width: 100%;
         }
+
+        .nhsuk-table-responsive th {
+            font-size: 1em;
+            white-space: normal;
+        }
+
+        .nhsuk-table-responsive td {
+            font-size: 1em;
+        }
+
+        table {
+            -webkit-break-inside: auto;
+            break-inside: auto;
+        }
+
+        td, thead th {
+            border: 0;
+            padding-top: 4px;
+            padding-right: 12px;
+            padding-bottom: 0;
+        }
+
+        th {
+            white-space: nowrap;
+        }
+
+        tr {
+            -ms-break-after: auto;
+            -webkit-break-after: auto;
+            -webkit-break-inside: avoid;
+            break-after: auto;
+            break-inside: avoid;
+        }
+
+        tbody tr.alternating:nth-child(even) {
+            background-color: #F8F8F8;
+        }
+
+        tbody tr.totals {
+            background-color: #FFFFFF;
+        }
+
+        td:last-child {
+            padding-right: 0;
+        }
+
+        .total {
+            border-top: 1px solid lightgray;
+            font-weight: 600;
+        }
+
+        .numeric {
+            text-align: right;
+        }
+
+        .signature td {
+            padding-top: 20px;
+            width: auto;
+            border-bottom: 1px solid lightgray;
+        }
+
+            .signature td:first-child {
+                width: 20%;
+                border-bottom: none;
+            }
     </style>
 </head>
 <body class="nhsuk-bc-print">
@@ -78,20 +143,27 @@
                         <br />
                         <br />
 
-                        <nhs-table label-text="Service availability">
-                            <nhs-table-column>Category</nhs-table-column>
-                            <nhs-table-column>Time period</nhs-table-column>
-                            <nhs-table-column>Applicable days</nhs-table-column>
+                        <h4>Service availability</h4>
+                        <table>
+                            <thead>
+                                <tr class="alternating">
+                                    <th>Category</th>
+                                    <th>Time period</th>
+                                    <th>Applicable days</th>
+                                </tr>
+                            </thead>
 
-                            @foreach (var serviceLevelItem in solutionScoreModel.Solution.ServiceLevelAgreement.ServiceHours)
-                            {
-                                <nhs-table-row-container>
-                                    <nhs-table-cell>@serviceLevelItem.Category</nhs-table-cell>
-                                    <nhs-table-cell>@($"{serviceLevelItem.TimeFrom:HH:mm} - {serviceLevelItem.TimeUntil:HH:mm}")</nhs-table-cell>
-                                    <nhs-table-cell>@serviceLevelItem.ApplicableDays</nhs-table-cell>
-                                </nhs-table-row-container>
-                            }
-                        </nhs-table>
+                            <tbody>
+                                @foreach (var serviceLevelItem in solutionScoreModel.Solution.ServiceLevelAgreement.ServiceHours)
+                                {
+                                    <tr class="alternating">
+                                        <td>@serviceLevelItem.Category</td>
+                                        <td>@($"{serviceLevelItem.TimeFrom:HH:mm} - {serviceLevelItem.TimeUntil:HH:mm}")</td>
+                                        <td>@serviceLevelItem.ApplicableDays</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
 
                         <nhs-fieldset-form-label asp-for="@Model.SolutionScores[i]"
                                                  label-text="What score would you give this solution?"
