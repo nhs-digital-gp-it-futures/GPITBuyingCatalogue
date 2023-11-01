@@ -207,7 +207,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             order.OrderItems.ElementAt(0).CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
             mockAssociatedServicesService
-                .Setup(x => x.GetPublishedAssociatedServicesForSolution(order.OrderItems.First().CatalogueItemId))
+                .Setup(x => x.GetPublishedAssociatedServicesForSolution(order.OrderItems.First().CatalogueItemId, true))
                 .ReturnsAsync(associatedServices);
 
             var result = provider.Process(new OrderWrapper(order), new RouteValues(

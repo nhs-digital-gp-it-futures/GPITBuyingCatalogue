@@ -278,7 +278,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var wrapper = await orderService.GetOrderThin(callOffId, internalOrgId);
             var order = wrapper.Order;
-            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(order.GetSolutionId());
+            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(order.GetSolutionId(), true);
 
             var route = routingService.GetRoute(
                 RoutingPoint.SelectAssociatedServicesBackLink,
@@ -294,7 +294,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 InternalOrgId = internalOrgId,
                 AssociatedServicesOnly = order.AssociatedServicesOnly,
                 IsAmendment = wrapper.IsAmendment,
-                SolutionName = order.AssociatedServicesOnly
+                SolutionName = order.OrderType.AssociatedServicesOnly
                     ? wrapper.RolledUp.AssociatedServicesOnlyDetails.Solution.Name
                     : wrapper.RolledUp.GetSolution()?.CatalogueItem.Name,
             };

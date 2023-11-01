@@ -126,14 +126,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                     new { internalOrgId, callOffId });
             }
 
-            var suppliers = order.OrderType switch
+            var suppliers = order.OrderType.Value switch
             {
                 OrderTypeEnum.AssociatedServiceOther => await supplierService.GetAllSuppliersWithAssociatedServices(),
                 OrderTypeEnum.Solution => await supplierService.GetAllSuppliersFromBuyingCatalogue(),
-                _ => await supplierService.GetAllSuppliersWithAssociatedServices(order.OrderTypeValue.ToPracticeReorganisationType),
+                _ => await supplierService.GetAllSuppliersWithAssociatedServices(order.OrderType.ToPracticeReorganisationType),
             };
 
-            if (!order.OrderTypeValue.UsesSupplierSearch && suppliers.Count() == 1)
+            if (!order.OrderType.UsesSupplierSearch && suppliers.Count() == 1)
             {
                 return RedirectToAction(
                     nameof(ConfirmSupplier),
@@ -149,7 +149,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                     new { internalOrgId, callOffId }),
                 CallOffId = callOffId,
                 InternalOrgId = internalOrgId,
-                OrderType = order.OrderTypeValue,
+                OrderType = order.OrderType,
                 Suppliers = suppliers
                     .Select(x => new SelectOption<string>(x.Name, $"{x.Id}"))
                     .ToList(),

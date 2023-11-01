@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public bool CanBeTerminated => Order.OrderStatus == OrderStatus.Completed && !HasSubsequentRevisions;
 
-        public bool CanBeAmended => !Order.AssociatedServicesOnly && CanBeTerminated && !Order.ContractExpired;
+        public bool CanBeAmended => !Order.OrderType.AssociatedServicesOnly && CanBeTerminated && !Order.ContractExpired;
 
         public bool HasSubsequentRevisions { get; init; }
 

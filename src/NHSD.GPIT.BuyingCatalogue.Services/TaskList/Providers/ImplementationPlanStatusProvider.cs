@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
 
             var order = wrapper.Order;
 
-            if (order.AssociatedServicesOnly)
+            if (!order.OrderType.ImplementationPlanRequired)
             {
                 return TaskProgress.NotApplicable;
             }

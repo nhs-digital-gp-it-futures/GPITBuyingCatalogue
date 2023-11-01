@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
-public record OrderType(OrderTypeEnum Value)
+public record OrderType(OrderTypeEnum Value) : IParsable<OrderType>
 {
     public CatalogueItemType? ToCatalogueItemType
     {
@@ -42,5 +43,61 @@ public record OrderType(OrderTypeEnum Value)
                 _ => false,
             };
         }
+    }
+
+    public bool ImplementationPlanRequired
+    {
+        get
+        {
+            return Value switch
+            {
+                OrderTypeEnum.Solution => true,
+                _ => false,
+            };
+        }
+    }
+
+    public bool AssociatedServicesOnly
+    {
+        get
+        {
+            return Value switch
+            {
+                OrderTypeEnum.AssociatedServiceOther or OrderTypeEnum.AssociatedServiceMerger or OrderTypeEnum.AssociatedServiceSplit => true,
+                _ => false,
+            };
+        }
+    }
+
+    public static implicit operator OrderType(OrderTypeEnum o) => new(o);
+
+    public static OrderType Parse(string s, IFormatProvider provider)
+    {
+        if (!TryParse(s, provider, out var result))
+        {
+            throw new ArgumentException("Could not parse supplied value.", nameof(s));
+        }
+
+        return result;
+    }
+
+    public static bool TryParse([NotNullWhen(true)] string s, IFormatProvider provider, [MaybeNullWhen(false)] out OrderType result)
+    {
+        if (Enum.TryParse<OrderTypeEnum>(s, out var value))
+        {
+            try
+            {
+                result = value;
+                return true;
+            }
+            catch
+            {
+                result = OrderTypeEnum.Unknown;
+                return false;
+            }
+        }
+
+        result = OrderTypeEnum.Unknown;
+        return false;
     }
 }

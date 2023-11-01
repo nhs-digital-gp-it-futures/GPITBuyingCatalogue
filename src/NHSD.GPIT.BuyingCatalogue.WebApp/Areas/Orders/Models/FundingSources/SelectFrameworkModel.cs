@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
             IList<EntityFramework.Catalogue.Models.Framework> frameworks)
         {
             SelectedFramework = order.SelectedFrameworkId;
-            AssociatedServicesOnly = order.AssociatedServicesOnly;
+            AssociatedServicesOnly = order.OrderType.AssociatedServicesOnly;
 
             SetFrameworks(frameworks);
 
