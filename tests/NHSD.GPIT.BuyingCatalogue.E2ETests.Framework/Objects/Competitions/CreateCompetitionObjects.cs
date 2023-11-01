@@ -7,5 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Competitions
         public static By CompetitionName => By.Id("Name");
 
         public static By CompetitionDescription => By.Id("Description");
+
+        public static By CalculatePriceEditLink => By.LinkText("Edit");
     }
 }
