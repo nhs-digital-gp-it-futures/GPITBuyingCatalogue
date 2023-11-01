@@ -18,7 +18,7 @@
                 <nhs-table-cell>
                     @if (!Model.HasReviewedCriteria)
                     {
-                        <a href="@Url.Action(nameof(CompetitionNonPriceElementsController.EditFeatureRequirement), typeof(CompetitionNonPriceElementsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, requirementId = mustRequirement.Id, Model.ReturnUrl, Model.SelectedNonPriceElements })">Edit</a>
+                        <a href="@Url.Action(nameof(CompetitionNonPriceElementsController.EditFeatureRequirement), typeof(CompetitionNonPriceElementsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, requirementId = mustRequirement.Id, Model.ReturnUrl, Model.SelectedNonPriceElements, isAdding = Model.IsAdding })">Edit</a>
                     }
                 </nhs-table-cell>
             </nhs-table-row-container>
@@ -44,7 +44,7 @@
                 <nhs-table-cell>
                     @if (!Model.HasReviewedCriteria)
                     {
-                        <a href="@Url.Action(nameof(CompetitionNonPriceElementsController.EditFeatureRequirement), typeof(CompetitionNonPriceElementsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, requirementId = shouldRequirement.Id, Model.ReturnUrl, Model.SelectedNonPriceElements })">Edit</a>
+                        <a href="@Url.Action(nameof(CompetitionNonPriceElementsController.EditFeatureRequirement), typeof(CompetitionNonPriceElementsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, requirementId = shouldRequirement.Id, Model.ReturnUrl, Model.SelectedNonPriceElements, isAdding = Model.IsAdding })">Edit</a>
                     }
                 </nhs-table-cell>
             </nhs-table-row-container>

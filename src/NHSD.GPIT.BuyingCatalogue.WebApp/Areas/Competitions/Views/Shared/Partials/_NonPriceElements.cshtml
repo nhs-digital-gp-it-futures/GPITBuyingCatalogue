@@ -3,7 +3,7 @@
 @if (Model.NonPriceElements.Features.Any())
 {
     <nhs-card title="Features" size="Large">
-        <partial name="Partials/_FeaturesRequirements" model="@(new FeaturesRequirementsPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.NonPriceElements.Features, Model.HasReviewedCriteria) { ReturnUrl = Url.ActionLink() })"/>
+        <partial name="Partials/_FeaturesRequirements" model="@(new FeaturesRequirementsPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.NonPriceElements.Features, Model.HasReviewedCriteria) { ReturnUrl = Url.ActionLink(), IsAdding = false })"/>
 
         @if (!Model.IsReviewScreen && !Model.HasReviewedCriteria)
         {
