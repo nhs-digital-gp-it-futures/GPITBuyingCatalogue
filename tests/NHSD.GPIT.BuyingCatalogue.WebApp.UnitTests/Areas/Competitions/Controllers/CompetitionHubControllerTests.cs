@@ -82,7 +82,7 @@ public static class CompetitionHubControllerTests
             .ReturnsAsync(competition);
 
         associatedServicesService.Setup(
-            x => x.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId))
+            x => x.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId, true))
             .ReturnsAsync(associatedServices.Select(x => x.CatalogueItem).ToList());
 
         var expectedModel = new CompetitionSolutionHubModel(internalOrgId, competitionSolution, competition)
@@ -965,7 +965,7 @@ public static class CompetitionHubControllerTests
             .ReturnsAsync(competition);
 
         associatedServicesService.Setup(
-                x => x.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId))
+                x => x.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId, true))
             .ReturnsAsync(associatedServices.Select(x => x.CatalogueItem).ToList());
 
         var expectedModel = new SelectServicesModel(
@@ -1018,7 +1018,7 @@ public static class CompetitionHubControllerTests
             .ReturnsAsync(competition);
 
         associatedServicesService.Setup(
-                x => x.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId))
+                x => x.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId, true))
             .ReturnsAsync(associatedServices.Select(x => x.CatalogueItem).ToList());
 
         var model = new SelectServicesModel(
@@ -1068,7 +1068,7 @@ public static class CompetitionHubControllerTests
             .ReturnsAsync(competition);
 
         associatedServicesService.Setup(
-                x => x.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId))
+                x => x.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId, true))
             .ReturnsAsync(associatedServices.Select(x => x.CatalogueItem).ToList());
 
         var model = new SelectServicesModel(
@@ -1118,7 +1118,7 @@ public static class CompetitionHubControllerTests
             .ReturnsAsync(competition);
 
         associatedServicesService.Setup(
-                x => x.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId))
+                x => x.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId, true))
             .ReturnsAsync(associatedServices.Select(x => x.CatalogueItem).ToList());
 
         var model = new SelectServicesModel(
@@ -1189,7 +1189,7 @@ public static class CompetitionHubControllerTests
             .ReturnsAsync(competition);
 
         associatedServicesService.Setup(
-                x => x.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId))
+                x => x.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId, true))
             .ReturnsAsync(associatedServices.Concat(new[] { existingService }).Select(x => x.CatalogueItem).ToList());
 
         var expectedModel = new ConfirmServiceChangesModel(internalOrgId, CatalogueItemType.AssociatedService)
@@ -1307,7 +1307,7 @@ public static class CompetitionHubControllerTests
             .ReturnsAsync(competition);
 
         associatedServicesService.Setup(
-                x => x.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId))
+                x => x.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId, true))
             .ReturnsAsync(associatedServices.Concat(new[] { existingService }).Select(x => x.CatalogueItem).ToList());
 
         var result = (await controller.ConfirmAssociatedServiceChanges(

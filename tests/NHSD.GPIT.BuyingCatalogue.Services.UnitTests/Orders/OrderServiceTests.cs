@@ -211,7 +211,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             result.OrderNumber.Should().Be(order.OrderNumber);
             result.Revision.Should().Be(order.CallOffId.Revision + 1);
-            result.AssociatedServicesOnly.Should().Be(order.AssociatedServicesOnly);
+            result.OrderType.Should().Be(order.OrderType);
             result.CommencementDate.Should().Be(order.CommencementDate);
             result.Description.Should().Be(order.Description);
             result.InitialPeriod.Should().Be(order.InitialPeriod);

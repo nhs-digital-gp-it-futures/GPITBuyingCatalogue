@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             model.Order.Should().BeEquivalentTo(order);
             model.HasSubsequentRevisions.Should().Be(hasSubsequentRevisions);
             model.CanBeTerminated.Should().Be(order.OrderStatus == OrderStatus.Completed && !hasSubsequentRevisions);
-            model.CanBeAmended.Should().Be(!order.AssociatedServicesOnly && order.OrderStatus == OrderStatus.Completed && !hasSubsequentRevisions && !order.ContractExpired);
+            model.CanBeAmended.Should().Be(!order.OrderType.AssociatedServicesOnly && order.OrderStatus == OrderStatus.Completed && !hasSubsequentRevisions && !order.ContractExpired);
         }
 
         [Theory]
@@ -75,7 +75,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         {
             order.CommencementDate = contractExpired ? DateTime.Now.AddMonths(-2) : null;
             order.MaximumTerm = contractExpired ? 1 : null;
-            order.AssociatedServicesOnly = associatedServicesOnly;
+            order.OrderType = associatedServicesOnly
+                ? OrderTypeEnum.AssociatedServiceOther
+                : OrderTypeEnum.Solution;
             order.Completed = completed ? DateTime.Now : null;
             var model = new SummaryModel(new OrderWrapper(order), internalOrgId, hasSubsequentRevisions, new ImplementationPlan());
 

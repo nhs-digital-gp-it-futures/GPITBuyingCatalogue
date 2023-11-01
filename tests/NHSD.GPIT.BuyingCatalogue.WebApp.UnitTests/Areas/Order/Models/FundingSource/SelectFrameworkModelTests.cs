@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             model.Title.Should().Be(SelectFrameworkModel.TitleText);
             model.Caption.Should().Be($"Order {order.CallOffId}");
             model.SelectedFramework.Should().Be(order.SelectedFrameworkId);
-            model.AssociatedServicesOnly.Should().Be(order.AssociatedServicesOnly);
+            model.AssociatedServicesOnly.Should().Be(order.OrderType.AssociatedServicesOnly);
             model.Frameworks.Should().BeEquivalentTo(expectedList);
         }
 
