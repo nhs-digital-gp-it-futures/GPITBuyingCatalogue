@@ -29,7 +29,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .HasColumnName("OrderTriageValueId");
 
             builder.Property(o => o.OrderType)
-                .HasConversion<int>()
+                .HasConversion<int>(
+                    v => (int)v.Value,
+                    v => (OrderTypeEnum)v)
                 .HasColumnName("OrderTypeId");
 
             builder.Property<CatalogueItemId?>(nameof(AssociatedServicesOnlyDetails.SolutionId))

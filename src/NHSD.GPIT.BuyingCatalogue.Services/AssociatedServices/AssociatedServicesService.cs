@@ -49,18 +49,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
                 .ToListAsync();
         }
 
-        public async Task<List<CatalogueItem>> GetPublishedAssociatedServicesForSolution(CatalogueItemId? catalogueItemId)
+        public async Task<List<CatalogueItem>> GetPublishedAssociatedServicesForSolution(CatalogueItemId? catalogueItemId, bool excludeMergersAndSplits)
         {
             if (catalogueItemId is null)
             {
                 return Enumerable.Empty<CatalogueItem>().ToList();
             }
 
-            return await dbContext.SupplierServiceAssociations
+            var query = dbContext.SupplierServiceAssociations
                 .Include(x => x.AssociatedService)
                 .ThenInclude(x => x.CatalogueItem)
-                .Where(x => x.CatalogueItemId == catalogueItemId)
-                .Select(x => x.AssociatedService.CatalogueItem)
+                .Where(x => x.CatalogueItemId == catalogueItemId);
+
+            if (excludeMergersAndSplits)
+            {
+                query = query.Where(ssa => ssa.AssociatedService.PracticeReorganisationType == PracticeReorganisationTypeEnum.None);
+            }
+
+            return await query.Select(x => x.AssociatedService.CatalogueItem)
                 .Where(x => x.PublishedStatus == PublicationStatus.Published)
                 .OrderBy(x => x.Name)
                 .ToListAsync();

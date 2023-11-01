@@ -104,12 +104,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         }
 
         [HttpGet("proxy-select")]
-        public async Task<IActionResult> SelectOrganisation(string internalOrgId, OrderTypeEnum orderType, OrderTriageValue? option = null)
+        public async Task<IActionResult> SelectOrganisation(string internalOrgId, OrderType orderType, OrderTriageValue? option = null)
         {
             if (!User.GetSecondaryOrganisationInternalIdentifiers().Any())
-                return RedirectToAction(nameof(Index), new { internalOrgId, option, orderType });
-
-            var orderTypeValue = new OrderType(orderType);
+                return RedirectToAction(nameof(Index), new { internalOrgId, option, orderType = orderType.Value });
 
             var internalOrgIds = new List<string>(User.GetSecondaryOrganisationInternalIdentifiers())
             {
@@ -120,7 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 
             var model = new SelectOrganisationModel(internalOrgId, organisations)
             {
-                BackLink = Url.Action(nameof(OrderItemType), new { internalOrgId, orderType = orderTypeValue.ToCatalogueItemType }),
+                BackLink = Url.Action(nameof(OrderItemType), new { internalOrgId, orderType = orderType.ToCatalogueItemType }),
                 Title = "Which organisation are you ordering for?",
             };
 
@@ -143,19 +141,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string internalOrgId, OrderTypeEnum orderType, OrderTriageValue? option = null)
+        public async Task<IActionResult> Index(string internalOrgId, OrderType orderType, OrderTriageValue? option = null)
         {
-            var orderTypeValue = new OrderType(orderType);
-            if (orderTypeValue.ToCatalogueItemType == CatalogueItemType.AssociatedService)
-                return RedirectToAction(nameof(OrderController.ReadyToStart), typeof(OrderController).ControllerName(), new { internalOrgId, orderType = orderTypeValue.Value });
+            if (orderType.ToCatalogueItemType == CatalogueItemType.AssociatedService)
+                return RedirectToAction(nameof(OrderController.ReadyToStart), typeof(OrderController).ControllerName(), new { internalOrgId, orderType = orderType.Value });
 
             var backlink = User.GetSecondaryOrganisationInternalIdentifiers().Any()
                 ? Url.Action(
                     nameof(SelectOrganisation),
-                    new { internalOrgId, option, orderType = orderTypeValue.Value })
+                    new { internalOrgId, option, orderType = orderType.Value })
                 : Url.Action(
                     nameof(OrderItemType),
-                    new { internalOrgId, orderType = orderTypeValue.ToCatalogueItemType });
+                    new { internalOrgId, orderType = orderType.ToCatalogueItemType });
 
             var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
             var model = new OrderTriageModel(organisation)
