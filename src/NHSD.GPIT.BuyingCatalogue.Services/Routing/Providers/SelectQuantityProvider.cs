@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
 
             var associatedServices = associatedServicesService.GetPublishedAssociatedServicesForSolution(order.GetSolutionId()).Result;
 
-            if (associatedServices.Any())
+            if (associatedServices.Any() && !order.IsAmendment)
             {
                 return new RoutingResult
                 {
