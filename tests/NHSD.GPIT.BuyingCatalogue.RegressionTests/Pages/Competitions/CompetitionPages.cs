@@ -1,5 +1,6 @@
-﻿using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+﻿using Microsoft.CodeAnalysis;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOne;
@@ -7,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOne.Solut
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCreateCompetition;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCreateCompetition.SelectFilterType;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCreateCompetition.SolutionSelection;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
@@ -22,11 +24,16 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             StartCompetition = new StartCompetition(driver, commonActions);
             SelectSolutions = new SelectSolutions(driver, commonActions);
             SolutionShortlisted = new SolutionShortlisted(driver, commonActions);
-            CompetitionStepOne = new CompetitionStepOne(driver, commonActions);
             NoSolutionsFound = new NoSolutionsFound(driver, commonActions);
             SingleSolutionFound = new SingleSolutionFound(driver, commonActions);
             CompetitionTaskList = new CompetitionTaskList(driver, commonActions);
             CompetitionServiceRecipients = new CompetitionServiceRecipients(driver, commonActions);
+            ContractLength = new ContractLength(driver, commonActions);
+            AwardCriteria = new AwardCriteria(driver, commonActions);
+            CalculatePrice = new CalculatePrice(driver, commonActions, factory);
+            SolutionServicePrice = new SolutionServicePrice(driver, commonActions);
+            SolutionServiceQuantity = new SolutionServiceQuantity(driver, commonActions);
+
             Factory = factory;
             Driver = driver;
         }
@@ -47,8 +54,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
 
         internal SolutionShortlisted SolutionShortlisted { get; }
 
-        internal CompetitionStepOne CompetitionStepOne { get; }
-
         internal NoSolutionsFound NoSolutionsFound { get; }
 
         internal SingleSolutionFound SingleSolutionFound { get; }
@@ -56,6 +61,16 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
         internal CompetitionTaskList CompetitionTaskList { get; }
 
         internal CompetitionServiceRecipients CompetitionServiceRecipients { get; }
+
+        internal ContractLength ContractLength { get; }
+
+        internal AwardCriteria AwardCriteria { get; }
+
+        internal CalculatePrice CalculatePrice { get; }
+
+        internal SolutionServicePrice SolutionServicePrice { get; }
+
+        internal SolutionServiceQuantity SolutionServiceQuantity { get; }
 
         internal FilterType FilterType { get; set; }
 
@@ -69,6 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             ReviewFilter.ReviewYourFilter();
 
             StartCompetition.CreateCompetition(competitionName);
+            int competitionId = CompetitionId();
 
             if (filterType == FilterType.NoResults)
             {
@@ -80,7 +96,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             }
             else
             {
-                int competitionId = CompetitionId();
                 int filterId = GetFilterId(competitionId);
 
                 if (filterId == 2)
@@ -95,16 +110,79 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                 CompetitionTaskList.CompetitionServiceRecipientsTask();
                 CompetitionServiceRecipients.AddCompetitionServiceRecipient(recipients);
                 CompetitionServiceRecipients.ConfirmServiceReceipientsChanges();
+
+                CompetitionTaskList.ContractLengthTask();
+                ContractLength.CompetitionContractLength();
             }
+        }
+
+        public void StepTwoDefineCompetitionCriteria(CompetitionType competitiontype)
+        {
+            int competitionId = CompetitionId();
+
+            var competitionsolutions = GetCompetitionSolutions(competitionId);
+
+            CompetitionTaskList.AwardCriteriaTask();
+
+            if (competitiontype == CompetitionType.PriceOnly)
+            {
+                AwardCriteria.PriceONly();
+                CompetitionTaskList.CalculatePriceTask();
+
+                foreach (var solution in competitionsolutions)
+                {
+                    if (HasTieredPrice(solution))
+                    {
+                        CalculatePrice.SelectPrice(solution);
+                        SolutionServiceQuantity.AddSolutionQuantity(solution);
+                    }
+                    else
+                    {
+                        CalculatePrice.SolutionPrice(solution);
+                        CalculatePrice.ConfirmSolutionPrice(solution);
+                        SolutionServiceQuantity.AddSolutionQuantity(solution);
+                    }
+
+                    if (HasAdditionalService(competitionId,solution))
+                    {
+                        var competitionsolutionservices = GetCompetitionSolutionServices(competitionId, solution);
+
+                        foreach (var servicdid in competitionsolutionservices)
+                        {
+                            if (HasTieredPrice(servicdid))
+                            {
+                                CalculatePrice.SelectAdditionalServicePrice(servicdid);
+                                SolutionServiceQuantity.AddAdditionalServiceQuantity(servicdid);
+                            }
+                            else
+                            {
+                                CalculatePrice.ConfirmAdditionalServicePrice(servicdid);
+                                SolutionServiceQuantity.AddAdditionalServiceQuantity(servicdid);
+                            }
+                        }
+                    }
+
+                    CalculatePrice.ConfirmPriceAndQuantity();
+                }
+            }
+
+            CalculatePrice.ConfirmCalculatePrice();
         }
 
         private int CompetitionId()
         {
-            string url = Driver.Url;
-            int charPos = url.LastIndexOf("competitions/") + "competitions".Length + 1;
-            int charLength = url.IndexOf("/select-solutions") - charPos;
-            int competitionId = int.Parse(url.Substring(charPos, charLength));
-            return competitionId;
+            const string lookupString = "competitions/";
+
+            var url = Driver.Url.AsSpan();
+            var beginningIndex = url.IndexOf(lookupString, StringComparison.Ordinal) + lookupString.Length;
+            var trimmedUrl = url.Slice(beginningIndex);
+            var endIndex = trimmedUrl.IndexOf('/');
+            var competitionIdLength = endIndex != -1 ? endIndex : trimmedUrl.Length;
+            var competitionId = trimmedUrl.Slice(0, competitionIdLength).ToString();
+
+            if (!int.TryParse(competitionId, out var parsedCompetitionId)) throw new InvalidOperationException("Unable to extract competition Id from the competition URL");
+
+            return parsedCompetitionId;
         }
 
         private int GetFilterId(int competitionId)
@@ -121,6 +199,46 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
         private int NoOfSlutions()
         {
             return new Random().Next(2, 5);
+        }
+
+        private IEnumerable<CatalogueItemId> GetCompetitionSolutions(int competitionId)
+        {
+            using var dbContext = Factory.DbContext;
+
+            var solutions = dbContext.Competitions
+                .SelectMany(x => x.CompetitionSolutions).Where(y => y.CompetitionId == competitionId & y.IsShortlisted == true).ToList();
+
+            var competitionsolutions = solutions.Select(x => x.SolutionId).ToList();
+
+            return competitionsolutions;
+        }
+
+        private IEnumerable<CatalogueItemId> GetCompetitionSolutionServices(int competitionId, CatalogueItemId solutionId)
+        {
+            using var dbContext = Factory.DbContext;
+
+            var competitionservices = dbContext.CompetitionSolutions
+                .SelectMany(x => x.SolutionServices).Where(y => y.CompetitionId == competitionId && y.SolutionId == solutionId).ToList();
+
+            return competitionservices.Select(x => x.ServiceId).ToList();
+        }
+
+        private bool HasAdditionalService(int competitionId, CatalogueItemId solutionId)
+        {
+            using var dbContext = Factory.DbContext;
+
+            var competitionservices = dbContext.CompetitionSolutions
+                .SelectMany(x => x.SolutionServices).Where(y => y.CompetitionId == competitionId && y.SolutionId == solutionId).ToList();
+            return competitionservices.Count() > 0;
+        }
+
+        private bool HasTieredPrice(CatalogueItemId competitionservice)
+        {
+            using var dbContext = Factory.DbContext;
+
+            var prices = dbContext.CatalogueItems
+                .SelectMany(x => x.CataloguePrices).Where(y => y.CatalogueItemId == competitionservice);
+            return prices.Count() > 1;
         }
     }
 }

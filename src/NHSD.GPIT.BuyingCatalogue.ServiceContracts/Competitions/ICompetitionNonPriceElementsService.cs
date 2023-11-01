@@ -19,4 +19,9 @@ public interface ICompetitionNonPriceElementsService
         int requirementId,
         string requirements,
         CompliancyLevel compliance);
+
+    Task DeleteFeatureRequirement(
+        string internalOrgId,
+        int competitionId,
+        int requirementId);
 }
