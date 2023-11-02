@@ -7,6 +7,7 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Humanizer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
@@ -321,6 +322,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 
             actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_EditDates_NoServiceRecipients_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            OrderWrapper orderWrapper,
+            [Frozen] Mock<IOrderService> orderService,
+            DeliveryDatesController controller)
+        {
+            var order = orderWrapper.Order;
+            order.SetupCatalogueSolution();
+            order.OrderRecipients = new List<OrderRecipient>();
+
+            var catalogueItemId = order.OrderItems.First().CatalogueItemId;
+
+            orderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            var result = await controller.EditDates(internalOrgId, callOffId, catalogueItemId);
+
+            orderService.VerifyAll();
+
+            result.Should().BeOfType<RedirectToActionResult>();
         }
 
         [Theory]
