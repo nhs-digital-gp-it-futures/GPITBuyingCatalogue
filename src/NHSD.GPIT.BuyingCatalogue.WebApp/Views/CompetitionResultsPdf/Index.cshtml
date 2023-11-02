@@ -206,9 +206,12 @@
                     </div>
                 }
 
-                    <h2>Filter details</h2>
-                        <partial name="Partials/_FilterDetailsPartial" model="@Model.FilterDetailsModel" />
-                  
+                <div style="page-break-after: always"></div>
+
+                <h2>Filter details</h2>
+                   <partial name="Partials/_FilterDetailsPartial" model="@Model.FilterDetailsModel" />
+
+                <div style="page-break-after: always"></div>
 
                 @if (Model.IncludesNonPriceElements)
                 {
