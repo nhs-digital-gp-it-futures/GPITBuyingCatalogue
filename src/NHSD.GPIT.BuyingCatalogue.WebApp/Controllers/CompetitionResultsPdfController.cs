@@ -29,10 +29,11 @@ public class CompetitionResultsPdfController : Controller
         int competitionId)
     {
         var competition = await competitionsService.GetCompetitionForResults(internalOrgId, competitionId);
-        var nonShortlistedSolutions = await competitionsService.GetNonShortlistedSolutions(internalOrgId, competitionId);
-        var filterDetails = await filtersService.GetFilterDetails(competition.OrganisationId, competition.FilterId);
 
         if (competition == null) return NotFound();
+
+        var nonShortlistedSolutions = await competitionsService.GetNonShortlistedSolutions(internalOrgId, competitionId);
+        var filterDetails = await filtersService.GetFilterDetails(competition.OrganisationId, competition.FilterId);
 
         var model = new PdfViewResultsModel(competition, filterDetails, nonShortlistedSolutions);
 
