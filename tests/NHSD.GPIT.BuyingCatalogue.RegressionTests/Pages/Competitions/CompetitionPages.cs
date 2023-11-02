@@ -9,6 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCreate
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCreateCompetition.SelectFilterType;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCreateCompetition.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.View_Result;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
@@ -31,8 +32,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             ContractLength = new ContractLength(driver, commonActions);
             AwardCriteria = new AwardCriteria(driver, commonActions);
             CalculatePrice = new CalculatePrice(driver, commonActions, factory);
-            SolutionServicePrice = new SolutionServicePrice(driver, commonActions);
             SolutionServiceQuantity = new SolutionServiceQuantity(driver, commonActions);
+            ViewCompetitionResults = new ViewCompetitionResults(driver, commonActions);
 
             Factory = factory;
             Driver = driver;
@@ -68,9 +69,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
 
         internal CalculatePrice CalculatePrice { get; }
 
-        internal SolutionServicePrice SolutionServicePrice { get; }
-
         internal SolutionServiceQuantity SolutionServiceQuantity { get; }
+
+        internal ViewCompetitionResults ViewCompetitionResults { get; }
 
         internal FilterType FilterType { get; set; }
 
@@ -167,6 +168,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             }
 
             CalculatePrice.ConfirmCalculatePrice();
+        }
+
+        public void ViewResults()
+        {
+            CompetitionTaskList.ViewResult();
+            ViewCompetitionResults.ViewResults();
         }
 
         private int CompetitionId()
