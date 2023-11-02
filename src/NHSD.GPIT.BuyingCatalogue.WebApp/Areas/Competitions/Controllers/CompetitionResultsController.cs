@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -104,5 +105,38 @@ public class CompetitionResultsController : Controller
 
         var fileName = $"{competition.Name}.pdf";
         return File(result, "application/pdf", fileName);
+    }
+
+    [HttpGet("select-winning-solution")]
+    public async Task<IActionResult> SelectWinningSolution(
+        string internalOrgId,
+        int competitionId)
+    {
+        var competition = await competitionsService.GetCompetitionForResults(internalOrgId, competitionId);
+        var winningSolutions = competition.CompetitionSolutions.Where(x => x.IsWinningSolution);
+
+        var model = new SelectWinningSolutionModel(competition.Name, winningSolutions.Select(x => x.Solution))
+        {
+            BackLink = Url.Action(nameof(ViewResults), new { internalOrgId, competitionId }),
+        };
+
+        return View(model);
+    }
+
+    [HttpPost("select-winning-solution")]
+    public async Task<IActionResult> SelectWinningSolution(
+        string internalOrgId,
+        int competitionId,
+        SelectWinningSolutionModel model)
+    {
+        _ = internalOrgId;
+        _ = competitionId;
+
+        if (!ModelState.IsValid)
+            return View(model);
+
+        await Task.Yield();
+
+        return View(model);
     }
 }

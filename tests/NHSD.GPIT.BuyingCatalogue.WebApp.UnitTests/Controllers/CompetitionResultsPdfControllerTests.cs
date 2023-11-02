@@ -7,6 +7,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
@@ -46,17 +47,19 @@ public static class CompetitionResultsPdfControllerTests
     [Theory]
     [CommonAutoData]
     public static async Task Index_ValidCompetition_ReturnsViewWithModel(
-        string internalOrgId,
+        Organisation organisation,
         Competition competition,
         [Frozen] Mock<ICompetitionsService> competitionsService,
         CompetitionResultsPdfController controller)
     {
-        competitionsService.Setup(x => x.GetCompetitionForResults(internalOrgId, competition.Id))
+        competition.Organisation = organisation;
+
+        competitionsService.Setup(x => x.GetCompetitionForResults(organisation.InternalIdentifier, competition.Id))
             .ReturnsAsync(competition);
 
         var expectedModel = new PdfViewResultsModel(competition);
 
-        var result = (await controller.Index(internalOrgId, competition.Id)).As<ViewResult>();
+        var result = (await controller.Index(organisation.InternalIdentifier, competition.Id)).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should()
