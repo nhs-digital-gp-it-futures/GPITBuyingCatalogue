@@ -51,6 +51,11 @@
             font-size: 1em;
         }
 
+        h2 {
+            border-bottom: 1px solid lightgray;
+            width: 100%;
+        }
+
         h3 {
             border-bottom: 1px solid lightgray;
             width: 100%;
@@ -159,24 +164,24 @@
         <div class="nhsuk-grid-row">
             <div class="nhsuk-grid-column-full">
                 <nhs-page-title title="Competition results" caption="@Model.Competition.Name"/>
-                <pdf-summary-list>
-                    <pdf-summary-list-row label-text="Competition name">
+                    <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Competition name">
                         @Model.Competition.Name
-                    </pdf-summary-list-row>
-                    <pdf-summary-list-row label-text="Competition description">
+                    </nhs-summary-list-row>
+                    <nhs-summary-list-row label-text="Competition description">
                         @Model.Competition.Description
-                    </pdf-summary-list-row>
-                    <pdf-summary-list-row label-text="Competition created">
+                    </nhs-summary-list-row>
+                    <nhs-summary-list-row label-text="Competition created">
                         @Model.Competition.Created.ToString("d MMMM yyyy")
-                    </pdf-summary-list-row>
-                    <pdf-summary-list-row label-text="Competition completed">
+                    </nhs-summary-list-row>
+                    <nhs-summary-list-row label-text="Competition completed">
                         @Model.Competition.Completed.GetValueOrDefault().ToString("d MMMM yyyy")
-                    </pdf-summary-list-row>
-                    <pdf-summary-list-row label-text="Organisation details">
+                    </nhs-summary-list-row>
+                    <nhs-summary-list-row label-text="Organisation details">
                         @Model.Competition.Organisation.Name (@Model.Competition.Organisation.ExternalIdentifier)<br/>
                         <vc:nhs-address address="@Model.Competition.Organisation.Address"/>
-                    </pdf-summary-list-row>
-                </pdf-summary-list>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
 
                 <div style="page-break-after: always"></div>
 
@@ -201,23 +206,27 @@
                     </div>
                 }
 
+                    <h2>Filter details</h2>
+                        <partial name="Partials/_FilterDetailsPartial" model="@Model.FilterDetailsModel" />
+                  
+
                 @if (Model.IncludesNonPriceElements)
                 {
                     <h2>Award criteria weightings</h2>
 
                     <h3>Award criteria weighting</h3>
-                    <pdf-summary-list>
-                        <pdf-summary-list-row label-text="Price">@Model.AwardCriteriaWeightings.Price%</pdf-summary-list-row>
-                        <pdf-summary-list-row label-text="Non-price">@Model.AwardCriteriaWeightings.NonPrice%</pdf-summary-list-row>
-                    </pdf-summary-list>
+                    <nhs-summary-list>
+                        <nhs-summary-list-row label-text="Price">@Model.AwardCriteriaWeightings.Price%</nhs-summary-list-row>
+                        <nhs-summary-list-row label-text="Non-price">@Model.AwardCriteriaWeightings.NonPrice%</nhs-summary-list-row>
+                    </nhs-summary-list>
 
                     <h3>Non-price weighting</h3>
-                    <pdf-summary-list>
+                    <nhs-summary-list>
                         @foreach (var nonPriceElementWeighting in Model.NonPriceElementWeightings)
                         {
-                            <pdf-summary-list-row label-text="@nonPriceElementWeighting.Key.EnumMemberName()">@nonPriceElementWeighting.Value%</pdf-summary-list-row>
+                            <nhs-summary-list-row label-text="@nonPriceElementWeighting.Key.EnumMemberName()">@nonPriceElementWeighting.Value%</nhs-summary-list-row>
                         }
-                    </pdf-summary-list>
+                    </nhs-summary-list>
                 }
             </div>
         </div>

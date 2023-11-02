@@ -103,7 +103,7 @@ public class CompetitionResultsController : Controller
 
         var result = await pdfService.Convert(new(pdfService.BaseUri(), uri));
 
-        var fileName = $"{competition.Name}.pdf";
+        var fileName = "competition-results.pdf";
         return File(result, "application/pdf", fileName);
     }
 
