@@ -247,5 +247,16 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                 .SelectMany(x => x.CataloguePrices).Where(y => y.CatalogueItemId == competitionservice);
             return prices.Count() > 1;
         }
+
+        private (int PriceWeighting,int NonPriceWeighting) GenerateWeightings()
+        {
+            Random random = new Random();
+            int priceWeighting = random.Next(13, 19) * 5;
+            int maxWeighting = 100 - priceWeighting;
+            int nonPriceWeighting = maxWeighting;
+
+            return (priceWeighting, nonPriceWeighting);
+        }
+
     }
 }
