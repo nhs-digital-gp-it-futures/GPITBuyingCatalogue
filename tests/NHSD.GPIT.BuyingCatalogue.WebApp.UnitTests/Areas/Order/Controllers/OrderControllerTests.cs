@@ -404,6 +404,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
 
         [Theory]
         [CommonAutoData]
+        public static async Task Post_AmendOrder_ContractExpired_Redirects(
+            string internalOrgId,
+            CallOffId callOffId,
+            AmendOrderModel model,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> orderService,
+            OrderController controller)
+        {
+            order.CommencementDate = DateTime.Now.AddMonths(-6);
+            order.MaximumTerm = 1;
+
+            orderService
+                .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            orderService.Setup(x => x.HasSubsequentRevisions(callOffId)).ReturnsAsync(false);
+
+            var result = (await controller.AmendOrder(internalOrgId, callOffId, model)).As<RedirectToActionResult>();
+
+            orderService.VerifyAll();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(DashboardController.Organisation));
+            result.ControllerName.Should().Be(typeof(DashboardController).ControllerName());
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static async Task Post_AmendOrder_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -412,6 +440,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
             [Frozen] Mock<IOrderService> orderService,
             OrderController controller)
         {
+            order.CommencementDate = DateTime.Now;
+            order.MaximumTerm = 6;
+
+            orderService
+                .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
             orderService
                 .Setup(x => x.AmendOrder(internalOrgId, callOffId))
                 .ReturnsAsync(order);
@@ -508,6 +543,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
             OrderController.GetAdvice(new OrderWrapper(order), true)
                 .Should()
                 .Be("This contract has been terminated, but you can still view the details.");
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void GetAdvice_ExpiredOrder_ReturnsExpectedAdvice(
+            EntityFramework.Ordering.Models.Order order)
+        {
+            order.Completed = DateTime.UtcNow.AddMonths(-5);
+            order.CommencementDate = DateTime.Now.AddMonths(-6);
+            order.MaximumTerm = 2;
+
+            OrderController.GetAdvice(new OrderWrapper(order), true)
+                .Should()
+                .Be($"This order expired on {order.EndDate.DisplayValue}, but you can still view the details.");
         }
 
         [Theory]

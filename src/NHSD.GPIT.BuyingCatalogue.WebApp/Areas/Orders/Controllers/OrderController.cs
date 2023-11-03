@@ -232,8 +232,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         [HttpPost("amend")]
         public async Task<IActionResult> AmendOrder(string internalOrgId, CallOffId callOffId, AmendOrderModel model)
         {
+            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
             var hasSubsequentRevisions = await orderService.HasSubsequentRevisions(callOffId);
-            if (hasSubsequentRevisions)
+            if (hasSubsequentRevisions || order.ContractExpired)
             {
                 return RedirectToAction(
                     nameof(DashboardController.Organisation),
@@ -293,6 +294,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             return order.OrderStatus switch
             {
                 OrderStatus.Terminated => "This contract has been terminated, but you can still view the details.",
+                OrderStatus.Completed when order.ContractExpired => $"This order expired on {order.EndDate.DisplayValue}, but you can still view the details.",
                 OrderStatus.Completed when order.AssociatedServicesOnly => "This order has already been completed, but you can terminate the contract if needed.",
                 OrderStatus.Completed when latestOrder => "This order has already been completed, but you can amend or terminate the contract if needed.",
                 OrderStatus.Completed => "There is an amendment currently in progress for this contract.",
