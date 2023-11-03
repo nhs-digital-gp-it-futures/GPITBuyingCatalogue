@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 
@@ -32,4 +33,6 @@ public class CompetitionDashboardItem
     public DateTime? ShortlistAccepted { get; set; }
 
     public TaskProgress Progress { get; set; }
+
+    public bool IsDirectAward() => Solutions.Count() == 1;
 }

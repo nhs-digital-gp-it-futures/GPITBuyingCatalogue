@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -39,6 +39,7 @@ public class CompetitionsService : ICompetitionsService
     public async Task<IEnumerable<Competition>> GetCompetitionsDashboard(string internalOrgId)
         => await dbContext.Competitions.Include(x => x.CompetitionSolutions)
             .Where(x => x.Organisation.InternalIdentifier == internalOrgId)
+            .IgnoreQueryFilters()
             .ToListAsync();
 
     public async Task<Competition> GetCompetitionForResults(string internalOrgId, int competitionId) =>

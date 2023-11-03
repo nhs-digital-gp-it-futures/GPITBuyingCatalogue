@@ -82,7 +82,8 @@
 @{
     (string LinkText, string Link) GetCompetitionActionLink(CompetitionDashboardItem competition)
         => competition.Progress == TaskProgress.Completed
-            ? ("View", Url.Action(nameof(CompetitionResultsController.ViewResults), typeof(CompetitionResultsController).ControllerName(), new { Area = typeof(CompetitionResultsController).AreaName(), internalOrgId = Model.InternalOrgId, competitionId = competition.Id }))
+            ? ("View", competition.IsDirectAward() ? Url.Action(nameof(CompetitionResultsController.DirectAward), typeof(CompetitionResultsController).ControllerName(), new { Area = typeof(CompetitionResultsController).AreaName(), internalOrgId = Model.InternalOrgId, competitionId = competition.Id }) :
+                Url.Action(nameof(CompetitionResultsController.ViewResults), typeof(CompetitionResultsController).ControllerName(), new { Area = typeof(CompetitionResultsController).AreaName(), internalOrgId = Model.InternalOrgId, competitionId = competition.Id }))
             : ("Edit", GetEditLink(competition));
 
     string GetEditLink(CompetitionDashboardItem competition)
