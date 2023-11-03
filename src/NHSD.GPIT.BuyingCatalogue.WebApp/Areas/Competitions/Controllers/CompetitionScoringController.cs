@@ -56,7 +56,7 @@ public class CompetitionScoringController : Controller
         var model = new InteroperabilityScoringModel(competition)
         {
             BackLink = Url.Action(nameof(Index), new { internalOrgId, competitionId }),
-            PdfUrl = Url.Action(nameof(InteropPdf), new { internalOrgId, competitionId }),
+            PdfUrl = Url.Action(nameof(GeneratePdf), new { internalOrgId, competitionId, pdfType = "interop" }),
         };
 
         return View(model);
@@ -97,7 +97,7 @@ public class CompetitionScoringController : Controller
         var model = new ImplementationScoringModel(competition)
         {
             BackLink = Url.Action(nameof(Index), new { internalOrgId, competitionId }),
-            PdfUrl = Url.Action(nameof(ImplementationPdf), new { internalOrgId, competitionId }),
+            PdfUrl = Url.Action(nameof(GeneratePdf), new { internalOrgId, competitionId, pdfType = "implementation" }),
         };
 
         return View(model);
@@ -136,7 +136,7 @@ public class CompetitionScoringController : Controller
         var model = new ServiceLevelScoringModel(competition)
         {
             BackLink = Url.Action(nameof(Index), new { internalOrgId, competitionId }),
-            PdfUrl = Url.Action(nameof(ServiceLevelPdf), new { internalOrgId, competitionId }),
+            PdfUrl = Url.Action(nameof(GeneratePdf), new { internalOrgId, competitionId, pdfType = "serviceLevel" }),
         };
 
         return View(model);
@@ -174,7 +174,7 @@ public class CompetitionScoringController : Controller
         var model = new FeaturesScoringModel(competition)
         {
             BackLink = Url.Action(nameof(Index), new { internalOrgId, competitionId }),
-            PdfUrl = Url.Action(nameof(FeaturePdf), new { internalOrgId, competitionId }),
+            PdfUrl = Url.Action(nameof(GeneratePdf), new { internalOrgId, competitionId, pdfType = "feature" }),
         };
 
         return View(model);
@@ -202,83 +202,55 @@ public class CompetitionScoringController : Controller
         return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
     }
 
-    [HttpGet("featurePdf")]
-    public async Task<IActionResult> FeaturePdf(
-        string internalOrgId,
-        int competitionId)
+    [HttpGet("generatePdf")]
+    public async Task<IActionResult> GeneratePdf(
+    string internalOrgId,
+    int competitionId,
+    string pdfType)
     {
         var competition = await competitionsService.GetCompetition(internalOrgId, competitionId);
 
         if (competition == null) return NotFound();
+        string fileName = null;
+        var uri = " ";
 
-        var uri = Url.Action(
-            nameof(CompetitionFeaturesScoringPdfController.Index),
-            typeof(CompetitionFeaturesScoringPdfController).ControllerName(),
-            new { internalOrgId, competitionId, });
+        switch (pdfType)
+        {
+            case "feature":
+                 uri = Url.Action(
+                 nameof(CompetitionFeaturesScoringPdfController.Index),
+                 typeof(CompetitionFeaturesScoringPdfController).ControllerName(),
+                 new { internalOrgId, competitionId, });
+                 fileName = "compare-features.pdf";
+                 break;
 
-        var result = await pdfService.Convert(new(pdfService.BaseUri(), uri));
+            case "implementation":
+                 uri = Url.Action(
+                 nameof(CompetitionScoringImplementationPdfController.Index),
+                 typeof(CompetitionScoringImplementationPdfController).ControllerName(),
+                 new { internalOrgId, competitionId, });
+                 fileName = "compare-implementation.pdf";
+                 break;
 
-        var fileName = "compare-features.pdf";
-        return File(result, "application/pdf", fileName);
-    }
+            case "interop":
+                 uri = Url.Action(
+                 nameof(CompetitionScoringInteropPdfController.Index),
+                 typeof(CompetitionScoringInteropPdfController).ControllerName(),
+                 new { internalOrgId, competitionId, });
+                 fileName = "compare-interoperability.pdf";
+                 break;
 
-    [HttpGet("implementationPdf")]
-    public async Task<IActionResult> ImplementationPdf(
-        string internalOrgId,
-        int competitionId)
-    {
-        var competition = await competitionsService.GetCompetition(internalOrgId, competitionId);
-
-        if (competition == null) return NotFound();
-
-        var uri = Url.Action(
-            nameof(CompetitionScoringImplementationPdfController.Index),
-            typeof(CompetitionScoringImplementationPdfController).ControllerName(),
-            new { internalOrgId, competitionId, });
-
-        var result = await pdfService.Convert(new(pdfService.BaseUri(), uri));
-
-        var fileName = "compare-implementation.pdf";
-        return File(result, "application/pdf", fileName);
-    }
-
-    [HttpGet("interopPdf")]
-    public async Task<IActionResult> InteropPdf(
-        string internalOrgId,
-        int competitionId)
-    {
-        var competition = await competitionsService.GetCompetition(internalOrgId, competitionId);
-
-        if (competition == null) return NotFound();
-
-        var uri = Url.Action(
-            nameof(CompetitionScoringInteropPdfController.Index),
-            typeof(CompetitionScoringInteropPdfController).ControllerName(),
-            new { internalOrgId, competitionId, });
+            case "serviceLevel":
+                 uri = Url.Action(
+                 nameof(CompetitionScoringServiceLevelPdfController.Index),
+                 typeof(CompetitionScoringServiceLevelPdfController).ControllerName(),
+                 new { internalOrgId, competitionId, });
+                 fileName = "compare-sla.pdf";
+                 break;
+        }
 
         var result = await pdfService.Convert(new(pdfService.BaseUri(), uri));
 
-        var fileName = "compare-interoperability.pdf";
-        return File(result, "application/pdf", fileName);
-    }
-
-    [HttpGet("serviceLevelPdf")]
-    public async Task<IActionResult> ServiceLevelPdf(
-        string internalOrgId,
-        int competitionId)
-    {
-        var competition = await competitionsService.GetCompetition(internalOrgId, competitionId);
-
-        if (competition == null) return NotFound();
-
-        var uri = Url.Action(
-            nameof(CompetitionScoringServiceLevelPdfController.Index),
-            typeof(CompetitionScoringServiceLevelPdfController).ControllerName(),
-            new { internalOrgId, competitionId, });
-
-        var result = await pdfService.Convert(new(pdfService.BaseUri(), uri));
-
-        var fileName = "compare-sla.pdf";
         return File(result, "application/pdf", fileName);
     }
 }

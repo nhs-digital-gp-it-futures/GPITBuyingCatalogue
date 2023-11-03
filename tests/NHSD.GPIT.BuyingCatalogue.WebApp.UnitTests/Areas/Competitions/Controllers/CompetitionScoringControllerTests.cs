@@ -359,10 +359,11 @@ public static class CompetitionScoringControllerTests
         [Frozen] Mock<ICompetitionsService> competitionsService,
         CompetitionScoringController controller)
     {
+        string pdfType = "feature";
         competitionsService.Setup(x => x.GetCompetition(internalOrgId, competitionId))
             .ReturnsAsync((Competition)null);
 
-        var result = (await controller.FeaturePdf(internalOrgId, competitionId)).As<NotFoundResult>();
+        var result = (await controller.GeneratePdf(internalOrgId, competitionId, pdfType)).As<NotFoundResult>();
 
         result.Should().NotBeNull();
     }
@@ -376,6 +377,7 @@ public static class CompetitionScoringControllerTests
         [Frozen] Mock<IPdfService> pdfService,
         CompetitionScoringController controller)
     {
+        string pdfType = "feature";
         competitionsService.Setup(x => x.GetCompetition(internalOrgId, competition.Id))
             .ReturnsAsync(competition);
 
@@ -383,7 +385,7 @@ public static class CompetitionScoringControllerTests
             .Setup(s => s.BaseUri())
             .Returns(new Uri("http://localhost"));
 
-        var result = (await controller.FeaturePdf(internalOrgId, competition.Id)).As<FileResult>();
+        var result = (await controller.GeneratePdf(internalOrgId, competition.Id, pdfType)).As<FileResult>();
 
         result.Should().NotBeNull();
         result.FileDownloadName.Should().Be("compare-features.pdf");
@@ -397,10 +399,11 @@ public static class CompetitionScoringControllerTests
         [Frozen] Mock<ICompetitionsService> competitionsService,
         CompetitionScoringController controller)
     {
+        string pdfType = "implementation";
         competitionsService.Setup(x => x.GetCompetition(internalOrgId, competitionId))
             .ReturnsAsync((Competition)null);
 
-        var result = (await controller.ImplementationPdf(internalOrgId, competitionId)).As<NotFoundResult>();
+        var result = (await controller.GeneratePdf(internalOrgId, competitionId, pdfType)).As<NotFoundResult>();
 
         result.Should().NotBeNull();
     }
@@ -414,6 +417,7 @@ public static class CompetitionScoringControllerTests
         [Frozen] Mock<IPdfService> pdfService,
         CompetitionScoringController controller)
     {
+        string pdfType = "implementation";
         competitionsService.Setup(x => x.GetCompetition(internalOrgId, competition.Id))
             .ReturnsAsync(competition);
 
@@ -421,7 +425,7 @@ public static class CompetitionScoringControllerTests
             .Setup(s => s.BaseUri())
             .Returns(new Uri("http://localhost"));
 
-        var result = (await controller.ImplementationPdf(internalOrgId, competition.Id)).As<FileResult>();
+        var result = (await controller.GeneratePdf(internalOrgId, competition.Id, pdfType)).As<FileResult>();
 
         result.Should().NotBeNull();
         result.FileDownloadName.Should().Be("compare-implementation.pdf");
@@ -435,10 +439,11 @@ public static class CompetitionScoringControllerTests
        [Frozen] Mock<ICompetitionsService> competitionsService,
        CompetitionScoringController controller)
     {
+        string pdfType = "interop";
         competitionsService.Setup(x => x.GetCompetition(internalOrgId, competitionId))
             .ReturnsAsync((Competition)null);
 
-        var result = (await controller.InteropPdf(internalOrgId, competitionId)).As<NotFoundResult>();
+        var result = (await controller.GeneratePdf(internalOrgId, competitionId, pdfType)).As<NotFoundResult>();
 
         result.Should().NotBeNull();
     }
@@ -452,6 +457,7 @@ public static class CompetitionScoringControllerTests
         [Frozen] Mock<IPdfService> pdfService,
         CompetitionScoringController controller)
     {
+        string pdfType = "interop";
         competitionsService.Setup(x => x.GetCompetition(internalOrgId, competition.Id))
             .ReturnsAsync(competition);
 
@@ -459,7 +465,7 @@ public static class CompetitionScoringControllerTests
             .Setup(s => s.BaseUri())
             .Returns(new Uri("http://localhost"));
 
-        var result = (await controller.InteropPdf(internalOrgId, competition.Id)).As<FileResult>();
+        var result = (await controller.GeneratePdf(internalOrgId, competition.Id, pdfType)).As<FileResult>();
 
         result.Should().NotBeNull();
         result.FileDownloadName.Should().Be("compare-interoperability.pdf");
@@ -473,10 +479,11 @@ public static class CompetitionScoringControllerTests
        [Frozen] Mock<ICompetitionsService> competitionsService,
        CompetitionScoringController controller)
     {
+        string pdfType = "serviceLevel";
         competitionsService.Setup(x => x.GetCompetition(internalOrgId, competitionId))
             .ReturnsAsync((Competition)null);
 
-        var result = (await controller.ServiceLevelPdf(internalOrgId, competitionId)).As<NotFoundResult>();
+        var result = (await controller.GeneratePdf(internalOrgId, competitionId, pdfType)).As<NotFoundResult>();
 
         result.Should().NotBeNull();
     }
@@ -490,6 +497,7 @@ public static class CompetitionScoringControllerTests
         [Frozen] Mock<IPdfService> pdfService,
         CompetitionScoringController controller)
     {
+        string pdfType = "serviceLevel";
         competitionsService.Setup(x => x.GetCompetition(internalOrgId, competition.Id))
             .ReturnsAsync(competition);
 
@@ -497,7 +505,7 @@ public static class CompetitionScoringControllerTests
             .Setup(s => s.BaseUri())
             .Returns(new Uri("http://localhost"));
 
-        var result = (await controller.ServiceLevelPdf(internalOrgId, competition.Id)).As<FileResult>();
+        var result = (await controller.GeneratePdf(internalOrgId, competition.Id, pdfType)).As<FileResult>();
 
         result.Should().NotBeNull();
         result.FileDownloadName.Should().Be("compare-sla.pdf");
