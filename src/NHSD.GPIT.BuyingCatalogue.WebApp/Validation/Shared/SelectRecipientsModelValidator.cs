@@ -29,13 +29,11 @@ public class SelectRecipientsModelValidator : AbstractValidator<SelectRecipients
         if (subLocations is null || !subLocations.Any())
             return false;
 
-        var serviceRecipients = subLocations
+        return subLocations
             .Where(x => x.ServiceRecipients != null)
             .SelectMany(x => x.ServiceRecipients)
             .Where(x => x.Selected)
-            .ToList();
-
-        return serviceRecipients.Count >= selectAtLeast;
+            .Count() >= selectAtLeast;
     }
 
     private static bool HaveMadeASelection(SublocationModel[] subLocations)
