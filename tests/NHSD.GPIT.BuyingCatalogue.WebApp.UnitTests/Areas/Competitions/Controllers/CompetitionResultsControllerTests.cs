@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -8,7 +9,9 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
@@ -68,7 +71,7 @@ public static class CompetitionResultsControllerTests
     [Theory]
     [CommonAutoData]
     public static async Task ViewResults_ReturnsViewWithModel(
-        string internalOrgId,
+        Organisation organisation,
         Competition competition,
         FilterDetailsModel filterDetailsModel,
         ICollection<CompetitionSolution> nonShortlistedSolutions,
@@ -76,18 +79,20 @@ public static class CompetitionResultsControllerTests
         [Frozen] Mock<IManageFiltersService> filtersService,
         CompetitionResultsController controller)
     {
+        competition.Organisation = organisation;
+
         filtersService.Setup(x => x.GetFilterDetails(It.IsAny<int>(), competition.FilterId))
             .ReturnsAsync(filterDetailsModel);
 
-        competitionsService.Setup(x => x.GetCompetitionForResults(internalOrgId, competition.Id))
+        competitionsService.Setup(x => x.GetCompetitionForResults(organisation.InternalIdentifier, competition.Id))
             .ReturnsAsync(competition);
 
-        competitionsService.Setup(x => x.GetNonShortlistedSolutions(internalOrgId, competition.Id))
+        competitionsService.Setup(x => x.GetNonShortlistedSolutions(organisation.InternalIdentifier, competition.Id))
             .ReturnsAsync(nonShortlistedSolutions);
 
         var expectedModel = new ViewResultsModel(competition, filterDetailsModel, nonShortlistedSolutions);
 
-        var result = (await controller.ViewResults(internalOrgId, competition.Id)).As<ViewResult>();
+        var result = (await controller.ViewResults(organisation.InternalIdentifier, competition.Id)).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should()
@@ -130,5 +135,66 @@ public static class CompetitionResultsControllerTests
 
         result.Should().NotBeNull();
         result.FileDownloadName.Should().Be($"{competition.Name}.pdf");
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task SelectWinningSolution_ReturnsViewWithModel(
+        string internalOrgId,
+        Competition competition,
+        Solution solution,
+        List<CompetitionSolution> competitionSolutions,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionResultsController controller)
+    {
+        var winningSolutions = competitionSolutions.Take(1).ToList();
+        winningSolutions.ForEach(
+            x =>
+            {
+                x.Solution = solution;
+                x.IsWinningSolution = true;
+            });
+
+        competition.CompetitionSolutions = competitionSolutions;
+
+        var expectedModel = new SelectWinningSolutionModel(competition.Name, winningSolutions.Select(x => x.Solution));
+
+        competitionsService.Setup(x => x.GetCompetitionForResults(internalOrgId, competition.Id))
+            .ReturnsAsync(competition);
+
+        var result = (await controller.SelectWinningSolution(internalOrgId, competition.Id)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task SelectWinningSolution_InvalidModel_ReturnsViewWithModel(
+        string internalOrgId,
+        int competitionId,
+        SelectWinningSolutionModel model,
+        CompetitionResultsController controller)
+    {
+        controller.ModelState.AddModelError("some-key", "some-error");
+
+        var result = (await controller.SelectWinningSolution(internalOrgId, competitionId, model)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().Be(model);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task SelectWinningSolution_ValidModel_ReturnsViewWithModel(
+        string internalOrgId,
+        int competitionId,
+        SelectWinningSolutionModel model,
+        CompetitionResultsController controller)
+    {
+        var result = (await controller.SelectWinningSolution(internalOrgId, competitionId, model)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().Be(model);
     }
 }
