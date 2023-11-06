@@ -55,8 +55,12 @@ public static class CompetitionResultsPdfControllerTests
         FilterDetailsModel filterDetailsModel,
         ICollection<CompetitionSolution> nonShortlistedSolutions,
         [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] Mock<IManageFiltersService> filtersService,
         CompetitionResultsPdfController controller)
     {
+        filtersService.Setup(x => x.GetFilterDetails(It.IsAny<int>(), competition.FilterId))
+            .ReturnsAsync(filterDetailsModel);
+
         competition.Organisation = organisation;
 
         competitionsService.Setup(x => x.GetCompetitionForResults(organisation.InternalIdentifier, competition.Id))
@@ -70,5 +74,7 @@ public static class CompetitionResultsPdfControllerTests
         var result = (await controller.Index(organisation.InternalIdentifier, competition.Id)).As<ViewResult>();
 
         result.Should().NotBeNull();
+        result.Model.Should()
+           .BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.PdfUrl));
     }
 }
