@@ -31,4 +31,6 @@ public class ConfirmResultsModel : NavBaseModel
     public ICollection<NonPriceElement> NonPriceElements { get; set; }
 
     public ICollection<CompetitionSolution> CompetitionSolutions { get; set; }
+
+    public string PdfUrl { get; set; }
 }

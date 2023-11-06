@@ -28,6 +28,8 @@ public class InteroperabilityScoringModel : NavBaseModel
 
     public List<InteroperabilityCriteria> InteroperabilityCriteria { get; set; }
 
+    public string PdfUrl { get; set; }
+
     public List<string> GetIm1Integrations() =>
         InteroperabilityCriteria.Where(
                 x => x.IntegrationType == InteropIntegrationType.Im1

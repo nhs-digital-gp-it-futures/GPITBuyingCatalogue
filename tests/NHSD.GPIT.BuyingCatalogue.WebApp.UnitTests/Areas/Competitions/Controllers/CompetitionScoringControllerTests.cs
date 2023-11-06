@@ -14,6 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.ScoringModels;
@@ -76,7 +77,7 @@ public static class CompetitionScoringControllerTests
         var result = (await controller.Interoperability(internalOrgId, competition.Id)).As<ViewResult>();
 
         result.Should().NotBeNull();
-        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.PdfUrl));
     }
 
     [Theory]
@@ -150,7 +151,7 @@ public static class CompetitionScoringControllerTests
         var result = (await controller.Implementation(internalOrgId, competition.Id)).As<ViewResult>();
 
         result.Should().NotBeNull();
-        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.PdfUrl));
     }
 
     [Theory]
@@ -224,7 +225,7 @@ public static class CompetitionScoringControllerTests
         var result = (await controller.ServiceLevel(internalOrgId, competition.Id)).As<ViewResult>();
 
         result.Should().NotBeNull();
-        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.PdfUrl));
     }
 
     [Theory]
@@ -298,7 +299,7 @@ public static class CompetitionScoringControllerTests
         var result = (await controller.Features(internalOrgId, competition.Id)).As<ViewResult>();
 
         result.Should().NotBeNull();
-        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.PdfUrl).Excluding(m => m.PdfUrl));
     }
 
     [Theory]
@@ -348,5 +349,157 @@ public static class CompetitionScoringControllerTests
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Index));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task FeaturePdf_NullCompetition_ReturnsNotFoundResult(
+        string internalOrgId,
+        int competitionId,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionScoringController controller)
+    {
+        competitionsService.Setup(x => x.GetCompetition(internalOrgId, competitionId))
+            .ReturnsAsync((Competition)null);
+
+        var result = (await controller.FeaturePdf(internalOrgId, competitionId)).As<NotFoundResult>();
+
+        result.Should().NotBeNull();
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task FeaturePdf_ValidCompetition_ReturnsFileResult(
+        string internalOrgId,
+        Competition competition,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] Mock<IPdfService> pdfService,
+        CompetitionScoringController controller)
+    {
+        competitionsService.Setup(x => x.GetCompetition(internalOrgId, competition.Id))
+            .ReturnsAsync(competition);
+
+        pdfService
+            .Setup(s => s.BaseUri())
+            .Returns(new Uri("http://localhost"));
+
+        var result = (await controller.FeaturePdf(internalOrgId, competition.Id)).As<FileResult>();
+
+        result.Should().NotBeNull();
+        result.FileDownloadName.Should().Be("compare-features.pdf");
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task ImplementationPdf_NullCompetition_ReturnsNotFoundResult(
+        string internalOrgId,
+        int competitionId,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionScoringController controller)
+    {
+        competitionsService.Setup(x => x.GetCompetition(internalOrgId, competitionId))
+            .ReturnsAsync((Competition)null);
+
+        var result = (await controller.ImplementationPdf(internalOrgId, competitionId)).As<NotFoundResult>();
+
+        result.Should().NotBeNull();
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task ImplementationPdf_ValidCompetition_ReturnsFileResult(
+        string internalOrgId,
+        Competition competition,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] Mock<IPdfService> pdfService,
+        CompetitionScoringController controller)
+    {
+        competitionsService.Setup(x => x.GetCompetition(internalOrgId, competition.Id))
+            .ReturnsAsync(competition);
+
+        pdfService
+            .Setup(s => s.BaseUri())
+            .Returns(new Uri("http://localhost"));
+
+        var result = (await controller.ImplementationPdf(internalOrgId, competition.Id)).As<FileResult>();
+
+        result.Should().NotBeNull();
+        result.FileDownloadName.Should().Be("compare-implementation.pdf");
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task InteropPdf_NullCompetition_ReturnsNotFoundResult(
+       string internalOrgId,
+       int competitionId,
+       [Frozen] Mock<ICompetitionsService> competitionsService,
+       CompetitionScoringController controller)
+    {
+        competitionsService.Setup(x => x.GetCompetition(internalOrgId, competitionId))
+            .ReturnsAsync((Competition)null);
+
+        var result = (await controller.InteropPdf(internalOrgId, competitionId)).As<NotFoundResult>();
+
+        result.Should().NotBeNull();
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task InteropPdf_ValidCompetition_ReturnsFileResult(
+        string internalOrgId,
+        Competition competition,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] Mock<IPdfService> pdfService,
+        CompetitionScoringController controller)
+    {
+        competitionsService.Setup(x => x.GetCompetition(internalOrgId, competition.Id))
+            .ReturnsAsync(competition);
+
+        pdfService
+            .Setup(s => s.BaseUri())
+            .Returns(new Uri("http://localhost"));
+
+        var result = (await controller.InteropPdf(internalOrgId, competition.Id)).As<FileResult>();
+
+        result.Should().NotBeNull();
+        result.FileDownloadName.Should().Be("compare-interoperability.pdf");
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task ServiceLevelPdf_NullCompetition_ReturnsNotFoundResult(
+       string internalOrgId,
+       int competitionId,
+       [Frozen] Mock<ICompetitionsService> competitionsService,
+       CompetitionScoringController controller)
+    {
+        competitionsService.Setup(x => x.GetCompetition(internalOrgId, competitionId))
+            .ReturnsAsync((Competition)null);
+
+        var result = (await controller.ServiceLevelPdf(internalOrgId, competitionId)).As<NotFoundResult>();
+
+        result.Should().NotBeNull();
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task ServiceLevelPdf_ValidCompetition_ReturnsFileResult(
+        string internalOrgId,
+        Competition competition,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] Mock<IPdfService> pdfService,
+        CompetitionScoringController controller)
+    {
+        competitionsService.Setup(x => x.GetCompetition(internalOrgId, competition.Id))
+            .ReturnsAsync(competition);
+
+        pdfService
+            .Setup(s => s.BaseUri())
+            .Returns(new Uri("http://localhost"));
+
+        var result = (await controller.ServiceLevelPdf(internalOrgId, competition.Id)).As<FileResult>();
+
+        result.Should().NotBeNull();
+        result.FileDownloadName.Should().Be("compare-sla.pdf");
     }
 }

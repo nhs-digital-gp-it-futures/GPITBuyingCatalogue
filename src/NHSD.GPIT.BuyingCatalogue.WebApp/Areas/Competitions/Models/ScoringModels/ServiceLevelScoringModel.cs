@@ -34,6 +34,8 @@ public class ServiceLevelScoringModel : NavBaseModel
 
     public IList<Iso8601DayOfWeek> ApplicableDays { get; set; }
 
+    public string PdfUrl { get; set; }
+
     public void WithSolutions(IEnumerable<CompetitionSolution> solutions, bool setScores = true)
     {
         SolutionScores = solutions.OrderBy(x => x.Solution.CatalogueItem.Name)

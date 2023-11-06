@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.ScoringModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 
@@ -16,11 +18,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 public class CompetitionScoringController : Controller
 {
     private readonly ICompetitionsService competitionsService;
+    private readonly IPdfService pdfService;
 
     public CompetitionScoringController(
-        ICompetitionsService competitionsService)
+        ICompetitionsService competitionsService,
+        IPdfService pdfService)
     {
         this.competitionsService = competitionsService ?? throw new ArgumentNullException(nameof(competitionsService));
+        this.pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
     }
 
     [HttpGet]
@@ -51,6 +56,7 @@ public class CompetitionScoringController : Controller
         var model = new InteroperabilityScoringModel(competition)
         {
             BackLink = Url.Action(nameof(Index), new { internalOrgId, competitionId }),
+            PdfUrl = Url.Action(nameof(InteropPdf), new { internalOrgId, competitionId }),
         };
 
         return View(model);
@@ -91,6 +97,7 @@ public class CompetitionScoringController : Controller
         var model = new ImplementationScoringModel(competition)
         {
             BackLink = Url.Action(nameof(Index), new { internalOrgId, competitionId }),
+            PdfUrl = Url.Action(nameof(ImplementationPdf), new { internalOrgId, competitionId }),
         };
 
         return View(model);
@@ -129,6 +136,7 @@ public class CompetitionScoringController : Controller
         var model = new ServiceLevelScoringModel(competition)
         {
             BackLink = Url.Action(nameof(Index), new { internalOrgId, competitionId }),
+            PdfUrl = Url.Action(nameof(ServiceLevelPdf), new { internalOrgId, competitionId }),
         };
 
         return View(model);
@@ -166,6 +174,7 @@ public class CompetitionScoringController : Controller
         var model = new FeaturesScoringModel(competition)
         {
             BackLink = Url.Action(nameof(Index), new { internalOrgId, competitionId }),
+            PdfUrl = Url.Action(nameof(FeaturePdf), new { internalOrgId, competitionId }),
         };
 
         return View(model);
@@ -191,5 +200,88 @@ public class CompetitionScoringController : Controller
         await competitionsService.SetSolutionsFeaturesScores(internalOrgId, competitionId, solutionsAndScores);
 
         return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
+    }
+
+    [HttpGet("featurePdf")]
+    public async Task<IActionResult> FeaturePdf(
+        string internalOrgId,
+        int competitionId)
+    {
+        var uri = Url.Action(
+            nameof(CompetitionFeaturesScoringPdfController.Index),
+            typeof(CompetitionFeaturesScoringPdfController).ControllerName(),
+            new { internalOrgId, competitionId, });
+
+        var pdfBytes = await GeneratePdfAsync(internalOrgId, competitionId, uri, "features");
+
+        return pdfBytes;
+    }
+
+    [HttpGet("implementationPdf")]
+    public async Task<IActionResult> ImplementationPdf(
+        string internalOrgId,
+        int competitionId)
+    {
+        var competition = await competitionsService.GetCompetition(internalOrgId, competitionId);
+
+        if (competition == null) return NotFound();
+
+        var uri = Url.Action(
+            nameof(CompetitionScoringImplementationPdfController.Index),
+            typeof(CompetitionScoringImplementationPdfController).ControllerName(),
+            new { internalOrgId, competitionId, });
+
+        var pdfBytes = await GeneratePdfAsync(internalOrgId, competitionId, uri, "implementation");
+
+        return pdfBytes;
+    }
+
+    [HttpGet("interopPdf")]
+    public async Task<IActionResult> InteropPdf(
+        string internalOrgId,
+        int competitionId)
+    {
+        var competition = await competitionsService.GetCompetition(internalOrgId, competitionId);
+
+        if (competition == null) return NotFound();
+
+        var uri = Url.Action(
+            nameof(CompetitionScoringInteropPdfController.Index),
+            typeof(CompetitionScoringInteropPdfController).ControllerName(),
+            new { internalOrgId, competitionId, });
+
+        var pdfBytes = await GeneratePdfAsync(internalOrgId, competitionId, uri, "interoperability");
+
+        return pdfBytes;
+    }
+
+    [HttpGet("serviceLevelPdf")]
+    public async Task<IActionResult> ServiceLevelPdf(
+        string internalOrgId,
+        int competitionId)
+    {
+        var competition = await competitionsService.GetCompetition(internalOrgId, competitionId);
+
+        if (competition == null) return NotFound();
+
+        var uri = Url.Action(
+            nameof(CompetitionScoringServiceLevelPdfController.Index),
+            typeof(CompetitionScoringServiceLevelPdfController).ControllerName(),
+            new { internalOrgId, competitionId, });
+
+        var pdfBytes = await GeneratePdfAsync(internalOrgId, competitionId, uri, "sla");
+
+        return pdfBytes;
+    }
+
+    private async Task<IActionResult> GeneratePdfAsync(string internalOrgId, int competitionId, string uri, string fileName)
+    {
+        var competition = await competitionsService.GetCompetition(internalOrgId, competitionId);
+
+        if (competition == null) return NotFound();
+
+        var pdfBytes = await pdfService.Convert(new(pdfService.BaseUri(), uri));
+
+        return File(pdfBytes, "application/pdf", $"compare-{fileName}.pdf");
     }
 }
