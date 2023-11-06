@@ -129,7 +129,7 @@ public static class CompetitionResultsControllerTests
         var result = (await controller.DownloadResults(internalOrgId, competition.Id)).As<FileResult>();
 
         result.Should().NotBeNull();
-        result.FileDownloadName.Should().Be($"competition-results-{competition.Name}.pdf");
+        result.FileDownloadName.Should().Be($"competition-results-{competition.Id}.pdf");
     }
 
     [Theory]
