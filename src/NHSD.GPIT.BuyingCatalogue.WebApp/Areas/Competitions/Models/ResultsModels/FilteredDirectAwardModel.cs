@@ -16,6 +16,8 @@ public class FilteredDirectAwardModel : NavBaseModel
         var selectedNonPriceElements = competition.NonPriceElements.GetNonPriceElements();
 
         CompetitionName = competition.Name;
+        InternalOrgId = competition.Organisation.InternalIdentifier;
+        CompetitionId = competition.Id;
 
         var competitionSolutionResults = competition.CompetitionSolutions
             .Select(x => new CompetitionSolutionResult(competition, x))
@@ -41,4 +43,8 @@ public class FilteredDirectAwardModel : NavBaseModel
     public ReviewFilterModel FilterDetailsModel { get; set; }
 
     public ICollection<CompetitionSolution> NonShortlistedSolutions { get; set; }
+
+    public string InternalOrgId { get; set; }
+
+    public int CompetitionId { get; set; }
 }

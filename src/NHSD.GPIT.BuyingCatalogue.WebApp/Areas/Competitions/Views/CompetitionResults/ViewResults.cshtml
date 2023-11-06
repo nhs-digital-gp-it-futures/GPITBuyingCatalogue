@@ -128,33 +128,5 @@
         }
     </div>
 
-    <partial name="_ResultsOrderingInformation" model="new ResultsOrderingInformation(false, Model.PdfUrl)" />
-    <div class="nhsuk-grid-column-three-quarters">
-        <h2>Download your results</h2>
-
-        <p>Download the results of your competition as evidence of how you arrived at your winning solution.</p>
-
-        <vc:nhs-secondary-button text="Download results (PDF)"
-                                 url="@Model.PdfUrl"
-                                 type="Secondary"/>
-
-        @if (Model.HasMultipleWinners)
-        {
-            <h2>Winning solution</h2>
-            <p>As your competition produced more than 1 solution with a winning score, you can choose to procure any of the winning solutions.</p>
-
-            <vc:nhs-secondary-button text="Select a winning solution"
-                                     url="@Url.Action(nameof(CompetitionResultsController.SelectWinningSolution), typeof(CompetitionResultsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId })"
-                                     type="Primary"/>
-        }
-        else
-        {
-            <h2>Ordering information</h2>
-            <p>Download the information you’ll need to create an order for this solution. It includes the Service Recipients you added and any services you may also need to order.</p>
-
-            <vc:nhs-secondary-button text="View ordering information"
-                                     url="#"
-                                     type="Primary"/>
-        }
-    </div>
+    <partial name="_ResultsOrderingInformation" model="new ResultsOrderingInformation(Model.HasMultipleWinners, false, Model.PdfUrl, Model.InternalOrgId, Model.CompetitionId)" />
 </div>

@@ -108,7 +108,8 @@ public static class CompetitionResultsControllerTests
         ICollection<CompetitionSolution> nonShortlistedSolutions,
         [Frozen] Mock<ICompetitionsService> competitionsService,
         [Frozen] Mock<IManageFiltersService> filtersService,
-        CompetitionResultsController controller)
+        CompetitionResultsController controller,
+        Organisation organisation)
     {
         filtersService.Setup(x => x.GetFilterDetails(It.IsAny<int>(), competition.FilterId))
             .ReturnsAsync(filterDetailsModel);
@@ -118,6 +119,8 @@ public static class CompetitionResultsControllerTests
 
         competitionsService.Setup(x => x.GetNonShortlistedSolutions(internalOrgId, competition.Id))
             .ReturnsAsync(nonShortlistedSolutions);
+
+        competition.Organisation = organisation;
 
         var expectedModel = new FilteredDirectAwardModel(competition, filterDetailsModel, nonShortlistedSolutions);
 
