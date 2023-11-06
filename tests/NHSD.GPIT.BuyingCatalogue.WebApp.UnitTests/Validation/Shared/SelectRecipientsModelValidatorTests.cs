@@ -16,6 +16,7 @@ public static class SelectRecipientsModelValidatorTests
         SelectRecipientsModel model,
         SelectRecipientsModelValidator systemUnderTest)
     {
+        model.SelectAtLeast = null;
         model.GetServiceRecipients().ForEach(x => x.Selected = false);
 
         var result = systemUnderTest.TestValidate(model);

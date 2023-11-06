@@ -63,6 +63,7 @@
             <input type="hidden" asp-for="Caption" />
             <input type="hidden" asp-for="Advice" />
             <input type="hidden" asp-for="SelectAtLeast" />
+            <input type="hidden" asp-for="OrganisationName" />
             @if (Model.SubLocations?.Any() ?? false)
             {
                 @if (Model.OrganisationType != OrganisationType.GP)

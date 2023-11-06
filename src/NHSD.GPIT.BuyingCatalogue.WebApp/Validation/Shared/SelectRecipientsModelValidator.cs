@@ -14,7 +14,8 @@ public class SelectRecipientsModelValidator : AbstractValidator<SelectRecipients
         RuleFor(x => x.SubLocations)
             .Must(HaveMadeASelection)
             .WithMessage(NoSelectionMadeErrorMessage)
-            .OverridePropertyName("SubLocations[0].ServiceRecipients[0].Selected");
+            .OverridePropertyName("SubLocations[0].ServiceRecipients[0].Selected")
+            .When(m => !m.SelectAtLeast.HasValue);
 
         RuleFor(x => x.SubLocations)
             .Must((m, x) => HaveMadeMinimumCountSelection(m.SelectAtLeast.Value, x))
