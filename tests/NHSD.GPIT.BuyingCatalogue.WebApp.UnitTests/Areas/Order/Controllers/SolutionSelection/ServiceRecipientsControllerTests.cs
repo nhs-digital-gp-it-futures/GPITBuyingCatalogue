@@ -22,7 +22,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.ServiceRecipients;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 using Xunit;
 using ServiceRecipient = NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.ServiceRecipient;
@@ -52,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         [CommonInlineAutoData(null)]
         [CommonInlineAutoData(SelectionMode.None)]
         [CommonInlineAutoData(SelectionMode.All)]
-        public static async Task Get_AddServiceRecipients_ReturnsExpectedResult(
+        public static async Task Get_AddServiceRecipients_Solution_ReturnsExpectedResult(
             SelectionMode? selectionMode,
             Organisation organisation,
             string internalOrgId,
@@ -105,13 +104,87 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 order.AddedOrderRecipients(null).Select(r => r.OdsCode),
                 Enumerable.Empty<string>().ToList(),
                 new string[] { },
-                selectionMode) { };
+                selectionMode)
+            { };
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x
                 .Excluding(o => o.Title)
                 .Excluding(o => o.BackLink)
                 .Excluding(o => o.Caption)
                 .Excluding(o => o.Advice)
+                .Excluding(o => o.ImportRecipientsLink)
+                .Excluding(o => o.HasImportedRecipients));
+        }
+
+        [Theory]
+        [CommonInlineAutoData(null, OrderTypeEnum.AssociatedServiceSplit, 2)]
+        [CommonInlineAutoData(SelectionMode.None, OrderTypeEnum.AssociatedServiceSplit, 2)]
+        [CommonInlineAutoData(SelectionMode.All, OrderTypeEnum.AssociatedServiceSplit, 2)]
+        [CommonInlineAutoData(null, OrderTypeEnum.AssociatedServiceMerger, 2)]
+        [CommonInlineAutoData(SelectionMode.None, OrderTypeEnum.AssociatedServiceMerger, 2)]
+        [CommonInlineAutoData(SelectionMode.All, OrderTypeEnum.AssociatedServiceMerger, 2)]
+        [CommonInlineAutoData(null, OrderTypeEnum.AssociatedServiceOther, null)]
+        [CommonInlineAutoData(SelectionMode.None, OrderTypeEnum.AssociatedServiceOther, null)]
+        [CommonInlineAutoData(SelectionMode.All, OrderTypeEnum.AssociatedServiceOther, null)]
+        public static async Task Get_AddServiceRecipients_MergerSplitOther_ReturnsExpectedResult(
+            SelectionMode selectionMode,
+            OrderTypeEnum orderType,
+            int? atLeast,
+            Organisation organisation,
+            string internalOrgId,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            List<ServiceRecipient> serviceRecipients,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] Mock<IOdsService> mockOdsService,
+            [Frozen] Mock<IOrganisationsService> organisationsService,
+            ServiceRecipientsController controller)
+        {
+            order.OrderType = orderType;
+            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
+            order.OrderItems = order.OrderItems.Take(1).ToList();
+
+            mockOrderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            mockOdsService
+                .Setup(x => x.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))
+                .ReturnsAsync(serviceRecipients);
+
+            organisationsService
+                .Setup(x => x.GetOrganisationByInternalIdentifier(internalOrgId))
+                .ReturnsAsync(organisation);
+
+            var result = await controller.SelectServiceRecipients(internalOrgId, callOffId, selectionMode);
+
+            mockOrderService.VerifyAll();
+            mockOdsService.VerifyAll();
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+
+            var recipients = serviceRecipients
+                .Select(x => new ServiceRecipientModel
+                {
+                    Name = x.Name,
+                    OdsCode = x.OrgId,
+                    Location = x.Location,
+                })
+                .ToList();
+
+            var expected = new SelectRecipientsModel(
+                organisation,
+                recipients,
+                order.AddedOrderRecipients(null).Select(r => r.OdsCode),
+                Enumerable.Empty<string>().ToList(),
+                new string[] { },
+                selectionMode)
+            { SelectAtLeast = atLeast };
+
+            actualResult.Model.Should().BeEquivalentTo(expected, x => x
+                .Excluding(o => o.Title)
+                .Excluding(o => o.BackLink)
+                .Excluding(o => o.Caption)
                 .Excluding(o => o.Advice)
                 .Excluding(o => o.ImportRecipientsLink)
                 .Excluding(o => o.HasImportedRecipients));
