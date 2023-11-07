@@ -332,7 +332,8 @@ public class CompetitionNonPriceElementsController : Controller
         int competitionId,
         int requirementId,
         string returnUrl = null,
-        string selectedNonPriceElements = null)
+        string selectedNonPriceElements = null,
+        bool? isAdding = false)
     {
         _ = selectedNonPriceElements;
 
@@ -349,6 +350,10 @@ public class CompetitionNonPriceElementsController : Controller
                 : Url.Action(
                     nameof(Features),
                     new { internalOrgId, competitionId, returnUrl, selectedNonPriceElements }),
+            IsAdding = isAdding,
+            InternalOrgId = internalOrgId,
+            SelectedNonPriceElements = selectedNonPriceElements,
+            ReturnUrl = returnUrl,
         };
 
         return View("FeatureRequirement", model);
@@ -379,6 +384,64 @@ public class CompetitionNonPriceElementsController : Controller
             : RedirectToAction(
                 nameof(Features),
                 new { internalOrgId, competitionId, selectedNonPriceElements });
+    }
+
+    [CriteriaReviewedGuardFilter]
+    [HttpGet("add/features/requirement/{requirementId:int}/delete")]
+    public async Task<IActionResult> DeleteFeatureRequirement(
+        string internalOrgId,
+        int competitionId,
+        int requirementId,
+        string returnUrl = null,
+        string selectedNonPriceElements = null,
+        bool? isAdding = false)
+    {
+        var competition = await competitionsService.GetCompetitionWithNonPriceElements(internalOrgId, competitionId);
+
+        var features = competition.NonPriceElements.Features;
+        var numberOfFeatures = features.Count;
+
+        if (numberOfFeatures > 1 || isAdding.GetValueOrDefault())
+        {
+            await competitionNonPriceElementsService.DeleteFeatureRequirement(
+                internalOrgId,
+                competitionId,
+                requirementId);
+
+            return !isAdding.GetValueOrDefault()
+                ? RedirectToAction(nameof(Index), new { internalOrgId, competitionId })
+                : numberOfFeatures > 1
+                    ? RedirectToAction(nameof(Features), new { internalOrgId, competitionId, selectedNonPriceElements })
+                    : GetRedirect(internalOrgId, competitionId, returnUrl, selectedNonPriceElements);
+        }
+
+        var model = new DeleteNonPriceElementModel(NonPriceElement.Features)
+        {
+            BackLink = Url.Action(
+                nameof(EditFeatureRequirement),
+                new { internalOrgId, competitionId, requirementId, selectedNonPriceElements, returnUrl }),
+        };
+
+        return View("Delete", model);
+    }
+
+    [CriteriaReviewedGuardFilter]
+    [HttpPost("add/features/requirement/{requirementId:int}/delete")]
+    public async Task<IActionResult> DeleteFeatureRequirement(
+        string internalOrgId,
+        int competitionId,
+        int requirementId,
+        DeleteNonPriceElementModel model)
+    {
+        _ = model;
+        _ = requirementId;
+
+        await competitionNonPriceElementsService.DeleteNonPriceElement(
+            internalOrgId,
+            competitionId,
+            NonPriceElement.Features);
+
+        return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
     }
 
     [HttpGet("weights")]

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -45,6 +46,7 @@ public class CompetitionResultsController : Controller
                 typeof(CompetitionTaskListController).ControllerName(),
                 new { internalOrgId, competitionId }),
             InternalOrgId = internalOrgId,
+            PdfUrl = Url.Action(nameof(DownloadConfirmResults), new { internalOrgId, competitionId }),
         };
 
         return View(model);
@@ -102,7 +104,60 @@ public class CompetitionResultsController : Controller
 
         var result = await pdfService.Convert(new(pdfService.BaseUri(), uri));
 
-        var fileName = $"{competition.Name}.pdf";
+        var fileName = $"competition-results-{competition.Id}.pdf";
         return File(result, "application/pdf", fileName);
+    }
+
+    [HttpGet("downloadConfirm")]
+    public async Task<IActionResult> DownloadConfirmResults(
+        string internalOrgId,
+        int competitionId)
+    {
+        var competition = await competitionsService.GetCompetitionForResults(internalOrgId, competitionId);
+
+        if (competition == null) return NotFound();
+
+        var uri = Url.Action(
+            nameof(CompetitionConfirmResultsPdfController.Index),
+            typeof(CompetitionConfirmResultsPdfController).ControllerName(),
+            new { internalOrgId, competitionId, });
+
+        var result = await pdfService.Convert(new(pdfService.BaseUri(), uri));
+
+        var fileName = "review-scoring.pdf";
+        return File(result, "application/pdf", fileName);
+    }
+
+    [HttpGet("select-winning-solution")]
+    public async Task<IActionResult> SelectWinningSolution(
+        string internalOrgId,
+        int competitionId)
+    {
+        var competition = await competitionsService.GetCompetitionForResults(internalOrgId, competitionId);
+        var winningSolutions = competition.CompetitionSolutions.Where(x => x.IsWinningSolution);
+
+        var model = new SelectWinningSolutionModel(competition.Name, winningSolutions.Select(x => x.Solution))
+        {
+            BackLink = Url.Action(nameof(ViewResults), new { internalOrgId, competitionId }),
+        };
+
+        return View(model);
+    }
+
+    [HttpPost("select-winning-solution")]
+    public async Task<IActionResult> SelectWinningSolution(
+        string internalOrgId,
+        int competitionId,
+        SelectWinningSolutionModel model)
+    {
+        _ = internalOrgId;
+        _ = competitionId;
+
+        if (!ModelState.IsValid)
+            return View(model);
+
+        await Task.Yield();
+
+        return View(model);
     }
 }

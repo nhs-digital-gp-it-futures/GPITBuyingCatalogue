@@ -15,7 +15,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Competition Results">
-    <title>Filter Results</title>
     <link rel="stylesheet" href="~/css/main.min.css">
     <link href="https://www.nhs.uk/" rel="preconnect">
     <link href="https://assets.nhs.uk/" rel="preconnect" crossorigin>
@@ -49,6 +48,11 @@
 
         .nhsuk-table-responsive td {
             font-size: 1em;
+        }
+
+        h2 {
+            border-bottom: 1px solid lightgray;
+            width: 100%;
         }
 
         h3 {
@@ -159,24 +163,24 @@
         <div class="nhsuk-grid-row">
             <div class="nhsuk-grid-column-full">
                 <nhs-page-title title="Competition results" caption="@Model.Competition.Name"/>
-                <pdf-summary-list>
-                    <pdf-summary-list-row label-text="Competition name">
+                    <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Competition name">
                         @Model.Competition.Name
-                    </pdf-summary-list-row>
-                    <pdf-summary-list-row label-text="Competition description">
+                    </nhs-summary-list-row>
+                    <nhs-summary-list-row label-text="Competition description">
                         @Model.Competition.Description
-                    </pdf-summary-list-row>
-                    <pdf-summary-list-row label-text="Competition created">
+                    </nhs-summary-list-row>
+                    <nhs-summary-list-row label-text="Competition created">
                         @Model.Competition.Created.ToString("d MMMM yyyy")
-                    </pdf-summary-list-row>
-                    <pdf-summary-list-row label-text="Competition completed">
+                    </nhs-summary-list-row>
+                    <nhs-summary-list-row label-text="Competition completed">
                         @Model.Competition.Completed.GetValueOrDefault().ToString("d MMMM yyyy")
-                    </pdf-summary-list-row>
-                    <pdf-summary-list-row label-text="Organisation details">
+                    </nhs-summary-list-row>
+                    <nhs-summary-list-row label-text="Organisation details">
                         @Model.Competition.Organisation.Name (@Model.Competition.Organisation.ExternalIdentifier)<br/>
                         <vc:nhs-address address="@Model.Competition.Organisation.Address"/>
-                    </pdf-summary-list-row>
-                </pdf-summary-list>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
 
                 <div style="page-break-after: always"></div>
 
@@ -201,23 +205,78 @@
                     </div>
                 }
 
+                <h2>Filter details</h2>
+                   <partial name="Partials/_FilterDetailsPartial" model="@Model.FilterDetailsModel" />
+
+                <div style="page-break-after: always"></div>
+
                 @if (Model.IncludesNonPriceElements)
                 {
-                    <h2>Award criteria weightings</h2>
+                    <h2>Award criteria</h2>
 
                     <h3>Award criteria weighting</h3>
-                    <pdf-summary-list>
-                        <pdf-summary-list-row label-text="Price">@Model.AwardCriteriaWeightings.Price%</pdf-summary-list-row>
-                        <pdf-summary-list-row label-text="Non-price">@Model.AwardCriteriaWeightings.NonPrice%</pdf-summary-list-row>
-                    </pdf-summary-list>
+                    <nhs-summary-list>
+                        <nhs-summary-list-row label-text="Price">@Model.AwardCriteriaWeightings.Price%</nhs-summary-list-row>
+                        <nhs-summary-list-row label-text="Non-price">@Model.AwardCriteriaWeightings.NonPrice%</nhs-summary-list-row>
+                    </nhs-summary-list>
 
                     <h3>Non-price weighting</h3>
-                    <pdf-summary-list>
+                    <nhs-summary-list>
                         @foreach (var nonPriceElementWeighting in Model.NonPriceElementWeightings)
                         {
-                            <pdf-summary-list-row label-text="@nonPriceElementWeighting.Key.EnumMemberName()">@nonPriceElementWeighting.Value%</pdf-summary-list-row>
+                            <nhs-summary-list-row label-text="@nonPriceElementWeighting.Key.EnumMemberName()">@nonPriceElementWeighting.Value%</nhs-summary-list-row>
                         }
-                    </pdf-summary-list>
+                    </nhs-summary-list>
+                }
+
+                <div style="page-break-after: always"></div>
+
+                @if (Model.NonShortlistedSolutions.Any())
+                {
+                    <h2>Non-shortlisted solutions</h2>
+                    <h4>Solutions not included</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Solution and supplier</th>
+                                <th>Additional Services required</th>
+                                <th>Justification</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var nonShortlistedSolution in Model.NonShortlistedSolutions.OrderBy(x => x.Solution.CatalogueItem.Name))
+                            {
+                                var requiredCompetitionServices = nonShortlistedSolution.SolutionServices.Where(x => x.IsRequired).OrderBy(x => x.Service.Name).ToList();
+                                <tr class="alternating">
+                                    <td style="width:30%">
+                                        @nonShortlistedSolution.Solution.CatalogueItem.Name
+                                        <span class="nhsuk-caption-m">
+                                            @nonShortlistedSolution.Solution.CatalogueItem.Supplier.Name
+                                        </span>
+                                    </td>
+                                    <td style="width:20%">
+                                        @if (requiredCompetitionServices.Any())
+                                        {
+                                            <ul>
+                                                @foreach (var competitionService in requiredCompetitionServices)
+                                                {
+                                                    <li>@competitionService.Service.Name</li>
+                                                }
+                                            </ul>
+                                        }
+                                        else
+                                        {
+                                            <p>None</p>
+                                        }
+                                    </td>
+                                    <td style="word-break:break-all">
+                                            @nonShortlistedSolution.Justification
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 }
             </div>
         </div>

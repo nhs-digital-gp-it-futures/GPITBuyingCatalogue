@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -7,7 +6,6 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Moq;
@@ -197,7 +195,8 @@ public static class CompetitionNonPriceElementsControllerTests
             InternalOrgId = organisation.InternalIdentifier, CompetitionId = competition.Id,
         };
 
-        var result = (await controller.Interoperability(organisation.InternalIdentifier, competition.Id)).As<ViewResult>();
+        var result =
+            (await controller.Interoperability(organisation.InternalIdentifier, competition.Id)).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -493,7 +492,8 @@ public static class CompetitionNonPriceElementsControllerTests
         FeaturesRequirementModel model,
         CompetitionNonPriceElementsController controller)
     {
-        var result = (await controller.FeatureRequirement(internalOrgId, competitionId, model)).As<RedirectToActionResult>();
+        var result = (await controller.FeatureRequirement(internalOrgId, competitionId, model))
+            .As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Features));
@@ -536,7 +536,10 @@ public static class CompetitionNonPriceElementsControllerTests
 
         var requirement = featuresCriteria.First();
 
-        var expectedModel = new FeaturesRequirementModel(competition, requirement);
+        var expectedModel = new FeaturesRequirementModel(competition, requirement)
+        {
+            InternalOrgId = internalOrgId, IsAdding = false,
+        };
 
         var result = (await controller.EditFeatureRequirement(internalOrgId, competition.Id, requirement.Id))
             .As<ViewResult>();
@@ -595,7 +598,12 @@ public static class CompetitionNonPriceElementsControllerTests
         FeaturesRequirementModel model,
         CompetitionNonPriceElementsController controller)
     {
-        var result = (await controller.EditFeatureRequirement(internalOrgId, competitionId, requirementId, model, returnUrl))
+        var result = (await controller.EditFeatureRequirement(
+                internalOrgId,
+                competitionId,
+                requirementId,
+                model,
+                returnUrl))
             .As<RedirectResult>();
 
         result.Should().NotBeNull();
@@ -611,10 +619,143 @@ public static class CompetitionNonPriceElementsControllerTests
         FeaturesRequirementModel model,
         CompetitionNonPriceElementsController controller)
     {
-        var result = (await controller.EditFeatureRequirement(internalOrgId, competitionId, requirementId, model)).As<RedirectToActionResult>();
+        var result = (await controller.EditFeatureRequirement(internalOrgId, competitionId, requirementId, model))
+            .As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Features));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task DeleteFeatureRequirement_IsAdding_MoreThanOneFeature_RedirectsToFeaturesReview(
+        FeaturesCriteria firstCriteria,
+        FeaturesCriteria secondCriteria,
+        string internalOrgId,
+        Competition competition,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionNonPriceElementsController controller)
+    {
+        competition.NonPriceElements = new()
+        {
+            Features = new List<FeaturesCriteria> { firstCriteria, secondCriteria, },
+        };
+
+        competitionsService.Setup(x => x.GetCompetitionWithNonPriceElements(internalOrgId, competition.Id))
+            .ReturnsAsync(competition);
+
+        var result = (await controller.DeleteFeatureRequirement(
+                internalOrgId,
+                competition.Id,
+                firstCriteria.Id,
+                isAdding: true))
+            .As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.Features));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task DeleteFeatureRequirement_IsAdding_SingleFeature_Redirects(
+        FeaturesCriteria firstCriteria,
+        string internalOrgId,
+        Competition competition,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionNonPriceElementsController controller)
+    {
+        competition.NonPriceElements = new()
+        {
+            Features = new List<FeaturesCriteria> { firstCriteria, },
+        };
+
+        competitionsService.Setup(x => x.GetCompetitionWithNonPriceElements(internalOrgId, competition.Id))
+            .ReturnsAsync(competition);
+
+        var result = (await controller.DeleteFeatureRequirement(
+                internalOrgId,
+                competition.Id,
+                firstCriteria.Id,
+                isAdding: true))
+            .As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.Index));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task DeleteFeatureRequirement_IsNotAdding_MultipleFeatures_Redirects(
+        FeaturesCriteria firstCriteria,
+        FeaturesCriteria secondCriteria,
+        string internalOrgId,
+        Competition competition,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionNonPriceElementsController controller)
+    {
+        competition.NonPriceElements = new()
+        {
+            Features = new List<FeaturesCriteria> { firstCriteria, secondCriteria, },
+        };
+
+        competitionsService.Setup(x => x.GetCompetitionWithNonPriceElements(internalOrgId, competition.Id))
+            .ReturnsAsync(competition);
+
+        var result = (await controller.DeleteFeatureRequirement(
+                internalOrgId,
+                competition.Id,
+                firstCriteria.Id,
+                isAdding: false))
+            .As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.Index));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task DeleteFeatureRequirement_IsNotAdding_SingleFeature_ReturnsViewWithModel(
+        FeaturesCriteria firstCriteria,
+        string internalOrgId,
+        Competition competition,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionNonPriceElementsController controller)
+    {
+        competition.NonPriceElements = new()
+        {
+            Features = new List<FeaturesCriteria> { firstCriteria, },
+        };
+
+        competitionsService.Setup(x => x.GetCompetitionWithNonPriceElements(internalOrgId, competition.Id))
+            .ReturnsAsync(competition);
+
+        var expectedModel = new DeleteNonPriceElementModel(NonPriceElement.Features);
+
+        var result = (await controller.DeleteFeatureRequirement(
+                internalOrgId,
+                competition.Id,
+                firstCriteria.Id,
+                isAdding: false))
+            .As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task Post_DeleteFeatureRequirement_Redirects(
+        string internalOrgId,
+        int competitionId,
+        int requirementId,
+        DeleteNonPriceElementModel model,
+        CompetitionNonPriceElementsController controller)
+    {
+        var result = (await controller.DeleteFeatureRequirement(internalOrgId, competitionId, requirementId, model))
+            .As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.Index));
     }
 
     [Theory]
@@ -754,7 +895,8 @@ public static class CompetitionNonPriceElementsControllerTests
 
         var selectedNonPriceElements = string.Join(',', nonPriceElements);
 
-        var result = controller.GetRedirect(internalOrgId, competitionId, returnUrl, selectedNonPriceElements).As<RedirectToActionResult>();
+        var result = controller.GetRedirect(internalOrgId, competitionId, returnUrl, selectedNonPriceElements)
+            .As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(expectedNonPriceElementAction.ToString());

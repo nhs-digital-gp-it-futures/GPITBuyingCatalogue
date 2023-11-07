@@ -4,6 +4,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -18,6 +19,7 @@ public static class ViewResultsModelTests
     [Theory]
     [CommonAutoData]
     public static void Construct_SetsPropertiesAsExpected(
+        Organisation organisation,
         NonPriceWeights nonPriceWeights,
         Weightings weightings,
         Competition competition)
@@ -30,6 +32,7 @@ public static class ViewResultsModelTests
             NonPriceWeights = nonPriceWeights,
         };
 
+        competition.Organisation = organisation;
         competition.Weightings = weightings;
 
         var selectedNonPriceElements = competition.NonPriceElements.GetNonPriceElements();
@@ -39,6 +42,8 @@ public static class ViewResultsModelTests
 
         var model = new ViewResultsModel(competition);
 
+        model.InternalOrgId.Should().Be(organisation.InternalIdentifier);
+        model.CompetitionId.Should().Be(competition.Id);
         model.CompetitionName.Should().Be(competition.Name);
         model.AwardCriteriaWeightings.Should().Be(weightings);
         model.IncludesNonPriceElements.Should().Be(competition.IncludesNonPrice.GetValueOrDefault());
@@ -48,6 +53,7 @@ public static class ViewResultsModelTests
     [Theory]
     [CommonAutoData]
     public static void Construct_SetsCompetitionSolutionResults(
+        Organisation organisation,
         Weightings weightings,
         Competition competition,
         Supplier supplier,
@@ -79,6 +85,7 @@ public static class ViewResultsModelTests
             new(ScoreType.ServiceLevel, 2, 0.5M),
         };
 
+        competition.Organisation = organisation;
         competition.Weightings = weightings;
         competition.NonPriceElements = new()
         {
@@ -99,10 +106,13 @@ public static class ViewResultsModelTests
     [Theory]
     [CommonAutoData]
     public static void Construct_SetsAdditionalPropertiesAsExpected(
+        Organisation organisation,
         Competition competition,
         FilterDetailsModel filterDetailsModel,
         ICollection<CompetitionSolution> nonShortlistedSolutions)
     {
+        competition.Organisation = organisation;
+
         var model = new ViewResultsModel(competition, filterDetailsModel, nonShortlistedSolutions);
 
         model.FilterDetailsModel.Should().BeEquivalentTo(new ReviewFilterModel(filterDetailsModel));
