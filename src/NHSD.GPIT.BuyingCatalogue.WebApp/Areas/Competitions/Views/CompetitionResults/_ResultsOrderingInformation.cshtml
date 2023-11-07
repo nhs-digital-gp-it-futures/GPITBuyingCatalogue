@@ -5,7 +5,14 @@
 <div class="nhsuk-grid-column-three-quarters">
     <h2>Download your results</h2>
 
-    <p>Download the results of your competition as evidence of how you arrived at your winning solution.</p>
+    @if(!Model.IsDirectAward)
+    {
+        <p>Download the results of your competition as evidence of how you arrived at your winning solution.</p>
+    }
+    else
+    {
+        <p>Download the results of your competition as evidence of how you arrived at one solution.</p>
+    }
 
     <vc:nhs-secondary-button text="Download results (PDF)"
                                 url="@Model.PdfUrl"
