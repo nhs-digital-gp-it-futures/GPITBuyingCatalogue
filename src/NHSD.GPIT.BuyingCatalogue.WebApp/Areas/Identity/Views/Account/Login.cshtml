@@ -8,9 +8,9 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
         <nhs-page-title title="@ViewBag.Title" />
-        <form asp-controller="@typeof(AccountController).ControllerName()" 
-              asp-action="@nameof(AccountController.Login)" 
-              asp-route-returnUrl="@Model.ReturnUrl" 
+        <form asp-controller="@typeof(AccountController).ControllerName()"
+              asp-action="@nameof(AccountController.Login)"
+              asp-route-returnUrl="@Model.ReturnUrl"
               method="post">
             <input type="hidden" asp-for="ReturnUrl" />
             <nhs-input asp-for="EmailAddress"
@@ -18,15 +18,20 @@
             <nhs-input asp-for="Password"
                        label-text="Password"/>
             <div class="nhsuk-u-margin-bottom-5 ">
-                <a data-test-id="forgot-password-link" 
-                   asp-controller="@typeof(AccountController).ControllerName()" 
-                   asp-action="@nameof(AccountController.ForgotPassword)" 
+                <a data-test-id="forgot-password-link"
+                   asp-controller="@typeof(AccountController).ControllerName()"
+                   asp-action="@nameof(AccountController.ForgotPassword)"
                    asp-route-returnUrl="@Model.ReturnUrl">Forgot password?</a>
             </div>
+
+            <recaptcha />
+
+            <br/>
+
             <nhs-submit-button text="Log in" />
             <div>
-                <a data-test-id="request-account-link" 
-                   asp-controller="@typeof(RegistrationController).ControllerName()" 
+                <a data-test-id="request-account-link"
+                   asp-controller="@typeof(RegistrationController).ControllerName()"
                    asp-action="@nameof(RegistrationController.Index)">
                     Don't have an account? Request one now
                 </a>

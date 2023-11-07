@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
+using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
@@ -31,6 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             => View(new ContactUsModel());
 
         [Authorize]
+        [ValidateRecaptcha]
         [HttpPost("contact-us")]
         public async Task<IActionResult> ContactUs(ContactUsModel model)
         {

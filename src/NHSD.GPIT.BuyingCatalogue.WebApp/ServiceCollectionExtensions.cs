@@ -1,13 +1,10 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO.Compression;
 using System.Threading.Tasks;
-using Azure.Core.Extensions;
 using Azure.Storage.Blobs;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
@@ -15,25 +12,24 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
-using NHSD.GPIT.BuyingCatalogue.Framework.Environments;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Security;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Security.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Storage;
 using NHSD.GPIT.BuyingCatalogue.Services.Email;
 using NHSD.GPIT.BuyingCatalogue.Services.Identity;
 using NHSD.GPIT.BuyingCatalogue.Services.Organisations;
-using NHSD.GPIT.BuyingCatalogue.Services.Storage;
+using NHSD.GPIT.BuyingCatalogue.Services.Security;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
@@ -376,6 +372,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.AddSingleton(settings);
             services.AddScoped<BlobServiceClient>(_ => new(settings.ConnectionString));
+        }
+
+        public static IServiceCollection ConfigureRecaptcha(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<RecaptchaSettings>(configuration.GetSection(nameof(RecaptchaSettings)));
+            services.AddHttpClient<IRecaptchaVerificationService, GoogleRecaptchaVerificationService>(
+                x =>
+                {
+                    x.BaseAddress = RecaptchaSettings.GoogleRecaptchaApiUri;
+                });
+
+            return services;
         }
     }
 }
