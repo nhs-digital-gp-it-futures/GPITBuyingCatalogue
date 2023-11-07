@@ -69,6 +69,18 @@ public record OrderType(OrderTypeEnum Value) : IParsable<OrderType>
         }
     }
 
+    public bool MergerOrSplit
+    {
+        get
+        {
+            return Value switch
+            {
+                OrderTypeEnum.AssociatedServiceMerger or OrderTypeEnum.AssociatedServiceSplit => true,
+                _ => false,
+            };
+        }
+    }
+
     public static implicit operator OrderType(OrderTypeEnum o) => new(o);
 
     public static OrderType Parse(string s, IFormatProvider provider)

@@ -9,6 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
@@ -22,6 +23,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
         private const string SelectViewName = "ServiceRecipients/SelectRecipients";
         private const string ConfirmViewName = "ServiceRecipients/ConfirmChanges";
+        private static readonly PageTitleModel DefaultPageTitle = new()
+        {
+            Title = "Service Recipients for this order",
+            Advice = "Select the organisations you want to receive the items you’re ordering.",
+        };
+
+        private static readonly PageTitleModel SplitPageTitle = new()
+        {
+            Title = "Service Recipients splitting",
+            Advice = "Select all the practices that will be involved in the split you’re ordering. They must all be using the same Catalogue Solution.",
+        };
+
+        private static readonly PageTitleModel MergerPageTitle = new()
+        {
+            Title = "Service Recipients merging",
+            Advice = "Select all the practices that will be involved in the merger you’re ordering. They must all be using the same Catalogue Solution.",
+        };
 
         private readonly IOdsService odsService;
         private readonly IOrderService orderService;
@@ -59,6 +77,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var serviceRecipients = await GetServiceRecipients(internalOrgId);
             var splitImportedRecipients = string.Join(Separator, recipientIds, importedRecipients).Split(Separator, StringSplitOptions.RemoveEmptyEntries);
 
+            var title = wrapper.Order.OrderType.Value switch {
+                OrderTypeEnum.AssociatedServiceSplit => SplitPageTitle,
+                OrderTypeEnum.AssociatedServiceMerger => MergerPageTitle,
+                _ => DefaultPageTitle,
+            };
+
             var model =
                 new SelectRecipientsModel(
                     organisation,
@@ -68,19 +92,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     splitImportedRecipients,
                     selectionMode)
                 {
-                    Title = "Service Recipients for this order",
+                    Title = title.Title,
+                    Caption = $"Order {callOffId}",
+                    Advice = title.Advice,
                     BackLink =
                         Url.Action(
                             nameof(OrderController.Order),
                             typeof(OrderController).ControllerName(),
                             new { internalOrgId, callOffId }),
-                    Caption = $"Order {callOffId}",
-                    Advice = "Select the organisations you want to receive the items you’re ordering.",
                     ImportRecipientsLink = Url.Action(
                         nameof(ImportServiceRecipientsController.Index),
                         typeof(ImportServiceRecipientsController).ControllerName(),
                         new { internalOrgId, callOffId }),
                     HasImportedRecipients = !string.IsNullOrWhiteSpace(importedRecipients),
+                    SelectAtLeast = wrapper.Order.OrderType.MergerOrSplit
+                        ? 2
+                        : null,
                 };
 
             return View(SelectViewName, model);
