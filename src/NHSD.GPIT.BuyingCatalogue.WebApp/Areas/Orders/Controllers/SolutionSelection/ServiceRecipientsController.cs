@@ -114,7 +114,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             string recipientIds)
         {
             var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
-            var order = wrapper.RolledUp;
             var selectedRecipientOdsCodes = recipientIds.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
             var previouslySelectedIds = wrapper.Previous?.OrderRecipients

@@ -17,11 +17,11 @@
 <nhs-expander colour-mode="BlackAndWhite"
               label-text="@Model.CatalogueItem.Name"
               added-sticker="@Model.IsAmendment && @Model.IsOrderItemAdded"
-			  open="true"
-			  bold-title="true">
-    @if (Model.RolledUpRecipients.Any())
+              open="true"
+              bold-title="true">
+    @if (Model.RolledUpRecipientsForItem.Any())
     {
-        <br/>
+        <br />
         <nhs-table label-text="Service Recipients" catches-errors="false">
             @if (Model.IsAmendment)
             {
@@ -32,13 +32,13 @@
             <nhs-table-column>Planned delivery date</nhs-table-column>
             <nhs-table-column>Quantity</nhs-table-column>
 
-			@foreach(var serviceRecipient in Model.RolledUpRecipients)
-			{
-			    var quantity = serviceRecipient.GetQuantityForItem(Model.CatalogueItem.Id);
-			    var deliveryDate = serviceRecipient.GetDeliveryDateForItem(Model.CatalogueItem.Id);
-			    var deliveryDateText = deliveryDate.HasValue
-			        ? $"{deliveryDate.Value:d MMM yyyy}"
-			        : "No date entered";
+            @foreach (var serviceRecipient in Model.RolledUpRecipientsForItem)
+            {
+                var quantity = serviceRecipient.GetQuantityForItem(Model.CatalogueItem.Id);
+                var deliveryDate = serviceRecipient.GetDeliveryDateForItem(Model.CatalogueItem.Id);
+                var deliveryDateText = deliveryDate.HasValue
+                ? $"{deliveryDate.Value:d MMM yyyy}"
+                : "No date entered";
 
                 <nhs-table-row-container>
                     @if (Model.IsAmendment)
@@ -85,12 +85,15 @@
                 <nhs-table-column>Pricing tier</nhs-table-column>
             }
             <nhs-table-column>Price per unit</nhs-table-column>
-            @if (Model.IsAmendment) {
+            @if (Model.IsAmendment)
+            {
                 <nhs-table-column>Old quantity</nhs-table-column>
                 <nhs-table-column>New quantity</nhs-table-column>
                 <nhs-table-column>Old price</nhs-table-column>
                 <nhs-table-column>New price</nhs-table-column>
-            } else {
+            }
+            else
+            {
                 <nhs-table-column>Quantity</nhs-table-column>
                 <nhs-table-column>Total cost (@billingPeriod)</nhs-table-column>
             }
@@ -106,12 +109,15 @@
                         }
                         <nhs-table-cell>£@rolledUpCosts[i].Price.ToString("N4") @Model.OrderItemPrice.ToPriceUnitString()</nhs-table-cell>
 
-                        @if (Model.IsAmendment) {
+                        @if (Model.IsAmendment)
+                        {
                             <nhs-table-cell>@($"{previousCosts[i].Quantity:N0}")</nhs-table-cell>
                             <nhs-table-cell>@($"{rolledUpCosts[i].Quantity:N0}")</nhs-table-cell>
                             <nhs-table-cell>£@previousCosts[i].Cost.ToString("N2")</nhs-table-cell>
                             <nhs-table-cell>£@rolledUpCosts[i].Cost.ToString("N2")</nhs-table-cell>
-                        } else {
+                        }
+                        else
+                        {
                             <nhs-table-cell>@($"{rolledUpCosts[i].Quantity:N0}")</nhs-table-cell>
                             <nhs-table-cell>£@rolledUpCosts[i].Cost.ToString("N2")</nhs-table-cell>
                         }

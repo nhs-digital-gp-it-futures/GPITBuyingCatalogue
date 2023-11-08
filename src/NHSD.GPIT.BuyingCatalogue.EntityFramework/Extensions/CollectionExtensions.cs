@@ -7,6 +7,18 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 
 public static class CollectionExtensions
 {
+    public static ICollection<OrderRecipient> ForCatalogueItem(this ICollection<OrderRecipient> recipients, CatalogueItemId catalogueItemId)
+    {
+        if (recipients == null)
+        {
+            return new List<OrderRecipient>();
+        }
+
+        return recipients
+            .Where(r => r.OrderItemRecipients.Any(oir => oir.CatalogueItemId == catalogueItemId))
+            .ToList();
+    }
+
     public static bool AllDeliveryDatesEntered(this ICollection<OrderRecipient> recipients, CatalogueItemId catalogueItemId)
     {
         return recipients != null && recipients.All(r => r.GetDeliveryDateForItem(catalogueItemId).HasValue);

@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -43,6 +44,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             OrderRecipient[] recipients,
             FundingTypeDescriptionModel fundingTypeDescription)
         {
+            recipients.ForEach(r => r.SetDeliveryDateForItem(orderItem.CatalogueItemId, DateTime.Now));
+
             var model = new AmendOrderItemModel(callOffId, recipients, null, orderItem, orderItem, isAmendment, fundingTypeDescription);
             recipients.ForEach(x => model.IsServiceRecipientAdded(x.OdsCode).Should().BeTrue());
         }
@@ -75,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             model.IsAmendment.Should().Be(isAmendment);
             model.OrderItemPrice.Should().Be(orderItem.OrderItemPrice);
             model.CatalogueItem.Should().Be(orderItem.CatalogueItem);
-            model.RolledUpRecipients.Should().BeEquivalentTo(System.Array.Empty<OrderRecipient>());
+            model.RolledUpRecipientsForItem.Should().BeEquivalentTo(System.Array.Empty<OrderRecipient>());
             model.RolledUpTotalQuantity.Should().Be(orderItem.TotalQuantity(null));
             model.PreviousTotalQuantity.Should().Be(previousOrderItem.TotalQuantity(null));
             model.FundingTypeDescription.Should().Be(fundingTypeDescription.Value(orderItem.CatalogueItem.CatalogueItemType.DisplayName()));
