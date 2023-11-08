@@ -1,0 +1,36 @@
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
+@model FilteredDirectAwardModel
+
+@{
+    ViewBag.Title = "Competition results";
+    var solutionUrl = Url.Action(
+                nameof(SolutionsController.Description),
+                typeof(SolutionsController).ControllerName(),
+            new { solutionId = @Model.NonShortlistedSolutions.FirstOrDefault().Solution.CatalogueItem.Id, Area = "Solutions" });
+}
+
+<partial name="Partials/_BackLink" model="Model"/>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-page-title title="@ViewBag.Title" caption="@Model.CompetitionName" advice="The filter used for this competition only returned one result. This means you can execute a direct award for this solution." />
+
+        <nhs-card>
+            <h2 class="nhsuk-card__heading nhsuk-heading-m">
+                <a href=@solutionUrl target="_blank">
+                    @Model.NonShortlistedSolutions.FirstOrDefault().Solution.CatalogueItem.Name (opens in new tab)
+                </a>
+            </h2>
+            <span class="nhsuk-caption-m nhsuk-caption--bottom">@Model.NonShortlistedSolutions.FirstOrDefault().Solution.CatalogueItem.Supplier.Name</span>
+        </nhs-card>
+
+        <h2>Filter information</h2>
+
+        <nhs-expander label-text="View filter information" open="false">
+            <partial name="Partials/_FilterDetailsPartial" model="@Model.FilterDetailsModel"/>
+        </nhs-expander>
+    </div>
+       
+    <partial name="_ResultsOrderingInformation" model="new ResultsOrderingInformation(false, true, Model.PdfUrl, Model.InternalOrgId, Model.CompetitionId)" />
+    
+</div>
