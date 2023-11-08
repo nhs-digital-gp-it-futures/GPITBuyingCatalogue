@@ -96,15 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
 
             var recipients = orderWrapper.DetermineOrderRecipients(catalogueItemId);
 
-            if (order.IsAmendment)
-            {
-                return CalculateForTerm(orderItem, order.GetTerm(), recipients);
-            }
-            else
-            {
-                var maximumTerm = order.MaximumTerm ?? 36;
-                return CalculateForTerm(orderItem, maximumTerm, recipients);
-            }
+            return CalculateForTerm(orderItem, order.GetTerm(), recipients);
         }
 
         public static decimal TotalCost(this OrderItem orderItem, ICollection<OrderRecipient> recipients)
@@ -136,26 +128,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
 
         private static decimal TotalCost(this Order order, Order previous)
         {
-            return order.IsAmendment
-                ? order.TotalCostByPlannedDelivery(previous)
-                : order.TotalCostForMaximumTerm(previous);
-        }
-
-        private static decimal TotalCostByPlannedDelivery(this Order order, Order previous)
-        {
             return order.TotalOneOffCost(previous) + (order.TotalMonthlyCost(previous) * order.GetTerm());
-        }
-
-        private static decimal TotalCostForMaximumTerm(this Order order, Order previous)
-        {
-            var maximumTerm = order?.MaximumTerm ?? 36;
-
-            return order.TotalOneOffCost(previous) + (order.TotalMonthlyCost(previous) * maximumTerm);
         }
 
         private static int GetTerm(this Order order)
         {
-            return order.DeliveryDate.HasValue
+            return order.DeliveryDate.HasValue && order.IsAmendment
                 ? order.EndDate.RemainingTerm(order.DeliveryDate.Value)
                 : order.MaximumTerm ?? 36;
         }
