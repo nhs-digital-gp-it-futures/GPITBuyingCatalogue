@@ -13,16 +13,9 @@ public class FilteredDirectAwardModel : NavBaseModel
     public FilteredDirectAwardModel(
         Competition competition)
     {
-        var selectedNonPriceElements = competition.NonPriceElements.GetNonPriceElements();
-
         CompetitionName = competition.Name;
         InternalOrgId = competition.Organisation.InternalIdentifier;
         CompetitionId = competition.Id;
-
-        var competitionSolutionResults = competition.CompetitionSolutions
-            .Select(x => new CompetitionSolutionResult(competition, x))
-            .OrderByDescending(x => x.TotalWeightedScore)
-            .ToList();
     }
 
     public FilteredDirectAwardModel(
