@@ -23,14 +23,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
                     .NoDeliveryDatesEntered(x.CatalogueItemId));
             var defaultDeliveryDateEntered = order.DeliveryDate.HasValue;
 
-            if (state.SolutionOrService != TaskProgress.Completed
+            var okToProgress = new[] { TaskProgress.Completed, TaskProgress.Amended };
+
+            if (!okToProgress.Contains(state.SolutionOrService)
                 && !anyDeliveryDatesEntered)
             {
                 return TaskProgress.CannotStart;
             }
 
             return order.HaveAllDeliveryDates(wrapper.RolledUp.OrderRecipients)
-                ? TaskProgress.Completed
+                ? order.IsAmendment ? TaskProgress.Amended : TaskProgress.Completed
                 : (anyDeliveryDatesEntered || defaultDeliveryDateEntered ? TaskProgress.InProgress : TaskProgress.NotStarted);
         }
     }

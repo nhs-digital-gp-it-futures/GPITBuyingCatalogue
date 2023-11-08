@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates
@@ -9,12 +10,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
         {
         }
 
-        public OrderItemRecipientModel(OrderItemRecipient recipient)
+        public OrderItemRecipientModel(OrderRecipient recipient, CatalogueItemId catalogueItemId)
         {
-            CatalogueItemId = recipient.CatalogueItemId;
-            DeliveryDate = recipient.DeliveryDate;
+            CatalogueItemId = catalogueItemId;
+            DeliveryDate = recipient.GetDeliveryDateForItem(catalogueItemId);
             OdsCode = recipient.OdsCode;
-            RecipientName = recipient.Recipient?.OdsOrganisation.Name;
+            RecipientName = recipient.OdsOrganisation?.Name;
         }
 
         public CatalogueItemId CatalogueItemId { get; set; }

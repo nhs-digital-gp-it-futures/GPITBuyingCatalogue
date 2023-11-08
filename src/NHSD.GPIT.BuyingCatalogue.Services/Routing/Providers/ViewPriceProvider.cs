@@ -20,11 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
             var orderItem = order.OrderItem(routeValues.CatalogueItemId.Value);
             var recipients = orderWrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
 
-            var attentionRequired = orderItem != null
-                && (!recipients.AllQuantitiesEntered(orderItem)
-                || (order.IsAmendment && !recipients.AllDeliveryDatesEntered(orderItem.CatalogueItemId)));
-
-            if (!attentionRequired)
+            if (recipients.AllQuantitiesEntered(orderItem))
             {
                 return new RoutingResult
                 {
