@@ -405,6 +405,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             var order = fixture.Build<Order>()
                 .With(o => o.Revision, revision)
                 .With(o => o.CommencementDate, commencementDate)
+                .With(o => o.DeliveryDate, amendmentPlannedDelivery)
                 .With(o => o.OrderItems, new HashSet<OrderItem>(new[] { perMonthOrderItemUsedForTotal }))
                 .With(o => o.OrderRecipients, new HashSet<OrderRecipient> { recipient })
                 .With(o => o.MaximumTerm, maximumTerm)
@@ -544,6 +545,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             Order order = BuildOrder(fixture, maximumTerm, new[] { orderItem }, commencementDate, new[] { recipient });
 
             var amendedOrder = order.BuildAmendment(2);
+            amendedOrder.DeliveryDate = amendmentPlannedDelivery;
             amendedOrder.OrderItems = new HashSet<OrderItem> { orderItem };
             amendedOrder.OrderRecipients.Add(amendedRecipient);
 
@@ -590,10 +592,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             Order order = BuildOrder(fixture, maximumTerm, new[] { orderItem }, commencementDate, new[] { recipient });
 
             var revision2 = order.BuildAmendment(2);
+            revision2.DeliveryDate = revision2PlannedDelivery;
             revision2.OrderItems = new HashSet<OrderItem> { orderItem };
             revision2.OrderRecipients = new HashSet<OrderRecipient> { revision2Recipient };
 
             var revision3 = order.BuildAmendment(3);
+            revision3.DeliveryDate = revision3PlannedDelivery;
             revision3.OrderItems = new HashSet<OrderItem> { orderItem };
             revision3.OrderRecipients = new HashSet<OrderRecipient> { revision3Recipient };
 

@@ -36,7 +36,7 @@
             <hr/>
         }
         
-        @if (Model.SolutionId != null)
+        @if (Model.SolutionId != null && Model.OrderItemDates(Model.SolutionId.Value).Any())
         {
             var catalogueItemId = Model.SolutionId.Value;
             var itemName = Model.OrderItemName(catalogueItemId);
@@ -75,7 +75,7 @@
         {
             <h2>Additional Services</h2>
 
-            @foreach (var catalogueItemId in Model.AdditionalServiceIds)
+            @foreach (var catalogueItemId in Model.AdditionalServiceIds.Where(x => Model.OrderItemDates(x).Any()))
             {
                 var itemName = Model.OrderItemName(catalogueItemId);
 

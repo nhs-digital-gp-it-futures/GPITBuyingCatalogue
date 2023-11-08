@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
@@ -39,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         {
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
-            var model = new SelectDateModel(internalOrgId, callOffId, order.CommencementDate!.Value, order.DeliveryDate)
+            var model = new SelectDateModel(internalOrgId, callOffId, order)
             {
                 BackLink = returnUrl ?? Url.Action(
                     nameof(OrderController.Order),
@@ -126,61 +127,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                 new { model.InternalOrgId, model.CallOffId, catalogueItemId });
         }
 
-        [HttpGet("{catalogueItemId}/amend")]
-        public async Task<IActionResult> AmendDate(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, RoutingSource? source = null)
-        {
-            var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
-            var order = wrapper.Order;
-
-            var recipients = wrapper.DetermineOrderRecipients(catalogueItemId);
-            var deliveryDate = recipients.FirstOrDefault()?.GetDeliveryDateForItem(catalogueItemId);
-
-            var route = routingService.GetRoute(
-                RoutingPoint.AmendDeliveryDatesBackLink,
-                wrapper,
-                new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
-
-            var model = new AmendDateModel(internalOrgId, callOffId, catalogueItemId, order, deliveryDate)
-            {
-                BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
-                Source = source,
-            };
-
-            return View(model);
-        }
-
-        [HttpPost("{catalogueItemId}/amend")]
-        public async Task<IActionResult> AmendDate(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, AmendDateModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            await deliveryDateService.SetDeliveryDate(internalOrgId, callOffId, catalogueItemId, model.Date!.Value);
-
-            var orderWrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
-
-            var route = routingService.GetRoute(
-                RoutingPoint.AmendDeliveryDates,
-                orderWrapper,
-                new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = model.Source });
-
-            return RedirectToAction(route.ActionName, route.ControllerName, route.RouteValues);
-        }
-
         [HttpGet("{catalogueItemId}/edit")]
         public async Task<IActionResult> EditDates(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, RoutingSource? source = null)
         {
             var orderWrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
-            var order = orderWrapper.Order;
+
+            // If there are no new recipients for this item (e.g. the original solution in a amend)
+            if (orderWrapper.DetermineOrderRecipients(catalogueItemId).IsNullOrEmpty())
+            {
+                var next = routingService.GetRoute(
+                    RoutingPoint.EditDeliveryDates,
+                    orderWrapper,
+                    new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
+
+                return RedirectToAction(next.ActionName, next.ControllerName, next.RouteValues);
+            }
 
             var route = routingService.GetRoute(
                 RoutingPoint.EditDeliveryDatesBackLink,
                 orderWrapper,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
 
-            var model = new EditDatesModel(order, catalogueItemId, source)
+            var model = new EditDatesModel(orderWrapper, catalogueItemId, source)
             {
                 BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
             };
@@ -269,9 +237,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         [HttpGet("review")]
         public async Task<IActionResult> Review(string internalOrgId, CallOffId callOffId)
         {
-            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
+            var orderWrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
 
-            var model = new ReviewModel(order)
+            var model = new ReviewModel(orderWrapper)
             {
                 BackLink = Url.Action(
                     nameof(OrderController.Order),

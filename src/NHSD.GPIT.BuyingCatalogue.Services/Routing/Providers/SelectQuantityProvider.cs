@@ -28,35 +28,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 throw new ArgumentNullException(nameof(routeValues));
             }
 
-            var orderItem = order.OrderItem(routeValues.CatalogueItemId.Value);
-            var attentionRequired = order.IsAmendment
-                && !orderWrapper.DetermineOrderRecipients(orderItem.CatalogueItemId)
-                                .AllDeliveryDatesEntered(orderItem.CatalogueItemId);
-
-            if (routeValues.Source == RoutingSource.TaskList
-                && !attentionRequired)
+            if (routeValues.Source == RoutingSource.TaskList)
             {
                 return new RoutingResult
                 {
                     ControllerName = Constants.Controllers.TaskList,
                     ActionName = Constants.Actions.TaskList,
                     RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId },
-                };
-            }
-
-            if (routeValues.CallOffId.IsAmendment)
-            {
-                return new RoutingResult
-                {
-                    ControllerName = Constants.Controllers.DeliveryDates,
-                    ActionName = Constants.Actions.AmendDeliveryDate,
-                    RouteValues = new
-                    {
-                        routeValues.InternalOrgId,
-                        routeValues.CallOffId,
-                        routeValues.CatalogueItemId,
-                        routeValues.Source,
-                    },
                 };
             }
 
@@ -76,9 +54,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 return PricesRoute(routeValues, associatedService);
             }
 
+            if (order.GetAssociatedServices().Any())
+            {
+                return new RoutingResult
+                {
+                    ControllerName = Constants.Controllers.TaskList,
+                    ActionName = Constants.Actions.TaskList,
+                    RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId },
+                };
+            }
+
             var associatedServices = associatedServicesService.GetPublishedAssociatedServicesForSolution(order.GetSolutionId()).Result;
 
-            if (associatedServices.Any())
+            if (associatedServices.Any() && !order.IsAmendment)
             {
                 return new RoutingResult
                 {
