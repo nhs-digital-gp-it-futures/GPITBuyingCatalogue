@@ -1,0 +1,123 @@
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.CompetitionFeaturesScoringPdf.PdfFeaturesScoringModel
+@{
+    Layout = "";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Compare and score features">
+    <title>Compare and score features</title>
+    <link rel="stylesheet" href="~/css/main.min.css">
+    <link href="https://www.nhs.uk/" rel="preconnect">
+    <link href="https://assets.nhs.uk/" rel="preconnect" crossorigin>
+    <link type="font/woff2" href="https://assets.nhs.uk/fonts/FrutigerLTW01-55Roman.woff2" rel="preload" as="font" crossorigin>
+    <link type="font/woff2" href="https://assets.nhs.uk/fonts/FrutigerLTW01-65Bold.woff2" rel="preload" as="font" crossorigin>
+    <link rel="shortcut icon" href="~/nhsuk-frontend/assets/favicons/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="~/nhsuk-frontend/assets/favicons/apple-touch-icon-180x180.png">
+    <link rel="mask-icon" href="~/nhsuk-frontend/assets/favicons/favicon.svg" color="#005eb8">
+    <link rel="icon" sizes="192x192" href="~/nhsuk-frontend/assets/favicons/favicon-192x192.png">
+    <meta name="msapplication-TileImage" content="~/nhsuk-frontend/assets/favicons/mediumtile-144x144.png">
+    <meta name="msapplication-TileColor" content="#005eb8">
+    <meta name="msapplication-square70x70logo" content="~/nhsuk-frontend/assets/favicons/smalltile-70x70.png">
+    <meta name="msapplication-square150x150logo" content="~/nhsuk-frontend/assets/favicons/mediumtile-150x150.png">
+    <meta name="msapplication-wide310x150logo" content="~/nhsuk-frontend/assets/favicons/widetile-310x150.png">
+    <meta name="msapplication-square310x310logo" content="~/nhsuk-frontend/assets/favicons/largetile-310x310.png">
+    <meta name="robots" content="noindex">
+    <meta name="googlebot" content="noindex">
+    <style>
+        @@media print {
+            @@page {
+                size: A4 landscape;
+                max-height: 100%;
+                max-width: 100%
+            }
+        }
+
+        h2 {
+            border-bottom: 1px solid lightgray;
+            width: 100%;
+        }
+
+        h3 {
+            border-bottom: 1px solid lightgray;
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="nhsuk-bc-print">
+    <div class="nhsuk-width-container">
+        <main class="nhsuk-main-wrapper" id="maincontent">
+            <div class="nhsuk-grid-row">
+                <div class="nhsuk-grid-column-full">
+                    <nhs-page-title title="Compare and score features" caption="@Model.Competition.Name" />
+                    
+                    <h2>Your features criteria</h2>
+                    <h3>Your features requirement details</h3>
+                    @if (Model.MustFeatures.Any())
+                    {
+                        <h4>Must requirements</h4>
+                        <ul>
+                            @foreach (var requirement in Model.MustFeatures)
+                            {
+                                <li>@requirement.Requirements</li>
+                            }
+                        </ul>
+                    }
+                    @if (Model.ShouldFeatures.Any())
+                    {
+                        <h4>Should requirements</h4>
+                        <ul>
+                            @foreach (var requirement in Model.ShouldFeatures)
+                            {
+                                <li>@requirement.Requirements</li>
+                            }
+                        </ul>
+                    }
+                    <div style="page-break-after: always"></div>
+
+                    @for (var i = 0; i < Model.SolutionScores.Count; i++)
+                    {
+                        <hr/>
+                        var solutionScoreModel = Model.SolutionScores[i];
+                        var solutionName = solutionScoreModel.Solution.CatalogueItem.Name;
+
+                        <h2>@solutionName</h2>
+
+                            <b>These are the features provided by this solution that can help meet needs in primary care:</b>
+
+                            <br />
+                            <br />
+
+                            <ul>
+                                @foreach (var feature in solutionScoreModel.Solution.GetFeatures().Where(x => !string.IsNullOrWhiteSpace(x)).Order())
+                                {
+                                    <li>@feature</li>
+                                }
+                            </ul>
+                            <br />
+
+                            <nhs-fieldset-form-label asp-for="@Model.SolutionScores[i]"
+                                                     label-text="What score would you give this solution?"
+                                                     label-hint="Score each solution between 1 and 5. The higher the score, the better you think a solution meets your needs." size="Small">
+                                <input type="hidden" asp-for="@Model.SolutionScores[i].SolutionId" />
+                                <nhs-input asp-for="@Model.SolutionScores[i].Score" input-width="Three" />
+                            </nhs-fieldset-form-label>
+
+                            <nhs-fieldset-form-label asp-for="@Model.SolutionScores[i]"
+                                                     label-text="Why have you given this score?"
+                                                     label-hint="Provide a justification for the score you have given this solution." size="Small">
+                                <input type="hidden" asp-for="@Model.SolutionScores[i].SolutionId" />
+                                <nhs-textarea asp-for="@Model.SolutionScores[i].Justification" character-count="false" />
+                            </nhs-fieldset-form-label>
+                        <div style="page-break-after: always"></div>
+                    }
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

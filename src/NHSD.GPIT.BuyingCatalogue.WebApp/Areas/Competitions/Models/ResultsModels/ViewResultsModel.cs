@@ -15,6 +15,8 @@ public class ViewResultsModel : NavBaseModel
     {
         var selectedNonPriceElements = competition.NonPriceElements.GetNonPriceElements();
 
+        InternalOrgId = competition.Organisation.InternalIdentifier;
+        CompetitionId = competition.Id;
         CompetitionName = competition.Name;
         IncludesNonPriceElements = competition.IncludesNonPrice.GetValueOrDefault();
         AwardCriteriaWeightings = competition.Weightings;
@@ -45,11 +47,17 @@ public class ViewResultsModel : NavBaseModel
         FilterDetailsModel = new ReviewFilterModel(filterDetails);
     }
 
+    public string InternalOrgId { get; set; }
+
+    public int CompetitionId { get; set; }
+
     public string CompetitionName { get; set; }
 
     public bool IncludesNonPriceElements { get; set; }
 
     public string PdfUrl { get; set; }
+
+    public bool HasMultipleWinners => WinningSolutions.Count > 1;
 
     public ReviewFilterModel FilterDetailsModel { get; set; }
 
