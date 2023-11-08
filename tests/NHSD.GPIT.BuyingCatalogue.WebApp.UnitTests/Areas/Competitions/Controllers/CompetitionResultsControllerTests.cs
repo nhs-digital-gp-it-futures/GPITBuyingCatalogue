@@ -101,6 +101,38 @@ public static class CompetitionResultsControllerTests
 
     [Theory]
     [CommonAutoData]
+    public static async Task DirectAward_OneResult_ReturnsViewWithModel(
+        string internalOrgId,
+        Competition competition,
+        FilterDetailsModel filterDetailsModel,
+        ICollection<CompetitionSolution> nonShortlistedSolutions,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] Mock<IManageFiltersService> filtersService,
+        CompetitionResultsController controller,
+        Organisation organisation)
+    {
+        filtersService.Setup(x => x.GetFilterDetails(It.IsAny<int>(), competition.FilterId))
+            .ReturnsAsync(filterDetailsModel);
+
+        competitionsService.Setup(x => x.GetCompetitionForResults(internalOrgId, competition.Id))
+            .ReturnsAsync(competition);
+
+        competitionsService.Setup(x => x.GetNonShortlistedSolutions(internalOrgId, competition.Id))
+            .ReturnsAsync(nonShortlistedSolutions);
+
+        competition.Organisation = organisation;
+
+        var expectedModel = new FilteredDirectAwardModel(competition, filterDetailsModel, nonShortlistedSolutions);
+
+        var result = (await controller.DirectAward(internalOrgId, competition.Id)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should()
+            .BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.PdfUrl));
+    }
+
+    [Theory]
+    [CommonAutoData]
     public static async Task DownloadResults_NullCompetition_ReturnsNotFoundResult(
         string internalOrgId,
         int competitionId,

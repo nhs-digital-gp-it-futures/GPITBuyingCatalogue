@@ -84,8 +84,27 @@ public class CompetitionResultsController : Controller
                 new { internalOrgId }),
             PdfUrl = Url.Action(nameof(DownloadResults), new { internalOrgId, competitionId }),
         };
+        return View("ViewResults", model);
+    }
 
-        return View(model);
+    [HttpGet("direct-award")]
+    public async Task<IActionResult> DirectAward(
+       string internalOrgId,
+       int competitionId)
+    {
+        var competition = await competitionsService.GetCompetitionForResults(internalOrgId, competitionId);
+        var nonShortlistedSolutions = await competitionsService.GetNonShortlistedSolutions(internalOrgId, competitionId);
+        var filterDetails = await filtersService.GetFilterDetails(competition.OrganisationId, competition.FilterId);
+
+        var model = new FilteredDirectAwardModel(competition, filterDetails, nonShortlistedSolutions)
+        {
+            BackLink = Url.Action(
+                nameof(CompetitionsDashboardController.Index),
+                typeof(CompetitionsDashboardController).ControllerName(),
+                new { internalOrgId }),
+            PdfUrl = Url.Action(nameof(DownloadResults), new { internalOrgId, competitionId }),
+        };
+        return View("FilteredDirectAward", model);
     }
 
     [HttpGet("download")]

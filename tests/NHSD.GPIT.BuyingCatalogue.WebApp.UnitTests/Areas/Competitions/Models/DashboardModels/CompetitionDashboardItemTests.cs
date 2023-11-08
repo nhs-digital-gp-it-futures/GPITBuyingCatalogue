@@ -1,4 +1,8 @@
-using System;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
@@ -45,5 +49,31 @@ public static class CompetitionDashboardItemTests
         var model = new CompetitionDashboardItem(competition);
 
         model.Progress.Should().Be(TaskProgress.Completed);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void Construct_SingleItem_IsDirectAward(
+        Competition competition,
+        CompetitionSolution competitionSolution)
+    {
+        competition.CompetitionSolutions = new Collection<CompetitionSolution> { competitionSolution };
+
+        var model = new CompetitionDashboardItem(competition);
+
+        model.IsDirectAward().Should().Be(true);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void Construct_MultipleItems_IsNotDirectAward(
+        Competition competition,
+        Collection<CompetitionSolution> competitionSolutions)
+    {
+        competition.CompetitionSolutions = competitionSolutions;
+
+        var model = new CompetitionDashboardItem(competition);
+
+        model.IsDirectAward().Should().Be(false);
     }
 }
