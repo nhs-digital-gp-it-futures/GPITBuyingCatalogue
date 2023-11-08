@@ -13,13 +13,13 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
 {
-    public class EditDeliveryDatesBackLinkProviderTests
+    public class DeliveryDatesBackLinkProviderTests
     {
         [Theory]
         [CommonAutoData]
         public void Process_OrderWrapperIsNull_ThrowsException(
             RouteValues routeValues,
-            EditDeliveryDatesBackLinkProvider provider)
+            DeliveryDatesBackLinkProvider provider)
         {
             FluentActions
                 .Invoking(() => provider.Process(null, routeValues))
@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         [CommonAutoData]
         public void Process_RouteValuesIsNull_ThrowsException(
             Order order,
-            EditDeliveryDatesBackLinkProvider provider)
+            DeliveryDatesBackLinkProvider provider)
         {
             FluentActions
                 .Invoking(() => provider.Process(new OrderWrapper(order), null))
@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         public void Process_RouteValuesCatalogueItemIdIsNull_ThrowsException(
             Order order,
             RouteValues routeValues,
-            EditDeliveryDatesBackLinkProvider provider)
+            DeliveryDatesBackLinkProvider provider)
         {
             routeValues.CatalogueItemId = null;
 
@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             CallOffId callOffId,
             CatalogueItemId catalogueItemId,
             Order order,
-            EditDeliveryDatesBackLinkProvider provider)
+            DeliveryDatesBackLinkProvider provider)
         {
             var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, catalogueItemId)
             {
@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             string internalOrgId,
             CallOffId callOffId,
             Order order,
-            EditDeliveryDatesBackLinkProvider provider)
+            DeliveryDatesBackLinkProvider provider)
         {
             order.SetupCatalogueSolution();
 
@@ -108,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             string internalOrgId,
             CallOffId callOffId,
             Order order,
-            EditDeliveryDatesBackLinkProvider provider)
+            DeliveryDatesBackLinkProvider provider)
         {
             order.AssociatedServicesOnly = true;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
@@ -135,7 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             string internalOrgId,
             CallOffId callOffId,
             Order order,
-            EditDeliveryDatesBackLinkProvider provider)
+            DeliveryDatesBackLinkProvider provider)
         {
             var deliveryDate = DateTime.Today;
 
@@ -166,7 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             string internalOrgId,
             CallOffId callOffId,
             Order order,
-            EditDeliveryDatesBackLinkProvider provider)
+            DeliveryDatesBackLinkProvider provider)
         {
             var deliveryDate = DateTime.Today;
 

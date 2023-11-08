@@ -231,7 +231,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
 
         [Theory]
         [CommonInlineAutoData(1, TaskProgress.Completed)]
-        [CommonInlineAutoData(2, TaskProgress.InProgress)]
+        [CommonInlineAutoData(2, TaskProgress.Amended)]
         public static void Get_SolutionSelected_With_Everything_But_DeliveryDates_Returns_InProgress_For_An_Amendment(
             int revision,
             TaskProgress expectedTaskProgress,

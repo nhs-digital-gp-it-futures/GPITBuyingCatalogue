@@ -325,7 +325,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 }).ToList();
             }
 
-            // it doesn't exsit on this order so no recipients apply
+            // it doesn't exist on this order so no recipients apply
             return Enumerable.Empty<OrderRecipient>().ToList();
         }
 
