@@ -11,7 +11,7 @@
 @if (Model.IncludesNonPriceElements)
 {
     <table>
-        <h3>Non-price element scores</h3>
+        <h4>Non-price element scores</h4>
         <thead>
         <tr>
             <th>Non-price element</th>
@@ -58,7 +58,7 @@
 }
 
 <table>
-    <h3>Price score</h3>
+    <h4>Price score</h4>
     <thead>
     <tr>
         <th>Price</th>
@@ -84,9 +84,7 @@
 
 @if (Model.IncludesNonPriceElements)
 {
-    <br/>
-    <br/>
-    <h2>Total weighted score: @Model.TotalWeightedScore.ToString("N2")</h2>
+    <h4>Total weighted score: @Model.TotalWeightedScore.ToString("N2")</h4>
 }
 
 <div style="page-break-after: always"></div>

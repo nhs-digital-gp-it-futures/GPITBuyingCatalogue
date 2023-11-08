@@ -56,6 +56,9 @@
             <nhs-button-group>
                 <nhs-submit-button text="View results"/>
                 <vc:nhs-secondary-button type="Secondary" text="Save for later" url="@Url.Action(nameof(CompetitionsDashboardController.Index), typeof(CompetitionsDashboardController).ControllerName(), new { internalOrgId = Model.InternalOrgId })"/>
+                <vc:nhs-secondary-button text="Download summary (PDF)"
+                                         url="@Model.PdfUrl"
+                                         type="Secondary" />
             </nhs-button-group>
         </form>
     </div>
