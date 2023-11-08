@@ -2105,6 +2105,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
 
             CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceOnly);
+
+            CompetitionPages.ViewResults();
         }
 
         [Fact]

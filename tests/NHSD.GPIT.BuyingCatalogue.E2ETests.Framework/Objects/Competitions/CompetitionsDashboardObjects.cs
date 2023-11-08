@@ -1,5 +1,6 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using OpenQA.Selenium;
+using OpenQA.Selenium.DevTools.V100.DOM;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Competitions;
 
@@ -22,4 +23,6 @@ public static class CompetitionsDashboardObjects
     public static By AwardCriteriaLink => By.LinkText("Award criteria");
 
     public static By CalculatePriceLink => By.LinkText("Calculate price");
+
+    public static By ViewResultLink => By.LinkText("View results");
 }

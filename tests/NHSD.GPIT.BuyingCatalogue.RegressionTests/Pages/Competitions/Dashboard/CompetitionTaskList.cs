@@ -39,5 +39,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Dashboard
             CommonActions.ClickLinkElement(CompetitionsDashboardObjects.CalculatePriceLink);
             CommonActions.LedeText().Should().Be("Provide information to calculate the price for each of your shortlisted solutions. The calculation will be based on the quantity you want to order and the length of the contract.".FormatForComparison());
         }
+
+        public void ViewResult()
+        {
+            CommonActions.ClickLinkElement(CompetitionsDashboardObjects.ViewResultLink);
+            CommonActions.LedeText().Should().Be("Review the information you’ve added for this competition. If you’re happy, you can view your results and see your winning solution.".FormatForComparison());
+        }
     }
 }
