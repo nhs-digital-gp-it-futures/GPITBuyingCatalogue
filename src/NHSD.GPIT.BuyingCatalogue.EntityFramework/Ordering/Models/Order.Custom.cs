@@ -21,6 +21,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public EndDate EndDate => new(CommencementDate, MaximumTerm);
 
         [JsonIgnore]
+        public bool ContractExpired => EndDate.DateTime.HasValue && DateTime.UtcNow.Date > EndDate.DateTime.Value.Date;
+
+        [JsonIgnore]
         public bool IsAmendment => CallOffId.IsAmendment;
 
         public void Complete()
