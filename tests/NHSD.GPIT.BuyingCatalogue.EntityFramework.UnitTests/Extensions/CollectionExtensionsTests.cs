@@ -75,6 +75,15 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
                 .Should().BeFalse();
         }
 
+        [Theory]
+        [CommonAutoData]
+        public static void AllQuantitiesEntered_Returns_False_When_OrderItemPrice_Null(OrderRecipient[] recipients, OrderItem orderItem)
+        {
+            orderItem.OrderItemPrice = null;
+            OrderRecipientCollection.CollectionExtensions.AllQuantitiesEntered(recipients, orderItem)
+                .Should().BeFalse();
+        }
+
         [Fact]
         public static void Exists_Returns_False_When_Null()
         {
