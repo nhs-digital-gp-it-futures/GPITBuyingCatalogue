@@ -197,6 +197,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
+            bool applyToAll,
             [Frozen] Mock<IOrderService> orderService,
             DeliveryDatesController controller)
         {
@@ -209,11 +210,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             var result = await controller.ConfirmChanges(
                 internalOrgId,
                 callOffId,
-                newDate.ToString(DeliveryDatesController.DateFormat));
+                newDate.ToString(DeliveryDatesController.DateFormat),
+                applyToAll);
 
             orderService.VerifyAll();
 
-            var expected = new ConfirmChangesModel(internalOrgId, callOffId, order.DeliveryDate.Value, newDate);
+            var expected = new ConfirmChangesModel(internalOrgId, callOffId, order.DeliveryDate.Value, newDate, applyToAll);
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 
             actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));

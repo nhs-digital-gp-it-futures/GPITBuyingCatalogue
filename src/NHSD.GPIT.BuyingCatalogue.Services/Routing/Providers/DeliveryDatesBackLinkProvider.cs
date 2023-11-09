@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 {
                     ActionName = Constants.Actions.SelectDeliveryDate,
                     ControllerName = Constants.Controllers.DeliveryDates,
-                    RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId },
+                    RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId, applyToAll = false },
                 };
             }
 

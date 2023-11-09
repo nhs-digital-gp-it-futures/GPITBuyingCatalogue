@@ -38,6 +38,12 @@
                                          size="ExtraSmall">
                     <nhs-date-input asp-for="@Model" day="Day" month="Month" year="Year" />
                 </nhs-fieldset-form-label>
+                
+                <nhs-fieldset-form-label asp-for="@Model"
+                                         label-text="Do you want to use the same delivery date for all recipients?"
+                                         size="ExtraSmall">
+                    <nhs-yesno-radio-buttons asp-for="ApplyToAll" />
+                </nhs-fieldset-form-label>
             </div>
 
             <nhs-submit-button />

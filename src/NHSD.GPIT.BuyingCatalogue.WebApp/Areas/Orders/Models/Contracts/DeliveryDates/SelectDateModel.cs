@@ -40,6 +40,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
 
         public bool IsAmend { get; set; }
 
+        public string ApplyToAll { get; set; }
+
         public DateTime? ContractEndDate
         {
             get
