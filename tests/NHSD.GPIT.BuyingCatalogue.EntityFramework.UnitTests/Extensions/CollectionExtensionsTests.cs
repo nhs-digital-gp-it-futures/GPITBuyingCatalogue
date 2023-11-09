@@ -45,6 +45,14 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
 
         [Theory]
         [CommonAutoData]
+        public static void AllDeliveryDatesEntered_Returns_False_When_Recipients_No_Linked_To_CatalogueItemId(OrderRecipient[] recipients, CatalogueItemId catalogueItemId)
+        {
+            OrderRecipientCollection.CollectionExtensions.AllDeliveryDatesEntered(recipients, catalogueItemId)
+                .Should().BeFalse();
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static void NoDeliveryDatesEntered_Returns_False_When_Null(CatalogueItemId catalogueItemId)
         {
             OrderRecipientCollection.CollectionExtensions.NoDeliveryDatesEntered(null, catalogueItemId)
@@ -53,17 +61,32 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
 
         [Theory]
         [CommonAutoData]
-        public static void AllQuantitiesEntered_Returns_False_When_Null(OrderItem orderItem)
+        public static void AllQuantitiesEntered_Returns_False_When_Recipient_Null(OrderItem orderItem)
         {
             OrderRecipientCollection.CollectionExtensions.AllQuantitiesEntered(null, orderItem)
                 .Should().BeFalse();
         }
 
+        [Theory]
+        [CommonAutoData]
+        public static void AllQuantitiesEntered_Returns_False_When_OrderItem_Null(OrderRecipient[] recipients)
+        {
+            OrderRecipientCollection.CollectionExtensions.AllQuantitiesEntered(recipients, null)
+                .Should().BeFalse();
+        }
+
         [Fact]
-        public static void Exist_Returns_False_When_Null()
+        public static void Exists_Returns_False_When_Null()
         {
             OrderRecipientCollection.CollectionExtensions.Exists(null, string.Empty)
                 .Should().BeFalse();
+        }
+
+        [Fact]
+        public static void Get_Returns_Nul_When_Recipients_Null()
+        {
+            OrderRecipientCollection.CollectionExtensions.Get(null, string.Empty)
+                .Should().BeNull();
         }
     }
 }
