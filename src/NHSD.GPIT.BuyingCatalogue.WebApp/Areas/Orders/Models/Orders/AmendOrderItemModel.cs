@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
         public bool IsServiceRecipientAdded(string odsCode)
         {
             var rolledUpRecipient = RolledUpRecipientsForItem.FirstOrDefault(x => x.OdsCode == odsCode);
-            var previousRecipient = PreviousRecipientsForItem?.FirstOrDefault(x => x.OdsCode == odsCode);
+            var previousRecipient = PreviousRecipientsForItem.FirstOrDefault(x => x.OdsCode == odsCode);
 
             return (rolledUpRecipient != null && previousRecipient == null)
                 || Previous == null;

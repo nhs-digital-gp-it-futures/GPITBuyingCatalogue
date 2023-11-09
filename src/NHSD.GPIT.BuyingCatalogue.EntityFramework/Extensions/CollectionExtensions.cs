@@ -36,8 +36,10 @@ public static class CollectionExtensions
 
     public static bool AllQuantitiesEntered(this ICollection<OrderRecipient> recipients, OrderItem orderItem)
     {
-        if (orderItem?.OrderItemPrice == null || recipients == null)
+        if (recipients == null || orderItem?.OrderItemPrice == null)
+        {
             return false;
+        }
 
         return ((IPrice)orderItem.OrderItemPrice).IsPerServiceRecipient()
             ? recipients.All(x => x.GetQuantityForItem(orderItem.CatalogueItemId).HasValue)

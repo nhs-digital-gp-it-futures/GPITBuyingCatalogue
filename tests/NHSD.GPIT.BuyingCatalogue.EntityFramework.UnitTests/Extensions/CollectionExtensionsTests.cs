@@ -68,17 +68,17 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
 
         [Theory]
         [CommonAutoData]
-        public static void AllQuantitiesEntered_Returns_False_When_Recipient_Null(OrderItem orderItem)
+        public static void AllQuantitiesEntered_Returns_False_When_OrderItem_Null(OrderRecipient[] recipients)
         {
-            OrderRecipientCollection.CollectionExtensions.AllQuantitiesEntered(null, orderItem)
+            OrderRecipientCollection.CollectionExtensions.AllQuantitiesEntered(recipients, null)
                 .Should().BeFalse();
         }
 
         [Theory]
         [CommonAutoData]
-        public static void AllQuantitiesEntered_Returns_False_When_OrderItem_Null(OrderRecipient[] recipients)
+        public static void AllQuantitiesEntered_Returns_False_When_Recipient_Null(OrderRecipient[] recipients, OrderItem orderItem)
         {
-            OrderRecipientCollection.CollectionExtensions.AllQuantitiesEntered(recipients, null)
+            OrderRecipientCollection.CollectionExtensions.AllQuantitiesEntered(recipients, orderItem)
                 .Should().BeFalse();
         }
 
@@ -88,6 +88,23 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
         {
             orderItem.OrderItemPrice = null;
             OrderRecipientCollection.CollectionExtensions.AllQuantitiesEntered(recipients, orderItem)
+                .Should().BeFalse();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void SomeButNotAllQuantitiesEntered_Returns_False_When_Recipient_Null(OrderItem orderItem)
+        {
+            OrderRecipientCollection.CollectionExtensions.SomeButNotAllQuantitiesEntered(null, orderItem)
+                .Should().BeFalse();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void SomeButNotAllQuantitiesEntered_Returns_False_When_OrderItemPrice_Null(OrderRecipient[] recipients, OrderItem orderItem)
+        {
+            orderItem.OrderItemPrice = null;
+            OrderRecipientCollection.CollectionExtensions.SomeButNotAllQuantitiesEntered(recipients, orderItem)
                 .Should().BeFalse();
         }
 
