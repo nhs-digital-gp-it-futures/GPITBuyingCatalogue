@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -61,6 +62,7 @@ public class GoogleRecaptchaVerificationService : IRecaptchaVerificationService
         message.EnsureSuccessStatusCode();
     }
 
+    [ExcludeFromCodeCoverage]
     internal class GoogleRecaptchaResponse
     {
         [JsonPropertyName("success")]

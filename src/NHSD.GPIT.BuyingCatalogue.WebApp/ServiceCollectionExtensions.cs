@@ -376,7 +376,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
         public static IServiceCollection ConfigureRecaptcha(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<RecaptchaSettings>(configuration.GetSection(nameof(RecaptchaSettings)));
+            const string validationErrorMessage = "reCAPTCHA configuration: Site or Secret key not specified";
+
+            services.AddOptions<RecaptchaSettings>()
+                .Bind(configuration.GetSection(nameof(RecaptchaSettings)))
+                .Validate(x => !string.IsNullOrWhiteSpace(x.SiteKey) && !string.IsNullOrWhiteSpace(x.SecretKey), validationErrorMessage)
+                .ValidateOnStart();
+
             services.AddHttpClient<IRecaptchaVerificationService, GoogleRecaptchaVerificationService>(
                 x =>
                 {
