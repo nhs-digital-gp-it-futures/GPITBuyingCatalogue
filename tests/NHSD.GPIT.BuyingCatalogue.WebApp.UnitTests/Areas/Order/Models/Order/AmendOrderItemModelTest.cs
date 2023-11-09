@@ -21,6 +21,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         {
             var model = new AmendOrderItemModel(callOffId, System.Array.Empty<OrderRecipient>(), null, orderItem, null, isAmendment, fundingTypeDescription);
             model.IsOrderItemAdded.Should().BeTrue();
+            model.PreviousTotalQuantity.Should().Be(0);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void PreviousTotalQuantity_0_When_Previous_OrderItem_Null(
+            CallOffId callOffId,
+            OrderItem orderItem,
+            bool isAmendment,
+            FundingTypeDescriptionModel fundingTypeDescription)
+        {
+            var model = new AmendOrderItemModel(callOffId, System.Array.Empty<OrderRecipient>(), null, orderItem, null, isAmendment, fundingTypeDescription);
+            model.PreviousTotalQuantity.Should().Be(0);
         }
 
         [Theory]
@@ -60,6 +73,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             FundingTypeDescriptionModel fundingTypeDescription)
         {
             var model = new AmendOrderItemModel(callOffId, recipients, recipients, orderItem, orderItem, isAmendment, fundingTypeDescription);
+            recipients.ForEach(x => model.IsServiceRecipientAdded(x.OdsCode).Should().BeFalse());
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void IsServiceRecipientAdded_False_When_Recipients_Null(
+            CallOffId callOffId,
+            OrderItem orderItem,
+            bool isAmendment,
+            OrderRecipient[] recipients,
+            FundingTypeDescriptionModel fundingTypeDescription)
+        {
+            recipients.ForEach(r => r.SetDeliveryDateForItem(orderItem.CatalogueItemId, DateTime.Now));
+
+            var model = new AmendOrderItemModel(callOffId, null, null, orderItem, orderItem, isAmendment, fundingTypeDescription);
             recipients.ForEach(x => model.IsServiceRecipientAdded(x.OdsCode).Should().BeFalse());
         }
 
