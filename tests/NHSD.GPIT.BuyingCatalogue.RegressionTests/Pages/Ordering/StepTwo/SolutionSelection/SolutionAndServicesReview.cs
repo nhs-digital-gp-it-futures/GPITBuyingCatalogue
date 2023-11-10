@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
         public void AmendReviewSolutionAndServices()
         {
-            CommonActions.ClickContinue();
+            CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
               typeof(OrderController),

@@ -46,8 +46,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-             typeof(TaskListController),
-             nameof(TaskListController.TaskList)).Should().BeTrue();
+                    typeof(DeliveryDatesController),
+                    nameof(DeliveryDatesController.EditDates)).Should().BeTrue();
         }
 
         public void AmendEditPlannedDeliveryDate(string name)

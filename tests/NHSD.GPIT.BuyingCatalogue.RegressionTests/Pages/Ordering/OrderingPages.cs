@@ -628,6 +628,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             TaskList.AmendSolutionAndServicesTask();
 
             Quantity.AmendEditQuantity(solutionName);
+            TaskList.SelectPlannedDeliveryDatesTask();
             PlannedDeliveryDates.AmendPlannedDeliveryDate(solutionName);
 
             if (HasAdditionalService(solutionName) && additionalServices != default && additionalServices.All(a => !string.IsNullOrWhiteSpace(a)))
@@ -662,6 +663,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
             TaskList.AmendSolutionAndServicesTask();
             Quantity.AmendEditQuantity(solutionName);
+            TaskList.SelectPlannedDeliveryDatesTask();
             PlannedDeliveryDates.AmendPlannedDeliveryDate(solutionName);
 
             if (HasAdditionalService(solutionName) && additionalServices != default && additionalServices.All(a => !string.IsNullOrWhiteSpace(a)))
