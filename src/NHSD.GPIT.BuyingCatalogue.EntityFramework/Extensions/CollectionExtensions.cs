@@ -7,6 +7,15 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 
 public static class CollectionExtensions
 {
+    public static ICollection<OrderRecipient> ForCatalogueItem(this ICollection<OrderRecipient> recipients, CatalogueItemId catalogueItemId)
+    {
+        return recipients == null
+            ? new List<OrderRecipient>()
+            : recipients
+                .Where(r => r.OrderItemRecipients.Any(oir => oir.CatalogueItemId == catalogueItemId))
+                .ToList();
+    }
+
     public static bool AllDeliveryDatesEntered(this ICollection<OrderRecipient> recipients, CatalogueItemId catalogueItemId)
     {
         return recipients != null && recipients.All(r => r.GetDeliveryDateForItem(catalogueItemId).HasValue);
@@ -24,8 +33,10 @@ public static class CollectionExtensions
 
     public static bool AllQuantitiesEntered(this ICollection<OrderRecipient> recipients, OrderItem orderItem)
     {
-        if (orderItem.OrderItemPrice == null || recipients == null)
+        if (recipients == null || orderItem?.OrderItemPrice == null)
+        {
             return false;
+        }
 
         return ((IPrice)orderItem.OrderItemPrice).IsPerServiceRecipient()
             ? recipients.All(x => x.GetQuantityForItem(orderItem.CatalogueItemId).HasValue)
