@@ -206,9 +206,7 @@
                 }
 
                 <h2>Filter details</h2>
-                   <partial name="Partials/_FilterDetailsPartial" model="@Model.FilterDetailsModel" />
-
-                <div style="page-break-after: always"></div>
+                   <partial name="_FilterDetails" model="@Model.FilterDetailsModel" />
 
                 @if (Model.IncludesNonPriceElements)
                 {
@@ -227,9 +225,8 @@
                             <nhs-summary-list-row label-text="@nonPriceElementWeighting.Key.EnumMemberName()">@nonPriceElementWeighting.Value%</nhs-summary-list-row>
                         }
                     </nhs-summary-list>
+                        <div style="page-break-after: always"></div>
                 }
-
-                <div style="page-break-after: always"></div>
 
                 @if (Model.NonShortlistedSolutions.Any())
                 {

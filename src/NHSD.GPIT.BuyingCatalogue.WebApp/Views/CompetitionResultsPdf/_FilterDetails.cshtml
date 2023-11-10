@@ -1,0 +1,183 @@
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.SummaryList
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ReviewFilterModel
+
+
+<h2>Name and description</h2>
+
+<nhs-summary-list>
+    <nhs-summary-list-row label-text="Name">
+        <p>
+            @Model.FilterDetails.Name
+        </p>
+    </nhs-summary-list-row>
+    <nhs-summary-list-row label-text="Description">
+        <p>
+            @Model.FilterDetails.Description
+        </p>
+    </nhs-summary-list-row>
+</nhs-summary-list>
+
+@if (Model.HasEpics())
+{
+    <h2 data-test-id="capabilities-and-epics">Capabilities and Epics</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="border-bottom: 1px solid lightgray">Capability</th>
+                <th style="border-bottom: 1px solid lightgray">Epic</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var capability in Model.FilterDetails.Capabilities)
+            {
+                <tr>
+                    <td style="border-bottom: 1px solid lightgray">
+                        @capability.Key
+                    </td>
+                    <td style="border-bottom: 1px solid lightgray">
+                        @if (capability.Value is null || !capability.Value.Any())
+                        {
+                            <p>
+                                None selected
+                            </p>
+                        }
+                        else
+                        {
+                            @if (capability.Value.Count() == 1)
+                            {
+                                <p>
+                                    @capability.Value.First()
+                                </p>
+                            }
+                            else
+                            {
+                                @foreach (var epic in capability.Value)
+                                {
+                                    <li>
+                                        @epic
+                                    </li>
+                                }
+                            }
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <h2 data-test-id="capabilities">Capabilities</h2>
+    @foreach (var capability in Model.FilterDetails.Capabilities)
+    {
+        <p>@capability.Key</p>
+    }
+}
+
+@if (Model.HasAdditionalFilters())
+{
+    <h2 data-test-id="additional-filters">Additional filters</h2>
+
+    <nhs-summary-list>
+        <nhs-summary-list-row label-text="Application type">
+            @if (!Model.HasApplicationTypes())
+            {
+                <p>
+                    None selected
+                </p>
+            }
+            else
+            {
+                @if (Model.FilterDetails.ApplicationTypes.Count == 1)
+                {
+                    <p>
+                        @Model.FilterDetails.ApplicationTypes.First().Name()
+                    </p>
+                }
+                else
+                {
+                    <ul>
+                        @foreach (var item in Model.FilterDetails.ApplicationTypes)
+                        {
+                            <li>
+                                @item.Name()
+                            </li>
+                        }
+                    </ul>
+                }
+            }
+        </nhs-summary-list-row>
+        <nhs-summary-list-row label-text="Framework">
+            <p>
+                @(Model.HasFramework() ? Model.FilterDetails.FrameworkName : "None selected")
+            </p>
+        </nhs-summary-list-row>
+        <nhs-summary-list-row label-text="Hosting type">
+            @if (!Model.HasHostingTypes())
+            {
+                <p>
+                    None selected
+                </p>
+            }
+            else
+            {
+                @if (Model.FilterDetails.HostingTypes.Count == 1)
+                {
+                    <p>
+                        @Model.FilterDetails.HostingTypes.First().Name()
+                    </p>
+                }
+                else
+                {
+                    <ul>
+                        @foreach (var item in Model.FilterDetails.HostingTypes)
+                        {
+                            <li>
+                                @item.Name()
+                            </li>
+                        }
+                    </ul>
+                }
+            }
+        </nhs-summary-list-row>
+        <nhs-summary-list-row label-text="Interoperability">
+            @if (Model.HasInteroperabilityIntegrationTypes())
+            {
+                @for (int j = 0; j < Model.FilterDetails.InteropIntegrationTypes.Count(); j++)
+                {
+                    @if (@Model.FilterDetails.InteropIntegrationTypes[j].EnumMemberName() == "IM1")
+                    {
+                        <p> @(Model.FilterDetails.InteropIntegrationTypes[j].EnumMemberName()) integrations</p>
+                        <ul>
+                            @foreach (var item in Model.FilterDetails.InteropIm1IntegrationsTypes)
+                            {
+                                <li>
+                                    @item.Name()
+                                </li>
+                            }
+                        </ul>
+                    }
+                    @if (Model.FilterDetails.InteropIntegrationTypes[j].EnumMemberName() == "GP Connect")
+                    {
+                        <p> @(Model.FilterDetails.InteropIntegrationTypes[j].EnumMemberName()) integrations</p>
+                        <ul>
+                            @foreach (var item in Model.FilterDetails.InteropGpConnectIntegrationsTypes)
+                            {
+                                <li>
+                                    @item.Name()
+                                </li>
+                            }
+                        </ul>
+                    }
+                }
+            }
+            else
+            {
+                @("None selected")
+            }
+        </nhs-summary-list-row>
+    </nhs-summary-list>
+}
+<div style="page-break-after: always"></div>
