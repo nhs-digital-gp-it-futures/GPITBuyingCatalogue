@@ -1,5 +1,6 @@
 ﻿using System;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates
@@ -10,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
         {
         }
 
-        public SelectDateModel(string internalOrgId, CallOffId callOffId, Order order)
+        public SelectDateModel(string internalOrgId, CallOffId callOffId, Order order, bool? applyToAll)
         {
             if (order == null)
             {
@@ -26,6 +27,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
             IsAmend = order.IsAmendment;
 
             SetDateFields(order.DeliveryDate);
+
+            ApplyToAll = applyToAll.ToYesNo();
         }
 
         public string InternalOrgId { get; set; }

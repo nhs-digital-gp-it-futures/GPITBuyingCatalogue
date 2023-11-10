@@ -18,6 +18,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts;
@@ -62,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             orderService.VerifyAll();
 
-            var expected = new SelectDateModel(internalOrgId, callOffId, order);
+            var expected = new SelectDateModel(internalOrgId, callOffId, order, null);
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 
             actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
@@ -188,6 +189,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 { "internalOrgId", internalOrgId },
                 { "callOffId", callOffId },
                 { "deliveryDate", model.Date.Value.ToString(DeliveryDatesController.DateFormat) },
+                { "applyToAll", model.ApplyToAll.EqualsIgnoreCase(YesNoRadioButtonTagHelper.Yes) },
             });
         }
 
