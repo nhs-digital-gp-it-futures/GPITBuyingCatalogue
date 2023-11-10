@@ -9,14 +9,11 @@ public static class CollectionExtensions
 {
     public static ICollection<OrderRecipient> ForCatalogueItem(this ICollection<OrderRecipient> recipients, CatalogueItemId catalogueItemId)
     {
-        if (recipients == null)
-        {
-            return new List<OrderRecipient>();
-        }
-
-        return recipients
-            .Where(r => r.OrderItemRecipients.Any(oir => oir.CatalogueItemId == catalogueItemId))
-            .ToList();
+        return recipients == null
+            ? new List<OrderRecipient>()
+            : recipients
+                .Where(r => r.OrderItemRecipients.Any(oir => oir.CatalogueItemId == catalogueItemId))
+                .ToList();
     }
 
     public static bool AllDeliveryDatesEntered(this ICollection<OrderRecipient> recipients, CatalogueItemId catalogueItemId)
