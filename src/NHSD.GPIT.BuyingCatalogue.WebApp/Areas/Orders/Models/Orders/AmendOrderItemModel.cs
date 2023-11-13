@@ -18,9 +18,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             bool isAmendment,
             FundingTypeDescriptionModel fundingTypeDescription)
         {
+            ArgumentNullException.ThrowIfNull(orderItem);
+
             CallOffId = callOffId;
             IsAmendment = isAmendment;
-            IsOrderItemAdded = orderItem != null && previous == null;
+            IsOrderItemAdded = previous == null;
             OrderItem = orderItem;
             Previous = previous;
             FundingTypeDescriptionModel = fundingTypeDescription;
@@ -65,8 +67,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public bool IsServiceRecipientAdded(string odsCode)
         {
-            var rolledUpRecipient = RolledUpRecipientsForItem?.FirstOrDefault(x => x.OdsCode == odsCode);
-            var previousRecipient = PreviousRecipientsForItem?.FirstOrDefault(x => x.OdsCode == odsCode);
+            var rolledUpRecipient = RolledUpRecipientsForItem.FirstOrDefault(x => x.OdsCode == odsCode);
+            var previousRecipient = PreviousRecipientsForItem.FirstOrDefault(x => x.OdsCode == odsCode);
 
             return (rolledUpRecipient != null && previousRecipient == null)
                 || Previous == null;
