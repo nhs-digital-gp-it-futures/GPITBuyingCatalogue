@@ -34,6 +34,9 @@ resource "azurerm_linux_web_app" "webapp" {
     # Settings for sql
     BC_DB_CONNECTION                    = "Server=tcp:${data.azurerm_mssql_server.sql_server.fully_qualified_domain_name},1433;Initial Catalog=${var.db_name_main};Persist Security Info=False;User ID=${var.sql_admin_username};Password=${var.sql_admin_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"    
     AZUREBLOBSETTINGS__CONNECTIONSTRING = var.blob_storage_connection_string
+
+    RECAPTCHASETTINGS__SITEKEY          = var.recaptcha_site_key
+    RECAPTCHASETTINGS__SECRETKEY        = var.recaptcha_secret_key
     
     NOTIFY_API_KEY                      = var.notify_api_key
 
