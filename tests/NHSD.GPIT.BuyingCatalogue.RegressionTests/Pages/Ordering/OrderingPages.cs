@@ -199,8 +199,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                             SelectEditAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
                             Quantity.AddQuantity();
                         }
-
-                        SelectEditAssociatedService.AddAssociatedService();
                     }
                     else
                     {
@@ -219,8 +217,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                         SelectEditAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
                         Quantity.AddQuantity();
                     }
-
-                    SelectEditAssociatedService.AddAssociatedService();
                 }
             }
 
@@ -332,8 +328,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                         SelectEditAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
                         Quantity.AddQuantity();
                     }
-
-                    SelectEditAssociatedService.AddAssociatedService();
                 }
             }
             else
@@ -362,8 +356,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                             SelectEditAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
                             Quantity.AddQuantity();
                         }
-
-                        SelectEditAssociatedService.AddAssociatedService();
                     }
                 }
             }
@@ -421,17 +413,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                         SelectEditAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
                         Quantity.AddQuantity();
                     }
-
-                    SelectEditAssociatedService.AddAssociatedService();
-                }
-                else
-                {
-                        SelectEditAssociatedService.AddAssociatedService();
                 }
 
                 SolutionAndServicesReview.ReviewSolutionAndServices();
 
-                TaskList.EditPlannedDeliveryDateTask();
+                TaskList.SelectPlannedDeliveryDatesTask();
                 PlannedDeliveryDates.EditPlannedDeliveryDate(solutionName, isAssociatedServiceOnlyOrder, newAssociatedServices, newAdditionalServices);
 
                 TaskList.SelectFundingSourcesTask();
@@ -501,7 +487,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 Quantity.AddQuantity();
             }
 
-            SelectEditAssociatedService.AddAssociatedService();
             SolutionAndServicesReview.ReviewSolutionAndServices();
 
             TaskList.SelectPlannedDeliveryDatesTask();
@@ -663,6 +648,20 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
             TaskList.AmendSolutionAndServicesTask();
             Quantity.AmendEditQuantity(solutionName);
+
+            if (HasAdditionalService(solutionName) && additionalServices != default && additionalServices.All(a => !string.IsNullOrWhiteSpace(a)))
+            {
+                TaskList.AmendSolutionAndServicesTask();
+                foreach (var additionalService in additionalServices)
+                {
+                    SelectEditCatalogueSolution.AddAdditionalServices(additionalService);
+                    SelectEditAndConfirmAdditionalServicePrice.SelectAndConfirmPrice();
+                    Quantity.AddQuantity();
+                }
+
+                SolutionAndServicesReview.ReviewSolutionAndServices();
+            }
+
             TaskList.SelectPlannedDeliveryDatesTask();
             PlannedDeliveryDates.AmendPlannedDeliveryDate(solutionName);
 
@@ -670,10 +669,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             {
                 foreach (var additionalService in additionalServices)
                 {
-                    SelectEditCatalogueSolution.AddAdditionalServices(additionalService);
-                    SelectEditAndConfirmAdditionalServicePrice.SelectAndConfirmPrice();
-                    Quantity.AddQuantity();
-                    PlannedDeliveryDates.AmendPlannedDeliveryDate(additionalService);
+                    PlannedDeliveryDates.AmendEditPlannedDeliveryDate(additionalService);
                 }
             }
 
