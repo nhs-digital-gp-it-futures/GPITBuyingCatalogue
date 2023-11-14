@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,13 +11,10 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
+using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Validators.Registration;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 {
@@ -61,6 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             return View(new LoginViewModel { ReturnUrl = returnUrl });
         }
 
+        [ValidateRecaptcha]
         [HttpPost("Login")]
         public async Task<IActionResult> Login(LoginViewModel viewModel)
         {
@@ -130,6 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             return View();
         }
 
+        [ValidateRecaptcha]
         [HttpPost("ForgotPassword")]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel viewModel)
         {

@@ -24,6 +24,8 @@ module "webapp" {
   ssl_thumbprint                  = data.azurerm_key_vault_certificate.ssl_cert.thumbprint
   notify_api_key                  = var.notify_api_key
   blob_storage_connection_string  = module.documentstorageaccount.primary_connection_string
+  recaptcha_site_key              = var.recaptcha_site_key
+  recaptcha_secret_key            = var.recaptcha_secret_key
 
   # SQL Vars
   sqlserver_name     = local.is_dr ? "${var.project}-${var.primary_env}-sql-primary" : join("", module.sql_server_pri[*].sql_server_name)

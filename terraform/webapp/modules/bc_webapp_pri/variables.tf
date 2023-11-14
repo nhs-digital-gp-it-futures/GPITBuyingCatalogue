@@ -112,3 +112,11 @@ variable "blob_storage_connection_string" {
   type      = string
   sensitive = true
 }
+
+variable "recaptcha_site_key" {
+  type = string
+}
+
+variable "recaptcha_secret_key" {
+  type = string
+}
