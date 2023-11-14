@@ -18,10 +18,10 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.ServiceRecipients;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 using Xunit;
 using ServiceRecipient = NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.ServiceRecipient;
@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         [CommonInlineAutoData(null)]
         [CommonInlineAutoData(SelectionMode.None)]
         [CommonInlineAutoData(SelectionMode.All)]
-        public static async Task Get_AddServiceRecipients_Solution_ReturnsExpectedResult(
+        public static async Task Get_SelectServiceRecipients_Solution_ReturnsExpectedResult(
             SelectionMode? selectionMode,
             Organisation organisation,
             string internalOrgId,
@@ -126,7 +126,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         [CommonInlineAutoData(null, OrderTypeEnum.AssociatedServiceOther, null)]
         [CommonInlineAutoData(SelectionMode.None, OrderTypeEnum.AssociatedServiceOther, null)]
         [CommonInlineAutoData(SelectionMode.All, OrderTypeEnum.AssociatedServiceOther, null)]
-        public static async Task Get_AddServiceRecipients_MergerSplitOther_ReturnsExpectedResult(
+        public static async Task Get_SelectServiceRecipients_MergerSplitOther_ReturnsExpectedResult(
             SelectionMode selectionMode,
             OrderTypeEnum orderType,
             int? atLeast,
@@ -192,7 +192,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_AddServiceRecipients_WithImportedSolutionRecipients_ReturnsExpectedResult(
+        public static async Task Get_SelectServiceRecipients_WithImportedSolutionRecipients_ReturnsExpectedResult(
             string internalOrgId,
             Organisation organisation,
             CallOffId callOffId,
@@ -241,7 +241,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [CommonAutoData]
-        public static void Post_AddServiceRecipients_WithModelErrors_ReturnsExpectedResult(
+        public static async Task Post_SelectServiceRecipients_WithModelErrors_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             SelectRecipientsModel model,
@@ -249,7 +249,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         {
             controller.ModelState.AddModelError("key", "errorMessage");
 
-            var result = controller.SelectServiceRecipients(internalOrgId, callOffId, model);
+            var result = await controller.SelectServiceRecipients(internalOrgId, callOffId, model);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
@@ -257,24 +257,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
-        public static void Post_AddServiceRecipients_ReturnsExpectedResult(
+        [CommonInlineAutoData(OrderTypeEnum.Solution)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
+        public static async Task Post_SelectServiceRecipients_RedirectsTo_ConfirmChanges(
+            OrderTypeEnum orderType,
             string internalOrgId,
             CallOffId callOffId,
             SelectRecipientsModel model,
             EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> mockOrderService,
             ServiceRecipientsController controller)
         {
-            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+            order.OrderType = orderType;
 
-            var orderItem = order.OrderItems.First().CatalogueItem;
-
-            orderItem.CatalogueItemType = CatalogueItemType.Solution;
+            mockOrderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(new[] { order }));
 
             var selectedOdsCodes = model.GetServiceRecipients().Where(x => x.Selected).Select(x => x.OdsCode);
             var recipientIds = string.Join(ServiceRecipientsController.Separator, selectedOdsCodes);
 
-            var result = controller.SelectServiceRecipients(internalOrgId, callOffId, model);
+            var result = await controller.SelectServiceRecipients(internalOrgId, callOffId, model);
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
@@ -285,7 +288,165 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 { "internalOrgId", internalOrgId },
                 { "callOffId", callOffId },
                 { "recipientIds", recipientIds },
-                { "journey", JourneyType.Add },
+            });
+        }
+
+        [Theory]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        public static async Task Post_SelectServiceRecipients_RedirectsTo_SelectRecipientForPracticeReorganisation(
+            OrderTypeEnum orderType,
+            string internalOrgId,
+            CallOffId callOffId,
+            SelectRecipientsModel model,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            ServiceRecipientsController controller)
+        {
+            order.OrderType = orderType;
+
+            mockOrderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(new[] { order }));
+
+            var selectedOdsCodes = model.GetServiceRecipients().Where(x => x.Selected).Select(x => x.OdsCode);
+            var recipientIds = string.Join(ServiceRecipientsController.Separator, selectedOdsCodes);
+
+            var result = await controller.SelectServiceRecipients(internalOrgId, callOffId, model);
+
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actualResult.ControllerName.Should().Be(typeof(ServiceRecipientsController).ControllerName());
+            actualResult.ActionName.Should().Be(nameof(ServiceRecipientsController.SelectRecipientForPracticeReorganisation));
+            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
+                { "callOffId", callOffId },
+                { "recipientIds", recipientIds },
+            });
+        }
+
+        [Theory]
+        [CommonInlineAutoData(OrderTypeEnum.Solution)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
+        public static async Task Get_SelectRecipientForPracticeReorganisation_With_WrongTypesOfOrders_ReturnsBadRequest(
+            OrderTypeEnum orderType,
+            string internalOrgId,
+            Organisation organisation,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] Mock<IOrganisationsService> organisationsService,
+            ServiceRecipientsController controller)
+        {
+            order.OrderType = orderType;
+
+            mockOrderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(new[] { order }));
+
+            organisationsService
+                .Setup(x => x.GetOrganisationByInternalIdentifier(internalOrgId))
+                .ReturnsAsync(organisation);
+
+            var result = await controller.SelectRecipientForPracticeReorganisation(internalOrgId, callOffId, default, default(string));
+
+            result.Should().BeOfType<BadRequestObjectResult>();
+        }
+
+        [Theory]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        public static async Task Get_SelectRecipientForPracticeReorganisation_With_MergerOrSplit_Returns(
+            OrderTypeEnum orderType,
+            string internalOrgId,
+            string selectedOdsCode,
+            Organisation organisation,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            List<ServiceRecipient> serviceRecipients,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] Mock<IOdsService> mockOdsService,
+            [Frozen] Mock<IOrganisationsService> organisationsService,
+            ServiceRecipientsController controller)
+        {
+            order.OrderType = orderType;
+
+            mockOrderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(new[] { order }));
+
+            mockOdsService
+                .Setup(x => x.GetServiceRecipientsById(internalOrgId, It.IsAny<IEnumerable<string>>()))
+                .ReturnsAsync(serviceRecipients);
+
+            organisationsService
+                .Setup(x => x.GetOrganisationByInternalIdentifier(internalOrgId))
+                .ReturnsAsync(organisation);
+
+            var result = await controller.SelectRecipientForPracticeReorganisation(internalOrgId, callOffId, string.Empty, selectedOdsCode);
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+            var model = actualResult.Model.Should().BeAssignableTo<RecipientForPracticeReorganisationModel>().Subject;
+
+            model.OrganisationName.Should().Be(organisation.Name);
+            model.OrganisationType.Should().Be(organisation.OrganisationType);
+            model.SelectedOdsCode.Should().Be(selectedOdsCode);
+            model.SubLocations
+                .SelectMany(s => s.ServiceRecipients)
+                .Select(s => new
+                {
+                    s.Name,
+                    s.OdsCode,
+                    s.Location,
+                })
+                .Should()
+                .BeEquivalentTo(serviceRecipients.Select(s => new
+                {
+                    s.Name,
+                    OdsCode = s.OrgId,
+                    s.Location,
+                }));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Post_SelectRecipientForPracticeReorganisation_WithModelErrors_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            RecipientForPracticeReorganisationModel model,
+            ServiceRecipientsController controller)
+        {
+            controller.ModelState.AddModelError("key", "errorMessage");
+
+            var result = controller.SelectRecipientForPracticeReorganisation(internalOrgId, callOffId, string.Empty, model);
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+
+            actualResult.Model.Should().BeEquivalentTo(model);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Post_SelectRecipientForPracticeReorganisation_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            RecipientForPracticeReorganisationModel model,
+            ServiceRecipientsController controller)
+        {
+            var recipientIds = "1,2";
+            var result = controller.SelectRecipientForPracticeReorganisation(internalOrgId, callOffId, recipientIds, model);
+
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actualResult.ControllerName.Should().Be(typeof(ServiceRecipientsController).ControllerName());
+            actualResult.ActionName.Should().Be(nameof(ServiceRecipientsController.ConfirmChanges));
+            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
+                { "callOffId", callOffId },
+                { "recipientIds", recipientIds },
+                { "selectedRecipientId", model.SelectedOdsCode },
             });
         }
 
@@ -324,7 +485,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var result = await controller.ConfirmChanges(
                 internalOrgId,
                 callOffId,
-                recipientIds);
+                recipientIds,
+                string.Empty);
 
             orderService.VerifyAll();
             odsService.VerifyAll();
@@ -340,7 +502,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 PreviouslySelected = new List<ServiceRecipientModel>(),
             };
 
-            actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(o => o.BackLink));
+            actual.Model.Should().BeEquivalentTo(expected, x => x
+                .Excluding(o => o.BackLink)
+                .Excluding(o => o.AddRemoveRecipientsLink));
         }
 
         [Theory]
