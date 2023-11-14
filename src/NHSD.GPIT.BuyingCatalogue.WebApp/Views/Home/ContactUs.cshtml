@@ -1,33 +1,37 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.ContactUsModel;
-@{ 
+@{
     ViewBag.Title = "Contact the NHS Buying Catalogue Team";
 }
 
 @section Breadcrumbs {
-<nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
-    <div class="nhsuk-width-container">
-        <ol class="nhsuk-breadcrumb__list">
-            <li class="nhsuk-breadcrumb__item">
-                <a class="nhsuk-breadcrumb__link"
-                   data-test-id="home-crumb"
-                   asp-action="@nameof(HomeController.Index)"
-                   asp-controller="@typeof(HomeController).ControllerName()">Home</a>
-            </li>
-            <li class="nhsuk-breadcrumb__item">
-                <a class="nhsuk-breadcrumb__link"
-                    data-test-id="contact-us-crumb"
-                    asp-action="@nameof(HomeController.ContactUs)"
-                    asp-controller="@typeof(HomeController).ControllerName()">Contact us</a>
-            </li>
-        </ol>
-    </div>
-</nav>
+    <nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
+        <div class="nhsuk-width-container">
+            <ol class="nhsuk-breadcrumb__list">
+                <li class="nhsuk-breadcrumb__item">
+                    <a class="nhsuk-breadcrumb__link"
+                       data-test-id="home-crumb"
+                       asp-action="@nameof(HomeController.Index)"
+                       asp-controller="@typeof(HomeController).ControllerName()">
+                        Home
+                    </a>
+                </li>
+                <li class="nhsuk-breadcrumb__item">
+                    <a class="nhsuk-breadcrumb__link"
+                       data-test-id="contact-us-crumb"
+                       asp-action="@nameof(HomeController.ContactUs)"
+                       asp-controller="@typeof(HomeController).ControllerName()">
+                        Contact us
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </nav>
 }
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-validation-summary />
-        <nhs-page-title title="@ViewBag.Title" />
+        <nhs-validation-summary/>
+        <nhs-page-title title="@ViewBag.Title"/>
 
         <h2>If you have a medical problem</h2>
         <p>The Buying Catalogue Team cannot help with medical problems</p>
@@ -37,7 +41,9 @@
 
             <ul>
                 <li>call 999</li>
-                <li><a href="https://www.nhs.uk/mental-health/get-urgent-help-for-mental-health">get urgent help for mental health</a></li>
+                <li>
+                    <a href="https://www.nhs.uk/mental-health/get-urgent-help-for-mental-health">get urgent help for mental health</a>
+                </li>
             </ul>
 
 
@@ -45,7 +51,9 @@
 
             <ul>
                 <li>call 111 or <a href="https://111.nhs.uk">go to 111 online</a></li>
-                <li><a href="https://www.nhs.uk/service-search">speak to a pharmacist, GP or dentist</a></li>
+                <li>
+                    <a href="https://www.nhs.uk/service-search">speak to a pharmacist, GP or dentist</a>
+                </li>
                 <li>search the <a href="https://www.nhs.uk/conditions">NHS website health A-Z</a> for more advice about your condition</li>
                 <li>find information and support for your <a href="https://www.nhs.uk/mental-health">mental health on the NHS website</a></li>
             </ul>
@@ -55,26 +63,29 @@
             <nhs-textarea asp-for="Message"
                           label-text="Your message for us"
                           label-hint="Do not include confidential or medical information in your message. For example, your NHS number, date of birth, medical diagnosis or medical history.  Currently, we can only respond to messages written in English."
-                          number-of-rows="5" />
+                          number-of-rows="5"/>
 
             <nhs-input asp-for="FullName"
                        label-text="Full Name"
-                       label-hint="We’ll use the name you provide in any replies to your message. We’ll not use your name for any other purpose." />
+                       label-hint="We’ll use the name you provide in any replies to your message. We’ll not use your name for any other purpose."/>
 
             <nhs-input asp-for="EmailAddress"
                        label-text="Email address"
-                       label-hint="We’ll use your email address to resolve the issue you’re contacting us about and reply to you. We may invite you to complete a voluntary short satisfaction survey. We’ll not use your email address for any other purpose." />
+                       label-hint="We’ll use your email address to resolve the issue you’re contacting us about and reply to you. We may invite you to complete a voluntary short satisfaction survey. We’ll not use your email address for any other purpose."/>
 
             <h2>Privacy policy agreement</h2>
             <p>You must confirm you’ve read and understood our <a href="~/privacy-policy">privacy policy (opens in a new tab)</a> before sending this message.</p>
             <nhs-fieldset-form-label asp-for="PrivacyPolicyAccepted">
                 <nhs-checkbox-container>
                     <nhs-checkbox asp-for="PrivacyPolicyAccepted"
-                                  label-text="I have read and understood the privacy policy" />
+                                  label-text="I have read and understood the privacy policy"/>
                 </nhs-checkbox-container>
             </nhs-fieldset-form-label>
-            
-            <nhs-submit-button />
+
+            <recaptcha/>
+
+            <br/>
+            <nhs-submit-button text="Submit"/>
         </form>
     </div>
 </div>
