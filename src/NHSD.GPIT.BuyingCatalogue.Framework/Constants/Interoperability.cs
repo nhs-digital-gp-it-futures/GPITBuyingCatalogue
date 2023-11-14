@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Constants
 {
+    [ExcludeFromCodeCoverage]
     public static class Interoperability
     {
         public const string IM1IntegrationType = "IM1";
@@ -26,6 +28,34 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Constants
             { "HTML View", "GP Connect - HTML View" },
             { "Appointment Booking", "GP Connect - Appointment Booking" },
             { "Structured Record", "GP Connect - Structured Record" },
+        };
+
+        public static IEnumerable<string> NhsAppIntegrations => new List<string>()
+        {
+            "Online consultations",
+            "Personal health records/care plans",
+            "Primary care notifications and messaging",
+            "Secondary care notifications and messaging",
+        };
+
+        public static Dictionary<string, string> NhsAppIntegrationDescriptions => new()
+        {
+            {
+                "Online consultations",
+                "Local integrations that allow NHS App users to submit medical or admin queries to their GP surgery through an online questionnaire."
+            },
+            {
+                "Personal health records/care plans",
+                "Local integrations for primary and secondary care that allow NHS App users to manage their own health and care by accessing messages, letters, test results and allowing users to upload their own information."
+            },
+            {
+                "Primary care notifications and messaging",
+                "An integration that allows this solution to use the NHS App messaging service to send notifications and messages to users."
+            },
+            {
+                "Secondary care notifications and messaging",
+                "An integration that allows this solution to use the NHS App messaging service to send secondary care appointment related messages to users."
+            },
         };
     }
 }

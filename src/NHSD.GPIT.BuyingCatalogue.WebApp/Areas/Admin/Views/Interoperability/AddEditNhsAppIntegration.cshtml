@@ -1,6 +1,6 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels.AddEditNhsAppIntegrationModel;
 @{
-    ViewBag.Title = $"Add an NHS App integration";
+    ViewBag.Title = "Add NHS App integrations";
 }
 
 <div class="nhsuk-width-container">
@@ -14,14 +14,15 @@
             <form method="post">
                 <input type="hidden" asp-for="@Model.BackLink" />
                 <input type="hidden" asp-for="@Model.SolutionName" />
-                <input type="hidden" asp-for="@Model.IntegrationId" />
+
                     <nhs-fieldset-form-label asp-for="@Model">
                         <nhs-checkbox-container>
-                        @for (int i = 0; i < @Model.NhsAppIntegrationTypes.Length; i++)
+                        @for (int i = 0; i < Model.NhsAppIntegrations.Count; i++)
                         {
-                            <nhs-checkbox asp-for="@Model.NhsAppIntegrationTypes[i].Checked"
-                                          hidden-input="@Model.NhsAppIntegrationTypes[i].IntegrationType"
-                                          label-text="@Model.NhsAppIntegrationTypes[i].IntegrationType" />
+                            <input type="hidden" asp-for="@Model.NhsAppIntegrations[i].Value" />
+                            <nhs-checkbox asp-for="@Model.NhsAppIntegrations[i].Selected"
+                                          hidden-input="@Model.NhsAppIntegrations[i].Text"
+                                          label-text="@Model.NhsAppIntegrations[i].Text" />
                         }
                         </nhs-checkbox-container>
                     </nhs-fieldset-form-label>
