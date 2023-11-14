@@ -1,11 +1,9 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.Contracts;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates;
 using OpenQA.Selenium;
 
@@ -46,21 +44,19 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-             typeof(TaskListController),
-             nameof(TaskListController.TaskList)).Should().BeTrue();
+                    typeof(DeliveryDatesController),
+                    nameof(DeliveryDatesController.EditDates)).Should().BeTrue();
+
+            CommonActions.ClickSave();
         }
 
         public void AmendEditPlannedDeliveryDate(string name)
         {
-            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemQuantiyLink(GetCatalogueItemID(name)));
-            CommonActions.ClickSave();
-
-            SetDefaultPlannedDeliveryDate(DateTime.Today.AddDays(7));
-            CommonActions.ClickSave();
-
             CommonActions.PageLoadedCorrectGetIndex(
-             typeof(TaskListController),
-             nameof(TaskListController.TaskList)).Should().BeTrue();
+                    typeof(DeliveryDatesController),
+                    nameof(DeliveryDatesController.EditDates)).Should().BeTrue();
+
+            CommonActions.ClickSave();
         }
 
         public void EditPlannedDeliveryDate(string solutionName, bool isAssociatedServiceOnly, IEnumerable<string>? associatedServices, IEnumerable<string>? additionalServices)
@@ -92,17 +88,18 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
             {
                 foreach (var name in names)
                 {
-                    CommonActions.ClickLinkElement(DeliveryDatesObjects.ReviewEditDeliveryDatesLink(name));
-
-                    EditDefaultPlannedDeliveryDate(DateTime.Today.AddDays(8));
                     CommonActions.ClickSave();
+
+                    CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(DeliveryDatesController),
+                    nameof(DeliveryDatesController.EditDates)).Should().BeTrue();
                 }
 
-                CommonActions.ClickContinue();
+                CommonActions.ClickSave();
 
                 CommonActions.PageLoadedCorrectGetIndex(
-                        typeof(OrderController),
-                        nameof(OrderController.Order)).Should().BeTrue();
+                typeof(DeliveryDatesController),
+                nameof(DeliveryDatesController.Review)).Should().BeTrue();
             }
         }
 

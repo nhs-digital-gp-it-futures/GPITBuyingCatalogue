@@ -52,6 +52,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo
             CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemQuantiyLink(GetCatalogueItemID(catalogueItemName)));
 
             AddQuantity();
+
+            CommonActions.ClickContinue();
         }
 
         private void AddPracticeListSize()

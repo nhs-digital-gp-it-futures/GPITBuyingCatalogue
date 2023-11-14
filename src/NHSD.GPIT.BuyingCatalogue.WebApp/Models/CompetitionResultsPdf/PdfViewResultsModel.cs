@@ -19,4 +19,6 @@ public class PdfViewResultsModel : ViewResultsModel
     public Competition Competition { get; set; }
 
     public new ReviewFilterModel FilterDetailsModel { get; set; }
+
+    public bool IsDirectAward() => Competition.CompetitionSolutions.Count + NonShortlistedSolutions.Count == 1;
 }
