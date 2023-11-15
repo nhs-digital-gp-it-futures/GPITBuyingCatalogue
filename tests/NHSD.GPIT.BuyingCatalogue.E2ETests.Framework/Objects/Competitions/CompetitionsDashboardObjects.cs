@@ -25,4 +25,6 @@ public static class CompetitionsDashboardObjects
     public static By CalculatePriceLink => By.LinkText("Calculate price");
 
     public static By ViewResultLink => By.LinkText("View results");
+
+    public static By AwardCriteriaWeightingsLink => By.LinkText("Award criteria weightings");
 }

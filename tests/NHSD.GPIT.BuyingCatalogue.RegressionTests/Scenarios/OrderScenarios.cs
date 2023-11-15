@@ -2110,6 +2110,20 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        public void CompetitionPricAndNonPriceElement()
+        {
+            string competitionName = "CompetitionForMultipleResultFilter";
+
+            CompetitionPages.CompetitionDashboard.CompetitionTriage();
+
+            CompetitionPages.BeforeYouStart.ReadyToStart();
+
+            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
+
+            CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceAndNonPriceElement);
+        }
+
+        [Fact]
         public void OrderAmendCatalogueSolutionGreaterThan250K()
         {
             string orderDescription = "CatalogueSolutionOver250K";

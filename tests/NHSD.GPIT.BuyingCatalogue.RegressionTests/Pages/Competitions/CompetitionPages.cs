@@ -34,6 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             CalculatePrice = new CalculatePrice(driver, commonActions, factory);
             SolutionServiceQuantity = new SolutionServiceQuantity(driver, commonActions);
             ViewCompetitionResults = new ViewCompetitionResults(driver, commonActions);
+            AwardCriteriaWeightings = new AwardCriteriaWeightings(driver, commonActions);
 
             Factory = factory;
             Driver = driver;
@@ -72,6 +73,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
         internal SolutionServiceQuantity SolutionServiceQuantity { get; }
 
         internal ViewCompetitionResults ViewCompetitionResults { get; }
+
+        internal AwardCriteriaWeightings AwardCriteriaWeightings { get; }
 
         internal FilterType FilterType { get; set; }
 
@@ -166,6 +169,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                     CalculatePrice.ConfirmPriceAndQuantity();
                 }
             }
+            else
+            {
+                AwardCriteria.PriceAndNonPrice();
+                CompetitionTaskList.AwardCriteriaWeightings();
+                AwardCriteriaWeightings.PriceNonPriceAwardCriteriaWeightings();
+            }
 
             CalculatePrice.ConfirmCalculatePrice();
         }
@@ -247,16 +256,5 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                 .SelectMany(x => x.CataloguePrices).Where(y => y.CatalogueItemId == competitionservice);
             return prices.Count() > 1;
         }
-
-        private (int PriceWeighting,int NonPriceWeighting) GenerateWeightings()
-        {
-            Random random = new Random();
-            int priceWeighting = random.Next(13, 19) * 5;
-            int maxWeighting = 100 - priceWeighting;
-            int nonPriceWeighting = maxWeighting;
-
-            return (priceWeighting, nonPriceWeighting);
-        }
-
     }
 }
