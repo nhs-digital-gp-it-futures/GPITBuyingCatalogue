@@ -73,3 +73,11 @@ variable "primary_env" {
   type = string
   default = ""
 }
+
+variable "recaptcha_site_key" {
+  type = string
+}
+
+variable "recaptcha_secret_key" {
+  type = string
+}

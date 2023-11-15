@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -10,6 +11,8 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -153,6 +156,74 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             await service.DeleteIntegration(solution.CatalogueItemId, invalidIntegrationId);
             var updatedSolution = await context.Solutions.FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
             updatedSolution.GetIntegrations().Should().BeEquivalentTo(integrations);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static Task SetNhsAppIntegrations_NullIntegrations_ThrowsArgumentNullException(
+            CatalogueItemId solutionId,
+            InteroperabilityService service) => FluentActions
+            .Awaiting(() => service.SetNhsAppIntegrations(solutionId, null))
+            .Should()
+            .ThrowAsync<ArgumentNullException>();
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SetNhsAppIntegrations_WithNewIntegrations_AddsIntegrations(
+            Solution solution,
+            [Frozen] BuyingCatalogueDbContext context,
+            InteroperabilityService service)
+        {
+            var expectedIntegrations = Interoperability.NhsAppIntegrations
+                .Select(x => new Integration(Interoperability.NhsAppIntegrationType, x))
+                .ToList();
+
+            solution.Integrations = JsonSerializer.Serialize(new List<Integration>());
+
+            context.Solutions.Add(solution);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            await service.SetNhsAppIntegrations(solution.CatalogueItemId, expectedIntegrations.Select(x => x.Qualifier));
+
+            var updatedSolution = await context.Solutions.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.CatalogueItemId == solution.CatalogueItemId);
+
+            var updatedIntegrations = updatedSolution.GetIntegrations();
+
+            updatedIntegrations.Should().BeEquivalentTo(expectedIntegrations, opt => opt.Excluding(m => m.Id));
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SetNhsAppIntegrations_WithStaleIntegrations_RemovesStaleIntegrations(
+            Solution solution,
+            [Frozen] BuyingCatalogueDbContext context,
+            InteroperabilityService service)
+        {
+            var integrations = Interoperability.NhsAppIntegrations
+                .Select(x => new Integration(Interoperability.NhsAppIntegrationType, x))
+                .ToList();
+
+            var staleIntegration = integrations.First();
+
+            solution.Integrations = JsonSerializer.Serialize(integrations);
+
+            context.Solutions.Add(solution);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            await service.SetNhsAppIntegrations(solution.CatalogueItemId, integrations.Skip(1).Select(x => x.Qualifier));
+
+            var updatedSolution = await context.Solutions.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.CatalogueItemId == solution.CatalogueItemId);
+
+            var updatedIntegrations = updatedSolution.GetIntegrations();
+
+            updatedIntegrations.Should().NotContain(x => x.Qualifier == staleIntegration.Qualifier);
+            updatedIntegrations.Should().BeEquivalentTo(integrations.Skip(1), opt => opt.Excluding(m => m.Id));
         }
     }
 }

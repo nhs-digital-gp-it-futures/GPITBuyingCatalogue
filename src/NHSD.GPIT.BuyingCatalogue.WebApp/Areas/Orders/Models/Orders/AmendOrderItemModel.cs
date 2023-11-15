@@ -4,7 +4,6 @@ using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Services.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 {
@@ -12,21 +11,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
     {
         public AmendOrderItemModel(
             CallOffId callOffId,
-            IEnumerable<OrderRecipient> recipients,
-            IEnumerable<OrderRecipient> previousRecipients,
+            ICollection<OrderRecipient> recipients,
+            ICollection<OrderRecipient> previousRecipients,
             OrderItem orderItem,
             OrderItem previous,
             bool isAmendment,
             FundingTypeDescriptionModel fundingTypeDescription)
         {
+            ArgumentNullException.ThrowIfNull(orderItem);
+
             CallOffId = callOffId;
             IsAmendment = isAmendment;
-            IsOrderItemAdded = orderItem != null && previous == null;
+            IsOrderItemAdded = previous == null;
             OrderItem = orderItem;
             Previous = previous;
             FundingTypeDescriptionModel = fundingTypeDescription;
-            RolledUpRecipients = recipients.ToList();
-            PreviousRecipients = (previousRecipients ?? Enumerable.Empty<OrderRecipient>()).ToList();
+            RolledUpRecipientsForItem = recipients
+                .ForCatalogueItem(orderItem.CatalogueItemId)
+                .ToList();
+            PreviousRecipientsForItem = (previousRecipients?.ForCatalogueItem(orderItem.CatalogueItemId) ?? Enumerable.Empty<OrderRecipient>()).ToList();
         }
 
         public CallOffId CallOffId { get; }
@@ -39,11 +42,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public CatalogueItem CatalogueItem => OrderItem.CatalogueItem;
 
-        public List<OrderRecipient> RolledUpRecipients { get; }
+        public List<OrderRecipient> RolledUpRecipientsForItem { get; }
 
-        public int RolledUpTotalQuantity => OrderItem.TotalQuantity(RolledUpRecipients);
+        public int RolledUpTotalQuantity => OrderItem.TotalQuantity(RolledUpRecipientsForItem);
 
-        public int PreviousTotalQuantity => Previous?.TotalQuantity(PreviousRecipients) ?? 0;
+        public int PreviousTotalQuantity => Previous?.TotalQuantity(PreviousRecipientsForItem) ?? 0;
 
         public string FundingTypeDescription
         {
@@ -54,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             }
         }
 
-        private List<OrderRecipient> PreviousRecipients { get; }
+        private List<OrderRecipient> PreviousRecipientsForItem { get; }
 
         private OrderItem OrderItem { get; }
 
@@ -64,8 +67,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public bool IsServiceRecipientAdded(string odsCode)
         {
-            var rolledUpRecipient = RolledUpRecipients?.FirstOrDefault(x => x.OdsCode == odsCode);
-            var previousRecipient = PreviousRecipients?.FirstOrDefault(x => x.OdsCode == odsCode);
+            var rolledUpRecipient = RolledUpRecipientsForItem.FirstOrDefault(x => x.OdsCode == odsCode);
+            var previousRecipient = PreviousRecipientsForItem.FirstOrDefault(x => x.OdsCode == odsCode);
 
             return (rolledUpRecipient != null && previousRecipient == null)
                 || Previous == null;

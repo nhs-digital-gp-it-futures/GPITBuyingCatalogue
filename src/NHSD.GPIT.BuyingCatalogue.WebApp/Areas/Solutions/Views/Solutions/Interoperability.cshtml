@@ -1,9 +1,10 @@
+@using NHSD.GPIT.BuyingCatalogue.Framework.Constants
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.InteroperabilityModel;
 
 <article>
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-full">
-            <partial name="_solutionSummary" model="Model" />
+            <partial name="_solutionSummary" model="Model"/>
             <p>View information about the systems this Catalogue Solution integrates with to exchange data:</p>
             <h3>
                 NHS assured integrations
@@ -12,9 +13,15 @@
                 There are three types of integrations specified and assured by the NHS: IM1, GP Connect and the NHS App.
             </p>
             <ul>
-                <li><a href="https://digital.nhs.uk/services/gp-it-futures-systems/im1-pairing-integration" target="_blank">More information on IM1 (opens in new tab)</a></li>
-                <li><a href="https://digital.nhs.uk/services/gp-connect" target="_blank">More information on GP Connect (opens in new tab)</a></li>
-                <li><a href="https://digital.nhs.uk/services/nhs-app" target="_blank">More information on the NHS App (opens in new tab)</a></li>
+                <li>
+                    <a href="https://digital.nhs.uk/services/gp-it-futures-systems/im1-pairing-integration" target="_blank">More information on IM1 (opens in new tab)</a>
+                </li>
+                <li>
+                    <a href="https://digital.nhs.uk/services/gp-connect" target="_blank">More information on GP Connect (opens in new tab)</a>
+                </li>
+                <li>
+                    <a href="https://digital.nhs.uk/services/nhs-app" target="_blank">More information on the NHS App (opens in new tab)</a>
+                </li>
             </ul>
             <hr>
 
@@ -27,7 +34,7 @@
                     <nhs-expander label-text="@($"IM1 {qualifier}")" open="false">
                         <nhs-table data-test-id="table-integrations-@qualifier.ToLowerInvariant().Replace(' ', '-')">
                             <nhs-table-column>
-                             Provider or<br>consumer
+                                Provider or<br>consumer
                             </nhs-table-column>
                             <nhs-table-column>
                                 Integrates with<br>system
@@ -57,7 +64,7 @@
                 }
                 <hr>
             }
-            
+
 
             @if (Model.GpConnectIntegrations.Any())
             {
@@ -96,12 +103,17 @@
             @if (Model.NhsAppIntegrationTypes.Any())
             {
                 <nhs-card title="NHS App integrations">
-                    @foreach (var integration in Model.NhsAppIntegrationTypes)
-                    {
-                        <ul class="nhsuk-list">
-                            <li>@integration</li>
-                        </ul>
-                    }
+                    <nhs-table>
+                        <nhs-table-column>Integration</nhs-table-column>
+                        <nhs-table-column>Description</nhs-table-column>
+                        @foreach (var integration in Model.NhsAppIntegrationTypes)
+                        {
+                            <nhs-table-row-container>
+                                <nhs-table-cell>@integration</nhs-table-cell>
+                                <nhs-table-cell>@Interoperability.NhsAppIntegrationDescriptions[integration]</nhs-table-cell>
+                            </nhs-table-row-container>
+                        }
+                    </nhs-table>
                 </nhs-card>
                 <hr>
             }

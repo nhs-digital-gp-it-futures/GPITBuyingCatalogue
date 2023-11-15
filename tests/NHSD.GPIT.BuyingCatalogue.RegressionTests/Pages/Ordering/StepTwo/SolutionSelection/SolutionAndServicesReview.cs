@@ -2,6 +2,7 @@
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
 using OpenQA.Selenium;
 
@@ -25,11 +26,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
         public void AmendReviewSolutionAndServices()
         {
-            CommonActions.ClickContinue();
+            //CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-              typeof(OrderController),
-              nameof(OrderController.Order)).Should().BeTrue();
+                typeof(DeliveryDatesController),
+                nameof(DeliveryDatesController.Review)).Should().BeTrue();
+
+            CommonActions.ClickContinue();
         }
     }
 }

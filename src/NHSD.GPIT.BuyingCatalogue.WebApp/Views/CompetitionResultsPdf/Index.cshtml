@@ -162,7 +162,7 @@
     <main class="nhsuk-main-wrapper" id="maincontent">
         <div class="nhsuk-grid-row">
             <div class="nhsuk-grid-column-full">
-                <nhs-page-title title="Competition results" caption="@Model.Competition.Name"/>
+                    <nhs-page-title title="Competition results" caption="@Model.Competition.Name" />
                     <nhs-summary-list>
                     <nhs-summary-list-row label-text="Competition name">
                         @Model.Competition.Name
@@ -186,11 +186,25 @@
 
                 <div class="pdf-container">
                     <h2>@winningSolutionHeading</h2>
-
-                    @foreach (var solutionResult in Model.WinningSolutions)
-                    {
-                        <partial name="_SolutionResultPdf" model="solutionResult"/>
-                    }
+                        @if (!Model.IsDirectAward())
+                        {
+                            @foreach (var solutionResult in Model.WinningSolutions)
+                            {
+                                <partial name="_SolutionResultPdf" model="solutionResult" />
+                            }
+                        }
+                        else
+                        {
+                            <p>The filter used for this competition only returned one result. This means you can execute a direct award for this solution</p>
+                            <h3 class="nhsuk-heading-l">
+                                @Model.NonShortlistedSolutions.FirstOrDefault().Solution.CatalogueItem.Name
+                                <span class="nhsuk-caption-l nhsuk-caption--bottom">
+                                    @Model.NonShortlistedSolutions.FirstOrDefault().Solution.CatalogueItem.Supplier.Name
+                                </span>
+                            </h3>
+                            <div style="page-break-after: always"></div>
+                        }
+                        
                 </div>
 
                 @if (Model.OtherSolutionResults.Any())
@@ -206,9 +220,7 @@
                 }
 
                 <h2>Filter details</h2>
-                   <partial name="Partials/_FilterDetailsPartial" model="@Model.FilterDetailsModel" />
-
-                <div style="page-break-after: always"></div>
+                   <partial name="_FilterDetails" model="@Model.FilterDetailsModel" />
 
                 @if (Model.IncludesNonPriceElements)
                 {
@@ -227,11 +239,10 @@
                             <nhs-summary-list-row label-text="@nonPriceElementWeighting.Key.EnumMemberName()">@nonPriceElementWeighting.Value%</nhs-summary-list-row>
                         }
                     </nhs-summary-list>
+                    <div style="page-break-after: always"></div>
                 }
 
-                <div style="page-break-after: always"></div>
-
-                @if (Model.NonShortlistedSolutions.Any())
+                @if (Model.NonShortlistedSolutions.Any() && !Model.IsDirectAward())
                 {
                     <h2>Non-shortlisted solutions</h2>
                     <h4>Solutions not included</h4>

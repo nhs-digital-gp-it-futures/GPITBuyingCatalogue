@@ -9,10 +9,6 @@
         : "Provide the commencement date, initial period and maximum term for the Call-off Agreement.";
 
     var isUnder40K = Model.OrderTriageValue == OrderTriageValue.Under40K;
-    var maximumTermLimit = isUnder40K ? 12 : 36; 
-    var recommendedPeriod = isUnder40K ? 3 : 6;
-    var maximumTermTitle = $"What is the maximum term for this Call-off Agreement{(!isUnder40K ? " for each Service Recipient": string.Empty)} (in months)?";
-    var maximumTermHint = $"This is the maximum length the Call-off Agreement can run for{(!isUnder40K ? " each Service Recipient" : string.Empty)}, which includes the initial period. It cannot exceed {maximumTermLimit} months.";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -32,7 +28,7 @@
                 <p>After the initial period, the Call-off Agreement can be terminated at any time by giving at least 30 days written notice to the supplier. The initial period begins on the commencement date for the Call-off Agreement.</p>
             </div>
         }
-        
+
         @if (Model.IsAmendment)
         {
             var commencementDate = Model.Date.HasValue
@@ -80,14 +76,14 @@
                 <div class="nhsuk-u-margin-bottom-9">
                     <nhs-bookended-input asp-for="@Model.InitialPeriod"
                                          label-text="What is the initial period for this Call-off Agreement (in months)?"
-                                         label-hint="This is the period after which the Call-off Agreement can be terminated without incurring charges. It is recommended the initial period is @recommendedPeriod months."
+                                         label-hint="This is the period after which the Call-off Agreement can be terminated without incurring charges and begins on the same day as the commencement date. It is recommended the initial period is 6 months, and it cannot exceed 12 months. "
                                          Suffix="months" />
                 </div>
 
                 <div class="nhsuk-u-margin-bottom-9">
                     <nhs-bookended-input asp-for="@Model.MaximumTerm"
-                                         label-text="@(maximumTermTitle)"
-                                         label-hint="@(maximumTermHint)"
+                                         label-text="What is the maximum term for this Call-off Agreement (in months)?"
+                                         label-hint="This is the maximum length the Call-off Agreement can run for each Service Recipient, which includes the initial period. It cannot exceed 36 months from the delivery date - which is when solutions or services start being used. "
                                          Suffix="months" />
                 </div>
 
