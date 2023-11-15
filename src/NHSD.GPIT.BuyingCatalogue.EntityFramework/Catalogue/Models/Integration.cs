@@ -5,13 +5,23 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     public class Integration
     {
+        public Integration()
+        {
+        }
+
+        public Integration(
+            string integrationType,
+            string qualifier)
+        {
+            IntegrationType = integrationType;
+            Qualifier = qualifier;
+        }
+
         public Guid Id { get; set; }
 
         public string IntegrationType { get; set; }
 
         public string Qualifier { get; set; }
-
-        public ICollection<string> NHSAppIntegrationTypes { get; set; } = new HashSet<string>();
 
         public bool IsConsumer { get; set; }
 

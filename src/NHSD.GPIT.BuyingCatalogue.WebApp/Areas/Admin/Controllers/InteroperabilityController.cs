@@ -373,20 +373,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View("AddEditNhsAppIntegration", model);
 
-            var integration = new Integration
-            {
-                IntegrationType = Framework.Constants.Interoperability.NhsAppIntegrationType,
-                NHSAppIntegrationTypes = model.NhsAppIntegrationTypes
-                                        .Where(o => o.Checked)
-                                        .Select(o => o.IntegrationType)
-                                        .ToHashSet(),
-            };
+            var selectedAppIntegrations = model.NhsAppIntegrations.Where(x => x.Selected).Select(x => x.Value);
 
-            var integrationExists = await interoperabilityService.GetIntegrationById(solutionId, model.IntegrationId);
-
-            await (string.IsNullOrEmpty(integrationExists?.IntegrationType)
-                ? interoperabilityService.AddIntegration(solutionId, integration)
-                : interoperabilityService.EditIntegration(solutionId, model.IntegrationId, integration));
+            await interoperabilityService.SetNhsAppIntegrations(solutionId, selectedAppIntegrations);
 
             return RedirectToAction(nameof(Interoperability), new { solutionId });
         }

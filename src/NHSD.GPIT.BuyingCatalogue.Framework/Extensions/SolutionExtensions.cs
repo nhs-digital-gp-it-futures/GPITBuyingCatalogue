@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Serialization;
 
@@ -23,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
                 throw new ArgumentNullException(nameof(solution));
 
             return string.IsNullOrWhiteSpace(solution.Integrations)
-                ? new List<Integration>()
+                ? Enumerable.Empty<Integration>().ToList()
                 : JsonDeserializer.Deserialize<List<Integration>>(solution.Integrations);
         }
     }

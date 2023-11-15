@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
@@ -91,6 +92,40 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
                 await dbContext.SaveChangesAsync();
             }
+        }
+
+        public async Task SetNhsAppIntegrations(CatalogueItemId solutionId, IEnumerable<string> integrations)
+        {
+            ArgumentNullException.ThrowIfNull(integrations);
+
+            var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
+
+            var solutionIntegrations = solution.GetIntegrations().ToList();
+
+            var nhsAppIntegrations =
+                solutionIntegrations.Where(x => x.IntegrationType == Interoperability.NhsAppIntegrationType)
+                    .ToList();
+
+            var newIntegrations = integrations.Select(x => new Integration(Interoperability.NhsAppIntegrationType, x))
+                .ToList();
+
+            var toRemove =
+                nhsAppIntegrations.Where(
+                    x => !newIntegrations.Any(
+                        y => string.Equals(x.Qualifier, y.Qualifier, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+
+            var toAdd =
+                newIntegrations.Where(
+                    x => !nhsAppIntegrations.Any(
+                        y => string.Equals(x.Qualifier, y.Qualifier, StringComparison.OrdinalIgnoreCase)));
+
+            toRemove.ForEach(x => solutionIntegrations.Remove(x));
+            solutionIntegrations.AddRange(toAdd);
+
+            solution.Integrations = JsonSerializer.Serialize(solutionIntegrations);
+
+            await dbContext.SaveChangesAsync();
         }
     }
 }
