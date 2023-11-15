@@ -63,36 +63,39 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             var applyToAll = model.ApplyToAll.EqualsIgnoreCase(YesNoRadioButtonTagHelper.Yes);
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
-            if (order.DeliveryDate == null
-                || order.DeliveryDate.Value == model.Date!.Value)
+            if (order.DeliveryDate.HasValue && order.DeliveryDate.Value != model.Date!.Value)
             {
-                if (applyToAll)
-                {
-                    await deliveryDateService.SetAllDeliveryDates(internalOrgId, callOffId, model.Date!.Value);
-
-                    return RedirectToAction(
-                        nameof(Review),
-                        typeof(DeliveryDatesController).ControllerName(),
-                        new { internalOrgId, callOffId });
-                }
-
-                if (order.DeliveryDate == null)
-                {
-                    await deliveryDateService.SetDeliveryDate(internalOrgId, callOffId, model.Date!.Value);
-                }
+                var deliveryDate = model.Date?.ToString(DateFormat);
 
                 return RedirectToAction(
-                    nameof(EditDates),
+                    nameof(ConfirmChanges),
                     typeof(DeliveryDatesController).ControllerName(),
-                    new { internalOrgId, callOffId, CatalogueItemId = order.GetOrderItemIds().First() });
+                    new { internalOrgId, callOffId, deliveryDate, applyToAll });
             }
 
-            var deliveryDate = model.Date?.ToString(DateFormat);
+            if (applyToAll)
+            {
+                await deliveryDateService.SetAllDeliveryDates(internalOrgId, callOffId, model.Date!.Value);
+
+                return RedirectToAction(
+                    nameof(Review),
+                    typeof(DeliveryDatesController).ControllerName(),
+                    new { internalOrgId, callOffId });
+            }
+
+            if (order.DeliveryDate == null)
+            {
+                await deliveryDateService.SetDeliveryDate(internalOrgId, callOffId, model.Date!.Value);
+            }
+            else
+            {
+                await deliveryDateService.ResetRecipientDeliveryDates(order.Id);
+            }
 
             return RedirectToAction(
-                nameof(ConfirmChanges),
+                nameof(EditDates),
                 typeof(DeliveryDatesController).ControllerName(),
-                new { internalOrgId, callOffId, deliveryDate, applyToAll });
+                new { internalOrgId, callOffId, CatalogueItemId = order.GetOrderItemIds().First() });
         }
 
         [HttpGet("confirm")]
@@ -120,28 +123,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                 return View(model);
             }
 
-            if (model.ConfirmChanges == false || model.ApplyToAll)
+            if (model.ConfirmChanges == true)
             {
-                if (model.ApplyToAll)
+                if (!model.ApplyToAll)
                 {
-                    await deliveryDateService.SetAllDeliveryDates(internalOrgId, callOffId, model.NewDeliveryDate);
+                    var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
+
+                    await deliveryDateService.SetDeliveryDate(internalOrgId, callOffId, model.NewDeliveryDate);
+                    await deliveryDateService.ResetRecipientDeliveryDates(order.Id);
+
+                    var catalogueItemId = order.GetOrderItemIds().First();
+
+                    return RedirectToAction(
+                        nameof(EditDates),
+                        typeof(DeliveryDatesController).ControllerName(),
+                        new { model.InternalOrgId, model.CallOffId, catalogueItemId });
                 }
 
-                return RedirectToAction(
-                    nameof(Review),
-                    typeof(DeliveryDatesController).ControllerName(),
-                    new { internalOrgId, callOffId });
+                await deliveryDateService.SetAllDeliveryDates(internalOrgId, callOffId, model.NewDeliveryDate);
             }
 
-            await deliveryDateService.SetDeliveryDate(internalOrgId, callOffId, model.NewDeliveryDate);
-
-            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
-            var catalogueItemId = order.GetOrderItemIds().First();
-
             return RedirectToAction(
-                nameof(EditDates),
+                nameof(Review),
                 typeof(DeliveryDatesController).ControllerName(),
-                new { model.InternalOrgId, model.CallOffId, catalogueItemId });
+                new { internalOrgId, callOffId });
         }
 
         [HttpGet("{catalogueItemId}/edit")]

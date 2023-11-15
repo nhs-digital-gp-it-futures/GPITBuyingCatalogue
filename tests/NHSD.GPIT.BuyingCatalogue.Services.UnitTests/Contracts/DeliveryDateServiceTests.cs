@@ -91,6 +91,30 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
         [Theory]
         [InMemoryDbAutoData]
+        public static async Task ResetRecipientDeliveryDates_UpdatesDatabase(
+            Order order,
+            DateTime initialDate,
+            [Frozen] BuyingCatalogueDbContext context,
+            DeliveryDateService service)
+        {
+            order.DeliveryDate = null;
+            order.OrderItems.ForEach(x => order.OrderRecipients.ForEach(r => r.SetDeliveryDateForItem(x.CatalogueItemId, initialDate)));
+            context.Orders.Add(order);
+            await context.SaveChangesAsync();
+
+            await service.ResetRecipientDeliveryDates(order.Id);
+            context.ChangeTracker.Clear();
+
+            var dbOrder = await context.Orders
+                .Include(x => x.OrderRecipients)
+                .ThenInclude(x => x.OrderItemRecipients)
+                .FirstAsync(x => x.Id == order.Id);
+
+            dbOrder.OrderItems.ForEach(x => order.OrderRecipients.ForEach(r => r.GetDeliveryDateForItem(x.CatalogueItemId).Should().Be(null)));
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
         public static async Task SetDeliveryDates_UpdatesDatabase(
             Order order,
             [Frozen] BuyingCatalogueDbContext context,
