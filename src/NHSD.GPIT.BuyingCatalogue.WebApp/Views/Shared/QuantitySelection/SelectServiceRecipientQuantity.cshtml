@@ -80,6 +80,25 @@
                 }
             </nhs-table>
 
+            @foreach (var location in Model.ServiceRecipients.GroupBy(x => x.Location))
+            {
+                var count = location.Count();
+                <nhs-expander label-text="@($"{location.Key} ({count.ToString()} selected)")"
+                          bold-title="true" open="@(count > 0 ? true : false)">
+                    <ul>
+                        @foreach (var item in location)
+                        {
+                            var recipient = Model.ServiceRecipients.FirstOrDefault(x => x.OdsCode.Contains(item.OdsCode));
+
+                            <input type="hidden" asp-for="@recipient.Name" />
+                            <input type="hidden" asp-for="@recipient.OdsCode" />
+                            <li>@item.Description</li>
+                        }
+                    </ul>
+
+                </nhs-expander>
+            }
+
             @if (Model.PreviouslySelected?.Any() ?? false)
             {
                 <div id="previously-selected-quantities">

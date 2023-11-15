@@ -25,6 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         private const string OrderItemViewName = "QuantitySelection/SelectOrderItemQuantity";
         private const string ServiceRecipientViewName = "QuantitySelection/SelectServiceRecipientQuantity";
 
+        private readonly IOdsService odsService;
         private readonly IGpPracticeService gpPracticeService;
         private readonly IOrderService orderService;
         private readonly IOrderQuantityService orderQuantityService;
@@ -32,12 +33,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         private readonly IOrderItemService orderItemService;
 
         public QuantityController(
+            IOdsService odsService,
             IGpPracticeService gpPracticeService,
             IOrderService orderService,
             IOrderQuantityService orderQuantityService,
             IRoutingService routingService,
             IOrderItemService orderItemService)
         {
+            this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
             this.gpPracticeService = gpPracticeService ?? throw new ArgumentNullException(nameof(gpPracticeService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.orderQuantityService = orderQuantityService ?? throw new ArgumentNullException(nameof(orderQuantityService));
@@ -129,6 +132,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var recipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId).Select(
                 x => new ServiceRecipientDto(x.OdsCode, x.OdsOrganisation?.Name, x.GetQuantityForItem(orderItem.CatalogueItemId)));
+
+            var selectedRecipients = await odsService.GetServiceRecipientsById(internalOrgId, recipients.Select(x => x.OdsCode).ToList());
 
             var previousRecipients = wrapper.Previous?.OrderRecipients?.Select(
                 x => new ServiceRecipientDto(x.OdsCode, x.OdsOrganisation?.Name, x.GetQuantityForItem(orderItem.CatalogueItemId)));
