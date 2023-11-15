@@ -4,8 +4,8 @@ resource "azurerm_application_gateway" "app_gateway" {
   resource_group_name = var.rg_name
   count               = var.core_env != "dev" ? 1 : 0
   sku {
-    name     = "Standard_v2"
-    tier     = "Standard_v2"
+    name     = "WAF_v2"
+    tier     = "WAF_v2"
     capacity = var.ag_capacity
   }
 
@@ -133,7 +133,7 @@ resource "azurerm_application_gateway" "app_gateway" {
 
   identity {
     type         = "UserAssigned"
-    identity_ids = [data.azurerm_user_assigned_identity.managed_identity_aad.id] # [azurerm_user_assigned_identity.managed_id.id]
+    identity_ids = [data.azurerm_user_assigned_identity.managed_identity_aad.id]
   }
 
   probe {
@@ -147,44 +147,48 @@ resource "azurerm_application_gateway" "app_gateway" {
     protocol                                  = "Http"
   }
 
-  # Waf config
+  waf_configuration {
+    enabled                   = true
+    firewall_mode             = "Prevention"
+    rule_set_type             = "OWASP"
+    rule_set_version          = "3.2"
+    request_body_check        = true
+    max_request_body_size_kb  = 128
 
-  # waf_configuration {
-  #   enabled                  = true
-  #   file_upload_limit_mb     = 100
-  #   firewall_mode            = "Prevention"
-  #   max_request_body_size_kb = 128
-  #   request_body_check       = true
-  #   rule_set_type            = "OWASP"
-  #   rule_set_version         = "3.1"
+    disabled_rule_group {
+       rule_group_name = "REQUEST-942-APPLICATION-ATTACK-SQLI"
+       rules           = [
+        942380,
+        942430,
+        942400,
+        942440,
+        942450,
+        942130
+       ]
+    }
 
-  #   disabled_rule_group {
-  #     rule_group_name = "REQUEST-942-APPLICATION-ATTACK-SQLI"
-  #     rules           = [
-  #       942430,
-  #       942130,
-  #       942450,
-  #       942440,
-  #       942210,
-  #       942380,
-  #       942200,
-  #       942220,
-  #       942400
-  #     ]
-  #   }
-  #   disabled_rule_group {
-  #     rule_group_name = "REQUEST-920-PROTOCOL-ENFORCEMENT"
-  #     rules           = [ 920230 ]
-  #   }
-  #   disabled_rule_group {
-  #     rule_group_name = "REQUEST-931-APPLICATION-ATTACK-RFI"
-  #     rules           = [ 931130 ]
-  #   }
-  #   disabled_rule_group {
-  #     rule_group_name = "REQUEST-932-APPLICATION-ATTACK-RCE"
-  #     rules           = [ 932115 ]
-  #   }
-  # }
+    disabled_rule_group {
+       rule_group_name = "REQUEST-920-PROTOCOL-ENFORCEMENT"
+       rules           = [ 920230 ]
+    }
+
+    disabled_rule_group {
+      rule_group_name = "REQUEST-931-APPLICATION-ATTACK-RFI"
+      rules           = [ 931130 ]
+    }
+
+    exclusion {
+      match_variable          = "RequestCookieNames"
+      selector_match_operator = "Equals"
+      selector                = "buyingcatalogue-cookie-consent"
+    }
+
+    exclusion {
+      match_variable          = "RequestArgNames"
+      selector_match_operator = "Equals"
+      selector                = "__RequestVerificationToken"
+    }
+  }
 
   tags = {
     environment  = var.environment,
@@ -192,19 +196,6 @@ resource "azurerm_application_gateway" "app_gateway" {
   }
 
   lifecycle {
-    # AGIC owns most app gateway settings, so we should ignore differences
-    ignore_changes = [
-      #  identity[0].identity_ids,
-      #  request_routing_rule, 
-      #  http_listener, 
-      #  backend_http_settings, 
-      #  frontend_port,
-      #  backend_address_pool,
-      #  probe,
-      #  redirect_configuration,      
-      #  url_path_map,     
-      #  custom_error_configuration,
-      #  tags, 
-    ]
+    ignore_changes = [ ]
   }
 }

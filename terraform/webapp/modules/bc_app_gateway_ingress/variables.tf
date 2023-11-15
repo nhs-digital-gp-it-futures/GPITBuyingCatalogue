@@ -49,3 +49,11 @@ variable "app_dns_url" {
 variable "core_env" {
   type = string
 }
+
+variable "storage_account_id" {
+  type = string
+}
+
+variable "diag_name" {
+  type = string
+}
