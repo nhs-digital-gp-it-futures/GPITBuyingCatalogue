@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Constants
 {
@@ -30,14 +31,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Constants
             { "Structured Record", "GP Connect - Structured Record" },
         };
 
-        public static IEnumerable<string> NhsAppIntegrations => new List<string>()
-        {
-            "Online consultations",
-            "Personal health records/care plans",
-            "Primary care notifications and messaging",
-            "Secondary care notifications and messaging",
-        };
-
         public static Dictionary<string, string> NhsAppIntegrationDescriptions => new()
         {
             {
@@ -57,5 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Constants
                 "An integration that allows this solution to use the NHS App messaging service to send secondary care appointment related messages to users."
             },
         };
+
+        public static IEnumerable<string> NhsAppIntegrations => NhsAppIntegrationDescriptions.Keys.Order();
     }
 }
