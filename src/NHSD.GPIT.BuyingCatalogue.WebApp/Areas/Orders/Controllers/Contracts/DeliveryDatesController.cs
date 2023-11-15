@@ -60,7 +60,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                 return View(model);
             }
 
-            var applyToAll = model.ApplyToAll.EqualsIgnoreCase(YesNoRadioButtonTagHelper.Yes);
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
             if (order.DeliveryDate.HasValue && order.DeliveryDate.Value != model.Date!.Value)
@@ -70,10 +69,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                 return RedirectToAction(
                     nameof(ConfirmChanges),
                     typeof(DeliveryDatesController).ControllerName(),
-                    new { internalOrgId, callOffId, deliveryDate, applyToAll });
+                    new { internalOrgId, callOffId, deliveryDate, model.ApplyToAll });
             }
 
-            if (applyToAll)
+            if (model.ApplyToAll == true)
             {
                 await deliveryDateService.SetAllDeliveryDates(internalOrgId, callOffId, model.Date!.Value);
 

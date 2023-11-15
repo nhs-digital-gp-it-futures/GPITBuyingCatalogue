@@ -140,7 +140,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         {
             order.SetupCatalogueSolution();
             order.DeliveryDate = null;
-            model.ApplyToAll = "Yes";
+            model.ApplyToAll = true;
 
             deliveryDatesService
                 .Setup(x => x.SetAllDeliveryDates(internalOrgId, callOffId, model.Date.Value))
@@ -218,7 +218,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         {
             order.SetupCatalogueSolution();
             order.DeliveryDate = model.Date;
-            model.ApplyToAll = "Yes";
+            model.ApplyToAll = true;
 
             orderService
                 .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
@@ -245,10 +245,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         }
 
         [Theory]
-        [CommonInlineAutoData("Yes")]
-        [CommonInlineAutoData("No")]
+        [CommonInlineAutoData(true)]
+        [CommonInlineAutoData(false)]
         public static async Task Post_SelectDate_NewDateDifferentFromOldDate_ReturnsExpectedResult(
-            string applyToAll,
+            bool applyToAll,
             string internalOrgId,
             CallOffId callOffId,
             SelectDateModel model,
@@ -277,7 +277,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 { "internalOrgId", internalOrgId },
                 { "callOffId", callOffId },
                 { "deliveryDate", model.Date.Value.ToString(DeliveryDatesController.DateFormat) },
-                { "applyToAll", model.ApplyToAll.EqualsIgnoreCase(YesNoRadioButtonTagHelper.Yes) },
+                { "applyToAll", model.ApplyToAll },
             });
         }
 

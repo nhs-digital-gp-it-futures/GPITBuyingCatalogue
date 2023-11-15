@@ -1,12 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates
 {
     public class SelectDateModel : DateInputModel
     {
+        public const string YesOption = "Yes";
+        public const string NoOption = "No";
+
         public SelectDateModel()
         {
         }
@@ -28,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
 
             SetDateFields(order.DeliveryDate);
 
-            ApplyToAll = applyToAll.ToYesNo();
+            ApplyToAll = applyToAll;
         }
 
         public string InternalOrgId { get; set; }
@@ -43,7 +48,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
 
         public bool IsAmend { get; set; }
 
-        public string ApplyToAll { get; set; }
+        public bool? ApplyToAll { get; set; }
+
+        public IEnumerable<SelectOption<bool>> ApplyToAllOptions => new List<SelectOption<bool>>
+        {
+            new(YesOption, true),
+            new(NoOption, false),
+        };
 
         public DateTime? ContractEndDate
         {
