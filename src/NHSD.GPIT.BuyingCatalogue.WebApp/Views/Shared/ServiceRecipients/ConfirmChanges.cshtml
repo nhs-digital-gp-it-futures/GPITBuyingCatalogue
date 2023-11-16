@@ -9,6 +9,7 @@
         <form method="post">
             <hidden-inputs title="Title" caption="Caption" advice="Advice"/>
             <input type="hidden" asp-for="BackLink" />
+            <input type="hidden" asp-for="AddRemoveRecipientsLink" />
 
             <div id="selected-service-recipients">
 
@@ -36,7 +37,7 @@
             <div class="nhsuk-u-margin-top-6">
                 <p>
                     You can
-                    <a href="@Model.BackLink">add or remove Service Recipients</a>
+                    <a href="@Model.AddRemoveRecipientsLink">add or remove Service Recipients</a>
                     if needed, or edit them later if you continue with your order.
                 </p>
             </div>
