@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
     public class ConfirmChangesModel : NavBaseModel
     {
         public const string YesOption = "Yes, I want to confirm changes to my planned delivery date";
-        public const string NoOption = "No, I do no want to confirm changes to my planned delivery date";
+        public const string NoOption = "No, I do not want to confirm changes to my planned delivery date";
 
         public ConfirmChangesModel()
         {
