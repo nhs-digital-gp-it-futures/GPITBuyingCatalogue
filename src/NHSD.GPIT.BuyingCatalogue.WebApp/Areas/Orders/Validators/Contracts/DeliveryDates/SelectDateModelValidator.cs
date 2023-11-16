@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.Contracts.Del
                 .OverridePropertyName(x => x.Day);
 
             RuleFor(x => x.ApplyToAll)
-                .NotEmpty()
+                .NotNull()
                 .WithMessage(ApplyToAllRequiredErrorMessage);
         }
     }
