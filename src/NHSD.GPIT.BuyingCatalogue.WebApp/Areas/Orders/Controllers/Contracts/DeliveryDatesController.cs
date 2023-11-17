@@ -10,6 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
@@ -36,11 +37,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         }
 
         [HttpGet("select")]
-        public async Task<IActionResult> SelectDate(string internalOrgId, CallOffId callOffId, string returnUrl = null)
+        public async Task<IActionResult> SelectDate(string internalOrgId, CallOffId callOffId, string returnUrl = null, bool? setAllPDD = null)
         {
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
-            var model = new SelectDateModel(internalOrgId, callOffId, order)
+            var model = new SelectDateModel(internalOrgId, callOffId, order, setAllPDD)
             {
                 BackLink = returnUrl ?? Url.Action(
                     nameof(OrderController.Order),
@@ -61,40 +62,53 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
 
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
-            if (order.DeliveryDate == null
-                || order.DeliveryDate.Value == model.Date!.Value)
+            if (order.DeliveryDate.HasValue && order.DeliveryDate.Value != model.Date!.Value)
             {
-                if (order.DeliveryDate == null)
-                {
-                    await deliveryDateService.SetDeliveryDate(internalOrgId, callOffId, model.Date!.Value);
-                }
+                var deliveryDate = model.Date?.ToString(DateFormat);
 
                 return RedirectToAction(
-                    nameof(EditDates),
+                    nameof(ConfirmChanges),
                     typeof(DeliveryDatesController).ControllerName(),
-                    new { internalOrgId, callOffId, CatalogueItemId = order.GetOrderItemIds().First() });
+                    new { internalOrgId, callOffId, deliveryDate, model.ApplyToAll });
             }
 
-            var deliveryDate = model.Date?.ToString(DateFormat);
+            if (model.ApplyToAll == true)
+            {
+                await deliveryDateService.SetAllDeliveryDates(internalOrgId, callOffId, model.Date!.Value);
+
+                return RedirectToAction(
+                    nameof(Review),
+                    typeof(DeliveryDatesController).ControllerName(),
+                    new { internalOrgId, callOffId });
+            }
+
+            if (order.DeliveryDate == null)
+            {
+                await deliveryDateService.SetDeliveryDate(internalOrgId, callOffId, model.Date!.Value);
+            }
+            else
+            {
+                await deliveryDateService.ResetRecipientDeliveryDates(order.Id);
+            }
 
             return RedirectToAction(
-                nameof(ConfirmChanges),
+                nameof(EditDates),
                 typeof(DeliveryDatesController).ControllerName(),
-                new { internalOrgId, callOffId, deliveryDate });
+                new { internalOrgId, callOffId, CatalogueItemId = order.GetOrderItemIds().First() });
         }
 
         [HttpGet("confirm")]
-        public async Task<IActionResult> ConfirmChanges(string internalOrgId, CallOffId callOffId, string deliveryDate)
+        public async Task<IActionResult> ConfirmChanges(string internalOrgId, CallOffId callOffId, string deliveryDate, bool applyToAll)
         {
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
             var newDate = DateTime.ParseExact(deliveryDate, DateFormat, CultureInfo.InvariantCulture);
 
-            var model = new ConfirmChangesModel(internalOrgId, callOffId, order.DeliveryDate!.Value, newDate)
+            var model = new ConfirmChangesModel(internalOrgId, callOffId, order.DeliveryDate!.Value, newDate, applyToAll)
             {
                 BackLink = Url.Action(
                     nameof(SelectDate),
                     typeof(DeliveryDatesController).ControllerName(),
-                    new { internalOrgId, callOffId }),
+                    new { internalOrgId, callOffId, applyToAll }),
             };
 
             return View(model);
@@ -108,23 +122,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                 return View(model);
             }
 
-            if (model.ConfirmChanges == false)
+            if (model.ConfirmChanges == true)
             {
-                return RedirectToAction(
-                    nameof(Review),
-                    typeof(DeliveryDatesController).ControllerName(),
-                    new { internalOrgId, callOffId });
+                if (!model.ApplyToAll)
+                {
+                    var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
+
+                    await deliveryDateService.SetDeliveryDate(internalOrgId, callOffId, model.NewDeliveryDate);
+                    await deliveryDateService.ResetRecipientDeliveryDates(order.Id);
+
+                    var catalogueItemId = order.GetOrderItemIds().First();
+
+                    return RedirectToAction(
+                        nameof(EditDates),
+                        typeof(DeliveryDatesController).ControllerName(),
+                        new { model.InternalOrgId, model.CallOffId, catalogueItemId });
+                }
+
+                await deliveryDateService.SetAllDeliveryDates(internalOrgId, callOffId, model.NewDeliveryDate);
             }
 
-            await deliveryDateService.SetDeliveryDate(internalOrgId, callOffId, model.NewDeliveryDate);
-
-            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
-            var catalogueItemId = order.GetOrderItemIds().First();
-
             return RedirectToAction(
-                nameof(EditDates),
+                nameof(Review),
                 typeof(DeliveryDatesController).ControllerName(),
-                new { model.InternalOrgId, model.CallOffId, catalogueItemId });
+                new { internalOrgId, callOffId });
         }
 
         [HttpGet("{catalogueItemId}/edit")]

@@ -18,6 +18,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts;
@@ -46,8 +47,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonInlineAutoData(null)]
+        [CommonInlineAutoData(true)]
+        [CommonInlineAutoData(false)]
         public static async Task Get_SelectDate_ReturnsExpectedResult(
+            bool? setAllPDD,
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
@@ -58,11 +62,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));
 
-            var result = await controller.SelectDate(internalOrgId, callOffId);
+            var result = await controller.SelectDate(internalOrgId, callOffId, setAllPDD: setAllPDD);
 
             orderService.VerifyAll();
 
-            var expected = new SelectDateModel(internalOrgId, callOffId, order);
+            var expected = new SelectDateModel(internalOrgId, callOffId, order, setAllPDD);
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 
             actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
@@ -125,6 +129,45 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
         [Theory]
         [CommonAutoData]
+        public static async Task Post_SelectDate_OrderDeliveryDateIsNull_ApplyToAll_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            SelectDateModel model,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IDeliveryDateService> deliveryDatesService,
+            [Frozen] Mock<IOrderService> orderService,
+            DeliveryDatesController controller)
+        {
+            order.SetupCatalogueSolution();
+            order.DeliveryDate = null;
+            model.ApplyToAll = true;
+
+            deliveryDatesService
+                .Setup(x => x.SetAllDeliveryDates(internalOrgId, callOffId, model.Date.Value))
+                .Verifiable();
+
+            orderService
+                .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            var result = await controller.SelectDate(internalOrgId, callOffId, model);
+
+            deliveryDatesService.VerifyAll();
+            orderService.VerifyAll();
+
+            var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actual.ActionName.Should().Be(nameof(DeliveryDatesController.Review));
+            actual.ControllerName.Should().Be(typeof(DeliveryDatesController).ControllerName());
+            actual.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
+                { "callOffId", callOffId },
+            });
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static async Task Post_SelectDate_NewDateSameAsOldDate_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -141,10 +184,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));
 
+            deliveryDatesService
+                .Setup(x => x.ResetRecipientDeliveryDates(order.Id))
+                .Verifiable();
+
             var result = await controller.SelectDate(internalOrgId, callOffId, model);
 
             orderService.VerifyAll();
-            deliveryDatesService.VerifyNoOtherCalls();
+            deliveryDatesService.VerifyAll();
 
             var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
@@ -160,7 +207,48 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
         [Theory]
         [CommonAutoData]
+        public static async Task Post_SelectDate_NewDateSameAsOldDate_ApplyToAll_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            SelectDateModel model,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IDeliveryDateService> deliveryDatesService,
+            [Frozen] Mock<IOrderService> orderService,
+            DeliveryDatesController controller)
+        {
+            order.SetupCatalogueSolution();
+            order.DeliveryDate = model.Date;
+            model.ApplyToAll = true;
+
+            orderService
+                .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            deliveryDatesService
+                .Setup(x => x.SetAllDeliveryDates(internalOrgId, callOffId, model.Date.Value))
+                .Verifiable();
+
+            var result = await controller.SelectDate(internalOrgId, callOffId, model);
+
+            orderService.VerifyAll();
+            deliveryDatesService.VerifyAll();
+
+            var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actual.ActionName.Should().Be(nameof(DeliveryDatesController.Review));
+            actual.ControllerName.Should().Be(typeof(DeliveryDatesController).ControllerName());
+            actual.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "InternalOrgId", internalOrgId },
+                { "callOffId", callOffId },
+            });
+        }
+
+        [Theory]
+        [CommonInlineAutoData(true)]
+        [CommonInlineAutoData(false)]
         public static async Task Post_SelectDate_NewDateDifferentFromOldDate_ReturnsExpectedResult(
+            bool applyToAll,
             string internalOrgId,
             CallOffId callOffId,
             SelectDateModel model,
@@ -168,6 +256,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             [Frozen] Mock<IOrderService> orderService,
             DeliveryDatesController controller)
         {
+            model.ApplyToAll = applyToAll;
             order.SetupCatalogueSolution();
             order.DeliveryDate = model.Date!.Value.AddDays(1);
 
@@ -188,6 +277,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 { "internalOrgId", internalOrgId },
                 { "callOffId", callOffId },
                 { "deliveryDate", model.Date.Value.ToString(DeliveryDatesController.DateFormat) },
+                { "applyToAll", model.ApplyToAll },
             });
         }
 
@@ -197,6 +287,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
+            bool applyToAll,
             [Frozen] Mock<IOrderService> orderService,
             DeliveryDatesController controller)
         {
@@ -209,11 +300,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             var result = await controller.ConfirmChanges(
                 internalOrgId,
                 callOffId,
-                newDate.ToString(DeliveryDatesController.DateFormat));
+                newDate.ToString(DeliveryDatesController.DateFormat),
+                applyToAll);
 
             orderService.VerifyAll();
 
-            var expected = new ConfirmChangesModel(internalOrgId, callOffId, order.DeliveryDate.Value, newDate);
+            var expected = new ConfirmChangesModel(internalOrgId, callOffId, order.DeliveryDate.Value, newDate, applyToAll);
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 
             actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
@@ -236,14 +328,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonInlineAutoData(true)]
+        [CommonInlineAutoData(false)]
         public static async Task Post_ConfirmChanges_NoSelected_ReturnsExpectedResult(
+            bool applyToAll,
             string internalOrgId,
             CallOffId callOffId,
             ConfirmChangesModel model,
             DeliveryDatesController controller)
         {
             model.ConfirmChanges = false;
+            model.ApplyToAll = applyToAll;
 
             var result = await controller.ConfirmChanges(internalOrgId, callOffId, model);
             var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
@@ -275,6 +370,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 .Setup(x => x.SetDeliveryDate(internalOrgId, callOffId, model.NewDeliveryDate))
                 .Verifiable();
 
+            deliveryDatesService
+                .Setup(x => x.ResetRecipientDeliveryDates(order.Id))
+                .Verifiable();
+
             orderService
                 .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));
@@ -293,6 +392,37 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 { "internalOrgId", model.InternalOrgId },
                 { "callOffId", model.CallOffId },
                 { "catalogueItemId", order.OrderItems.First().CatalogueItemId },
+            });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_ConfirmChanges_YesSelected_ApplyToAll_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            ConfirmChangesModel model,
+            [Frozen] Mock<IDeliveryDateService> deliveryDatesService,
+            DeliveryDatesController controller)
+        {
+            model.ConfirmChanges = true;
+            model.ApplyToAll = true;
+
+            deliveryDatesService
+                .Setup(x => x.SetAllDeliveryDates(internalOrgId, callOffId, model.NewDeliveryDate))
+                .Verifiable();
+
+            var result = await controller.ConfirmChanges(internalOrgId, callOffId, model);
+
+            deliveryDatesService.VerifyAll();
+
+            var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actual.ActionName.Should().Be(nameof(DeliveryDatesController.Review));
+            actual.ControllerName.Should().Be(typeof(DeliveryDatesController).ControllerName());
+            actual.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
+                { "callOffId", callOffId },
             });
         }
 

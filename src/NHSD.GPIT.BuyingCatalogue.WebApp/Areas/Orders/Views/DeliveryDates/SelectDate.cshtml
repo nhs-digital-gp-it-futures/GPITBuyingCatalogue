@@ -7,7 +7,7 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-validation-summary />
+        <nhs-validation-summary RadioId="@nameof(Model.ApplyToAll)" />
 
         <nhs-page-title title="@ViewBag.Title"
                         caption="Order @Model.CallOffId"
@@ -37,6 +37,15 @@
                                          label-hint="This is the date any solutions and services you've ordered will start being used."
                                          size="ExtraSmall">
                     <nhs-date-input asp-for="@Model" day="Day" month="Month" year="Year" />
+                </nhs-fieldset-form-label>
+                
+                <nhs-fieldset-form-label asp-for="ApplyToAll"
+                                         label-text="Do you want to use the same delivery date for all recipients?"
+                                         size="ExtraSmall">
+                    <nhs-radio-buttons asp-for="ApplyToAll"
+                                       values="@Model.ApplyToAllOptions.Cast<object>()"
+                                       value-name="Value"
+                                       display-name="Text" />
                 </nhs-fieldset-form-label>
             </div>
 

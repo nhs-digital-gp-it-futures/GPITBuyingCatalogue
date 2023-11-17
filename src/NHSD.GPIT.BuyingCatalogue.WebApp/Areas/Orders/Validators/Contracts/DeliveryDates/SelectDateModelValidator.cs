@@ -11,6 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.Contracts.Del
         public const string DeliveryDateBeforeCommencementDateErrorMessage = "Planned delivery date must be on or after your commencement date ({0})";
         public const string DeliveryDateAfterContractEndDateErrorMessage = "Date cannot exceed the maximum term of the contract ({0})";
         public const string AmendDeliveryDateAfterContractEndDateErrorMessage = "Date cannot exceed the maximum term of the original contract ({0})";
+        public const string ApplyToAllRequiredErrorMessage = "Select yes if you want to use the same delivery date for all recipients";
 
         public SelectDateModelValidator()
         {
@@ -27,6 +28,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.Contracts.Del
                 .Unless(x => !x.IsValid)
                 .WithMessage(x => string.Format(x.IsAmend ? AmendDeliveryDateAfterContractEndDateErrorMessage : DeliveryDateAfterContractEndDateErrorMessage, $"{x.ContractEndDate:d MMMM yyyy}"))
                 .OverridePropertyName(x => x.Day);
+
+            RuleFor(x => x.ApplyToAll)
+                .NotNull()
+                .WithMessage(ApplyToAllRequiredErrorMessage);
         }
     }
 }
