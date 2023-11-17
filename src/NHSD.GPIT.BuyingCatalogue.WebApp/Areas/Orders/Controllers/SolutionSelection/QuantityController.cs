@@ -130,10 +130,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 wrapper,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
 
-            var recipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId).Select(
-                x => new ServiceRecipientDto(x.OdsCode, x.OdsOrganisation?.Name, x.GetQuantityForItem(orderItem.CatalogueItemId)));
+            var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
+            var organisationRecipients = await odsService.GetServiceRecipientsById(internalOrgId, orderRecipients.Select(x => x.OdsCode).ToList());
 
-            var selectedRecipients = await odsService.GetServiceRecipientsById(internalOrgId, recipients.Select(x => x.OdsCode).ToList());
+            var recipients = orderRecipients.Join(organisationRecipients, orderRecipients => orderRecipients.OdsCode, organisationRecipients => organisationRecipients.OrgId,
+                (orderRecipients, organisationRecipients) =>
+                    new ServiceRecipientDto(orderRecipients.OdsCode,
+                                            orderRecipients.OdsOrganisation?.Name,
+                                            orderRecipients.GetQuantityForItem(orderItem.CatalogueItemId),
+                                            organisationRecipients.Location));
 
             var previousRecipients = wrapper.Previous?.OrderRecipients?.Select(
                 x => new ServiceRecipientDto(x.OdsCode, x.OdsOrganisation?.Name, x.GetQuantityForItem(orderItem.CatalogueItemId)));
