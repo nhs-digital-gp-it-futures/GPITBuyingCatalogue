@@ -142,7 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
 
             orderWrapper.Order.OrderItems.Count.Should().Be(1);
             orderWrapper.Order.OrderRecipients.Count.Should().Be(2);
-            orderWrapper.AddedOrderRecipients().Count.Should().Be(1);
+            orderWrapper.AddedRecipientsOdsCodes().Count().Should().Be(1);
             orderWrapper.DetermineOrderRecipients(catalogueItem.Id).Count.Should().Be(1);
 
             orderWrapper.RolledUp.OrderItems.Count.Should().Be(1);
@@ -168,7 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
 
             orderWrapper.Order.OrderItems.Count.Should().Be(2);
             orderWrapper.Order.OrderRecipients.Count.Should().Be(2);
-            orderWrapper.AddedOrderRecipients().Count.Should().Be(1);
+            orderWrapper.AddedRecipientsOdsCodes().Count().Should().Be(1);
             orderWrapper.DetermineOrderRecipients(originalCatalogueItem.Id).Count.Should().Be(1);
             orderWrapper.DetermineOrderRecipients(addedCatalogueItem.Id).Count.Should().Be(2);
 

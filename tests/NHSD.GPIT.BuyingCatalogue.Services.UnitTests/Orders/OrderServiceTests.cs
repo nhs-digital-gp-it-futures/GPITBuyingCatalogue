@@ -1048,12 +1048,35 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             context.Orders.Add(order);
 
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
 
             (await context.Orders.FirstAsync(x => x.Id == order.Id)).AssociatedServicesOnlyDetails.SolutionId.Should().BeNull();
 
             await service.SetSolutionId(order.OrderingParty.InternalIdentifier, order.CallOffId, solutionId);
 
             (await context.Orders.FirstAsync(x => x.Id == order.Id)).AssociatedServicesOnlyDetails.SolutionId.Should().Be(solutionId);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SetOrderPracticeReorganisationRecipient_UpdatesDatabase(
+            Order order,
+            string odsCode,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode = null;
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            (await context.Orders.FirstAsync(x => x.Id == order.Id)).AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode.Should().BeNull();
+
+            await service.SetOrderPracticeReorganisationRecipient(order.OrderingParty.InternalIdentifier, order.CallOffId, odsCode);
+
+            (await context.Orders.FirstAsync(x => x.Id == order.Id)).AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode.Should().Be(odsCode);
         }
 
         [Theory]

@@ -7,6 +7,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 {
     public static class IEnumerableExtensions
     {
+        public static string ToRecipientsString(this IEnumerable<string> values)
+        {
+            ArgumentNullException.ThrowIfNull(values);
+            return string.Join(RecipientsConstants.Delimiter, values);
+        }
+
         public static string ToFilterString(this IEnumerable<string> values)
         {
             ArgumentNullException.ThrowIfNull(values);

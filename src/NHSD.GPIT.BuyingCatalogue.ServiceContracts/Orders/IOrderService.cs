@@ -51,6 +51,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public Task SetSolutionId(string internalOrgId, CallOffId callOffId, CatalogueItemId solutionId);
 
+        public Task SetOrderPracticeReorganisationRecipient(string internalOrgId, CallOffId callOffId, string odsCode);
+
         public Task SetFundingSourceForForceFundedItems(string internalOrgId, CallOffId callOffId);
 
         public Task DeleteSelectedFramework(string internalOrgId, CallOffId callOffId);

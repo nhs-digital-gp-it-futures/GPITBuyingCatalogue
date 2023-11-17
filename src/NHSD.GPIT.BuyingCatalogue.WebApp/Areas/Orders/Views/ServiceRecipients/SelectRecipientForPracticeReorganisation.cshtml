@@ -18,33 +18,39 @@
                 <h3 style="white-space:nowrap">Sublocations for @Model.OrganisationName</h3>
             }
 
-            @foreach (var (location, lIndex) in Model.SubLocations.Select((x, i) => (x, i)))
-            {
-                <input type="hidden" asp-for="@Model.SubLocations[lIndex].Name" />
-                <nhs-expander label-text="@location.Name" bold-title="true" open="@(true)">
+            @{
+                var radioButtonIndex = 0;
 
-                    <nhs-table>
-                        <nhs-table-column>Organisation</nhs-table-column>
-                        <nhs-table-column>ODS code</nhs-table-column>
-                        @foreach (var (item, rIndex) in location.ServiceRecipients.Select((x, i) => (x, i)))
-                        {
-                            <input type="hidden" asp-for="@Model.SubLocations[lIndex].ServiceRecipients[rIndex].OdsCode" />
-                            <input type="hidden" asp-for="@Model.SubLocations[lIndex].ServiceRecipients[rIndex].Name" />
-                            <nhs-table-row-container>
-                                <nhs-table-cell>
-                                    <nhs-radio-button asp-for="SelectedOdsCode"
-                                                      value="@item.OdsCode"
-                                                      display-text="@item.Name"
-                                                      index="@rIndex" />
+                foreach (var (location, lIndex) in Model.SubLocations.Select((x, i) => (x, i)))
+                {
 
-                                </nhs-table-cell>
-                                <nhs-table-cell>
-                                    <div class="nhsuk-input--width-10 nhsuk-u-margin-top-2">@item.OdsCode</div>
-                                </nhs-table-cell>
-                            </nhs-table-row-container>
-                        }
-                    </nhs-table>
-                </nhs-expander>
+                    <input type="hidden" asp-for="@Model.SubLocations[lIndex].Name" />
+                    <nhs-expander label-text="@location.Name" bold-title="true" open="@(true)">
+
+                        <nhs-table>
+                            <nhs-table-column>Organisation</nhs-table-column>
+                            <nhs-table-column>ODS code</nhs-table-column>
+                            @foreach (var (item, rIndex) in location.ServiceRecipients.Select((x, i) => (x, i)))
+                            {
+                                <input type="hidden" asp-for="@Model.SubLocations[lIndex].ServiceRecipients[rIndex].OdsCode" />
+                                <input type="hidden" asp-for="@Model.SubLocations[lIndex].ServiceRecipients[rIndex].Name" />
+                                <nhs-table-row-container>
+                                    <nhs-table-cell>
+                                        <nhs-radio-button asp-for="SelectedOdsCode"
+                                                          value="@item.OdsCode"
+                                                          display-text="@item.Name"
+                                                          index="@radioButtonIndex++" />
+
+                                    </nhs-table-cell>
+                                    <nhs-table-cell>
+                                        <div class="nhsuk-input--width-10 nhsuk-u-margin-top-2">@item.OdsCode</div>
+                                    </nhs-table-cell>
+                                </nhs-table-row-container>
+                            }
+                        </nhs-table>
+                    </nhs-expander>
+
+                }
             }
             <br />
             <nhs-submit-button />
