@@ -289,7 +289,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     Title = "Service Recipient to be retained",
                     Advice = "Select the Service Recipient that will still exist after the merger.",
                 },
-                _ => throw new InvalidOperationException(),
+                _ => throw new InvalidOperationException($"Unsupported orderType {orderType.Value} in {nameof(GetSelectRecipientForPracticeReorganisationTitle)}"),
             };
         }
 
@@ -314,7 +314,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                         ? AdditionalAdviceText
                         : AdviceText,
                 },
-                _ => throw new InvalidOperationException(),
+                _ => throw new InvalidOperationException($"Unsupported orderType {orderType.Value} in {nameof(GetConfirmRecipientsTitle)}"),
             };
         }
 
