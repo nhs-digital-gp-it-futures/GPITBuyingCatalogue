@@ -14,6 +14,11 @@ resource "azurerm_application_gateway" "app_gateway" {
     custom_error_page_url = "https://gpitfuturesappgwcontent.z33.web.core.windows.net/index.html"
   }
 
+  custom_error_configuration {
+    status_code           = "HttpStatus403"
+    custom_error_page_url = "https://gpitfuturesappgwcontent.z33.web.core.windows.net/error.html"
+  }
+
   gateway_ip_configuration {
     name      = local.gateway_ip_name
     subnet_id = var.ag_subnet_id
