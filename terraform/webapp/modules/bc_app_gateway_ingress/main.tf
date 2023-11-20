@@ -1,5 +1,5 @@
 resource "azurerm_application_gateway" "app_gateway" {
-  name                = var.ag_name
+  name                = local.gateway_name
   location            = var.region
   resource_group_name = var.rg_name
   count               = var.core_env != "dev" ? 1 : 0
@@ -15,22 +15,22 @@ resource "azurerm_application_gateway" "app_gateway" {
   }
 
   gateway_ip_configuration {
-    name      = "${var.ag_name_fragment}-gwip"
+    name      = local.gateway_ip_name
     subnet_id = var.ag_subnet_id
   }
 
   frontend_ip_configuration {
-    name                 = "${var.ag_name_fragment}-appgateway-feip"
+    name                 = local.frontend_ip_name
     public_ip_address_id = azurerm_public_ip.pip_app_gateway[0].id
   }
 
   backend_address_pool {
-    name  = "${var.ag_name_fragment}-appgateway-beap"
+    name  = local.backend_address_pool_name
     fqdns = [var.app_service_hostname]
   }
 
   backend_http_settings {
-    name                                = "${var.ag_name_fragment}-appgateway-be-htst"
+    name                                = local.backend_http_settings_name
     cookie_based_affinity               = "Disabled"
     path                                = "/"
     port                                = 80
@@ -40,12 +40,12 @@ resource "azurerm_application_gateway" "app_gateway" {
   }
 
   frontend_port {
-    name = "${var.ag_name_fragment}-appgateway-feport"
+    name = local.http_frontend_port_name
     port = 80
   }
 
   frontend_port {
-    name = "${var.ag_name_fragment}-appgateway-feporthttps"
+    name = local.https_frontend_port_name
     port = 443
   }
 
@@ -57,50 +57,50 @@ resource "azurerm_application_gateway" "app_gateway" {
   # Static Sites
 
   http_listener {
-    name                           = "${var.ag_name_fragment}-appgateway-httplstn"
-    frontend_ip_configuration_name = "${var.ag_name_fragment}-appgateway-feip"
-    frontend_port_name             = "${var.ag_name_fragment}-appgateway-feport"
+    name                           = local.http_listener_name
+    frontend_ip_configuration_name = local.frontend_ip_name
+    frontend_port_name             = local.http_frontend_port_name
     protocol                       = "Http"
   }
 
   request_routing_rule {
-    name                        = "${var.ag_name_fragment}-appgateway-rqrt"
+    name                        = local.http_request_routing_name
     rule_type                   = "Basic"
-    http_listener_name          = "${var.ag_name_fragment}-appgateway-httplstn"
-    redirect_configuration_name = "${var.ag_name_fragment}-appgateway-http-redirect"
-    rewrite_rule_set_name       = "${var.ag_name_fragment}-appgateway-rewrite-rules"
+    http_listener_name          = local.http_listener_name
+    redirect_configuration_name = local.http_redirect_config_name
+    rewrite_rule_set_name       = local.redirect_ruleset_name
     priority                    = 10010
   }
 
   http_listener {
-    name                           = "${var.ag_name_fragment}-appgateway-httpslstn"
-    frontend_ip_configuration_name = "${var.ag_name_fragment}-appgateway-feip"
-    frontend_port_name             = "${var.ag_name_fragment}-appgateway-feporthttps"
+    name                           = local.https_listener_name
+    frontend_ip_configuration_name = local.frontend_ip_name
+    frontend_port_name             = local.https_frontend_port_name
     protocol                       = "Https"
     ssl_certificate_name           = var.ssl_cert_name
   }
 
   request_routing_rule {
-    name                        = "${var.ag_name_fragment}-appgateway-rqrt-https"
+    name                        = local.https_request_routing_name
     rule_type                   = "Basic"
-    http_listener_name          = "${var.ag_name_fragment}-appgateway-httpslstn"
-    backend_address_pool_name   = "${var.ag_name_fragment}-appgateway-beap"
-    backend_http_settings_name  = "${var.ag_name_fragment}-appgateway-be-htst"
-    rewrite_rule_set_name       = "${var.ag_name_fragment}-appgateway-rewrite-rules"
+    http_listener_name          = local.https_listener_name
+    backend_address_pool_name   = local.backend_address_pool_name
+    backend_http_settings_name  = local.backend_http_settings_name
+    rewrite_rule_set_name       = local.redirect_ruleset_name
     priority                    = 10020
   }
 
   redirect_configuration {
-    name = "${var.ag_name_fragment}-appgateway-http-redirect"
+    name = local.http_redirect_config_name
     redirect_type = "Permanent"
-    target_listener_name = "${var.ag_name_fragment}-appgateway-httpslstn"
+    target_listener_name = local.https_listener_name
     include_path = true
     include_query_string = true
   }
 
   # Rewrite rules
   rewrite_rule_set {
-    name = "${var.ag_name_fragment}-appgateway-rewrite-rules"
+    name = local.redirect_ruleset_name
     rewrite_rule {
       name          = "StrictTransportSecurityRule"
       rule_sequence = 1
@@ -137,7 +137,7 @@ resource "azurerm_application_gateway" "app_gateway" {
   }
 
   probe {
-    name                                      = "${var.ag_name_fragment}-appgateway-healthprobe"
+    name                                      = local.healthprobe_name
     host                                      = var.app_service_hostname
     pick_host_name_from_backend_http_settings = false
     path                                      = "/"

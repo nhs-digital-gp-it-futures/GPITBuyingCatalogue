@@ -99,22 +99,22 @@ jobs:
       targets: 'min'
       workingDirectory: 'src/NHSD.GPIT.BuyingCatalogue.WebApp'
 
-#  - task: DotNetCoreCLI@2
-#    displayName: 'Run unit tests'
-#    inputs:
-#      command: test
-#      projects: '**/*UnitTests.csproj'
-#      arguments: '--no-build --configuration $(buildConfiguration) --collect:"XPlat Code Coverage" -- xunit.parallelizeTestCollections=true'
-#      publishTestResults: false
+  - task: DotNetCoreCLI@2
+    displayName: 'Run unit tests'
+    inputs:
+      command: test
+      projects: '**/*UnitTests.csproj'
+      arguments: '--no-build --configuration $(buildConfiguration) --collect:"XPlat Code Coverage" -- xunit.parallelizeTestCollections=true'
+      publishTestResults: false
 
-#  - task: CmdLine@2
-#    displayName: 'Push code coverage statistics'
-#    inputs:
-#      script: |
-#        curl -Os https://uploader.codecov.io/latest/linux/codecov
-#
-#        chmod +x codecov
-#        ./codecov -f tests/**/coverage.cobertura.xml -t $(CODECOVTOKEN)
+  - task: CmdLine@2
+    displayName: 'Push code coverage statistics'
+    inputs:
+      script: |
+        curl -Os https://uploader.codecov.io/latest/linux/codecov
+
+        chmod +x codecov
+        ./codecov -f tests/**/coverage.cobertura.xml -t $(CODECOVTOKEN)
 
 #  - task: DotNetCoreCLI@2
 #    displayName: 'Run Integration Tests'
