@@ -9,6 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCreate
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCreateCompetition.SelectFilterType;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCreateCompetition.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.NonPrice;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.View_Result;
 using OpenQA.Selenium;
 
@@ -35,6 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             SolutionServiceQuantity = new SolutionServiceQuantity(driver, commonActions);
             ViewCompetitionResults = new ViewCompetitionResults(driver, commonActions);
             AwardCriteriaWeightings = new AwardCriteriaWeightings(driver, commonActions);
+            NonPriceElements = new NonPriceElements(driver, commonActions);
 
             Factory = factory;
             Driver = driver;
@@ -75,6 +77,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
         internal ViewCompetitionResults ViewCompetitionResults { get; }
 
         internal AwardCriteriaWeightings AwardCriteriaWeightings { get; }
+
+        internal NonPriceElements NonPriceElements { get; }
 
         internal FilterType FilterType { get; set; }
 
@@ -120,7 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             }
         }
 
-        public void StepTwoDefineCompetitionCriteria(CompetitionType competitiontype)
+        public void StepTwoDefineCompetitionCriteria(CompetitionType competitiontype, NonPriceElementType elementtype = NonPriceElementType.Null)
         {
             int competitionId = CompetitionId();
 
@@ -174,6 +178,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                 AwardCriteria.PriceAndNonPrice();
                 CompetitionTaskList.AwardCriteriaWeightings();
                 AwardCriteriaWeightings.PriceNonPriceAwardCriteriaWeightings();
+                CompetitionTaskList.NonPriceElements();
+                NonPriceElements.AddNonPriceElements(elementtype);
             }
 
             CalculatePrice.ConfirmCalculatePrice();
