@@ -28,6 +28,7 @@
     AssociatedServicesOnly BIT NULL,
     OrderTypeId INT NULL,
     [SolutionId] NVARCHAR(14) NULL,
+    PracticeReorganisationOdsCode nvarchar(8) NULL,
     SelectedFrameworkId NVARCHAR(36) NULL,
     [DeliveryDate] DATE NULL,
     CONSTRAINT PK_Orders PRIMARY KEY (Id),

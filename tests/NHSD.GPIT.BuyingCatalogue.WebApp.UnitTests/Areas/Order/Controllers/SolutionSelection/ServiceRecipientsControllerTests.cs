@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -275,7 +276,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .ReturnsAsync(new OrderWrapper(new[] { order }));
 
             var selectedOdsCodes = model.GetServiceRecipients().Where(x => x.Selected).Select(x => x.OdsCode);
-            var recipientIds = string.Join(ServiceRecipientsController.Separator, selectedOdsCodes);
+            var recipientIds = selectedOdsCodes.ToRecipientsString();
 
             var result = await controller.SelectServiceRecipients(internalOrgId, callOffId, model);
 
@@ -304,13 +305,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             ServiceRecipientsController controller)
         {
             order.OrderType = orderType;
+            var selectedRecipientId = order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode;
 
             mockOrderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(new[] { order }));
 
-            var selectedOdsCodes = model.GetServiceRecipients().Where(x => x.Selected).Select(x => x.OdsCode);
-            var recipientIds = string.Join(ServiceRecipientsController.Separator, selectedOdsCodes);
+            var recipientIds = model
+                .GetServiceRecipients()
+                .Where(x => x.Selected)
+                .Select(x => x.OdsCode)
+                .ToRecipientsString();
 
             var result = await controller.SelectServiceRecipients(internalOrgId, callOffId, model);
 
@@ -323,6 +328,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 { "internalOrgId", internalOrgId },
                 { "callOffId", callOffId },
                 { "recipientIds", recipientIds },
+                { "selectedRecipientId", selectedRecipientId },
             });
         }
 
@@ -451,8 +457,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonInlineAutoData(OrderTypeEnum.Solution)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
         public static async Task Get_ConfirmChanges_ReturnsExpectedResult(
+            OrderTypeEnum orderType,
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
@@ -462,7 +470,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             ServiceRecipientsController controller)
         {
             callOffId = new CallOffId(callOffId.OrderNumber, 1);
-            order.OrderType = OrderTypeEnum.Solution;
+            order.OrderType = orderType;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
 
             var solution = order.OrderItems.First();
@@ -473,9 +481,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));
 
-            var recipientIds = order.OrderRecipients.First().OdsCode;
+            var recipientIds = serviceRecipients.Select(r => r.OrgId);
             odsService
-                .Setup(x => x.GetServiceRecipientsById(internalOrgId, It.Is<IEnumerable<string>>(x => x.SequenceEqual(new[] { recipientIds }))))
+                .Setup(x => x.GetServiceRecipientsById(internalOrgId, It.Is<IEnumerable<string>>(x => Enumerable.ToHashSet(x).SetEquals(recipientIds))))
                 .ReturnsAsync(serviceRecipients);
 
             odsService
@@ -485,7 +493,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var result = await controller.ConfirmChanges(
                 internalOrgId,
                 callOffId,
-                recipientIds,
+                recipientIds.ToRecipientsString(),
                 string.Empty);
 
             orderService.VerifyAll();
@@ -497,27 +505,143 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             {
                 Title = "Confirm Service Recipients",
                 Caption = $"Order {callOffId}",
-                Advice = string.Format(ConfirmChangesModel.AdviceText, solution.CatalogueItem.CatalogueItemType.Name()),
                 Selected = serviceRecipients.Select(x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OrgId, Location = x.Location }).ToList(),
                 PreviouslySelected = new List<ServiceRecipientModel>(),
+                OrderType = orderType,
             };
 
             actual.Model.Should().BeEquivalentTo(expected, x => x
+                .Excluding(o => o.Advice)
                 .Excluding(o => o.BackLink)
                 .Excluding(o => o.AddRemoveRecipientsLink));
         }
 
         [Theory]
-        [CommonAutoData]
-        public static async Task Post_ConfirmChanges_ReturnsExpectedResult(
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        public static async Task Get_ConfirmChanges_MergerOrSplit_Throws(
+            OrderTypeEnum orderType,
             string internalOrgId,
-            ConfirmChangesModel model,
+            string odsCodeNotInListOfRecipients,
+            CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
+            List<ServiceRecipient> serviceRecipients,
+            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] Mock<IOdsService> odsService,
             ServiceRecipientsController controller)
         {
+            callOffId = new CallOffId(callOffId.OrderNumber, 1);
+            order.OrderType = orderType;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
 
-            var result = await controller.ConfirmChanges(internalOrgId, order.CallOffId, model);
+            var solution = order.OrderItems.First();
+
+            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+
+            orderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            var recipientIds = serviceRecipients.Select(r => r.OrgId);
+            odsService
+                .Setup(x => x.GetServiceRecipientsById(internalOrgId, It.Is<IEnumerable<string>>(x => Enumerable.ToHashSet(x).SetEquals(recipientIds))))
+                .ReturnsAsync(serviceRecipients);
+
+            odsService
+                .Setup(x => x.GetServiceRecipientsById(internalOrgId, It.Is<IEnumerable<string>>(x => x.SequenceEqual(Enumerable.Empty<string>()))))
+                .ReturnsAsync(new List<ServiceRecipient>());
+
+            await FluentActions.Invoking(async () => await controller.ConfirmChanges(
+                internalOrgId,
+                callOffId,
+                recipientIds.ToRecipientsString(),
+                odsCodeNotInListOfRecipients))
+                .Should()
+                .ThrowAsync<InvalidOperationException>();
+        }
+
+        [Theory]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        public static async Task Get_ConfirmChanges_MergerOrSplit_ReturnsExpectedResult(
+            OrderTypeEnum orderType,
+            string internalOrgId,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            List<ServiceRecipient> serviceRecipients,
+            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] Mock<IOdsService> odsService,
+            ServiceRecipientsController controller)
+        {
+            callOffId = new CallOffId(callOffId.OrderNumber, 1);
+            order.OrderType = orderType;
+            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+
+            var solution = order.OrderItems.First();
+
+            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+
+            orderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            var recipientIds = serviceRecipients.Select(r => r.OrgId);
+            var recipientIdFromList = recipientIds.First();
+            odsService
+                .Setup(x => x.GetServiceRecipientsById(internalOrgId, It.Is<IEnumerable<string>>(x => Enumerable.ToHashSet(x).SetEquals(recipientIds))))
+                .ReturnsAsync(serviceRecipients);
+
+            odsService
+                .Setup(x => x.GetServiceRecipientsById(internalOrgId, It.Is<IEnumerable<string>>(x => x.SequenceEqual(Enumerable.Empty<string>()))))
+                .ReturnsAsync(new List<ServiceRecipient>());
+
+            var result = await controller.ConfirmChanges(
+                internalOrgId,
+                callOffId,
+                recipientIds.ToRecipientsString(),
+                recipientIdFromList);
+
+            orderService.VerifyAll();
+            odsService.VerifyAll();
+
+            var actual = result.Should().BeOfType<ViewResult>().Subject;
+
+            var expected = new ConfirmChangesModel()
+            {
+                Title = "Confirm Service Recipients",
+                Caption = $"Order {callOffId}",
+                Selected = serviceRecipients
+                    .Where(r => r.OrgId != recipientIdFromList)
+                    .Select(x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OrgId, Location = x.Location }).ToList(),
+                PreviouslySelected = new List<ServiceRecipientModel>(),
+                PracticeReorganisationRecipient = serviceRecipients
+                    .Where(r => r.OrgId == recipientIdFromList)
+                    .Select(x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OrgId, Location = x.Location })
+                    .First(),
+                OrderType = orderType,
+            };
+
+            actual.Model.Should().BeEquivalentTo(expected, x => x
+                .Excluding(o => o.Advice)
+                .Excluding(o => o.BackLink)
+                .Excluding(o => o.AddRemoveRecipientsLink));
+        }
+
+        [Theory]
+        [CommonInlineAutoData(OrderTypeEnum.Solution)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        public static async Task Post_ConfirmChanges_ReturnsExpectedResult(
+            OrderTypeEnum orderType,
+            string internalOrgId,
+            ConfirmChangesModel model,
+            CallOffId callOffId,
+            ServiceRecipientsController controller)
+        {
+            model.OrderType = orderType;
+
+            var result = await controller.ConfirmChanges(internalOrgId, callOffId, model);
 
             var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
 

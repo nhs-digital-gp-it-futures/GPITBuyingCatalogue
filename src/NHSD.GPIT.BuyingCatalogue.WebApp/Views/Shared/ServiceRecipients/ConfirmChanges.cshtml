@@ -1,4 +1,5 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ConfirmChangesModel;
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ConfirmChangesModel;
 <partial name="Partials/_BackLink" model="Model" />
 
 <div class="nhsuk-grid-row">
@@ -7,68 +8,126 @@
         <nhs-page-title model="@Model" />
 
         <form method="post">
-            <hidden-inputs title="Title" caption="Caption" advice="Advice"/>
+            <hidden-inputs title="Title" caption="Caption" advice="Advice" />
             <input type="hidden" asp-for="BackLink" />
             <input type="hidden" asp-for="AddRemoveRecipientsLink" />
+            <input type="hidden" asp-for="OrderType.Value" name="@nameof(Model.OrderType)" />
+            <input type="hidden" asp-for="PracticeReorganisationRecipient.Name" />
+            <input type="hidden" asp-for="PracticeReorganisationRecipient.OdsCode" />
 
-            <div id="selected-service-recipients">
-
-                @foreach (var location in Model.Selected.GroupBy(x => x.Location))
-                {
-                    var count = location.Count();
-                    <nhs-expander
-                        label-text="@($"{location.Key} ({count.ToString()} selected)")"
-                        bold-title="true" open="@(count > 0 ? true : false)">
-                        <ul>
-                            @foreach (var item in location)
-                            {
-                                var index = Model.Selected.FindIndex(x => x.OdsCode.Contains(item.OdsCode));
-
-                                <input type="hidden" asp-for="@Model.Selected[index].Name"/>
-                                <input type="hidden" asp-for="@Model.Selected[index].OdsCode"/>
-                                <li>@item.Description</li>
-                            }
-                        </ul>
-
-                    </nhs-expander>
-                }
-            </div>
-
-            <div class="nhsuk-u-margin-top-6">
-                <p>
-                    You can
-                    <a href="@Model.AddRemoveRecipientsLink">add or remove Service Recipients</a>
-                    if needed, or edit them later if you continue with your order.
-                </p>
-            </div>
-
-            @if (Model.PreviouslySelected?.Any() ?? false)
+            @if (Model.OrderType.MergerOrSplit)
             {
-                <div id="previously-selected-service-recipients">
-                    <nhs-details label-text="View Service Recipients from the original order">
-                        <p>
-                            The original order had @Model.PreviouslySelected.Count Service @PluralOrSingular(Model.PreviouslySelected.Count)
-                        </p>
+                var recipientTitle = GetPracticeReorganisationRecipientTitle(Model.OrderType.Value);
+                var recipientsTitle = GetMergerSplitRecipientsTitle(Model.OrderType.Value);
 
-                        @foreach (var location in Model.PreviouslySelected.GroupBy(x => x.Location))
-                        {
-                            <nhs-expander
-                                label-text="@location.Key"
-                                bold-title="true">
+                <div id="selected-service-recipients-practice-reorganisation">
+
+                    <h3 style="white-space:nowrap">@recipientTitle</h3>
+                    <nhs-expander label-text="@recipientTitle"
+                                  bold-title="true" open="@(true)">
+                        <nhs-table>
+                            <nhs-table-column>Organisation</nhs-table-column>
+                            <nhs-table-column>ODS code</nhs-table-column>
+                            <nhs-table-row-container>
+                                <nhs-table-cell>
+                                    @Model.PracticeReorganisationRecipient.Name
+                                </nhs-table-cell>
+                                <nhs-table-cell>
+                                    @Model.PracticeReorganisationRecipient.OdsCode
+                                </nhs-table-cell>
+                            </nhs-table-row-container>
+                        </nhs-table>
+                    </nhs-expander>
+
+                    <h3 style="white-space:nowrap">@recipientsTitle</h3>
+                    <nhs-expander label-text="@recipientsTitle"
+                                  bold-title="true" open="@true">
+                        <nhs-table>
+                            <nhs-table-column>Organisation</nhs-table-column>
+                            <nhs-table-column>ODS code</nhs-table-column>
+                            @foreach (var (item, index) in Model.Selected.Select((v, i) => (v, i)))
+                            {
+                                <input type="hidden" asp-for="@Model.Selected[index].Name" />
+                                <input type="hidden" asp-for="@Model.Selected[index].OdsCode" />
+                                <nhs-table-row-container>
+                                    <nhs-table-cell>
+                                        @item.Name
+                                    </nhs-table-cell>
+                                    <nhs-table-cell>
+                                        @item.OdsCode
+                                    </nhs-table-cell>
+                                </nhs-table-row-container>
+                            }
+                        </nhs-table>
+                    </nhs-expander>
+                </div>
+
+                <div class="nhsuk-u-margin-top-6">
+                    <p>
+                        You can
+                        <a href="@Model.AddRemoveRecipientsLink">add or remove Service Recipients</a>
+                        if needed.
+                    </p>
+                </div>
+            }
+            else
+            {
+                <div id="selected-service-recipients">
+                    @foreach (var location in Model.Selected.GroupBy(x => x.Location))
+                    {
+                        var count = location.Count();
+                        <nhs-expander label-text="@($"{location.Key} ({count.ToString()} selected)")"
+                                      bold-title="true" open="@(count > 0 ? true : false)">
+                            <ul>
+                                @foreach (var item in location)
+                                {
+                                    var index = Model.Selected.FindIndex(x => x.OdsCode.Contains(item.OdsCode));
+
+                                    <input type="hidden" asp-for="@Model.Selected[index].Name" />
+                                    <input type="hidden" asp-for="@Model.Selected[index].OdsCode" />
+                                    <li>@item.Description</li>
+                                }
+                            </ul>
+
+                        </nhs-expander>
+                    }
+                </div>
+
+                <div class="nhsuk-u-margin-top-6">
+                    <p>
+                        You can
+                        <a href="@Model.AddRemoveRecipientsLink">add or remove Service Recipients</a>
+                        if needed, or edit them later if you continue with your order.
+                    </p>
+                </div>
+
+                @if (Model.PreviouslySelected?.Any() ?? false)
+                {
+                    <div id="previously-selected-service-recipients">
+                        <nhs-details label-text="View Service Recipients from the original order">
+                            <p>
+                                The original order had @Model.PreviouslySelected.Count Service @PluralOrSingular(Model.PreviouslySelected.Count)
+                            </p>
+
+                            @foreach (var location in Model.PreviouslySelected.GroupBy(x => x.Location))
+                            {
+                                <nhs-expander label-text="@location.Key"
+                                              bold-title="true">
                                     <ul>
                                         @foreach (var item in location)
                                         {
                                             var index = Model.PreviouslySelected.FindIndex(x => x.OdsCode.Contains(item.OdsCode));
 
-                                            <input type="hidden" asp-for="@Model.PreviouslySelected[index].Name"/>
+                                            <input type="hidden" asp-for="@Model.PreviouslySelected[index].Name" />
                                             <input type="hidden" asp-for="@Model.PreviouslySelected[index].OdsCode" />
                                             <li>@item.Description</li>
                                         }
                                     </ul>
-                            </nhs-expander>
-                        }
-                    </nhs-details>
-                </div>
+                                </nhs-expander>
+                            }
+                        </nhs-details>
+                    </div>
+                }
             }
 
             <div class="nhsuk-u-margin-top-6">
@@ -80,4 +139,24 @@
 
 @{
     string PluralOrSingular(int total) => total == 1 ? "Recipient:" : "Recipients:";
+
+    string GetPracticeReorganisationRecipientTitle(OrderTypeEnum orderType)
+    {
+        return orderType switch
+        {
+            OrderTypeEnum.AssociatedServiceSplit => "Service Recipient to be split",
+            OrderTypeEnum.AssociatedServiceMerger => "Service Recipient to be retained",
+            _ => throw new InvalidOperationException(""),
+        };
+    }
+
+    string GetMergerSplitRecipientsTitle(OrderTypeEnum orderType)
+    {
+        return orderType switch
+        {
+            OrderTypeEnum.AssociatedServiceSplit => "Service Recipients to receive patients",
+            OrderTypeEnum.AssociatedServiceMerger => "Service Recipients to be merged",
+            _ => throw new InvalidOperationException(""),
+        };
+    }
 }
