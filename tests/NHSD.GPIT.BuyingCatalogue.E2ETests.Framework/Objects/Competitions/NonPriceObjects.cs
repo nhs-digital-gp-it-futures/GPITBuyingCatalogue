@@ -8,5 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Competitions
         public static By AddNonPriceElementLink => By.LinkText("Add a non-price element");
 
         public static By FeatureRequirements => By.Id("Requirements");
+
+        public static By AddAnotherRequirementLink => By.LinkText("Add another requirement");
     }
 }
