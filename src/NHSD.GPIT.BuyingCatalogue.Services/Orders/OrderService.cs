@@ -406,6 +406,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             await dbContext.SaveChangesAsync();
         }
 
+        public async Task SetOrderPracticeReorganisationRecipient(string internalOrgId, CallOffId callOffId, string odsCode)
+        {
+            var order = await dbContext.Order(internalOrgId, callOffId);
+
+            order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode = odsCode;
+
+            await dbContext.SaveChangesAsync();
+        }
+
         public async Task SetFundingSourceForForceFundedItems(string internalOrgId, CallOffId callOffId)
         {
             var order = await dbContext.Orders

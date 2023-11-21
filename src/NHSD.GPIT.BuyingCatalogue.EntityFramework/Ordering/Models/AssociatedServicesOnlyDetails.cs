@@ -7,5 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public CatalogueItemId? SolutionId { get; set; }
 
         public CatalogueItem Solution { get; set; }
+
+        public string PracticeReorganisationOdsCode { get; set; }
     }
 }

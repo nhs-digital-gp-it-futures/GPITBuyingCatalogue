@@ -14,7 +14,7 @@ public class SelectRecipientsModel : NavBaseModel
 
     public SelectRecipientsModel(
         Organisation organisation,
-        IEnumerable<ServiceRecipientModel> serviceRecipients,
+        IEnumerable<ServiceRecipientModel> possibleServiceRecipients,
         IEnumerable<string> existingRecipients,
         IEnumerable<string> excludeRecipients,
         IEnumerable<string> preSelectedRecipients,
@@ -27,7 +27,7 @@ public class SelectRecipientsModel : NavBaseModel
 
         PreviouslySelected = excludeRecipients.ToList();
 
-        SubLocations = serviceRecipients
+        SubLocations = possibleServiceRecipients
             .GroupBy(x => x.Location)
             .Select(
                 x => new SublocationModel(

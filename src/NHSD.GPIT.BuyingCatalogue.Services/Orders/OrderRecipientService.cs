@@ -25,14 +25,18 @@ public class OrderRecipientService : IOrderRecipientService
     {
         var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
 
-        var orderRecipients = wrapper.Order.OrderRecipients;
+        var currentOrderRecipients = wrapper.Order.OrderRecipients;
 
-        var odsCodesExistingAndSelected = new List<string>();
-        odsCodesExistingAndSelected.AddRange(odsCodes);
-        odsCodesExistingAndSelected.AddRange(wrapper.ExistingOrderRecipients.Select(r => r.OdsCode));
+        var odsCodesExistingAndSelected = new List<string>(odsCodes);
 
-        var staleRecipients = orderRecipients.Where(x => !odsCodesExistingAndSelected.Contains(x.OdsCode)).ToList();
-        var newRecipients = odsCodesExistingAndSelected.Where(x => orderRecipients.All(y => x != y.OdsCode)).ToList();
+        // for newly created amendments we dont need to add in the
+        // previous recipients as we add all the recipients when the
+        // amended order is created however there might be some in
+        // progress amendments that this would help with
+        odsCodesExistingAndSelected.AddRange(wrapper.PreviousRecipientsOdsCodes());
+
+        var staleRecipients = currentOrderRecipients.Where(x => !odsCodesExistingAndSelected.Contains(x.OdsCode)).ToList();
+        var newRecipients = odsCodesExistingAndSelected.Where(x => currentOrderRecipients.All(y => x != y.OdsCode)).ToList();
 
         dbContext.OrderRecipients.RemoveRange(staleRecipients);
         dbContext.OrderRecipients.AddRange(newRecipients.Select(x => wrapper.InitialiseOrderRecipient(x)));

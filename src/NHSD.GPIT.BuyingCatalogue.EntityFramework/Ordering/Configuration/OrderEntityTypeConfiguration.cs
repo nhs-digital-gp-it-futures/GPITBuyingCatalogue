@@ -80,11 +80,18 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 {
                     a.Property(p => p.SolutionId)
                         .HasColumnName("SolutionId");
+
+                    a.Property(p => p.PracticeReorganisationOdsCode)
+                        .HasColumnName("PracticeReorganisationOdsCode");
+
                     a.HasOne(p => p.Solution)
                         .WithMany()
                         .HasForeignKey(x => x.SolutionId)
                         .HasConstraintName("FK_Orders_Solution");
                 });
+
+            builder.Navigation(o => o.AssociatedServicesOnlyDetails)
+                .IsRequired();
 
             builder.HasOne(o => o.SelectedFramework)
                 .WithMany()
