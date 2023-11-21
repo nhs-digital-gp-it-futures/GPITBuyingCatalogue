@@ -1,7 +1,7 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.ResultsModels;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.CompetitionConfirmResultsPdf;
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.CompetitionPdfModels;
 
 public class PdfConfirmResultsModel : ConfirmResultsModel
 {

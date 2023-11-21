@@ -1,7 +1,7 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.ScoringModels;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.CompetitionFeaturesScoringPdf;
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.CompetitionPdfModels;
 
 public class PdfFeaturesScoringModel : FeaturesScoringModel
 {

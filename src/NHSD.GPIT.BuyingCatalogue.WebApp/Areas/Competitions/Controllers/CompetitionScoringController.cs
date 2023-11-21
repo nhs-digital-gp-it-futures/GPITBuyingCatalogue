@@ -208,8 +208,8 @@ public class CompetitionScoringController : Controller
         int competitionId)
     {
         var uri = Url.Action(
-            nameof(CompetitionFeaturesScoringPdfController.Index),
-            typeof(CompetitionFeaturesScoringPdfController).ControllerName(),
+            nameof(CompetitionPdfController.FeaturesScoring),
+            typeof(CompetitionPdfController).ControllerName(),
             new { internalOrgId, competitionId, });
 
         var pdfBytes = await GeneratePdfAsync(internalOrgId, competitionId, uri, "features");
@@ -227,8 +227,8 @@ public class CompetitionScoringController : Controller
         if (competition == null) return NotFound();
 
         var uri = Url.Action(
-            nameof(CompetitionScoringImplementationPdfController.Index),
-            typeof(CompetitionScoringImplementationPdfController).ControllerName(),
+            nameof(CompetitionPdfController.ImplementationScoring),
+            typeof(CompetitionPdfController).ControllerName(),
             new { internalOrgId, competitionId, });
 
         var pdfBytes = await GeneratePdfAsync(internalOrgId, competitionId, uri, "implementation");
@@ -246,8 +246,8 @@ public class CompetitionScoringController : Controller
         if (competition == null) return NotFound();
 
         var uri = Url.Action(
-            nameof(CompetitionScoringInteropPdfController.Index),
-            typeof(CompetitionScoringInteropPdfController).ControllerName(),
+            nameof(CompetitionPdfController.InteropScoring),
+            typeof(CompetitionPdfController).ControllerName(),
             new { internalOrgId, competitionId, });
 
         var pdfBytes = await GeneratePdfAsync(internalOrgId, competitionId, uri, "interoperability");
@@ -265,8 +265,8 @@ public class CompetitionScoringController : Controller
         if (competition == null) return NotFound();
 
         var uri = Url.Action(
-            nameof(CompetitionScoringServiceLevelPdfController.Index),
-            typeof(CompetitionScoringServiceLevelPdfController).ControllerName(),
+            nameof(CompetitionPdfController.ServiceLevelScoring),
+            typeof(CompetitionPdfController).ControllerName(),
             new { internalOrgId, competitionId, });
 
         var pdfBytes = await GeneratePdfAsync(internalOrgId, competitionId, uri, "sla");

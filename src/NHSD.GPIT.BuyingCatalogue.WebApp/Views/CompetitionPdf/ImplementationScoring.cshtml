@@ -1,4 +1,4 @@
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.CompetitionScoringImplementationPdf.PdfScoringImplementationModel
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.CompetitionPdfModels.PdfScoringImplementationModel
 @{
     Layout = "";
 }
@@ -53,7 +53,7 @@
             <div class="nhsuk-grid-row">
                 <div class="nhsuk-grid-column-full">
                     <nhs-page-title title="Compare and score implementation" caption="@Model.Competition.Name" />
-                    
+
                     <h2>Your implementation criteria</h2>
                     <h3>Your Implementation details</h3>
 
@@ -84,7 +84,10 @@
                             <input type="hidden" asp-for="@Model.SolutionScores[i].SolutionId" />
                             <nhs-textarea asp-for="@Model.SolutionScores[i].Justification" character-count="false" />
                         </nhs-fieldset-form-label>
-                        <div style="page-break-after: always"></div>
+                        @if (i+1 < Model.SolutionScores.Count)
+                        {
+                            <div style="page-break-after: always"></div>
+                        }
                     }
                 </div>
             </div>

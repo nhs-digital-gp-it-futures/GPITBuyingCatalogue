@@ -137,13 +137,13 @@ public class CompetitionResultsController : Controller
         if (competition == null) return NotFound();
 
         var uri = Url.Action(
-            nameof(CompetitionConfirmResultsPdfController.Index),
-            typeof(CompetitionConfirmResultsPdfController).ControllerName(),
+            nameof(CompetitionPdfController.ConfirmResults),
+            typeof(CompetitionPdfController).ControllerName(),
             new { internalOrgId, competitionId, });
 
         var result = await pdfService.Convert(new(pdfService.BaseUri(), uri));
 
-        var fileName = "review-scoring.pdf";
+        const string fileName = "review-scoring.pdf";
         return File(result, "application/pdf", fileName);
     }
 
