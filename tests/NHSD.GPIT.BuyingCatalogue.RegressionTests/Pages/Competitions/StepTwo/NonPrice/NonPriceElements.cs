@@ -21,9 +21,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
         public void AddNonPriceElements(NonPriceElementType elementType)
         {
             AddElements();
-            if (elementType == NonPriceElementType.Feature)
+
+            switch (elementType)
             {
-                Features.AddFeature();
+                case NonPriceElementType.Feature:
+                    Features.AddFeature();
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -41,6 +46,5 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
                 .Should().BeTrue();
             CommonActions.ClickLinkElement(NonPriceObjects.AddNonPriceElementLink);
         }
-    }
     }
 }

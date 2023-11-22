@@ -4,6 +4,9 @@
     {
         Null,
         Feature,
+        Implementation,
+        Interoperability,
+        ServiceLevelAgreement,
         All
     }
 }
