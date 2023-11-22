@@ -1,11 +1,11 @@
 resource "azurerm_application_gateway" "app_gateway" {
-  name                = var.ag_name
+  name                = local.gateway_name
   location            = var.region
   resource_group_name = var.rg_name
   count               = var.core_env != "dev" ? 1 : 0
   sku {
-    name     = "Standard_v2"
-    tier     = "Standard_v2"
+    name     = "WAF_v2"
+    tier     = "WAF_v2"
     capacity = var.ag_capacity
   }
 
@@ -14,23 +14,28 @@ resource "azurerm_application_gateway" "app_gateway" {
     custom_error_page_url = "https://gpitfuturesappgwcontent.z33.web.core.windows.net/index.html"
   }
 
+  custom_error_configuration {
+    status_code           = "HttpStatus403"
+    custom_error_page_url = "https://gpitfuturesappgwcontent.z33.web.core.windows.net/error.html"
+  }
+
   gateway_ip_configuration {
-    name      = "${var.ag_name_fragment}-gwip"
+    name      = local.gateway_ip_name
     subnet_id = var.ag_subnet_id
   }
 
   frontend_ip_configuration {
-    name                 = "${var.ag_name_fragment}-appgateway-feip"
+    name                 = local.frontend_ip_name
     public_ip_address_id = azurerm_public_ip.pip_app_gateway[0].id
   }
 
   backend_address_pool {
-    name  = "${var.ag_name_fragment}-appgateway-beap"
+    name  = local.backend_address_pool_name
     fqdns = [var.app_service_hostname]
   }
 
   backend_http_settings {
-    name                                = "${var.ag_name_fragment}-appgateway-be-htst"
+    name                                = local.backend_http_settings_name
     cookie_based_affinity               = "Disabled"
     path                                = "/"
     port                                = 80
@@ -40,12 +45,12 @@ resource "azurerm_application_gateway" "app_gateway" {
   }
 
   frontend_port {
-    name = "${var.ag_name_fragment}-appgateway-feport"
+    name = local.http_frontend_port_name
     port = 80
   }
 
   frontend_port {
-    name = "${var.ag_name_fragment}-appgateway-feporthttps"
+    name = local.https_frontend_port_name
     port = 443
   }
 
@@ -57,50 +62,50 @@ resource "azurerm_application_gateway" "app_gateway" {
   # Static Sites
 
   http_listener {
-    name                           = "${var.ag_name_fragment}-appgateway-httplstn"
-    frontend_ip_configuration_name = "${var.ag_name_fragment}-appgateway-feip"
-    frontend_port_name             = "${var.ag_name_fragment}-appgateway-feport"
+    name                           = local.http_listener_name
+    frontend_ip_configuration_name = local.frontend_ip_name
+    frontend_port_name             = local.http_frontend_port_name
     protocol                       = "Http"
   }
 
   request_routing_rule {
-    name                        = "${var.ag_name_fragment}-appgateway-rqrt"
+    name                        = local.http_request_routing_name
     rule_type                   = "Basic"
-    http_listener_name          = "${var.ag_name_fragment}-appgateway-httplstn"
-    redirect_configuration_name = "${var.ag_name_fragment}-appgateway-http-redirect"
-    rewrite_rule_set_name       = "${var.ag_name_fragment}-appgateway-rewrite-rules"
+    http_listener_name          = local.http_listener_name
+    redirect_configuration_name = local.http_redirect_config_name
+    rewrite_rule_set_name       = local.redirect_ruleset_name
     priority                    = 10010
   }
 
   http_listener {
-    name                           = "${var.ag_name_fragment}-appgateway-httpslstn"
-    frontend_ip_configuration_name = "${var.ag_name_fragment}-appgateway-feip"
-    frontend_port_name             = "${var.ag_name_fragment}-appgateway-feporthttps"
+    name                           = local.https_listener_name
+    frontend_ip_configuration_name = local.frontend_ip_name
+    frontend_port_name             = local.https_frontend_port_name
     protocol                       = "Https"
     ssl_certificate_name           = var.ssl_cert_name
   }
 
   request_routing_rule {
-    name                        = "${var.ag_name_fragment}-appgateway-rqrt-https"
+    name                        = local.https_request_routing_name
     rule_type                   = "Basic"
-    http_listener_name          = "${var.ag_name_fragment}-appgateway-httpslstn"
-    backend_address_pool_name   = "${var.ag_name_fragment}-appgateway-beap"
-    backend_http_settings_name  = "${var.ag_name_fragment}-appgateway-be-htst"
-    rewrite_rule_set_name       = "${var.ag_name_fragment}-appgateway-rewrite-rules"
+    http_listener_name          = local.https_listener_name
+    backend_address_pool_name   = local.backend_address_pool_name
+    backend_http_settings_name  = local.backend_http_settings_name
+    rewrite_rule_set_name       = local.redirect_ruleset_name
     priority                    = 10020
   }
 
   redirect_configuration {
-    name = "${var.ag_name_fragment}-appgateway-http-redirect"
+    name = local.http_redirect_config_name
     redirect_type = "Permanent"
-    target_listener_name = "${var.ag_name_fragment}-appgateway-httpslstn"
+    target_listener_name = local.https_listener_name
     include_path = true
     include_query_string = true
   }
 
   # Rewrite rules
   rewrite_rule_set {
-    name = "${var.ag_name_fragment}-appgateway-rewrite-rules"
+    name = local.redirect_ruleset_name
     rewrite_rule {
       name          = "StrictTransportSecurityRule"
       rule_sequence = 1
@@ -133,11 +138,11 @@ resource "azurerm_application_gateway" "app_gateway" {
 
   identity {
     type         = "UserAssigned"
-    identity_ids = [data.azurerm_user_assigned_identity.managed_identity_aad.id] # [azurerm_user_assigned_identity.managed_id.id]
+    identity_ids = [data.azurerm_user_assigned_identity.managed_identity_aad.id]
   }
 
   probe {
-    name                                      = "${var.ag_name_fragment}-appgateway-healthprobe"
+    name                                      = local.healthprobe_name
     host                                      = var.app_service_hostname
     pick_host_name_from_backend_http_settings = false
     path                                      = "/"
@@ -147,44 +152,48 @@ resource "azurerm_application_gateway" "app_gateway" {
     protocol                                  = "Http"
   }
 
-  # Waf config
+  waf_configuration {
+    enabled                   = true
+    firewall_mode             = "Prevention"
+    rule_set_type             = "OWASP"
+    rule_set_version          = "3.2"
+    request_body_check        = true
+    max_request_body_size_kb  = 128
 
-  # waf_configuration {
-  #   enabled                  = true
-  #   file_upload_limit_mb     = 100
-  #   firewall_mode            = "Prevention"
-  #   max_request_body_size_kb = 128
-  #   request_body_check       = true
-  #   rule_set_type            = "OWASP"
-  #   rule_set_version         = "3.1"
+    disabled_rule_group {
+       rule_group_name = "REQUEST-942-APPLICATION-ATTACK-SQLI"
+       rules           = [
+        942380,
+        942430,
+        942400,
+        942440,
+        942450,
+        942130
+       ]
+    }
 
-  #   disabled_rule_group {
-  #     rule_group_name = "REQUEST-942-APPLICATION-ATTACK-SQLI"
-  #     rules           = [
-  #       942430,
-  #       942130,
-  #       942450,
-  #       942440,
-  #       942210,
-  #       942380,
-  #       942200,
-  #       942220,
-  #       942400
-  #     ]
-  #   }
-  #   disabled_rule_group {
-  #     rule_group_name = "REQUEST-920-PROTOCOL-ENFORCEMENT"
-  #     rules           = [ 920230 ]
-  #   }
-  #   disabled_rule_group {
-  #     rule_group_name = "REQUEST-931-APPLICATION-ATTACK-RFI"
-  #     rules           = [ 931130 ]
-  #   }
-  #   disabled_rule_group {
-  #     rule_group_name = "REQUEST-932-APPLICATION-ATTACK-RCE"
-  #     rules           = [ 932115 ]
-  #   }
-  # }
+    disabled_rule_group {
+       rule_group_name = "REQUEST-920-PROTOCOL-ENFORCEMENT"
+       rules           = [ 920230 ]
+    }
+
+    disabled_rule_group {
+      rule_group_name = "REQUEST-931-APPLICATION-ATTACK-RFI"
+      rules           = [ 931130 ]
+    }
+
+    exclusion {
+      match_variable          = "RequestCookieNames"
+      selector_match_operator = "Equals"
+      selector                = "buyingcatalogue-cookie-consent"
+    }
+
+    exclusion {
+      match_variable          = "RequestArgNames"
+      selector_match_operator = "Equals"
+      selector                = "__RequestVerificationToken"
+    }
+  }
 
   tags = {
     environment  = var.environment,
@@ -192,19 +201,6 @@ resource "azurerm_application_gateway" "app_gateway" {
   }
 
   lifecycle {
-    # AGIC owns most app gateway settings, so we should ignore differences
-    ignore_changes = [
-      #  identity[0].identity_ids,
-      #  request_routing_rule, 
-      #  http_listener, 
-      #  backend_http_settings, 
-      #  frontend_port,
-      #  backend_address_pool,
-      #  probe,
-      #  redirect_configuration,      
-      #  url_path_map,     
-      #  custom_error_configuration,
-      #  tags, 
-    ]
+    ignore_changes = [ ]
   }
 }

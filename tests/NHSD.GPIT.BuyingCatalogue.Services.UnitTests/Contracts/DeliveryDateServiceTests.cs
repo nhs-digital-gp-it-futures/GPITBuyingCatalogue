@@ -44,7 +44,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             DeliveryDateService service)
         {
             order.DeliveryDate = null;
-            order.OrderItems.ForEach(x => order.OrderRecipients.ForEach(r => r.OrderItemRecipients.Clear()));
             context.Orders.Add(order);
             await context.SaveChangesAsync();
 
@@ -55,8 +54,35 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             context.ChangeTracker.Clear();
 
             var dbOrder = await context.Orders
+                .FirstAsync(x => x.Id == order.Id);
+
+            dbOrder.DeliveryDate.Should().Be(deliveryDate);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SetAllDeliveryDates_UpdatesDatabase(
+            Order order,
+            DateTime initialDate,
+            DateTime deliveryDate,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            DeliveryDateService service)
+        {
+            order.DeliveryDate = null;
+            order.OrderItems.ForEach(x => order.OrderRecipients.ForEach(r => r.SetDeliveryDateForItem(x.CatalogueItemId, initialDate)));
+            context.Orders.Add(order);
+            await context.SaveChangesAsync();
+
+            mockOrderService.Setup(x => x.GetOrderWithOrderItems(order.CallOffId, order.OrderingParty.InternalIdentifier))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            await service.SetAllDeliveryDates(order.OrderingParty.InternalIdentifier, order.CallOffId, deliveryDate);
+            context.ChangeTracker.Clear();
+
+            var dbOrder = await context.Orders
                 .Include(x => x.OrderRecipients)
-                    .ThenInclude(x => x.OrderItemRecipients)
+                .ThenInclude(x => x.OrderItemRecipients)
                 .FirstAsync(x => x.Id == order.Id);
 
             dbOrder.DeliveryDate.Should().Be(deliveryDate);
@@ -65,39 +91,26 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task SetDeliveryDate_WithCatalogueItemId_UpdatesDatabase(
+        public static async Task ResetRecipientDeliveryDates_UpdatesDatabase(
             Order order,
-            DateTime deliveryDate,
+            DateTime initialDate,
             [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] Mock<IOrderService> mockOrderService,
             DeliveryDateService service)
         {
             order.DeliveryDate = null;
-            order.OrderItems.ForEach(x => order.OrderRecipients.ForEach(r => r.OrderItemRecipients.Clear()));
+            order.OrderItems.ForEach(x => order.OrderRecipients.ForEach(r => r.SetDeliveryDateForItem(x.CatalogueItemId, initialDate)));
             context.Orders.Add(order);
             await context.SaveChangesAsync();
 
-            var orderItem = order.OrderItems.First();
-
-            mockOrderService.Setup(x => x.GetOrderWithOrderItems(order.CallOffId, order.OrderingParty.InternalIdentifier))
-                .ReturnsAsync(new OrderWrapper(order));
-
-            await service.SetDeliveryDate(order.OrderingParty.InternalIdentifier, order.CallOffId, orderItem.CatalogueItemId, deliveryDate);
+            await service.ResetRecipientDeliveryDates(order.Id);
             context.ChangeTracker.Clear();
 
             var dbOrder = await context.Orders
                 .Include(x => x.OrderRecipients)
-                    .ThenInclude(x => x.OrderItemRecipients)
+                .ThenInclude(x => x.OrderItemRecipients)
                 .FirstAsync(x => x.Id == order.Id);
 
-            dbOrder.DeliveryDate.Should().BeNull();
-            dbOrder.OrderItems
-                .Where(o => o.CatalogueItemId == orderItem.CatalogueItemId)
-                .ForEach(x => order.OrderRecipients.ForEach(r => r.GetDeliveryDateForItem(x.CatalogueItemId).Should().Be(deliveryDate)));
-
-            dbOrder.OrderItems
-                .Where(o => o.CatalogueItemId != orderItem.CatalogueItemId)
-                .ForEach(x => order.OrderRecipients.ForEach(r => r.GetDeliveryDateForItem(x.CatalogueItemId).Should().BeNull()));
+            dbOrder.OrderItems.ForEach(x => order.OrderRecipients.ForEach(r => r.GetDeliveryDateForItem(x.CatalogueItemId).Should().Be(null)));
         }
 
         [Theory]

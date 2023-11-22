@@ -163,7 +163,7 @@ jobs:
       TargetFolder: '$(build.artifactStagingDirectory)/dacpacs'
       CleanTargetFolder: false
       OverWrite: true
-      flattenFolders: true 
+      flattenFolders: true
 
   - publish: $(build.artifactStagingDirectory)/code
     displayName: Publish Code Version

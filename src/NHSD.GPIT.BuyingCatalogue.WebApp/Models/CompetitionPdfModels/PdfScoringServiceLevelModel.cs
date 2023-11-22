@@ -1,11 +1,11 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.ScoringModels;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.CompetitionScoringInteropPdf;
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.CompetitionPdfModels;
 
-public class PdfScoringInteropModel : InteroperabilityScoringModel
+public class PdfScoringServiceLevelModel : ServiceLevelScoringModel
 {
-    public PdfScoringInteropModel(Competition competition)
+    public PdfScoringServiceLevelModel(Competition competition)
         : base(competition)
     {
         Competition = competition;

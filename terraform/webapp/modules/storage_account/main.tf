@@ -29,6 +29,11 @@ resource "azurerm_key_vault_secret" "storageaccount_connectionstring" {
   depends_on = [azurerm_storage_account.storage_account]
 }
 
+output "storage_account_id" {
+  description = "Storage account id"
+  value       = azurerm_storage_account.storage_account.id
+}
+
 output "storage_account_name" {
   description = "Storage account name"
   value       = azurerm_storage_account.storage_account.name

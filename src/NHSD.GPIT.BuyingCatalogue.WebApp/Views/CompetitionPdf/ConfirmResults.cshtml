@@ -1,4 +1,6 @@
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.CompetitionScoringServiceLevelPdf.PdfScoringServiceLevelModel
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
+@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.CompetitionPdfModels.PdfConfirmResultsModel
 @{
     Layout = "";
 }
@@ -8,8 +10,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Compare and score service levels">
-    <title>Compare and score service levels</title>
+    <meta name="description" content="CReview the results for this  Competition">
+    <title>Review the results for this competition</title>
     <link rel="stylesheet" href="~/css/main.min.css">
     <link href="https://www.nhs.uk/" rel="preconnect">
     <link href="https://assets.nhs.uk/" rel="preconnect" crossorigin>
@@ -117,68 +119,47 @@
         <main class="nhsuk-main-wrapper" id="maincontent">
             <div class="nhsuk-grid-row">
                 <div class="nhsuk-grid-column-full">
-                    <nhs-page-title title="Compare and score service levels" caption="@Model.Competition.Name" />
-                    <h2>Your service level criteria</h2>
-                    <h3>Core support hours</h3>
-                    <nhs-summary-list>
-                        <nhs-summary-list-row label-text="Times">@($"{Model.From:HH:mm} to {Model.Until:HH:mm}")</nhs-summary-list-row>
-                        <nhs-summary-list-row label-text="Days">
-                            <ul>
-                                @foreach (var day in Model.ApplicableDays)
-                                {
-                                    <li>@day.ToString()</li>
-                                }
-                            </ul>
-                        </nhs-summary-list-row>
-                    </nhs-summary-list>
-                    <div style="page-break-after: always"></div>
-                    @for (var i = 0; i < Model.SolutionScores.Count; i++)
+                    <nhs-page-title title="Review the results for this competition" caption="@Model.Competition.Name" />
+                    @if (Model.IncludesNonPriceElements)
                     {
-                        var solutionScoreModel = Model.SolutionScores[i];
-                        var solutionName = solutionScoreModel.Solution.CatalogueItem.Name;
-                        <hr/>
-                        <h2>@solutionName</h2>
-                        <b>These are the levels of service the supplier has committed to for this Catalogue Solution:</b>
+                        <h2>Review your non-price scoring</h2>
 
-                        <br />
-                        <br />
+                        var orderedSolutions = Model.CompetitionSolutions.OrderBy(x => x.Solution.CatalogueItem.Name).ToList();
+                        @for (var i = 0; i < orderedSolutions.Count; i++)
+                        {
+                            var competitionSolution = orderedSolutions[i];
+                            <br/>
+                            <h3>
+                                @competitionSolution.Solution.CatalogueItem.Name
+                                <span class="nhsuk-caption-m nhsuk-caption--bottom">
+                                    @competitionSolution.Solution.CatalogueItem.Supplier.Name
+                                </span>
+                            </h3>
 
-                        <h4>Service availability</h4>
-                        <table>
-                            <thead>
-                                <tr class="alternating">
-                                    <th>Category</th>
-                                    <th>Time period</th>
-                                    <th>Applicable days</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                @foreach (var serviceLevelItem in solutionScoreModel.Solution.ServiceLevelAgreement.ServiceHours)
-                                {
+                            <h4>Non-price element scoring</h4>
+                            <table>
+                                <thead>
                                     <tr class="alternating">
-                                        <td>@serviceLevelItem.Category</td>
-                                        <td>@($"{serviceLevelItem.TimeFrom:HH:mm} - {serviceLevelItem.TimeUntil:HH:mm}")</td>
-                                        <td>@serviceLevelItem.ApplicableDays</td>
+                                        <th>Non-price element</th>
+                                        <th>Score</th>
                                     </tr>
-                                }
-                            </tbody>
-                        </table>
+                                </thead>
 
-                        <nhs-fieldset-form-label asp-for="@Model.SolutionScores[i]"
-                                                 label-text="What score would you give this solution?"
-                                                 label-hint="Score each solution between 1 and 5. The higher the score, the better you think a solution meets your needs." size="Small">
-                            <input type="hidden" asp-for="@Model.SolutionScores[i].SolutionId" />
-                            <nhs-input asp-for="@Model.SolutionScores[i].Score" input-width="Three" />
-                        </nhs-fieldset-form-label>
-
-                        <nhs-fieldset-form-label asp-for="@Model.SolutionScores[i]"
-                                                 label-text="Why have you given this score?"
-                                                 label-hint="Provide a justification for the score you have given this solution." size="Small">
-                            <input type="hidden" asp-for="@Model.SolutionScores[i].SolutionId" />
-                            <nhs-textarea asp-for="@Model.SolutionScores[i].Justification" character-count="false" />
-                        </nhs-fieldset-form-label>
-                        <div style="page-break-after: always"></div>
+                                <tbody>
+                                    @foreach (var nonPriceElement in Model.NonPriceElements)
+                                    {
+                                        <tr class="alternating">
+                                            <td>@nonPriceElement.EnumMemberName()</td>
+                                            <td>@(competitionSolution.GetScoreByType(nonPriceElement.AsScoreType())?.Score)</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                            @if (i + 1 < orderedSolutions.Count)
+                            {
+                                <div style="page-break-after: always"></div>
+                            }
+                        }
                     }
                 </div>
             </div>

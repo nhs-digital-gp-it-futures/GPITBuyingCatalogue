@@ -1,8 +1,6 @@
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.CompetitionScoringInteropPdf.PdfScoringInteropModel
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.CompetitionPdfModels.PdfScoringServiceLevelModel
 @{
     Layout = "";
-    var im1Integrations = Model.GetIm1Integrations();
-    var gpConnectIntegrations = Model.GetGpConnectIntegrations();
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -10,8 +8,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Compare and score interoperability">
-    <title>Compare and score interoperability</title>
+    <meta name="description" content="Compare and score service levels">
+    <title>Compare and score service levels</title>
     <link rel="stylesheet" href="~/css/main.min.css">
     <link href="https://www.nhs.uk/" rel="preconnect">
     <link href="https://assets.nhs.uk/" rel="preconnect" crossorigin>
@@ -119,119 +117,53 @@
         <main class="nhsuk-main-wrapper" id="maincontent">
             <div class="nhsuk-grid-row">
                 <div class="nhsuk-grid-column-full">
-                    <nhs-page-title title="Compare and score interoperability" caption="@Model.Competition.Name" />
-                    <h2>Your interoperability criteria</h2>
-                    <h3>IM1 integrations</h3>
+                    <nhs-page-title title="Compare and score service levels" caption="@Model.Competition.Name" />
+                    <h2>Your service level criteria</h2>
+                    <h3>Core support hours</h3>
                     <nhs-summary-list>
-                        <nhs-summary-list-row label-text="Integration type">
-                            @if (!im1Integrations.Any())
-                            {
-                                <span>None selected</span>
-                            }
-                            else
-                            {
-                                @foreach (var integration in im1Integrations.Order())
+                        <nhs-summary-list-row label-text="Times">@($"{Model.From:HH:mm} to {Model.Until:HH:mm}")</nhs-summary-list-row>
+                        <nhs-summary-list-row label-text="Days">
+                            <ul>
+                                @foreach (var day in Model.ApplicableDays)
                                 {
-                                    <p>@integration</p>
+                                    <li>@day.ToString()</li>
                                 }
-                            }
-                        </nhs-summary-list-row>
-                    </nhs-summary-list>
-
-                    <h3>GP Connect integrations</h3>
-                    <nhs-summary-list>
-                        <nhs-summary-list-row label-text="Integration type">
-                            @if (!gpConnectIntegrations.Any())
-                            {
-                                <span>None selected</span>
-                            }
-                            else
-                            {
-                                @foreach (var integration in gpConnectIntegrations.Order())
-                                {
-                                    <p>@integration</p>
-                                }
-                            }
+                            </ul>
                         </nhs-summary-list-row>
                     </nhs-summary-list>
                     <div style="page-break-after: always"></div>
-
                     @for (var i = 0; i < Model.SolutionScores.Count; i++)
                     {
-                        <hr/>
                         var solutionScoreModel = Model.SolutionScores[i];
                         var solutionName = solutionScoreModel.Solution.CatalogueItem.Name;
-
+                        <hr/>
                         <h2>@solutionName</h2>
-                        <h4>This is how this Catalogue Solution works with other systems:</h4>
+                        <b>These are the levels of service the supplier has committed to for this Catalogue Solution:</b>
+
                         <br />
                         <br />
 
-                        <h3>IM1 integrations</h3>
+                        <h4>Service availability</h4>
+                        <table>
+                            <thead>
+                                <tr class="alternating">
+                                    <th>Category</th>
+                                    <th>Time period</th>
+                                    <th>Applicable days</th>
+                                </tr>
+                            </thead>
 
-                        @if (solutionScoreModel.Im1Integrations.Count == 0)
-                        {
-                            <p>This solution has no IM1 integrations listed</p>
-                        }
-                        else
-                        {
-                            foreach (var integration in solutionScoreModel.Im1Integrations)
-                            {
-                                <h4>@integration.Qualifier</h4>
-                                <table>
-                                    <thead>
-                                        <tr class="alternating">
-                                            <th>Provider or<br/>consumer</th>
-                                            <th>System<br/>integrating with</th>
-                                            <th>Description</th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        @foreach (var specificIntegration in integration.Integrations.OrderBy(x => x.IsConsumer).ThenBy(x => x.IntegratesWith))
-                                        {
-                                            <tr class="alternating">
-                                                <td>@(specificIntegration.IsConsumer ? "Consumer" : "Provider")</td>
-                                                <td>@specificIntegration.IntegratesWith</td>
-                                                <td>@specificIntegration.Description</td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            }
-                        }
-
-                        <h3>GP Connect integrations</h3>
-
-                        @if (solutionScoreModel.GpConnectIntegrations.Count == 0)
-                        {
-                            <p>This solution has no GP Connect integrations listed</p>
-                        }
-                        else
-                        {
-                            foreach (var integration in solutionScoreModel.GpConnectIntegrations)
-                            {
-                                <h4>@integration.Qualifier</h4>
-                                <table>
-                                    <thead>
-                                        <tr class="alternating">
-                                            <th>Provider or consumer</th>
-                                            <th>Description</th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        @foreach (var specificIntegration in integration.Integrations.OrderBy(x => x.IsConsumer).ThenBy(x => x.IntegratesWith))
-                                        {
-                                            <tr class="alternating">
-                                                <td>@(specificIntegration.IsConsumer ? "Consumer" : "Provider")</td>
-                                                <td>@specificIntegration.Description</td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            }
-                        }
+                            <tbody>
+                                @foreach (var serviceLevelItem in solutionScoreModel.Solution.ServiceLevelAgreement.ServiceHours)
+                                {
+                                    <tr class="alternating">
+                                        <td>@serviceLevelItem.Category</td>
+                                        <td>@($"{serviceLevelItem.TimeFrom:HH:mm} - {serviceLevelItem.TimeUntil:HH:mm}")</td>
+                                        <td>@serviceLevelItem.ApplicableDays</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
 
                         <nhs-fieldset-form-label asp-for="@Model.SolutionScores[i]"
                                                  label-text="What score would you give this solution?"
@@ -239,14 +171,17 @@
                             <input type="hidden" asp-for="@Model.SolutionScores[i].SolutionId" />
                             <nhs-input asp-for="@Model.SolutionScores[i].Score" input-width="Three" />
                         </nhs-fieldset-form-label>
+
                         <nhs-fieldset-form-label asp-for="@Model.SolutionScores[i]"
                                                  label-text="Why have you given this score?"
                                                  label-hint="Provide a justification for the score you have given this solution." size="Small">
                             <input type="hidden" asp-for="@Model.SolutionScores[i].SolutionId" />
                             <nhs-textarea asp-for="@Model.SolutionScores[i].Justification" character-count="false" />
                         </nhs-fieldset-form-label>
-
-                        <div style="page-break-after: always"></div>
+                        @if (i + 1 < Model.SolutionScores.Count)
+                        {
+                            <div style="page-break-after: always"></div>
+                        }
                     }
                 </div>
             </div>

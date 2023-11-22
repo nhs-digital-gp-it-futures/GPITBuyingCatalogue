@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Pdf
     [ExcludeFromCodeCoverage(Justification = "Can't be tested as it stands up an instance of Google Chrome")]
     public sealed class PdfService : IPdfService
     {
-        private const string ChromeArgs = "--no-sandbox --headless --disable-dev-shm-usage --disable-gpu --disable-software-rasterizer --ignore-certificate-errors";
+        private const string ChromeArgs = "--no-sandbox --headless --disable-dev-shm-usage --disable-gpu --disable-software-rasterizer --ignore-certificate-errors --no-pdf-header-footer";
         private const string ChromeWindows32BitPath = @"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe";
         private const string ChromeWindows64BitPath = @"C:\Program Files\Google\Chrome\Application\chrome.exe";
         private const string ChromeLinuxPath = "/usr/bin/chromium-browser";

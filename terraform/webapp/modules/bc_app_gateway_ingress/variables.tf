@@ -1,3 +1,6 @@
+variable "project" {
+  type = string
+}
 variable "environment" {
   type = string
 }
@@ -5,12 +8,6 @@ variable "region" {
   type = string
 }
 variable "rg_name" {
-  type = string
-}
-variable "ag_name" {
-  type = string
-}
-variable "ag_name_fragment" {
   type = string
 }
 variable "ag_capacity" {
@@ -31,13 +28,9 @@ variable "ssl_cert_secret_id" {
 variable "dns_name" {
   type = string
 }
-variable "pip_name" {
-  type = string
-}
 variable "managed_id_principal_id" {
   type = string
 }
-
 variable "app_service_hostname" {
   type = string
 }
@@ -47,5 +40,9 @@ variable "app_dns_url" {
 }
 
 variable "core_env" {
+  type = string
+}
+
+variable "storage_account_id" {
   type = string
 }
