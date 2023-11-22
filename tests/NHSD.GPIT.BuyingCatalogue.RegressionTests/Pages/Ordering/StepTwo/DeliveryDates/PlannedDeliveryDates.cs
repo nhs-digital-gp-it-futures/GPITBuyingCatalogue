@@ -22,6 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
         public void PlannedDeliveryDate(string solutionName, bool isAssociatedServiceOnly, IEnumerable<string>? associatedServices, IEnumerable<string>? additionalServices)
         {
             SetDefaultPlannedDeliveryDate(DateTime.Today.AddDays(7));
+            CommonActions.ClickRadioButtonWithText("No");
             CommonActions.ClickSave();
 
             var names = SelectSolutionAndServices.SelectSolutionServices(solutionName, isAssociatedServiceOnly, associatedServices, additionalServices);
@@ -41,6 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
         public void AmendPlannedDeliveryDate(string name)
         {
             SetDefaultPlannedDeliveryDate(DateTime.Today.AddDays(7));
+            CommonActions.ClickRadioButtonWithText("No");
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -67,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
                 CommonActions.PageLoadedCorrectGetIndex(
                         typeof(DeliveryDatesController),
                         nameof(DeliveryDatesController.SelectDate)).Should().BeTrue();
-
+                CommonActions.ClickRadioButtonWithText("No");
                 CommonActions.ClickSave();
                 CommonActions.PageLoadedCorrectGetIndex(
                     typeof(DeliveryDatesController),
@@ -86,20 +88,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
             }
             else
             {
-                foreach (var name in names)
-                {
-                    CommonActions.ClickSave();
-
-                    CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(DeliveryDatesController),
-                    nameof(DeliveryDatesController.EditDates)).Should().BeTrue();
-                }
+                CommonActions.ClickRadioButtonWithText("Yes");
 
                 CommonActions.ClickSave();
 
                 CommonActions.PageLoadedCorrectGetIndex(
                 typeof(DeliveryDatesController),
                 nameof(DeliveryDatesController.Review)).Should().BeTrue();
+                CommonActions.ClickContinue();
             }
         }
 
@@ -114,6 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
                     nameof(DeliveryDatesController.SelectDate)).Should().BeTrue();
 
                 SetDefaultPlannedDeliveryDate(DateTime.Today.AddDays(8));
+                CommonActions.ClickRadioButtonWithText("No");
                 ConfirmPlannedDeliveryPageYesOption();
 
                 CommonActions.PageLoadedCorrectGetIndex(
@@ -146,6 +143,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
                     nameof(DeliveryDatesController.SelectDate)).Should().BeTrue();
 
                 SetDefaultPlannedDeliveryDate(DateTime.Today.AddDays(8));
+                CommonActions.ClickRadioButtonWithText("No");
                 ConfirmPlannedDeliveryPageYesOption();
 
                 EditDatePlannedDeliveryDate();
