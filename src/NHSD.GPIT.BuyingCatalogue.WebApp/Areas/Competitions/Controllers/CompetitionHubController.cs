@@ -33,6 +33,7 @@ public class CompetitionHubController : Controller
     private const string ServiceRecipientViewName = "QuantitySelection/SelectServiceRecipientQuantity";
     private const string SelectAssociatedServicesViewName = "Services/SelectAssociatedServices";
 
+    private readonly IOdsService odsService;
     private readonly ICompetitionsService competitionsService;
     private readonly ICompetitionsPriceService competitionsPriceService;
     private readonly ICompetitionsQuantityService competitionsQuantityService;
@@ -41,6 +42,7 @@ public class CompetitionHubController : Controller
     private readonly IAssociatedServicesService associatedServicesService;
 
     public CompetitionHubController(
+        IOdsService odsService,
         ICompetitionsService competitionsService,
         ICompetitionsPriceService competitionsPriceService,
         ICompetitionsQuantityService competitionsQuantityService,
@@ -48,6 +50,7 @@ public class CompetitionHubController : Controller
         IGpPracticeService gpPracticeService,
         IAssociatedServicesService associatedServicesService)
     {
+        this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
         this.competitionsService = competitionsService ?? throw new ArgumentNullException(nameof(competitionsService));
         this.competitionsPriceService = competitionsPriceService
             ?? throw new ArgumentNullException(nameof(competitionsPriceService));
@@ -308,7 +311,7 @@ public class CompetitionHubController : Controller
         var competitionSolution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
 
         (IPrice price, CatalogueItem item, IEnumerable<ServiceRecipientDto> recipientQuantities) =
-            await GetRecipientQuantityDetails(competition, competitionSolution, serviceId);
+            await GetRecipientQuantityDetails(competition, competitionSolution, internalOrgId, serviceId);
 
         var model = new SelectServiceRecipientQuantityModel(item, price, recipientQuantities)
         {
@@ -545,6 +548,7 @@ public class CompetitionHubController : Controller
         GetRecipientQuantityDetails(
             Competition competition,
             CompetitionSolution competitionSolution,
+            string internalOrgId,
             CatalogueItemId? serviceId = null)
     {
         if (serviceId is null)
@@ -552,7 +556,8 @@ public class CompetitionHubController : Controller
             return (competitionSolution.Price, competitionSolution.Solution.CatalogueItem,
                 await GetRecipientQuantities(
                     competition.Recipients,
-                    competitionSolution.Quantities.Cast<RecipientQuantityBase>().ToList()));
+                    competitionSolution.Quantities.Cast<RecipientQuantityBase>().ToList(),
+                    internalOrgId));
         }
 
         var service = competitionSolution.SolutionServices.FirstOrDefault(x => x.ServiceId == serviceId);
@@ -561,20 +566,24 @@ public class CompetitionHubController : Controller
         return (service.Price, service.Service,
             await GetRecipientQuantities(
                 competition.Recipients,
-                service.Quantities.Cast<RecipientQuantityBase>().ToList()));
+                service.Quantities.Cast<RecipientQuantityBase>().ToList(),
+                internalOrgId));
     }
 
     private async Task<IEnumerable<ServiceRecipientDto>> GetRecipientQuantities(
         ICollection<OdsOrganisation> competitionRecipients,
-        ICollection<RecipientQuantityBase> recipientQuantities)
+        ICollection<RecipientQuantityBase> recipientQuantities,
+        string internalOrgId)
     {
         var competitionRecipientIds = competitionRecipients.Select(x => x.Id);
         var practiceListSizes = await gpPracticeService.GetNumberOfPatients(competitionRecipientIds);
+        var organisations = await odsService.GetServiceRecipientsById(internalOrgId, competitionRecipientIds);
 
         return competitionRecipients.Select(
             x => new ServiceRecipientDto(
                 x.Id,
                 x.Name,
-                recipientQuantities?.FirstOrDefault(y => x.Id == y.OdsCode)?.Quantity ?? practiceListSizes?.FirstOrDefault(y => y.OdsCode == x.Id)?.NumberOfPatients));
+                recipientQuantities?.FirstOrDefault(y => x.Id == y.OdsCode)?.Quantity ?? practiceListSizes?.FirstOrDefault(y => y.OdsCode == x.Id)?.NumberOfPatients,
+                organisations?.FirstOrDefault(y => x.Id == y.OrgId).Location));
     }
 }
