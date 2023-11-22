@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using LinqKit;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Quantity
