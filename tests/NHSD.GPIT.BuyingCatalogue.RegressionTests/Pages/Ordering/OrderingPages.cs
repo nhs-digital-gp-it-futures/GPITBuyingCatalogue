@@ -402,7 +402,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 }
             }
 
-            if (HasAssociatedServices(solutionName) && newAssociatedServices.All(a => !string.IsNullOrWhiteSpace(a)))
+            if (newAssociatedServices != default && newAssociatedServices.All(a => !string.IsNullOrWhiteSpace(a)))
             {
                 foreach (var associatedService in newAssociatedServices)
                 {
@@ -411,7 +411,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 }
             }
 
-            //SelectEditAssociatedService.AddAssociatedService();
+            if (!HasTheOriginalOrderAssociatedService(orderId))
+            {
+                SelectEditAssociatedService.AddAssociatedService();
+            }
+
             SolutionAndServicesReview.ReviewSolutionAndServices();
 
             TaskList.SelectPlannedDeliveryDatesTask();
@@ -449,7 +453,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 }
             }
 
-            //SelectEditAssociatedService.AddAssociatedService();
             SolutionAndServicesReview.ReviewSolutionAndServices();
 
             TaskList.SelectPlannedDeliveryDatesTask();
