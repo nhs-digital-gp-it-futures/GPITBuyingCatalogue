@@ -26,6 +26,7 @@ module "webapp" {
   blob_storage_connection_string  = module.documentstorageaccount.primary_connection_string
   recaptcha_site_key              = var.recaptcha_site_key
   recaptcha_secret_key            = var.recaptcha_secret_key
+  identity                        = azurerm_user_assigned_identity.managed_webapp_id.id
 
   # SQL Vars
   sqlserver_name     = local.is_dr ? "${var.project}-${var.primary_env}-sql-primary" : join("", module.sql_server_pri[*].sql_server_name)

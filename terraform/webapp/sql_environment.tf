@@ -12,6 +12,7 @@ module "sql_server_pri" {
   sql_admin_password    = module.keyvault[0].sqladminpassword
   sqladmins             = var.sql_admin_group
   bjssvpn               = var.primary_vpn
+  identity              = azurerm_user_assigned_identity.managed_webapp_id.id
 }
 
 resource "azurerm_mssql_virtual_network_rule" "sqlvnetrule" {
@@ -40,4 +41,5 @@ module "sql_server_sec" {
   sql_admin_password    = module.keyvault[0].sqladminpassword
   sqladmins             = var.sql_admin_group
   bjssvpn               = var.primary_vpn
+  identity              = azurerm_user_assigned_identity.managed_webapp_id.id
 }

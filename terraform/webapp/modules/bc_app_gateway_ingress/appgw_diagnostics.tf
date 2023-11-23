@@ -1,4 +1,4 @@
-resource "azurerm_monitor_diagnostic_setting" "example" {
+resource "azurerm_monitor_diagnostic_setting" "diagnostic" {
   name               = local.diagnostics_name
   target_resource_id = azurerm_application_gateway.app_gateway[0].id
   storage_account_id = var.storage_account_id

@@ -37,3 +37,7 @@ variable "sqladmins" {
 variable "bjssvpn" {
   type = string
 }
+
+variable "identity" {
+  type = string
+}

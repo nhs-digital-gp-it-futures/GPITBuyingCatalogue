@@ -120,3 +120,7 @@ variable "recaptcha_site_key" {
 variable "recaptcha_secret_key" {
   type = string
 }
+
+variable "identity" {
+  type = string
+}
