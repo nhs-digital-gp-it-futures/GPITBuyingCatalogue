@@ -670,6 +670,7 @@ public static class CompetitionHubControllerTests
 
     [Theory]
     [CommonInlineAutoData(5)]
+    [CommonInlineAutoData(null)]
     public static async Task SelectQuantity_DifferentQuantities_ReturnsViewWithModel(
         int quantity,
         string internalOrgId,
