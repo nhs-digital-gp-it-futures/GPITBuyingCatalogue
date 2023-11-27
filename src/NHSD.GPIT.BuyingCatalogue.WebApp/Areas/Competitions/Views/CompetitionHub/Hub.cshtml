@@ -28,6 +28,7 @@
         {
             <div id="AdditionalServiceDetails" class="nhsuk-u-margin-bottom-9">
                 <h2>Additional Services</h2>
+                <p>These Additional Services are needed along with the solution to meet all the Capabilities and Epics you’ve selected.</p>
 
                 @foreach (var item in additionalServices)
                 {
@@ -42,6 +43,8 @@
         {
             <div id="AssociatedServiceDetails" class="nhsuk-u-margin-bottom-9">
                 <h2>Associated Services</h2>
+                <p>You can add Associated Services to help implement your solution, for example training or data migration.</p>
+
                 <span data-test-id="associated-services-action">
                     <vc:nhs-action-link text="@Model.AssociatedServicesActionText"
                                         url="@Model.AssociatedServicesUrl"/>
