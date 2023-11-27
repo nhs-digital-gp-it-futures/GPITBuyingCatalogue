@@ -671,7 +671,7 @@ public static class CompetitionHubControllerTests
     [Theory]
     [CommonInlineAutoData(5)]
     public static async Task SelectQuantity_DifferentQuantities_ReturnsViewWithModel(
-        int Quantity,
+        int quantity,
         string internalOrgId,
         Competition competition,
         CompetitionSolution competitionSolution,
@@ -685,7 +685,7 @@ public static class CompetitionHubControllerTests
         competitionSolution.Solution = solution;
         competitionSolution.SolutionId = solution.CatalogueItemId;
         competitionSolution.Price = competitionPrice;
-        competitionSolution.Quantity = Quantity;
+        competitionSolution.Quantity = quantity;
 
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
