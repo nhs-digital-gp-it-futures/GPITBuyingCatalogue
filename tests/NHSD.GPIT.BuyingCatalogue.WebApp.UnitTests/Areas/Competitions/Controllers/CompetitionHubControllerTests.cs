@@ -669,6 +669,42 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
+    [CommonInlineAutoData(5)]
+    public static async Task SelectQuantity_DifferentQuantities_ReturnsViewWithModel(
+        int Quantity,
+        string internalOrgId,
+        Competition competition,
+        CompetitionSolution competitionSolution,
+        CompetitionCatalogueItemPrice competitionPrice,
+        Solution solution,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionHubController controller)
+    {
+        competitionPrice.ProvisioningType = ProvisioningType.Declarative;
+
+        competitionSolution.Solution = solution;
+        competitionSolution.SolutionId = solution.CatalogueItemId;
+        competitionSolution.Price = competitionPrice;
+        competitionSolution.Quantity = Quantity;
+
+        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+
+        competitionsService.Setup(x => x.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id))
+            .ReturnsAsync(competition);
+
+        var expectedModel = new SelectOrderItemQuantityModel(
+            solution.CatalogueItem,
+            competitionPrice,
+            competitionSolution.Quantity);
+
+        var result = (await controller.SelectQuantity(internalOrgId, competition.Id, solution.CatalogueItemId))
+            .As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+    }
+
+    [Theory]
     [CommonAutoData]
     public static async Task SelectQuantity_WithServiceId_ReturnsViewWithModel(
         string internalOrgId,
