@@ -76,14 +76,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (applicationType is null)
                 return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
-            if (applicationType.MobileOperatingSystems is null)
-                applicationType.MobileOperatingSystems = new MobileOperatingSystems();
-
-            if (applicationType.MobileOperatingSystems.OperatingSystems is null)
-                applicationType.MobileOperatingSystems.OperatingSystems = new System.Collections.Generic.HashSet<string>();
+            applicationType.MobileOperatingSystems ??= new MobileOperatingSystems();
+            applicationType.MobileOperatingSystems.OperatingSystems ??= new System.Collections.Generic.HashSet<string>();
 
             applicationType.MobileOperatingSystems.OperatingSystems.Clear();
-
             applicationType.MobileOperatingSystems.OperatingSystems = model.OperatingSystems
                 .Where(o => o.Checked)
                 .Select(o => o.OperatingSystemName)
@@ -125,15 +121,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (applicationType is null)
                 return BadRequest($"No Application Type found for Solution Id: {solutionId}");
 
-            if (applicationType.MobileConnectionDetails is null)
-                applicationType.MobileConnectionDetails = new MobileConnectionDetails();
+            applicationType.MobileConnectionDetails ??= new MobileConnectionDetails();
 
             applicationType.MobileConnectionDetails.MinimumConnectionSpeed = model.SelectedConnectionSpeed;
             applicationType.MobileConnectionDetails.Description = model.Description;
 
-            if (applicationType.MobileConnectionDetails.ConnectionType is null)
-                applicationType.MobileConnectionDetails.ConnectionType = new System.Collections.Generic.HashSet<string>();
-
+            applicationType.MobileConnectionDetails.ConnectionType ??= new System.Collections.Generic.HashSet<string>();
             applicationType.MobileConnectionDetails.ConnectionType.Clear();
 
             applicationType.MobileConnectionDetails.ConnectionType = model.ConnectionTypes
