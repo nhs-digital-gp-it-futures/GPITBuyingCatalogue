@@ -12,6 +12,7 @@ using Moq;
 using MoreLinq.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
@@ -839,6 +840,51 @@ public static class CompetitionHubControllerTests
         result.Should().NotBeNull();
         result.Model.Should()
             .BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.ServiceRecipients));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task SelectServiceRecipientQuantity_NullServiceId_ReturnsViewWithModel_TryingToMakeAWorkingTest(
+       string internalOrgId,
+       Competition competition,
+       OdsOrganisation organisation,
+       CompetitionSolution competitionSolution,
+       CompetitionCatalogueItemPrice competitionPrice,
+       List<SolutionQuantity> solutionQuantities,
+       List<ServiceRecipientDto> recipientQuantities,
+       Solution solution,
+       [Frozen] Mock<ICompetitionsService> competitionsService,
+       CompetitionHubController controller)
+    {
+        competitionPrice.ProvisioningType = ProvisioningType.Declarative;
+
+        solutionQuantities.FirstOrDefault().OdsCode = internalOrgId;
+
+        competitionSolution.Solution = solution;
+        competitionSolution.SolutionId = solution.CatalogueItemId;
+        competitionSolution.Price = competitionPrice;
+        competitionSolution.Quantities = solutionQuantities;
+
+        organisation.Id = internalOrgId;
+
+        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+        competition.Recipients = new List<OdsOrganisation> { organisation };
+
+        competitionsService.Setup(x => x.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id))
+            .ReturnsAsync(competition);
+
+        var expectedModel = new SelectServiceRecipientQuantityModel(
+            solution.CatalogueItem,
+            competitionPrice,
+            recipientQuantities);
+
+        var result =
+            (await controller.SelectServiceRecipientQuantity(internalOrgId, competition.Id, solution.CatalogueItemId))
+            .As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should()
+            .BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
     }
 
     [Theory]
