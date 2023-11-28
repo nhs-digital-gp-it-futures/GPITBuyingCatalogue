@@ -39,7 +39,8 @@
         </p>
         @if (Model.CatalogueItem.Solution.AdditionalServices.Any())
         {
-            <h4 class="nhsuk-heading-xs">Additional Services relevant to your search</h4>
+            <h4 class="nhsuk-heading-xs">Additional Services required</h4>
+            <p>These Additional Services are needed along with the solution to meet all the Capabilities and Epics you’ve selected:</p>
             <p>
                 @for (int i = 0; i < Model.CatalogueItem.Solution.AdditionalServices.Count; i++)
                 {
