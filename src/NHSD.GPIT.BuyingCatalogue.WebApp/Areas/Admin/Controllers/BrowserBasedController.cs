@@ -36,8 +36,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var model = new BrowserBasedModel(solution)
             {
                 BackLink = applicationType?.HasApplicationType(ApplicationType.BrowserBased) ?? false
-                           ? Url.Action(nameof(CatalogueSolutionsController.ApplicationType), typeof(CatalogueSolutionsController).ControllerName(), new { solutionId })
-                           : Url.Action(nameof(CatalogueSolutionsController.AddApplicationType), typeof(CatalogueSolutionsController).ControllerName(), new { solutionId }),
+                    ? Url.Action(
+                        nameof(CatalogueSolutionsController.ApplicationType),
+                        typeof(CatalogueSolutionsController).ControllerName(),
+                        new { solutionId })
+                    : Url.Action(
+                        nameof(CatalogueSolutionsController.AddApplicationType),
+                        typeof(CatalogueSolutionsController).ControllerName(),
+                        new { solutionId }),
             };
 
             return View(model);
@@ -71,12 +77,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             applicationType.BrowsersSupported.Clear();
             applicationType.BrowsersSupported = model.Browsers is null
                 ? new HashSet<SupportedBrowser>()
-                : model.Browsers.Where(b => b.Checked).Select(b =>
-                new SupportedBrowser
-                {
-                    BrowserName = b.BrowserName,
-                    MinimumBrowserVersion = b.MinimumBrowserVersion,
-                }).ToHashSet();
+                : model.Browsers.Where(b => b.Checked)
+                    .Select(
+                        b =>
+                            new SupportedBrowser
+                            {
+                                BrowserName = b.BrowserName, MinimumBrowserVersion = b.MinimumBrowserVersion,
+                            })
+                    .ToHashSet();
 
             applicationType.MobileResponsive = string.IsNullOrWhiteSpace(model.MobileResponsive)
                 ? null
@@ -139,7 +147,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost("connectivity-and-resolution")]
-        public async Task<IActionResult> ConnectivityAndResolution(CatalogueItemId solutionId, ConnectivityAndResolutionModel model)
+        public async Task<IActionResult> ConnectivityAndResolution(
+            CatalogueItemId solutionId,
+            ConnectivityAndResolutionModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -171,7 +181,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost("hardware-requirements")]
-        public async Task<IActionResult> HardwareRequirements(CatalogueItemId solutionId, HardwareRequirementsModel model)
+        public async Task<IActionResult> HardwareRequirements(
+            CatalogueItemId solutionId,
+            HardwareRequirementsModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -203,7 +215,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpPost("additional-information")]
-        public async Task<IActionResult> AdditionalInformation(CatalogueItemId solutionId, AdditionalInformationModel model)
+        public async Task<IActionResult> AdditionalInformation(
+            CatalogueItemId solutionId,
+            AdditionalInformationModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
