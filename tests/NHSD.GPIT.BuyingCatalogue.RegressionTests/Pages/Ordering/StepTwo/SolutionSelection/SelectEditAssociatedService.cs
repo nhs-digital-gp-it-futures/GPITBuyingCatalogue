@@ -20,10 +20,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
         public void AddAssociatedService(string preference = "No", string associatedService = "")
         {
-            CommonActions.PageLoadedCorrectGetIndex(
-                  typeof(AssociatedServicesController),
-                  nameof(AssociatedServicesController.AddAssociatedServices)).Should().BeTrue();
-
             CommonActions.ClickRadioButtonWithText(preference);
 
             CommonActions.ClickSave();
@@ -42,10 +38,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
         public void AddAssociatedService(IEnumerable<string>? associatedServices, string preference = "No")
         {
-            CommonActions.PageLoadedCorrectGetIndex(
-                  typeof(AssociatedServicesController),
-                  nameof(AssociatedServicesController.AddAssociatedServices)).Should().BeTrue();
-
             CommonActions.ClickRadioButtonWithText(preference);
 
             CommonActions.ClickSave();

@@ -402,27 +402,27 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 }
             }
 
-            if (HasAssociatedServices(solutionName))
+            if (newAssociatedServices != default && newAssociatedServices.All(a => !string.IsNullOrWhiteSpace(a)))
             {
-                if (newAssociatedServices != default && newAssociatedServices.All(a => !string.IsNullOrWhiteSpace(a)))
+                foreach (var associatedService in newAssociatedServices)
                 {
-                    SelectEditAssociatedService.AddAssociatedService(newAssociatedServices, "Yes");
-
-                    foreach (var associatedService in newAssociatedServices)
-                    {
-                        SelectEditAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
-                        Quantity.AddQuantity();
-                    }
+                    SelectEditAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
+                    Quantity.AddQuantity();
                 }
-
-                SolutionAndServicesReview.ReviewSolutionAndServices();
-
-                TaskList.SelectPlannedDeliveryDatesTask();
-                PlannedDeliveryDates.EditPlannedDeliveryDate(solutionName, isAssociatedServiceOnlyOrder, newAssociatedServices, newAdditionalServices);
-
-                TaskList.SelectFundingSourcesTask();
-                SelectFundingSources.AddFundingSources(solutionName, isAssociatedServiceOnlyOrder, newAssociatedServices, newAdditionalServices);
             }
+
+            if (!HasTheOriginalOrderAssociatedService(orderId))
+            {
+                SelectEditAssociatedService.AddAssociatedService();
+            }
+
+            SolutionAndServicesReview.ReviewSolutionAndServices();
+
+            TaskList.SelectPlannedDeliveryDatesTask();
+            PlannedDeliveryDates.EditPlannedDeliveryDate(solutionName, isAssociatedServiceOnlyOrder, newAssociatedServices, newAdditionalServices);
+
+            TaskList.SelectFundingSourcesTask();
+            SelectFundingSources.AddFundingSources(solutionName, isAssociatedServiceOnlyOrder, newAssociatedServices, newAdditionalServices);
         }
 
         public void EditAssociatedService(string solutionName, string newAssociatedServiceName, string additionalServiceName = "", string oldAssociatedServiceName = "")
@@ -452,10 +452,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                     Quantity.AddQuantity();
                 }
             }
-            SelectEditAssociatedService.AddAssociatedService();
+
             SolutionAndServicesReview.ReviewSolutionAndServices();
 
-            TaskList.EditPlannedDeliveryDateTask();
+            TaskList.SelectPlannedDeliveryDatesTask();
             PlannedDeliveryDates.EditPlannedDeliveryDate(solutionName, isAssociatedServiceOnlyOrder,  newAssociatedServices, additionalServices);
 
             TaskList.SelectFundingSourcesTask();

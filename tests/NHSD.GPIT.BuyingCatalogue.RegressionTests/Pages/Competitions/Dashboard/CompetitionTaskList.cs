@@ -3,6 +3,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Competitions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Dashboard
@@ -25,13 +26,20 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Dashboard
         public void ContractLengthTask()
         {
             CommonActions.ClickLinkElement(CompetitionsDashboardObjects.ContractLengthLink);
-            CommonActions.LedeText().Should().Be("Confirm how long your contract will be in months.".FormatForComparison());
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CompetitionTaskListController),
+                nameof(CompetitionTaskListController.ContractLength))
+                .Should().BeTrue();
         }
 
         public void AwardCriteriaTask()
         {
             CommonActions.ClickLinkElement(CompetitionsDashboardObjects.AwardCriteriaLink);
-            CommonActions.LedeText().Should().Be("Select if you want to use price only or price and non-price elements.".FormatForComparison());
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CompetitionTaskListController),
+                nameof(CompetitionTaskListController.AwardCriteria))
+                .Should().BeTrue();
         }
 
         public void CalculatePriceTask()
@@ -44,6 +52,21 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Dashboard
         {
             CommonActions.ClickLinkElement(CompetitionsDashboardObjects.ViewResultLink);
             CommonActions.LedeText().Should().Be("Review the information you’ve added for this competition. If you’re happy, you can view your results and see your winning solution.".FormatForComparison());
+        }
+
+        public void AwardCriteriaWeightings()
+        {
+            CommonActions.ClickLinkElement(CompetitionsDashboardObjects.AwardCriteriaWeightingsLink);
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CompetitionTaskListController),
+                nameof(CompetitionTaskListController.Weightings))
+                .Should().BeTrue();
+        }
+
+        public void NonPriceElements()
+        {
+            CommonActions.ClickLinkElement(CompetitionsDashboardObjects.NonPriceElementsLink);
+            CommonActions.LedeText().Should().Be("Add at least 1 optional non-price element to help you score your shortlisted solutions, for example features, implementation, interoperability or service levels.".FormatForComparison());
         }
     }
 }
