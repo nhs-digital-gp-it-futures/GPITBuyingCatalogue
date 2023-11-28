@@ -507,6 +507,23 @@ public class CompetitionHubController : Controller
             new { internalOrgId, competitionId, solutionId });
     }
 
+    internal async Task<IEnumerable<ServiceRecipientDto>> GetRecipientQuantities(
+        ICollection<OdsOrganisation> competitionRecipients,
+        ICollection<RecipientQuantityBase> recipientQuantities,
+        string internalOrgId)
+    {
+        var competitionRecipientIds = competitionRecipients.Select(x => x.Id);
+        var practiceListSizes = await gpPracticeService.GetNumberOfPatients(competitionRecipientIds);
+        var organisations = await odsService.GetServiceRecipientsById(internalOrgId, competitionRecipientIds);
+
+        return competitionRecipients.Select(
+            x => new ServiceRecipientDto(
+                x.Id,
+                x.Name,
+                recipientQuantities?.FirstOrDefault(y => x.Id == y.OdsCode)?.Quantity ?? practiceListSizes?.FirstOrDefault(y => y.OdsCode == x.Id)?.NumberOfPatients,
+                organisations?.FirstOrDefault(y => x.Id == y.OrgId).Location));
+    }
+
     private static (IPrice Price, CatalogueItem CatalogueItem, int? Quantity) GetGlobalQuantityDetails(
         CompetitionSolution competitionSolution,
         CatalogueItemId? serviceId = null)
@@ -568,22 +585,5 @@ public class CompetitionHubController : Controller
                 competition.Recipients,
                 service.Quantities.Cast<RecipientQuantityBase>().ToList(),
                 internalOrgId));
-    }
-
-    private async Task<IEnumerable<ServiceRecipientDto>> GetRecipientQuantities(
-        ICollection<OdsOrganisation> competitionRecipients,
-        ICollection<RecipientQuantityBase> recipientQuantities,
-        string internalOrgId)
-    {
-        var competitionRecipientIds = competitionRecipients.Select(x => x.Id);
-        var practiceListSizes = await gpPracticeService.GetNumberOfPatients(competitionRecipientIds);
-        var organisations = await odsService.GetServiceRecipientsById(internalOrgId, competitionRecipientIds);
-
-        return competitionRecipients.Select(
-            x => new ServiceRecipientDto(
-                x.Id,
-                x.Name,
-                recipientQuantities?.FirstOrDefault(y => x.Id == y.OdsCode)?.Quantity ?? practiceListSizes?.FirstOrDefault(y => y.OdsCode == x.Id)?.NumberOfPatients,
-                organisations?.FirstOrDefault(y => x.Id == y.OrgId).Location));
     }
 }
