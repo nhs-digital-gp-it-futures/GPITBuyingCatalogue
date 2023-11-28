@@ -1,6 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOne;
@@ -9,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCreate
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCreateCompetition.SelectFilterType;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCreateCompetition.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.NonPrice;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.View_Result;
 using OpenQA.Selenium;
 
@@ -34,6 +34,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             CalculatePrice = new CalculatePrice(driver, commonActions, factory);
             SolutionServiceQuantity = new SolutionServiceQuantity(driver, commonActions);
             ViewCompetitionResults = new ViewCompetitionResults(driver, commonActions);
+            AwardCriteriaWeightings = new AwardCriteriaWeightings(driver, commonActions);
+            NonPriceElements = new NonPriceElements(driver, commonActions);
 
             Factory = factory;
             Driver = driver;
@@ -72,6 +74,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
         internal SolutionServiceQuantity SolutionServiceQuantity { get; }
 
         internal ViewCompetitionResults ViewCompetitionResults { get; }
+
+        internal AwardCriteriaWeightings AwardCriteriaWeightings { get; }
+
+        internal NonPriceElements NonPriceElements { get; }
 
         internal FilterType FilterType { get; set; }
 
@@ -117,7 +123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             }
         }
 
-        public void StepTwoDefineCompetitionCriteria(CompetitionType competitiontype)
+        public void StepTwoDefineCompetitionCriteria(CompetitionType competitiontype, NonPriceElementType elementtype = NonPriceElementType.Null)
         {
             int competitionId = CompetitionId();
 
@@ -165,6 +171,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
 
                     CalculatePrice.ConfirmPriceAndQuantity();
                 }
+            }
+            else
+            {
+                AwardCriteria.PriceAndNonPrice();
+                CompetitionTaskList.AwardCriteriaWeightings();
+                AwardCriteriaWeightings.PriceNonPriceAwardCriteriaWeightings();
+                CompetitionTaskList.NonPriceElements();
+                NonPriceElements.AddNonPriceElements(elementtype);
             }
 
             CalculatePrice.ConfirmCalculatePrice();
@@ -247,16 +261,5 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                 .SelectMany(x => x.CataloguePrices).Where(y => y.CatalogueItemId == competitionservice);
             return prices.Count() > 1;
         }
-
-        private (int PriceWeighting,int NonPriceWeighting) GenerateWeightings()
-        {
-            Random random = new Random();
-            int priceWeighting = random.Next(13, 19) * 5;
-            int maxWeighting = 100 - priceWeighting;
-            int nonPriceWeighting = maxWeighting;
-
-            return (priceWeighting, nonPriceWeighting);
-        }
-
     }
 }
