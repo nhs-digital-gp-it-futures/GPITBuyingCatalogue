@@ -1346,6 +1346,5 @@ public static class CompetitionHubControllerTests
 
         serviceRecipients.Should().NotBeNull();
         serviceRecipients.Should().BeEquivalentTo(expectedList);
-
     }
 }
