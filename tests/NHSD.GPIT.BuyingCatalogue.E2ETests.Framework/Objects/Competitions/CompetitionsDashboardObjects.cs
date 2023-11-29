@@ -28,4 +28,6 @@ public static class CompetitionsDashboardObjects
     public static By AwardCriteriaWeightingsLink => By.LinkText("Award criteria weightings");
 
     public static By NonPriceElementsLink => By.LinkText("Non-price elements");
+
+    public static By NonPriceWeightingsLink => By.LinkText("Non-price weightings");
 }
