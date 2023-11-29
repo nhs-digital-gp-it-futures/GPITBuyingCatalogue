@@ -14,7 +14,6 @@ module "appgateway" {
   dns_name                   = "gpitfbuyingcatalogue${local.shortenv}"
   app_service_hostname       = module.webapp.webapp_default_site_hostname
   app_dns_url                = var.app_url
-  storage_account_id         = module.documentstorageaccount.storage_account_id
   log_analytics_workspace_id = azurerm_log_analytics_workspace.log_analytics.id
 
   depends_on = [
