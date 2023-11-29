@@ -1,0 +1,78 @@
+@model OrderingInformationModel
+
+@{
+    ViewBag.Title = "Ordering information";
+    var additionalServices = Model.GetAdditionalServices();
+    var associatedServices = Model.GetAssociatedServices();
+}
+
+<partial name="Partials/_BackLink" model="Model"/>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-page-title title="@ViewBag.Title" caption="@Model.CompetitionName" advice="This is what you’ll need to order and who you’ll need to order for based on this competition."/>
+
+        <nhs-inset-text>
+            <p>There are <b>@Model.NumberOfRecipients service recipients</b> you’ll need to order for.</p>
+
+            <p>You can view them by downloading the Service Recipient list CSV file, which you can then upload when placing your order.</p>
+        </nhs-inset-text>
+
+        <h2>Catalogue Solution</h2>
+        <partial name="_OrderingInformationItem" model="Model.SolutionDisplay"/>
+                <br/>
+
+        @if (additionalServices.Any())
+        {
+            <h2>Additional Services</h2>
+            @foreach (var additionalService in additionalServices)
+            {
+                <partial name="_OrderingInformationItem" model="additionalService"/>
+                <br/>
+            }
+        }
+
+        @if (associatedServices.Any())
+        {
+            <h2>Associated Services</h2>
+            @foreach (var associatedService in associatedServices)
+            {
+                <partial name="_OrderingInformationItem" model="associatedService"/>
+                <br/>
+            }
+        }
+
+        <h2>Indicative costs not including VAT</h2>
+        <nhs-summary-list>
+            <nhs-summary-list-row label-text="Total one-off cost:">
+                £@($"{Model.CalculateTotalOneOffCost():N2}")
+            </nhs-summary-list-row>
+
+            <nhs-summary-list-row label-text="Total monthly cost:">
+                £@($"{Model.CalculateTotalMonthlyCost():N2}")
+            </nhs-summary-list-row>
+
+            <nhs-summary-list-row label-text="Total cost for one year:">
+                £@($"{Model.CalculateTotalYearlyCost():N2}")
+            </nhs-summary-list-row>
+
+            <nhs-summary-list-row label-text="Contract length:">
+                @Model.ContractLength
+            </nhs-summary-list-row>
+
+            <nhs-summary-list-row label-text="@($"Total cost of contract")">
+                £@($"{Model.CalculateTotalCost():N2}")
+            </nhs-summary-list-row>
+        </nhs-summary-list>
+
+        <nhs-button-group>
+            <vc:nhs-secondary-button text="Download Service Recipient list (CSV)"
+                                     url="@Url.Action(nameof(CompetitionResultsController.RecipientsCsv), typeof(CompetitionResultsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId })"
+                                     type="Secondary"/>
+
+            <vc:nhs-secondary-button text="Download ordering information (PDF)"
+                                                         url="#"
+                                                         type="Secondary"/>
+        </nhs-button-group>
+    </div>
+</div>

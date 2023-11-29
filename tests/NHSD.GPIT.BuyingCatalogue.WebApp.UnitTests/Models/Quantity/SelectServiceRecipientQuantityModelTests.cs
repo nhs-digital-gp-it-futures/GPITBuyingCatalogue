@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Quantity
                 var recipient = serviceRecipients.First(x => x.OdsCode == serviceRecipient.OdsCode);
 
                 serviceRecipient.Name.Should().Be(recipient.Name);
-                serviceRecipient.InputQuantity.Should().BeNull();
+                serviceRecipient.InputQuantity.Should().Be("1");
                 serviceRecipient.Quantity.Should().Be(1);
             }
         }

@@ -1,13 +1,18 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.ResultsModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.ResultsModels.OrderingInformationModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
@@ -21,15 +26,19 @@ public class CompetitionResultsController : Controller
     private readonly ICompetitionsService competitionsService;
     private readonly IManageFiltersService filtersService;
     private readonly IPdfService pdfService;
+    private readonly IServiceRecipientImportService serviceRecipientImportService;
 
     public CompetitionResultsController(
         ICompetitionsService competitionsService,
         IManageFiltersService filtersService,
-        IPdfService pdfService)
+        IPdfService pdfService,
+        IServiceRecipientImportService serviceRecipientImportService)
     {
         this.competitionsService = competitionsService ?? throw new ArgumentNullException(nameof(competitionsService));
         this.filtersService = filtersService ?? throw new ArgumentNullException(nameof(filtersService));
         this.pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
+        this.serviceRecipientImportService = serviceRecipientImportService
+            ?? throw new ArgumentNullException(nameof(serviceRecipientImportService));
     }
 
     [HttpGet("confirm")]
@@ -164,7 +173,7 @@ public class CompetitionResultsController : Controller
     }
 
     [HttpPost("select-winning-solution")]
-    public async Task<IActionResult> SelectWinningSolution(
+    public IActionResult SelectWinningSolution(
         string internalOrgId,
         int competitionId,
         SelectWinningSolutionModel model)
@@ -175,8 +184,53 @@ public class CompetitionResultsController : Controller
         if (!ModelState.IsValid)
             return View(model);
 
-        await Task.Yield();
+        return RedirectToAction(
+            nameof(OrderingInformation),
+            new { internalOrgId, competitionId, solutionId = model.SolutionId });
+    }
+
+    [HttpGet("ordering-information")]
+    public async Task<IActionResult> OrderingInformation(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId? solutionId = null)
+    {
+        bool WinningSolutionSelector(CompetitionSolution competitionSolution)
+        {
+            return solutionId is not null
+                ? competitionSolution.SolutionId == solutionId
+                : competitionSolution.IsWinningSolution;
+        }
+
+        var competition = await competitionsService.GetCompetitionForResults(internalOrgId, competitionId);
+        var solution = competition.CompetitionSolutions.FirstOrDefault(WinningSolutionSelector);
+
+        if (solution is null || !solution.IsWinningSolution)
+            return RedirectToAction(nameof(ViewResults), new { internalOrgId, competitionId });
+
+        var model = new OrderingInformationModel(competition, solution)
+        {
+            BackLink = Url.Action(
+                solutionId is not null ? nameof(SelectWinningSolution) : nameof(ViewResults),
+                new { internalOrgId, competitionId }),
+        };
 
         return View(model);
+    }
+
+    [HttpGet("recipients-csv")]
+    public async Task<IActionResult> RecipientsCsv(
+        string internalOrgId,
+        int competitionId)
+    {
+        var competition = await competitionsService.GetCompetitionWithRecipients(internalOrgId, competitionId);
+        var recipients = competition.Recipients.Select(
+            x => new ServiceRecipientImportModel { Organisation = x.Name, OdsCode = x.Id, });
+
+        using var stream = new MemoryStream();
+        await serviceRecipientImportService.CreateServiceRecipientTemplate(stream, recipients);
+        stream.Position = 0;
+
+        return File(stream.ToArray(), "application/octet-stream", "service_recipient_export.csv");
     }
 }

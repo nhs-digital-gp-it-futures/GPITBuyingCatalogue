@@ -97,6 +97,7 @@ public class SelectServiceRecipientQuantityModel : NavBaseModel
         if (ProvisioningType is ProvisioningType.PerServiceRecipient)
         {
             recipientQuantityModel.Quantity = 1;
+            recipientQuantityModel.InputQuantity = "1";
         }
         else
         {

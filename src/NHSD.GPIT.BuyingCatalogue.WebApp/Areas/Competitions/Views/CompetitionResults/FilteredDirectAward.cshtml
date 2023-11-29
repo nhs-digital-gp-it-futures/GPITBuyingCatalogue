@@ -6,7 +6,7 @@
     var solutionUrl = Url.Action(
                 nameof(SolutionsController.Description),
                 typeof(SolutionsController).ControllerName(),
-            new { solutionId = @Model.NonShortlistedSolutions.FirstOrDefault().Solution.CatalogueItem.Id, Area = "Solutions" });
+            new { solutionId = Model.NonShortlistedSolutions.FirstOrDefault().Solution.CatalogueItem.Id, Area = "Solutions" });
 }
 
 <partial name="Partials/_BackLink" model="Model"/>
@@ -30,7 +30,7 @@
             <partial name="Partials/_FilterDetailsPartial" model="@Model.FilterDetailsModel"/>
         </nhs-expander>
     </div>
-       
+
     <partial name="_ResultsOrderingInformation" model="new ResultsOrderingInformation(false, true, Model.PdfUrl, Model.InternalOrgId, Model.CompetitionId)" />
-    
+
 </div>
