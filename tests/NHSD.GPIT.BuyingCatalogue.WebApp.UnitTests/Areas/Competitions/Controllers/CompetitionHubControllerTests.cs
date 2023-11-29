@@ -14,6 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
@@ -1323,7 +1324,7 @@ public static class CompetitionHubControllerTests
 
     [Theory]
     [CommonAutoData]
-    public static async Task GetRecipientQuantities(
+    public static async Task GetRecipientQuantities_QuantityNotNull_ReturnsCorrectResult(
         OdsOrganisation competitionRecipient,
         RecipientQuantityBase recipientQuantity,
         ServiceRecipient serviceRecipient,
@@ -1342,6 +1343,37 @@ public static class CompetitionHubControllerTests
         var serviceRecipients = await controller.GetRecipientQuantities(competitionRecipients, recipientQuantities, internalOrgId);
 
         var expected = new ServiceRecipientDto(recipientQuantity.OdsCode, competitionRecipient.Name, recipientQuantity.Quantity, serviceRecipient.Location);
+        var expectedList = new List<ServiceRecipientDto> { expected };
+
+        serviceRecipients.Should().NotBeNull();
+        serviceRecipients.Should().BeEquivalentTo(expectedList);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task GetRecipientQuantities_QuantityNull_ReturnsCorrectResult(
+        OdsOrganisation competitionRecipient,
+        ServiceRecipient serviceRecipient,
+        [Frozen] Mock<ServiceContracts.Organisations.IOdsService> odsService,
+        [Frozen] Mock<ServiceContracts.Organisations.IGpPracticeService> gpPracticeService,
+        string internalOrgId,
+        string odsCode,
+        CompetitionHubController controller,
+        GpPracticeSize gpPractice)
+    {
+        gpPractice.OdsCode = competitionRecipient.Id = serviceRecipient.OrgId = odsCode;
+        var odsCodes = new List<string> { gpPractice.OdsCode };
+        var competitionRecipientIds = new List<string>() { competitionRecipient.Id };
+        List<OdsOrganisation> competitionRecipients = new List<OdsOrganisation>() { competitionRecipient };
+        List<RecipientQuantityBase> recipientQuantities = null;
+        odsService.Setup(x => x.GetServiceRecipientsById(internalOrgId, odsCodes))
+            .ReturnsAsync(new List<ServiceRecipient> { serviceRecipient });
+        gpPracticeService.Setup(x => x.GetNumberOfPatients(competitionRecipientIds))
+            .ReturnsAsync(new List<GpPracticeSize> { gpPractice });
+
+        var serviceRecipients = await controller.GetRecipientQuantities(competitionRecipients, recipientQuantities, internalOrgId);
+
+        var expected = new ServiceRecipientDto(gpPractice.OdsCode, competitionRecipient.Name, gpPractice.NumberOfPatients, serviceRecipient.Location);
         var expectedList = new List<ServiceRecipientDto> { expected };
 
         serviceRecipients.Should().NotBeNull();
