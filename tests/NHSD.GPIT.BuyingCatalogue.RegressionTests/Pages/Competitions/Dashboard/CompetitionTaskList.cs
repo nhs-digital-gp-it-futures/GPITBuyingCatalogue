@@ -74,5 +74,17 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Dashboard
             CommonActions.ClickLinkElement(CompetitionsDashboardObjects.NonPriceWeightingsLink);
             CommonActions.LedeText().Should().Be("Give your chosen non-price elements weightings based on how important they are to you.".FormatForComparison());
         }
+
+        public void ReviewCompetitionCriteria()
+        {
+            CommonActions.ClickLinkElement(CompetitionsDashboardObjects.ReviewCompetitionCriteriaList);
+            CommonActions.LedeText().Should().Be("Review the weightings you’ve applied to your competition and the details of any non-price elements you’ve added.".FormatForComparison());
+        }
+
+        public void CompareAndScoreLink()
+        {
+            CommonActions.ClickLinkElement(CompetitionsDashboardObjects.CompareAndScoreNonPriceElementLink);
+            CommonActions.LedeText().Should().Be("Compare and score shortlisted solutions based on the non-price elements you’ve added.".FormatForComparison());
+        }
     }
 }
