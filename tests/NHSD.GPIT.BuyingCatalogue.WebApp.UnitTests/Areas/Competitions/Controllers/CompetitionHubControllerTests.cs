@@ -1320,4 +1320,32 @@ public static class CompetitionHubControllerTests
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Hub));
     }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task GetRecipientQuantities(
+        OdsOrganisation competitionRecipient,
+        RecipientQuantityBase recipientQuantity,
+        ServiceRecipient serviceRecipient,
+        [Frozen] Mock<ServiceContracts.Organisations.IOdsService> odsService,
+        string internalOrgId,
+        string odsCode,
+        CompetitionHubController controller)
+    {
+        recipientQuantity.OdsCode = competitionRecipient.Id = serviceRecipient.OrgId = odsCode;
+        var odsCodes = new List<string> { recipientQuantity.OdsCode };
+        List<OdsOrganisation> competitionRecipients = new List<OdsOrganisation>() { competitionRecipient };
+        List<RecipientQuantityBase> recipientQuantities = new List<RecipientQuantityBase>() { recipientQuantity };
+        odsService.Setup(x => x.GetServiceRecipientsById(internalOrgId, odsCodes))
+            .ReturnsAsync(new List<ServiceRecipient> { serviceRecipient });
+
+        var serviceRecipients = await controller.GetRecipientQuantities(competitionRecipients, recipientQuantities, internalOrgId);
+
+        var expected = new ServiceRecipientDto(recipientQuantity.OdsCode, competitionRecipient.Name, recipientQuantity.Quantity, serviceRecipient.Location);
+        var expectedList = new List<ServiceRecipientDto> { expected };
+
+        serviceRecipients.Should().NotBeNull();
+        serviceRecipients.Should().BeEquivalentTo(expectedList);
+
+    }
 }
