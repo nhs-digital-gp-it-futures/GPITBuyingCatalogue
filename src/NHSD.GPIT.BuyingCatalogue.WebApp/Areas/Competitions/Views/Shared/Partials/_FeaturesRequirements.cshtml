@@ -12,7 +12,7 @@
         @foreach (var mustRequirement in Model.MustRequirements)
         {
             <nhs-table-row-container>
-                <nhs-table-cell>
+                <nhs-table-cell style="word-break:break-all">
                     <p>@mustRequirement.Requirements</p>
                 </nhs-table-cell>
                 <nhs-table-cell>
@@ -38,7 +38,7 @@
         @foreach (var shouldRequirement in Model.ShouldRequirements)
         {
             <nhs-table-row-container>
-                <nhs-table-cell>
+                <nhs-table-cell style="word-break:break-all">
                     <p>@shouldRequirement.Requirements</p>
                 </nhs-table-cell>
                 <nhs-table-cell>

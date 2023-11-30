@@ -456,6 +456,7 @@ public class CompetitionsService : ICompetitionsService
                 .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Scores)
                 .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Quantities)
                 .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Price).ThenInclude(x => x.Tiers)
+                .Include(x => x.CompetitionSolutions).ThenInclude(x => x.SolutionServices).ThenInclude(x => x.Service)
                 .Include(x => x.CompetitionSolutions).ThenInclude(x => x.SolutionServices).ThenInclude(x => x.Quantities)
                 .Include(x => x.CompetitionSolutions).ThenInclude(x => x.SolutionServices).ThenInclude(x => x.Price).ThenInclude(x => x.Tiers)
                 .AsSplitQuery()
