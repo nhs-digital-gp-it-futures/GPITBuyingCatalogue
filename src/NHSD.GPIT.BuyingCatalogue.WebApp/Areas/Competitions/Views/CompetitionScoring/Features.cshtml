@@ -27,7 +27,7 @@
                 <ul>
                     @foreach (var requirement in Model.MustFeatures)
                     {
-                        <li>@requirement.Requirements</li>
+                        <li style="word-break:break-all">@requirement.Requirements</li>
                     }
                 </ul>
             }
@@ -38,7 +38,7 @@
                 <ul>
                     @foreach (var requirement in Model.ShouldFeatures)
                     {
-                        <li>@requirement.Requirements</li>
+                        <li style="word-break:break-all">@requirement.Requirements</li>
                     }
                 </ul>
             }

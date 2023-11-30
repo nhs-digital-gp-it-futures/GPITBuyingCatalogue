@@ -16,7 +16,7 @@ public class StubbedServiceRecipientImportService : IServiceRecipientImportServi
             new() { OdsCode = "Y07021", Organisation = "BEVAN LTD" },
         };
 
-    public Task CreateServiceRecipientTemplate(MemoryStream stream)
+    public Task CreateServiceRecipientTemplate(MemoryStream stream, IEnumerable<ServiceRecipientImportModel> serviceRecipients = null)
     {
         throw new System.NotImplementedException();
     }

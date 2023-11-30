@@ -1,0 +1,29 @@
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
+@model OrderingInformationItem
+
+@{
+    var tierCosts = Model.Price.CostPerTierForBillingPeriod(Model.Quantity);
+}
+
+<h3>
+    @Model.CatalogueItemName
+    <span class="nhsuk-caption-m nhsuk-caption--bottom">
+        @Model.SupplierName
+    </span>
+</h3>
+
+<nhs-table label-text="Pricing">
+    <nhs-table-column>Price per unit</nhs-table-column>
+    <nhs-table-column>Quantity</nhs-table-column>
+    <nhs-table-column>Subtotal</nhs-table-column>
+
+    @foreach (var tier in tierCosts)
+    {
+
+        <nhs-table-row-container>
+            <nhs-table-cell>@($"£{tier.Price:#,###,##0.00##}") @Model.Price.ToPriceUnitString()</nhs-table-cell>
+            <nhs-table-cell>@($"{tier.Quantity:N0}")</nhs-table-cell>
+            <nhs-table-cell>@($"£{tier.Cost:N2}")</nhs-table-cell>
+        </nhs-table-row-container>
+    }
+</nhs-table>

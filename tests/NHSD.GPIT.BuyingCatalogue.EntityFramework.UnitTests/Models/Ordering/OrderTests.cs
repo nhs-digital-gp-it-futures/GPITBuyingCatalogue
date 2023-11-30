@@ -68,14 +68,15 @@ public static class OrderTests
     }
 
     [Theory]
-    [CommonInlineAutoData("-1", true)]
-    [CommonInlineAutoData("0", false)]
-    [CommonInlineAutoData("1", false)]
+    [CommonInlineAutoData(-1, true)]
+    [CommonInlineAutoData(0, false)]
+    [CommonInlineAutoData(1, false)]
     public static void ContractExpired_PropertyCorrectlySet(
         int remainingDaysOfContract,
-        bool value,
-        int maxTerm)
+        bool value)
     {
+        const int maxTerm = 36;
+
         var order = new Order { MaximumTerm = maxTerm, CommencementDate = DateTime.UtcNow.AddMonths(-maxTerm).AddDays(1 + remainingDaysOfContract) };
 
         order.ContractExpired.Should().Be(value);

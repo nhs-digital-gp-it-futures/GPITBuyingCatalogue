@@ -22,9 +22,9 @@ public class ServiceRecipientImportService : CsvServiceBase, IServiceRecipientIm
         this.distributedCache = distributedCache ?? throw new ArgumentNullException(nameof(distributedCache));
     }
 
-    public async Task CreateServiceRecipientTemplate(MemoryStream stream)
+    public async Task CreateServiceRecipientTemplate(MemoryStream stream, IEnumerable<ServiceRecipientImportModel> serviceRecipients = null)
     {
-        var recipients = Enumerable.Empty<ServiceRecipientImportModel>();
+        var recipients = serviceRecipients ?? Enumerable.Empty<ServiceRecipientImportModel>();
 
         await WriteRecordsAsync<ServiceRecipientImportModel, ServiceRecipientImportModelMap>(stream, recipients);
     }
