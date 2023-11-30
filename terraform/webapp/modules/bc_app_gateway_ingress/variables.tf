@@ -43,6 +43,6 @@ variable "core_env" {
   type = string
 }
 
-variable "storage_account_id" {
+variable "log_analytics_workspace_id" {
   type = string
 }

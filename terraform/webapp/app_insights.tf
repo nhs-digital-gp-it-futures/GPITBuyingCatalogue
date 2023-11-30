@@ -2,6 +2,7 @@ resource "azurerm_application_insights" "appinsights" {
   name                = "${var.project}-${var.environment}-appinsights"
   location            = var.region
   resource_group_name = azurerm_resource_group.app-insights.name
+  workspace_id        = azurerm_log_analytics_workspace.log_analytics.id
   application_type    = "web"
   
   tags = {
