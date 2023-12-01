@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Shared;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services
 {
@@ -49,6 +49,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services
         public bool AssociatedServicesOnly { get; set; }
 
         public string SolutionName { get; set; }
+
+        public CatalogueItemId SolutionId { get; set; }
 
         public List<string> ExistingServices { get; set; } = Enumerable.Empty<string>().ToList();
 

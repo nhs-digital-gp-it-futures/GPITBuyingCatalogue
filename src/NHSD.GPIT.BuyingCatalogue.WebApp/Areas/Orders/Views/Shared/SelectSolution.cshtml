@@ -1,4 +1,5 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Shared.SelectSolutionModel;
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Shared.SelectSolutionModel;
 
 <partial name="Partials/_BackLink" model="Model" />
 
@@ -71,13 +72,23 @@
                                 {
                                     <p><strong>Do you want to add any Additional Services?</strong></p>
                                     <p>These are optional add-ons to the main solution that provide extra functionality.</p>
+                                    <p>
+                                        Find out more
+                                        <a href="@Url.Action(
+                                      nameof(SolutionsController.AdditionalServices),
+                                      typeof(SolutionsController).ControllerName(),
+                                      new { solutionId = selectListItem.Value, area = "Solutions" })" target="_blank">
+                                           (opens in new tab)
+                                        </a>
+                                    </p>
                                     <nhs-checkbox-container>
                                         @foreach (var (service, j) in Model.AdditionalServices.Select((x, j) => (x, j)))
                                         {
                                             if (!$"{service.CatalogueItemId}".StartsWith(selectListItem.Value))
                                                 continue;
 
-                                            <input type="hidden" asp-for="@Model.AdditionalServices[j].CatalogueItemId"/>
+                                            <input type="hidden" asp-for="@Model.AdditionalServices[j].CatalogueItemId"
+                                                   value="" />
                                             <input type="hidden" asp-for="@Model.AdditionalServices[j].Description"/>
                                             <nhs-checkbox asp-for="@Model.AdditionalServices[j].IsSelected"
                                                           label-text="@service.Description"/>
