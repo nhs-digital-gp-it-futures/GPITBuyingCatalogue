@@ -1,0 +1,1293 @@
+[
+  {
+    "model": "base.footertext",
+    "pk": 1,
+    "fields": {
+      "translation_key": "ec7d7b66-559e-4ca8-8ece-bc23cd3c2a00",
+      "locale": 1,
+      "latest_revision": null,
+      "live": true,
+      "has_unpublished_changes": false,
+      "first_published_at": "2023-09-01T16:55:18.551Z",
+      "last_published_at": "2023-09-01T16:55:18.551Z",
+      "live_revision": null,
+      "go_live_at": null,
+      "expire_at": null,
+      "expired": false,
+      "body": "<p class=\"nhsuk-footer__copyright\">© Crown copyright</p>"
+    }
+  },
+  {
+    "model": "base.genericsettings",
+    "pk": 1,
+    "fields": {
+      "twitter_url": "https://twitter.com/wagtailcms",
+      "github_url": "https://github.com/wagtail/wagtail",
+      "organisation_url": "https://wagtail.org/"
+    }
+  },
+  {
+    "model": "releasenotes.releasenotespersonrelationship",
+    "pk": 1,
+    "fields": {
+      "sort_order": 0,
+      "page": 8,
+      "person": 1
+    }
+  },
+  {
+    "model": "newfeatures.country",
+    "pk": 1,
+    "fields": {
+      "title": "Feature type"
+    }
+  },
+  {
+    "model": "newfeatures.newfeatureingredient",
+    "pk": 1,
+    "fields": {
+      "latest_revision": null,
+      "live": true,
+      "has_unpublished_changes": false,
+      "first_published_at": "2023-09-01T16:55:28.854Z",
+      "last_published_at": "2023-09-01T16:55:28.854Z",
+      "live_revision": null,
+      "go_live_at": null,
+      "expire_at": null,
+      "expired": false,
+      "name": "Feature type"
+    }
+  },
+  {
+    "model": "newfeatures.newfeaturetype",
+    "pk": 1,
+    "fields": {
+      "latest_revision": null,
+      "title": "New feature 1"
+    }
+  },
+  {
+    "model": "newfeatures.newfeaturetype",
+    "pk": 2,
+    "fields": {
+      "latest_revision": null,
+      "title": "New feature 2"
+    }
+  },
+  {
+    "model": "newfeatures.newfeaturetype",
+    "pk": 3,
+    "fields": {
+      "latest_revision": null,
+      "title": "New feature 3"
+    }
+  },
+  {
+    "model": "frameworks.frameworkoperatinghours",
+    "pk": 1,
+    "fields": {
+      "sort_order": 0,
+      "day": "MON",
+      "opening_time": "08:00:00",
+      "closing_time": "18:00:00",
+      "closed": false,
+      "framework": 10
+    }
+  },
+  {
+    "model": "wagtailcore.locale",
+    "pk": 1,
+    "fields": {
+      "language_code": "en"
+    }
+  },
+  {
+    "model": "wagtailcore.site",
+    "pk": 2,
+    "fields": {
+      "hostname": "127.0.0.1",
+      "port": 8000,
+      "site_name": "Buying Catalogue",
+      "root_page": 6,
+      "is_default_site": true
+    }
+  },
+  {
+    "model": "wagtailcore.collection",
+    "pk": 1,
+    "fields": {
+      "path": "0001",
+      "depth": 1,
+      "numchild": 4,
+      "name": "Root"
+    }
+  },
+  {
+    "model": "wagtailcore.collection",
+    "pk": 2,
+    "fields": {
+      "path": "00010001",
+      "depth": 2,
+      "numchild": 0,
+      "name": "Bakeries"
+    }
+  },
+  {
+    "model": "wagtailcore.collection",
+    "pk": 3,
+    "fields": {
+      "path": "00010003",
+      "depth": 2,
+      "numchild": 0,
+      "name": "Other"
+    }
+  },
+  {
+    "model": "wagtailcore.collection",
+    "pk": 4,
+    "fields": {
+      "path": "00010002",
+      "depth": 2,
+      "numchild": 0,
+      "name": "NewFeaturePage Images"
+    }
+  },
+  {
+    "model": "wagtailcore.collection",
+    "pk": 5,
+    "fields": {
+      "path": "00010004",
+      "depth": 2,
+      "numchild": 0,
+      "name": "Recipes"
+    }
+  },
+  {
+    "model": "wagtailcore.workflowpage",
+    "pk": 1,
+    "fields": {
+      "workflow": 1
+    }
+  },
+  {
+    "model": "wagtailcore.workflowcontenttype",
+    "pk": 4,
+    "fields": {
+      "workflow": 1
+    }
+  },
+  {
+    "model": "wagtailcore.workflowtask",
+    "pk": 1,
+    "fields": {
+      "sort_order": 0,
+      "workflow": 1,
+      "task": 1
+    }
+  },
+  {
+    "model": "wagtailcore.task",
+    "pk": 1,
+    "fields": {
+      "name": "Moderators approval",
+      "content_type": [ "wagtailcore", "groupapprovaltask" ],
+      "active": true
+    }
+  },
+  {
+    "model": "wagtailcore.workflow",
+    "pk": 1,
+    "fields": {
+      "name": "Moderators approval",
+      "active": true
+    }
+  },
+
+  {
+    "model": "auth.group",
+    "pk": 1,
+    "fields": {
+      "name": "Moderators",
+      "permissions": [
+        [ "access_admin", "wagtailadmin", "admin" ],
+        [ "add_document", "wagtaildocs", "document" ],
+        [ "change_document", "wagtaildocs", "document" ],
+        [ "delete_document", "wagtaildocs", "document" ],
+        [ "add_image", "wagtailimages", "image" ],
+        [ "change_image", "wagtailimages", "image" ],
+        [ "delete_image", "wagtailimages", "image" ]
+      ]
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 2,
+    "fields": {
+      "name": "Editors",
+      "permissions": [
+        [ "add_footertext", "base", "footertext" ],
+        [ "change_footertext", "base", "footertext" ],
+        [ "add_person", "base", "person" ],
+        [ "change_person", "base", "person" ],
+        [ "lock_person", "base", "person" ],
+        [ "add_newfeatureingredient", "newfeatures", "newfeatureingredient" ],
+        [ "change_newfeatureingredient", "newfeatures", "newfeatureingredient" ],
+        [ "access_admin", "wagtailadmin", "admin" ],
+        [ "add_document", "wagtaildocs", "document" ],
+        [ "change_document", "wagtaildocs", "document" ],
+        [ "delete_document", "wagtaildocs", "document" ],
+        [ "add_image", "wagtailimages", "image" ],
+        [ "change_image", "wagtailimages", "image" ],
+        [ "delete_image", "wagtailimages", "image" ]
+      ]
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$yzcRrbI8n9Yfwg8S9T0nZt$4bZz0FcUIq/zFOU6XDrb31HxAFnsHqoqyR/CCSevqmE=",
+      "last_login": "2023-09-01T17:55:27.917Z",
+      "is_superuser": true,
+      "username": "admin",
+      "first_name": "Admin",
+      "last_name": "User",
+      "email": "admin@example.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2019-02-17T07:37:53.700Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 4,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$vDpqnaE6Nb6yc4r0v9Z6MK$xHyp2mJ1UZOhNnmjgOF8Id8W8gIbif8xyCS8Vj0NICU=",
+      "last_login": "2023-09-01T16:57:17.041Z",
+      "is_superuser": false,
+      "username": "editor",
+      "first_name": "Eddy",
+      "last_name": "Thorsørensen",
+      "email": "editor@example.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2019-02-17T08:01:33.700Z",
+      "groups": [ [ "Editors" ] ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 5,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$f90XskzX2N06T8lOwkce0h$vgXRvkERlpJprzpbPs532+Q7Tw6hACddA0wYWck8u1Y=",
+      "last_login": "2019-04-23T19:58:19.460Z",
+      "is_superuser": false,
+      "username": "moderator",
+      "first_name": "Jordan",
+      "last_name": "Rules",
+      "email": "moderator@example.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2019-02-17T08:02:33.700Z",
+      "groups": [ [ "Moderators" ] ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 6,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$zQKWzgiFtsrRNaYd2owW0c$Y5NyUP57J53f4YV7JfP+AUMBGFvHd3QGHQv4O7UhSLQ=",
+      "last_login": null,
+      "is_superuser": true,
+      "username": "inactive",
+      "first_name": "Iman",
+      "last_name": "Absent",
+      "email": "inactive@example.com",
+      "is_staff": false,
+      "is_active": false,
+      "date_joined": "2019-02-17T08:03:33.700Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 7,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$HfWLDvRsEWtiAVtHTIex9v$FZJZ5U5KpkMcXFHRXh+y3PThUVgJx7pVqT/hePR/oDo=",
+      "last_login": "2019-04-23T19:58:19.460Z",
+      "is_superuser": true,
+      "username": "german",
+      "first_name": "Friedrich Wilhelm",
+      "last_name": "von Braunenberg",
+      "email": "german@example.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2019-02-17T08:04:33.700Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 8,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$54BR3OOHXVwLAX05PqFeFI$h9vYXGoqC5pzAd1XPY0fo+IiQx5zabzDx936NQ4cbfg=",
+      "last_login": "2019-04-23T19:59:19.460Z",
+      "is_superuser": true,
+      "username": "arabic",
+      "first_name": "Nour",
+      "last_name": "al-Hudā",
+      "email": "arabic@example.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2019-02-17T08:05:33.700Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "wagtailcore.groupapprovaltask",
+    "pk": 1,
+    "fields": {
+      "groups": [ [ "Moderators" ] ]
+    }
+  },
+  {
+    "model": "wagtailcore.grouppagepermission",
+    "pk": 1,
+    "fields": {
+      "group": [ "Moderators" ],
+      "page": 1,
+      "permission": [ "add_page", "wagtailcore", "page" ]
+    }
+  },
+  {
+    "model": "wagtailcore.grouppagepermission",
+    "pk": 2,
+    "fields": {
+      "group": [ "Moderators" ],
+      "page": 1,
+      "permission": [ "change_page", "wagtailcore", "page" ]
+    }
+  },
+  {
+    "model": "wagtailcore.grouppagepermission",
+    "pk": 3,
+    "fields": {
+      "group": [ "Moderators" ],
+      "page": 1,
+      "permission": [ "publish_page", "wagtailcore", "page" ]
+    }
+  },
+  {
+    "model": "wagtailcore.grouppagepermission",
+    "pk": 4,
+    "fields": {
+      "group": [ "Editors" ],
+      "page": 1,
+      "permission": [ "add_page", "wagtailcore", "page" ]
+    }
+  },
+  {
+    "model": "wagtailcore.grouppagepermission",
+    "pk": 5,
+    "fields": {
+      "group": [ "Editors" ],
+      "page": 1,
+      "permission": [ "change_page", "wagtailcore", "page" ]
+    }
+  },
+  {
+    "model": "wagtailcore.grouppagepermission",
+    "pk": 6,
+    "fields": {
+      "group": [ "Moderators" ],
+      "page": 1,
+      "permission": [ "lock_page", "wagtailcore", "page" ]
+    }
+  },
+  {
+    "model": "wagtailcore.grouppagepermission",
+    "pk": 7,
+    "fields": {
+      "group": [ "Moderators" ],
+      "page": 1,
+      "permission": [ "unlock_page", "wagtailcore", "page" ]
+    }
+  },
+  {
+    "model": "wagtailcore.page",
+    "pk": 1,
+    "fields": {
+      "path": "0001",
+      "depth": 1,
+      "numchild": 1,
+      "translation_key": "4b0fecf3-cfa4-466d-b726-16389bd691d0",
+      "locale": 1,
+      "latest_revision": null,
+      "live": true,
+      "has_unpublished_changes": false,
+      "first_published_at": null,
+      "last_published_at": null,
+      "live_revision": null,
+      "go_live_at": null,
+      "expire_at": null,
+      "expired": false,
+      "locked": false,
+      "locked_at": null,
+      "locked_by": null,
+      "title": "Root",
+      "draft_title": "Root",
+      "slug": "root",
+      "content_type": [ "wagtailcore", "page" ],
+      "url_path": "/",
+      "owner": null,
+      "seo_title": "",
+      "show_in_menus": false,
+      "search_description": "",
+      "latest_revision_created_at": null,
+      "alias_of": null
+    }
+  },
+  {
+    "model": "wagtailcore.page",
+    "pk": 2,
+    "fields": {
+      "path": "000100020001",
+      "depth": 3,
+      "numchild": 11,
+      "translation_key": "4a0ed213-c519-4f2e-82a5-e92ef6c06b42",
+      "locale": 1,
+      "latest_revision": null,
+      "live": true,
+      "has_unpublished_changes": false,
+      "first_published_at": "2019-02-10T11:34:11.560Z",
+      "last_published_at": "2023-09-01T16:55:11.511Z",
+      "live_revision": null,
+      "go_live_at": null,
+      "expire_at": null,
+      "expired": false,
+      "locked": false,
+      "locked_at": null,
+      "locked_by": null,
+      "title": "What's new",
+      "draft_title": "What's new",
+      "slug": "newfeatures",
+      "content_type": [ "newfeatures", "newfeaturesindexpage" ],
+      "url_path": "/home/newfeatures/",
+      "owner": null,
+      "seo_title": "",
+      "show_in_menus": true,
+      "search_description": "",
+      "latest_revision_created_at": "2023-09-01T16:55:11.486Z",
+      "alias_of": null
+    }
+  },
+  {
+    "model": "wagtailcore.page",
+    "pk": 3,
+    "fields": {
+      "path": "0001000200010003",
+      "depth": 4,
+      "numchild": 0,
+      "translation_key": "8c3db6f9-d293-4275-baf9-840132947d36",
+      "locale": 1,
+      "latest_revision": null,
+      "live": true,
+      "has_unpublished_changes": false,
+      "first_published_at": "2019-02-10T13:00:21.882Z",
+      "last_published_at": "2023-09-01T16:55:11.622Z",
+      "live_revision": null,
+      "go_live_at": null,
+      "expire_at": null,
+      "expired": false,
+      "locked": false,
+      "locked_at": null,
+      "locked_by": null,
+      "title": "New feature 1",
+      "draft_title": "New feature 1",
+      "slug": "newfeatureone",
+      "content_type": [ "newfeatures", "newfeaturepage" ],
+      "url_path": "/home/newfeatures/newfeatureone",
+      "owner": null,
+      "seo_title": "",
+      "show_in_menus": false,
+      "search_description": "",
+      "latest_revision_created_at": "2023-09-01T16:55:11.596Z",
+      "alias_of": null
+    }
+  },
+  {
+    "model": "wagtailcore.page",
+    "pk": 4,
+    "fields": {
+      "path": "0001000200010004",
+      "depth": 4,
+      "numchild": 0,
+      "translation_key": "15e3cb9b-87f8-4110-a3b1-c40474c5ecf7",
+      "locale": 1,
+      "latest_revision": null,
+      "live": true,
+      "has_unpublished_changes": false,
+      "first_published_at": "2019-02-10T13:00:21.931Z",
+      "last_published_at": "2023-09-01T16:55:11.716Z",
+      "live_revision": null,
+      "go_live_at": null,
+      "expire_at": null,
+      "expired": false,
+      "locked": false,
+      "locked_at": null,
+      "locked_by": null,
+      "title": "New feature 2",
+      "draft_title": "New feature 2",
+      "slug": "newfeaturetwo",
+      "content_type": [ "newfeatures", "newfeaturepage" ],
+      "url_path": "/home/newfeatures/newfeaturetwo",
+      "owner": null,
+      "seo_title": "",
+      "show_in_menus": false,
+      "search_description": "",
+      "latest_revision_created_at": "2023-09-01T16:55:11.692Z",
+      "alias_of": null
+    }
+  },
+  {
+    "model": "wagtailcore.page",
+    "pk": 5,
+    "fields": {
+      "path": "0001000200010005",
+      "depth": 4,
+      "numchild": 0,
+      "translation_key": "2955de9f-eba4-4ddd-a01c-f2bf8e69c98f",
+      "locale": 1,
+      "latest_revision": null,
+      "live": true,
+      "has_unpublished_changes": false,
+      "first_published_at": "2019-02-10T13:00:21.980Z",
+      "last_published_at": "2023-09-01T16:55:11.816Z",
+      "live_revision": null,
+      "go_live_at": null,
+      "expire_at": null,
+      "expired": false,
+      "locked": false,
+      "locked_at": null,
+      "locked_by": null,
+      "title": "New feature 3",
+      "draft_title": "New feature 3",
+      "slug": "newfeaturethree",
+      "content_type": [ "newfeatures", "newfeaturepage" ],
+      "url_path": "/home/newfeatures/newfeaturethree",
+      "owner": null,
+      "seo_title": "",
+      "show_in_menus": false,
+      "search_description": "",
+      "latest_revision_created_at": "2023-09-01T16:55:11.789Z",
+      "alias_of": null
+    }
+  },
+  {
+    "model": "wagtailcore.page",
+    "pk": 6,
+    "fields": {
+      "path": "00010002",
+      "depth": 2,
+      "numchild": 7,
+      "translation_key": "0a325c4d-e292-46ba-b4f1-c4b7e4663c77",
+      "locale": 1,
+      "latest_revision": null,
+      "live": true,
+      "has_unpublished_changes": false,
+      "first_published_at": "2019-02-10T16:24:31.388Z",
+      "last_published_at": "2023-09-01T16:55:11.409Z",
+      "live_revision": null,
+      "go_live_at": null,
+      "expire_at": null,
+      "expired": false,
+      "locked": false,
+      "locked_at": null,
+      "locked_by": null,
+      "title": "What's new on the Buying Catalogue",
+      "draft_title": "What's new on the Buying Catalogue",
+      "slug": "home",
+      "content_type": [ "base", "homepage" ],
+      "url_path": "/home/",
+      "owner": null,
+      "seo_title": "Home",
+      "show_in_menus": false,
+      "search_description": "",
+      "latest_revision_created_at": "2023-09-01T17:01:46.837Z",
+      "alias_of": null
+    }
+  },
+  {
+    "model": "wagtailcore.page",
+    "pk": 7,
+    "fields": {
+      "path": "000100020004",
+      "depth": 3,
+      "numchild": 6,
+      "translation_key": "f502abcf-8643-448e-b55d-6cae0ee8d749",
+      "locale": 1,
+      "latest_revision": null,
+      "live": true,
+      "has_unpublished_changes": false,
+      "first_published_at": "2019-02-10T16:25:47.179Z",
+      "last_published_at": "2023-09-01T16:55:13.590Z",
+      "live_revision": null,
+      "go_live_at": null,
+      "expire_at": null,
+      "expired": false,
+      "locked": false,
+      "locked_at": null,
+      "locked_by": null,
+      "title": "Release notes",
+      "draft_title": "Release notes",
+      "slug": "releasenotes",
+      "content_type": [ "releasenotes", "releasenotesindexpage" ],
+      "url_path": "/home/releasenotes/",
+      "owner": null,
+      "seo_title": "Release notes",
+      "show_in_menus": true,
+      "search_description": "",
+      "latest_revision_created_at": "2023-09-01T16:55:13.565Z",
+      "alias_of": null
+    }
+  },
+  {
+    "model": "wagtailcore.page",
+    "pk": 8,
+    "fields": {
+      "path": "0001000200040001",
+      "depth": 4,
+      "numchild": 0,
+      "translation_key": "ef9c6173-919b-49ec-927e-96180337a91a",
+      "locale": 1,
+      "latest_revision": null,
+      "live": true,
+      "has_unpublished_changes": false,
+      "first_published_at": "2019-02-10T16:26:58.040Z",
+      "last_published_at": "2023-09-01T16:55:13.710Z",
+      "live_revision": null,
+      "go_live_at": null,
+      "expire_at": null,
+      "expired": false,
+      "locked": false,
+      "locked_at": null,
+      "locked_by": null,
+      "title": "Release 4.31.0",
+      "draft_title": "Release 4.31.0",
+      "slug": "release31",
+      "content_type": [ "releasenotes", "releasenotespage" ],
+      "url_path": "/home/releasenotes/release31/",
+      "owner": null,
+      "seo_title": "",
+      "show_in_menus": false,
+      "search_description": "",
+      "latest_revision_created_at": "2023-09-01T16:55:13.675Z",
+      "alias_of": null
+    }
+  },
+  {
+    "model": "wagtailcore.page",
+    "pk": 9,
+    "fields": {
+      "path": "000100020003",
+      "depth": 3,
+      "numchild": 6,
+      "translation_key": "c581e82f-912a-409c-bbe3-e608fbb7952f",
+      "locale": 1,
+      "latest_revision": null,
+      "live": true,
+      "has_unpublished_changes": false,
+      "first_published_at": "2019-02-10T16:39:04.527Z",
+      "last_published_at": "2023-09-01T16:55:12.718Z",
+      "live_revision": null,
+      "go_live_at": null,
+      "expire_at": null,
+      "expired": false,
+      "locked": false,
+      "locked_at": null,
+      "locked_by": null,
+      "title": "Frameworks",
+      "draft_title": "Frameworks",
+      "slug": "frameworks",
+      "content_type": [ "frameworks", "frameworksindexpage" ],
+      "url_path": "/home/frameworks/",
+      "owner": null,
+      "seo_title": "",
+      "show_in_menus": true,
+      "search_description": "",
+      "latest_revision_created_at": "2023-09-01T16:55:12.694Z",
+      "alias_of": null
+    }
+  },
+  {
+    "model": "wagtailcore.page",
+    "pk": 10,
+    "fields": {
+      "path": "0001000200030001",
+      "depth": 4,
+      "numchild": 0,
+      "translation_key": "70e0c3e1-dfe7-4669-8831-b122996f2dc1",
+      "locale": 1,
+      "latest_revision": null,
+      "live": true,
+      "has_unpublished_changes": false,
+      "first_published_at": "2019-02-10T16:39:55.909Z",
+      "last_published_at": "2023-09-01T16:55:12.824Z",
+      "live_revision": null,
+      "go_live_at": null,
+      "expire_at": null,
+      "expired": false,
+      "locked": false,
+      "locked_at": null,
+      "locked_by": null,
+      "title": "Advanced Telephony",
+      "draft_title": "Advanced Telephony",
+      "slug": "adbp",
+      "content_type": [ "frameworks", "frameworkpage" ],
+      "url_path": "/home/frameworks/atbp/",
+      "owner": null,
+      "seo_title": "",
+      "show_in_menus": false,
+      "search_description": "",
+      "latest_revision_created_at": "2023-09-01T16:55:12.788Z",
+      "alias_of": null
+    }
+  },
+  {
+    "model": "wagtailcore.page",
+    "pk": 11,
+    "fields": {
+      "path": "0001000200040002",
+      "depth": 4,
+      "numchild": 0,
+      "translation_key": "645b40cb-8d69-47bd-b70f-182b5efd11b3",
+      "locale": 1,
+      "latest_revision": null,
+      "live": true,
+      "has_unpublished_changes": false,
+      "first_published_at": "2019-02-15T07:42:52.978Z",
+      "last_published_at": "2023-09-01T17:04:47.587Z",
+      "live_revision": null,
+      "go_live_at": null,
+      "expire_at": null,
+      "expired": false,
+      "locked": false,
+      "locked_at": null,
+      "locked_by": null,
+      "title": "Release 4.30.0",
+      "draft_title": "Release 4.30.0",
+      "slug": "release30",
+      "content_type": [ "releasenotes", "releasenotespage" ],
+      "url_path": "/home/releasenotes/release30/",
+      "owner": null,
+      "seo_title": "",
+      "show_in_menus": false,
+      "search_description": "",
+      "latest_revision_created_at": "2023-09-01T17:58:50.377Z",
+      "alias_of": null
+    }
+  },
+  {
+    "model": "wagtailcore.page",
+    "pk": 12,
+    "fields": {
+      "path": "0001000200040003",
+      "depth": 4,
+      "numchild": 0,
+      "translation_key": "c1324591-fed6-47b3-95f3-e880fae219c2",
+      "locale": 1,
+      "latest_revision": null,
+      "live": true,
+      "has_unpublished_changes": false,
+      "first_published_at": "2019-02-21T08:07:11.832Z",
+      "last_published_at": "2023-09-01T16:55:14.091Z",
+      "live_revision": null,
+      "go_live_at": null,
+      "expire_at": null,
+      "expired": false,
+      "locked": false,
+      "locked_at": null,
+      "locked_by": null,
+      "title": "Release 4.29.0",
+      "draft_title": "Release 4.29.0",
+      "slug": "release29",
+      "content_type": [ "releasenotes", "releasenotespage" ],
+      "url_path": "/home/releasenotes/release29/",
+      "owner": [ "admin" ],
+      "seo_title": "",
+      "show_in_menus": false,
+      "search_description": "",
+      "latest_revision_created_at": "2023-09-01T16:55:14.052Z",
+      "alias_of": null
+    }
+  },
+  {
+    "model": "wagtailredirects.redirect",
+    "pk": 1,
+    "fields": {
+      "old_path": "/frameworks/wellington",
+      "site": [ "127.0.0.1", 8000 ],
+      "is_permanent": true,
+      "redirect_page": 1,
+      "redirect_page_route_path": "",
+      "redirect_link": "",
+      "automatically_created": true,
+      "created_at": "2019-06-23T09:02:31.074Z"
+    }
+  },
+  {
+    "model": "wagtailimages.image",
+    "pk": 1,
+    "fields": {
+      "collection": 1,
+      "title": "Homepage",
+      "file": "original_images/home-page-image.jpg",
+      "width": 1080,
+      "height": 831,
+      "created_at": "2019-02-17T08:10:34.237Z",
+      "uploaded_by_user": [ "admin" ],
+      "focal_point_x": null,
+      "focal_point_y": null,
+      "focal_point_width": null,
+      "focal_point_height": null,
+      "file_size": 173675,
+      "file_hash": ""
+    }
+  },
+  {
+    "model": "wagtailimages.image",
+    "pk": 2,
+    "fields": {
+      "collection": 1,
+      "title": "Image 1",
+      "file": "original_images/image1.jpg",
+      "width": 226,
+      "height": 223,
+      "created_at": "2019-02-17T08:10:34.344Z",
+      "uploaded_by_user": [ "admin" ],
+      "focal_point_x": null,
+      "focal_point_y": null,
+      "focal_point_width": null,
+      "focal_point_height": null,
+      "file_size": 506419,
+      "file_hash": ""
+    }
+  },
+  {
+    "model": "wagtailimages.image",
+    "pk": 3,
+    "fields": {
+      "collection": 1,
+      "title": "Image 2",
+      "file": "original_images/image2.jpg",
+      "width": 275,
+      "height": 183,
+      "created_at": "2019-02-17T08:10:34.580Z",
+      "uploaded_by_user": [ "admin" ],
+      "focal_point_x": null,
+      "focal_point_y": null,
+      "focal_point_width": null,
+      "focal_point_height": null,
+      "file_size": 166505,
+      "file_hash": ""
+    }
+  },
+  {
+    "model": "wagtailimages.image",
+    "pk": 4,
+    "fields": {
+      "collection": 1,
+      "title": "Image 3",
+      "file": "original_images/image3.jpg",
+      "width": 300,
+      "height": 168,
+      "created_at": "2019-02-17T08:10:34.723Z",
+      "uploaded_by_user": [ "admin" ],
+      "focal_point_x": null,
+      "focal_point_y": null,
+      "focal_point_width": null,
+      "focal_point_height": null,
+      "file_size": 174743,
+      "file_hash": ""
+    }
+  },
+  {
+    "model": "wagtailimages.image",
+    "pk": 5,
+    "fields": {
+      "collection": 1,
+      "title": "Image 4",
+      "file": "original_images/image4.jpg",
+      "width": 201,
+      "height": 251,
+      "created_at": "2019-02-19T08:08:37.723Z",
+      "uploaded_by_user": [ "admin" ],
+      "focal_point_x": null,
+      "focal_point_y": null,
+      "focal_point_width": null,
+      "focal_point_height": null,
+      "file_size": 127107,
+      "file_hash": ""
+    }
+  },
+  {
+    "model": "wagtailimages.image",
+    "pk": 6,
+    "fields": {
+      "collection": 2,
+      "title": "Image 5",
+      "file": "original_images/image5.jpg",
+      "width": 292,
+      "height": 173,
+      "created_at": "2019-02-19T08:08:38.028Z",
+      "uploaded_by_user": [ "admin" ],
+      "focal_point_x": null,
+      "focal_point_y": null,
+      "focal_point_width": null,
+      "focal_point_height": null,
+      "file_size": 247052,
+      "file_hash": ""
+    }
+  },
+  {
+    "model": "wagtailimages.image",
+    "pk": 7,
+    "fields": {
+      "collection": 1,
+      "title": "Image 6",
+      "file": "original_images/image6.jpg",
+      "width": 275,
+      "height": 183,
+      "created_at": "2019-02-21T07:50:10.793Z",
+      "uploaded_by_user": [ "admin" ],
+      "focal_point_x": null,
+      "focal_point_y": null,
+      "focal_point_width": null,
+      "focal_point_height": null,
+      "file_size": 122348,
+      "file_hash": ""
+    }
+  },
+  {
+    "model": "wagtailimages.image",
+    "pk": 8,
+    "fields": {
+      "collection": 2,
+      "title": "Muddy Waters",
+      "file": "original_images/muddy_waters.jpg",
+      "width": 611,
+      "height": 672,
+      "created_at": "2019-03-31T06:36:23.486Z",
+      "uploaded_by_user": [ "admin" ],
+      "focal_point_x": null,
+      "focal_point_y": null,
+      "focal_point_width": null,
+      "focal_point_height": null,
+      "file_size": 189650,
+      "file_hash": ""
+    }
+  },
+  {
+    "model": "wagtailimages.image",
+    "pk": 9,
+    "fields": {
+      "collection": 2,
+      "title": "Lightnin' Hopkins",
+      "file": "original_images/lightnin_hopkins.jpg",
+      "width": 150,
+      "height": 162,
+      "created_at": "2019-04-01T07:31:21.251Z",
+      "uploaded_by_user": [ "admin" ],
+      "focal_point_x": null,
+      "focal_point_y": null,
+      "focal_point_width": null,
+      "focal_point_height": null,
+      "file_size": 18521,
+      "file_hash": ""
+    }
+  },
+  {
+    "model": "wagtailusers.userprofile",
+    "pk": 1,
+    "fields": {
+      "user": [ "admin" ],
+      "submitted_notifications": true,
+      "approved_notifications": true,
+      "rejected_notifications": true,
+      "updated_comments_notifications": true,
+      "preferred_language": "",
+      "current_time_zone": "",
+      "avatar": "",
+      "dismissibles": {},
+      "theme": "system"
+    }
+  },
+  {
+    "model": "wagtailusers.userprofile",
+    "pk": 2,
+    "fields": {
+      "user": [ "editor" ],
+      "submitted_notifications": true,
+      "approved_notifications": true,
+      "rejected_notifications": true,
+      "updated_comments_notifications": true,
+      "preferred_language": "",
+      "current_time_zone": "",
+      "avatar": "",
+      "dismissibles": {},
+      "theme": "system"
+    }
+  },
+  {
+    "model": "wagtailusers.userprofile",
+    "pk": 3,
+    "fields": {
+      "user": [ "german" ],
+      "submitted_notifications": true,
+      "approved_notifications": true,
+      "rejected_notifications": true,
+      "updated_comments_notifications": true,
+      "preferred_language": "de",
+      "current_time_zone": "Europe/Berlin",
+      "avatar": "",
+      "dismissibles": {},
+      "theme": "system"
+    }
+  },
+  {
+    "model": "wagtailusers.userprofile",
+    "pk": 4,
+    "fields": {
+      "user": [ "arabic" ],
+      "submitted_notifications": true,
+      "approved_notifications": true,
+      "rejected_notifications": true,
+      "updated_comments_notifications": true,
+      "preferred_language": "ar",
+      "current_time_zone": "Asia/Beirut",
+      "avatar": "",
+      "dismissibles": {},
+      "theme": "system"
+    }
+  },
+  {
+    "model": "wagtailusers.userprofile",
+    "pk": 5,
+    "fields": {
+      "user": [ "moderator" ],
+      "submitted_notifications": true,
+      "approved_notifications": true,
+      "rejected_notifications": true,
+      "updated_comments_notifications": true,
+      "preferred_language": "",
+      "current_time_zone": "",
+      "avatar": "",
+      "dismissibles": {},
+      "theme": "system"
+    }
+  },
+  {
+    "model": "frameworks.frameworkpage",
+    "pk": 10,
+    "fields": {
+      "introduction": "Advanced telephony Better Purchasing framework",
+      "image": 2,
+      "body": "[{\"type\": \"paragraph_block\", \"value\": \"<p><br/></p><p>Supports the commissioning of advanced, cloud-hosted GP telephony systems</p>\", \"id\": \"77fb44cb-770c-4fe8-8ba1-b1dd3351214d\"}]",
+      "address": "Hof 2,\r\nLækjarhús,\r\n785 Öræfi,\r\nIceland",
+      "lat_long": "63.9095213,-16.7093877"
+    }
+  },
+  {
+    "model": "frameworks.frameworksindexpage",
+    "pk": 9,
+    "fields": {
+      "introduction": "New frameworks coming soon...",
+      "image": 1
+    }
+  },
+  {
+    "model": "newfeatures.newfeaturesindexpage",
+    "pk": 2,
+    "fields": {
+      "introduction": "New features coming soon...",
+      "image": 1
+    }
+  },
+  {
+    "model": "newfeatures.newfeaturepage",
+    "pk": 3,
+    "fields": {
+      "introduction": "This is a great new feature we have just developed. Its so exciting. Lots of words about it",
+      "image": 3,
+      "body": "[]",
+      "origin": 1,
+      "newfeature_type": 1,
+      "ingredients": []
+    }
+  },
+  {
+    "model": "newfeatures.newfeaturepage",
+    "pk": 4,
+    "fields": {
+      "introduction": "This is a great new feature we have just developed. Its so exciting. Lots of words about it",
+      "image": 2,
+      "body": "[]",
+      "origin": 1,
+      "newfeature_type": 2,
+      "ingredients": []
+    }
+  },
+  {
+    "model": "newfeatures.newfeaturepage",
+    "pk": 5,
+    "fields": {
+      "introduction": "This is a great new feature we have just developed. Its so exciting. Lots of words about it",
+      "image": 4,
+      "body": "[]",
+      "origin": 1,
+      "newfeature_type": 3,
+      "ingredients": []
+    }
+  },
+  {
+    "model": "releasenotes.releasenotesindexpage",
+    "pk": 7,
+    "fields": {
+      "introduction": "Welcome to our releasenotes",
+      "image": 4
+    }
+  },
+  {
+    "model": "releasenotes.releasenotespage",
+    "pk": 8,
+    "fields": {
+      "introduction": "Summary of this release",
+      "image": 7,
+      "body": "[{\"type\": \"paragraph_block\", \"value\": \"<p><ul><li>Allow user to select a winning solution in further competition journey (currently toggled off).</li><li><li>Allow user to select a winning solution in further competition journey (currently toggled off).</li></li></ul></p><p><br/></p>\", \"id\": \"5a0af64d-01b0-4a7a-abc2-6ca6a7faab23\"}]",
+      "subtitle": "Changed",
+      "date_published": "2019-01-12"
+    }
+  },
+  {
+    "model": "releasenotes.releasenotespage",
+    "pk": 11,
+    "fields": {
+      "introduction": "Summary of this release",
+      "image": 6,
+      "body": "[{\"type\": \"paragraph_block\", \"value\": \"<p><ul><li>Allow user to select a winning solution in further competition journey (currently toggled off).</li><li><li>Allow user to select a winning solution in further competition journey (currently toggled off).</li></li></ul></p><p><br/></p>\", \"id\": \"5a0af64d-01b0-4a7a-abc2-6ca6a7faab23\"}]",
+      "subtitle": "Changed",
+      "date_published": "2019-02-14"
+    }
+  },
+  {
+    "model": "releasenotes.releasenotespage",
+    "pk": 12,
+    "fields": {
+      "introduction": "Summary of this release",
+      "image": 5,
+      "body": "[{\"type\": \"paragraph_block\", \"value\": \"<p><ul><li>Allow user to select a winning solution in further competition journey (currently toggled off).</li><li><li>Allow user to select a winning solution in further competition journey (currently toggled off).</li></li></ul></p><p><br/></p>\", \"id\": \"5a0af64d-01b0-4a7a-abc2-6ca6a7faab23\"}]",
+      "subtitle": "Changed",
+      "date_published": "2019-03-21"
+    }
+  },
+  {
+    "model": "base.sitesettings",
+    "pk": 1,
+    "fields": {
+      "site": [ "127.0.0.1", 8000 ],
+      "title_suffix": "Buying Catalogue"
+    }
+  },
+  {
+    "model": "base.formpage",
+    "pk": 1,
+    "fields": {
+      "to_address": "us@example.com",
+      "from_address": "you@example.com",
+      "subject": "Contact message from Wagtail Demo site",
+      "image": null,
+      "body": "[{\"type\": \"paragraph_block\", \"value\": \"<p>We'd love to hear from you! Drop us a line to let us know what you liked or didn't like about your recent store visit, or if you have comments or questions about this site.\\u00a0</p><p>This form is for demo purposes only - email goes nowhere. Developers: \\u00a0Edit the \\\"To Address\\\" field in the Form object in the Wagtail admin, and see the Email notes in the project readme to make your instance send live email.</p>\", \"id\": \"25a48aa0-7b9b-47a9-ac24-bce39baf0a6c\"}]",
+      "thank_you_text": "<p>Thanks!</p><p>We've received your message and will get back to you shortly.</p>"
+    }
+  },
+  {
+    "model": "base.homepage",
+    "pk": 6,
+    "fields": {
+      "image": 1,
+      "hero_text": "Find out about the improvements we are making'",
+      "hero_cta": "Learn more about new and upcoming features",
+      "hero_cta_link": 2,
+      "body": "[{\"type\": \"paragraph_block\", \"value\": \"<p><b>The Buying Catalogue</b> is amazing. Here's some chat about it</p>\", \"id\": \"331ba9a8-8580-4bfb-b47f-73bb4ec40ec0\"}]",
+      "promo_image": 7,
+      "promo_title": "Have you checked out our new features",
+      "promo_text": "<p>Some waffle about what's new.</p>",
+      "featured_section_1_title": "New features",
+      "featured_section_1": 2,
+      "featured_section_2_title": "Frameworks",
+      "featured_section_2": 9,
+      "featured_section_3_title": "Release Notes",
+      "featured_section_3": 7
+    }
+  },
+  {
+    "model": "base.standardpage",
+    "pk": 1,
+    "fields": {
+      "introduction": "Things to know about this demo site",
+      "image": 2,
+      "body": "[{\"type\": \"paragraph_block\", \"value\": \"<h2>Welcome to the Wagtail Demo Site!</h2><p>If you've gotten this far, congratulations - you're running an instance of a killer content management system written for and on top of Django, <i>the framework for perfectionists with deadlines.</i></p><p>What does Wagtail get you that Django alone does not?\\u00a0</p><p></p><ul><li>Focus on content creators/managers, rather than developers (but developer-friendly!)</li><li>\\\"Page-centric\\\" content modeling</li><li>Beautiful, modern, intuitive user interface optimized for content people</li><li>Super-powerful hierarchical content management (\\\"content trees\\\")</li><li>User- and group-based permissions system attached to content hierarchies</li><li>Flexible image resizing with a ton of image display helpers</li><li>Innovative \\\"<a href=\\\"https://torchbox.com/releasenotes/rich-text-fields-and-faster-horses/\\\">StreamFields</a>\\\" as an alternative to traditional \\\"anything goes\\\" rich text fields</li><li>Intuitive choosers for embedded Pages, Images, Documents and other content</li><li>Native integration with ElasticSearch to help you build powerful search features</li><li>Template tags to help create image renditions, smart links, and to navigate content trees</li></ul><p>If you're new to Wagtail, there are two primary paths to learning:</p><p></p><ul><li>The source code that powers this demo site</li><li>The official <a href=\\\"https://docs.wagtail.org/en/stable/getting_started/index.html\\\">tutorial</a></li></ul><p></p><p></p>\", \"id\": \"c6629b9b-3e70-4e30-a00c-b1ab878c8df9\"}]"
+    }
+  },
+  {
+    "model": "base.person",
+    "pk": 1,
+    "fields": {
+      "latest_revision": null,
+      "live": true,
+      "has_unpublished_changes": false,
+      "first_published_at": "2023-09-01T16:55:22.793Z",
+      "last_published_at": "2023-09-01T16:55:22.793Z",
+      "live_revision": null,
+      "go_live_at": null,
+      "expire_at": null,
+      "expired": false,
+      "locked": true,
+      "locked_at": "2023-09-01T17:04:16.981Z",
+      "locked_by": [ "editor" ],
+      "first_name": "Lightnin'",
+      "last_name": "Hopkins",
+      "job_title": "Designer",
+      "image": 9
+    }
+  },
+  {
+    "model": "base.person",
+    "pk": 2,
+    "fields": {
+      "latest_revision": null,
+      "live": true,
+      "has_unpublished_changes": true,
+      "first_published_at": "2023-09-01T16:55:22.847Z",
+      "last_published_at": "2023-09-01T16:55:22.847Z",
+      "live_revision": null,
+      "go_live_at": null,
+      "expire_at": null,
+      "expired": false,
+      "locked": false,
+      "locked_at": null,
+      "locked_by": null,
+      "first_name": "Muddy",
+      "last_name": "Waters",
+      "job_title": "Assistant Editor",
+      "image": 9
+    }
+  }
+]

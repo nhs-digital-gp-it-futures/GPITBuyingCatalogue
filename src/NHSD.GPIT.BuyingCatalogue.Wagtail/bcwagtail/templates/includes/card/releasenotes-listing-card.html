@@ -1,0 +1,28 @@
+{% load wagtailcore_tags navigation_tags wagtailimages_tags %}
+
+<div class="releasenotes-listing-card">
+    <a class="releasenotes-listing-card__link" href="{% pageurl releasenotes %}">
+        {% if releasenotes.image %}
+            <figure class="releasenotes-listing-card__image">
+                {% image releasenotes.image fill-322x247-c100 loading="lazy" %}
+            </figure>
+        {% endif %}
+        <div class="releasenotes-listing-card__contents">
+            <h2 class="releasenotes-listing-card__title">{{ releasenotes.title }}</h2>
+            {% if releasenotes.introduction %}
+                <p class="releasenotes-listing-card__introduction">{{ releasenotes.introduction|truncatewords:15 }}</p>
+            {% endif %}
+            <p class="releasenotes-listing-card__metadata">
+                {% if releasenotes.date_published %}
+                    {{ releasenotes.date_published }} by
+                {% endif %}
+                {% for author in releasenotes.authors %}
+                    {{ author }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </p>
+        </div>
+    </a>
+</div>
+
+
+

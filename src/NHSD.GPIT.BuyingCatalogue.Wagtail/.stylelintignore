@@ -1,0 +1,5 @@
+node_modules
+venv
+.venv
+*.min.css
+bcwagtail/collect_static

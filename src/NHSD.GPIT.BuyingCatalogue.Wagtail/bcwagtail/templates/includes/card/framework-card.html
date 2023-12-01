@@ -1,0 +1,15 @@
+{% load wagtailimages_tags %}
+
+<div class="framework-card col-sm-4">
+    <a class="framework-card__link" href="{{page.url}}">
+        <figure class="framework-card__image">
+            {% image page.image fill-430x320-c100 loading="lazy" %}
+        </figure>
+        <div class="framework-card__contents">
+            <h3 class="framework-card__title">{{page.title}}</h3>
+            {% if page.introduction %}
+                <p class="framework-card__text">{{ page.introduction|truncatewords:15 }}</p>
+            {% endif %}
+        </div>
+    </a>
+</div>

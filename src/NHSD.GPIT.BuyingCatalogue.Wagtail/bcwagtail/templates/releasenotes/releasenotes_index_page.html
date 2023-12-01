@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags navigation_tags wagtailimages_tags %}
+
+{% if tag %}
+    {% block title %}
+        {% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.title }}{% endif %}: {{ tag }}
+    {% endblock %}
+
+    {% block search_description %}Viewing all releasenotes posts sorted by the tag {{ tag }}{% endblock %}
+{% endif %}
+
+{% block content %}
+    {% if not tag %}
+        {% include "base/include/header-index.html" %}
+    {% endif %}
+
+    <div class="container">
+        {% if tag %}
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="index-header__title">releasenotes</h1>
+                </div>
+                <div class="col-md-12">
+                    <p class="index-header__introduction">Viewing all releasenotes posts sorted by the tag <span class="releasenotes-tags__tag">{{ tag }}</span>.</p>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if page.get_child_tags %}
+            <ul class="releasenotes-tags">
+                <li><span class="releasenotes-tags__pill releasenotes-tags__pill--selected">All</span></li>
+                {% for tag in page.get_child_tags %}
+                    <li><a class="releasenotes-tags__pill" aria-label="Filter by tag name {{ tag }}" href="{{ tag.url }}">{{ tag }}</a></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <div class="releasenotes-list">
+            {% if posts %}
+                {% for releasenotes in posts %}
+                    {% include "includes/card/releasenotes-listing-card.html" %}
+                {% endfor %}
+            {% else %}
+                <div class="col-md-12">
+                    <p>Oh, snap. Looks like we were too busy baking to write any releasenotes posts. Sorry.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}

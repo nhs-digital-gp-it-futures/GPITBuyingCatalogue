@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load navigation_tags wagtailimages_tags %}
+
+{% block content %}
+
+    {% include "base/include/header-releasenotes.html" %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="releasenotes__meta">
+                    {% if page.authors %}
+                        <div class="releasenotes__avatars">
+                            {% for author in page.authors %}
+                                <div class="releasenotes__author">{% image author.image fill-50x50-c100 class="releasenotes__avatar" %}
+                                    {{ author.first_name }} {{ author.last_name }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                {{ page.body }}
+
+                {% if page.get_tags %}
+                    <p class="releasenotes__tag-introduction">Find more releasenotes posts with similar tags</p>
+                    <div class="releasenotes-tags releasenotes-tags--condensed">
+                        <span class="u-sr-only">Filter releasenotes posts by tag</span>
+                        {% for tag in page.get_tags %}
+                            <a href="{{ tag.url }}" class="releasenotes-tags__pill">{{ tag }}</a>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}

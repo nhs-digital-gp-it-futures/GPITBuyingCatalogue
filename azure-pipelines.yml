@@ -17,6 +17,7 @@ trigger:
     exclude:
     - '**/BuyingCatalogueFunction*'
     - '**/OrganisationImporter*'
+    - '**/NHSD.GPIT.BuyingCatalogue.Wagtail*'
     - 'terraform/orgimport'
 
 pr:
