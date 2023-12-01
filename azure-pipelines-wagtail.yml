@@ -71,8 +71,8 @@ jobs:
         $(semVer)
         $(latestTag)
 
-    - task: AzureWebAppContainer@1
-      displayName: 'Azure Web App on Container Deploy'
-      inputs:
-        appName: 'WagtailApp'
-        containers: 'gpitfuturesdevacr/nhsd/buying-catalogue/nhsdgpitbuyingcataloguewagtailapp':$(semVer)$(latestTag)
+  - task: AzureWebAppContainer@1
+    displayName: 'Azure Web App on Container Deploy'
+    inputs:
+      appName: 'NHSD.GPIT.BuyingCatalogue.WagtailApp'
+      containers: gpitfuturesdevacr/nhsd/buying-catalogue/nhsdgpitbuyingcataloguewagtailapp:$(semVer)$(latestTag)
