@@ -75,10 +75,10 @@
                                     <p>
                                         Find out more
                                         <a href="@Url.Action(
-                                      nameof(SolutionsController.AdditionalServices),
-                                      typeof(SolutionsController).ControllerName(),
-                                      new { solutionId = selectListItem.Value, area = "Solutions" })" target="_blank">
-                                           (opens in new tab)
+                                            nameof(SolutionsController.AdditionalServices),
+                                            typeof(SolutionsController).ControllerName(),
+                                            new { solutionId = Model.SelectedCatalogueSolutionId, area = typeof(SolutionsController).AreaName() })" target="_blank">
+                                            (opens in new tab) 
                                         </a>
                                     </p>
                                     <nhs-checkbox-container>
@@ -87,8 +87,7 @@
                                             if (!$"{service.CatalogueItemId}".StartsWith(selectListItem.Value))
                                                 continue;
 
-                                            <input type="hidden" asp-for="@Model.AdditionalServices[j].CatalogueItemId"
-                                                   value="" />
+                                            <input type="hidden" asp-for="@Model.AdditionalServices[j].CatalogueItemId"/>
                                             <input type="hidden" asp-for="@Model.AdditionalServices[j].Description"/>
                                             <nhs-checkbox asp-for="@Model.AdditionalServices[j].IsSelected"
                                                           label-text="@service.Description"/>

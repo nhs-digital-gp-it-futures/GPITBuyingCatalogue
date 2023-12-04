@@ -289,7 +289,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 order.GetServices(catalogueItemType),
                 associatedServices)
             {
-                SolutionId = order.Solution.Id,
+                SolutionId = order.AssociatedServicesOnly
+                    ? order.SolutionId
+                    : order.GetSolution().CatalogueItemId,
                 BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
                 InternalOrgId = internalOrgId,
                 AssociatedServicesOnly = order.AssociatedServicesOnly,

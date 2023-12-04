@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services
 
         public string SolutionName { get; set; }
 
-        public CatalogueItemId SolutionId { get; set; }
+        public CatalogueItemId? SolutionId { get; set; }
 
         public List<string> ExistingServices { get; set; } = Enumerable.Empty<string>().ToList();
 
