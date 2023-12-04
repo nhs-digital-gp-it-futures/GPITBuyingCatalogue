@@ -78,7 +78,7 @@
                                     @if (Model.ServiceRecipients[index].Quantity > 0
                                    && Model.ProvisioningType == ProvisioningType.PerServiceRecipient)
                                     {
-                                        <input type="hidden" asp-for="@Model.ServiceRecipients[i].InputQuantity" />
+                                        <input type="hidden" asp-for="@Model.ServiceRecipients[index].InputQuantity" />
                                         @($"{Model.ServiceRecipients[index].Quantity:N0}")
                                     }
                                     else
