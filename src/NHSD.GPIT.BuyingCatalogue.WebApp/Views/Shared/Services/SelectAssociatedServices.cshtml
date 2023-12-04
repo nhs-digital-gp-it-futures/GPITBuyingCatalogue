@@ -30,12 +30,11 @@
                     <h3>Select Associated Services</h3>
                     <p>These are products that support the implementation of a solution and can be bought independently. For example, training or data migration or arranging the merging or splitting of existing practices.</p>
                     <p>
-                        Find out more
                         <a href="@Url.Action(
                                       nameof(SolutionsController.AssociatedServices),
                                       typeof(SolutionsController).ControllerName(),
                                       new { solutionId = @Model.SolutionId, area = typeof(SolutionsController).AreaName() })" target="_blank">
-                              (opens in new tab)
+                            Find out more (opens in new tab)
                         </a>
                     </p>
                     <nhs-fieldset-form-label asp-for="@Model">
