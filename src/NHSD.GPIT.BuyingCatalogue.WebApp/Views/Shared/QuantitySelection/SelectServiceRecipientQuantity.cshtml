@@ -31,54 +31,68 @@
             <input type="hidden" asp-for="@Model.RangeDefinition"/>
             <input type="hidden" asp-for="@Model.BillingPeriod"/>
 
-            <h2>
-                @($"{Model.RangeDefinition.CapitaliseFirstLetter()} per practice {Model.BillingPeriod?.Description() ?? string.Empty}")
-            </h2>
+            @foreach (var location in Model.ServiceRecipients.GroupBy(x => x.Location))
+            {
+                var count = location.Count();
+                <nhs-expander label-text="@location.Key" secondary-text-title="@count.ToString()" secondary-text=" recipients added" bold-title="true" open="true">
+                    <nhs-table data-test-id="additional-service-dashboard-table">
+                        <nhs-table-column>Organisation </nhs-table-column>
+                        <nhs-table-column>ODS code</nhs-table-column>
+                        <nhs-table-column>@Model.QuantityColumnTitle</nhs-table-column>
 
-            <nhs-table data-test-id="additional-service-dashboard-table">
-                <nhs-table-column>Recipient name (ODS code)</nhs-table-column>
-                <nhs-table-column>@Model.QuantityColumnTitle</nhs-table-column>
-
-                @for (var i = 0; i < Model.ServiceRecipients.Length; i++)
-                {
-                    <nhs-table-row-container>
-                        <nhs-table-cell>
-                            <input type="hidden" asp-for="@Model.ServiceRecipients[i].Name"/>
-                            <input type="hidden" asp-for="@Model.ServiceRecipients[i].OdsCode"/>
-                            <input type="hidden" asp-for="@Model.ServiceRecipients[i].Quantity"/>
-                            @if (Model.ServiceRecipients[i].Quantity > 0
-                                && Model.ProvisioningType == ProvisioningType.PerServiceRecipient)
-                            {
-                                @Model.ServiceRecipients[i].Description
-                            }
-                            else
-                            {
-                                <div style="margin-top: 6px">
-                                    @Model.ServiceRecipients[i].Description
-                                </div>
-                            }
-                        </nhs-table-cell>
-                        <nhs-table-cell>
-                            @if (Model.ServiceRecipients[i].Quantity > 0
-                                && Model.ProvisioningType == ProvisioningType.PerServiceRecipient)
-                            {
-                                <input type="hidden" asp-for="@Model.ServiceRecipients[i].InputQuantity" />
-                                <div style="text-align: right">
-                                    @($"{Model.ServiceRecipients[i].Quantity:N0}")
-                                </div>
-                            }
-                            else
-                            {
-                                <div style="text-align: right">
-                                    <nhs-input asp-for="@Model.ServiceRecipients[i].InputQuantity"
-                                               input-width="Five"
-                                               data-test-id="input_quantity"/>
-                                </div>
-                            }
-                        </nhs-table-cell>
-                    </nhs-table-row-container>
-                }
-            </nhs-table>
+                        @foreach (var recipient in location)
+                        {
+                            var index = Array.FindIndex(Model.ServiceRecipients, x => x.OdsCode.Contains(recipient.OdsCode));
+                            <nhs-table-row-container>
+                                <nhs-table-cell>
+                                    <input type="hidden" asp-for="@Model.ServiceRecipients[index].Name" />
+                                    <input type="hidden" asp-for="@Model.ServiceRecipients[index].OdsCode" />
+                                    <input type="hidden" asp-for="@Model.ServiceRecipients[index].Quantity" />
+                                    <input type="hidden" asp-for="@Model.ServiceRecipients[index].Location" />
+                                    @if (Model.ServiceRecipients[index].Quantity > 0
+                                   && Model.ProvisioningType == ProvisioningType.PerServiceRecipient)
+                                    {
+                                        @Model.ServiceRecipients[index].Name
+                                    }
+                                    else
+                                    {
+                                        <div style="margin-top: 6px">
+                                            @Model.ServiceRecipients[index].Name
+                                        </div>
+                                    }
+                                </nhs-table-cell>
+                                <nhs-table-cell>
+                                    @if (Model.ServiceRecipients[index].Quantity > 0
+                                   && Model.ProvisioningType == ProvisioningType.PerServiceRecipient)
+                                    {
+                                        @Model.ServiceRecipients[index].OdsCode
+                                    }
+                                    else
+                                    {
+                                        <div style="margin-top: 6px">
+                                            @Model.ServiceRecipients[index].OdsCode
+                                        </div>
+                                    }
+                                </nhs-table-cell>
+                                <nhs-table-cell>
+                                    @if (Model.ServiceRecipients[index].Quantity > 0
+                                   && Model.ProvisioningType == ProvisioningType.PerServiceRecipient)
+                                    {
+                                        <input type="hidden" asp-for="@Model.ServiceRecipients[index].InputQuantity" />
+                                        @($"{Model.ServiceRecipients[index].Quantity:N0}")
+                                    }
+                                    else
+                                    {
+                                        <nhs-input asp-for="@Model.ServiceRecipients[index].InputQuantity"
+                                           input-width="Five"
+                                                       data-test-id="input_quantity" />
+                                    }
+                                </nhs-table-cell>
+                            </nhs-table-row-container>
+                        }
+                    </nhs-table>
+                </nhs-expander>
+            }
 
             @if (Model.PreviouslySelected?.Any() ?? false)
             {

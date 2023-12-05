@@ -92,6 +92,7 @@ public class SelectServiceRecipientQuantityModel : NavBaseModel
         {
             OdsCode = recipient.OdsCode,
             Name = recipient.Name,
+            Location = recipient.Location,
         };
 
         if (ProvisioningType is ProvisioningType.PerServiceRecipient)
