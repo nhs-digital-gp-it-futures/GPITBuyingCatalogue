@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.CodeAnalysis;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
@@ -22,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             AssociatedServicesOnly = order.AssociatedServicesOnly;
             CallOffId = order.CallOffId;
             SupplierName = order.Supplier?.Name;
-
+            SolutionId = order.SolutionId;
             CatalogueSolutions = solutions
                 .Select(x => new SelectOption<string>(x.Name, $"{x.Id}"))
                 .ToList();
@@ -42,6 +43,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         public CallOffId CallOffId { get; set; }
 
         public string SupplierName { get; set; }
+
+        public CatalogueItemId? SolutionId { get; set; }
 
         public string SelectedCatalogueSolutionId { get; set; }
 

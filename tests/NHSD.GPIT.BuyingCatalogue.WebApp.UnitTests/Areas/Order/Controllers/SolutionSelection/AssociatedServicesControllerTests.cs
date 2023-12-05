@@ -22,7 +22,6 @@ using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.AssociatedServices;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Shared;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services;
 using Xunit;
 
@@ -187,6 +186,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 SolutionName = order.AssociatedServicesOnly
                     ? orderWrapper.RolledUp.Solution.Name
                     : orderWrapper.RolledUp.GetSolution()?.CatalogueItem.Name,
+                SolutionId = order.GetSolutionId(),
             };
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(o => o.BackLink));
@@ -237,6 +237,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 SolutionName = order.AssociatedServicesOnly
                     ? orderWrapper.RolledUp.Solution.Name
                     : orderWrapper.RolledUp.GetSolution()?.CatalogueItem.Name,
+                SolutionId = order.GetSolutionId(),
             };
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(o => o.BackLink));
@@ -340,6 +341,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 SolutionName = order.AssociatedServicesOnly
                     ? orderWrapper.RolledUp.Solution.Name
                     : orderWrapper.RolledUp.GetSolution()?.CatalogueItem.Name,
+                SolutionId = order.GetSolutionId(),
             };
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
