@@ -35,7 +35,7 @@
             <p>Download the information you’ll need to create an order for this solution. It includes the Service Recipients you added and any services you may also need to order.</p>
 
             <vc:nhs-secondary-button text="View ordering information"
-                             url="#"
+                             url="@Url.Action(nameof(CompetitionResultsController.OrderingInformation), typeof(CompetitionResultsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId })"
                              type="Primary" />
         }
 

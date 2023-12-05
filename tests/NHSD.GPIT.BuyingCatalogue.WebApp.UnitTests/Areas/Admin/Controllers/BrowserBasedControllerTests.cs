@@ -1,13 +1,18 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
+using EnumsNET;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
@@ -30,605 +35,774 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_BrowserBased_GetsSolutionFromService(
-            Solution solution,
-            [Frozen] Mock<ISolutionsService> mockService,
+        public static async Task BrowserBased_InvalidSolutionId_ReturnsBadRequestResult(
+            CatalogueItemId solutionId,
+            [Frozen] Mock<ISolutionsService> solutionsService,
             BrowserBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
+            solutionsService.Setup(x => x.GetSolutionThin(solutionId))
+                .ReturnsAsync((CatalogueItem)null);
+
+            var result = (await controller.BrowserBased(solutionId)).As<BadRequestObjectResult>();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task BrowserBased_WithBrowserClientApplication_SetsCorrectBacklink(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] Mock<IUrlHelper> urlHelper,
+            BrowserBasedController controller)
+        {
+            solution.ApplicationTypeDetail.ApplicationTypes.Add(
+                ApplicationType.BrowserBased.AsString(EnumFormat.EnumMemberValue));
+
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
-            await controller.BrowserBased(solution.CatalogueItemId);
+            _ = await controller.BrowserBased(solution.CatalogueItemId);
 
-            mockService.Verify(s => s.GetSolutionThin(solution.CatalogueItemId));
+            urlHelper.Verify(
+                x => x.Action(
+                    It.Is<UrlActionContext>(y => y.Action == nameof(CatalogueSolutionsController.ApplicationType))));
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_BrowserBased_InvalidId_ReturnsBadRequestResult(
-            CatalogueItemId catalogueItemId,
-            [Frozen] Mock<ISolutionsService> mockService,
-            BrowserBasedController controller)
-        {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(default(CatalogueItem));
-
-            var actual = (await controller.BrowserBased(catalogueItemId)).As<BadRequestObjectResult>();
-
-            actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_BrowserBased_ValidId_ReturnsViewWithExpectedModel(
+        public static async Task BrowserBased_WithoutBrowserClientApplication_SetsCorrectBacklink(
             Solution solution,
-            CatalogueItemId catalogueItemId,
-            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] Mock<IUrlHelper> urlHelper,
             BrowserBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
+            solution.ApplicationTypeDetail.ApplicationTypes = new HashSet<string>();
+
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
                 .ReturnsAsync(solution.CatalogueItem);
 
-            var actual = (await controller.BrowserBased(catalogueItemId)).As<ViewResult>();
+            _ = await controller.BrowserBased(solution.CatalogueItemId);
 
-            mockService.Verify(s => s.GetSolutionThin(catalogueItemId));
-            actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new BrowserBasedModel(solution.CatalogueItem), opt => opt.Excluding(m => m.BackLink));
+            urlHelper.Verify(
+                x => x.Action(
+                    It.Is<UrlActionContext>(y => y.Action == nameof(CatalogueSolutionsController.AddApplicationType))));
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_SupportedBrowsers_GetsSolutionFromService(
-           CatalogueItemId catalogueItemId,
-           CatalogueItem catalogueItem,
-           [Frozen] Mock<ISolutionsService> mockService,
-           BrowserBasedController controller)
-        {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
-
-            await controller.SupportedBrowsers(catalogueItemId);
-
-            mockService.Verify(s => s.GetSolutionThin(catalogueItemId));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_SupportedBrowsers_InvalidId_ReturnsBadRequestResult(
-            CatalogueItemId catalogueItemId,
-            [Frozen] Mock<ISolutionsService> mockService,
+        public static async Task BrowserBased_Valid_ReturnsViewWithModel(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> solutionsService,
             BrowserBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(default(CatalogueItem));
+            solution.ApplicationTypeDetail.ApplicationTypes = new HashSet<string>();
 
-            var actual = (await controller.SupportedBrowsers(catalogueItemId)).As<BadRequestObjectResult>();
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
 
-            actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
+            var expectedModel = new BrowserBasedModel(solution.CatalogueItem);
+
+            var result = (await controller.BrowserBased(solution.CatalogueItemId)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_SupportedBrowsers_ValidId_ReturnsViewWithExpectedModel(
-            CatalogueItem catalogueItem,
-            CatalogueItemId catalogueItemId,
-            [Frozen] Mock<ISolutionsService> mockService,
+        public static async Task SupportedBrowsers_InvalidSolutionId_ReturnsBadRequestResult(
+            CatalogueItemId solutionId,
+            [Frozen] Mock<ISolutionsService> solutionsService,
             BrowserBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
+            solutionsService.Setup(x => x.GetSolutionThin(solutionId))
+                .ReturnsAsync((CatalogueItem)null);
 
-            var actual = (await controller.SupportedBrowsers(catalogueItemId)).As<ViewResult>();
+            var result = (await controller.SupportedBrowsers(solutionId)).As<BadRequestObjectResult>();
 
-            mockService.Verify(s => s.GetSolutionThin(catalogueItemId));
-            actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new SupportedBrowsersModel(catalogueItem));
+            result.Should().NotBeNull();
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_SupportedBrowsers_CallsSaveApplication(
-            CatalogueItemId catalogueItemId,
-            CatalogueItem catalogueItem,
+        public static async Task Get_SupportedBrowsers_ValidSolutionId_ReturnsViewWithModel(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            BrowserBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var expectedModel = new SupportedBrowsersModel(solution.CatalogueItem);
+
+            var result = (await controller.SupportedBrowsers(solution.CatalogueItemId)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_SupportedBrowsers_InvalidModel_ReturnsViewWithModel(
+            CatalogueItemId solutionId,
             SupportedBrowsersModel model,
-            ApplicationTypeDetail applicationTypeDetail,
-            [Frozen] Mock<ISolutionsService> mockService,
             BrowserBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
+            controller.ModelState.AddModelError("some-key", "some-value");
 
-            mockService.Setup(s => s.GetApplicationType(catalogueItemId))
-                .ReturnsAsync(applicationTypeDetail);
+            var result = (await controller.SupportedBrowsers(solutionId, model)).As<ViewResult>();
 
-            await controller.SupportedBrowsers(catalogueItemId, model);
-
-            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, applicationTypeDetail));
+            result.Should().NotBeNull();
+            result.Model.Should().Be(model);
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_SupportedBrowsers_RedirectsToBrowserBased(
-            CatalogueItemId catalogueItemId,
-            CatalogueItem catalogueItem,
+        public static async Task Post_SupportedBrowsers_InvalidSolutionId_ReturnsBadRequestResult(
+            CatalogueItemId solutionId,
             SupportedBrowsersModel model,
-            ApplicationTypeDetail applicationTypeDetail,
-            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] Mock<ISolutionsService> solutionsService,
             BrowserBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
+            solutionsService.Setup(x => x.GetSolutionThin(solutionId))
+                .ReturnsAsync((CatalogueItem)null);
 
-            mockService.Setup(s => s.GetApplicationType(catalogueItemId))
-                .ReturnsAsync(applicationTypeDetail);
+            var result = (await controller.SupportedBrowsers(solutionId, model)).As<BadRequestObjectResult>();
 
-            var actual = (await controller.SupportedBrowsers(catalogueItemId, model)).As<RedirectToActionResult>();
-
-            actual.ActionName.Should().Be(nameof(BrowserBasedController.BrowserBased));
-            actual.ControllerName.Should().BeNull();
-            actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
+            result.Should().NotBeNull();
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_SupportedBrowsers_InvalidId_ReturnsBadRequestResult(
-            CatalogueItem catalogueItem,
-            CatalogueItemId catalogueItemId,
-            [Frozen] Mock<ISolutionsService> mockService,
+        public static async Task Post_SupportedBrowsers_NullApplicationType_ReturnsBadRequestResult(
+            Solution solution,
+            SupportedBrowsersModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
             BrowserBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
 
-            var actual = (await controller.SupportedBrowsers(catalogueItemId)).As<ViewResult>();
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync((ApplicationTypeDetail)null);
 
-            mockService.Verify(s => s.GetSolutionThin(catalogueItemId));
-            actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new SupportedBrowsersModel(catalogueItem));
+            var result = (await controller.SupportedBrowsers(solution.CatalogueItemId, model)).As<BadRequestObjectResult>();
+
+            result.Should().NotBeNull();
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_PlugInsOrExtensions_GetsSolutionFromService(
-           CatalogueItemId catalogueItemId,
-           CatalogueItem catalogueItem,
-           [Frozen] Mock<ISolutionsService> mockService,
-           BrowserBasedController controller)
-        {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
-
-            await controller.PlugInsOrExtensions(catalogueItemId);
-
-            mockService.Verify(s => s.GetSolutionThin(catalogueItemId));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_PlugInsOrExtensions_InvalidId_ReturnsBadRequestResult(
-            CatalogueItemId catalogueItemId,
-            [Frozen] Mock<ISolutionsService> mockService,
+        public static async Task Post_SupportedBrowsers_NullBrowsers_SetsBrowsersSupported(
+            Solution solution,
+            ApplicationTypeDetail applicationTypeDetails,
+            SupportedBrowsersModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
             BrowserBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(default(CatalogueItem));
+            model.Browsers = null;
 
-            var actual = (await controller.PlugInsOrExtensions(catalogueItemId)).As<BadRequestObjectResult>();
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
 
-            actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync(applicationTypeDetails);
+
+            _ = await controller.SupportedBrowsers(solution.CatalogueItemId, model);
+
+            applicationTypeDetails.BrowsersSupported.Should().BeEquivalentTo(new HashSet<SupportedBrowser>());
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_PlugInsOrExtensions_ValidId_ReturnsViewWithExpectedModel(
-            CatalogueItem catalogueItem,
-            CatalogueItemId catalogueItemId,
-            [Frozen] Mock<ISolutionsService> mockService,
+        public static async Task Post_SupportedBrowsers_WithBrowsers_SetsBrowsersSupported(
+            Solution solution,
+            ApplicationTypeDetail applicationTypeDetails,
+            SupportedBrowsersModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
             BrowserBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
 
-            var actual = (await controller.PlugInsOrExtensions(catalogueItemId)).As<ViewResult>();
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync(applicationTypeDetails);
 
-            mockService.Verify(s => s.GetSolutionThin(catalogueItemId));
-            actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new PlugInsOrExtensionsModel(catalogueItem));
+            _ = await controller.SupportedBrowsers(solution.CatalogueItemId, model);
+
+            applicationTypeDetails.BrowsersSupported.Should()
+                .BeEquivalentTo(
+                    model.Browsers.Where(b => b.Checked)
+                        .Select(
+                            b =>
+                                new SupportedBrowser
+                                {
+                                    BrowserName = b.BrowserName, MinimumBrowserVersion = b.MinimumBrowserVersion,
+                                })
+                        .ToHashSet());
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_PlugInsOrExtensions_CallsSaveApplication(
-            CatalogueItemId catalogueItemId,
-            CatalogueItem catalogueItem,
+        public static async Task Post_SupportedBrowsers_IsNotMobileResponsive_SetsMobileResponsiveNull(
+            Solution solution,
+            ApplicationTypeDetail applicationTypeDetails,
+            SupportedBrowsersModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            BrowserBasedController controller)
+        {
+            model.MobileResponsive = null;
+
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync(applicationTypeDetails);
+
+            _ = await controller.SupportedBrowsers(solution.CatalogueItemId, model);
+
+            applicationTypeDetails.MobileResponsive.Should().BeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_SupportedBrowsers_IsMobileResponsive_SetsMobileResponsiveNull(
+            Solution solution,
+            ApplicationTypeDetail applicationTypeDetails,
+            SupportedBrowsersModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            BrowserBasedController controller)
+        {
+            model.MobileResponsive = true.ToYesNo();
+
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync(applicationTypeDetails);
+
+            _ = await controller.SupportedBrowsers(solution.CatalogueItemId, model);
+
+            applicationTypeDetails.MobileResponsive.Should().BeTrue();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_SupportedBrowsers_Valid_Redirects(
+            Solution solution,
+            ApplicationTypeDetail applicationTypeDetails,
+            SupportedBrowsersModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            BrowserBasedController controller)
+        {
+            model.MobileResponsive = true.ToYesNo();
+
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync(applicationTypeDetails);
+
+            var result = (await controller.SupportedBrowsers(solution.CatalogueItemId, model)).As<RedirectToActionResult>();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(controller.BrowserBased));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task PluginsOrExtensions_InvalidSolutionId_ReturnsBadRequestResult(
+            CatalogueItemId solutionId,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            BrowserBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solutionId))
+                .ReturnsAsync((CatalogueItem)null);
+
+            var result = (await controller.PlugInsOrExtensions(solutionId)).As<BadRequestObjectResult>();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task PluginsOrExtensions_ValidSolutionId_ReturnsViewWithModel(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            BrowserBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var expectedModel = new PlugInsOrExtensionsModel(solution.CatalogueItem);
+
+            var result = (await controller.PlugInsOrExtensions(solution.CatalogueItemId)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_PluginsOrExtensions_InvalidModel_ReturnsViewWithModel(
+            CatalogueItemId solutionId,
             PlugInsOrExtensionsModel model,
-            ApplicationTypeDetail applicationTypeDetail,
-            [Frozen] Mock<ISolutionsService> mockService,
             BrowserBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
+            controller.ModelState.AddModelError("some-key", "some-value");
 
-            mockService.Setup(s => s.GetApplicationType(catalogueItemId))
-                .ReturnsAsync(applicationTypeDetail);
+            var result = (await controller.PlugInsOrExtensions(solutionId, model)).As<ViewResult>();
 
-            await controller.PlugInsOrExtensions(catalogueItemId, model);
-
-            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, applicationTypeDetail));
+            result.Should().NotBeNull();
+            result.Model.Should().Be(model);
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_PlugInsOrExtensions_RedirectsToBrowserBased(
-            CatalogueItemId catalogueItemId,
-            CatalogueItem catalogueItem,
+        public static async Task Post_PluginsOrExtensions_InvalidSolutionId_ReturnsBadRequestResult(
+            CatalogueItemId solutionId,
             PlugInsOrExtensionsModel model,
-            ApplicationTypeDetail applicationTypeDetail,
-            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] Mock<ISolutionsService> solutionsService,
             BrowserBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
+            solutionsService.Setup(x => x.GetSolutionThin(solutionId))
+                .ReturnsAsync((CatalogueItem)null);
 
-            mockService.Setup(s => s.GetApplicationType(catalogueItemId))
-                .ReturnsAsync(applicationTypeDetail);
+            var result = (await controller.PlugInsOrExtensions(solutionId, model)).As<BadRequestObjectResult>();
 
-            var actual = (await controller.PlugInsOrExtensions(catalogueItemId, model)).As<RedirectToActionResult>();
-
-            actual.ActionName.Should().Be(nameof(BrowserBasedController.BrowserBased));
-            actual.ControllerName.Should().BeNull();
-            actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
+            result.Should().NotBeNull();
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_PlugInsOrExtensions_InvalidId_ReturnsBadRequestResult(
-            CatalogueItem catalogueItem,
-            CatalogueItemId catalogueItemId,
-            [Frozen] Mock<ISolutionsService> mockService,
+        public static async Task Post_PluginsOrExtensions_NullApplicationType_ReturnsBadRequestResult(
+            Solution solution,
+            PlugInsOrExtensionsModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
             BrowserBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
 
-            var actual = (await controller.PlugInsOrExtensions(catalogueItemId)).As<ViewResult>();
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync((ApplicationTypeDetail)null);
 
-            mockService.Verify(s => s.GetSolutionThin(catalogueItemId));
-            actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new PlugInsOrExtensionsModel(catalogueItem));
+            var result = (await controller.PlugInsOrExtensions(solution.CatalogueItemId, model)).As<BadRequestObjectResult>();
+
+            result.Should().NotBeNull();
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_ConnectivityAndResolution_GetsSolutionFromService(
-           CatalogueItemId catalogueItemId,
-           CatalogueItem catalogueItem,
-           [Frozen] Mock<ISolutionsService> mockService,
-           BrowserBasedController controller)
-        {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
-
-            await controller.ConnectivityAndResolution(catalogueItemId);
-
-            mockService.Verify(s => s.GetSolutionThin(catalogueItemId));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_ConnectivityAndResolution_InvalidId_ReturnsBadRequestResult(
-            CatalogueItemId catalogueItemId,
-            [Frozen] Mock<ISolutionsService> mockService,
+        public static async Task Post_PluginsOrExtensions_PluginsRequired_SetsApplicationPlugins(
+            Solution solution,
+            ApplicationTypeDetail applicationTypeDetails,
+            PlugInsOrExtensionsModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
             BrowserBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(default(CatalogueItem));
+            model.PlugInsRequired = true.ToYesNo();
 
-            var actual = (await controller.ConnectivityAndResolution(catalogueItemId)).As<BadRequestObjectResult>();
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
 
-            actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync(applicationTypeDetails);
+
+            _ = await controller.PlugInsOrExtensions(solution.CatalogueItemId, model);
+
+            applicationTypeDetails.Plugins.Should().NotBeNull();
+            applicationTypeDetails.Plugins.Required.Should().BeTrue();
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_ConnectivityAndResolution_ValidId_ReturnsViewWithExpectedModel(
-            CatalogueItem catalogueItem,
-            CatalogueItemId catalogueItemId,
-            [Frozen] Mock<ISolutionsService> mockService,
+        public static async Task Post_PluginsOrExtensions_PluginsNotRequired_SetsApplicationPlugins(
+            Solution solution,
+            ApplicationTypeDetail applicationTypeDetails,
+            PlugInsOrExtensionsModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
             BrowserBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
+            model.PlugInsRequired = null;
 
-            var actual = (await controller.ConnectivityAndResolution(catalogueItemId)).As<ViewResult>();
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
 
-            mockService.Verify(s => s.GetSolutionThin(catalogueItemId));
-            actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new ConnectivityAndResolutionModel(catalogueItem));
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync(applicationTypeDetails);
+
+            _ = await controller.PlugInsOrExtensions(solution.CatalogueItemId, model);
+
+            applicationTypeDetails.Plugins.Should().NotBeNull();
+            applicationTypeDetails.Plugins.Required.Should().BeNull();
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_ConnectivityAndResolution_CallsSaveApplication(
-            CatalogueItemId catalogueItemId,
-            CatalogueItem catalogueItem,
+        public static async Task Post_PluginsOrExtensions_Valid_Redirects(
+            Solution solution,
+            ApplicationTypeDetail applicationTypeDetails,
+            PlugInsOrExtensionsModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            BrowserBasedController controller)
+        {
+            model.PlugInsRequired = null;
+
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync(applicationTypeDetails);
+
+            var result = (await controller.PlugInsOrExtensions(solution.CatalogueItemId, model)).As<RedirectToActionResult>();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(controller.BrowserBased));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task ConnectivityAndResolution_InvalidSolutionId_ReturnsBadRequestResult(
+            CatalogueItemId solutionId,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            BrowserBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solutionId))
+                .ReturnsAsync((CatalogueItem)null);
+
+            var result = (await controller.ConnectivityAndResolution(solutionId)).As<BadRequestObjectResult>();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_ConnectivityAndResolution_NullApplicationType_ReturnsBadRequestResult(
+            Solution solution,
             ConnectivityAndResolutionModel model,
-            ApplicationTypeDetail applicationTypeDetail,
-            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] Mock<ISolutionsService> solutionsService,
             BrowserBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
 
-            mockService.Setup(s => s.GetApplicationType(catalogueItemId))
-                .ReturnsAsync(applicationTypeDetail);
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync((ApplicationTypeDetail)null);
 
-            await controller.ConnectivityAndResolution(catalogueItemId, model);
+            var result = (await controller.ConnectivityAndResolution(solution.CatalogueItemId, model)).As<BadRequestObjectResult>();
 
-            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, applicationTypeDetail));
+            result.Should().NotBeNull();
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_ConnectivityAndResolution_RedirectsToBrowserBased(
-            CatalogueItemId catalogueItemId,
-            CatalogueItem catalogueItem,
+        public static async Task ConnectivityAndResolution_ValidSolutionId_ReturnsViewWithModel(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            BrowserBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var expectedModel = new ConnectivityAndResolutionModel(solution.CatalogueItem);
+
+            var result = (await controller.ConnectivityAndResolution(solution.CatalogueItemId)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_ConnectivityAndResolution_InvalidModel_ReturnsView(
+            CatalogueItemId solutionId,
             ConnectivityAndResolutionModel model,
-            ApplicationTypeDetail applicationTypeDetail,
-            [Frozen] Mock<ISolutionsService> mockService,
             BrowserBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
+            controller.ModelState.AddModelError("some-key", "some-value");
 
-            mockService.Setup(s => s.GetApplicationType(catalogueItemId))
-                .ReturnsAsync(applicationTypeDetail);
+            var result = (await controller.ConnectivityAndResolution(solutionId, model)).As<ViewResult>();
 
-            var actual = (await controller.ConnectivityAndResolution(catalogueItemId, model)).As<RedirectToActionResult>();
-
-            actual.ActionName.Should().Be(nameof(BrowserBasedController.BrowserBased));
-            actual.ControllerName.Should().BeNull();
-            actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
+            result.Should().NotBeNull();
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_ConnectivityAndResolution_InvalidId_ReturnsBadRequestResult(
-            CatalogueItem catalogueItem,
-            CatalogueItemId catalogueItemId,
-            [Frozen] Mock<ISolutionsService> mockService,
+        public static async Task Post_ConnectivityAndResolution_Valid_SetsApplication(
+            Solution solution,
+            ApplicationTypeDetail applicationTypeDetails,
+            ConnectivityAndResolutionModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
             BrowserBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
 
-            var actual = (await controller.ConnectivityAndResolution(catalogueItemId)).As<ViewResult>();
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync(applicationTypeDetails);
 
-            mockService.Verify(s => s.GetSolutionThin(catalogueItemId));
-            actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new ConnectivityAndResolutionModel(catalogueItem));
+            _ = await controller.ConnectivityAndResolution(solution.CatalogueItemId, model);
+
+            applicationTypeDetails.MinimumConnectionSpeed.Should().Be(model.SelectedConnectionSpeed);
+            applicationTypeDetails.MinimumDesktopResolution.Should().Be(model.SelectedScreenResolution);
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_HardwareRequirements_GetsSolutionFromService(
-           CatalogueItemId catalogueItemId,
-           CatalogueItem catalogueItem,
-           [Frozen] Mock<ISolutionsService> mockService,
-           BrowserBasedController controller)
-        {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
-
-            await controller.HardwareRequirements(catalogueItemId);
-
-            mockService.Verify(s => s.GetSolutionThin(catalogueItemId));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_HardwareRequirements_InvalidId_ReturnsBadRequestResult(
-            CatalogueItemId catalogueItemId,
-            [Frozen] Mock<ISolutionsService> mockService,
+        public static async Task Post_ConnectivityAndResolution_Valid_Redirects(
+            Solution solution,
+            ApplicationTypeDetail applicationTypeDetails,
+            ConnectivityAndResolutionModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
             BrowserBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(default(CatalogueItem));
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
 
-            var actual = (await controller.HardwareRequirements(catalogueItemId)).As<BadRequestObjectResult>();
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync(applicationTypeDetails);
 
-            actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
+            var result = (await controller.ConnectivityAndResolution(solution.CatalogueItemId, model))
+                .As<RedirectToActionResult>();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(controller.BrowserBased));
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_HardwareRequirements_ValidId_ReturnsViewWithExpectedModel(
-            CatalogueItem catalogueItem,
-            CatalogueItemId catalogueItemId,
-            [Frozen] Mock<ISolutionsService> mockService,
+        public static async Task HardwareRequirements_InvalidSolutionId_ReturnsBadRequestResult(
+            CatalogueItemId solutionId,
+            [Frozen] Mock<ISolutionsService> solutionsService,
             BrowserBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
+            solutionsService.Setup(x => x.GetSolutionThin(solutionId))
+                .ReturnsAsync((CatalogueItem)null);
 
-            var actual = (await controller.HardwareRequirements(catalogueItemId)).As<ViewResult>();
+            var result = (await controller.HardwareRequirements(solutionId)).As<BadRequestObjectResult>();
 
-            mockService.Verify(s => s.GetSolutionThin(catalogueItemId));
-            actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new HardwareRequirementsModel(catalogueItem));
+            result.Should().NotBeNull();
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_HardwareRequirements_CallsSaveApplication(
-            CatalogueItemId catalogueItemId,
-            CatalogueItem catalogueItem,
+        public static async Task HardwareRequirements_ValidSolutionId_ReturnsViewWithModel(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            BrowserBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var expectedModel = new HardwareRequirementsModel(solution.CatalogueItem);
+
+            var result = (await controller.HardwareRequirements(solution.CatalogueItemId)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_HardwareRequirements_InvalidModel_ReturnsViewWithModel(
+            CatalogueItemId solutionId,
             HardwareRequirementsModel model,
-            ApplicationTypeDetail applicationTypeDetail,
-            [Frozen] Mock<ISolutionsService> mockService,
             BrowserBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
+            controller.ModelState.AddModelError("some-key", "some-value");
 
-            mockService.Setup(s => s.GetApplicationType(catalogueItemId))
-                .ReturnsAsync(applicationTypeDetail);
+            var result = (await controller.HardwareRequirements(solutionId, model)).As<ViewResult>();
 
-            await controller.HardwareRequirements(catalogueItemId, model);
-
-            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, applicationTypeDetail));
+            result.Should().NotBeNull();
+            result.Model.Should().Be(model);
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_HardwareRequirements_RedirectsToBrowserBased(
-            CatalogueItemId catalogueItemId,
-            CatalogueItem catalogueItem,
+        public static async Task Post_HardwareRequirements_InvalidSolutionId_ReturnsBadRequestResult(
+            CatalogueItemId solutionId,
             HardwareRequirementsModel model,
-            ApplicationTypeDetail applicationTypeDetail,
-            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] Mock<ISolutionsService> solutionsService,
             BrowserBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
+            solutionsService.Setup(x => x.GetSolutionThin(solutionId))
+                .ReturnsAsync((CatalogueItem)null);
 
-            mockService.Setup(s => s.GetApplicationType(catalogueItemId))
-                .ReturnsAsync(applicationTypeDetail);
+            var result = (await controller.HardwareRequirements(solutionId, model)).As<BadRequestObjectResult>();
 
-            var actual = (await controller.HardwareRequirements(catalogueItemId, model)).As<RedirectToActionResult>();
-
-            actual.ActionName.Should().Be(nameof(BrowserBasedController.BrowserBased));
-            actual.ControllerName.Should().BeNull();
-            actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
+            result.Should().NotBeNull();
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_HardwareRequirements_InvalidId_ReturnsBadRequestResult(
-            CatalogueItem catalogueItem,
-            CatalogueItemId catalogueItemId,
-            [Frozen] Mock<ISolutionsService> mockService,
+        public static async Task Post_HardwareRequirements_NullApplicationType_ReturnsBadRequestResult(
+            Solution solution,
+            HardwareRequirementsModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
             BrowserBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
 
-            var actual = (await controller.HardwareRequirements(catalogueItemId)).As<ViewResult>();
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync((ApplicationTypeDetail)null);
 
-            mockService.Verify(s => s.GetSolutionThin(catalogueItemId));
-            actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new HardwareRequirementsModel(catalogueItem));
+            var result = (await controller.HardwareRequirements(solution.CatalogueItemId, model)).As<BadRequestObjectResult>();
+
+            result.Should().NotBeNull();
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_AdditionalInformation_GetsSolutionFromService(
-           CatalogueItemId catalogueItemId,
-           CatalogueItem catalogueItem,
-           [Frozen] Mock<ISolutionsService> mockService,
-           BrowserBasedController controller)
-        {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
-
-            await controller.AdditionalInformation(catalogueItemId);
-
-            mockService.Verify(s => s.GetSolutionThin(catalogueItemId));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_AdditionalInformation_InvalidId_ReturnsBadRequestResult(
-            CatalogueItemId catalogueItemId,
-            [Frozen] Mock<ISolutionsService> mockService,
+        public static async Task Post_HardwareRequirements_Valid_SetsApplication(
+            Solution solution,
+            ApplicationTypeDetail applicationTypeDetails,
+            HardwareRequirementsModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
             BrowserBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(default(CatalogueItem));
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
 
-            var actual = (await controller.AdditionalInformation(catalogueItemId)).As<BadRequestObjectResult>();
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync(applicationTypeDetails);
 
-            actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
+            _ = await controller.HardwareRequirements(solution.CatalogueItemId, model);
+
+            applicationTypeDetails.HardwareRequirements.Should().Be(model.Description);
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_AdditionalInformation_ValidId_ReturnsViewWithExpectedModel(
-            CatalogueItem catalogueItem,
-            CatalogueItemId catalogueItemId,
-            [Frozen] Mock<ISolutionsService> mockService,
+        public static async Task Post_HardwareRequirements_Valid_Redirects(
+            Solution solution,
+            ApplicationTypeDetail applicationTypeDetails,
+            HardwareRequirementsModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
             BrowserBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
 
-            var actual = (await controller.AdditionalInformation(catalogueItemId)).As<ViewResult>();
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync(applicationTypeDetails);
 
-            mockService.Verify(s => s.GetSolutionThin(catalogueItemId));
-            actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new AdditionalInformationModel(catalogueItem));
+            var result = (await controller.HardwareRequirements(solution.CatalogueItemId, model))
+                .As<RedirectToActionResult>();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(controller.BrowserBased));
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_AdditionalInformation_CallsSaveApplication(
-            CatalogueItemId catalogueItemId,
-            CatalogueItem catalogueItem,
+        public static async Task AdditionalInformation_InvalidSolutionId_ReturnsBadRequestResult(
+            CatalogueItemId solutionId,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            BrowserBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solutionId))
+                .ReturnsAsync((CatalogueItem)null);
+
+            var result = (await controller.AdditionalInformation(solutionId)).As<BadRequestObjectResult>();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task AdditionalInformation_ValidSolutionId_ReturnsViewWithModel(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            BrowserBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var expectedModel = new AdditionalInformationModel(solution.CatalogueItem);
+
+            var result = (await controller.AdditionalInformation(solution.CatalogueItemId)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AdditionalInformation_InvalidModel_ReturnsViewWithModel(
+            CatalogueItemId solutionId,
             AdditionalInformationModel model,
-            ApplicationTypeDetail applicationTypeDetail,
-            [Frozen] Mock<ISolutionsService> mockService,
             BrowserBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
+            controller.ModelState.AddModelError("some-key", "some-value");
 
-            mockService.Setup(s => s.GetApplicationType(catalogueItemId))
-                .ReturnsAsync(applicationTypeDetail);
+            var result = (await controller.AdditionalInformation(solutionId, model)).As<ViewResult>();
 
-            await controller.AdditionalInformation(catalogueItemId, model);
-
-            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, applicationTypeDetail));
+            result.Should().NotBeNull();
+            result.Model.Should().Be(model);
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_AdditionalInformation_RedirectsToBrowserBased(
-            CatalogueItemId catalogueItemId,
-            CatalogueItem catalogueItem,
+        public static async Task Post_AdditionalInformation_NullApplicationType_ReturnsBadRequestResult(
+            Solution solution,
             AdditionalInformationModel model,
-            ApplicationTypeDetail applicationTypeDetail,
-            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] Mock<ISolutionsService> solutionsService,
             BrowserBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
 
-            mockService.Setup(s => s.GetApplicationType(catalogueItemId))
-                .ReturnsAsync(applicationTypeDetail);
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync((ApplicationTypeDetail)null);
 
-            var actual = (await controller.AdditionalInformation(catalogueItemId, model)).As<RedirectToActionResult>();
+            var result = (await controller.AdditionalInformation(solution.CatalogueItemId, model)).As<BadRequestObjectResult>();
 
-            actual.ActionName.Should().Be(nameof(BrowserBasedController.BrowserBased));
-            actual.ControllerName.Should().BeNull();
-            actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
+            result.Should().NotBeNull();
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_AdditionalInformation_InvalidId_ReturnsBadRequestResult(
-            CatalogueItem catalogueItem,
-            CatalogueItemId catalogueItemId,
-            [Frozen] Mock<ISolutionsService> mockService,
+        public static async Task Post_AdditionalInformation_Valid_SetsApplication(
+            Solution solution,
+            ApplicationTypeDetail applicationTypeDetails,
+            AdditionalInformationModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
             BrowserBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(catalogueItem);
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
 
-            var actual = (await controller.AdditionalInformation(catalogueItemId)).As<ViewResult>();
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync(applicationTypeDetails);
 
-            mockService.Verify(s => s.GetSolutionThin(catalogueItemId));
-            actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new AdditionalInformationModel(catalogueItem));
+            _ = await controller.AdditionalInformation(solution.CatalogueItemId, model);
+
+            applicationTypeDetails.AdditionalInformation.Should().Be(model.AdditionalInformation);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AdditionalInformation_Valid_Redirects(
+            Solution solution,
+            ApplicationTypeDetail applicationTypeDetails,
+            AdditionalInformationModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            BrowserBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync(applicationTypeDetails);
+
+            var result = (await controller.AdditionalInformation(solution.CatalogueItemId, model))
+                .As<RedirectToActionResult>();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(controller.BrowserBased));
         }
     }
 }

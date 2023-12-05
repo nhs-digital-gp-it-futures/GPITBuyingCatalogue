@@ -7,7 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 
 public interface IServiceRecipientImportService
 {
-    Task CreateServiceRecipientTemplate(MemoryStream stream);
+    Task CreateServiceRecipientTemplate(MemoryStream stream, IEnumerable<ServiceRecipientImportModel> serviceRecipients = null);
 
     Task<IList<ServiceRecipientImportModel>> ReadFromStream(Stream stream);
 

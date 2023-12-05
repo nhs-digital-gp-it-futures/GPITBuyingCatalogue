@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Text.Json;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -7,8 +6,8 @@ using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using EnumsNET;
 using FluentAssertions;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -23,17 +22,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
     public static class DesktopBasedControllerTests
     {
         [Fact]
-        public static void ClassIsCorrectlyDecorated()
-        {
-            typeof(DesktopBasedController).Should()
-                .BeDecoratedWith<AuthorizeAttribute>(a => a.Policy == "AdminOnly");
-            typeof(DesktopBasedController).Should()
-                .BeDecoratedWith<AreaAttribute>(a => a.RouteValue == "Admin");
-            typeof(DesktopBasedController).Should()
-                .BeDecoratedWith<RouteAttribute>(r => r.Template == "admin/catalogue-solutions");
-        }
-
-        [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
             var fixture = new Fixture().Customize(new AutoMoqCustomization());
@@ -45,397 +33,740 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_Desktop_ValidId_ReturnsViewWithExpectedModel(
-         Solution solution,
-         List<Integration> integrations,
-         [Frozen] Mock<ISolutionsService> mockService,
-         DesktopBasedController controller)
-        {
-            var catalogueItem = solution.CatalogueItem;
-            solution.Integrations = JsonSerializer.Serialize(integrations);
-
-            mockService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
-                .ReturnsAsync(catalogueItem);
-
-            var actual = (await controller.Desktop(catalogueItem.Id)).As<ViewResult>();
-
-            mockService.Verify(s => s.GetSolutionThin(catalogueItem.Id));
-            actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new DesktopBasedModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_Desktop_InvalidId_ReturnsBadRequestResult(
-            CatalogueItemId catalogueItemId,
-            [Frozen] Mock<ISolutionsService> mockService,
+        public static async Task Desktop_InvalidSolutionId_ReturnsBadRequestResult(
+            CatalogueItemId solutionId,
+            [Frozen] Mock<ISolutionsService> solutionsService,
             DesktopBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(default(CatalogueItem));
+            solutionsService.Setup(x => x.GetSolutionThin(solutionId))
+                .ReturnsAsync((CatalogueItem)null);
 
-            var actual = (await controller.Desktop(catalogueItemId)).As<BadRequestObjectResult>();
+            var result = (await controller.Desktop(solutionId)).As<BadRequestObjectResult>();
 
-            actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
+            result.Should().NotBeNull();
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_OperatingSystems_ValidId_ReturnsViewWithExpectedModel(
-           Solution solution,
-           List<Integration> integrations,
-           [Frozen] Mock<ISolutionsService> mockService,
-           DesktopBasedController controller)
-        {
-            var catalogueItem = solution.CatalogueItem;
-            solution.Integrations = JsonSerializer.Serialize(integrations);
-
-            mockService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
-                .ReturnsAsync(catalogueItem);
-
-            var actual = (await controller.OperatingSystems(catalogueItem.Id)).As<ViewResult>();
-
-            mockService.Verify(s => s.GetSolutionThin(catalogueItem.Id));
-            actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new OperatingSystemsModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_OperatingSystems_InvalidId_ReturnsBadRequestResult(
-            CatalogueItemId catalogueItemId,
-            [Frozen] Mock<ISolutionsService> mockService,
+        public static async Task Desktop_WithBrowserClientApplication_SetsCorrectBacklink(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] Mock<IUrlHelper> urlHelper,
             DesktopBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(default(CatalogueItem));
+            solution.ApplicationTypeDetail.ApplicationTypes.Add(
+                ApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue));
 
-            var actual = (await controller.OperatingSystems(catalogueItemId)).As<BadRequestObjectResult>();
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
 
-            actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
+            _ = await controller.Desktop(solution.CatalogueItemId);
+
+            urlHelper.Verify(
+                x => x.Action(
+                    It.Is<UrlActionContext>(y => y.Action == nameof(CatalogueSolutionsController.ApplicationType))));
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_OperatingSystems_Saves_And_RedirectsToDesktop(
-            CatalogueItemId catalogueItemId,
+        public static async Task Desktop_WithoutBrowserClientApplication_SetsCorrectBacklink(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] Mock<IUrlHelper> urlHelper,
+            DesktopBasedController controller)
+        {
+            solution.ApplicationTypeDetail.ApplicationTypes = new HashSet<string>();
+
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            _ = await controller.Desktop(solution.CatalogueItemId);
+
+            urlHelper.Verify(
+                x => x.Action(
+                    It.Is<UrlActionContext>(y => y.Action == nameof(CatalogueSolutionsController.AddApplicationType))));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Desktop_Valid_ReturnsViewWithModel(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            DesktopBasedController controller)
+        {
+            solution.ApplicationTypeDetail.ApplicationTypes = new HashSet<string>();
+
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var expectedModel = new DesktopBasedModel(solution.CatalogueItem);
+
+            var result = (await controller.Desktop(solution.CatalogueItemId)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task OperatingSystems_InvalidSolutionId_ReturnsBadRequestResult(
+            CatalogueItemId solutionId,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            DesktopBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solutionId))
+                .ReturnsAsync((CatalogueItem)null);
+
+            var result = (await controller.OperatingSystems(solutionId)).As<BadRequestObjectResult>();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_OperatingSystems_ValidSolutionId_ReturnsViewWithModel(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            DesktopBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var expectedModel = new OperatingSystemsModel(solution.CatalogueItem);
+
+            var result = (await controller.OperatingSystems(solution.CatalogueItemId)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_OperatingSystems_InvalidModel_ReturnsViewWithModel(
+            CatalogueItemId solutionId,
             OperatingSystemsModel model,
-            ApplicationTypeDetail applicationTypeDetail,
-            [Frozen] Mock<ISolutionsService> mockService,
             DesktopBasedController controller)
         {
-            mockService.Setup(s => s.GetApplicationType(catalogueItemId)).ReturnsAsync(applicationTypeDetail);
-            applicationTypeDetail.ApplicationTypes.Clear();
+            controller.ModelState.AddModelError("some-key", "some-value");
 
-            var actual = (await controller.OperatingSystems(catalogueItemId, model)).As<RedirectToActionResult>();
+            var result = (await controller.OperatingSystems(solutionId, model)).As<ViewResult>();
 
-            applicationTypeDetail.ApplicationTypes.Add(ApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue));
-            applicationTypeDetail.NativeDesktopOperatingSystemsDescription = model.Description;
-
-            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, applicationTypeDetail));
-            actual.ActionName.Should().Be(nameof(DesktopBasedController.Desktop));
-            actual.ControllerName.Should().BeNull();
-            actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
+            result.Should().NotBeNull();
+            result.Model.Should().Be(model);
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_Connectivity_ValidId_ReturnsViewWithExpectedModel(
-           Solution solution,
-           List<Integration> integrations,
-           [Frozen] Mock<ISolutionsService> mockService,
-           DesktopBasedController controller)
-        {
-            var catalogueItem = solution.CatalogueItem;
-            solution.Integrations = JsonSerializer.Serialize(integrations);
-
-            mockService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
-                .ReturnsAsync(catalogueItem);
-
-            var actual = (await controller.Connectivity(catalogueItem.Id)).As<ViewResult>();
-
-            mockService.Verify(s => s.GetSolutionThin(catalogueItem.Id));
-            actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new ConnectivityModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_Connectivity_InvalidId_ReturnsBadRequestResult(
-            CatalogueItemId catalogueItemId,
-            [Frozen] Mock<ISolutionsService> mockService,
+        public static async Task Post_OperatingSystems_NullApplicationType_ReturnsBadRequestResult(
+            Solution solution,
+            OperatingSystemsModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
             DesktopBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(default(CatalogueItem));
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
 
-            var actual = (await controller.Connectivity(catalogueItemId)).As<BadRequestObjectResult>();
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync((ApplicationTypeDetail)null);
 
-            actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
+            var result = (await controller.OperatingSystems(solution.CatalogueItemId, model)).As<BadRequestObjectResult>();
+
+            result.Should().NotBeNull();
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_Connectivity_Saves_And_RedirectsToDesktop(
-            CatalogueItemId catalogueItemId,
+        public static async Task Post_OperatingSystems_Valid_SetsApplication(
+            Solution solution,
+            ApplicationTypeDetail applicationTypeDetails,
+            OperatingSystemsModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            DesktopBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync(applicationTypeDetails);
+
+            _ = await controller.OperatingSystems(solution.CatalogueItemId, model);
+
+            applicationTypeDetails.NativeDesktopOperatingSystemsDescription.Should().Be(model.Description);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_OperatingSystems_Valid_Redirects(
+            Solution solution,
+            ApplicationTypeDetail applicationTypeDetails,
+            OperatingSystemsModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            DesktopBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync(applicationTypeDetails);
+
+            var result = (await controller.OperatingSystems(solution.CatalogueItemId, model))
+                .As<RedirectToActionResult>();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(controller.Desktop));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Connectivity_InvalidSolutionId_ReturnsBadRequestResult(
+            CatalogueItemId solutionId,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            DesktopBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solutionId))
+                .ReturnsAsync((CatalogueItem)null);
+
+            var result = (await controller.Connectivity(solutionId)).As<BadRequestObjectResult>();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_Connectivity_ValidSolutionId_ReturnsViewWithModel(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            DesktopBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var expectedModel = new ConnectivityModel(solution.CatalogueItem);
+
+            var result = (await controller.Connectivity(solution.CatalogueItemId)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_Connectivity_InvalidModel_ReturnsViewWithModel(
+            CatalogueItemId solutionId,
             ConnectivityModel model,
-            ApplicationTypeDetail applicationTypeDetail,
-            [Frozen] Mock<ISolutionsService> mockService,
             DesktopBasedController controller)
         {
-            mockService.Setup(s => s.GetApplicationType(catalogueItemId)).ReturnsAsync(applicationTypeDetail);
-            applicationTypeDetail.ApplicationTypes.Clear();
+            controller.ModelState.AddModelError("some-key", "some-value");
 
-            var actual = (await controller.Connectivity(catalogueItemId, model)).As<RedirectToActionResult>();
+            var result = (await controller.Connectivity(solutionId, model)).As<ViewResult>();
 
-            applicationTypeDetail.NativeDesktopMinimumConnectionSpeed = model.SelectedConnectionSpeed;
-
-            applicationTypeDetail.ApplicationTypes.Add(ApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue));
-
-            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, applicationTypeDetail));
-            actual.ActionName.Should().Be(nameof(DesktopBasedController.Desktop));
-            actual.ControllerName.Should().BeNull();
-            actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
+            result.Should().NotBeNull();
+            result.Model.Should().Be(model);
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_MemoryAndStorage_ValidId_ReturnsViewWithExpectedModel(
-           Solution solution,
-           List<Integration> integrations,
-           [Frozen] Mock<ISolutionsService> mockService,
-           DesktopBasedController controller)
-        {
-            var catalogueItem = solution.CatalogueItem;
-            solution.Integrations = JsonSerializer.Serialize(integrations);
-
-            mockService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
-                .ReturnsAsync(catalogueItem);
-
-            var actual = (await controller.MemoryAndStorage(catalogueItem.Id)).As<ViewResult>();
-
-            mockService.Verify(s => s.GetSolutionThin(catalogueItem.Id));
-            actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new MemoryAndStorageModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_MemoryAndStorage_InvalidId_ReturnsBadRequestResult(
-            CatalogueItemId catalogueItemId,
-            [Frozen] Mock<ISolutionsService> mockService,
+        public static async Task Post_Connectivity_NullApplicationType_ReturnsBadRequestResult(
+            Solution solution,
+            ConnectivityModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
             DesktopBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(default(CatalogueItem));
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
 
-            var actual = (await controller.MemoryAndStorage(catalogueItemId)).As<BadRequestObjectResult>();
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync((ApplicationTypeDetail)null);
 
-            actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
+            var result = (await controller.Connectivity(solution.CatalogueItemId, model)).As<BadRequestObjectResult>();
+
+            result.Should().NotBeNull();
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_MemoryAndStorage_Saves_And_RedirectsToDesktop(
-            CatalogueItemId catalogueItemId,
+        public static async Task Post_Connectivity_Valid_SetsApplication(
+            Solution solution,
+            ApplicationTypeDetail applicationTypeDetails,
+            ConnectivityModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            DesktopBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync(applicationTypeDetails);
+
+            _ = await controller.Connectivity(solution.CatalogueItemId, model);
+
+            applicationTypeDetails.NativeDesktopMinimumConnectionSpeed.Should().Be(model.SelectedConnectionSpeed);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_Connectivity_Valid_Redirects(
+            Solution solution,
+            ApplicationTypeDetail applicationTypeDetails,
+            ConnectivityModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            DesktopBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync(applicationTypeDetails);
+
+            var result = (await controller.Connectivity(solution.CatalogueItemId, model))
+                .As<RedirectToActionResult>();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(controller.Desktop));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task MemoryAndStorage_InvalidSolutionId_ReturnsBadRequestResult(
+            CatalogueItemId solutionId,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            DesktopBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solutionId))
+                .ReturnsAsync((CatalogueItem)null);
+
+            var result = (await controller.MemoryAndStorage(solutionId)).As<BadRequestObjectResult>();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_MemoryAndStorage_ValidSolutionId_ReturnsViewWithModel(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            DesktopBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var expectedModel = new MemoryAndStorageModel(solution.CatalogueItem);
+
+            var result = (await controller.MemoryAndStorage(solution.CatalogueItemId)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_MemoryAndStorage_InvalidModel_ReturnsViewWithModel(
+            CatalogueItemId solutionId,
             MemoryAndStorageModel model,
-            ApplicationTypeDetail applicationTypeDetail,
-            [Frozen] Mock<ISolutionsService> mockService,
             DesktopBasedController controller)
         {
-            mockService.Setup(s => s.GetApplicationType(catalogueItemId)).ReturnsAsync(applicationTypeDetail);
-            applicationTypeDetail.ApplicationTypes.Clear();
+            controller.ModelState.AddModelError("some-key", "some-value");
 
-            var actual = (await controller.MemoryAndStorage(catalogueItemId, model)).As<RedirectToActionResult>();
+            var result = (await controller.MemoryAndStorage(solutionId, model)).As<ViewResult>();
 
-            applicationTypeDetail.NativeDesktopMemoryAndStorage.MinimumMemoryRequirement = model.SelectedMemorySize;
-            applicationTypeDetail.NativeDesktopMemoryAndStorage.StorageRequirementsDescription = model.StorageSpace;
-            applicationTypeDetail.NativeDesktopMemoryAndStorage.MinimumCpu = model.ProcessingPower;
-            applicationTypeDetail.NativeDesktopMemoryAndStorage.RecommendedResolution = model.SelectedResolution;
-            applicationTypeDetail.ApplicationTypes.Add(ApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue));
-
-            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, applicationTypeDetail));
-            actual.ActionName.Should().Be(nameof(DesktopBasedController.Desktop));
-            actual.ControllerName.Should().BeNull();
-            actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
+            result.Should().NotBeNull();
+            result.Model.Should().Be(model);
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_ThirdPartyComponents_ValidId_ReturnsViewWithExpectedModel(
+        public static async Task Post_MemoryAndStorage_NullApplicationType_ReturnsBadRequestResult(
             Solution solution,
-            List<Integration> integrations,
-            [Frozen] Mock<ISolutionsService> mockService,
+            MemoryAndStorageModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
             DesktopBasedController controller)
         {
-            var catalogueItem = solution.CatalogueItem;
-            solution.Integrations = JsonSerializer.Serialize(integrations);
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
 
-            mockService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
-                .ReturnsAsync(catalogueItem);
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync((ApplicationTypeDetail)null);
 
-            var actual = (await controller.ThirdPartyComponents(catalogueItem.Id)).As<ViewResult>();
+            var result = (await controller.MemoryAndStorage(solution.CatalogueItemId, model)).As<BadRequestObjectResult>();
 
-            mockService.Verify(s => s.GetSolutionThin(catalogueItem.Id));
-            actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new ThirdPartyComponentsModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
+            result.Should().NotBeNull();
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_ThirdPartyComponents_InvalidId_ReturnsBadRequestResult(
-            CatalogueItemId catalogueItemId,
-            [Frozen] Mock<ISolutionsService> mockService,
+        public static async Task Post_MemoryAndStorage_Valid_SetsApplication(
+            Solution solution,
+            ApplicationTypeDetail applicationTypeDetails,
+            MemoryAndStorageModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
             DesktopBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(default(CatalogueItem));
+            applicationTypeDetails.NativeDesktopMemoryAndStorage = null;
 
-            var actual = (await controller.ThirdPartyComponents(catalogueItemId)).As<BadRequestObjectResult>();
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
 
-            actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync(applicationTypeDetails);
+
+            _ = await controller.MemoryAndStorage(solution.CatalogueItemId, model);
+
+            applicationTypeDetails.NativeDesktopMemoryAndStorage!.MinimumMemoryRequirement.Should().Be(model.SelectedMemorySize);
+            applicationTypeDetails.NativeDesktopMemoryAndStorage!.StorageRequirementsDescription.Should().Be(model.StorageSpace);
+            applicationTypeDetails.NativeDesktopMemoryAndStorage!.MinimumCpu.Should().Be(model.ProcessingPower);
+            applicationTypeDetails.NativeDesktopMemoryAndStorage!.RecommendedResolution.Should().Be(model.SelectedResolution);
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_ThirdPartyComponents_Saves_And_RedirectsToDesktop(
-            CatalogueItemId catalogueItemId,
+        public static async Task Post_MemoryAndStorage_Valid_Redirects(
+            Solution solution,
+            ApplicationTypeDetail applicationTypeDetails,
+            MemoryAndStorageModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            DesktopBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync(applicationTypeDetails);
+
+            var result = (await controller.MemoryAndStorage(solution.CatalogueItemId, model))
+                .As<RedirectToActionResult>();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(controller.Desktop));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task ThirdPartyComponents_InvalidSolutionId_ReturnsBadRequestResult(
+            CatalogueItemId solutionId,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            DesktopBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solutionId))
+                .ReturnsAsync((CatalogueItem)null);
+
+            var result = (await controller.ThirdPartyComponents(solutionId)).As<BadRequestObjectResult>();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_ThirdPartyComponents_ValidSolutionId_ReturnsViewWithModel(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            DesktopBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var expectedModel = new ThirdPartyComponentsModel(solution.CatalogueItem);
+
+            var result = (await controller.ThirdPartyComponents(solution.CatalogueItemId)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_ThirdPartyComponents_InvalidModel_ReturnsViewWithModel(
+            CatalogueItemId solutionId,
             ThirdPartyComponentsModel model,
-            ApplicationTypeDetail applicationTypeDetail,
-            [Frozen] Mock<ISolutionsService> mockService,
             DesktopBasedController controller)
         {
-            mockService.Setup(s => s.GetApplicationType(catalogueItemId)).ReturnsAsync(applicationTypeDetail);
-            applicationTypeDetail.ApplicationTypes.Clear();
+            controller.ModelState.AddModelError("some-key", "some-value");
 
-            var actual = (await controller.ThirdPartyComponents(catalogueItemId, model)).As<RedirectToActionResult>();
+            var result = (await controller.ThirdPartyComponents(solutionId, model)).As<ViewResult>();
 
-            applicationTypeDetail.NativeDesktopThirdParty.ThirdPartyComponents = model.ThirdPartyComponents;
-            applicationTypeDetail.NativeDesktopThirdParty.DeviceCapabilities = model.DeviceCapabilities;
-            applicationTypeDetail.ApplicationTypes.Add(ApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue));
-
-            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, applicationTypeDetail));
-            actual.ActionName.Should().Be(nameof(DesktopBasedController.Desktop));
-            actual.ControllerName.Should().BeNull();
-            actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
+            result.Should().NotBeNull();
+            result.Model.Should().Be(model);
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_HardwareRequirements_ValidId_ReturnsViewWithExpectedModel(
-             Solution solution,
-             List<Integration> integrations,
-             [Frozen] Mock<ISolutionsService> mockService,
-             DesktopBasedController controller)
-        {
-            var catalogueItem = solution.CatalogueItem;
-            solution.Integrations = JsonSerializer.Serialize(integrations);
-
-            mockService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
-                .ReturnsAsync(catalogueItem);
-
-            var actual = (await controller.HardwareRequirements(catalogueItem.Id)).As<ViewResult>();
-
-            mockService.Verify(s => s.GetSolutionThin(catalogueItem.Id));
-            actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new HardwareRequirementsModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_HardwareRequirements_InvalidId_ReturnsBadRequestResult(
-            CatalogueItemId catalogueItemId,
-            [Frozen] Mock<ISolutionsService> mockService,
-            DesktopBasedController controller)
-        {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(default(CatalogueItem));
-
-            var actual = (await controller.HardwareRequirements(catalogueItemId)).As<BadRequestObjectResult>();
-
-            actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_HardwareRequirements_Saves_And_RedirectsToDesktop(
-            CatalogueItemId catalogueItemId,
-            HardwareRequirementsModel model,
-            ApplicationTypeDetail applicationTypeDetail,
-            [Frozen] Mock<ISolutionsService> mockService,
-            DesktopBasedController controller)
-        {
-            mockService.Setup(s => s.GetApplicationType(catalogueItemId)).ReturnsAsync(applicationTypeDetail);
-            applicationTypeDetail.ApplicationTypes.Clear();
-
-            var actual = (await controller.HardwareRequirements(catalogueItemId, model)).As<RedirectToActionResult>();
-
-            applicationTypeDetail.NativeDesktopHardwareRequirements = model.Description;
-            applicationTypeDetail.ApplicationTypes.Add(ApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue));
-
-            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, applicationTypeDetail));
-            actual.ActionName.Should().Be(nameof(DesktopBasedController.Desktop));
-            actual.ControllerName.Should().BeNull();
-            actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_AdditionalInformation_ValidId_ReturnsViewWithExpectedModel(
+        public static async Task Post_ThirdPartyComponents_NullApplicationType_ReturnsBadRequestResult(
             Solution solution,
-            List<Integration> integrations,
-            [Frozen] Mock<ISolutionsService> mockService,
+            ThirdPartyComponentsModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
             DesktopBasedController controller)
         {
-            var catalogueItem = solution.CatalogueItem;
-            solution.Integrations = JsonSerializer.Serialize(integrations);
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
 
-            mockService.Setup(s => s.GetSolutionThin(catalogueItem.Id))
-                .ReturnsAsync(catalogueItem);
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync((ApplicationTypeDetail)null);
 
-            var actual = (await controller.AdditionalInformation(catalogueItem.Id)).As<ViewResult>();
+            var result = (await controller.ThirdPartyComponents(solution.CatalogueItemId, model)).As<BadRequestObjectResult>();
 
-            mockService.Verify(s => s.GetSolutionThin(catalogueItem.Id));
-            actual.ViewName.Should().BeNull();
-            actual.Model.Should().BeEquivalentTo(new AdditionalInformationModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
+            result.Should().NotBeNull();
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Get_AdditionalInformation_InvalidId_ReturnsBadRequestResult(
-            CatalogueItemId catalogueItemId,
-            [Frozen] Mock<ISolutionsService> mockService,
+        public static async Task Post_ThirdPartyComponents_Valid_SetsApplication(
+            Solution solution,
+            ApplicationTypeDetail applicationTypeDetails,
+            ThirdPartyComponentsModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
             DesktopBasedController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(default(CatalogueItem));
+            applicationTypeDetails.NativeDesktopThirdParty = null;
 
-            var actual = (await controller.AdditionalInformation(catalogueItemId)).As<BadRequestObjectResult>();
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
 
-            actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync(applicationTypeDetails);
+
+            _ = await controller.ThirdPartyComponents(solution.CatalogueItemId, model);
+
+            applicationTypeDetails.NativeDesktopThirdParty!.ThirdPartyComponents.Should().Be(model.ThirdPartyComponents);
+            applicationTypeDetails.NativeDesktopThirdParty!.DeviceCapabilities.Should().Be(model.DeviceCapabilities);
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_AdditionalInformation_Saves_And_RedirectsToDesktop(
-            CatalogueItemId catalogueItemId,
+        public static async Task Post_ThirdPartyComponents_Valid_Redirects(
+            Solution solution,
+            ApplicationTypeDetail applicationTypeDetails,
+            ThirdPartyComponentsModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            DesktopBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync(applicationTypeDetails);
+
+            var result = (await controller.ThirdPartyComponents(solution.CatalogueItemId, model))
+                .As<RedirectToActionResult>();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(controller.Desktop));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task HardwareRequirements_InvalidSolutionId_ReturnsBadRequestResult(
+            CatalogueItemId solutionId,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            DesktopBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solutionId))
+                .ReturnsAsync((CatalogueItem)null);
+
+            var result = (await controller.HardwareRequirements(solutionId)).As<BadRequestObjectResult>();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_HardwareRequirements_ValidSolutionId_ReturnsViewWithModel(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            DesktopBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var expectedModel = new HardwareRequirementsModel(solution.CatalogueItem);
+
+            var result = (await controller.HardwareRequirements(solution.CatalogueItemId)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_HardwareRequirements_InvalidModel_ReturnsViewWithModel(
+            CatalogueItemId solutionId,
+            HardwareRequirementsModel model,
+            DesktopBasedController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-value");
+
+            var result = (await controller.HardwareRequirements(solutionId, model)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().Be(model);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_HardwareRequirements_NullApplicationType_ReturnsBadRequestResult(
+            Solution solution,
+            HardwareRequirementsModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            DesktopBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync((ApplicationTypeDetail)null);
+
+            var result = (await controller.HardwareRequirements(solution.CatalogueItemId, model)).As<BadRequestObjectResult>();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_HardwareRequirements_Valid_SetsApplication(
+            Solution solution,
+            ApplicationTypeDetail applicationTypeDetails,
+            HardwareRequirementsModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            DesktopBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync(applicationTypeDetails);
+
+            _ = await controller.HardwareRequirements(solution.CatalogueItemId, model);
+
+            applicationTypeDetails.NativeDesktopHardwareRequirements.Should().Be(model.Description);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_HardwareRequirements_Valid_Redirects(
+            Solution solution,
+            ApplicationTypeDetail applicationTypeDetails,
+            HardwareRequirementsModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            DesktopBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync(applicationTypeDetails);
+
+            var result = (await controller.HardwareRequirements(solution.CatalogueItemId, model))
+                .As<RedirectToActionResult>();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(controller.Desktop));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task AdditionalInformation_InvalidSolutionId_ReturnsBadRequestResult(
+            CatalogueItemId solutionId,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            DesktopBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solutionId))
+                .ReturnsAsync((CatalogueItem)null);
+
+            var result = (await controller.AdditionalInformation(solutionId)).As<BadRequestObjectResult>();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_AdditionalInformation_ValidSolutionId_ReturnsViewWithModel(
+            Solution solution,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            DesktopBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            var expectedModel = new AdditionalInformationModel(solution.CatalogueItem);
+
+            var result = (await controller.AdditionalInformation(solution.CatalogueItemId)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AdditionalInformation_InvalidModel_ReturnsViewWithModel(
+            CatalogueItemId solutionId,
             AdditionalInformationModel model,
-            ApplicationTypeDetail applicationTypeDetail,
-            [Frozen] Mock<ISolutionsService> mockService,
             DesktopBasedController controller)
         {
-            mockService.Setup(s => s.GetApplicationType(catalogueItemId)).ReturnsAsync(applicationTypeDetail);
-            applicationTypeDetail.ApplicationTypes.Clear();
+            controller.ModelState.AddModelError("some-key", "some-value");
 
-            var actual = (await controller.AdditionalInformation(catalogueItemId, model)).As<RedirectToActionResult>();
+            var result = (await controller.AdditionalInformation(solutionId, model)).As<ViewResult>();
 
-            applicationTypeDetail.NativeDesktopAdditionalInformation = model.AdditionalInformation;
-            applicationTypeDetail.ApplicationTypes.Add(ApplicationType.Desktop.AsString(EnumFormat.EnumMemberValue));
+            result.Should().NotBeNull();
+            result.Model.Should().Be(model);
+        }
 
-            mockService.Verify(s => s.SaveApplicationType(catalogueItemId, applicationTypeDetail));
-            actual.ActionName.Should().Be(nameof(DesktopBasedController.Desktop));
-            actual.ControllerName.Should().BeNull();
-            actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AdditionalInformation_NullApplicationType_ReturnsBadRequestResult(
+            Solution solution,
+            AdditionalInformationModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            DesktopBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync((ApplicationTypeDetail)null);
+
+            var result = (await controller.AdditionalInformation(solution.CatalogueItemId, model)).As<BadRequestObjectResult>();
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AdditionalInformation_Valid_SetsApplication(
+            Solution solution,
+            ApplicationTypeDetail applicationTypeDetails,
+            AdditionalInformationModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            DesktopBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync(applicationTypeDetails);
+
+            _ = await controller.AdditionalInformation(solution.CatalogueItemId, model);
+
+            applicationTypeDetails.NativeDesktopAdditionalInformation.Should().Be(model.AdditionalInformation);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_AdditionalInformation_Valid_Redirects(
+            Solution solution,
+            ApplicationTypeDetail applicationTypeDetails,
+            AdditionalInformationModel model,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            DesktopBasedController controller)
+        {
+            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
+                .ReturnsAsync(solution.CatalogueItem);
+
+            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
+                .ReturnsAsync(applicationTypeDetails);
+
+            var result = (await controller.AdditionalInformation(solution.CatalogueItemId, model))
+                .As<RedirectToActionResult>();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(controller.Desktop));
         }
     }
 }

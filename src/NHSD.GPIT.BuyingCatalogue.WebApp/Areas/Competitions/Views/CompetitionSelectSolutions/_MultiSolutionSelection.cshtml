@@ -17,6 +17,13 @@
         <nhs-checkbox-container>
             @for (var i = 0; i < Model.Solutions.Count; i++)
             {
+                var content = Model.Solutions[i].RequiredServices.Any()
+                    ? @"<b>Additional Services required</b>
+                        <br/>
+                        These Additional Services are needed along with the solution to meet all the Capabilities and Epics you’ve selected:
+                        <br/>
+                        <br/>"
+                    : "<b>Additional Services required</b>:<br/><br/>";
                 <input type="hidden" asp-for="@Model.Solutions[i].SolutionId"/>
                 <input type="hidden" asp-for="@Model.Solutions[i].SolutionName"/>
                 <input type="hidden" asp-for="@Model.Solutions[i].SupplierName"/>
@@ -28,7 +35,7 @@
                 <nhs-checkbox asp-for="@Model.Solutions[i].Selected"
                               label-text="<a href='@GetSolutionMarketingPageUrl(Model.Solutions[i].SolutionId)' target='_blank'>@Model.Solutions[i].SolutionName (opens in a new tab)</a>"
                               hint-text="@Model.Solutions[i].SupplierName"
-                              sub-hint="Additional Services required:<br/>@Model.Solutions[i].GetAdditionalServicesList()"
+                              sub-hint="@content @Model.Solutions[i].GetAdditionalServicesList()"
                               use-embedded-html="true"/>
             }
         </nhs-checkbox-container>
