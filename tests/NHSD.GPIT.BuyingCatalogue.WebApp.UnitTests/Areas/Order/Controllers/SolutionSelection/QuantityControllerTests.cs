@@ -15,6 +15,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
@@ -228,7 +229,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IGpPracticeService> mockGpPracticeService,
             [Frozen] Mock<IOrderService> mockOrderService,
-            QuantityController controller)
+            [Frozen] Mock<IOdsService> odsService,
+            QuantityController controller,
+            string location)
         {
             var orderItem = order.OrderItems.First();
 
@@ -247,6 +250,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                             x => new GpPracticeSize { OdsCode = x.OdsCode, NumberOfPatients = NumberOfPatients })
                         .ToList());
 
+            odsService.Setup(x => x.GetServiceRecipientsById(internalOrgId, It.IsAny<IEnumerable<string>>())).ReturnsAsync(
+                 order.OrderRecipients.Select(
+                            x => new ServiceRecipient { OrgId = x.OdsCode, Location = location })
+                        .ToList());
+
             var result = await controller.SelectServiceRecipientQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId);
 
             mockOrderService.VerifyAll();
@@ -256,7 +264,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var model = actualResult.Model.Should().BeOfType<SelectServiceRecipientQuantityModel>().Subject;
 
             var recipients = order.OrderRecipients.Select(
-                x => new ServiceRecipientDto(x.OdsCode, x.OdsOrganisation?.Name, x.GetQuantityForItem(orderItem.CatalogueItemId)));
+                x => new ServiceRecipientDto(x.OdsCode, x.OdsOrganisation?.Name, x.GetQuantityForItem(orderItem.CatalogueItemId), location));
 
             var expected = new SelectServiceRecipientQuantityModel(orderItem.CatalogueItem, orderItem.OrderItemPrice, recipients);
             expected.ServiceRecipients.ForEach(x => x.InputQuantity = $"{NumberOfPatients}");
@@ -271,7 +279,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> mockOrderService,
-            QuantityController controller)
+            [Frozen] Mock<IOdsService> odsService,
+            QuantityController controller,
+            string location)
         {
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
 
@@ -290,6 +300,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));
 
+            odsService.Setup(x => x.GetServiceRecipientsById(internalOrgId, It.IsAny<IEnumerable<string>>())).ReturnsAsync(
+                 order.OrderRecipients.Select(
+                            x => new ServiceRecipient { OrgId = x.OdsCode, Location = location })
+                        .ToList());
+
             var result = await controller.SelectServiceRecipientQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId);
 
             mockOrderService.VerifyAll();
@@ -298,7 +313,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var model = actualResult.Model.Should().BeOfType<SelectServiceRecipientQuantityModel>().Subject;
 
             var recipients = order.OrderRecipients.Select(
-                x => new ServiceRecipientDto(x.OdsCode, x.OdsOrganisation?.Name, x.GetQuantityForItem(orderItem.CatalogueItemId)));
+                x => new ServiceRecipientDto(x.OdsCode, x.OdsOrganisation?.Name, x.GetQuantityForItem(orderItem.CatalogueItemId), location));
 
             var expected = new SelectServiceRecipientQuantityModel(orderItem.CatalogueItem, orderItem.OrderItemPrice, recipients);
 
@@ -314,7 +329,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> mockOrderService,
-            QuantityController controller)
+            [Frozen] Mock<IOdsService> odsService,
+            QuantityController controller,
+            string location)
         {
             const int expectedQuantity = 1;
             var orderItem = order.OrderItems.First();
@@ -326,6 +343,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));
 
+            odsService.Setup(x => x.GetServiceRecipientsById(internalOrgId, It.IsAny<IEnumerable<string>>())).ReturnsAsync(
+                 order.OrderRecipients.Select(
+                            x => new ServiceRecipient { OrgId = x.OdsCode, Location = location })
+                        .ToList());
+
             var result = await controller.SelectServiceRecipientQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId);
 
             mockOrderService.VerifyAll();
@@ -334,7 +356,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var model = actualResult.Model.Should().BeOfType<SelectServiceRecipientQuantityModel>().Subject;
 
             var recipients = order.OrderRecipients.Select(
-                x => new ServiceRecipientDto(x.OdsCode, x.OdsOrganisation?.Name, x.GetQuantityForItem(orderItem.CatalogueItemId)));
+                x => new ServiceRecipientDto(x.OdsCode, x.OdsOrganisation?.Name, x.GetQuantityForItem(orderItem.CatalogueItemId), location));
 
             var expected = new SelectServiceRecipientQuantityModel(orderItem.CatalogueItem, orderItem.OrderItemPrice, recipients);
 

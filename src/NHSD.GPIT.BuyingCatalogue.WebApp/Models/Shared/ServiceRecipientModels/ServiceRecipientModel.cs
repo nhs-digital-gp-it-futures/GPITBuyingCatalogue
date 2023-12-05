@@ -18,6 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
         {
             Name = Name,
             OdsCode = OdsCode,
+            Location = Location,
         };
     }
 }
