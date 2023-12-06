@@ -36,4 +36,12 @@ public class AddEditFrameworkModel : NavBaseModel
         new SelectOption<FundingType>(FundingType.LocalFunding.Description(), FundingType.LocalFunding),
         new SelectOption<FundingType>(FundingType.Pcarp.Description(), FundingType.Pcarp),
     };
+
+    public List<SelectOption<bool>> FoundationSolutionOptions => new List<SelectOption<bool>>
+        {
+            new("Yes", true),
+            new("No", false),
+        };
+
+    public bool SupportsFoundationSolutions { get; set; }
 }

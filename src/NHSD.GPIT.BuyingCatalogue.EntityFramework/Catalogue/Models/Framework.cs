@@ -25,5 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public bool IsExpired { get; set; }
 
         public ICollection<FundingType> FundingTypes { get; set; } = new HashSet<FundingType>();
+
+        public bool SupportsFoundationSolutions { get; set; }
     }
 }
