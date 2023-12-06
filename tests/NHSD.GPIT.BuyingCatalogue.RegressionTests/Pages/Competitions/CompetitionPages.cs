@@ -36,7 +36,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             ViewCompetitionResults = new ViewCompetitionResults(driver, commonActions);
             AwardCriteriaWeightings = new AwardCriteriaWeightings(driver, commonActions);
             NonPriceElements = new NonPriceElements(driver, commonActions);
-
+            NonPriceWeightings = new NonPriceWeightings(driver, commonActions);
+            ReviewCompetitionCriteria = new ReviewCompetitionCriteria(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -78,6 +79,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
         internal AwardCriteriaWeightings AwardCriteriaWeightings { get; }
 
         internal NonPriceElements NonPriceElements { get; }
+
+        internal NonPriceWeightings NonPriceWeightings { get; }
+
+        internal ReviewCompetitionCriteria ReviewCompetitionCriteria { get; }
 
         internal FilterType FilterType { get; set; }
 
@@ -134,43 +139,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             if (competitiontype == CompetitionType.PriceOnly)
             {
                 AwardCriteria.PriceONly();
-                CompetitionTaskList.CalculatePriceTask();
-
-                foreach (var solution in competitionsolutions)
-                {
-                    if (HasTieredPrice(solution))
-                    {
-                        CalculatePrice.SelectPrice(solution);
-                        SolutionServiceQuantity.AddSolutionQuantity(solution);
-                    }
-                    else
-                    {
-                        CalculatePrice.SolutionPrice(solution);
-                        CalculatePrice.ConfirmSolutionPrice(solution);
-                        SolutionServiceQuantity.AddSolutionQuantity(solution);
-                    }
-
-                    if (HasAdditionalService(competitionId,solution))
-                    {
-                        var competitionsolutionservices = GetCompetitionSolutionServices(competitionId, solution);
-
-                        foreach (var servicdid in competitionsolutionservices)
-                        {
-                            if (HasTieredPrice(servicdid))
-                            {
-                                CalculatePrice.SelectAdditionalServicePrice(servicdid);
-                                SolutionServiceQuantity.AddAdditionalServiceQuantity(servicdid);
-                            }
-                            else
-                            {
-                                CalculatePrice.ConfirmAdditionalServicePrice(servicdid);
-                                SolutionServiceQuantity.AddAdditionalServiceQuantity(servicdid);
-                            }
-                        }
-                    }
-
-                    CalculatePrice.ConfirmPriceAndQuantity();
-                }
             }
             else
             {
@@ -179,6 +147,49 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                 AwardCriteriaWeightings.PriceNonPriceAwardCriteriaWeightings();
                 CompetitionTaskList.NonPriceElements();
                 NonPriceElements.AddNonPriceElements(elementtype);
+                CompetitionTaskList.NonPriceWeightings();
+                NonPriceWeightings.Weightings(elementtype);
+                CompetitionTaskList.ReviewCompetitionCriteria();
+                ReviewCompetitionCriteria.ReviewCriteria();
+                CompetitionTaskList.CompareAndScoreLink();
+            }
+
+            CompetitionTaskList.CalculatePriceTask();
+
+            foreach (var solution in competitionsolutions)
+            {
+                if (HasTieredPrice(solution))
+                {
+                    CalculatePrice.SelectPrice(solution);
+                    SolutionServiceQuantity.AddSolutionQuantity(solution);
+                }
+                else
+                {
+                    CalculatePrice.SolutionPrice(solution);
+                    CalculatePrice.ConfirmSolutionPrice(solution);
+                    SolutionServiceQuantity.AddSolutionQuantity(solution);
+                }
+
+                if (HasAdditionalService(competitionId, solution))
+                {
+                    var competitionsolutionservices = GetCompetitionSolutionServices(competitionId, solution);
+
+                    foreach (var servicdid in competitionsolutionservices)
+                    {
+                        if (HasTieredPrice(servicdid))
+                        {
+                            CalculatePrice.SelectAdditionalServicePrice(servicdid);
+                            SolutionServiceQuantity.AddAdditionalServiceQuantity(servicdid);
+                        }
+                        else
+                        {
+                            CalculatePrice.ConfirmAdditionalServicePrice(servicdid);
+                            SolutionServiceQuantity.AddAdditionalServiceQuantity(servicdid);
+                        }
+                    }
+                }
+
+                CalculatePrice.ConfirmPriceAndQuantity();
             }
 
             CalculatePrice.ConfirmCalculatePrice();
