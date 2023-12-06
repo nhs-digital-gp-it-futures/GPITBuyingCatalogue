@@ -117,6 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 SolutionName = order.AssociatedServicesOnly
                     ? orderWrapper.RolledUp.Solution.Name
                     : orderWrapper.RolledUp.GetSolution()?.CatalogueItem.Name,
+                SolutionId = solutionId,
             };
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
@@ -260,6 +261,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 SolutionName = order.AssociatedServicesOnly
                     ? orderWrapper.RolledUp.Solution.Name
                     : orderWrapper.RolledUp.GetSolution()?.CatalogueItem.Name,
+                SolutionId = solutionId,
             };
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));

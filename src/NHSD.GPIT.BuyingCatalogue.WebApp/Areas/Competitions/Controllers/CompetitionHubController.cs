@@ -558,6 +558,7 @@ public class CompetitionHubController : Controller
             InternalOrgId = internalOrgId,
             SolutionName = solution.Solution.CatalogueItem.Name,
             EntityType = "Competition",
+            SolutionId = solutionId,
         };
     }
 

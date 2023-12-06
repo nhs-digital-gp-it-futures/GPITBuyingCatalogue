@@ -261,6 +261,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 SolutionName = order.AssociatedServicesOnly
                     ? wrapper.RolledUp.Solution.Name
                     : wrapper.RolledUp.GetSolution()?.CatalogueItem.Name,
+                SolutionId = order.GetSolutionId(),
             };
         }
     }

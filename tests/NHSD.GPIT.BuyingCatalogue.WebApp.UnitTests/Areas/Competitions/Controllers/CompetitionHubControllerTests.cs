@@ -977,6 +977,7 @@ public static class CompetitionHubControllerTests
             EntityType = "Competition",
             SolutionName = solution.CatalogueItem.Name,
             InternalOrgId = internalOrgId,
+            SolutionId = solution.CatalogueItemId,
         };
 
         var result = (await controller.SelectAssociatedServices(
@@ -1030,6 +1031,7 @@ public static class CompetitionHubControllerTests
             EntityType = "Competition",
             SolutionName = solution.CatalogueItem.Name,
             InternalOrgId = internalOrgId,
+            SolutionId = solution.CatalogueItemId,
         };
 
         var result = (await controller.SelectAssociatedServices(internalOrgId, competition.Id, solution.CatalogueItemId, model))

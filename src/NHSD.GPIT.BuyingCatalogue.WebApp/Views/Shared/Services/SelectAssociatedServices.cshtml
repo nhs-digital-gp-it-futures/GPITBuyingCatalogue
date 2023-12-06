@@ -1,4 +1,5 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services.SelectServicesModel
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services.SelectServicesModel
 @{
     ViewBag.Title = "Associated Services";
 }
@@ -27,7 +28,15 @@
             {
                 <div id="services-to-select">
                     <h3>Select Associated Services</h3>
-                    <p>These are products that support the implementation of a solution and can be bought independently. For example, training or data migration or arranging the merging or splitting of existing practices.</p>
+                    <p>These are products that support the implementation of a solution, for example, training or data migration. To order a merger or split for any of your practices, you’ll need to create a separate Associated Services only order</p>
+                    <p>
+                        <a href="@Url.Action(
+                                      nameof(SolutionsController.AssociatedServices),
+                                      typeof(SolutionsController).ControllerName(),
+                                      new { solutionId = @Model.SolutionId, area = typeof(SolutionsController).AreaName() })" target="_blank">
+                            Find out more (opens in new tab)
+                        </a>
+                    </p>
                     <nhs-fieldset-form-label asp-for="@Model">
                         <nhs-checkbox-container>
                             @for (var i = 0; i < Model.Services.Count; i++)
