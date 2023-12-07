@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
             var framework =
                 new EntityFramework.Catalogue.Models.Framework
                 {
-                    Name = name, ShortName = name, FundingTypes = fundingTypes.ToArray(), SupportsFoundationSolutions = supportsFoundationSolutions,
+                    Name = name, ShortName = name, FundingTypes = fundingTypes.ToArray(), SupportsFoundationSolution = supportsFoundationSolutions,
                 };
 
             dbContext.Frameworks.Add(framework);
