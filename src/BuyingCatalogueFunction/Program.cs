@@ -26,12 +26,6 @@ public static class Program
     public static async Task Main(string[] args)
     {
         var host = Host.CreateDefaultBuilder(args)
-            .ConfigureFunctionsWorkerDefaults(builder =>
-            {
-                builder
-                    .AddApplicationInsights()
-                    .AddApplicationInsightsLogger();
-            })
             .ConfigureServices((context, services) =>
             {
                 var configuration = context.Configuration;
@@ -43,6 +37,9 @@ public static class Program
                     configuration.GetValue<Uri>("SearchUri")));
 
                 services.AddSingleton<IIdentityService, FunctionsIdentityService>();
+
+                services.AddApplicationInsightsTelemetryWorkerService();
+                services.ConfigureFunctionsApplicationInsights();
 
                 services.AddTransient<IIncrementalUpdateService, IncrementalUpdateService>();
                 services.AddTransient<IOdsService, OdsService>();
