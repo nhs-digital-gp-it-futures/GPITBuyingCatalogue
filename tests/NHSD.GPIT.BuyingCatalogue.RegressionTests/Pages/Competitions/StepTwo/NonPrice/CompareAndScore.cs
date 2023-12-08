@@ -1,5 +1,7 @@
-﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
+﻿using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Competitions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using OpenQA.Selenium;
 
@@ -18,6 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
             CommonActions.ClickLinkElement(NonPriceObjects.EditCompareAndScoreLink(elementtype));
             CatalogueSolutionScore();
             ReasonOfScore();
+            ReviewCompareAndScore();
         }
 
         public void ReasonOfScore()
@@ -37,6 +40,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
             var random = new Random();
             var number = random.Next(lowerRange, upperRange);
             return number;
+        }
+
+        public void ReviewCompareAndScore()
+        {
+            CommonActions.LedeText().Should().Be("Compare and score shortlisted solutions based on the non-price elements you’ve added.".FormatForComparison());
+            CommonActions.ClickContinue();
         }
     }
 }
