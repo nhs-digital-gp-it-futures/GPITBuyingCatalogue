@@ -67,7 +67,7 @@ public class FrameworksController : Controller
         if (!ModelState.IsValid)
             return View("add", model);
 
-        await frameworkService.UpdateFramework(frameworkId, model.Name, model.FundingTypes.Where(x => x.Selected).Select(x => x.Value));
+        await frameworkService.UpdateFramework(frameworkId, model.Name, model.FundingTypes.Where(x => x.Selected).Select(x => x.Value), model.SupportsFoundationSolution);
 
         return RedirectToAction(nameof(Dashboard));
     }

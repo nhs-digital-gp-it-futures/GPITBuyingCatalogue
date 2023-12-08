@@ -18,6 +18,7 @@ public class AddEditFrameworkModel : NavBaseModel
     {
         FrameworkId = framework.Id;
         Name = framework.ShortName;
+        SupportsFoundationSolution = framework.SupportsFoundationSolution;
 
         foreach (FundingType i in framework.FundingTypes)
         {
