@@ -27,6 +27,9 @@ public static class Program
                 services.AddApplicationInsightsTelemetryWorkerService();
                 services.ConfigureFunctionsApplicationInsights();
 
+                services.AddApplicationInsightsTelemetryWorkerService();
+                services.ConfigureFunctionsApplicationInsights();
+
                 services.AddTransient<ICapabilityService, CapabilityService>();
                 services.AddTransient<IEpicService, EpicService>();
                 services.AddTransient<IStandardService, StandardService>();

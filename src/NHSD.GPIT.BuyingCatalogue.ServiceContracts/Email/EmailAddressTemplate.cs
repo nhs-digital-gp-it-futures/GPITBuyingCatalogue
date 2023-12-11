@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email
 {
+    [ExcludeFromCodeCoverage]
     public sealed record EmailAddressTemplate
     {
         private readonly string address;
