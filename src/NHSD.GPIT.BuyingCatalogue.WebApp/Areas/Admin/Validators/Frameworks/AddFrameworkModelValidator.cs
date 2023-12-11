@@ -11,6 +11,7 @@ public sealed class AddFrameworkModelValidator : AbstractValidator<AddEditFramew
     internal const string FundingTypeError = "Select a funding type";
     internal const string NameMissingError = "Enter a name";
     internal const string NameDuplicationError = "Name already exists. Try another name";
+    internal const string SupportsFoundationSolutionError = "Select yes if this framework supports Foundation Solutions";
 
     public AddFrameworkModelValidator(
         IFrameworkService frameworkService)
@@ -25,5 +26,9 @@ public sealed class AddFrameworkModelValidator : AbstractValidator<AddEditFramew
             .WithMessage(NameMissingError)
             .Must((model, name) => !frameworkService.FrameworkNameExistsExcludeSelf(name, model.FrameworkId).GetAwaiter().GetResult())
             .WithMessage(NameDuplicationError);
+
+        RuleFor(x => x.SupportsFoundationSolution)
+            .Must(x => x.HasValue)
+            .WithMessage(SupportsFoundationSolutionError);
     }
 }

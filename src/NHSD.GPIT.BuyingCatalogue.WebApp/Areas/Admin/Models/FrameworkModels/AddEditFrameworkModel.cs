@@ -44,5 +44,5 @@ public class AddEditFrameworkModel : NavBaseModel
             new("No", false),
         };
 
-    public bool SupportsFoundationSolution { get; set; }
+    public bool? SupportsFoundationSolution { get; set; }
 }
