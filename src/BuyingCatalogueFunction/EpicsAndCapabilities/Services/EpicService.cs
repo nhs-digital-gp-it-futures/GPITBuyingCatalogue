@@ -202,7 +202,7 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
             log.Add($"New Epic {newEpic.Id} {newEpic.Name}");
         }
 
-        private static CompliancyLevel ParseLevel(string level)
+        private static CompliancyLevel ParseLevel(string? level)
         {
             ArgumentNullException.ThrowIfNull(level);
 
