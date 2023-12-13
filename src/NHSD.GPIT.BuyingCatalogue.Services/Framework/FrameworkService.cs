@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
         [ExcludeFromCodeCoverage(
             Justification =
                 "Can't be tested until the ID migration due to another bizarre Entity Framework design choice where HasDefaultValue doesn't work for the In-memory provider.")]
-        public async Task AddFramework(string name, IEnumerable<FundingType> fundingTypes)
+        public async Task AddFramework(string name, IEnumerable<FundingType> fundingTypes, bool supportsFoundationSolution)
         {
             ArgumentException.ThrowIfNullOrEmpty(name);
             ArgumentNullException.ThrowIfNull(fundingTypes);
@@ -55,14 +55,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
             var framework =
                 new EntityFramework.Catalogue.Models.Framework
                 {
-                    Name = name, ShortName = name, FundingTypes = fundingTypes.ToArray(),
+                    Name = name, ShortName = name, FundingTypes = fundingTypes.ToArray(), SupportsFoundationSolution = supportsFoundationSolution,
                 };
 
             dbContext.Frameworks.Add(framework);
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task UpdateFramework(string frameworkId, string name, IEnumerable<FundingType> fundingTypes)
+        public async Task UpdateFramework(string frameworkId, string name, IEnumerable<FundingType> fundingTypes, bool supportsFoundationSolution)
         {
             var framework = await GetFramework(frameworkId);
             if (framework is null)
@@ -73,6 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
             framework.Name = name;
             framework.ShortName = name;
             framework.FundingTypes = fundingTypes.ToArray();
+            framework.SupportsFoundationSolution = supportsFoundationSolution;
             await dbContext.SaveChangesAsync();
         }
 
