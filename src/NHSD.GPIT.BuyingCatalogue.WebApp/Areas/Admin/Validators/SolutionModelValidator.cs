@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
                 .When(s => s.SupplierId.HasValue && !string.IsNullOrWhiteSpace(s.SolutionName));
 
             RuleFor(s => s.Frameworks)
-                .Must(framework => framework.Count(x => x.IsFoundation) <= 1)
+                .Must(framework => framework.Count(x => x.IsFoundation && x.Selected) <= 1)
                 .OverridePropertyName($"{nameof(SolutionModel.Frameworks)}[0].Selected")
                 .WithMessage("A solution can only be marked as a Foundation Solution under one Framework at any given time");
         }
