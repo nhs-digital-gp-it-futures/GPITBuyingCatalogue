@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -35,8 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 BackLink = Url.Action(nameof(CatalogueSolutionsController.Index), typeof(CatalogueSolutionsController).ControllerName()),
             }.WithSelectListItems(suppliers).WithAddSolution();
 
-            model.Frameworks = (await solutionsService.GetAllFrameworks())
-                .Select(f => new FrameworkModel { Name = $"{f.ShortName} Framework", FrameworkId = f.Id, SupportsFoundationSolution = f.SupportsFoundationSolution }).ToList();
+            model.Frameworks = await GetFrameworks();
 
             return View("Details", model);
         }
@@ -47,6 +47,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
             {
                 var suppliers = await suppliersService.GetAllActiveSuppliers();
+
+                model.Frameworks = await GetFrameworks();
 
                 return View("Details", model.WithSelectListItems(suppliers).WithAddSolution());
             }
@@ -65,5 +67,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 typeof(CatalogueSolutionsController).ControllerName(),
                 new { solutionId = catalogueItemId });
         }
+
+        private async Task<IList<FrameworkModel>> GetFrameworks() => (await solutionsService.GetAllFrameworks())
+                .Select(f => new FrameworkModel { Name = $"{f.ShortName} Framework", FrameworkId = f.Id, SupportsFoundationSolution = f.SupportsFoundationSolution }).ToList();
     }
 }

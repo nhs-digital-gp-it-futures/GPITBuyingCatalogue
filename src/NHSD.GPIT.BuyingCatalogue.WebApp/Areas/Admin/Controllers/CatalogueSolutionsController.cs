@@ -177,6 +177,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             {
                 var suppliers = await suppliersService.GetAllActiveSuppliers();
 
+                model.Frameworks = (await solutionsService.GetAllFrameworks())
+                .Select(f => new FrameworkModel { Name = $"{f.ShortName} Framework", FrameworkId = f.Id, SupportsFoundationSolution = f.SupportsFoundationSolution }).ToList();
+
                 return View(model.WithSelectListItems(suppliers).WithEditSolution());
             }
 
