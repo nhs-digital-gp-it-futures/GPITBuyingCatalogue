@@ -30,7 +30,7 @@
 @if (Context.Items.TryGetValue(CatalogueCookies.UseAnalytics, out var useAnalytics) && useAnalytics is true && !string.IsNullOrWhiteSpace(settings?.GoogleAnalytics?.Id))
 {
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-G933LRYMBZ"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=@settings.GoogleAnalytics.Id"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
