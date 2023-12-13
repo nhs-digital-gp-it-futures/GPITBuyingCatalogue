@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             }.WithSelectListItems(suppliers).WithAddSolution();
 
             model.Frameworks = (await solutionsService.GetAllFrameworks())
-                .Select(f => new FrameworkModel { Name = $"{f.ShortName} Framework", FrameworkId = f.Id }).ToList();
+                .Select(f => new FrameworkModel { Name = $"{f.ShortName} Framework", FrameworkId = f.Id, SupportsFoundationSolution = f.SupportsFoundationSolution }).ToList();
 
             return View("Details", model);
         }
