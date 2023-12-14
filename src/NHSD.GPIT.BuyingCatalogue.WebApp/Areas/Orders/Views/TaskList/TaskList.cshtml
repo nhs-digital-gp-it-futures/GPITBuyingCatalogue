@@ -110,10 +110,7 @@
                     var serviceModel = Model.OrderItemModel(service.CatalogueItemId);
 
                     <div class="nhsuk-u-margin-bottom-9">
-@*                         <h2>@serviceModel.Name</h2>
-                        <h3 class="nhsuk-heading-s">@serviceModel.Name</h3>
-                        <h3 class="nhsuk-heading-m">@serviceModel.Name</h3>
- *@                        <partial name="TaskListOrderItem"
+                        <partial name="TaskListOrderItem"
                                  model="@serviceModel" />
                     </div>
                 }

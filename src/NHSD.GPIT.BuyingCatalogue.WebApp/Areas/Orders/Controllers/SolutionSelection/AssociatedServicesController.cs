@@ -350,12 +350,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     }),
 
                 RoutingSource.EditSolution => Url.Action(
-                    nameof(CatalogueSolutionsController.EditSolutionAssociatedServicesOnly), // Constants.Actions.EditSolutionAssociatedServicesOnly,
+                    nameof(CatalogueSolutionsController.EditSolutionAssociatedServicesOnly),
                     typeof(CatalogueSolutionsController).ControllerName(),
                     defaultRouteValues),
 
                 RoutingSource.SelectSolution => Url.Action(
-                    nameof(CatalogueSolutionsController.SelectSolutionAssociatedServicesOnly), // Constants.Actions.SelectSolutionAssociatedServicesOnly,
+                    nameof(CatalogueSolutionsController.SelectSolutionAssociatedServicesOnly),
                     typeof(CatalogueSolutionsController).ControllerName(),
                     new
                     {
