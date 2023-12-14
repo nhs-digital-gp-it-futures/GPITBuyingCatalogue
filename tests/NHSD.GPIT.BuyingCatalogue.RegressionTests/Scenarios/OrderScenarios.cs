@@ -2111,9 +2111,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        public void CompetitionPricAndNonPriceElement()
+        public void CompetitionPricAndNonPriceElementFeature()
         {
-            string competitionName = "CompetitionForMultipleResultFilter";
+            string competitionName = "CompetitionPricAndNonPriceElementFeature";
 
             CompetitionPages.CompetitionDashboard.CompetitionTriage();
 

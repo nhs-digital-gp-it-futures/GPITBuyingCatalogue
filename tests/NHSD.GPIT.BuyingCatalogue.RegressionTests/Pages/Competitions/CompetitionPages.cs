@@ -38,6 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             NonPriceElements = new NonPriceElements(driver, commonActions);
             NonPriceWeightings = new NonPriceWeightings(driver, commonActions);
             ReviewCompetitionCriteria = new ReviewCompetitionCriteria(driver, commonActions);
+            CompareAndScore = new CompareAndScore(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -83,6 +84,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
         internal NonPriceWeightings NonPriceWeightings { get; }
 
         internal ReviewCompetitionCriteria ReviewCompetitionCriteria { get; }
+
+        internal CompareAndScore CompareAndScore { get; }
 
         internal FilterType FilterType { get; set; }
 
@@ -152,6 +155,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                 CompetitionTaskList.ReviewCompetitionCriteria();
                 ReviewCompetitionCriteria.ReviewCriteria();
                 CompetitionTaskList.CompareAndScoreLink();
+                CompareAndScore.CompareAndScoreShortlistedSolutions(elementtype);
             }
 
             CompetitionTaskList.CalculatePriceTask();

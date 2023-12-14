@@ -12,5 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Competitions
         public static By AddAnotherRequirementLink => By.LinkText("Add another requirement");
 
         public static By FeatureWeighting => By.Id("Features");
+
+        public static By EditCompareAndScoreLink(string elementtype) => By.XPath($"//a[contains(@href, 'scoring/{elementtype}')]");
     }
 }
