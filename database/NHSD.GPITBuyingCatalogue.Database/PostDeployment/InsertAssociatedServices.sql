@@ -83,7 +83,7 @@ BEGIN
 
     DECLARE @declarative INT = (SELECT Id FROM catalogue.ProvisioningTypes WHERE [Name] = 'Declarative');
     DECLARE @onDemand INT = (SELECT Id FROM catalogue.ProvisioningTypes WHERE [Name] = 'OnDemand');
-    DECLARE @perServiceRecipient INT = (Select Id FROM catalogue.ProvisioningTypes WHERE [Name] = 'PerServiceRecipient');
+    DECLARE @perServiceRecipient INT = (Select Id FROM catalogue.CataloguePriceQuantityCalculationTypes WHERE [Name] = 'PerServiceRecipient');
 
     DECLARE @flat INT = (SELECT Id FROM catalogue.CataloguePriceTypes WHERE [Name] = 'Flat');
     DECLARE @tiered INT = (SELECT Id FROM catalogue.CataloguePriceTypes WHERE [Name] = 'Tiered');
@@ -105,24 +105,25 @@ BEGIN
         PricingUnitId INT,
         TimeUnitId INT,
         CataloguePriceCalculationTypeId INT,
+        CataloguePriceQuantityCalculationTypeId INT,
         CurrencyCode NVARCHAR(3),
         LastUpdated DATETIME2(0),
         Price DECIMAL(18,4),
         PublishedStatusId INT
     );
 
-    INSERT INTO @AssociatedServicesPrices (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CataloguePriceCalculationTypeId, CurrencyCode, LastUpdated, Price, PublishedStatusId)
+    INSERT INTO @AssociatedServicesPrices (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CataloguePriceCalculationTypeId, CataloguePriceQuantityCalculationTypeId, CurrencyCode, LastUpdated, Price, PublishedStatusId)
     VALUES
-    ('100000-S-001', @declarative, @flat, @course, NULL, 1, @gbp, @now, 99.99, 3),
-    ('100000-S-001', @onDemand, @flat, @halfDay, NULL, 1, @gbp, @now, 150.00, 3),
-    ('100000-S-002', @onDemand, @tiered, @hour, NULL, 1, @gbp, @now, 595, 3),
-    ('100000-S-003', @onDemand, @flat, @hour, NULL, 1, @gbp, @now, 4.35, 3),
-    ('100000-S-004', @perServiceRecipient, @flat, @hour, NULL, 1, @gbp, @now, 1.25, 3),
-    ('100000-S-005', @perServiceRecipient, @flat, @hour, NULL, 1, @gbp, @now, 205, 3);
+    ('100000-S-001', @declarative, @flat, @course, NULL, 1, NULL, @gbp, @now, 99.99, 3),
+    ('100000-S-001', @onDemand, @flat, @halfDay, NULL, 1, NULL, @gbp, @now, 150.00, 3),
+    ('100000-S-002', @onDemand, @tiered, @hour, NULL, 1, NULL, @gbp, @now, 595, 3),
+    ('100000-S-003', @onDemand, @flat, @hour, NULL, 1, NULL, @gbp, @now, 4.35, 3),
+    ('100000-S-004', @onDemand, @flat, @hour, NULL, 3, @perServiceRecipient, @gbp, @now, 1.25, 3),
+    ('100000-S-005', @onDemand, @flat, @hour, NULL, 3, @perServiceRecipient, @gbp, @now, 205, 3);
 
 	MERGE INTO catalogue.CataloguePrices USING @AssociatedServicesPrices AS ASP ON 1 = 0
 	WHEN NOT MATCHED THEN
-	INSERT (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CataloguePriceCalculationTypeId, CurrencyCode, LastUpdated, PublishedStatusId)
+	INSERT (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CataloguePriceCalculationTypeId, CataloguePriceQuantityCalculationTypeId, CurrencyCode, LastUpdated, PublishedStatusId)
 	VALUES(    
 	ASP.CatalogueItemId,
     ASP.ProvisioningTypeId,
@@ -130,6 +131,7 @@ BEGIN
     ASP.PricingUnitId,
     ASP.TimeUnitId,
     ASP.CataloguePriceCalculationTypeId,
+    ASP.CataloguePriceQuantityCalculationTypeId,
     ASP.CurrencyCode,
     ASP.LastUpdated,
     ASP.PublishedStatusId)

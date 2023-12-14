@@ -28,7 +28,7 @@
     AssociatedServicesOnly BIT NULL,
     OrderTypeId INT NULL,
     [SolutionId] NVARCHAR(14) NULL,
-    PracticeReorganisationOdsCode nvarchar(8) NULL,
+    PracticeReorganisationOdsCode NVARCHAR(10) NULL,
     SelectedFrameworkId NVARCHAR(36) NULL,
     [DeliveryDate] DATE NULL,
     CONSTRAINT PK_Orders PRIMARY KEY (Id),
@@ -41,6 +41,7 @@
     CONSTRAINT FK_Orders_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
     CONSTRAINT FK_Orders_Solution FOREIGN KEY (SolutionId) REFERENCES catalogue.CatalogueItems(Id),
     CONSTRAINT FK_Orders_SelectedFramework FOREIGN KEY (SelectedFrameworkId) REFERENCES catalogue.Frameworks(Id),
+    CONSTRAINT FK_Orders_PraticeReorganisationRecipient FOREIGN KEY ([PracticeReorganisationOdsCode]) REFERENCES [ods_organisations].[OdsOrganisations] (Id),
     INDEX IX_Orders_IsDeleted (IsDeleted)
 ) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = ordering.Orders_History));
 

@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         private readonly IAssociatedServicesService associatedServicesService;
         private readonly IOrderItemService orderItemService;
         private readonly IOrderService orderService;
-        private readonly IRoutingService routingService;
+        private readonly IOrderQuantityService orderQuantityService;
         private readonly IContractBillingService contractBillingService;
         private readonly IRequirementsService requirementsService;
 
@@ -36,14 +36,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             IAssociatedServicesService associatedServicesService,
             IOrderItemService orderItemService,
             IOrderService orderService,
-            IRoutingService routingService,
+            IOrderQuantityService orderQuantityService,
             IContractBillingService contractBillingService,
             IRequirementsService requirementsService)
         {
             this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
             this.orderItemService = orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
-            this.routingService = routingService ?? throw new ArgumentNullException(nameof(routingService));
+            this.orderQuantityService = orderQuantityService ?? throw new ArgumentNullException(nameof(orderQuantityService));
             this.contractBillingService = contractBillingService ?? throw new ArgumentNullException(nameof(contractBillingService));
             this.requirementsService = requirementsService ?? throw new ArgumentNullException(nameof(requirementsService));
         }
@@ -95,7 +95,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         [HttpGet("select")]
         public async Task<IActionResult> SelectAssociatedServices(string internalOrgId, CallOffId callOffId, RoutingSource? source = null)
         {
-            return View(SelectViewName, await GetSelectServicesModel(internalOrgId, callOffId, source));
+            var wrapper = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var order = wrapper.Order;
+            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(
+                order.GetSolutionId(),
+                order.OrderType.ToPracticeReorganisationType);
+
+            if (order.OrderType.MergerOrSplit && associatedServices.Count == 1)
+            {
+                var catalogueItemId = associatedServices.Select(s => s.Id).First();
+                await AddOrderItems(internalOrgId, callOffId, new[] { catalogueItemId }.ToList());
+                await orderQuantityService.SetServiceRecipientQuantitiesToSameValue(order.Id, catalogueItemId, 1);
+                return RedirectToPriceOrTaskList(internalOrgId, callOffId, catalogueItemId);
+            }
+
+            var model = GetSelectServicesModel(internalOrgId, callOffId, wrapper, associatedServices, source);
+            return View(SelectViewName, model);
         }
 
         [HttpPost("select")]
@@ -103,36 +118,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             if (!ModelState.IsValid)
             {
-                return View(SelectViewName, await GetSelectServicesModel(internalOrgId, callOffId));
+                return View(SelectViewName, model);
             }
 
-            var serviceIds = model.Services?
+            var serviceIds = model.Services
                 .Where(x => x.IsSelected)
                 .Select(x => x.CatalogueItemId)
                 .ToList();
 
-            if (serviceIds?.Any() ?? false)
-            {
-                await orderItemService.AddOrderItems(internalOrgId, callOffId, serviceIds);
+            await AddOrderItems(internalOrgId, callOffId, serviceIds);
+            CatalogueItemId? catalogueItemId = serviceIds.Any()
+                ? serviceIds.First()
+                : null;
 
-                var catalogueItemId = serviceIds.First();
-
-                return RedirectToAction(
-                    nameof(PricesController.SelectPrice),
-                    typeof(PricesController).ControllerName(),
-                    new { internalOrgId, callOffId, catalogueItemId });
-            }
-
-            return RedirectToAction(
-                nameof(TaskListController.TaskList),
-                typeof(TaskListController).ControllerName(),
-                new { internalOrgId, callOffId });
+            return RedirectToPriceOrTaskList(internalOrgId, callOffId, catalogueItemId);
         }
 
         [HttpGet("edit")]
         public async Task<IActionResult> EditAssociatedServices(string internalOrgId, CallOffId callOffId)
         {
-            return View(SelectViewName, await GetSelectServicesModel(internalOrgId, callOffId, RoutingSource.TaskList));
+            var wrapper = await orderService.GetOrderThin(callOffId, internalOrgId);
+            var order = wrapper.Order;
+            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(
+                order.GetSolutionId(),
+                order.OrderType.ToPracticeReorganisationType);
+
+            var model = GetSelectServicesModel(internalOrgId, callOffId, wrapper, associatedServices, RoutingSource.TaskList);
+            return View(SelectViewName, model);
         }
 
         [HttpPost("edit")]
@@ -140,7 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             if (!ModelState.IsValid)
             {
-                return View(SelectViewName, await GetSelectServicesModel(internalOrgId, callOffId, RoutingSource.TaskList));
+                return View(SelectViewName, model);
             }
 
             var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
@@ -268,35 +280,99 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 new { internalOrgId, callOffId, model.ToAdd.First().CatalogueItemId });
         }
 
-        private async Task<SelectServicesModel> GetSelectServicesModel(
+        private async Task AddOrderItems(string internalOrgId, CallOffId callOffId, List<CatalogueItemId> serviceIds)
+        {
+            if (serviceIds.Any())
+            {
+                await orderItemService.AddOrderItems(internalOrgId, callOffId, serviceIds);
+            }
+        }
+
+        private IActionResult RedirectToPriceOrTaskList(string internalOrgId, CallOffId callOffId, CatalogueItemId? catalogueItemId)
+        {
+            if (catalogueItemId.HasValue)
+            {
+                return RedirectToAction(
+                    nameof(PricesController.SelectPrice),
+                    typeof(PricesController).ControllerName(),
+                    new { internalOrgId, callOffId, catalogueItemId });
+            }
+            else
+            {
+                return RedirectToAction(
+                    nameof(TaskListController.TaskList),
+                    typeof(TaskListController).ControllerName(),
+                    new { internalOrgId, callOffId });
+            }
+        }
+
+        private SelectServicesModel GetSelectServicesModel(
             string internalOrgId,
             CallOffId callOffId,
+            OrderWrapper wrapper,
+            List<CatalogueItem> associatedServices,
             RoutingSource? source = RoutingSource.Dashboard)
         {
-            const CatalogueItemType catalogueItemType = CatalogueItemType.AssociatedService;
-
-            var wrapper = await orderService.GetOrderThin(callOffId, internalOrgId);
             var order = wrapper.Order;
-            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(order.GetSolutionId(), true);
-
-            var route = routingService.GetRoute(
-                RoutingPoint.SelectAssociatedServicesBackLink,
-                wrapper,
-                new RouteValues(internalOrgId, callOffId) { Source = source });
 
             return new SelectServicesModel(
-                wrapper.Previous?.GetServices(catalogueItemType) ?? Enumerable.Empty<CatalogueItem>(),
-                order.GetServices(catalogueItemType),
+                order.GetServices(CatalogueItemType.AssociatedService),
                 associatedServices)
             {
                 SolutionId = order.GetSolutionId(),
-                BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
+                BackLink = GetBackLink(internalOrgId, callOffId, source),
                 InternalOrgId = internalOrgId,
-                AssociatedServicesOnly = order.AssociatedServicesOnly,
-                IsAmendment = wrapper.IsAmendment,
+                AssociatedServicesOnly = order.OrderType.AssociatedServicesOnly,
                 SolutionName = order.OrderType.AssociatedServicesOnly
                     ? wrapper.RolledUp.AssociatedServicesOnlyDetails.Solution.Name
-                    : wrapper.RolledUp.GetSolution()?.CatalogueItem.Name,
+                    : wrapper.RolledUp.GetSolutionOrderItem()?.CatalogueItem.Name,
+            };
+        }
+
+        private string GetBackLink(string internalOrgId, CallOffId callOffId, RoutingSource? source)
+        {
+            var defaultRouteValues = new
+            {
+                internalOrgId,
+                callOffId,
+            };
+
+            return source switch
+            {
+                RoutingSource.AddAssociatedServices => Url.Action(
+                    nameof(AddAssociatedServices),
+                    typeof(AssociatedServicesController).ControllerName(),
+                    new
+                    {
+                        internalOrgId,
+                        callOffId,
+                        selected = true,
+                    }),
+
+                RoutingSource.EditSolution => Url.Action(
+                    nameof(CatalogueSolutionsController.EditSolutionAssociatedServicesOnly), // Constants.Actions.EditSolutionAssociatedServicesOnly,
+                    typeof(CatalogueSolutionsController).ControllerName(),
+                    defaultRouteValues),
+
+                RoutingSource.SelectSolution => Url.Action(
+                    nameof(CatalogueSolutionsController.SelectSolutionAssociatedServicesOnly), // Constants.Actions.SelectSolutionAssociatedServicesOnly,
+                    typeof(CatalogueSolutionsController).ControllerName(),
+                    new
+                    {
+                        internalOrgId,
+                        callOffId,
+                        source = RoutingSource.SelectAssociatedServices,
+                    }),
+
+                RoutingSource.TaskList => Url.Action(
+                    nameof(TaskListController.TaskList),
+                    typeof(TaskListController).ControllerName(),
+                    defaultRouteValues),
+
+                _ => Url.Action(
+                    nameof(OrderController.Order),
+                    typeof(OrderController).ControllerName(),
+                    defaultRouteValues),
             };
         }
     }

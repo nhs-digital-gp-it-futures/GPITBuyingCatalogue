@@ -145,5 +145,35 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 i.GetQuantityForItem(actual.CatalogueItemId).Should().Be(quantity.Quantity);
             }
         }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SetServiceRecipientQuantitiesToSameValue_OrderItemInDatabase_UpdatesQuantities(
+            int quantity,
+            [Frozen] BuyingCatalogueDbContext context,
+            Order order,
+            OrderQuantityService service)
+        {
+            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+            var solution = order.OrderItems.First();
+            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            context.Orders.Add(order);
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            await service.SetServiceRecipientQuantitiesToSameValue(order.Id, solution.CatalogueItemId, quantity);
+
+            var dbOrder = await context.Orders
+                .Include(x => x.OrderRecipients)
+                    .ThenInclude(x => x.OrderItemRecipients)
+                .Include(x => x.OrderItems)
+                .FirstAsync(x => x.Id == order.Id);
+
+            dbOrder.OrderRecipients.SelectMany(or => or.OrderItemRecipients)
+                .Where(oir => oir.CatalogueItemId == solution.CatalogueItemId)
+                .All(oir => oir.Quantity == quantity)
+                .Should()
+                .BeTrue();
+        }
     }
 }

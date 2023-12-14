@@ -59,13 +59,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         {
             return OrderType.AssociatedServicesOnly
                 ? AssociatedServicesOnlyDetails.SolutionId
-                : GetSolution()?.CatalogueItemId;
+                : GetSolutionOrderItem()?.CatalogueItemId;
         }
 
         public List<CatalogueItemId> GetOrderItemIds()
         {
             var output = new List<CatalogueItemId>();
-            var solution = GetSolution();
+            var solution = GetSolutionOrderItem();
 
             if (solution != null)
             {
@@ -115,7 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             return OrderItems.FirstOrDefault(x => x.CatalogueItem.Id == catalogueItemId);
         }
 
-        public OrderItem GetSolution()
+        public OrderItem GetSolutionOrderItem()
         {
             return OrderItems
                 .FirstOrDefault(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution);

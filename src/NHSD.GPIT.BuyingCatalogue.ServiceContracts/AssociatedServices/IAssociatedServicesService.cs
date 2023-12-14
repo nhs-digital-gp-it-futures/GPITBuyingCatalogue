@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices
 
         Task<List<CatalogueItem>> GetPublishedAssociatedServicesForSupplier(int? supplierId);
 
-        Task<List<CatalogueItem>> GetPublishedAssociatedServicesForSolution(CatalogueItemId? catalogueItemId, bool excludeMergersAndSplits);
+        Task<List<CatalogueItem>> GetPublishedAssociatedServicesForSolution(CatalogueItemId? catalogueItemId, PracticeReorganisationTypeEnum? practiceReorganisationType = null);
 
         Task<CatalogueItem> GetAssociatedService(CatalogueItemId associatedServiceId);
 

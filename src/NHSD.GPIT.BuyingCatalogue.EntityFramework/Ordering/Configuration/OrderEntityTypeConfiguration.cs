@@ -88,6 +88,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                         .WithMany()
                         .HasForeignKey(x => x.SolutionId)
                         .HasConstraintName("FK_Orders_Solution");
+
+                    a.HasOne(p => p.PracticeReorganisationRecipient)
+                        .WithMany()
+                        .HasForeignKey(x => x.PracticeReorganisationOdsCode)
+                        .HasConstraintName("FK_Orders_PraticeReorganisationRecipient");
                 });
 
             builder.Navigation(o => o.AssociatedServicesOnlyDetails)

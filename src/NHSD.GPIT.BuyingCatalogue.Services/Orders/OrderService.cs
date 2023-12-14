@@ -117,6 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             var orders = await dbContext.Orders
                 .Include(x => x.OrderingParty)
                 .Include(x => x.AssociatedServicesOnlyDetails.Solution)
+                .Include(x => x.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient)
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.CatalogueItem)
                 .Include(o => o.OrderItems)

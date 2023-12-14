@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
     {
         [Theory]
         [CommonAutoData]
-        public static void WithValidArguments_PropertiesCorrectlySet(
+        public static void InProgressOrder_WithValidArguments_PropertiesCorrectlySet(
             string internalOrgId,
             AspNetUser aspNetUser,
             EntityFramework.Ordering.Models.Order order,
@@ -20,10 +20,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         {
             order.LastUpdatedByUser = aspNetUser;
 
-            var model = new OrderModel(internalOrgId, order, progress);
+            var model = new OrderModel(internalOrgId, progress, order);
 
             model.Progress.Should().BeEquivalentTo(progress);
             model.Title.Should().Be($"Order {order.CallOffId}");
+            model.OrganisationName.Should().Be(order.OrderingParty.Name);
             model.CallOffId.Should().Be(order.CallOffId);
             model.Description.Should().Be(order.Description);
             model.LastUpdatedByUserName.Should().Be(aspNetUser.FullName);
@@ -32,14 +33,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
 
         [Theory]
         [CommonAutoData]
-        public static void WithNoOrder_PropertiesCorrectlySet(
+        public static void NewOrder_WithValidArguments_PropertiesCorrectlySet(
             string internalOrgId,
-            OrderProgress progress)
+            OrderTypeEnum orderType,
+            OrderProgress progress,
+            string organisationName)
         {
-            var model = new OrderModel(internalOrgId, null, progress);
+            var model = new OrderModel(internalOrgId, orderType, progress, organisationName);
 
             model.Progress.Should().BeEquivalentTo(progress);
             model.Title.Should().Be("New order");
+            model.OrganisationName.Should().Be(organisationName);
             model.CallOffId.Should().BeEquivalentTo(default(CallOffId));
             model.Description.Should().Be(default);
         }

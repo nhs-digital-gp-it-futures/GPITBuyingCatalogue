@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
 
             OrderWrapper = orderWrapper;
 
-            SolutionId = order.GetSolution()?.CatalogueItemId;
+            SolutionId = order.GetSolutionOrderItem()?.CatalogueItemId;
             AdditionalServiceIds = order.GetAdditionalServices().Select(x => x.CatalogueItemId).ToList();
             AssociatedServiceIds = order.GetAssociatedServices().Select(x => x.CatalogueItemId).ToList();
         }

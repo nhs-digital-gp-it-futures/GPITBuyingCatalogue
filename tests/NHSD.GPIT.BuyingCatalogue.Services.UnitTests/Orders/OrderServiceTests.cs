@@ -17,6 +17,7 @@ using Newtonsoft.Json.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -1061,12 +1062,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         [InMemoryDbAutoData]
         public static async Task SetOrderPracticeReorganisationRecipient_UpdatesDatabase(
             Order order,
-            string odsCode,
+            OdsOrganisation odsOrganisation,
             [Frozen] BuyingCatalogueDbContext context,
             OrderService service)
         {
+            order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient = null;
             order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode = null;
-
+            context.OdsOrganisations.Add(odsOrganisation);
             context.Orders.Add(order);
 
             await context.SaveChangesAsync();
@@ -1074,9 +1076,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             (await context.Orders.FirstAsync(x => x.Id == order.Id)).AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode.Should().BeNull();
 
-            await service.SetOrderPracticeReorganisationRecipient(order.OrderingParty.InternalIdentifier, order.CallOffId, odsCode);
+            await service.SetOrderPracticeReorganisationRecipient(order.OrderingParty.InternalIdentifier, order.CallOffId, odsOrganisation.Id);
 
-            (await context.Orders.FirstAsync(x => x.Id == order.Id)).AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode.Should().Be(odsCode);
+            (await context.Orders.FirstAsync(x => x.Id == order.Id)).AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode.Should().Be(odsOrganisation.Id);
         }
 
         [Theory]

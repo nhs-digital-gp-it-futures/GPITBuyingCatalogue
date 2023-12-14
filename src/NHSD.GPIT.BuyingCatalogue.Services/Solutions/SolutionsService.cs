@@ -420,9 +420,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ToListAsync();
         }
 
-        public async Task<List<CatalogueItem>> GetSupplierSolutionsWithAssociatedServices(int? supplierId)
+        public async Task<List<CatalogueItem>> GetSupplierSolutionsWithAssociatedServices(int? supplierId, PracticeReorganisationTypeEnum practiceReorganisationType = PracticeReorganisationTypeEnum.None)
         {
-            return await dbContext.CatalogueItems.AsNoTracking()
+            var query = dbContext.CatalogueItems.AsNoTracking()
                 .Include(x => x.SupplierServiceAssociations).ThenInclude(x => x.AssociatedService).ThenInclude(x => x.CatalogueItem)
                 .Include(i => i.Solution)
                 .Include(i => i.CatalogueItemCapabilities).ThenInclude(sc => sc.Capability)
@@ -431,9 +431,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     && i.CatalogueItemType == CatalogueItemType.Solution
                     && i.PublishedStatus == PublicationStatus.Published
                     && i.SupplierServiceAssociations != null
-                    && i.SupplierServiceAssociations.Any(x => x.AssociatedService != null
-                        && x.AssociatedService.CatalogueItem.PublishedStatus == PublicationStatus.Published)
-                    && i.Solution.FrameworkSolutions.Select(x => x.Framework).Distinct().Any(x => !x.IsExpired))
+                    && i.Solution.FrameworkSolutions.Select(x => x.Framework).Distinct().Any(x => !x.IsExpired));
+
+            if (practiceReorganisationType != PracticeReorganisationTypeEnum.None)
+            {
+                query = query
+                    .Where(i => i.SupplierServiceAssociations.Any(x => x.AssociatedService != null
+                        && (x.AssociatedService.PracticeReorganisationType & practiceReorganisationType) == practiceReorganisationType
+                        && x.AssociatedService.CatalogueItem.PublishedStatus == PublicationStatus.Published));
+            }
+            else
+            {
+                query = query
+                    .Where(i => i.SupplierServiceAssociations.Any(x => x.AssociatedService != null
+                        && x.AssociatedService.CatalogueItem.PublishedStatus == PublicationStatus.Published));
+            }
+
+            return await query
                 .OrderBy(i => i.Name)
                 .ToListAsync();
         }

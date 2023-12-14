@@ -12,7 +12,6 @@
         EditPriceBackLink,
         MatchDeliveryDates,
         SelectAdditionalServices,
-        SelectAssociatedServicesBackLink,
         SelectPriceBackLink,
         SelectQuantity,
         SelectQuantityBackLink,
