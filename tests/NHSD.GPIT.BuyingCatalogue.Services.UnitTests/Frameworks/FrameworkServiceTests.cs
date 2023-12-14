@@ -202,14 +202,14 @@ public static class FrameworkServiceTests
     [Theory]
     [InMemoryDbAutoData]
     public static Task AddFramework_NullName_ThrowsException(FrameworkService service) => FluentActions
-        .Invoking(() => service.AddFramework(null, Enumerable.Empty<FundingType>()))
+        .Invoking(() => service.AddFramework(null, Enumerable.Empty<FundingType>(), false))
         .Should()
         .ThrowAsync<ArgumentException>();
 
     [Theory]
     [InMemoryDbAutoData]
     public static Task AddFramework_NullFundingType_ThrowsException(string name, FrameworkService service) => FluentActions
-        .Invoking(() => service.AddFramework(name, null))
+        .Invoking(() => service.AddFramework(name, null, false))
         .Should()
         .ThrowAsync<ArgumentException>();
 
@@ -227,7 +227,7 @@ public static class FrameworkServiceTests
 
         dbContext.ChangeTracker.Clear();
 
-        return await Assert.ThrowsAsync<ArgumentNullException>(() => service.UpdateFramework(id, null, Enumerable.Empty<FundingType>()));
+        return await Assert.ThrowsAsync<ArgumentNullException>(() => service.UpdateFramework(id, null, Enumerable.Empty<FundingType>(), false));
     }
 
     [Theory]
@@ -247,7 +247,7 @@ public static class FrameworkServiceTests
 
         dbContext.ChangeTracker.Clear();
 
-        await service.UpdateFramework(frameworkId, newName, fundingTypes);
+        await service.UpdateFramework(frameworkId, newName, fundingTypes, false);
 
         var framework = dbContext.Frameworks.AsNoTracking().FirstOrDefault(x => x.Id == frameworkId);
 

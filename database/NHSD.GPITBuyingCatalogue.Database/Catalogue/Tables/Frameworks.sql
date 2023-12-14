@@ -14,6 +14,7 @@
     LocalFundingOnly BIT NULL,
     FundingTypes NVARCHAR(30) NULL,
     IsExpired BIT NOT NULL DEFAULT(0),
+    SupportsFoundationSolution BIT NOT NULL DEFAULT(0),
     PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
     CONSTRAINT PK_Frameworks PRIMARY KEY (Id),
     CONSTRAINT FK_Frameworks_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers (Id),

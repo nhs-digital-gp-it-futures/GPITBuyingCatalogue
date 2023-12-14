@@ -7,6 +7,7 @@ resource "azurerm_linux_web_app_slot" "slot" {
     # Main Settings
     WEBSITES_ENABLE_APP_SERVICE_STORAGE = false
     ASPNETCORE_ENVIRONMENT              = var.aspnet_environment
+    ASPNETCORE_HTTP_PORTS               = "80"
 
     APPINSIGHTS_INSTRUMENTATIONKEY = var.instrumentation_key
 

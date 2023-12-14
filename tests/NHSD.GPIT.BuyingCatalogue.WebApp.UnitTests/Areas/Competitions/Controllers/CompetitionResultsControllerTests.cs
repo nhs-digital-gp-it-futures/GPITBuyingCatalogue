@@ -217,6 +217,7 @@ public static class CompetitionResultsControllerTests
         string internalOrgId,
         Competition competition,
         Solution solution,
+        Solution secondSolution,
         List<CompetitionSolution> competitionSolutions,
         [Frozen] Mock<ICompetitionsService> competitionsService,
         CompetitionResultsController controller)
@@ -228,6 +229,10 @@ public static class CompetitionResultsControllerTests
                 x.Solution = solution;
                 x.IsWinningSolution = true;
             });
+        competitionSolutions.ForEach(x =>
+        {
+            x.Solution ??= secondSolution;
+        });
 
         competition.CompetitionSolutions = competitionSolutions;
 

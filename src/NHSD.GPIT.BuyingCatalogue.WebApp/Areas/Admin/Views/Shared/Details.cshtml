@@ -33,7 +33,7 @@
                 <nhs-checkbox-container>
                     @for (var i = 0; i < Model.Frameworks.Count; i++)
                     {
-                        @if (Model.Frameworks[i].Name == "GP IT Futures Framework")
+                        @if (Model.Frameworks[i].SupportsFoundationSolution)
                         {
                             <nhs-checkbox asp-for="@Model.Frameworks[i].Selected"
                                           label-text="@Model.Frameworks[i].Name"
