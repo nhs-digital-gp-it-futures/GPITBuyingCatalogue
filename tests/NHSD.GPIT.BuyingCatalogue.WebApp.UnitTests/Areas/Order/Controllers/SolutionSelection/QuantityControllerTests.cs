@@ -266,7 +266,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var recipients = order.OrderRecipients.Select(
                 x => new ServiceRecipientDto(x.OdsCode, x.OdsOrganisation?.Name, x.GetQuantityForItem(orderItem.CatalogueItemId), location));
 
-            var expected = new SelectServiceRecipientQuantityModel(orderItem.CatalogueItem, orderItem.OrderItemPrice, recipients);
+            var expected = new SelectServiceRecipientQuantityModel(
+                order.OrderType,
+                order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient,
+                orderItem.CatalogueItem,
+                orderItem.OrderItemPrice,
+                recipients,
+                null);
             expected.ServiceRecipients.ForEach(x => x.InputQuantity = $"{NumberOfPatients}");
 
             model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
@@ -315,7 +321,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var recipients = order.OrderRecipients.Select(
                 x => new ServiceRecipientDto(x.OdsCode, x.OdsOrganisation?.Name, x.GetQuantityForItem(orderItem.CatalogueItemId), location));
 
-            var expected = new SelectServiceRecipientQuantityModel(orderItem.CatalogueItem, orderItem.OrderItemPrice, recipients);
+            var expected = new SelectServiceRecipientQuantityModel(
+                order.OrderType,
+                order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient,
+                orderItem.CatalogueItem,
+                orderItem.OrderItemPrice,
+                recipients,
+                null);
 
             expected.ServiceRecipients.ForEach(x => x.InputQuantity = $"{NumberOfPatients}");
 
@@ -358,7 +370,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var recipients = order.OrderRecipients.Select(
                 x => new ServiceRecipientDto(x.OdsCode, x.OdsOrganisation?.Name, x.GetQuantityForItem(orderItem.CatalogueItemId), location));
 
-            var expected = new SelectServiceRecipientQuantityModel(orderItem.CatalogueItem, orderItem.OrderItemPrice, recipients);
+            var expected = new SelectServiceRecipientQuantityModel(
+                order.OrderType,
+                order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient,
+                orderItem.CatalogueItem,
+                orderItem.OrderItemPrice,
+                recipients,
+                null);
 
             expected.ServiceRecipients.ForEach(x => x.Quantity = expectedQuantity);
 

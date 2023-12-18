@@ -44,7 +44,7 @@ BEGIN
                 (N'10072-004', N'Digital Locum',                        1, 10072, 1, CAST(N'2020-06-25T14:31:34.0466667' AS datetime2)),
                 (N'10072-006', N'Push Access',                          1, 10072, 1, CAST(N'2020-06-25T14:31:15.0166667' AS datetime2)),
                 (N'10073-009', N'Remote Consultation',                  1, 10073, 3, CAST(N'2020-04-01T12:49:33.9433333' AS datetime2)),
-    -- Additional Services
+                -- Additional Services
                 (N'10030-001A001', N'AccuRx Video Consultation',          2, 10030, 3, GETUTCDATE()),
                 (N'10007-002A001', N'Localised Referral Forms',           2, 10007, 3, GETUTCDATE()),
                 (N'10007-002A002', N'Localised Supporting Content',       2, 10007, 3, GETUTCDATE()),
@@ -62,7 +62,7 @@ BEGIN
                 (N'10052-002A004', N'SystemOne Shared Admin',             2, 10052, 3, GETUTCDATE()),
                 (N'10052-002A003', N'SystmOne Auto Planner',              2, 10052, 3, GETUTCDATE()),
                 (N'10052-002A005', N'TPP Video Conferencing with Airmid', 2, 10052, 3, GETUTCDATE()),
-    -- Associated Services
+                -- Associated Services
                 (N'10046-S-001',  N'Consultancy',                                                                        3, 10046, 3, GETUTCDATE()),
                 (N'10046-S-007',  N'Data Import Activity',                                                               3, 10046, 3, GETUTCDATE()),
                 (N'10046-S-010',  N'Database creation/software initialisation',                                          3, 10046, 3, GETUTCDATE()),
@@ -91,6 +91,8 @@ BEGIN
                 (N'10000-S-039',  N'Migration',                                                                          3, 10000, 3, GETUTCDATE()),
                 (N'10000-S-069',  N'Doc Management – Migration',                                                         3, 10000, 3, GETUTCDATE()),
                 (N'10000-S-040',  N'Practice Reorganisation',                                                            3, 10000, 3, GETUTCDATE()),
+                (N'10000-S-042',  N'Merger',                                                                             3, 10000, 3, GETUTCDATE()),
+                (N'10000-S-043',  N'Split',                                                                              3, 10000, 3, GETUTCDATE()),
                 (N'10000-S-041',  N'Project Management',                                                                 3, 10000, 3, GETUTCDATE()),
                 (N'10000-S-007',  N'Automated Arrivals – Specialist Cabling',                                            3, 10000, 3, GETUTCDATE()),
                 (N'10000-S-003',  N'Training Day at Practice',                                                           3, 10000, 3, GETUTCDATE()),

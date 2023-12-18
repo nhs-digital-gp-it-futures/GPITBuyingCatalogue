@@ -7,7 +7,7 @@
     const RoutingSource source = RoutingSource.TaskList;
 }
 
-<nhs-table label-text="@Model.Name" >
+<nhs-table label-text="@Model.Name">
     <nhs-table-column>Section</nhs-table-column>
     <nhs-table-column>Status</nhs-table-column>
     <nhs-table-column>Action</nhs-table-column>
@@ -69,9 +69,10 @@
         <nhs-table-cell>
             @if (Model.QuantityStatus != TaskProgress.CannotStart)
             {
-                if (Model.IsAmendment && Model.FromPreviousRevision && !Model.HasNewRecipients && Model.QuantityStatus != TaskProgress.InProgress)
+                if (Model.QuantityStatus != TaskProgress.InProgress
+                && Model.IsAmendment && Model.FromPreviousRevision && !Model.HasNewRecipients)
                 {
-                    <a id="Quantity_@Model.CatalogueItemId" 
+                    <a id="Quantity_@Model.CatalogueItemId"
                        href="@Url.Action(
                                  nameof(QuantityController.ViewOrderItemQuantity),
                                  typeof(QuantityController).ControllerName(),
@@ -79,11 +80,23 @@
                 }
                 else
                 {
-                <a id="Quantity_@Model.CatalogueItemId"
-                   href="@Url.Action(
+                    if (Model.OrderType.MergerOrSplit && Model.QuantityStatus == TaskProgress.Completed)
+                    {
+                        <a id="Quantity_@Model.CatalogueItemId"
+                           href="@Url.Action(
+                                 nameof(QuantityController.SelectQuantity),
+                                 typeof(QuantityController).ControllerName(),
+                                 new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, source })">View</a>
+                    }
+                    else
+                    {
+                        <a id="Quantity_@Model.CatalogueItemId"
+                           href="@Url.Action(
                                  nameof(QuantityController.SelectQuantity),
                                  typeof(QuantityController).ControllerName(),
                                  new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, source })">Edit</a>
+                        
+                    }
                 }
             }
         </nhs-table-cell>

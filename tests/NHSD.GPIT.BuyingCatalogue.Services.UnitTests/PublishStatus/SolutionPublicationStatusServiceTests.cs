@@ -71,7 +71,7 @@ public static class SolutionPublicationStatusServiceTests
         SolutionPublicationStatusService service)
     {
         associatedServicesService
-            .Setup(x => x.GetPublishedAssociatedServicesForSolution(catalogueItemId, false))
+            .Setup(x => x.GetPublishedAssociatedServicesForSolution(catalogueItemId, null))
             .ReturnsAsync(associatedServices);
 
         associatedServicesService
@@ -99,7 +99,7 @@ public static class SolutionPublicationStatusServiceTests
         referencedSolution.PublishedStatus = PublicationStatus.Published;
 
         associatedServicesService
-            .Setup(x => x.GetPublishedAssociatedServicesForSolution(catalogueItemId, false))
+            .Setup(x => x.GetPublishedAssociatedServicesForSolution(catalogueItemId, null))
             .ReturnsAsync(associatedServices);
 
         associatedServicesService

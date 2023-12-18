@@ -316,13 +316,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(true)]
-        [InMemoryDbInlineAutoData(false)]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.None)]
+        [InMemoryDbInlineAutoData(null)]
         public static async Task GetPublishedAssociatedServicesForSolution_NullCatalogueItemId_ReturnsEmptySet(
-            bool excludeMergersAndSplits,
+            PracticeReorganisationTypeEnum? practiceReorganisationType,
             AssociatedServicesService service)
         {
-            var result = await service.GetPublishedAssociatedServicesForSolution(null, excludeMergersAndSplits);
+            var result = await service.GetPublishedAssociatedServicesForSolution(null, practiceReorganisationType);
 
             result.Should().NotBeNull();
             result.Should().BeEmpty();
@@ -333,7 +333,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
         [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Merger)]
         [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split)]
         [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split | PracticeReorganisationTypeEnum.Merger)]
-        public static async Task GetPublishedAssociatedServicesForSolution_NotExcludingMergersAndSplits_WithReturnsExpectedResult(
+        public static async Task GetPublishedAssociatedServicesForSolution_WithNoPracticeReorganisationType_ReturnsAllServices(
             PracticeReorganisationTypeEnum reorganisationType,
             [Frozen] BuyingCatalogueDbContext context,
             CatalogueItem solution,
@@ -349,18 +349,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
             context.SupplierServiceAssociations.Add(new SupplierServiceAssociation(solution.Id, associatedService.Id));
 
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
 
-            var result = await service.GetPublishedAssociatedServicesForSolution(solution.Id, false);
+            var result = await service.GetPublishedAssociatedServicesForSolution(solution.Id);
 
             result.Should().NotBeNull();
-            result.Should().BeEquivalentTo(new[] { associatedService });
+            result.Select(r => r.Id).Should().BeEquivalentTo(new[] { associatedService.Id });
         }
 
         [Theory]
         [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Merger)]
         [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split)]
         [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split | PracticeReorganisationTypeEnum.Merger)]
-        public static async Task GetPublishedAssociatedServicesForSolution_ExcludingMergersAndSplits_WithReturnsExpectedResult(
+        public static async Task GetPublishedAssociatedServicesForSolution_WithPracticeReorganisationTypeNone_ExcludesMergersAndSplits(
             PracticeReorganisationTypeEnum reorganisationType,
             [Frozen] BuyingCatalogueDbContext context,
             CatalogueItem solution,
@@ -376,11 +377,40 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
             context.SupplierServiceAssociations.Add(new SupplierServiceAssociation(solution.Id, associatedService.Id));
 
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
 
-            var result = await service.GetPublishedAssociatedServicesForSolution(solution.Id, true);
+            var result = await service.GetPublishedAssociatedServicesForSolution(solution.Id, PracticeReorganisationTypeEnum.None);
 
             result.Should().NotBeNull();
             result.Should().BeEquivalentTo(Array.Empty<CatalogueItem>());
+        }
+
+        [Theory]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Merger)]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split)]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split | PracticeReorganisationTypeEnum.Merger)]
+        public static async Task GetPublishedAssociatedServicesForSolution_WithPracticeReorganisationType_ReturnsMatchingServices(
+            PracticeReorganisationTypeEnum reorganisationType,
+            [Frozen] BuyingCatalogueDbContext context,
+            CatalogueItem solution,
+            CatalogueItem associatedService,
+            AssociatedServicesService service)
+        {
+            solution.CatalogueItemType = CatalogueItemType.Solution;
+            associatedService.CatalogueItemType = CatalogueItemType.AssociatedService;
+            associatedService.PublishedStatus = PublicationStatus.Published;
+
+            context.CatalogueItems.AddRange(solution, associatedService);
+            context.AssociatedServices.Add(new AssociatedService { CatalogueItem = associatedService, PracticeReorganisationType = reorganisationType });
+            context.SupplierServiceAssociations.Add(new SupplierServiceAssociation(solution.Id, associatedService.Id));
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var result = await service.GetPublishedAssociatedServicesForSolution(solution.Id, reorganisationType);
+
+            result.Should().NotBeNull();
+            result.Select(r => r.Id).Should().BeEquivalentTo(new[] { associatedService.Id });
         }
     }
 }

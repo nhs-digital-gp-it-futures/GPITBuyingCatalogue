@@ -16,7 +16,7 @@
     var additionalServices = Model.RolledUp.GetAdditionalServices().ToList();
     var associatedServices = Model.RolledUp.GetAssociatedServices().ToList();
 
-    var orderSolution = Model.Order.OrderType.AssociatedServicesOnly ? Model.Order.AssociatedServicesOnlyDetails.Solution : Model.Order.GetSolution()?.CatalogueItem;
+    var orderSolution = Model.Order.OrderType.AssociatedServicesOnly ? Model.Order.AssociatedServicesOnlyDetails.Solution : Model.Order.GetSolutionOrderItem()?.CatalogueItem;
     var frameworks = orderSolution != null ? orderSolution?.Solution?.FrameworkSolutions?.Select(x => x.Framework).Distinct().ToList() : Enumerable.Empty<NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.Framework>().ToList();
 
     var contractTerm = Model.Order.MaximumTerm.HasValue ? $" ({Model.Order.MaximumTerm} months)" : " (estimated)";

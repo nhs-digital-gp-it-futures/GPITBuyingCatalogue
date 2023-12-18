@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 
             var orderProgress = await orderProgressService.GetOrderProgress(internalOrgId, callOffId);
 
-            var orderModel = new OrderModel(internalOrgId, order, orderProgress)
+            var orderModel = new OrderModel(internalOrgId, orderProgress, order)
             {
                 DescriptionUrl = Url.Action(
                     nameof(OrderDescriptionController.OrderDescription),
@@ -127,7 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         {
             var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
-            var orderModel = new OrderModel(internalOrgId, null, new OrderProgress(), organisation.Name)
+            var orderModel = new OrderModel(internalOrgId, orderType, new OrderProgress(), organisation.Name)
             {
                 DescriptionUrl = Url.Action(
                     nameof(OrderDescriptionController.NewOrderDescription),

@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         {
             var model = new SelectSolutionModel(order, solutions, additionalServices);
 
-            model.AssociatedServicesOnly.Should().Be(order.OrderType.AssociatedServicesOnly);
+            model.OrderType.Should().Be(order.OrderType);
             model.CallOffId.Should().Be(order.CallOffId);
             model.SupplierName.Should().Be(order.Supplier.Name);
 

@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             model.AdditionalServiceIds.Count.Should().Be(1);
             model.AssociatedServiceIds.Count.Should().Be(1);
 
-            model.SolutionId.Should().Be(order.GetSolution()?.CatalogueItemId);
+            model.SolutionId.Should().Be(order.GetSolutionOrderItem()?.CatalogueItemId);
         }
 
         [Theory]

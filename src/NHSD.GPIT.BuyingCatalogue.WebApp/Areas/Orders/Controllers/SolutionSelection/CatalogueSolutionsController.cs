@@ -176,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             }
 
             var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
-            var solution = order.GetSolution();
+            var solution = order.GetSolutionOrderItem();
             var catalogueItemId = CatalogueItemId.ParseExact(model.SelectedCatalogueSolutionId);
 
             if (solution.CatalogueItemId == catalogueItemId)
@@ -251,7 +251,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         public async Task<IActionResult> ConfirmSolutionChanges(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId)
         {
             var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
-            var solution = order.GetSolution();
+            var solution = order.GetSolutionOrderItem();
             var newSolution = await solutionsService.GetSolutionThin(catalogueItemId);
 
             var toAdd = new[]
@@ -421,7 +421,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var solutionId = order.GetSolutionId();
 
             var solutions = order.OrderType.AssociatedServicesOnly
-                ? await solutionsService.GetSupplierSolutionsWithAssociatedServices(order.SupplierId)
+                ? await solutionsService.GetSupplierSolutionsWithAssociatedServices(order.SupplierId, order.OrderType.ToPracticeReorganisationType)
                 : await solutionsService.GetSupplierSolutions(order.SupplierId);
 
             var additionalServices = includeAdditionalServices
