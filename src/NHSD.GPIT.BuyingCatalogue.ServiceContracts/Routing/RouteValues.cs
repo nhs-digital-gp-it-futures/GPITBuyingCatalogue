@@ -30,9 +30,5 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing
         public RoutingSource? Source { get; set; }
 
         public int? SelectedPriceId { get; set; }
-
-        public string RecipientIds { get; set; }
-
-        public bool FromPreviousRevision { get; set; }
     }
 }

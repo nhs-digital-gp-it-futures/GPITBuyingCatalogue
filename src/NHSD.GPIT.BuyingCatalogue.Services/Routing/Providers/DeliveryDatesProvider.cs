@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 };
             }
 
-            var solution = order.GetSolution();
+            var solution = order.GetSolutionOrderItem();
 
             if (order.AssociatedServicesOnly
                 || solution == null)

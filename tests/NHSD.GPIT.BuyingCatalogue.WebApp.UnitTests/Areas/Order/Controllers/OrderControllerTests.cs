@@ -80,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
             orderServiceMock.VerifyAll();
             orderProgressService.VerifyAll();
 
-            var expected = new OrderModel(internalOrgId, order, orderTaskList)
+            var expected = new OrderModel(internalOrgId, orderTaskList, order)
             {
                 DescriptionUrl = "testUrl",
             };
@@ -231,7 +231,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
 
             organisationsService.VerifyAll();
 
-            var expected = new OrderModel(internalOrgId, null, new OrderProgress(), organisation.Name)
+            var expected = new OrderModel(internalOrgId, orderType, new OrderProgress(), organisation.Name)
             {
                 DescriptionUrl = "testUrl",
             };

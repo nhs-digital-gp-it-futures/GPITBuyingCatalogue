@@ -4,6 +4,7 @@ using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
@@ -28,10 +29,15 @@ public class SelectServiceRecipientQuantityModel : NavBaseModel
         IPrice price,
         IEnumerable<ServiceRecipientDto> serviceRecipients)
     {
-        ItemName = catalogueItem.Name;
-        ItemType = catalogueItem.CatalogueItemType.Name();
+        Caption = catalogueItem.Name;
+        Title = string.Format(TitleText, catalogueItem.CatalogueItemType.Name());
+        Advice = price.ProvisioningType switch
+        {
+            ProvisioningType.Patient => AdviceTextPatient,
+            ProvisioningType.PerServiceRecipient => AdviceTextServiceRecipient,
+            _ => AdviceText,
+        };
         ProvisioningType = price.ProvisioningType;
-        RangeDefinition = price.RangeDescription;
         BillingPeriod = price.BillingPeriod;
 
         ServiceRecipients = (serviceRecipients ?? Enumerable.Empty<ServiceRecipientDto>())
@@ -40,35 +46,31 @@ public class SelectServiceRecipientQuantityModel : NavBaseModel
     }
 
     public SelectServiceRecipientQuantityModel(
+        OrderType orderType,
+        OdsOrganisation practiceReorganisationRecipient,
         CatalogueItem catalogueItem,
         IPrice price,
         IEnumerable<ServiceRecipientDto> serviceRecipients,
         IEnumerable<ServiceRecipientDto> previousRecipients)
         : this(catalogueItem, price, serviceRecipients)
     {
+        OrderType = orderType;
+        PracticeReorganisationRecipient = $"{practiceReorganisationRecipient?.Name} ({practiceReorganisationRecipient?.Id})";
+        if (orderType.MergerOrSplit)
+        {
+            Advice = "Review the quantity you’ll be ordering based on the Service Recipients you’ve selected.";
+        }
+
         PreviouslySelected = previousRecipients?
             .Select(CreateServiceRecipient)
             .ToArray() ?? Array.Empty<ServiceRecipientQuantityModel>();
     }
 
-    public override string Title => string.Format(TitleText, ItemType);
+    public OrderType OrderType { get; set; }
 
-    public override string Caption => ItemName;
-
-    public override string Advice => ProvisioningType switch
-    {
-        ProvisioningType.Patient => AdviceTextPatient,
-        ProvisioningType.PerServiceRecipient => AdviceTextServiceRecipient,
-        _ => AdviceText,
-    };
-
-    public string ItemName { get; set; }
-
-    public string ItemType { get; set; }
+    public string PracticeReorganisationRecipient { get; set; }
 
     public ProvisioningType ProvisioningType { get; set; }
-
-    public string RangeDefinition { get; set; }
 
     public TimeUnit? BillingPeriod { get; set; }
 

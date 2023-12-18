@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using MoreLinq.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 
@@ -7,72 +9,82 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 {
     public sealed class OrderModel : OrderingBaseModel
     {
-        private readonly Dictionary<OrderSummaryField, string> amendmentDescriptions = new()
+        private static readonly KeyValuePair<OrderSummaryField, string>[] MergerSplitSpecificDescriptions =
         {
-            { OrderSummaryField.OrderDescription, "Update the description of this order if needed." },
-            { OrderSummaryField.OrderingParty, "Change the primary contact for this order if needed." },
-            { OrderSummaryField.Supplier, "Select a different supplier contact if needed." },
-            { OrderSummaryField.CommencementDate, "Review the commencement date, maximum term and initial period for this contract." },
-            { OrderSummaryField.ServiceRecipients, "Select the organisations you want to receive this solution." },
-            { OrderSummaryField.SolutionsAndServices, "Select a solution or services, prices and quantities." },
-            { OrderSummaryField.PlannedDeliveryDates, "Enter the planned delivery dates for the items you're ordering." },
-            { OrderSummaryField.FundingSources, "Allocate funding sources for items in this order." },
-            { OrderSummaryField.ImplementationPlan, "Review the default milestones that will act as payment triggers and create bespoke ones." },
-            { OrderSummaryField.DataProcessing, "Download the data processing information template for the supplier to complete." },
-            { OrderSummaryField.ReviewAndComplete, "Check the information you’ve provided is correct and complete this amended order." },
+            new(OrderSummaryField.SolutionsAndServices, "Select the solution involved, confirm the price and review the quantity you’re ordering."),
         };
 
-        private readonly Dictionary<OrderSummaryField, string> orderDescriptions = new()
+        private static readonly KeyValuePair<OrderSummaryField, string>[] AmendmentSpecificDescriptions =
         {
-            { OrderSummaryField.OrderDescription, "Provide a description of your order." },
-            { OrderSummaryField.OrderingParty, "Provide information about the primary contact for your order." },
-            { OrderSummaryField.Supplier, "Find the supplier you want to order from and select a supplier contact." },
-            { OrderSummaryField.CommencementDate, "Provide the commencement date, the length of the contract and its initial period." },
-            { OrderSummaryField.ServiceRecipients, "Select the organisations you want to receive this solution." },
-            { OrderSummaryField.SolutionsAndServices, "Select a solution or services, prices and quantities." },
-            { OrderSummaryField.PlannedDeliveryDates, "Enter the planned delivery dates for the items you're ordering." },
-            { OrderSummaryField.FundingSources, "Review how you’ll be paying for your order." },
-            { OrderSummaryField.ImplementationPlan, "Review the default milestones that will act as payment triggers and create bespoke ones." },
-            { OrderSummaryField.AssociatedServicesBilling, "Review the default milestones, create bespoke ones and add specific requirements." },
-            { OrderSummaryField.DataProcessing, "Download the data processing information template for the supplier to complete." },
-            { OrderSummaryField.ReviewAndComplete, "Check the information you’ve provided is correct and complete your order." },
+            new(OrderSummaryField.OrderDescription, "Update the description of this order if needed."),
+            new(OrderSummaryField.OrderingParty, "Change the primary contact for this order if needed."),
+            new(OrderSummaryField.Supplier, "Select a different supplier contact if needed."),
+            new(OrderSummaryField.CommencementDate, "Review the commencement date, maximum term and initial period for this contract."),
+            new(OrderSummaryField.FundingSources, "Allocate funding sources for items in this order."),
+            new(OrderSummaryField.ReviewAndComplete, "Check the information you’ve provided is correct and complete this amended order."),
+        };
+
+        private static readonly KeyValuePair<OrderSummaryField, string>[] DefaultDescriptions =
+        {
+            new(OrderSummaryField.OrderDescription, "Provide a description of your order."),
+            new(OrderSummaryField.OrderingParty, "Provide information about the primary contact for your order."),
+            new(OrderSummaryField.Supplier, "Find the supplier you want to order from and select a supplier contact."),
+            new(OrderSummaryField.CommencementDate, "Provide the commencement date, the length of the contract and its initial period."),
+            new(OrderSummaryField.ServiceRecipients, "Select the organisations you want to receive this solution."),
+            new(OrderSummaryField.SolutionsAndServices, "Select a solution or services, prices and quantities."),
+            new(OrderSummaryField.PlannedDeliveryDates, "Enter the planned delivery dates for the items you're ordering."),
+            new(OrderSummaryField.FundingSources, "Review how you’ll be paying for your order."),
+            new(OrderSummaryField.ImplementationPlan, "Review the default milestones that will act as payment triggers and create bespoke ones."),
+            new(OrderSummaryField.AssociatedServicesBilling, "Review the default milestones, create bespoke ones and add specific requirements."),
+            new(OrderSummaryField.DataProcessing, "Download the data processing information template for the supplier to complete."),
+            new(OrderSummaryField.ReviewAndComplete, "Check the information you’ve provided is correct and complete your order."),
         };
 
         public OrderModel(
             string internalOrgId,
-            Order order,
+            OrderType orderType,
             OrderProgress orderSections,
-            string organisationName = "")
+            string organisationName)
+            : this(internalOrgId, orderSections)
+        {
+            Title = "New order";
+            TitleAdvice = "You must provide an order description before a unique ID is created for this order.";
+            OrganisationName = organisationName;
+            Descriptions = BuildDescriptions(orderType, false);
+        }
+
+        public OrderModel(
+            string internalOrgId,
+            OrderProgress orderSections,
+            Order order)
+            : this(internalOrgId, orderSections)
+        {
+            Title = $"Order {order.CallOffId}";
+            CallOffId = order.CallOffId;
+            IsAmendment = order.IsAmendment;
+            TitleAdvice = order.IsAmendment
+                ? "You can amend parts of this order as required and will need to review other parts that cannot be changed. Your amendments will be saved as you progress through each section."
+                : "Complete the following steps to create an order summary.";
+            Description = order.Description;
+            OrganisationName = order.OrderingParty.Name;
+
+            LastUpdatedByUserName = order.LastUpdatedByUser.FullName;
+            LastUpdated = order.LastUpdated;
+            ShowSelectFrameworkPage = string.IsNullOrWhiteSpace(order.SelectedFrameworkId);
+            Descriptions = BuildDescriptions(order.OrderType, order.IsAmendment);
+        }
+
+        private OrderModel(
+            string internalOrgId,
+            OrderProgress orderSections)
         {
             InternalOrgId = internalOrgId;
             Progress = orderSections;
-
-            if (order is null)
-            {
-                Title = "New order";
-                TitleAdvice = "You must provide an order description before a unique ID is created for this order.";
-                OrganisationName = organisationName;
-            }
-            else
-            {
-                Title = $"Order {order.CallOffId}";
-                CallOffId = order.CallOffId;
-                IsAmendment = order.IsAmendment;
-                TitleAdvice = order.IsAmendment
-                    ? "You can amend parts of this order as required and will need to review other parts that cannot be changed. Your amendments will be saved as you progress through each section."
-                    : "Complete the following steps to create an order summary.";
-                Description = order.Description;
-                OrganisationName = order.OrderingParty.Name;
-
-                LastUpdatedByUserName = order.LastUpdatedByUser.FullName;
-                LastUpdated = order.LastUpdated;
-                ShowSelectFrameworkPage = string.IsNullOrWhiteSpace(order.SelectedFrameworkId);
-            }
         }
 
         public CallOffId CallOffId { get; set; }
 
-        public bool IsAmendment { get; set; }
+        public bool IsAmendment { get; }
 
         public string Description { get; set; }
 
@@ -94,15 +106,40 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public bool ShowSelectFrameworkPage { get; set; }
 
-        public string StatusDescription(OrderSummaryField field, bool isAmendment)
-        {
-            var descriptions = isAmendment
-                ? amendmentDescriptions
-                : orderDescriptions;
+        private ReadOnlyDictionary<OrderSummaryField, string> Descriptions { get; }
 
-            return descriptions.ContainsKey(field)
-                ? descriptions[field]
+        public string StatusDescription(OrderSummaryField field)
+        {
+            return Descriptions.ContainsKey(field)
+                ? Descriptions[field]
                 : string.Empty;
+        }
+
+        private static void Apply(
+            Dictionary<OrderSummaryField, string> descriptions,
+            IEnumerable<KeyValuePair<OrderSummaryField, string>> overrideDescriptions)
+        {
+            foreach (var item in overrideDescriptions)
+            {
+                descriptions[item.Key] = item.Value;
+            }
+        }
+
+        private ReadOnlyDictionary<OrderSummaryField, string> BuildDescriptions(OrderType orderType, bool isAmendment)
+        {
+            var descriptions = DefaultDescriptions.ToDictionary();
+
+            if (orderType.MergerOrSplit)
+            {
+                Apply(descriptions, MergerSplitSpecificDescriptions);
+            }
+
+            if (isAmendment)
+            {
+                Apply(descriptions, AmendmentSpecificDescriptions);
+            }
+
+            return descriptions.AsReadOnly();
         }
     }
 }

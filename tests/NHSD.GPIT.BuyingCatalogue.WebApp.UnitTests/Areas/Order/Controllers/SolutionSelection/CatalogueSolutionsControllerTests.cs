@@ -273,7 +273,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .ReturnsAsync(new OrderWrapper(order));
 
             mockSolutionsService
-                .Setup(x => x.GetSupplierSolutionsWithAssociatedServices(order.SupplierId))
+                .Setup(x => x.GetSupplierSolutionsWithAssociatedServices(order.SupplierId, order.OrderType.ToPracticeReorganisationType))
                 .ReturnsAsync(supplierSolutions);
 
             var result = await controller.SelectSolutionAssociatedServicesOnly(internalOrgId, callOffId, RoutingSource.SelectAssociatedServices);
@@ -310,7 +310,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .ReturnsAsync(new OrderWrapper(order));
 
             mockSolutionsService
-                .Setup(x => x.GetSupplierSolutionsWithAssociatedServices(order.SupplierId))
+                .Setup(x => x.GetSupplierSolutionsWithAssociatedServices(order.SupplierId, order.OrderType.ToPracticeReorganisationType))
                 .ReturnsAsync(supplierSolutions);
 
             var result = await controller.SelectSolutionAssociatedServicesOnly(internalOrgId, callOffId);
@@ -348,7 +348,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .ReturnsAsync(new OrderWrapper(order));
 
             mockSolutionsService
-                .Setup(x => x.GetSupplierSolutionsWithAssociatedServices(order.SupplierId))
+                .Setup(x => x.GetSupplierSolutionsWithAssociatedServices(order.SupplierId, order.OrderType.ToPracticeReorganisationType))
                 .ReturnsAsync(supplierSolutions);
 
             controller.ModelState.AddModelError("key", "errorMessage");
@@ -594,7 +594,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .ReturnsAsync(new OrderWrapper(order));
 
             mockSolutionsService
-                .Setup(x => x.GetSupplierSolutionsWithAssociatedServices(order.SupplierId))
+                .Setup(x => x.GetSupplierSolutionsWithAssociatedServices(order.SupplierId, order.OrderType.ToPracticeReorganisationType))
                 .ReturnsAsync(solutions);
 
             var result = await controller.EditSolutionAssociatedServicesOnly(internalOrgId, order.CallOffId);

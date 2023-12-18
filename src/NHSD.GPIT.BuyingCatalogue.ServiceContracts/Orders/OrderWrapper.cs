@@ -134,6 +134,14 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
                 });
             }
 
+            if (Order.OrderType.MergerOrSplit)
+            {
+                Order.OrderItems.ToList().ForEach(i =>
+                {
+                    newRecipient.SetQuantityForItem(i.CatalogueItemId, 1);
+                });
+            }
+
             return newRecipient;
         }
 

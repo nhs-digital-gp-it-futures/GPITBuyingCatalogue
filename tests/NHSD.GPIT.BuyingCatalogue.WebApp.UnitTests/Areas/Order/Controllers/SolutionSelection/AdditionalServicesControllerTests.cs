@@ -116,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 AssociatedServicesOnly = order.AssociatedServicesOnly,
                 SolutionName = order.AssociatedServicesOnly
                     ? orderWrapper.RolledUp.AssociatedServicesOnlyDetails.Solution.Name
-                    : orderWrapper.RolledUp.GetSolution()?.CatalogueItem.Name,
+                    : orderWrapper.RolledUp.GetSolutionOrderItem()?.CatalogueItem.Name,
                 SolutionId = solutionId,
             };
 
@@ -260,7 +260,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 AssociatedServicesOnly = order.AssociatedServicesOnly,
                 SolutionName = order.AssociatedServicesOnly
                     ? orderWrapper.RolledUp.AssociatedServicesOnlyDetails.Solution.Name
-                    : orderWrapper.RolledUp.GetSolution()?.CatalogueItem.Name,
+                    : orderWrapper.RolledUp.GetSolutionOrderItem()?.CatalogueItem.Name,
                 SolutionId = solutionId,
             };
 
