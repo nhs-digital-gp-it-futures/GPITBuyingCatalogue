@@ -27,44 +27,15 @@
 <meta name="googlebot" content="noindex">
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
-@if (Context.Items.TryGetValue(CatalogueCookies.UseAnalytics, out var useAnalytics) && useAnalytics is true)
+@if (Context.Items.TryGetValue(CatalogueCookies.UseAnalytics, out var useAnalytics) && useAnalytics is true && !string.IsNullOrWhiteSpace(settings?.GoogleAnalytics?.Id))
 {
-    <!-- Hotjar tracking code -->
-    <script id="hotjar">
-        (function(h,o,t,j,a,r){
-            h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-            h._hjSettings={hjid:@settings.Hotjar.Id,hjsv:6};
-            a=o.getElementsByTagName('head')[0];
-            r=o.createElement('script');r.async=1;
-            r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-            a.appendChild(r);
-        })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=@settings.GoogleAnalytics.Id"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', '@settings.GoogleAnalytics.Id');
     </script>
-
-    static string ToAdobeAnalyticsPageName(string pageName) => !string.IsNullOrEmpty(pageName) ? pageName.Kebaberize().ToLowerInvariant() : "Unknown";
-
-    // The only view where PageName is currently set explicitly is Home, which has to be set to 'home', hence the use of
-    // ViewBag. If additional views need an explicit page name (rather than relying on the title) then it will make
-    // sense to introduce a new model or updated base view model (see also comment below regarding categories).
-    var pageName = $"{settings.Adobe.ProgrammeArea}:{ToAdobeAnalyticsPageName(ViewBag.PageName ?? ViewBag.Title)}";
-
-    // Additional work may be required to either generate category data programatically or to update each view with
-    // the desired categories, if it is determined that categorization is necessary to make the best use of analytics
-    // (in which case an updated base view model may be required).
-    <script id="adobe-analytics-data">window.digitalData=
-        { "page": {
-            "pageInfo": {
-                "pageName": "@pageName"
-                },
-            "category": {
-                "primaryCategory": "",
-                "subCategory1": "",
-                "subCategory2": "",
-                "subCategory3": ""
-                }
-            },
-       };
-    </script>
-
-    <script id="adobe-analytics" src="@settings.Adobe.ScriptSource" async></script>
 }
