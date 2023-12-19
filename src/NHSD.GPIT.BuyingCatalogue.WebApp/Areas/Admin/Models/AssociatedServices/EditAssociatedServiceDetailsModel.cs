@@ -23,6 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
             OrderGuidance = associatedServiceItem.AssociatedService.OrderGuidance;
             PracticeMerger = (associatedServiceItem.AssociatedService.PracticeReorganisationType & PracticeReorganisationTypeEnum.Merger) == PracticeReorganisationTypeEnum.Merger;
             PracticeSplit = (associatedServiceItem.AssociatedService.PracticeReorganisationType & PracticeReorganisationTypeEnum.Split) == PracticeReorganisationTypeEnum.Split;
+            CataloguePrices = associatedServiceItem.CataloguePrices;
             SolutionMergerAndSplits = list;
         }
 
@@ -44,6 +45,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
         public string OrderGuidance { get; set; }
 
         public bool PracticeSplit { get; set; }
+
+        public ICollection<CataloguePrice> CataloguePrices { get; set; }
 
         public bool PracticeMerger { get; set; }
 

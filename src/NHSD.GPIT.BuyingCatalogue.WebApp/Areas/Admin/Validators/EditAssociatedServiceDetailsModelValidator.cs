@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using FluentValidation;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices;
 
@@ -42,14 +43,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
                 })
                 .WithMessage((_, y) => "{Message} {Solutions}")
                 .OverridePropertyName("practice-reorganisation");
+
+            RuleFor(m => m)
+                .Must(model => model.PracticeReorganisation != PracticeReorganisationTypeEnum.None ?
+                    HaveCorrectProvisioningAndCalculationTypes(model)
+                    && NotHaveTieredPrices(model)
+                    : true)
+                .WithMessage("This Associated Service has invalid price types for mergers and splits.You must edit the price types first")
+                .OverridePropertyName("practice-reorganisation");
         }
 
         private bool NotBeADuplicateServiceName(EditAssociatedServiceDetailsModel model)
         {
             return !associatedServicesService.AssociatedServiceExistsWithNameForSupplier(
-                model.Name,
-                model.SupplierId,
-                model.Id.HasValue ? model.Id.Value : default).GetAwaiter().GetResult();
+            model.Name,
+            model.SupplierId,
+            model.Id.HasValue ? model.Id.Value : default).GetAwaiter().GetResult();
         }
+
+        private bool HaveCorrectProvisioningAndCalculationTypes(EditAssociatedServiceDetailsModel model) =>
+            model.CataloguePrices.All(x =>
+            x.ProvisioningType == (ProvisioningType.Declarative | ProvisioningType.PerServiceRecipient)
+            && x.CataloguePriceCalculationType == CataloguePriceCalculationType.Volume);
+
+        private bool NotHaveTieredPrices(EditAssociatedServiceDetailsModel model) =>
+            model.CataloguePrices.All(x =>
+            x.CataloguePriceType != CataloguePriceType.Tiered);
     }
 }
