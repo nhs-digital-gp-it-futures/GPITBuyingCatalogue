@@ -156,6 +156,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var model = new AddEditFlatListPriceModel(associatedService)
             {
                 BackLink = Url.Action(nameof(ListPriceType), new { solutionId, associatedServiceId }),
+                PracticeReorganisation = associatedService.AssociatedService.PracticeReorganisationType,
             };
 
             return View("ListPrices/AddEditFlatListPrice", model);
@@ -385,6 +386,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new AddEditFlatListPriceModel(associatedService, price)
             {
+                PracticeReorganisation = associatedService.AssociatedService.PracticeReorganisationType,
                 BackLink = Url.Action(nameof(Index), new { solutionId, associatedServiceId }),
                 DeleteListPriceUrl = Url.Action(
                     nameof(DeleteListPrice),
