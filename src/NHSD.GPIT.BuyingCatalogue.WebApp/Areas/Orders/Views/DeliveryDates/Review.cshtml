@@ -1,9 +1,19 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates.ReviewModel
 @{
     ViewBag.Title = "Review planned delivery dates";
+    var mergerSplit = Model.OrderType.MergerOrSplit && Model.AssociatedServiceIds.Count == 1;
+
+    var caption = mergerSplit
+        ? Model.OrderItemName(Model.AssociatedServiceIds[0])
+        : $"Order {Model.CallOffId}";
+
+    var advice = mergerSplit
+        ? "Make sure the correct planned delivery dates have been applied for each of your Service Recipients."
+        : "Review the planned delivery date for your solutions and services.";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -13,15 +23,34 @@
         <nhs-validation-summary />
 
         <nhs-page-title title="@ViewBag.Title"
-                        caption="Order @Model.CallOffId"
-                        advice="Review the planned delivery date for your solutions and services." />
+                        caption="@caption"
+                        advice="@advice" />
+
+        @if (Model.OrderType.MergerOrSplit)
+        {
+            var practiceReorganisationRecipientTitle = Model.OrderType.Value switch
+            {
+                OrderTypeEnum.AssociatedServiceSplit => "Service Recipient to be split",
+                OrderTypeEnum.AssociatedServiceMerger => "Retained Service Recipient",
+                _ => throw new InvalidOperationException($"Unsupported orderType {Model.OrderType.Value}"),
+            };
+
+            <nhs-summary-list>
+                <nhs-summary-list-row label-text="Catalogue Solution">
+                    @Model.SolutionName
+                </nhs-summary-list-row>
+                <nhs-summary-list-row label-text="@practiceReorganisationRecipientTitle">
+                    @Model.PracticeReorganisationName
+                </nhs-summary-list-row>
+            </nhs-summary-list>
+        }
 
         @if (Model.DeliveryDate != null)
         {
             var returnUrl = Url.Action(
-                nameof(DeliveryDatesController.Review),
-                typeof(DeliveryDatesController).ControllerName(),
-                new { Model.InternalOrgId, Model.CallOffId });
+            nameof(DeliveryDatesController.Review),
+            typeof(DeliveryDatesController).ControllerName(),
+            new { Model.InternalOrgId, Model.CallOffId });
 
             <p>
                 <strong>Planned delivery date for the majority of Service Recipients:</strong>
@@ -33,9 +62,9 @@
                              typeof(DeliveryDatesController).ControllerName(),
                              new { Model.InternalOrgId, Model.CallOffId, returnUrl })">Edit</a>
             </p>
-            <hr/>
+            <hr />
         }
-        
+
         @if (Model.SolutionId != null && Model.OrderItemDates(Model.SolutionId.Value).Any())
         {
             var catalogueItemId = Model.SolutionId.Value;
@@ -46,7 +75,7 @@
                                 url="@Url.Action(
                                          nameof(DeliveryDatesController.EditDates),
                                          typeof(DeliveryDatesController).ControllerName(),
-                                         new { Model.InternalOrgId, Model.CallOffId, catalogueItemId, source = RoutingSource.TaskList } )"/>
+                                         new { Model.InternalOrgId, Model.CallOffId, catalogueItemId, source = RoutingSource.TaskList } )" />
 
             foreach (var date in Model.OrderItemDates(catalogueItemId))
             {
@@ -54,10 +83,9 @@
                               secondary-text-title="Planned delivery date: "
                               secondary-text="@GetFormattedDate(date)"
                               bold-title="true"
-                              colour-mode="BlackAndWhite"
                               open="true">
                     <nhs-table>
-                        <nhs-table-column>Service Recipient</nhs-table-column>
+                        <nhs-table-column>Organisation</nhs-table-column>
                         <nhs-table-column>ODS code</nhs-table-column>
                         @foreach (var (odsCode, name) in Model.OrderItemRecipients(catalogueItemId, date))
                         {
@@ -70,7 +98,7 @@
                 </nhs-expander>
             }
         }
-        
+
         @if (Model.AdditionalServiceIds.Any())
         {
             <h2>Additional Services</h2>
@@ -79,12 +107,12 @@
             {
                 var itemName = Model.OrderItemName(catalogueItemId);
 
-                <vc:nhs-action-link data-test-id="edit-service-dates-@catalogueItemId" 
-                                text="Edit planned delivery dates for @itemName"
-                                url="@Url.Action(
+                <vc:nhs-action-link data-test-id="edit-service-dates-@catalogueItemId"
+                                    text="Edit planned delivery dates for @itemName"
+                                    url="@Url.Action(
                                          nameof(DeliveryDatesController.EditDates),
                                          typeof(DeliveryDatesController).ControllerName(),
-                                         new { Model.InternalOrgId, Model.CallOffId, catalogueItemId, source = RoutingSource.TaskList } )"/>
+                                         new { Model.InternalOrgId, Model.CallOffId, catalogueItemId, source = RoutingSource.TaskList } )" />
 
                 foreach (var date in Model.OrderItemDates(catalogueItemId))
                 {
@@ -92,10 +120,9 @@
                                   secondary-text-title="Planned delivery date: "
                                   secondary-text="@GetFormattedDate(date)"
                                   bold-title="true"
-                                  colour-mode="BlackAndWhite"
                                   open="true">
                         <nhs-table>
-                            <nhs-table-column>Service Recipient</nhs-table-column>
+                            <nhs-table-column>Organisation</nhs-table-column>
                             <nhs-table-column>ODS code</nhs-table-column>
                             @foreach (var (odsCode, name) in Model.OrderItemRecipients(catalogueItemId, date))
                             {
@@ -109,32 +136,49 @@
                 }
             }
         }
-        
+
         @if (Model.AssociatedServiceIds.Any())
         {
-            <h2>Associated Services</h2>
+            if (!mergerSplit)
+            {
+                <h2>Associated Services</h2>
+            }
 
             @foreach (var catalogueItemId in Model.AssociatedServiceIds)
             {
                 var itemName = Model.OrderItemName(catalogueItemId);
+                var cta = mergerSplit
+                ? $"Edit planned delivery dates"
+                : $"Edit planned delivery dates for {itemName}";
 
-                <vc:nhs-action-link data-test-id="edit-service-dates-@catalogueItemId" 
-                                    text="Edit planned delivery dates for @itemName"
+                <vc:nhs-action-link data-test-id="edit-service-dates-@catalogueItemId"
+                                    text="@cta"
                                     url="@Url.Action(
                                              nameof(DeliveryDatesController.EditDates),
                                              typeof(DeliveryDatesController).ControllerName(),
-                                             new { Model.InternalOrgId, Model.CallOffId, catalogueItemId, source = RoutingSource.TaskList } )"/>
+                                             new { Model.InternalOrgId, Model.CallOffId, catalogueItemId, source = RoutingSource.TaskList } )" />
 
                 foreach (var date in Model.OrderItemDates(catalogueItemId))
                 {
-                    <nhs-expander label-text="@itemName"
-                                  secondary-text-title="Planned delivery date: "
-                                  secondary-text="@GetFormattedDate(date)"
+                    var label = mergerSplit
+                        ? $"Planned delivery date: {GetFormattedDate(date)}"
+                        : itemName;
+
+                    var secondaryTitle = string.Empty;
+                    var secondaryText = string.Empty;
+
+                    if (!mergerSplit)
+                    {
+                        secondaryTitle = $"Planned delivery date: ";
+                        secondaryText = GetFormattedDate(date);
+                    }
+                    <nhs-expander label-text="@label"
+                                  secondary-text-title="@secondaryTitle"
+                                  secondary-text="@secondaryText"
                                   bold-title="true"
-                                  colour-mode="BlackAndWhite"
                                   open="true">
                         <nhs-table>
-                            <nhs-table-column>Service Recipient</nhs-table-column>
+                            <nhs-table-column>Organisation</nhs-table-column>
                             <nhs-table-column>ODS code</nhs-table-column>
                             @foreach (var (odsCode, name) in Model.OrderItemRecipients(catalogueItemId, date))
                             {
@@ -148,13 +192,13 @@
                 }
             }
         }
-        
+
         <vc:nhs-secondary-button text="Continue"
                                  type="Primary"
                                  url="@Url.Action(
                                           nameof(OrderController.Order),
                                           typeof(OrderController).ControllerName(),
-                                          new { Model.InternalOrgId, Model.CallOffId })"/>
+                                          new { Model.InternalOrgId, Model.CallOffId })" />
     </div>
 </div>
 

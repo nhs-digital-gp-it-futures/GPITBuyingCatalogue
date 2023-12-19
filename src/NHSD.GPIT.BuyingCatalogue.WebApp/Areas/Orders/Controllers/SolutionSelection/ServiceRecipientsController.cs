@@ -277,19 +277,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
         private static PageTitleModel GetSelectRecipientForPracticeReorganisationTitle(OrderType orderType)
         {
-            return orderType.Value switch
+            return new()
             {
-                OrderTypeEnum.AssociatedServiceSplit => new()
+                Title = orderType.GetPracticeReorganisationRecipientTitle(),
+                Advice = orderType.Value switch
                 {
-                    Title = "Service Recipient to be split",
-                    Advice = "Select the Service Recipient that will be losing patients as part of the split.",
+                    OrderTypeEnum.AssociatedServiceSplit => "Select the Service Recipient that will be losing patients as part of the split.",
+                    OrderTypeEnum.AssociatedServiceMerger => "Select the Service Recipient that will still exist after the merger.",
+                    _ => throw new InvalidOperationException($"Unsupported orderType {orderType.Value} in {nameof(GetSelectRecipientForPracticeReorganisationTitle)}"),
                 },
-                OrderTypeEnum.AssociatedServiceMerger => new()
-                {
-                    Title = "Service Recipient to be retained",
-                    Advice = "Select the Service Recipient that will still exist after the merger.",
-                },
-                _ => throw new InvalidOperationException($"Unsupported orderType {orderType.Value} in {nameof(GetSelectRecipientForPracticeReorganisationTitle)}"),
             };
         }
 

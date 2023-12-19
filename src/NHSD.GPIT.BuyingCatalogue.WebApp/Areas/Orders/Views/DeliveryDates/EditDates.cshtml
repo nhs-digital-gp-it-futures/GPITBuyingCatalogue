@@ -1,8 +1,12 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates.EditDatesModel
 @{
-    ViewBag.Title = $"Planned delivery dates for {Model.CatalogueItemType.Name()}";
+    ViewBag.Title = Model.OrderType.MergerOrSplit
+        ? $"Planned delivery dates"
+        : $"Planned delivery dates for {Model.CatalogueItemType.Name()}";
+
     var deliveryDate = Model.DeliveryDate.HasValue
         ? $"{Model.DeliveryDate:d MMMM yyyy}"
         : "No date entered";
@@ -17,16 +21,34 @@
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.Description"
                         advice="Make sure the correct planned delivery dates have been applied for each of your Service Recipients." />
-                        
+
+        @if (Model.OrderType.MergerOrSplit)
+        {
+            var practiceReorganisationRecipientTitle = Model.OrderType.Value switch
+            {
+                OrderTypeEnum.AssociatedServiceSplit => "Service Recipient to be split",
+                OrderTypeEnum.AssociatedServiceMerger => "Retained Service Recipient",
+                _ => throw new InvalidOperationException($"Unsupported orderType {Model.OrderType.Value}"),
+            };
+
+            <nhs-summary-list>
+                <nhs-summary-list-row label-text="Catalogue Solution">
+                    @Model.SolutionName
+                </nhs-summary-list-row>
+                <nhs-summary-list-row label-text="@practiceReorganisationRecipientTitle">
+                    @Model.PracticeReorganisationName
+                </nhs-summary-list-row>
+            </nhs-summary-list>
+        }
         <p>
             <strong>Planned delivery date for the majority of Service Recipients:</strong>
             @deliveryDate
             @if (Model.DisplayEditLink)
             {
                 var returnUrl = Url.Action(
-                    nameof(DeliveryDatesController.EditDates),
-                    typeof(DeliveryDatesController).ControllerName(),
-                    new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, Model.Source });
+                nameof(DeliveryDatesController.EditDates),
+                typeof(DeliveryDatesController).ControllerName(),
+                new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, Model.Source });
 
                 <span>&nbsp;</span>
                 <a id="edit-delivery-date-link"
@@ -36,7 +58,7 @@
                              new { Model.InternalOrgId, Model.CallOffId, returnUrl })">Edit</a>
             }
         </p>
-        <hr/>
+        <hr />
 
         <form method="post">
             <input type="hidden" asp-for="@Model.BackLink" />
@@ -45,37 +67,50 @@
             <input type="hidden" asp-for="@Model.DeliveryDate" />
             <input type="hidden" asp-for="@Model.DisplayEditLink" />
             <input type="hidden" asp-for="@Model.Source" />
-            
-            <nhs-table>
-                <nhs-table-column>Service Recipient</nhs-table-column>
-                <nhs-table-column>ODS code</nhs-table-column>
-                <nhs-table-column>Planned delivery date</nhs-table-column>
-                @for (var i = 0; i < Model.Recipients.Length; i++)
-                {
-                    <nhs-table-row-container>
-                        <nhs-table-cell>
-                            <input type="hidden" asp-for="@Model.Recipients[i].Description" />
-                            <div>
-                                @Model.Recipients[i].Description
-                            </div>
-                        </nhs-table-cell>
-                        <nhs-table-cell>
-                            <input type="hidden" asp-for="@Model.Recipients[i].OdsCode" />
-                            @Model.Recipients[i].OdsCode
-                        </nhs-table-cell>
-                        <nhs-table-cell>
-                            <input type="hidden" asp-for="@Model.Recipients[i].CommencementDate" />
-                            <nhs-fieldset-form-label asp-for="@Model">
-                                <nhs-date-input asp-for="@Model.Recipients[i]"
-                                                day="@Model.Recipients[i].Day"
-                                                month="@Model.Recipients[i].Month"
-                                                year="@Model.Recipients[i].Year"/>
-                            </nhs-fieldset-form-label>
-                        </nhs-table-cell>
-                    </nhs-table-row-container>
-                }
-            </nhs-table>
+            <input type="hidden" asp-for="@Model.OrderType.Value" name="@nameof(Model.OrderType)" />
+            <input type="hidden" asp-for="@Model.SolutionName" />
+            <input type="hidden" asp-for="@Model.PracticeReorganisationName" />
 
+            @{
+                var expanderLabel = Model.OrderType.Value switch
+                {
+                    OrderTypeEnum.AssociatedServiceSplit => "Service Recipients receiving patients",
+                    OrderTypeEnum.AssociatedServiceMerger => "Service Recipients to be merged",
+                    _ => string.Empty,
+                };
+            }
+            <nhs-expander label-text="@expanderLabel"
+                          open="true" content-only="@Model.OrderType.MergerOrSplit == false">
+                <nhs-table>
+                    <nhs-table-column>Organisation</nhs-table-column>
+                    <nhs-table-column>ODS code</nhs-table-column>
+                    <nhs-table-column>Planned delivery date</nhs-table-column>
+                    @for (var i = 0; i < Model.Recipients.Length; i++)
+                    {
+                        <nhs-table-row-container>
+                            <nhs-table-cell>
+                                <input type="hidden" asp-for="@Model.Recipients[i].Description" />
+                                <div>
+                                    @Model.Recipients[i].Description
+                                </div>
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                <input type="hidden" asp-for="@Model.Recipients[i].OdsCode" />
+                                @Model.Recipients[i].OdsCode
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                <input type="hidden" asp-for="@Model.Recipients[i].CommencementDate" />
+                                <nhs-fieldset-form-label asp-for="@Model">
+                                    <nhs-date-input asp-for="@Model.Recipients[i]"
+                                                    day="@Model.Recipients[i].Day"
+                                                    month="@Model.Recipients[i].Month"
+                                                    year="@Model.Recipients[i].Year" />
+                                </nhs-fieldset-form-label>
+                            </nhs-table-cell>
+                        </nhs-table-row-container>
+                    }
+                </nhs-table>
+            </nhs-expander>
             <nhs-submit-button />
         </form>
     </div>

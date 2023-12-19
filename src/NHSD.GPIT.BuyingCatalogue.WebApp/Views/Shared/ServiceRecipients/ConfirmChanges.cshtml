@@ -17,7 +17,7 @@
 
             @if (Model.OrderType.MergerOrSplit)
             {
-                var recipientTitle = GetPracticeReorganisationRecipientTitle(Model.OrderType.Value);
+                var recipientTitle = Model.OrderType.GetPracticeReorganisationRecipientTitle();
                 var recipientsTitle = GetMergerSplitRecipientsTitle(Model.OrderType.Value);
 
                 <div id="selected-service-recipients-practice-reorganisation">
@@ -139,16 +139,6 @@
 
 @{
     string PluralOrSingular(int total) => total == 1 ? "Recipient:" : "Recipients:";
-
-    string GetPracticeReorganisationRecipientTitle(OrderTypeEnum orderType)
-    {
-        return orderType switch
-        {
-            OrderTypeEnum.AssociatedServiceSplit => "Service Recipient to be split",
-            OrderTypeEnum.AssociatedServiceMerger => "Service Recipient to be retained",
-            _ => throw new InvalidOperationException(""),
-        };
-    }
 
     string GetMergerSplitRecipientsTitle(OrderTypeEnum orderType)
     {

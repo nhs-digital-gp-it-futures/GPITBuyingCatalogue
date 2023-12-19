@@ -83,6 +83,13 @@ public record OrderType(OrderTypeEnum Value) : IParsable<OrderType>
 
     public static implicit operator OrderType(OrderTypeEnum o) => new(o);
 
+    public string GetPracticeReorganisationRecipientTitle() => Value switch
+    {
+        OrderTypeEnum.AssociatedServiceSplit => "Service Recipient to be split",
+        OrderTypeEnum.AssociatedServiceMerger => "Service Recipient to be retained",
+        _ => throw new InvalidOperationException($"Unsupported orderType {Value}"),
+    };
+
     public static OrderType Parse(string s, IFormatProvider provider)
     {
         if (!TryParse(s, provider, out var result))
@@ -111,5 +118,12 @@ public record OrderType(OrderTypeEnum Value) : IParsable<OrderType>
 
         result = OrderTypeEnum.Unknown;
         return false;
+    }
+
+    public string GetSolutionNameFromOrder(Order order)
+    {
+        return AssociatedServicesOnly
+                   ? order.AssociatedServicesOnlyDetails.Solution.Name
+                   : order.GetSolutionOrderItem()?.CatalogueItem.Name;
     }
 }
