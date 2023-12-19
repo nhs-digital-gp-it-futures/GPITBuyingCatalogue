@@ -186,9 +186,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             {
                 InternalOrgId = internalOrgId,
                 AssociatedServicesOnly = order.OrderType.AssociatedServicesOnly,
-                SolutionName = order.OrderType.AssociatedServicesOnly
-                    ? orderWrapper.RolledUp.AssociatedServicesOnlyDetails.Solution.Name
-                    : orderWrapper.RolledUp.GetSolutionOrderItem()?.CatalogueItem.Name,
+                SolutionName = order.OrderType.GetSolutionNameFromOrder(orderWrapper.RolledUp),
                 SolutionId = order.GetSolutionId(),
             };
 

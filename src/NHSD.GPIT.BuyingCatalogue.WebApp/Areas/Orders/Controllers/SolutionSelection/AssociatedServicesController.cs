@@ -323,9 +323,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 BackLink = GetBackLink(internalOrgId, callOffId, source),
                 InternalOrgId = internalOrgId,
                 AssociatedServicesOnly = order.OrderType.AssociatedServicesOnly,
-                SolutionName = order.OrderType.AssociatedServicesOnly
-                    ? wrapper.RolledUp.AssociatedServicesOnlyDetails.Solution.Name
-                    : wrapper.RolledUp.GetSolutionOrderItem()?.CatalogueItem.Name,
+                SolutionName = order.OrderType.GetSolutionNameFromOrder(wrapper.RolledUp),
             };
         }
 
