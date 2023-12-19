@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AssociatedServices;
@@ -23,8 +24,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
             OrderGuidance = associatedServiceItem.AssociatedService.OrderGuidance;
             PracticeMerger = (associatedServiceItem.AssociatedService.PracticeReorganisationType & PracticeReorganisationTypeEnum.Merger) == PracticeReorganisationTypeEnum.Merger;
             PracticeSplit = (associatedServiceItem.AssociatedService.PracticeReorganisationType & PracticeReorganisationTypeEnum.Split) == PracticeReorganisationTypeEnum.Split;
-            CataloguePrices = associatedServiceItem.CataloguePrices;
             SolutionMergerAndSplits = list;
+
+            HaveCorrectProvisioningAndCalculationTypes =
+                associatedServiceItem.CataloguePrices.All(x =>
+                    x.ProvisioningType == ProvisioningType.Declarative
+                    && x.CataloguePriceQuantityCalculationType == CataloguePriceQuantityCalculationType.PerServiceRecipient
+                    && x.CataloguePriceCalculationType == CataloguePriceCalculationType.Volume);
+
+            NotHaveTieredPrices =
+                associatedServiceItem.CataloguePrices.All(x =>
+                    x.CataloguePriceType != CataloguePriceType.Tiered);
         }
 
         public CatalogueItemId? Id { get; init; }
@@ -46,7 +56,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
 
         public bool PracticeSplit { get; set; }
 
-        public ICollection<CataloguePrice> CataloguePrices { get; set; }
+        public bool HaveCorrectProvisioningAndCalculationTypes { get; set; }
+
+        public bool NotHaveTieredPrices { get; set; }
 
         public bool PracticeMerger { get; set; }
 

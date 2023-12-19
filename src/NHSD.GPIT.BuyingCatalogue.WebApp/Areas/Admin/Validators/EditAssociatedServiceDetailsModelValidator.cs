@@ -46,8 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 
             RuleFor(m => m)
                 .Must(model => model.PracticeReorganisation != PracticeReorganisationTypeEnum.None ?
-                    HaveCorrectProvisioningAndCalculationTypes(model)
-                    && NotHaveTieredPrices(model)
+                    model.HaveCorrectProvisioningAndCalculationTypes && model.NotHaveTieredPrices
                     : true)
                 .WithMessage("This Associated Service has invalid price types for mergers and splits.You must edit the price types first")
                 .OverridePropertyName("practice-reorganisation");
@@ -60,14 +59,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
             model.SupplierId,
             model.Id.HasValue ? model.Id.Value : default).GetAwaiter().GetResult();
         }
-
-        private bool HaveCorrectProvisioningAndCalculationTypes(EditAssociatedServiceDetailsModel model) =>
-            model.CataloguePrices.All(x =>
-            x.ProvisioningType == (ProvisioningType.Declarative | ProvisioningType.PerServiceRecipient)
-            && x.CataloguePriceCalculationType == CataloguePriceCalculationType.Volume);
-
-        private bool NotHaveTieredPrices(EditAssociatedServiceDetailsModel model) =>
-            model.CataloguePrices.All(x =>
-            x.CataloguePriceType != CataloguePriceType.Tiered);
     }
 }
