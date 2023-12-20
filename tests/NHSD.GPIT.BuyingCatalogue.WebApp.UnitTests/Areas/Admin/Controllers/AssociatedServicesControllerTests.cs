@@ -271,7 +271,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 .ReturnsAsync(solution);
 
             var catalogueItem = associatedService.CatalogueItem;
-            mockAssociatedServicesService.Setup(s => s.GetAssociatedService(catalogueItem.Id))
+            mockAssociatedServicesService.Setup(s => s.GetAssociatedServiceWithCataloguePrices(catalogueItem.Id))
                 .ReturnsAsync(catalogueItem);
 
             mockAssociatedServicesService.Setup(s => s.GetSolutionsWithMergerAndSplitTypesForButExcludingAssociatedService(catalogueItem.Id))
@@ -280,7 +280,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var actual = await controller.EditAssociatedServiceDetails(solution.Id, catalogueItem.Id);
 
             mockSolutionService.Verify(s => s.GetSolutionThin(solution.Id));
-            mockAssociatedServicesService.Verify(a => a.GetAssociatedService(catalogueItem.Id));
+            mockAssociatedServicesService.Verify(a => a.GetAssociatedServiceWithCataloguePrices(catalogueItem.Id));
 
             actual.Should().BeOfType<ViewResult>();
 
@@ -313,7 +313,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             CatalogueItemId solutionId,
             CatalogueItemId associatedServiceId)
         {
-            mockAssociatedService.Setup(s => s.GetAssociatedService(associatedServiceId))
+            mockAssociatedService.Setup(s => s.GetAssociatedServiceWithCataloguePrices(associatedServiceId))
                 .ReturnsAsync(default(CatalogueItem));
 
             var actual = await controller.EditAssociatedServiceDetails(solutionId, associatedServiceId);
