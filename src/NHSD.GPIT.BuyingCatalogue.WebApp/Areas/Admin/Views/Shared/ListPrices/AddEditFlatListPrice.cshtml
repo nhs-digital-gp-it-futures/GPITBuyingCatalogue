@@ -41,6 +41,10 @@
             }
             else
             {
+                @if (Model.CatalogueItemType == CatalogueItemType.AssociatedService)
+                {
+                    <nhs-inset-text>For Associated Services that support mergers and splits, the provisioning type must be declarative per Service Recipient and the calculation type must be volume.</nhs-inset-text>
+                }
                 <nhs-fieldset-form-label asp-for="SelectedProvisioningType" label-text="Provisioning type" size="Medium">
                     <nhs-radio-button-container>
                         <nhs-radio-button asp-for="SelectedProvisioningType"
