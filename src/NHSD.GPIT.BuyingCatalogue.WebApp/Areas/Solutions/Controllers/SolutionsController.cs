@@ -101,11 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     selectedGPConnectIntegrations,
                     selectedInteroperabilityOptions);
 
-            (IQueryable<CatalogueItem> catalogueItemsWithoutFrameworkFilter, _) =
-                await solutionsFilterService.GetFilteredAndNonFilteredQueryResults(capabilityAndEpicIds);
-
-            var frameworks = await frameworkService.GetFrameworksByCatalogueItems(
-                catalogueItemsWithoutFrameworkFilter.Select(x => x.Id).ToList());
+            var frameworks = await frameworkService.GetFrameworksByCatalogueItems();
             var additionalFilters = new AdditionalFiltersModel(
                 frameworks,
                 selectedFrameworkId,

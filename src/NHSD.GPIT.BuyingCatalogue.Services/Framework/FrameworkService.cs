@@ -21,8 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task<List<FrameworkFilterInfo>> GetFrameworksByCatalogueItems(
-            IList<CatalogueItemId> catalogueItems) =>
+        public async Task<List<FrameworkFilterInfo>> GetFrameworksByCatalogueItems() =>
             await dbContext.FrameworkSolutions.AsNoTracking()
                 .Where(x => x.Solution.CatalogueItem.PublishedStatus == PublicationStatus.Published)
                 .GroupBy(x => new { x.FrameworkId, x.Framework.ShortName, x.Framework.IsExpired })
