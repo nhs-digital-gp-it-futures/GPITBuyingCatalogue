@@ -15,11 +15,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
         {
             Features = new Features(driver, commonActions);
             Implementation = new Implementation(driver, commonActions);
+            Interoperability = new Interoperability(driver, commonActions);
         }
 
         public Features Features { get; }
 
         public Implementation Implementation { get; }
+
+        public Interoperability Interoperability { get; }
 
         public void AddNonPriceElements(NonPriceElementType elementType)
         {
@@ -32,6 +35,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
                     break;
                 case NonPriceElementType.Implementation:
                     Implementation.AddImplementation();
+                    break;
+                case NonPriceElementType.Interoperability:
+                    Interoperability.AddInteroperability();
                     break;
                 default:
                     break;

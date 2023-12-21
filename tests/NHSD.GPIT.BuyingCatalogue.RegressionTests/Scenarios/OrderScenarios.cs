@@ -2138,6 +2138,21 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceAndNonPriceElement, NonPriceElementType.Implementation);
         }
 
+
+        [Fact]
+        public void CompetitionPricAndNonPriceElementInteroperability()
+        {
+            string competitionName = "CompetitionPricAndNonPriceElementInteroperability";
+
+            CompetitionPages.CompetitionDashboard.CompetitionTriage();
+
+            CompetitionPages.BeforeYouStart.ReadyToStart();
+
+            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
+
+            CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceAndNonPriceElement, NonPriceElementType.Interoperability);
+        }
+
         [Fact]
         public void OrderAmendCatalogueSolutionGreaterThan250K()
         {

@@ -24,6 +24,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
                 case NonPriceElementType.Implementation:
                     ImplementationWeightings(weightingssingle);
                     break;
+                case NonPriceElementType.Interoperability:
+                    InteroperabilityWeightings(weightingssingle);
+                    break;
                 default:
                     break;
             }
@@ -38,6 +41,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
         public void ImplementationWeightings(int weightings)
         {
             Driver.FindElement(NonPriceObjects.ImplementationWeighting).SendKeys(weightings.ToString());
+            CommonActions.ClickSave();
+        }
+
+        public void InteroperabilityWeightings(int weightings)
+        {
+            Driver.FindElement(NonPriceObjects.InteroperabilityWeightings).SendKeys(weightings.ToString());
             CommonActions.ClickSave();
         }
     }

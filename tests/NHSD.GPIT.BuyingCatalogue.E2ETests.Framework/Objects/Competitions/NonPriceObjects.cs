@@ -15,6 +15,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Competitions
 
         public static By ImplementationWeighting => By.Id("Implementation");
 
+        public static By InteroperabilityWeightings => By.Id("Interoperability");
+
         public static By EditCompareAndScoreLink(string elementtype) => By.XPath($"//a[contains(@href, 'scoring/{elementtype}')]");
     }
 }
