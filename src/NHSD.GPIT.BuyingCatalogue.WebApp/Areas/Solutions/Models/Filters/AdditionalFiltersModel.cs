@@ -97,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                 .Select(
                     f => new SelectOption<string>
                     {
-                        Value = f.Id, Text = $"{f.ShortName} ({f.CountOfActiveSolutions})", Selected = false,
+                        Value = f.Id, Text = $"{f.ShortName}", Selected = false,
                     })
                 .ToList();
 
@@ -105,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                 .FirstOrDefault(f => f.Id == selectedFrameworkId);
 
             FrameworkFilter = framework != null
-                ? $"{framework.ShortName} ({framework.CountOfActiveSolutions})"
+                ? $"{framework.ShortName}"
                 : string.Empty;
         }
 
