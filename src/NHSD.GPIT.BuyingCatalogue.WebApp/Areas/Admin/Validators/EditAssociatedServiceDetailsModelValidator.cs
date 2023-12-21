@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
                 .Must(model => model.PracticeReorganisation != PracticeReorganisationTypeEnum.None ?
                     model.HaveCorrectProvisioningAndCalculationTypes && model.NotHaveTieredPrices
                     : true)
-                .WithMessage("This Associated Service has invalid price types for mergers and splits.You must edit the price types first")
+                .WithMessage("This Associated Service has invalid price types for mergers and splits. You must edit the price types first")
                 .OverridePropertyName("practice-reorganisation");
         }
 

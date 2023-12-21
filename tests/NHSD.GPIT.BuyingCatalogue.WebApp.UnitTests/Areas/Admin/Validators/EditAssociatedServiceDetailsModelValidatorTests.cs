@@ -59,6 +59,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 .WithErrorMessage("Enter order guidance");
         }
 
+        // This test only tests that the system breaks with the generated test data, rather than testing
+        // the actual behaviour.Creating a merger or split should not necessarily cause an error.
         [Theory]
         [CommonAutoData]
         public static void Validate_PracticeReoganisation_SetsModelError(
@@ -105,6 +107,45 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldNotHaveAnyValidationErrors();
+        }
+
+        [Theory]
+        [CommonInlineAutoData(true, true, true)]
+        [CommonInlineAutoData(false, true, false)]
+        [CommonInlineAutoData(true, false, false)]
+        [CommonInlineAutoData(false, false, false)]
+        public static void Validate_WithPriceReorganisation_CalculationProvisioningTypesAndTieredPrice(
+            bool haveCorrectProvisioningAndCalculationTypes,
+            bool notHaveTieredPrice,
+            bool expected,
+            // [Frozen] Mock<SolutionMergerAndSplitTypesModel> solutionMergerAndSplitTypesModelMock,
+            // [Frozen] Mock<IAssociatedServicesService> associatedServicesService,
+            /*[Frozen] BuyingCatalogueDbContext context,
+            List<Solution> solutions,
+            AssociatedService associatedService,*/
+            EditAssociatedServiceDetailsModel model,
+            EditAssociatedServiceDetailsModelValidator validator)
+        {
+            /*context.Solutions.AddRange(solutions);
+            context.AssociatedServices.Add(associatedService);
+            context.SaveChanges();
+            context.ChangeTracker.Clear();*/
+            model.PracticeSplit = true;
+            model.PracticeSplit = false;
+            model.HaveCorrectProvisioningAndCalculationTypes = haveCorrectProvisioningAndCalculationTypes;
+            model.NotHaveTieredPrices = notHaveTieredPrice;
+
+            var result = validator.TestValidate(model);
+
+            if (expected)
+            {
+                result.ShouldNotHaveValidationErrorFor("practice-reorganisation");
+            }
+            else
+            {
+                result.ShouldHaveValidationErrorFor("practice-reorganisation")
+                .WithErrorMessage("This Associated Service has invalid price types for mergers and splits. You must edit the price types first");
+            }
         }
     }
 }
