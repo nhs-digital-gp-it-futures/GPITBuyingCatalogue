@@ -60,10 +60,10 @@ public static class FrameworkServiceTests
 
         var expectedFrameworks = new List<FrameworkFilterInfo>
         {
-            new() { Id = framework.Id, ShortName = framework.ShortName, CountOfActiveSolutions = 1 },
+            new() { Id = framework.Id, ShortName = framework.ShortName },
         };
 
-        var result = await service.GetFrameworksByCatalogueItems(new List<CatalogueItemId> { catalogueItem.Id });
+        var result = await service.GetFrameworksWithPublishedCatalogueItems();
 
         result.Should().HaveCount(1);
         result.Should().BeEquivalentTo(expectedFrameworks);
@@ -97,7 +97,7 @@ public static class FrameworkServiceTests
 
         await dbContext.SaveChangesAsync();
 
-        var result = await service.GetFrameworksByCatalogueItems(new List<CatalogueItemId> { catalogueItem.Id });
+        var result = await service.GetFrameworksWithPublishedCatalogueItems();
 
         result.Should().HaveCount(1);
         result.All(f => f.Expired);
@@ -127,10 +127,10 @@ public static class FrameworkServiceTests
 
         var expectedFrameworks = new List<FrameworkFilterInfo>
         {
-            new() { Id = framework.Id, ShortName = framework.ShortName, CountOfActiveSolutions = 0 },
+            new() { Id = framework.Id, ShortName = framework.ShortName },
         };
 
-        var result = await service.GetFrameworksByCatalogueItems(new List<CatalogueItemId>());
+        var result = await service.GetFrameworksWithPublishedCatalogueItems();
 
         result.Should().HaveCount(1);
         result.Should().BeEquivalentTo(expectedFrameworks);
@@ -163,7 +163,7 @@ public static class FrameworkServiceTests
 
         await dbContext.SaveChangesAsync();
 
-        var result = await service.GetFrameworksByCatalogueItems(new List<CatalogueItemId> { catalogueItem.Id });
+        var result = await service.GetFrameworksWithPublishedCatalogueItems();
 
         result.Should().BeEmpty();
     }
