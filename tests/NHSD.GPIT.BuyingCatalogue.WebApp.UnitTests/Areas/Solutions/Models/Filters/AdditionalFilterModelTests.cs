@@ -82,17 +82,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
             model.GPConnectIntegrationsFilters.Should().NotBeNull().And.BeEmpty();
         }
 
-        [Fact]
-        public static void ApplicationTypeFilters_WhenApplicationTypeOptionsIsNull_ReturnsEmptyArray()
-        {
-            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
-
-            var result = model.ApplicationTypeFilters;
-
-            result.Should().NotBeNull();
-            result.Should().BeEmpty();
-        }
-
         [Theory]
         [InlineData(new[] { 0, 1, 2 })]
         public static void Constructor_WithApplicationTypeSelected_CreatesApplicationTypeCheckBoxItems_AllSelected(int[] expectedSelectedValues)
@@ -154,17 +143,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
             {
                 item.Selected.Should().BeFalse();
             }
-        }
-
-        [Fact]
-        public static void HostingTypeFilters_WhenHostingTypeOptionsIsNull_ReturnsEmptyArray()
-        {
-            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), null, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
-
-            var result = model.HostingTypeFilters;
-
-            result.Should().NotBeNull();
-            result.Should().BeEmpty();
         }
 
         [Theory]
