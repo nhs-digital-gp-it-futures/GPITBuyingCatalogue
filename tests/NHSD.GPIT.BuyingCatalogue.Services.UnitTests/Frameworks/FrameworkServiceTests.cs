@@ -60,7 +60,7 @@ public static class FrameworkServiceTests
 
         var expectedFrameworks = new List<FrameworkFilterInfo>
         {
-            new() { Id = framework.Id, ShortName = framework.ShortName},
+            new() { Id = framework.Id, ShortName = framework.ShortName },
         };
 
         var result = await service.GetFrameworksByCatalogueItems(new List<CatalogueItemId> { catalogueItem.Id });
