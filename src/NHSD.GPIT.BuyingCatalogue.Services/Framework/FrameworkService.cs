@@ -31,9 +31,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
                     {
                         Id = x.Key.FrameworkId,
                         ShortName = x.Key.ShortName,
-                        CountOfActiveSolutions = catalogueItems.Any()
-                                        ? x.Count(y => catalogueItems.Contains(y.SolutionId))
-                                        : 0,
                         Expired = x.Key.IsExpired,
                     })
                 .ToListAsync();

@@ -60,7 +60,7 @@ public static class FrameworkServiceTests
 
         var expectedFrameworks = new List<FrameworkFilterInfo>
         {
-            new() { Id = framework.Id, ShortName = framework.ShortName, CountOfActiveSolutions = 1 },
+            new() { Id = framework.Id, ShortName = framework.ShortName},
         };
 
         var result = await service.GetFrameworksByCatalogueItems(new List<CatalogueItemId> { catalogueItem.Id });
@@ -127,7 +127,7 @@ public static class FrameworkServiceTests
 
         var expectedFrameworks = new List<FrameworkFilterInfo>
         {
-            new() { Id = framework.Id, ShortName = framework.ShortName, CountOfActiveSolutions = 0 },
+            new() { Id = framework.Id, ShortName = framework.ShortName },
         };
 
         var result = await service.GetFrameworksByCatalogueItems(new List<CatalogueItemId>());

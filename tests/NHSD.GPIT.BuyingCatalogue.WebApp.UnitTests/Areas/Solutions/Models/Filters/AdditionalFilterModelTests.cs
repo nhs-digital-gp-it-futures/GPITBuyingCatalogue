@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
                 model.FrameworkOptions.Should().ContainEquivalentOf(new SelectOption<string>
                 {
                     Value = framework.Id,
-                    Text = $"{framework.ShortName} ({framework.CountOfActiveSolutions})",
+                    Text = $"{framework.ShortName}",
                     Selected = false,
                 });
             }
@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
 
             model.FrameworkOptions.Should().NotBeNull();
             model.FrameworkOptions.Should().HaveCount(frameworks.Count);
-            model.FrameworkFilter.Should().Be($"{framework.ShortName} ({framework.CountOfActiveSolutions})");
+            model.FrameworkFilter.Should().Be($"{framework.ShortName}");
         }
 
         [Theory]
@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
 
             model.FrameworkOptions.Should().NotBeNull();
             model.FrameworkOptions.Should().BeEmpty();
-            model.FrameworkFilter.Should().Be($"{framework.ShortName} ({framework.CountOfActiveSolutions})");
+            model.FrameworkFilter.Should().Be($"{framework.ShortName}");
         }
 
         [Theory]
