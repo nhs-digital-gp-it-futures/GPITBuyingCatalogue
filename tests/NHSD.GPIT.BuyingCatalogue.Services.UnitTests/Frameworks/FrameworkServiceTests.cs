@@ -63,7 +63,7 @@ public static class FrameworkServiceTests
             new() { Id = framework.Id, ShortName = framework.ShortName },
         };
 
-        var result = await service.GetFrameworksByCatalogueItems();
+        var result = await service.GetFrameworksWithPublishedCatalogueItems();
 
         result.Should().HaveCount(1);
         result.Should().BeEquivalentTo(expectedFrameworks);
@@ -97,7 +97,7 @@ public static class FrameworkServiceTests
 
         await dbContext.SaveChangesAsync();
 
-        var result = await service.GetFrameworksByCatalogueItems();
+        var result = await service.GetFrameworksWithPublishedCatalogueItems();
 
         result.Should().HaveCount(1);
         result.All(f => f.Expired);
@@ -130,7 +130,7 @@ public static class FrameworkServiceTests
             new() { Id = framework.Id, ShortName = framework.ShortName },
         };
 
-        var result = await service.GetFrameworksByCatalogueItems();
+        var result = await service.GetFrameworksWithPublishedCatalogueItems();
 
         result.Should().HaveCount(1);
         result.Should().BeEquivalentTo(expectedFrameworks);
@@ -163,7 +163,7 @@ public static class FrameworkServiceTests
 
         await dbContext.SaveChangesAsync();
 
-        var result = await service.GetFrameworksByCatalogueItems();
+        var result = await service.GetFrameworksWithPublishedCatalogueItems();
 
         result.Should().BeEmpty();
     }

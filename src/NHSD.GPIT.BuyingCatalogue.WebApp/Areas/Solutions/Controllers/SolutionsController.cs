@@ -101,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     selectedGPConnectIntegrations,
                     selectedInteroperabilityOptions);
 
-            var frameworks = await frameworkService.GetFrameworksByCatalogueItems();
+            var frameworks = await frameworkService.GetFrameworksWithPublishedCatalogueItems();
             var additionalFilters = new AdditionalFiltersModel(
                 frameworks,
                 selectedFrameworkId,
