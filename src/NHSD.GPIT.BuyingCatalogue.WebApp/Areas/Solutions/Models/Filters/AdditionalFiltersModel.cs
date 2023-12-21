@@ -52,38 +52,43 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 
         public List<SelectOption<int>> ApplicationTypeOptions { get; set; }
 
-        public string[] ApplicationTypeFilters => ApplicationTypeOptions
-            ?.Where(f => f.Selected)
-            ?.Select(f => f.Text)
-            ?.ToArray() ?? Array.Empty<string>();
+        public string[] ApplicationTypeFilters => ApplicationTypeOptions == null
+            ? Array.Empty<string>()
+            : ApplicationTypeOptions.Where(f => f.Selected)
+                .Select(f => f.Text)
+                .ToArray();
 
         public List<SelectOption<int>> HostingTypeOptions { get; set; }
 
-        public string[] HostingTypeFilters => HostingTypeOptions
-            ?.Where(f => f.Selected)
-            ?.Select(f => f.Text)
-            ?.ToArray() ?? Array.Empty<string>();
+        public string[] HostingTypeFilters => HostingTypeOptions == null
+            ? Array.Empty<string>()
+            : HostingTypeOptions.Where(f => f.Selected)
+                .Select(f => f.Text)
+                .ToArray();
 
         public List<SelectOption<int>> InteroperabilityOptions { get; set; }
 
-        public string[] InteroperabilityFilters => InteroperabilityOptions
-            ?.Where(f => f.Selected)
-            ?.Select(f => f.Text)
-            ?.ToArray() ?? Array.Empty<string>();
+        public string[] InteroperabilityFilters => InteroperabilityOptions == null
+            ? Array.Empty<string>()
+            : InteroperabilityOptions.Where(f => f.Selected)
+                .Select(f => f.Text)
+                .ToArray();
 
         public List<SelectOption<int>> IM1IntegrationsOptions { get; set; }
 
-        public string[] IM1IntegrationsFilters => IM1IntegrationsOptions
-            ?.Where(f => f.Selected)
-            ?.Select(f => f.Text)
-            ?.ToArray() ?? Array.Empty<string>();
+        public string[] IM1IntegrationsFilters => IM1IntegrationsOptions == null
+            ? Array.Empty<string>()
+            : IM1IntegrationsOptions.Where(f => f.Selected)
+                .Select(f => f.Text)
+                .ToArray();
 
         public List<SelectOption<int>> GPConnectIntegrationsOptions { get; set; }
 
-        public string[] GPConnectIntegrationsFilters => GPConnectIntegrationsOptions
-            ?.Where(f => f.Selected)
-            ?.Select(f => f.Text)
-            ?.ToArray() ?? Array.Empty<string>();
+        public string[] GPConnectIntegrationsFilters => GPConnectIntegrationsOptions == null
+            ? Array.Empty<string>()
+            : GPConnectIntegrationsOptions.Where(f => f.Selected)
+                .Select(f => f.Text)
+                .ToArray();
 
         public string CombineSelectedOptions(List<SelectOption<int>> options)
         {
