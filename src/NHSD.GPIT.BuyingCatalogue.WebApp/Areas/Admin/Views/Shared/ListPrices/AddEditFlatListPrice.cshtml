@@ -29,15 +29,19 @@
             <input type="hidden" asp-for="CatalogueItemName" />
             <input type="hidden" asp-for="CataloguePricePublicationStatus" />
             <input type="hidden" asp-for="DeleteListPriceUrl" />
+            <input type="hidden" asp-for="PracticeReorganisation" />
 
             @if ((Model.PracticeReorganisation ?? 0) != 0)
             {
-                <partial name ="ListPrices/_MergerSplitFixedTypes" model="Model" />
-                {
-                    Model.SelectedProvisioningType = ProvisioningType.Declarative;
-                    Model.DeclarativeQuantityCalculationType = CataloguePriceQuantityCalculationType.PerServiceRecipient;
-                    Model.SelectedCalculationType = CataloguePriceCalculationType.Volume;
-                }
+                <input type="hidden" asp-for="SelectedProvisioningType" value="@ProvisioningType.Declarative" />
+                <input type="hidden" asp-for="DeclarativeQuantityCalculationType" value="@CataloguePriceQuantityCalculationType.PerServiceRecipient" />
+                <input type="hidden" asp-for="SelectedCalculationType" value="@CataloguePriceCalculationType.Volume" />
+
+                <nhs-inset-text>As this service supports the merging or splitting of practices, the provisioning and calculation types cannot be changed.</nhs-inset-text>
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Provisioning type">Declarative per Service Recipient</nhs-summary-list-row>
+                    <nhs-summary-list-row label-text="Calculation type">Volume</nhs-summary-list-row>
+                </nhs-summary-list>   
             }
             else
             {

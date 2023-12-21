@@ -13,7 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Associat
 {
     public static class EditAssociatedServiceDetailsModelTests
     {
-
         [Theory]
         [InlineAutoData(ProvisioningType.Declarative, CataloguePriceQuantityCalculationType.PerServiceRecipient, CataloguePriceCalculationType.Volume, true, CataloguePriceType.Flat, true)]
         [InlineAutoData(ProvisioningType.Patient, CataloguePriceQuantityCalculationType.PerServiceRecipient, CataloguePriceCalculationType.Volume, false, CataloguePriceType.Tiered, false)]
