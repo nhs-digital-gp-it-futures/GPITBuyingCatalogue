@@ -150,6 +150,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                 AwardCriteriaWeightings.PriceNonPriceAwardCriteriaWeightings();
                 CompetitionTaskList.NonPriceElements();
                 NonPriceElements.AddNonPriceElements(elementtype);
+                NonPriceElements.AddNonPriceElement();
                 CompetitionTaskList.NonPriceWeightings();
                 NonPriceWeightings.Weightings(elementtype);
                 CompetitionTaskList.ReviewCompetitionCriteria();

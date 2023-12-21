@@ -21,6 +21,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
                 case NonPriceElementType.Feature:
                     FeatureWeightings(weightingssingle);
                     break;
+                case NonPriceElementType.Implementation:
+                    ImplementationWeightings(weightingssingle);
+                    break;
                 default:
                     break;
             }
@@ -29,6 +32,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
         public void FeatureWeightings(int weightings)
         {
             Driver.FindElement(NonPriceObjects.FeatureWeighting).SendKeys(weightings.ToString());
+            CommonActions.ClickSave();
+        }
+
+        public void ImplementationWeightings(int weightings)
+        {
+            Driver.FindElement(NonPriceObjects.ImplementationWeighting).SendKeys(weightings.ToString());
             CommonActions.ClickSave();
         }
     }

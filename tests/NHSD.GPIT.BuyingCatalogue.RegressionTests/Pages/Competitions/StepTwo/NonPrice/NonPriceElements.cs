@@ -14,9 +14,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
             : base(driver, commonActions)
         {
             Features = new Features(driver, commonActions);
+            Implementation = new Implementation(driver, commonActions);
         }
 
         public Features Features { get; }
+
+        public Implementation Implementation { get; }
 
         public void AddNonPriceElements(NonPriceElementType elementType)
         {
@@ -26,6 +29,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
             {
                 case NonPriceElementType.Feature:
                     Features.AddFeature();
+                    break;
+                case NonPriceElementType.Implementation:
+                    Implementation.AddImplementation();
                     break;
                 default:
                     break;
@@ -45,6 +51,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
                 nameof(CompetitionNonPriceElementsController.AddNonPriceElement))
                 .Should().BeTrue();
             CommonActions.ClickLinkElement(NonPriceObjects.AddNonPriceElementLink);
+        }
+
+        public void AddNonPriceElement()
+        {
+            CommonActions.LedeText().Should().Be("Add at least 1 optional non-price element to help you score your shortlisted solutions, for example features, implementation, interoperability or service levels.".FormatForComparison());
+            CommonActions.ClickContinue();
         }
     }
 }
