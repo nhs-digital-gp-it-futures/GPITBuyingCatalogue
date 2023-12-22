@@ -1,7 +1,10 @@
-﻿using AutoFixture.Xunit2;
+﻿using System.Collections.Generic;
+using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
@@ -59,14 +62,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 .WithErrorMessage("Enter order guidance");
         }
 
-        // This test only tests that the system breaks with the generated test data, rather than testing
-        // the actual behaviour.Creating a merger or split should not necessarily cause an error.
         [Theory]
         [CommonAutoData]
-        public static void Validate_PracticeReoganisation_SetsModelError(
+        public static void Validate_PracticeReorganisation_OtherReorganisations_SetsModelError(
             EditAssociatedServiceDetailsModel model,
             EditAssociatedServiceDetailsModelValidator validator)
         {
+            model.SolutionMergerAndSplits.Add(new SolutionMergerAndSplitTypesModel() { SelectedMergerAndSplitsServices = { PracticeReorganisationTypeEnum.Merger } });
             model.PracticeMerger = true;
             model.PracticeSplit = true;
 
@@ -118,18 +120,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             bool haveCorrectProvisioningAndCalculationTypes,
             bool notHaveTieredPrice,
             bool expected,
-            // [Frozen] Mock<SolutionMergerAndSplitTypesModel> solutionMergerAndSplitTypesModelMock,
-            // [Frozen] Mock<IAssociatedServicesService> associatedServicesService,
-            /*[Frozen] BuyingCatalogueDbContext context,
-            List<Solution> solutions,
-            AssociatedService associatedService,*/
             EditAssociatedServiceDetailsModel model,
             EditAssociatedServiceDetailsModelValidator validator)
         {
-            /*context.Solutions.AddRange(solutions);
-            context.AssociatedServices.Add(associatedService);
-            context.SaveChanges();
-            context.ChangeTracker.Clear();*/
+            model.SolutionMergerAndSplits = new List<SolutionMergerAndSplitTypesModel>() { };
             model.PracticeSplit = true;
             model.PracticeSplit = false;
             model.HaveCorrectProvisioningAndCalculationTypes = haveCorrectProvisioningAndCalculationTypes;
