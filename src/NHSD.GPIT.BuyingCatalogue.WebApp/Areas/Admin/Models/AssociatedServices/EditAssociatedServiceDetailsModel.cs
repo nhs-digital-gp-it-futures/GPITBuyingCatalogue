@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AssociatedServices;
@@ -24,6 +25,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
             PracticeMerger = (associatedServiceItem.AssociatedService.PracticeReorganisationType & PracticeReorganisationTypeEnum.Merger) == PracticeReorganisationTypeEnum.Merger;
             PracticeSplit = (associatedServiceItem.AssociatedService.PracticeReorganisationType & PracticeReorganisationTypeEnum.Split) == PracticeReorganisationTypeEnum.Split;
             SolutionMergerAndSplits = list;
+
+            HaveCorrectProvisioningAndCalculationTypes =
+                associatedServiceItem.CataloguePrices.All(x =>
+                    x.ProvisioningType == ProvisioningType.Declarative
+                    && x.CataloguePriceQuantityCalculationType == CataloguePriceQuantityCalculationType.PerServiceRecipient
+                    && x.CataloguePriceCalculationType == CataloguePriceCalculationType.Volume);
+
+            NotHaveTieredPrices =
+                associatedServiceItem.CataloguePrices.All(x =>
+                    x.CataloguePriceType != CataloguePriceType.Tiered);
         }
 
         public CatalogueItemId? Id { get; init; }
@@ -44,6 +55,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
         public string OrderGuidance { get; set; }
 
         public bool PracticeSplit { get; set; }
+
+        public bool HaveCorrectProvisioningAndCalculationTypes { get; set; }
+
+        public bool NotHaveTieredPrices { get; set; }
 
         public bool PracticeMerger { get; set; }
 

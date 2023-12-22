@@ -91,6 +91,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 
         public CataloguePriceCalculationType? SelectedCalculationType { get; set; }
 
+        public PracticeReorganisationTypeEnum? PracticeReorganisation { get; set; }
+
         public decimal? Price => InputPrice.AsNullableDecimal();
 
         public string InputPrice { get; set; }

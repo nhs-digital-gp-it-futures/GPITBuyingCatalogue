@@ -54,9 +54,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                     nameof(AssociatedServicesController.EditAssociatedService),
                     typeof(AssociatedServicesController).ControllerName(),
                     new { solutionId, associatedServiceId }),
-                AddListPriceUrl = Url.Action(
-                    nameof(ListPriceType),
-                    new { solutionId, associatedServiceId }),
+                AddListPriceUrl = (service.AssociatedService.PracticeReorganisationType == PracticeReorganisationTypeEnum.None) ?
+                    Url.Action(nameof(ListPriceType), new { solutionId, associatedServiceId }) :
+                    Url.Action(nameof(AddFlatListPrice), new { solutionId, associatedServiceId }),
             };
 
             return View("ListPrices/ManageListPrices", model);
@@ -155,7 +155,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new AddEditFlatListPriceModel(associatedService)
             {
-                BackLink = Url.Action(nameof(ListPriceType), new { solutionId, associatedServiceId }),
+                PracticeReorganisation = associatedService.AssociatedService.PracticeReorganisationType,
+                BackLink = (associatedService.AssociatedService.PracticeReorganisationType == PracticeReorganisationTypeEnum.None) ?
+                    Url.Action(nameof(ListPriceType), new { solutionId, associatedServiceId }) :
+                    Url.Action(nameof(Index), new { solutionId, associatedServiceId }),
             };
 
             return View("ListPrices/AddEditFlatListPrice", model);
@@ -385,6 +388,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new AddEditFlatListPriceModel(associatedService, price)
             {
+                PracticeReorganisation = associatedService.AssociatedService.PracticeReorganisationType,
                 BackLink = Url.Action(nameof(Index), new { solutionId, associatedServiceId }),
                 DeleteListPriceUrl = Url.Action(
                     nameof(DeleteListPrice),
