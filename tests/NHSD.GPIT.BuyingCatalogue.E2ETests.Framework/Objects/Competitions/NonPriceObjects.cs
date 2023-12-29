@@ -17,6 +17,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Competitions
 
         public static By InteroperabilityWeightings => By.Id("Interoperability");
 
+        public static By ServieLevelWeightings => By.Id("ServiceLevel");
+
+        public static By TimeFrom => By.Id("TimeFrom");
+
+        public static By TimeUntil => By.Id("TimeUntil");
+
         public static By EditCompareAndScoreLink(string elementtype) => By.XPath($"//a[contains(@href, 'scoring/{elementtype}')]");
     }
 }

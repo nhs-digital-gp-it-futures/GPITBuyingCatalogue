@@ -16,6 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
             Features = new Features(driver, commonActions);
             Implementation = new Implementation(driver, commonActions);
             Interoperability = new Interoperability(driver, commonActions);
+            ServiceLevelAgreement = new ServiceLevelAgreement(driver, commonActions);
         }
 
         public Features Features { get; }
@@ -23,6 +24,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
         public Implementation Implementation { get; }
 
         public Interoperability Interoperability { get; }
+
+        public ServiceLevelAgreement ServiceLevelAgreement { get; }
 
         public void AddNonPriceElements(NonPriceElementType elementType)
         {
@@ -38,6 +41,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
                     break;
                 case NonPriceElementType.Interoperability:
                     Interoperability.AddInteroperability();
+                    break;
+                case NonPriceElementType.ServiceLevelAgreement:
+                    ServiceLevelAgreement.AddServiceLevelAgreement();
+                    break;
+                case NonPriceElementType.All:
+                    SelectAllNonPriceElements();
+                    AddAllNonPriceElements();
                     break;
                 default:
                     break;
@@ -61,8 +71,31 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
 
         public void AddNonPriceElement()
         {
-            CommonActions.LedeText().Should().Be("Add at least 1 optional non-price element to help you score your shortlisted solutions, for example features, implementation, interoperability or service levels.".FormatForComparison());
+                CommonActions.LedeText().Should().Be("Add at least 1 optional non-price element to help you score your shortlisted solutions, for example features, implementation, interoperability or service levels.".FormatForComparison());
+                CommonActions.ClickContinue();
+        }
+
+        public void AllNonPriceElementsReview()
+        {
+            CommonActions.LedeText().Should().Be("All available non-price elements have been added for this competition.".FormatForComparison());
             CommonActions.ClickContinue();
+        }
+
+        public void SelectAllNonPriceElements()
+        {
+            CommonActions.ClickCheckboxByLabel("Features");
+            CommonActions.ClickCheckboxByLabel("Implementation");
+            CommonActions.ClickCheckboxByLabel("Interoperability");
+            CommonActions.ClickCheckboxByLabel("Service levels");
+            CommonActions.ClickSave();
+        }
+
+        public void AddAllNonPriceElements()
+        {
+            Features.AddFeatureForAllNonPriceElements();
+            Implementation.AddImplementationForAllNonPriceElements();
+            Interoperability.AddInteroperabilityForAllNonPriceElements();
+            ServiceLevelAgreement.AddServiceLevelAgreementForAllNonPriceElements();
         }
     }
 }

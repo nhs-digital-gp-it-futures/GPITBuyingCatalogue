@@ -23,5 +23,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
             CommonActions.ClickAllCheckboxes();
             CommonActions.ClickSave();
         }
+
+        public void AddInteroperabilityForAllNonPriceElements()
+        {
+            CommonActions.LedeText().Should().Be("Select which integrations your winning solution needs to work with.".FormatForComparison());
+            CommonActions.ClickAllCheckboxes();
+            CommonActions.ClickSave();
+        }
     }
 }

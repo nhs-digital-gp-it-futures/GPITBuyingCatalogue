@@ -8,6 +8,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common
 
         public static By CancelLink => By.LinkText("Cancel");
 
+        public static By SelectAll => By.XPath("//a[contains(@href, 'select-recipients?selectionMode=All')]");
+
         public static By Header1 => By.TagName("h1");
 
         public static By Header2 => By.TagName("h2");
