@@ -153,6 +153,7 @@
                 padding-right: 24px;
                 padding-bottom: 0;
                 width: 50%;
+                border-bottom: 1px solid lightgray;
             }
 
                 .pdf-summary-list-row div:first-child {
@@ -173,41 +174,41 @@
                     <nhs-page-title title="@title"
                                     caption="Order @Model.Order.CallOffId" />
 
-                    <nhs-summary-list>
-                        <nhs-summary-list-row label-text="Order ID">
+                    <pdf-summary-list>
+                        <pdf-summary-list-row label-text="Order ID">
                             @Model.Order.CallOffId
-                        </nhs-summary-list-row>
+                        </pdf-summary-list-row>
 
                         @if (Model.Order.SelectedFramework is not null)
                         {
-                            <nhs-summary-list-row label-text="Framework">
+                            <pdf-summary-list-row label-text="Framework">
                                 @Model.Order.SelectedFramework.ShortName
-                            </nhs-summary-list-row>
+                            </pdf-summary-list-row>
                         }
 
-                        <nhs-summary-list-row label-text="Description">
+                        <pdf-summary-list-row label-text="Description">
                             @Model.Order.Description
-                        </nhs-summary-list-row>
+                        </pdf-summary-list-row>
 
-                        <nhs-summary-list-row label-text="Date order summary created">
+                        <pdf-summary-list-row label-text="Date order summary created">
                             @DateTime.UtcNow.ToString("d MMMM yyyy")
-                        </nhs-summary-list-row>
+                        </pdf-summary-list-row>
 
                         @if (Model.Order.OrderStatus == OrderStatus.Completed
                         && Model.Order.Completed.HasValue)
                         {
-                            <nhs-summary-list-row label-text="Date order summary completed">
+                            <pdf-summary-list-row label-text="Date order summary completed">
                                 @Model.Order.Completed.Value.ToString("d MMMM yyyy")
-                            </nhs-summary-list-row>
+                            </pdf-summary-list-row>
                         }
 
                         @if (Model.Order.OrderingPartyContact != null)
                         {
-                            <nhs-summary-list-row label-text="Call-off Ordering Party">
+                            <pdf-summary-list-row label-text="Call-off Ordering Party">
                                 @Model.Order.OrderingPartyContact.FirstName @Model.Order.OrderingPartyContact.LastName <br />
                                 @Model.Order.OrderingParty.Name (@Model.Order.OrderingParty.ExternalIdentifier)<br />
                                 <vc:nhs-address address="@Model.Order.OrderingParty.Address" />
-                            </nhs-summary-list-row>
+                            </pdf-summary-list-row>
                         }
 
                         @if (Model.Order.Supplier != null
@@ -215,45 +216,45 @@
                         {
                             @if (!string.Equals(Model.Order.Supplier.LegalName, Model.Order.Supplier.Name, StringComparison.OrdinalIgnoreCase))
                             {
-                                <nhs-summary-list-row label-text="Supplier legal name">
+                                <pdf-summary-list-row label-text="Supplier legal name">
                                     @Model.Order.Supplier.LegalName<br />
-                                </nhs-summary-list-row>
+                                </pdf-summary-list-row>
                             }
-                            <nhs-summary-list-row label-text="Supplier">
+                            <pdf-summary-list-row label-text="Supplier">
                                 @Model.Order.SupplierContact.FirstName @Model.Order.SupplierContact.LastName <br />
                                 @Model.Order.Supplier.Name <br />
                                 <vc:nhs-address address="@Model.Order.Supplier.Address" />
-                            </nhs-summary-list-row>
+                            </pdf-summary-list-row>
                         }
 
                         @if (Model.Order.CommencementDate != null)
                         {
-                            <nhs-summary-list-row label-text="Commencement date">
+                            <pdf-summary-list-row label-text="Commencement date">
                                 @($"{Model.Order.CommencementDate.Value:d MMMM yyyy}")
-                            </nhs-summary-list-row>
+                            </pdf-summary-list-row>
                         }
 
                         @if (Model.Order.InitialPeriod != null)
                         {
-                            <nhs-summary-list-row label-text="Initial period">
+                            <pdf-summary-list-row label-text="Initial period">
                                 @($"{Model.Order.InitialPeriod} Months")
-                            </nhs-summary-list-row>
+                            </pdf-summary-list-row>
                         }
 
                         @if (Model.Order.MaximumTerm != null)
                         {
-                            <nhs-summary-list-row label-text="Maximum term">
+                            <pdf-summary-list-row label-text="Maximum term">
                                 @($"{Model.Order.MaximumTerm} Months")
-                            </nhs-summary-list-row>
+                            </pdf-summary-list-row>
 
                             if (Model.Order.CommencementDate != null)
                             {
-                                <nhs-summary-list-row label-text="End date">
+                                <pdf-summary-list-row label-text="End date">
                                     @Model.Order.EndDate.DisplayValue
-                                </nhs-summary-list-row>
+                                </pdf-summary-list-row>
                             }
                         }
-                    </nhs-summary-list>
+                    </pdf-summary-list>
 
                 @if (Model.Order.OrderStatus == OrderStatus.Terminated)
                 {
@@ -275,11 +276,11 @@
 
                     <h1>Service Recipients</h1>
 
-                    <nhs-summary-list>
-                        <nhs-summary-list-row label-text="Number of Service Recipients">
+                    <pdf-summary-list>
+                        <pdf-summary-list-row label-text="Number of Service Recipients">
                             @Model.RolledUp.OrderRecipients.Count
-                        </nhs-summary-list-row>
-                    </nhs-summary-list>
+                        </pdf-summary-list-row>
+                    </pdf-summary-list>
 
                     <p>You can find the list of Service Recipients and their planned delivery dates by logging into Buying Catalogue and viewing the summary of this order.</p>
 
