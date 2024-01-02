@@ -21,6 +21,18 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
                 case NonPriceElementType.Feature:
                     FeatureWeightings(weightingssingle);
                     break;
+                case NonPriceElementType.Implementation:
+                    ImplementationWeightings(weightingssingle);
+                    break;
+                case NonPriceElementType.Interoperability:
+                    InteroperabilityWeightings(weightingssingle);
+                    break;
+                case NonPriceElementType.ServiceLevelAgreement:
+                    ServiceLevelAgreementWeightings(weightingssingle);
+                    break;
+                case NonPriceElementType.All:
+                    AllNonPriceElementsWeightings(weightingssingle / 4);
+                    break;
                 default:
                     break;
             }
@@ -29,6 +41,33 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
         public void FeatureWeightings(int weightings)
         {
             Driver.FindElement(NonPriceObjects.FeatureWeighting).SendKeys(weightings.ToString());
+            CommonActions.ClickSave();
+        }
+
+        public void ImplementationWeightings(int weightings)
+        {
+            Driver.FindElement(NonPriceObjects.ImplementationWeighting).SendKeys(weightings.ToString());
+            CommonActions.ClickSave();
+        }
+
+        public void InteroperabilityWeightings(int weightings)
+        {
+            Driver.FindElement(NonPriceObjects.InteroperabilityWeightings).SendKeys(weightings.ToString());
+            CommonActions.ClickSave();
+        }
+
+        public void ServiceLevelAgreementWeightings(int weightings)
+        {
+            Driver.FindElement(NonPriceObjects.ServieLevelWeightings).SendKeys(weightings.ToString());
+            CommonActions.ClickSave();
+        }
+
+        public void AllNonPriceElementsWeightings(int weightings)
+        {
+            Driver.FindElement(NonPriceObjects.FeatureWeighting).SendKeys(weightings.ToString());
+            Driver.FindElement(NonPriceObjects.ImplementationWeighting).SendKeys(weightings.ToString());
+            Driver.FindElement(NonPriceObjects.InteroperabilityWeightings).SendKeys(weightings.ToString());
+            Driver.FindElement(NonPriceObjects.ServieLevelWeightings).SendKeys(weightings.ToString());
             CommonActions.ClickSave();
         }
     }

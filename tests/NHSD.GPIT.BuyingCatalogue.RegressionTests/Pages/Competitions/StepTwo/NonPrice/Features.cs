@@ -3,6 +3,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Competitions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ImportServiceRecipients;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.NonPrice
@@ -25,13 +26,20 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
             ReviewFeatureAddAnotherRequirement();
             ShouldFeature();
             ReviewFeature();
-            AddNonPriceElement();
+        }
+
+        public void AddFeatureForAllNonPriceElements()
+        {
+            MustFeature();
+            ReviewFeatureAddAnotherRequirement();
+            ShouldFeature();
+            ReviewFeature();
         }
 
         public void MustFeature()
         {
             CommonActions.ClickRadioButtonWithValue("Must");
-            TextGenerators.TextInputAddText(NonPriceObjects.FeatureRequirements, 100);
+            TextGenerators.TextInputAddText(NonPriceObjects.ElementRequirements, 100);
             CommonActions.ClickSave();
         }
 
@@ -44,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
         public void ShouldFeature()
         {
             CommonActions.ClickRadioButtonWithValue("Should");
-            TextGenerators.TextInputAddText(NonPriceObjects.FeatureRequirements, 100);
+            TextGenerators.TextInputAddText(NonPriceObjects.ElementRequirements, 100);
             CommonActions.ClickSave();
         }
 

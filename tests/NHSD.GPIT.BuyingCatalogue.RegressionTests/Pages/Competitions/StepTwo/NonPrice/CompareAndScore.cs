@@ -16,11 +16,48 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
 
         public void CompareAndScoreShortlistedSolutions(NonPriceElementType elementType)
         {
-            string elementtype = elementType.ToString().ToLower();
-            CommonActions.ClickLinkElement(NonPriceObjects.EditCompareAndScoreLink(elementtype));
-            CatalogueSolutionScore();
-            ReasonOfScore();
-            ReviewCompareAndScore();
+            if (elementType == NonPriceElementType.All)
+            {
+                var nonPriceElements = Enum.GetValues(typeof(NonPriceElementType))
+                        .Cast<NonPriceElementType>()
+                        .Select(v => v.ToString().ToLower())
+                        .ToList().GetRange(1, 4);
+
+                foreach (var element in nonPriceElements)
+                {
+                    if (element == NonPriceElementType.ServiceLevelAgreement.ToString().ToLower())
+                    {
+                        string slaElementType = "service-level";
+                        CommonActions.ClickLinkElement(NonPriceObjects.EditCompareAndScoreLink(slaElementType));
+                        CatalogueSolutionScore();
+                        ReasonOfScore();
+                    }
+                    else
+                    {
+                        CommonActions.ClickLinkElement(NonPriceObjects.EditCompareAndScoreLink(element));
+                        CatalogueSolutionScore();
+                        ReasonOfScore();
+                    }
+                }
+
+                ReviewCompareAndScore();
+            }
+            else if (elementType == NonPriceElementType.ServiceLevelAgreement)
+            {
+                string slaElementType = "service-level";
+                CommonActions.ClickLinkElement(NonPriceObjects.EditCompareAndScoreLink(slaElementType));
+                CatalogueSolutionScore();
+                ReasonOfScore();
+                ReviewCompareAndScore();
+            }
+            else
+            {
+                string elementtype = elementType.ToString().ToLower();
+                CommonActions.ClickLinkElement(NonPriceObjects.EditCompareAndScoreLink(elementtype));
+                CatalogueSolutionScore();
+                ReasonOfScore();
+                ReviewCompareAndScore();
+            }
         }
 
         public void ReasonOfScore()
@@ -32,10 +69,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
 
         public void CatalogueSolutionScore()
         {
-            Driver.FindElements(By.XPath("//*[@class='nhsuk-input nhsuk-input--width-3']")).ToList().ForEach(element => element.SendKeys(RandonScore(1,5).ToString()));
+            Driver.FindElements(By.XPath("//*[@class='nhsuk-input nhsuk-input--width-3']")).ToList().ForEach(element => element.SendKeys(RandomScore(1,5).ToString()));
         }
 
-        public int RandonScore(int lowerRange = 0, int upperRange = int.MaxValue)
+        public int RandomScore(int lowerRange = 0, int upperRange = int.MaxValue)
         {
             var random = new Random();
             var number = random.Next(lowerRange, upperRange);

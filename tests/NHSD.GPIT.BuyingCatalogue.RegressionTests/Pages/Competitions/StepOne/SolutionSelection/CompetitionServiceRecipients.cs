@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOne.S
             switch (recipients)
             {
                 case ServiceRecipientSelectionMode.All:
-                    CommonActions.ClickAllCheckboxes();
+                    CommonActions.ClickSelectAll();
                     break;
                 case ServiceRecipientSelectionMode.Single:
                     CommonActions.ClickFirstCheckbox();
