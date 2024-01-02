@@ -29,64 +29,85 @@
             <input type="hidden" asp-for="CatalogueItemName" />
             <input type="hidden" asp-for="CataloguePricePublicationStatus" />
             <input type="hidden" asp-for="DeleteListPriceUrl" />
+            <input type="hidden" asp-for="PracticeReorganisation" />
 
-            <nhs-fieldset-form-label asp-for="SelectedProvisioningType" label-text="Provisioning type" size="Medium">
-                <nhs-radio-button-container>
-                    <nhs-radio-button asp-for="SelectedProvisioningType"
-                                      value="Model.AvailableProvisioningTypes.ElementAt(0)"
-                                      value-name="Value"
-                                      display-name="Text"
-                                      index="0" />
+            @if ((Model.PracticeReorganisation ?? 0) != 0)
+            {
+                <input type="hidden" asp-for="SelectedProvisioningType" value="@ProvisioningType.Declarative" />
+                <input type="hidden" asp-for="DeclarativeQuantityCalculationType" value="@CataloguePriceQuantityCalculationType.PerServiceRecipient" />
+                <input type="hidden" asp-for="SelectedCalculationType" value="@CataloguePriceCalculationType.Volume" />
 
-                    <nhs-radio-button asp-for="SelectedProvisioningType"
-                                      value="Model.AvailableProvisioningTypes.ElementAt(1)"
-                                      value-name="Value"
-                                      display-name="Text"
-                                      index="1">
+                <nhs-inset-text>As this service supports the merging or splitting of practices, the provisioning and calculation types cannot be changed.</nhs-inset-text>
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Provisioning type">Declarative per Service Recipient</nhs-summary-list-row>
+                    <nhs-summary-list-row label-text="Calculation type">Volume</nhs-summary-list-row>
+                </nhs-summary-list>   
+            }
+            else
+            {
+                @if (Model.CatalogueItemType == CatalogueItemType.AssociatedService && Model.CataloguePriceId is not null)
+                {
+                    <nhs-inset-text>For Associated Services that support mergers and splits, the provisioning type must be declarative per Service Recipient and the calculation type must be volume.</nhs-inset-text>
+                }
+                <nhs-fieldset-form-label asp-for="SelectedProvisioningType" label-text="Provisioning type" size="Medium">
+                    <nhs-radio-button-container>
+                        <nhs-radio-button asp-for="SelectedProvisioningType"
+                                          value="Model.AvailableProvisioningTypes.ElementAt(0)"
+                                          value-name="Value"
+                                          display-name="Text"
+                                          index="0" />
 
-                        <nhs-fieldset-form-label asp-for="DeclarativeQuantityCalculationType" label-text="How are quantities for this price calculated?" size="Small">
-                            <nhs-radio-buttons asp-for="DeclarativeQuantityCalculationType"
-                                               values="@Model.AvailableQuantityCalculationTypes.Cast<object>()"
-                                               display-name="Text"
-                                               value-name="Value"/>
-                        </nhs-fieldset-form-label>
+                        <nhs-radio-button asp-for="SelectedProvisioningType"
+                                          value="Model.AvailableProvisioningTypes.ElementAt(1)"
+                                          value-name="Value"
+                                          display-name="Text"
+                                          index="1">
 
-                        <nhs-select asp-for="DeclarativeBillingPeriod"
-                                    asp-items="Model.AvailableBillingPeriods"
-                                    label-text="Billing period (optional)"
-                                    label-hint="Select if it’s a recurring payment either per month or per year."
-                                    use-default-value="false" />
-                    </nhs-radio-button>
+                            <nhs-fieldset-form-label asp-for="DeclarativeQuantityCalculationType" label-text="How are quantities for this price calculated?" size="Small">
+                                <nhs-radio-buttons asp-for="DeclarativeQuantityCalculationType"
+                                                   values="@Model.AvailableQuantityCalculationTypes.Cast<object>()"
+                                                   display-name="Text"
+                                                   value-name="Value" />
+                            </nhs-fieldset-form-label>
 
-                    <nhs-radio-button asp-for="SelectedProvisioningType"
-                                      value="Model.AvailableProvisioningTypes.ElementAt(2)"
-                                      value-name="Value"
-                                      display-name="Text"
-                                      index="2">
+                            <nhs-select asp-for="DeclarativeBillingPeriod"
+                                        asp-items="Model.AvailableBillingPeriods"
+                                        label-text="Billing period (optional)"
+                                        label-hint="Select if it’s a recurring payment either per month or per year."
+                                        use-default-value="false" />
+                        </nhs-radio-button>
 
-                        <nhs-fieldset-form-label asp-for="OnDemandQuantityCalculationType"  label-text="How are quantities for this price calculated?" size="Small">
-                            <nhs-radio-buttons asp-for="OnDemandQuantityCalculationType"
-                                               values="@Model.AvailableQuantityCalculationTypes.Cast<object>()"
-                                               display-name="Text"
-                                               value-name="Value"/>
-                        </nhs-fieldset-form-label>
+                        <nhs-radio-button asp-for="SelectedProvisioningType"
+                                          value="Model.AvailableProvisioningTypes.ElementAt(2)"
+                                          value-name="Value"
+                                          display-name="Text"
+                                          index="2">
 
-                        <nhs-select asp-for="OnDemandBillingPeriod"
-                                    asp-items="Model.AvailableBillingPeriods"
-                                    label-text="Billing period (optional)"
-                                    label-hint="Select if it’s a recurring payment either per month or per year."
-                                    use-default-value="false"/>
-                    </nhs-radio-button>
-                </nhs-radio-button-container>
-            </nhs-fieldset-form-label>
+                            <nhs-fieldset-form-label asp-for="OnDemandQuantityCalculationType" label-text="How are quantities for this price calculated?" size="Small">
+                                <nhs-radio-buttons asp-for="OnDemandQuantityCalculationType"
+                                                   values="@Model.AvailableQuantityCalculationTypes.Cast<object>()"
+                                                   display-name="Text"
+                                                   value-name="Value" />
+                            </nhs-fieldset-form-label>
 
-			<nhs-fieldset-form-label asp-for="SelectedCalculationType" label-text="Calculation type" size="Medium">
-						<nhs-radio-buttons asp-for="SelectedCalculationType"
-											values="@Model.AvailableCalculationTypes.Cast<object>()"
-											display-name="Text"
-											value-name="Value"
-											hint-name="Advice"/>
-            </nhs-fieldset-form-label>
+                            <nhs-select asp-for="OnDemandBillingPeriod"
+                                        asp-items="Model.AvailableBillingPeriods"
+                                        label-text="Billing period (optional)"
+                                        label-hint="Select if it’s a recurring payment either per month or per year."
+                                        use-default-value="false" />
+                        </nhs-radio-button>
+                    </nhs-radio-button-container>
+                </nhs-fieldset-form-label>
+
+                <nhs-fieldset-form-label asp-for="SelectedCalculationType" label-text="Calculation type" size="Medium">
+                    <nhs-radio-buttons asp-for="SelectedCalculationType"
+                                       values="@Model.AvailableCalculationTypes.Cast<object>()"
+                                       display-name="Text"
+                                       value-name="Value"
+                                       hint-name="Advice" />
+                </nhs-fieldset-form-label>
+            }
+            
 
             <nhs-bookended-input
                 asp-for="InputPrice"

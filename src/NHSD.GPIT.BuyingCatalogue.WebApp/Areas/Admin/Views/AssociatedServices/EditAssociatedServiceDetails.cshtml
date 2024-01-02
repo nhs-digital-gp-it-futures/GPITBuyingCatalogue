@@ -21,6 +21,9 @@
             <input type="hidden" asp-for="@Model.SupplierId" />
             <input type="hidden" asp-for="@Model.ServiceName" />
             <input type="hidden" asp-for="@Model.SupplierName" />
+            <input type="hidden" asp-for="@Model.HaveCorrectProvisioningAndCalculationTypes" />
+            <input type="hidden" asp-for="@Model.NotHaveTieredPrices" />
+
             @for (int i = 0; i < Model.SolutionMergerAndSplits.Count; i++)
             {
                 <input type="hidden" asp-for="@Model.SolutionMergerAndSplits[i].SolutionName" />

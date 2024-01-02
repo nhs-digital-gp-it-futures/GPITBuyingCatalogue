@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks
 {
     public interface IFrameworkService
     {
-        public Task<List<FrameworkFilterInfo>> GetFrameworksByCatalogueItems(IList<CatalogueItemId> catalogueItems);
+        public Task<List<FrameworkFilterInfo>> GetFrameworksWithPublishedCatalogueItems();
 
         public Task<Framework> GetFramework(string frameworkId);
 
