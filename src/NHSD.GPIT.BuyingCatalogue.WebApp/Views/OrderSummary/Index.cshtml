@@ -58,7 +58,12 @@
             font-size: 1em;
         }
 
-        h3 {
+        h1 {
+            border-bottom: 1px solid lightgray;
+            width: 100%;
+        }
+
+        h2 {
             border-bottom: 1px solid lightgray;
             width: 100%;
         }
@@ -168,41 +173,41 @@
                     <nhs-page-title title="@title"
                                     caption="Order @Model.Order.CallOffId" />
 
-                    <pdf-summary-list>
-                        <pdf-summary-list-row label-text="Order ID">
+                    <nhs-summary-list>
+                        <nhs-summary-list-row label-text="Order ID">
                             @Model.Order.CallOffId
-                        </pdf-summary-list-row>
+                        </nhs-summary-list-row>
 
                         @if (Model.Order.SelectedFramework is not null)
                         {
-                            <pdf-summary-list-row label-text="Framework">
+                            <nhs-summary-list-row label-text="Framework">
                                 @Model.Order.SelectedFramework.ShortName
-                            </pdf-summary-list-row>
+                            </nhs-summary-list-row>
                         }
 
-                        <pdf-summary-list-row label-text="Description">
+                        <nhs-summary-list-row label-text="Description">
                             @Model.Order.Description
-                        </pdf-summary-list-row>
+                        </nhs-summary-list-row>
 
-                        <pdf-summary-list-row label-text="Date order summary created">
+                        <nhs-summary-list-row label-text="Date order summary created">
                             @DateTime.UtcNow.ToString("d MMMM yyyy")
-                        </pdf-summary-list-row>
+                        </nhs-summary-list-row>
 
                         @if (Model.Order.OrderStatus == OrderStatus.Completed
                         && Model.Order.Completed.HasValue)
                         {
-                            <pdf-summary-list-row label-text="Date order summary completed">
+                            <nhs-summary-list-row label-text="Date order summary completed">
                                 @Model.Order.Completed.Value.ToString("d MMMM yyyy")
-                            </pdf-summary-list-row>
+                            </nhs-summary-list-row>
                         }
 
                         @if (Model.Order.OrderingPartyContact != null)
                         {
-                            <pdf-summary-list-row label-text="Call-off Ordering Party">
+                            <nhs-summary-list-row label-text="Call-off Ordering Party">
                                 @Model.Order.OrderingPartyContact.FirstName @Model.Order.OrderingPartyContact.LastName <br />
                                 @Model.Order.OrderingParty.Name (@Model.Order.OrderingParty.ExternalIdentifier)<br />
                                 <vc:nhs-address address="@Model.Order.OrderingParty.Address" />
-                            </pdf-summary-list-row>
+                            </nhs-summary-list-row>
                         }
 
                         @if (Model.Order.Supplier != null
@@ -210,45 +215,45 @@
                         {
                             @if (!string.Equals(Model.Order.Supplier.LegalName, Model.Order.Supplier.Name, StringComparison.OrdinalIgnoreCase))
                             {
-                                <pdf-summary-list-row label-text="Supplier legal name">
+                                <nhs-summary-list-row label-text="Supplier legal name">
                                     @Model.Order.Supplier.LegalName<br />
-                                </pdf-summary-list-row>
+                                </nhs-summary-list-row>
                             }
-                            <pdf-summary-list-row label-text="Supplier">
+                            <nhs-summary-list-row label-text="Supplier">
                                 @Model.Order.SupplierContact.FirstName @Model.Order.SupplierContact.LastName <br />
                                 @Model.Order.Supplier.Name <br />
                                 <vc:nhs-address address="@Model.Order.Supplier.Address" />
-                            </pdf-summary-list-row>
+                            </nhs-summary-list-row>
                         }
 
                         @if (Model.Order.CommencementDate != null)
                         {
-                            <pdf-summary-list-row label-text="Commencement date">
+                            <nhs-summary-list-row label-text="Commencement date">
                                 @($"{Model.Order.CommencementDate.Value:d MMMM yyyy}")
-                            </pdf-summary-list-row>
+                            </nhs-summary-list-row>
                         }
 
                         @if (Model.Order.InitialPeriod != null)
                         {
-                            <pdf-summary-list-row label-text="Initial period">
+                            <nhs-summary-list-row label-text="Initial period">
                                 @($"{Model.Order.InitialPeriod} Months")
-                            </pdf-summary-list-row>
+                            </nhs-summary-list-row>
                         }
 
                         @if (Model.Order.MaximumTerm != null)
                         {
-                            <pdf-summary-list-row label-text="Maximum term">
+                            <nhs-summary-list-row label-text="Maximum term">
                                 @($"{Model.Order.MaximumTerm} Months")
-                            </pdf-summary-list-row>
+                            </nhs-summary-list-row>
 
                             if (Model.Order.CommencementDate != null)
                             {
-                                <pdf-summary-list-row label-text="End date">
+                                <nhs-summary-list-row label-text="End date">
                                     @Model.Order.EndDate.DisplayValue
-                                </pdf-summary-list-row>
+                                </nhs-summary-list-row>
                             }
                         }
-                    </pdf-summary-list>
+                    </nhs-summary-list>
 
                 @if (Model.Order.OrderStatus == OrderStatus.Terminated)
                 {
@@ -268,7 +273,19 @@
                     <div style="page-break-after: always"></div>
                 }
 
-                    <h1>Items added to this order</h1>
+                    <h1>Service Recipients</h1>
+
+                    <nhs-summary-list>
+                        <nhs-summary-list-row label-text="Number of Service Recipients">
+                            @Model.RolledUp.OrderRecipients.Count
+                        </nhs-summary-list-row>
+                    </nhs-summary-list>
+
+                    <p>You can find the list of Service Recipients and their planned delivery dates by logging into Buying Catalogue and viewing the summary of this order.</p>
+
+                    <div style="page-break-after: always"></div>
+
+                    <h1>Solution and services</h1>
 
                     @if (Model.RolledUp.GetSolutions().Any())
                     {
@@ -276,7 +293,6 @@
                         @foreach (var solution in Model.RolledUp.GetSolutions())
                         {
                             <partial name="OrderItem" model="@(new AmendOrderItemModel(Model.CallOffId, Model.RolledUp.OrderRecipients, Model.Previous?.OrderRecipients, solution, Model.Previous?.OrderItem(solution.CatalogueItemId), Model.Order.IsAmendment, Model.FundingTypeDescription(solution.CatalogueItemId)))" />
-                            <div style="page-break-after: always"></div>
                         }
                     }
 
@@ -286,7 +302,6 @@
                         @foreach (var service in Model.RolledUp.GetAdditionalServices())
                         {
                             <partial name="OrderItem" model="@(new AmendOrderItemModel(Model.CallOffId, Model.RolledUp.OrderRecipients, Model.Previous?.OrderRecipients, service, Model.Previous?.OrderItem(service.CatalogueItemId), Model.Order.IsAmendment, Model.FundingTypeDescription(service.CatalogueItemId)))" />
-                            <div style="page-break-after: always"></div>
                         }
                     }
 
@@ -296,9 +311,125 @@
                         @foreach (var service in Model.RolledUp.GetAssociatedServices())
                         {
                             <partial name="OrderItem" model="@(new AmendOrderItemModel(Model.CallOffId, Model.RolledUp.OrderRecipients, Model.Previous?.OrderRecipients, service, Model.Previous?.OrderItem(service.CatalogueItemId), Model.Order.IsAmendment, Model.FundingTypeDescription(service.CatalogueItemId)))" />
-                            <div style="page-break-after: always"></div>
                         }
                     }
+
+                    <div class="pdf-container">
+                        <h3>Indicative costs excluding VAT</h3>
+                        @if (Model.Order.IsAmendment)
+                        {
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Cost type</th>
+                                        <th>Previous cost</th>
+                                        <th>Difference</th>
+                                        <th>New cost</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="alternating">
+                                        <td>
+                                            <strong>Total one-off cost</strong>
+                                        </td>
+                                        <td>
+                                            £@($"{Model.Previous.TotalOneOffCost(null, true):N2}")
+                                        </td>
+                                        <td>
+                                            £@($"{Model.RolledUp.TotalOneOffCost(null, true) - Model.Previous.TotalOneOffCost(null, true):N2}")
+                                        </td>
+                                        <td>
+                                            £@($"{Model.RolledUp.TotalOneOffCost(null, true):N2}")
+                                        </td>
+                                    </tr>
+                                    <tr class="alternating">
+                                        <td>
+                                            <strong>Total monthly cost</strong>
+                                        </td>
+                                        <td>
+                                            £@($"{Model.Previous.TotalMonthlyCost(null, true):N2}")
+                                        </td>
+                                        <td>
+                                            £@($"{Model.RolledUp.TotalMonthlyCost(null, true) - Model.Previous.TotalMonthlyCost(null, true):N2}")
+                                        </td>
+                                        <td>
+                                            £@($"{Model.RolledUp.TotalMonthlyCost(null, true):N2}")
+                                        </td>
+                                    </tr>
+                                    <tr class="alternating">
+                                        <td>
+                                            <strong>Total annual cost</strong>
+                                        </td>
+                                        <td>
+                                            £@($"{Model.Previous.TotalAnnualCost(null, true):N2}")
+                                        </td>
+                                        <td>
+                                            £@($"{Model.RolledUp.TotalAnnualCost(null, true) - Model.Previous.TotalAnnualCost(null, true):N2}")
+                                        </td>
+                                        <td>
+                                            £@($"{Model.RolledUp.TotalAnnualCost(null, true):N2}")
+                                        </td>
+                                    </tr>
+                                    <tr class="alternating">
+                                        <td>
+                                            <strong>Total cost of contract</strong>
+                                        </td>
+                                        <td>
+                                            £@($"{Model.OrderWrapper.TotalPreviousCost(true):N2}")
+                                        </td>
+                                        <td>
+                                            £@($"{Model.OrderWrapper.TotalCost(true) - Model.OrderWrapper.TotalPreviousCost(true):N2}")
+                                        </td>
+                                        <td>
+                                            £@($"{Model.OrderWrapper.TotalCost(true):N2}")
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <table>
+                                <tbody>
+                                    <tr class="alternating">
+                                        <td><strong>Total one-off cost</strong></td>
+                                        <td>
+                                            @($"£{Model.Order.TotalOneOffCost(null):N2}")
+                                        </td>
+                                    </tr>
+                                    <tr class="alternating">
+                                        <td><strong>Total monthly cost</strong></td>
+                                        <td>
+                                            @($"£{Model.Order.TotalMonthlyCost(null):N2}")
+                                        </td>
+                                    </tr>
+                                    <tr class="alternating">
+                                        <td><strong>Total annual cost</strong></td>
+                                        <td>
+                                            @($"£{Model.Order.TotalAnnualCost(null):N2}")
+                                        </td>
+                                    </tr>
+                                    <tr class="alternating">
+                                        <td><strong>Total cost of contract @contractTerm</strong></td>
+                                        <td>
+                                            @($"£{Model.OrderWrapper.TotalCost():N2}")
+                                            @if (!Model.Order.MaximumTerm.HasValue)
+                                            {
+                                                <br />
+                                                <br />
+                                                <p>
+                                                    This is the total estimated cost for the entire duration of the Call-off Agreement, which is usually 3 years.
+                                                    The figure is made up of the one-off costs and the yearly cost multiplied by 3.
+                                                </p>
+                                            }
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        }
+                    </div>
+
+                    <div style="page-break-after: always"></div>
 
                     @if (!Model.Order.AssociatedServicesOnly)
                     {
@@ -438,111 +569,6 @@
                             <div class="nhsuk-u-margin-bottom-6">
                                 <p>Requirements are documented in Data processing information template.</p>
                             </div>
-                        }
-                    </div>
-
-                    <div style="page-break-after: always"></div>
-
-                    <div class="pdf-container">
-                        <h1>Indicative costs for this order</h1>
-                        <h3>Indicative costs not including VAT</h3>
-                        @if (Model.Order.IsAmendment)
-                        {
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Cost type</th>
-                                        <th>Previous cost</th>
-                                        <th>Difference</th>
-                                        <th>New cost</th>
-                                    </tr>
-                                </thead>
-                                <tr>
-                                    <td>
-                                        <strong>Total one-off cost</strong>
-                                    </td>
-                                    <td>
-                                        £@($"{Model.Previous.TotalOneOffCost(null, true):N2}")
-                                    </td>
-                                    <td>
-                                        £@($"{Model.RolledUp.TotalOneOffCost(null, true) - Model.Previous.TotalOneOffCost(null, true):N2}")
-                                    </td>
-                                    <td>
-                                        £@($"{Model.RolledUp.TotalOneOffCost(null, true):N2}")
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <strong>Total monthly cost</strong>
-                                    </td>
-                                    <td>
-                                        £@($"{Model.Previous.TotalMonthlyCost(null, true):N2}")
-                                    </td>
-                                    <td>
-                                        £@($"{Model.RolledUp.TotalMonthlyCost(null, true) - Model.Previous.TotalMonthlyCost(null, true):N2}")
-                                    </td>
-                                    <td>
-                                        £@($"{Model.RolledUp.TotalMonthlyCost(null, true):N2}")
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <strong>Total annual cost</strong>
-                                    </td>
-                                    <td>
-                                        £@($"{Model.Previous.TotalAnnualCost(null, true):N2}")
-                                    </td>
-                                    <td>
-                                        £@($"{Model.RolledUp.TotalAnnualCost(null, true) - Model.Previous.TotalAnnualCost(null, true):N2}")
-                                    </td>
-                                    <td>
-                                        £@($"{Model.RolledUp.TotalAnnualCost(null, true):N2}")
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <strong>Total cost of contract</strong>
-                                    </td>
-                                    <td>
-                                        £@($"{Model.OrderWrapper.TotalPreviousCost(true):N2}")
-                                    </td>
-                                    <td>
-                                        £@($"{Model.OrderWrapper.TotalCost(true) - Model.OrderWrapper.TotalPreviousCost(true):N2}")
-                                    </td>
-                                    <td>
-                                        £@($"{Model.OrderWrapper.TotalCost(true):N2}")
-                                    </td>
-                                </tr>
-                            </table>
-                        }
-                        else
-                        {
-                            <pdf-summary-list>
-                                <pdf-summary-list-row label-text="Total one-off cost">
-                                    @($"£{Model.Order.TotalOneOffCost(null):N2}")
-                                </pdf-summary-list-row>
-
-                                <pdf-summary-list-row label-text="Total monthly cost">
-                                    @($"£{Model.Order.TotalMonthlyCost(null):N2}")
-                                </pdf-summary-list-row>
-
-                                <pdf-summary-list-row label-text="Total annual cost">
-                                    @($"£{Model.Order.TotalAnnualCost(null):N2}")
-                                </pdf-summary-list-row>
-
-                                <pdf-summary-list-row label-text="Total cost of contract @contractTerm">
-                                    @($"£{Model.OrderWrapper.TotalCost():N2}")
-                                    @if (!Model.Order.MaximumTerm.HasValue)
-                                    {
-                                        <br />
-                                        <br />
-                                        <p>
-                                            This is the total estimated cost for the entire duration of the Call-off Agreement, which is usually 3 years.
-                                            The figure is made up of the one-off costs and the yearly cost multiplied by 3.
-                                        </p>
-                                    }
-                                </pdf-summary-list-row>
-                            </pdf-summary-list>
                         }
                     </div>
 
