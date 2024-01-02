@@ -1385,6 +1385,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var model = new AddEditFlatListPriceModel(associatedService.CatalogueItem);
 
+            model.PracticeReorganisation = PracticeReorganisationTypeEnum.None;
+
             associatedServicesService.Setup(s => s.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId))
                 .ReturnsAsync(associatedService.CatalogueItem);
 
@@ -1488,6 +1490,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             associatedService.CatalogueItem.CataloguePrices.Add(price);
 
             var model = new AddEditFlatListPriceModel(associatedService.CatalogueItem, price);
+
+            model.PracticeReorganisation = PracticeReorganisationTypeEnum.None;
 
             associatedServicesService.Setup(
                     s => s.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId))

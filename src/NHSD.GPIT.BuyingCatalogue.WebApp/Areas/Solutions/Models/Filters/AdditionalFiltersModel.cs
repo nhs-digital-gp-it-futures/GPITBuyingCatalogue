@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using EnumsNET;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
@@ -52,38 +51,38 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 
         public List<SelectOption<int>> ApplicationTypeOptions { get; set; }
 
-        public string[] ApplicationTypeFilters => ApplicationTypeOptions
-            ?.Where(f => f.Selected)
-            ?.Select(f => f.Text)
-            ?.ToArray() ?? Array.Empty<string>();
+        public string[] ApplicationTypeFilters => (ApplicationTypeOptions ?? Array.Empty<SelectOption<int>>().ToList())
+            .Where(f => f.Selected)
+            .Select(f => f.Text)
+            .ToArray();
 
         public List<SelectOption<int>> HostingTypeOptions { get; set; }
 
-        public string[] HostingTypeFilters => HostingTypeOptions
-            ?.Where(f => f.Selected)
-            ?.Select(f => f.Text)
-            ?.ToArray() ?? Array.Empty<string>();
+        public string[] HostingTypeFilters => (HostingTypeOptions ?? Array.Empty<SelectOption<int>>().ToList())
+            .Where(f => f.Selected)
+            .Select(f => f.Text)
+            .ToArray();
 
         public List<SelectOption<int>> InteroperabilityOptions { get; set; }
 
-        public string[] InteroperabilityFilters => InteroperabilityOptions
-            ?.Where(f => f.Selected)
-            ?.Select(f => f.Text)
-            ?.ToArray() ?? Array.Empty<string>();
+        public string[] InteroperabilityFilters => (InteroperabilityOptions ?? Array.Empty<SelectOption<int>>().ToList())
+            .Where(f => f.Selected)
+            .Select(f => f.Text)
+            .ToArray();
 
         public List<SelectOption<int>> IM1IntegrationsOptions { get; set; }
 
-        public string[] IM1IntegrationsFilters => IM1IntegrationsOptions
-            ?.Where(f => f.Selected)
-            ?.Select(f => f.Text)
-            ?.ToArray() ?? Array.Empty<string>();
+        public string[] IM1IntegrationsFilters => (IM1IntegrationsOptions ?? Array.Empty<SelectOption<int>>().ToList())
+            .Where(f => f.Selected)
+            .Select(f => f.Text)
+            .ToArray();
 
         public List<SelectOption<int>> GPConnectIntegrationsOptions { get; set; }
 
-        public string[] GPConnectIntegrationsFilters => GPConnectIntegrationsOptions
-            ?.Where(f => f.Selected)
-            ?.Select(f => f.Text)
-            ?.ToArray() ?? Array.Empty<string>();
+        public string[] GPConnectIntegrationsFilters => (GPConnectIntegrationsOptions ?? Array.Empty<SelectOption<int>>().ToList())
+            .Where(f => f.Selected)
+            .Select(f => f.Text)
+            .ToArray();
 
         public string CombineSelectedOptions(List<SelectOption<int>> options)
         {
@@ -97,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                 .Select(
                     f => new SelectOption<string>
                     {
-                        Value = f.Id, Text = $"{f.ShortName} ({f.CountOfActiveSolutions})", Selected = false,
+                        Value = f.Id, Text = $"{f.ShortName}", Selected = false,
                     })
                 .ToList();
 
@@ -105,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                 .FirstOrDefault(f => f.Id == selectedFrameworkId);
 
             FrameworkFilter = framework != null
-                ? $"{framework.ShortName} ({framework.CountOfActiveSolutions})"
+                ? $"{framework.ShortName}"
                 : string.Empty;
         }
 
