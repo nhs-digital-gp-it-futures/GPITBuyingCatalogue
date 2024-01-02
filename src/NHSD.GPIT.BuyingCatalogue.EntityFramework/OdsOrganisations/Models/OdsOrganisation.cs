@@ -2,7 +2,7 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 
-public partial class OdsOrganisation
+public class OdsOrganisation
 {
     public string Id { get; set; }
 
@@ -31,4 +31,22 @@ public partial class OdsOrganisation
         new HashSet<OrganisationRelationship>();
 
     public virtual ICollection<OrganisationRole> Roles { get; set; } = new HashSet<OrganisationRole>();
+
+    public void UpdateFrom(OdsOrganisation source)
+    {
+        if (source == null)
+        {
+            return;
+        }
+
+        Name = source.Name;
+        IsActive = source.IsActive;
+        AddressLine1 = source.AddressLine1;
+        AddressLine2 = source.AddressLine2;
+        AddressLine3 = source.AddressLine3;
+        Town = source.Town;
+        County = source.County;
+        Postcode = source.Postcode;
+        Country = source.Country;
+    }
 }
