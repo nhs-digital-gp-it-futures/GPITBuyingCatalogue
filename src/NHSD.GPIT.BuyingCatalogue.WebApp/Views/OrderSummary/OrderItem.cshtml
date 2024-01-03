@@ -31,7 +31,8 @@ else
     var billingPeriod = Model.OrderItemPrice.BillingPeriod?.Description() ?? "one-off";
 
     <br />
-    <table label-text="Pricing and quantities" catches-errors="false">
+    <h4>Pricing and quantities</h4>
+    <table catches-errors="false">
         <thead>
             <tr>
         @if (hasTieredPricing)
