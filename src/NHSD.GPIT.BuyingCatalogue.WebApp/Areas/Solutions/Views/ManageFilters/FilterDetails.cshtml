@@ -27,14 +27,14 @@
                 <p>It should be deleted and a new filter created using valid Capabilities or Epics.</p>
             </nhs-warning-callout>
         }
-        else if(CurrentEnvironment.IsDevelopment)
+        else
         {
             <vc:nhs-action-link url="@Url.Action(
                                     nameof(CompetitionsDashboardController.SaveCompetition),
                                     typeof(CompetitionsDashboardController).ControllerName(),
-                                    new { 
-                                        internalOrgId = Model.InternalOrgId, 
-                                        filterId = Model.FilterDetails.Id, 
+                                    new {
+                                        internalOrgId = Model.InternalOrgId,
+                                        filterId = Model.FilterDetails.Id,
                                         fromFilter = true,
                                         Area = typeof(CompetitionsDashboardController).AreaName(),})"
                             text="Begin a competition using this filter" />

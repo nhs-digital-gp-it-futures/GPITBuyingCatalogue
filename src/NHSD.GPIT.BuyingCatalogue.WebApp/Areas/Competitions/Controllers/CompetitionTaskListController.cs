@@ -11,7 +11,6 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.TaskListModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 
-[Authorize("Development")]
 [Authorize("Buyer")]
 [Area("Competitions")]
 [Route("organisation/{internalOrgId}/competitions/{competitionId:int}")]

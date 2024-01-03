@@ -23,7 +23,6 @@ using OdsOrganisation = NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisatio
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 
-[Authorize("Development")]
 [Authorize("Buyer")]
 [Area("Competitions")]
 [Route("organisation/{internalOrgId}/competitions/{competitionId:int}/hub")]

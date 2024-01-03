@@ -11,7 +11,6 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 
-[Authorize("Development")]
 [Authorize("Buyer")]
 [Area("Competitions")]
 [Route("organisation/{internalOrgId}/competitions/{competitionId:int}")]
