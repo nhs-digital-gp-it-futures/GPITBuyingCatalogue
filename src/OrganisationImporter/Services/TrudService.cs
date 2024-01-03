@@ -50,18 +50,14 @@ public class TrudService : ITrudService
 
         try
         {
-            await ClearExistingEntitiesAsync(_dbContext);
-
-            _dbContext.OrganisationRoleTypes.AddRange(mappedData.RoleTypes);
-            _dbContext.OrganisationRelationshipTypes.AddRange(mappedData.RelationshipTypes);
-            _dbContext.OdsOrganisations.AddRange(mappedData.OdsOrganisations);
+            await HandleOrganisationRoleTypes(mappedData.RoleTypes);
+            await HandleOrganisationRelationshipTypes(mappedData.RelationshipTypes);
+            await HandleOrganisations(mappedData.OdsOrganisations);
 
             await _dbContext.SaveChangesAsync();
 
-            _dbContext.OrganisationRoles.AddRange(mappedData.OrganisationRoles);
-
-            if (mappedData.OrganisationRelationships.Any())
-                _dbContext.OrganisationRelationships.AddRange(mappedData.OrganisationRelationships);
+            await HandleOrganisationRoles(mappedData.OrganisationRoles);
+            await HandleOrganisationRelationships(mappedData.OrganisationRelationships);
 
             await _dbContext.SaveChangesAsync();
 
@@ -105,28 +101,83 @@ public class TrudService : ITrudService
         return deserialized;
     }
 
-    private static async Task ClearExistingEntitiesAsync(DbContext dbContext)
+    private async Task HandleOrganisationRoleTypes(IEnumerable<RoleType> roleTypes)
     {
-        var entitiesToClear = new[]
+        foreach (var roleType in roleTypes)
         {
-            typeof(OrganisationRelationship),
-            typeof(OrganisationRole),
-            typeof(OdsOrganisation),
-            typeof(RelationshipType),
-            typeof(RoleType),
-            typeof(OrgImportJournal)
-        };
+            var existing = await _dbContext.OrganisationRoleTypes.FirstOrDefaultAsync(x => x.Id == roleType.Id);
+            if (existing is not null)
+            {
+                existing.Description = roleType.Description;
+                continue;
+            }
 
-        foreach (var entityToClear in entitiesToClear)
-        {
-            var entityType = dbContext.Model.FindEntityType(entityToClear)!;
-            var tableName = dbContext.Database.IsSqlServer()
-                ? entityType.GetSchemaQualifiedTableName()
-                : entityType.GetTableName();
-
-            await dbContext.Database.ExecuteSqlRawAsync($"DELETE FROM {tableName}");
+            _dbContext.OrganisationRoleTypes.Add(roleType);
         }
+    }
 
-        await dbContext.SaveChangesAsync();
+    private async Task HandleOrganisationRelationshipTypes(IEnumerable<RelationshipType> relationshipTypes)
+    {
+        foreach (var relationshipType in relationshipTypes)
+        {
+            var existing = await _dbContext.OrganisationRelationshipTypes.FirstOrDefaultAsync(x => x.Id == relationshipType.Id);
+            if (existing is not null)
+            {
+                existing.Description = relationshipType.Description;
+                continue;
+            }
+
+            _dbContext.OrganisationRelationshipTypes.Add(relationshipType);
+        }
+    }
+
+    private async Task HandleOrganisations(IEnumerable<OdsOrganisation> organisations)
+    {
+        foreach (var organisation in organisations)
+        {
+            var existing = await _dbContext.OdsOrganisations.FirstOrDefaultAsync(x => x.Id == organisation.Id);
+            if (existing is not null)
+            {
+                existing.UpdateFrom(organisation);
+                continue;
+            }
+
+            _dbContext.OdsOrganisations.Add(organisation);
+        }
+    }
+
+    private async Task HandleOrganisationRoles(IEnumerable<OrganisationRole> organisationRoles)
+    {
+        foreach (var organisationRole in organisationRoles)
+        {
+            var existing = await _dbContext.OrganisationRoles.FirstOrDefaultAsync(x => x.Id == organisationRole.Id);
+            if (existing is not null)
+            {
+                existing.IsPrimaryRole = organisationRole.IsPrimaryRole;
+
+                continue;
+            }
+
+            _dbContext.OrganisationRoles.Add(organisationRole);
+        }
+    }
+
+    private async Task HandleOrganisationRelationships(IEnumerable<OrganisationRelationship> organisationRelationships)
+    {
+        foreach (var organisationRelationship in organisationRelationships)
+        {
+            var existing =
+                await _dbContext.OrganisationRelationships.FirstOrDefaultAsync(x =>
+                    x.Id == organisationRelationship.Id);
+            if (existing is not null)
+            {
+                existing.TargetOrganisationId = organisationRelationship.TargetOrganisationId;
+                existing.OwnerOrganisationId = organisationRelationship.OwnerOrganisationId;
+                existing.RelationshipTypeId = organisationRelationship.RelationshipTypeId;
+                continue;
+            }
+
+            _dbContext.OrganisationRelationships.Add(organisationRelationship);
+        }
     }
 }
