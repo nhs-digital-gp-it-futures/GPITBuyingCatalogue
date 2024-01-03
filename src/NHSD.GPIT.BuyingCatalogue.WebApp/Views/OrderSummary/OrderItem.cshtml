@@ -18,13 +18,8 @@ else
 }
 
 @{
-    var itemType = Model.CatalogueItem.CatalogueItemType.DisplayName();
-    var orderItemCostBasis = Model.OrderItemPrice?.BillingPeriod?.Description() ?? string.Empty;
-    var hasServiceRecipientQuantities = ((IPrice)Model.OrderItemPrice)?.IsPerServiceRecipient() ?? false;
-    var tierCosts = ((IPrice)Model.OrderItemPrice)?.CostPerTierForBillingPeriod(Model.RolledUpTotalQuantity) ?? new List<PriceCalculationModel>();
-    var tiers = Model.OrderItemPrice?.OrderItemPriceTiers?.OrderBy(x => x.LowerRange).ToList() ?? new List<OrderItemPriceTier>();
     var hasTieredPricing = Model.OrderItemPrice?.CataloguePriceType is CataloguePriceType.Tiered;
-    }
+ }
 
 @if (Model.OrderItemPrice?.OrderItemPriceTiers.Any() ?? false)
 {
