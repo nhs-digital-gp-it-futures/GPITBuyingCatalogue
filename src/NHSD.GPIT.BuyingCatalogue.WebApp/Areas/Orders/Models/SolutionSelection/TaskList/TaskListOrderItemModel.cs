@@ -59,11 +59,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         {
             get
             {
-                if (PriceStatus == TaskProgress.NotStarted)
-                {
-                    return TaskProgress.CannotStart;
-                }
-
                 if (RolledUpOrderRecipients.AllQuantitiesEntered(rolledUpOrderItem))
                 {
                     return FromPreviousRevision && HasNewRecipients ? TaskProgress.Amended : TaskProgress.Completed;

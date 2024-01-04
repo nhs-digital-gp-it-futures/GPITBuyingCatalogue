@@ -1,0 +1,38 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Shared.EditSolutionServices;
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-validation-summary RadioId="SelectedCatalogueSolutionId" />
+
+        @{
+            var caption = $"Order {Model.CallOffId}";
+        }
+        <nhs-page-title title= "Catalogue Solution and services"
+                        caption= "@caption" />
+
+        <h2>Catalogue Solution</h2>
+
+        <nhs-card title= "@Model.CatalogueItem.Name" data="Test" manifest="Test2" text="Test3" 
+           >
+            <nhs-table>
+                <nhs-table-column>Section</nhs-table-column>
+                <nhs-table-column>Status</nhs-table-column>
+                <nhs-table-column>Action</nhs-table-column>
+
+                <nhs-table-row-container>
+                    <nhs-table-cell>Price</nhs-table-cell>
+                    <nhs-table-cell>
+                        <nhs-tag status-enum="@Model.PriceProgress()" />
+                    </nhs-table-cell>
+                    <nhs-table-cell>
+                        Start
+                    </nhs-table-cell>
+                </nhs-table-row-container>
+            </nhs-table>
+
+        </nhs-card>
+    </div>
+</div>

@@ -44,15 +44,14 @@
                     <h3>@Model.SolutionName</h3>
                 }
 
-                @if (Model.CatalogueSolution != null)
-                {
-                    <div class="nhsuk-u-margin-bottom-9">
-                        <partial name="TaskListOrderItem"
-                                 model="@Model.OrderItemModel(Model.CatalogueSolution.CatalogueItemId)" />
-                    </div>
-                }
-            </div>
-        }
+            @if (Model.CatalogueSolution != null)
+            {
+                <nhs-card>
+                    <partial name="TaskListOrderItem"
+                             model="@Model.OrderItemModel(Model.CatalogueSolution.CatalogueItemId)" />
+                </nhs-card>
+            }
+        </div>
 
         @if (!Model.OrderType.AssociatedServicesOnly)
         {
@@ -73,12 +72,21 @@
                     <p>There are no Additional Services available for this Catalogue Solution.</p>
                 }
 
-                @foreach (var service in Model.AdditionalServices)
+                @if (Model.AdditionalServices.Any())
                 {
-                    <div class="nhsuk-u-margin-bottom-9">
-                        <partial name="TaskListOrderItem"
-                                 model="@Model.OrderItemModel(service.CatalogueItemId)" />
-                    </div>
+                    <nhs-card>
+                        @foreach (var service in Model.AdditionalServices)
+                        {
+                            <div>
+                                <partial name="TaskListOrderItem"
+                                         model="@Model.OrderItemModel(service.CatalogueItemId)" />
+                                <vc:nhs-delete-button url="@Url.Action(nameof(CatalogueSolutionsController.RemoveService),
+                                                                       typeof(CatalogueSolutionsController).ControllerName(),
+                                                                       new { Model.InternalOrgId, Model.CallOffId, service.CatalogueItemId })"
+                                                      text="Remove @service.CatalogueItem.Name" />
+                            </div>
+                        }
+                    </nhs-card>
                 }
             </div>
         }
@@ -105,14 +113,17 @@
                     }
                 }
 
-                @foreach (var service in Model.AssociatedServices)
+                @if (Model.AssociatedServices.Any())
                 {
-                    var serviceModel = Model.OrderItemModel(service.CatalogueItemId);
-
-                    <div class="nhsuk-u-margin-bottom-9">
-                        <partial name="TaskListOrderItem"
-                                 model="@serviceModel" />
-                    </div>
+                    <nhs-card>
+                        @foreach (var service in Model.AssociatedServices)
+                        {
+                            <div class="nhsuk-u-margin-bottom-9">
+                                <partial name="TaskListOrderItem"
+                                         model="@Model.OrderItemModel(service.CatalogueItemId)" />
+                            </div>
+                        }
+                    </nhs-card>
                 }
             </div>
         }

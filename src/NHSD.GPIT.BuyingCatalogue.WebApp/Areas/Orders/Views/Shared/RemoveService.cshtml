@@ -1,0 +1,46 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Shared
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Shared.RemoveServiceModel;
+
+@{
+    ViewBag.Title = "Remove Additional Service";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.Service.Name"
+                        advice="Confirm you want to remove this @Model.ServiceType from your order." />
+
+        <nhs-warning-callout label-text="Removing an @Model.ServiceType">
+            <p>Removing an @Model.ServiceType will also remove any quantities and prices you've previously entered for it.</p>
+        </nhs-warning-callout>
+
+        <form method="post">
+            <input type="hidden" asp-for="@Model.Service" />
+            <input type="hidden" asp-for="@Model.ServiceType" />
+            <input type="hidden" asp-for="@Model.RemoveServiceOptions" />
+            <input type="hidden" asp-for="BackLink" />
+            <nhs-fieldset-form-label asp-for="ConfirmRemoveService" label-text="Remove @Model.Service.Name">
+                <nhs-radio-button-container>
+                    <nhs-radio-button asp-for="ConfirmRemoveService"
+                                      value="Model.RemoveServiceOptions[0]"
+                                      value-name="Value"
+                                      display-name="Text"
+                                      index="0" />
+
+                    <nhs-radio-button asp-for="ConfirmRemoveService"
+                                      value="Model.RemoveServiceOptions[1]"
+                                      value-name="Value"
+                                      display-name="Text"
+                                      index="1" />
+                </nhs-radio-button-container>
+            </nhs-fieldset-form-label>
+            <nhs-submit-button>Save and continue</nhs-submit-button>
+        </form>
+
+
+    </div>
+</div>

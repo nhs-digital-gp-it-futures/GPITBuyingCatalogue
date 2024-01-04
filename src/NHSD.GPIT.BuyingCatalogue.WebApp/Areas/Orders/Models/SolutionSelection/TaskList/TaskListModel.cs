@@ -11,17 +11,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 {
     public class TaskListModel : NavBaseModel
     {
-        public const string AmendmentAdvice = "Add Service Recipients to existing items or add Additional Services.";
         public const string AmendmentTitle = "Amend items from the previous order";
-        public const string CompletedAdvice = "Select the sections that you want to edit.";
         public const string CompletedTitle = "Edit solutions and services";
         public const string MergerSplitTitle = "Edit Associated Service";
-        public const string InProgressAdvice = "Review the progress of your order. Make sure you’ve included everything you want to order and that all sections are completed.";
-        public const string InProgressTitle = "Review your progress";
+        public const string InProgressTitle = "Catalogue Solution and services";
 
         private const string Add = "Add";
         private const string Change = "Change";
-        private const string MergerSplitAdvice = "Confirm the price and review the quantity of the Associated Service you’re ordering.";
+
         private readonly Dictionary<CatalogueItemId, TaskListOrderItemModel> taskModels = new();
 
         public TaskListModel()
@@ -107,14 +104,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         public override string Caption => OrderType.MergerOrSplit
             ? SolutionName
             : $"Order {CallOffId}";
-
-        public override string Advice => IsAmendment
-            ? AmendmentAdvice
-            : OrderType.MergerOrSplit
-                ? MergerSplitAdvice
-                : Progress == TaskProgress.Completed
-                    ? CompletedAdvice
-                    : InProgressAdvice;
 
         public string SolutionName { get; set; }
 

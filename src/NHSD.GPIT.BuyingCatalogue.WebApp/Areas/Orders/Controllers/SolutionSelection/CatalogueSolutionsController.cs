@@ -78,6 +78,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             await orderItemService.AddOrderItems(internalOrgId, callOffId, ids);
 
+            await orderService.SetSolutionId(internalOrgId, callOffId, catalogueItemId);
+
             var wrapper = await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId);
             var orderItem = wrapper.Order.OrderItem(catalogueItemId);
 
@@ -85,18 +87,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 .Where(x => x.PublishedStatus == PublicationStatus.Published)
                 .ToList();
 
-            if (publishedPrices.Count > 1)
-            {
-                return RedirectToAction(
-                    nameof(PricesController.SelectPrice),
-                    typeof(PricesController).ControllerName(),
-                    new { internalOrgId, callOffId, catalogueItemId });
-            }
-
             return RedirectToAction(
-                nameof(PricesController.ConfirmPrice),
-                typeof(PricesController).ControllerName(),
-                new { internalOrgId, callOffId, catalogueItemId, priceId = publishedPrices[0].CataloguePriceId });
+                nameof(TaskListController.TaskList),
+                typeof(TaskListController).ControllerName(),
+                new { internalOrgId, callOffId });
         }
 
         [HttpGet("select/associated-services-only")]
@@ -136,6 +130,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 nameof(AssociatedServicesController.SelectAssociatedServices),
                 typeof(AssociatedServicesController).ControllerName(),
                 new { internalOrgId, callOffId, source = RoutingSource.SelectSolution });
+        }
+
+        [HttpGet("edit-solution-and-services")]
+        public async Task<IActionResult> EditSolutionServices(string internalOrgId, CallOffId callOffId)
+        {
+            var order = (await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId)).Order;
+
+            var solutionId = order.Solution.Id;
+            var solution = await solutionsService.GetSolutionThin(solutionId);
+
+            var model = new EditSolutionServices()
+            {
+                CallOffId = callOffId,
+                BackLink = Url.Action(
+                    nameof(SelectSolution),
+                    typeof(CatalogueSolutionsController).ControllerName(),
+                    new { internalOrgId, callOffId }),
+                CatalogueItem = solution,
+            };
+
+            return View("Areas/Orders/Views/SolutionServices/EditSolutionServices.cshtml", model);
         }
 
         [HttpGet("edit")]
@@ -408,6 +423,41 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 nameof(AssociatedServicesController.SelectAssociatedServices),
                 typeof(AssociatedServicesController).ControllerName(),
                 new { internalOrgId, callOffId, source = RoutingSource.EditSolution });
+        }
+
+        [HttpGet("remove-service")]
+        public async Task<IActionResult> RemoveService(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId)
+        {
+            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
+            var service = await solutionsService.GetSolutionThin(catalogueItemId);
+            var model = new RemoveServiceModel(order, service)
+            {
+                BackLink = Url.Action(
+                    nameof(TaskListController.TaskList),
+                    typeof(TaskListController).ControllerName(),
+                    new { internalOrgId, callOffId }),
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("remove-service")]
+        public async Task<IActionResult> RemoveService(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, RemoveServiceModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            if (model.ConfirmRemoveService ?? false)
+            {
+                await orderItemService.DeleteOrderItems(internalOrgId, callOffId, new List<CatalogueItemId> { catalogueItemId });
+            }
+
+            return RedirectToAction(
+                    nameof(TaskListController.TaskList),
+                    typeof(TaskListController).ControllerName(),
+                    new { internalOrgId, callOffId });
         }
 
         private async Task<SelectSolutionModel> GetSelectModel(
