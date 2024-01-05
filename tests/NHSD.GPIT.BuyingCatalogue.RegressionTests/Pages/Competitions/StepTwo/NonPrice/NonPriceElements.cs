@@ -49,6 +49,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
                     SelectAllNonPriceElements();
                     AddAllNonPriceElements();
                     break;
+                case NonPriceElementType.Multiple:
+                    SelectMultipleNonPriceElements();
+                    AddMultipleNonPriceElements();
+                    break;
                 default:
                     break;
             }
@@ -96,6 +100,19 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
             Implementation.AddImplementationForAllNonPriceElements();
             Interoperability.AddInteroperabilityForAllNonPriceElements();
             ServiceLevelAgreement.AddServiceLevelAgreementForAllNonPriceElements();
+        }
+
+        public void SelectMultipleNonPriceElements()
+        {
+            CommonActions.ClickCheckboxByLabel("Features");
+            CommonActions.ClickCheckboxByLabel("Implementation");
+            CommonActions.ClickSave();
+        }
+
+        public void AddMultipleNonPriceElements()
+        {
+            Features.AddFeatureForAllNonPriceElements();
+            Implementation.AddImplementationForAllNonPriceElements();
         }
     }
 }
