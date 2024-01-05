@@ -29,7 +29,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public const string OrderIdToken = "order_id";
         public const string OrderSummaryLinkToken = "order_summary_link";
         public const string OrderSummaryCsv = "order_summary_csv";
-        public const string PatientOrderCsvToken = "patient_order_csv";
 
         private readonly BuyingCatalogueDbContext dbContext;
         private readonly ICsvService csvService;
@@ -480,7 +479,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         private async Task SendEmailsAndSave(Order order, CallOffId callOffId, int userId, bool showRevisions = false)
         {
             await using var fullOrderStream = new MemoryStream();
-            await using var patientOrderStream = new MemoryStream();
 
             await csvService.CreateFullOrderCsvAsync(order.Id, order.OrderType, fullOrderStream, showRevisions);
 
@@ -495,13 +493,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             var templateId = order.IsTerminated ? orderMessageSettings.OrderTerminatedAdminTemplateId : orderMessageSettings.SingleCsvTemplateId;
 
-            if (!order.IsTerminated && await csvService.CreatePatientNumberCsvAsync(order.Id, patientOrderStream) > 0)
-            {
-                patientOrderStream.Position = 0;
-                adminTokens.Add(PatientOrderCsvToken, NotificationClient.PrepareUpload(patientOrderStream.ToArray(), true));
-                templateId = orderMessageSettings.DualCsvTemplateId;
-            }
-
             var userTokens = new Dictionary<string, dynamic>
             {
                 { OrderIdToken, $"{callOffId}" },
@@ -515,8 +506,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             var userEmail = dbContext.Users.First(x => x.Id == userId).Email;
 
             await Task.WhenAll(
-                emailService.SendEmailAsync(orderMessageSettings.Recipient.Address, templateId, adminTokens), // full_order_csv
-                emailService.SendEmailAsync(userEmail, GetUserTemplateId(order), userTokens), // order_summary_csv
+                emailService.SendEmailAsync(orderMessageSettings.Recipient.Address, templateId, adminTokens),
+                emailService.SendEmailAsync(userEmail, GetUserTemplateId(order), userTokens),
                 dbContext.SaveChangesAsync());
         }
 
